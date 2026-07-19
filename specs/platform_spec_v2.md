@@ -103,9 +103,10 @@ ANTI-FABRICATION RULE (all marketing content):
   Telephony: Twilio Programmable Voice + Media Streams
     (bidirectional WebSocket to Gemini Live), Twilio SMS.
   Payments: Stripe subscriptions (plans, annual), payment
-    links (deposits). No one-time concierge/setup product —
-    onboarding is self-serve (4.6); sections 4.6 and 8 are
-    authoritative. [Owner ruling 2026-07-19]
+    links (deposits). No one-time setup or onboarding
+    products of any kind — onboarding is self-serve (4.6);
+    sections 4.6 and 8 are authoritative.
+    [Owner ruling 2026-07-19]
   Calendar: Google Calendar OAuth + Calendly link support.
   Email: Resend or SendGrid transactional.
   Integrations out: generic signed WEBHOOK on events
@@ -303,7 +304,7 @@ particles.
   free); minutes translated to human terms under each tier
   ("300 minutes ≈ 80–110 typical calls"); overage rate
   stated in plain sight ($0.35/min); money-back badge. NO
-  setup fee and NO one-time concierge charge is shown — the
+  setup fee or one-time charge of any kind is shown — the
   table lists recurring plan tiers only. Setup is fully
   self-serve (the AI price-book interview, 4.6, plus simple
   written steps to connect the line) and must be framed as
@@ -686,8 +687,8 @@ detected ✓" checker.
   hard cap 60 voice minutes (clearly shown).
   GUARANTEE: 30-day money-back on the first month, badge at
   every CTA, honored self-serve.
-  NO SETUP FEE: onboarding is self-serve (4.6); no
-  one-time concierge charge.
+  NO SETUP FEE: onboarding is fully self-serve (4.6); no
+  one-time charges of any kind.
   PRICING VALIDATION NOTE (to the project owner, not the
   build agent): these numbers are reasoned defaults, not
   validated prices — build as config, test willingness to

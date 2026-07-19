@@ -733,8 +733,8 @@ Build the following:
    Pricing page (3.9): Operator $119 / QuoteDone $279 /
      Scale $549, monthly/annual toggle (annual = 2 months
      free), minutes translated to calls, $0.35/min overage
-     stated plainly, money-back badge. NO setup fee, NO
-     concierge charge, NO separate pricing FAQ — recurring
+     stated plainly, money-back badge. NO setup fee of any
+     kind, NO separate pricing FAQ — recurring
      tiers only; setup framed as self-serve, done in
      minutes. The phrase "missed call" must not appear in
      any tier feature list.
@@ -806,8 +806,8 @@ Build the following:
    Annual prices (2 months free) as separate Stripe prices.
    Overage: Stripe metered billing at $0.35/min, triggered
      at the end of each billing period from billed minutes.
-   NO setup-fee or concierge product — recurring tiers and
-     overage only.
+   NO setup-fee or one-time onboarding product of any kind —
+     recurring tiers and overage only.
    Trial: 14 days, card required, 60 voice-minute hard cap
      shown to the user.
    Billing lifecycle per section 12.6: payment_failed
