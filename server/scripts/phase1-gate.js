@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 
-const child = spawn('node', ['--test', 'test/quoteEngine.spec.js'], {
+const child = spawn('node', ['--test', 'test/quoteEngine.spec.js', 'test/tenantAddon.spec.js'], {
   stdio: 'inherit',
   shell: process.platform === 'win32'
 });

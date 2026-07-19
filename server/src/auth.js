@@ -3,14 +3,16 @@ import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import { db } from './db.js';
 import { sendTransactionalEmail } from './email.js';
+import { attachTenantContext, deriveTenantOwnerId } from './tenant.js';
 
 const resetTokens = new Map();
 const verifyTokens = new Map();
 const loginAttempts = new Map();
 
 export function signToken(user) {
+  const tenantOwnerId = deriveTenantOwnerId(user);
   return jwt.sign(
-    { sub: user.id, ownerId: user.role === 'admin' ? null : user.id, role: user.role, email: user.email },
+    { sub: user.id, ownerId: tenantOwnerId, tenantOwnerId, role: user.role, email: user.email },
     process.env.JWT_SECRET,
     { expiresIn: '8h' }
   );
@@ -27,8 +29,15 @@ export function requireAuth(allowedRoles = []) {
       if (allowedRoles.length && !allowedRoles.includes(payload.role)) {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      req.user = payload;
-      req.ownerId = payload.ownerId;
+      const user = { ...payload, id: payload.sub };
+      if (payload.role === 'staff') {
+        const row = db.prepare('SELECT ownerId FROM users WHERE id = ?').get(payload.sub);
+        user.ownerId = row?.ownerId || payload.tenantOwnerId || payload.ownerId;
+      }
+      const tenantOwnerId = attachTenantContext(req, user);
+      if (payload.role !== 'admin' && !tenantOwnerId) {
+        return res.status(401).json({ error: 'Invalid tenant context' });
+      }
       return next();
     } catch {
       return res.status(401).json({ error: 'Invalid token' });
@@ -76,9 +85,9 @@ export async function register(req, res) {
   const passwordHash = await bcrypt.hash(password, cost);
 
   const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-  db.prepare(`INSERT INTO users (id, email, passwordHash, firstName, businessName, plan, planStatus, trialEndsAt, timezone, role, createdAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
-      id, email.toLowerCase(), passwordHash, firstName, businessName, 'Operator', 'trialing', trialEndsAt, 'UTC', 'owner', now
+  db.prepare(`INSERT INTO users (id, ownerId, email, passwordHash, firstName, businessName, plan, planStatus, trialEndsAt, timezone, role, createdAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
+      id, null, email.toLowerCase(), passwordHash, firstName, businessName, 'Operator', 'trialing', trialEndsAt, 'UTC', 'owner', now
     );
 
   const verifyToken = crypto.randomBytes(24).toString('hex');
