@@ -36,23 +36,38 @@ export function requireAuth(allowedRoles = []) {
   };
 }
 
+const WINDOW_MS = 15 * 60 * 1000;
+const MAX_FAILED_ATTEMPTS = 5;
+
 function limited(ip) {
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000;
-  const record = loginAttempts.get(ip) || { count: 0, firstAt: now };
-  if (now - record.firstAt > windowMs) {
-    loginAttempts.set(ip, { count: 1, firstAt: now });
+  const record = loginAttempts.get(ip);
+  if (!record) return false;
+  if (Date.now() - record.firstAt > WINDOW_MS) {
+    loginAttempts.delete(ip);
     return false;
   }
+  return record.count >= MAX_FAILED_ATTEMPTS;
+}
+
+function recordFailedAttempt(ip) {
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+  if (!record || now - record.firstAt > WINDOW_MS) {
+    loginAttempts.set(ip, { count: 1, firstAt: now });
+    return;
+  }
   record.count += 1;
-  loginAttempts.set(ip, record);
-  return record.count > 5;
 }
 
 export async function register(req, res) {
   const { email, password, firstName, businessName } = req.body || {};
   if (!email || !password || !firstName || !businessName) {
     return res.status(400).json({ error: 'email, password, firstName, and businessName are required' });
+  }
+
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(String(email).toLowerCase());
+  if (existing) {
+    return res.status(409).json({ error: 'An account with this email already exists' });
   }
 
   const now = new Date().toISOString();
@@ -84,6 +99,7 @@ export async function login(req, res) {
   const { email, password } = req.body || {};
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(String(email || '').toLowerCase());
   if (!user || !(await bcrypt.compare(password || '', user.passwordHash))) {
+    recordFailedAttempt(ip);
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
@@ -91,12 +107,18 @@ export async function login(req, res) {
 }
 
 export async function adminLogin(req, res) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  if (limited(ip)) return res.status(429).json({ error: 'Too many login attempts' });
+
   const { email, password } = req.body || {};
   if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD_HASH) {
     return res.status(503).json({ error: 'Admin auth is not configured' });
   }
   const ok = email === process.env.ADMIN_EMAIL && await bcrypt.compare(password || '', process.env.ADMIN_PASSWORD_HASH);
-  if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+  if (!ok) {
+    recordFailedAttempt(ip);
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
   return res.json({ token: signToken({ id: 'admin', email, role: 'admin' }) });
 }
 
