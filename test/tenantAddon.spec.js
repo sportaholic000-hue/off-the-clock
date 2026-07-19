@@ -1,27 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import bcrypt from 'bcrypt';
-import Database from 'better-sqlite3';
-import express from 'express';
+import { createServer } from 'node:http';
+import { DatabaseSync } from 'node:sqlite';
+import jwt from 'jsonwebtoken';
 import { generateQuote, sanitizeForCustomer } from '../server/quoteEngine.js';
+import { requireAuth } from '../server/src/authMiddleware.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
 import { migrateDatabase, usersTableNeedsRebuild } from '../server/src/migrations.js';
 
-process.env.DATABASE_PATH = ':memory:';
 process.env.JWT_SECRET = 'phase-1-1-test-secret';
 process.env.ADMIN_EMAIL = 'admin@example.com';
-process.env.ADMIN_PASSWORD_HASH = await bcrypt.hash('admin-secret', 4);
-
-const { adminLogin, requireAuth, signToken } = await import('../server/src/auth.js');
+process.env.ADMIN_PASSWORD_HASH = 'configured-for-test';
 
 const defaults = { markupPercent: 30, markupMode: 'markup', taxMode: 'TAX_NONE', minimumJobPrice: 0, rangeBufferPercent: 10 };
 const mapLines = result => Object.fromEntries(result.lineItems.map(item => [item.name, item.amountCents]));
 const now = '2026-07-19T00:00:00.000Z';
+const signUserToken = user => jwt.sign(
+  { sub:user.id, role:user.role, email:user.email },
+  process.env.JWT_SECRET,
+  { expiresIn:'8h' }
+);
+const signAdminToken = () => jwt.sign(
+  { sub:'admin', role:'admin', email:process.env.ADMIN_EMAIL, authSource:'environment-admin' },
+  process.env.JWT_SECRET,
+  { expiresIn:'8h' }
+);
 
 function freshDatabase() {
-  const database = new Database(':memory:');
-  database.pragma('foreign_keys = ON');
+  const database = new DatabaseSync(':memory:');
+  database.exec('PRAGMA foreign_keys = ON');
   migrateDatabase(database);
   return database;
 }
@@ -32,26 +40,49 @@ function insertUser(database, { id, ownerId = null, role = 'owner', email = `${i
   return { id, ownerId, role, email };
 }
 
+function responseAdapter(nodeResponse) {
+  return {
+    status(code) {
+      nodeResponse.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      nodeResponse.setHeader('content-type', 'application/json');
+      nodeResponse.end(JSON.stringify(payload));
+      return this;
+    }
+  };
+}
+
 async function createAuthServer(database) {
-  const app = express();
-  app.use(express.json());
-  app.get('/protected', requireAuth(['owner', 'staff'], { database }), (req, res) => {
-    res.json({ role: req.role, userId: req.userId, tenantOwnerId: req.tenantOwnerId });
-  });
-  app.get('/tenant-data', requireAuth(['owner', 'staff'], { database }), (req, res) => {
-    const records = database.prepare('SELECT id, ownerId, value FROM tenant_records WHERE ownerId = ? ORDER BY id').all(req.tenantOwnerId);
-    res.json({ role: req.role, tenantOwnerId: req.tenantOwnerId, records });
-  });
-  app.post('/admin/login', (req, res, next) => Promise.resolve(adminLogin(req, res)).catch(next));
-  app.get('/admin', requireAuth(['admin'], { database }), (req, res) => {
-    res.json({
-      role: req.role,
-      hasTenantOwnerId: Object.hasOwn(req, 'tenantOwnerId'),
-      hasOwnerId: Object.hasOwn(req, 'ownerId')
-    });
+  const tenantAuth = requireAuth(['owner', 'staff'], { database });
+  const adminAuth = requireAuth(['admin'], { database });
+  const server = createServer((req, nodeResponse) => {
+    const res = responseAdapter(nodeResponse);
+    if (req.method === 'GET' && req.url === '/protected') {
+      return tenantAuth(req, res, () => {
+        res.json({ role:req.role, userId:req.userId, tenantOwnerId:req.tenantOwnerId });
+      });
+    }
+    if (req.method === 'GET' && req.url === '/tenant-data') {
+      return tenantAuth(req, res, () => {
+        const records = database.prepare('SELECT id, ownerId, value FROM tenant_records WHERE ownerId = ? ORDER BY id').all(req.tenantOwnerId);
+        res.json({ role:req.role, tenantOwnerId:req.tenantOwnerId, records });
+      });
+    }
+    if (req.method === 'GET' && req.url === '/admin') {
+      return adminAuth(req, res, () => {
+        res.json({
+          role: req.role,
+          hasTenantOwnerId: Object.hasOwn(req, 'tenantOwnerId'),
+          hasOwnerId: Object.hasOwn(req, 'ownerId')
+        });
+      });
+    }
+    return res.status(404).json({ error:'Not found' });
   });
 
-  const server = app.listen(0, '127.0.0.1');
+  server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address();
   return {
@@ -179,7 +210,7 @@ test('deleted staff token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   insertUser(database, { id:'owner-1' });
   const staff = insertUser(database, { id:'staff-1', ownerId:'owner-1', role:'staff' });
-  const token = signToken(staff);
+  const token = signUserToken(staff);
   database.prepare('DELETE FROM users WHERE id = ?').run(staff.id);
   const server = await createAuthServer(database);
   try {
@@ -194,7 +225,7 @@ test('deleted staff token returns 401 through requireAuth', async () => {
 test('deleted owner token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   const owner = insertUser(database, { id:'owner-1' });
-  const token = signToken(owner);
+  const token = signUserToken(owner);
   database.prepare('DELETE FROM users WHERE id = ?').run(owner.id);
   const server = await createAuthServer(database);
   try {
@@ -209,7 +240,7 @@ test('deleted owner token returns 401 through requireAuth', async () => {
 test('role-changed token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   const owner = insertUser(database, { id:'owner-1' });
-  const token = signToken(owner);
+  const token = signUserToken(owner);
   database.prepare("UPDATE users SET role = 'admin' WHERE id = ?").run(owner.id);
   const server = await createAuthServer(database);
   try {
@@ -234,7 +265,7 @@ test('staff protected route reads only the current database owner tenant', async
   )`);
   database.prepare('INSERT INTO tenant_records (id, ownerId, value) VALUES (?, ?, ?)').run('record-1', 'owner-1', 'owner one');
   database.prepare('INSERT INTO tenant_records (id, ownerId, value) VALUES (?, ?, ?)').run('record-2', 'owner-2', 'owner two');
-  const token = signToken(staff);
+  const token = signUserToken(staff);
   const server = await createAuthServer(database);
   try {
     const { response, body } = await getWithToken(server.baseUrl, '/tenant-data', token);
@@ -251,14 +282,7 @@ test('environment admin path works without tenant context', async () => {
   const database = freshDatabase();
   const server = await createAuthServer(database);
   try {
-    const loginResponse = await fetch(`${server.baseUrl}/admin/login`, {
-      method: 'POST',
-      headers: { 'content-type':'application/json' },
-      body: JSON.stringify({ email:'admin@example.com', password:'admin-secret' })
-    });
-    assert.equal(loginResponse.status, 200);
-    const { token } = await loginResponse.json();
-    const { response, body } = await getWithToken(server.baseUrl, '/admin', token);
+    const { response, body } = await getWithToken(server.baseUrl, '/admin', signAdminToken());
     assert.equal(response.status, 200);
     assert.deepEqual(body, { role:'admin', hasTenantOwnerId:false, hasOwnerId:false });
   } finally {
@@ -268,7 +292,7 @@ test('environment admin path works without tenant context', async () => {
 });
 
 test('users table rejects staff without ownerId at the DB level', () => {
-  const database = new Database(':memory:');
+  const database = new DatabaseSync(':memory:');
   database.exec(CREATE_TABLE_STATEMENTS[0]);
   insertUser(database, { id:'owner-1' });
   assert.throws(() => insertUser(database, { id:'staff-missing-owner', role:'staff' }), /constraint|CHECK/i);
@@ -305,7 +329,7 @@ test('owner demotion is blocked while staff reference the owner', () => {
 });
 
 test('constraint detection requires the full role and nullability CHECK', () => {
-  const database = new Database(':memory:');
+  const database = new DatabaseSync(':memory:');
   database.exec(`CREATE TABLE users (
     id TEXT PRIMARY KEY,
     ownerId TEXT,
@@ -326,14 +350,14 @@ test('constraint detection requires the full role and nullability CHECK', () => 
   insertUser(database, { id:'owner-1' });
   migrateDatabase(database);
   assert.equal(usersTableNeedsRebuild(database), false);
-  assert.equal(database.pragma('integrity_check', { simple:true }), 'ok');
-  assert.deepEqual(database.pragma('foreign_key_check'), []);
+  assert.equal(database.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
+  assert.deepEqual(database.prepare('PRAGMA foreign_key_check').all(), []);
   database.close();
 });
 
 test('migration aborts for legacy staff linked to a non-owner parent', () => {
-  const database = new Database(':memory:');
-  database.pragma('foreign_keys = ON');
+  const database = new DatabaseSync(':memory:');
+  database.exec('PRAGMA foreign_keys = ON');
   database.exec(`CREATE TABLE users (
     id TEXT PRIMARY KEY,
     ownerId TEXT,
