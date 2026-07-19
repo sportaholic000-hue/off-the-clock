@@ -235,6 +235,11 @@ STEP 2 — VALIDATE OWNER PRICING
   missing = fields that are undefined, null, or 0
   (Class 2 quantity factors are exempt from the zero check only
    where 0 is meaningful; waste factors may legitimately be 0.)
+  OWNER RULING (2026-07-19): minimum fields — minimumJob,
+   repairMinimum, minimumServiceCharge — must be PRESENT but 0
+   is a valid value meaning "no minimum". Rates keep the
+   zero-means-missing rule. A $0/unit rate is unconfigured; a
+   $0 minimum is a deliberate choice.
   if any missing → return ESTIMATE_REQUIRES_REVIEW with
     missingOwnerFields and reviewReason: "Pricing not fully
     configured for this service. Owner follow-up required."
@@ -250,6 +255,15 @@ STEP 2b — SCOPE vs ADD-ON RULE (replaces old add-on rule)
            appliedRules, AND append to the customer-visible
            disclaimer: "This estimate does not include: [names]."
   Never silently underbid scope. Never kill a quote over an addon.
+  OWNER RULING (2026-07-19): fields commented // ADDON in any
+   template's getRequiredOwnerFields() are NEVER hard-fail
+   required fields — the ADDON comment wins over list placement.
+   When the customer selected the addon and its price is missing,
+   apply this STEP 2b behavior: skip the line, push "[name]
+   skipped: price not configured" to appliedRules, and append
+   "This estimate does not include: [names]." to the
+   customer-visible disclaimer. Applies to pondingWaterSurcharge,
+   baggingSurchargePercent, and mowing edgingPerLinearFoot.
 
 STEP 3 — TIER LOOP
   tiers = ownerPricing.tiers?.length
