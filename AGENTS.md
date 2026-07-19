@@ -37,7 +37,14 @@ or /server/quoteTemplates.js.
 - Voice agent never receives raw price-book rates
 - No call recording or audio storage; transcripts only
 - Plan gating at the route layer, never inside the engine
-- Every DB query filters by ownerId, no exceptions
+- Every query touching tenant data filters by tenantOwnerId,
+  no exceptions. Authentication, registration, migrations,
+  admin, and platform-metrics queries are explicit exceptions.
+  Tenant reads/writes go through the ownerQuery helper.
+- UI labels: use spec labels verbatim where given; where a
+  required field has no specced label, propose one in the
+  phase gate output for owner approval — never ship
+  unapproved labels silently.
 
 ## Honesty
 State broken or incomplete work plainly at the top of every
