@@ -1,0 +1,1 @@
+{"scripts":{"dev":"npm --prefix server run dev & npm --prefix client run dev","phase0:gate":"node server/scripts/phase0-gate.js"},"workspaces":["server","client"],"private":true}
