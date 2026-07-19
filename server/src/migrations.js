@@ -17,6 +17,35 @@ function tableColumns(database, table) {
   return database.prepare(`PRAGMA table_info(${table})`).all().map(row => row.name);
 }
 
+function pragmaRows(database, statement) {
+  if (typeof database.pragma === 'function') return database.pragma(statement);
+  return database.prepare(`PRAGMA ${statement}`).all();
+}
+
+function pragmaValue(database, statement) {
+  if (typeof database.pragma === 'function') return database.pragma(statement, { simple: true });
+  const row = database.prepare(`PRAGMA ${statement}`).get();
+  return row ? Object.values(row)[0] : undefined;
+}
+
+function setPragma(database, statement) {
+  if (typeof database.pragma === 'function') return database.pragma(statement);
+  return database.exec(`PRAGMA ${statement}`);
+}
+
+function runTransaction(database, work) {
+  if (typeof database.transaction === 'function') return database.transaction(work)();
+  database.exec('BEGIN IMMEDIATE');
+  try {
+    const result = work();
+    database.exec('COMMIT');
+    return result;
+  } catch (error) {
+    database.exec('ROLLBACK');
+    throw error;
+  }
+}
+
 export function usersTableNeedsRebuild(database) {
   const sql = tableSql(database, 'users');
   if (!sql) return false;
@@ -25,14 +54,14 @@ export function usersTableNeedsRebuild(database) {
 
 export function assertMigrationIntegrity(database) {
   const errors = [];
-  const integrityFailures = database.pragma('integrity_check')
+  const integrityFailures = pragmaRows(database, 'integrity_check')
     .map(row => Object.values(row)[0])
     .filter(value => value !== 'ok');
   if (integrityFailures.length) {
     errors.push(`integrity_check: ${integrityFailures.join(', ')}`);
   }
 
-  const foreignKeyFailures = database.pragma('foreign_key_check');
+  const foreignKeyFailures = pragmaRows(database, 'foreign_key_check');
   if (foreignKeyFailures.length) {
     const details = foreignKeyFailures.map(row => `${row.table}:${row.rowid}->${row.parent}`).join(', ');
     errors.push(`foreign_key_check: ${details}`);
@@ -62,35 +91,35 @@ export function rebuildUsersTableForOwnerConstraint(database) {
     'CREATE TABLE IF NOT EXISTS users',
     `CREATE TABLE ${USERS_MIGRATION_TABLE}`
   );
-  const foreignKeysWereEnabled = Boolean(database.pragma('foreign_keys', { simple: true }));
+  const foreignKeysWereEnabled = Number(pragmaValue(database, 'foreign_keys')) === 1;
 
-  database.pragma('foreign_keys = OFF');
+  setPragma(database, 'foreign_keys = OFF');
   try {
-    database.transaction(() => {
-      database.prepare(`DROP TABLE IF EXISTS ${USERS_MIGRATION_TABLE}`).run();
-      database.prepare(createMigrationTableSql).run();
+    runTransaction(database, () => {
+      database.exec(`DROP TABLE IF EXISTS ${USERS_MIGRATION_TABLE}`);
+      database.exec(createMigrationTableSql);
       database.prepare(`
         INSERT INTO ${USERS_MIGRATION_TABLE} (${USERS_COLUMNS.join(', ')})
         SELECT ${selectColumns} FROM users
       `).run();
-      database.prepare('DROP TABLE users').run();
-      database.prepare(`ALTER TABLE ${USERS_MIGRATION_TABLE} RENAME TO users`).run();
+      database.exec('DROP TABLE users');
+      database.exec(`ALTER TABLE ${USERS_MIGRATION_TABLE} RENAME TO users`);
       assertMigrationIntegrity(database);
-    })();
+    });
   } finally {
-    database.pragma(`foreign_keys = ${foreignKeysWereEnabled ? 'ON' : 'OFF'}`);
+    setPragma(database, `foreign_keys = ${foreignKeysWereEnabled ? 'ON' : 'OFF'}`);
   }
   return true;
 }
 
 export function migrateDatabase(database) {
   for (const statement of CREATE_TABLE_STATEMENTS) {
-    database.prepare(statement).run();
+    database.exec(statement);
   }
   const rebuilt = rebuildUsersTableForOwnerConstraint(database);
   if (!rebuilt) assertMigrationIntegrity(database);
   for (const statement of CREATE_TRIGGER_STATEMENTS) {
-    database.prepare(statement).run();
+    database.exec(statement);
   }
   return CREATE_TABLE_STATEMENTS;
 }
