@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0A0A0A;color:#F2F5F2}
+body{font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#00E676;text-decoration:none}
+a:hover{color:#16A34A}
+*{box-sizing:border-box}
+@keyframes otcPulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</helmet>
+
+<div data-screen-label="Owner Dashboard" style="min-height:100vh;background:#0A0A0A;display:flex">
+
+  <!-- LEFT RAIL (desktop) -->
+  <nav style="display:{{ railDisplay }};flex:none;width:200px;min-height:100vh;border-right:1px solid #1E241E;flex-direction:column;gap:2px;padding:20px 12px">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 10px 18px">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="#00E676" stroke-width="1.6"></circle><line x1="10" y1="10" x2="10" y2="5.5" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line><line x1="10" y1="10" x2="13.5" y2="12" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line></svg>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#00E676">Off The Clock AI</span>
+    </div>
+    <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="11">
+      <a href="#" style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;padding:10px 10px;border-radius:3px;background:{{ nv.bg }};color:{{ nv.color }};border-left:2px solid {{ nv.edge }};transition:color 150ms ease" style-hover="color:#F2F5F2">{{ nv.label }}</a>
+    </sc-for>
+  </nav>
+
+  <!-- MAIN -->
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <!-- TOP BAR -->
+    <header style="border-bottom:1px solid #1E241E;padding:{{ topPad }};display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="#00E676" stroke-width="1.6"></circle><line x1="10" y1="10" x2="10" y2="5.5" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line><line x1="10" y1="10" x2="13.5" y2="12" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line></svg>
+      </sc-if>
+
+      <button onClick="{{ toggleOp }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:#111411;border:1px solid {{ opBorder }};border-radius:4px;padding:12px 16px;box-shadow:{{ opGlow }};transition:box-shadow 150ms ease,border-color 150ms ease">
+        <span style="position:relative;display:inline-block;flex:none;width:52px;height:28px;border-radius:3px;background:{{ opTrackBg }};border:1px solid {{ opBorder }};transition:background 150ms ease">
+          <span style="position:absolute;top:3px;left:{{ opKnobLeft }};width:20px;height:20px;border-radius:2px;background:{{ opKnobBg }};transition:left 150ms ease"></span>
+        </span>
+        <span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;font-weight:700;color:{{ opTitleColor }}">{{ opTitle }}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">{{ opSub }}</span>
+        </span>
+      </button>
+
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-left:auto">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#0A0A0A;background:#00E676;padding:3px 7px;border-radius:2px">{{ planName }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">642 / 1,200 MIN</span>
+          </div>
+          <span style="display:block;width:150px;height:4px;background:#1E241E;border-radius:2px"><span style="display:block;width:54%;height:4px;background:#00E676;border-radius:2px"></span></span>
+        </div>
+        <span style="display:{{ spamDisplay }};font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A;border:1px solid #1E241E;border-radius:3px;padding:8px 10px">23 SPAM CALLS BLOCKED · 41 MIN SAVED</span>
+      </div>
+    </header>
+
+    <!-- MOBILE NAV STRIP -->
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid #1E241E">
+        <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="11">
+          <a href="#" style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:7px 11px;border-radius:3px;background:{{ nv.bg }};color:{{ nv.color }};border:1px solid {{ nv.chipBorder }}">{{ nv.label }}</a>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <div style="padding:{{ bodyPad }};display:flex;flex-direction:column;gap:20px;max-width:1080px;width:100%">
+
+      <!-- QUOTE REQUESTS WAITING — front and center -->
+      <a href="#" style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:#111411;border:1px solid #00E676;border-radius:4px;padding:16px 18px;transition:background 150ms ease" style-hover="background:#0A0A0A">
+        <span style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#00E676">QUOTE REQUESTS WAITING ON YOUR PRICING</span>
+          <span style="font-size:13px;color:#8A948A">Custom ironwork fence · Slope over 20° run. Captured in full, waiting on you.</span>
+        </span>
+        <span style="display:flex;align-items:center;gap:12px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#F2F5F2">2</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00E676">REVIEW ▸</span>
+        </span>
+      </a>
+
+      <!-- COUNTERS -->
+      <div style="display:grid;grid-template-columns:{{ counterCols }};gap:14px">
+        <div style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8A948A">CALLS ANSWERED</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;color:#F2F5F2;line-height:1">{{ callsToday }}<span style="font-size:13px;font-weight:400;color:#8A948A"> today</span></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A">61 THIS WEEK · 5 AFTER-HOURS</span>
+        </div>
+        <div style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8A948A">QUOTES DELIVERED</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;color:#00E676;line-height:1">$23,400</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A">6 TODAY · 19 THIS WEEK</span>
+        </div>
+        <div style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8A948A">BOOKED ON CALENDAR</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;color:#00E676;line-height:1">$11,280</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A">4 APPOINTMENTS THIS WEEK</span>
+        </div>
+        <div onMouseEnter="{{ showFormula }}" onMouseLeave="{{ hideFormula }}" style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8A948A">TIME OFF THE CLOCK <span style="color:#3a423a">· EST.</span></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;color:#F2F5F2;line-height:1">≈ 9.2<span style="font-size:13px;font-weight:400;color:#8A948A"> hrs / wk</span></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A">{{ formulaText }}</span>
+        </div>
+      </div>
+
+      <!-- LIVE CALL FEED -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;color:#F2F5F2">Call feed</span>
+          <a href="#" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em">ALL CALLS ▸</a>
+        </div>
+
+        <!-- live call -->
+        <div style="background:#111411;border:1px solid #00E676;border-radius:4px;padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 0 24px rgba(0,230,118,.15)">
+          <span style="flex:none;width:9px;height:9px;border-radius:50%;background:#00E676;animation:otcPulse 1.4s ease infinite"></span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <span style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#F2F5F2">(612) 555-0184</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">LIVE · {{ liveDur }}</span>
+            </span>
+            <span style="font-size:12.5px;color:#8A948A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cedar privacy fence, backyard, gathering measurements…</span>
+          </span>
+          <span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#00E676;border:1px solid #00E676;border-radius:2px;padding:4px 8px">ON CALL</span>
+        </div>
+
+        <sc-for list="{{ feed }}" as="c" hint-placeholder-count="5">
+          <a href="#" style="display:flex;align-items:center;gap:14px;background:#111411;border:1px solid #1E241E;border-radius:4px;padding:14px 16px;transition:border-color 150ms ease" style-hover="border-color:#00E676">
+            <span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A;width:60px">{{ c.time }}</span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#F2F5F2">{{ c.caller }}</span>
+              <span style="font-size:12.5px;color:#8A948A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.summary }}</span>
+            </span>
+            <span style="flex:none;display:flex;align-items:center;gap:10px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:{{ c.valColor }}">{{ c.value }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:{{ c.chipColor }};border:1px solid {{ c.chipColor }};border-radius:2px;padding:4px 8px">{{ c.chip }}</span>
+            </span>
+          </a>
+        </sc-for>
+      </div>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;plan&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;OPERATOR&quot;, &quot;QUOTEDONE&quot;, &quot;SCALE&quot;], &quot;default&quot;: &quot;QUOTEDONE&quot;, &quot;section&quot;: &quot;Account&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;callsToday&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 14, &quot;min&quot;: 0, &quot;max&quot;: 200, &quot;section&quot;: &quot;Sample data&quot;, &quot;tsType&quot;: &quot;number&quot;}}">
+class Component extends DCLogic {
+  state = { opOn: true, isMobile: false, liveSec: 47, hoverFormula: false, callsToday: 14 };
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ isMobile: window.innerWidth < 860 });
+    this._onResize();
+    window.addEventListener('resize', this._onResize);
+    this._tick = setInterval(() => this.setState(s => ({ liveSec: s.liveSec + 1 })), 1000);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    clearInterval(this._tick);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const G = '#00E676', GRAY = '#8A948A', LINE = '#1E241E';
+    const opOn = s.opOn;
+
+    const navItems = ['HOME', 'CALLS', 'PRICE BOOK', 'QUOTES', 'KNOWLEDGE BASE', 'CUSTOMERS', 'CALENDAR', 'LEADS', 'TEAM', 'INTEGRATIONS', 'SETTINGS'].map((label, i) => ({
+      label,
+      bg: i === 0 ? '#111411' : 'transparent',
+      color: i === 0 ? G : GRAY,
+      edge: i === 0 ? G : 'transparent',
+      chipBorder: i === 0 ? G : LINE
+    }));
+
+    const chipColors = { BOOKED: G, QUOTED: G, LEAD: GRAY, FLAGGED: '#F2F5F2' };
+    const feed = [
+      { time: '3:42 PM', caller: 'D. Okafor', summary: 'Quoted 6 ft cedar privacy, 120 LF, one walk gate. Range texted.', chip: 'QUOTED', value: '$4.8\u20135.8K' },
+      { time: '2:15 PM', caller: '(651) 555-0139', summary: 'Gate repair, site visit booked Thu 9:00 AM.', chip: 'BOOKED', value: '$680' },
+      { time: '12:08 PM', caller: 'T. Renner', summary: 'Pool-adjacent fence with custom ironwork. Needs your pricing.', chip: 'FLAGGED', value: '' },
+      { time: '11:31 AM', caller: '(612) 555-0117', summary: 'New-build inquiry, wants a callback after 5 PM. Full details captured.', chip: 'LEAD', value: '' },
+      { time: '9:02 AM', caller: 'M. Alvarez', summary: 'Chain link around a garden, quoted from your rates, thinking it over.', chip: 'QUOTED', value: '$1.9\u20132.3K' }
+    ].map(c => ({ ...c, chipColor: chipColors[c.chip], valColor: c.value ? G : GRAY }));
+
+    const mm = Math.floor(s.liveSec / 60), ss = s.liveSec % 60;
+
+    return {
+      isMobile: s.isMobile,
+      railDisplay: s.isMobile ? 'none' : 'flex',
+      spamDisplay: s.isMobile ? 'none' : 'inline-block',
+      topPad: s.isMobile ? '12px 16px' : '16px 24px',
+      bodyPad: s.isMobile ? '16px' : '24px',
+      counterCols: s.isMobile ? '1fr 1fr' : 'repeat(4,1fr)',
+      navItems,
+      // master toggle
+      toggleOp: () => this.setState(st => ({ opOn: !st.opOn })),
+      opBorder: opOn ? G : LINE,
+      opGlow: opOn ? '0 0 24px rgba(0,230,118,.15)' : 'none',
+      opTrackBg: opOn ? G : '#0A0A0A',
+      opKnobBg: opOn ? '#0A0A0A' : GRAY,
+      opKnobLeft: opOn ? '28px' : '3px',
+      opTitle: opOn ? 'OPERATOR LIVE' : 'OPERATOR OFF',
+      opTitleColor: opOn ? G : GRAY,
+      opSub: opOn ? (this.props.callsToday ?? s.callsToday) + ' CALLS HANDLED TODAY' : 'CALLS RING YOUR PHONE',
+      planName: this.props.plan ?? 'QUOTEDONE',
+      callsToday: this.props.callsToday ?? s.callsToday,
+      // formula hover
+      showFormula: () => this.setState({ hoverFormula: true }),
+      hideFormula: () => this.setState({ hoverFormula: false }),
+      formulaText: s.hoverFormula ? 'EST = CALLS \u00d7 4 MIN + QUOTES \u00d7 11 MIN' : 'ESTIMATE \u00b7 HOVER FOR FORMULA',
+      // live call + feed
+      liveDur: mm + ':' + String(ss).padStart(2, '0'),
+      feed
+    };
+  }
+}
+</script>
+</body>
+</html>
