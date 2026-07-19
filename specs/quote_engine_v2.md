@@ -264,6 +264,13 @@ STEP 2b — SCOPE vs ADD-ON RULE (replaces old add-on rule)
    "This estimate does not include: [names]." to the
    customer-visible disclaimer. Applies to pondingWaterSurcharge,
    baggingSurchargePercent, and mowing edgingPerLinearFoot.
+   TIER CLARIFICATION (owner-ruled 2026-07-19): skipped-addon
+   disclosure is PER OPTION. Each tier/option carries its own
+   skippedAddons and its own disclaimer reflecting only that
+   option's exclusions; appliedRules entries name the tier.
+   Top-level fields mirror the first valid tier. A global
+   disclaimer must never claim an exclusion that a priced
+   option actually includes.
 
 STEP 3 — TIER LOOP
   tiers = ownerPricing.tiers?.length
