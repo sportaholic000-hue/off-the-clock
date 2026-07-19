@@ -3,22 +3,53 @@ import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import { db } from './db.js';
 import { sendTransactionalEmail } from './email.js';
-import { attachTenantContext, deriveTenantOwnerId } from './tenant.js';
+import { attachTenantContext } from './tenant.js';
 
 const resetTokens = new Map();
 const verifyTokens = new Map();
 const loginAttempts = new Map();
 
 export function signToken(user) {
-  const tenantOwnerId = deriveTenantOwnerId(user);
+  if (user.role === 'admin') {
+    throw new Error('Admin tokens must be issued through the environment admin login');
+  }
   return jwt.sign(
-    { sub: user.id, ownerId: tenantOwnerId, tenantOwnerId, role: user.role, email: user.email },
+    { sub: user.id, role: user.role, email: user.email },
     process.env.JWT_SECRET,
     { expiresIn: '8h' }
   );
 }
 
-export function requireAuth(allowedRoles = []) {
+function signAdminToken(email) {
+  return jwt.sign(
+    { sub: 'admin', role: 'admin', email, authSource: 'environment-admin' },
+    process.env.JWT_SECRET,
+    { expiresIn: '8h' }
+  );
+}
+
+function validEnvironmentAdmin(payload) {
+  return Boolean(
+    process.env.ADMIN_EMAIL &&
+    process.env.ADMIN_PASSWORD_HASH &&
+    payload.sub === 'admin' &&
+    payload.role === 'admin' &&
+    payload.email === process.env.ADMIN_EMAIL &&
+    payload.authSource === 'environment-admin'
+  );
+}
+
+function loadTenantUser(database, userId) {
+  return database.prepare(`
+    SELECT user.id, user.ownerId, user.email, user.role,
+      parent.role AS ownerRole
+    FROM users AS user
+    LEFT JOIN users AS parent ON parent.id = user.ownerId
+    WHERE user.id = ?
+  `).get(userId);
+}
+
+export function requireAuth(allowedRoles = [], { database = db } = {}) {
   return (req, res, next) => {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -26,16 +57,41 @@ export function requireAuth(allowedRoles = []) {
 
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET);
-      if (allowedRoles.length && !allowedRoles.includes(payload.role)) {
+      if (!payload || typeof payload === 'string') {
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+
+      if (payload.role === 'admin') {
+        if (!validEnvironmentAdmin(payload)) {
+          return res.status(401).json({ error: 'Invalid token' });
+        }
+        if (allowedRoles.length && !allowedRoles.includes('admin')) {
+          return res.status(403).json({ error: 'Forbidden' });
+        }
+        req.user = { id: 'admin', email: payload.email, role: 'admin' };
+        req.userId = 'admin';
+        req.role = 'admin';
+        delete req.tenantOwnerId;
+        delete req.ownerId;
+        return next();
+      }
+
+      if (!['owner', 'staff'].includes(payload.role)) {
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+      const user = loadTenantUser(database, payload.sub);
+      if (!user || user.role !== payload.role) {
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+      if (user.role === 'staff' && (!user.ownerId || user.ownerRole !== 'owner')) {
+        return res.status(401).json({ error: 'Invalid tenant context' });
+      }
+      if (allowedRoles.length && !allowedRoles.includes(user.role)) {
         return res.status(403).json({ error: 'Forbidden' });
       }
-      const user = { ...payload, id: payload.sub };
-      if (payload.role === 'staff') {
-        const row = db.prepare('SELECT ownerId FROM users WHERE id = ?').get(payload.sub);
-        user.ownerId = row?.ownerId || payload.tenantOwnerId || payload.ownerId;
-      }
+
       const tenantOwnerId = attachTenantContext(req, user);
-      if (payload.role !== 'admin' && !tenantOwnerId) {
+      if (!tenantOwnerId) {
         return res.status(401).json({ error: 'Invalid tenant context' });
       }
       return next();
@@ -107,7 +163,7 @@ export async function login(req, res) {
 
   const { email, password } = req.body || {};
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(String(email || '').toLowerCase());
-  if (!user || !(await bcrypt.compare(password || '', user.passwordHash))) {
+  if (!user || user.role === 'admin' || !(await bcrypt.compare(password || '', user.passwordHash))) {
     recordFailedAttempt(ip);
     return res.status(401).json({ error: 'Invalid credentials' });
   }
@@ -128,7 +184,7 @@ export async function adminLogin(req, res) {
     recordFailedAttempt(ip);
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  return res.json({ token: signToken({ id: 'admin', email, role: 'admin' }) });
+  return res.json({ token: signAdminToken(email) });
 }
 
 export async function forgotPassword(req, res) {
