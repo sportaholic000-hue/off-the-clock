@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import { db } from './db.js';
 import { sendTransactionalEmail } from './email.js';
-import { attachTenantContext } from './tenant.js';
+import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
 
 const resetTokens = new Map();
 const verifyTokens = new Map();
@@ -28,77 +28,8 @@ function signAdminToken(email) {
   );
 }
 
-function validEnvironmentAdmin(payload) {
-  return Boolean(
-    process.env.ADMIN_EMAIL &&
-    process.env.ADMIN_PASSWORD_HASH &&
-    payload.sub === 'admin' &&
-    payload.role === 'admin' &&
-    payload.email === process.env.ADMIN_EMAIL &&
-    payload.authSource === 'environment-admin'
-  );
-}
-
-function loadTenantUser(database, userId) {
-  return database.prepare(`
-    SELECT user.id, user.ownerId, user.email, user.role,
-      parent.role AS ownerRole
-    FROM users AS user
-    LEFT JOIN users AS parent ON parent.id = user.ownerId
-    WHERE user.id = ?
-  `).get(userId);
-}
-
-export function requireAuth(allowedRoles = [], { database = db } = {}) {
-  return (req, res, next) => {
-    const header = req.headers.authorization || '';
-    const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-    if (!token) return res.status(401).json({ error: 'Missing token' });
-
-    try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      if (!payload || typeof payload === 'string') {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-
-      if (payload.role === 'admin') {
-        if (!validEnvironmentAdmin(payload)) {
-          return res.status(401).json({ error: 'Invalid token' });
-        }
-        if (allowedRoles.length && !allowedRoles.includes('admin')) {
-          return res.status(403).json({ error: 'Forbidden' });
-        }
-        req.user = { id: 'admin', email: payload.email, role: 'admin' };
-        req.userId = 'admin';
-        req.role = 'admin';
-        delete req.tenantOwnerId;
-        delete req.ownerId;
-        return next();
-      }
-
-      if (!['owner', 'staff'].includes(payload.role)) {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-      const user = loadTenantUser(database, payload.sub);
-      if (!user || user.role !== payload.role) {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-      if (user.role === 'staff' && (!user.ownerId || user.ownerRole !== 'owner')) {
-        return res.status(401).json({ error: 'Invalid tenant context' });
-      }
-      if (allowedRoles.length && !allowedRoles.includes(user.role)) {
-        return res.status(403).json({ error: 'Forbidden' });
-      }
-
-      const tenantOwnerId = attachTenantContext(req, user);
-      if (!tenantOwnerId) {
-        return res.status(401).json({ error: 'Invalid tenant context' });
-      }
-      return next();
-    } catch {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-  };
+export function requireAuth(allowedRoles = [], options = {}) {
+  return databaseRequireAuth(allowedRoles, { database: db, ...options });
 }
 
 const WINDOW_MS = 15 * 60 * 1000;
