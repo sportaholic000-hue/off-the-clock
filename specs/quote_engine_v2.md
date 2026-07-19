@@ -267,7 +267,10 @@ STEP 2b — SCOPE vs ADD-ON RULE (replaces old add-on rule)
    TIER CLARIFICATION (owner-ruled 2026-07-19): skipped-addon
    disclosure is PER OPTION. Each tier/option carries its own
    skippedAddons and its own disclaimer reflecting only that
-   option's exclusions; appliedRules entries name the tier.
+   option's exclusions; appliedRules entries name the tier for
+   named options (Good/Better/Best); for the default unnamed
+   single option (tierName: null) use the existing unprefixed
+   wording — never emit "null tier"/"undefined tier".
    Top-level estimates/lineItems/priceDrivers mirror the first
    valid option; the top-level DISCLAIMER follows STEP 11 —
    base-only when option exclusions differ, never claiming an
@@ -279,9 +282,11 @@ STEP 3 — TIER LOOP
     : [{ name: null, overrides: {} }]
   For each tier (max 3):
     effectivePricing = { ...ownerPricing.pricing, ...tier.overrides }
-    run STEPS 4–9 with effectivePricing
+    run STEPS 4–9 AND STEP 11 with effectivePricing to produce
+    the complete per-option result
     collect { tierName, lowEstimate, highEstimate, midEstimate,
-              priceDrivers, lineItems }
+              priceDrivers, lineItems, skippedAddons, disclaimer }
+    // skippedAddons/disclaimer per STEP 2b/11 rulings
   If a tier's overrides remove/zero a REQUIRED price field, that
   tier alone fails validation: exclude it and push
   "[tierName] tier skipped: incomplete pricing" to appliedRules.
