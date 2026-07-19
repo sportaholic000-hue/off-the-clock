@@ -268,9 +268,10 @@ STEP 2b — SCOPE vs ADD-ON RULE (replaces old add-on rule)
    disclosure is PER OPTION. Each tier/option carries its own
    skippedAddons and its own disclaimer reflecting only that
    option's exclusions; appliedRules entries name the tier.
-   Top-level fields mirror the first valid tier. A global
-   disclaimer must never claim an exclusion that a priced
-   option actually includes.
+   Top-level estimates/lineItems/priceDrivers mirror the first
+   valid option; the top-level DISCLAIMER follows STEP 11 —
+   base-only when option exclusions differ, never claiming an
+   exclusion that a priced option includes.
 
 STEP 3 — TIER LOOP
   tiers = ownerPricing.tiers?.length
@@ -397,7 +398,14 @@ STEP 10 — PRICE DRIVERS
   used", "Decking replacement, if needed, billed at $X/sheet").
 
 STEP 11 — DISCLAIMER
-  disclaimer = ownerPricing.disclaimer ||
+  Each valid option carries its own disclaimer: the base text
+  below plus ONLY that option's skipped-addon exclusions
+  (STEP 2b). The TOP-LEVEL disclaimer is base-only when
+  option exclusions differ; it may include addon exclusions
+  only when every valid option shares the same exclusions or
+  there is a single option. It must never claim an exclusion
+  that any priced option includes. [Owner ruling 2026-07-19]
+  base disclaimer = ownerPricing.disclaimer ||
   "This preliminary estimate is based on the project details
   provided and covers the described scope only. Final pricing is
   confirmed after review and, when needed, in-person
@@ -411,7 +419,11 @@ STEP 12 — RETURN
     resultType: "INSTANT_ESTIMATE_READY",
     lowEstimate, highEstimate, midEstimate,   // dollars
     options: [ { tierName, lowEstimate, highEstimate,
-                 midEstimate, priceDrivers } ],  // 1–3 entries
+                 midEstimate, priceDrivers,
+                 skippedAddons, disclaimer } ],  // 1–3 entries
+                 // per-option fields per STEP 2b/11 rulings;
+                 // customer sanitization preserves each
+                 // option's disclaimer and exclusion names
     priceDrivers, lineItems, appliedRules,
     urgencyFlags,          // e.g. ["Active leak reported"]
     rangeBufferUsed: effectiveBufferPercent,
