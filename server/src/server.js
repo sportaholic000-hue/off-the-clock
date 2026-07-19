@@ -16,6 +16,7 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const zeroAllowedOwnerFields = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 
 // Route any async handler error to the global error handler instead of
 // crashing the process (Express 4 does not catch async throws).
@@ -76,7 +77,11 @@ app.post('/api/pricebook/save', requireAuth(['owner']), asyncHandler(async (req,
   const services = incoming.services || [];
   const statuses = services.map(service => {
     const fields = getRequiredOwnerFields(service.serviceType, {});
-    const missing = fields.filter(field => field === 'postsIncludedInMaterial' ? service[field] === undefined : service[field] === undefined || service[field] === null || service[field] === 0);
+    const missing = fields.filter(field => {
+      if (field === 'postsIncludedInMaterial') return service[field] === undefined;
+      if (service[field] === undefined || service[field] === null) return true;
+      return !zeroAllowedOwnerFields.has(field) && service[field] === 0;
+    });
     return { serviceType: service.serviceType, status: missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE', missingOwnerFields: missing };
   });
   savePricebook(req.ownerId, incoming);
