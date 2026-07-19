@@ -35,4 +35,12 @@ skip-plus-disclosure verified on owner and customer paths
 when priced); users.ownerId CHECK constraint rejects staff
 without owner and owner with owner at the DB; legacy users
 table rebuild migration preserves rows and installs the
-constraint; staff tenantOwnerId scoping verified.
+constraint; staff tenantOwnerId derivation verified at unit
+level only. OPEN — Phase 1.1 hardening before staff features:
+middleware falls back to stale JWT tenant data when the staff
+row is deleted/changed (DB must be source of truth); DB does
+not enforce that a staff's ownerId references a role='owner'
+row; no HTTP-level auth-path tests (deleted staff, role
+change); ADDON disclosure uses first tier only while
+appliedRules aggregates all tiers; migration lacks post-rebuild
+integrity check.
