@@ -11,6 +11,7 @@ export const db = new Database(databasePath);
 db.pragma('foreign_keys = ON');
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
+const USERS_MIGRATION_TABLE = 'users_owner_migration';
 const USERS_COLUMNS = [
   'id', 'ownerId', 'email', 'passwordHash', 'firstName', 'businessName',
   'plan', 'planStatus', 'trialEndsAt', 'timezone', 'role', 'createdAt'
@@ -35,14 +36,16 @@ function rebuildUsersTableForOwnerConstraint() {
 
   const existingColumns = new Set(tableColumns('users'));
   const selectColumns = USERS_COLUMNS.map(column => existingColumns.has(column) ? column : `NULL AS ${column}`).join(', ');
+  const createMigrationTableSql = USERS_CREATE_SQL.replace('CREATE TABLE IF NOT EXISTS users', `CREATE TABLE ${USERS_MIGRATION_TABLE}`);
 
   db.pragma('foreign_keys = OFF');
   try {
     db.transaction(() => {
-      db.prepare('ALTER TABLE users RENAME TO users_legacy_owner_migration').run();
-      db.prepare(USERS_CREATE_SQL).run();
-      db.prepare(`INSERT INTO users (${USERS_COLUMNS.join(', ')}) SELECT ${selectColumns} FROM users_legacy_owner_migration`).run();
-      db.prepare('DROP TABLE users_legacy_owner_migration').run();
+      db.prepare(`DROP TABLE IF EXISTS ${USERS_MIGRATION_TABLE}`).run();
+      db.prepare(createMigrationTableSql).run();
+      db.prepare(`INSERT INTO ${USERS_MIGRATION_TABLE} (${USERS_COLUMNS.join(', ')}) SELECT ${selectColumns} FROM users`).run();
+      db.prepare('DROP TABLE users').run();
+      db.prepare(`ALTER TABLE ${USERS_MIGRATION_TABLE} RENAME TO users`).run();
     })();
   } finally {
     db.pragma('foreign_keys = ON');
