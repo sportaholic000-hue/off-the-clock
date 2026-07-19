@@ -1,6 +1,7 @@
 export const CREATE_TABLE_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
+    ownerId TEXT,
     email TEXT NOT NULL UNIQUE,
     passwordHash TEXT NOT NULL,
     firstName TEXT NOT NULL,
@@ -10,7 +11,12 @@ export const CREATE_TABLE_STATEMENTS = [
     trialEndsAt TEXT,
     timezone TEXT NOT NULL DEFAULT 'UTC',
     role TEXT NOT NULL CHECK (role IN ('owner', 'staff', 'admin')),
-    createdAt TEXT NOT NULL
+    createdAt TEXT NOT NULL,
+    CHECK (
+      (role = 'staff' AND ownerId IS NOT NULL) OR
+      (role IN ('owner', 'admin') AND ownerId IS NULL)
+    ),
+    FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,
   `CREATE TABLE IF NOT EXISTS calls (
     id TEXT PRIMARY KEY,
