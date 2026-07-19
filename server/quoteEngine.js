@@ -4,8 +4,14 @@ import { calculateService, getRequiredFields, getRequiredOwnerFields } from './q
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const MARKUP_APPLIES_DEFAULT = { labor:true, material:true, removal:true, prep:true, addon:true, equipment:true, travel:true, disposal:true, permit:false, overhead:true };
 const ZERO_ALLOWED_OWNER_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
+const ADDON_DISCLOSURES = [
+  { serviceType: 'FLAT_ROOF_REPAIR', field: 'pondingWaterSurcharge', name: 'Ponding water surcharge', selected: c => Boolean(c.pondingWater) },
+  { serviceType: 'LANDSCAPING_MOWING', field: 'baggingSurchargePercent', name: 'Clipping bagging & disposal', selected: c => Boolean(c.bagClippings) },
+  { serviceType: 'LANDSCAPING_MOWING', field: 'edgingPerLinearFoot', name: 'Perimeter edging', selected: c => Boolean(c.edgingIncluded) }
+];
 const missing = (obj, field) => obj?.[field] === undefined || obj?.[field] === null || obj?.[field] === 'unsure' || obj?.[field] === '';
 const missingOwner = (obj, field) => missing(obj, field) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
+const missingAddonPrice = (obj, field) => missing(obj, field) || obj[field] === 0;
 const round = Math.round;
 
 function review({ missingCustomerFields = [], missingOwnerFields = [], reviewReason }) {
@@ -46,6 +52,18 @@ function applyMinimum(lineItems, subtotalCents, p, defaults, appliedRules) {
   }
   return subtotalCents;
 }
+function pushSkippedAddon(ctx, name) {
+  const message = `${name} skipped: price not configured`;
+  if (!ctx.appliedRules.includes(message)) ctx.appliedRules.push(message);
+  if (!ctx.skippedAddons.includes(name)) ctx.skippedAddons.push(name);
+}
+function collectSkippedAddons(serviceType, customerInputs, pricing, ctx) {
+  for (const addon of ADDON_DISCLOSURES) {
+    if (addon.serviceType === serviceType && addon.selected(customerInputs) && missingAddonPrice(pricing, addon.field)) {
+      pushSkippedAddon(ctx, addon.name);
+    }
+  }
+}
 function disclaimerWithSkippedAddons(base, skippedAddons = []) {
   const names = [...new Set(skippedAddons)].filter(Boolean);
   if (!names.length) return base;
@@ -55,7 +73,9 @@ function disclaimerWithSkippedAddons(base, skippedAddons = []) {
 function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, inherited }) {
   const defaults = defaultsOf(businessDefaults);
   const ctx = { appliedRules: inherited.appliedRules, urgencyFlags: inherited.urgencyFlags, priceDrivers: [], estimationUsed: false, skippedAddons: [] };
-  const calculated = calculateService(serviceType, customerInputs, { ...ownerPricing, ...effectivePricing }, defaults, ctx);
+  const pricing = { ...ownerPricing, ...effectivePricing };
+  collectSkippedAddons(serviceType, customerInputs, pricing, ctx);
+  const calculated = calculateService(serviceType, customerInputs, pricing, defaults, ctx);
   const lineItems = calculated.lineItems;
 
   const month = new Date().getMonth() + 1;
@@ -72,7 +92,7 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
   let subtotalCents = lineItems.reduce((s,i)=>s+i.amountCents,0);
 
   if (defaults.taxMode === 'TAX_ALL') {
-    subtotalCents = applyMinimum(lineItems, subtotalCents, { ...ownerPricing, ...effectivePricing }, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
     const taxCents = round(subtotalCents * Number(defaults.taxPercent || 0) / 100);
     if (taxCents) lineItems.push({ name:'Tax', category:'tax', amountCents:taxCents, taxable:false, ownerVisible:true, customerVisible:false });
     subtotalCents += taxCents;
@@ -82,9 +102,9 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
     const taxCents = round((taxableBase + markupFor(taxableMarkupBase, defaults)) * Number(defaults.taxPercent || 0) / 100);
     if (taxCents) lineItems.push({ name:'Tax', category:'tax', amountCents:taxCents, taxable:false, ownerVisible:true, customerVisible:false });
     subtotalCents += taxCents;
-    subtotalCents = applyMinimum(lineItems, subtotalCents, { ...ownerPricing, ...effectivePricing }, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
   } else {
-    subtotalCents = applyMinimum(lineItems, subtotalCents, { ...ownerPricing, ...effectivePricing }, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
   }
 
   let buffer = Number(defaults.rangeBufferPercent ?? 10);
