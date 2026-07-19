@@ -104,7 +104,7 @@ ANTI-FABRICATION RULE (all marketing content):
     (bidirectional WebSocket to Gemini Live), Twilio SMS.
   Payments: Stripe subscriptions (plans, annual), payment
     links (deposits). No one-time concierge/setup product —
-    onboarding is self-serve (4.6); sections 4.x/6.x are
+    onboarding is self-serve (4.6); sections 4.6 and 8 are
     authoritative. [Owner ruling 2026-07-19]
   Calendar: Google Calendar OAuth + Calendly link support.
   Email: Resend or SendGrid transactional.
