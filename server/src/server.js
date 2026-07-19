@@ -41,13 +41,13 @@ app.get('/api/auth/verify-email', verifyEmail);
 app.post('/api/admin/login', asyncHandler(adminLogin));
 
 app.post('/api/quote/calculate', requireAuth(['owner', 'staff']), asyncHandler(async (req, res) => {
-  const ownerId = req.ownerId;
+  const tenantOwnerId = req.tenantOwnerId;
   const { serviceType, customerInputs = {}, callerType = 'owner' } = req.body || {};
-  const pricebook = loadPricebook(ownerId);
+  const pricebook = loadPricebook(tenantOwnerId);
   const service = (pricebook.services || []).find(s => s.serviceType === serviceType || s.service === serviceType);
   if (!service) return res.status(404).json({ error: 'Service not found in price book' });
   const result = generateQuote({ serviceType: service.serviceType, customerInputs, ownerPricing: service, businessDefaults: pricebook.defaults || {}, callerType });
-  insertQuoteLog(ownerId, result.quoteId, service.serviceType, customerInputs, result, callerType, result.urgencyFlags?.join('; ') || null);
+  insertQuoteLog(tenantOwnerId, result.quoteId, service.serviceType, customerInputs, result, callerType, result.urgencyFlags?.join('; ') || null);
   return res.json(callerType === 'customer' ? sanitizeForCustomer(result) : result);
 }));
 
@@ -59,12 +59,13 @@ app.post('/api/quote/test', asyncHandler(async (req, res) => {
 }));
 
 app.post('/api/business/jurisdiction', requireAuth(['owner']), asyncHandler(async (req, res) => {
+  const tenantOwnerId = req.tenantOwnerId;
   const resolved = resolveJurisdiction(req.body?.country, req.body?.region);
-  const book = loadPricebook(req.ownerId);
+  const book = loadPricebook(tenantOwnerId);
   const defaults = { ...(book.defaults || {}) };
   if (resolved.taxMode) defaults.taxMode = resolved.taxMode;
   if (resolved.taxPercent !== null && resolved.taxPercent !== undefined) defaults.taxPercent = resolved.taxPercent;
-  savePricebook(req.ownerId, { ...book, defaults });
+  savePricebook(tenantOwnerId, { ...book, defaults });
   return res.json(resolved);
 }));
 
@@ -84,17 +85,17 @@ app.post('/api/pricebook/save', requireAuth(['owner']), asyncHandler(async (req,
     });
     return { serviceType: service.serviceType, status: missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE', missingOwnerFields: missing };
   });
-  savePricebook(req.ownerId, incoming);
+  savePricebook(req.tenantOwnerId, incoming);
   return res.json({ success: true, statuses });
 }));
 
 app.get('/api/pricebook/:ownerId', requireAuth(['owner', 'staff']), (req, res) => {
-  if (req.params.ownerId !== req.ownerId) return res.status(403).json({ error: 'Forbidden' });
-  return res.json(centsToDollars(loadPricebook(req.ownerId)));
+  if (req.params.ownerId !== req.tenantOwnerId) return res.status(403).json({ error: 'Forbidden' });
+  return res.json(centsToDollars(loadPricebook(req.tenantOwnerId)));
 });
 
 app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
-  res.json({ ownerId: req.ownerId, shell: 'dashboard', sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings'] });
+  res.json({ ownerId: req.tenantOwnerId, shell: 'dashboard', sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings'] });
 });
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
