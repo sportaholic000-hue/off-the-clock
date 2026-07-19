@@ -46,10 +46,15 @@ function applyMinimum(lineItems, subtotalCents, p, defaults, appliedRules) {
   }
   return subtotalCents;
 }
+function disclaimerWithSkippedAddons(base, skippedAddons = []) {
+  const names = [...new Set(skippedAddons)].filter(Boolean);
+  if (!names.length) return base;
+  return `${base} This estimate does not include: ${names.join(', ')}.`;
+}
 
 function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, inherited }) {
   const defaults = defaultsOf(businessDefaults);
-  const ctx = { appliedRules: inherited.appliedRules, urgencyFlags: inherited.urgencyFlags, priceDrivers: [], estimationUsed: false };
+  const ctx = { appliedRules: inherited.appliedRules, urgencyFlags: inherited.urgencyFlags, priceDrivers: [], estimationUsed: false, skippedAddons: [] };
   const calculated = calculateService(serviceType, customerInputs, { ...ownerPricing, ...effectivePricing }, defaults, ctx);
   const lineItems = calculated.lineItems;
 
@@ -91,7 +96,7 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
 
   const topDrivers = lineItems.filter(i => ['labor','material'].includes(i.category)).sort((a,b)=>b.amountCents-a.amountCents).slice(0,4).map(i => i.name);
   const priceDrivers = [...new Set([...topDrivers, ...ctx.priceDrivers])];
-  return { lineItems, priceDrivers, lowEstimate:centsToDollars(lowCents), highEstimate:centsToDollars(highCents), midEstimate:centsToDollars(midCents), rangeBufferUsed: buffer, estimationUsed: ctx.estimationUsed };
+  return { lineItems, priceDrivers, lowEstimate:centsToDollars(lowCents), highEstimate:centsToDollars(highCents), midEstimate:centsToDollars(midCents), rangeBufferUsed: buffer, estimationUsed: ctx.estimationUsed, skippedAddons: ctx.skippedAddons };
 }
 
 export function generateQuote({ serviceType, customerInputs = {}, ownerPricing = {}, businessDefaults = {}, callerType = 'owner' }) {
@@ -128,7 +133,7 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
   if (!options.length) return review({ missingOwnerFields: ownerFields, reviewReason:'Pricing not fully configured for this service. Owner follow-up required.' });
 
   const first = options[0];
-  const disclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
+  const disclaimer = disclaimerWithSkippedAddons(ownerPricing.disclaimer || DEFAULT_DISCLAIMER, first.skippedAddons);
   const result = { resultType:'INSTANT_ESTIMATE_READY', lowEstimate:first.lowEstimate, highEstimate:first.highEstimate, midEstimate:first.midEstimate, options: options.map(o => ({ tierName:o.tierName, lowEstimate:o.lowEstimate, highEstimate:o.highEstimate, midEstimate:o.midEstimate, priceDrivers:o.priceDrivers, lineItems:o.lineItems })), priceDrivers:first.priceDrivers, lineItems:first.lineItems, appliedRules, urgencyFlags, rangeBufferUsed:first.rangeBufferUsed, disclaimer, quoteId };
   return callerType === 'customer' ? sanitizeForCustomer(result) : result;
 }
