@@ -103,7 +103,9 @@ ANTI-FABRICATION RULE (all marketing content):
   Telephony: Twilio Programmable Voice + Media Streams
     (bidirectional WebSocket to Gemini Live), Twilio SMS.
   Payments: Stripe subscriptions (plans, annual), payment
-    links (deposits), one-time invoice (concierge setup).
+    links (deposits). No one-time concierge/setup product —
+    onboarding is self-serve (4.6); sections 4.x/6.x are
+    authoritative. [Owner ruling 2026-07-19]
   Calendar: Google Calendar OAuth + Calendly link support.
   Email: Resend or SendGrid transactional.
   Integrations out: generic signed WEBHOOK on events
@@ -315,7 +317,7 @@ particles.
 3.10 FOOTER (no standalone FAQ)
   There is NO separate FAQ section on the page. All Q&A lives
   in the single "Straight Answers to Fair Questions" section
-  (3.8). Fold these honest answers into THAT section (once
+  (3.7). Fold these honest answers into THAT section (once
   each, no duplication with existing objection blocks):
   "Will callers know it's AI?" (human-sounding; discloses
   honestly if asked — hear the demo) — note: if an
