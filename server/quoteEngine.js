@@ -3,8 +3,9 @@ import { calculateService, getRequiredFields, getRequiredOwnerFields } from './q
 
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const MARKUP_APPLIES_DEFAULT = { labor:true, material:true, removal:true, prep:true, addon:true, equipment:true, travel:true, disposal:true, permit:false, overhead:true };
+const ZERO_ALLOWED_OWNER_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 const missing = (obj, field) => obj?.[field] === undefined || obj?.[field] === null || obj?.[field] === 'unsure' || obj?.[field] === '';
-const missingOwner = (obj, field) => missing(obj, field) || obj[field] === 0;
+const missingOwner = (obj, field) => missing(obj, field) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
 const round = Math.round;
 
 function review({ missingCustomerFields = [], missingOwnerFields = [], reviewReason }) {
