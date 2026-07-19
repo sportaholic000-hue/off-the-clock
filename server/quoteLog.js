@@ -1,4 +1,4 @@
-import { db } from './src/db.js';
+import { db, ownerQuery } from './src/db.js';
 import crypto from 'node:crypto';
 
 function hasColumn(table, column) {
@@ -22,7 +22,7 @@ export function ensureQuoteLogSchema() {
 
 export function insertQuoteLog(ownerId, quoteId, serviceType, customerInputs, result, callerType, urgency) {
   ensureQuoteLogSchema();
-  db.prepare(`INSERT INTO quotes (id, ownerId, quoteId, serviceType, customerInputsJson, resultJson, callerType, urgency, status, createdAt)
+  ownerQuery(`INSERT INTO quotes (id, ownerId, quoteId, serviceType, customerInputsJson, resultJson, callerType, urgency, status, createdAt)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
       crypto.randomUUID(), ownerId, quoteId, serviceType, JSON.stringify(customerInputs || {}), JSON.stringify(result || {}), callerType || 'owner', urgency || null, result?.resultType || null, new Date().toISOString()
     );
