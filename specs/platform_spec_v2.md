@@ -421,11 +421,12 @@ STEP 9 — Voice & greeting: male/female voice pick, AGENT
 =======================================================
 5.1 CALL PATH
   Inbound → Twilio → webhook → SPAM CHECK (5.2) → if
-  masterToggle ON and within coverage hours: Media Stream ↔
-  Gemini Live. If OFF: owner-configured behavior — redirect
-  to owner's mobile, or voicemail greeting with TRANSCRIPT-
-  ONLY message capture (no audio stored) → lead card. The
-  toggle never produces a dead ring.
+  masterToggle ON: Media Stream ↔ Gemini Live (the AI answers
+  every call while the toggle is ON, no time-of-day gating).
+  If masterToggle OFF: the call rings the business's own line
+  as it always has, and whoever answers is responsible; the AI
+  does not intercept. The toggle is the owner's single control
+  over when the AI answers. [Owner rule, authoritative]
 
 5.2 SPAM FILTERING (protects owner minutes AND our AI cost)
   Check caller ID against a spam database/blocklist before
@@ -634,7 +635,8 @@ excluded and shown as savings: "[n] spam calls blocked —
   guide, CSV exports, Google Calendar/Calendly management.
 
 6.11 SETTINGS
-  Toggle OFF behavior, coverage hours, transfer windows +
+  Master toggle (the single on/off control; ON answers every
+  call, OFF rings the business line), transfer windows +
   number (5.6), voice + greeting with audio preview,
   transcription notice (default ON + legal note),
   multilingual toggle, SMS templates (EN/ES/FR), reminder
@@ -836,7 +838,7 @@ here is a build requirement with the same force as sections
 
 12.8 TIMEZONES
   Owner timezone set at onboarding (default from region,
-  editable). ALL scheduling, reminders, coverage hours,
+  editable). ALL scheduling, reminders,
   peak-month checks, and "after-hours" analytics compute in
   the owner's timezone; timestamps stored UTC, displayed
   owner-local. Reminder sends respect quiet hours (no SMS
