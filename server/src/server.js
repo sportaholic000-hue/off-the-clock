@@ -288,7 +288,7 @@ app.post('/api/pricebook/save', requireAuth(['owner']), asyncHandler(async (req,
   return res.json({ success: true, statuses });
 }));
 
-app.get('/api/pricebook/:ownerId', requireAuth(['owner', 'staff']), (req, res) => {
+app.get('/api/pricebook/:ownerId', requireAuth(['owner']), (req, res) => {
   if (req.params.ownerId !== req.tenantOwnerId) return res.status(403).json({ error: 'Forbidden' });
   return res.json(centsToDollars(loadPricebook(req.tenantOwnerId)));
 });
