@@ -112,7 +112,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
       error.statusCode = 400;
       throw error;
     }
-    if (taxMode !== 'TAX_NONE' && (!Number.isFinite(taxPercent) || taxPercent < 0 || taxPercent > 100)) {
+    if (taxMode !== 'TAX_NONE' && (!Number.isFinite(taxPercent) || taxPercent <= 0 || taxPercent > 100)) {
       const error = new Error('Enter a valid sales tax rate');
       error.statusCode = 400;
       throw error;
