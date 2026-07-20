@@ -70,10 +70,22 @@ function pricingFor(service) {
   return service?.pricing && typeof service.pricing === 'object' ? service.pricing : service || {};
 }
 
+function numericLeaves(value) {
+  if (typeof value === 'number') return [value];
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+  return Object.values(value).flatMap(numericLeaves);
+}
+
 function isMissing(pricing, field) {
-  if (field === 'postsIncludedInMaterial') return pricing[field] === undefined || pricing[field] === null;
   const value = pricing[field];
+  if (field === 'postsIncludedInMaterial') return typeof value !== 'boolean';
+  if (field === 'unit') return !['flat','per_sqft','per_hour','per_unit','per_LF','per_square'].includes(value);
   if (value === undefined || value === null || value === '') return true;
+  if (value && typeof value === 'object') {
+    const leaves = numericLeaves(value);
+    return leaves.length === 0 || leaves.some(number => !Number.isFinite(number) || number <= 0);
+  }
+  if (typeof value !== 'number' || !Number.isFinite(value)) return true;
   return !zeroAllowedOwnerFields.has(field) && value === 0;
 }
 
@@ -101,6 +113,9 @@ function validateServiceShape(service, index) {
   if (!service || typeof service !== 'object') throw new Error(`services[${index}] must be an object`);
   if (!SERVICE_TYPES.includes(service.serviceType)) throw new Error(`services[${index}].serviceType is invalid`);
   if (service.service && String(service.service).length > 40) throw new Error(`services[${index}].service must be at most 40 characters`);
+  if (service.serviceType === 'CUSTOM' && service.low !== undefined && service.high !== undefined && Number(service.high) <= Number(service.low)) {
+    throw new Error(`services[${index}].high must be greater than low`);
+  }
   if (service.tiers !== undefined) {
     if (!Array.isArray(service.tiers) || service.tiers.length > 3) throw new Error(`services[${index}].tiers must contain at most three tiers`);
     service.tiers.forEach((tier, tierIndex) => {
