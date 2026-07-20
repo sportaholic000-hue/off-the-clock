@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Off The Clock AI — Price Book Editor (reference)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --panel:#111411; --line:#1E241E; --ink:#F2F5F2;
+    --muted:#8A948A; --green:#00E676; --green-press:#16A34A; --gray-edge:#3a423a;
+    --mono:'JetBrains Mono',monospace; --disp:'Space Grotesk',sans-serif; --body:Inter,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+  a{color:var(--green);text-decoration:none}
+  a:hover{color:var(--green-press)}
+  input,select{outline:none}
+  input:focus,select:focus{border-color:var(--green) !important}
+  input[type=number]::-webkit-inner-spin-button{opacity:.3}
+  button{cursor:pointer;font-family:inherit}
+  .mono{font-family:var(--mono)}
+  .disp{font-family:var(--disp)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:4px}
+  .field-label{font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.4}
+  .field-help{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:4px}
+  .money-input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:3px;color:var(--ink);font-family:var(--mono);font-size:14px;padding:11px 12px 11px 26px;transition:border-color 150ms ease}
+  .plain-input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:3px;color:var(--ink);font-family:var(--mono);font-size:14px;padding:11px 12px;transition:border-color 150ms ease}
+  .reset-btn{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:3px;padding:5px 9px;transition:color 150ms ease,border-color 150ms ease}
+  .reset-btn:hover{color:var(--ink);border-color:var(--gray-edge)}
+  .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:4px 8px;border-radius:2px}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  ::-webkit-scrollbar-track{background:transparent}
+  @media(max-width:960px){ .rail{display:none !important} .editor-grid{grid-template-columns:1fr !important} }
+</style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex">
+
+  <!-- ============ LEFT RAIL ============ -->
+  <nav class="rail" style="flex:none;width:200px;min-height:100vh;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:20px 12px">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 10px 18px">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="#00E676" stroke-width="1.6"></circle><line x1="10" y1="10" x2="10" y2="5.5" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line><line x1="10" y1="10" x2="13.5" y2="12" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line></svg>
+      <span class="disp" style="font-weight:700;font-size:13px;color:var(--green)">Off The Clock AI</span>
+    </div>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">DASHBOARD</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">CALL FEED</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">QUOTE REQUESTS</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;background:#0E120E;color:var(--green);border-left:2px solid var(--green)">PRICE BOOK</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">APPOINTMENTS</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">KNOWLEDGE BASE</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">SETTINGS</a>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <!-- TOP BAR -->
+    <header style="border-bottom:1px solid var(--line);padding:16px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <span class="disp" style="font-weight:600;font-size:19px;color:var(--ink)">Price book</span>
+        <span style="font-size:12.5px;color:var(--muted)">Your prices drive every quote. Ridgeline Fence Co.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-left:auto">
+        <span class="mono" style="font-size:10.5px;color:var(--muted)">3 OF 5 SERVICES LIVE</span>
+        <span style="width:1px;height:26px;background:var(--line)"></span>
+        <span class="mono" style="font-size:9.5px;letter-spacing:.12em;color:#0A0A0A;background:var(--green);padding:3px 7px;border-radius:2px">OPERATOR</span>
+      </div>
+    </header>
+
+    <div style="padding:24px 28px;display:flex;flex-direction:column;gap:22px;max-width:1120px;width:100%">
+
+      <!-- ===== SERVICE LIST WITH STATUS CHIPS ===== -->
+      <section style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <span class="eyebrow">Your services</span>
+          <button style="background:transparent;border:1px solid var(--line);border-radius:3px;color:var(--green);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:8px 12px" onmouseover="this.style.borderColor='#00E676'" onmouseout="this.style.borderColor='#1E241E'">＋ ADD SERVICE</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">
+          <!-- Selected / editing: Fencing install -->
+          <div class="card" style="border-color:var(--green);padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:#0E120E">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span class="disp" style="font-size:14px;font-weight:600;color:var(--ink)">Fencing — install</span>
+              <span class="chip" style="background:rgba(0,230,118,.12);color:var(--green)">● QUOTING LIVE</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">All required pricing set. Editing now.</span>
+          </div>
+
+          <!-- Live -->
+          <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span class="disp" style="font-size:14px;font-weight:600;color:var(--ink)">Fencing — replacement</span>
+              <span class="chip" style="background:rgba(0,230,118,.12);color:var(--green)">● QUOTING LIVE</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">All required pricing set.</span>
+          </div>
+
+          <!-- Live -->
+          <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span class="disp" style="font-size:14px;font-weight:600;color:var(--ink)">Gate repair</span>
+              <span class="chip" style="background:rgba(0,230,118,.12);color:var(--green)">● QUOTING LIVE</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">All required pricing set.</span>
+          </div>
+
+          <!-- Needs pricing: exact missing field names from getRequiredOwnerFields -->
+          <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span class="disp" style="font-size:14px;font-weight:600;color:var(--ink)">Deck staining</span>
+              <span class="chip" style="background:#151815;color:var(--muted);border:1px solid var(--line)">○ NEEDS PRICING</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">Missing: <span class="mono" style="color:#b8c0b8;font-size:10.5px">laborPerSqft, stainMaterialPerSqft, minimumJob</span></span>
+          </div>
+
+          <!-- Needs pricing -->
+          <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span class="disp" style="font-size:14px;font-weight:600;color:var(--ink)">Custom / other</span>
+              <span class="chip" style="background:#151815;color:var(--muted);border:1px solid var(--line)">○ NEEDS PRICING</span>
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">Non-template — always sends to your review.</span>
+          </div>
+        </div>
+
+        <!-- Suggest starter book -->
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:2px">
+          <div style="display:flex;flex-direction:column;gap:3px;max-width:640px">
+            <span style="font-size:13px;color:var(--ink);font-weight:500">Not sure where to start?</span>
+            <span style="font-size:11.5px;color:var(--muted);line-height:1.5">Get AI-suggested placeholder ranges for a service, then replace them with your own numbers.</span>
+          </div>
+          <button style="background:transparent;border:1px solid var(--green);border-radius:3px;color:var(--green);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:9px 14px" onmouseover="this.style.background='#0E120E'" onmouseout="this.style.background='transparent'">SUGGEST A STARTER BOOK</button>
+        </div>
+      </section>
+
+      <span style="height:1px;background:var(--line);width:100%"></span>
+
+      <!-- ===== PER-SERVICE EDITOR: FENCING INSTALL ===== -->
+      <section style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="disp" style="font-size:20px;font-weight:600;color:var(--ink)">Fencing — install</span>
+          <span class="chip" style="background:rgba(0,230,118,.12);color:var(--green)">● QUOTING LIVE</span>
+          <span style="margin-left:auto;font-size:11.5px;color:var(--muted)" class="mono">LAST SAVED 21:38 · AUTO-VALIDATED</span>
+        </div>
+
+        <div class="editor-grid" style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start">
+
+          <!-- LEFT COLUMN: pricing inputs -->
+          <div style="display:flex;flex-direction:column;gap:18px">
+
+            <!-- CLASS 1 OWNER PRICING (exact labels from engine spec) -->
+            <div class="card" style="padding:18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <span class="eyebrow">Your pricing · required</span>
+                <span class="mono" style="font-size:10px;color:var(--green)">8 / 8 SET</span>
+              </div>
+              <p style="font-size:11.5px;color:var(--muted);margin:6px 0 16px;line-height:1.5">These are your numbers. Off The Clock never guesses them — every field here must be set before this service can quote.</p>
+
+              <div style="display:flex;flex-direction:column;gap:16px">
+
+                <!-- laborPerLinearFoot -->
+                <div>
+                  <label class="field-label">Labor cost per linear foot</label>
+                  <div style="position:relative;margin-top:7px">
+                    <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                    <input class="money-input" type="number" value="14.00" step="0.01">
+                  </div>
+                </div>
+
+                <!-- materialPerLinearFoot -->
+                <div>
+                  <label class="field-label">Material cost per linear foot</label>
+                  <div style="position:relative;margin-top:7px">
+                    <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                    <input class="money-input" type="number" value="22.00" step="0.01">
+                  </div>
+                </div>
+
+                <!-- postSpacing -->
+                <div>
+                  <label class="field-label">Post spacing (feet)</label>
+                  <input class="plain-input" style="margin-top:7px" type="number" value="8">
+                </div>
+
+                <!-- postPrice -->
+                <div>
+                  <label class="field-label">Price per post</label>
+                  <div style="position:relative;margin-top:7px">
+                    <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                    <input class="money-input" type="number" value="38.00" step="0.01">
+                  </div>
+                </div>
+
+                <!-- concretePerPost — EXACT label from spec -->
+                <div>
+                  <label class="field-label">Concrete + digging cost per post at your local frost/set depth</label>
+                  <p class="field-help">Frost-line depth and post length live inside your number — the engine never guesses regional frost depth.</p>
+                  <div style="position:relative;margin-top:7px">
+                    <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                    <input class="money-input" type="number" value="18.00" step="0.01">
+                  </div>
+                </div>
+
+                <!-- postsIncludedInMaterial (boolean) -->
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:3px">
+                  <div style="max-width:60%">
+                    <label class="field-label">Posts already included in material cost?</label>
+                    <p class="field-help">If on, posts aren't priced separately.</p>
+                  </div>
+                  <span style="position:relative;display:inline-block;flex:none;width:46px;height:26px;border-radius:3px;background:var(--line);border:1px solid var(--gray-edge)">
+                    <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:2px;background:var(--muted)"></span>
+                  </span>
+                </div>
+
+                <!-- gatePrice — EXACT label from spec -->
+                <div>
+                  <label class="field-label">Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below</label>
+                  <div style="position:relative;margin-top:7px">
+                    <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                    <input class="money-input" type="number" value="285.00" step="0.01">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- MINIMUM JOB PRICE -->
+            <div class="card" style="padding:18px">
+              <span class="eyebrow">Minimum job price</span>
+              <p style="font-size:11.5px;color:var(--muted);margin:6px 0 14px;line-height:1.5">The floor for any quote on this service. Set to $0 to enforce no minimum — that's a valid choice, not a missing field.</p>
+              <div style="position:relative;max-width:220px">
+                <span class="mono" style="position:absolute;left:11px;top:11px;color:var(--muted);font-size:14px">$</span>
+                <input class="money-input" type="number" value="450.00" step="0.01">
+              </div>
+            </div>
+
+            <!-- CLASS 2 QUANTITY FACTORS -->
+            <div class="card" style="padding:18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <span class="eyebrow">Quantity factors · defaults</span>
+                <button class="reset-btn">↺ RESET ALL TO DEFAULT</button>
+              </div>
+              <p style="font-size:11.5px;color:var(--muted);margin:6px 0 16px;line-height:1.5">Sensible defaults are already set. Adjust only if your jobs differ — leave them alone and quoting still works.</p>
+
+              <!-- Height labor multiplier -->
+              <div style="margin-bottom:16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="field-label">Height multiplier — labor</span>
+                  <button class="reset-btn">↺ DEFAULT</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">4 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="0.85"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">6 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.00"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">8 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.20"></div>
+                </div>
+              </div>
+
+              <!-- Height material multiplier -->
+              <div style="margin-bottom:16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="field-label">Height multiplier — material</span>
+                  <button class="reset-btn">↺ DEFAULT</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">4 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="0.80"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">6 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.00"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">8 FT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.35"></div>
+                </div>
+              </div>
+
+              <!-- Terrain multiplier -->
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="field-label">Terrain multiplier — labor only</span>
+                  <button class="reset-btn">↺ DEFAULT</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">FLAT</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.00"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">MODERATE</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.15"></div>
+                  <div style="display:flex;flex-direction:column;gap:5px"><span class="mono" style="font-size:10px;color:var(--muted)">STEEP</span><input class="plain-input" style="padding:8px 10px;font-size:13px" value="1.30"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: markup, tiers, tax, live preview -->
+          <div style="display:flex;flex-direction:column;gap:18px">
+
+            <!-- MARKUP / MARGIN with live equivalence -->
+            <div class="card" style="padding:18px">
+              <span class="eyebrow">Markup &amp; margin</span>
+              <div style="display:flex;gap:8px;margin:12px 0 14px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:3px">
+                <button style="flex:1;font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:8px;border-radius:2px;background:var(--green);color:#0A0A0A;border:none">MARKUP</button>
+                <button style="flex:1;font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:8px;border-radius:2px;background:transparent;color:var(--muted);border:none">MARGIN</button>
+              </div>
+              <div style="position:relative">
+                <input class="plain-input" style="padding-right:34px" type="number" value="30">
+                <span class="mono" style="position:absolute;right:12px;top:11px;color:var(--muted);font-size:14px">%</span>
+              </div>
+              <!-- live equivalence text, exact format from spec -->
+              <div style="margin-top:12px;padding:11px 13px;background:var(--bg);border:1px solid var(--line);border-radius:3px">
+                <span class="mono" style="font-size:12px;color:var(--green)">30% markup = 23.1% margin</span>
+              </div>
+            </div>
+
+            <!-- GOOD / BETTER / BEST TIER BUILDER -->
+            <div class="card" style="padding:18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <span class="eyebrow">Tiers · optional</span>
+                <button style="background:transparent;border:1px solid var(--line);border-radius:3px;color:var(--green);font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:5px 9px" onmouseover="this.style.borderColor='#00E676'" onmouseout="this.style.borderColor='#1E241E'">＋ ADD TIER</button>
+              </div>
+              <p style="font-size:11.5px;color:var(--muted);margin:6px 0 14px;line-height:1.5">Offer up to three options on a quote. Override any pricing field per tier; unset fields inherit your base numbers.</p>
+
+              <!-- Tier: Good -->
+              <div style="border:1px solid var(--line);border-radius:3px;padding:12px 14px;margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+                  <input class="plain-input" style="max-width:160px;padding:7px 10px;font-size:13px" value="Standard">
+                  <span class="mono" style="font-size:14px;font-weight:700;color:var(--ink)">$3,240<span style="font-size:10px;color:var(--muted);font-weight:400"> / mid</span></span>
+                </div>
+                <span class="mono" style="font-size:10px;color:var(--muted)">NO OVERRIDES · INHERITS BASE</span>
+              </div>
+
+              <!-- Tier: Better with override -->
+              <div style="border:1px solid var(--line);border-radius:3px;padding:12px 14px;margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+                  <input class="plain-input" style="max-width:160px;padding:7px 10px;font-size:13px" value="Premium cedar">
+                  <span class="mono" style="font-size:14px;font-weight:700;color:var(--green)">$4,180<span style="font-size:10px;color:var(--muted);font-weight:400"> / mid</span></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span class="mono" style="font-size:9.5px;letter-spacing:.06em;color:var(--green);background:rgba(0,230,118,.1);border-radius:2px;padding:3px 7px">materialPerLinearFoot → $34.00</span>
+                  <button class="reset-btn" style="padding:3px 7px">＋ OVERRIDE FIELD</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- LIVE SAMPLE QUOTE PREVIEW -->
+            <div class="card" style="padding:18px;border-color:var(--green)">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--green)"></span>
+                <span class="eyebrow" style="color:var(--green)">Live sample quote</span>
+              </div>
+              <p style="font-size:11px;color:var(--muted);margin:0 0 14px;line-height:1.5">120 ft · 6 ft · 1 gate · moderate slope — recalculates as you edit.</p>
+              <div style="display:flex;flex-direction:column;gap:9px;font-family:var(--mono);font-size:12px">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Labor</span><span style="color:var(--ink)">$1,932</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Material</span><span style="color:var(--ink)">$2,640</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Posts (17)</span><span style="color:var(--ink)">$646</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Footings</span><span style="color:var(--ink)">$306</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Gate</span><span style="color:var(--ink)">$285</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Markup 30%</span><span style="color:var(--ink)">$1,743</span></div>
+                <span style="height:1px;background:var(--line);margin:3px 0"></span>
+                <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700"><span style="color:var(--ink)">Range shown</span><span style="color:var(--green)">$6,800 – $8,300</span></div>
+              </div>
+            </div>
+
+            <!-- TAX MODE PANEL -->
+            <div class="card" style="padding:18px">
+              <span class="eyebrow">Tax</span>
+              <p style="font-size:11.5px;color:var(--muted);margin:6px 0 14px;line-height:1.5">From your jurisdiction setting. Editable here.</p>
+              <select class="plain-input" style="margin-bottom:10px">
+                <option>Materials taxed — 8.0%</option>
+                <option>All taxed</option>
+                <option>No tax</option>
+              </select>
+              <div style="padding:11px 13px;background:var(--bg);border:1px solid var(--line);border-radius:3px">
+                <span style="font-size:11px;color:var(--muted);line-height:1.55;display:block">Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SAVE BAR -->
+        <div style="position:sticky;bottom:0;background:#0A0A0A;border-top:1px solid #1E241E;padding:16px 0 8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <button style="background:var(--green);color:#0A0A0A;font-weight:600;font-size:14px;padding:13px 26px;border-radius:3px;border:none;transition:background 150ms ease" onmouseover="this.style.background='#16A34A'" onmouseout="this.style.background='#00E676'">Save &amp; validate</button>
+          <button style="background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:500;font-size:14px;padding:12px 22px;border-radius:3px">Cancel</button>
+          <span class="mono" style="font-size:11px;color:var(--muted);margin-left:auto">SAVING CONVERTS TO CENTS · RE-RUNS VALIDATION · RETURNS STATUS</span>
+        </div>
+
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>
