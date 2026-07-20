@@ -13,9 +13,11 @@ function run(command, args) {
 }
 
 try {
+  console.log('[phase2-gate] engine, tenant, and Phase 2 regressions');
   await run('node', ['--test', 'test/quoteEngine.spec.js', 'test/tenantAddon.spec.js', 'test/phase2.spec.js']);
+  console.log('[phase2-gate] production client build');
   await run('npm', ['--prefix', 'client', 'run', 'build']);
-  console.log('Phase 2 gate command completed. External end-to-end product audit is still required.');
+  console.log('[phase2-gate] command complete; external end-to-end product audit is still required');
 } catch (error) {
   console.error(error.message);
   process.exit(1);
