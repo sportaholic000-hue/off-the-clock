@@ -36,11 +36,25 @@ when priced); users.ownerId CHECK constraint rejects staff
 without owner and owner with owner at the DB; legacy users
 table rebuild migration preserves rows and installs the
 constraint; staff tenantOwnerId derivation verified at unit
-level only. OPEN — Phase 1.1 hardening before staff features:
-middleware falls back to stale JWT tenant data when the staff
-row is deleted/changed (DB must be source of truth); DB does
-not enforce that a staff's ownerId references a role='owner'
-row; no HTTP-level auth-path tests (deleted staff, role
-change); ADDON disclosure uses first tier only while
-appliedRules aggregates all tiers; migration lacks post-rebuild
-integrity check.
+level only.
+
+Phase 1.1 (tenant + ADDON hardening) gate passed — 2026-07-19 —
+Branch agent/phase-1-1-tenant-addon-hardening (9e464b8) merged
+after external audit in a real Node environment: 45/45 tests
+cold. Auth is DB-authoritative — independently attacked with
+forged JWTs: deleted-staff, deleted-owner, role-flip
+(owner->admin), forged-tenant, garbage, and expired tokens all
+return 401; the pre-fix 200 on a deleted-staff token is closed.
+Parent-role invariant enforced by 3 SQLite triggers, attacked
+directly: staff under staff/admin parent rejected, owner
+demotion blocked while staff reference it, staff repoint to
+non-owner rejected. Migration runs integrity_check +
+foreign_key_check + tenant-invariant validation: a seeded
+legacy staff-under-admin row aborts the migration, a valid
+legacy set migrates with all 3 triggers installed. ADDON
+disclosure is per-option (STEP 2b/3/11/12): divergent tiers
+verified — top-level disclaimer never claims an exclusion a
+priced option includes; shared exclusions disclosed at top
+level; single unnamed option uses unprefixed wording; no
+"null tier" in output; customer sanitization preserves
+per-option disclaimers and hides line items.
