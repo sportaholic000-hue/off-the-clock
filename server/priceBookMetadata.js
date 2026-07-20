@@ -59,7 +59,7 @@ export const ALL_OWNER_FIELDS = {
   LANDSCAPING_SOD: ['sodMaterialPerSqft','sodInstallLaborPerSqft','minimumServiceCharge','groundPrepPerSqft','allowAssumptionBasedQuotes'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant','plantMaterialAllowance','minimumServiceCharge','bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft','minimumServiceCharge','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','edgingPerLinearFoot','allowAssumptionBasedQuotes'],
-  SIDING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','trimPerLinearFoot','houseWrapPerSqft','allowAssumptionBasedQuotes'],
+  SIDING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','trimPerLinearFoot','allowAssumptionBasedQuotes'],
   SIDING_REPAIR: ['laborHourlyRate','repairMinimum','repairHours','materialAllowance'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft','minimumJob','insulationPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate','repairMinimum','patchRepairHours','patchMaterialAllowance','pondingWaterSurcharge'],

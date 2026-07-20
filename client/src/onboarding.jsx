@@ -492,7 +492,7 @@ function PriceBookStep({ state, metadata, back, next }) {
     setError(null);
     try {
       const industry = TRADE_GROUPS.filter(group => group.types.some(type => activeTypes.includes(type))).map(group => group.label).join(', ');
-      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry } });
+      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:activeTypes } });
       setSuggestions(result);
       sessionStorage.setItem('otc_pricebook_suggestions', JSON.stringify(result));
     } catch (nextError) { setError(nextError); }
@@ -571,7 +571,7 @@ function PriceBookStep({ state, metadata, back, next }) {
         {suggestions && (
           <div className="suggestion-results">
             <Notice tone="warning">{suggestions.warning}</Notice>
-            {suggestions.suggestions.map(item => <div className="suggestion-row" key={`${item.serviceType}-${item.service}`}><strong>{item.service}</strong><span className="mono">${item.low} to ${item.high} · {item.unit}</span></div>)}
+            {suggestions.suggestions.map(item => <div className="suggestion-row" key={`${item.serviceType}-${item.service}`}><strong>{item.service}</strong><span className="mono">{Object.keys(item.fields || {}).length} DRAFT values · confirm each in the editor</span></div>)}
             <Button onClick={() => go('/pricebook')}>Open in editor</Button>
           </div>
         )}

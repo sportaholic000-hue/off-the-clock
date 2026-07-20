@@ -297,16 +297,23 @@ export default function PriceBook() {
     setError(null);
     try {
       const industry = (onboarding.profile.businessTypes || []).join(', ');
-      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry } });
+      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:(onboarding.profile.businessTypes || []) } });
       setSuggestions(result);
     } catch (nextError) { setError(nextError); }
   }
 
   function addSuggestion(item) {
     const existingIndex = book.services.findIndex(service => service.serviceType === item.serviceType);
-    const next = { ...item, tiers:[], confirmedFields:{}, validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {}) };
+    const draftFields = item.fields || {};
+    const next = {
+      serviceType:item.serviceType, service:item.service, ...draftFields,
+      tiers:[], source:'AI_SUGGESTED', confirmedFields:{},
+      validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {})
+    };
     const services = existingIndex >= 0
-      ? book.services.map((service,index) => index === existingIndex ? { ...service, starterSuggestion:item, source:'AI_SUGGESTED', confirmedFields:{} } : service)
+      ? book.services.map((service,index) => index === existingIndex
+          ? { ...service, ...draftFields, starterSuggestion:item, source:'AI_SUGGESTED', confirmedFields:{} }
+          : service)
       : [...book.services, next];
     setBook({ ...book, services });
     setSelectedType(item.serviceType);
@@ -329,8 +336,27 @@ export default function PriceBook() {
     );
   }
   const statusMap = new Map(statuses.map(status => [status.serviceType, status]));
+  // Displayed status must respect per-field confirmation exactly like the
+  // backend: an AI-sourced service with any unconfirmed required field is
+  // NEVER shown as QUOTING LIVE, and a stale saved status cannot override
+  // an unconfirmed draft.
+  function displayStatus(service, meta, savedStatus) {
+    if (service && ['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)) {
+      const required = meta?.fields.filter(field => field.requiredAtBase) || [];
+      const confirmed = service.confirmedFields || {};
+      const pending = required.filter(field => confirmed[field.field] !== true);
+      if (pending.length) {
+        return {
+          status:'NEEDS PRICING',
+          missingOwnerFields: pending.map(field => field.field),
+          missingOwnerLabels: pending.map(field => field.label || field.field)
+        };
+      }
+    }
+    return savedStatus || null;
+  }
   const localRequired = selectedMeta?.fields.filter(field => field.requiredAtBase).map(field => field.field) || [];
-  const selectedStatus = statusMap.get(selectedType) || {
+  const selectedStatus = displayStatus(selected, selectedMeta, statusMap.get(selectedType)) || {
     status:localRequired.every(field => {
       const value = selected?.[field];
       return field === 'postsIncludedInMaterial' ? value !== undefined : value !== undefined && value !== null && (['minimumJob','repairMinimum','minimumServiceCharge'].includes(field) || value !== 0);
@@ -358,7 +384,7 @@ export default function PriceBook() {
               {suggestions.suggestions.map(item => (
                 <article key={`${item.serviceType}-${item.service}`}>
                   <strong>{item.service}</strong>
-                  <span className="mono">${item.low} to ${item.high} · {item.unit}</span>
+                  <span className="mono">{Object.keys(item.fields || {}).length} DRAFT values · confirm each before quoting</span>
                   <Button variant="quiet" onClick={() => addSuggestion(item)}>Use as draft</Button>
                 </article>
               ))}
@@ -369,8 +395,8 @@ export default function PriceBook() {
           <aside className="service-list">
             <p className="eyebrow">SERVICES</p>
             {book.services.map(service => {
-              const status = statusMap.get(service.serviceType);
               const meta = metadata.find(item => item.serviceType === service.serviceType);
+              const status = displayStatus(service, meta, statusMap.get(service.serviceType));
               const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label || field.field) || []);
               return (
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>

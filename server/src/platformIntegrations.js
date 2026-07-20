@@ -169,6 +169,8 @@ async function geminiJson({ systemInstruction, userMessage, timeoutMs = 15000 })
   return JSON.parse(stripJsonFences(text));
 }
 
+import { getServiceMetadata } from '../priceBookMetadata.js';
+
 const SERVICE_TYPE_OPTIONS = [
   'ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR',
   'INTERIOR_PAINTING','EXTERIOR_PAINTING','FLOORING_INSTALL','FLOORING_REPLACEMENT',
@@ -178,22 +180,86 @@ const SERVICE_TYPE_OPTIONS = [
 ];
 const UNIT_OPTIONS = ['flat','per_sqft','per_hour','per_unit','per_LF','per_square'];
 
-function validSuggestion(entry) {
+function validCustomRange(entry) {
   return entry && typeof entry.service === 'string' && entry.service.length > 0 && entry.service.length <= 40 &&
-    SERVICE_TYPE_OPTIONS.includes(entry.serviceType) && Number.isInteger(entry.low) &&
-    Number.isInteger(entry.high) && entry.high > entry.low && UNIT_OPTIONS.includes(entry.unit) &&
-    typeof entry.taxable === 'boolean' && Number.isInteger(entry.minimumJob);
+    Number.isInteger(entry.low) && Number.isInteger(entry.high) && entry.high > entry.low &&
+    UNIT_OPTIONS.includes(entry.unit) && (entry.minimumJob === undefined || Number.isInteger(entry.minimumJob));
 }
 
-export async function suggestStarterBook(industry) {
+// Scalar (dollar) Class 1 fields for a service. Shaped/keyed fields and
+// select/boolean scope switches are intentionally excluded from AI
+// suggestions: their key domains are customer-facing selections and must
+// not be invented by the model. They stay empty and surface in NEEDS
+// PRICING for the owner to fill.
+export function starterFieldSpecs(serviceType) {
+  const service = getServiceMetadata().find(item => item.serviceType === serviceType);
+  if (!service) return [];
+  return service.fields.filter(def => def.type === 'number');
+}
+
+// Validate/normalize the model's output for the upgraded starter book:
+// per-field Class 1 draft values for formula services; generic
+// low/high/unit reserved for CUSTOM. Invalid fields are dropped, never
+// coerced. Values are DOLLARS and remain DRAFT/unconfirmed.
+export function validateStarterServices(raw, serviceTypes) {
+  if (!Array.isArray(raw)) return [];
+  const allowed = new Set(serviceTypes);
+  const seen = new Set();
+  const out = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== 'object') continue;
+    const serviceType = entry.serviceType;
+    if (!allowed.has(serviceType) || seen.has(serviceType)) continue;
+    if (serviceType === 'CUSTOM') {
+      if (!validCustomRange(entry)) continue;
+      seen.add(serviceType);
+      out.push({
+        serviceType,
+        service: entry.service.slice(0, 40),
+        fields: { low: entry.low, high: entry.high, unit: entry.unit, minimumJob: entry.minimumJob ?? 0 }
+      });
+      continue;
+    }
+    const specs = starterFieldSpecs(serviceType);
+    const fields = {};
+    for (const def of specs) {
+      const value = entry.fields?.[def.field];
+      if (typeof value === 'number' && Number.isFinite(value) && value >= 0) fields[def.field] = value;
+    }
+    if (!Object.keys(fields).length) continue;
+    seen.add(serviceType);
+    out.push({
+      serviceType,
+      service: String(entry.service || '').slice(0, 40) || serviceType,
+      fields
+    });
+  }
+  return out;
+}
+
+export async function suggestStarterBook({ industry, serviceTypes }) {
+  const requested = [...new Set((serviceTypes || []).filter(type => SERVICE_TYPE_OPTIONS.includes(type)))];
+  if (!requested.length) {
+    const error = new Error('Select at least one service before requesting suggestions');
+    error.statusCode = 400;
+    throw error;
+  }
+  const fieldCatalog = requested.map(serviceType => {
+    if (serviceType === 'CUSTOM') return 'CUSTOM: { service, serviceType:"CUSTOM", low: integer dollars, high: integer greater than low, unit: one of ' + UNIT_OPTIONS.join('|') + ', minimumJob: integer dollars }';
+    const specs = starterFieldSpecs(serviceType);
+    return `${serviceType}: { service, serviceType:"${serviceType}", fields: { ${specs.map(def => `${def.field}: number (${def.money ? 'dollars' : 'quantity'})`).join(', ')} } }`;
+  }).join('\n');
+  const labelNotes = requested.filter(type => type !== 'CUSTOM').map(serviceType =>
+    `${serviceType} field meanings: ${starterFieldSpecs(serviceType).map(def => `${def.field} = ${def.label}`).join(' | ')}`
+  ).join('\n');
   const systemInstruction = 'You are a contractor pricing assistant. Return ONLY a valid JSON array. No markdown. No code blocks. No backticks. No explanation. Response must start with [ and end with ] and be parseable by JSON.parse() with zero modifications.';
-  const userMessage = `Return a price book for a ${String(industry || '').slice(0, 80)} business. Return between 5 and 12 services. Each object must have EXACTLY these fields: { service: string max 40 chars, serviceType: one of exactly ${SERVICE_TYPE_OPTIONS.join('|')}, low: integer no decimals no $ sign, high: integer greater than low, unit: one of exactly ${UNIT_OPTIONS.join('|')}, taxable: boolean, minimumJob: integer }`;
+  const userMessage = `Suggest STARTER draft prices for a ${String(industry || '').slice(0, 80)} business. Return one object per requested service, in this exact shape (money fields are US dollars, quantity fields use their natural unit; plain numbers only, no strings, no $ signs):\n${fieldCatalog}\n${labelNotes}\nOnly include the listed fields. Use realistic mid-market rates. These are placeholders the owner will replace.`;
   let lastError;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
       const result = await geminiJson({ systemInstruction, userMessage });
-      const valid = Array.isArray(result) ? result.filter(validSuggestion) : [];
-      if (valid.length < 3) throw new Error('AI returned fewer than three valid services');
+      const valid = validateStarterServices(result, requested);
+      if (!valid.length) throw new Error('AI returned no valid starter services');
       return valid;
     } catch (error) {
       lastError = error;

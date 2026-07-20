@@ -3,7 +3,7 @@ import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
-import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, ownerFieldLabel } from './priceBookMetadata.js';
+import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, ownerFieldLabel, getServiceMetadata } from './priceBookMetadata.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const configuredDir = process.env.PRICEBOOK_PATH;
@@ -126,19 +126,60 @@ export function pricebookStatuses(pricebook) {
   return (pricebook.services || []).map(pricebookServiceStatus);
 }
 
-function assertValidNumbers(value, path) {
+let fieldDefCache = null;
+function fieldDef(serviceType, field) {
+  if (!fieldDefCache) {
+    fieldDefCache = new Map();
+    for (const service of getServiceMetadata()) {
+      fieldDefCache.set(service.serviceType, new Map(service.fields.map(def => [def.field, def])));
+    }
+  }
+  return fieldDefCache.get(serviceType)?.get(field);
+}
+
+// Numeric maps (shaped Class 1 fields, Class 2 factor tables) may contain
+// ONLY finite, non-negative numbers at their leaves. Strings, booleans, and
+// null leaves are rejected: a string leaf becomes NaN in the engine and
+// silently deletes the quote line it feeds.
+function assertNumericLeaves(value, path) {
   if (typeof value === 'number') {
     if (!Number.isFinite(value)) throw new Error(`${path} must be a finite number`);
     if (value < 0) throw new Error(`${path} cannot be negative`);
     return;
   }
   if (Array.isArray(value)) {
-    value.forEach((item, itemIndex) => assertValidNumbers(item, `${path}[${itemIndex}]`));
+    value.forEach((item, itemIndex) => assertNumericLeaves(item, `${path}[${itemIndex}]`));
     return;
   }
   if (value && typeof value === 'object') {
-    for (const [childKey, childValue] of Object.entries(value)) assertValidNumbers(childValue, `${path}.${childKey}`);
+    for (const [childKey, childValue] of Object.entries(value)) assertNumericLeaves(childValue, `${path}.${childKey}`);
+    return;
   }
+  throw new Error(`${path} must be a number`);
+}
+
+function validateOwnerFieldValue(serviceType, field, value, path) {
+  if (value === undefined) return;
+  const def = fieldDef(serviceType, field);
+  const type = def?.type || 'number';
+  if (type === 'boolean') {
+    if (typeof value !== 'boolean') throw new Error(`${path} must be true or false`);
+    return;
+  }
+  if (type === 'select') {
+    if (typeof value !== 'string') throw new Error(`${path} must be a string`);
+    if (def?.options?.length && !def.options.includes(value)) {
+      throw new Error(`${path} must be one of: ${def.options.join(', ')}`);
+    }
+    return;
+  }
+  if (type === 'json') {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${path} must be an object of numeric rates`);
+    assertNumericLeaves(value, path);
+    return;
+  }
+  if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${path} must be a finite number`);
+  if (value < 0) throw new Error(`${path} cannot be negative`);
 }
 
 function validateServiceShape(service, index) {
@@ -152,10 +193,10 @@ function validateServiceShape(service, index) {
   const class2Fields = Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {});
   const pricing = pricingFor(service);
   for (const field of ownerFields) {
-    if (pricing[field] !== undefined) assertValidNumbers(pricing[field], `services[${index}].${field}`);
+    validateOwnerFieldValue(service.serviceType, field, pricing[field], `services[${index}].${field}`);
   }
   for (const field of class2Fields) {
-    if (pricing[field] !== undefined) assertValidNumbers(pricing[field], `services[${index}].${field}`);
+    if (pricing[field] !== undefined) assertNumericLeaves(pricing[field], `services[${index}].${field}`);
   }
   if (service.tiers !== undefined) {
     if (!Array.isArray(service.tiers) || service.tiers.length > 3) throw new Error(`services[${index}].tiers must contain at most three tiers`);
@@ -171,7 +212,10 @@ function validateServiceShape(service, index) {
         if (!overridableFields.has(field)) {
           throw new Error(`services[${index}].tiers[${tierIndex}].overrides.${field} is not a pricing field for ${service.serviceType}`);
         }
-        if (value !== undefined) assertValidNumbers(value, `services[${index}].tiers[${tierIndex}].overrides.${field}`);
+        if (value === undefined) continue;
+        const overridePath = `services[${index}].tiers[${tierIndex}].overrides.${field}`;
+        if (ownerFields.includes(field)) validateOwnerFieldValue(service.serviceType, field, value, overridePath);
+        else assertNumericLeaves(value, overridePath);
       }
     });
   }
@@ -184,12 +228,23 @@ export function validatePricebookShape(data) {
   const defaults = data.defaults || {};
   if (!['markup','margin'].includes(defaults.markupMode || 'markup')) throw new Error('markupMode must be markup or margin');
   if (!['TAX_NONE','TAX_MATERIALS','TAX_ALL'].includes(defaults.taxMode || 'TAX_NONE')) throw new Error('taxMode is invalid');
+  if (defaults.markupPercent !== undefined && typeof defaults.markupPercent !== 'number') throw new Error('markupPercent must be a number');
+  if (defaults.taxPercent !== undefined && typeof defaults.taxPercent !== 'number') throw new Error('taxPercent must be a number');
   const markupPercent = Number(defaults.markupPercent || 0);
   const taxPercent = Number(defaults.taxPercent || 0);
   if (!Number.isFinite(markupPercent) || markupPercent < 0 || (defaults.markupMode === 'margin' && markupPercent >= 100)) {
     throw new Error('markupPercent is invalid');
   }
   if (!Number.isFinite(taxPercent) || taxPercent < 0 || taxPercent > 100) throw new Error('taxPercent is invalid');
+  // Business-wide money and percent defaults must be finite and non-negative;
+  // malformed values here feed every service's quote.
+  for (const field of ['travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','rangeBufferPercent','peakSurchargePercent']) {
+    const value = defaults[field];
+    if (value === undefined || value === null) continue;
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+      throw new Error(`defaults.${field} must be a finite non-negative number`);
+    }
+  }
   return true;
 }
 

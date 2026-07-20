@@ -203,16 +203,48 @@ test('previously skipped monetary fields now convert dollars to cents', () => {
   assert.equal(converted.services[1].disposalPerSqft, 225);
 });
 
-test('siding uses houseWrapPerSqft as a separate material line when set', () => {
+test('houseWrapPerSqft is withdrawn pending the pricing-mode ruling (no exposure, no line, no double count)', () => {
+  // The mandated materialPerSqft label says house wrap is INCLUDED, while the
+  // spec also allows houseWrapPerSqft as a separate charge. Until the owner
+  // rules on a pricing mode, the field is neither editable nor consumed, so
+  // it can neither double-count nor sit dead in the editor.
+  assert.equal(ALL_OWNER_FIELDS.SIDING_REPLACEMENT.includes('houseWrapPerSqft'), false);
   const customerInputs = { sidingType:'vinyl', areaInputMethod:'sqft', sidingAreaSqft:1000, stories:'1', oldSidingRemoval:false, trimIncluded:false };
   const ownerPricing = {
     laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 }, minimumJob:0,
     houseWrapPerSqft:50, allowAssumptionBasedQuotes:true
   };
   const result = generateQuote({ serviceType:'SIDING_REPLACEMENT', customerInputs, ownerPricing, businessDefaults:{ markupPercent:0, taxMode:'TAX_NONE', rangeBufferPercent:10 } });
-  const wrap = result.lineItems.find(item => item.name === 'House wrap');
-  assert.equal(wrap?.amountCents, 1000 * 50);
-  assert.equal(wrap?.category, 'material');
+  assert.equal(result.lineItems.find(item => item.name === 'House wrap'), undefined);
+});
+
+test('malformed leaves and business defaults are rejected at save', () => {
+  const base = {
+    serviceType:'FENCING_INSTALL', laborPerLinearFoot:14, materialPerLinearFoot:22,
+    postSpacing:8, postPrice:38, concretePerPost:18, postsIncludedInMaterial:false,
+    gatePrice:285, minimumJob:0
+  };
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, terrainMultiplier:{ flat:1, moderate:'bad', steep:1.3 } }]
+  }), /must be a number/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, laborPerLinearFoot:'14' }]
+  }), /must be a finite number/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, postsIncludedInMaterial:'yes' }]
+  }), /must be true or false/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{ travelFee:-50 }, services:[]
+  }), /defaults\.travelFee/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{ rangeBufferPercent:'nonsense' }, services:[]
+  }), /defaults\.rangeBufferPercent/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{ overheadFixed:Number.NaN }, services:[]
+  }), /defaults\.overheadFixed/);
+  assert.equal(validatePricebookShape({
+    defaults:{ travelFee:45.5, rangeBufferPercent:10, peakSurchargePercent:0 }, services:[base]
+  }), true);
 });
 
 test('negative pricing is rejected at save and treated as unconfigured by the engine', () => {
@@ -284,4 +316,32 @@ test('Class 2 defaults are stored per service on save, and money fields round-tr
   assert.equal(stored.wasteFactorByType.vinyl, 0.10);
   assert.equal(typeof stored.storyMultiplier, 'object');
   assert.equal(saved.statuses[0].serviceType, 'SIDING_REPLACEMENT');
+});
+
+test('upgraded starter book: per-field Class 1 drafts for formula services, ranges only for CUSTOM', async () => {
+  const { validateStarterServices, starterFieldSpecs } = await import('../server/src/platformIntegrations.js');
+  // Scalar Class 1 fields only; shaped/select/boolean excluded
+  const fenceFields = starterFieldSpecs('FENCING_INSTALL').map(def => def.field);
+  assert.deepEqual(fenceFields, ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','gatePrice','minimumJob']);
+  assert.equal(starterFieldSpecs('SIDING_REPLACEMENT').some(def => def.field === 'laborPerSqft'), false, 'shaped fields are never AI-suggested');
+
+  const validated = validateStarterServices([
+    { serviceType:'FENCING_INSTALL', service:'Fence install', fields:{ laborPerLinearFoot:14, materialPerLinearFoot:22, postSpacing:8, postPrice:38, concretePerPost:18, gatePrice:285, minimumJob:600, notAField:9, laborPerSqft:{ vinyl:3 } } },
+    { serviceType:'FENCING_INSTALL', service:'Duplicate ignored', fields:{ laborPerLinearFoot:1 } },
+    { serviceType:'CUSTOM', service:'Junk hauling', low:150, high:600, unit:'flat', minimumJob:150 },
+    { serviceType:'ROOFING_REPLACEMENT', service:'Bad values', fields:{ laborPerSquare:'bad', materialCostPerSquare:-5 } },
+    { serviceType:'SIDING_REPLACEMENT', service:'Not requested', fields:{ minimumJob:500 } }
+  ], ['FENCING_INSTALL','CUSTOM','ROOFING_REPLACEMENT']);
+
+  assert.equal(validated.length, 2, 'invalid-only and unrequested services are dropped');
+  const fence = validated.find(item => item.serviceType === 'FENCING_INSTALL');
+  assert.equal(fence.fields.laborPerLinearFoot, 14);
+  assert.equal(fence.fields.notAField, undefined, 'unknown fields are dropped, never coerced');
+  assert.equal(fence.fields.laborPerSqft, undefined);
+  const custom = validated.find(item => item.serviceType === 'CUSTOM');
+  assert.deepEqual(custom.fields, { low:150, high:600, unit:'flat', minimumJob:150 });
+
+  // A starter draft still cannot activate without per-field confirmation
+  const status = pricebookServiceStatus({ serviceType:'FENCING_INSTALL', ...fence.fields, postsIncludedInMaterial:false, source:'AI_SUGGESTED', confirmedFields:{} });
+  assert.equal(status.status, 'NEEDS PRICING');
 });

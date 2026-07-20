@@ -14,7 +14,7 @@ import {
   savePricebook,
   saveValidatedPricebook
 } from '../priceBookService.js';
-import { getServiceMetadata } from '../priceBookMetadata.js';
+import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
@@ -282,7 +282,7 @@ app.get('/api/pricebook/meta', requireAuth(['owner']), (_req, res) => {
 });
 
 app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
-  const suggestions = await suggestStarterBook(req.body?.industry);
+  const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
   return res.json({
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', confirmedFields: {} })),
     warning: 'These are AI-suggested placeholder ranges — replace them with YOUR prices before going live.'
@@ -302,6 +302,9 @@ app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan,
     businessDefaults: converted.defaults,
     callerType: 'owner'
   });
+  if (Array.isArray(result.missingOwnerFields)) {
+    result.missingOwnerLabels = result.missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field));
+  }
   return res.json(result);
 }));
 

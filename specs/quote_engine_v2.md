@@ -1293,37 +1293,49 @@ POST /api/quote/calculate
 POST /api/business/jurisdiction — per JURISDICTION section above.
 
 POST /api/pricebook/suggest
-  Auth: JWT. Body: { industry: string }
+  [AMENDED 2026-07-20 by owner ruling: starter suggestions must
+  produce draft values for each service's ACTUAL Class 1 fields.
+  Generic low/high/unit ranges are reserved for CUSTOM services
+  only. Supersedes the previous 5-12 generic-range contract.]
+  Auth: JWT. Body: { industry: string, serviceTypes: string[] }
+  serviceTypes = the owner's active service types; reject with
+  400 when empty.
   Call the LLM with:
   systemInstruction: "You are a contractor pricing assistant.
   Return ONLY a valid JSON array. No markdown. No code blocks.
   No backticks. No explanation. Response must start with [ and
   end with ] and be parseable by JSON.parse() with zero
   modifications."
-  userMessage: "Return a price book for a [industry] business.
-  Return between 5 and 12 services. Each object must have EXACTLY
-  these fields: { service: string max 40 chars, serviceType: one
-  of exactly ROOFING_REPLACEMENT|ROOFING_REPAIR|
-  FLAT_ROOF_REPLACEMENT|FLAT_ROOF_REPAIR|INTERIOR_PAINTING|
-  EXTERIOR_PAINTING|FLOORING_INSTALL|FLOORING_REPLACEMENT|
-  FENCING_INSTALL|FENCING_REPLACEMENT|SIDING_REPLACEMENT|
-  SIDING_REPAIR|CONCRETE_DRIVEWAY|CONCRETE_PATIO_SLAB|
-  LANDSCAPING_CLEANUP|LANDSCAPING_MULCH|LANDSCAPING_SOD|
-  LANDSCAPING_PLANTING|LANDSCAPING_MOWING|CUSTOM,
-  low: integer no decimals no $ sign, high: integer greater than
-  low, unit: one of exactly flat|per_sqft|per_hour|per_unit|
-  per_LF|per_square, taxable: boolean, minimumJob: integer }"
+  userMessage: one object per requested serviceType.
+  - Formula services: { service: string max 40 chars,
+    serviceType, fields: { <field>: number } } where <field>
+    ranges over that service's SCALAR Class 1 owner fields
+    (type number). Money fields are dollars; quantity fields
+    (spacing, feet-per-room) use their natural unit. Shaped/
+    keyed fields (e.g. rates keyed by siding type or repair
+    scope) and select/boolean fields are EXCLUDED: their key
+    domains are customer-facing selections the model must not
+    invent. They stay empty and appear in NEEDS PRICING for
+    the owner.
+  - CUSTOM: { service, serviceType:"CUSTOM", low: integer,
+    high: integer greater than low, unit: one of exactly
+    flat|per_sqft|per_hour|per_unit|per_LF|per_square,
+    minimumJob: integer }.
   Response handling: strip ```json fences, JSON.parse, retry once
   on failure, then error "Could not generate suggestions. Please
   build your price book manually."
-  Validate entries (all fields present, valid unit, numbers,
-  high > low); require ≥3 valid or return error.
-  IMPORTANT: suggested numbers are STARTING POINTS. The dashboard
-  must show: "These are AI-suggested placeholder ranges — replace
-  them with YOUR prices before going live." A suggested price
-  book does not satisfy Class 1; template services still require
-  the owner's own detailed pricing fields before instant quotes.
-  Timeout 15s, one retry.
+  Validation: drop unknown/invalid fields (never coerce); numbers
+  must be finite and non-negative; require ≥1 valid service or
+  return the error above. Timeout 15s, one retry.
+  IMPORTANT: every suggested value is a STARTING POINT saved as
+  DRAFT with source AI_SUGGESTED and an empty confirmedFields
+  map. The dashboard must show: "These are AI-suggested
+  placeholder ranges — replace them with YOUR prices before
+  going live." A suggested price book does not satisfy Class 1;
+  a service with source AI_SUGGESTED cannot reach QUOTING LIVE
+  until the owner individually confirms every required field
+  (confirmedFields[field] === true), in addition to normal
+  owner-field validation.
 
 POST /api/pricebook/save
   Auth: JWT. Validate required fields per service. Convert
