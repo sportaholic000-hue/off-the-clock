@@ -504,6 +504,7 @@ function PriceBookStep({ state, metadata, back, next }) {
 }
 
 function CalendarStep({ state, refresh, back, next }) {
+  const connected = state.profile.calendar?.status === 'connected';
   const [provider, setProvider] = useState(state.profile.calendar?.provider || 'calendly');
   const [calendlyUrl, setCalendlyUrl] = useState(state.profile.calendar?.calendlyUrl || '');
   const [error, setError] = useState(null);
@@ -523,6 +524,7 @@ function CalendarStep({ state, refresh, back, next }) {
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your operator collects preferred times and puts them on the lead card." />
+      {connected && <Notice tone="success">Calendar connected.</Notice>}
       <div className="calendar-options">
         <div className="integration-row"><div><strong>Google Calendar</strong><span>Connect with Google OAuth</span></div><Button onClick={google}>Connect Google</Button></div>
         <div className="integration-row">
@@ -531,7 +533,7 @@ function CalendarStep({ state, refresh, back, next }) {
         </div>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={() => save(true)} nextLabel="Skip for now" />
+      <StepActions onBack={back} onNext={connected ? next : () => save(true)} nextLabel={connected ? 'Continue' : 'Skip for now'} />
     </section>
   );
 }
