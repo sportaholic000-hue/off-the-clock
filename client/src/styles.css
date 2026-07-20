@@ -349,6 +349,18 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .inline-form { width: min(430px,100%); display: flex; gap: 8px; }
 
 .pricebook-page > .page-header { margin-bottom: 18px; }
+.locked-pricebook {
+  max-width: 680px;
+  border: 1px solid var(--black-line);
+  border-radius: 4px;
+  background: var(--black-raised);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.locked-pricebook > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.locked-pricebook > div:first-child strong { color: var(--green); font-size: 34px; }
 .starter-panel { border: 1px solid #5E502B; border-radius: 4px; padding: 15px; margin-bottom: 14px; }
 .starter-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
 .starter-grid article { border: 1px solid var(--black-line); border-radius: 3px; padding: 12px; display: flex; flex-direction: column; gap: 7px; }
