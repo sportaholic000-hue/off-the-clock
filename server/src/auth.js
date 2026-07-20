@@ -56,9 +56,10 @@ function recordFailedAttempt(ip) {
 }
 
 export async function register(req, res) {
-  const { email, password, firstName, businessName } = req.body || {};
-  if (!email || !password || !firstName || !businessName) {
-    return res.status(400).json({ error: 'email, password, firstName, and businessName are required' });
+  const { email, password, firstName, businessName, plan = 'Operator' } = req.body || {};
+  const allowedPlans = new Set(['Operator', 'QuoteDone', 'Scale']);
+  if (!email || !password || !firstName || !businessName || !allowedPlans.has(plan)) {
+    return res.status(400).json({ error: 'email, password, firstName, businessName, and a valid plan are required' });
   }
 
   const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(String(email).toLowerCase());
@@ -74,7 +75,7 @@ export async function register(req, res) {
   const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
   db.prepare(`INSERT INTO users (id, ownerId, email, passwordHash, firstName, businessName, plan, planStatus, trialEndsAt, timezone, role, createdAt)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
-      id, null, email.toLowerCase(), passwordHash, firstName, businessName, 'Operator', 'trialing', trialEndsAt, 'UTC', 'owner', now
+      id, null, email.toLowerCase(), passwordHash, firstName, businessName, plan, 'trialing', trialEndsAt, 'UTC', 'owner', now
     );
 
   const verifyToken = crypto.randomBytes(24).toString('hex');
@@ -85,7 +86,10 @@ export async function register(req, res) {
     text: `Verify your email: /api/auth/verify-email?token=${verifyToken}`
   });
 
-  return res.status(201).json({ token: signToken({ id, email, role: 'owner' }) });
+  return res.status(201).json({
+    token: signToken({ id, email, role: 'owner' }),
+    account: { id, email: email.toLowerCase(), firstName, businessName, plan, role: 'owner' }
+  });
 }
 
 export async function login(req, res) {
