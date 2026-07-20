@@ -40,8 +40,6 @@ const FIELD_LABELS = {
   postPrice: 'Price per post',
   postsIncludedInMaterial: 'Posts already included in material cost?',
   minimumJob: 'Minimum job price',
-  repairMinimum: 'Repair minimum',
-  minimumServiceCharge: 'Minimum service charge',
   allowAssumptionBasedQuotes: 'Allow size estimates (small/medium/large) when exact measurements are unavailable.'
 };
 
