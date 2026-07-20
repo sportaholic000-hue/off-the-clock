@@ -51,7 +51,7 @@ test('dollar conversion handles nested owner rates and leaves factors alone', ()
 });
 
 test('minimum fields accept zero while rates still require a nonzero value', () => {
-  const ready = pricebookServiceStatus({
+  const fencing = {
     serviceType:'FENCING_INSTALL',
     laborPerLinearFoot:1400,
     materialPerLinearFoot:2200,
@@ -61,9 +61,10 @@ test('minimum fields accept zero while rates still require a nonzero value', () 
     postsIncludedInMaterial:false,
     gatePrice:28500,
     minimumJob:0
-  });
+  };
+  const ready = pricebookServiceStatus(fencing);
   assert.equal(ready.status, 'QUOTING LIVE');
-  const missing = pricebookServiceStatus({ ...ready, laborPerLinearFoot:0 });
+  const missing = pricebookServiceStatus({ ...fencing, laborPerLinearFoot:0 });
   assert.deepEqual(missing.missingOwnerFields, ['laborPerLinearFoot']);
 });
 
