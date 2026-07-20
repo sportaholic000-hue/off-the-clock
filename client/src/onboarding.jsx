@@ -383,7 +383,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const interviewFields = useMemo(
-    () => available.flatMap(service => service.fields.filter(field => field.requiredAtBase).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
+    () => available.flatMap(service => service.fields.map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
     [available]
   );
   const current = interviewFields[position];
