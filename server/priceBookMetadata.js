@@ -25,13 +25,13 @@ export const SERVICE_NAMES = {
 
 const FIELD_LABELS = {
   materialCostPerSquare: 'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.',
-  laborPerFloorSqft: 'Your labor price per square foot of FLOOR area - walls only, two coats, standard 8-ft ceilings.',
+  laborPerFloorSqft: 'Your labor price per square foot of FLOOR area — walls only, two coats, standard 8-ft ceilings.',
   materialPerFloorSqft2Coats: 'Your paint/material cost per square foot of FLOOR area for two coats on walls.',
   concretePerPost: 'Concrete + digging cost per post at your local frost/set depth.',
   gatePrice: "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.",
   basePrepPerSqft: 'Excavation + compacted gravel base + grading, per square foot.',
-  groundPrepPerSqft: 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job - make sure this number covers disposal of the old lawn.',
-  materialPerSqft_SIDING_REPLACEMENT: 'All-in installed material per sqft for this siding type, INCLUDING house wrap, J-channel, corner posts, and starter strip - accessories run 20-30% of vinyl material cost.',
+  groundPrepPerSqft: 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job — make sure this number covers disposal of the old lawn.',
+  materialPerSqft_SIDING_REPLACEMENT: 'All-in installed material per sqft for this siding type, INCLUDING house wrap, J-channel, corner posts, and starter strip — accessories run 20–30% of vinyl material cost.',
   laborPerSqft_CONCRETE_DRIVEWAY: 'Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.',
   laborPerSqft_CONCRETE_PATIO_SLAB: 'Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.',
   laborPerLinearFoot: 'Labor cost per linear foot',
@@ -92,8 +92,13 @@ const SHAPED_FIELDS = new Set([
   'repairHours','repairMaterialAllowance','debrisPricing','mulchMaterialPerYard',
   'plantingLaborPerPlant','plantMaterialAllowance','frequencyMultipliers',
   'overgrowthMultipliers','materialAllowance','patchRepairHours',
-  'patchMaterialAllowance','materialPerSqft','laborPerSqft',
-  'membraneCostPerSqft','tearOffPerSqft'
+  'patchMaterialAllowance','membraneCostPerSqft'
+]);
+const SERVICE_SHAPED_FIELDS = new Set([
+  'SIDING_REPLACEMENT.materialPerSqft',
+  'SIDING_REPLACEMENT.laborPerSqft',
+  'FLAT_ROOF_REPLACEMENT.laborPerSqft',
+  'FLAT_ROOF_REPLACEMENT.tearOffPerSqft'
 ]);
 
 const BOOLEAN_FIELDS = new Set(['postsIncludedInMaterial']);
@@ -205,10 +210,10 @@ function labelFor(serviceType, field) {
   return FIELD_LABELS[`${field}_${serviceType}`] || FIELD_LABELS[field] || field;
 }
 
-function fieldType(field) {
+function fieldType(serviceType, field) {
   if (BOOLEAN_FIELDS.has(field)) return 'boolean';
   if (SELECT_FIELDS[field]) return 'select';
-  if (SHAPED_FIELDS.has(field)) return 'json';
+  if (SHAPED_FIELDS.has(field) || SERVICE_SHAPED_FIELDS.has(`${serviceType}.${field}`)) return 'json';
   return 'number';
 }
 
@@ -221,7 +226,7 @@ export function getServiceMetadata() {
       fields: (ALL_OWNER_FIELDS[serviceType] || []).map(field => ({
         field,
         label: labelFor(serviceType, field),
-        type: fieldType(field),
+        type: fieldType(serviceType, field),
         options: SELECT_FIELDS[field] || null,
         money: MONEY_FIELD_NAMES.has(field),
         requiredAtBase: baseRequired.includes(field),
