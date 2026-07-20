@@ -1,10 +1,15 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
 import { MONEY_FIELD_NAMES } from './priceBookMetadata.js';
 
-const dir = resolve(process.cwd(), 'data', 'pricebooks');
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const configuredDir = process.env.PRICEBOOK_PATH;
+const dir = configuredDir
+  ? (isAbsolute(configuredDir) ? configuredDir : resolve(projectRoot, configuredDir))
+  : resolve(projectRoot, 'data', 'pricebooks');
 const zeroAllowedOwnerFields = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 
 export function loadPricebook(ownerId) {
