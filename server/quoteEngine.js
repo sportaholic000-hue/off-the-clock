@@ -52,15 +52,16 @@ function applyMinimum(lineItems, subtotalCents, p, defaults, appliedRules) {
   }
   return subtotalCents;
 }
-function pushSkippedAddon(ctx, name) {
-  const message = `${name} skipped: price not configured`;
+function pushSkippedAddon(ctx, name, tierName) {
+  const baseMessage = `${name} skipped: price not configured`;
+  const message = tierName ? `${tierName} tier: ${baseMessage}` : baseMessage;
   if (!ctx.appliedRules.includes(message)) ctx.appliedRules.push(message);
   if (!ctx.skippedAddons.includes(name)) ctx.skippedAddons.push(name);
 }
-function collectSkippedAddons(serviceType, customerInputs, pricing, ctx) {
+function collectSkippedAddons(serviceType, customerInputs, pricing, ctx, tierName) {
   for (const addon of ADDON_DISCLOSURES) {
     if (addon.serviceType === serviceType && addon.selected(customerInputs) && missingAddonPrice(pricing, addon.field)) {
-      pushSkippedAddon(ctx, addon.name);
+      pushSkippedAddon(ctx, addon.name, tierName);
     }
   }
 }
@@ -69,12 +70,17 @@ function disclaimerWithSkippedAddons(base, skippedAddons = []) {
   if (!names.length) return base;
   return `${base} This estimate does not include: ${names.join(', ')}.`;
 }
+function optionExclusionsMatch(options) {
+  if (options.length <= 1) return true;
+  const first = JSON.stringify(options[0].skippedAddons);
+  return options.every(option => JSON.stringify(option.skippedAddons) === first);
+}
 
-function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, inherited }) {
+function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, tierName, inherited }) {
   const defaults = defaultsOf(businessDefaults);
   const ctx = { appliedRules: inherited.appliedRules, urgencyFlags: inherited.urgencyFlags, priceDrivers: [], estimationUsed: false, skippedAddons: [] };
   const pricing = { ...ownerPricing, ...effectivePricing };
-  collectSkippedAddons(serviceType, customerInputs, pricing, ctx);
+  collectSkippedAddons(serviceType, customerInputs, pricing, ctx, tierName);
   const calculated = calculateService(serviceType, customerInputs, pricing, defaults, ctx);
   const lineItems = calculated.lineItems;
 
@@ -116,7 +122,8 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
 
   const topDrivers = lineItems.filter(i => ['labor','material'].includes(i.category)).sort((a,b)=>b.amountCents-a.amountCents).slice(0,4).map(i => i.name);
   const priceDrivers = [...new Set([...topDrivers, ...ctx.priceDrivers])];
-  return { lineItems, priceDrivers, lowEstimate:centsToDollars(lowCents), highEstimate:centsToDollars(highCents), midEstimate:centsToDollars(midCents), rangeBufferUsed: buffer, estimationUsed: ctx.estimationUsed, skippedAddons: ctx.skippedAddons };
+  const disclaimer = disclaimerWithSkippedAddons(ownerPricing.disclaimer || DEFAULT_DISCLAIMER, ctx.skippedAddons);
+  return { lineItems, priceDrivers, lowEstimate:centsToDollars(lowCents), highEstimate:centsToDollars(highCents), midEstimate:centsToDollars(midCents), rangeBufferUsed: buffer, estimationUsed: ctx.estimationUsed, skippedAddons: ctx.skippedAddons, disclaimer };
 }
 
 export function generateQuote({ serviceType, customerInputs = {}, ownerPricing = {}, businessDefaults = {}, callerType = 'owner' }) {
@@ -143,7 +150,7 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
     const tierMissing = ownerFields.filter(f => f === 'postsIncludedInMaterial' ? missing(effectivePricing, f) : missingOwner(effectivePricing, f));
     if (tierMissing.length) { if (tier.name) appliedRules.push(`${tier.name} tier skipped: incomplete pricing`); continue; }
     try {
-      const run = finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, inherited:{ appliedRules, urgencyFlags } });
+      const run = finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, tierName:tier.name, inherited:{ appliedRules, urgencyFlags } });
       options.push({ tierName:tier.name, ...run });
     } catch (err) {
       if (err.reviewReason) return review({ reviewReason: err.reviewReason });
@@ -153,13 +160,25 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
   if (!options.length) return review({ missingOwnerFields: ownerFields, reviewReason:'Pricing not fully configured for this service. Owner follow-up required.' });
 
   const first = options[0];
-  const disclaimer = disclaimerWithSkippedAddons(ownerPricing.disclaimer || DEFAULT_DISCLAIMER, first.skippedAddons);
-  const result = { resultType:'INSTANT_ESTIMATE_READY', lowEstimate:first.lowEstimate, highEstimate:first.highEstimate, midEstimate:first.midEstimate, options: options.map(o => ({ tierName:o.tierName, lowEstimate:o.lowEstimate, highEstimate:o.highEstimate, midEstimate:o.midEstimate, priceDrivers:o.priceDrivers, lineItems:o.lineItems })), priceDrivers:first.priceDrivers, lineItems:first.lineItems, appliedRules, urgencyFlags, rangeBufferUsed:first.rangeBufferUsed, disclaimer, quoteId };
+  const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
+  const disclaimer = optionExclusionsMatch(options) ? first.disclaimer : baseDisclaimer;
+  const result = { resultType:'INSTANT_ESTIMATE_READY', lowEstimate:first.lowEstimate, highEstimate:first.highEstimate, midEstimate:first.midEstimate, options: options.map(o => ({ tierName:o.tierName, lowEstimate:o.lowEstimate, highEstimate:o.highEstimate, midEstimate:o.midEstimate, priceDrivers:o.priceDrivers, lineItems:o.lineItems, skippedAddons:o.skippedAddons, disclaimer:o.disclaimer })), priceDrivers:first.priceDrivers, lineItems:first.lineItems, appliedRules, urgencyFlags, rangeBufferUsed:first.rangeBufferUsed, disclaimer, quoteId };
   return callerType === 'customer' ? sanitizeForCustomer(result) : result;
 }
 
 export function sanitizeForCustomer(result) {
   if (result.resultType !== 'INSTANT_ESTIMATE_READY') return result;
   const { lineItems, ...safe } = result;
-  return { ...safe, options: result.options.map(({ tierName, lowEstimate, highEstimate, midEstimate, priceDrivers }) => ({ tierName, lowEstimate, highEstimate, midEstimate, priceDrivers })) };
+  return {
+    ...safe,
+    options: result.options.map(({ tierName, lowEstimate, highEstimate, midEstimate, priceDrivers, skippedAddons, disclaimer }) => ({
+      tierName,
+      lowEstimate,
+      highEstimate,
+      midEstimate,
+      priceDrivers,
+      skippedAddons,
+      disclaimer
+    }))
+  };
 }

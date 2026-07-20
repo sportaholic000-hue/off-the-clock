@@ -111,3 +111,37 @@ export const CREATE_TABLE_STATEMENTS = [
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`
 ];
+
+export const CREATE_TRIGGER_STATEMENTS = [
+  `CREATE TRIGGER IF NOT EXISTS users_staff_parent_insert
+    BEFORE INSERT ON users
+    WHEN NEW.role = 'staff'
+      AND NOT EXISTS (
+        SELECT 1 FROM users AS parent
+        WHERE parent.id = NEW.ownerId AND parent.role = 'owner'
+      )
+    BEGIN
+      SELECT RAISE(ABORT, 'staff ownerId must reference an owner');
+    END`,
+  `CREATE TRIGGER IF NOT EXISTS users_staff_parent_update
+    BEFORE UPDATE OF role, ownerId ON users
+    WHEN NEW.role = 'staff'
+      AND NOT EXISTS (
+        SELECT 1 FROM users AS parent
+        WHERE parent.id = NEW.ownerId AND parent.role = 'owner'
+      )
+    BEGIN
+      SELECT RAISE(ABORT, 'staff ownerId must reference an owner');
+    END`,
+  `CREATE TRIGGER IF NOT EXISTS users_owner_demotion_guard
+    BEFORE UPDATE OF role ON users
+    WHEN OLD.role = 'owner'
+      AND NEW.role != 'owner'
+      AND EXISTS (
+        SELECT 1 FROM users AS staff
+        WHERE staff.ownerId = OLD.id AND staff.role = 'staff'
+      )
+    BEGIN
+      SELECT RAISE(ABORT, 'owner role cannot change while staff reference it');
+    END`
+];
