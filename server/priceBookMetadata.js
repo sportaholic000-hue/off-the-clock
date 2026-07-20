@@ -223,6 +223,7 @@ export function getServiceMetadata() {
         label: labelFor(serviceType, field),
         type: fieldType(field),
         options: SELECT_FIELDS[field] || null,
+        money: MONEY_FIELD_NAMES.has(field),
         requiredAtBase: baseRequired.includes(field),
         minimumAllowsZero: ['minimumJob','repairMinimum','minimumServiceCharge'].includes(field)
       })),
