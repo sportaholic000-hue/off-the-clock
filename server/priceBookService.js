@@ -3,7 +3,7 @@ import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
-import { MONEY_FIELD_NAMES } from './priceBookMetadata.js';
+import { getActivationOwnerFields, MONEY_FIELD_NAMES } from './priceBookMetadata.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const configuredDir = process.env.PRICEBOOK_PATH;
@@ -96,7 +96,10 @@ function isMissing(pricing, field) {
 
 export function pricebookServiceStatus(service) {
   const customerInputs = service.validationInputs || {};
-  const requiredFields = getRequiredOwnerFields(service.serviceType, customerInputs);
+  const requiredFields = [...new Set([
+    ...getActivationOwnerFields(service.serviceType, pricingFor(service)),
+    ...getRequiredOwnerFields(service.serviceType, customerInputs)
+  ])];
   let missingOwnerFields = requiredFields.filter(field => isMissing(pricingFor(service), field));
   if (service.source === 'AI_SUGGESTED' && service.ownerConfirmed !== true) {
     missingOwnerFields = [...requiredFields];
