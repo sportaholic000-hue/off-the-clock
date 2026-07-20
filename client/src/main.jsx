@@ -1,39 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Shield } from 'lucide-react';
 import './styles.css';
+import { getToken, go } from './api.js';
+import Dashboard from './dashboard.jsx';
+import Onboarding from './onboarding.jsx';
+import PriceBook from './pricebook.jsx';
+import { Brand } from './ui.jsx';
 
-const navItems = ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings'];
-const adminSections = ['Accounts list', 'Provisioning failures', 'A2P status', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'];
-
-function Shell({ mode }) {
-  const isAdmin = mode === 'admin';
+function AdminShell() {
   return (
-    <main className="app-shell">
-      <aside className="rail">
-        <div className="wordmark">Off The Clock AI</div>
-        {(isAdmin ? adminSections : navItems).map((item) => <a key={item}>{item}</a>)}
-      </aside>
-      <section className="panel">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">{isAdmin ? 'ADMIN' : 'DASHBOARD'}</p>
-            <h1>{isAdmin ? 'Admin shell' : 'Empty dashboard shell'}</h1>
-          </div>
-          {!isAdmin && <button className="master-toggle" type="button">Operator OFF</button>}
-          {!isAdmin && <div className="meter"><span>PLAN</span><strong>Operator</strong><span>0 / 300 min</span></div>}
-        </header>
-        <div className="empty-grid">
-          {(isAdmin ? adminSections : navItems).map((item) => <article key={item}><p>{item}</p><span>Empty</span></article>)}
-        </div>
-      </section>
+    <main className="admin-shell">
+      <Brand />
+      <div><Shield size={24} /><p className="eyebrow">ADMIN</p><h1>Platform cockpit</h1><p>Admin surfaces are scheduled for a later phase.</p></div>
     </main>
   );
 }
 
 function App() {
-  const path = window.location.pathname;
-  if (path === '/admin') return <Shell mode="admin" />;
-  return <Shell mode="dashboard" />;
+  const [location, setLocation] = useState(window.location.pathname + window.location.search);
+  useEffect(() => {
+    const update = () => setLocation(window.location.pathname + window.location.search);
+    window.addEventListener('popstate', update);
+    return () => window.removeEventListener('popstate', update);
+  }, []);
+
+  const path = location.split('?')[0];
+  if (path === '/admin') return <AdminShell />;
+  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding />;
+  if (path === '/pricebook') return <PriceBook />;
+  if (path === '/dashboard') return <Dashboard />;
+  go('/dashboard');
+  return null;
 }
 
 createRoot(document.getElementById('root')).render(<App />);
