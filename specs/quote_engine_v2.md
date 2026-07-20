@@ -282,8 +282,11 @@ STEP 3 — TIER LOOP
     : [{ name: null, overrides: {} }]
   For each tier (max 3):
     effectivePricing = { ...ownerPricing.pricing, ...tier.overrides }
-    run STEPS 4–9 AND STEP 11 with effectivePricing to produce
-    the complete per-option result
+    re-evaluate STEP 2b ADDON pricing for this option using
+    effectivePricing (a tier override may price or unprice an
+    addon differently than base), then run STEPS 4–11 inclusive
+    with effectivePricing to produce the complete per-option
+    result
     collect { tierName, lowEstimate, highEstimate, midEstimate,
               priceDrivers, lineItems, skippedAddons, disclaimer }
     // skippedAddons/disclaimer per STEP 2b/11 rulings
