@@ -126,6 +126,17 @@ export async function placeTwilioTestCall({ to, from, businessName, agentName })
   });
 }
 
+export async function getTwilioCallStatus(callSid) {
+  if (!/^CA[0-9a-f]{32}$/i.test(String(callSid || ''))) throw new Error('Invalid Twilio call identifier');
+  const call = await twilioRequest(`Calls/${callSid}.json`);
+  return {
+    sid: call.sid,
+    status: call.status,
+    to: call.to,
+    from: call.from
+  };
+}
+
 function escapeXml(value) {
   return String(value).replace(/[<>&'"]/g, character => ({
     '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;'
