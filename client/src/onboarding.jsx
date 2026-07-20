@@ -374,6 +374,7 @@ function parseInterviewValue(raw, type) {
 }
 
 function PriceBookStep({ state, metadata, back, next }) {
+  const quoteAccess = state.account.planStatus === 'trialing' || ['QuoteDone','Scale'].includes(state.account.plan);
   const activeTypes = state.profile.businessTypes || [];
   const available = metadata.filter(service => activeTypes.includes(service.serviceType));
   const [mode, setMode] = useState('browser');
@@ -436,6 +437,17 @@ function PriceBookStep({ state, metadata, back, next }) {
       setSuggestions(result);
       sessionStorage.setItem('otc_pricebook_suggestions', JSON.stringify(result));
     } catch (nextError) { setError(nextError); }
+  }
+
+  if (!quoteAccess) {
+    return (
+      <section className="step-panel">
+        <PageHeader eyebrow="Step 7 of 9" title="Price book" description="QuoteDone pricing is available on QuoteDone and Scale." />
+        <Notice>Operator keeps answering, booking, and capturing pricing requests without guessing.</Notice>
+        <Button onClick={() => go('/onboarding?step=1')}>Choose QuoteDone</Button>
+        <StepActions onBack={back} onNext={next} nextLabel="Skip for now" />
+      </section>
+    );
   }
 
   return (
