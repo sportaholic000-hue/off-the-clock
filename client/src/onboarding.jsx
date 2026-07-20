@@ -223,7 +223,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
         </>
       )}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || (form.country === 'US' && !taxChoiceMade))} />
+      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || (form.country === 'US' && !taxChoiceMade) || ((form.country === 'CA' || (taxChoiceMade && form.taxMode !== 'TAX_NONE')) && !(Number(form.taxPercent) > 0)))} />
     </section>
   );
 }
