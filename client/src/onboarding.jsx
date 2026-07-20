@@ -243,14 +243,26 @@ function PhoneStep({ state, refresh, back, next }) {
     finally { setBusy(false); }
   }
   async function test() {
-    setTestStatus('CALLING YOUR NUMBER');
+    setTestStatus('CALLING');
     setError(null);
     try {
-      await api('/api/onboarding/phone/test', { method:'POST', body:{} });
-      setTestStatus('TEST CALL QUEUED');
+      const created = await api('/api/onboarding/phone/test', { method:'POST', body:{} });
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const call = await api(`/api/onboarding/phone/test/${created.callSid}`);
+        if (['in-progress','completed'].includes(call.status)) {
+          setTestStatus('LIVE');
+          return;
+        }
+        if (['busy','failed','no-answer','canceled'].includes(call.status)) {
+          throw new Error('The test call was not answered');
+        }
+        setTestStatus(call.status === 'ringing' ? 'RINGING' : 'CALLING');
+      }
+      setTestStatus('CHECK YOUR PHONE');
     } catch (nextError) {
       setTestStatus('');
-      setError(new Error('The test call could not be placed. Try again in a moment.'));
+      setError(new Error('The test call could not be completed. Try again in a moment.'));
     }
   }
   return (
@@ -268,7 +280,7 @@ function PhoneStep({ state, refresh, back, next }) {
           <div>
             <p className="eyebrow">Hear it answer</p>
             <p>Call your own number right now. You will hear Off The Clock pick up, the same way your customers will.</p>
-            <PhonePreviewButton onClick={test}>{testStatus || 'Call my number now'}</PhonePreviewButton>
+            <div className="test-call-row"><PhonePreviewButton onClick={test}>{testStatus === 'LIVE' ? 'Call again' : 'Call my number now'}</PhonePreviewButton>{testStatus && <StatusChip status={testStatus} />}</div>
           </div>
         </div>
       )}
