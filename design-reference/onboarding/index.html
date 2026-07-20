@@ -87,40 +87,40 @@
 
       <div style="display:flex;flex-direction:column;gap:8px">
         <span class="eyebrow">Step 4 of 8</span>
-        <h1 class="disp" style="margin:0;font-weight:600;font-size:30px;letter-spacing:-0.02em;color:var(--ink)">Get your phone number</h1>
-        <p style="margin:0;font-size:14.5px;color:var(--muted);line-height:1.55;max-width:560px">Pick a local number for your business. Calls forward here, and Off The Clock answers when you can't. You keep your existing number. This runs alongside it.</p>
+        <h1 class="disp" style="margin:0;font-weight:600;font-size:30px;letter-spacing:-0.02em;color:var(--ink)">Plug in your line</h1>
+        <p style="margin:0;font-size:14.5px;color:var(--muted);line-height:1.55;max-width:560px">Keep the number your customers already know. Nothing about it changes for them, except that someone always answers. Enter your business number and we handle the rest.</p>
       </div>
 
-      <!-- FIND A NUMBER -->
+      <!-- CONNECT YOUR NUMBER -->
       <div class="card" style="padding:22px;max-width:640px">
-        <span class="eyebrow">Find a number</span>
+        <span class="eyebrow">Your business number</span>
         <div class="two" style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;align-items:end">
           <div>
-            <label style="font-size:13px;color:var(--ink);font-weight:500;display:block;margin-bottom:7px">Area code</label>
-            <input id="areaInput" class="in" value="506" maxlength="3" style="max-width:140px">
+            <label style="font-size:13px;color:var(--ink);font-weight:500;display:block;margin-bottom:7px">The number your customers call</label>
+            <input id="bizInput" class="in" value="(506) 214-7788" style="max-width:220px">
           </div>
-          <button id="searchBtn" onclick="runSearch()" class="btn-green" style="font-size:13.5px;padding:12px 20px">Search numbers</button>
+          <button id="connectBtn" onclick="connectNumber()" class="btn-green" style="font-size:13.5px;padding:12px 20px">Connect this number</button>
         </div>
+        <p style="font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:12px">This is the line on your trucks, your website, your business cards. It stays exactly the same.</p>
 
-        <!-- RESULTS (revealed on search) -->
-        <div id="results" style="margin-top:18px;display:none;flex-direction:column;gap:8px"></div>
-
-        <!-- CLAIM (revealed on selection) -->
-        <button id="claimBtn" onclick="claimNumber()" class="btn-green" style="display:none;margin-top:16px;font-size:14px;padding:13px 24px;width:100%">Claim this number</button>
+        <!-- CONNECTED CONFIRMATION (revealed) -->
+        <div id="connectedBox" style="display:none;margin-top:16px">
+          <div style="display:flex;align-items:center;gap:11px;padding:14px 16px;background:var(--bg);border:1px solid var(--green);border-radius:3px">
+            <span style="flex:none;width:22px;height:22px;border-radius:50%;background:rgba(0,230,118,.14);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:12px">✓</span>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span style="font-size:13px;color:var(--ink);font-weight:500">Connected. Your line is ready.</span>
+              <span class="mono" style="font-size:10.5px;color:var(--muted)">FLIP THE OPERATOR ON FROM YOUR DASHBOARD ANY TIME</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- FORWARDING + TEST (revealed after claim) -->
+      <!-- TEST: hear it answer (revealed after connect) -->
       <div id="forwardCard" class="card" style="padding:22px;max-width:640px;display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px">
-          <span class="eyebrow">Forward your calls</span>
-          <span class="tag" style="background:rgba(0,230,118,.12);color:var(--green)">NUMBER CLAIMED</span>
-        </div>
-        <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:8px 0 14px">On most carriers, dial this from your business phone to send unanswered calls to Off The Clock:</p>
-        <div style="padding:13px 15px;background:var(--bg);border:1px solid var(--line);border-radius:3px;margin-bottom:14px">
-          <span id="fwdCode" class="mono" style="font-size:15px;color:var(--green)">*72 506 555 0142</span>
-        </div>
+        <span class="eyebrow">Hear it answer</span>
+        <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:8px 0 14px">Call your own number right now. You will hear Off The Clock pick up, the same way your customers will.</p>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-          <button id="testBtn" onclick="runTest()" class="btn-ghost" style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:11px 16px;color:var(--green);border-color:var(--green)">▸ SEND A TEST CALL</button>
+          <button id="testBtn" onclick="runTest()" class="btn-ghost" style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:11px 16px;color:var(--green);border-color:var(--green)">▸ CALL MY NUMBER NOW</button>
           <div style="display:flex;align-items:center;gap:8px">
             <span id="testDot" style="width:8px;height:8px;border-radius:50%;background:var(--gray-edge);transition:background 200ms ease"></span>
             <span id="testText" class="mono" style="font-size:11px;color:var(--muted)">WAITING FOR TEST</span>
@@ -140,47 +140,20 @@
 </div>
 
 <script>
-const NUMS = [
-  { n:'(506) 555-0142', city:'SAINT JOHN, NB', code:'*72 506 555 0142' },
-  { n:'(506) 555-0188', city:'SAINT JOHN, NB', code:'*72 506 555 0188' },
-  { n:'(506) 555-0207', city:'MONCTON, NB',   code:'*72 506 555 0207' },
-];
-let selected = null;
-let claimed = false;
+let connected = false;
 
-function runSearch(){
-  const box = document.getElementById('results');
-  box.innerHTML = '';
-  box.style.display = 'flex';
-  NUMS.forEach((num, i)=>{
-    const el = document.createElement('label');
-    el.className = 'num-opt reveal';
-    el.style.animationDelay = (i*60)+'ms';
-    el.innerHTML = `<span style="display:flex;align-items:center;gap:11px"><span class="radio"><i></i></span><span class="mono" style="font-size:15px;color:var(--ink)">${num.n}</span></span><span class="mono" style="font-size:10.5px;color:var(--muted)">${num.city}</span>`;
-    el.onclick = ()=>{
-      document.querySelectorAll('.num-opt').forEach(o=>o.classList.remove('sel'));
-      el.classList.add('sel');
-      selected = num;
-      const cb = document.getElementById('claimBtn');
-      cb.style.display = 'block';
-      cb.textContent = 'Claim ' + num.n;
-    };
-    box.appendChild(el);
-  });
-}
-
-function claimNumber(){
-  if(!selected) return;
-  claimed = true;
-  document.getElementById('claimBtn').textContent = '✓ ' + selected.n + ' is yours';
-  document.getElementById('claimBtn').style.background = 'var(--green-press)';
-  document.getElementById('fwdCode').textContent = selected.code;
+function connectNumber(){
+  connected = true;
+  const btn = document.getElementById('connectBtn');
+  btn.textContent = '✓ Connected';
+  btn.style.background = 'var(--green-press)';
+  document.getElementById('connectedBox').style.display = 'block';
+  document.getElementById('connectedBox').classList.add('reveal');
   const fc = document.getElementById('forwardCard');
   fc.style.display = 'block';
   fc.classList.add('reveal');
+  document.getElementById('ansText').textContent = 'Number connected. Add About + Hours to go live.';
   fc.scrollIntoView({behavior:'smooth', block:'center'});
-  // answering status: number set (needs About+Hours next, so still pending but closer)
-  document.getElementById('ansText').textContent = 'Number set. Add About + Hours to go live.';
 }
 
 function runTest(){
@@ -188,20 +161,18 @@ function runTest(){
   const txt = document.getElementById('testText');
   const btn = document.getElementById('testBtn');
   btn.style.pointerEvents = 'none'; btn.style.opacity = '.6';
-  // calling...
   dot.style.background = 'var(--green)'; dot.style.animation = 'pulse 1s ease infinite';
   txt.textContent = 'CALLING YOUR NUMBER...'; txt.style.color = 'var(--green)';
   setTimeout(()=>{ txt.textContent = 'RINGING...'; }, 1100);
   setTimeout(()=>{
-    txt.textContent = 'CONNECTED · OFF THE CLOCK ANSWERED';
+    txt.textContent = 'OFF THE CLOCK ANSWERED';
     dot.style.animation = 'none';
-    // now fully live
     document.getElementById('ansDot').style.background = 'var(--green)';
     document.getElementById('ansDot').style.animation = 'pulse 1.6s ease infinite';
     document.getElementById('ansText').textContent = 'Live. Off The Clock is answering.';
     const cont = document.getElementById('continueBtn');
     cont.style.opacity = '1'; cont.style.pointerEvents = 'auto';
-    btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; btn.textContent = '↺ TEST AGAIN';
+    btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; btn.textContent = '↺ CALL AGAIN';
   }, 2300);
 }
 </script>

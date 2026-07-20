@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Off The Clock AI · Dashboard (interactive reference)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --panel:#111411; --line:#1E241E; --ink:#F2F5F2;
+    --muted:#8A948A; --green:#00E676; --green-press:#16A34A; --gray-edge:#3a423a;
+    --mono:'JetBrains Mono',monospace; --disp:'Space Grotesk',sans-serif; --body:Inter,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+  a{color:var(--green);text-decoration:none}
+  a:hover{color:var(--green-press)}
+  button{cursor:pointer;font-family:inherit}
+  .mono{font-family:var(--mono)}
+  .disp{font-family:var(--disp)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:4px}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .reveal{animation:fadeUp 260ms ease both}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  @media(max-width:900px){ .rail{display:none!important} .counters{grid-template-columns:1fr 1fr!important} }
+</style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex">
+
+  <!-- LEFT RAIL -->
+  <nav class="rail" style="flex:none;width:200px;min-height:100vh;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:20px 12px">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 10px 18px">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="#00E676" stroke-width="1.6"></circle><line x1="10" y1="10" x2="10" y2="5.5" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line><line x1="10" y1="10" x2="13.5" y2="12" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"></line></svg>
+      <span class="disp" style="font-weight:700;font-size:13px;color:var(--green)">Off The Clock AI</span>
+    </div>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;background:#0E120E;color:var(--green);border-left:2px solid var(--green)">DASHBOARD</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">CALL FEED</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">QUOTE REQUESTS</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">PRICE BOOK</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">APPOINTMENTS</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">KNOWLEDGE BASE</a>
+    <a href="#" class="mono" style="display:block;font-size:11px;letter-spacing:.12em;padding:10px;border-radius:3px;color:var(--muted);border-left:2px solid transparent">SETTINGS</a>
+  </nav>
+
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <!-- TOP BAR with MASTER TOGGLE as centerpiece -->
+    <header style="border-bottom:1px solid var(--line);padding:16px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+
+      <!-- THE MASTER TOGGLE -->
+      <button id="opBtn" onclick="toggleOp()" style="cursor:pointer;display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--green);border-radius:4px;padding:12px 18px;box-shadow:0 0 24px rgba(0,230,118,.15);transition:box-shadow 150ms ease,border-color 150ms ease">
+        <span id="opTrack" style="position:relative;display:inline-block;flex:none;width:52px;height:28px;border-radius:3px;background:var(--green);border:1px solid var(--green);transition:background 150ms ease">
+          <span id="opKnob" style="position:absolute;top:3px;left:28px;width:20px;height:20px;border-radius:2px;background:#0A0A0A;transition:left 150ms ease"></span>
+        </span>
+        <span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
+          <span id="opTitle" class="mono" style="font-size:13px;letter-spacing:.1em;font-weight:700;color:var(--green)">OPERATOR LIVE</span>
+          <span id="opSub" class="mono" style="font-size:10.5px;color:var(--muted)">EVERY CALL FROM HERE ON IS COVERED</span>
+        </span>
+      </button>
+
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-left:auto">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span class="mono" style="font-size:9.5px;letter-spacing:.12em;color:#0A0A0A;background:var(--green);padding:3px 7px;border-radius:2px">OPERATOR</span>
+            <span class="mono" style="font-size:10.5px;color:var(--muted)">642 / 1,200 MIN</span>
+          </div>
+          <span style="display:block;width:150px;height:4px;background:var(--line);border-radius:2px"><span style="display:block;width:54%;height:4px;background:var(--green);border-radius:2px"></span></span>
+        </div>
+        <span class="mono" style="font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:8px 10px">23 SPAM CALLS BLOCKED · 41 MIN SAVED</span>
+      </div>
+    </header>
+
+    <div style="padding:24px 28px;display:flex;flex-direction:column;gap:20px;max-width:1080px;width:100%">
+
+      <!-- OFF-STATE BANNER (only when toggled off) -->
+      <div id="offBanner" style="display:none;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--gray-edge);border-radius:4px;padding:14px 18px">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--gray-edge)"></span>
+        <span style="font-size:13px;color:var(--ink)">Operator is off. Calls to your line ring your phone. Whoever answers is on it.</span>
+      </div>
+
+      <!-- QUOTE REQUESTS WAITING -->
+      <a href="#" style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--panel);border:1px solid var(--green);border-radius:4px;padding:16px 18px;transition:background 150ms ease" onmouseover="this.style.background='#0A0A0A'" onmouseout="this.style.background='#111411'">
+        <span style="display:flex;flex-direction:column;gap:4px">
+          <span class="mono" style="font-size:10.5px;letter-spacing:.12em;color:var(--green)">QUOTE REQUESTS WAITING ON YOUR PRICING</span>
+          <span style="font-size:13px;color:var(--muted)">Custom ironwork fence · slope over 20°. Captured in full, waiting on you.</span>
+        </span>
+        <span style="display:flex;align-items:center;gap:12px">
+          <span class="mono" style="font-size:32px;font-weight:700;color:var(--ink)">2</span>
+          <span class="mono" style="font-size:12px;color:var(--green)">REVIEW ▸</span>
+        </span>
+      </a>
+
+      <!-- COUNTERS -->
+      <div class="counters" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+        <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--muted)">CALLS ANSWERED</span>
+          <span class="mono" style="font-size:34px;font-weight:700;color:var(--ink);line-height:1">14<span style="font-size:13px;font-weight:400;color:var(--muted)"> today</span></span>
+          <span class="mono" style="font-size:11px;color:var(--muted)">61 THIS WEEK · 5 AFTER-HOURS</span>
+        </div>
+        <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--muted)">QUOTES DELIVERED</span>
+          <span class="mono" style="font-size:34px;font-weight:700;color:var(--green);line-height:1">$23,400</span>
+          <span class="mono" style="font-size:11px;color:var(--muted)">6 TODAY · 19 THIS WEEK</span>
+        </div>
+        <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--muted)">BOOKED ON CALENDAR</span>
+          <span class="mono" style="font-size:34px;font-weight:700;color:var(--green);line-height:1">$11,280</span>
+          <span class="mono" style="font-size:11px;color:var(--muted)">4 APPOINTMENTS THIS WEEK</span>
+        </div>
+        <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:8px">
+          <span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--muted)">TIME OFF THE CLOCK <span style="color:var(--gray-edge)">· EST.</span></span>
+          <span class="mono" style="font-size:34px;font-weight:700;color:var(--ink);line-height:1">≈ 9.2<span style="font-size:13px;font-weight:400;color:var(--muted)"> hrs / wk</span></span>
+          <span class="mono" style="font-size:11px;color:var(--muted)">BASED ON CALLS HANDLED FOR YOU</span>
+        </div>
+      </div>
+
+      <!-- LIVE CALL FEED -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="disp" style="font-weight:600;font-size:17px;color:var(--ink)">Call feed</span>
+          <a href="#" class="mono" style="font-size:11px;letter-spacing:.08em">ALL CALLS ▸</a>
+        </div>
+
+        <div id="liveRow" class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-color:var(--green)">
+          <span style="display:flex;align-items:center;gap:12px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.6s ease infinite"></span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--green)">LIVE NOW · 0:41</span>
+              <span style="font-size:13px;color:var(--ink)">Incoming from (506) 555-0164 · quoting a 140 ft cedar fence</span>
+            </span>
+          </span>
+          <span class="mono" style="font-size:11px;color:var(--muted)">LISTEN ▸</span>
+        </div>
+
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <span style="display:flex;flex-direction:column;gap:3px">
+            <span class="mono" style="font-size:11px;color:var(--muted)">21:12 · 3:24</span>
+            <span style="font-size:13px;color:var(--ink)">Gate repair quote · $285 delivered · booked Thursday 9am</span>
+          </span>
+          <span class="mono" style="font-size:10px;color:var(--green);background:rgba(0,230,118,.1);border-radius:2px;padding:4px 8px">QUOTED + BOOKED</span>
+        </div>
+
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <span style="display:flex;flex-direction:column;gap:3px">
+            <span class="mono" style="font-size:11px;color:var(--muted)">20:48 · 1:58</span>
+            <span style="font-size:13px;color:var(--ink)">Custom ironwork · flagged to you, full details captured</span>
+          </span>
+          <span class="mono" style="font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:2px;padding:4px 8px">NEEDS YOUR PRICE</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+let opOn = true;
+
+function toggleOp(){
+  opOn = !opOn;
+  const G='var(--green)', GRAY='var(--muted)', LINE='var(--line)';
+  document.getElementById('opBtn').style.borderColor = opOn ? G : LINE;
+  document.getElementById('opBtn').style.boxShadow = opOn ? '0 0 24px rgba(0,230,118,.15)' : 'none';
+  document.getElementById('opTrack').style.background = opOn ? G : '#0A0A0A';
+  document.getElementById('opTrack').style.borderColor = opOn ? G : LINE;
+  document.getElementById('opKnob').style.left = opOn ? '28px' : '3px';
+  document.getElementById('opKnob').style.background = opOn ? '#0A0A0A' : GRAY;
+  document.getElementById('opTitle').textContent = opOn ? 'OPERATOR LIVE' : 'OPERATOR OFF';
+  document.getElementById('opTitle').style.color = opOn ? G : GRAY;
+  document.getElementById('opSub').textContent = opOn ? 'EVERY CALL FROM HERE ON IS COVERED' : 'CALLS RING YOUR PHONE';
+  document.getElementById('offBanner').style.display = opOn ? 'none' : 'flex';
+  if(!opOn) document.getElementById('offBanner').classList.add('reveal');
+  // live call row only makes sense when on
+  document.getElementById('liveRow').style.opacity = opOn ? '1' : '.45';
+}
+</script>
+</body>
+</html>
