@@ -46,26 +46,26 @@ const FIELD_LABELS = {
 };
 
 export const ALL_OWNER_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','accessoryPricingMode','starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare'],
+  ROOFING_REPLACEMENT: ['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','accessoryPricingMode','starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare','allowAssumptionBasedQuotes'],
   ROOFING_REPAIR: ['laborHourlyRate','repairMinimum','repairHours','repairMaterialAllowance'],
-  INTERIOR_PAINTING: ['laborPerFloorSqft','materialPerFloorSqft2Coats','minimumJob','laborHourlyRate','ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF','trimLinearFeetPerRoom'],
-  EXTERIOR_PAINTING: ['exteriorLaborPerSqft','materialPerSqftPerCoat','minimumJob','laborHourlyRate'],
-  FLOORING_INSTALL: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat'],
-  FLOORING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','subfloorAllowancePerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat'],
-  FENCING_INSTALL: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob'],
-  FENCING_REPLACEMENT: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob','removalPerLinearFoot','disposalPerLF'],
-  CONCRETE_DRIVEWAY: ['laborPerSqft','concreteCostPerCubicYard','formworkPerLF','minimumJob','demolitionPerSqft','basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','disposalPerSqft'],
-  CONCRETE_PATIO_SLAB: ['laborPerSqft','concreteCostPerCubicYard','formworkPerLF','minimumJob','demolitionPerSqft','basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','disposalPerSqft'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft','debrisPricing','minimumServiceCharge','haulAwayFee'],
+  INTERIOR_PAINTING: ['laborPerFloorSqft','materialPerFloorSqft2Coats','minimumJob','laborHourlyRate','ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF','trimLinearFeetPerRoom','allowAssumptionBasedQuotes'],
+  EXTERIOR_PAINTING: ['exteriorLaborPerSqft','materialPerSqftPerCoat','minimumJob','laborHourlyRate','allowAssumptionBasedQuotes'],
+  FLOORING_INSTALL: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat','allowAssumptionBasedQuotes'],
+  FLOORING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','subfloorAllowancePerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat','allowAssumptionBasedQuotes'],
+  FENCING_INSTALL: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob','allowAssumptionBasedQuotes'],
+  FENCING_REPLACEMENT: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob','removalPerLinearFoot','disposalPerLF','allowAssumptionBasedQuotes'],
+  CONCRETE_DRIVEWAY: ['laborPerSqft','concreteCostPerCubicYard','formworkPerLF','minimumJob','demolitionPerSqft','basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
+  CONCRETE_PATIO_SLAB: ['laborPerSqft','concreteCostPerCubicYard','formworkPerLF','minimumJob','demolitionPerSqft','basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
+  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft','debrisPricing','minimumServiceCharge','haulAwayFee','allowAssumptionBasedQuotes'],
   LANDSCAPING_MULCH: ['mulchMaterialPerYard','mulchInstallLaborPerYard','minimumServiceCharge','bedPrepLaborPerSqft','edgingPerLinearFoot'],
-  LANDSCAPING_SOD: ['sodMaterialPerSqft','sodInstallLaborPerSqft','minimumServiceCharge','groundPrepPerSqft'],
+  LANDSCAPING_SOD: ['sodMaterialPerSqft','sodInstallLaborPerSqft','minimumServiceCharge','groundPrepPerSqft','allowAssumptionBasedQuotes'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant','plantMaterialAllowance','minimumServiceCharge','bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft','minimumServiceCharge','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','edgingPerLinearFoot'],
-  SIDING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','trimPerLinearFoot','houseWrapPerSqft'],
+  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft','minimumServiceCharge','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','edgingPerLinearFoot','allowAssumptionBasedQuotes'],
+  SIDING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','trimPerLinearFoot','houseWrapPerSqft','allowAssumptionBasedQuotes'],
   SIDING_REPAIR: ['laborHourlyRate','repairMinimum','repairHours','materialAllowance'],
-  FLAT_ROOF_REPLACEMENT: ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft','minimumJob','insulationPerSqft','disposalPerSqft'],
+  FLAT_ROOF_REPLACEMENT: ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft','minimumJob','insulationPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate','repairMinimum','patchRepairHours','patchMaterialAllowance','pondingWaterSurcharge'],
-  CUSTOM: ['low','high','unit']
+  CUSTOM: ['low','high','unit','allowAssumptionBasedQuotes']
 };
 
 export const MONEY_FIELD_NAMES = new Set([
@@ -101,7 +101,7 @@ const SERVICE_SHAPED_FIELDS = new Set([
   'FLAT_ROOF_REPLACEMENT.tearOffPerSqft'
 ]);
 
-const BOOLEAN_FIELDS = new Set(['postsIncludedInMaterial']);
+const BOOLEAN_FIELDS = new Set(['postsIncludedInMaterial','allowAssumptionBasedQuotes']);
 const SELECT_FIELDS = {
   accessoryPricingMode: ['per_square_allin','itemized'],
   unit: ['flat','per_sqft','per_hour','per_unit','per_LF','per_square']
