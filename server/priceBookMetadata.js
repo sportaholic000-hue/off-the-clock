@@ -206,6 +206,36 @@ export const SAMPLE_INPUTS = {
   CUSTOM: { service: 'Sample service', unit: 'flat', quantity: 1 }
 };
 
+const ACTIVATION_SCENARIOS = {
+  INTERIOR_PAINTING: [{ surfaceCondition:'fair', ceilingsIncluded:true, trimIncluded:true }],
+  EXTERIOR_PAINTING: [{ surfaceCondition:'fair' }],
+  FLOORING_INSTALL: [{ removalNeeded:true, stairSteps:1, newFlooringType:'hardwood', underlaymentApplies:true }],
+  FLOORING_REPLACEMENT: [{ removalNeeded:true, stairSteps:1, newFlooringType:'hardwood', underlaymentApplies:true, subfloorIssues:true }],
+  FENCING_REPLACEMENT: [{ oldFenceRemoval:true }],
+  CONCRETE_DRIVEWAY: [
+    { demolitionNeeded:true, baseNeeded:true, reinforcement:'wire_mesh', finishType:'stamped' },
+    { reinforcement:'rebar' }
+  ],
+  CONCRETE_PATIO_SLAB: [
+    { demolitionNeeded:true, baseNeeded:true, reinforcement:'wire_mesh', finishType:'stamped' },
+    { reinforcement:'rebar' }
+  ],
+  LANDSCAPING_CLEANUP: [{ haulAway:true }],
+  LANDSCAPING_MULCH: [{ bedCondition:'needs_weeding', edgingNeeded:true }],
+  LANDSCAPING_SOD: [{ groundPrepNeeded:true }],
+  LANDSCAPING_PLANTING: [{ bedCondition:'needs_weeding', mulchNeeded:true }],
+  SIDING_REPLACEMENT: [{ oldSidingRemoval:true, trimIncluded:true }],
+  FLAT_ROOF_REPLACEMENT: [{ buildingType:'commercial' }]
+};
+
+export function getActivationOwnerFields(serviceType, pricing = {}) {
+  const scenarios = [{}, ...(ACTIVATION_SCENARIOS[serviceType] || [])];
+  if (serviceType === 'ROOFING_REPLACEMENT' && pricing.accessoryPricingMode === 'itemized') {
+    scenarios.push({ accessoryPricingMode:'itemized' });
+  }
+  return [...new Set(scenarios.flatMap(inputs => getRequiredOwnerFields(serviceType, inputs)))];
+}
+
 function labelFor(serviceType, field) {
   return FIELD_LABELS[`${field}_${serviceType}`] || FIELD_LABELS[field] || field;
 }
@@ -219,7 +249,7 @@ function fieldType(serviceType, field) {
 
 export function getServiceMetadata() {
   return SERVICE_TYPES.map(serviceType => {
-    const baseRequired = getRequiredOwnerFields(serviceType, {});
+    const baseRequired = getActivationOwnerFields(serviceType, {});
     return {
       serviceType,
       name: SERVICE_NAMES[serviceType],
