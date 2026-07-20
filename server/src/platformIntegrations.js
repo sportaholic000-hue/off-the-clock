@@ -92,6 +92,28 @@ export async function requestCarrierConnection({ ownerId, existingNumber, twilio
   return { status: result.status || 'queued', reference: result.reference || null };
 }
 
+export async function setCarrierCoverage({ ownerId, enabled, existingNumber, twilioNumber }) {
+  if (!process.env.CARRIER_CONNECTION_URL) {
+    return { status: 'platform_action_required' };
+  }
+  const response = await fetchWithTimeout(process.env.CARRIER_CONNECTION_URL, {
+    method: 'POST',
+    headers: {
+      ...JSON_HEADERS,
+      authorization: `Bearer ${required('CARRIER_CONNECTION_TOKEN')}`
+    },
+    body: JSON.stringify({
+      action: 'set_coverage',
+      ownerId,
+      enabled: Boolean(enabled),
+      existingNumber,
+      destinationNumber: twilioNumber
+    })
+  });
+  if (!response.ok) throw new Error('Carrier coverage update failed');
+  return response.json().catch(() => ({ status: 'updated' }));
+}
+
 export async function placeTwilioTestCall({ to, from, businessName, agentName }) {
   const greeting = `${businessName || 'Your business'}, this is ${agentName || 'Nova'}. Your Off The Clock line is connected.`;
   return twilioRequest('Calls.json', {
