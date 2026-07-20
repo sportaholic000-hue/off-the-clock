@@ -83,7 +83,17 @@ export const MONEY_FIELD_NAMES = new Set([
   'plantingLaborPerPlant','plantMaterialAllowance','mowingBaseRatePerSqft',
   'materialAllowance','membraneCostPerSqft','tearOffPerSqft','insulationPerSqft',
   'patchMaterialAllowance','pondingWaterSurcharge','low','high','travelFee','disposalFee',
-  'permitFee','overheadFixed','minimumJobPrice'
+  'permitFee','overheadFixed','minimumJobPrice',
+  'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot','houseWrapPerSqft'
+]);
+
+// Owner fields that are legitimately NOT money. Every other field in
+// ALL_OWNER_FIELDS must appear in MONEY_FIELD_NAMES — enforced by a
+// regression test so a new field can never silently skip cents conversion.
+export const NON_MONEY_OWNER_FIELDS = new Set([
+  'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
+  'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
+  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing'
 ]);
 
 const SHAPED_FIELDS = new Set([
@@ -234,8 +244,12 @@ export function getActivationOwnerFields(serviceType, pricing = {}) {
   return [...new Set(scenarios.flatMap(inputs => getRequiredOwnerFields(serviceType, inputs)))];
 }
 
-function labelFor(serviceType, field) {
+export function ownerFieldLabel(serviceType, field) {
   return FIELD_LABELS[`${field}_${serviceType}`] || FIELD_LABELS[field] || field;
+}
+
+function labelFor(serviceType, field) {
+  return ownerFieldLabel(serviceType, field);
 }
 
 function fieldType(serviceType, field) {

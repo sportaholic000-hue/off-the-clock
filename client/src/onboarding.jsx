@@ -369,7 +369,7 @@ function GoLiveStep({ state, refresh, back, next }) {
         />
       </div>
       {!operator.eligible && <Notice tone="warning">Still needed: {operator.missing.join(', ')}</Notice>}
-      {operator.enabled && <Notice tone="success">OPERATOR LIVE - every call from here on is covered.</Notice>}
+      {operator.enabled && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={next} />
     </section>
@@ -386,13 +386,15 @@ function parseInterviewValue(raw, type) {
 }
 
 function PriceBookStep({ state, metadata, back, next }) {
-  const quoteAccess = state.account.planStatus === 'trialing' || ['QuoteDone','Scale'].includes(state.account.plan);
+  const quoteAccess = ['QuoteDone','Scale'].includes(state.account.plan);
   const activeTypes = state.profile.businessTypes || [];
   const available = metadata.filter(service => activeTypes.includes(service.serviceType));
   const [mode, setMode] = useState('browser');
   const [draft, setDraft] = useState(null);
   const [position, setPosition] = useState(0);
   const [rawValue, setRawValue] = useState('');
+  const [readBack, setReadBack] = useState(null);
+  const [existingDrafts, setExistingDrafts] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const interviewFields = useMemo(
@@ -401,20 +403,67 @@ function PriceBookStep({ state, metadata, back, next }) {
   );
   const current = interviewFields[position];
 
+  useEffect(() => {
+    if (!quoteAccess || draft) return;
+    api('/api/pricebook/interview')
+      .then(result => setExistingDrafts(result.drafts || []))
+      .catch(() => setExistingDrafts([]));
+  }, [quoteAccess, draft]);
+
+  function editValue(value) {
+    setRawValue(value);
+    setReadBack(null);
+  }
+
+  function positionFor(loaded) {
+    if (loaded.currentField) {
+      const index = interviewFields.findIndex(field => `${field.serviceType}.${field.field}` === loaded.currentField);
+      if (index >= 0) return index;
+    }
+    const index = interviewFields.findIndex(field => !(loaded.confirmedFields?.[field.serviceType] || []).includes(field.field));
+    return index >= 0 ? index : interviewFields.length;
+  }
+
   async function startInterview() {
     setError(null);
     try {
       const result = await api('/api/pricebook/interview', { method:'POST', body:{ mode, serviceTypes:activeTypes } });
       setDraft(result.draft);
       setPosition(0);
+      setReadBack(null);
+    } catch (nextError) { setError(nextError); }
+  }
+
+  async function resumeInterview(draftId) {
+    setError(null);
+    try {
+      const result = await api(`/api/pricebook/interview/${draftId}`);
+      setDraft(result.draft);
+      setPosition(positionFor(result.draft));
+      setReadBack(null);
+    } catch (nextError) { setError(nextError); }
+  }
+
+  function readItBack() {
+    if (!current) return;
+    setError(null);
+    try {
+      const value = parseInterviewValue(rawValue, current.type);
+      const spoken = typeof value === 'number'
+        ? `${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`
+        : String(rawValue);
+      if (typeof window.speechSynthesis !== 'undefined') {
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(spoken));
+      }
+      setReadBack({ value, spoken });
     } catch (nextError) { setError(nextError); }
   }
 
   async function confirmField() {
-    if (!draft || !current) return;
+    if (!draft || !current || !readBack) return;
     setError(null);
     try {
-      const value = parseInterviewValue(rawValue, current.type);
+      const value = readBack.value;
       const existingConfirmed = draft.confirmedFields?.[current.serviceType] || [];
       const result = await api(`/api/pricebook/interview/${draft.id}`, {
         method:'PUT',
@@ -425,10 +474,8 @@ function PriceBookStep({ state, metadata, back, next }) {
         }
       });
       setDraft(result.draft);
-      if (typeof window.speechSynthesis !== 'undefined' && typeof value === 'number') {
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`));
-      }
       setRawValue('');
+      setReadBack(null);
       setPosition(Math.min(interviewFields.length, position + 1));
     } catch (nextError) { setError(nextError); }
   }
@@ -475,6 +522,9 @@ function PriceBookStep({ state, metadata, back, next }) {
                 <button type="button" className={mode === 'browser' ? 'selected' : ''} onClick={() => setMode('browser')}><Mic size={15} />Browser</button>
               </div>
               <Button onClick={startInterview}>Start interview</Button>
+              {existingDrafts?.length > 0 && (
+                <Button variant="secondary" onClick={() => resumeInterview(existingDrafts[0].id)}>Resume saved draft</Button>
+              )}
             </div>
           )}
           {draft && current && (
@@ -483,19 +533,28 @@ function PriceBookStep({ state, metadata, back, next }) {
               <p className="mono">{position + 1} / {interviewFields.length} · {current.serviceName}</p>
               <Field label={current.label}>
                 {current.type === 'select' ? (
-                  <Select value={rawValue} onChange={event => setRawValue(event.target.value)}>
+                  <Select value={rawValue} onChange={event => editValue(event.target.value)}>
                     <option value="">Choose</option>
                     {(current.options || []).map(option => <option key={option} value={option}>{option}</option>)}
                   </Select>
                 ) : current.type === 'boolean' ? (
-                  <Select value={rawValue} onChange={event => setRawValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
+                  <Select value={rawValue} onChange={event => editValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
                 ) : current.type === 'json' ? (
-                  <Textarea rows="5" value={rawValue} onChange={event => setRawValue(event.target.value)} placeholder='{"key": 0}' />
+                  <Textarea rows="5" value={rawValue} onChange={event => editValue(event.target.value)} placeholder='{"key": 0}' />
                 ) : (
-                  <TextInput type="number" step="0.01" value={rawValue} onChange={event => setRawValue(event.target.value)} />
+                  <TextInput type="number" step="0.01" value={rawValue} onChange={event => editValue(event.target.value)} />
                 )}
               </Field>
-              <Button icon={Volume2} onClick={confirmField} disabled={!rawValue}>Read back and confirm</Button>
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={!rawValue}>Read it back</Button>}
+              {readBack && (
+                <div className="readback-confirm">
+                  <p className="mono">READ BACK: {readBack.spoken}</p>
+                  <div className="test-call-row">
+                    <Button icon={Check} onClick={confirmField}>Yes, save this number</Button>
+                    <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           {draft && !current && (

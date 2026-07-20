@@ -10,8 +10,9 @@ const ADDON_DISCLOSURES = [
   { serviceType: 'LANDSCAPING_MOWING', field: 'edgingPerLinearFoot', name: 'Perimeter edging', selected: c => Boolean(c.edgingIncluded) }
 ];
 const missing = (obj, field) => obj?.[field] === undefined || obj?.[field] === null || obj?.[field] === 'unsure' || obj?.[field] === '';
-const missingOwner = (obj, field) => missing(obj, field) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
-const missingAddonPrice = (obj, field) => missing(obj, field) || obj[field] === 0;
+const negativeNumber = value => typeof value === 'number' && value < 0;
+const missingOwner = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
+const missingAddonPrice = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || obj[field] === 0;
 const round = Math.round;
 
 function review({ missingCustomerFields = [], missingOwnerFields = [], reviewReason }) {

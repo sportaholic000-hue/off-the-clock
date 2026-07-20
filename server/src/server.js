@@ -15,6 +15,7 @@ import {
   saveValidatedPricebook
 } from '../priceBookService.js';
 import { getServiceMetadata } from '../priceBookMetadata.js';
+import { hasQuoteDoneAccess } from './planAccess.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
 import {
@@ -62,7 +63,7 @@ function requireQuoteDonePlan(req, res, next) {
     WHERE id = ? AND (ownerId = ? OR id = ?)`).get(
       req.tenantOwnerId, req.tenantOwnerId, req.tenantOwnerId
     );
-  if (!account || (!['QuoteDone','Scale'].includes(account.plan) && account.planStatus !== 'trialing')) {
+  if (!hasQuoteDoneAccess(account)) {
     return res.status(403).json({ error:'QuoteDone or Scale is required' });
   }
   return next();
@@ -283,7 +284,7 @@ app.get('/api/pricebook/meta', requireAuth(['owner']), (_req, res) => {
 app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const suggestions = await suggestStarterBook(req.body?.industry);
   return res.json({
-    suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', ownerConfirmed: false })),
+    suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', confirmedFields: {} })),
     warning: 'These are AI-suggested placeholder ranges — replace them with YOUR prices before going live.'
   });
 }));

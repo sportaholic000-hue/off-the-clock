@@ -68,18 +68,29 @@ test('minimum fields accept zero while rates still require a nonzero value', () 
   assert.deepEqual(missing.missingOwnerFields, ['laborPerLinearFoot']);
 });
 
-test('AI starter suggestions never activate without owner confirmation', () => {
-  const status = pricebookServiceStatus({
+test('AI-sourced services require individual confirmation of every field', () => {
+  const service = {
     serviceType:'CUSTOM',
     service:'Sample',
     low:10000,
     high:20000,
     unit:'flat',
     source:'AI_SUGGESTED',
-    ownerConfirmed:false
-  });
-  assert.equal(status.status, 'NEEDS PRICING');
-  assert.deepEqual(status.missingOwnerFields, ['low','high','unit']);
+    confirmedFields:{}
+  };
+  const unconfirmed = pricebookServiceStatus(service);
+  assert.equal(unconfirmed.status, 'NEEDS PRICING');
+  assert.deepEqual(unconfirmed.missingOwnerFields, ['low','high','unit']);
+
+  const partial = pricebookServiceStatus({ ...service, confirmedFields:{ low:true, high:true } });
+  assert.equal(partial.status, 'NEEDS PRICING');
+  assert.deepEqual(partial.missingOwnerFields, ['unit']);
+
+  const confirmed = pricebookServiceStatus({ ...service, confirmedFields:{ low:true, high:true, unit:true } });
+  assert.equal(confirmed.status, 'QUOTING LIVE');
+
+  const interview = pricebookServiceStatus({ ...service, source:'AI_INTERVIEW', confirmedFields:{} });
+  assert.equal(interview.status, 'NEEDS PRICING');
 });
 
 test('Class 2 fencing override changes labor without changing materials', () => {
@@ -149,7 +160,9 @@ test('owner-facing Phase 2 source has no gradients or forwarding mechanics', () 
   assert.equal(/forward(?:ing|ed|s)?/i.test(client), false);
   assert.match(client, /Keep the number your customers already know/);
   assert.match(client, /CALLS RING YOUR PHONE/);
-  assert.match(client, /Tax settings are your responsibility\. Off The Clock applies the mode and rate you set\. It does not provide tax advice\./);
+  assert.match(client, /Tax settings are your responsibility\. Off The Clock applies the mode and rate you set — it does not provide tax advice\./);
+  assert.match(client, /OPERATOR LIVE — every call from here on is covered\./);
+  assert.equal(/planStatus === 'trialing' \|\|/.test(client), false, 'client must not widen plan access for trials');
 });
 
 test('server exposes the complete Phase 2 route surface', () => {
@@ -162,4 +175,113 @@ test('server exposes the complete Phase 2 route surface', () => {
     '/api/pricebook/interview','/api/pricebook/meta','/api/pricebook/suggest',
     '/api/pricebook/preview','/api/pricebook/save','/api/pricebook/:ownerId'
   ]) assert.match(source, new RegExp(route.replaceAll('/','\\/')));
+});
+
+test('every owner field is classified as money or explicitly non-money', async () => {
+  const { MONEY_FIELD_NAMES, NON_MONEY_OWNER_FIELDS } = await import('../server/priceBookMetadata.js');
+  for (const [serviceType, fields] of Object.entries(ALL_OWNER_FIELDS)) {
+    for (const field of fields) {
+      const classified = MONEY_FIELD_NAMES.has(field) || NON_MONEY_OWNER_FIELDS.has(field);
+      assert.equal(classified, true, `${serviceType}.${field} must be in MONEY_FIELD_NAMES or NON_MONEY_OWNER_FIELDS`);
+      assert.equal(MONEY_FIELD_NAMES.has(field) && NON_MONEY_OWNER_FIELDS.has(field), false, `${serviceType}.${field} cannot be both money and non-money`);
+    }
+  }
+});
+
+test('previously skipped monetary fields now convert dollars to cents', () => {
+  const converted = dollarsToCents({
+    services: [{
+      serviceType:'SIDING_REPLACEMENT', trimPerLinearFoot:5, houseWrapPerSqft:1.5
+    }, {
+      serviceType:'CONCRETE_DRIVEWAY', demolitionPerSqft:4, disposalPerSqft:2.25
+    }],
+    defaults:{}
+  });
+  assert.equal(converted.services[0].trimPerLinearFoot, 500);
+  assert.equal(converted.services[0].houseWrapPerSqft, 150);
+  assert.equal(converted.services[1].demolitionPerSqft, 400);
+  assert.equal(converted.services[1].disposalPerSqft, 225);
+});
+
+test('siding uses houseWrapPerSqft as a separate material line when set', () => {
+  const customerInputs = { sidingType:'vinyl', areaInputMethod:'sqft', sidingAreaSqft:1000, stories:'1', oldSidingRemoval:false, trimIncluded:false };
+  const ownerPricing = {
+    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 }, minimumJob:0,
+    houseWrapPerSqft:50, allowAssumptionBasedQuotes:true
+  };
+  const result = generateQuote({ serviceType:'SIDING_REPLACEMENT', customerInputs, ownerPricing, businessDefaults:{ markupPercent:0, taxMode:'TAX_NONE', rangeBufferPercent:10 } });
+  const wrap = result.lineItems.find(item => item.name === 'House wrap');
+  assert.equal(wrap?.amountCents, 1000 * 50);
+  assert.equal(wrap?.category, 'material');
+});
+
+test('negative pricing is rejected at save and treated as unconfigured by the engine', () => {
+  const base = {
+    serviceType:'FENCING_INSTALL', laborPerLinearFoot:14, materialPerLinearFoot:22,
+    postSpacing:8, postPrice:38, concretePerPost:18, postsIncludedInMaterial:false,
+    gatePrice:285, minimumJob:0
+  };
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, laborPerLinearFoot:-14 }]
+  }), /cannot be negative/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, tiers:[{ name:'Budget', overrides:{ laborPerLinearFoot:-4 } }] }]
+  }), /cannot be negative/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...base, tiers:[{ name:'Budget', overrides:{ notARealField:4 } }] }]
+  }), /not a pricing field/);
+
+  const status = pricebookServiceStatus({ ...base, laborPerLinearFoot:-1400, materialPerLinearFoot:2200, postPrice:3800, concretePerPost:1800, gatePrice:28500 });
+  assert.equal(status.status, 'NEEDS PRICING');
+  assert.equal(status.missingOwnerFields.includes('laborPerLinearFoot'), true);
+
+  const quote = generateQuote({
+    serviceType:'FENCING_INSTALL',
+    customerInputs:{ linearFeet:200, lfMethod:'exact', fenceType:'wood_privacy', fenceHeight:'6', gateCount:1, cornerCount:2, terrainSlope:'flat' },
+    ownerPricing:{ ...base, laborPerLinearFoot:-1400, materialPerLinearFoot:2200, postPrice:3800, concretePerPost:1800, gatePrice:28500 },
+    businessDefaults:{}
+  });
+  assert.equal(quote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(quote.missingOwnerFields.includes('laborPerLinearFoot'), true);
+});
+
+test('missing-field statuses carry exact human-facing labels', () => {
+  const status = pricebookServiceStatus({ serviceType:'FENCING_INSTALL' });
+  const index = status.missingOwnerFields.indexOf('concretePerPost');
+  assert.equal(index >= 0, true);
+  assert.equal(status.missingOwnerLabels[index], 'Concrete + digging cost per post at your local frost/set depth.');
+});
+
+test('QuoteDone access is decided by plan, never widened by trial status', async () => {
+  const { hasQuoteDoneAccess } = await import('../server/src/planAccess.js');
+  assert.equal(hasQuoteDoneAccess({ plan:'Operator', planStatus:'trialing' }), false);
+  assert.equal(hasQuoteDoneAccess({ plan:'Operator', planStatus:'active' }), false);
+  assert.equal(hasQuoteDoneAccess({ plan:'QuoteDone', planStatus:'trialing' }), true);
+  assert.equal(hasQuoteDoneAccess({ plan:'Scale', planStatus:'active' }), true);
+  assert.equal(hasQuoteDoneAccess(null), false);
+  const source = readFileSync('server/src/server.js', 'utf8');
+  assert.match(source, /hasQuoteDoneAccess/);
+  assert.equal(/planStatus !== 'trialing'/.test(source), false, 'server must not widen plan access for trials');
+});
+
+test('Class 2 defaults are stored per service on save, and money fields round-trip', async () => {
+  const { mkdtempSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  process.env.PRICEBOOK_PATH = mkdtempSync(join(tmpdir(), 'otc-pricebook-'));
+  const fresh = await import('../server/priceBookService.js?scope=class2-persistence');
+  const saved = fresh.saveValidatedPricebook('owner-class2', {
+    defaults:{},
+    services:[{
+      serviceType:'SIDING_REPLACEMENT', service:'Siding',
+      laborPerSqft:{ vinyl:3 }, materialPerSqft:{ vinyl:4 }, minimumJob:500,
+      trimPerLinearFoot:5, allowAssumptionBasedQuotes:true
+    }]
+  });
+  const stored = fresh.loadPricebook('owner-class2').services[0];
+  assert.equal(stored.trimPerLinearFoot, 500, 'dollars convert to cents on save');
+  assert.equal(typeof stored.wasteFactorByType, 'object', 'untouched Class 2 defaults are persisted');
+  assert.equal(stored.wasteFactorByType.vinyl, 0.10);
+  assert.equal(typeof stored.storyMultiplier, 'object');
+  assert.equal(saved.statuses[0].serviceType, 'SIDING_REPLACEMENT');
 });

@@ -156,7 +156,7 @@ function Preview({ preview, loading }) {
         {!loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW' && (
           <div className="preview-empty">
             <StatusChip status="NEEDS PRICING" />
-            <span className="mono">{(preview.missingOwnerFields || []).join(', ') || preview.reviewReason}</span>
+            <span className="mono">{(preview.missingOwnerLabels || preview.missingOwnerFields || []).join('; ') || preview.reviewReason}</span>
           </div>
         )}
         {!loading && preview?.resultType === 'INSTANT_ESTIMATE_READY' && (
@@ -199,7 +199,7 @@ export default function PriceBook() {
       api('/api/onboarding/state'),
       api('/api/pricebook/meta')
     ]);
-    const canQuote = state.account.planStatus === 'trialing' || ['QuoteDone','Scale'].includes(state.account.plan);
+    const canQuote = ['QuoteDone','Scale'].includes(state.account.plan);
     const loadedBook = canQuote ? await api(`/api/pricebook/${dash.ownerId}`) : { services:[], defaults:{} };
     setLocked(!canQuote);
     const activeTypes = state.profile.businessTypes || [];
@@ -216,8 +216,10 @@ export default function PriceBook() {
     if (draft?.services) {
       for (const incoming of draft.services) {
         const index = services.findIndex(service => service.serviceType === incoming.serviceType);
-        if (index >= 0) services[index] = { ...services[index], ...incoming, source:'AI_INTERVIEW_DRAFT' };
-        else services.push(incoming);
+        // Interview values are DRAFT: on-screen field-by-field confirmation
+        // starts from zero here regardless of the verbal confirmation.
+        if (index >= 0) services[index] = { ...services[index], ...incoming, source:'AI_INTERVIEW', confirmedFields:{} };
+        else services.push({ ...incoming, source:'AI_INTERVIEW', confirmedFields:{} });
       }
       sessionStorage.removeItem('otc_pricebook_draft');
     }
@@ -258,8 +260,18 @@ export default function PriceBook() {
     setBook({ ...book, services:book.services.map(service => service.serviceType === selectedType ? next : service) });
   }
 
+  const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
+
   function updateField(field, value) {
-    replaceSelected({ ...selected, [field]:value, ...(selected.source === 'AI_SUGGESTED' ? { ownerConfirmed:false } : {}) });
+    const next = { ...selected, [field]:value };
+    if (aiSourced && selected.confirmedFields?.[field]) {
+      next.confirmedFields = { ...selected.confirmedFields, [field]:false };
+    }
+    replaceSelected(next);
+  }
+
+  function confirmField(field, value) {
+    replaceSelected({ ...selected, confirmedFields:{ ...(selected.confirmedFields || {}), [field]:value } });
   }
 
   function updateDefault(field, value) {
@@ -292,9 +304,9 @@ export default function PriceBook() {
 
   function addSuggestion(item) {
     const existingIndex = book.services.findIndex(service => service.serviceType === item.serviceType);
-    const next = { ...item, tiers:[], validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {}) };
+    const next = { ...item, tiers:[], confirmedFields:{}, validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {}) };
     const services = existingIndex >= 0
-      ? book.services.map((service,index) => index === existingIndex ? { ...service, starterSuggestion:item, source:'AI_SUGGESTED', ownerConfirmed:false } : service)
+      ? book.services.map((service,index) => index === existingIndex ? { ...service, starterSuggestion:item, source:'AI_SUGGESTED', confirmedFields:{} } : service)
       : [...book.services, next];
     setBook({ ...book, services });
     setSelectedType(item.serviceType);
@@ -359,12 +371,12 @@ export default function PriceBook() {
             {book.services.map(service => {
               const status = statusMap.get(service.serviceType);
               const meta = metadata.find(item => item.serviceType === service.serviceType);
-              const missing = status?.missingOwnerFields || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.field) || []);
+              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label || field.field) || []);
               return (
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>
                   <span><strong>{service.service || meta?.name || service.serviceType}</strong><small className="mono">{service.serviceType}</small></span>
                   <StatusChip status={status?.status || (missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE')} />
-                  {missing.length > 0 && <small className="missing-list mono">{missing.join(', ')}</small>}
+                  {missing.length > 0 && <small className="missing-list">{missing.join('; ')}</small>}
                 </button>
               );
             })}
@@ -377,15 +389,24 @@ export default function PriceBook() {
                     <div><p className="eyebrow">YOUR PRICES · REQUIRED</p><h2>{selected.service || selectedMeta.name}</h2><span>Off The Clock never guesses these. Complete the required fields and save to activate this service.</span></div>
                     <StatusChip status={selectedStatus.status} />
                   </div>
-                  {selectedStatus.missingOwnerFields?.length > 0 && <Notice tone="warning">Missing: <span className="mono">{selectedStatus.missingOwnerFields.join(', ')}</span></Notice>}
+                  {(selectedStatus.missingOwnerLabels || selectedStatus.missingOwnerFields)?.length > 0 && <Notice tone="warning">Missing: {(selectedStatus.missingOwnerLabels || selectedStatus.missingOwnerFields).join('; ')}</Notice>}
+                  {aiSourced && (
+                    <Notice tone="warning">AI-captured values are DRAFT. Confirm each price individually below — this service cannot go live until every required field is confirmed as yours.</Notice>
+                  )}
                   <div className="field-stack">
                     {selectedMeta.fields.map(definition => (
-                      <OwnerField key={definition.field} definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} />
+                      <div key={definition.field} className={aiSourced ? 'field-confirm-row' : undefined}>
+                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} />
+                        {aiSourced && (
+                          <Toggle
+                            checked={selected.confirmedFields?.[definition.field] === true}
+                            onChange={value => confirmField(definition.field, value)}
+                            label={selected.confirmedFields?.[definition.field] === true ? 'CONFIRMED' : 'CONFIRM THIS PRICE'}
+                          />
+                        )}
+                      </div>
                     ))}
                   </div>
-                  {selected.source === 'AI_SUGGESTED' && (
-                    <Toggle checked={selected.ownerConfirmed === true} onChange={value => replaceSelected({ ...selected, ownerConfirmed:value })} label="I replaced the placeholder ranges with my own prices" />
-                  )}
                 </section>
                 <section className="editor-section">
                   <div className="section-title">
@@ -430,7 +451,7 @@ export default function PriceBook() {
                     </Select>
                   </Field>
                   {book.defaults.taxMode !== 'TAX_NONE' && <Field label="Tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={book.defaults.taxPercent} onChange={event => updateDefault('taxPercent',Number(event.target.value))} /></Field>}
-                  <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set. It does not provide tax advice.</Notice>
+                  <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
                 </section>
               </div>
               <Preview preview={preview} loading={previewLoading} />

@@ -53,7 +53,7 @@ export default function Dashboard() {
                   <button key={service.serviceType} type="button" onClick={() => go('/pricebook')}>
                     <span><strong>{service.service}</strong><small className="mono">{service.serviceType}</small></span>
                     <StatusChip status={service.status} />
-                    {service.missingOwnerFields.length > 0 && <small className="mono">{service.missingOwnerFields.join(', ')}</small>}
+                    {service.missingOwnerFields.length > 0 && <small>{(service.missingOwnerLabels || service.missingOwnerFields).join('; ')}</small>}
                     <ChevronRight size={16} />
                   </button>
                 ))}

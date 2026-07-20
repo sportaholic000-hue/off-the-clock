@@ -561,3 +561,11 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Per-field confirmation for AI-sourced pricing (DRAFT until each field is confirmed) */
+.field-confirm-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; background: #0E120E; border: 1px solid var(--black-line); border-radius: 4px; }
+.field-confirm-row > .toggle-control { align-self: flex-end; }
+
+/* Interview readback: read the number back, confirm, only then persist */
+.readback-confirm { display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #0E120E; border-left: 2px solid var(--green); border-radius: 3px; }
+.readback-confirm .mono { color: var(--green); font-size: 12px; letter-spacing: .04em; }
