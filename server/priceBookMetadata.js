@@ -79,7 +79,7 @@ export const MONEY_FIELD_NAMES = new Set([
   'laborPerLinearFoot','materialPerLinearFoot','postPrice','concretePerPost','gatePrice',
   'removalPerLinearFoot','disposalPerLF','concreteCostPerCubicYard','formworkPerLF',
   'basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft',
-  'stampedMaterialPerSqft','cleanupBaseRatePerSqft','debrisPricing','minimumServiceCharge',
+  'stampedMaterialPerSqft','cleanupBaseRatePerSqft','disposalFlat','minimumServiceCharge',
   'haulAwayFee','mulchMaterialPerYard','mulchInstallLaborPerYard','bedPrepLaborPerSqft',
   'edgingPerLinearFoot','sodMaterialPerSqft','sodInstallLaborPerSqft','groundPrepPerSqft',
   'plantingLaborPerPlant','plantMaterialAllowance','mowingBaseRatePerSqft',
