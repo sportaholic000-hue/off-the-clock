@@ -1,10 +1,14 @@
 import Database from 'better-sqlite3';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { mkdirSync } from 'node:fs';
 import { migrateDatabase } from './migrations.js';
 
-const defaultPath = resolve(process.cwd(), '..', 'data', 'off-the-clock.sqlite');
-const databasePath = process.env.DATABASE_PATH || defaultPath;
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const configuredPath = process.env.DATABASE_PATH;
+const databasePath = configuredPath
+  ? (isAbsolute(configuredPath) ? configuredPath : resolve(projectRoot, configuredPath))
+  : resolve(projectRoot, 'data', 'off-the-clock.sqlite');
 mkdirSync(dirname(databasePath), { recursive: true });
 
 export const db = new Database(databasePath);
