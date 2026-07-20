@@ -52,19 +52,19 @@ test('dollar conversion handles nested owner rates and leaves factors alone', ()
 
 test('minimum fields accept zero while rates still require a nonzero value', () => {
   const ready = pricebookServiceStatus({
-    serviceType:'INTERIOR_PAINTING',
-    laborPerFloorSqft:200,
-    materialPerFloorSqft2Coats:100,
+    serviceType:'FENCING_INSTALL',
+    laborPerLinearFoot:1400,
+    materialPerLinearFoot:2200,
+    postSpacing:8,
+    postPrice:3800,
+    concretePerPost:1800,
+    postsIncludedInMaterial:false,
+    gatePrice:28500,
     minimumJob:0
   });
   assert.equal(ready.status, 'QUOTING LIVE');
-  const missing = pricebookServiceStatus({
-    serviceType:'INTERIOR_PAINTING',
-    laborPerFloorSqft:0,
-    materialPerFloorSqft2Coats:100,
-    minimumJob:0
-  });
-  assert.deepEqual(missing.missingOwnerFields, ['laborPerFloorSqft']);
+  const missing = pricebookServiceStatus({ ...ready, laborPerLinearFoot:0 });
+  assert.deepEqual(missing.missingOwnerFields, ['laborPerLinearFoot']);
 });
 
 test('AI starter suggestions never activate without owner confirmation', () => {
