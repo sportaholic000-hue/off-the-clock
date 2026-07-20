@@ -109,6 +109,39 @@ export const CREATE_TABLE_STATEMENTS = [
     payloadJson TEXT,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS businessProfiles (
+    ownerId TEXT PRIMARY KEY,
+    businessTypesJson TEXT NOT NULL DEFAULT '[]',
+    country TEXT,
+    region TEXT,
+    existingPhoneNumber TEXT,
+    twilioNumber TEXT,
+    twilioNumberSid TEXT,
+    phoneProvisioningStatus TEXT NOT NULL DEFAULT 'not_started',
+    carrierSetupStatus TEXT NOT NULL DEFAULT 'not_started',
+    knowledgeBaseJson TEXT NOT NULL DEFAULT '{}',
+    calendarJson TEXT NOT NULL DEFAULT '{}',
+    voiceId TEXT,
+    agentName TEXT,
+    greeting TEXT,
+    operatorEnabled INTEGER NOT NULL DEFAULT 0 CHECK (operatorEnabled IN (0, 1)),
+    onboardingStep INTEGER NOT NULL DEFAULT 1,
+    updatedAt TEXT NOT NULL,
+    FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS priceBookDrafts (
+    id TEXT PRIMARY KEY,
+    ownerId TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status = 'DRAFT'),
+    mode TEXT NOT NULL CHECK (mode IN ('phone', 'browser')),
+    serviceTypesJson TEXT NOT NULL DEFAULT '[]',
+    fieldsJson TEXT NOT NULL DEFAULT '{}',
+    confirmedFieldsJson TEXT NOT NULL DEFAULT '{}',
+    currentField TEXT,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL,
+    FOREIGN KEY (ownerId) REFERENCES users(id)
   )`
 ];
 
