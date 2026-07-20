@@ -139,7 +139,10 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
   const missingCustomerFields = getRequiredFields(serviceType, customerInputs).filter(f => missing(customerInputs, f));
   if (missingCustomerFields.length) return review({ missingCustomerFields, missingOwnerFields: [], reviewReason:'Required project details were not provided.' });
 
-  const ownerFields = getRequiredOwnerFields(serviceType, customerInputs);
+  const ownerFields = getRequiredOwnerFields(serviceType, {
+    ...customerInputs,
+    accessoryPricingMode: pricing.accessoryPricingMode
+  });
   const missingOwnerFields = ownerFields.filter(f => f === 'postsIncludedInMaterial' ? missing(pricing, f) : missingOwner(pricing, f));
   if (missingOwnerFields.length) return review({ missingOwnerFields, missingCustomerFields: [], reviewReason:'Pricing not fully configured for this service. Owner follow-up required.' });
 
