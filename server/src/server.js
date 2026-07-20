@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import { migrate } from './db.js';
+import { migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
 import { CREATE_TABLE_STATEMENTS } from './schema.js';
 import { generateQuote, sanitizeForCustomer } from '../quoteEngine.js';
@@ -56,6 +56,17 @@ const port = Number(process.env.PORT || 3000);
 const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 
+function requireQuoteDonePlan(req, res, next) {
+  const account = ownerQuery(`SELECT plan, planStatus FROM users
+    WHERE id = ? AND (ownerId = ? OR id = ?)`).get(
+      req.tenantOwnerId, req.tenantOwnerId, req.tenantOwnerId
+    );
+  if (!account || (!['QuoteDone','Scale'].includes(account.plan) && account.planStatus !== 'trialing')) {
+    return res.status(403).json({ error:'QuoteDone or Scale is required' });
+  }
+  return next();
+}
+
 migrate();
 
 app.use(cors());
@@ -87,7 +98,7 @@ app.post('/api/onboarding/business-types', requireAuth(['owner']), asyncHandler(
   res.json({ profile });
 }));
 
-app.post('/api/business/jurisdiction', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const ownerId = req.tenantOwnerId;
   const country = String(req.body?.country || '').toUpperCase();
   const region = String(req.body?.region || '').toUpperCase();
@@ -231,27 +242,27 @@ app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (re
   return res.json({ profile });
 }));
 
-app.post('/api/pricebook/interview', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/pricebook/interview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const draft = createInterviewDraft(req.tenantOwnerId, req.body || {});
   return res.status(201).json({ draft });
 }));
 
-app.get('/api/pricebook/interview', requireAuth(['owner']), (req, res) => {
+app.get('/api/pricebook/interview', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
   res.json({ drafts: listInterviewDrafts(req.tenantOwnerId) });
 });
 
-app.get('/api/pricebook/interview/:draftId', requireAuth(['owner']), (req, res) => {
+app.get('/api/pricebook/interview/:draftId', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
   const draft = getInterviewDraft(req.tenantOwnerId, req.params.draftId);
   if (!draft) return res.status(404).json({ error: 'Draft not found' });
   return res.json({ draft });
 });
 
-app.put('/api/pricebook/interview/:draftId', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.put('/api/pricebook/interview/:draftId', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const draft = saveInterviewDraft(req.tenantOwnerId, req.params.draftId, req.body || {});
   return res.json({ draft });
 }));
 
-app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   return res.json(draftReviewPayload(req.tenantOwnerId, req.params.draftId));
 }));
 
@@ -259,7 +270,7 @@ app.get('/api/pricebook/meta', requireAuth(['owner']), (_req, res) => {
   res.json({ services: getServiceMetadata() });
 });
 
-app.post('/api/pricebook/suggest', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const suggestions = await suggestStarterBook(req.body?.industry);
   return res.json({
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', ownerConfirmed: false })),
@@ -267,7 +278,7 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), asyncHandler(async (r
   });
 }));
 
-app.post('/api/pricebook/preview', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const converted = dollarsToCents({
     service: req.body?.service || {},
     defaults: req.body?.defaults || {}
@@ -283,17 +294,17 @@ app.post('/api/pricebook/preview', requireAuth(['owner']), asyncHandler(async (r
   return res.json(result);
 }));
 
-app.post('/api/pricebook/save', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/pricebook/save', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const { statuses } = saveValidatedPricebook(req.tenantOwnerId, req.body || {});
   return res.json({ success: true, statuses });
 }));
 
-app.get('/api/pricebook/:ownerId', requireAuth(['owner']), (req, res) => {
+app.get('/api/pricebook/:ownerId', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
   if (req.params.ownerId !== req.tenantOwnerId) return res.status(403).json({ error: 'Forbidden' });
   return res.json(centsToDollars(loadPricebook(req.tenantOwnerId)));
 });
 
-app.post('/api/quote/calculate', requireAuth(['owner', 'staff']), asyncHandler(async (req, res) => {
+app.post('/api/quote/calculate', requireAuth(['owner', 'staff']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const tenantOwnerId = req.tenantOwnerId;
   const { serviceType, customerInputs = {}, callerType = 'owner' } = req.body || {};
   const pricebook = loadPricebook(tenantOwnerId);
@@ -328,11 +339,13 @@ app.post('/api/quote/test', asyncHandler(async (req, res) => {
 app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
   const profileState = onboardingState(req.tenantOwnerId);
   const book = loadPricebook(req.tenantOwnerId);
+  const quoteRequestCount = ownerQuery('SELECT COUNT(*) AS count FROM quoteRequests WHERE ownerId = ?').get(req.tenantOwnerId)?.count || 0;
   res.json({
     ownerId: req.tenantOwnerId,
     role: req.role,
     operator: profileState.operator,
     onboardingStep: profileState.profile.onboardingStep,
+    quoteRequestCount,
     pricebookStatuses: pricebookStatuses(book),
     sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']
   });
