@@ -39,6 +39,7 @@ import {
 import {
   draftKnowledgeBase,
   exchangeGoogleCalendarCode,
+  getTwilioCallStatus,
   googleCalendarAuthorizationUrl,
   placeTwilioTestCall,
   provisionTwilioNumber,
@@ -172,6 +173,15 @@ app.post('/api/onboarding/phone/test', requireAuth(['owner']), asyncHandler(asyn
     agentName: profile.agentName
   });
   return res.json({ callSid: call.sid, status: call.status || 'queued' });
+}));
+
+app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), asyncHandler(async (req, res) => {
+  const profile = getBusinessProfile(req.tenantOwnerId);
+  const call = await getTwilioCallStatus(req.params.callSid);
+  if (call.to !== profile.existingPhoneNumber || call.from !== profile.twilioNumber) {
+    return res.status(404).json({ error:'Test call not found' });
+  }
+  return res.json({ status:call.status });
 }));
 
 app.post('/api/onboarding/knowledge-base/draft', requireAuth(['owner']), asyncHandler(async (req, res) => {
