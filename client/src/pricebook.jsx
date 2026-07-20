@@ -191,6 +191,7 @@ export default function PriceBook() {
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [locked, setLocked] = useState(false);
 
   async function load() {
     const [dash, state, meta] = await Promise.all([
@@ -198,7 +199,9 @@ export default function PriceBook() {
       api('/api/onboarding/state'),
       api('/api/pricebook/meta')
     ]);
-    const loadedBook = await api(`/api/pricebook/${dash.ownerId}`);
+    const canQuote = state.account.planStatus === 'trialing' || ['QuoteDone','Scale'].includes(state.account.plan);
+    const loadedBook = canQuote ? await api(`/api/pricebook/${dash.ownerId}`) : { services:[], defaults:{} };
+    setLocked(!canQuote);
     const activeTypes = state.profile.businessTypes || [];
     const existing = new Map((loadedBook.services || []).map(service => [service.serviceType, service]));
     const services = meta.services
@@ -299,6 +302,20 @@ export default function PriceBook() {
 
   if (error && !book) return <div className="center-state"><ErrorMessage error={error} /></div>;
   if (!book || !dashboard || !onboarding) return <Loading label="LOADING PRICE BOOK" />;
+  if (locked) {
+    return (
+      <AppShell activePath="/pricebook" operator={dashboard.operator}>
+        <main className="pricebook-page">
+          <PageHeader eyebrow="QUOTEDONE" title="Price book" description="Upgrade to QuoteDone or Scale to give callers prices from your own book." />
+          <section className="locked-pricebook">
+            <div><p className="eyebrow">QUOTE REQUESTS CAPTURED</p><strong className="mono">{dashboard.quoteRequestCount}</strong></div>
+            <Notice>Operator keeps answering, booking, and capturing every pricing request without guessing.</Notice>
+            <Button onClick={() => go('/onboarding?step=1')}>Choose QuoteDone</Button>
+          </section>
+        </main>
+      </AppShell>
+    );
+  }
   const statusMap = new Map(statuses.map(status => [status.serviceType, status]));
   const localRequired = selectedMeta?.fields.filter(field => field.requiredAtBase).map(field => field.field) || [];
   const selectedStatus = statusMap.get(selectedType) || {
