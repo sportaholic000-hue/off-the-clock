@@ -11,10 +11,10 @@ function clone(value) {
 }
 
 function JsonEditor({ value, onChange }) {
-  const [raw, setRaw] = useState(value && typeof value === 'object' ? JSON.stringify(value, null, 2) : '');
+  const [raw, setRaw] = useState(value !== undefined && value !== null ? JSON.stringify(value, null, 2) : '');
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
-    setRaw(value && typeof value === 'object' ? JSON.stringify(value, null, 2) : '');
+    setRaw(value !== undefined && value !== null ? JSON.stringify(value, null, 2) : '');
   }, [value]);
   function commit() {
     if (!raw.trim()) { setInvalid(false); onChange(undefined); return; }
