@@ -48,8 +48,8 @@ export const ALL_OWNER_FIELDS = {
   ROOFING_REPAIR: ['laborHourlyRate','repairMinimum','repairHours','repairMaterialAllowance'],
   INTERIOR_PAINTING: ['laborPerFloorSqft','materialPerFloorSqft2Coats','minimumJob','laborHourlyRate','ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF','trimLinearFeetPerRoom','allowAssumptionBasedQuotes'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqft','materialPerSqftPerCoat','minimumJob','laborHourlyRate','allowAssumptionBasedQuotes'],
-  FLOORING_INSTALL: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat','allowAssumptionBasedQuotes'],
-  FLOORING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','subfloorAllowancePerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat','allowAssumptionBasedQuotes'],
+  FLOORING_INSTALL: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','allowAssumptionBasedQuotes'],
+  FLOORING_REPLACEMENT: ['laborPerSqft','materialPerSqft','minimumJob','removalPerSqft','perStepPrice','underlaymentPerSqft','subfloorAllowancePerSqft','allowAssumptionBasedQuotes'],
   FENCING_INSTALL: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob','allowAssumptionBasedQuotes'],
   FENCING_REPLACEMENT: ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','postsIncludedInMaterial','gatePrice','minimumJob','removalPerLinearFoot','disposalPerLF','allowAssumptionBasedQuotes'],
   CONCRETE_DRIVEWAY: ['laborPerSqft','concreteCostPerCubicYard','formworkPerLF','minimumJob','demolitionPerSqft','basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
@@ -63,7 +63,7 @@ export const ALL_OWNER_FIELDS = {
   SIDING_REPAIR: ['laborHourlyRate','repairMinimum','repairHours','materialAllowance'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft','minimumJob','insulationPerSqft','disposalPerSqft','allowAssumptionBasedQuotes'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate','repairMinimum','patchRepairHours','patchMaterialAllowance','pondingWaterSurcharge'],
-  CUSTOM: ['low','high','unit','allowAssumptionBasedQuotes']
+  CUSTOM: ['low','high','unit','allowAssumptionBasedQuotes','minimumJob']
 };
 
 export const MONEY_FIELD_NAMES = new Set([
@@ -84,7 +84,7 @@ export const MONEY_FIELD_NAMES = new Set([
   'materialAllowance','membraneCostPerSqft','tearOffPerSqft','insulationPerSqft',
   'patchMaterialAllowance','pondingWaterSurcharge','low','high','travelFee','disposalFee',
   'permitFee','overheadFixed','minimumJobPrice',
-  'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot','houseWrapPerSqft'
+  'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot'
 ]);
 
 // Owner fields that are legitimately NOT money. Every other field in
@@ -244,6 +244,40 @@ export function getActivationOwnerFields(serviceType, pricing = {}) {
   return [...new Set(scenarios.flatMap(inputs => getRequiredOwnerFields(serviceType, inputs)))];
 }
 
+
+// Key domains for shaped (map) owner fields, extracted from
+// quote_engine_v2.md. keys:null marks an OPEN domain: the spec keys the
+// field by a customer answer without enumerating its values, so key
+// membership cannot be enforced yet (enumerations requested from the
+// owner as a spec addition). nested lists are CLOSED second-level keys.
+// customerField names the customer input whose answer selects the key at
+// quote time; unknownKey maps the customer's 'unknown' to a mandated key.
+export const SHAPED_FIELD_KEYS = {
+  'SIDING_REPLACEMENT.laborPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
+  'SIDING_REPLACEMENT.materialPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
+  'FLAT_ROOF_REPLACEMENT.laborPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
+  'FLAT_ROOF_REPLACEMENT.membraneCostPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
+  'FLAT_ROOF_REPLACEMENT.tearOffPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
+  'ROOFING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
+  'ROOFING_REPAIR.repairMaterialAllowance': { keys:null, customerField:'repairType' },
+  'SIDING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'damageLevel' },
+  'SIDING_REPAIR.materialAllowance': { keys:null, nested:['small','medium','large'], customerField:'damageLevel' },
+  'FLAT_ROOF_REPAIR.patchRepairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
+  'FLAT_ROOF_REPAIR.patchMaterialAllowance': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
+  'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat'], customerField:'debrisLevel' },
+  'LANDSCAPING_MULCH.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
+  'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
+  'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
+  'LANDSCAPING_MOWING.frequencyMultipliers': { keys:['weekly','biweekly','monthly','one_time'], customerField:'serviceFrequency' },
+  'LANDSCAPING_MOWING.overgrowthMultipliers': { keys:['maintained','overgrown','severe'], customerField:'grassCondition' }
+};
+
+export function shapedFieldKeys(serviceType, field) {
+  return SHAPED_FIELD_KEYS[`${serviceType}.${field}`] || null;
+}
+
+export const ZERO_ALLOWED_OWNER_FIELDS = ['minimumJob', 'repairMinimum', 'minimumServiceCharge'];
+
 export function ownerFieldLabel(serviceType, field) {
   return FIELD_LABELS[`${field}_${serviceType}`] || FIELD_LABELS[field] || field;
 }
@@ -271,6 +305,8 @@ export function getServiceMetadata() {
         type: fieldType(serviceType, field),
         options: SELECT_FIELDS[field] || null,
         money: MONEY_FIELD_NAMES.has(field),
+        shapedKeys: SHAPED_FIELD_KEYS[`${serviceType}.${field}`] || null,
+        zeroAllowed: ZERO_ALLOWED_OWNER_FIELDS.includes(field),
         requiredAtBase: baseRequired.includes(field),
         minimumAllowsZero: ['minimumJob','repairMinimum','minimumServiceCharge'].includes(field)
       })),

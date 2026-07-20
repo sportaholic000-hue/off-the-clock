@@ -1116,8 +1116,10 @@ getRequiredOwnerFields(customerInputs):
   // materialPerSqft label: "All-in installed material per sqft
   // for this siding type, INCLUDING house wrap, J-channel,
   // corner posts, and starter strip — accessories run 20–30% of
-  // vinyl material cost." (Alternatively set houseWrapPerSqft
-  // separately — optional owner field, material category.)
+  // vinyl material cost."
+  // [RULED 2026-07-20: material pricing is ALL-IN ONLY. The former
+  // optional houseWrapPerSqft field is DELETED to eliminate the
+  // double-count path against the label above.]
   if oldSidingRemoval: add 'removalPerSqft'              // SCOPE
   if trimIncluded: add 'trimPerLinearFoot'               // SCOPE
   Class 2 defaults (overridable):
@@ -1310,13 +1312,17 @@ POST /api/pricebook/suggest
   - Formula services: { service: string max 40 chars,
     serviceType, fields: { <field>: number } } where <field>
     ranges over that service's SCALAR Class 1 owner fields
-    (type number). Money fields are dollars; quantity fields
-    (spacing, feet-per-room) use their natural unit. Shaped/
-    keyed fields (e.g. rates keyed by siding type or repair
-    scope) and select/boolean fields are EXCLUDED: their key
-    domains are customer-facing selections the model must not
-    invent. They stay empty and appear in NEEDS PRICING for
-    the owner.
+    (type number) plus shaped fields with a CLOSED,
+    spec-enumerated key domain (e.g. siding rates keyed
+    vinyl|fiber_cement|wood|metal), suggested as structured
+    per-key drafts validated against the domain. Money fields
+    are dollars; quantity fields (spacing, feet-per-room) use
+    their natural unit. Shaped fields with OPEN key domains
+    (membrane types, repair/damage types, mulch types: the spec
+    keys them by a customer answer without enumerating values)
+    and select/boolean fields are EXCLUDED: the model must not
+    invent keys. They stay empty and appear in NEEDS PRICING
+    for the owner.
   - CUSTOM: { service, serviceType:"CUSTOM", low: integer,
     high: integer greater than low, unit: one of exactly
     flat|per_sqft|per_hour|per_unit|per_LF|per_square,

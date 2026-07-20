@@ -47,6 +47,70 @@ function MoneyInput({ value, onChange, money }) {
   );
 }
 
+
+function humanKey(key) {
+  return String(key).replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function ShapedMapField({ definition, value, onChange }) {
+  const domain = definition.shapedKeys;
+  const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  const fixed = Array.isArray(domain.keys);
+  const keys = fixed ? domain.keys : Object.keys(map);
+  const [newKey, setNewKey] = useState('');
+
+  function write(next) { onChange(Object.keys(next).length ? next : undefined); }
+
+  function setLeaf(key, nestedKey, raw) {
+    const number = raw === '' ? undefined : Number(raw);
+    const next = { ...map };
+    if (domain.nested) {
+      const row = { ...(next[key] && typeof next[key] === 'object' ? next[key] : {}) };
+      if (number === undefined) delete row[nestedKey]; else row[nestedKey] = number;
+      if (Object.keys(row).length) next[key] = row; else delete next[key];
+    } else if (number === undefined) { delete next[key]; } else { next[key] = number; }
+    write(next);
+  }
+
+  function removeKey(key) {
+    const next = { ...map };
+    delete next[key];
+    write(next);
+  }
+
+  function addKey() {
+    const key = newKey.trim().toLowerCase().replace(/[\s-]+/g, '_');
+    if (!/^[a-z][a-z0-9_]*$/.test(key) || map[key] !== undefined) return;
+    write({ ...map, [key]: domain.nested ? {} : 0 });
+    setNewKey('');
+  }
+
+  return (
+    <div className="shaped-map">
+      {keys.map(key => (
+        <div className="shaped-map-row" key={key}>
+          <span className="shaped-map-key">{humanKey(key)}</span>
+          {domain.nested
+            ? domain.nested.map(nestedKey => (
+                <label className="shaped-map-cell" key={nestedKey}>
+                  <span>{humanKey(nestedKey)}</span>
+                  <TextInput type="number" step="0.01" min="0" value={map[key]?.[nestedKey] ?? ''} onChange={event => setLeaf(key, nestedKey, event.target.value)} />
+                </label>
+              ))
+            : <TextInput type="number" step="0.01" min="0" value={typeof map[key] === 'number' ? map[key] : ''} onChange={event => setLeaf(key, null, event.target.value)} />}
+          {!fixed && <Button variant="quiet" onClick={() => removeKey(key)}>Remove</Button>}
+        </div>
+      ))}
+      {!fixed && (
+        <div className="shaped-map-add">
+          <TextInput value={newKey} placeholder="add a type (e.g. epdm)" onChange={event => setNewKey(event.target.value)} />
+          <Button variant="secondary" onClick={addKey}>Add</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function OwnerField({ definition, value, onChange, compact = false }) {
   let control;
   if (definition.type === 'boolean') {
@@ -59,7 +123,9 @@ function OwnerField({ definition, value, onChange, compact = false }) {
       </Select>
     );
   } else if (definition.type === 'json') {
-    control = <JsonEditor value={value} onChange={onChange} />;
+    control = definition.shapedKeys
+      ? <ShapedMapField definition={definition} value={value} onChange={onChange} />
+      : <JsonEditor value={value} onChange={onChange} />;
   } else {
     control = <MoneyInput value={value} onChange={onChange} money={definition.money} />;
   }
@@ -340,18 +406,41 @@ export default function PriceBook() {
   // backend: an AI-sourced service with any unconfirmed required field is
   // NEVER shown as QUOTING LIVE, and a stale saved status cannot override
   // an unconfirmed draft.
+  function fieldConfigured(def, value) {
+    if (value === undefined || value === null || value === '') return false;
+    if (def.type === 'boolean') return typeof value === 'boolean';
+    if (def.type === 'select') return typeof value === 'string' && value !== '';
+    if (def.type === 'json') {
+      if (!value || typeof value !== 'object') return false;
+      const leaves = [];
+      const walk = node => { if (typeof node === 'number') leaves.push(node); else if (node && typeof node === 'object') Object.values(node).forEach(walk); };
+      walk(value);
+      return leaves.length > 0 && leaves.every(leaf => Number.isFinite(leaf) && leaf >= 0) && leaves.some(leaf => leaf > 0);
+    }
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return false;
+    return def.zeroAllowed ? true : value > 0;
+  }
+
+  // The displayed status is computed from the CURRENT draft, worst-of the
+  // saved status: unsaved edits never inherit a prior QUOTING LIVE, and an
+  // AI-sourced service stays NEEDS PRICING until every populated field is
+  // individually confirmed.
   function displayStatus(service, meta, savedStatus) {
-    if (service && ['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)) {
-      const required = meta?.fields.filter(field => field.requiredAtBase) || [];
+    if (!service) return savedStatus || null;
+    const fields = meta?.fields || [];
+    const invalid = fields.filter(field => field.requiredAtBase && !fieldConfigured(field, service[field.field]));
+    let pending = [];
+    if (['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)) {
       const confirmed = service.confirmedFields || {};
-      const pending = required.filter(field => confirmed[field.field] !== true);
-      if (pending.length) {
-        return {
-          status:'NEEDS PRICING',
-          missingOwnerFields: pending.map(field => field.field),
-          missingOwnerLabels: pending.map(field => field.label || field.field)
-        };
-      }
+      pending = fields.filter(field => (field.requiredAtBase || service[field.field] !== undefined) && confirmed[field.field] !== true);
+    }
+    const broken = [...new Map([...invalid, ...pending].map(field => [field.field, field])).values()];
+    if (broken.length) {
+      return {
+        status:'NEEDS PRICING',
+        missingOwnerFields: broken.map(field => field.field),
+        missingOwnerLabels: broken.map(field => field.label || field.field)
+      };
     }
     return savedStatus || null;
   }

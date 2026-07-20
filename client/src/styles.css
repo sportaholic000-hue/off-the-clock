@@ -569,3 +569,12 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 /* Interview readback: read the number back, confirm, only then persist */
 .readback-confirm { display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #0E120E; border-left: 2px solid var(--green); border-radius: 3px; }
 .readback-confirm .mono { color: var(--green); font-size: 12px; letter-spacing: .04em; }
+
+/* Structured per-key inputs for shaped pricing maps */
+.shaped-map { display: flex; flex-direction: column; gap: 8px; }
+.shaped-map-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; background: #0E120E; border: 1px solid var(--black-line); border-radius: 4px; }
+.shaped-map-key { min-width: 110px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: .04em; }
+.shaped-map-cell { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--gray); }
+.shaped-map-row input { max-width: 120px; }
+.shaped-map-add { display: flex; gap: 8px; align-items: center; }
+.shaped-map-add input { max-width: 200px; }

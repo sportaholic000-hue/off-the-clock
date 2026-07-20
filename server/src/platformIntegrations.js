@@ -194,7 +194,46 @@ function validCustomRange(entry) {
 export function starterFieldSpecs(serviceType) {
   const service = getServiceMetadata().find(item => item.serviceType === serviceType);
   if (!service) return [];
-  return service.fields.filter(def => def.type === 'number');
+  // Scalar number fields, plus shaped fields whose key domain is CLOSED
+  // (spec-enumerated). Open-domain shaped fields and select/boolean
+  // switches stay excluded so the model can never invent keys.
+  return service.fields.filter(def =>
+    def.type === 'number' ||
+    (def.type === 'json' && Array.isArray(def.shapedKeys?.keys))
+  );
+}
+
+function describeStarterField(def) {
+  if (def.type !== 'json') return `${def.field}: number (${def.money ? 'dollars' : 'quantity'})`;
+  const keys = def.shapedKeys.keys;
+  if (def.shapedKeys.nested) {
+    return `${def.field}: { ${keys.map(key => `${key}: { ${def.shapedKeys.nested.map(nested => `${nested}: number`).join(', ')} }`).join(', ')} }`;
+  }
+  return `${def.field}: { ${keys.map(key => `${key}: number (${def.money ? 'dollars' : 'quantity'})`).join(', ')} }`;
+}
+
+function validStarterValue(def, value) {
+  if (def.type !== 'json') {
+    return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : undefined;
+  }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const domain = def.shapedKeys;
+  const out = {};
+  for (const [key, child] of Object.entries(value)) {
+    if (!domain.keys.includes(key)) continue;
+    if (domain.nested) {
+      if (!child || typeof child !== 'object' || Array.isArray(child)) continue;
+      const row = {};
+      for (const nestedKey of domain.nested) {
+        const leaf = child[nestedKey];
+        if (typeof leaf === 'number' && Number.isFinite(leaf) && leaf >= 0) row[nestedKey] = leaf;
+      }
+      if (Object.keys(row).length === domain.nested.length) out[key] = row;
+    } else if (typeof child === 'number' && Number.isFinite(child) && child >= 0) {
+      out[key] = child;
+    }
+  }
+  return Object.keys(out).length ? out : undefined;
 }
 
 // Validate/normalize the model's output for the upgraded starter book:
@@ -223,8 +262,8 @@ export function validateStarterServices(raw, serviceTypes) {
     const specs = starterFieldSpecs(serviceType);
     const fields = {};
     for (const def of specs) {
-      const value = entry.fields?.[def.field];
-      if (typeof value === 'number' && Number.isFinite(value) && value >= 0) fields[def.field] = value;
+      const value = validStarterValue(def, entry.fields?.[def.field]);
+      if (value !== undefined) fields[def.field] = value;
     }
     if (!Object.keys(fields).length) continue;
     seen.add(serviceType);
@@ -247,7 +286,7 @@ export async function suggestStarterBook({ industry, serviceTypes }) {
   const fieldCatalog = requested.map(serviceType => {
     if (serviceType === 'CUSTOM') return 'CUSTOM: { service, serviceType:"CUSTOM", low: integer dollars, high: integer greater than low, unit: one of ' + UNIT_OPTIONS.join('|') + ', minimumJob: integer dollars }';
     const specs = starterFieldSpecs(serviceType);
-    return `${serviceType}: { service, serviceType:"${serviceType}", fields: { ${specs.map(def => `${def.field}: number (${def.money ? 'dollars' : 'quantity'})`).join(', ')} } }`;
+    return `${serviceType}: { service, serviceType:"${serviceType}", fields: { ${specs.map(def => describeStarterField(def)).join(', ')} } }`;
   }).join('\n');
   const labelNotes = requested.filter(type => type !== 'CUSTOM').map(serviceType =>
     `${serviceType} field meanings: ${starterFieldSpecs(serviceType).map(def => `${def.field} = ${def.label}`).join(' | ')}`

@@ -3,6 +3,8 @@ import { calculateService, getRequiredFields, getRequiredOwnerFields } from './q
 
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const MARKUP_APPLIES_DEFAULT = { labor:true, material:true, removal:true, prep:true, addon:true, equipment:true, travel:true, disposal:true, permit:false, overhead:true };
+import { shapedFieldKeys } from './priceBookMetadata.js';
+
 const ZERO_ALLOWED_OWNER_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 const ADDON_DISCLOSURES = [
   { serviceType: 'FLAT_ROOF_REPAIR', field: 'pondingWaterSurcharge', name: 'Ponding water surcharge', selected: c => Boolean(c.pondingWater) },
@@ -14,6 +16,29 @@ const negativeNumber = value => typeof value === 'number' && value < 0;
 const missingOwner = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
 const missingAddonPrice = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || obj[field] === 0;
 const round = Math.round;
+
+
+// A shaped required field is only usable for THIS quote if the customer's
+// selected key resolves to a positive value (or, for nested maps, an object
+// with positive numeric leaves). A missing or misspelled key must surface
+// as owner follow-up, never as a silently deleted quote line.
+function shapedKeyMissing(serviceType, field, pricing, customerInputs) {
+  const domain = shapedFieldKeys(serviceType, field);
+  if (!domain || !domain.customerField) return false;
+  const map = pricing?.[field];
+  if (!map || typeof map !== 'object') return false; // plain missing handled by missingOwner
+  let key = customerInputs?.[domain.customerField];
+  if (domain.unknownKey && (key === 'unknown' || key === undefined || key === null || key === '')) key = domain.unknownKey;
+  if (key === undefined || key === null || key === '') return false; // customer side handles it
+  const value = map[key];
+  if (value === undefined || value === null) return true;
+  if (typeof value === 'number') return !Number.isFinite(value) || value <= 0;
+  if (typeof value === 'object') {
+    const leaves = Object.values(value).filter(leaf => typeof leaf === 'number');
+    return leaves.length === 0 || leaves.some(leaf => !Number.isFinite(leaf) || leaf < 0);
+  }
+  return true;
+}
 
 function review({ missingCustomerFields = [], missingOwnerFields = [], reviewReason }) {
   return { resultType: 'ESTIMATE_REQUIRES_REVIEW', missingCustomerFields, missingOwnerFields, reviewReason, quoteId: crypto.randomUUID() };
@@ -144,14 +169,18 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
     ...customerInputs,
     accessoryPricingMode: pricing.accessoryPricingMode
   });
-  const missingOwnerFields = ownerFields.filter(f => f === 'postsIncludedInMaterial' ? missing(pricing, f) : missingOwner(pricing, f));
+  const missingOwnerFields = ownerFields.filter(f => f === 'postsIncludedInMaterial'
+    ? missing(pricing, f)
+    : (missingOwner(pricing, f) || shapedKeyMissing(serviceType, f, pricing, customerInputs)));
   if (missingOwnerFields.length) return review({ missingOwnerFields, missingCustomerFields: [], reviewReason:'Pricing not fully configured for this service. Owner follow-up required.' });
 
   const tiers = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length ? ownerPricing.tiers.slice(0,3) : [{ name:null, overrides:{} }];
   const options = [];
   for (const tier of tiers) {
     const effectivePricing = { ...pricing, ...(tier.overrides || {}) };
-    const tierMissing = ownerFields.filter(f => f === 'postsIncludedInMaterial' ? missing(effectivePricing, f) : missingOwner(effectivePricing, f));
+    const tierMissing = ownerFields.filter(f => f === 'postsIncludedInMaterial'
+      ? missing(effectivePricing, f)
+      : (missingOwner(effectivePricing, f) || shapedKeyMissing(serviceType, f, effectivePricing, customerInputs)));
     if (tierMissing.length) { if (tier.name) appliedRules.push(`${tier.name} tier skipped: incomplete pricing`); continue; }
     try {
       const run = finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePricing, businessDefaults, tierName:tier.name, inherited:{ appliedRules, urgencyFlags } });

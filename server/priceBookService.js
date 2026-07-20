@@ -3,7 +3,7 @@ import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
-import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, ownerFieldLabel, getServiceMetadata } from './priceBookMetadata.js';
+import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const configuredDir = process.env.PRICEBOOK_PATH;
@@ -106,7 +106,14 @@ export function pricebookServiceStatus(service) {
   let missingOwnerFields = requiredFields.filter(field => isMissing(pricingFor(service), field));
   if (AI_SOURCES.has(service.source)) {
     const confirmed = service.confirmedFields && typeof service.confirmedFields === 'object' ? service.confirmedFields : {};
-    const unconfirmed = requiredFields.filter(field => confirmed[field] !== true);
+    // EVERY field the AI populated must be individually confirmed (or
+    // removed), optional fields included: unconfirmed optional charges
+    // must never reach a live quote.
+    const gated = [...new Set([
+      ...requiredFields,
+      ...(ALL_OWNER_FIELDS[service.serviceType] || []).filter(field => pricingFor(service)[field] !== undefined)
+    ])];
+    const unconfirmed = gated.filter(field => confirmed[field] !== true);
     missingOwnerFields = [...new Set([...missingOwnerFields, ...unconfirmed])];
   }
   const active = missingOwnerFields.length === 0;
@@ -175,6 +182,25 @@ function validateOwnerFieldValue(serviceType, field, value, path) {
   }
   if (type === 'json') {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${path} must be an object of numeric rates`);
+    const domain = shapedFieldKeys(serviceType, field);
+    if (domain) {
+      for (const [key, child] of Object.entries(value)) {
+        if (Array.isArray(domain.keys) && !domain.keys.includes(key)) {
+          throw new Error(`${path}.${key} is not a valid key; expected one of: ${domain.keys.join(', ')}`);
+        }
+        if (!/^[a-z][a-z0-9_]*$/.test(key)) throw new Error(`${path}.${key} is not a valid key name`);
+        if (domain.nested) {
+          if (!child || typeof child !== 'object' || Array.isArray(child)) {
+            throw new Error(`${path}.${key} must be an object with: ${domain.nested.join(', ')}`);
+          }
+          for (const nestedKey of Object.keys(child)) {
+            if (!domain.nested.includes(nestedKey)) {
+              throw new Error(`${path}.${key}.${nestedKey} is not a valid key; expected one of: ${domain.nested.join(', ')}`);
+            }
+          }
+        }
+      }
+    }
     assertNumericLeaves(value, path);
     return;
   }

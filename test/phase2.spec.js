@@ -80,7 +80,7 @@ test('AI-sourced services require individual confirmation of every field', () =>
   };
   const unconfirmed = pricebookServiceStatus(service);
   assert.equal(unconfirmed.status, 'NEEDS PRICING');
-  assert.deepEqual(unconfirmed.missingOwnerFields, ['low','high','unit']);
+  assert.deepEqual([...unconfirmed.missingOwnerFields].sort(), ['high','low','unit']);
 
   const partial = pricebookServiceStatus({ ...service, confirmedFields:{ low:true, high:true } });
   assert.equal(partial.status, 'NEEDS PRICING');
@@ -91,6 +91,11 @@ test('AI-sourced services require individual confirmation of every field', () =>
 
   const interview = pricebookServiceStatus({ ...service, source:'AI_INTERVIEW', confirmedFields:{} });
   assert.equal(interview.status, 'NEEDS PRICING');
+
+  // Blocker 3 regression: an AI-injected CUSTOM minimum is exposed and gated
+  const withMinimum = pricebookServiceStatus({ ...service, minimumJob:15000, confirmedFields:{ low:true, high:true, unit:true } });
+  assert.equal(withMinimum.status, 'NEEDS PRICING');
+  assert.equal(withMinimum.missingOwnerFields.includes('minimumJob'), true);
 });
 
 test('Class 2 fencing override changes labor without changing materials', () => {
@@ -191,14 +196,13 @@ test('every owner field is classified as money or explicitly non-money', async (
 test('previously skipped monetary fields now convert dollars to cents', () => {
   const converted = dollarsToCents({
     services: [{
-      serviceType:'SIDING_REPLACEMENT', trimPerLinearFoot:5, houseWrapPerSqft:1.5
+      serviceType:'SIDING_REPLACEMENT', trimPerLinearFoot:5
     }, {
       serviceType:'CONCRETE_DRIVEWAY', demolitionPerSqft:4, disposalPerSqft:2.25
     }],
     defaults:{}
   });
   assert.equal(converted.services[0].trimPerLinearFoot, 500);
-  assert.equal(converted.services[0].houseWrapPerSqft, 150);
   assert.equal(converted.services[1].demolitionPerSqft, 400);
   assert.equal(converted.services[1].disposalPerSqft, 225);
 });
@@ -323,7 +327,7 @@ test('upgraded starter book: per-field Class 1 drafts for formula services, rang
   // Scalar Class 1 fields only; shaped/select/boolean excluded
   const fenceFields = starterFieldSpecs('FENCING_INSTALL').map(def => def.field);
   assert.deepEqual(fenceFields, ['laborPerLinearFoot','materialPerLinearFoot','postSpacing','postPrice','concretePerPost','gatePrice','minimumJob']);
-  assert.equal(starterFieldSpecs('SIDING_REPLACEMENT').some(def => def.field === 'laborPerSqft'), false, 'shaped fields are never AI-suggested');
+  assert.equal(starterFieldSpecs('SIDING_REPLACEMENT').some(def => def.field === 'laborPerSqft'), true, 'closed-domain shaped fields are suggestible per the key-domain ruling');
 
   const validated = validateStarterServices([
     { serviceType:'FENCING_INSTALL', service:'Fence install', fields:{ laborPerLinearFoot:14, materialPerLinearFoot:22, postSpacing:8, postPrice:38, concretePerPost:18, gatePrice:285, minimumJob:600, notAField:9, laborPerSqft:{ vinyl:3 } } },
@@ -344,4 +348,60 @@ test('upgraded starter book: per-field Class 1 drafts for formula services, rang
   // A starter draft still cannot activate without per-field confirmation
   const status = pricebookServiceStatus({ serviceType:'FENCING_INSTALL', ...fence.fields, postsIncludedInMaterial:false, source:'AI_SUGGESTED', confirmedFields:{} });
   assert.equal(status.status, 'NEEDS PRICING');
+});
+
+test('shaped fields enforce spec key domains and never silently drop the customer key', () => {
+  const siding = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding',
+    laborPerSqft:{ vinyl:3 }, materialPerSqft:{ vinyl:4 }, minimumJob:500,
+    allowAssumptionBasedQuotes:true
+  };
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...siding, laborPerSqft:{ vinly:3 } }]
+  }), /not a valid key/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{}, services:[{ ...siding, serviceType:'LANDSCAPING_CLEANUP', cleanupBaseRatePerSqft:0.1, minimumServiceCharge:0,
+      debrisPricing:{ light:{ laborMultiplier:1, wrongKey:5 } } }]
+  }), /not a valid key/);
+  assert.equal(validatePricebookShape({ defaults:{}, services:[siding] }), true, 'a subset of valid domain keys is allowed');
+
+  // Customer picks a siding type the owner has not priced: REVIEW, not a vanished labor line
+  const quote = generateQuote({
+    serviceType:'SIDING_REPLACEMENT',
+    customerInputs:{ areaInputMethod:'sqft', sidingAreaSqft:1000, sidingType:'wood', stories:'1', oldSidingRemoval:false, trimIncluded:false },
+    ownerPricing:{ laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 }, minimumJob:0, allowAssumptionBasedQuotes:true },
+    businessDefaults:{}
+  });
+  assert.equal(quote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(quote.missingOwnerFields.includes('laborPerSqft'), true);
+});
+
+test('every AI-populated field, optional included, must be confirmed before activation', () => {
+  const service = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding',
+    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 }, minimumJob:0,
+    removalPerSqft:100, trimPerLinearFoot:600,
+    allowAssumptionBasedQuotes:true,
+    source:'AI_SUGGESTED',
+    confirmedFields:{ laborPerSqft:true, materialPerSqft:true, minimumJob:true, removalPerSqft:true, allowAssumptionBasedQuotes:true }
+  };
+  const status = pricebookServiceStatus(service);
+  assert.equal(status.status, 'NEEDS PRICING', 'populated conditional field without confirmation blocks activation');
+  assert.equal(status.missingOwnerFields.includes('trimPerLinearFoot'), true);
+  const confirmed = pricebookServiceStatus({ ...service, confirmedFields:{ ...service.confirmedFields, trimPerLinearFoot:true } });
+  assert.equal(confirmed.status, 'QUOTING LIVE');
+});
+
+test('CUSTOM exposes and enforces minimumJob; starter drafts cover closed-domain shaped fields', async () => {
+  assert.equal(ALL_OWNER_FIELDS.CUSTOM.includes('minimumJob'), true);
+  const { validateStarterServices, starterFieldSpecs } = await import('../server/src/platformIntegrations.js');
+  assert.equal(starterFieldSpecs('SIDING_REPLACEMENT').some(def => def.field === 'laborPerSqft'), true, 'closed-domain shaped fields are now suggestible');
+  assert.equal(starterFieldSpecs('FLAT_ROOF_REPLACEMENT').some(def => def.field === 'membraneCostPerSqft'), false, 'open-domain shaped fields stay excluded');
+  const [siding] = validateStarterServices([
+    { serviceType:'SIDING_REPLACEMENT', service:'Siding', fields:{
+      laborPerSqft:{ vinyl:3, vinly:9, wood:5 }, materialPerSqft:{ vinyl:4 }, minimumJob:500, trimPerLinearFoot:6
+    } }
+  ], ['SIDING_REPLACEMENT']);
+  assert.deepEqual(siding.fields.laborPerSqft, { vinyl:3, wood:5 }, 'out-of-domain keys are dropped, never coerced');
+  assert.equal(siding.fields.trimPerLinearFoot, 6);
 });
