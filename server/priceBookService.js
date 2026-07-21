@@ -3,7 +3,8 @@ import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
-import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
+import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
+import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const configuredDir = process.env.PRICEBOOK_PATH;
@@ -145,14 +146,81 @@ export function pricebookServiceStatus(service) {
   const active = missingOwnerFields.length === 0;
   return {
     serviceType: service.serviceType,
-    service: service.service || service.serviceType,
+    service: service.service || SERVICE_NAMES[service.serviceType] || 'Service',
     status: active ? 'QUOTING LIVE' : 'NEEDS PRICING',
     missingOwnerFields,
-    // Exact human-facing labels from the engine spec for display.
-    // Fields without a specced label fall back to the engine name
-    // until owner-approved labels are ruled at the phase gate.
     missingOwnerLabels: missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field))
   };
+}
+
+
+const DEFAULT_DISPLAY_NAMES = {
+  markupPercent:'Markup or margin percentage',
+  markupMode:'Markup calculation method',
+  overheadFixed:'Fixed overhead charge',
+  minimumJobPrice:'Business-wide minimum job price',
+  travelFee:'Travel charge',
+  disposalFee:'Business-wide disposal charge',
+  permitFee:'Permit charge',
+  taxMode:'Tax mode',
+  taxPercent:'Tax rate',
+  rangeBufferPercent:'Estimate range buffer percentage',
+  laborHourlyRate:'Business-wide labor rate per hour',
+  peakMonths:'Peak-season months',
+  peakSurchargePercent:'Peak-season surcharge percentage',
+  markupApplies:'Markup categories'
+};
+
+const SERVICE_SETTING_NAMES = {
+  serviceType:'Service type',
+  service:'Service name',
+  tiers:'Pricing tiers',
+  name:'Tier name',
+  overrides:'Tier price overrides',
+  peakMonths:'Peak-season months',
+  peakSurchargePercent:'Peak-season surcharge percentage',
+  disclaimer:'Customer estimate note'
+};
+
+function serviceSettingName(pricebook, index, field) {
+  const service = pricebook?.services?.[Number(index)];
+  const serviceType = service?.serviceType;
+  if ((ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return ownerFieldLabel(serviceType, field);
+  if (Object.hasOwn(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}, field)) return class2FieldCopy(serviceType, field).label;
+  return SERVICE_SETTING_NAMES[field] || 'Submitted pricing value';
+}
+
+export function contractorValidationMessage(input, pricebook = {}) {
+  let message = String(input || 'Review the highlighted pricing values and try again.');
+  if (/not a supported pricing field/.test(message)) {
+    const serviceMatch = message.match(/for ([A-Z][A-Z0-9_]+)/);
+    const serviceName = SERVICE_NAMES[serviceMatch?.[1]] || 'This service';
+    return `${serviceName} contains a pricing value that is not supported. Remove it before saving.`;
+  }
+
+  message = message.replace(
+    /services\[(\d+)\]\.tiers\[(\d+)\](?:\.overrides)?\.([A-Za-z][A-Za-z0-9]*)(\.[A-Za-z0-9_]+)*/g,
+    (matched, serviceIndex, tierIndex, field) => `Tier ${Number(tierIndex) + 1}: ${serviceSettingName(pricebook, serviceIndex, field)}`
+  );
+  message = message.replace(
+    /services\[(\d+)\]\.([A-Za-z][A-Za-z0-9]*)(\.[A-Za-z0-9_]+)*/g,
+    (matched, serviceIndex, field) => serviceSettingName(pricebook, serviceIndex, field)
+  );
+  message = message.replace(
+    /defaults\.([A-Za-z][A-Za-z0-9]*)(?:\.([A-Za-z0-9_]+))?/g,
+    (matched, field, category) => `${DEFAULT_DISPLAY_NAMES[field] || 'Business-wide pricing setting'}${category ? `: ${displayPricingValue(category)}` : ''}`
+  );
+  for (const [field, label] of Object.entries(DEFAULT_DISPLAY_NAMES)) {
+    message = message.replace(new RegExp(`\\b${field}\\b`, 'g'), label);
+  }
+  for (const [serviceType, label] of Object.entries(SERVICE_NAMES)) {
+    message = message.replace(new RegExp(`\\b${serviceType}\\b`, 'g'), label);
+  }
+  message = message.replace(/\b(?:per_[A-Za-z0-9_]+|[a-z]+_[a-z0-9_]+)\b/g, value => displayPricingValue(value));
+
+  const rawIdentifier = /\b[a-z][a-z0-9]*(?:[A-Z][A-Za-z0-9]*)+\b|\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b|\b[a-z]+(?:_[A-Za-z0-9]+)+\b/;
+  if (rawIdentifier.test(message)) return 'Review the highlighted pricing values and try again.';
+  return message;
 }
 
 export function pricebookStatuses(pricebook) {
@@ -172,8 +240,9 @@ export function pricebookDraftValidation(pricebook) {
   try {
     validatePricebookDefaults(pricebook.defaults || {});
   } catch (error) {
-    validationErrors.push(error.message);
-    defaultValidationErrors.push(error.message);
+    const message = contractorValidationMessage(error.message, pricebook);
+    validationErrors.push(message);
+    defaultValidationErrors.push(message);
   }
 
   const statuses = pricebook.services.map((service, index) => {
@@ -182,7 +251,7 @@ export function pricebookDraftValidation(pricebook) {
       status = pricebookServiceStatus(service);
       validateServiceShape(service, index);
     } catch (error) {
-      const message = error.message;
+      const message = contractorValidationMessage(error.message, pricebook);
       validationErrors.push(message);
       return {
         serviceType:service?.serviceType,

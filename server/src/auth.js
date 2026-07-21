@@ -59,7 +59,7 @@ export async function register(req, res) {
   const { email, password, firstName, businessName, plan = 'Operator' } = req.body || {};
   const allowedPlans = new Set(['Operator', 'QuoteDone', 'Scale']);
   if (!email || !password || !firstName || !businessName || !allowedPlans.has(plan)) {
-    return res.status(400).json({ error: 'email, password, firstName, businessName, and a valid plan are required' });
+    return res.status(400).json({ error: 'Email, password, first name, business name, and a valid plan are required' });
   }
 
   const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(String(email).toLowerCase());

@@ -1,9 +1,16 @@
 import { spawn } from 'node:child_process';
 
 const shell = process.platform === 'win32';
+const preview = process.argv.includes('--preview');
+const env = preview
+  ? { ...process.env, NODE_ENV:'development', LOCAL_PREVIEW_MODE:'true' }
+  : process.env;
+if (preview) {
+  console.log('[local preview] Simulated telephony controls are available for visual review only. No phone or carrier actions are performed by the preview controls.');
+}
 const children = [
-  spawn('npm', ['--prefix','server','run','dev'], { stdio:'inherit', shell }),
-  spawn('npm', ['--prefix','client','run','dev'], { stdio:'inherit', shell })
+  spawn('npm', ['--prefix','server','run','dev'], { stdio:'inherit', shell, env }),
+  spawn('npm', ['--prefix','client','run','dev'], { stdio:'inherit', shell, env })
 ];
 
 let stopping = false;

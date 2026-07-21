@@ -10,6 +10,7 @@ import {
   centsToDollars,
   dollarsToCents,
   loadPricebook,
+  contractorValidationMessage,
   pricebookDraftValidation,
   pricebookStatuses,
   savePricebook,
@@ -39,6 +40,12 @@ import {
   updateOnboardingAccount
 } from './onboardingService.js';
 import {
+  decoratePreviewState,
+  localPreviewEnabled,
+  previewOperatorPatch,
+  previewPhonePatch
+} from './previewMode.js';
+import {
   draftKnowledgeBase,
   exchangeGoogleCalendarCode,
   getTwilioCallStatus,
@@ -58,6 +65,7 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
+const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
 
 function requireQuoteDonePlan(req, res, next) {
   const account = ownerQuery(`SELECT plan, planStatus FROM users
@@ -89,8 +97,22 @@ app.get('/api/auth/verify-email', verifyEmail);
 app.post('/api/admin/login', asyncHandler(adminLogin));
 
 app.get('/api/onboarding/state', requireAuth(['owner']), (req, res) => {
-  res.json(onboardingState(req.tenantOwnerId));
+  res.json(clientOnboardingState(req.tenantOwnerId));
 });
+
+if (localPreviewEnabled()) {
+  app.post('/api/dev/preview/telephony', requireAuth(['owner']), (req, res) => {
+    const profile = getBusinessProfile(req.tenantOwnerId);
+    updateBusinessProfile(req.tenantOwnerId, previewPhonePatch(profile, req.body?.existingNumber));
+    return res.json(clientOnboardingState(req.tenantOwnerId));
+  });
+
+  app.post('/api/dev/preview/operator', requireAuth(['owner']), (req, res) => {
+    const profile = getBusinessProfile(req.tenantOwnerId);
+    updateBusinessProfile(req.tenantOwnerId, previewOperatorPatch(profile, req.body?.enabled === true));
+    return res.json(clientOnboardingState(req.tenantOwnerId));
+  });
+}
 
 app.post('/api/onboarding/account', requireAuth(['owner']), asyncHandler(async (req, res) => {
   res.json({ account: updateOnboardingAccount(req.tenantOwnerId, req.body || {}) });
@@ -221,7 +243,7 @@ app.post('/api/operator/toggle', requireAuth(['owner']), asyncHandler(async (req
     error.statusCode = 502;
     throw error;
   }
-  return res.json({ operator: onboardingState(req.tenantOwnerId).operator, carrierStatus });
+  return res.json({ operator: clientOnboardingState(req.tenantOwnerId).operator, carrierStatus });
 }));
 
 app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async (req, res) => {
@@ -314,8 +336,14 @@ app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan,
 }));
 
 app.post('/api/pricebook/save', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
-  const { statuses } = saveValidatedPricebook(req.tenantOwnerId, req.body || {});
-  return res.json({ success: true, statuses });
+  try {
+    const { statuses } = saveValidatedPricebook(req.tenantOwnerId, req.body || {});
+    return res.json({ success: true, statuses });
+  } catch (error) {
+    const validationError = new Error(contractorValidationMessage(error.message, req.body || {}));
+    validationError.statusCode = 400;
+    throw validationError;
+  }
 }));
 
 app.get('/api/pricebook/:ownerId', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
@@ -356,7 +384,7 @@ app.post('/api/quote/test', asyncHandler(async (req, res) => {
 }));
 
 app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
-  const profileState = onboardingState(req.tenantOwnerId);
+  const profileState = clientOnboardingState(req.tenantOwnerId);
   const book = loadPricebook(req.tenantOwnerId);
   const quoteRequestCount = ownerQuery('SELECT COUNT(*) AS count FROM quoteRequests WHERE ownerId = ?').get(req.tenantOwnerId)?.count || 0;
   res.json({

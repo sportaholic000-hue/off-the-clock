@@ -64,7 +64,7 @@ export function updateOnboardingAccount(ownerId, values) {
   const businessName = String(values.businessName || '').trim();
   const plan = String(values.plan || '');
   if (!firstName || !businessName || !allowedPlans.has(plan)) {
-    const error = new Error('firstName, businessName, and a valid plan are required');
+    const error = new Error('First name, business name, and a valid plan are required');
     error.statusCode = 400;
     throw error;
   }
@@ -186,7 +186,7 @@ export function saveVoice(ownerId, input) {
   const agentName = String(input.agentName || '').trim();
   const greeting = String(input.greeting || '').trim();
   if (!['male','female'].includes(voiceId) || !agentName || !greeting) {
-    const error = new Error('voiceId, agentName, and greeting are required');
+    const error = new Error('Choose a voice, enter an agent name, and enter a greeting');
     error.statusCode = 400;
     throw error;
   }

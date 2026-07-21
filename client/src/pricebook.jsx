@@ -90,17 +90,21 @@ function ShapedMapField({ definition, value, onChange }) {
           {domain.nested
             ? domain.nested.map(nestedKey => (
                 <label className="shaped-map-cell" key={nestedKey}>
-                  <span>{humanPricingKey(nestedKey)}</span>
+                  <span>{domain.nestedCopy?.[nestedKey]?.label || humanPricingKey(nestedKey)}</span>
                   <TextInput type="number" step="0.01" min="0" value={map[key]?.[nestedKey] ?? ''} onChange={event => setLeaf(key, nestedKey, event.target.value)} />
+                  <small>{domain.nestedCopy?.[nestedKey]?.unit || domain.nestedUnit}</small>
                 </label>
               ))
-            : <TextInput type="number" step="0.01" min="0" value={typeof map[key] === 'number' ? map[key] : ''} onChange={event => setLeaf(key, null, event.target.value)} />}
+            : <label className="shaped-map-cell">
+                <TextInput type="number" step="0.01" min="0" value={typeof map[key] === 'number' ? map[key] : ''} onChange={event => setLeaf(key, null, event.target.value)} />
+                <small>{domain.leafUnit}</small>
+              </label>}
           {!fixed && <Button variant="quiet" onClick={() => removeKey(key)}>Remove</Button>}
         </div>
       ))}
       {!fixed && (
         <div className="shaped-map-add">
-          <TextInput value={newKey} placeholder="add a type (e.g. epdm)" onChange={event => setNewKey(event.target.value)} />
+          <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`} placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`} onChange={event => setNewKey(event.target.value)} />
           <Button variant="secondary" onClick={addKey}>Add</Button>
         </div>
       )}
@@ -151,7 +155,7 @@ function OwnerField({ definition, value, onChange, compact = false }) {
     control = (
       <Select value={value || ''} onChange={event => onChange(event.target.value || undefined)}>
         <option value="">Choose</option>
-        {(definition.options || []).map(option => <option key={option} value={option}>{option}</option>)}
+        {(definition.options || []).map(option => <option key={option} value={option}>{definition.optionLabels?.[option] || 'Pricing option'}</option>)}
       </Select>
     );
   } else if (definition.type === 'json') {
@@ -165,7 +169,7 @@ function OwnerField({ definition, value, onChange, compact = false }) {
   return (
     <Field
       label={definition.label}
-      help={definition.minimumAllowsZero ? '$0 is valid and means no minimum.' : definition.requiredAtBase ? 'Required before this service can quote.' : 'Used only when this scope or add-on is selected.'}
+      help={`${definition.help}${definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}`}
     >
       {control}
     </Field>
@@ -228,7 +232,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
                 return (
                   <div className="override-row" key={field}>
                     <Select value={field} onChange={event => renameOverride(index, field, event.target.value)}>
-                      {definitions.map(item => <option key={item.field} value={item.field}>{item.field}</option>)}
+                      {definitions.map(item => <option key={item.field} value={item.field}>{item.label}</option>)}
                     </Select>
                     {definition && <OwnerField definition={definition} value={value} onChange={next => setOverride(index, field, next)} compact />}
                     <Button icon={X} variant="icon" aria-label="Remove override" title="Remove override" onClick={() => removeOverride(index, field)} />
@@ -254,7 +258,7 @@ function Preview({ preview, loading }) {
         {!loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW' && (
           <div className="preview-empty">
             <StatusChip status="NEEDS PRICING" />
-            <span className="mono">{(preview.missingOwnerLabels || preview.missingOwnerFields || []).join('; ') || preview.reviewReason}</span>
+            <span>{preview.missingOwnerLabels?.join('; ') || preview.reviewReason || 'Complete the required pricing before previewing this quote.'}</span>
           </div>
         )}
         {!loading && preview?.resultType === 'INSTANT_ESTIMATE_READY' && (
@@ -507,10 +511,10 @@ export default function PriceBook() {
             {book.services.map(service => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
               const status = displayStatus(service);
-              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label || field.field) || []);
+              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label) || []);
               return (
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>
-                  <span><strong>{service.service || meta?.name || service.serviceType}</strong><small className="mono">{service.serviceType}</small></span>
+                  <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
                   <StatusChip status={status?.status || (missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE')} />
                   {missing.length > 0 && <small className="missing-list">{missing.join('; ')}</small>}
                 </button>
@@ -522,10 +526,10 @@ export default function PriceBook() {
               <div className="editor-column">
                 <section className="editor-section essentials">
                   <div className="section-title">
-                    <div><p className="eyebrow">YOUR PRICES · REQUIRED</p><h2>{selected.service || selectedMeta.name}</h2><span>Off The Clock never guesses these. Complete the required fields and save to activate this service.</span></div>
+                    <div><p className="eyebrow">SERVICE PRICES</p><h2>{selected.service || selectedMeta.name}</h2><span>Each control explains what it prices and when it affects a quote.</span></div>
                     <StatusChip status={selectedStatus.status} />
                   </div>
-                  {(selectedStatus.missingOwnerLabels || selectedStatus.missingOwnerFields)?.length > 0 && <Notice tone="warning">Missing: {(selectedStatus.missingOwnerLabels || selectedStatus.missingOwnerFields).join('; ')}</Notice>}
+                  {selectedStatus.missingOwnerLabels?.length > 0 && <Notice tone="warning">Still needed: {selectedStatus.missingOwnerLabels.join('; ')}</Notice>}
                   {aiSourced && (
                     <Notice tone="warning">AI-captured values are DRAFT. Confirm each price individually below — this service cannot go live until every required field is confirmed as yours.</Notice>
                   )}
@@ -537,7 +541,7 @@ export default function PriceBook() {
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
                             onChange={value => confirmField(definition.field, value)}
-                            label={selected.confirmedFields?.[definition.field] === true ? 'CONFIRMED' : 'CONFIRM THIS PRICE'}
+                            label={selected.confirmedFields?.[definition.field] === true ? 'CONFIRMED' : 'CONFIRM THIS VALUE'}
                           />
                         )}
                       </div>
@@ -546,7 +550,7 @@ export default function PriceBook() {
                 </section>
                 <section className="editor-section">
                   <div className="section-title">
-                    <div><p className="eyebrow">CLASS 2</p><h2>Quantity factors</h2><span>Engine defaults are shown. Reset restores the current spec value.</span></div>
+                    <div><p className="eyebrow">QUANTITY SETTINGS</p><h2>Quantity factors</h2><span>Recommended defaults are shown. Reset restores the recommended value.</span></div>
                     <Button icon={RotateCcw} variant="secondary" onClick={() => {
                       const next = { ...selected };
                       for (const [field,value] of Object.entries(selectedMeta.class2Defaults || {})) next[field] = clone(value);
@@ -556,7 +560,7 @@ export default function PriceBook() {
                   <div className="factor-list">
                     {(selectedMeta.class2Fields || []).map(definition => (
                       <div className="factor-row" key={definition.field}>
-                        <Field label={`${definition.label} (${definition.unit})`}>
+                        <Field label={`${definition.label} (${definition.unit})`} help={definition.help}>
                           <StructuredFactorField
                             value={selected[definition.field]}
                             defaultValue={definition.defaultValue}
@@ -567,7 +571,7 @@ export default function PriceBook() {
                         <Button icon={RotateCcw} variant="icon" title="Reset to default" aria-label={`Reset ${definition.label}`} onClick={() => resetClass2(definition.field)} />
                       </div>
                     ))}
-                    {!selectedMeta.class2Fields?.length && <Notice>No Class 2 factors for this service.</Notice>}
+                    {!selectedMeta.class2Fields?.length && <Notice>No quantity factors are needed for this service.</Notice>}
                   </div>
                 </section>
                 <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields} onChange={tiers => replaceSelected({ ...selected, tiers })} />
@@ -604,7 +608,7 @@ export default function PriceBook() {
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} />
           <Button icon={Check} onClick={save} disabled={saving}>{saving ? 'Saving' : 'Save & validate'}</Button>
-          <span className="mono">SAVES IN CENTS · RE-RUNS ENGINE VALIDATION · RETURNS EACH SERVICE STATUS</span>
+          <span className="mono">SAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS</span>
         </div>
       </main>
     </AppShell>

@@ -14,7 +14,7 @@ function run(command, args) {
 
 try {
   console.log('[phase2-gate] engine, tenant, and Phase 2 regressions');
-  await run('node', ['--test', 'test/quoteEngine.spec.js', 'test/tenantAddon.spec.js', 'test/phase2.spec.js']);
+  await run('node', ['--test', 'test/quoteEngine.spec.js', 'test/tenantAddon.spec.js', 'test/phase2.spec.js', 'test/phase2Terminology.spec.js']);
   console.log('[phase2-gate] production client build');
   await run('npm', ['--prefix', 'client', 'run', 'build']);
   console.log('[phase2-gate] command complete; external end-to-end product audit is still required');

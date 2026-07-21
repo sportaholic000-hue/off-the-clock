@@ -68,7 +68,7 @@ export function AppShell({ activePath, children, operator }) {
       <div className="workspace">
         <header className="mobile-header">
           <Brand />
-          {operator && <StatusChip status={operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
+          {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
         </header>
         {children}
       </div>

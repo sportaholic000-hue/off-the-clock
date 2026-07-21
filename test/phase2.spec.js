@@ -747,16 +747,16 @@ test('disposal override falls back, prices removal, and reviews malformed values
 test('current draft validates every quote-affecting business default before save', () => {
   const service = { serviceType:'CUSTOM', service:'Custom', low:100, high:200, unit:'flat', minimumJob:0 };
   const cases = [
-    [{ markupPercent:-1 }, /markupPercent is invalid/],
-    [{ markupMode:'margin', markupPercent:100 }, /markupPercent is invalid/],
-    [{ taxPercent:101 }, /taxPercent is invalid/],
-    [{ travelFee:-1 }, /defaults\.travelFee/],
-    [{ disposalFee:'bad' }, /defaults\.disposalFee/],
-    [{ permitFee:Number.NaN }, /defaults\.permitFee/],
-    [{ overheadFixed:-1 }, /defaults\.overheadFixed/],
-    [{ minimumJobPrice:-1 }, /defaults\.minimumJobPrice/],
-    [{ rangeBufferPercent:-1 }, /defaults\.rangeBufferPercent/],
-    [{ peakSurchargePercent:-1 }, /defaults\.peakSurchargePercent/]
+    [{ markupPercent:-1 }, /Markup or margin percentage is invalid/],
+    [{ markupMode:'margin', markupPercent:100 }, /Markup or margin percentage is invalid/],
+    [{ taxPercent:101 }, /Tax rate is invalid/],
+    [{ travelFee:-1 }, /Travel charge/],
+    [{ disposalFee:'bad' }, /Business-wide disposal charge/],
+    [{ permitFee:Number.NaN }, /Permit charge/],
+    [{ overheadFixed:-1 }, /Fixed overhead charge/],
+    [{ minimumJobPrice:-1 }, /Business-wide minimum job price/],
+    [{ rangeBufferPercent:-1 }, /Estimate range buffer percentage/],
+    [{ peakSurchargePercent:-1 }, /Peak-season surcharge percentage/]
   ];
 
   for (const [invalidDefaults, expected] of cases) {

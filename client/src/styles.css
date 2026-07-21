@@ -310,6 +310,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .radio-row { border: 1px solid var(--black-line); border-radius: 3px; padding: 12px; display: flex; align-items: flex-start; gap: 9px; color: var(--gray); font-size: 13px; line-height: 1.45; }
 .radio-row.selected { color: var(--white); border-color: var(--green); }
 .phone-connect { border: 1px solid var(--black-line); border-radius: 4px; background: var(--black-raised); padding: 20px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 13px; align-items: end; }
+.preview-mode-panel { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; margin-top: 12px; }
 .connection-ready { display: grid; gap: 16px; }
 .test-call-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .connection-ready p:not(.eyebrow) { color: var(--gray); font-size: 13px; line-height: 1.5; }
@@ -537,6 +538,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .header-actions .button { flex: 1; }
   .form-grid.two, .choice-grid.two, .choice-grid.three, .kb-grid { grid-template-columns: 1fr; }
   .phone-connect, .draft-tools, .path-row { grid-template-columns: 1fr; }
+  .preview-mode-panel { grid-template-columns: 1fr; }
   .phone-connect .button, .draft-tools .button, .path-row > .button { width: 100%; }
   .path-actions { align-items: stretch; }
   .segmented.compact { width: 100%; }

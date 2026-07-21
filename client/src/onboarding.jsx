@@ -234,12 +234,22 @@ function PhoneStep({ state, refresh, back, next }) {
   const [busy, setBusy] = useState(false);
   const [testStatus, setTestStatus] = useState('');
   const connected = state.profile.phoneProvisioningStatus === 'provisioned';
+  const simulated = state.preview?.telephonySimulated === true;
+  const readyToContinue = connected || simulated;
   async function connect() {
     setBusy(true); setError(null);
     try {
       await api('/api/onboarding/phone/provision', { method:'POST', body:{ existingNumber:number } });
       await refresh();
     } catch (nextError) { setError(new Error('We could not finish connecting this line. Check the number and try again.')); }
+    finally { setBusy(false); }
+  }
+  async function simulate() {
+    setBusy(true); setError(null);
+    try {
+      await api('/api/dev/preview/telephony', { method:'POST', body:{ existingNumber:number } });
+      await refresh();
+    } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
   async function test() {
@@ -267,13 +277,23 @@ function PhoneStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 4 of 9" title="Plug in your line" description="Keep the number your customers already know. Nothing about it changes for them, except that someone always answers." />
+      <PageHeader
+        eyebrow="Step 4 of 9"
+        title="Plug in your line"
+        description={state.preview?.enabled ? 'Use a simulated phone step to inspect the remaining screens. No customer calls are affected.' : 'Keep the number your customers already know. Nothing about it changes for them, except that someone always answers.'}
+      />
       <div className="phone-connect">
         <Field label="The number your customers call" help="This is the line on your trucks, your website, and your business cards. It stays exactly the same.">
           <TextInput type="tel" value={number} onChange={event => setNumber(event.target.value)} placeholder="(506) 214-7788" />
         </Field>
         <Button icon={Phone} onClick={connect} disabled={busy || connected}>{connected ? 'Connected' : busy ? 'Connecting' : 'Connect this number'}</Button>
       </div>
+      {state.preview?.enabled && (
+        <div className="preview-mode-panel">
+          <Notice tone="warning" title="Local visual preview only">This simulates the setup screens. It does not provision a number, place a call, change carrier setup, contact a carrier, or make the operator available to customers.</Notice>
+          <Button variant="secondary" onClick={simulate} disabled={busy || simulated || !number.trim()}>{simulated ? 'Simulation ready' : 'Use simulated phone step'}</Button>
+        </div>
+      )}
       {connected && (
         <div className="connection-ready">
           <Notice tone="success" title="Connected. Your line is ready.">Flip the operator on from your dashboard any time.</Notice>
@@ -284,8 +304,11 @@ function PhoneStep({ state, refresh, back, next }) {
           </div>
         </div>
       )}
+      {simulated && (
+        <Notice tone="warning" title="SIMULATED FOR VISUAL REVIEW">No telephony connection exists. Continue to inspect the remaining onboarding screens.</Notice>
+      )}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={next} nextDisabled={!connected} />
+      <StepActions onBack={back} onNext={next} nextDisabled={!readyToContinue} />
     </section>
   );
 }
@@ -347,29 +370,34 @@ function KnowledgeStep({ state, refresh, back, next }) {
 function GoLiveStep({ state, refresh, back, next }) {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const operator = state.operator;
+  const simulated = operator.simulated === true;
+  const enabled = simulated ? operator.simulatedEnabled : operator.enabled;
+  const eligible = simulated ? operator.simulatedEligible : operator.eligible;
+  const missing = simulated ? operator.simulatedMissing : operator.missing;
   async function toggle(enabled) {
     setBusy(true); setError(null);
     try {
-      await api('/api/operator/toggle', { method:'POST', body:{ enabled } });
+      await api(simulated ? '/api/dev/preview/operator' : '/api/operator/toggle', { method:'POST', body:{ enabled } });
       await refresh();
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
-  const operator = state.operator;
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 6 of 9" title="Put your operator on the line" description="Answering is ready before pricing. QuoteDone activates separately as each service gets its prices." />
-      <div className={operator.enabled ? 'go-live-control live' : 'go-live-control'}>
+      <PageHeader eyebrow="Step 6 of 9" title={simulated ? 'Review the operator control' : 'Put your operator on the line'} description={simulated ? 'This control is simulated for visual review. No calls are answered or routed.' : 'Answering is ready before pricing. QuoteDone activates separately as each service gets its prices.'} />
+      <div className={!simulated && enabled ? 'go-live-control live' : 'go-live-control'}>
         <Toggle
-          checked={operator.enabled}
-          disabled={busy || (!operator.eligible && !operator.enabled)}
+          checked={enabled}
+          disabled={busy || (!eligible && !enabled)}
           onChange={toggle}
-          label={operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'}
-          sublabel={operator.enabled ? 'EVERY CALL FROM HERE ON IS COVERED' : 'CALLS RING YOUR PHONE'}
+          label={simulated ? (enabled ? 'SIMULATED ON' : 'SIMULATED OFF') : (enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF')}
+          sublabel={simulated ? 'VISUAL REVIEW ONLY · NO CALLS ARE ROUTED' : (enabled ? 'EVERY CALL FROM HERE ON IS COVERED' : 'CALLS RING YOUR PHONE')}
         />
       </div>
-      {!operator.eligible && <Notice tone="warning">Still needed: {operator.missing.join(', ')}</Notice>}
-      {operator.enabled && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
+      {!eligible && <Notice tone="warning">Still needed: {missing.join(', ')}</Notice>}
+      {simulated && <Notice tone="warning">SIMULATED FOR VISUAL REVIEW. Production phone eligibility is unchanged and no telephony action has occurred.</Notice>}
+      {!simulated && enabled && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={next} />
     </section>
@@ -451,7 +479,9 @@ function PriceBookStep({ state, metadata, back, next }) {
       const value = parseInterviewValue(rawValue, current.type);
       const spoken = typeof value === 'number'
         ? `${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`
-        : String(rawValue);
+        : current.type === 'select'
+          ? current.optionLabels?.[value] || 'Selected pricing option'
+          : String(rawValue);
       if (typeof window.speechSynthesis !== 'undefined') {
         window.speechSynthesis.speak(new SpeechSynthesisUtterance(spoken));
       }
@@ -511,7 +541,7 @@ function PriceBookStep({ state, metadata, back, next }) {
 
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 7 of 9" title="Build your price book" description="This step is skippable and resumable. Answering stays live while you finish pricing." />
+      <PageHeader eyebrow="Step 7 of 9" title="Build your price book" description={state.preview?.telephonySimulated ? 'This step is skippable and resumable. Phone controls remain simulated while you inspect pricing.' : 'This step is skippable and resumable. Answering stays live while you finish pricing.'} />
       <div className="path-list">
         <div className="path-row featured">
           <div><span className="eyebrow">1 · FLAGSHIP</span><h2>AI price-book interview</h2><p>Have your AI build your price book with you. Takes about 15 minutes.</p></div>
@@ -535,7 +565,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                 {current.type === 'select' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}>
                     <option value="">Choose</option>
-                    {(current.options || []).map(option => <option key={option} value={option}>{option}</option>)}
+                    {(current.options || []).map(option => <option key={option} value={option}>{current.optionLabels?.[option] || 'Pricing option'}</option>)}
                   </Select>
                 ) : current.type === 'boolean' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
@@ -565,7 +595,7 @@ function PriceBookStep({ state, metadata, back, next }) {
           )}
         </div>
         <div className="path-row">
-          <div><span className="eyebrow">2</span><h2>Suggest a starter book</h2><p>Generate placeholder service ranges, then replace them with your own detailed prices.</p></div>
+          <div><span className="eyebrow">2</span><h2>Suggest a starter book</h2><p>Generate AI-suggested placeholder prices, then review and confirm each value before going live.</p></div>
           <Button icon={Sparkles} variant="secondary" onClick={suggest}>Suggest a starter book</Button>
         </div>
         {suggestions && (
@@ -576,7 +606,7 @@ function PriceBookStep({ state, metadata, back, next }) {
           </div>
         )}
         <div className="path-row">
-          <div><span className="eyebrow">3</span><h2>Manual editor</h2><p>Enter every service field directly and validate it against the quote engine.</p></div>
+          <div><span className="eyebrow">3</span><h2>Manual editor</h2><p>Enter every service price directly and check that each service has what it needs to quote.</p></div>
           <Button icon={BookOpen} variant="secondary" onClick={() => go('/pricebook')}>Open manual editor</Button>
         </div>
       </div>

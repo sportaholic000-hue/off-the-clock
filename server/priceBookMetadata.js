@@ -1,4 +1,10 @@
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
+import {
+  SELECT_OPTION_LABELS,
+  class2FieldCopy,
+  ownerFieldCopy,
+  shapedFieldCopy
+} from './priceBookCopy.js';
 
 export const SERVICE_NAMES = {
   ROOFING_REPLACEMENT: 'Roof replacement',
@@ -281,6 +287,7 @@ export const SHAPED_FIELD_KEYS = {
   'LANDSCAPING_MULCH.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
   'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
   'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
+  'LANDSCAPING_PLANTING.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
   'LANDSCAPING_MOWING.frequencyMultipliers': { keys:['weekly','biweekly','monthly','one_time'], customerField:'serviceFrequency' },
   'LANDSCAPING_MOWING.overgrowthMultipliers': { keys:['maintained','overgrown','severe'], customerField:'grassCondition' }
 };
@@ -289,44 +296,21 @@ export function shapedFieldKeys(serviceType, field) {
   return SHAPED_FIELD_KEYS[`${serviceType}.${field}`] || null;
 }
 
-const CLASS2_UNIT_OVERRIDES = {
-  roomFloorSqft:'sq ft',
-  paintableAreaMap:'sq ft',
-  sidingAreaMap:'sq ft',
-  assumedDrivewayWidthFt:'ft'
-};
-
-function humanizeFactorName(field) {
-  const words = String(field)
-    .replace(/_/g, ' ')
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .toLowerCase();
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
-
-function class2Unit(field) {
-  if (CLASS2_UNIT_OVERRIDES[field]) return CLASS2_UNIT_OVERRIDES[field];
-  if (/multiplier|factor|adder|ratio|waste/i.test(field)) return 'decimal';
-  return 'number';
-}
-
 function class2Definitions(serviceType) {
-  return Object.entries(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}).map(([field, defaultValue]) => ({
-    field,
-    label: humanizeFactorName(field),
-    unit: class2Unit(field),
-    defaultValue
-  }));
+  return Object.entries(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}).map(([field, defaultValue]) => {
+    const fieldCopy = class2FieldCopy(serviceType, field);
+    return { field, ...fieldCopy, defaultValue };
+  });
 }
 
 export const ZERO_ALLOWED_OWNER_FIELDS = ['minimumJob', 'repairMinimum', 'minimumServiceCharge'];
 
 export function ownerFieldLabel(serviceType, field) {
-  return FIELD_LABELS[`${field}_${serviceType}`] || FIELD_LABELS[field] || field;
+  return ownerFieldCopy(serviceType, field).label;
 }
 
-function labelFor(serviceType, field) {
-  return ownerFieldLabel(serviceType, field);
+export function ownerFieldHelp(serviceType, field) {
+  return ownerFieldCopy(serviceType, field).help;
 }
 
 function fieldType(serviceType, field) {
@@ -342,17 +326,22 @@ export function getServiceMetadata() {
     return {
       serviceType,
       name: SERVICE_NAMES[serviceType],
-      fields: (ALL_OWNER_FIELDS[serviceType] || []).map(field => ({
-        field,
-        label: labelFor(serviceType, field),
-        type: fieldType(serviceType, field),
-        options: SELECT_FIELDS[field] || null,
-        money: MONEY_FIELD_NAMES.has(field),
-        shapedKeys: SHAPED_FIELD_KEYS[`${serviceType}.${field}`] || null,
-        zeroAllowed: ZERO_ALLOWED_OWNER_FIELDS.includes(field),
-        requiredAtBase: baseRequired.includes(field),
-        minimumAllowsZero: ['minimumJob','repairMinimum','minimumServiceCharge'].includes(field)
-      })),
+      fields: (ALL_OWNER_FIELDS[serviceType] || []).map(field => {
+        const fieldCopy = ownerFieldCopy(serviceType, field);
+        const shape = SHAPED_FIELD_KEYS[`${serviceType}.${field}`];
+        return {
+          field,
+          ...fieldCopy,
+          type: fieldType(serviceType, field),
+          options: SELECT_FIELDS[field] || null,
+          optionLabels: SELECT_OPTION_LABELS[field] || null,
+          money: MONEY_FIELD_NAMES.has(field),
+          shapedKeys: shape ? { ...shape, ...shapedFieldCopy(serviceType, field) } : null,
+          zeroAllowed: ZERO_ALLOWED_OWNER_FIELDS.includes(field),
+          requiredAtBase: baseRequired.includes(field),
+          minimumAllowsZero: ['minimumJob','repairMinimum','minimumServiceCharge'].includes(field)
+        };
+      }),
       class2Defaults: CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {},
       class2Fields: class2Definitions(serviceType),
       sampleInputs: SAMPLE_INPUTS[serviceType] || {}
