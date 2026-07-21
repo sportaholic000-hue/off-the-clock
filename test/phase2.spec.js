@@ -449,13 +449,13 @@ test('exact nested shaped prices are required for the selected quote', () => {
 });
 
 test('activation requires complete mandated shaped keys and nested rows', () => {
-  const repair = pricebookServiceStatus({
+  const [repair] = pricebookDraftStatuses({ defaults:{}, services:[{
     serviceType:'ROOFING_REPAIR',
     laborHourlyRate:10000,
     repairMinimum:0,
     repairHours:{ flashing:{ small:2 } },
     repairMaterialAllowance:{ flashing:15000 }
-  });
+  }] });
   assert.equal(repair.status, 'NEEDS PRICING');
   assert.equal(repair.missingOwnerFields.includes('repairHours'), true);
 
@@ -567,6 +567,26 @@ test('flooring uses keyed type rates and human pricing keys split snake_case and
   assert.deepEqual(labor.shapedKeys.keys, ['hardwood','laminate','vinyl_plank','carpet','tile']);
   assert.equal(labor.label, 'Labor price per square foot by flooring type.');
   assert.equal(material.label, 'Material price per square foot by flooring type.');
+
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{
+      serviceType:'FLOORING_INSTALL',
+      laborPerSqft:3,
+      materialPerSqft:{ hardwood:5, laminate:5, vinyl_plank:5, carpet:5, tile:5 },
+      minimumJob:0
+    }]
+  }), /must be an object of numeric rates/);
+
+  const missingTile = generateQuote({
+    serviceType:'FLOORING_INSTALL',
+    customerInputs:{ sqft:300, sqftMethod:'exact', newFlooringType:'tile', existingFloorType:'bare', removalNeeded:false, roomCount:1, layoutPattern:'straight', stairSteps:0 },
+    ownerPricing:{ laborPerSqft:{ hardwood:300 }, materialPerSqft:{ hardwood:500 }, minimumJob:0 },
+    businessDefaults:{ markupPercent:0, taxMode:'TAX_NONE', rangeBufferPercent:10 }
+  });
+  assert.equal(missingTile.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(missingTile.missingOwnerFields.includes('laborPerSqft'), true);
+  assert.equal(missingTile.missingOwnerFields.includes('materialPerSqft'), true);
 
   const spec = readFileSync('specs/quote_engine_v2.md', 'utf8');
   for (const withdrawn of ['baseboardPerLF','transitionsEach','furnitureMovingFlat']) {
