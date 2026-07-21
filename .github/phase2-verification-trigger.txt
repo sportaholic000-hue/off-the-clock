@@ -1,2 +1,1 @@
-Temporary unmerged branch used to trigger the Phase 0-2 GitHub-hosted verification run.
-Final retry after updating the shaped siding fixture.
+Temporary unmerged branch used to generate and verify the dependency lock remotely.
