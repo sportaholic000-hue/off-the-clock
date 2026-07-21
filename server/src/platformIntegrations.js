@@ -295,7 +295,7 @@ export async function suggestStarterBook({ industry, serviceTypes }) {
     `${serviceType} field meanings: ${starterFieldSpecs(serviceType).map(def => `${def.field} = ${def.label}`).join(' | ')}`
   ).join('\n');
   const systemInstruction = 'You are a contractor pricing assistant. Return ONLY a valid JSON array. No markdown. No code blocks. No backticks. No explanation. Response must start with [ and end with ] and be parseable by JSON.parse() with zero modifications.';
-  const userMessage = `Suggest STARTER draft prices for a ${String(industry || '').slice(0, 80)} business. Return one object per requested service, in this exact shape (money fields are US dollars, quantity fields use their natural unit; plain numbers only, no strings, no $ signs):\n${fieldCatalog}\n${labelNotes}\nOnly include the listed fields. Use realistic mid-market rates. These are placeholders the owner will replace.`;
+  const userMessage = `Suggest STARTER draft prices for a ${String(industry || '').slice(0, 80)} business. Return one object per requested service, in this exact shape (money fields are US dollars, quantity fields use their natural unit; plain numbers only, no strings, no $ signs):\n${fieldCatalog}\n${labelNotes}\nOnly include the listed fields. Use realistic mid-market rates. These are AI-suggested placeholder prices. Review and confirm each value before going live.`;
   let lastError;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {

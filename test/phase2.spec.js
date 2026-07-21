@@ -597,9 +597,18 @@ test('flooring uses keyed type rates and human pricing keys split snake_case and
   }
 });
 
-test('starter warning copy is exact', () => {
-  const server = readFileSync('server/src/server.js', 'utf8');
-  assert.match(server, /These are AI-suggested placeholder prices\. Review and confirm each value before going live\./);
+test('starter warning ruling is exact across spec, API, and model prompt', () => {
+  const approved = 'These are AI-suggested placeholder prices. Review and confirm each value before going live.';
+  const sources = [
+    readFileSync('specs/quote_engine_v2.md', 'utf8'),
+    readFileSync('server/src/server.js', 'utf8'),
+    readFileSync('server/src/platformIntegrations.js', 'utf8')
+  ];
+  for (const source of sources) assert.equal(source.includes(approved), true);
+  const governingText = sources.join('\n');
+  for (const obsolete of ['placeholder ranges', 'replace them with YOUR prices', 'owner will replace']) {
+    assert.equal(governingText.includes(obsolete), false, `obsolete starter wording remains: ${obsolete}`);
+  }
 });
 
 

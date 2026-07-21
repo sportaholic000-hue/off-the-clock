@@ -1,1 +1,1 @@
-Temporary unmerged branch used for the final clean npm ci and Phase 0-2 verification.
+Temporary unmerged branch used to classify npm advisories and verify final non-telephony cleanup.
