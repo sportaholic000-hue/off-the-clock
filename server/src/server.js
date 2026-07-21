@@ -10,7 +10,7 @@ import {
   centsToDollars,
   dollarsToCents,
   loadPricebook,
-  pricebookDraftStatuses,
+  pricebookDraftValidation,
   pricebookStatuses,
   savePricebook,
   saveValidatedPricebook
@@ -291,7 +291,7 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan,
 }));
 
 app.post('/api/pricebook/validate', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
-  return res.json({ statuses: pricebookDraftStatuses(req.body || {}) });
+  return res.json(pricebookDraftValidation(req.body || {}));
 });
 
 app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {

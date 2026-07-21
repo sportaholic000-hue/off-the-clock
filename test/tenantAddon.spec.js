@@ -125,6 +125,33 @@ function flatRoofRepairQuote(overrides = {}) {
   });
 }
 
+
+
+test('add-on missing-price guard executes every priced and unpriced path without a helper ReferenceError', () => {
+  const mowing = overrides => generateQuote({
+    serviceType:'LANDSCAPING_MOWING',
+    customerInputs:{ yardSqft:5000, sqftMethod:'exact', serviceFrequency:'weekly', grassCondition:'maintained', bagClippings:true, edgingIncluded:true },
+    ownerPricing:{
+      mowingBaseRatePerSqft:2,
+      minimumServiceCharge:0,
+      frequencyMultipliers:{ weekly:1 },
+      overgrowthMultipliers:{ maintained:1 },
+      ...overrides
+    },
+    businessDefaults:defaults
+  });
+
+  for (const run of [
+    () => flatRoofRepairQuote(),
+    () => flatRoofRepairQuote({ pondingWaterSurcharge:2500 }),
+    () => flatRoofRepairQuote({ tiers:[{ name:'Good', overrides:{} }, { name:'Better', overrides:{ pondingWaterSurcharge:2500 } }] }),
+    () => mowing({}),
+    () => mowing({ baggingSurchargePercent:10, edgingPerLinearFoot:50 })
+  ]) {
+    assert.doesNotThrow(run);
+  }
+});
+
 test('unpriced ponding water addon is skipped and disclosed', () => {
   assertSkippedAddon(flatRoofRepairQuote(), 'Ponding water surcharge');
 });

@@ -159,21 +159,54 @@ export function pricebookStatuses(pricebook) {
   return (pricebook.services || []).map(pricebookServiceStatus);
 }
 
-export function pricebookDraftStatuses(pricebook) {
-  return (pricebook.services || []).map((service, index) => {
-    const status = pricebookServiceStatus(service);
+export function pricebookDraftValidation(pricebook) {
+  if (!pricebook || typeof pricebook !== 'object' || Array.isArray(pricebook)) {
+    return { statuses:[], validationErrors:['Price book must be an object'] };
+  }
+  if (!Array.isArray(pricebook.services)) {
+    return { statuses:[], validationErrors:['Price book services must be an array'] };
+  }
+
+  const validationErrors = [];
+  const defaultValidationErrors = [];
+  try {
+    validatePricebookDefaults(pricebook.defaults || {});
+  } catch (error) {
+    validationErrors.push(error.message);
+    defaultValidationErrors.push(error.message);
+  }
+
+  const statuses = pricebook.services.map((service, index) => {
+    let status;
     try {
+      status = pricebookServiceStatus(service);
       validateServiceShape(service, index);
-      return status;
     } catch (error) {
+      const message = error.message;
+      validationErrors.push(message);
       return {
-        ...status,
+        serviceType:service?.serviceType,
+        service:service?.service || service?.serviceType,
         status:'NEEDS PRICING',
-        validationErrors:[error.message],
-        missingOwnerLabels:[...new Set([...(status.missingOwnerLabels || []), error.message])]
+        missingOwnerFields:[],
+        missingOwnerLabels:[message],
+        validationErrors:[message]
       };
     }
+    if (!defaultValidationErrors.length) return status;
+    return {
+      ...status,
+      status:'NEEDS PRICING',
+      validationErrors:[...defaultValidationErrors],
+      missingOwnerLabels:[...new Set([...(status.missingOwnerLabels || []), ...defaultValidationErrors])]
+    };
   });
+
+  return { statuses, validationErrors:[...new Set(validationErrors)] };
+}
+
+export function pricebookDraftStatuses(pricebook) {
+  return pricebookDraftValidation(pricebook).statuses;
 }
 
 let fieldDefCache = null;
@@ -269,12 +302,11 @@ function validateOwnerFieldValue(serviceType, field, value, path) {
   if (value < 0) throw new Error(`${path} cannot be negative`);
 }
 
-const SERVICE_CONTROL_FIELDS = new Set([
+const SERVICE_METADATA_FIELDS = new Set([
   'id','service','serviceType','pricing','tiers','active','taxable',
-  'source','confirmedFields','validationInputs','starterSuggestion',
-  'peakMonths','peakSurchargePercent','disclaimer','low','high','unit',
-  'minimumJob','allowAssumptionBasedQuotes','disposalPerSqft'
+  'source','confirmedFields','validationInputs','starterSuggestion'
 ]);
+const SERVICE_QUOTE_FIELDS = new Set(['peakMonths','peakSurchargePercent','disclaimer']);
 
 function validateServiceShape(service, index) {
   if (!service || typeof service !== 'object') throw new Error(`services[${index}] must be an object`);
@@ -287,7 +319,7 @@ function validateServiceShape(service, index) {
   const class2Defaults = CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {};
   const class2Fields = Object.keys(class2Defaults);
   const pricing = pricingFor(service);
-  const allowedFields = new Set([...ownerFields, ...class2Fields, ...SERVICE_CONTROL_FIELDS]);
+  const allowedFields = new Set([...ownerFields, ...class2Fields, ...SERVICE_METADATA_FIELDS, ...SERVICE_QUOTE_FIELDS]);
   for (const field of Object.keys(pricing)) {
     if (!allowedFields.has(field)) {
       throw new Error(`services[${index}].${field} is not a supported pricing field for ${service.serviceType}`);
@@ -298,6 +330,18 @@ function validateServiceShape(service, index) {
   }
   for (const field of class2Fields) {
     if (pricing[field] !== undefined) assertExactClass2Shape(pricing[field], class2Defaults[field], `services[${index}].${field}`);
+  }
+  if (pricing.peakMonths !== undefined) {
+    if (!Array.isArray(pricing.peakMonths) || pricing.peakMonths.some(month => !Number.isInteger(month) || month < 1 || month > 12)) {
+      throw new Error(`services[${index}].peakMonths must contain only month numbers 1 through 12`);
+    }
+  }
+  if (pricing.peakSurchargePercent !== undefined &&
+      (typeof pricing.peakSurchargePercent !== 'number' || !Number.isFinite(pricing.peakSurchargePercent) || pricing.peakSurchargePercent < 0)) {
+    throw new Error(`services[${index}].peakSurchargePercent must be a finite non-negative number`);
+  }
+  if (pricing.disclaimer !== undefined && pricing.disclaimer !== null && typeof pricing.disclaimer !== 'string') {
+    throw new Error(`services[${index}].disclaimer must be a string or null`);
   }
   if (service.tiers !== undefined) {
     if (!Array.isArray(service.tiers) || service.tiers.length > 3) throw new Error(`services[${index}].tiers must contain at most three tiers`);
@@ -322,11 +366,21 @@ function validateServiceShape(service, index) {
   }
 }
 
-export function validatePricebookShape(data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Price book must be an object');
-  if (!Array.isArray(data.services)) throw new Error('Price book services must be an array');
-  data.services.forEach(validateServiceShape);
-  const defaults = data.defaults || {};
+const SUPPORTED_DEFAULT_FIELDS = new Set([
+  'markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee',
+  'disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent',
+  'laborHourlyRate','peakMonths','peakSurchargePercent','markupApplies'
+]);
+const MARKUP_CATEGORIES = new Set([
+  'labor','material','removal','prep','addon','equipment','travel',
+  'disposal','permit','overhead'
+]);
+
+function validatePricebookDefaults(defaults = {}) {
+  if (!defaults || typeof defaults !== 'object' || Array.isArray(defaults)) throw new Error('Price book defaults must be an object');
+  for (const field of Object.keys(defaults)) {
+    if (!SUPPORTED_DEFAULT_FIELDS.has(field)) throw new Error(`defaults.${field} is not supported`);
+  }
   if (!['markup','margin'].includes(defaults.markupMode || 'markup')) throw new Error('markupMode must be markup or margin');
   if (!['TAX_NONE','TAX_MATERIALS','TAX_ALL'].includes(defaults.taxMode || 'TAX_NONE')) throw new Error('taxMode is invalid');
   if (defaults.markupPercent !== undefined && typeof defaults.markupPercent !== 'number') throw new Error('markupPercent must be a number');
@@ -337,15 +391,35 @@ export function validatePricebookShape(data) {
     throw new Error('markupPercent is invalid');
   }
   if (!Number.isFinite(taxPercent) || taxPercent < 0 || taxPercent > 100) throw new Error('taxPercent is invalid');
-  // Business-wide money and percent defaults must be finite and non-negative;
-  // malformed values here feed every service's quote.
-  for (const field of ['travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','rangeBufferPercent','peakSurchargePercent']) {
+
+  for (const field of ['travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','rangeBufferPercent','peakSurchargePercent','laborHourlyRate']) {
     const value = defaults[field];
     if (value === undefined || value === null) continue;
     if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
       throw new Error(`defaults.${field} must be a finite non-negative number`);
     }
   }
+  if (defaults.peakMonths !== undefined &&
+      (!Array.isArray(defaults.peakMonths) || defaults.peakMonths.some(month => !Number.isInteger(month) || month < 1 || month > 12))) {
+    throw new Error('defaults.peakMonths must contain only month numbers 1 through 12');
+  }
+  if (defaults.markupApplies !== undefined) {
+    if (!defaults.markupApplies || typeof defaults.markupApplies !== 'object' || Array.isArray(defaults.markupApplies)) {
+      throw new Error('defaults.markupApplies must be an object');
+    }
+    for (const [category, enabled] of Object.entries(defaults.markupApplies)) {
+      if (!MARKUP_CATEGORIES.has(category)) throw new Error(`defaults.markupApplies.${category} is not supported`);
+      if (typeof enabled !== 'boolean') throw new Error(`defaults.markupApplies.${category} must be true or false`);
+    }
+  }
+  return true;
+}
+
+export function validatePricebookShape(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Price book must be an object');
+  if (!Array.isArray(data.services)) throw new Error('Price book services must be an array');
+  data.services.forEach(validateServiceShape);
+  validatePricebookDefaults(data.defaults || {});
   return true;
 }
 

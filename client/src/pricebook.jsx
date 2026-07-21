@@ -284,6 +284,7 @@ export default function PriceBook() {
   const [book, setBook] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [statuses, setStatuses] = useState(null);
+  const [draftValidationErrors, setDraftValidationErrors] = useState([]);
   const [preview, setPreview] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
@@ -334,6 +335,7 @@ export default function PriceBook() {
       rangeBufferPercent:10, ...(loadedBook.defaults || {})
     }});
     setStatuses(null);
+    setDraftValidationErrors([]);
     setSelectedType(services[0]?.serviceType || null);
   }
 
@@ -346,11 +348,18 @@ export default function PriceBook() {
     if (!book || locked) return;
     let cancelled = false;
     setStatuses(null);
+    setDraftValidationErrors([]);
     const timer = setTimeout(() => {
       api('/api/pricebook/validate', { method:'POST', body:book })
-        .then(result => { if (!cancelled) setStatuses(result.statuses || []); })
+        .then(result => {
+          if (!cancelled) {
+            setStatuses(result.statuses || []);
+            setDraftValidationErrors(result.validationErrors || []);
+          }
+        })
         .catch(nextError => {
           if (!cancelled) {
+            setDraftValidationErrors([nextError.message]);
             setStatuses((book.services || []).map(service => ({
               serviceType:service.serviceType,
               status:'NEEDS PRICING',
@@ -589,6 +598,9 @@ export default function PriceBook() {
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>
         <ErrorMessage error={error} />
+        {draftValidationErrors.length > 0 && (
+          <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
+        )}
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} />
           <Button icon={Check} onClick={save} disabled={saving}>{saving ? 'Saving' : 'Save & validate'}</Button>

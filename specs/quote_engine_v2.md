@@ -375,11 +375,13 @@ STEP 7 — TAX (mode-dependent; order differs by mode)
     push tax line, subtotal += taxCents. Skip STEP 8 below.
 
 STEP 8 — MINIMUM JOB PRICE (per-service minimums ENFORCED)
+  approvedServiceMinimums = only the minimum field explicitly
+    exposed by this service's owner-field list:
+    minimumJob | repairMinimum | minimumServiceCharge
   effectiveMinimumCents = max(
     businessDefaults.minimumJobPrice || 0,
-    ownerPricing.minimumJob || 0,
-    effectivePricing.repairMinimum || 0,
-    effectivePricing.minimumServiceCharge || 0 )
+    ...approvedServiceMinimums )
+  Unsupported minimum fields are rejected at save and never consumed.
   // all already in cents — never multiply by 100
   if subtotalCents < effectiveMinimumCents:
     push { name:"Minimum Price Adjustment",
@@ -766,6 +768,9 @@ getRequiredOwnerFields(customerInputs):
   // laborPerSqft label: "Labor price per square foot by flooring type."
   // materialPerSqft label: "Material price per square foot by flooring type."
   if removalNeeded: add 'removalPerSqft'                 // SCOPE
+  Optional when removalNeeded: disposalPerSqft
+  // label: "Optional disposal price per square foot when removal
+  // is included." Absent uses businessDefaults.disposalFee.
   if stairSteps > 0: add 'perStepPrice'                  // SCOPE
   if underlayment applies (see table): add 'underlaymentPerSqft'
                                                          // SCOPE
@@ -792,7 +797,8 @@ calculate():
   materialCents = round(materialSqft
     × materialPerSqft[newFlooringType])
   if removalNeeded: removalCents = round(sqft × removalPerSqft)
-    // disposal: disposalPerSqft override supported (global rule)
+    // valid disposalPerSqft overrides disposal; absent uses the
+    // business-wide disposal fee
   if underlaymentApplies:
     underlaymentCents = round(materialSqft × underlaymentPerSqft)
     // waste-adjusted quantity
@@ -1130,6 +1136,9 @@ getRequiredOwnerFields(customerInputs):
   // optional houseWrapPerSqft field is DELETED to eliminate the
   // double-count path against the label above.]
   if oldSidingRemoval: add 'removalPerSqft'              // SCOPE
+  Optional when oldSidingRemoval: disposalPerSqft
+  // label: "Optional disposal price per square foot when removal
+  // is included." Absent uses businessDefaults.disposalFee.
   if trimIncluded: add 'trimPerLinearFoot'               // SCOPE
   Class 2 defaults (overridable):
     wasteFactorByType: vinyl=0.10, fiber_cement=0.12, wood=0.12,
@@ -1153,7 +1162,8 @@ calculate():
   if oldSidingRemoval:
     removalCents = round(sidingAreaSqft × removalPerSqft
       × storyMultiplier)
-    disposal: disposalPerSqft override supported.
+    valid disposalPerSqft overrides disposal; absent uses the
+    business-wide disposal fee.
   if trimIncluded:
     trimLF = customer-provided exact value, else
       round(sidingAreaSqft × trimRatio) with estimationUsed=true

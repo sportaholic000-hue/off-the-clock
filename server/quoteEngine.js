@@ -3,7 +3,7 @@ import { calculateService, getRequiredFields, getRequiredOwnerFields } from './q
 
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const MARKUP_APPLIES_DEFAULT = { labor:true, material:true, removal:true, prep:true, addon:true, equipment:true, travel:true, disposal:true, permit:false, overhead:true };
-import { shapedFieldKeys } from './priceBookMetadata.js';
+import { ALL_OWNER_FIELDS, shapedFieldKeys } from './priceBookMetadata.js';
 
 const ZERO_ALLOWED_OWNER_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 const ADDON_DISCLOSURES = [
@@ -14,7 +14,7 @@ const ADDON_DISCLOSURES = [
 const missing = (obj, field) => obj?.[field] === undefined || obj?.[field] === null || obj?.[field] === 'unsure' || obj?.[field] === '';
 const invalidNumber = value => typeof value === 'number' && (!Number.isFinite(value) || value < 0);
 const missingOwner = (obj, field) => missing(obj, field) || invalidNumber(obj?.[field]) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
-const missingAddonPrice = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || obj[field] === 0;
+const missingAddonPrice = (obj, field) => missing(obj, field) || invalidNumber(obj?.[field]) || obj[field] === 0;
 const round = Math.round;
 
 
@@ -79,8 +79,12 @@ function markupFor(base, defaults) {
   if (!pct) return 0;
   return defaults.markupMode === 'margin' ? round(base / (1 - pct)) - base : round(base * pct);
 }
-function applyMinimum(lineItems, subtotalCents, p, defaults, appliedRules) {
-  const min = Math.max(Number(defaults.minimumJobPrice || 0), Number(p.minimumJob || 0), Number(p.repairMinimum || 0), Number(p.minimumServiceCharge || 0));
+function applyMinimum(serviceType, lineItems, subtotalCents, p, defaults, appliedRules) {
+  const approvedFields = new Set(ALL_OWNER_FIELDS[serviceType] || []);
+  const serviceMinimums = ['minimumJob','repairMinimum','minimumServiceCharge']
+    .filter(field => approvedFields.has(field))
+    .map(field => Number(p[field] || 0));
+  const min = Math.max(Number(defaults.minimumJobPrice || 0), ...serviceMinimums);
   if (subtotalCents < min) {
     const amount = min - subtotalCents;
     lineItems.push({ name:'Minimum Price Adjustment', category:'minimum_adjustment', amountCents:amount, taxable:false, ownerVisible:true, customerVisible:false });
@@ -135,7 +139,7 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
   let subtotalCents = lineItems.reduce((s,i)=>s+i.amountCents,0);
 
   if (defaults.taxMode === 'TAX_ALL') {
-    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(serviceType, lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
     const taxCents = round(subtotalCents * Number(defaults.taxPercent || 0) / 100);
     if (taxCents) lineItems.push({ name:'Tax', category:'tax', amountCents:taxCents, taxable:false, ownerVisible:true, customerVisible:false });
     subtotalCents += taxCents;
@@ -145,9 +149,9 @@ function finalizeRun({ serviceType, customerInputs, ownerPricing, effectivePrici
     const taxCents = round((taxableBase + markupFor(taxableMarkupBase, defaults)) * Number(defaults.taxPercent || 0) / 100);
     if (taxCents) lineItems.push({ name:'Tax', category:'tax', amountCents:taxCents, taxable:false, ownerVisible:true, customerVisible:false });
     subtotalCents += taxCents;
-    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(serviceType, lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
   } else {
-    subtotalCents = applyMinimum(lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
+    subtotalCents = applyMinimum(serviceType, lineItems, subtotalCents, pricing, defaults, inherited.appliedRules);
   }
 
   let buffer = Number(defaults.rangeBufferPercent ?? 10);
@@ -168,6 +172,15 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
   const pricing = ownerPricing.pricing || ownerPricing;
   const appliedRules = [];
   const urgencyFlags = [];
+
+  if ((ALL_OWNER_FIELDS[serviceType] || []).includes('disposalPerSqft') &&
+      !missing(pricing, 'disposalPerSqft') &&
+      (typeof pricing.disposalPerSqft !== 'number' || !Number.isFinite(pricing.disposalPerSqft) || pricing.disposalPerSqft < 0)) {
+    return review({
+      missingOwnerFields:['disposalPerSqft'],
+      reviewReason:'Pricing not fully configured for this service. Owner follow-up required.'
+    });
+  }
 
   if (['ROOFING_REPAIR','FLAT_ROOF_REPAIR'].includes(serviceType) && ['unknown','unknown_leak'].includes(customerInputs.repairType)) {
     return review({ reviewReason: serviceType === 'ROOFING_REPAIR' ? 'Leak source is unknown. An in-person inspection is needed before we can estimate this repair accurately.' : 'Flat roof leak source requires inspection before we can estimate accurately.' });

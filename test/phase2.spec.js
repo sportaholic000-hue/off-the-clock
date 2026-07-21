@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { generateQuote } from '../server/quoteEngine.js';
 import { getRequiredOwnerFields, SERVICE_TYPES } from '../server/quoteTemplates.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS } from '../server/priceBookMetadata.js';
-import { dollarsToCents, pricebookDraftStatuses, pricebookServiceStatus, validatePricebookShape } from '../server/priceBookService.js';
+import { dollarsToCents, pricebookDraftStatuses, pricebookDraftValidation, pricebookServiceStatus, validatePricebookShape } from '../server/priceBookService.js';
 import { humanPricingKey } from '../client/src/pricebookFormatting.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
 
@@ -598,4 +598,167 @@ test('flooring uses keyed type rates and human pricing keys split snake_case and
 test('starter warning copy is exact', () => {
   const server = readFileSync('server/src/server.js', 'utf8');
   assert.match(server, /These are AI-suggested placeholder prices\. Review and confirm each value before going live\./);
+});
+
+
+test('service-specific quote fields reject unsupported hidden values', () => {
+  for (const [serviceType, field, value] of [
+    ['ROOFING_REPAIR','minimumJob',999],
+    ['FLOORING_INSTALL','low',100],
+    ['SIDING_REPAIR','high',200],
+    ['ROOFING_REPLACEMENT','unit','flat'],
+    ['LANDSCAPING_CLEANUP','disposalPerSqft',2]
+  ]) {
+    assert.throws(() => validatePricebookShape({
+      defaults:{},
+      services:[{ serviceType, [field]:value }]
+    }), /not a supported pricing field/, `${serviceType} must reject ${field}`);
+  }
+
+  const hiddenMinimum = generateQuote({
+    serviceType:'ROOFING_REPAIR',
+    customerInputs:{ repairType:'flashing', affectedArea:25, roofType:'architectural', pitch:'low', stories:1, leakPresent:false },
+    ownerPricing:{
+      laborHourlyRate:10000,
+      repairMinimum:0,
+      repairHours:{ flashing:{ small:2, medium:4, large:8 } },
+      repairMaterialAllowance:{ flashing:15000 },
+      minimumJob:999999
+    },
+    businessDefaults:{ markupPercent:0, taxMode:'TAX_NONE', rangeBufferPercent:10, minimumJobPrice:0 }
+  });
+  assert.equal(hiddenMinimum.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(hiddenMinimum.lineItems.some(line => line.name === 'Minimum Price Adjustment'), false);
+});
+
+test('ruled disposal overrides are exposed, validated, converted, and confirmed', () => {
+  for (const serviceType of ['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT']) {
+    assert.equal(ALL_OWNER_FIELDS[serviceType].includes('disposalPerSqft'), true, `${serviceType} exposes disposalPerSqft`);
+  }
+  assert.equal(ALL_OWNER_FIELDS.ROOFING_REPAIR.includes('disposalPerSqft'), false);
+
+  const converted = dollarsToCents({
+    defaults:{},
+    services:[{ serviceType:'FLOORING_INSTALL', disposalPerSqft:2.5 }]
+  });
+  assert.equal(converted.services[0].disposalPerSqft, 250);
+
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{ serviceType:'FLOORING_INSTALL', disposalPerSqft:-1 }]
+  }), /cannot be negative/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{ serviceType:'SIDING_REPLACEMENT', disposalPerSqft:'bad' }]
+  }), /must be a finite number/);
+
+  const types = ['hardwood','laminate','vinyl_plank','carpet','tile'];
+  const rates = Object.fromEntries(types.map(type => [type, 500]));
+  const service = {
+    serviceType:'FLOORING_INSTALL',
+    laborPerSqft:rates,
+    materialPerSqft:rates,
+    minimumJob:0,
+    removalPerSqft:100,
+    disposalPerSqft:20,
+    perStepPrice:1000,
+    underlaymentPerSqft:50,
+    source:'AI_SUGGESTED',
+    confirmedFields:{
+      laborPerSqft:true,
+      materialPerSqft:true,
+      minimumJob:true,
+      removalPerSqft:true,
+      perStepPrice:true,
+      underlaymentPerSqft:true
+    }
+  };
+  const unconfirmed = pricebookServiceStatus(service);
+  assert.equal(unconfirmed.status, 'NEEDS PRICING');
+  assert.equal(unconfirmed.missingOwnerFields.includes('disposalPerSqft'), true);
+  const confirmed = pricebookServiceStatus({
+    ...service,
+    confirmedFields:{ ...service.confirmedFields, disposalPerSqft:true }
+  });
+  assert.equal(confirmed.status, 'QUOTING LIVE');
+});
+
+test('disposal override falls back, prices removal, and reviews malformed values', () => {
+  const customerInputs = {
+    sqft:300,
+    sqftMethod:'exact',
+    newFlooringType:'tile',
+    existingFloorType:'vinyl',
+    removalNeeded:true,
+    roomCount:1,
+    layoutPattern:'straight',
+    stairSteps:0
+  };
+  const basePricing = {
+    laborPerSqft:{ tile:300 },
+    materialPerSqft:{ tile:500 },
+    minimumJob:0,
+    removalPerSqft:100
+  };
+  const businessDefaults = {
+    markupPercent:0,
+    taxMode:'TAX_NONE',
+    rangeBufferPercent:10,
+    disposalFee:5000
+  };
+  const lineAmount = (result, name) => result.lineItems.find(line => line.name === name)?.amountCents;
+
+  const fallback = generateQuote({ serviceType:'FLOORING_INSTALL', customerInputs, ownerPricing:basePricing, businessDefaults });
+  assert.equal(fallback.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(lineAmount(fallback, 'Disposal'), 5000);
+
+  const overridden = generateQuote({
+    serviceType:'FLOORING_INSTALL',
+    customerInputs,
+    ownerPricing:{ ...basePricing, disposalPerSqft:20 },
+    businessDefaults
+  });
+  assert.equal(overridden.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(lineAmount(overridden, 'Disposal'), 6000);
+
+  for (const value of [-1, Number.NaN, 'bad']) {
+    const invalid = generateQuote({
+      serviceType:'FLOORING_INSTALL',
+      customerInputs,
+      ownerPricing:{ ...basePricing, disposalPerSqft:value },
+      businessDefaults
+    });
+    assert.equal(invalid.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.equal(invalid.missingOwnerFields.includes('disposalPerSqft'), true);
+  }
+});
+
+test('current draft validates every quote-affecting business default before save', () => {
+  const service = { serviceType:'CUSTOM', service:'Custom', low:100, high:200, unit:'flat', minimumJob:0 };
+  const cases = [
+    [{ markupPercent:-1 }, /markupPercent is invalid/],
+    [{ markupMode:'margin', markupPercent:100 }, /markupPercent is invalid/],
+    [{ taxPercent:101 }, /taxPercent is invalid/],
+    [{ travelFee:-1 }, /defaults\.travelFee/],
+    [{ disposalFee:'bad' }, /defaults\.disposalFee/],
+    [{ permitFee:Number.NaN }, /defaults\.permitFee/],
+    [{ overheadFixed:-1 }, /defaults\.overheadFixed/],
+    [{ minimumJobPrice:-1 }, /defaults\.minimumJobPrice/],
+    [{ rangeBufferPercent:-1 }, /defaults\.rangeBufferPercent/],
+    [{ peakSurchargePercent:-1 }, /defaults\.peakSurchargePercent/]
+  ];
+
+  for (const [invalidDefaults, expected] of cases) {
+    const result = pricebookDraftValidation({
+      defaults:{ markupMode:'markup', taxMode:'TAX_NONE', ...invalidDefaults },
+      services:[service]
+    });
+    assert.equal(result.statuses[0].status, 'NEEDS PRICING');
+    assert.equal(result.validationErrors.some(message => expected.test(message)), true);
+    assert.equal(result.statuses[0].missingOwnerLabels.some(message => expected.test(message)), true);
+  }
+
+  const client = readFileSync('client/src/pricebook.jsx', 'utf8');
+  assert.match(client, /draftValidationErrors/);
+  assert.match(client, /<Notice tone="warning">\{draftValidationErrors\.join\(' '\)\}<\/Notice>/);
 });
