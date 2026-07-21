@@ -21,11 +21,43 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Install dependencies
-        run: npm install --package-lock=false
+      - name: Refresh lock and install dependencies
+        shell: bash
+        run: |
+          set +e
+          npm install --package-lock-only
+          status=$?
+          echo "LOCK_REFRESH_EXIT_STATUS=$status"
+          if [ "$status" -ne 0 ]; then exit "$status"; fi
+          echo "LOCKFILE_BASE64_BEGIN"
+          base64 -w0 package-lock.json
+          echo
+          echo "LOCKFILE_BASE64_END"
+          npm ci
+          status=$?
+          echo "NPM_CI_EXIT_STATUS=$status"
+          exit "$status"
       - name: Phase 0 gate
-        run: npm run gate:0
+        shell: bash
+        run: |
+          set +e
+          npm run gate:0
+          status=$?
+          echo "PHASE_0_EXIT_STATUS=$status"
+          exit "$status"
       - name: Phase 1 gate
-        run: npm run gate:1
+        shell: bash
+        run: |
+          set +e
+          npm run gate:1
+          status=$?
+          echo "PHASE_1_EXIT_STATUS=$status"
+          exit "$status"
       - name: Phase 2 gate and production client build
-        run: npm run gate:2
+        shell: bash
+        run: |
+          set +e
+          npm run gate:2
+          status=$?
+          echo "PHASE_2_EXIT_STATUS=$status"
+          exit "$status"
