@@ -578,3 +578,12 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .shaped-map-row input { max-width: 120px; }
 .shaped-map-add { display: flex; gap: 8px; align-items: center; }
 .shaped-map-add input { max-width: 200px; }
+
+.factor-map { display: flex; flex-direction: column; gap: 8px; }
+.factor-map-row { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(160px, 2fr); gap: 10px; align-items: center; }
+.factor-map-row > span { color: var(--gray); font-size: 12px; }
+.factor-value { display: flex; align-items: center; gap: 8px; }
+.factor-value small { min-width: 48px; color: var(--gray); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+@media (max-width: 640px) {
+  .factor-map-row { grid-template-columns: 1fr; }
+}

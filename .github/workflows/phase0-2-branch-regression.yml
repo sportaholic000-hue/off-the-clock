@@ -1,0 +1,28 @@
+name: Phase 0-2 branch regression
+
+on:
+  push:
+    branches:
+      - claude/phase-2-audit-fixes
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Phase 0 gate
+        run: npm run gate:0
+      - name: Phase 1 gate
+        run: npm run gate:1
+      - name: Phase 2 gate and production client build
+        run: npm run gate:2

@@ -38,6 +38,11 @@ CLASS 1 — PRICES AND RATES (what the owner charges).
   NO system defaults, ever. Owner must enter their own numbers.
   Missing required price → ESTIMATE_REQUIRES_REVIEW. Never guess.
   Examples: laborPerSquare, materialPerSqft, gatePrice, hourly rates.
+  Required shaped maps must contain every documented key, required
+  fallback key, and nested value before the service can activate.
+  At quote time, the exact customer-selected key and derived nested
+  value must be finite and greater than zero or the result is
+  ESTIMATE_REQUIRES_REVIEW.
 
 CLASS 2 — QUANTITY/PHYSICS FACTORS (how much stuff a job takes).
   Industry-standard defaults ARE allowed, because they describe
@@ -46,6 +51,10 @@ CLASS 2 — QUANTITY/PHYSICS FACTORS (how much stuff a job takes).
   (b) stored per-service in the price book so the owner can
   override it in the dashboard, (c) visible in the dashboard
   with its default value shown.
+  Owner overrides must match the declared Class 2 keys and nesting
+  exactly. Missing, extra, or misspelled keys fail validation.
+  Dashboard controls are structured fields with human-readable names
+  and units; raw JSON is not an owner-facing Class 2 control.
   Examples: waste factors, mulch overage, pitch area factors,
   concrete ordering overage, door/window deduction sizes.
 
@@ -751,12 +760,15 @@ getRequiredFields(customerInputs):
 
 getRequiredOwnerFields(customerInputs):
   base: ['laborPerSqft','materialPerSqft','minimumJob']
+  // laborPerSqft and materialPerSqft are keyed by
+  // newFlooringType: hardwood, laminate, vinyl_plank, carpet, tile.
+  // Owner sets all supported keys; no blended scalar rates.
+  // laborPerSqft label: "Labor price per square foot by flooring type."
+  // materialPerSqft label: "Material price per square foot by flooring type."
   if removalNeeded: add 'removalPerSqft'                 // SCOPE
   if stairSteps > 0: add 'perStepPrice'                  // SCOPE
   if underlayment applies (see table): add 'underlaymentPerSqft'
                                                          // SCOPE
-  Optional ADDON: baseboardPerLF, transitionsEach,
-    furnitureMovingFlat
   Class 2 defaults (overridable):
     wasteFactorByType: hardwood=0.10, laminate=0.08,
       vinyl_plank=0.08, carpet=0.10, tile=0.12
@@ -775,9 +787,10 @@ calculate():
   effectiveWaste = wasteFactorByType[newFlooringType]
     + patternWasteAdder[layoutPattern]
   materialSqft = sqft × (1 + effectiveWaste)
-  laborCents = round(sqft × laborPerSqft
+  laborCents = round(sqft × laborPerSqft[newFlooringType]
     × roomComplexityMultiplier)
-  materialCents = round(materialSqft × materialPerSqft)
+  materialCents = round(materialSqft
+    × materialPerSqft[newFlooringType])
   if removalNeeded: removalCents = round(sqft × removalPerSqft)
     // disposal: disposalPerSqft override supported (global rule)
   if underlaymentApplies:
@@ -785,10 +798,6 @@ calculate():
     // waste-adjusted quantity
   if stairSteps > 0:
     stairCents = round(stairSteps × perStepPrice)   // labor
-  ADDONs (skip-with-disclosure if unpriced):
-    baseboard: LF from customer or derived 4×sqrt(sqft)
-      (estimationUsed=true if derived), transitions, furniture
-      moving flat.
   + travel, disposal, permit, overhead flat.
 
 ── FLOORING_REPLACEMENT ─────────────────────────────
@@ -1209,7 +1218,7 @@ calculate():
   if buildingType='commercial':
     insulationCents = round(roofSqft × insulationPerSqft)
                                                     // material
-  tearOffCents = round(tearOffSqft × tearOffPerSqft
+  tearOffCents = round(tearOffSqft × tearOffPerSqft[membraneKey]
     × accessMultiplier)
   disposal: disposalPerSqft override supported (applied to
     tearOffSqft).

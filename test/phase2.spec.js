@@ -5,7 +5,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { generateQuote } from '../server/quoteEngine.js';
 import { getRequiredOwnerFields, SERVICE_TYPES } from '../server/quoteTemplates.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS } from '../server/priceBookMetadata.js';
-import { dollarsToCents, pricebookServiceStatus, validatePricebookShape } from '../server/priceBookService.js';
+import { dollarsToCents, pricebookDraftStatuses, pricebookServiceStatus, validatePricebookShape } from '../server/priceBookService.js';
+import { humanPricingKey } from '../client/src/pricebookFormatting.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
 
 test('Phase 2 metadata covers every engine service and formula owner field', () => {
@@ -178,7 +179,7 @@ test('server exposes the complete Phase 2 route surface', () => {
     '/api/onboarding/phone/test','/api/onboarding/knowledge-base',
     '/api/operator/toggle','/api/onboarding/calendar','/api/onboarding/voice',
     '/api/pricebook/interview','/api/pricebook/meta','/api/pricebook/suggest',
-    '/api/pricebook/preview','/api/pricebook/save','/api/pricebook/:ownerId'
+    '/api/pricebook/validate','/api/pricebook/preview','/api/pricebook/save','/api/pricebook/:ownerId'
   ]) assert.match(source, new RegExp(route.replaceAll('/','\\/')));
 });
 
@@ -207,11 +208,9 @@ test('previously skipped monetary fields now convert dollars to cents', () => {
   assert.equal(converted.services[1].disposalPerSqft, 225);
 });
 
-test('houseWrapPerSqft is withdrawn pending the pricing-mode ruling (no exposure, no line, no double count)', () => {
-  // The mandated materialPerSqft label says house wrap is INCLUDED, while the
-  // spec also allows houseWrapPerSqft as a separate charge. Until the owner
-  // rules on a pricing mode, the field is neither editable nor consumed, so
-  // it can neither double-count nor sit dead in the editor.
+test('house wrap remains included in the all-in siding rate with no separate charge', () => {
+  // The mandated materialPerSqft label includes house wrap. A separate field
+  // is neither editable nor consumed, so it cannot double-count.
   assert.equal(ALL_OWNER_FIELDS.SIDING_REPLACEMENT.includes('houseWrapPerSqft'), false);
   const customerInputs = { sidingType:'vinyl', areaInputMethod:'sqft', sidingAreaSqft:1000, stories:'1', oldSidingRemoval:false, trimIncluded:false };
   const ownerPricing = {
@@ -230,7 +229,7 @@ test('malformed leaves and business defaults are rejected at save', () => {
   };
   assert.throws(() => validatePricebookShape({
     defaults:{}, services:[{ ...base, terrainMultiplier:{ flat:1, moderate:'bad', steep:1.3 } }]
-  }), /must be a number/);
+  }), /must be a finite number/);
   assert.throws(() => validatePricebookShape({
     defaults:{}, services:[{ ...base, laborPerLinearFoot:'14' }]
   }), /must be a finite number/);
@@ -360,7 +359,7 @@ test('shaped fields enforce spec key domains and never silently drop the custome
     defaults:{}, services:[{ ...siding, laborPerSqft:{ vinly:3 } }]
   }), /not a valid key/);
   assert.throws(() => validatePricebookShape({
-    defaults:{}, services:[{ ...siding, serviceType:'LANDSCAPING_CLEANUP', cleanupBaseRatePerSqft:0.1, minimumServiceCharge:0,
+    defaults:{}, services:[{ serviceType:'LANDSCAPING_CLEANUP', cleanupBaseRatePerSqft:0.1, minimumServiceCharge:0,
       debrisPricing:{ light:{ laborMultiplier:1, wrongKey:5 } } }]
   }), /not a valid key/);
   assert.equal(validatePricebookShape({ defaults:{}, services:[siding] }), true, 'a subset of valid domain keys is allowed');
@@ -404,4 +403,179 @@ test('CUSTOM exposes and enforces minimumJob; starter drafts cover closed-domain
   ], ['SIDING_REPLACEMENT']);
   assert.deepEqual(siding.fields.laborPerSqft, { vinyl:3, wood:5 }, 'out-of-domain keys are dropped, never coerced');
   assert.equal(siding.fields.trimPerLinearFoot, 6);
+});
+
+
+test('exact nested shaped prices are required for the selected quote', () => {
+  const defaults = { markupPercent:0, taxMode:'TAX_NONE', rangeBufferPercent:10 };
+  const cases = [
+    {
+      serviceType:'ROOFING_REPAIR',
+      customerInputs:{ repairType:'flashing', affectedArea:80, roofType:'architectural', pitch:'low', stories:1, leakPresent:false },
+      ownerPricing:{ laborHourlyRate:10000, repairMinimum:0, repairHours:{ flashing:{ small:2 } }, repairMaterialAllowance:{ flashing:15000 } },
+      missing:['repairHours']
+    },
+    {
+      serviceType:'SIDING_REPAIR',
+      customerInputs:{ affectedArea:40, sidingType:'vinyl', damageLevel:'moderate', stories:1 },
+      ownerPricing:{ laborHourlyRate:10000, repairMinimum:0, repairHours:{ moderate:{ small:2 } }, materialAllowance:{ moderate:{ small:15000 } } },
+      missing:['repairHours','materialAllowance']
+    },
+    {
+      serviceType:'FLAT_ROOF_REPAIR',
+      customerInputs:{ repairType:'patch', affectedArea:40, membraneType:'epdm', leakPresent:false, pondingWater:false },
+      ownerPricing:{ laborHourlyRate:10000, repairMinimum:0, patchRepairHours:{ patch:{ small:2 } }, patchMaterialAllowance:{ patch:{ small:15000 } } },
+      missing:['patchRepairHours','patchMaterialAllowance']
+    }
+  ];
+  for (const entry of cases) {
+    const result = generateQuote({ ...entry, businessDefaults:defaults });
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', entry.serviceType);
+    for (const field of entry.missing) assert.equal(result.missingOwnerFields.includes(field), true, `${entry.serviceType} missing ${field}`);
+  }
+
+  const debris = generateQuote({
+    serviceType:'LANDSCAPING_CLEANUP',
+    customerInputs:{ yardSize:3500, debrisLevel:'moderate', slope:'flat', haulAway:false },
+    ownerPricing:{
+      cleanupBaseRatePerSqft:10,
+      minimumServiceCharge:0,
+      debrisPricing:{ moderate:{ laborMultiplier:1.15 } }
+    },
+    businessDefaults:defaults
+  });
+  assert.equal(debris.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(debris.missingOwnerFields.includes('debrisPricing'), true);
+});
+
+test('activation requires complete mandated shaped keys and nested rows', () => {
+  const repair = pricebookServiceStatus({
+    serviceType:'ROOFING_REPAIR',
+    laborHourlyRate:10000,
+    repairMinimum:0,
+    repairHours:{ flashing:{ small:2 } },
+    repairMaterialAllowance:{ flashing:15000 }
+  });
+  assert.equal(repair.status, 'NEEDS PRICING');
+  assert.equal(repair.missingOwnerFields.includes('repairHours'), true);
+
+  const flatRoof = pricebookServiceStatus({
+    serviceType:'FLAT_ROOF_REPLACEMENT',
+    laborPerSqft:{ epdm:500 },
+    membraneCostPerSqft:{ epdm:700 },
+    tearOffPerSqft:{ epdm:200 },
+    minimumJob:0,
+    insulationPerSqft:200
+  });
+  assert.equal(flatRoof.status, 'NEEDS PRICING');
+  for (const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft']) {
+    assert.equal(flatRoof.missingOwnerFields.includes(field), true, `average fallback required for ${field}`);
+  }
+
+  const debris = pricebookServiceStatus({
+    serviceType:'LANDSCAPING_CLEANUP',
+    cleanupBaseRatePerSqft:0.1,
+    minimumServiceCharge:0,
+    haulAwayFee:100,
+    debrisPricing:{
+      light:{ laborMultiplier:1, disposalFlat:50 },
+      moderate:{ laborMultiplier:1.2 },
+      heavy:{ laborMultiplier:1.5, disposalFlat:200 }
+    }
+  });
+  assert.equal(debris.status, 'NEEDS PRICING');
+  assert.equal(debris.missingOwnerFields.includes('debrisPricing'), true);
+});
+
+test('Class 2 maps require the exact supported shape and the editor has no raw JSON factor control', () => {
+  const fencing = {
+    serviceType:'FENCING_INSTALL',
+    laborPerLinearFoot:14,
+    materialPerLinearFoot:22,
+    postSpacing:8,
+    postPrice:38,
+    concretePerPost:18,
+    postsIncludedInMaterial:false,
+    gatePrice:285,
+    minimumJob:0
+  };
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{ ...fencing, terrainMultiplier:{ flat:1, modrate:1.15, steep:1.3 } }]
+  }), /missing required keys: moderate/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{ ...fencing, terrainMultiplier:{ flat:1, moderate:1.15, steep:1.3, cliff:2 } }]
+  }), /unsupported keys: cliff/);
+  assert.throws(() => validatePricebookShape({
+    defaults:{},
+    services:[{ ...fencing, terrainMultipler:{ flat:1, moderate:1.15, steep:1.3 } }]
+  }), /not a supported pricing field/);
+
+  const client = readFileSync('client/src/pricebook.jsx', 'utf8');
+  assert.match(client, /StructuredFactorField/);
+  assert.match(client, /selectedMeta\.class2Fields/);
+  assert.equal(/<JsonEditor value=\{selected\[field\]/.test(client), false);
+});
+
+test('current draft status follows dynamic server requirements and never trusts saved LIVE state', () => {
+  const roof = {
+    serviceType:'ROOFING_REPLACEMENT',
+    service:'Roof replacement',
+    laborPerSquare:300,
+    materialCostPerSquare:500,
+    tearOffPerSquare:100,
+    underlaymentPerSquare:50,
+    accessoryPricingMode:'itemized',
+    active:true,
+    validationInputs:{ roofSizeInput:2000, roofSizeMethod:'roof_measured', roofType:'architectural', pitch:'medium', stories:1, existingLayers:'1', roofComplexity:'simple', serviceScope:'full' }
+  };
+  const [status] = pricebookDraftStatuses({ defaults:{}, services:[roof] });
+  assert.equal(status.status, 'NEEDS PRICING');
+  for (const field of ['starterPerLF','dripEdgePerLF','ridgeCapPerLF']) {
+    assert.equal(status.missingOwnerFields.includes(field), true, `itemized roofing requires ${field}`);
+  }
+
+  const client = readFileSync('client/src/pricebook.jsx', 'utf8');
+  assert.match(client, /api\('\/api\/pricebook\/validate'/);
+  assert.match(client, /statuses === null/);
+  assert.equal(/dash\.pricebookStatuses/.test(client), false);
+});
+
+test('CUSTOM starter suggestions drop negative and non-finite ranges and minimums', async () => {
+  const { validateStarterServices } = await import('../server/src/platformIntegrations.js');
+  const validated = validateStarterServices([
+    { serviceType:'CUSTOM', service:'Negative low', low:-1, high:100, unit:'flat', minimumJob:0 },
+    { serviceType:'CUSTOM', service:'Negative high', low:-20, high:-10, unit:'flat', minimumJob:0 },
+    { serviceType:'CUSTOM', service:'Negative minimum', low:10, high:100, unit:'flat', minimumJob:-5 },
+    { serviceType:'CUSTOM', service:'Infinite', low:10, high:Number.POSITIVE_INFINITY, unit:'flat', minimumJob:0 },
+    { serviceType:'CUSTOM', service:'Valid', low:10, high:100, unit:'flat', minimumJob:0 }
+  ], ['CUSTOM']);
+  assert.equal(validated.length, 1);
+  assert.equal(validated[0].service, 'Valid');
+});
+
+test('flooring uses keyed type rates and human pricing keys split snake_case and camelCase', () => {
+  assert.equal(humanPricingKey('fiber_cement'), 'Fiber cement');
+  assert.equal(humanPricingKey('laborMultiplier'), 'Labor multiplier');
+  assert.equal(humanPricingKey('disposalFlat'), 'Flat disposal charge ($)');
+
+  const metadata = getServiceMetadata().find(service => service.serviceType === 'FLOORING_INSTALL');
+  const labor = metadata.fields.find(field => field.field === 'laborPerSqft');
+  const material = metadata.fields.find(field => field.field === 'materialPerSqft');
+  assert.equal(labor.type, 'json');
+  assert.deepEqual(labor.shapedKeys.keys, ['hardwood','laminate','vinyl_plank','carpet','tile']);
+  assert.equal(labor.label, 'Labor price per square foot by flooring type.');
+  assert.equal(material.label, 'Material price per square foot by flooring type.');
+
+  const spec = readFileSync('specs/quote_engine_v2.md', 'utf8');
+  for (const withdrawn of ['baseboardPerLF','transitionsEach','furnitureMovingFlat']) {
+    assert.equal(spec.includes(withdrawn), false, `${withdrawn} must be absent from the launch spec`);
+    assert.equal(Object.values(ALL_OWNER_FIELDS).flat().includes(withdrawn), false, `${withdrawn} must not be exposed`);
+  }
+});
+
+test('starter warning copy is exact', () => {
+  const server = readFileSync('server/src/server.js', 'utf8');
+  assert.match(server, /These are AI-suggested placeholder prices\. Review and confirm each value before going live\./);
 });

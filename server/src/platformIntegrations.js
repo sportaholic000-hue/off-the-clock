@@ -181,9 +181,12 @@ const SERVICE_TYPE_OPTIONS = [
 const UNIT_OPTIONS = ['flat','per_sqft','per_hour','per_unit','per_LF','per_square'];
 
 function validCustomRange(entry) {
+  const validMinimum = entry?.minimumJob === undefined ||
+    (Number.isInteger(entry.minimumJob) && Number.isFinite(entry.minimumJob) && entry.minimumJob >= 0);
   return entry && typeof entry.service === 'string' && entry.service.length > 0 && entry.service.length <= 40 &&
-    Number.isInteger(entry.low) && Number.isInteger(entry.high) && entry.high > entry.low &&
-    UNIT_OPTIONS.includes(entry.unit) && (entry.minimumJob === undefined || Number.isInteger(entry.minimumJob));
+    Number.isInteger(entry.low) && Number.isFinite(entry.low) && entry.low >= 0 &&
+    Number.isInteger(entry.high) && Number.isFinite(entry.high) && entry.high >= 0 && entry.high > entry.low &&
+    UNIT_OPTIONS.includes(entry.unit) && validMinimum;
 }
 
 // Scalar (dollar) Class 1 fields for a service. Shaped/keyed fields and

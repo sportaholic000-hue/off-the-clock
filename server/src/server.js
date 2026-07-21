@@ -10,6 +10,7 @@ import {
   centsToDollars,
   dollarsToCents,
   loadPricebook,
+  pricebookDraftStatuses,
   pricebookStatuses,
   savePricebook,
   saveValidatedPricebook
@@ -285,9 +286,13 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan,
   const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
   return res.json({
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', confirmedFields: {} })),
-    warning: 'These are AI-suggested placeholder ranges — replace them with YOUR prices before going live.'
+    warning: 'These are AI-suggested placeholder prices. Review and confirm each value before going live.'
   });
 }));
+
+app.post('/api/pricebook/validate', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
+  return res.json({ statuses: pricebookDraftStatuses(req.body || {}) });
+});
 
 app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const converted = dollarsToCents({

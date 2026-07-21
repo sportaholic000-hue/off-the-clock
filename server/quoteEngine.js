@@ -12,32 +12,43 @@ const ADDON_DISCLOSURES = [
   { serviceType: 'LANDSCAPING_MOWING', field: 'edgingPerLinearFoot', name: 'Perimeter edging', selected: c => Boolean(c.edgingIncluded) }
 ];
 const missing = (obj, field) => obj?.[field] === undefined || obj?.[field] === null || obj?.[field] === 'unsure' || obj?.[field] === '';
-const negativeNumber = value => typeof value === 'number' && value < 0;
-const missingOwner = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
+const invalidNumber = value => typeof value === 'number' && (!Number.isFinite(value) || value < 0);
+const missingOwner = (obj, field) => missing(obj, field) || invalidNumber(obj?.[field]) || (!ZERO_ALLOWED_OWNER_FIELDS.has(field) && obj[field] === 0);
 const missingAddonPrice = (obj, field) => missing(obj, field) || negativeNumber(obj?.[field]) || obj[field] === 0;
 const round = Math.round;
 
 
-// A shaped required field is only usable for THIS quote if the customer's
-// selected key resolves to a positive value (or, for nested maps, an object
-// with positive numeric leaves). A missing or misspelled key must surface
-// as owner follow-up, never as a silently deleted quote line.
+// Resolve the exact shaped Class 1 value this quote consumes. The guard
+// follows both the customer-selected first-level key and, where applicable,
+// the derived repair-size leaf. Missing or invalid values always force review.
+function positivePricingValue(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+function selectedSizeCategory(value, [smallBoundary, mediumBoundary], allowed) {
+  if (typeof value === 'string' && allowed.includes(value)) return value;
+  const area = Number(value);
+  if (!Number.isFinite(area)) return null;
+  return area < smallBoundary ? 'small' : area <= mediumBoundary ? 'medium' : 'large';
+}
+
 function shapedKeyMissing(serviceType, field, pricing, customerInputs) {
   const domain = shapedFieldKeys(serviceType, field);
   if (!domain || !domain.customerField) return false;
   const map = pricing?.[field];
-  if (!map || typeof map !== 'object') return false; // plain missing handled by missingOwner
+  if (!map || typeof map !== 'object' || Array.isArray(map)) return false;
   let key = customerInputs?.[domain.customerField];
   if (domain.unknownKey && (key === 'unknown' || key === undefined || key === null || key === '')) key = domain.unknownKey;
-  if (key === undefined || key === null || key === '') return false; // customer side handles it
-  const value = map[key];
-  if (value === undefined || value === null) return true;
-  if (typeof value === 'number') return !Number.isFinite(value) || value <= 0;
-  if (typeof value === 'object') {
-    const leaves = Object.values(value).filter(leaf => typeof leaf === 'number');
-    return leaves.length === 0 || leaves.some(leaf => !Number.isFinite(leaf) || leaf < 0);
+  if (key === undefined || key === null || key === '') return false;
+  const selected = map[key];
+  if (!domain.nested) return !positivePricingValue(selected);
+  if (!selected || typeof selected !== 'object' || Array.isArray(selected)) return true;
+  if (domain.sizeBreakpoints) {
+    const nestedKey = selectedSizeCategory(customerInputs?.affectedArea, domain.sizeBreakpoints, domain.nested);
+    return !nestedKey || !positivePricingValue(selected[nestedKey]);
   }
-  return true;
+  if (domain.consumeAllNested) return domain.nested.some(nestedKey => !positivePricingValue(selected[nestedKey]));
+  return domain.nested.some(nestedKey => !positivePricingValue(selected[nestedKey]));
 }
 
 function review({ missingCustomerFields = [], missingOwnerFields = [], reviewReason }) {

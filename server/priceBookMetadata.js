@@ -32,6 +32,10 @@ const FIELD_LABELS = {
   basePrepPerSqft: 'Excavation + compacted gravel base + grading, per square foot.',
   groundPrepPerSqft: 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job — make sure this number covers disposal of the old lawn.',
   materialPerSqft_SIDING_REPLACEMENT: 'All-in installed material per sqft for this siding type, INCLUDING house wrap, J-channel, corner posts, and starter strip — accessories run 20–30% of vinyl material cost.',
+  laborPerSqft_FLOORING_INSTALL: 'Labor price per square foot by flooring type.',
+  laborPerSqft_FLOORING_REPLACEMENT: 'Labor price per square foot by flooring type.',
+  materialPerSqft_FLOORING_INSTALL: 'Material price per square foot by flooring type.',
+  materialPerSqft_FLOORING_REPLACEMENT: 'Material price per square foot by flooring type.',
   laborPerSqft_CONCRETE_DRIVEWAY: 'Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.',
   laborPerSqft_CONCRETE_PATIO_SLAB: 'Include forming labor, expansion joints, cure & seal in your per-sqft labor rate.',
   laborPerLinearFoot: 'Labor cost per linear foot',
@@ -73,8 +77,7 @@ export const MONEY_FIELD_NAMES = new Set([
   'materialPerFloorSqft2Coats','minimumJob','ceilingLaborPerFloorSqft','trimLaborPerLF',
   'trimMaterialPerLF','exteriorLaborPerSqft','materialPerSqftPerCoat','laborPerSqft',
   'materialPerSqft','removalPerSqft','perStepPrice','underlaymentPerSqft',
-  'subfloorAllowancePerSqft','baseboardPerLF','transitionsEach','furnitureMovingFlat',
-  'laborPerLinearFoot','materialPerLinearFoot','postPrice','concretePerPost','gatePrice',
+  'subfloorAllowancePerSqft','laborPerLinearFoot','materialPerLinearFoot','postPrice','concretePerPost','gatePrice',
   'removalPerLinearFoot','disposalPerLF','concreteCostPerCubicYard','formworkPerLF',
   'basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft',
   'stampedMaterialPerSqft','cleanupBaseRatePerSqft','disposalFlat','minimumServiceCharge',
@@ -103,6 +106,10 @@ const SHAPED_FIELDS = new Set([
   'patchMaterialAllowance','membraneCostPerSqft'
 ]);
 const SERVICE_SHAPED_FIELDS = new Set([
+  'FLOORING_INSTALL.laborPerSqft',
+  'FLOORING_INSTALL.materialPerSqft',
+  'FLOORING_REPLACEMENT.laborPerSqft',
+  'FLOORING_REPLACEMENT.materialPerSqft',
   'SIDING_REPLACEMENT.materialPerSqft',
   'SIDING_REPLACEMENT.laborPerSqft',
   'FLAT_ROOF_REPLACEMENT.laborPerSqft',
@@ -247,24 +254,27 @@ export function getActivationOwnerFields(serviceType, pricing = {}) {
 
 // Key domains for shaped (map) owner fields, extracted from
 // quote_engine_v2.md. keys:null marks an OPEN domain: the spec keys the
-// field by a customer answer without enumerating its values, so key
-// membership cannot be enforced yet (enumerations requested from the
-// owner as a spec addition). nested lists are CLOSED second-level keys.
+// field by an owner-defined customer answer, so the first-level domain
+// remains extensible. nested lists are CLOSED second-level keys.
 // customerField names the customer input whose answer selects the key at
 // quote time; unknownKey maps the customer's 'unknown' to a mandated key.
 export const SHAPED_FIELD_KEYS = {
+  'FLOORING_INSTALL.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
+  'FLOORING_INSTALL.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
+  'FLOORING_REPLACEMENT.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
+  'FLOORING_REPLACEMENT.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
   'SIDING_REPLACEMENT.laborPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
   'SIDING_REPLACEMENT.materialPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
   'FLAT_ROOF_REPLACEMENT.laborPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
   'FLAT_ROOF_REPLACEMENT.membraneCostPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
   'FLAT_ROOF_REPLACEMENT.tearOffPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
-  'ROOFING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
+  'ROOFING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[50,200] },
   'ROOFING_REPAIR.repairMaterialAllowance': { keys:null, customerField:'repairType' },
-  'SIDING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'damageLevel' },
-  'SIDING_REPAIR.materialAllowance': { keys:null, nested:['small','medium','large'], customerField:'damageLevel' },
-  'FLAT_ROOF_REPAIR.patchRepairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
-  'FLAT_ROOF_REPAIR.patchMaterialAllowance': { keys:null, nested:['small','medium','large'], customerField:'repairType' },
-  'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat'], customerField:'debrisLevel' },
+  'SIDING_REPAIR.repairHours': { keys:null, nested:['small','medium','large'], customerField:'damageLevel', sizeBreakpoints:[20,80] },
+  'SIDING_REPAIR.materialAllowance': { keys:null, nested:['small','medium','large'], customerField:'damageLevel', sizeBreakpoints:[20,80] },
+  'FLAT_ROOF_REPAIR.patchRepairHours': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[20,80] },
+  'FLAT_ROOF_REPAIR.patchMaterialAllowance': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[20,80] },
+  'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat'], customerField:'debrisLevel', consumeAllNested:true },
   'LANDSCAPING_MULCH.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
   'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
   'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
@@ -274,6 +284,36 @@ export const SHAPED_FIELD_KEYS = {
 
 export function shapedFieldKeys(serviceType, field) {
   return SHAPED_FIELD_KEYS[`${serviceType}.${field}`] || null;
+}
+
+const CLASS2_UNIT_OVERRIDES = {
+  roomFloorSqft:'sq ft',
+  paintableAreaMap:'sq ft',
+  sidingAreaMap:'sq ft',
+  assumedDrivewayWidthFt:'ft'
+};
+
+function humanizeFactorName(field) {
+  const words = String(field)
+    .replace(/_/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .toLowerCase();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function class2Unit(field) {
+  if (CLASS2_UNIT_OVERRIDES[field]) return CLASS2_UNIT_OVERRIDES[field];
+  if (/multiplier|factor|adder|ratio|waste/i.test(field)) return 'decimal';
+  return 'number';
+}
+
+function class2Definitions(serviceType) {
+  return Object.entries(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}).map(([field, defaultValue]) => ({
+    field,
+    label: humanizeFactorName(field),
+    unit: class2Unit(field),
+    defaultValue
+  }));
 }
 
 export const ZERO_ALLOWED_OWNER_FIELDS = ['minimumJob', 'repairMinimum', 'minimumServiceCharge'];
@@ -311,6 +351,7 @@ export function getServiceMetadata() {
         minimumAllowsZero: ['minimumJob','repairMinimum','minimumServiceCharge'].includes(field)
       })),
       class2Defaults: CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {},
+      class2Fields: class2Definitions(serviceType),
       sampleInputs: SAMPLE_INPUTS[serviceType] || {}
     };
   });

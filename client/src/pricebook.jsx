@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
+import { humanPricingKey } from './pricebookFormatting.js';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, Textarea, TextInput, Toggle
@@ -48,10 +49,6 @@ function MoneyInput({ value, onChange, money }) {
 }
 
 
-function humanKey(key) {
-  return String(key).replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-}
-
 function ShapedMapField({ definition, value, onChange }) {
   const domain = definition.shapedKeys;
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -89,11 +86,11 @@ function ShapedMapField({ definition, value, onChange }) {
     <div className="shaped-map">
       {keys.map(key => (
         <div className="shaped-map-row" key={key}>
-          <span className="shaped-map-key">{humanKey(key)}</span>
+          <span className="shaped-map-key">{humanPricingKey(key)}</span>
           {domain.nested
             ? domain.nested.map(nestedKey => (
                 <label className="shaped-map-cell" key={nestedKey}>
-                  <span>{humanKey(nestedKey)}</span>
+                  <span>{humanPricingKey(nestedKey)}</span>
                   <TextInput type="number" step="0.01" min="0" value={map[key]?.[nestedKey] ?? ''} onChange={event => setLeaf(key, nestedKey, event.target.value)} />
                 </label>
               ))
@@ -107,6 +104,41 @@ function ShapedMapField({ definition, value, onChange }) {
           <Button variant="secondary" onClick={addKey}>Add</Button>
         </div>
       )}
+    </div>
+  );
+}
+
+function StructuredFactorField({ value, defaultValue, onChange, unit }) {
+  if (defaultValue && typeof defaultValue === 'object') {
+    const current = value && typeof value === 'object' && !Array.isArray(value)
+      ? value
+      : defaultValue;
+    return (
+      <div className="factor-map">
+        {Object.entries(defaultValue).map(([key, childDefault]) => (
+          <div className="factor-map-row" key={key}>
+            <span>{humanPricingKey(key)}</span>
+            <StructuredFactorField
+              value={current[key]}
+              defaultValue={childDefault}
+              unit={unit}
+              onChange={child => onChange({ ...current, [key]:child })}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="factor-value">
+      <TextInput
+        type="number"
+        min="0"
+        step="0.01"
+        value={value ?? defaultValue}
+        onChange={event => onChange(event.target.value === '' ? defaultValue : Number(event.target.value))}
+      />
+      <small>{unit}</small>
     </div>
   );
 }
@@ -251,7 +283,7 @@ export default function PriceBook() {
   const [metadata, setMetadata] = useState([]);
   const [book, setBook] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
-  const [statuses, setStatuses] = useState([]);
+  const [statuses, setStatuses] = useState(null);
   const [preview, setPreview] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
@@ -301,7 +333,7 @@ export default function PriceBook() {
       markupPercent:30, markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0,
       rangeBufferPercent:10, ...(loadedBook.defaults || {})
     }});
-    setStatuses(dash.pricebookStatuses || []);
+    setStatuses(null);
     setSelectedType(services[0]?.serviceType || null);
   }
 
@@ -309,6 +341,26 @@ export default function PriceBook() {
 
   const selected = book?.services.find(service => service.serviceType === selectedType);
   const selectedMeta = metadata.find(service => service.serviceType === selectedType);
+
+  useEffect(() => {
+    if (!book || locked) return;
+    let cancelled = false;
+    setStatuses(null);
+    const timer = setTimeout(() => {
+      api('/api/pricebook/validate', { method:'POST', body:book })
+        .then(result => { if (!cancelled) setStatuses(result.statuses || []); })
+        .catch(nextError => {
+          if (!cancelled) {
+            setStatuses((book.services || []).map(service => ({
+              serviceType:service.serviceType,
+              status:'NEEDS PRICING',
+              missingOwnerLabels:[nextError.message]
+            })));
+          }
+        });
+    }, 120);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [book, locked]);
 
   useEffect(() => {
     if (!selected || !selectedMeta || !book) return;
@@ -401,57 +453,17 @@ export default function PriceBook() {
       </AppShell>
     );
   }
-  const statusMap = new Map(statuses.map(status => [status.serviceType, status]));
-  // Displayed status must respect per-field confirmation exactly like the
-  // backend: an AI-sourced service with any unconfirmed required field is
-  // NEVER shown as QUOTING LIVE, and a stale saved status cannot override
-  // an unconfirmed draft.
-  function fieldConfigured(def, value) {
-    if (value === undefined || value === null || value === '') return false;
-    if (def.type === 'boolean') return typeof value === 'boolean';
-    if (def.type === 'select') return typeof value === 'string' && value !== '';
-    if (def.type === 'json') {
-      if (!value || typeof value !== 'object') return false;
-      const leaves = [];
-      const walk = node => { if (typeof node === 'number') leaves.push(node); else if (node && typeof node === 'object') Object.values(node).forEach(walk); };
-      walk(value);
-      return leaves.length > 0 && leaves.every(leaf => Number.isFinite(leaf) && leaf >= 0) && leaves.some(leaf => leaf > 0);
-    }
-    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return false;
-    return def.zeroAllowed ? true : value > 0;
-  }
-
-  // The displayed status is computed from the CURRENT draft, worst-of the
-  // saved status: unsaved edits never inherit a prior QUOTING LIVE, and an
-  // AI-sourced service stays NEEDS PRICING until every populated field is
-  // individually confirmed.
-  function displayStatus(service, meta, savedStatus) {
-    if (!service) return savedStatus || null;
-    const fields = meta?.fields || [];
-    const invalid = fields.filter(field => field.requiredAtBase && !fieldConfigured(field, service[field.field]));
-    let pending = [];
-    if (['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)) {
-      const confirmed = service.confirmedFields || {};
-      pending = fields.filter(field => (field.requiredAtBase || service[field.field] !== undefined) && confirmed[field.field] !== true);
-    }
-    const broken = [...new Map([...invalid, ...pending].map(field => [field.field, field])).values()];
-    if (broken.length) {
-      return {
-        status:'NEEDS PRICING',
-        missingOwnerFields: broken.map(field => field.field),
-        missingOwnerLabels: broken.map(field => field.label || field.field)
-      };
-    }
-    return savedStatus || null;
-  }
-  const localRequired = selectedMeta?.fields.filter(field => field.requiredAtBase).map(field => field.field) || [];
-  const selectedStatus = displayStatus(selected, selectedMeta, statusMap.get(selectedType)) || {
-    status:localRequired.every(field => {
-      const value = selected?.[field];
-      return field === 'postsIncludedInMaterial' ? value !== undefined : value !== undefined && value !== null && (['minimumJob','repairMinimum','minimumServiceCharge'].includes(field) || value !== 0);
-    }) ? 'QUOTING LIVE' : 'NEEDS PRICING',
-    missingOwnerFields:localRequired.filter(field => selected?.[field] === undefined || selected?.[field] === null)
+  const statusMap = new Map((statuses || []).map(status => [status.serviceType, status]));
+  const validatingStatus = {
+    status:'NEEDS PRICING',
+    missingOwnerFields:[],
+    missingOwnerLabels:['Validating current draft']
   };
+  function displayStatus(service) {
+    if (!service || statuses === null) return validatingStatus;
+    return statusMap.get(service.serviceType) || validatingStatus;
+  }
+  const selectedStatus = displayStatus(selected);
   const markup = Number(book.defaults.markupPercent || 0);
   const equivalence = book.defaults.markupMode === 'markup'
     ? `${markup}% markup = ${(markup / (100 + markup) * 100).toFixed(1)}% margin`
@@ -485,7 +497,7 @@ export default function PriceBook() {
             <p className="eyebrow">SERVICES</p>
             {book.services.map(service => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
-              const status = displayStatus(service, meta, statusMap.get(service.serviceType));
+              const status = displayStatus(service);
               const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label || field.field) || []);
               return (
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>
@@ -533,17 +545,20 @@ export default function PriceBook() {
                     }}>Reset all</Button>
                   </div>
                   <div className="factor-list">
-                    {Object.entries(selectedMeta.class2Defaults || {}).map(([field,defaultValue]) => (
-                      <div className="factor-row" key={field}>
-                        <Field label={field}>
-                          {typeof defaultValue === 'object'
-                            ? <JsonEditor value={selected[field] ?? defaultValue} onChange={value => updateField(field, value)} />
-                            : <TextInput type="number" step="0.01" value={selected[field] ?? defaultValue} onChange={event => updateField(field, Number(event.target.value))} />}
+                    {(selectedMeta.class2Fields || []).map(definition => (
+                      <div className="factor-row" key={definition.field}>
+                        <Field label={`${definition.label} (${definition.unit})`}>
+                          <StructuredFactorField
+                            value={selected[definition.field]}
+                            defaultValue={definition.defaultValue}
+                            unit={definition.unit}
+                            onChange={value => updateField(definition.field, value)}
+                          />
                         </Field>
-                        <Button icon={RotateCcw} variant="icon" title="Reset to default" aria-label={`Reset ${field}`} onClick={() => resetClass2(field)} />
+                        <Button icon={RotateCcw} variant="icon" title="Reset to default" aria-label={`Reset ${definition.label}`} onClick={() => resetClass2(definition.field)} />
                       </div>
                     ))}
-                    {!Object.keys(selectedMeta.class2Defaults || {}).length && <Notice>No Class 2 factors for this service.</Notice>}
+                    {!selectedMeta.class2Fields?.length && <Notice>No Class 2 factors for this service.</Notice>}
                   </div>
                 </section>
                 <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields} onChange={tiers => replaceSelected({ ...selected, tiers })} />

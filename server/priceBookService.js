@@ -81,15 +81,41 @@ function numericLeaves(value) {
   return Object.values(value).flatMap(numericLeaves);
 }
 
-function isMissing(pricing, field) {
+function positiveOwnerPrice(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+function shapedPricingMissing(serviceType, field, value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return true;
+  const domain = shapedFieldKeys(serviceType, field);
+  if (!domain) {
+    const leaves = numericLeaves(value);
+    return leaves.length === 0 || leaves.some(number => !positiveOwnerPrice(number));
+  }
+
+  const presentKeys = Object.keys(value);
+  const requiredKeys = Array.isArray(domain.keys)
+    ? domain.keys
+    : (domain.requiredKeys || presentKeys);
+  if (!requiredKeys.length || requiredKeys.some(key => value[key] === undefined)) return true;
+
+  const keysToValidate = [...new Set([...requiredKeys, ...presentKeys])];
+  return keysToValidate.some(key => {
+    const row = value[key];
+    if (domain.nested) {
+      if (!row || typeof row !== 'object' || Array.isArray(row)) return true;
+      return domain.nested.some(nestedKey => !positiveOwnerPrice(row[nestedKey]));
+    }
+    return !positiveOwnerPrice(row);
+  });
+}
+
+function isMissing(serviceType, pricing, field) {
   const value = pricing[field];
   if (field === 'postsIncludedInMaterial') return typeof value !== 'boolean';
   if (field === 'unit') return !['flat','per_sqft','per_hour','per_unit','per_LF','per_square'].includes(value);
   if (value === undefined || value === null || value === '') return true;
-  if (value && typeof value === 'object') {
-    const leaves = numericLeaves(value);
-    return leaves.length === 0 || leaves.some(number => !Number.isFinite(number) || number <= 0);
-  }
+  if (value && typeof value === 'object') return shapedPricingMissing(serviceType, field, value);
   if (typeof value !== 'number' || !Number.isFinite(value)) return true;
   if (value < 0) return true;
   return !zeroAllowedOwnerFields.has(field) && value === 0;
@@ -103,7 +129,7 @@ export function pricebookServiceStatus(service) {
     ...getActivationOwnerFields(service.serviceType, pricingFor(service)),
     ...getRequiredOwnerFields(service.serviceType, customerInputs)
   ])];
-  let missingOwnerFields = requiredFields.filter(field => isMissing(pricingFor(service), field));
+  let missingOwnerFields = requiredFields.filter(field => isMissing(service.serviceType, pricingFor(service), field));
   if (AI_SOURCES.has(service.source)) {
     const confirmed = service.confirmedFields && typeof service.confirmedFields === 'object' ? service.confirmedFields : {};
     // EVERY field the AI populated must be individually confirmed (or
@@ -131,6 +157,23 @@ export function pricebookServiceStatus(service) {
 
 export function pricebookStatuses(pricebook) {
   return (pricebook.services || []).map(pricebookServiceStatus);
+}
+
+export function pricebookDraftStatuses(pricebook) {
+  return (pricebook.services || []).map((service, index) => {
+    const status = pricebookServiceStatus(service);
+    try {
+      validateServiceShape(service, index);
+      return status;
+    } catch (error) {
+      return {
+        ...status,
+        status:'NEEDS PRICING',
+        validationErrors:[error.message],
+        missingOwnerLabels:[...new Set([...(status.missingOwnerLabels || []), error.message])]
+      };
+    }
+  });
 }
 
 let fieldDefCache = null;
@@ -163,6 +206,24 @@ function assertNumericLeaves(value, path) {
     return;
   }
   throw new Error(`${path} must be a number`);
+}
+
+function assertExactClass2Shape(value, expected, path) {
+  if (typeof expected === 'number') {
+    if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${path} must be a finite number`);
+    if (value < 0) throw new Error(`${path} cannot be negative`);
+    return;
+  }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`${path} must be an object with exactly: ${Object.keys(expected).join(', ')}`);
+  }
+  const expectedKeys = Object.keys(expected);
+  const actualKeys = Object.keys(value);
+  const missingKeys = expectedKeys.filter(key => !actualKeys.includes(key));
+  const extraKeys = actualKeys.filter(key => !expectedKeys.includes(key));
+  if (missingKeys.length) throw new Error(`${path} is missing required keys: ${missingKeys.join(', ')}`);
+  if (extraKeys.length) throw new Error(`${path} has unsupported keys: ${extraKeys.join(', ')}`);
+  for (const key of expectedKeys) assertExactClass2Shape(value[key], expected[key], `${path}.${key}`);
 }
 
 function validateOwnerFieldValue(serviceType, field, value, path) {
@@ -208,6 +269,13 @@ function validateOwnerFieldValue(serviceType, field, value, path) {
   if (value < 0) throw new Error(`${path} cannot be negative`);
 }
 
+const SERVICE_CONTROL_FIELDS = new Set([
+  'id','service','serviceType','pricing','tiers','active','taxable',
+  'source','confirmedFields','validationInputs','starterSuggestion',
+  'peakMonths','peakSurchargePercent','disclaimer','low','high','unit',
+  'minimumJob','allowAssumptionBasedQuotes','disposalPerSqft'
+]);
+
 function validateServiceShape(service, index) {
   if (!service || typeof service !== 'object') throw new Error(`services[${index}] must be an object`);
   if (!SERVICE_TYPES.includes(service.serviceType)) throw new Error(`services[${index}].serviceType is invalid`);
@@ -216,13 +284,20 @@ function validateServiceShape(service, index) {
     throw new Error(`services[${index}].high must be greater than low`);
   }
   const ownerFields = ALL_OWNER_FIELDS[service.serviceType] || [];
-  const class2Fields = Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {});
+  const class2Defaults = CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {};
+  const class2Fields = Object.keys(class2Defaults);
   const pricing = pricingFor(service);
+  const allowedFields = new Set([...ownerFields, ...class2Fields, ...SERVICE_CONTROL_FIELDS]);
+  for (const field of Object.keys(pricing)) {
+    if (!allowedFields.has(field)) {
+      throw new Error(`services[${index}].${field} is not a supported pricing field for ${service.serviceType}`);
+    }
+  }
   for (const field of ownerFields) {
     validateOwnerFieldValue(service.serviceType, field, pricing[field], `services[${index}].${field}`);
   }
   for (const field of class2Fields) {
-    if (pricing[field] !== undefined) assertNumericLeaves(pricing[field], `services[${index}].${field}`);
+    if (pricing[field] !== undefined) assertExactClass2Shape(pricing[field], class2Defaults[field], `services[${index}].${field}`);
   }
   if (service.tiers !== undefined) {
     if (!Array.isArray(service.tiers) || service.tiers.length > 3) throw new Error(`services[${index}].tiers must contain at most three tiers`);
@@ -241,7 +316,7 @@ function validateServiceShape(service, index) {
         if (value === undefined) continue;
         const overridePath = `services[${index}].tiers[${tierIndex}].overrides.${field}`;
         if (ownerFields.includes(field)) validateOwnerFieldValue(service.serviceType, field, value, overridePath);
-        else assertNumericLeaves(value, overridePath);
+        else assertExactClass2Shape(value, class2Defaults[field], overridePath);
       }
     });
   }
