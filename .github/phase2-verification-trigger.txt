@@ -1,2 +1,2 @@
 Temporary unmerged branch used to trigger the Phase 0-2 GitHub-hosted verification run.
-Retry after dependency installation workaround.
+Final retry after updating the shaped siding fixture.
