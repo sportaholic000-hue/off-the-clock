@@ -22,7 +22,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: npm install --package-lock=false
       - name: Phase 0 gate
         run: npm run gate:0
       - name: Phase 1 gate
