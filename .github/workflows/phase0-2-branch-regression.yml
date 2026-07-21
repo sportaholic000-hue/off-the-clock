@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - claude/phase-2-audit-fixes
+  pull_request:
+    branches:
+      - claude/phase-2-audit-fixes
 
 permissions:
   contents: read
