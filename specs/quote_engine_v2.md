@@ -1354,9 +1354,8 @@ POST /api/pricebook/suggest
   return the error above. Timeout 15s, one retry.
   IMPORTANT: every suggested value is a STARTING POINT saved as
   DRAFT with source AI_SUGGESTED and an empty confirmedFields
-  map. The dashboard must show: "These are AI-suggested
-  placeholder ranges — replace them with YOUR prices before
-  going live." A suggested price book does not satisfy Class 1;
+  map. The dashboard must show: "These are AI-suggested placeholder prices. Review and confirm each value before going live."
+  A suggested price book does not satisfy Class 1;
   a service with source AI_SUGGESTED cannot reach QUOTING LIVE
   until the owner individually confirms every required field
   (confirmedFields[field] === true), in addition to normal
