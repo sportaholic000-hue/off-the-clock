@@ -378,7 +378,9 @@ test('shaped fields enforce spec key domains and never silently drop the custome
 test('every AI-populated field, optional included, must be confirmed before activation', () => {
   const service = {
     serviceType:'SIDING_REPLACEMENT', service:'Siding',
-    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 }, minimumJob:0,
+    laborPerSqft:{ vinyl:300, fiber_cement:350, wood:400, metal:450 },
+    materialPerSqft:{ vinyl:400, fiber_cement:500, wood:600, metal:700 },
+    minimumJob:0,
     removalPerSqft:100, trimPerLinearFoot:600,
     allowAssumptionBasedQuotes:true,
     source:'AI_SUGGESTED',
