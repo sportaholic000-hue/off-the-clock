@@ -29,14 +29,6 @@ jobs:
           status=$?
           echo "NPM_CI_EXIT_STATUS=$status"
           exit "$status"
-      - name: Audit dependency graph for classification
-        shell: bash
-        run: |
-          set +e
-          npm audit --json
-          status=$?
-          echo "NPM_AUDIT_EXIT_STATUS=$status"
-          exit 0
       - name: Phase 0 gate
         shell: bash
         run: |
