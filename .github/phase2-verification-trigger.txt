@@ -1,1 +1,1 @@
-Temporary unmerged branch used to generate and verify the dependency lock remotely.
+Temporary unmerged branch used for the final clean npm ci and Phase 0-2 verification.

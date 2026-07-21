@@ -21,18 +21,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Refresh lock and install dependencies
+      - name: Install dependencies
         shell: bash
         run: |
           set +e
-          npm install --package-lock-only
-          status=$?
-          echo "LOCK_REFRESH_EXIT_STATUS=$status"
-          if [ "$status" -ne 0 ]; then exit "$status"; fi
-          echo "LOCKFILE_BASE64_BEGIN"
-          base64 -w0 package-lock.json
-          echo
-          echo "LOCKFILE_BASE64_END"
           npm ci
           status=$?
           echo "NPM_CI_EXIT_STATUS=$status"
