@@ -173,22 +173,18 @@ test('preview endpoints are registered only inside the development guard', () =>
 
 test('the customer-facing quote preview never renders owner-only line items', () => {
   const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
-  // The preview is labelled "what your customer hears"; it must filter on the
-  // engine's customerVisible flag rather than rendering every line item.
-  assert.match(pricebook, /customerVisible === true/);
-  assert.match(pricebook, /OWNER_ONLY_CATEGORIES/);
-  // Markup, minimum adjustments, peak surcharges and tax are owner-only.
-  for (const category of ['markup', 'minimum_adjustment', 'surcharge', 'tax']) {
-    assert.match(pricebook, new RegExp(`'${category}'`),
-      `${category} must be listed as an owner-only category`);
-  }
-  // The unfiltered map over lineItems must not remain in the preview.
   const previewBlock = pricebook.slice(
     pricebook.indexOf('function Preview('),
     pricebook.indexOf('export default function PriceBook')
   );
-  assert.equal(/\(active\.lineItems \|\| \[\]\)\.map/.test(previewBlock), false,
-    'the preview must not map over unfiltered line items');
+  // The preview is labelled "what your customer hears". The engine's canonical
+  // customer view (sanitizeForCustomer) strips lineItems and exposes
+  // priceDrivers, so the preview must render priceDrivers and never lineItems.
+  // Every engine line item (labor, material, removal, markup, tax, ...) is
+  // customerVisible:false, so rendering lineItems at all leaks owner data.
+  assert.equal(/lineItems/.test(previewBlock.replace(/\/\/.*$/gm, '')), false,
+    'the preview must not reference lineItems at all (owner-only data)');
+  assert.match(previewBlock, /priceDrivers/);
 });
 
 test('owner-only line items are flagged customerVisible false by the engine', async () => {
@@ -200,4 +196,51 @@ test('owner-only line items are flagged customerVisible false by the engine', as
     assert.match(declaration, /customerVisible:false/,
       `${name} must be marked customerVisible:false`);
   }
+});
+
+test('the quote preview renders customer-safe priceDrivers, not raw line items', () => {
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  const preview = pricebook.slice(
+    pricebook.indexOf('function Preview('),
+    pricebook.indexOf('export default function PriceBook')
+  );
+  // Must render priceDrivers (the engine's sanitized customer strings).
+  assert.match(preview, /active\?\.priceDrivers/);
+  assert.match(preview, /quote-driver-list/);
+  // Must NOT render raw lineItems in the customer view (owner-only amounts).
+  assert.equal(/\.lineItems\b.*\.map/.test(preview.replace(/\/\/.*$/gm, '')), false,
+    'preview must not map over lineItems');
+  // Must not print per-item dollar amounts from lineItems.
+  assert.equal(/item\.amountCents/.test(preview), false,
+    'preview must not display raw line-item amounts');
+});
+
+test('sanitizeForCustomer strips lineItems and exposes only safe fields', async () => {
+  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+  const result = {
+    resultType: 'INSTANT_ESTIMATE_READY',
+    lineItems: [{ name: 'Markup', category: 'markup', amountCents: 40000, customerVisible: false }],
+    options: [{
+      tierName: 'Standard', lowEstimate: 100, highEstimate: 200, midEstimate: 150,
+      priceDrivers: ['Labor', 'Materials'], skippedAddons: [], disclaimer: 'x',
+      lineItems: [{ name: 'Markup', category: 'markup', amountCents: 40000, customerVisible: false }]
+    }]
+  };
+  const safe = sanitizeForCustomer(result);
+  assert.equal(safe.lineItems, undefined, 'top-level lineItems stripped');
+  assert.equal(safe.options[0].lineItems, undefined, 'per-option lineItems stripped');
+  assert.deepEqual(safe.options[0].priceDrivers, ['Labor', 'Materials']);
+  assert.equal(JSON.stringify(safe).includes('Markup'), false, 'no owner-only line names survive');
+});
+
+test('skipped add-ons are distinguished explicitly in the preview', () => {
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  const preview = pricebook.slice(
+    pricebook.indexOf('function Preview('),
+    pricebook.indexOf('export default function PriceBook')
+  );
+  assert.match(preview, /skippedAddons\?\.length/);
+  assert.match(preview, /skipped-addon-list/);
+  // Skipped add-ons must render as their own rows, not just folded into the disclaimer.
+  assert.match(preview, /active\.skippedAddons\.map/);
 });

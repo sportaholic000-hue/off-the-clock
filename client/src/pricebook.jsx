@@ -415,17 +415,14 @@ function Preview({ preview, loading, status }) {
   const options = ready ? (preview.options || []) : [];
   const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
 
-  // Owner-only internals must not surface in the customer-facing preview.
-  // The engine flags them customerVisible:false.
-  const OWNER_ONLY_CATEGORIES = new Set(['markup','minimum_adjustment','surcharge','tax','overhead']);
-  const customerLineItems = (active?.lineItems || []).filter(item =>
-    item.customerVisible === true && !OWNER_ONLY_CATEGORIES.has(item.category));
-  // When the engine exposes no customer-visible breakdown, describe the
-  // drivers in plain language rather than leaking internal line names.
-  const driverSummary = [...new Set((active?.lineItems || [])
-    .filter(item => !OWNER_ONLY_CATEGORIES.has(item.category))
-    .map(item => String(item.category || '').replace(/_/g, ' ')))]
-    .filter(Boolean).join(', ') || 'labor and materials';
+  // The quote engine's canonical customer view is sanitizeForCustomer(), which
+  // strips lineItems entirely and exposes priceDrivers: human-readable,
+  // customer-safe strings (e.g. "Siding labor", "Membrane type unconfirmed -
+  // average pricing used"). Owner-only line items (labor/material rates,
+  // markup, margin, minimum adjustments, surcharges, tax) all carry
+  // customerVisible:false and must never appear here. So the preview renders
+  // priceDrivers, never raw lineItems.
+  const priceDrivers = active?.priceDrivers || [];
 
   return (
     <aside className="preview-column">
@@ -490,33 +487,38 @@ function Preview({ preview, loading, status }) {
               {active.tierName && <span className="mono quote-tier-name">{active.tierName}</span>}
             </div>
 
-            {/* Customer-facing drivers only. The quote engine marks markup,
-                minimum adjustments, peak surcharges and tax as
-                customerVisible:false; those are owner-only and must never
-                appear in a view labelled "what your customer hears". Items
-                are grouped so the customer sees price drivers, not internals. */}
-            <dl className="quote-lines">
-              {customerLineItems.length > 0 ? customerLineItems.map(item => (
-                <div key={`${active.tierName}-${item.name}`}>
-                  <dt>{item.name}</dt>
-                  <dd className="mono">
-                    ${(item.amountCents / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                  </dd>
-                </div>
-              )) : (
-                <div className="quote-drivers-note">
-                  <dt>Included in this estimate</dt>
-                  <dd>{driverSummary}</dd>
-                </div>
+            {/* Customer-facing price drivers from the engine's sanitized output.
+                These are the same strings a customer would hear. No owner-only
+                amounts, rates, markup, margin or tax are shown. */}
+            <div className="quote-drivers">
+              <span className="mono quote-drivers-label">WHAT GOES INTO THIS ESTIMATE</span>
+              {priceDrivers.length > 0 ? (
+                <ul className="quote-driver-list">
+                  {priceDrivers.map((driver, index) => (
+                    <li key={`${active.tierName}-${index}`}>{driver}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="quote-driver-empty">Labor and materials for the job as described.</p>
               )}
-              <div className="quote-midpoint">
-                <dt>Midpoint</dt>
-                <dd className="mono">${active.midEstimate.toLocaleString()}</dd>
+              <div className="quote-midpoint-row">
+                <span>Midpoint estimate</span>
+                <span className="mono quote-midpoint-value">${active.midEstimate.toLocaleString()}</span>
               </div>
-            </dl>
+            </div>
 
             {active.skippedAddons?.length > 0 && (
-              <Notice tone="warning">{active.disclaimer}</Notice>
+              <div className="skipped-addons">
+                <span className="mono skipped-addons-label">NOT INCLUDED — PRICE THESE TO ADD THEM</span>
+                <ul className="skipped-addon-list">
+                  {active.skippedAddons.map(addon => (
+                    <li key={`${active.tierName}-skip-${addon}`}>{addon}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {active.disclaimer && (
+              <p className="quote-disclaimer">{active.disclaimer}</p>
             )}
 
             {status && (

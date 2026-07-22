@@ -393,12 +393,12 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 
 .editor-grid { min-width: 0; display: grid; grid-template-columns: minmax(0,1.2fr) minmax(310px,.8fr); gap: 18px; align-items: start; }
 .editor-column { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
-.editor-section { border: 1px solid var(--black-line); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.editor-section { min-width: 0; border: 1px solid var(--black-line); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 16px; overflow-wrap: break-word; }
 .essentials { background: var(--black-raised); }
 .section-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .section-title > div { min-width: 0; }
 .section-title span { color: var(--gray); font-size: 11px; line-height: 1.5; }
-.field-stack { display: flex; flex-direction: column; gap: 16px; }
+.field-stack { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .money-input { position: relative; }
 .money-input > span { position: absolute; top: 11px; left: 11px; color: var(--gray); font-family: 'JetBrains Mono', monospace; z-index: 1; }
 .money-input .input { padding-left: 25px; }
@@ -693,8 +693,8 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 }
 .blocker-row:hover:not(:disabled) { border-color: var(--green); }
 .blocker-marker { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); }
-.blocker-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
-.blocker-title { font-size: 13px; line-height: 1.4; color: var(--white); }
+.blocker-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; overflow-wrap: break-word; }
+.blocker-title { font-size: 13px; line-height: 1.4; color: var(--white); overflow-wrap: break-word; }
 .blocker-service { font-size: 11px; color: var(--gray); }
 .blocker-tail { display: flex; align-items: center; gap: 10px; flex: none; }
 .checklist-empty { font-size: 13px; color: var(--gray); margin: 0; }
@@ -880,9 +880,9 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 }
 
 /* --- Owner field: title / authoritative definition / help --- */
-.owner-field { display: flex; flex-direction: column; gap: 5px; }
-.owner-field-title { font-size: 13.5px; font-weight: 500; color: var(--white); line-height: 1.4; }
-.owner-field-definition { font-size: 11.5px; color: var(--gray); line-height: 1.55; }
+.owner-field { min-width: 0; display: flex; flex-direction: column; gap: 5px; overflow-wrap: break-word; }
+.owner-field-title { font-size: 13.5px; font-weight: 500; color: var(--white); line-height: 1.4; overflow-wrap: break-word; }
+.owner-field-definition { font-size: 11.5px; color: var(--gray); line-height: 1.55; overflow-wrap: break-word; }
 .owner-field-help { font-size: 11px; color: var(--edge); line-height: 1.5; }
 .owner-field-control { margin-top: 5px; }
 .set-count { font-size: 10px; color: var(--green); letter-spacing: .08em; }
@@ -893,7 +893,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   background: rgba(245,196,81,.06); border: 1px solid var(--black-line);
   border-radius: 4px; padding: 14px 15px; display: flex; flex-direction: column; gap: 10px;
 }
-.blocker-drawer-title { font-size: 10px; letter-spacing: .12em; color: var(--amber); margin: 0; }
+.blocker-drawer-title { font-size: 10px; letter-spacing: .12em; color: var(--amber); margin: 0; overflow-wrap: break-word; }
 
 /* --- Business-wide grouping --- */
 .business-wide { display: flex; flex-direction: column; gap: 10px; }
@@ -999,9 +999,17 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
    The essentials card carries status + blockers + required pricing, so it
    leads; the preview follows it and precedes the collapsed regions. */
 @media (max-width: 1000px) {
-  .editor-grid { display: flex; flex-direction: column; }
+  .editor-grid { display: flex; flex-direction: column; min-width: 0; width: 100%; }
   .editor-column { display: contents; }
-  .editor-section.essentials { order: 1; }
+  /* Children promoted via display:contents become flex items of .editor-grid.
+     Flex items default to min-width:auto, so long titles/definitions would
+     force page-level horizontal overflow. Because the DOM parent stays
+     .editor-column (display:contents), these must be targeted by their own
+     class, not a child combinator against .editor-grid. */
+  .editor-section, .disclose, .business-wide, .preview-column {
+    min-width: 0; max-width: 100%; box-sizing: border-box;
+  }
+  .editor-section.essentials { order: 1; min-width: 0; max-width: 100%; }
   .preview-column { order: 2; position: static; }
   .editor-column > .disclose { order: 3; }
   .business-wide { order: 4; }
@@ -1012,6 +1020,18 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .answering-dot { transition: none; }
 }
 
-.quote-drivers-note { flex-direction: column; gap: 4px; align-items: flex-start !important; }
-.quote-drivers-note dt { color: var(--gray) !important; font-size: 11px; }
-.quote-drivers-note dd { margin: 0; color: var(--white); font-size: 12px; line-height: 1.5; text-transform: capitalize; }
+.quote-drivers { display: flex; flex-direction: column; gap: 10px; }
+.quote-drivers-label { font-size: 9.5px; letter-spacing: .12em; color: var(--gray); }
+.quote-driver-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.quote-driver-list li { position: relative; padding-left: 15px; font-size: 12.5px; color: var(--white); line-height: 1.45; }
+.quote-driver-list li::before { content: '+'; position: absolute; left: 0; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+.quote-driver-empty { margin: 0; font-size: 12.5px; color: var(--gray); }
+.quote-midpoint-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-top: 11px; margin-top: 3px; border-top: 1px solid var(--black-line); }
+.quote-midpoint-row span:first-child { font-size: 13px; font-weight: 600; color: var(--white); }
+.quote-midpoint-value { font-size: 16px; font-weight: 700; color: var(--green); }
+.skipped-addons { display: flex; flex-direction: column; gap: 6px; padding: 11px 13px; background: rgba(245,196,81,.06); border: 1px solid var(--black-line); border-radius: 3px; }
+.skipped-addons-label { font-size: 9.5px; letter-spacing: .1em; color: var(--amber); }
+.skipped-addon-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.skipped-addon-list li { font-size: 12px; color: var(--gray); padding-left: 14px; position: relative; }
+.skipped-addon-list li::before { content: '—'; position: absolute; left: 0; color: var(--edge); }
+.quote-disclaimer { margin: 0; font-size: 11px; color: var(--gray); line-height: 1.5; }
