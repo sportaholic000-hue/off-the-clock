@@ -95,9 +95,16 @@ function shapedPricingMissing(serviceType, field, value) {
   }
 
   const presentKeys = Object.keys(value);
-  const requiredKeys = Array.isArray(domain.keys)
-    ? domain.keys
-    : (domain.requiredKeys || presentKeys);
+  // Owner-selectable product domains (flooring, siding types) may be offered as
+  // a supported subset: at least one type must be enabled and fully priced.
+  // Every type the owner DID enable is still validated in full below, so a
+  // partially-priced offering still blocks activation. Absent keys mean the
+  // business does not offer that product.
+  const requiredKeys = domain.ownerSelectable
+    ? presentKeys
+    : Array.isArray(domain.keys)
+      ? domain.keys
+      : (domain.requiredKeys || presentKeys);
   if (!requiredKeys.length || requiredKeys.some(key => value[key] === undefined)) return true;
 
   const keysToValidate = [...new Set([...requiredKeys, ...presentKeys])];

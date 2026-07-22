@@ -773,3 +773,91 @@ test('current draft validates every quote-affecting business default before save
   assert.match(client, /draftValidationErrors/);
   assert.match(client, /<Notice tone="warning">\{draftValidationErrors\.join\(' '\)\}<\/Notice>/);
 });
+
+test('owner-selectable product offerings activate on a supported subset', () => {
+  // A vinyl-only siding contractor must not be forced to price fiber cement,
+  // wood and metal. Absent types mean NOT OFFERED.
+  const vinylOnly = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 },
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  assert.equal(pricebookServiceStatus(vinylOnly).status, 'QUOTING LIVE',
+    'a vinyl-only siding contractor activates without pricing every siding type');
+
+  // A carpet + vinyl-plank flooring contractor likewise.
+  const twoTypes = {
+    serviceType:'FLOORING_INSTALL', service:'Flooring installation',
+    laborPerSqft:{ carpet:200, vinyl_plank:250 },
+    materialPerSqft:{ carpet:300, vinyl_plank:350 },
+    removalPerSqft:100, disposalPerSqft:50, perStepPrice:1500,
+    underlaymentPerSqft:75,
+    minimumJob:40000, allowAssumptionBasedQuotes:true
+  };
+  assert.equal(pricebookServiceStatus(twoTypes).status, 'QUOTING LIVE',
+    'a carpet and vinyl-plank contractor activates without hardwood, laminate or tile');
+});
+
+test('every ENABLED product offering must be completely priced', () => {
+  // vinyl priced for labor but not material: still blocked. Partial is not offered.
+  const partial = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{ vinyl:300, wood:280 }, materialPerSqft:{ vinyl:400, wood:0 },
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  assert.equal(pricebookServiceStatus(partial).status, 'NEEDS PRICING',
+    'an enabled siding type missing its material price blocks activation');
+  assert.equal(pricebookServiceStatus(partial).missingOwnerFields.includes('materialPerSqft'), true);
+
+  // A zero or blank value inside an enabled type is never treated as free.
+  const zeroed = {
+    ...partial, laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:0 }
+  };
+  assert.equal(pricebookServiceStatus(zeroed).status, 'NEEDS PRICING',
+    'a zero price inside an enabled offering is not treated as free');
+});
+
+test('at least one product offering must be enabled and priced', () => {
+  const noneOffered = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{}, materialPerSqft:{},
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  assert.equal(pricebookServiceStatus(noneOffered).status, 'NEEDS PRICING',
+    'an empty offering map cannot activate');
+});
+
+test('a disabled product requested at quote time returns review, never a substituted rate', () => {
+  const quote = generateQuote({
+    serviceType:'FLOORING_INSTALL',
+    customerInputs:{ sqft:600, sqftMethod:'exact', newFlooringType:'hardwood',
+      existingFloorType:'none', removalNeeded:false, roomCount:3,
+      layoutPattern:'straight', stairSteps:0 },
+    ownerPricing:{ laborPerSqft:{ carpet:200, vinyl_plank:250 },
+      materialPerSqft:{ carpet:300, vinyl_plank:350 },
+      minimumJob:0, allowAssumptionBasedQuotes:true },
+    businessDefaults:{}
+  });
+  assert.equal(quote.resultType, 'ESTIMATE_REQUIRES_REVIEW',
+    'hardwood is not offered, so the estimate requires review');
+  assert.equal(quote.missingOwnerFields.includes('laborPerSqft'), true);
+  // Never silently priced from carpet or vinyl_plank.
+  assert.equal(quote.low === undefined || quote.low === null, true,
+    'no substituted rate produces a customer-facing number');
+});
+
+test('closed non-selectable domains still require complete coverage', () => {
+  // Repair size shapes, condition domains and the flat-roof Average fallback
+  // must NOT be loosened by the offered-subset ruling.
+  const partialRepair = {
+    serviceType:'SIDING_REPAIR', service:'Siding repair',
+    laborHourlyRate:9500, repairMinimum:25000, materialAllowance:{ small:{}, medium:{}, large:{} },
+    repairHours:{ small:1 }
+  };
+  const status = pricebookServiceStatus(partialRepair);
+  assert.equal(status.status, 'NEEDS PRICING',
+    'an incomplete Small/Medium/Large repair shape still blocks activation');
+});

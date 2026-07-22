@@ -267,13 +267,20 @@ export function getActivationOwnerFields(serviceType, pricing = {}) {
 // remains extensible. nested lists are CLOSED second-level keys.
 // customerField names the customer input whose answer selects the key at
 // quote time; unknownKey maps the customer's 'unknown' to a mandated key.
+// ownerSelectable marks a CLOSED domain whose keys are product offerings the
+// contractor legitimately chooses to sell. The listed keys remain the only
+// permitted keys (the write path still rejects anything outside them), but
+// activation requires at least one priced offering rather than all of them.
+// An absent or blank key means NOT OFFERED — never free, never substituted.
+// A customer request for an unpriced key still returns ESTIMATE_REQUIRES_REVIEW
+// via shapedKeyMissing in quoteEngine.js.
 export const SHAPED_FIELD_KEYS = {
-  'FLOORING_INSTALL.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
-  'FLOORING_INSTALL.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
-  'FLOORING_REPLACEMENT.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
-  'FLOORING_REPLACEMENT.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], customerField:'newFlooringType' },
-  'SIDING_REPLACEMENT.laborPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
-  'SIDING_REPLACEMENT.materialPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], customerField:'sidingType' },
+  'FLOORING_INSTALL.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], ownerSelectable:true, customerField:'newFlooringType' },
+  'FLOORING_INSTALL.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], ownerSelectable:true, customerField:'newFlooringType' },
+  'FLOORING_REPLACEMENT.laborPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], ownerSelectable:true, customerField:'newFlooringType' },
+  'FLOORING_REPLACEMENT.materialPerSqft': { keys:['hardwood','laminate','vinyl_plank','carpet','tile'], ownerSelectable:true, customerField:'newFlooringType' },
+  'SIDING_REPLACEMENT.laborPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], ownerSelectable:true, customerField:'sidingType' },
+  'SIDING_REPLACEMENT.materialPerSqft': { keys:['vinyl','fiber_cement','wood','metal'], ownerSelectable:true, customerField:'sidingType' },
   'FLAT_ROOF_REPLACEMENT.laborPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
   'FLAT_ROOF_REPLACEMENT.membraneCostPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
   'FLAT_ROOF_REPLACEMENT.tearOffPerSqft': { keys:null, requiredKeys:['average'], customerField:'membraneType', unknownKey:'average' },
