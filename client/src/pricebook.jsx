@@ -415,6 +415,18 @@ function Preview({ preview, loading, status }) {
   const options = ready ? (preview.options || []) : [];
   const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
 
+  // Owner-only internals must not surface in the customer-facing preview.
+  // The engine flags them customerVisible:false.
+  const OWNER_ONLY_CATEGORIES = new Set(['markup','minimum_adjustment','surcharge','tax','overhead']);
+  const customerLineItems = (active?.lineItems || []).filter(item =>
+    item.customerVisible === true && !OWNER_ONLY_CATEGORIES.has(item.category));
+  // When the engine exposes no customer-visible breakdown, describe the
+  // drivers in plain language rather than leaking internal line names.
+  const driverSummary = [...new Set((active?.lineItems || [])
+    .filter(item => !OWNER_ONLY_CATEGORIES.has(item.category))
+    .map(item => String(item.category || '').replace(/_/g, ' ')))]
+    .filter(Boolean).join(', ') || 'labor and materials';
+
   return (
     <aside className="preview-column">
       <section className={`quote-preview${ready ? ' ready' : ''}`}>
@@ -478,15 +490,25 @@ function Preview({ preview, loading, status }) {
               {active.tierName && <span className="mono quote-tier-name">{active.tierName}</span>}
             </div>
 
+            {/* Customer-facing drivers only. The quote engine marks markup,
+                minimum adjustments, peak surcharges and tax as
+                customerVisible:false; those are owner-only and must never
+                appear in a view labelled "what your customer hears". Items
+                are grouped so the customer sees price drivers, not internals. */}
             <dl className="quote-lines">
-              {(active.lineItems || []).map(item => (
+              {customerLineItems.length > 0 ? customerLineItems.map(item => (
                 <div key={`${active.tierName}-${item.name}`}>
                   <dt>{item.name}</dt>
                   <dd className="mono">
                     ${(item.amountCents / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </dd>
                 </div>
-              ))}
+              )) : (
+                <div className="quote-drivers-note">
+                  <dt>Included in this estimate</dt>
+                  <dd>{driverSummary}</dd>
+                </div>
+              )}
               <div className="quote-midpoint">
                 <dt>Midpoint</dt>
                 <dd className="mono">${active.midEstimate.toLocaleString()}</dd>

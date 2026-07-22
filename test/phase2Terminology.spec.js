@@ -170,3 +170,34 @@ test('preview endpoints are registered only inside the development guard', () =>
   assert.match(dashboard, /SIMULATED FOR VISUAL REVIEW/);
   assert.match(dashboard, /NO CALLS ARE ROUTED/);
 });
+
+test('the customer-facing quote preview never renders owner-only line items', () => {
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  // The preview is labelled "what your customer hears"; it must filter on the
+  // engine's customerVisible flag rather than rendering every line item.
+  assert.match(pricebook, /customerVisible === true/);
+  assert.match(pricebook, /OWNER_ONLY_CATEGORIES/);
+  // Markup, minimum adjustments, peak surcharges and tax are owner-only.
+  for (const category of ['markup', 'minimum_adjustment', 'surcharge', 'tax']) {
+    assert.match(pricebook, new RegExp(`'${category}'`),
+      `${category} must be listed as an owner-only category`);
+  }
+  // The unfiltered map over lineItems must not remain in the preview.
+  const previewBlock = pricebook.slice(
+    pricebook.indexOf('function Preview('),
+    pricebook.indexOf('export default function PriceBook')
+  );
+  assert.equal(/\(active\.lineItems \|\| \[\]\)\.map/.test(previewBlock), false,
+    'the preview must not map over unfiltered line items');
+});
+
+test('owner-only line items are flagged customerVisible false by the engine', async () => {
+  const engine = readFileSync('server/quoteEngine.js', 'utf8');
+  for (const name of ['Markup', 'Minimum Price Adjustment', 'Peak season adjustment', 'Tax']) {
+    const index = engine.indexOf(`name:'${name}'`);
+    assert.equal(index >= 0, true, `${name} line item should exist`);
+    const declaration = engine.slice(index, index + 220);
+    assert.match(declaration, /customerVisible:false/,
+      `${name} must be marked customerVisible:false`);
+  }
+});

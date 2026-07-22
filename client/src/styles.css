@@ -1011,3 +1011,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .live-dot { animation: none; }
   .answering-dot { transition: none; }
 }
+
+.quote-drivers-note { flex-direction: column; gap: 4px; align-items: flex-start !important; }
+.quote-drivers-note dt { color: var(--gray) !important; font-size: 11px; }
+.quote-drivers-note dd { margin: 0; color: var(--white); font-size: 12px; line-height: 1.5; text-transform: capitalize; }
