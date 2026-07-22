@@ -6,6 +6,7 @@ import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, Textarea, TextInput, Toggle
 } from './ui.jsx';
+import { AssumptionRow, BlockerChecklist, Disclosure } from './reference.jsx';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -49,10 +50,11 @@ function MoneyInput({ value, onChange, money }) {
 }
 
 
-function ShapedMapField({ definition, value, onChange }) {
+function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] }) {
   const domain = definition.shapedKeys;
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   const fixed = Array.isArray(domain.keys);
+  const selectable = domain.ownerSelectable === true;
   const keys = fixed ? domain.keys : Object.keys(map);
   const [newKey, setNewKey] = useState('');
 
@@ -82,29 +84,174 @@ function ShapedMapField({ definition, value, onChange }) {
     setNewKey('');
   }
 
+  // Owner-selectable product offerings: an absent key means NOT OFFERED, never
+  // free. Toggling a product off removes its pricing entirely, which is what
+  // the corrected activation logic reads as "not offered".
+  function toggleOffered(key, offered) {
+    if (offered) {
+      write({ ...map, [key]: domain.nested ? {} : 0 });
+    } else {
+      removeKey(key);
+    }
+  }
+
+  if (selectable && !domain.nested) {
+    const offeredKeys = Object.keys(map);
+    return (
+      <div className="shaped-map">
+        <p className="offering-note">
+          Turn on only the {String(domain.keyLabel || 'type').toLowerCase()}s you actually sell.
+          Anything left off is treated as not offered — never as free.
+        </p>
+        <div className="matrix-scroll">
+          <table className="pricing-matrix">
+            <thead>
+              <tr>
+                <th scope="col">{domain.keyLabel || 'Type'}</th>
+                <th scope="col">Price ({domain.leafUnit || '$'})</th>
+                <th scope="col" className="matrix-status">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {keys.map(key => {
+                const offered = offeredKeys.includes(key);
+                const incomplete = incompleteOfferings.includes(key);
+                return (
+                  <tr key={key} className={offered ? '' : 'row-not-offered'}>
+                    <th scope="row">
+                      <label className="offered-toggle">
+                        <input type="checkbox" checked={offered}
+                          onChange={() => toggleOffered(key, !offered)} />
+                        <span>{humanPricingKey(key)}</span>
+                      </label>
+                    </th>
+                    <td>
+                      {offered ? (
+                        <div className="matrix-input">
+                          <span className="matrix-prefix mono">$</span>
+                          <input type="number" step="0.01" min="0" inputMode="decimal"
+                            aria-label={`${humanPricingKey(key)} price`}
+                            value={typeof map[key] === 'number' && map[key] !== 0 ? map[key] : ''}
+                            onChange={event => setLeaf(key, null, event.target.value)} />
+                        </div>
+                      ) : <span className="matrix-off mono">NOT OFFERED</span>}
+                    </td>
+                    <td className="matrix-status">
+                      {!offered ? <span className="chip chip-quiet">NOT OFFERED</span>
+                        : incomplete || !map[key] ? <span className="chip chip-need">NEEDS PRICE</span>
+                        : <span className="chip chip-live">READY</span>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // Nested shapes (Small / Medium / Large): shared column headings, no repeated
+  // size label in every cell.
+  if (domain.nested) {
+    const nestedKeys = domain.nested;
+    return (
+      <div className="shaped-map">
+        <div className="matrix-scroll">
+          <table className="pricing-matrix">
+            <thead>
+              <tr>
+                <th scope="col">{domain.keyLabel || 'Type'}</th>
+                {nestedKeys.map(nestedKey => (
+                  <th scope="col" key={nestedKey}>
+                    {domain.nestedCopy?.[nestedKey]?.label || humanPricingKey(nestedKey)}
+                  </th>
+                ))}
+                {!fixed && <th scope="col" className="matrix-status" />}
+              </tr>
+            </thead>
+            <tbody>
+              {keys.map(key => (
+                <tr key={key}>
+                  <th scope="row">
+                    <span className="matrix-row-title">{humanPricingKey(key)}</span>
+                    {domain.nestedUnit && <span className="matrix-row-unit mono">{domain.nestedUnit}</span>}
+                  </th>
+                  {nestedKeys.map(nestedKey => (
+                    <td key={nestedKey}>
+                      <div className="matrix-input">
+                        <span className="matrix-prefix mono">
+                          {domain.nestedCopy?.[nestedKey]?.unit === 'hours' ? 'h' : '$'}
+                        </span>
+                        <input type="number" step="0.01" min="0" inputMode="decimal"
+                          aria-label={`${humanPricingKey(key)} ${domain.nestedCopy?.[nestedKey]?.label || nestedKey}`}
+                          value={map[key]?.[nestedKey] ?? ''}
+                          onChange={event => setLeaf(key, nestedKey, event.target.value)} />
+                      </div>
+                    </td>
+                  ))}
+                  {!fixed && (
+                    <td className="matrix-status">
+                      <Button variant="quiet" onClick={() => removeKey(key)}>Remove</Button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {!fixed && (
+          <div className="shaped-map-add">
+            <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`}
+              placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`}
+              onChange={event => setNewKey(event.target.value)} />
+            <Button variant="secondary" onClick={addKey}>Add</Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Open single-level domains (e.g. membrane types, mulch types).
   return (
     <div className="shaped-map">
-      {keys.map(key => (
-        <div className="shaped-map-row" key={key}>
-          <span className="shaped-map-key">{humanPricingKey(key)}</span>
-          {domain.nested
-            ? domain.nested.map(nestedKey => (
-                <label className="shaped-map-cell" key={nestedKey}>
-                  <span>{domain.nestedCopy?.[nestedKey]?.label || humanPricingKey(nestedKey)}</span>
-                  <TextInput type="number" step="0.01" min="0" value={map[key]?.[nestedKey] ?? ''} onChange={event => setLeaf(key, nestedKey, event.target.value)} />
-                  <small>{domain.nestedCopy?.[nestedKey]?.unit || domain.nestedUnit}</small>
-                </label>
-              ))
-            : <label className="shaped-map-cell">
-                <TextInput type="number" step="0.01" min="0" value={typeof map[key] === 'number' ? map[key] : ''} onChange={event => setLeaf(key, null, event.target.value)} />
-                <small>{domain.leafUnit}</small>
-              </label>}
-          {!fixed && <Button variant="quiet" onClick={() => removeKey(key)}>Remove</Button>}
-        </div>
-      ))}
+      <div className="matrix-scroll">
+        <table className="pricing-matrix">
+          <thead>
+            <tr>
+              <th scope="col">{domain.keyLabel || 'Type'}</th>
+              <th scope="col">Price ({domain.leafUnit || '$'})</th>
+              {!fixed && <th scope="col" className="matrix-status" />}
+            </tr>
+          </thead>
+          <tbody>
+            {keys.map(key => (
+              <tr key={key}>
+                <th scope="row">{humanPricingKey(key)}</th>
+                <td>
+                  <div className="matrix-input">
+                    <span className="matrix-prefix mono">$</span>
+                    <input type="number" step="0.01" min="0" inputMode="decimal"
+                      aria-label={`${humanPricingKey(key)} price`}
+                      value={typeof map[key] === 'number' ? map[key] : ''}
+                      onChange={event => setLeaf(key, null, event.target.value)} />
+                  </div>
+                </td>
+                {!fixed && (
+                  <td className="matrix-status">
+                    <Button variant="quiet" onClick={() => removeKey(key)}>Remove</Button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {!fixed && (
         <div className="shaped-map-add">
-          <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`} placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`} onChange={event => setNewKey(event.target.value)} />
+          <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`}
+            placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`}
+            onChange={event => setNewKey(event.target.value)} />
           <Button variant="secondary" onClick={addKey}>Add</Button>
         </div>
       )}
@@ -147,7 +294,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
   );
 }
 
-function OwnerField({ definition, value, onChange, compact = false }) {
+function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [] }) {
   let control;
   if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;
@@ -160,19 +307,29 @@ function OwnerField({ definition, value, onChange, compact = false }) {
     );
   } else if (definition.type === 'json') {
     control = definition.shapedKeys
-      ? <ShapedMapField definition={definition} value={value} onChange={onChange} />
+      ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} />
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
     control = <MoneyInput value={value} onChange={onChange} money={definition.money} />;
   }
   if (compact) return control;
+  // Approved label ruling: concise trade-specific title is the primary label;
+  // the complete authoritative definition sits immediately beneath it as
+  // supporting copy, preserving all units, inclusions and exclusions.
+  // Approved label ruling: where a concise trade-specific title exists it is the
+  // primary control label and the complete authoritative definition (definition.label,
+  // preserved verbatim server-side) sits immediately beneath as supporting copy.
+  // Fields whose label is already concise keep it as the primary label.
+  const hasTitle = Boolean(definition.title);
   return (
-    <Field
-      label={definition.label}
-      help={`${definition.help}${definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}`}
-    >
-      {control}
-    </Field>
+    <div className="owner-field">
+      <span className="owner-field-title">{hasTitle ? definition.title : definition.label}</span>
+      {hasTitle && <span className="owner-field-definition">{definition.label}</span>}
+      <span className="owner-field-help">
+        {definition.help}{definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}
+      </span>
+      <div className="owner-field-control">{control}</div>
+    </div>
   );
 }
 
@@ -248,33 +405,109 @@ function TierBuilder({ tiers, definitions, onChange }) {
   );
 }
 
-function Preview({ preview, loading }) {
+function Preview({ preview, loading, status }) {
+  // Reference: design-reference/pricebook-editor/index.html "THE SIGNATURE
+  // MOMENT" — the customer-facing estimate is the hero of the right rail.
+  // Owner-only markup, margin and internal rates are never rendered here.
+  const ready = !loading && preview?.resultType === 'INSTANT_ESTIMATE_READY';
+  const review = !loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW';
+  const [tierIndex, setTierIndex] = useState(0);
+  const options = ready ? (preview.options || []) : [];
+  const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
+
   return (
     <aside className="preview-column">
-      <section className="live-preview">
-        <div className="preview-title"><span className="live-dot" /><p className="eyebrow">LIVE SAMPLE QUOTE</p><small>UPDATES AS YOU TYPE</small></div>
+      <section className={`quote-preview${ready ? ' ready' : ''}`}>
+        <div className="quote-preview-head">
+          <span className="quote-preview-eyebrow">
+            <span className="live-dot" aria-hidden="true" />
+            <span className="eyebrow">What your customer hears</span>
+          </span>
+          <span className="mono quote-preview-note">UPDATES AS YOU TYPE</span>
+        </div>
+        <p className="quote-preview-sub">
+          This is what the estimate will sound like on a call. Nothing saves until you save.
+        </p>
+
         {loading && <div className="preview-empty mono">CALCULATING</div>}
-        {!loading && !preview && <div className="preview-empty">Enter the required prices to see every tier.</div>}
-        {!loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW' && (
-          <div className="preview-empty">
+
+        {!loading && !preview && (
+          <div className="preview-empty">Enter the required prices to see the customer estimate.</div>
+        )}
+
+        {review && (
+          <div className="preview-review">
             <StatusChip status="NEEDS PRICING" />
-            <span>{preview.missingOwnerLabels?.join('; ') || preview.reviewReason || 'Complete the required pricing before previewing this quote.'}</span>
+            <p className="preview-review-title">This job would go to you for review.</p>
+            <BlockerChecklist
+              items={(preview.missingOwnerLabels || []).map((label, index) => ({
+                field: preview.missingOwnerFields?.[index] || String(index),
+                label
+              }))}
+              emptyLabel={preview.reviewReason || 'Complete the required pricing before previewing this quote.'}
+            />
           </div>
         )}
-        {!loading && preview?.resultType === 'INSTANT_ESTIMATE_READY' && (
-          <div className="preview-options">
-            {preview.options.map((option, index) => (
-              <article className="preview-option" key={option.tierName || index}>
-                <div><strong>{option.tierName || 'Base option'}</strong><StatusChip status="QUOTING LIVE" /></div>
-                <p><span>${option.lowEstimate.toLocaleString()}</span><small>to</small><span>${option.highEstimate.toLocaleString()}</span></p>
-                <dl>
-                  <div><dt>Midpoint</dt><dd>${option.midEstimate.toLocaleString()}</dd></div>
-                  {(option.lineItems || []).map(item => <div key={`${option.tierName}-${item.name}`}><dt>{item.name}</dt><dd>${(item.amountCents / 100).toLocaleString(undefined,{maximumFractionDigits:2})}</dd></div>)}
-                </dl>
-                {option.skippedAddons?.length > 0 && <Notice tone="warning">{option.disclaimer}</Notice>}
-              </article>
-            ))}
-          </div>
+
+        {ready && active && (
+          <>
+            {options.length > 1 && (
+              <div className="tier-switch" role="tablist" aria-label="Quote tiers">
+                {options.map((option, index) => (
+                  <button
+                    key={option.tierName || index}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === tierIndex}
+                    className={index === tierIndex ? 'selected' : ''}
+                    onClick={() => setTierIndex(index)}
+                  >
+                    {option.tierName || `Option ${index + 1}`}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="quote-range">
+              <div className="mono quote-range-label">RANGE YOUR CUSTOMER HEARS</div>
+              <div className="quote-range-values">
+                <span className="quote-low">${active.lowEstimate.toLocaleString()}</span>
+                <span className="mono quote-dash">–</span>
+                <span className="quote-high">${active.highEstimate.toLocaleString()}</span>
+              </div>
+              {active.tierName && <span className="mono quote-tier-name">{active.tierName}</span>}
+            </div>
+
+            <dl className="quote-lines">
+              {(active.lineItems || []).map(item => (
+                <div key={`${active.tierName}-${item.name}`}>
+                  <dt>{item.name}</dt>
+                  <dd className="mono">
+                    ${(item.amountCents / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  </dd>
+                </div>
+              ))}
+              <div className="quote-midpoint">
+                <dt>Midpoint</dt>
+                <dd className="mono">${active.midEstimate.toLocaleString()}</dd>
+              </div>
+            </dl>
+
+            {active.skippedAddons?.length > 0 && (
+              <Notice tone="warning">{active.disclaimer}</Notice>
+            )}
+
+            {status && (
+              <div className={`quote-issue-state${status.status === 'QUOTING LIVE' ? ' live' : ''}`}>
+                <StatusChip status={status.status} />
+                <span>
+                  {status.status === 'QUOTING LIVE'
+                    ? 'This service can issue quotes on a live call.'
+                    : 'This service still needs pricing before it can quote.'}
+                </span>
+              </div>
+            )}
+          </>
         )}
       </section>
     </aside>
@@ -477,6 +710,19 @@ export default function PriceBook() {
     return statusMap.get(service.serviceType) || validatingStatus;
   }
   const selectedStatus = displayStatus(selected);
+  // Split required from optional so required pricing stays open and dominant
+  // while optional charges collapse. requiredAtBase comes from the server's
+  // activation field list, so this mirrors real activation requirements.
+  const allFields = selectedMeta?.fields || [];
+  const requiredFields = allFields.filter(field => field.requiredAtBase);
+  const optionalFields = allFields.filter(field => !field.requiredAtBase);
+  const missingSet = new Set(selectedStatus.missingOwnerFields || []);
+  const requiredMissing = requiredFields.filter(field => missingSet.has(field.field));
+  const optionalMissing = optionalFields.filter(field => missingSet.has(field.field));
+  const optionalSet = optionalFields.filter(field => selected?.[field.field] !== undefined).length;
+  const class2Overridden = (selectedMeta?.class2Fields || []).filter(field =>
+    JSON.stringify(selected?.[field.field]) !== JSON.stringify(field.defaultValue)).length;
+
   const markup = Number(book.defaults.markupPercent || 0);
   const equivalence = book.defaults.markupMode === 'markup'
     ? `${markup}% markup = ${(markup / (100 + markup) * 100).toFixed(1)}% margin`
@@ -516,7 +762,11 @@ export default function PriceBook() {
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
                   <StatusChip status={status?.status || (missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE')} />
-                  {missing.length > 0 && <small className="missing-list">{missing.join('; ')}</small>}
+                  <small className="mono service-compact-status">
+                    {missing.length > 0
+                      ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
+                      : 'Ready to quote'}
+                  </small>
                 </button>
               );
             })}
@@ -524,19 +774,51 @@ export default function PriceBook() {
           {selected && selectedMeta ? (
             <div className="editor-grid">
               <div className="editor-column">
+                {/* REQUIRED PRICING — open and visually dominant.
+                    Reference: pricebook-editor "ESSENTIALS" card. */}
                 <section className="editor-section essentials">
                   <div className="section-title">
-                    <div><p className="eyebrow">SERVICE PRICES</p><h2>{selected.service || selectedMeta.name}</h2><span>Each control explains what it prices and when it affects a quote.</span></div>
-                    <StatusChip status={selectedStatus.status} />
+                    <div>
+                      <p className="eyebrow">Your prices · required</p>
+                      <h2>{selected.service || selectedMeta.name}</h2>
+                      <span>Off The Clock never guesses these. Fill them in and this service goes live.</span>
+                    </div>
+                    <span className="mono set-count">
+                      {requiredFields.length - requiredMissing.length} / {requiredFields.length} SET
+                    </span>
                   </div>
-                  {selectedStatus.missingOwnerLabels?.length > 0 && <Notice tone="warning">Still needed: {selectedStatus.missingOwnerLabels.join('; ')}</Notice>}
+
+                  {requiredMissing.length > 0 && (
+                    <div className="blocker-drawer">
+                      <p className="mono blocker-drawer-title">
+                        {requiredMissing.length} {requiredMissing.length === 1 ? 'PRICE NEEDED' : 'PRICES NEEDED'}
+                      </p>
+                      <BlockerChecklist
+                        items={requiredMissing.map(field => ({
+                          field: field.field,
+                          label: field.label,
+                          service: selected.service || selectedMeta.name
+                        }))}
+                        onNavigate={item => {
+                          const node = document.getElementById(`field-${item.field}`);
+                          if (node) {
+                            node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            node.querySelector('input, select, textarea, button')?.focus();
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+
                   {aiSourced && (
                     <Notice tone="warning">AI-captured values are DRAFT. Confirm each price individually below — this service cannot go live until every required field is confirmed as yours.</Notice>
                   )}
+
                   <div className="field-stack">
-                    {selectedMeta.fields.map(definition => (
-                      <div key={definition.field} className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} />
+                    {requiredFields.map(definition => (
+                      <div key={definition.field} id={`field-${definition.field}`}
+                        className={aiSourced ? 'field-confirm-row' : undefined}>
+                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -548,56 +830,139 @@ export default function PriceBook() {
                     ))}
                   </div>
                 </section>
-                <section className="editor-section">
-                  <div className="section-title">
-                    <div><p className="eyebrow">QUANTITY SETTINGS</p><h2>Quantity factors</h2><span>Recommended defaults are shown. Reset restores the recommended value.</span></div>
-                    <Button icon={RotateCcw} variant="secondary" onClick={() => {
-                      const next = { ...selected };
-                      for (const [field,value] of Object.entries(selectedMeta.class2Defaults || {})) next[field] = clone(value);
-                      replaceSelected(next);
-                    }}>Reset all</Button>
-                  </div>
-                  <div className="factor-list">
-                    {(selectedMeta.class2Fields || []).map(definition => (
-                      <div className="factor-row" key={definition.field}>
-                        <Field label={`${definition.label} (${definition.unit})`} help={definition.help}>
-                          <StructuredFactorField
-                            value={selected[definition.field]}
-                            defaultValue={definition.defaultValue}
-                            unit={definition.unit}
-                            onChange={value => updateField(definition.field, value)}
+
+                {/* OPTIONAL PRICES — collapsed until relevant. */}
+                {optionalFields.length > 0 && (
+                  <Disclosure
+                    title="Optional prices and add-on charges"
+                    subtitle="Only charged when the job includes them. Leave blank to skip."
+                    summaryChip={`${optionalSet} OF ${optionalFields.length} SET`}
+                    blockerCount={optionalMissing.length && aiSourced ? optionalMissing.length : 0}
+                  >
+                    {optionalFields.map(definition => (
+                      <div key={definition.field} id={`field-${definition.field}`}
+                        className={aiSourced ? 'field-confirm-row' : undefined}>
+                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        {aiSourced && (
+                          <Toggle
+                            checked={selected.confirmedFields?.[definition.field] === true}
+                            onChange={value => confirmField(definition.field, value)}
+                            label={selected.confirmedFields?.[definition.field] === true ? 'CONFIRMED' : 'CONFIRM THIS VALUE'}
                           />
-                        </Field>
-                        <Button icon={RotateCcw} variant="icon" title="Reset to default" aria-label={`Reset ${definition.label}`} onClick={() => resetClass2(definition.field)} />
+                        )}
                       </div>
                     ))}
-                    {!selectedMeta.class2Fields?.length && <Notice>No quantity factors are needed for this service.</Notice>}
-                  </div>
-                </section>
-                <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields} onChange={tiers => replaceSelected({ ...selected, tiers })} />
-                <section className="editor-section">
-                  <div className="section-title"><div><p className="eyebrow">MARKUP & MARGIN</p><h2>Price treatment</h2></div></div>
-                  <div className="segmented">
-                    <button type="button" className={book.defaults.markupMode === 'markup' ? 'selected' : ''} onClick={() => updateDefault('markupMode','markup')}>MARKUP</button>
-                    <button type="button" className={book.defaults.markupMode === 'margin' ? 'selected' : ''} onClick={() => updateDefault('markupMode','margin')}>MARGIN</button>
-                  </div>
-                  <Field label={book.defaults.markupMode === 'markup' ? 'Markup (%)' : 'Margin (%)'}><TextInput type="number" min="0" max={book.defaults.markupMode === 'margin' ? 99.99 : undefined} step="0.1" value={book.defaults.markupPercent} onChange={event => updateDefault('markupPercent', Number(event.target.value))} /></Field>
-                  <div className="equivalence mono">{equivalence}</div>
-                </section>
-                <section className="editor-section">
-                  <div className="section-title"><div><p className="eyebrow">TAX</p><h2>Jurisdiction-aware tax</h2></div></div>
-                  <Field label="Tax mode">
-                    <Select value={book.defaults.taxMode} onChange={event => updateDefault('taxMode',event.target.value)}>
-                      <option value="TAX_NONE">No tax line</option>
-                      <option value="TAX_MATERIALS">Tax materials</option>
-                      <option value="TAX_ALL">Tax entire job</option>
-                    </Select>
-                  </Field>
-                  {book.defaults.taxMode !== 'TAX_NONE' && <Field label="Tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={book.defaults.taxPercent} onChange={event => updateDefault('taxPercent',Number(event.target.value))} /></Field>}
-                  <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
-                </section>
+                  </Disclosure>
+                )}
+
+                {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
+                {(selectedMeta.class2Fields || []).length > 0 && (
+                  <Disclosure
+                    title="Quantity assumptions"
+                    subtitle="Defaults are already being applied. Adjust only if your jobs differ."
+                    summaryChip={class2Overridden > 0 ? `${class2Overridden} CHANGED` : 'DEFAULTS APPLIED'}
+                  >
+                    <div className="assumption-toolbar">
+                      <span className="assumption-note">
+                        These change how much material or labor a job is assumed to need. They are not prices.
+                      </span>
+                      <Button icon={RotateCcw} variant="secondary" onClick={() => {
+                        const next = { ...selected };
+                        for (const [field, value] of Object.entries(selectedMeta.class2Defaults || {})) next[field] = clone(value);
+                        replaceSelected(next);
+                      }}>Reset all to default</Button>
+                    </div>
+                    {(selectedMeta.class2Fields || []).map(definition => {
+                      const current = selected[definition.field];
+                      const isStructured = current && typeof current === 'object';
+                      if (isStructured) {
+                        return (
+                          <div className="assumption-row" key={definition.field}>
+                            <div className="assumption-head">
+                              <span className="assumption-label">{definition.label}</span>
+                              <Button icon={RotateCcw} variant="icon" title="Reset to default"
+                                aria-label={`Reset ${definition.label}`} onClick={() => resetClass2(definition.field)} />
+                            </div>
+                            <p className="assumption-explanation">{definition.help}</p>
+                            <StructuredFactorField
+                              value={current}
+                              defaultValue={definition.defaultValue}
+                              unit={definition.unit}
+                              onChange={value => updateField(definition.field, value)}
+                            />
+                          </div>
+                        );
+                      }
+                      return (
+                        <AssumptionRow
+                          key={definition.field}
+                          label={definition.label}
+                          explanation={definition.help}
+                          unit={definition.unit}
+                          value={current}
+                          defaultValue={JSON.stringify(definition.defaultValue).replace(/"/g, '')}
+                          overridden={JSON.stringify(current) !== JSON.stringify(definition.defaultValue)}
+                          onChange={value => updateField(definition.field, value === '' ? undefined : Number(value))}
+                          onReset={() => resetClass2(definition.field)}
+                        />
+                      );
+                    })}
+                  </Disclosure>
+                )}
+
+                {/* GOOD / BETTER / BEST — collapsed until the owner opts in. */}
+                <Disclosure
+                  title="Good / Better / Best tiers"
+                  subtitle="Offer up to three options on one quote."
+                  summaryChip={(selected.tiers || []).length ? `${(selected.tiers || []).length} SET` : 'NOT USED'}
+                  defaultOpen={(selected.tiers || []).length > 0}
+                >
+                  <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields}
+                    onChange={tiers => replaceSelected({ ...selected, tiers })} />
+                </Disclosure>
+
+                {/* BUSINESS-WIDE — must not compete with service pricing. */}
+                <div className="business-wide">
+                  <p className="eyebrow business-wide-eyebrow">Business-wide · applies to every service</p>
+                  <Disclosure
+                    title="Markup and margin"
+                    subtitle={equivalence}
+                    summaryChip={`${markup}%`}
+                  >
+                    <div className="segmented">
+                      <button type="button" className={book.defaults.markupMode === 'markup' ? 'selected' : ''} onClick={() => updateDefault('markupMode','markup')}>MARKUP</button>
+                      <button type="button" className={book.defaults.markupMode === 'margin' ? 'selected' : ''} onClick={() => updateDefault('markupMode','margin')}>MARGIN</button>
+                    </div>
+                    <Field label={book.defaults.markupMode === 'markup' ? 'Markup (%)' : 'Margin (%)'}>
+                      <TextInput type="number" min="0" max={book.defaults.markupMode === 'margin' ? 99.99 : undefined} step="0.1" value={book.defaults.markupPercent} onChange={event => updateDefault('markupPercent', Number(event.target.value))} />
+                    </Field>
+                    <div className="equivalence mono">{equivalence}</div>
+                  </Disclosure>
+
+                  <Disclosure
+                    title="Tax"
+                    subtitle={book.defaults.taxMode === 'TAX_NONE'
+                      ? 'No tax line on quotes'
+                      : `${book.defaults.taxMode === 'TAX_MATERIALS' ? 'Materials' : 'Entire job'} taxed at ${book.defaults.taxPercent}%`}
+                    summaryChip={book.defaults.taxMode === 'TAX_NONE' ? 'NO TAX' : 'SET'}
+                  >
+                    <Field label="Tax mode">
+                      <Select value={book.defaults.taxMode} onChange={event => updateDefault('taxMode',event.target.value)}>
+                        <option value="TAX_NONE">No tax line</option>
+                        <option value="TAX_MATERIALS">Tax materials</option>
+                        <option value="TAX_ALL">Tax entire job</option>
+                      </Select>
+                    </Field>
+                    {book.defaults.taxMode !== 'TAX_NONE' && (
+                      <Field label="Tax rate (%)">
+                        <TextInput type="number" min="0" max="100" step="0.01" value={book.defaults.taxPercent} onChange={event => updateDefault('taxPercent',Number(event.target.value))} />
+                      </Field>
+                    )}
+                    <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
+                  </Disclosure>
+                </div>
               </div>
-              <Preview preview={preview} loading={previewLoading} />
+              <Preview preview={preview} loading={previewLoading} status={selectedStatus} />
             </div>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>

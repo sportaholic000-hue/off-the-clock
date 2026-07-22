@@ -1,8 +1,15 @@
 const copy = (label, help) => ({ label, help });
 
+// Approved label ruling: where the authoritative pricing definition is a full
+// sentence, render a concise trade-specific control title as the primary label
+// and keep the complete authoritative wording immediately beneath as supporting
+// copy. titled() preserves the authoritative text VERBATIM in `definition`.
+// Units, inclusions, exclusions and pricing meaning are unchanged.
+const titled = (title, authoritativeLabel, help) => ({ label: authoritativeLabel, title, help });
+
 export const OWNER_FIELD_COPY = {
   laborPerSquare: copy('Roof installation labor price per roofing square', 'Labor charge for each 100 square feet of roof area before pitch and story adjustments.'),
-  materialCostPerSquare: copy('Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.', 'Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
+  materialCostPerSquare: titled('All-in roofing material price per square', 'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.', 'Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
   tearOffPerSquare: copy('Roof tear-off price per existing roofing square', 'Removal labor for each roofing square and each existing layer, adjusted for pitch and stories.'),
   underlaymentPerSquare: copy('Underlayment material price per roofing square', 'Material price applied to each waste-adjusted roofing square.'),
   accessoryPricingMode: copy('Roof accessory pricing method', 'Choose whether starter, drip edge, and ridge cap are included in the all-in material price or priced separately.'),
@@ -16,8 +23,8 @@ export const OWNER_FIELD_COPY = {
   repairMinimum: copy('Minimum repair visit price', 'Lowest total price for this repair service. Enter $0 when there is no repair minimum.'),
   repairHours: copy('Repair labor hours by repair type and project size', 'Enter the labor hours normally required for each repair type and small, medium, or large affected area.'),
   repairMaterialAllowance: copy('Roof repair material allowance by repair type', 'Material allowance added for each roof repair type before the final site inspection.'),
-  laborPerFloorSqft: copy('Your labor price per square foot of FLOOR area — walls only, two coats, standard 8-ft ceilings.', 'Base wall-painting labor applied to floor area, then adjusted for wall height and coat count.'),
-  materialPerFloorSqft2Coats: copy('Your paint/material cost per square foot of FLOOR area for two coats on walls.', 'Base wall paint and material price applied to floor area, then adjusted for wall height and coat count.'),
+  laborPerFloorSqft: titled('Wall painting labor price per floor square foot', 'Your labor price per square foot of FLOOR area — walls only, two coats, standard 8-ft ceilings.', 'Base wall-painting labor applied to floor area, then adjusted for wall height and coat count.'),
+  materialPerFloorSqft2Coats: titled('Wall paint material price per floor square foot', 'Your paint/material cost per square foot of FLOOR area for two coats on walls.', 'Base wall paint and material price applied to floor area, then adjusted for wall height and coat count.'),
   minimumJob: copy('Minimum job price', 'Lowest total price for this service. Enter $0 when there is no service minimum.'),
   ceilingLaborPerFloorSqft: copy('Ceiling painting labor price per square foot of floor area', 'Labor charge applied when ceilings are included. Ceiling area is treated as equal to the floor area.'),
   trimLaborPerLF: copy('Trim painting labor price per linear foot', 'Labor charge applied to the estimated trim length when trim painting is included.'),
@@ -29,15 +36,15 @@ export const OWNER_FIELD_COPY = {
   materialPerLinearFoot: copy('Fence material price per linear foot', 'Fence-panel and rail material charge for each linear foot, adjusted for fence height.'),
   postSpacing: copy('Post spacing (ft)', 'Typical distance between line posts, used to calculate the number of posts required.'),
   postPrice: copy('Fence post material price per post', 'Material price for each calculated fence post when posts are not included in the per-foot material price.'),
-  concretePerPost: copy('Concrete + digging cost per post at your local frost/set depth.', 'Material and digging charge for every calculated fence post, including corner and gate posts.'),
+  concretePerPost: titled('Concrete and digging price per post', 'Concrete + digging cost per post at your local frost/set depth.', 'Material and digging charge for every calculated fence post, including corner and gate posts.'),
   postsIncludedInMaterial: copy('Posts already included in material cost?', 'Choose Yes only when the per-linear-foot material price already includes every fence post.'),
-  gatePrice: copy("Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.", 'Material and hardware charge for each gate. The two gate posts remain part of the calculated post count.'),
+  gatePrice: titled('Installed price per gate', "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.", 'Material and hardware charge for each gate. The two gate posts remain part of the calculated post count.'),
   removalPerLinearFoot: copy('Existing fence removal labor price per linear foot', 'Removal labor applied when the customer wants the old fence removed, adjusted for terrain.'),
   disposalPerLF: copy('Existing fence disposal price per linear foot', 'Optional disposal charge for each linear foot of old fence removed. When blank, the business-wide disposal charge is used.'),
   concreteCostPerCubicYard: copy('Ready-mix concrete material price per cubic yard', 'Concrete material cost multiplied by calculated slab volume, including the configured waste allowance.'),
   formworkPerLF: copy('Formwork material price per linear foot', 'Forms and related material charge applied to the calculated slab perimeter.'),
   demolitionPerSqft: copy('Concrete demolition labor price per square foot', 'Removal labor applied to the existing concrete area when demolition is included, adjusted for access.'),
-  basePrepPerSqft: copy('Excavation + compacted gravel base + grading, per square foot.', 'Preparation charge applied to the slab area when a new base is required.'),
+  basePrepPerSqft: titled('Base preparation price per square foot', 'Excavation + compacted gravel base + grading, per square foot.', 'Preparation charge applied to the slab area when a new base is required.'),
   wireReinforcementPerSqft: copy('Wire mesh reinforcement material price per square foot', 'Material charge applied when wire mesh reinforcement is selected.'),
   rebarReinforcementPerSqft: copy('Rebar reinforcement material price per square foot', 'Material charge applied when rebar reinforcement is selected.'),
   stampedMaterialPerSqft: copy('Stamped finish material price per square foot', 'Color hardener, release agent, and sealer material charge applied when a stamped finish is selected.'),
@@ -51,7 +58,7 @@ export const OWNER_FIELD_COPY = {
   edgingPerLinearFoot: copy('Landscape edging labor price per linear foot', 'Labor charge applied when bed edging or lawn edging is included.'),
   sodMaterialPerSqft: copy('Sod material price per square foot', 'Sod material charge applied to the measured area plus the configured waste allowance.'),
   sodInstallLaborPerSqft: copy('Sod installation labor price per square foot', 'Installation labor applied to the measured sod area, adjusted for slope and access.'),
-  groundPrepPerSqft: copy('Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job — make sure this number covers disposal of the old lawn.', 'Preparation charge applied to the sod area when ground preparation is included.'),
+  groundPrepPerSqft: titled('Ground preparation price per square foot', 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job — make sure this number covers disposal of the old lawn.', 'Preparation charge applied to the sod area when ground preparation is included.'),
   plantingLaborPerPlant: copy('Plant installation labor price per plant by plant size', 'Labor charge for each plant, selected from the small, medium, large, or mixed rate.'),
   plantMaterialAllowance: copy('Plant material allowance per plant by plant size', 'Plant material allowance multiplied by the plant count for the selected size.'),
   mowingBaseRatePerSqft: copy('Base mowing labor price per square foot', 'Base mowing labor applied to yard area before service-frequency and overgrowth adjustments.'),

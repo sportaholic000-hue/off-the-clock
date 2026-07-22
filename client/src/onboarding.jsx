@@ -6,7 +6,17 @@ import {
   PhonePreviewButton, Select, StatusChip, StepActions, Textarea, TextInput, Toggle
 } from './ui.jsx';
 
-const STEPS = ['Account','Business type','Jurisdiction','Phone','Knowledge base','Go live','Price book','Calendar','Voice'];
+const STEPS = [
+  { name:'Account' },
+  { name:'Business type' },
+  { name:'Jurisdiction' },
+  { name:'Phone number' },
+  { name:'Knowledge base' },
+  { name:'Go live' },
+  { name:'Price book' },
+  { name:'Calendar', optional:true },
+  { name:'Voice & greeting' }
+];
 const PLANS = ['Operator','QuoteDone','Scale'];
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
@@ -28,20 +38,61 @@ function setStepUrl(step) {
   window.history.replaceState({}, '', `/onboarding?step=${step}`);
 }
 
-function Stepper({ step }) {
+function StepRail({ step, state, onJump }) {
+  // Reference: design-reference/onboarding/index.html step rail.
+  // Answering status flips once the number is set and About + Hours have
+  // content. Quoting activates per service later; answering never waits on
+  // the price book.
+  const profile = state?.profile || {};
+  const simulated = state?.preview?.telephonySimulated === true;
+  const numberReady = simulated || profile.phoneProvisioningStatus === 'provisioned';
+  const knowledgeReady = Boolean(profile.knowledgeBase?.about && profile.knowledgeBase?.hours);
+  const answering = numberReady && knowledgeReady;
+
   return (
-    <ol className="stepper" aria-label="Onboarding progress">
-      {STEPS.map((name, index) => {
-        const number = index + 1;
-        const state = number < step ? 'done' : number === step ? 'current' : 'upcoming';
-        return (
-          <li key={name} className={state}>
-            <span>{number < step ? <Check size={13} /> : number}</span>
-            <small>{name}</small>
-          </li>
-        );
-      })}
-    </ol>
+    <nav className="step-rail" aria-label="Setup progress">
+      <span className="eyebrow">Get set up</span>
+      <ol className="progress-rail">
+        {STEPS.map((entry, index) => {
+          const number = index + 1;
+          const railState = number < step ? 'done' : number === step ? 'current' : 'upcoming';
+          return (
+            <li key={entry.name} className={`rail-step ${railState}`}>
+              <button
+                type="button"
+                onClick={() => railState === 'done' && onJump && onJump(number)}
+                disabled={railState !== 'done'}
+                aria-current={railState === 'current' ? 'step' : undefined}
+              >
+                <span className="rail-marker mono">
+                  {railState === 'done' ? <Check size={12} aria-hidden="true" /> : number}
+                </span>
+                <span className="rail-copy">
+                  <span className="rail-title">{entry.name}</span>
+                  {entry.optional && <span className="rail-optional mono">SKIPPABLE</span>}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className={`answering-status${answering ? ' on' : ''}`}>
+        <span className="mono answering-label">ANSWERING STATUS</span>
+        <div className="answering-state">
+          <span className="answering-dot" aria-hidden="true" />
+          <span className="answering-text">
+            {answering
+              ? (simulated ? 'Ready (simulated review only)' : 'Ready to answer')
+              : 'Not live yet'}
+          </span>
+        </div>
+        <span className="answering-note">
+          Flips on once your number is set and the About and Hours sections have content.
+          Quoting turns on per service later. Answering never waits on your price book.
+        </span>
+      </div>
+    </nav>
   );
 }
 
@@ -748,8 +799,14 @@ export default function Onboarding() {
   return (
     <AppShell activePath="/onboarding" operator={state.operator}>
       <main className="onboarding-page">
-        <Stepper step={step} />
-        {content}
+        <StepRail step={step} state={state} onJump={move} />
+        <div className="step-body">
+          <div className="step-heading">
+            <span className="eyebrow">Step {step} of {STEPS.length}</span>
+            <h1>{STEPS[step - 1]?.name}</h1>
+          </div>
+          {content}
+        </div>
       </main>
     </AppShell>
   );

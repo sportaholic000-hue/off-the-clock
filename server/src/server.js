@@ -42,6 +42,7 @@ import {
 import {
   decoratePreviewState,
   localPreviewEnabled,
+  previewDashboardActivity,
   previewOperatorPatch,
   previewPhonePatch
 } from './previewMode.js';
@@ -394,6 +395,8 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
     pricebookStatuses: pricebookStatuses(book),
+    // Null outside local preview. Never fabricated for the real product.
+    previewActivity: previewDashboardActivity(),
     sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']
   });
 });

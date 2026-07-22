@@ -861,3 +861,91 @@ test('closed non-selectable domains still require complete coverage', () => {
   assert.equal(status.status, 'NEEDS PRICING',
     'an incomplete Small/Medium/Large repair shape still blocks activation');
 });
+
+test('disjoint product offering maps must not activate', () => {
+  // Siding labor priced only for vinyl, material priced only for wood.
+  // Each field is individually well-formed; no product is actually sellable.
+  const disjoint = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ wood:520 },
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  const status = pricebookServiceStatus(disjoint);
+  assert.equal(status.status, 'NEEDS PRICING',
+    'disjoint labor and material product sets must not activate');
+  assert.deepEqual(status.incompleteOfferings, ['vinyl','wood'],
+    'both half-priced products are reported as incomplete offerings');
+
+  // Flooring equivalent.
+  const flooringDisjoint = {
+    serviceType:'FLOORING_INSTALL', service:'Flooring installation',
+    laborPerSqft:{ carpet:200 }, materialPerSqft:{ tile:410 },
+    removalPerSqft:100, disposalPerSqft:50, perStepPrice:1500,
+    underlaymentPerSqft:75,
+    minimumJob:40000, allowAssumptionBasedQuotes:true
+  };
+  assert.equal(pricebookServiceStatus(flooringDisjoint).status, 'NEEDS PRICING',
+    'disjoint flooring labor and material sets must not activate');
+});
+
+test('a product in labor but absent from material blocks activation', () => {
+  const partialOverlap = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{ vinyl:300, wood:280 }, materialPerSqft:{ vinyl:400 },
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  const status = pricebookServiceStatus(partialOverlap);
+  assert.equal(status.status, 'NEEDS PRICING',
+    'wood has labor but no material, so it is enabled and incomplete');
+  assert.deepEqual(status.incompleteOfferings, ['wood']);
+  assert.equal(status.missingOwnerFields.includes('materialPerSqft'), true);
+});
+
+test('a product in material but absent from labor blocks activation', () => {
+  const reversed = {
+    serviceType:'FLOORING_REPLACEMENT', service:'Flooring replacement',
+    laborPerSqft:{ carpet:200 }, materialPerSqft:{ carpet:300, hardwood:800 },
+    removalPerSqft:100, disposalPerSqft:50, perStepPrice:1500,
+    underlaymentPerSqft:75, subfloorAllowancePerSqft:60,
+    minimumJob:40000, allowAssumptionBasedQuotes:true
+  };
+  const status = pricebookServiceStatus(reversed);
+  assert.equal(status.status, 'NEEDS PRICING',
+    'hardwood has material but no labor, so it is enabled and incomplete');
+  assert.deepEqual(status.incompleteOfferings, ['hardwood']);
+});
+
+test('a consistently priced subset still activates after the consistency check', () => {
+  const consistent = {
+    serviceType:'SIDING_REPLACEMENT', service:'Siding replacement',
+    laborPerSqft:{ vinyl:300 }, materialPerSqft:{ vinyl:400 },
+    removalPerSqft:120, trimPerLinearFoot:450,
+    minimumJob:50000, allowAssumptionBasedQuotes:true
+  };
+  const status = pricebookServiceStatus(consistent);
+  assert.equal(status.status, 'QUOTING LIVE');
+  assert.deepEqual(status.incompleteOfferings, [],
+    'a consistent single-product offering reports no gaps');
+
+  // Two consistently priced products also activate.
+  const twoConsistent = {
+    ...consistent,
+    laborPerSqft:{ vinyl:300, metal:360 }, materialPerSqft:{ vinyl:400, metal:610 }
+  };
+  assert.equal(pricebookServiceStatus(twoConsistent).status, 'QUOTING LIVE');
+});
+
+test('offering consistency does not affect services without selectable products', () => {
+  // Fencing has no ownerSelectable product domain; behavior must be unchanged.
+  const fencing = {
+    serviceType:'FENCING_INSTALL', service:'Fencing installation',
+    laborPerLinearFoot:1200, materialPerLinearFoot:1800,
+    postsIncludedInMaterial:true, gatePrice:25000, minimumJob:50000,
+    allowAssumptionBasedQuotes:true
+  };
+  const status = pricebookServiceStatus(fencing);
+  assert.deepEqual(status.incompleteOfferings, [],
+    'a service with no selectable product domain reports no offering gaps');
+});

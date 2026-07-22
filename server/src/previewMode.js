@@ -70,3 +70,39 @@ export function decoratePreviewState(state, env = process.env) {
     }
   };
 }
+
+// Seeded demonstration activity for the local visual-review mode ONLY.
+// Gated by localPreviewEnabled(): NODE_ENV must not be production AND
+// LOCAL_PREVIEW_MODE must be exactly 'true'. Every consumer must render this
+// behind an explicit simulated marker. It never reflects, alters or implies
+// genuine operator activity — previewOperatorPatch always writes
+// operatorEnabled: 0, so no simulated state can place a real operator live.
+export function previewDashboardActivity(env = process.env) {
+  if (!localPreviewEnabled(env)) return null;
+  return {
+    simulated: true,
+    label: 'SIMULATED PREVIEW DATA',
+    counters: {
+      callsAnswered: { value: 14, unit: 'today', detail: '61 THIS WEEK · 5 AFTER-HOURS' },
+      quotesDelivered: { value: '$23,400', detail: '6 TODAY · 19 THIS WEEK' },
+      bookedOnCalendar: { value: '$11,280', detail: '4 APPOINTMENTS THIS WEEK' },
+      timeOffTheClock: { value: '≈ 9.2', unit: 'hrs / wk', detail: 'BASED ON CALLS HANDLED FOR YOU' }
+    },
+    liveCall: {
+      duration: '0:41',
+      summary: 'Incoming from (506) 555-0164 · quoting a 140 ft cedar fence'
+    },
+    feed: [
+      { time: '21:12 · 3:24', summary: 'Gate repair quote · $285 delivered · booked Thursday 9am', chip: 'QUOTED + BOOKED', tone: 'live' },
+      { time: '20:48 · 1:58', summary: 'Custom ironwork · flagged to you, full details captured', chip: 'NEEDS YOUR PRICE', tone: 'need' },
+      { time: '19:03 · 2:41', summary: 'Chain link, 80 ft · quoted from your rates', chip: 'QUOTED', tone: 'live' }
+    ],
+    priorityAction: {
+      eyebrow: 'QUOTE REQUESTS WAITING ON YOUR PRICING',
+      detail: 'Custom ironwork fence · slope over 20°. Captured in full, waiting on you.',
+      count: 2
+    },
+    minutes: { used: 642, included: 1200, label: '642 / 1,200 MIN' },
+    spamBlocked: '23 SPAM CALLS BLOCKED · 41 MIN SAVED'
+  };
+}

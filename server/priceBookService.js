@@ -129,6 +129,57 @@ function isMissing(serviceType, pricing, field) {
   return !zeroAllowedOwnerFields.has(field) && value === 0;
 }
 
+// Owner-selectable product offerings must be consistent ACROSS the required
+// product-specific pricing fields, not merely valid within each field
+// independently. A product type counts as ENABLED as soon as it appears in any
+// required product-specific field; once enabled it must carry a positive price
+// in EVERY such field. This blocks disjoint maps — e.g. siding labor priced
+// only for vinyl while siding material is priced only for wood — where each
+// field is individually well-formed but no single product is actually sellable.
+// Returns the product keys that are enabled but incompletely priced.
+export function inconsistentOfferings(serviceType, pricing, requiredFields) {
+  const selectableFields = requiredFields.filter(field => {
+    const domain = shapedFieldKeys(serviceType, field);
+    return domain?.ownerSelectable === true;
+  });
+  if (selectableFields.length < 1) return [];
+
+  const enabled = new Set();
+  for (const field of selectableFields) {
+    const value = pricing[field];
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+    for (const key of Object.keys(value)) enabled.add(key);
+  }
+  if (!enabled.size) return [];
+
+  // A product is fully priced only if every selectable field carries a
+  // positive price for it. Absent means NOT OFFERED, never free.
+  const incomplete = [...enabled].filter(key =>
+    selectableFields.some(field => !positiveOwnerPrice(pricing[field]?.[key]))
+  );
+  return incomplete.sort();
+}
+
+// True when no single product type is completely priced across all required
+// product-specific fields.
+function noCompleteOffering(serviceType, pricing, requiredFields) {
+  const selectableFields = requiredFields.filter(field => {
+    const domain = shapedFieldKeys(serviceType, field);
+    return domain?.ownerSelectable === true;
+  });
+  if (selectableFields.length < 1) return false;
+
+  const enabled = new Set();
+  for (const field of selectableFields) {
+    const value = pricing[field];
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+    for (const key of Object.keys(value)) enabled.add(key);
+  }
+  return ![...enabled].some(key =>
+    selectableFields.every(field => positiveOwnerPrice(pricing[field]?.[key]))
+  );
+}
+
 export const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 
 export function pricebookServiceStatus(service) {
@@ -138,6 +189,19 @@ export function pricebookServiceStatus(service) {
     ...getRequiredOwnerFields(service.serviceType, customerInputs)
   ])];
   let missingOwnerFields = requiredFields.filter(field => isMissing(service.serviceType, pricingFor(service), field));
+
+  // Cross-field offering consistency. Each product-specific pricing field may
+  // individually pass while no single product type is completely priced across
+  // all of them (disjoint labor/material maps). Those fields must be reported
+  // as blockers so the service cannot activate.
+  const offeringGaps = inconsistentOfferings(service.serviceType, pricingFor(service), requiredFields);
+  const noOffering = noCompleteOffering(service.serviceType, pricingFor(service), requiredFields);
+  if (offeringGaps.length || noOffering) {
+    const selectableFields = requiredFields.filter(field =>
+      shapedFieldKeys(service.serviceType, field)?.ownerSelectable === true);
+    missingOwnerFields = [...new Set([...missingOwnerFields, ...selectableFields])];
+  }
+
   if (AI_SOURCES.has(service.source)) {
     const confirmed = service.confirmedFields && typeof service.confirmedFields === 'object' ? service.confirmedFields : {};
     // EVERY field the AI populated must be individually confirmed (or
@@ -156,7 +220,10 @@ export function pricebookServiceStatus(service) {
     service: service.service || SERVICE_NAMES[service.serviceType] || 'Service',
     status: active ? 'QUOTING LIVE' : 'NEEDS PRICING',
     missingOwnerFields,
-    missingOwnerLabels: missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field))
+    missingOwnerLabels: missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field)),
+    // Product types the owner enabled but did not price across every required
+    // product-specific field. Empty when offerings are consistent.
+    incompleteOfferings: offeringGaps
   };
 }
 
