@@ -257,5 +257,33 @@ test('--edge is a border token and is never used as a text colour', () => {
   });
   assert.deepEqual(textUses, [],
     `--edge must not be used as a text colour; found: ${textUses.join(' | ')}`);
-  assert.match(css, /--muted:\s*#7A847A/, '--muted text token must be defined');
+  assert.match(css, /--muted:\s*#[0-9A-Fa-f]{6}/, '--muted text token must be defined');
+
+  // Contrast is the property that matters, not a specific hex. Every text
+  // token must clear WCAG AA (4.5:1) against the page background, measured
+  // rather than assumed. Contractors read this on a phone in a truck.
+  const relLum = hex => {
+    const v = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map(c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  };
+  const contrast = (a, b) => {
+    const [hi, lo] = [relLum(a), relLum(b)].sort((x, y) => y - x);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  const page = '#0A0A0A';
+  for (const token of ['gray', 'muted', 'white']) {
+    const found = css.match(new RegExp(`--${token}:\\s*(#[0-9A-Fa-f]{6})`));
+    assert.ok(found, `--${token} must be defined`);
+    const ratio = contrast(found[1], page);
+    assert.ok(ratio >= 4.5,
+      `--${token} (${found[1]}) is ${ratio.toFixed(2)}:1 against the page background; needs 4.5:1 for small text`);
+  }
+
+  // No text may render below 11px. Smaller than that is unreadable for many
+  // users regardless of contrast.
+  const tooSmall = [...css.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/g)]
+    .map(m => Number(m[1])).filter(size => size < 11);
+  assert.deepEqual(tooSmall, [],
+    `text smaller than 11px found: ${tooSmall.join(', ')}px`);
 });
