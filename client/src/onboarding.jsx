@@ -5,6 +5,9 @@ import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   PhonePreviewButton, Select, StatusChip, StepActions, Textarea, TextInput, Toggle
 } from './ui.jsx';
+import StructuredPricingQuestion, {
+  describeStructuredValue, validateStructuredValue
+} from './interviewStructured.jsx';
 
 const STEPS = [
   { name:'Account' },
@@ -457,7 +460,10 @@ function GoLiveStep({ state, refresh, back, next }) {
 
 function parseInterviewValue(raw, type) {
   if (type === 'boolean') return raw === 'true';
-  if (type === 'json') return JSON.parse(raw);
+  // Structured fields are edited through StructuredPricingQuestion and are
+  // already the exact object the price book expects. They are never serialized
+  // to text and never parsed back.
+  if (type === 'json') return raw;
   if (type === 'select') return raw;
   const number = Number(raw);
   if (!Number.isFinite(number)) throw new Error('Enter a number before confirming this field');
@@ -471,6 +477,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [mode, setMode] = useState('browser');
   const [draft, setDraft] = useState(null);
   const [position, setPosition] = useState(0);
+  // Scalar/select fields hold a string; structured fields hold the object.
   const [rawValue, setRawValue] = useState('');
   const [readBack, setReadBack] = useState(null);
   const [existingDrafts, setExistingDrafts] = useState(null);
@@ -509,16 +516,32 @@ function PriceBookStep({ state, metadata, back, next }) {
       const result = await api('/api/pricebook/interview', { method:'POST', body:{ mode, serviceTypes:activeTypes } });
       setDraft(result.draft);
       setPosition(0);
+      setRawValue(interviewFields[0]?.type === 'json' ? {} : '');
       setReadBack(null);
     } catch (nextError) { setError(nextError); }
+  }
+
+  // Restore whatever was already captured for a field, so resuming mid-question
+  // brings back a partially completed structured answer instead of a blank.
+  function savedValueFor(loadedDraft, index) {
+    const field = interviewFields[index];
+    if (!field) return '';
+    const stored = loadedDraft?.fields?.[field.serviceType]?.[field.field];
+    if (field.type === 'json') {
+      return stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
+    }
+    if (stored === undefined || stored === null) return '';
+    return String(stored);
   }
 
   async function resumeInterview(draftId) {
     setError(null);
     try {
       const result = await api(`/api/pricebook/interview/${draftId}`);
+      const index = positionFor(result.draft);
       setDraft(result.draft);
-      setPosition(positionFor(result.draft));
+      setPosition(index);
+      setRawValue(savedValueFor(result.draft, index));
       setReadBack(null);
     } catch (nextError) { setError(nextError); }
   }
@@ -528,11 +551,19 @@ function PriceBookStep({ state, metadata, back, next }) {
     setError(null);
     try {
       const value = parseInterviewValue(rawValue, current.type);
-      const spoken = typeof value === 'number'
-        ? `${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`
-        : current.type === 'select'
-          ? current.optionLabels?.[value] || 'Selected pricing option'
-          : String(rawValue);
+      if (current.type === 'json') {
+        // Structured answers are confirmed as a human sentence. Raw serialized
+        // data is never displayed or spoken.
+        const problem = validateStructuredValue(value, current.shapedKeys, current.title || current.label);
+        if (problem) throw new Error(problem);
+      }
+      const spoken = current.type === 'json'
+        ? describeStructuredValue(value, current.shapedKeys, current.title || current.label)
+        : typeof value === 'number'
+          ? `${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`
+          : current.type === 'select'
+            ? current.optionLabels?.[value] || 'Selected pricing option'
+            : String(rawValue);
       if (typeof window.speechSynthesis !== 'undefined') {
         window.speechSynthesis.speak(new SpeechSynthesisUtterance(spoken));
       }
@@ -555,7 +586,8 @@ function PriceBookStep({ state, metadata, back, next }) {
         }
       });
       setDraft(result.draft);
-      setRawValue('');
+      const nextField = interviewFields[position + 1];
+      setRawValue(nextField?.type === 'json' ? {} : '');
       setReadBack(null);
       setPosition(Math.min(interviewFields.length, position + 1));
     } catch (nextError) { setError(nextError); }
@@ -595,7 +627,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       <PageHeader eyebrow="Step 7 of 9" title="Build your price book" description={state.preview?.telephonySimulated ? 'This step is skippable and resumable. Phone controls remain simulated while you inspect pricing.' : 'This step is skippable and resumable. Answering stays live while you finish pricing.'} />
       <div className="path-list">
         <div className="path-row featured">
-          <div><span className="eyebrow">1 · FLAGSHIP</span><h2>AI price-book interview</h2><p>Have your AI build your price book with you. Takes about 15 minutes.</p></div>
+          <div><span className="eyebrow">1 · FLAGSHIP</span><h2>AI price-book interview</h2><p>Have your AI build your price book with you. {interviewFields.length} pricing {interviewFields.length === 1 ? 'question' : 'questions'} across {available.length} {available.length === 1 ? 'service' : 'services'}.</p></div>
           {!draft && (
             <div className="path-actions">
               <div className="segmented compact">
@@ -621,17 +653,21 @@ function PriceBookStep({ state, metadata, back, next }) {
                 ) : current.type === 'boolean' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
                 ) : current.type === 'json' ? (
-                  <Textarea rows="5" value={rawValue} onChange={event => editValue(event.target.value)} placeholder='{"key": 0}' />
+                  <StructuredPricingQuestion
+                    definition={current}
+                    value={typeof rawValue === 'object' && rawValue !== null ? rawValue : {}}
+                    onChange={editValue}
+                  />
                 ) : (
                   <TextInput type="number" step="0.01" value={rawValue} onChange={event => editValue(event.target.value)} />
                 )}
               </Field>
-              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={!rawValue}>Read it back</Button>}
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : !rawValue}>Read it back</Button>}
               {readBack && (
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
                   <div className="test-call-row">
-                    <Button icon={Check} onClick={confirmField}>Yes, save this number</Button>
+                    <Button icon={Check} onClick={confirmField}>{current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
                     <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
                   </div>
                 </div>

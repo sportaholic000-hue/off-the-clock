@@ -445,3 +445,91 @@ test('the dashboard has a page-level vertical rhythm, not per-card margins', () 
   assert.equal(/\.dashboard-page > \.notice \{ margin-top/.test(css), false,
     'individual dashboard cards must not carry one-off margins');
 });
+
+test('the AI interview never asks for or speaks raw JSON', () => {
+  const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
+  const structured = readFileSync('client/src/interviewStructuredValue.js', 'utf8');
+
+  // The user-visible failure: structured pricing fields rendered a textarea
+  // with the placeholder {"key": 0} and the readback spoke that raw text.
+  assert.equal(/placeholder='\{"key"/.test(onboarding), false,
+    'no JSON placeholder may remain');
+  assert.equal(/\{"[a-z_]+":\s*\d/.test(onboarding), false,
+    'no serialized JSON example may appear in the interview UI');
+  assert.equal(/JSON\.parse\(raw\)/.test(onboarding), false,
+    'structured answers must not be parsed from typed text');
+
+  // Structured questions are rendered by the dedicated component.
+  assert.match(onboarding, /<StructuredPricingQuestion/);
+  // The readback is a human sentence, not the value stringified.
+  assert.match(onboarding, /describeStructuredValue\(value, current\.shapedKeys/);
+
+  // The describe helper must never serialize.
+  assert.equal(/JSON\.stringify/.test(structured), false,
+    'structured descriptions must never serialize the value');
+});
+
+test('structured interview answers keep the exact shape validation expects', async () => {
+  const { structuredShape, validateStructuredValue, describeStructuredValue } =
+    await import('../client/src/interviewStructuredValue.js');
+
+  const nested = { nested:['small','medium','large'], keyLabel:'Repair type', leafUnit:'hours' };
+  const selectable = { keys:['hardwood','carpet'], ownerSelectable:true, keyLabel:'Flooring type', leafUnit:'$ per sq ft' };
+  const fixed = { keys:['small','medium','large','mixed'], keyLabel:'Plant size', leafUnit:'$ per plant' };
+  const open = { keys:null, keyLabel:'Membrane type', leafUnit:'$ per sq ft' };
+
+  assert.equal(structuredShape(nested), 'NESTED');
+  assert.equal(structuredShape(selectable), 'OWNER_SELECTABLE');
+  assert.equal(structuredShape(fixed), 'FIXED_KEYS');
+  assert.equal(structuredShape(open), 'OPEN');
+
+  // Nested: every size of every enabled type is required, and the message must
+  // name the missing size so the owner knows what to do.
+  // Two independent branches reject an incomplete row (missing-value and
+  // positive-amount), so an enabled type can never reach confirmation with a
+  // gap. Both must name the offending size in plain language.
+  const partial = validateStructuredValue({ shingle:{ small:1 } }, nested, 'x');
+  assert.ok(partial, 'a nested row missing a size must be rejected');
+  assert.match(partial, /Medium/, `the message must name the missing size: ${partial}`);
+  assert.match(partial, /Shingle/, 'the message must name the row');
+  assert.equal(/[{}]|":/.test(partial), false, 'the message must not contain JSON');
+  // A blank string is the same as missing.
+  const blanks = validateStructuredValue({ shingle:{ small:1, medium:'', large:'' } }, nested, 'x');
+  assert.ok(blanks, 'blank sizes must be rejected');
+  assert.match(blanks, /Medium/);
+  assert.equal(validateStructuredValue({ shingle:{ small:1, medium:2, large:3 } }, nested, 'x'), null);
+
+  // Owner-selectable: an offered product must be priced; absent means not offered.
+  assert.ok(validateStructuredValue({}, selectable, 'x'), 'no offering enabled must be rejected');
+  assert.ok(validateStructuredValue({ hardwood:0 }, selectable, 'x'), 'zero is not a price');
+  assert.equal(validateStructuredValue({ hardwood:3.5 }, selectable, 'x'), null,
+    'a supported subset is valid');
+
+  // Fixed keys: all of them required.
+  assert.ok(validateStructuredValue({ small:1 }, fixed, 'x'), 'a missing fixed key must be rejected');
+  assert.equal(validateStructuredValue({ small:1, medium:2, large:3, mixed:4 }, fixed, 'x'), null);
+
+  // Descriptions are human sentences containing no JSON punctuation.
+  const spoken = describeStructuredValue({ hardwood:3.5 }, selectable, 'Flooring labor');
+  assert.equal(/[{}]|":/.test(spoken), false, `spoken text must not contain JSON: ${spoken}`);
+  assert.match(spoken, /Not offered: Carpet/, 'unpicked products are named as not offered');
+});
+
+test('the interview states a truthful question count, not a fixed time', () => {
+  const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
+  assert.equal(/about 15 minutes/i.test(onboarding), false,
+    'the fixed completion-time claim must be gone');
+  assert.match(onboarding, /\{interviewFields\.length\} pricing/,
+    'the interview must state its real question count');
+  assert.match(onboarding, /\{available\.length\}/,
+    'the interview must state how many services are included');
+});
+
+test('resuming an interview restores a partially completed structured answer', () => {
+  const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
+  // Resume previously left rawValue blank, discarding partial structured work.
+  assert.match(onboarding, /function savedValueFor\(loadedDraft, index\)/);
+  assert.match(onboarding, /setRawValue\(savedValueFor\(result\.draft, index\)\)/);
+  // Structured fields resume as an object, scalars as a string.
+  assert.match(onboarding, /stored && typeof stored === 'object' && !Array\.isArray\(stored\)/);
+});

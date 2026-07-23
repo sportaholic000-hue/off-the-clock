@@ -1102,3 +1102,43 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .blocker-group { flex-direction: column; align-items: flex-start; gap: 10px; }
   .blocker-group-tail { width: 100%; justify-content: space-between; }
 }
+
+/* --- Interview structured pricing questions --- */
+.structured-question { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.structured-hint { margin: 0; font-size: 12.5px; color: var(--gray); line-height: 1.5; }
+.structured-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--black); border: 1px solid var(--black-line);
+  border-radius: 3px; padding: 10px 12px; min-width: 0;
+}
+.structured-row.not-offered { opacity: .68; }
+.structured-row-label { font-size: 13px; color: var(--white); flex: 1; min-width: 0; overflow-wrap: break-word; }
+.structured-toggle { display: flex; align-items: center; gap: 9px; flex: 1; min-width: 0; cursor: pointer; font-size: 13px; }
+.structured-toggle input { accent-color: var(--green); width: 15px; height: 15px; flex: none; }
+.structured-input { position: relative; display: inline-flex; align-items: center; flex: none; }
+.structured-prefix { position: absolute; left: 9px; color: var(--gray); font-size: 12px; pointer-events: none; }
+.structured-input input {
+  width: 118px; background: var(--black-raised); border: 1px solid var(--black-line);
+  border-radius: 3px; color: var(--white); font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; padding: 9px 10px 9px 22px; transition: border-color 150ms ease;
+}
+.structured-input input:focus { border-color: var(--green); outline: none; }
+.structured-off { font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+.structured-group {
+  background: var(--black); border: 1px solid var(--black-line);
+  border-radius: 3px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0;
+}
+.structured-group-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.structured-group-title { font-size: 13px; font-weight: 500; color: var(--white); overflow-wrap: break-word; }
+.structured-sizes { display: flex; gap: 10px; flex-wrap: wrap; }
+.structured-cell { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.structured-cell-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; color: var(--gray); }
+.structured-add { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+.structured-add > *:first-child { flex: 1; min-width: 150px; }
+
+@media (max-width: 700px) {
+  .structured-row { flex-direction: column; align-items: stretch; }
+  .structured-input, .structured-input input { width: 100%; }
+  .structured-sizes { flex-direction: column; }
+  .structured-cell { width: 100%; }
+}
