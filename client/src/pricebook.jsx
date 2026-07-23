@@ -324,10 +324,19 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   return (
     <div className="owner-field">
       <span className="owner-field-title">{hasTitle ? definition.title : definition.label}</span>
-      {hasTitle && <span className="owner-field-definition">{definition.label}</span>}
-      <span className="owner-field-help">
-        {definition.help}{definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}
-      </span>
+      {hasTitle ? (
+        // Titled fields already carry the full authoritative definition as the
+        // supporting line. Rendering `help` as well produced two supporting
+        // lines saying overlapping things, which read as one merged paragraph.
+        // The authoritative wording wins; help is redundant here.
+        <span className="owner-field-definition">
+          {definition.label}{definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}
+        </span>
+      ) : (
+        <span className="owner-field-help">
+          {definition.help}{definition.minimumAllowsZero ? ' $0 is valid and means no minimum.' : ''}
+        </span>
+      )}
       <div className="owner-field-control">{control}</div>
     </div>
   );

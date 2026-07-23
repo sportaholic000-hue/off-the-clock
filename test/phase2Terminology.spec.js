@@ -287,3 +287,29 @@ test('--edge is a border token and is never used as a text colour', () => {
   assert.deepEqual(tooSmall, [],
     `text smaller than 11px found: ${tooSmall.join(', ')}px`);
 });
+
+test('a titled field renders exactly one supporting line, not two', () => {
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  // A field with a concise title already carries the full authoritative
+  // definition as its supporting line. Rendering `help` as well produced two
+  // supporting lines saying overlapping things, which read as one merged
+  // paragraph. Titled fields show the authoritative definition; untitled
+  // fields show help.
+  assert.match(pricebook, /hasTitle \? \(/);
+  assert.match(pricebook, /owner-field-definition/);
+  // The unconditional help span must not remain.
+  assert.equal(
+    /\{hasTitle && <span className="owner-field-definition">[\s\S]*?<span className="owner-field-help">/.test(pricebook),
+    false,
+    'help must not render alongside the authoritative definition');
+});
+
+test('the service list row places all three children without collision', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+  // .service-row is a two-column grid with three children. Without explicit
+  // placement the third child wrapped into column 1 of row 2 and collided
+  // with a wrapped service name.
+  assert.match(css, /\.service-row > \.service-compact-status \{[^}]*grid-column: 1 \/ -1/);
+  assert.match(css, /\.service-row > \.service-compact-status \{[^}]*grid-row: 2/);
+  assert.match(css, /\.service-row > \.status-chip \{[^}]*grid-row: 1/);
+});
