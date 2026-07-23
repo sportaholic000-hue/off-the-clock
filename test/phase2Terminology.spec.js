@@ -244,3 +244,18 @@ test('skipped add-ons are distinguished explicitly in the preview', () => {
   // Skipped add-ons must render as their own rows, not just folded into the disclaimer.
   assert.match(preview, /active\.skippedAddons\.map/);
 });
+
+test('--edge is a border token and is never used as a text colour', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+  // --edge is #3A423A: 1.90:1 against the page background, far below the WCAG
+  // AA 4.5:1 floor for small text. It is legitimate for borders only.
+  // --muted (#7A847A) is the dimmest permitted text colour: 5.10:1 on the page
+  // and 4.68:1 on raised cards.
+  const textUses = css.split('\n').filter(line => {
+    const stripped = line.replace(/border-color:\s*var\(--edge\)/g, '');
+    return /(?<!border-)color:\s*var\(--edge\)/.test(stripped);
+  });
+  assert.deepEqual(textUses, [],
+    `--edge must not be used as a text colour; found: ${textUses.join(' | ')}`);
+  assert.match(css, /--muted:\s*#7A847A/, '--muted text token must be defined');
+});
