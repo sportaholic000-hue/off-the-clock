@@ -358,6 +358,32 @@ app.post('/api/quote/calculate', requireAuth(['owner', 'staff']), requireQuoteDo
   const pricebook = loadPricebook(tenantOwnerId);
   const service = (pricebook.services || []).find(entry => entry.serviceType === serviceType || entry.service === serviceType);
   if (!service) return res.status(404).json({ error: 'Service not found in price book' });
+
+  // CUSTOMER ELIGIBILITY -- established BEFORE quote generation.
+  // A customer may only be quoted from a service that is currently
+  // QUOTING LIVE. That is the same status the owner interface shows, so a
+  // service reading NEEDS PRICING -- incomplete pricing, an unconfirmed
+  // AI-suggested or interview draft, or an offering the owner disabled --
+  // can never produce a customer estimate. No other service, product or rate
+  // is substituted; the customer is told a person will follow up.
+  // Owner and staff callers are unaffected and keep full diagnostics.
+  if (callerType === 'customer') {
+    const status = pricebookStatuses(pricebook)
+      .find(entry => entry.serviceType === service.serviceType);
+    if (!status || status.status !== 'QUOTING LIVE') {
+      const deferred = {
+        resultType: 'ESTIMATE_REQUIRES_REVIEW',
+        reviewReason: 'Service is not currently active for instant quoting'
+      };
+      insertQuoteLog(
+        tenantOwnerId, null, service.serviceType, customerInputs,
+        { ...deferred, missingOwnerFields: status?.missingOwnerFields || [] },
+        callerType, 'SERVICE_NOT_LIVE'
+      );
+      return res.json(sanitizeForCustomer(deferred));
+    }
+  }
+
   const result = generateQuote({
     serviceType: service.serviceType,
     customerInputs,

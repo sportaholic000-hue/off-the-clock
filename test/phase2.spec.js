@@ -1045,3 +1045,62 @@ test('owner results retain full diagnostics', async () => {
   assert.ok(Array.isArray(owner.missingOwnerFields) || Array.isArray(owner.missingCustomerFields),
     'owner diagnostics remain available');
 });
+
+test('customer eligibility is enforced before quote generation', () => {
+  const server = readFileSync('server/src/server.js', 'utf8');
+  const handler = server.slice(
+    server.indexOf("app.post('/api/quote/calculate'"),
+    server.indexOf("app.post('/api/quote/test'")
+  );
+
+  // BEFORE THIS REPAIR: generateQuote ran unconditionally, so a NEEDS PRICING
+  // service -- including an unconfirmed AI-suggested draft -- could return a
+  // customer estimate.
+  const gateAt = handler.indexOf("callerType === 'customer'");
+  const generateAt = handler.indexOf('generateQuote({');
+  assert.ok(gateAt >= 0, 'a customer eligibility gate must exist');
+  assert.ok(gateAt < generateAt,
+    'eligibility must be established BEFORE quote generation, not after');
+
+  // The gate must use the same authority the owner UI shows.
+  assert.match(handler, /pricebookStatuses\(pricebook\)/);
+  assert.match(handler, /status !== 'QUOTING LIVE'/);
+  // The blocked path returns a sanitized deferral, never a generated estimate.
+  assert.match(handler, /return res\.json\(sanitizeForCustomer\(deferred\)\)/);
+});
+
+test('a service that is not QUOTING LIVE cannot produce a customer estimate', async () => {
+  const { pricebookServiceStatus } = await import('../server/priceBookService.js');
+  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+
+  // An unconfirmed AI-suggested draft is NEEDS PRICING even though every
+  // numeric value is present -- confirmation is what activates it.
+  const aiDraft = {
+    serviceType:'FLOORING_INSTALL', service:'Flooring installation',
+    laborPerSqft:{ carpet:2.0, vinyl_plank:2.5 },
+    materialPerSqft:{ carpet:3.0, vinyl_plank:3.5 },
+    removalPerSqft:1.0, disposalPerSqft:0.5, perStepPrice:15, underlaymentPerSqft:0.75,
+    minimumJob:400, allowAssumptionBasedQuotes:true,
+    source:'AI_SUGGESTED', confirmedFields:{}
+  };
+  assert.equal(pricebookServiceStatus(aiDraft).status, 'NEEDS PRICING',
+    'an unconfirmed AI draft is not live');
+
+  // Confirming every gated field activates it -- proving the block is the
+  // confirmation state, not missing numbers.
+  const confirmed = { ...aiDraft, confirmedFields:Object.fromEntries(
+    pricebookServiceStatus(aiDraft).missingOwnerFields.map(field => [field, true])) };
+  assert.equal(pricebookServiceStatus(confirmed).status, 'QUOTING LIVE',
+    'confirming the draft activates the service');
+
+  // The deferral a blocked customer receives carries no owner detail.
+  const deferred = sanitizeForCustomer({
+    resultType:'ESTIMATE_REQUIRES_REVIEW',
+    reviewReason:'Service is not currently active for instant quoting'
+  });
+  assert.equal(deferred.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(deferred.customerMessage);
+  assert.equal(JSON.stringify(deferred).includes('not currently active'), false,
+    'the internal reason must not reach the customer');
+  assert.equal(deferred.midEstimate, undefined, 'no estimate is returned');
+});
