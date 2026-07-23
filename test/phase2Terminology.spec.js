@@ -381,3 +381,26 @@ test('draft validation never clears known statuses or reports failure while typi
   assert.equal(/statuses === null/.test(display), false,
     'displayStatus must not treat an in-flight validation as a failing status');
 });
+
+test('each onboarding step renders exactly one heading composition', () => {
+  const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
+
+  // Each step supplies its own PageHeader with "Step N of 9", a meaningful
+  // title and a description. The shell previously added a second generic
+  // heading, so every step showed the step counter twice and two stacked
+  // titles.
+  const shell = onboarding.slice(onboarding.indexOf('<div className="step-body">'),
+                                 onboarding.indexOf('</main>'));
+  assert.equal(/className="step-heading"/.test(shell), false,
+    'the onboarding shell must not add a second heading block');
+  assert.equal(/Step \{step\} of \{STEPS\.length\}/.test(shell), false,
+    'the shell must not render its own step counter');
+
+  // Every step keeps its own counter and a meaningful title.
+  const counters = (onboarding.match(/eyebrow="Step \d+ of 9"/g) || []).length;
+  assert.ok(counters >= 9, `expected a step counter per step, found ${counters}`);
+  // Titles must be meaningful, not just the rail's short names.
+  for (const title of ['Your account', 'Build your price book', 'Connect your calendar']) {
+    assert.ok(onboarding.includes(title), `step title "${title}" must be preserved`);
+  }
+});

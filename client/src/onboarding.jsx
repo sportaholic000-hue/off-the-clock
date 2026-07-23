@@ -801,10 +801,9 @@ export default function Onboarding() {
       <main className="onboarding-page">
         <StepRail step={step} state={state} onJump={move} />
         <div className="step-body">
-          <div className="step-heading">
-            <span className="eyebrow">Step {step} of {STEPS.length}</span>
-            <h1>{STEPS[step - 1]?.name}</h1>
-          </div>
+          {/* Each step renders its own PageHeader with "Step N of 9", a
+              meaningful title and a description. A second generic heading here
+              duplicated the step counter and title on all nine steps. */}
           {content}
         </div>
       </main>
