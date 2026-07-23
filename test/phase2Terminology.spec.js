@@ -533,3 +533,25 @@ test('resuming an interview restores a partially completed structured answer', (
   // Structured fields resume as an object, scalars as a string.
   assert.match(onboarding, /stored && typeof stored === 'object' && !Array\.isArray\(stored\)/);
 });
+
+test('the onboarding grid columns can shrink below their content width', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+
+  // A bare `1fr` track has min-width:auto, so a wide child expands the column
+  // past the viewport and takes the whole page with it. At 375px a structured
+  // pricing question rendered 802px wide inside a 1314px grid column.
+  // minmax(0,1fr) lets the column shrink, which is what makes the single-column
+  // mobile layout actually hold.
+  const desktop = css.match(/\.onboarding-page \{ display: grid; grid-template-columns: ([^;]+);/);
+  assert.ok(desktop, '.onboarding-page grid rule must exist');
+  assert.match(desktop[1], /minmax\(0, ?1fr\)/,
+    `the content column must be shrinkable, found: ${desktop[1]}`);
+
+  const mobile = css.match(/@media \(max-width: 900px\)[\s\S]*?\.onboarding-page \{ grid-template-columns: ([^;]+);/);
+  assert.ok(mobile, 'the mobile onboarding grid rule must exist');
+  assert.match(mobile[1], /minmax\(0, ?1fr\)/,
+    `the mobile column must be shrinkable, found: ${mobile[1]}`);
+
+  // The interview panel must not expand its grid cell either.
+  assert.match(css, /\.interview-field, \.interview-complete \{[^}]*min-width: 0/);
+});
