@@ -555,3 +555,42 @@ test('the onboarding grid columns can shrink below their content width', () => {
   // The interview panel must not expand its grid cell either.
   assert.match(css, /\.interview-field, \.interview-complete \{[^}]*min-width: 0/);
 });
+
+test('supporting-text selectors match the markup their components actually render', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+  const onboarding = readFileSync('client/src/onboarding.jsx', 'utf8');
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+
+  // The accessibility repair scoped container rules to stop them repainting
+  // nested button labels, but two replacements no longer matched their markup,
+  // so those descriptions silently lost their muted styling. This test checks
+  // the selector against the real element structure rather than just asserting
+  // the selector string exists.
+
+  // 1. Onboarding suggestion row: <div class="suggestion-row"><strong/><span/></div>
+  //    The span is a DIRECT child, so "> div span" matched nothing.
+  const rowMarkup = onboarding.slice(onboarding.indexOf('className="suggestion-row"'));
+  const rowBlock = rowMarkup.slice(0, rowMarkup.indexOf('</div>'));
+  assert.match(rowBlock, /<strong>/, 'suggestion row renders a strong');
+  assert.match(rowBlock, /<span className="mono">/, 'the description is a direct child span');
+  assert.equal(/<div[^>]*>\s*<span/.test(rowBlock), false,
+    'the description span is not wrapped in a nested div');
+  assert.match(css, /\.suggestion-row > span \{[^}]*color: var\(--gray\)/,
+    'the selector must target a direct child span');
+
+  // 2. Price-book starter card: <article><strong/><span class="mono"/><Button/></article>
+  //    Children are <article>, not <div>, so "> div span" matched nothing.
+  //    A bare "article span" would repaint the Button label, so the rule
+  //    targets the description by the class it carries.
+  const cardMarkup = pricebook.slice(pricebook.indexOf('<div className="starter-grid">'));
+  const cardBlock = cardMarkup.slice(0, cardMarkup.indexOf('</article>'));
+  assert.match(cardBlock, /<article/, 'starter cards are article elements, not divs');
+  assert.match(cardBlock, /<span className="mono">/);
+  assert.match(cardBlock, /<Button/, 'the card also contains a Button whose label must not be repainted');
+  assert.match(css, /\.starter-grid > article > span\.mono \{[^}]*color: var\(--gray\)/,
+    'the selector must match article children and exclude the button label');
+
+  // Button labels stay protected regardless of container.
+  assert.match(css, /\.button > span \{ color: inherit; \}/);
+  assert.match(css, /\.button-primary \{[^}]*color: var\(--black\)/);
+});
