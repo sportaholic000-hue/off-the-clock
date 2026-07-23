@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import { api, go } from './api.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
-import { BlockerChecklist, CounterCard, SimulatedBanner } from './reference.jsx';
+import { CounterCard, SimulatedBanner } from './reference.jsx';
 
 // Composition follows the committed Fable dashboard references:
 //   design-reference/dashboard/index.html      — operator OFF / not-live /
@@ -60,17 +60,42 @@ export default function Dashboard() {
   }
 
   // One row per missing requirement — never a semicolon-joined paragraph.
-  const blockers = useMemo(() => {
+  // Grouped by service, not a flat field list. A multi-trade owner has one
+  // row per blocked service instead of one row per missing field across every
+  // service, which previously produced a hundred-plus row wall above the rest
+  // of the dashboard.
+  const MAX_SERVICE_GROUPS = 4;   // bounded rows on the dashboard
+  const MAX_EXAMPLES = 2;         // named requirements shown per service
+
+  const blockerGroups = useMemo(() => {
     if (!dashboard) return [];
-    return (dashboard.pricebookStatuses || []).flatMap(service =>
-      (service.missingOwnerFields || []).map((field, index) => ({
-        field,
-        serviceType: service.serviceType,
-        service: service.service,
-        label: service.missingOwnerLabels?.[index] || field
-      }))
-    );
+    return (dashboard.pricebookStatuses || [])
+      .filter(service => (service.missingOwnerFields || []).length > 0)
+      .map(service => {
+        const fields = service.missingOwnerFields || [];
+        const labels = service.missingOwnerLabels || [];
+        return {
+          serviceType: service.serviceType,
+          service: service.service,
+          total: fields.length,
+          // First requirement deep-links straight to the affected control.
+          firstField: fields[0],
+          examples: fields.slice(0, MAX_EXAMPLES).map((field, index) => ({
+            field,
+            label: labels[index] || field
+          })),
+          remaining: Math.max(0, fields.length - MAX_EXAMPLES)
+        };
+      })
+      .sort((a, b) => b.total - a.total);
   }, [dashboard]);
+
+  const shownGroups = blockerGroups.slice(0, MAX_SERVICE_GROUPS);
+  const hiddenGroups = blockerGroups.slice(MAX_SERVICE_GROUPS);
+  // Truthful counts for everything not shown on this screen.
+  const hiddenServiceCount = hiddenGroups.length;
+  const hiddenFieldCount = hiddenGroups.reduce((sum, group) => sum + group.total, 0);
+  const totalMissing = blockerGroups.reduce((sum, group) => sum + group.total, 0);
 
   if (error && !dashboard) return <div className="center-state"><ErrorMessage error={error} /></div>;
   if (!dashboard || !state) return <Loading label="LOADING DASHBOARD" />;
@@ -205,20 +230,55 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* MISSING PRICES — scannable checklist, never a semicolon paragraph */}
-        {blockers.length > 0 && (
+        {/* MISSING PRICES — grouped by service and bounded. One row per blocked
+            service, not one row per missing field across every service. */}
+        {blockerGroups.length > 0 && (
           <section className="dashboard-band">
             <div className="band-heading">
               <div>
                 <p className="eyebrow">NEEDS PRICING</p>
-                <h2>{blockers.length} {blockers.length === 1 ? 'price needed' : 'prices needed'}</h2>
+                <h2>
+                  {blockerGroups.length === 1
+                    ? `${totalMissing} ${totalMissing === 1 ? 'price needed' : 'prices needed'}`
+                    : `${totalMissing} prices needed across ${blockerGroups.length} services`}
+                </h2>
               </div>
               <Button icon={BookOpen} variant="secondary" onClick={() => go('/pricebook')}>Open price book</Button>
             </div>
-            <BlockerChecklist
-              items={blockers}
-              onNavigate={item => go(`/pricebook?service=${encodeURIComponent(item.serviceType)}&field=${encodeURIComponent(item.field)}`)}
-            />
+
+            <ul className="blocker-groups">
+              {shownGroups.map(group => (
+                <li key={group.serviceType}>
+                  <button
+                    type="button"
+                    className="blocker-group"
+                    onClick={() => go(`/pricebook?service=${encodeURIComponent(group.serviceType)}&field=${encodeURIComponent(group.firstField)}`)}
+                  >
+                    <span className="blocker-group-main">
+                      <span className="blocker-group-name">{group.service}</span>
+                      <span className="blocker-group-examples">
+                        {group.examples.map(example => example.label).join(' · ')}
+                        {group.remaining > 0 && ` · +${group.remaining} more`}
+                      </span>
+                    </span>
+                    <span className="blocker-group-tail">
+                      <span className="chip chip-need">
+                        {group.total} {group.total === 1 ? 'price' : 'prices'}
+                      </span>
+                      <ChevronRight size={16} aria-hidden="true" />
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {hiddenServiceCount > 0 && (
+              <button type="button" className="blocker-more" onClick={() => go('/pricebook')}>
+                {hiddenServiceCount} {hiddenServiceCount === 1 ? 'other service needs' : 'other services need'}
+                {' '}pricing ({hiddenFieldCount} more {hiddenFieldCount === 1 ? 'price' : 'prices'}) — open the price book
+                <ChevronRight size={14} aria-hidden="true" />
+              </button>
+            )}
           </section>
         )}
 

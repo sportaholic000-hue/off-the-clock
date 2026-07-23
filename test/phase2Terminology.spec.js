@@ -404,3 +404,23 @@ test('each onboarding step renders exactly one heading composition', () => {
     assert.ok(onboarding.includes(title), `step title "${title}" must be preserved`);
   }
 });
+
+test('the dashboard blocker section is bounded and grouped by service', () => {
+  const dashboard = readFileSync('client/src/dashboard.jsx', 'utf8');
+
+  // The user-visible failure: one checklist row per missing field across every
+  // service. A 20-trade account produced 112 rows above the rest of the
+  // dashboard. Rows are now grouped by service and capped.
+  assert.equal(/flatMap\([\s\S]{0,200}missingOwnerFields/.test(dashboard), false,
+    'blockers must not be flattened into one row per missing field');
+  assert.match(dashboard, /MAX_SERVICE_GROUPS/);
+  assert.match(dashboard, /shownGroups = blockerGroups\.slice\(0, MAX_SERVICE_GROUPS\)/);
+
+  // Hidden remainder must be truthfully counted, not silently dropped.
+  assert.match(dashboard, /hiddenServiceCount/);
+  assert.match(dashboard, /hiddenFieldCount/);
+  assert.match(dashboard, /blocker-more/);
+
+  // Deep-link into the specific service AND its first missing requirement.
+  assert.match(dashboard, /pricebook\?service=\$\{encodeURIComponent\(group\.serviceType\)\}&field=\$\{encodeURIComponent\(group\.firstField\)\}/);
+});
