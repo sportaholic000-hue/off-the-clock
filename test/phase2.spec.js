@@ -962,3 +962,86 @@ test('offering consistency does not affect services without selectable products'
   assert.deepEqual(status.incompleteOfferings, [],
     'a service with no selectable product domain reports no offering gaps');
 });
+
+test('customer payloads are built from an allowlist, not by removing known keys', async () => {
+  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+
+  // BEFORE THIS REPAIR: ready results spread the engine result and removed only
+  // lineItems, so every other property -- including ones added later -- reached
+  // the customer automatically.
+  const ready = {
+    resultType: 'INSTANT_ESTIMATE_READY',
+    lowEstimate: 100, highEstimate: 200, midEstimate: 150, quoteId: 'q-1',
+    options: [{
+      tierName: 'Standard', lowEstimate: 100, highEstimate: 200, midEstimate: 150,
+      priceDrivers: ['Siding labor'], skippedAddons: ['Trim'], disclaimer: 'Estimate only',
+      lineItems: [{ name: 'Markup', category: 'markup', amountCents: 5000 }]
+    }],
+    lineItems: [{ name: 'Markup', category: 'markup', amountCents: 5000 }],
+    appliedRules: ['MARKUP_30'],
+    urgencyFlags: ['AFTER_HOURS'],
+    rangeBufferPercent: 12,
+    someFutureInternalField: 'must not leak',
+    internalDebugTrace: 'owner labor rate 95/hr'
+  };
+  const safeReady = sanitizeForCustomer(ready);
+  const readyJson = JSON.stringify(safeReady);
+
+  // Customer-facing content survives.
+  assert.equal(safeReady.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(safeReady.midEstimate, 150);
+  assert.deepEqual(safeReady.options[0].priceDrivers, ['Siding labor']);
+  assert.deepEqual(safeReady.options[0].skippedAddons, ['Trim']);
+  assert.equal(safeReady.options[0].disclaimer, 'Estimate only');
+
+  // Nothing internal survives -- including a property the engine does not have
+  // today, which is the point of an allowlist.
+  for (const leaked of ['lineItems', 'appliedRules', 'urgencyFlags', 'rangeBufferPercent',
+                        'someFutureInternalField', 'internalDebugTrace', 'Markup', '95/hr']) {
+    assert.equal(readyJson.includes(leaked), false, `${leaked} must not reach the customer`);
+  }
+  assert.equal(safeReady.options[0].lineItems, undefined, 'per-option line items stripped');
+});
+
+test('customer review outcomes never expose owner configuration', async () => {
+  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+
+  // BEFORE THIS REPAIR: non-ready results were returned untouched, so
+  // missingOwnerFields -- internal owner pricing-field identifiers -- and the
+  // internal review reason went straight to the customer.
+  const review = {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    missingOwnerFields: ['laborPerSqft', 'materialPerSqft'],
+    missingCustomerFields: ['sqft'],
+    reviewReason: 'Owner pricing incomplete for hardwood',
+    appliedRules: ['NO_GUESSING'],
+    quoteId: 'q-2'
+  };
+  const safe = sanitizeForCustomer(review);
+  const json = JSON.stringify(safe);
+
+  assert.equal(safe.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(safe.customerMessage, 'the customer gets a human follow-up message');
+  assert.equal(safe.quoteId, 'q-2');
+  for (const leaked of ['laborPerSqft', 'materialPerSqft', 'missingOwnerFields',
+                        'missingCustomerFields', 'reviewReason', 'appliedRules', 'hardwood']) {
+    assert.equal(json.includes(leaked), false, `${leaked} must not reach the customer`);
+  }
+});
+
+test('owner results retain full diagnostics', async () => {
+  const { generateQuote } = await import('../server/quoteEngine.js');
+  const owner = generateQuote({
+    serviceType: 'FLOORING_INSTALL',
+    customerInputs: { areaInputMethod:'sqft', floorAreaSqft:600, newFlooringType:'hardwood',
+      existingFloorType:'none', removalNeeded:false },
+    ownerPricing: { laborPerSqft:{ carpet:2 }, materialPerSqft:{ carpet:3 },
+      minimumJob:0, allowAssumptionBasedQuotes:true },
+    businessDefaults: {},
+    callerType: 'owner'
+  });
+  // The owner path is untouched by customer sanitization.
+  assert.equal(owner.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(Array.isArray(owner.missingOwnerFields) || Array.isArray(owner.missingCustomerFields),
+    'owner diagnostics remain available');
+});

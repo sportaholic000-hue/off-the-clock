@@ -223,19 +223,40 @@ export function generateQuote({ serviceType, customerInputs = {}, ownerPricing =
   return callerType === 'customer' ? sanitizeForCustomer(result) : result;
 }
 
+// Customer payloads are built from a strict ALLOWLIST, never by removing known
+// internal keys. A denylist ({ lineItems, ...safe }) leaks every property added
+// to an engine result later; an allowlist cannot. Review results were
+// previously returned untouched, which exposed missingOwnerFields -- internal
+// owner pricing-field identifiers -- straight to the caller.
+const CUSTOMER_OPTION_FIELDS = [
+  'tierName', 'lowEstimate', 'highEstimate', 'midEstimate',
+  'priceDrivers', 'skippedAddons', 'disclaimer'
+];
+
+function pick(source, keys) {
+  const out = {};
+  for (const key of keys) {
+    if (source?.[key] !== undefined) out[key] = source[key];
+  }
+  return out;
+}
+
 export function sanitizeForCustomer(result) {
-  if (result.resultType !== 'INSTANT_ESTIMATE_READY') return result;
-  const { lineItems, ...safe } = result;
+  if (result?.resultType === 'INSTANT_ESTIMATE_READY') {
+    const safe = pick(result, [
+      'resultType', 'lowEstimate', 'highEstimate', 'midEstimate',
+      'disclaimer', 'quoteId'
+    ]);
+    safe.options = (result.options || []).map(option => pick(option, CUSTOMER_OPTION_FIELDS));
+    return safe;
+  }
+
+  // Any non-ready outcome (review, defer, unsupported) tells the customer only
+  // that a person will follow up. It never names owner fields, missing
+  // configuration, validation internals or which service failed and why.
   return {
-    ...safe,
-    options: result.options.map(({ tierName, lowEstimate, highEstimate, midEstimate, priceDrivers, skippedAddons, disclaimer }) => ({
-      tierName,
-      lowEstimate,
-      highEstimate,
-      midEstimate,
-      priceDrivers,
-      skippedAddons,
-      disclaimer
-    }))
+    resultType: result?.resultType || 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We have everything we need to price this. Someone will follow up with your estimate shortly.',
+    ...(result?.quoteId ? { quoteId: result.quoteId } : {})
   };
 }
