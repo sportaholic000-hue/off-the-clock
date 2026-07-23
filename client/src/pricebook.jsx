@@ -792,7 +792,7 @@ export default function PriceBook() {
               const status = displayStatus(service);
               const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label) || []);
               return (
-                <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-row active' : 'service-row'} type="button" onClick={() => setSelectedType(service.serviceType)}>
+                <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(service.serviceType)}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
                   <StatusChip status={status?.status || (missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE')} />
                   <small className="mono service-compact-status">

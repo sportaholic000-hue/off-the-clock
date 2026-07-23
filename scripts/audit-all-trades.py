@@ -54,8 +54,8 @@ try:
     }"""
     COLLIDE_JS = """() => {
       const bad=[];
-      document.querySelectorAll('.service-row').forEach(r=>{
-        const name=r.querySelector('span'), chip=r.querySelector('.status-chip');
+      document.querySelectorAll('.service-pick').forEach(r=>{
+        const name=r.querySelector('strong'), chip=r.querySelector('.status-chip');
         if(!name||!chip) return;
         const a=name.getBoundingClientRect(), b=chip.getBoundingClientRect();
         const overlap=!(a.right<=b.left||b.right<=a.left||a.bottom<=b.top||b.bottom<=a.top);
@@ -70,13 +70,28 @@ try:
             page=ctx.new_page()
             page.add_init_script(f"localStorage.setItem('otc_token','{t}')")
             page.goto(f"{CLIENT}/pricebook",wait_until="networkidle");page.wait_for_timeout(1800)
-            rows=page.query_selector_all(".service-row")
+            rows=page.query_selector_all(".service-pick")
             print(f"\n===== {label}: {len(rows)} service rows =====")
             col=page.evaluate(COLLIDE_JS)
             print("  name/chip collisions:", col if col else "NONE")
+            rowinfo=page.evaluate("""() => {
+              const out=[];
+              document.querySelectorAll('.service-pick').forEach(r=>{
+                const nm=r.querySelector('strong'); if(!nm) return;
+                const lh=parseFloat(getComputedStyle(nm).lineHeight)||18;
+                const lines=Math.round(nm.getBoundingClientRect().height/lh);
+                out.push({n:nm.textContent.trim(), lines, h:Math.round(r.getBoundingClientRect().height)});
+              });
+              const multi=out.filter(o=>o.lines>2);
+              const tall=out.filter(o=>o.h>110);
+              return {total:out.length, multiline:multi.slice(0,5), tall:tall.slice(0,5),
+                      maxH:Math.max(...out.map(o=>o.h))};
+            }""")
+            print(f"  sidebar rows: {rowinfo['total']}, max height {rowinfo['maxH']}px")
+            print(f"  names wrapping >2 lines: {rowinfo['multiline'] if rowinfo['multiline'] else 'NONE'}")
             three_line=[]; style_mismatch=[]; checked=0
             for i in range(len(rows)):
-                rows=page.query_selector_all(".service-row")
+                rows=page.query_selector_all(".service-pick")
                 if i>=len(rows): break
                 nm=rows[i].inner_text().split("\n")[0][:26]
                 rows[i].click(); page.wait_for_timeout(420)

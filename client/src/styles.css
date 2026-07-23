@@ -376,30 +376,39 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .pricebook-layout { display: grid; grid-template-columns: 245px minmax(0,1fr); gap: 18px; align-items: start; }
 .service-list { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow: auto; border-right: 1px solid var(--black-line); padding-right: 12px; display: flex; flex-direction: column; gap: 5px; }
 .service-list > .eyebrow { padding: 5px 8px 8px; }
-.service-row {
+.service-pick {
   width: 100%;
   border: 1px solid transparent;
   border-left: 2px solid transparent;
   border-radius: 3px;
   background: transparent;
   color: var(--white);
-  padding: 10px 8px;
-  display: grid;
-  grid-template-columns: minmax(0,1fr) auto;
-  gap: 5px 8px;
+  padding: 9px 10px;
+  /* A 245px sidebar cannot fit a service name and a nowrap status chip on one
+     line: the name column collapsed to ~110px and broke mid-word. Stack
+     instead -- name on its own full-width line, chip and count beneath. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
   text-align: left;
 }
-.service-row:hover { background: var(--black-raised); }
-.service-row.active { border-color: var(--black-line); border-left-color: var(--green); background: #0E120E; }
-.service-row > span:first-child { grid-column: 1; grid-row: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.service-row > .status-chip { grid-column: 2; grid-row: 1; align-self: start; justify-self: end; white-space: nowrap; }
-/* The compact status is the row's third child. Without an explicit placement
-   it wrapped into column 1 of row 2 and collided with a wrapped service name.
-   Span the full width on its own row. */
-.service-row > .service-compact-status { grid-column: 1 / -1; grid-row: 2; }
-.service-row strong { font-size: 13px; line-height: 1.35; overflow-wrap: break-word; }
-.service-row small { color: var(--gray); font-size: 11px; overflow-wrap: anywhere; }
-.service-row .missing-list { grid-column: 1 / -1; color: var(--amber); line-height: 1.4; }
+.service-pick:hover { background: var(--black-raised); }
+.service-pick.active { border-color: var(--black-line); border-left-color: var(--green); background: #0E120E; }
+.service-pick > span:first-child { width: 100%; min-width: 0; }
+.service-pick strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  /* Break between words only. Never mid-word. */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.service-pick > .status-chip { align-self: flex-start; white-space: nowrap; }
+.service-pick > .service-compact-status { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.service-pick small { color: var(--gray); font-size: 11px; overflow-wrap: normal; }
+.service-pick .missing-list { color: var(--amber); line-height: 1.4; }
 
 .editor-grid { min-width: 0; display: grid; grid-template-columns: minmax(0,1.2fr) minmax(310px,.8fr); gap: 18px; align-items: start; }
 .editor-column { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
@@ -913,7 +922,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   gap: 12px; flex-wrap: wrap; padding-bottom: 4px;
 }
 .assumption-note { font-size: 12.5px; color: var(--gray); line-height: 1.5; flex: 1; min-width: 200px; }
-.service-compact-status { display: block; font-size: 11.5px; color: var(--gray); margin-top: 4px; }
+.service-compact-status { display: block; font-size: 11.5px; color: var(--gray); margin-top: 0; }
 
 /* --- Quote preview (pricebook-editor signature moment) --- */
 .quote-preview {

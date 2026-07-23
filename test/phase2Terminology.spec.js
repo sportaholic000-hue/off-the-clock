@@ -304,12 +304,29 @@ test('a titled field renders exactly one supporting line, not two', () => {
     'help must not render alongside the authoritative definition');
 });
 
-test('the service list row places all three children without collision', () => {
+test('the price-book sidebar does not share a class with the dashboard rows', () => {
   const css = readFileSync('client/src/styles.css', 'utf8');
-  // .service-row is a two-column grid with three children. Without explicit
-  // placement the third child wrapped into column 1 of row 2 and collided
-  // with a wrapped service name.
-  assert.match(css, /\.service-row > \.service-compact-status \{[^}]*grid-column: 1 \/ -1/);
-  assert.match(css, /\.service-row > \.service-compact-status \{[^}]*grid-row: 2/);
-  assert.match(css, /\.service-row > \.status-chip \{[^}]*grid-row: 1/);
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  const dashboard = readFileSync('client/src/dashboard.jsx', 'utf8');
+
+  // .service-row was used by BOTH the full-width dashboard rows and the 245px
+  // price-book sidebar. The dashboard rule came later in the stylesheet and
+  // silently won, applying 14px padding and 14px gaps to a narrow sidebar and
+  // squeezing service names until they broke mid-word. The sidebar now uses
+  // .service-pick so the two cannot collide.
+  assert.match(pricebook, /service-pick/,
+    'the price-book sidebar must use .service-pick');
+  assert.equal(/className=\{[^}]*'service-row/.test(pricebook), false,
+    'the price-book sidebar must not reuse .service-row');
+  assert.match(dashboard, /className="service-row"/,
+    'the dashboard keeps .service-row');
+
+  // Sidebar names must break between words only. Mid-word breaking in a narrow
+  // column produced one letter-fragment per line.
+  const pick = css.slice(css.indexOf('.service-pick strong'));
+  const block = pick.slice(0, pick.indexOf('}') + 1);
+  assert.match(block, /overflow-wrap: normal/);
+  assert.match(block, /word-break: normal/);
+  assert.equal(/break-word|anywhere/.test(block), false,
+    'sidebar service names must not break mid-word');
 });
