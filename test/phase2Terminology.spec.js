@@ -348,3 +348,36 @@ test('button labels are never repainted by container descendant selectors', () =
   assert.deepEqual(risky, [],
     `container rules repainting descendant spans: ${risky.join(' | ')}`);
 });
+
+test('draft validation never clears known statuses or reports failure while typing', () => {
+  const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
+  const effect = pricebook.slice(
+    pricebook.indexOf('if (!book || locked) return;'),
+    pricebook.indexOf('}, [book, locked]);')
+  );
+
+  // The user-visible failure: typing one character cleared every service's
+  // status, so chips that were QUOTING LIVE flashed to NEEDS PRICING on every
+  // keystroke. The validation effect must not clear statuses.
+  assert.equal(/setStatuses\(null\)/.test(effect), false,
+    'the validation effect must not clear statuses while typing');
+
+  // A failed validation must not fabricate NEEDS PRICING for every service.
+  assert.equal(/status:\s*'NEEDS PRICING'/.test(effect), false,
+    'validation failure must not synthesise NEEDS PRICING for every service');
+
+  // Out-of-order guard: a slow earlier response must not overwrite a newer one.
+  // BOTH the success and failure paths must discard stale responses. Guarding
+  // only one still lets an older response overwrite a newer result.
+  const guards = (effect.match(/validationSeq\.current !== seq/g) || []).length;
+  assert.ok(guards >= 2,
+    `both the success and failure handlers must discard stale responses; found ${guards} guard(s)`);
+  assert.match(pricebook, /const validationSeq = useRef\(0\)/);
+
+  // The pre-first-validation state is unknown, not failing.
+  assert.match(pricebook, /status:\s*'CHECKING'/);
+  const display = pricebook.slice(pricebook.indexOf('function displayStatus'),
+                                  pricebook.indexOf('const selectedStatus'));
+  assert.equal(/statuses === null/.test(display), false,
+    'displayStatus must not treat an in-flight validation as a failing status');
+});

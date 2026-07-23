@@ -540,7 +540,20 @@ test('current draft status follows dynamic server requirements and never trusts 
 
   const client = readFileSync('client/src/pricebook.jsx', 'utf8');
   assert.match(client, /api\('\/api\/pricebook\/validate'/);
-  assert.match(client, /statuses === null/);
+  // Status must never be assumed before the server confirms it. Previously the
+  // client expressed this by setting statuses to null and treating null as a
+  // failing status, which made every chip flash NEEDS PRICING on each
+  // keystroke. The unknown state is now CHECKING, and statuses are only ever
+  // populated from a completed /validate response -- never from saved state.
+  assert.match(client, /status:\s*'CHECKING'/);
+  // Clearing on load is fine -- nothing is known yet. Clearing inside the
+  // draft-validation effect is the defect: it wiped known statuses on every
+  // keystroke.
+  const validationEffect = client.slice(
+    client.indexOf('if (!book || locked) return;'),
+    client.indexOf('}, [book, locked]);'));
+  assert.equal(/setStatuses\(null\)/.test(validationEffect), false,
+    'the validation effect must not clear known statuses while typing');
   assert.equal(/dash\.pricebookStatuses/.test(client), false);
 });
 

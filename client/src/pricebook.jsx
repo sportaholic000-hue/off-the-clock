@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
 import { humanPricingKey } from './pricebookFormatting.js';
@@ -554,6 +554,13 @@ export default function PriceBook() {
   const [book, setBook] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [statuses, setStatuses] = useState(null);
+  // True while a draft validation is in flight. Statuses are NOT cleared during
+  // validation -- the last confirmed result stays visible so a QUOTING LIVE
+  // service does not flash to NEEDS PRICING on every keystroke.
+  const [validating, setValidating] = useState(false);
+  // Monotonic sequence: a response is applied only if it belongs to the most
+  // recent request, so a slow earlier response cannot overwrite a newer one.
+  const validationSeq = useRef(0);
   const [draftValidationErrors, setDraftValidationErrors] = useState([]);
   const [preview, setPreview] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -616,29 +623,33 @@ export default function PriceBook() {
 
   useEffect(() => {
     if (!book || locked) return;
-    let cancelled = false;
-    setStatuses(null);
-    setDraftValidationErrors([]);
+    // Do NOT clear statuses here. Clearing on every keystroke made every
+    // service chip fall back to NEEDS PRICING mid-typing, including services
+    // already proven QUOTING LIVE. The previous confirmed result stays on
+    // screen until a completed validation replaces it.
+    const seq = validationSeq.current + 1;
+    validationSeq.current = seq;
+    setValidating(true);
     const timer = setTimeout(() => {
       api('/api/pricebook/validate', { method:'POST', body:book })
         .then(result => {
-          if (!cancelled) {
-            setStatuses(result.statuses || []);
-            setDraftValidationErrors(result.validationErrors || []);
-          }
+          // Out-of-order guard: ignore anything but the newest request.
+          if (validationSeq.current !== seq) return;
+          setStatuses(result.statuses || []);
+          setDraftValidationErrors(result.validationErrors || []);
+          setValidating(false);
         })
         .catch(nextError => {
-          if (!cancelled) {
-            setDraftValidationErrors([nextError.message]);
-            setStatuses((book.services || []).map(service => ({
-              serviceType:service.serviceType,
-              status:'NEEDS PRICING',
-              missingOwnerLabels:[nextError.message]
-            })));
-          }
+          if (validationSeq.current !== seq) return;
+          // A failed validation must be visible and must never leave the UI
+          // claiming the draft is valid. Surface the error, but do not
+          // fabricate NEEDS PRICING for every service -- the last confirmed
+          // statuses remain, and the error banner states the draft is unverified.
+          setDraftValidationErrors([nextError.message]);
+          setValidating(false);
         });
-    }, 120);
-    return () => { cancelled = true; clearTimeout(timer); };
+    }, 250);
+    return () => { clearTimeout(timer); };
   }, [book, locked]);
 
   useEffect(() => {
@@ -733,14 +744,17 @@ export default function PriceBook() {
     );
   }
   const statusMap = new Map((statuses || []).map(status => [status.serviceType, status]));
-  const validatingStatus = {
-    status:'NEEDS PRICING',
+  // Before the first validation completes nothing is known yet. That is a
+  // genuinely unknown state, not a failing one, so it must not read as
+  // NEEDS PRICING.
+  const unknownStatus = {
+    status:'CHECKING',
     missingOwnerFields:[],
-    missingOwnerLabels:['Validating current draft']
+    missingOwnerLabels:[]
   };
   function displayStatus(service) {
-    if (!service || statuses === null) return validatingStatus;
-    return statusMap.get(service.serviceType) || validatingStatus;
+    if (!service) return unknownStatus;
+    return statusMap.get(service.serviceType) || unknownStatus;
   }
   const selectedStatus = displayStatus(selected);
   // Split required from optional so required pricing stays open and dominant
@@ -794,11 +808,13 @@ export default function PriceBook() {
               return (
                 <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(service.serviceType)}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
-                  <StatusChip status={status?.status || (missing.length ? 'NEEDS PRICING' : 'QUOTING LIVE')} />
+                  <StatusChip status={status.status} pending={validating} />
                   <small className="mono service-compact-status">
-                    {missing.length > 0
-                      ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
-                      : 'Ready to quote'}
+                    {status.status === 'CHECKING'
+                      ? 'Checking'
+                      : missing.length > 0
+                        ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
+                        : 'Ready to quote'}
                   </small>
                 </button>
               );
@@ -1004,7 +1020,13 @@ export default function PriceBook() {
           <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
         )}
         <div className="save-bar">
-          <StatusChip status={selectedStatus.status} />
+          <StatusChip status={selectedStatus.status} pending={validating} />
+          {validating && (
+            <span className="validating-note" role="status">
+              <span className="validating-dot" aria-hidden="true" />
+              Checking your changes
+            </span>
+          )}
           <Button icon={Check} onClick={save} disabled={saving}>{saving ? 'Saving' : 'Save & validate'}</Button>
           <span className="mono">SAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS</span>
         </div>
