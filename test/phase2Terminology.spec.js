@@ -330,3 +330,21 @@ test('the price-book sidebar does not share a class with the dashboard rows', ()
   assert.equal(/break-word|anywhere/.test(block), false,
     'sidebar service names must not break mid-word');
 });
+
+test('button labels are never repainted by container descendant selectors', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+
+  // The Button component wraps its label in a <span>. A container rule using a
+  // bare descendant selector (e.g. `.integration-row span { color: ... }`)
+  // silently repaints that label. On the Google Calendar step this rendered
+  // --gray on the green primary button at 1.37:1 -- effectively invisible.
+  assert.match(css, /\.button > span \{ color: inherit; \}/,
+    'button labels must inherit their colour from the button variant');
+
+  // No container rule may target a bare descendant span with a colour, since
+  // any button placed inside it would be repainted.
+  const risky = css.split('\n').filter(line =>
+    /^\.[a-z-]+ span \{/.test(line) && /color:/.test(line));
+  assert.deepEqual(risky, [],
+    `container rules repainting descendant spans: ${risky.join(' | ')}`);
+});

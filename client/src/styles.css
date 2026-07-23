@@ -124,6 +124,10 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   font-weight: 600;
   transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
 }
+/* Button labels are wrapped in a <span>, so any container rule using a
+   descendant span selector can silently repaint them. Label colour must always
+   come from the button variant. */
+.button > span { color: inherit; }
 .button-primary { background: var(--green); color: var(--black); }
 .button-primary:hover { background: var(--green-deep); }
 .button-secondary { background: transparent; border-color: var(--black-line); color: var(--white); }
@@ -348,11 +352,11 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .interview-field, .interview-complete { grid-column: 1 / -1; border-top: 1px solid var(--black-line); padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
 .suggestion-results { border-left: 2px solid var(--green); padding-left: 14px; display: flex; flex-direction: column; gap: 8px; }
 .suggestion-row { min-height: 40px; border-bottom: 1px solid var(--black-line); display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; }
-.suggestion-row span { color: var(--gray); }
+.suggestion-row > div span { color: var(--gray); }
 .calendar-options { display: flex; flex-direction: column; gap: 10px; }
 .integration-row { min-height: 76px; border: 1px solid var(--black-line); border-radius: 4px; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .integration-row > div:first-child { display: flex; flex-direction: column; gap: 5px; }
-.integration-row span { color: var(--gray); font-size: 13px; }
+.integration-row > div:first-child span { color: var(--gray); font-size: 13px; }
 .inline-form { width: min(430px,100%); display: flex; gap: 8px; }
 
 .pricebook-page > .page-header { margin-bottom: 18px; }
@@ -371,7 +375,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .starter-panel { border: 1px solid #5E502B; border-radius: 4px; padding: 15px; margin-bottom: 14px; }
 .starter-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
 .starter-grid article { border: 1px solid var(--black-line); border-radius: 3px; padding: 12px; display: flex; flex-direction: column; gap: 7px; }
-.starter-grid span { color: var(--gray); font-size: 11.5px; }
+.starter-grid > div span { color: var(--gray); font-size: 11.5px; }
 
 .pricebook-layout { display: grid; grid-template-columns: 245px minmax(0,1fr); gap: 18px; align-items: start; }
 .service-list { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow: auto; border-right: 1px solid var(--black-line); padding-right: 12px; display: flex; flex-direction: column; gap: 5px; }
@@ -416,7 +420,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .essentials { background: var(--black-raised); }
 .section-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .section-title > div { min-width: 0; }
-.section-title span { color: var(--gray); font-size: 12px; line-height: 1.5; }
+.section-title > div span { color: var(--gray); font-size: 12px; line-height: 1.5; }
 .field-stack { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .money-input { position: relative; }
 .money-input > span { position: absolute; top: 11px; left: 11px; color: var(--gray); font-family: 'JetBrains Mono', monospace; z-index: 1; }
@@ -503,7 +507,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .setup-facts { border: 1px solid var(--black-line); border-radius: 4px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); }
 .setup-facts div { min-height: 76px; border-right: 1px solid var(--black-line); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .setup-facts div:last-child { border-right: 0; }
-.setup-facts span { color: var(--gray); font-size: 12px; }
+.setup-facts > div span { color: var(--gray); font-size: 12px; }
 .setup-facts strong { color: var(--white); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.4; }
 
 .admin-shell { min-height: 100vh; padding: 24px; display: flex; flex-direction: column; gap: 80px; }
@@ -661,7 +665,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .simulated-dot { flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--amber); }
 .simulated-copy { display: flex; flex-direction: column; gap: 4px; }
 .simulated-copy strong { font-size: 11.5px; letter-spacing: .12em; color: var(--amber); }
-.simulated-copy span { font-size: 13.5px; color: var(--gray); line-height: 1.5; }
+.simulated-copy > span { font-size: 13.5px; color: var(--gray); line-height: 1.5; }
 
 /* --- Off banner (dashboard reference off-state) --- */
 .off-banner {
