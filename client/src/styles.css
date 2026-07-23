@@ -11,6 +11,8 @@
      raised cards and 5.10:1 on the page, both above the WCAG AA 4.5 floor for
      small text, while still reading below --gray in the hierarchy. */
   --muted: #929B92;
+  /* Vertical rhythm between major page regions. */
+  --rhythm: 20px;
   --green: #00E676;
   --green-deep: #16A34A;
   --white: #F2F5F2;
@@ -88,7 +90,16 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .workspace { flex: 1; min-width: 0; }
 .mobile-header { display: none; }
 .dashboard-page, .onboarding-page, .pricebook-page { width: 100%; padding: 24px 28px 96px; }
-.dashboard-page { max-width: 1100px; }
+.dashboard-page {
+  max-width: 1100px;
+  /* Page-level vertical rhythm. Major regions are direct children, so the page
+     owns the spacing: conditional banners and notices can appear or disappear
+     without leaving a double gap or a fused seam, and no card carries its own
+     one-off margin. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--rhythm);
+}
 .onboarding-page { max-width: 1120px; }
 .pricebook-page { max-width: 1440px; }
 
@@ -488,8 +499,8 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   justify-content: space-between;
 }
 .master-operator.live { border-color: var(--green); color: var(--green); box-shadow: 0 0 24px rgba(0,230,118,.15); }
-.dashboard-page > .notice { margin-top: 12px; }
-.dashboard-bands { margin-top: 18px; display: flex; flex-direction: column; gap: 18px; }
+
+.dashboard-bands { display: flex; flex-direction: column; gap: var(--rhythm); }
 .dashboard-band { border-top: 1px solid var(--black-line); padding-top: 16px; }
 .band-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .status-table { border: 1px solid var(--black-line); border-radius: 4px; overflow: hidden; }
@@ -545,6 +556,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
     gap: 10px;
   }
   .dashboard-page, .onboarding-page, .pricebook-page { padding: 18px 16px 92px; }
+  .dashboard-page { --rhythm: 16px; }
   .save-bar { left: 0; padding: 11px 16px; }
   .save-bar > span:last-child { display: none; }
   .pricebook-layout { grid-template-columns: 1fr; }

@@ -424,3 +424,24 @@ test('the dashboard blocker section is bounded and grouped by service', () => {
   // Deep-link into the specific service AND its first missing requirement.
   assert.match(dashboard, /pricebook\?service=\$\{encodeURIComponent\(group\.serviceType\)\}&field=\$\{encodeURIComponent\(group\.firstField\)\}/);
 });
+
+test('the dashboard has a page-level vertical rhythm, not per-card margins', () => {
+  const css = readFileSync('client/src/styles.css', 'utf8');
+
+  // The user-visible failure: every major dashboard region rendered with a 0px
+  // gap, fusing the operator control, banners, priority action, counters and
+  // bands into one slab. The regions are direct children of .dashboard-page,
+  // so the page owns the spacing -- conditional sections can appear or
+  // disappear without leaving a double gap or a fused seam.
+  const page = css.slice(css.indexOf('.dashboard-page {'));
+  const block = page.slice(0, page.indexOf('}') + 1);
+  assert.match(block, /display: flex/);
+  assert.match(block, /flex-direction: column/);
+  assert.match(block, /gap: var\(--rhythm\)/);
+  assert.match(css, /--rhythm:\s*\d+px/, 'a rhythm token must be defined');
+
+  // The old one-off notice margin would double the gap now that the page owns
+  // spacing; it must not come back.
+  assert.equal(/\.dashboard-page > \.notice \{ margin-top/.test(css), false,
+    'individual dashboard cards must not carry one-off margins');
+});
