@@ -30,7 +30,8 @@ console.log('Running candidate formula, contract, price-book, and adversarial su
 const child = spawn(process.execPath, [
   '--test',
   'test/quoteEngineVNext.spec.js',
-  'test/quoteEngineVNextAdversarial.spec.js'
+  'test/quoteEngineVNextAdversarial.spec.js',
+  'test/quoteEngineVNextRepairs.spec.js'
 ], { stdio: 'inherit' });
 
 child.on('error', error => {

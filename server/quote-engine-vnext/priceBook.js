@@ -6,7 +6,8 @@ import {
   validateBusinessDefaults,
   validateCustomerInputs,
   validateOwnerPricing,
-  validateServiceRules
+  validateServiceRules,
+  vinylUnderlaymentApplies
 } from './contracts.js';
 import {
   generateQuoteVNext,
@@ -50,14 +51,15 @@ const NEW_FIELD_COPY = {
   dripEdgePerLF: { label: 'Drip edge material price per measured linear foot', help: 'Used only with itemized roof accessories and multiplied by the confirmed drip-edge length.' },
   ridgeCapPerLF: { label: 'Ridge cap material price per measured linear foot', help: 'Used only with itemized roof accessories and multiplied by the confirmed ridge-cap length.' },
   postPrice: { label: 'Fence post material price per confirmed planned post', help: 'Applied to the confirmed post count when posts are not included in the per-foot fence material price.' },
-  concretePerPost: { label: 'Concrete and digging price per confirmed planned post', help: 'Applied to every post in the confirmed fence plan; the engine does not infer post count from spacing.' },
-  gatePrice: { label: 'Installed gate price per gate', help: 'Applied to the confirmed gate count. Gate-opening width is removed from the solid fence run before per-foot pricing.' },
+  underlaymentPerSquare: { label: 'Installed-area underlayment sell price per roofing square', help: 'Used only when material rates are owner-classified as final sell prices. Cost-based underlayment requires product coverage and purchasable-quantity facts and is held for review.' },
+  underlaymentPerSqft: { label: 'Installed-area underlayment sell price per square foot', help: 'Used only when material rates are owner-classified as final sell prices. Cost-based underlayment requires product coverage and purchasable-quantity facts and is held for review.' },
+  concretePerPost: { label: 'Concrete + digging cost per post at your local frost/set depth.', help: 'This mixed charge cannot be quoted until separate labor and material prices or an explicit owner-confirmed allocation rule is approved.' },
+  gatePrice: { label: "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.", help: 'Selected gates remain review-only until the owner approves a measured-width pricing model and rates; the existing per-gate value is not reinterpreted.' },
   trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Applied only when siding trim is included and multiplied by the confirmed trim length.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied only when a replacement sheet count is confirmed; an unmeasured decking scope is disclosed rather than fabricated.' },
   roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Defines small and medium average-room area boundaries used by the visible room-complexity labor factor.' },
-  unknownMembraneRule: { label: 'Unknown membrane pricing rule', help: 'Choose owner review or an explicitly configured average membrane rate with a customer disclosure.' },
-  unknownLayerCount: { label: 'Assumed existing layer count when unknown', help: 'Owner-configured layer assumption used only when the customer cannot confirm the flat-roof layer count.' },
+
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
   price: { label: 'Fixed customer price per configured unit', help: 'Final configured amount before any explicitly selected cost-basis markup.' },
@@ -79,11 +81,14 @@ function keysOf(value, fallback) {
     : [fallback];
 }
 
-function repairScenarios(cube, fallbacks, makeScenario) {
+function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
+  const affectedAreas = serviceType === 'ROOFING_REPAIR'
+    ? { small: 25, medium: 100, large: 250 }
+    : { small: 10, medium: 50, large: 100 };
   const out = [];
   for (const first of keysOf(cube, fallbacks[0])) {
     for (const second of keysOf(cube?.[first], fallbacks[1])) {
-      for (const size of ['small', 'medium', 'large']) out.push(makeScenario(first, second, size));
+      for (const size of ['small', 'medium', 'large']) out.push(makeScenario(first, second, affectedAreas[size]));
     }
   }
   return out;
@@ -107,22 +112,22 @@ function activationScenarios(service) {
     })));
   }
   if (serviceType === 'ROOFING_REPAIR') {
-    return repairScenarios(p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, repairSize) => ({ repairType, repairSize, roofType, pitch: 'medium', stories: 2, leakPresent: false }));
+    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch: 'medium', stories: 2, leakPresent: false }));
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    const configured = keysOf(p.laborPerSqft, 'average').filter(key => key !== 'average');
-    const membraneTypes = configured.length ? configured : ['average'];
+    const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
+    const membraneTypes = configured.length ? configured : ['epdm'];
     const scenarios = membraneTypes.flatMap(membraneType => [
         { roofSqft: 1200, sqftMethod: 'exact', membraneType, existingLayers: 1, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' },
         { roofSqft: 1200, sqftMethod: 'exact', membraneType, existingLayers: 1, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'commercial' }
       ]);
-    if (p.unknownMembraneRule === 'average_with_disclosure') scenarios.push({ roofSqft: 1200, sqftMethod: 'exact', membraneType: 'unknown', existingLayers: 1, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' });
+
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    return repairScenarios(p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, repairSize) => ({ repairType, repairSize, membraneType, leakPresent: false, pondingWater: false }));
+    return repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false }));
   }
-  if (serviceType === 'INTERIOR_PAINTING') return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 3600, wallHeight: 'high', surfaceCondition: 'fair', coats: 2, ceilingsIncluded: true, ceilingAreaSqft: 1200, trimIncluded: true, trimLengthLF: 300 }];
+  if (serviceType === 'INTERIOR_PAINTING') return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 3600, wallHeight: 'high', surfaceCondition: 'good', coats: 2, ceilingsIncluded: true, ceilingAreaSqft: 1200, trimIncluded: true, trimLengthLF: 300 }];
   if (serviceType === 'EXTERIOR_PAINTING') return [{ areaInputMethod: 'wall_sqft', exteriorAreaSqft: 1800, stories: 2, surfaceCondition: 'fair', coats: 2 }];
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') {
     const flooringTypes = keysOf(p.laborPerSqft, 'tile');
@@ -143,7 +148,7 @@ function activationScenarios(service) {
   }
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') {
     const fenceTypes = keysOf(p.laborPerLinearFoot, 'wood');
-    return fenceTypes.map(fenceType => ({ linearFeet: 120, lfMethod: 'exact', fenceType, fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, cornerCount: 2, postCount: 20, terrainSlope: 'moderate', ...(serviceType === 'FENCING_REPLACEMENT' ? { oldFenceRemoval: p.removalPerLinearFoot !== undefined } : {}) }));
+    return fenceTypes.map(fenceType => ({ linearFeet: 120, lfMethod: 'exact', fenceType, fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 20, terrainSlope: 'moderate', ...(serviceType === 'FENCING_REPLACEMENT' ? { oldFenceRemoval: p.removalPerLinearFoot !== undefined } : {}) }));
   }
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') {
     return [
@@ -158,7 +163,7 @@ function activationScenarios(service) {
   if (serviceType === 'LANDSCAPING_MOWING') return [{ yardSqft: 5000, sqftMethod: 'exact', serviceFrequency: 'weekly', grassCondition: 'maintained', bagClippings: false, edgingIncluded: false }];
   if (serviceType === 'SIDING_REPLACEMENT') return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 1800, sidingType, stories: 2, oldSidingRemoval: true, trimIncluded: true, trimLengthLF: 300 }));
   if (serviceType === 'SIDING_REPAIR') {
-    return repairScenarios(p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, repairSize) => ({ sidingType, damageLevel, repairSize, stories: 2 }));
+    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories: 2 }));
   }
   if (serviceType === 'CUSTOM') return [{ service: service.service, serviceConfirmed: true, unit: p.unit || 'flat', ...({ per_hour: { hours: 4 }, per_unit: { itemCount: 3 }, per_sqft: { areaSqft: 500 }, per_LF: { linearFeet: 120 }, per_square: { roofSquares: 20 } }[p.unit] || {}) }];
   return [];
@@ -203,8 +208,16 @@ export function vNextServiceStatus(service) {
       }
       const owner = validateOwnerPricing(service.serviceType, customerInputs, effectivePricing);
       missingOwnerFields.push(...owner.missingOwnerFields.map(field => tierName ? `${tierName}.${field}` : field));
-      invalidOwnerFields.push(...[...owner.invalidOwnerFields, ...owner.unexpectedOwnerFields].map(field => tierName ? `${tierName}.${field}` : field));
+      invalidOwnerFields.push(...[...owner.invalidOwnerFields, ...owner.unsupportedOwnerFields].map(field => tierName ? `${tierName}.${field}` : field));
       errors.push(...owner.validationMessages.map(message => `${prefix}${message}`));
+
+      const underlaymentPath = service.serviceType === 'ROOFING_REPLACEMENT'
+        ? `underlaymentPerSquare.${customerInputs.replacementRoofType}`
+        : (service.serviceType.startsWith('FLOORING_') && vinylUnderlaymentApplies(customerInputs, effectivePricing) ? 'underlaymentPerSqft' : null);
+      if (underlaymentPath && service.priceBasisByCategory?.material === 'cost') {
+        invalidOwnerFields.push(tierName ? `${tierName}.${underlaymentPath}` : underlaymentPath);
+        errors.push(`${prefix}Cost-based underlayment requires product-specific coverage and purchasable-quantity information.`);
+      }
     }
   };
   validateEffectivePricing(pricing);
@@ -277,7 +290,7 @@ export function validateVNextPricebook(pricebook) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], statuses };
 }
 
-export function quoteFromVNextPricebook({ pricebook, serviceType, customerInputs, callerType = 'owner', feeSelections, currentMonth }) {
+export function quoteFromVNextPricebook({ pricebook, serviceType, customerInputs, callerType = 'owner', feeSelections, currentMonth, allowInactiveOwnerPreview = false }) {
   const services = Array.isArray(pricebook?.services) ? pricebook.services : [];
   const builtIn = SERVICE_TYPES.includes(serviceType) && serviceType !== 'CUSTOM';
   const requestedCustomName = String(serviceType === 'CUSTOM' ? (customerInputs?.service || '') : (serviceType || '')).trim().toLowerCase();
@@ -305,12 +318,13 @@ export function quoteFromVNextPricebook({ pricebook, serviceType, customerInputs
     businessDefaults: pricebook?.defaults || {},
     callerType,
     feeSelections,
-    currentMonth
+    currentMonth,
+    allowInactiveOwnerPreview
   });
 }
 
 export function previewFromVNextPricebook(input) {
-  return quoteFromVNextPricebook({ ...input, callerType: 'owner' });
+  return quoteFromVNextPricebook({ ...input, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 function fieldCopy(serviceType, field) {

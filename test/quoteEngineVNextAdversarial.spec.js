@@ -80,8 +80,12 @@ function roofService(pricing = {}, overrides = {}) {
     tearOffPerSquare: { asphalt_shingle: 2000 },
     underlaymentPerSquare: { asphalt_shingle: 1500 },
     accessoryPricingMode: 'per_square_allin',
+    minimumJob: 0,
     ...pricing
-  }, overrides);
+  }, {
+    priceBasisByCategory: { ...costBasis, material: 'sell_price' },
+    ...overrides
+  });
 }
 
 function roofInputs(overrides = {}) {
@@ -106,7 +110,6 @@ function flatService(pricing = {}, overrides = {}) {
     tearOffPerSqft: { epdm: 200, average: 225 },
     minimumJob: 0,
     insulationPerSqft: 250,
-    unknownMembraneRule: 'review',
     ...pricing
   }, overrides);
 }
@@ -129,7 +132,6 @@ function interiorService(pricing = {}, overrides = {}) {
     laborPerWallSqftPerCoat: 100,
     materialPerWallSqftPerCoat: 50,
     minimumJob: 0,
-    laborHourlyRate: 10000,
     ceilingLaborPerSqftPerCoat: 100,
     ceilingMaterialPerSqftPerCoat: 50,
     trimLaborPerLF: 100,
@@ -195,7 +197,6 @@ function fencingInputs(overrides = {}) {
     fenceType: 'wood',
     fenceHeight: 6,
     gateCount: 0,
-    cornerCount: 2,
     postCount: 10,
     terrainSlope: 'flat',
     ...overrides
@@ -244,8 +245,8 @@ test('quote-time requests for an unconfigured offering require review', () => {
   assert.equal(result.missingOwnerFields.includes('materialPerSqft.tile'), true);
 });
 
-test('flat-roof activation requires Average plus at least one actual membrane offering', () => {
-  const missingAverage = flatService({
+test('flat-roof activation requires an actual configured membrane and never relies on Average', () => {
+  const actualOffering = flatService({
     laborPerSqft: { epdm: 500 },
     membraneCostPerSqft: { epdm: 700 },
     tearOffPerSqft: { epdm: 200 }
@@ -255,7 +256,7 @@ test('flat-roof activation requires Average plus at least one actual membrane of
     membraneCostPerSqft: { average: 700 },
     tearOffPerSqft: { average: 200 }
   });
-  assert.equal(vNextServiceStatus(missingAverage).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(actualOffering).status, 'QUOTING LIVE');
   assert.equal(vNextServiceStatus(onlyAverage).status, 'NEEDS PRICING');
 });
 
@@ -267,7 +268,7 @@ test('a medium repair cannot quote from a nested map containing only small', () 
     repairMaterialAllowance: { asphalt_shingle: { patch: { small: 5000 } } }
   });
   const result = run('ROOFING_REPAIR', {
-    repairType: 'patch', repairSize: 'medium', roofType: 'asphalt_shingle',
+    repairType: 'patch', affectedArea: 100, roofType: 'asphalt_shingle',
     pitch: 'low', stories: 1, leakPresent: false
   }, ownerPricing);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
@@ -321,10 +322,10 @@ test('an explicitly confirmed zero accessory length is recorded as no physical s
 test('fractional cents and unsupported pricing controls are rejected', () => {
   const fractional = flooringService({ laborPerSqft: { vinyl_plank: 300.5 } });
   assert.equal(vNextServiceStatus(fractional).status, 'NEEDS PRICING');
-  const unsupported = roofService({ minimumJob: 10000 });
+  const unsupported = roofService({ repairMinimum: 10000 });
   const result = run('ROOFING_REPLACEMENT', roofInputs(), unsupported);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.equal(result.invalidOwnerFields.includes('minimumJob'), true);
+  assert.equal(result.unsupportedOwnerFields.includes('repairMinimum'), true);
 });
 
 test('unexpected customer fields never influence a quote', () => {
@@ -376,11 +377,16 @@ test('painting labor and material respond exactly to measured wall area and coat
   assert.equal(lineMap(three)['Wall paint and materials'], 15000);
 });
 
-test('fencing uses the confirmed planned post count with no spacing inference', () => {
+test('fencing accepts confirmed post counts but fails closed on the mixed concrete-and-digging charge', () => {
   const ten = run('FENCING_INSTALL', fencingInputs({ postCount: 10 }), fencingService());
   const eleven = run('FENCING_INSTALL', fencingInputs({ postCount: 11 }), fencingService());
-  assert.equal(lineMap(eleven)['Fence posts'] - lineMap(ten)['Fence posts'], 2500);
-  assert.equal(lineMap(eleven)['Concrete footings'] - lineMap(ten)['Concrete footings'], 700);
+  for (const result of [ten, eleven]) {
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.equal(result.lineItems, undefined);
+    assert.equal(result.ownerDecisionRequired.some(item => item.kind === 'mixed_charge_allocation'), true);
+    assert.match(result.validationMessages.join(' '), /needs separate labor and material prices, or an explicit owner-confirmed allocation rule/);
+  }
+  assert.equal(validateCustomerInputs('FENCING_INSTALL', fencingInputs({ postCount: 11 }), fencingService().pricing).ok, true);
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
   assert.equal(source.includes('postSpacing'), false);
   assert.equal(source.includes('Math.sqrt'), false);
@@ -430,14 +436,13 @@ test('mulch disposal scope follows measured bed preparation scope', () => {
   assert.equal(lineMap(prepared).Disposal, 10000);
 });
 
-test('TAX_ALL still obeys explicit per-service line taxability', () => {
+test('TAX_ALL taxes the full pre-tax subtotal regardless of category taxability flags', () => {
   const ownerPricing = interiorService();
-  ownerPricing.taxabilityByCategory.material = true;
   const result = run('INTERIOR_PAINTING', interiorInputs({ coats: 1 }), ownerPricing, {
     businessDefaults: { ...defaults, taxMode: 'TAX_ALL', taxPercent: 10 }
   });
-  assert.equal(lineMap(result).Tax, 500);
-  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.taxableSubtotalCents, 5000);
+  assert.equal(lineMap(result).Tax, 1500);
+  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.taxableSubtotalCents, 15000);
 });
 
 test('service status validates every tier using effective merged pricing', () => {
@@ -504,13 +509,23 @@ test('every custom pricing unit consumes only its matching confirmed quantity', 
   }
 });
 
-test('unknown flat-roof assumptions are owner-configured, recorded, and disclosed', () => {
-  const ownerPricing = flatService({ unknownMembraneRule: 'average_with_disclosure', unknownLayerCount: 2 });
-  const result = run('FLAT_ROOF_REPLACEMENT', flatInputs({ membraneType: 'unknown', existingLayers: 'unknown' }), ownerPricing);
-  assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(result.calculationRecord.options[0].assumptions.length, 2);
-  assert.match(result.disclaimer, /average membrane pricing was used/);
-  assert.match(result.disclaimer, /2-layer assumption/);
+test('unknown flat-roof facts require inspection and obsolete assumption controls are rejected', () => {
+  for (const inputs of [
+    flatInputs({ membraneType: 'unknown' }),
+    flatInputs({ existingLayers: 'unknown' })
+  ]) {
+    const result = run('FLAT_ROOF_REPLACEMENT', inputs, flatService());
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.equal(result.inspectionFirst, true);
+  }
+  const obsolete = run(
+    'FLAT_ROOF_REPLACEMENT',
+    flatInputs(),
+    flatService({ unknownMembraneRule: 'average_with_disclosure', unknownLayerCount: 2 })
+  );
+  assert.equal(obsolete.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(obsolete.unsupportedOwnerFields.includes('unknownMembraneRule'), true);
+  assert.equal(obsolete.unsupportedOwnerFields.includes('unknownLayerCount'), true);
 });
 
 test('customer sanitizer never exposes calculation records, rates, or owner rules', () => {
@@ -538,6 +553,10 @@ test('candidate price-book metadata has specific labels instead of generic raw-k
       assert.equal(/[a-z][A-Z]|_/.test(field.label), false, `${serviceMetadata.serviceType}.${field.field}: ${field.label}`);
     }
   }
+  const fencing = metadata.find(serviceMetadata => serviceMetadata.serviceType === 'FENCING_INSTALL');
+  const fencingFields = Object.fromEntries(fencing.pricingFields.map(field => [field.field, field]));
+  assert.equal(fencingFields.concretePerPost.label, 'Concrete + digging cost per post at your local frost/set depth.');
+  assert.equal(fencingFields.gatePrice.label, "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.");
 });
 
 test('owner-selected common fees require an explicit owner decision', () => {
@@ -586,7 +605,7 @@ test('underlayment and gate measurements reject contradictory selected scope', (
   assert.equal(gate.invalidCustomerFields.includes('gateWidthTotalLF'), true);
 });
 
-test('concrete labor rounds the base and finish-extra components independently', () => {
+test('supported concrete finishes round the base and finish-extra components independently', () => {
   const ownerPricing = service('CONCRETE_DRIVEWAY', {
     laborPerSqft: 101,
     concreteCostPerCubicYard: 10000,
@@ -598,16 +617,16 @@ test('concrete labor rounds the base and finish-extra components independently',
     areaSqft: 1.01,
     perimeterLF: 4.1,
     thickness: 2,
-    finishType: 'exposed_aggregate',
+    finishType: 'smooth',
     demolitionNeeded: false,
     reinforcement: 'none',
     accessDifficulty: 'moderate',
     baseNeeded: false
   }, ownerPricing);
   assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(lineMap(result)['Concrete labor'], 132);
+  assert.equal(lineMap(result)['Concrete labor'], 117);
   const labor = result.lineItems.find(line => line.name === 'Concrete labor');
-  assert.deepEqual(labor.calculation.components.map(component => component.amountCents), [112, 20]);
+  assert.deepEqual(labor.calculation.components.map(component => component.amountCents), [112, 5]);
 });
 
 test('buffered ranges cannot use remitted tax to satisfy a pre-tax minimum', () => {
@@ -623,9 +642,9 @@ test('buffered ranges cannot use remitted tax to satisfy a pre-tax minimum', () 
   });
   const scenario = result.calculationRecord.options[0].scenarios.mid;
   assert.equal(scenario.tax.preTaxSubtotalCents, 30000);
-  assert.equal(scenario.tax.taxCents, 1000);
-  assert.equal(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 26000);
-  assert.equal(result.lowEstimate, 260);
+  assert.equal(scenario.tax.taxCents, 3000);
+  assert.equal(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 27500);
+  assert.equal(result.lowEstimate, 275);
 });
 
 test('price-book statuses fail closed when business-wide defaults are invalid', () => {
@@ -711,6 +730,6 @@ test('custom ranges record the taxed customer floor for a pre-tax minimum', () =
       taxPercent: 10
     }
   });
-  assert.equal(result.lowEstimate, 160);
-  assert.equal(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 16000);
+  assert.equal(result.lowEstimate, 165);
+  assert.equal(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 16500);
 });

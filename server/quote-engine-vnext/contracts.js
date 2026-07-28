@@ -29,6 +29,15 @@ export const TAXABILITY_CATEGORIES = [
   'minimum_adjustment'
 ];
 
+export function repairSizeFromAffectedArea(serviceType, affectedArea) {
+  if (typeof affectedArea !== 'number' || !Number.isFinite(affectedArea) || affectedArea <= 0) return null;
+  const boundaries = serviceType === 'ROOFING_REPAIR' ? [50, 200] : [20, 80];
+  if (!['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR', 'SIDING_REPAIR'].includes(serviceType)) return null;
+  if (affectedArea < boundaries[0]) return 'small';
+  if (affectedArea <= boundaries[1]) return 'medium';
+  return 'large';
+}
+
 const FLOORING_TYPES = ['hardwood', 'laminate', 'vinyl_plank', 'carpet', 'tile'];
 const SIDING_TYPES = ['vinyl', 'fiber_cement', 'wood', 'metal'];
 const SIZE_KEYS = ['small', 'medium', 'large'];
@@ -99,13 +108,13 @@ export const MEASUREMENT_CONTRACTS = {
   ROOFING_REPAIR: commonContract({
     fields: {
       repairType: slugField('Roof repair type'),
-      repairSize: enumField('Repair size', SIZE_KEYS),
+      affectedArea: numberField('Measured affected roof area', 'square feet', 0.01, 1_000_000),
       roofType: slugField('Roofing material'),
       pitch: enumField('Roof pitch', PITCHES),
       stories: enumField('Building stories', STORIES),
       leakPresent: booleanField('Active leak reported')
     },
-    required: () => ['repairType', 'repairSize', 'roofType', 'pitch', 'stories', 'leakPresent'],
+    required: () => ['repairType', 'affectedArea', 'roofType', 'pitch', 'stories', 'leakPresent'],
     inspection: c => c.repairType === 'unknown'
       ? 'Leak source is unknown. An in-person inspection is required before pricing this repair.'
       : null
@@ -128,14 +137,10 @@ export const MEASUREMENT_CONTRACTS = {
       if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
       return out;
     },
-    inspection(c, p) {
+    inspection(c) {
       if (c.sqftMethod && c.sqftMethod !== 'exact') return 'Measured flat-roof area is required for a customer-ready quote.';
-      if (c.membraneType === 'unknown' && p.unknownMembraneRule !== 'average_with_disclosure') {
-        return 'The membrane type must be confirmed before this flat-roof replacement can be priced.';
-      }
-      if (c.existingLayers === 'unknown' && !Number.isInteger(p.unknownLayerCount)) {
-        return 'The existing layer count must be measured or explicitly configured as an owner assumption.';
-      }
+      if (c.membraneType === 'unknown') return 'The membrane type must be confirmed before this flat-roof replacement can be priced.';
+      if (c.existingLayers === 'unknown') return 'The existing layer count must be measured before this flat-roof replacement can be priced.';
       return null;
     },
     crossValidate(c) {
@@ -156,12 +161,12 @@ export const MEASUREMENT_CONTRACTS = {
   FLAT_ROOF_REPAIR: commonContract({
     fields: {
       repairType: slugField('Flat-roof repair type'),
-      repairSize: enumField('Repair size', SIZE_KEYS),
+      affectedArea: numberField('Measured affected flat-roof area', 'square feet', 0.01, 1_000_000),
       membraneType: slugField('Membrane type'),
       leakPresent: booleanField('Active leak reported'),
       pondingWater: booleanField('Ponding water reported')
     },
-    required: () => ['repairType', 'repairSize', 'membraneType', 'leakPresent', 'pondingWater'],
+    required: () => ['repairType', 'affectedArea', 'membraneType', 'leakPresent', 'pondingWater'],
     inspection(c) {
       if (c.repairType === 'unknown_leak') return 'Flat-roof leak source requires inspection before pricing.';
       if (c.membraneType === 'unknown') return 'The flat-roof membrane type must be confirmed before repair pricing.';
@@ -187,9 +192,11 @@ export const MEASUREMENT_CONTRACTS = {
       if (c.trimIncluded) out.push('trimLengthLF');
       return out;
     },
-    inspection: c => c.areaInputMethod !== 'wall_sqft'
-      ? 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.'
-      : null
+    inspection(c) {
+      if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.';
+      if (c.surfaceCondition !== 'good') return 'Wall preparation requires a confirmed measured preparation scope before pricing.';
+      return null;
+    }
   }),
 
   EXTERIOR_PAINTING: commonContract({
@@ -201,9 +208,11 @@ export const MEASUREMENT_CONTRACTS = {
       coats: numberField('Paint coats', 'coats', 1, 3, { integer: true })
     },
     required: () => ['areaInputMethod', 'exteriorAreaSqft', 'stories', 'surfaceCondition', 'coats'],
-    inspection: c => c.areaInputMethod !== 'wall_sqft'
-      ? 'Measured paintable wall area is required; home-size maps are not sufficient for a customer-ready quote.'
-      : null
+    inspection(c) {
+      if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; home-size maps are not sufficient for a customer-ready quote.';
+      if (c.surfaceCondition === 'poor') return 'Poor exterior surfaces require an explicitly confirmed primer pricing rule before pricing.';
+      return null;
+    }
   }),
 
   FLOORING_INSTALL: null,
@@ -285,15 +294,14 @@ function fencingContract(replacement) {
       fenceType: slugField('Fence type'),
       fenceHeight: enumField('Fence height', [4, 6, 8]),
       gateCount: numberField('Gate count', 'gates', 0, 10_000, { integer: true }),
-      gateWidthTotalLF: numberField('Measured total gate-opening width', 'linear feet', 0.1, 100_000),
-      cornerCount: numberField('Corner count', 'corners', 0, 100_000, { integer: true }),
+      gateWidthTotalLF: numberField('Measured total gate-opening width', 'linear feet', 0, 100_000),
       postCount: numberField('Confirmed planned post count', 'posts', 2, 100_000, { integer: true }),
       terrainSlope: enumField('Terrain slope', SLOPES),
       ...(replacement ? { oldFenceRemoval: booleanField('Old fence removal included') } : {})
     },
     required: c => [
       'linearFeet', 'lfMethod', 'fenceType', 'fenceHeight',
-      'gateCount', 'cornerCount', 'postCount', 'terrainSlope',
+      'gateCount', 'postCount', 'terrainSlope',
       ...(c.gateCount > 0 ? ['gateWidthTotalLF'] : []),
       ...(replacement ? ['oldFenceRemoval'] : [])
     ],
@@ -302,8 +310,11 @@ function fencingContract(replacement) {
       : null,
     crossValidate(c) {
       const errors = [];
-      if (c.gateCount === 0 && c.gateWidthTotalLF !== undefined) {
+      if (c.gateCount === 0 && c.gateWidthTotalLF !== undefined && c.gateWidthTotalLF !== 0) {
         errors.push({ field: 'gateWidthTotalLF', message: 'Gate-opening width cannot be supplied when no gates are selected.' });
+      }
+      if (c.gateCount > 0 && c.gateWidthTotalLF !== undefined && c.gateWidthTotalLF <= 0) {
+        errors.push({ field: 'gateWidthTotalLF', message: 'A positive measured gate-opening width is required when gates are selected.' });
       }
       if (c.gateCount > 0 && c.gateWidthTotalLF !== undefined && c.linearFeet !== undefined && c.gateWidthTotalLF >= c.linearFeet) {
         errors.push({ field: 'gateWidthTotalLF', message: 'Gate-opening width must be less than the measured fence length.' });
@@ -339,6 +350,9 @@ function concreteContract() {
     inspection(c) {
       if (['area_only', 'assumption'].includes(c.dimensionMethod)) {
         return 'Measured slab dimensions or measured area and perimeter are required; perimeter is not inferred from area.';
+      }
+      if (c.finishType === 'exposed_aggregate') {
+        return 'Exposed-aggregate material pricing requires an approved owner pricing rule before quoting.';
       }
       return null;
     }
@@ -455,10 +469,10 @@ MEASUREMENT_CONTRACTS.SIDING_REPAIR = commonContract({
   fields: {
     sidingType: enumField('Siding type', SIDING_TYPES),
     damageLevel: slugField('Siding damage type'),
-    repairSize: enumField('Repair size', SIZE_KEYS),
+    affectedArea: numberField('Measured affected siding area', 'square feet', 0.01, 1_000_000),
     stories: enumField('Building stories', STORIES)
   },
-  required: () => ['sidingType', 'damageLevel', 'repairSize', 'stories']
+  required: () => ['sidingType', 'damageLevel', 'affectedArea', 'stories']
 });
 
 MEASUREMENT_CONTRACTS.CUSTOM = commonContract({
@@ -513,13 +527,11 @@ export const CLASS2_DEFINITIONS = {
   },
   FLAT_ROOF_REPAIR: {},
   INTERIOR_PAINTING: {
-    wallHeightLaborMultiplier: factorMap({ standard: 1, high: 1.10, vaulted: 1.25 }, 'Wall-height labor multiplier', 'multiplier', 0.1, 5),
-    prepHoursPerSqft: factorMap({ fair: 0.015, poor: 0.035 }, 'Wall preparation labor hours by measured wall area', 'hours per wall square foot', 0.000001, 2)
+    wallHeightLaborMultiplier: factorMap({ standard: 1, high: 1.10, vaulted: 1.25 }, 'Wall-height labor multiplier', 'multiplier', 0.1, 5)
   },
   EXTERIOR_PAINTING: {
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Exterior story labor multiplier', 'multiplier', 0.1, 5),
-    prepHoursPerSqft: factorMap({ fair: 0.008, poor: 0.02 }, 'Exterior preparation labor hours by condition', 'hours per square foot', 0.000001, 2),
-    poorSurfacePrimerCoats: factor(1, 'Additional primer coats for poor exterior surfaces', 'coats', 0, 3)
+    prepHoursPerSqft: factorMap({ fair: 0.008, poor: 0.02 }, 'Exterior preparation labor hours by condition', 'hours per square foot', 0.000001, 2)
   },
   FLOORING_INSTALL: {
     wasteFactorByType: factorMap({ hardwood: 0.10, laminate: 0.08, vinyl_plank: 0.08, carpet: 0.10, tile: 0.12 }, 'Flooring material waste by type', 'decimal fraction', 0, 0.5),
@@ -710,11 +722,11 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'accessoryPricingMode', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare'],
+  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'accessoryPricingMode', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance'],
-  FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft', 'unknownMembraneRule', 'unknownLayerCount'],
+  FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge'],
-  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'laborHourlyRate', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
+  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
   FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'vinylPlankUnderlaymentRule'],
   FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft'],
@@ -742,11 +754,11 @@ const positiveMoney = value => Number.isSafeInteger(value) && value > 0;
 const nonNegativeMoney = value => Number.isSafeInteger(value) && value >= 0;
 
 const SCALAR_MONEY_FIELDS = {
-  ROOFING_REPLACEMENT: ['starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare'],
+  ROOFING_REPLACEMENT: ['starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
   FLAT_ROOF_REPLACEMENT: ['minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'pondingWaterSurcharge'],
-  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'laborHourlyRate', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
+  INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
   FLOORING_INSTALL: ['minimumJob', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft'],
   FLOORING_REPLACEMENT: ['minimumJob', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'subfloorAllowancePerSqft'],
@@ -765,7 +777,16 @@ const SCALAR_MONEY_FIELDS = {
 };
 
 const ZERO_ALLOWED_MONEY_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
-const ZERO_ALLOWED_MONEY_KEYS = new Set(['FLAT_ROOF_REPAIR.pondingWaterSurcharge', 'LANDSCAPING_MOWING.edgingPerLinearFoot']);
+const ZERO_ALLOWED_MONEY_KEYS = new Set([
+  'ROOFING_REPLACEMENT.deckingPerSheet',
+  'FLAT_ROOF_REPAIR.pondingWaterSurcharge',
+  'FLOORING_INSTALL.disposalPerSqft',
+  'FLOORING_INSTALL.perStepPrice',
+  'FLOORING_REPLACEMENT.disposalPerSqft',
+  'FLOORING_REPLACEMENT.perStepPrice',
+  'LANDSCAPING_MOWING.edgingPerLinearFoot',
+  'SIDING_REPLACEMENT.disposalPerSqft'
+]);
 
 function zeroAllowedMoney(serviceType, fieldName) {
   return ZERO_ALLOWED_MONEY_FIELDS.has(fieldName) || ZERO_ALLOWED_MONEY_KEYS.has(`${serviceType}.${fieldName}`);
@@ -800,8 +821,9 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
   if (serviceType === 'ROOFING_REPLACEMENT') {
     add(`laborPerSquare.${c.replacementRoofType}`, 'Roof installation labor price for the selected replacement material');
     add(`materialCostPerSquare.${c.replacementRoofType}`, 'Roof material price for the selected replacement material');
-    add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Underlayment price for the selected replacement material');
+    add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Installed-area underlayment sell price per roofing square');
     add(`tearOffPerSquare.${c.existingRoofType}`, 'Tear-off price for the existing roof material');
+    add('minimumJob', 'Minimum roof replacement job price', { kind: 'minimum' });
     out.push({ path: 'accessoryPricingMode', label: 'Roof accessory pricing method', kind: 'enum', values: ['per_square_allin', 'itemized'] });
     if (p.accessoryPricingMode === 'itemized') {
       if (c.starterLengthLF > 0) add('starterPerLF', 'Starter strip price per linear foot');
@@ -812,27 +834,27 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
   } else if (serviceType === 'ROOFING_REPAIR') {
     add('laborHourlyRate', 'Roof repair labor rate per hour');
     add('repairMinimum', 'Minimum repair visit price', { kind: 'minimum' });
-    add(`repairHours.${c.roofType}.${c.repairType}.${c.repairSize}`, 'Repair labor hours for the selected roof, repair, and size', { kind: 'positive_number' });
-    add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${c.repairSize}`, 'Repair material allowance for the selected roof, repair, and size');
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    add(`repairHours.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair labor hours for the measured affected-area category', { kind: 'positive_number' });
+    add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair material allowance for the measured affected-area category');
   } else if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    const membrane = c.membraneType === 'unknown' ? 'average' : c.membraneType;
+    const membrane = c.membraneType;
     add(`laborPerSqft.${membrane}`, 'Flat-roof labor price for the selected membrane');
     add(`membraneCostPerSqft.${membrane}`, 'Flat-roof membrane price for the selected membrane');
     add(`tearOffPerSqft.${membrane}`, 'Flat-roof tear-off price for the selected membrane');
     add('minimumJob', 'Minimum flat-roof job price', { kind: 'minimum' });
-    out.push({ path: 'unknownMembraneRule', label: 'Unknown membrane pricing rule', kind: 'enum', values: ['review', 'average_with_disclosure'] });
-    if (c.existingLayers === 'unknown') out.push({ path: 'unknownLayerCount', label: 'Owner-assumed layer count', kind: 'integer', min: 1, max: 10 });
     if (c.buildingType === 'commercial') add('insulationPerSqft', 'Commercial insulation and coverboard price per square foot');
   } else if (serviceType === 'FLAT_ROOF_REPAIR') {
     add('laborHourlyRate', 'Flat-roof repair labor rate per hour');
     add('repairMinimum', 'Minimum flat-roof repair visit price', { kind: 'minimum' });
-    add(`patchRepairHours.${c.membraneType}.${c.repairType}.${c.repairSize}`, 'Flat-roof repair hours for the selected membrane, repair, and size', { kind: 'positive_number' });
-    add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${c.repairSize}`, 'Flat-roof material allowance for the selected membrane, repair, and size');
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
+    add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
   } else if (serviceType === 'INTERIOR_PAINTING') {
     add('laborPerWallSqftPerCoat', 'Wall painting labor price per measured wall square foot per coat');
     add('materialPerWallSqftPerCoat', 'Wall paint material price per measured wall square foot per coat');
     add('minimumJob', 'Minimum interior-painting job price', { kind: 'minimum' });
-    if (c.surfaceCondition !== 'good') add('laborHourlyRate', 'Preparation labor rate per hour');
+
     if (c.ceilingsIncluded) {
       add('ceilingLaborPerSqftPerCoat', 'Ceiling labor price per measured ceiling square foot per coat');
       add('ceilingMaterialPerSqftPerCoat', 'Ceiling material price per measured ceiling square foot per coat');
@@ -853,15 +875,14 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     out.push({ path: 'vinylPlankUnderlaymentRule', label: 'Vinyl-plank underlayment rule', kind: 'enum', values: ['always_included', 'never_included', 'subfloor_condition', 'customer_selectable_addon', 'owner_review'] });
     if (c.removalNeeded) add(`removalPerSqft.${c.existingFloorType}`, 'Removal price for the selected existing floor type');
     if (c.stairSteps > 0) add('perStepPrice', 'Stair installation price per step');
-    if (vinylUnderlaymentApplies(c, p)) add('underlaymentPerSqft', 'Underlayment price per square foot');
+    if (vinylUnderlaymentApplies(c, p)) add('underlaymentPerSqft', 'Installed-area underlayment sell price per square foot');
     if (serviceType === 'FLOORING_REPLACEMENT' && c.subfloorIssues) add('subfloorAllowancePerSqft', 'Subfloor repair allowance per affected square foot');
   } else if (serviceType.startsWith('FENCING_')) {
     add(`laborPerLinearFoot.${c.fenceType}`, 'Fence labor price for the selected fence type');
     add(`materialPerLinearFoot.${c.fenceType}`, 'Fence material price for the selected fence type');
-    add(`postPrice.${c.fenceType}`, 'Fence post price for the selected fence type');
-    add('concretePerPost', 'Concrete and digging price per post');
     out.push({ path: `postsIncludedInMaterial.${c.fenceType}`, label: 'Posts included in material rate for selected fence type', kind: 'boolean' });
-    add(`gatePrice.${c.fenceType}`, 'Gate price for the selected fence type');
+    if (p.postsIncludedInMaterial?.[c.fenceType] === false) add(`postPrice.${c.fenceType}`, 'Fence post price for the selected fence type');
+    if (c.gateCount > 0) add(`gatePrice.${c.fenceType}`, "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.");
     add('minimumJob', 'Minimum fence job price', { kind: 'minimum' });
     if (serviceType === 'FENCING_REPLACEMENT' && c.oldFenceRemoval) add(`removalPerLinearFoot.${c.fenceType}`, 'Fence removal price for the selected fence type');
   } else if (serviceType.startsWith('CONCRETE_')) {
@@ -916,8 +937,9 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
   } else if (serviceType === 'SIDING_REPAIR') {
     add('laborHourlyRate', 'Siding repair labor rate per hour');
     add('repairMinimum', 'Minimum siding repair visit price', { kind: 'minimum' });
-    add(`repairHours.${c.sidingType}.${c.damageLevel}.${c.repairSize}`, 'Siding repair hours for selected material, damage, and size', { kind: 'positive_number' });
-    add(`materialAllowance.${c.sidingType}.${c.damageLevel}.${c.repairSize}`, 'Siding material allowance for selected material, damage, and size');
+    const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
+    add(`repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding repair hours for the measured affected-area category', { kind: 'positive_number' });
+    add(`materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding material allowance for the measured affected-area category');
   } else if (serviceType === 'CUSTOM') {
     out.push({ path: 'customPricingMode', label: 'Custom service pricing mode', kind: 'enum', values: ['fixed', 'range', 'inspection_first'] });
     out.push({ path: 'unit', label: 'Custom service unit', kind: 'enum', values: ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square'] });
@@ -986,9 +1008,7 @@ function validatePricingStructures(serviceType, p) {
     const valid = zeroAllowed ? nonNegativeMoney(p[name]) : positiveMoney(p[name]);
     if (!valid) errors.push(`${name} must be ${zeroAllowed ? 'a non-negative' : 'a positive'} integer-cent amount.`);
   }
-  if (p.unknownLayerCount !== undefined && (!Number.isInteger(p.unknownLayerCount) || p.unknownLayerCount < 1 || p.unknownLayerCount > 10)) {
-    errors.push('unknownLayerCount must be a whole number from 1 to 10.');
-  }
+
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) errors.push('baggingSurchargePercent must be from 0 to 500.');
   const positiveMap = (name, allowed = null, requireAll = false, predicate = positiveMoney) => {
     if (p[name] === undefined) return;
@@ -1005,10 +1025,6 @@ function validatePricingStructures(serviceType, p) {
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) positiveMap(name);
-    for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) if (p[name] !== undefined && !hasOwn(p[name], 'average')) errors.push(`${name} must include the required average membrane fallback key.`);
-    if (p.laborPerSqft && typeof p.laborPerSqft === 'object' && Object.keys(p.laborPerSqft).every(key => key === 'average')) {
-      errors.push('Flat-roof replacement requires at least one actual membrane offering in addition to the average fallback.');
-    }
     if (!sameShape(p.laborPerSqft, p.membraneCostPerSqft, p.tearOffPerSqft)) errors.push('Flat-roof labor, membrane, and tear-off maps must use identical membrane keys.');
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
@@ -1019,18 +1035,23 @@ function validatePricingStructures(serviceType, p) {
   if (serviceType.startsWith('FLOORING_')) {
     positiveMap('laborPerSqft', FLOORING_TYPES);
     positiveMap('materialPerSqft', FLOORING_TYPES);
-    positiveMap('removalPerSqft');
+    positiveMap('removalPerSqft', null, false, nonNegativeMoney);
     if (!sameShape(p.laborPerSqft, p.materialPerSqft)) errors.push('Flooring labor and material maps must use identical offered flooring-type keys.');
   }
   if (serviceType.startsWith('FENCING_')) {
-    for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'gatePrice', 'removalPerLinearFoot']) positiveMap(name);
+    for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot']) positiveMap(name);
+    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) positiveMap(name, null, false, nonNegativeMoney);
     if (p.postsIncludedInMaterial !== undefined) {
       if (!p.postsIncludedInMaterial || typeof p.postsIncludedInMaterial !== 'object' || Array.isArray(p.postsIncludedInMaterial) || !Object.values(p.postsIncludedInMaterial).every(value => typeof value === 'boolean')) errors.push('postsIncludedInMaterial must contain boolean values by fence type.');
     }
-    if (!sameShape(p.laborPerLinearFoot, p.materialPerLinearFoot, p.postPrice, p.gatePrice, p.postsIncludedInMaterial)) errors.push('Fence labor, material, post, gate, and post-inclusion maps must use identical offered fence-type keys.');
+    if (!sameShape(p.laborPerLinearFoot, p.materialPerLinearFoot, p.postsIncludedInMaterial)) errors.push('Fence labor, material, and post-inclusion maps must use identical offered fence-type keys.');
+    const offeredFenceTypes = Object.keys(p.laborPerLinearFoot || {});
+    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) {
+      if (p[name] && Object.keys(p[name]).some(key => !offeredFenceTypes.includes(key))) errors.push(`${name} contains a fence type that is not offered.`);
+    }
   }
   if (serviceType === 'LANDSCAPING_CLEANUP' && p.debrisPricing !== undefined) {
-    if (!exactKeys(p.debrisPricing, ['light', 'moderate', 'heavy']) || Object.values(p.debrisPricing).some(row => !exactKeys(row, ['laborMultiplier', 'disposalFlat']) || !positive(row.laborMultiplier) || !positiveMoney(row.disposalFlat))) errors.push('debrisPricing must contain complete light, moderate, and heavy laborMultiplier/disposalFlat rows with positive integer-cent disposal charges.');
+    if (!exactKeys(p.debrisPricing, ['light', 'moderate', 'heavy']) || Object.values(p.debrisPricing).some(row => !exactKeys(row, ['laborMultiplier', 'disposalFlat']) || !positive(row.laborMultiplier) || !nonNegativeMoney(row.disposalFlat))) errors.push('debrisPricing must contain complete light, moderate, and heavy laborMultiplier/disposalFlat rows with non-negative integer-cent disposal charges.');
   }
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) positiveMap('mulchMaterialPerYard');
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType) && p.bedPrepLaborPerSqft !== undefined) positiveMap('bedPrepLaborPerSqft', ['needs_weeding', 'overgrown'], true);
@@ -1056,25 +1077,104 @@ function validatePricingStructures(serviceType, p) {
   return errors;
 }
 
+const CROSS_FIELD_VALIDATION_PATHS = [
+  ['Roof replacement labor, material, and underlayment', ['laborPerSquare', 'materialCostPerSquare', 'underlaymentPerSquare']],
+  ['Roof repair hour and material', ['repairHours', 'repairMaterialAllowance']],
+  ['Flat-roof labor, membrane, and tear-off', ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']],
+  ['Flat-roof repair hour and material', ['patchRepairHours', 'patchMaterialAllowance']],
+  ['Flooring labor and material', ['laborPerSqft', 'materialPerSqft']],
+  ['Fence labor, material, and post-inclusion', ['laborPerLinearFoot', 'materialPerLinearFoot', 'postsIncludedInMaterial']],
+  ['Siding labor and material', ['laborPerSqft', 'materialPerSqft']],
+  ['Siding repair hour and material', ['repairHours', 'materialAllowance']],
+  ['roomSizeThresholds.smallMaxSqft', ['roomSizeThresholds.smallMaxSqft', 'roomSizeThresholds.mediumMaxSqft']]
+];
+
+function validationPaths(message, allowedFields) {
+  const cross = CROSS_FIELD_VALIDATION_PATHS.find(([prefix]) => message.startsWith(prefix));
+  if (cross) return { paths: cross[1], crossField: true };
+  const token = message.match(/^([A-Za-z][A-Za-z0-9_]*)/)?.[1];
+  return { paths: token && allowedFields.has(token) ? [token] : [], crossField: false };
+}
+
+function uniqueDiagnostics(items) {
+  const seen = new Set();
+  return items.filter(item => {
+    const key = `${item.type}:${item.path}:${item.kind || ''}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function validateOwnerPricing(serviceType, customerInputs, pricing = {}) {
   const allowed = new Set(allowedPricingFields(serviceType));
-  const unexpected = Object.keys(pricing).filter(key => !allowed.has(key));
+  const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
   const structuralErrors = validatePricingStructures(serviceType, pricing);
   const class2Errors = validateClass2Factors(serviceType, pricing);
   const missingOwnerFields = [];
   const invalidOwnerFields = [];
+  const crossFieldOwnerFields = [];
+  const ownerDiagnostics = [];
+
   for (const item of ownerRequirements(serviceType, customerInputs, pricing)) {
     const value = valueAtPath(pricing, item.path);
-    if (missing(value)) missingOwnerFields.push(item.path);
-    else if (!validateRequirementValue(item, value)) invalidOwnerFields.push(item.path);
+    if (missing(value)) {
+      missingOwnerFields.push(item.path);
+      ownerDiagnostics.push({ type: 'missing', kind: item.kind, path: item.path, message: `${item.label} is required.` });
+    } else if (!validateRequirementValue(item, value)) {
+      invalidOwnerFields.push(item.path);
+      ownerDiagnostics.push({ type: 'invalid', kind: item.kind, path: item.path, message: `${item.label} is invalid.` });
+    }
   }
-  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && positive(pricing.low) && positive(pricing.high) && pricing.high <= pricing.low) invalidOwnerFields.push('high');
+
+  for (const message of [...structuralErrors, ...class2Errors]) {
+    const details = validationPaths(message, allowed);
+    for (const path of details.paths) {
+      if (details.crossField) crossFieldOwnerFields.push(path);
+      else invalidOwnerFields.push(path);
+      ownerDiagnostics.push({ type: details.crossField ? 'cross_field' : 'invalid', kind: details.crossField ? 'relationship' : 'structure', path, message });
+    }
+  }
+
+  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && positive(pricing.low) && positive(pricing.high) && pricing.high <= pricing.low) {
+    invalidOwnerFields.push('high');
+    crossFieldOwnerFields.push('low', 'high');
+    ownerDiagnostics.push({ type: 'cross_field', kind: 'range_order', path: 'high', message: 'Custom range high price must be greater than low price.' });
+  }
+
+  const ownerDecisionRequired = [];
+  if (serviceType.startsWith('FENCING_')) {
+    const decisions = [{
+      path: 'concretePerPost',
+      kind: 'mixed_charge_allocation',
+      message: 'Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule.'
+    }];
+    if (customerInputs.gateCount > 0) {
+      decisions.push({
+        path: `gatePrice.${customerInputs.fenceType}`,
+        kind: 'gate_width_pricing_contract',
+        message: 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.'
+      });
+    }
+    ownerDecisionRequired.push(...decisions);
+    ownerDiagnostics.push(...decisions.map(decision => ({ type: 'owner_decision', ...decision })));
+  }
+
+  for (const path of unsupportedOwnerFields) ownerDiagnostics.push({ type: 'unsupported', kind: 'field', path, message: 'This pricing field is not supported for the selected service.' });
+
+  const uniqueMissingOwnerFields = [...new Set(missingOwnerFields)];
+  const invalid = [...new Set(invalidOwnerFields)];
+  const cross = [...new Set(crossFieldOwnerFields)];
   return {
-    ok: !unexpected.length && !structuralErrors.length && !class2Errors.length && !missingOwnerFields.length && !invalidOwnerFields.length,
-    missingOwnerFields: [...new Set(missingOwnerFields)],
-    invalidOwnerFields: [...new Set(invalidOwnerFields)],
-    unexpectedOwnerFields: unexpected,
-    validationMessages: [...structuralErrors, ...class2Errors]
+    ok: !unsupportedOwnerFields.length && !structuralErrors.length && !class2Errors.length && !uniqueMissingOwnerFields.length && !invalid.length && !ownerDecisionRequired.length,
+    missingOwnerFields: uniqueMissingOwnerFields,
+    invalidOwnerFields: invalid,
+    crossFieldOwnerFields: cross,
+    unsupportedOwnerFields,
+    unexpectedOwnerFields: unsupportedOwnerFields,
+    ownerDecisionRequired,
+    ownerDiagnostics: uniqueDiagnostics(ownerDiagnostics),
+    validationMessages: [...structuralErrors, ...class2Errors, ...ownerDecisionRequired.map(item => item.message)]
   };
 }
 

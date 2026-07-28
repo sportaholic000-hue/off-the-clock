@@ -30,6 +30,7 @@ const FEE_LINE_NAMES = {
 };
 
 const SERVICE_MINIMUM_FIELDS = {
+  ROOFING_REPLACEMENT: 'minimumJob',
   FLAT_ROOF_REPLACEMENT: 'minimumJob',
   ROOFING_REPAIR: 'repairMinimum',
   FLAT_ROOF_REPAIR: 'repairMinimum',
@@ -58,9 +59,15 @@ function review({
   invalidCustomerFields = [],
   missingOwnerFields = [],
   invalidOwnerFields = [],
+  unsupportedOwnerFields = [],
+  crossFieldOwnerFields = [],
+  ownerDiagnostics = [],
+  ownerDecisionRequired = [],
+  failedTierDiagnostics = [],
   validationMessages = [],
   inspectionFirst = false,
-  appliedRules = []
+  appliedRules = [],
+  urgencyFlags = []
 }) {
   return {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
@@ -70,9 +77,15 @@ function review({
     invalidCustomerFields,
     missingOwnerFields,
     invalidOwnerFields,
+    unsupportedOwnerFields,
+    crossFieldOwnerFields,
+    ownerDiagnostics,
+    ownerDecisionRequired,
+    failedTierDiagnostics,
     validationMessages,
     inspectionFirst,
-    appliedRules
+    appliedRules,
+    urgencyFlags
   };
 }
 
@@ -174,11 +187,15 @@ function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections,
         ownerVisible: true,
         customerVisible: false,
         calculation: {
+          evidenceVariant: 'fixed_amount',
+          amountCents,
           quantity: 1,
           unit: 'configured fixed charge',
           rateCents: amountCents,
           ratePath: `businessDefaults.${FEE_DEFAULT_FIELDS[fee]}`,
-          multipliers: []
+          multipliers: [],
+          unroundedCents: amountCents,
+          roundedAmountCents: amountCents
         }
       });
     }
@@ -206,7 +223,14 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
       amountCents,
       ownerVisible: true,
       customerVisible: false,
-      calculation: { basisCategory: 'labor', basisAmountCents: laborSubtotalCents, percent: seasonal.percent }
+      calculation: {
+        evidenceVariant: 'percentage_derived',
+        basisCategory: 'labor',
+        basisAmountCents: laborSubtotalCents,
+        percent: seasonal.percent,
+        unroundedCents: laborSubtotalCents * seasonal.percent / 100,
+        roundedAmountCents: amountCents
+      }
     });
   }
   record.month = month;
@@ -227,7 +251,9 @@ function markupAmount(baseCents, defaults) {
 
 function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
-    line.taxable = taxMode !== 'TAX_NONE' && ownerPricing.taxabilityByCategory[line.category] === true;
+    line.taxable = taxMode === 'TAX_ALL'
+      ? true
+      : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[line.category] === true;
   }
 }
 
@@ -248,10 +274,15 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
       ownerVisible: true,
       customerVisible: false,
       calculation: {
+        evidenceVariant: 'percentage_derived',
         basisAmountCents: baseCents,
         mode: defaults.markupMode,
         percent: defaults.markupPercent,
-        includedLineIndexes: eligibleLines.map(line => lines.indexOf(line))
+        includedLineIndexes: eligibleLines.map(line => lines.indexOf(line)),
+        unroundedCents: defaults.markupMode === 'margin'
+          ? baseCents / (1 - defaults.markupPercent / 100) - baseCents
+          : baseCents * defaults.markupPercent / 100,
+        roundedAmountCents: amountCents
       }
     });
   }
@@ -271,7 +302,7 @@ function effectiveMinimum(serviceType, pricing, defaults) {
   return { amountCents: Math.max(serviceMinimum, businessMinimum), serviceField, serviceMinimum, businessMinimum };
 }
 
-function applyMinimum(lines, serviceType, pricing, defaults, ownerPricing, record) {
+function applyMinimum(lines, serviceType, pricing, defaults, record, basis) {
   const minimum = effectiveMinimum(serviceType, pricing, defaults);
   const subtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   const adjustmentCents = Math.max(0, minimum.amountCents - subtotalCents);
@@ -280,13 +311,19 @@ function applyMinimum(lines, serviceType, pricing, defaults, ownerPricing, recor
       name: 'Minimum price adjustment',
       category: 'minimum_adjustment',
       amountCents: adjustmentCents,
-      taxable: ownerPricing.taxabilityByCategory.minimum_adjustment,
+      taxable: false,
       ownerVisible: true,
       customerVisible: false,
-      calculation: { subtotalBeforeMinimumCents: subtotalCents, effectiveMinimumCents: minimum.amountCents }
+      calculation: {
+        evidenceVariant: 'fixed_amount',
+        amountCents: adjustmentCents,
+        subtotalBeforeMinimumCents: subtotalCents,
+        effectiveMinimumCents: minimum.amountCents,
+        roundedAmountCents: adjustmentCents
+      }
     });
   }
-  record.basis = 'pre_tax';
+  record.basis = basis;
   record.subtotalBeforeMinimumCents = subtotalCents;
   record.businessMinimumCents = minimum.businessMinimum;
   record.serviceMinimumField = minimum.serviceField;
@@ -302,13 +339,19 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
   const nonMarkupLines = lines.filter(line => line.category !== 'markup');
   let taxableSubtotalCents = 0;
   let taxableMarkupCents = 0;
-  if (defaults.taxMode !== 'TAX_NONE') {
+
+  if (defaults.taxMode === 'TAX_ALL') {
+    taxableSubtotalCents = preTaxSubtotalCents;
+    taxableMarkupCents = markupRecord.amountCents;
+  } else if (defaults.taxMode === 'TAX_MATERIALS') {
     taxableSubtotalCents = nonMarkupLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     taxableSubtotalCents += taxableMarkupCents;
   }
-  const taxCents = defaults.taxMode === 'TAX_NONE' ? 0 : round(taxableSubtotalCents * defaults.taxPercent / 100);
+
+  const unroundedTaxCents = taxableSubtotalCents * defaults.taxPercent / 100;
+  const taxCents = defaults.taxMode === 'TAX_NONE' ? 0 : round(unroundedTaxCents);
   if (!Number.isSafeInteger(taxCents) || taxCents < 0) throw new QuoteReviewError('Tax configuration produced an invalid amount.', { invalidOwnerFields: ['taxPercent'] });
   if (taxCents > 0) {
     lines.push({
@@ -318,7 +361,16 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
       taxable: false,
       ownerVisible: true,
       customerVisible: false,
-      calculation: { taxMode: defaults.taxMode, taxPercent: defaults.taxPercent, taxableSubtotalCents }
+      calculation: {
+        evidenceVariant: 'percentage_derived',
+        taxMode: defaults.taxMode,
+        percent: defaults.taxPercent,
+        taxPercent: defaults.taxPercent,
+        basisAmountCents: taxableSubtotalCents,
+        taxableSubtotalCents,
+        unroundedCents: unroundedTaxCents,
+        roundedAmountCents: taxCents
+      }
     });
   }
   record.mode = defaults.taxMode;
@@ -335,8 +387,12 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
 
 function assertMoneyIntegrity(lines, finalTotalCents) {
   for (const line of lines) {
-    if (!Number.isSafeInteger(line.amountCents) || line.amountCents <= 0) {
+    const validZero = line.amountCents === 0 && line.noCharge === true;
+    if (!Number.isSafeInteger(line.amountCents) || line.amountCents < 0 || (line.amountCents === 0 && !validZero)) {
       throw new QuoteReviewError(`${line.name || 'A line item'} contains an invalid money value.`);
+    }
+    if (!line.calculation?.evidenceVariant) {
+      throw new QuoteReviewError(`${line.name || 'A line item'} is missing its calculation evidence variant.`);
     }
   }
   if (!Number.isSafeInteger(finalTotalCents) || finalTotalCents <= 0) {
@@ -348,6 +404,7 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   const lines = cloneLines(template.lineItems, variant);
   const record = {
     variant,
+    order: [],
     fees: [],
     seasonal: {},
     markup: {},
@@ -355,11 +412,31 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
     tax: {}
   };
   applyCommonFees(lines, template, ownerPricing, defaults, feeSelections, record.fees);
+  record.order.push('fees');
   applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
+  record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
+  record.order.push('taxability');
   const markup = applyMarkup(lines, ownerPricing, defaults, record.markup);
-  const minimumCents = applyMinimum(lines, serviceType, pricing, defaults, ownerPricing, record.minimum);
-  const finalTotalCents = applyTax(lines, ownerPricing, defaults, markup, record.tax);
+  record.order.push('markup');
+
+  let minimumCents;
+  let finalTotalCents;
+  if (defaults.taxMode === 'TAX_MATERIALS') {
+    applyTax(lines, ownerPricing, defaults, markup, record.tax);
+    record.order.push('tax');
+    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, 'post_tax');
+    record.order.push('minimum');
+    finalTotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
+    record.tax.finalTotalCents = finalTotalCents;
+  } else {
+    const basis = defaults.taxMode === 'TAX_ALL' ? 'pre_tax' : 'post_markup';
+    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis);
+    record.order.push('minimum');
+    finalTotalCents = applyTax(lines, ownerPricing, defaults, markup, record.tax);
+    if (defaults.taxMode === 'TAX_ALL') record.order.push('tax');
+  }
+
   assertMoneyIntegrity(lines, finalTotalCents);
   return { lines, finalTotalCents, minimumCents, record };
 }
@@ -368,25 +445,36 @@ function toDollars(cents) {
   return cents / 100;
 }
 
-function rangeForStandardQuote(totalCents, minimumCents, defaults, taxRecord) {
+function minimumCustomerFloor(minimumCents, defaults) {
+  return defaults.taxMode === 'TAX_ALL'
+    ? minimumCents + round(minimumCents * defaults.taxPercent / 100)
+    : minimumCents;
+}
+
+function roundedCustomerCents(valueCents) {
+  if (valueCents <= 0) return 0;
+  return Math.max(1, round(valueCents / 1000) * 1000);
+}
+
+function rangeForStandardQuote(totalCents, minimumCents, defaults) {
   const buffer = defaults.rangeBufferPercent;
-  const minimumFloorCents = minimumCents + taxRecord.taxCents;
-  let midCents = round(totalCents / 1000) * 1000;
-  let lowCents = round(midCents * (1 - buffer / 100) / 1000) * 1000;
-  let highCents = round(midCents * (1 + buffer / 100) / 1000) * 1000;
-  lowCents = Math.max(lowCents, minimumFloorCents);
+  const minimumFloorCents = minimumCustomerFloor(minimumCents, defaults);
+  let midCents = roundedCustomerCents(totalCents);
+  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100));
+  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100));
+  lowCents = Math.max(lowCents, minimumFloorCents, 1);
   lowCents = Math.min(lowCents, totalCents);
-  highCents = Math.max(highCents, totalCents, lowCents);
-  midCents = Math.max(midCents, lowCents);
+  highCents = Math.max(highCents, totalCents, lowCents, 1);
+  midCents = Math.max(midCents, lowCents, 1);
   midCents = Math.min(midCents, highCents);
   return { lowCents, midCents, highCents, minimumFloorCents, buffer };
 }
 
-function rangeForIntrinsicQuote(low, mid, high) {
+function rangeForIntrinsicQuote(low, mid, high, defaults) {
   const lowCents = Math.min(low.finalTotalCents, mid.finalTotalCents, high.finalTotalCents);
   const highCents = Math.max(low.finalTotalCents, mid.finalTotalCents, high.finalTotalCents);
   const midCents = Math.min(Math.max(mid.finalTotalCents, lowCents), highCents);
-  return { lowCents, midCents, highCents, minimumFloorCents: low.minimumCents + low.record.tax.taxCents, buffer: null };
+  return { lowCents, midCents, highCents, minimumFloorCents: minimumCustomerFloor(low.minimumCents, defaults), buffer: null };
 }
 
 function unique(values) {
@@ -405,15 +493,45 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
+function inspectionOwnerDecision(serviceType, customerInputs) {
+  if (serviceType === 'INTERIOR_PAINTING' && customerInputs.surfaceCondition !== 'good') {
+    return [{
+      path: 'interiorPrepPricing',
+      kind: 'measured_prep_pricing_contract',
+      message: 'Approve a measured interior preparation scope and pricing contract.'
+    }];
+  }
+  if (serviceType === 'EXTERIOR_PAINTING' && customerInputs.surfaceCondition === 'poor') {
+    return [{
+      path: 'exteriorPrimerPricing',
+      kind: 'primer_pricing_contract',
+      message: 'Approve separate primer pricing or an explicit all-inclusive exterior rate rule.'
+    }];
+  }
+  if (serviceType.startsWith('CONCRETE_') && customerInputs.finishType === 'exposed_aggregate') {
+    return [{
+      path: 'exposedAggregateMaterialPricing',
+      kind: 'finish_material_pricing_contract',
+      message: 'Approve an exposed-aggregate material price or an explicit all-inclusive finish rule.'
+    }];
+  }
+  return [];
+}
+
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited }) {
   const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
-  if (!customerValidation.ok) throw new QuoteReviewError(customerValidation.reviewReason, customerValidation);
+  if (!customerValidation.ok) {
+    throw new QuoteReviewError(customerValidation.reviewReason, {
+      ...customerValidation,
+      ownerDecisionRequired: inspectionOwnerDecision(serviceType, customerInputs)
+    });
+  }
   const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing);
   if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);
 
   const skippedAddons = [];
   const ctx = {
-    urgencyFlags: inherited.urgencyFlags,
+    priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
       const prefix = tierName ? `${tierName} tier: ` : '';
@@ -428,17 +546,20 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if (hasIntrinsicRange) {
     const low = runScenario({ variant: 'low', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
     const high = runScenario({ variant: 'high', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
-    range = rangeForIntrinsicQuote(low, mid, high);
+    range = rangeForIntrinsicQuote(low, mid, high, defaults);
     scenarioRecords = { low: low.record, mid: mid.record, high: high.record };
   } else {
-    range = rangeForStandardQuote(mid.finalTotalCents, mid.minimumCents, defaults, mid.record.tax);
+    range = rangeForStandardQuote(mid.finalTotalCents, mid.minimumCents, defaults);
   }
 
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const optionDisclaimer = disclaimer(baseDisclaimer, template.disclosures, skippedAddons);
   const priceDrivers = unique([
-    ...template.priceDrivers,
-    ...mid.lines.map(line => line.customerDriver)
+    ...mid.lines
+      .filter(line => PRICE_BASIS_CATEGORIES.includes(line.category))
+      .sort((left, right) => right.amountCents - left.amountCents)
+      .map(line => line.customerDriver || line.name),
+    ...template.priceDrivers
   ]).slice(0, 4);
   const calculationRecord = {
     engineVersion: ENGINE_VERSION,
@@ -453,6 +574,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     range: {
       source: hasIntrinsicRange ? 'owner_configured_custom_range' : 'business_range_buffer',
       bufferPercent: range.buffer,
+      effectiveRangeBufferPercent: range.buffer,
       minimumCustomerFloorCents: range.minimumFloorCents,
       lowCents: range.lowCents,
       midCents: range.midCents,
@@ -466,6 +588,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     midEstimate: toDollars(range.midCents),
     highEstimate: toDollars(range.highCents),
     priceDrivers,
+    effectiveRangeBufferPercent: range.buffer,
     lineItems: mid.lines,
     skippedAddons,
     disclaimer: optionDisclaimer,
@@ -480,17 +603,22 @@ export function generateQuoteVNext({
   businessDefaults = {},
   callerType = 'owner',
   feeSelections = {},
-  currentMonth = new Date().getMonth() + 1
+  currentMonth = new Date().getMonth() + 1,
+  allowInactiveOwnerPreview = false
 }) {
   const quoteId = crypto.randomUUID();
   const appliedRules = [];
-  const urgencyFlags = [];
+  const urgencyFlags = ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs.leakPresent === true
+    ? ['Active leak reported']
+    : [];
   const finishReview = details => {
-    const result = review({ quoteId, ...details });
+    const result = review({ quoteId, appliedRules, urgencyFlags, ...details });
     return callerType === 'customer' ? sanitizeForCustomerVNext(result) : result;
   };
   if (!SERVICE_TYPES.includes(serviceType)) return finishReview({ reviewReason: 'Unsupported service type.' });
-  if (ownerPricing.active !== true) return finishReview({ reviewReason: 'This service is not active for customer quoting.' });
+  if (ownerPricing.active !== true && !(callerType === 'owner' && allowInactiveOwnerPreview === true)) {
+    return finishReview({ reviewReason: 'This service is not active for customer quoting.' });
+  }
   const basePricing = extractPricing(ownerPricing, serviceType);
 
   if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)) {
@@ -556,22 +684,48 @@ export function generateQuoteVNext({
       }));
     } catch (error) {
       if (!(error instanceof QuoteReviewError)) throw error;
-      failed.push(error);
+      failed.push({ tierName: tier.name, error });
       if (tier.name) appliedRules.push(`${tier.name} tier skipped: ${error.reviewReason}`);
     }
   }
+  const failedTierDiagnostics = failed.map(({ tierName, error }) => ({
+    tierName,
+    reviewReason: error.reviewReason,
+    missingCustomerFields: unique(error.missingCustomerFields || []),
+    invalidCustomerFields: unique(error.invalidCustomerFields || []),
+    missingOwnerFields: unique(error.missingOwnerFields || []),
+    invalidOwnerFields: unique([...(error.invalidOwnerFields || []), ...(error.unsupportedOwnerFields || []), ...(error.unexpectedOwnerFields || [])]),
+    unsupportedOwnerFields: unique([...(error.unsupportedOwnerFields || []), ...(error.unexpectedOwnerFields || [])]),
+    crossFieldOwnerFields: unique(error.crossFieldOwnerFields || []),
+    ownerDiagnostics: error.ownerDiagnostics || [],
+    ownerDecisionRequired: error.ownerDecisionRequired || [],
+    validationMessages: error.validationMessages || [],
+    inspectionFirst: error.inspectionFirst === true
+  }));
+
   if (!options.length) {
-    const error = failed[0] || new QuoteReviewError('No pricing option could produce a complete quote.');
+    const firstFailure = failed[0]?.error || new QuoteReviewError('No pricing option could produce a complete quote.');
+    const collect = field => unique(failed.flatMap(item => item.error?.[field] || []));
     const result = review({
       quoteId,
-      reviewReason: error.reviewReason,
-      missingCustomerFields: error.missingCustomerFields,
-      invalidCustomerFields: error.invalidCustomerFields,
-      missingOwnerFields: error.missingOwnerFields,
-      invalidOwnerFields: unique([...(error.invalidOwnerFields || []), ...(error.unexpectedOwnerFields || [])]),
-      validationMessages: error.validationMessages,
-      inspectionFirst: error.inspectionFirst,
-      appliedRules
+      reviewReason: firstFailure.reviewReason,
+      missingCustomerFields: collect('missingCustomerFields'),
+      invalidCustomerFields: collect('invalidCustomerFields'),
+      missingOwnerFields: collect('missingOwnerFields'),
+      invalidOwnerFields: unique([
+        ...collect('invalidOwnerFields'),
+        ...collect('unsupportedOwnerFields'),
+        ...collect('unexpectedOwnerFields')
+      ]),
+      unsupportedOwnerFields: unique([...collect('unsupportedOwnerFields'), ...collect('unexpectedOwnerFields')]),
+      crossFieldOwnerFields: collect('crossFieldOwnerFields'),
+      ownerDiagnostics: failed.flatMap(item => item.error.ownerDiagnostics || []),
+      ownerDecisionRequired: failed.flatMap(item => item.error.ownerDecisionRequired || []),
+      failedTierDiagnostics,
+      validationMessages: collect('validationMessages'),
+      inspectionFirst: failed.some(item => item.error.inspectionFirst === true),
+      appliedRules,
+      urgencyFlags
     });
     return callerType === 'customer' ? sanitizeForCustomerVNext(result) : result;
   }
@@ -587,10 +741,13 @@ export function generateQuoteVNext({
     highEstimate: first.highEstimate,
     options,
     priceDrivers: first.priceDrivers,
+    effectiveRangeBufferPercent: first.effectiveRangeBufferPercent,
     lineItems: first.lineItems,
     disclaimer: topDisclaimer,
     appliedRules,
     urgencyFlags,
+    failedTierDiagnostics,
+    ...(failedTierDiagnostics.length ? { optionAvailabilityNotice: 'Fewer options are available because one or more configured options need owner review.' } : {}),
     calculationRecord: {
       engineVersion: ENGINE_VERSION,
       quoteId,
@@ -614,18 +771,18 @@ export function sanitizeForCustomerVNext(result) {
   if (result?.resultType !== 'INSTANT_ESTIMATE_READY') {
     return {
       resultType: 'ESTIMATE_REQUIRES_REVIEW',
-      customerMessage: 'We have the project details and a person will follow up with the estimate.',
+      customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
       ...(result?.quoteId ? { quoteId: result.quoteId } : {})
     };
   }
   return {
-    ...pick(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId']),
+    ...pick(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice']),
     options: (result.options || []).map(option => pick(option, CUSTOMER_OPTION_FIELDS))
   };
 }
 
 export function previewQuoteVNext(input) {
-  return generateQuoteVNext({ ...input, callerType: 'owner' });
+  return generateQuoteVNext({ ...input, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 export function liveQuoteVNext(input) {

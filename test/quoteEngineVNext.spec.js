@@ -94,17 +94,18 @@ const happyCases = [
       tearOffPerSquare: { asphalt_shingle: 2000 },
       underlaymentPerSquare: { asphalt_shingle: 1500 },
       accessoryPricingMode: 'itemized', starterPerLF: 100,
-      dripEdgePerLF: 200, ridgeCapPerLF: 300, deckingPerSheet: 5000
-    }),
+      dripEdgePerLF: 200, ridgeCapPerLF: 300, deckingPerSheet: 5000,
+      minimumJob: 0
+    }, { priceBasisByCategory: { ...costBasis, material: 'sell_price' } }),
     expected: {
-      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 16500, 'Starter strip': 10000, 'Drip edge': 20000, 'Ridge cap': 6000, 'Decking replacement': 10000 },
-      low: 2190, mid: 2430, high: 2670
+      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 15000, 'Starter strip': 10000, 'Drip edge': 20000, 'Ridge cap': 6000, 'Decking replacement': 10000 },
+      low: 2170, mid: 2410, high: 2650
     }
   },
   {
     name: 'roof repair maps the canonical medium size exactly',
     serviceType: 'ROOFING_REPAIR',
-    customerInputs: { repairType: 'shingle_patch', repairSize: 'medium', roofType: 'asphalt_shingle', pitch: 'medium', stories: 2, leakPresent: false },
+    customerInputs: { repairType: 'shingle_patch', affectedArea: 100, roofType: 'asphalt_shingle', pitch: 'medium', stories: 2, leakPresent: false },
     ownerPricing: service('ROOFING_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       repairHours: { asphalt_shingle: { shingle_patch: { small: 2, medium: 4, large: 8 } } },
@@ -119,14 +120,14 @@ const happyCases = [
     ownerPricing: service('FLAT_ROOF_REPLACEMENT', {
       laborPerSqft: { epdm: 500, average: 500 }, membraneCostPerSqft: { epdm: 700, average: 700 },
       tearOffPerSqft: { epdm: 200, average: 200 }, minimumJob: 0,
-      insulationPerSqft: 250, unknownMembraneRule: 'review'
+      insulationPerSqft: 250
     }),
     expected: { lines: { 'Flat roof labor': 575000, Membrane: 700000, 'Tear-off': 460000 }, low: 15620, mid: 17350, high: 19090 }
   },
   {
     name: 'flat roof repair consumes the selected nested size price',
     serviceType: 'FLAT_ROOF_REPAIR',
-    customerInputs: { repairType: 'seam_patch', repairSize: 'small', membraneType: 'epdm', leakPresent: false, pondingWater: false },
+    customerInputs: { repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: false },
     ownerPricing: service('FLAT_ROOF_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       patchRepairHours: { epdm: { seam_patch: { small: 3, medium: 5, large: 8 } } },
@@ -140,21 +141,21 @@ const happyCases = [
     customerInputs: { areaInputMethod: 'wall_sqft', wallAreaSqft: 500, wallHeight: 'standard', surfaceCondition: 'good', coats: 2, ceilingsIncluded: false, trimIncluded: true, trimLengthLF: 200 },
     ownerPricing: service('INTERIOR_PAINTING', {
       laborPerWallSqftPerCoat: 100, materialPerWallSqftPerCoat: 30,
-      minimumJob: 0, laborHourlyRate: 10000,
+      minimumJob: 0,
       ceilingLaborPerSqftPerCoat: 100, ceilingMaterialPerSqftPerCoat: 30,
       trimLaborPerLF: 125, trimMaterialPerLF: 50
     }),
     expected: { lines: { 'Wall labor': 100000, 'Wall paint and materials': 30000, 'Trim labor': 25000, 'Trim materials': 10000 }, low: 1490, mid: 1650, high: 1820 }
   },
   {
-    name: 'exterior painting records explicit prep and primer factors',
+    name: 'exterior painting records measured fair-condition preparation',
     serviceType: 'EXTERIOR_PAINTING',
-    customerInputs: { areaInputMethod: 'wall_sqft', exteriorAreaSqft: 1000, stories: 2, surfaceCondition: 'poor', coats: 2 },
+    customerInputs: { areaInputMethod: 'wall_sqft', exteriorAreaSqft: 1000, stories: 2, surfaceCondition: 'fair', coats: 2 },
     ownerPricing: service('EXTERIOR_PAINTING', {
       exteriorLaborPerSqftPerCoat: 100, materialPerSqftPerCoat: 50,
       minimumJob: 0, laborHourlyRate: 10000
     }),
-    expected: { lines: { 'Exterior labor': 330000, 'Exterior preparation': 200000, 'Exterior materials': 150000 }, low: 6120, mid: 6800, high: 7480 }
+    expected: { lines: { 'Exterior labor': 220000, 'Exterior preparation': 80000, 'Exterior materials': 100000 }, low: 3600, mid: 4000, high: 4400 }
   },
   {
     name: 'flooring installation uses measured area and explicit vinyl rule',
@@ -178,27 +179,27 @@ const happyCases = [
     expected: { lines: { 'Flooring labor': 99000, 'Flooring materials': 168000, 'Existing flooring removal': 30000, 'Stair installation': 20000, 'Subfloor repair allowance': 6000 }, low: 2910, mid: 3230, high: 3550 }
   },
   {
-    name: 'fencing installation deducts measured gate openings from run pricing',
+    name: 'fencing installation defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_INSTALL',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, cornerCount: 2, terrainSlope: 'flat' },
+    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, terrainSlope: 'flat' },
     ownerPricing: service('FENCING_INSTALL', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
       postsIncludedInMaterial: { wood: false }, gatePrice: { wood: 25000 }, minimumJob: 0
     }),
-    expected: { lines: { 'Fence labor': 96000, 'Fence materials': 192000, 'Fence posts': 42500, 'Concrete footings': 11900, 'Installed gates': 25000 }, low: 3300, mid: 3670, high: 4040 }
+    expectedOwnerDecision: 'mixed_charge_allocation'
   },
   {
-    name: 'fencing replacement keeps removal tied to measured total length',
+    name: 'fencing replacement defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_REPLACEMENT',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, cornerCount: 2, terrainSlope: 'flat', oldFenceRemoval: true },
+    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, terrainSlope: 'flat', oldFenceRemoval: true },
     ownerPricing: service('FENCING_REPLACEMENT', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
       postsIncludedInMaterial: { wood: false }, gatePrice: { wood: 25000 },
       minimumJob: 0, removalPerLinearFoot: { wood: 500 }
     }),
-    expected: { lines: { 'Fence labor': 96000, 'Fence materials': 192000, 'Fence posts': 42500, 'Concrete footings': 11900, 'Installed gates': 25000, 'Old fence removal': 50000 }, low: 3750, mid: 4170, high: 4590 }
+    expectedOwnerDecision: 'mixed_charge_allocation'
   },
   {
     name: 'concrete driveway uses measured dimensions and correct waste addition',
@@ -293,7 +294,7 @@ const happyCases = [
   {
     name: 'siding repair consumes material-type and damage-specific rates',
     serviceType: 'SIDING_REPAIR',
-    customerInputs: { sidingType: 'vinyl', damageLevel: 'minor', repairSize: 'medium', stories: 2 },
+    customerInputs: { sidingType: 'vinyl', damageLevel: 'minor', affectedArea: 50, stories: 2 },
     ownerPricing: service('SIDING_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       repairHours: { vinyl: { minor: { small: 2, medium: 4, large: 8 } } },
@@ -311,8 +312,13 @@ const happyCases = [
 ];
 
 for (const entry of happyCases) {
-  test(`vNext hand calculation: ${entry.name}`, () => {
+  test(`${entry.expectedOwnerDecision ? 'vNext fail-closed contract' : 'vNext hand calculation'}: ${entry.name}`, () => {
     const result = quote(entry);
+    if (entry.expectedOwnerDecision) {
+      assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+      assert.equal(result.ownerDecisionRequired.some(item => item.kind === entry.expectedOwnerDecision), true);
+      return;
+    }
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
     assert.deepEqual(lineMap(result), entry.expected.lines);
     assert.equal(result.lowEstimate, entry.expected.low);
@@ -324,7 +330,7 @@ for (const entry of happyCases) {
 
 const malformedCases = [
   ['ROOFING_REPLACEMENT', 'roofSizeInput', value => ({ ...value, roofSizeInput: 0 })],
-  ['ROOFING_REPAIR', 'repairSize', value => ({ ...value, repairSize: 'Medium' })],
+  ['ROOFING_REPAIR', 'affectedArea', value => ({ ...value, affectedArea: 0 })],
   ['FLAT_ROOF_REPLACEMENT', 'existingLayers', value => ({ ...value, existingLayers: 0 })],
   ['FLAT_ROOF_REPAIR', 'membraneType', value => ({ ...value, membraneType: 'NOT VALID' })],
   ['INTERIOR_PAINTING', 'coats', value => ({ ...value, coats: 4 })],
@@ -332,7 +338,7 @@ const malformedCases = [
   ['FLOORING_INSTALL', 'sqft', value => ({ ...value, sqft: -1 })],
   ['FLOORING_REPLACEMENT', 'subfloorRepairAreaSqft', value => ({ ...value, subfloorRepairAreaSqft: value.sqft + 1 })],
   ['FENCING_INSTALL', 'gateWidthTotalLF', value => ({ ...value, gateWidthTotalLF: value.linearFeet })],
-  ['FENCING_REPLACEMENT', 'cornerCount', value => ({ ...value, cornerCount: 1.5 })],
+  ['FENCING_REPLACEMENT', 'cornerCount', value => ({ ...value, cornerCount: 2 })],
   ['CONCRETE_DRIVEWAY', 'thickness', value => ({ ...value, thickness: 1 })],
   ['CONCRETE_PATIO_SLAB', 'reinforcement', value => ({ ...value, reinforcement: 'mesh' })],
   ['LANDSCAPING_CLEANUP', 'debrisLevel', value => ({ ...value, debrisLevel: 'extreme' })],
@@ -341,7 +347,7 @@ const malformedCases = [
   ['LANDSCAPING_PLANTING', 'plantsBySize', value => ({ ...value, plantsBySize: { small: 0, medium: 0, large: 0 } })],
   ['LANDSCAPING_MOWING', 'serviceFrequency', value => ({ ...value, serviceFrequency: 'sometimes' })],
   ['SIDING_REPLACEMENT', 'stories', value => ({ ...value, stories: 4 })],
-  ['SIDING_REPAIR', 'repairSize', value => ({ ...value, repairSize: 75 })],
+  ['SIDING_REPAIR', 'affectedArea', value => ({ ...value, affectedArea: 0 })],
   ['CUSTOM', 'hours', value => ({ ...value, hours: 'half day' })]
 ];
 
@@ -356,9 +362,9 @@ for (const [serviceType, field, mutate] of malformedCases) {
 
 const missingMeasurementCases = [
   ['ROOFING_REPLACEMENT', 'starterLengthLF'],
-  ['ROOFING_REPAIR', 'repairSize'],
+  ['ROOFING_REPAIR', 'affectedArea'],
   ['FLAT_ROOF_REPLACEMENT', 'roofSqft'],
-  ['FLAT_ROOF_REPAIR', 'repairSize'],
+  ['FLAT_ROOF_REPAIR', 'affectedArea'],
   ['INTERIOR_PAINTING', 'trimLengthLF'],
   ['EXTERIOR_PAINTING', 'exteriorAreaSqft'],
   ['FLOORING_INSTALL', 'sqft'],
@@ -373,7 +379,7 @@ const missingMeasurementCases = [
   ['LANDSCAPING_PLANTING', 'plantsBySize'],
   ['LANDSCAPING_MOWING', 'edgingLengthLF'],
   ['SIDING_REPLACEMENT', 'trimLengthLF'],
-  ['SIDING_REPAIR', 'repairSize'],
+  ['SIDING_REPAIR', 'affectedArea'],
   ['CUSTOM', 'hours']
 ];
 
@@ -444,10 +450,10 @@ test('selected mandatory scope never disappears when its owner rate is missing o
   }
 });
 
-test('repair sizes never coerce or fall through to large', () => {
+test('caller-selected repair sizes are rejected instead of overriding measured affected area', () => {
   for (const serviceType of ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR', 'SIDING_REPAIR']) {
     const entry = happyCases.find(candidate => candidate.serviceType === serviceType);
-    const invalid = quote({ ...entry, customerInputs: { ...entry.customerInputs, repairSize: '75' } });
+    const invalid = quote({ ...entry, customerInputs: { ...entry.customerInputs, repairSize: 'large' } });
     assert.equal(invalid.resultType, 'ESTIMATE_REQUIRES_REVIEW');
     assert.equal(invalid.invalidCustomerFields.includes('repairSize'), true);
   }
@@ -488,13 +494,14 @@ test('vinyl-plank underlayment follows every explicit owner rule', () => {
     const ownerPricing = structuredClone(base.ownerPricing);
     ownerPricing.pricing.vinylPlankUnderlaymentRule = rule;
     ownerPricing.pricing.underlaymentPerSqft = 50;
+    ownerPricing.priceBasisByCategory.material = 'sell_price';
     return ownerPricing;
   };
   assert.equal(Object.hasOwn(lineMap(quote(base)), 'Underlayment'), false);
-  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('always_included') })).Underlayment, 16200);
+  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('always_included') })).Underlayment, 15000);
   assert.equal(Object.hasOwn(lineMap(quote({ ...base, ownerPricing: withPrice('customer_selectable_addon'), customerInputs: { ...base.customerInputs, underlaymentSelected: false } })), 'Underlayment'), false);
-  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('customer_selectable_addon'), customerInputs: { ...base.customerInputs, underlaymentSelected: true } })).Underlayment, 16200);
-  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('subfloor_condition'), customerInputs: { ...base.customerInputs, subfloorCondition: 'requires_underlayment' } })).Underlayment, 16200);
+  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('customer_selectable_addon'), customerInputs: { ...base.customerInputs, underlaymentSelected: true } })).Underlayment, 15000);
+  assert.equal(lineMap(quote({ ...base, ownerPricing: withPrice('subfloor_condition'), customerInputs: { ...base.customerInputs, subfloorCondition: 'requires_underlayment' } })).Underlayment, 15000);
   assert.equal(quote({ ...base, ownerPricing: withPrice('subfloor_condition'), customerInputs: { ...base.customerInputs, subfloorCondition: 'unknown' } }).resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(quote({ ...base, ownerPricing: withPrice('owner_review') }).inspectionFirst, true);
 });
@@ -529,9 +536,9 @@ test('minimum is pre-tax and every displayed range stays above the customer mini
   const taxedDefaults = { ...defaults, taxMode: 'TAX_ALL', taxPercent: 10, rangeBufferPercent: 25 };
   const result = quote({ ...entry, ownerPricing }, { businessDefaults: taxedDefaults });
   assert.equal(lineMap(result)['Minimum price adjustment'], 135000);
-  assert.equal(lineMap(result).Tax, 4000);
-  assert.equal(result.lowEstimate, 3040);
-  assert.equal(result.midEstimate, 3040);
+  assert.equal(lineMap(result).Tax, 30000);
+  assert.equal(result.lowEstimate, 3300);
+  assert.equal(result.midEstimate, 3300);
   assert.equal(result.highEstimate >= result.midEstimate, true);
   assert.equal(result.calculationRecord.options[0].scenarios.mid.minimum.basis, 'pre_tax');
 });
@@ -581,7 +588,7 @@ test('customer payload remains strictly allowlisted while owner record remains c
   const serialized = JSON.stringify(safe);
   for (const forbidden of ['lineItems', 'calculationRecord', 'rateCents', 'ratePath', 'appliedRules', 'urgencyFlags']) assert.equal(serialized.includes(forbidden), false, forbidden);
   assert.equal(result.calculationRecord.options[0].lineItems[0].calculation.rateCents, 5000);
-  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 242500);
+  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 241000);
 });
 
 test('missing optional add-ons stay disclosed and never throw', () => {
@@ -618,6 +625,11 @@ test('every tier validates effective pricing and only its explicit override chan
 test('no valid service calculation emits NaN, Infinity, undefined money, or omitted mandatory lines', () => {
   for (const entry of happyCases) {
     const result = quote(entry);
+    if (entry.expectedOwnerDecision) {
+      assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', entry.serviceType);
+      assert.equal(result.ownerDecisionRequired.some(item => item.kind === entry.expectedOwnerDecision), true);
+      continue;
+    }
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', entry.serviceType);
     assert.equal(result.lineItems.length > 0, true, entry.serviceType);
     for (const line of result.lineItems) {

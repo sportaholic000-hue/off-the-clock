@@ -33,3 +33,39 @@ before integration.
 Likewise, the candidate adds measurement and pricing shapes that require an
 explicit migration and owner-facing controls before cutover. The audit gate
 tests this directory directly while leaving current customer traffic unchanged.
+
+## Calculation evidence
+
+Every calculation line declares one reproducible evidence variant:
+
+- `quantity_rate`: measured quantity, unit, integer-cent rate, and named
+  multipliers.
+- `fixed_amount`: an explicit integer-cent amount plus its owner field path or
+  the recorded minimum-basis inputs that derive it.
+- `percentage_derived`: an integer-cent basis amount, percentage, and rounded
+  derived amount.
+- `composite`: independently rounded component lines whose sum is the line
+  amount.
+- `ranged`: explicit low and high integer-cent amounts for an approved ranged
+  service.
+
+## Decisions intentionally left open
+
+The candidate fails closed instead of inventing these pricing contracts:
+
+- Cost-based roofing or flooring underlayment needs product-specific coverage
+  and purchasable-quantity data. Only an owner-classified installed-area
+  `sell_price` may use measured installed area directly.
+- Fencing `concretePerPost` combines concrete and digging. It needs separate
+  labor and material prices or an explicit owner-confirmed allocation rule.
+- The locked `gatePrice` is per gate and cannot distinguish opening widths.
+  Selected gates need an owner-approved measured-width pricing model and rates;
+  the existing value is not reinterpreted.
+- Fair or poor interior preparation needs measured-scope preparation pricing.
+- Poor exterior surfaces need separate primer pricing or an explicit
+  all-inclusive owner rule.
+- Exposed aggregate needs material pricing or an explicit all-inclusive owner
+  rule.
+
+Until those decisions exist, the affected path returns
+`ESTIMATE_REQUIRES_REVIEW`; no rate is duplicated, split, or reinterpreted.
