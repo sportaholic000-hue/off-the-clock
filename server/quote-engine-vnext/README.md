@@ -13,13 +13,17 @@ unconfirmed layer counts, unconfirmed material types, or unrelated quantities.
 - `contracts.js` defines a measurement-sufficiency contract for every built-in
   service, bounded input domains, exact owner-rate paths, and owner-visible
   Class 2 factors.
-- `templates.js` contains measurement-driven formulas. Every mandatory line
-  throws for review when its quantity or rate is invalid.
+- `templates.js` contains the internal measurement-driven formulas. Its
+  calculator independently runs the shared customer and owner-pricing
+  validation before producing any line and is not re-exported by `index.js`.
 - `engine.js` applies explicit fee rules, rate-basis-aware markup, service line
-  taxability, pre-tax minimums, mathematically bounded ranges, strict customer
-  sanitization, and a complete internal calculation record.
-- `priceBook.js` validates candidate price books and makes preview and live
-  calculations call the same engine entry point.
+  taxability, tax-mode-ordered minimums, mathematically bounded ranges, strict
+  customer sanitization, and a complete internal calculation record.
+- `priceBook.js` validates candidate price books, executes activation
+  scenarios through the complete financial pipeline, and makes preview and
+  live calculations call the same engine entry point.
+- `index.js` exposes the validated public candidate API. It does not expose
+  the low-level template calculator.
 
 ## Deliberate non-integration
 
@@ -46,26 +50,58 @@ Every calculation line declares one reproducible evidence variant:
   derived amount.
 - `composite`: independently rounded component lines whose sum is the line
   amount.
-- `ranged`: explicit low and high integer-cent amounts for an approved ranged
-  service.
+- `ranged`: explicit low and high integer-cent amounts whose complete evidence
+  is revalidated before scenario materialization. No custom ranged line is
+  currently executable because custom charge classification remains an owner
+  decision.
 
-## Decisions intentionally left open
+## Fail-closed owner decisions
 
-The candidate fails closed instead of inventing these pricing contracts:
+The candidate returns `ESTIMATE_REQUIRES_REVIEW` instead of inventing these
+pricing contracts:
 
-- Cost-based roofing or flooring underlayment needs product-specific coverage
-  and purchasable-quantity data. Only an owner-classified installed-area
-  `sell_price` may use measured installed area directly.
+- Cost-based roofing or vinyl-plank underlayment needs product coverage, waste,
+  package size, and purchasable-quantity rounding. Only an owner-classified
+  installed-area `sell_price` uses measured installed area directly.
+- Hardwood, laminate, and carpet need product-specific underlayment scope and
+  pricing. The vinyl-plank scalar is never reused.
+- Cost-based paint needs product coverage, coat-specific yield, package size,
+  and purchasable-quantity rounding.
+- Fencing post quantity needs approved geometry rules for spacing, ends,
+  corners, and gate posts. Caller-provided post counts are rejected.
 - Fencing `concretePerPost` combines concrete and digging. It needs separate
   labor and material prices or an explicit owner-confirmed allocation rule.
-- The locked `gatePrice` is per gate and cannot distinguish opening widths.
-  Selected gates need an owner-approved measured-width pricing model and rates;
-  the existing value is not reinterpreted.
+- The locked `gatePrice` cannot distinguish measured opening widths.
+- Siding trim installation needs separate labor and material rates or an
+  explicit owner-confirmed category and allocation.
+- Custom services need an owner-confirmed charge category or mixed allocation.
 - Fair or poor interior preparation needs measured-scope preparation pricing.
 - Poor exterior surfaces need separate primer pricing or an explicit
   all-inclusive owner rule.
 - Exposed aggregate needs material pricing or an explicit all-inclusive owner
   rule.
+- Flooring quotes exactly on a configured room-size threshold remain review
+  only until the owner decides whether maximum thresholds are inclusive.
 
-Until those decisions exist, the affected path returns
-`ESTIMATE_REQUIRES_REVIEW`; no rate is duplicated, split, or reinterpreted.
+No affected path duplicates, splits, reclassifies, or silently reuses a rate.
+
+## Release decisions still open
+
+These decisions cannot be inferred by an arithmetic engine and remain explicit
+production-cutover blockers:
+
+- Maximum permissible margin.
+- First-coat versus additional-coat labor pricing.
+- Interior primer scope and pricing.
+- Objective wall-height productivity factors.
+- Objective selection criteria for plant size, debris, grass condition,
+  access, slope, terrain, pitch, and complexity.
+- Work-date versus quote-date seasonal pricing.
+- Owner-facing controls and migration for every new measurement, price basis,
+  factor, and structured map.
+- Persistence of the unsanitized internal review lead, original request, and
+  urgency before returning customer-safe output.
+
+`buildInternalLeadVNext` creates and clones the required internal persistence
+envelope and rejects customer-sanitized review payloads. No production route
+persists that envelope yet. Production and integration remain untouched.

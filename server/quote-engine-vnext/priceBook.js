@@ -1,22 +1,45 @@
+import crypto from 'node:crypto';
 import {
   CLASS2_DEFINITIONS,
   SERVICE_TYPES,
+  aiConfirmationFieldsVNext,
   allowedPricingFields,
   contractMetadata,
+  validateClass2FactorsDetailed,
   validateBusinessDefaults,
   validateCustomerInputs,
   validateOwnerPricing,
+  validatePricingStructuresDetailed,
   validateServiceRules,
+  validateServiceRulesDetailed,
   vinylUnderlaymentApplies
 } from './contracts.js';
 import {
   generateQuoteVNext,
   mergePricingVNext,
-  validateTierDefinitionsVNext
+  sanitizeForCustomerVNext,
+  validateTierDefinitionsVNext,
+  validateTierDefinitionsDetailedVNext
 } from './engine.js';
+import { QuoteReviewError, calculateServiceVNext } from './templates.js';
+import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 import { ownerFieldCopy } from '../priceBookCopy.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
+const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
+  'pricebook', 'serviceType', 'customerInputs', 'callerType',
+  'feeSelections', 'currentMonth', 'allowInactiveOwnerPreview'
+]);
+
+function isPlainRecord(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  try {
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+  } catch {
+    return false;
+  }
+}
 
 const SERVICE_NAMES = {
   ROOFING_REPLACEMENT: 'Roof replacement',
@@ -46,19 +69,20 @@ const NEW_FIELD_COPY = {
   materialPerWallSqftPerCoat: { label: 'Wall paint material price per measured wall square foot, per coat', help: 'Paint and material price multiplied by measured paintable wall area and the confirmed number of finish coats.' },
   ceilingLaborPerSqftPerCoat: { label: 'Ceiling painting labor price per measured ceiling square foot, per coat', help: 'Labor price used only when ceilings are included, multiplied by measured ceiling area and confirmed coats.' },
   ceilingMaterialPerSqftPerCoat: { label: 'Ceiling paint material price per measured ceiling square foot, per coat', help: 'Paint and material price used only when ceilings are included, multiplied by measured ceiling area and confirmed coats.' },
-  exteriorLaborPerSqftPerCoat: { label: 'Exterior painting labor price per measured wall square foot, per applied coat', help: 'Labor price multiplied by measured paintable exterior wall area, finish coats, and any owner-configured primer coats.' },
+  exteriorLaborPerSqftPerCoat: { label: 'Exterior painting labor price per measured wall square foot, per applied coat', help: 'Labor price multiplied by measured paintable exterior wall area, confirmed finish coats, and the configured story factor. Poor surfaces remain review-only until primer pricing is approved.' },
   starterPerLF: { label: 'Starter strip material price per measured linear foot', help: 'Used only with itemized roof accessories and multiplied by the confirmed starter-strip length.' },
   dripEdgePerLF: { label: 'Drip edge material price per measured linear foot', help: 'Used only with itemized roof accessories and multiplied by the confirmed drip-edge length.' },
   ridgeCapPerLF: { label: 'Ridge cap material price per measured linear foot', help: 'Used only with itemized roof accessories and multiplied by the confirmed ridge-cap length.' },
-  postPrice: { label: 'Fence post material price per confirmed planned post', help: 'Applied to the confirmed post count when posts are not included in the per-foot fence material price.' },
-  underlaymentPerSquare: { label: 'Installed-area underlayment sell price per roofing square', help: 'Used only when material rates are owner-classified as final sell prices. Cost-based underlayment requires product coverage and purchasable-quantity facts and is held for review.' },
-  underlaymentPerSqft: { label: 'Installed-area underlayment sell price per square foot', help: 'Used only when material rates are owner-classified as final sell prices. Cost-based underlayment requires product coverage and purchasable-quantity facts and is held for review.' },
+  postPrice: { label: 'Fence post material price per derived planned post', help: 'Held for review until post quantity can be derived from measured geometry and approved spacing, end, corner, and gate-post rules.' },
+  underlaymentPerSquare: { label: 'Installed-area underlayment sell price per roofing square', help: 'Used only when this underlayment rate is owner-classified as a final installed-area sell price. A cost-based underlayment rate requires product coverage and purchasable-quantity facts and is held for review.' },
+  underlaymentPerSqft: { label: 'Installed-area underlayment sell price per square foot', help: 'Used only when this underlayment rate is owner-classified as a final installed-area sell price. A cost-based underlayment rate requires product coverage and purchasable-quantity facts and is held for review.' },
+  underlaymentPriceBasis: { label: 'Underlayment price basis', help: 'Classifies only the underlayment field. Installed-area sell prices use measured installed area; cost prices remain review-only until package coverage and purchasable quantities are configured.' },
   concretePerPost: { label: 'Concrete + digging cost per post at your local frost/set depth.', help: 'This mixed charge cannot be quoted until separate labor and material prices or an explicit owner-confirmed allocation rule is approved.' },
   gatePrice: { label: "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.", help: 'Selected gates remain review-only until the owner approves a measured-width pricing model and rates; the existing per-gate value is not reinterpreted.' },
-  trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Applied only when siding trim is included and multiplied by the confirmed trim length.' },
+  trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Held for owner review until labor and material are separately priced or an explicit category and allocation rule is approved.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
-  deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied only when a replacement sheet count is confirmed; an unmeasured decking scope is disclosed rather than fabricated.' },
-  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Defines small and medium average-room area boundaries used by the visible room-complexity labor factor.' },
+  deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. The configured per-sheet price is disclosed for possible additional decking without inventing a sheet count.' },
+  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Defines small and medium average-room area boundaries used by the room-complexity labor factor. Quotes exactly on a boundary remain review-only until inclusive-boundary behavior is approved.' },
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
@@ -69,16 +93,50 @@ const NEW_FIELD_COPY = {
 };
 
 function pricingOf(service) {
-  return service?.pricing && typeof service.pricing === 'object' && !Array.isArray(service.pricing)
+  return isPlainRecord(service?.pricing)
     ? service.pricing
     : {};
 }
 
+function cloneForStatus(value, fallback = {}) {
+  try {
+    return structuredClone(value);
+  } catch {
+    return structuredClone(fallback);
+  }
+}
+
 
 function keysOf(value, fallback) {
-  return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length
+  return isPlainRecord(value) && Object.keys(value).length
     ? Object.keys(value)
     : [fallback];
+}
+
+function greatestConfiguredKey(value, supportedKeys, fallback) {
+  if (!isPlainRecord(value)) return fallback;
+  const candidates = supportedKeys.filter(key => Object.hasOwn(value, key) && typeof value[key] === 'number' && Number.isFinite(value[key]));
+  if (!candidates.length) return fallback;
+  return candidates.reduce((greatest, key) => value[key] > value[greatest] ? key : greatest);
+}
+
+function flooringRoomBands(pricing) {
+  const thresholds = pricing.roomSizeThresholds;
+  if (!isPlainRecord(thresholds) ||
+      typeof thresholds.smallMaxSqft !== 'number' || !Number.isFinite(thresholds.smallMaxSqft) ||
+      typeof thresholds.mediumMaxSqft !== 'number' || !Number.isFinite(thresholds.mediumMaxSqft) ||
+      thresholds.smallMaxSqft <= 0 || thresholds.mediumMaxSqft <= thresholds.smallMaxSqft) {
+    return [{ sqft: 1_000_000, roomCount: 1 }];
+  }
+  const scenarioForAverage = average => {
+    const roomCount = Math.max(1, Math.min(10_000, Math.floor(1_000_000 / average)));
+    return { sqft: average * roomCount, roomCount };
+  };
+  return [
+    scenarioForAverage(thresholds.smallMaxSqft / 2),
+    scenarioForAverage((thresholds.smallMaxSqft + thresholds.mediumMaxSqft) / 2),
+    { sqft: 1_000_000, roomCount: 1 }
+  ];
 }
 
 function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
@@ -100,144 +158,298 @@ function activationScenarios(service) {
   if (serviceType === 'ROOFING_REPLACEMENT') {
     const replacements = keysOf(p.laborPerSquare, 'asphalt_shingle');
     const existingTypes = keysOf(p.tearOffPerSquare, 'asphalt_shingle');
+    const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
+    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
+    const roofComplexity = greatestConfiguredKey(p.wasteFactorByComplexity, ['simple', 'moderate', 'complex'], 'moderate');
     return replacements.flatMap(replacement => existingTypes.map(existing => ({
-      roofSizeMethod: 'roof_measured', roofSizeInput: 2000,
+      roofSizeMethod: 'roof_measured', roofSizeInput: 1_000_000,
       existingRoofType: existing, replacementRoofType: replacement,
-      pitch: 'medium', stories: 2, existingLayers: 1,
-      roofComplexity: 'moderate', serviceScope: 'full',
+      pitch, stories, existingLayers: 10,
+      roofComplexity, serviceScope: 'full',
       ...(p.accessoryPricingMode === 'itemized'
-        ? { starterLengthLF: 180, dripEdgeLengthLF: 180, ridgeCapLengthLF: 40 }
+        ? { starterLengthLF: 1_000_000, dripEdgeLengthLF: 1_000_000, ridgeCapLengthLF: 1_000_000 }
         : {}),
-      ...(p.deckingPerSheet !== undefined ? { deckingSheets: 1 } : {})
+      ...(p.deckingPerSheet !== undefined ? { deckingSheets: 100_000 } : {})
     })));
   }
   if (serviceType === 'ROOFING_REPAIR') {
-    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch: 'medium', stories: 2, leakPresent: false }));
+    const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
+    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
+    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch, stories, leakPresent: false }));
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
     const membraneTypes = configured.length ? configured : ['epdm'];
+    const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const scenarios = membraneTypes.flatMap(membraneType => [
-        { roofSqft: 1200, sqftMethod: 'exact', membraneType, existingLayers: 1, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' },
-        { roofSqft: 1200, sqftMethod: 'exact', membraneType, existingLayers: 1, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'commercial' }
+        { roofSqft: 2_000_000, sqftMethod: 'exact', membraneType, existingLayers: 10, accessDifficulty, serviceScope: 'full', buildingType: 'residential' },
+        { roofSqft: 2_000_000, sqftMethod: 'exact', membraneType, existingLayers: 10, accessDifficulty, serviceScope: 'full', buildingType: 'commercial' }
       ]);
 
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    return repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false }));
+    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false }));
+    return base.flatMap(inputs => [
+      inputs,
+      { ...inputs, pondingWater: true }
+    ]);
   }
-  if (serviceType === 'INTERIOR_PAINTING') return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 3600, wallHeight: 'high', surfaceCondition: 'good', coats: 2, ceilingsIncluded: true, ceilingAreaSqft: 1200, trimIncluded: true, trimLengthLF: 300 }];
-  if (serviceType === 'EXTERIOR_PAINTING') return [{ areaInputMethod: 'wall_sqft', exteriorAreaSqft: 1800, stories: 2, surfaceCondition: 'fair', coats: 2 }];
+  if (serviceType === 'INTERIOR_PAINTING') {
+    const wallHeight = greatestConfiguredKey(p.wallHeightLaborMultiplier, ['standard', 'high', 'vaulted'], 'high');
+    return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 2_000_000, wallHeight, surfaceCondition: 'good', coats: 3, ceilingsIncluded: true, ceilingAreaSqft: 1_000_000, trimIncluded: true, trimLengthLF: 1_000_000 }];
+  }
+  if (serviceType === 'EXTERIOR_PAINTING') {
+    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
+    return [{ areaInputMethod: 'wall_sqft', exteriorAreaSqft: 2_000_000, stories, surfaceCondition: 'fair', coats: 3 }];
+  }
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') {
     const flooringTypes = keysOf(p.laborPerSqft, 'tile');
-    const removalTypes = p.removalPerSqft && typeof p.removalPerSqft === 'object' ? Object.keys(p.removalPerSqft) : [];
+    const removalTypes = isPlainRecord(p.removalPerSqft) ? Object.keys(p.removalPerSqft) : [];
     const replacement = serviceType === 'FLOORING_REPLACEMENT';
-    const scenario = (flooringType, existingFloorType, removalNeeded) => ({
-      sqft: 600, sqftMethod: 'exact', newFlooringType: flooringType,
+    const layoutPattern = greatestConfiguredKey(p.patternWasteAdder, ['straight', 'diagonal_or_pattern'], 'diagonal_or_pattern');
+    const roomBands = flooringRoomBands(p);
+    const scenario = (flooringType, existingFloorType, removalNeeded, roomBand) => ({
+      sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
       existingFloorType, removalNeeded,
-      roomCount: 3, layoutPattern: 'straight', stairSteps: p.perStepPrice !== undefined ? 1 : 0,
+      roomCount: roomBand.roomCount, layoutPattern, stairSteps: p.perStepPrice !== undefined ? 10_000 : 0,
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: true } : {}),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'requires_underlayment' } : {}),
-      ...(replacement ? { subfloorIssues: p.subfloorAllowancePerSqft !== undefined, ...(p.subfloorAllowancePerSqft !== undefined ? { subfloorRepairAreaSqft: 60 } : {}) } : {})
+      ...(replacement ? { subfloorIssues: p.subfloorAllowancePerSqft !== undefined, ...(p.subfloorAllowancePerSqft !== undefined ? { subfloorRepairAreaSqft: roomBand.sqft } : {}) } : {})
     });
-    return [
-      ...flooringTypes.map(flooringType => scenario(flooringType, 'none', false)),
-      ...removalTypes.map(existingFloorType => scenario(flooringTypes[0], existingFloorType, true))
-    ];
+    return flooringTypes.flatMap(flooringType => roomBands.flatMap(roomBand => [
+      scenario(flooringType, 'none', false, roomBand),
+      ...removalTypes.map(existingFloorType => scenario(flooringType, existingFloorType, true, roomBand))
+    ]));
   }
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') {
     const fenceTypes = keysOf(p.laborPerLinearFoot, 'wood');
-    return fenceTypes.map(fenceType => ({ linearFeet: 120, lfMethod: 'exact', fenceType, fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 20, terrainSlope: 'moderate', ...(serviceType === 'FENCING_REPLACEMENT' ? { oldFenceRemoval: p.removalPerLinearFoot !== undefined } : {}) }));
+    return fenceTypes.map(fenceType => ({ linearFeet: 120, lfMethod: 'exact', fenceType, fenceHeight: 6, gateCount: 0, terrainSlope: 'moderate', ...(serviceType === 'FENCING_REPLACEMENT' ? { oldFenceRemoval: p.removalPerLinearFoot !== undefined } : {}) }));
   }
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') {
-    return [
-      { dimensionMethod: 'exact', length: 30, width: 20, thickness: 4, finishType: 'stamped', demolitionNeeded: true, demolitionAreaSqft: 500, reinforcement: 'wire_mesh', accessDifficulty: 'moderate', baseNeeded: true },
-      { dimensionMethod: 'measured_area_perimeter', areaSqft: 600, perimeterLF: 110, thickness: 4, finishType: 'broom', demolitionNeeded: false, reinforcement: 'rebar', accessDifficulty: 'easy', baseNeeded: true }
+    const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
+    const dimensions = [
+      { dimensionMethod: 'exact', length: 100_000, width: 100_000 },
+      { dimensionMethod: 'measured_area_perimeter', areaSqft: 10_000_000, perimeterLF: 1_000_000 }
     ];
+    return dimensions.flatMap(dimension => ['broom', 'smooth', 'stamped'].flatMap(finishType => ['none', 'wire_mesh', 'rebar'].map(reinforcement => ({
+      ...dimension, thickness: 24, finishType,
+      demolitionNeeded: true, demolitionAreaSqft: 10_000_000,
+      reinforcement, accessDifficulty, baseNeeded: true
+    }))));
   }
-  if (serviceType === 'LANDSCAPING_CLEANUP') return [{ yardSqft: 3500, sqftMethod: 'exact', debrisLevel: 'moderate', slope: 'moderate', haulAway: true }];
-  if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard, 'standard').map(mulchType => ({ inputMethod: 'sqft', mulchArea: 900, mulchDepth: 3, mulchType, bedCondition: 'needs_weeding', bedSqft: 900, edgingNeeded: true, edgeLF: 240 }));
-  if (serviceType === 'LANDSCAPING_SOD') return [{ sodSqft: 1200, sqftMethod: 'exact', groundPrepNeeded: true, slope: 'moderate', accessDifficulty: 'moderate' }];
-  if (serviceType === 'LANDSCAPING_PLANTING') return keysOf(p.mulchMaterialPerYard, 'standard').map(mulchType => ({ plantsBySize: { small: 4, medium: 4, large: 4 }, bedCondition: 'needs_weeding', bedSqft: 500, mulchNeeded: true, mulchYards: 4, mulchType }));
-  if (serviceType === 'LANDSCAPING_MOWING') return [{ yardSqft: 5000, sqftMethod: 'exact', serviceFrequency: 'weekly', grassCondition: 'maintained', bagClippings: false, edgingIncluded: false }];
-  if (serviceType === 'SIDING_REPLACEMENT') return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 1800, sidingType, stories: 2, oldSidingRemoval: true, trimIncluded: true, trimLengthLF: 300 }));
+  if (serviceType === 'LANDSCAPING_CLEANUP') {
+    const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
+    return ['light', 'moderate', 'heavy'].map(debrisLevel => ({ yardSqft: 10_000_000, sqftMethod: 'exact', debrisLevel, slope, haulAway: true }));
+  }
+  if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard, 'standard').flatMap(mulchType => ['needs_weeding', 'overgrown'].flatMap(bedCondition => [
+    { inputMethod: 'sqft', mulchArea: 10_000_000, mulchDepth: 24, mulchType, bedCondition, bedSqft: 10_000_000, edgingNeeded: true, edgeLF: 1_000_000 },
+    { inputMethod: 'yards', mulchArea: 10_000_000, mulchType, bedCondition, bedSqft: 10_000_000, edgingNeeded: true, edgeLF: 1_000_000 }
+  ]));
+  if (serviceType === 'LANDSCAPING_SOD') {
+    const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
+    const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
+    return [{ sodSqft: 10_000_000, sqftMethod: 'exact', groundPrepNeeded: true, slope, accessDifficulty }];
+  }
+  if (serviceType === 'LANDSCAPING_PLANTING') return keysOf(p.mulchMaterialPerYard, 'standard').map(mulchType => ({ plantsBySize: { small: 1_000_000, medium: 1_000_000, large: 1_000_000 }, bedCondition: 'overgrown', bedSqft: 10_000_000, mulchNeeded: true, mulchYards: 100_000, mulchType }));
+  if (serviceType === 'LANDSCAPING_MOWING') {
+    const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
+    const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
+    return [{ yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: true, edgingIncluded: true, edgingLengthLF: 1_000_000 }];
+  }
+  if (serviceType === 'SIDING_REPLACEMENT') {
+    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
+    return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 2_000_000, sidingType, stories, oldSidingRemoval: p.removalPerSqft !== undefined, trimIncluded: false }));
+  }
   if (serviceType === 'SIDING_REPAIR') {
-    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories: 2 }));
+    const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
+    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories }));
   }
   if (serviceType === 'CUSTOM') return [{ service: service.service, serviceConfirmed: true, unit: p.unit || 'flat', ...({ per_hour: { hours: 4 }, per_unit: { itemCount: 3 }, per_sqft: { areaSqft: 500 }, per_LF: { linearFeet: 120 }, per_square: { roofSquares: 20 } }[p.unit] || {}) }];
   return [];
 }
 
-function statusFromErrors(service, errors, missingOwnerFields, invalidOwnerFields) {
-  const active = errors.length === 0 && missingOwnerFields.length === 0 && invalidOwnerFields.length === 0;
+function uniqueStatusDiagnostics(items) {
+  const seen = new Set();
+  return items.filter(item => {
+    const key = `${item.type}:${item.kind || ''}:${item.path}:${item.message}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
+  const blocking = uniqueStatusDiagnostics(diagnostics);
+  const live = service?.active === true && blocking.length === 0 && validTierNames.length > 0;
+  const invalidTypes = new Set(['invalid', 'unsupported', 'cross_field', 'owner_decision']);
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    status: active ? 'QUOTING LIVE' : 'NEEDS PRICING',
-    missingOwnerFields: [...new Set(missingOwnerFields)],
-    invalidOwnerFields: [...new Set(invalidOwnerFields)],
-    validationErrors: [...new Set(errors)]
+    status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
+    missingOwnerFields: [...new Set(blocking.filter(item => item.type === 'missing').map(item => item.path))],
+    invalidOwnerFields: [...new Set(blocking.filter(item => invalidTypes.has(item.type)).map(item => item.path))],
+    unsupportedOwnerFields: [...new Set(blocking.filter(item => item.type === 'unsupported').map(item => item.path))],
+    crossFieldOwnerFields: [...new Set(blocking.filter(item => item.type === 'cross_field').map(item => item.path))],
+    ownerDecisionRequired: blocking.filter(item => item.type === 'owner_decision').map(({ path, kind, message }) => ({ path, kind, message })),
+    ownerDiagnostics: blocking,
+    validationErrors: [...new Set(blocking.map(item => item.message))],
+    failedTierDiagnostics,
+    validTierNames,
+    ...(live && failedTierDiagnostics.length ? { optionAvailabilityNotice: 'Fewer options are available because one or more configured options need owner review.' } : {})
   };
 }
 
-export function vNextServiceStatus(service) {
-  if (!service || typeof service !== 'object' || Array.isArray(service)) return statusFromErrors(service, ['Service must be an object.'], [], []);
-  if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromErrors(service, ['Service type is unsupported.'], [], ['serviceType']);
-  const pricing = pricingOf(service);
+const ACTIVATION_FEE_SELECTIONS = {
+  owner: { travel: true, disposal: true, permit: true, overhead: true },
+  customer: { travel: true, disposal: true, permit: true, overhead: true }
+};
+
+function appendActivationReviewDiagnostics(diagnostics, result) {
+  const before = diagnostics.length;
+  const message = result.reviewReason || 'Activation scenario could not complete the quote pipeline safely.';
+  diagnostics.push(...(result.ownerDiagnostics || []).map(item => ({ ...item, kind: item.kind || 'activation_pipeline' })));
+  for (const path of result.missingOwnerFields || []) diagnostics.push({ type: 'missing', kind: 'activation_pipeline', path, message });
+  for (const path of result.invalidOwnerFields || []) diagnostics.push({ type: 'invalid', kind: 'activation_pipeline', path, message });
+  for (const path of result.unsupportedOwnerFields || []) diagnostics.push({ type: 'unsupported', kind: 'activation_pipeline', path, message });
+  for (const path of result.crossFieldOwnerFields || []) diagnostics.push({ type: 'cross_field', kind: 'activation_pipeline', path, message });
+  for (const path of result.missingCustomerFields || []) diagnostics.push({ type: 'missing', kind: 'activation_scenario', path: `customerInputs.${path}`, message });
+  for (const path of result.invalidCustomerFields || []) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: `customerInputs.${path}`, message });
+  for (const decision of result.ownerDecisionRequired || []) diagnostics.push({ type: 'owner_decision', kind: decision.kind, path: decision.path, message: decision.message });
+  if (result.inspectionFirst && diagnostics.length === before) diagnostics.push({ type: 'invalid', kind: 'pricing_policy', path: 'pricingPolicy', message });
+  if (diagnostics.length === before) diagnostics.push({ type: 'invalid', kind: 'activation_pipeline', path: 'pricingCalculation', message });
+}
+
+function activationMonth(service, defaults) {
+  const months = service.peakMonths !== undefined ? service.peakMonths : defaults.peakMonths;
+  return Array.isArray(months) && months.length ? months[0] : 1;
+}
+
+function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults) {
+  const diagnostics = [];
+  const scenarios = activationScenarios({ ...service, pricing: effectivePricing });
+  if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
-  const errors = validateServiceRules(service);
-  if (service.active !== true) {
-    errors.push('Service is not enabled for customer quoting.');
+  for (const key of Object.keys(effectivePricing)) {
+    if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'field', path: key, message: 'This pricing field is not supported for the selected service.' });
   }
-  const missingOwnerFields = [];
-  const invalidOwnerFields = Object.keys(pricing).filter(field => !allowed.has(field));
-  if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) {
-    errors.push('Custom service requires a specific configured offering name.');
-    invalidOwnerFields.push('service');
-  }
-  const validateEffectivePricing = (effectivePricing, tierName = null) => {
-    const prefix = tierName ? `${tierName} tier: ` : '';
-    const probeService = { ...service, pricing: effectivePricing };
-    for (const customerInputs of activationScenarios(probeService)) {
-      const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing);
-      if (!customer.ok) {
-        errors.push(`${prefix}${customer.reviewReason}`, ...(customer.validationMessages || []).map(message => `${prefix}${message}`));
-        if (customer.inspectionFirst) invalidOwnerFields.push(tierName ? `${tierName}.pricing policy` : 'pricing policy');
+  diagnostics.push(
+    ...validatePricingStructuresDetailed(service.serviceType, effectivePricing),
+    ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
+  );
+  for (const customerInputs of scenarios) {
+    const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing);
+    if (!customer.ok) {
+      for (const path of customer.missingCustomerFields || []) diagnostics.push({ type: 'missing', kind: 'activation_scenario', path: `customerInputs.${path}`, message: customer.reviewReason });
+      for (const path of customer.invalidCustomerFields || []) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: `customerInputs.${path}`, message: customer.reviewReason });
+      if (customer.inspectionFirst) diagnostics.push({ type: 'invalid', kind: 'pricing_policy', path: 'pricingPolicy', message: customer.reviewReason });
+      continue;
+    }
+    const owner = validateOwnerPricing(service.serviceType, customerInputs, effectivePricing, service);
+    diagnostics.push(...owner.ownerDiagnostics);
+    if (!owner.ok) continue;
+    try {
+      const template = calculateServiceVNext(service.serviceType, customer.normalized, effectivePricing, { ownerPricing: service, skipAddon() {} });
+      const subtotalCents = template.lineItems.reduce((sum, line) => sum + line.amountCents, 0);
+      if (!Number.isSafeInteger(subtotalCents) || subtotalCents < 0) {
+        throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
+      }
+      if (businessDefaults) {
+        const pipelineResult = generateQuoteVNext({
+          serviceType: service.serviceType,
+          customerInputs: customer.normalized,
+          ownerPricing: { ...service, active: true, pricing: effectivePricing, tiers: [] },
+          businessDefaults,
+          callerType: 'owner',
+          feeSelections: ACTIVATION_FEE_SELECTIONS,
+          currentMonth: activationMonth(service, businessDefaults),
+          allowInactiveOwnerPreview: true
+        });
+        if (pipelineResult.resultType !== 'INSTANT_ESTIMATE_READY') appendActivationReviewDiagnostics(diagnostics, pipelineResult);
+      }
+    } catch (error) {
+      if (!(error instanceof QuoteReviewError)) {
+        diagnostics.push({ type: 'invalid', kind: 'activation_calculation', path: 'pricingCalculation', message: 'Activation scenario could not be calculated safely.' });
         continue;
       }
-      const owner = validateOwnerPricing(service.serviceType, customerInputs, effectivePricing);
-      missingOwnerFields.push(...owner.missingOwnerFields.map(field => tierName ? `${tierName}.${field}` : field));
-      invalidOwnerFields.push(...[...owner.invalidOwnerFields, ...owner.unsupportedOwnerFields].map(field => tierName ? `${tierName}.${field}` : field));
-      errors.push(...owner.validationMessages.map(message => `${prefix}${message}`));
-
-      const underlaymentPath = service.serviceType === 'ROOFING_REPLACEMENT'
-        ? `underlaymentPerSquare.${customerInputs.replacementRoofType}`
-        : (service.serviceType.startsWith('FLOORING_') && vinylUnderlaymentApplies(customerInputs, effectivePricing) ? 'underlaymentPerSqft' : null);
-      if (underlaymentPath && service.priceBasisByCategory?.material === 'cost') {
-        invalidOwnerFields.push(tierName ? `${tierName}.${underlaymentPath}` : underlaymentPath);
-        errors.push(`${prefix}Cost-based underlayment requires product-specific coverage and purchasable-quantity information.`);
-      }
+      const before = diagnostics.length;
+      for (const path of error.missingOwnerFields || []) diagnostics.push({ type: 'missing', kind: 'activation_calculation', path, message: error.reviewReason });
+      for (const path of error.invalidOwnerFields || []) diagnostics.push({ type: 'invalid', kind: 'activation_calculation', path, message: error.reviewReason });
+      for (const path of [...(error.unsupportedOwnerFields || []), ...(error.unexpectedOwnerFields || [])]) diagnostics.push({ type: 'unsupported', kind: 'activation_calculation', path, message: error.reviewReason });
+      for (const path of error.crossFieldOwnerFields || []) diagnostics.push({ type: 'cross_field', kind: 'activation_calculation', path, message: error.reviewReason });
+      for (const path of error.invalidCustomerFields || []) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: `customerInputs.${path}`, message: error.reviewReason });
+      for (const decision of error.ownerDecisionRequired || []) diagnostics.push({ type: 'owner_decision', kind: decision.kind, path: decision.path, message: decision.message });
+      if (diagnostics.length === before) diagnostics.push({ type: 'invalid', kind: 'activation_calculation', path: 'pricingCalculation', message: error.reviewReason });
     }
+  }
+  const unique = uniqueStatusDiagnostics(diagnostics);
+  return {
+    ok: unique.length === 0,
+    tierName,
+    tierIndex,
+    diagnostics: unique,
+    reviewReason: unique[0]?.message || null
   };
-  validateEffectivePricing(pricing);
-  const tierErrors = validateTierDefinitionsVNext(service, service.serviceType);
-  errors.push(...tierErrors);
-  if (!tierErrors.length && Array.isArray(service.tiers)) {
-    for (const tier of service.tiers) {
-      validateEffectivePricing(mergePricingVNext(pricing, tier.overrides), tier.name.trim());
-    }
-  }
-  if (AI_SOURCES.has(service.source)) {
-    const confirmed = service.confirmedFields && typeof service.confirmedFields === 'object' ? service.confirmedFields : {};
-    for (const field of Object.keys(pricing)) if (confirmed[field] !== true) missingOwnerFields.push(field);
-    if (Array.isArray(service.tiers) && service.tiers.length && confirmed.tiers !== true) missingOwnerFields.push('tiers');
-  }
-  return statusFromErrors(service, errors.filter(Boolean), missingOwnerFields, invalidOwnerFields);
 }
 
+export function vNextServiceStatus(service, businessDefaults = null) {
+  const snapshot = snapshotPlainData(service, 'service');
+  if (!snapshot.ok) return statusFromDiagnostics(null, [{
+    type: 'invalid', kind: 'service', path: snapshot.errorPath,
+    message: `Service could not be read safely: ${snapshot.reason}.`
+  }]);
+  service = snapshot.value;
+  if (!isPlainRecord(service)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'service', message: 'Service must be an object.' }]);
+  if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'serviceType', message: 'Service type is unsupported.' }]);
+  const pricing = pricingOf(service);
+  const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType)];
+  if (service.active !== true) diagnostics.push({ type: 'invalid', kind: 'activation', path: 'active', message: 'Service is not enabled for customer quoting.' });
+  if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) diagnostics.push({ type: 'invalid', kind: 'service', path: 'service', message: 'Custom service requires a specific configured offering name.' });
+
+  const tierDefinitionDiagnostics = validateTierDefinitionsDetailedVNext(service, service.serviceType);
+  diagnostics.push(...tierDefinitionDiagnostics);
+  if (AI_SOURCES.has(service.source)) {
+    const confirmed = isPlainRecord(service.confirmedFields) ? service.confirmedFields : {};
+    for (const field of aiConfirmationFieldsVNext(service, pricing)) {
+      if (!Object.hasOwn(confirmed, field) || confirmed[field] !== true) diagnostics.push({ type: 'missing', kind: 'ai_confirmation', path: `confirmedFields.${field}`, message: `${field} must be individually confirmed before customer quoting.` });
+    }
+  }
+
+  if (tierDefinitionDiagnostics.length) return statusFromDiagnostics(service, diagnostics);
+  const tierEntries = Array.isArray(service.tiers) && service.tiers.length
+    ? service.tiers.map((tier, index) => ({ tier, index }))
+    : [{ tier: { name: null, overrides: {} }, index: null }];
+  const variants = tierEntries.map(({ tier, index }) => {
+    try {
+      return evaluateActivationVariant(service, mergePricingVNext(pricing, tier.overrides || {}), tier.name, index, businessDefaults);
+    } catch {
+      const path = index === null ? 'pricing' : `tiers.${index}.overrides`;
+      return {
+        ok: false,
+        tierName: tier.name,
+        tierIndex: index,
+        diagnostics: [{ type: 'invalid', kind: 'tier_pricing', path, message: 'Tier pricing contains values that cannot be validated safely.' }],
+        reviewReason: 'Tier pricing contains values that cannot be validated safely.'
+      };
+    }
+  });
+  const validVariants = variants.filter(variant => variant.ok);
+  const failedTierDiagnostics = variants.filter(variant => !variant.ok).map(variant => ({
+    tierName: variant.tierName,
+    reviewReason: variant.reviewReason,
+    missingOwnerFields: variant.diagnostics.filter(item => item.type === 'missing').map(item => item.path),
+    invalidOwnerFields: variant.diagnostics.filter(item => ['invalid', 'unsupported', 'cross_field', 'owner_decision'].includes(item.type)).map(item => item.path),
+    unsupportedOwnerFields: variant.diagnostics.filter(item => item.type === 'unsupported').map(item => item.path),
+    crossFieldOwnerFields: variant.diagnostics.filter(item => item.type === 'cross_field').map(item => item.path),
+    ownerDiagnostics: variant.diagnostics,
+    ownerDecisionRequired: variant.diagnostics.filter(item => item.type === 'owner_decision').map(({ path, kind, message }) => ({ path, kind, message })),
+    validationMessages: variant.diagnostics.map(item => item.message)
+  }));
+  if (!validVariants.length) diagnostics.push(...variants.flatMap(variant => variant.diagnostics));
+  return statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName));
+}
 function serviceIdentity(service) {
-  if (!service || typeof service !== 'object' || Array.isArray(service)) return null;
+  if (!isPlainRecord(service)) return null;
   if (service.serviceType === 'CUSTOM') {
     const name = typeof service.service === 'string' ? service.service.trim().toLowerCase() : '';
     return name ? `CUSTOM:${name}` : null;
@@ -246,37 +458,71 @@ function serviceIdentity(service) {
 }
 
 export function vNextPricebookStatuses(pricebook) {
-  const services = Array.isArray(pricebook?.services) ? pricebook.services : [];
-  const defaultValidation = validateBusinessDefaults(pricebook?.defaults || {});
-  const globalErrors = [
-    ...defaultValidation.missingFields.map(field => `businessDefaults.${field} is required.`),
-    ...defaultValidation.errors
-  ];
-  const identities = services.map(serviceIdentity);
+  if (!isPlainRecord(pricebook)) return [];
+  const snapshot = snapshotPlainData(pricebook, 'pricebook');
+  if (!snapshot.ok) return [statusFromDiagnostics(null, [{
+    type: 'invalid', kind: 'pricebook', path: snapshot.errorPath,
+    message: `Price book could not be read safely: ${snapshot.reason}.`
+  }])];
+  pricebook = snapshot.value;
+  const services = isPlainRecord(pricebook) && Array.isArray(pricebook.services) ? pricebook.services : [];
+  const servicesIssue = denseArrayIssue(services);
+  if (servicesIssue) {
+    const path = servicesIssue.path ? `pricebook.services.${servicesIssue.path}` : 'pricebook.services';
+    return [statusFromDiagnostics(null, [{
+      type: 'invalid', kind: 'pricebook_services', path,
+      message: `Price book services are invalid at ${path}: ${servicesIssue.reason}.`
+    }])];
+  }
+  const defaultSource = isPlainRecord(pricebook) && Object.hasOwn(pricebook, 'defaults') ? pricebook.defaults : {};
+  const defaultValidation = validateBusinessDefaults(defaultSource);
+  const defaultDiagnostics = defaultValidation.diagnostics.map(item => ({
+    ...item,
+    path: item.path === 'businessDefaults' || item.path.startsWith('businessDefaults.') ? item.path : `businessDefaults.${item.path}`
+  }));
+  const identities = Array.from(services, serviceIdentity);
   const counts = new Map();
   for (const identity of identities) if (identity) counts.set(identity, (counts.get(identity) || 0) + 1);
 
-  return services.map((service, index) => {
-    const status = vNextServiceStatus(service);
-    const duplicateError = identities[index] && counts.get(identities[index]) > 1
-      ? 'Price book contains an ambiguous duplicate service definition.'
-      : null;
-    const validationErrors = [...new Set([
-      ...status.validationErrors,
-      ...globalErrors,
-      duplicateError
-    ].filter(Boolean))];
-    return validationErrors.length
-      ? { ...status, status: 'NEEDS PRICING', validationErrors }
-      : status;
+  return Array.from(services, (service, index) => {
+    const status = vNextServiceStatus(service, defaultValidation.ok ? defaultSource : null);
+    const duplicateDiagnostics = identities[index] && counts.get(identities[index]) > 1
+      ? [{ type: 'invalid', kind: 'duplicate_service', path: `services.${index}`, message: 'Price book contains an ambiguous duplicate service definition.' }]
+      : [];
+    const diagnostics = uniqueStatusDiagnostics([...status.ownerDiagnostics, ...defaultDiagnostics, ...duplicateDiagnostics]);
+    const invalidTypes = new Set(['invalid', 'unsupported', 'cross_field', 'owner_decision']);
+    return {
+      ...status,
+      status: diagnostics.length ? 'NEEDS PRICING' : status.status,
+      missingOwnerFields: [...new Set([...status.missingOwnerFields, ...diagnostics.filter(item => item.type === 'missing').map(item => item.path)])],
+      invalidOwnerFields: [...new Set([...status.invalidOwnerFields, ...diagnostics.filter(item => invalidTypes.has(item.type)).map(item => item.path)])],
+      unsupportedOwnerFields: [...new Set([...(status.unsupportedOwnerFields || []), ...diagnostics.filter(item => item.type === 'unsupported').map(item => item.path)])],
+      crossFieldOwnerFields: [...new Set([...(status.crossFieldOwnerFields || []), ...diagnostics.filter(item => item.type === 'cross_field').map(item => item.path)])],
+      ownerDiagnostics: diagnostics,
+      validationErrors: [...new Set(diagnostics.map(item => item.message))]
+    };
   });
 }
-
 export function validateVNextPricebook(pricebook) {
   const errors = [];
-  if (!pricebook || typeof pricebook !== 'object' || Array.isArray(pricebook)) return { ok: false, errors: ['Price book must be an object.'], statuses: [] };
+  if (!isPlainRecord(pricebook)) return { ok: false, errors: ['Price book must be an object.'], statuses: [] };
+  const snapshot = snapshotPlainData(pricebook, 'pricebook');
+  if (!snapshot.ok) return {
+    ok: false, errors: [`Price book could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`], statuses: []
+  };
+  pricebook = snapshot.value;
   if (!Array.isArray(pricebook.services)) return { ok: false, errors: ['Price book services must be an array.'], statuses: [] };
-  const defaults = validateBusinessDefaults(pricebook.defaults || {});
+  const servicesIssue = denseArrayIssue(pricebook.services);
+  if (servicesIssue) {
+    const path = servicesIssue.path ? `pricebook.services.${servicesIssue.path}` : 'pricebook.services';
+    return {
+      ok: false,
+      errors: [`Price book services are invalid at ${path}: ${servicesIssue.reason}.`],
+      statuses: vNextPricebookStatuses(pricebook)
+    };
+  }
+  const defaultSource = Object.hasOwn(pricebook, 'defaults') ? pricebook.defaults : {};
+  const defaults = validateBusinessDefaults(defaultSource);
   errors.push(...defaults.missingFields.map(field => `businessDefaults.${field} is required.`), ...defaults.errors);
   const statuses = vNextPricebookStatuses(pricebook);
   for (const status of statuses) {
@@ -290,32 +536,77 @@ export function validateVNextPricebook(pricebook) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], statuses };
 }
 
-export function quoteFromVNextPricebook({ pricebook, serviceType, customerInputs, callerType = 'owner', feeSelections, currentMonth, allowInactiveOwnerPreview = false }) {
-  const services = Array.isArray(pricebook?.services) ? pricebook.services : [];
-  const builtIn = SERVICE_TYPES.includes(serviceType) && serviceType !== 'CUSTOM';
-  const requestedCustomName = String(serviceType === 'CUSTOM' ? (customerInputs?.service || '') : (serviceType || '')).trim().toLowerCase();
+function serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason, path, kind }) {
+  const ownerDiagnostic = { type: 'invalid', kind, path, message: reviewReason };
+  const result = {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    quoteId: crypto.randomUUID(),
+    serviceType,
+    submittedCustomerInputs: cloneForStatus(customerInputs, {}),
+    normalizedScope: null,
+    validatedMeasurements: [],
+    reviewReason,
+    missingCustomerFields: [],
+    invalidCustomerFields: [],
+    missingOwnerFields: [],
+    invalidOwnerFields: [path],
+    unsupportedOwnerFields: [],
+    crossFieldOwnerFields: [],
+    ownerDiagnostics: [ownerDiagnostic],
+    ownerDecisionRequired: [],
+    failedTierDiagnostics: [],
+    validationMessages: [reviewReason],
+    inspectionFirst: false,
+    appliedRules: [],
+    urgencyFlags: ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs?.leakPresent === true ? ['Active leak reported'] : []
+  };
+  return callerType === 'owner' ? result : sanitizeForCustomerVNext(result);
+}
+
+export function quoteFromVNextPricebook(input = {}) {
+  const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
+  const requestIsPlainObject = requestSnapshot.ok;
+  const callerDescriptor = ownDataValue(input, 'callerType');
+  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'customer' ? 'customer' : 'owner' };
+  const {
+    pricebook,
+    serviceType,
+    customerInputs,
+    callerType = 'owner',
+    feeSelections,
+    currentMonth,
+    allowInactiveOwnerPreview = false
+  } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
+  if (!requestIsPlainObject) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`, path: requestSnapshot.errorPath, kind: 'invalid_request' });
+  const unsupportedRequestField = Object.keys(requestSnapshot.value).find(field => !PRICEBOOK_QUOTE_REQUEST_FIELDS.has(field));
+  if (unsupportedRequestField) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request contains an unsupported field.', path: `quoteRequest.${unsupportedRequestField}`, kind: 'invalid_request' });
+  const services = isPlainRecord(pricebook) && Array.isArray(pricebook.services) ? pricebook.services : [];
+  const servicesIssue = denseArrayIssue(services);
+  if (servicesIssue) {
+    const path = servicesIssue.path ? `pricebook.services.${servicesIssue.path}` : 'pricebook.services';
+    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Price book services are invalid at ${path}: ${servicesIssue.reason}.`, path, kind: 'pricebook_services' });
+  }
+  if (!SERVICE_TYPES.includes(serviceType)) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Unsupported service type: ${serviceType}.`, path: 'serviceType', kind: 'unsupported_service' });
+  const builtIn = serviceType !== 'CUSTOM';
+  const requestedCustomService = isPlainRecord(customerInputs) && typeof customerInputs.service === 'string' ? customerInputs.service : '';
+  const requestedCustomName = requestedCustomService.trim().toLowerCase();
   const matches = builtIn
     ? services.filter(entry => entry?.serviceType === serviceType)
     : services.filter(entry => entry?.serviceType === 'CUSTOM' && typeof entry.service === 'string' && entry.service.trim().toLowerCase() === requestedCustomName);
-  const resolvedType = builtIn ? serviceType : 'CUSTOM';
-  if (matches.length !== 1) {
-    return generateQuoteVNext({
-      serviceType: resolvedType,
-      customerInputs,
-      ownerPricing: { active: false },
-      businessDefaults: pricebook?.defaults || {},
-      callerType,
-      feeSelections,
-      currentMonth
-    });
+  if (matches.length === 0) {
+    const description = builtIn ? serviceType : `custom service "${requestedCustomService}"`;
+    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `No matching service is configured for ${description}.`, path: 'services', kind: 'missing_service' });
+  }
+  if (matches.length > 1) {
+    const description = builtIn ? serviceType : `custom service "${requestedCustomService}"`;
+    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Multiple matching service definitions make ${description} ambiguous.`, path: 'services', kind: 'duplicate_service' });
   }
   const service = matches[0];
-  const status = vNextPricebookStatuses(pricebook)[services.indexOf(service)] || vNextServiceStatus(service);
   return generateQuoteVNext({
     serviceType: service.serviceType,
     customerInputs,
-    ownerPricing: { ...service, active: status.status === 'QUOTING LIVE' },
-    businessDefaults: pricebook?.defaults || {},
+    ownerPricing: service,
+    businessDefaults: isPlainRecord(pricebook) && Object.hasOwn(pricebook, 'defaults') ? pricebook.defaults : {},
     callerType,
     feeSelections,
     currentMonth,
@@ -324,7 +615,9 @@ export function quoteFromVNextPricebook({ pricebook, serviceType, customerInputs
 }
 
 export function previewFromVNextPricebook(input) {
-  return quoteFromVNextPricebook({ ...input, callerType: 'owner', allowInactiveOwnerPreview: true });
+  const snapshot = snapshotPlainData(input, 'quoteRequest');
+  if (!snapshot.ok) return quoteFromVNextPricebook(input);
+  return quoteFromVNextPricebook({ ...snapshot.value, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 function fieldCopy(serviceType, field) {
@@ -345,12 +638,21 @@ export function getVNextPriceBookMetadata() {
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules'].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.map(definition => ({
       ...definition,
-      help: 'This physical quantity assumption is stored per service, editable by the owner, and recorded whenever it affects a quote.'
+      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence.`
     }))
   }));
 }
 
 export function materializeVNextService(service) {
+  const snapshot = snapshotPlainData(service, 'service');
+  if (!snapshot.ok) {
+    if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');
+    throw new TypeError(`Service could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
+  }
+  service = snapshot.value;
+  if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');
+  if (!SERVICE_TYPES.includes(service.serviceType)) throw new TypeError('Service type is unsupported.');
+  if (service.pricing !== undefined && !isPlainRecord(service.pricing)) throw new TypeError('Service pricing must be an object.');
   const next = structuredClone(service);
   next.pricing ||= {};
   for (const [field, definition] of Object.entries(CLASS2_DEFINITIONS[next.serviceType] || {})) {

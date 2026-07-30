@@ -17,6 +17,7 @@ import {
   vNextServiceStatus,
   withClass2Defaults
 } from '../server/quote-engine-vnext/index.js';
+import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -47,13 +48,23 @@ const defaults = {
 };
 
 function service(serviceType, pricing, overrides = {}) {
+  const configuredPricing = withClass2Defaults(serviceType, pricing);
+  if (serviceType === 'ROOFING_REPLACEMENT' && configuredPricing.underlaymentPerSquare && configuredPricing.underlaymentPriceBasis === undefined) {
+    configuredPricing.underlaymentPriceBasis = Object.fromEntries(Object.keys(configuredPricing.underlaymentPerSquare).map(key => [key, 'installed_area_sell_price']));
+  }
+  if (serviceType.startsWith('FLOORING_')) {
+    if (pricing.roomSizeThresholds === undefined) configuredPricing.roomSizeThresholds = { smallMaxSqft: 149, mediumMaxSqft: 299 };
+    if (configuredPricing.underlaymentPerSqft !== undefined && configuredPricing.underlaymentPriceBasis === undefined) configuredPricing.underlaymentPriceBasis = 'installed_area_sell_price';
+  }
+  const basis = structuredClone(costBasis);
+  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
     active: true,
     serviceType,
     service: serviceType,
-    pricing: withClass2Defaults(serviceType, pricing),
+    pricing: configuredPricing,
     feeRules: structuredClone(feeRules),
-    priceBasisByCategory: structuredClone(costBasis),
+    priceBasisByCategory: basis,
     taxabilityByCategory: structuredClone(taxability),
     peakMonths: [],
     peakSurchargePercent: 0,
@@ -181,7 +192,7 @@ const happyCases = [
   {
     name: 'fencing installation defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_INSTALL',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, terrainSlope: 'flat' },
+    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat' },
     ownerPricing: service('FENCING_INSTALL', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
@@ -192,7 +203,7 @@ const happyCases = [
   {
     name: 'fencing replacement defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_REPLACEMENT',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, postCount: 17, terrainSlope: 'flat', oldFenceRemoval: true },
+    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat', oldFenceRemoval: true },
     ownerPricing: service('FENCING_REPLACEMENT', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
@@ -289,7 +300,7 @@ const happyCases = [
       laborPerSqft: { vinyl: 400 }, materialPerSqft: { vinyl: 700 },
       minimumJob: 0, removalPerSqft: 100, trimPerLinearFoot: 100
     }),
-    expected: { lines: { 'Siding labor': 400000, 'Siding materials': 770000, 'Old siding removal': 100000, 'Siding trim': 20000 }, low: 11610, mid: 12900, high: 14190 }
+    expectedOwnerDecision: 'mixed_charge_classification'
   },
   {
     name: 'siding repair consumes material-type and damage-specific rates',
@@ -307,7 +318,7 @@ const happyCases = [
     serviceType: 'CUSTOM',
     customerInputs: { service: 'Finish carpentry', serviceConfirmed: true, unit: 'per_hour', hours: 4 },
     ownerPricing: service('CUSTOM', { customPricingMode: 'fixed', price: 10000, unit: 'per_hour', minimumJob: 0 }, { service: 'Finish carpentry' }),
-    expected: { lines: { 'Finish carpentry': 40000 }, low: 360, mid: 400, high: 440 }
+    expectedOwnerDecision: 'custom_charge_classification'
   }
 ];
 
@@ -426,27 +437,30 @@ test('itemized roofing has no square-root geometry and uses each measured length
   assert.equal(lineMap(changed)['Ridge cap'], 6000);
 });
 
-test('selected mandatory scope never disappears when its owner rate is missing or zero', () => {
+test('selected mandatory scope distinguishes missing prices from intentionally free prices', () => {
   const controls = [
-    ['ROOFING_REPLACEMENT', 'dripEdgePerLF'],
-    ['INTERIOR_PAINTING', 'trimLaborPerLF'],
-    ['FLOORING_REPLACEMENT', 'subfloorAllowancePerSqft'],
-    ['FENCING_REPLACEMENT', 'removalPerLinearFoot'],
-    ['CONCRETE_DRIVEWAY', 'basePrepPerSqft'],
-    ['LANDSCAPING_MULCH', 'bedPrepLaborPerSqft'],
-    ['LANDSCAPING_SOD', 'groundPrepPerSqft'],
-    ['SIDING_REPLACEMENT', 'trimPerLinearFoot']
+    ['ROOFING_REPLACEMENT', 'dripEdgePerLF', 'Drip edge'],
+    ['INTERIOR_PAINTING', 'trimLaborPerLF', 'Trim labor'],
+    ['FLOORING_REPLACEMENT', 'subfloorAllowancePerSqft', 'Subfloor repair allowance'],
+    ['CONCRETE_DRIVEWAY', 'basePrepPerSqft', 'Base preparation'],
+    ['LANDSCAPING_MULCH', 'bedPrepLaborPerSqft', 'Bed preparation'],
+    ['LANDSCAPING_SOD', 'groundPrepPerSqft', 'Ground preparation']
   ];
-  for (const [serviceType, field] of controls) {
+  for (const [serviceType, field, lineName] of controls) {
     const entry = happyCases.find(candidate => candidate.serviceType === serviceType);
-    for (const missingValue of [undefined, 0]) {
-      const ownerPricing = structuredClone(entry.ownerPricing);
-      if (field === 'removalPerLinearFoot') ownerPricing.pricing[field].wood = missingValue;
-      else if (field === 'bedPrepLaborPerSqft') ownerPricing.pricing[field].needs_weeding = missingValue;
-      else ownerPricing.pricing[field] = missingValue;
-      const result = quote({ ...entry, ownerPricing });
-      assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', `${serviceType}.${field}=${missingValue}`);
-    }
+    const missingPricing = structuredClone(entry.ownerPricing);
+    if (field === 'bedPrepLaborPerSqft') delete missingPricing.pricing[field].needs_weeding;
+    else delete missingPricing.pricing[field];
+    assert.equal(quote({ ...entry, ownerPricing: missingPricing }).resultType, 'ESTIMATE_REQUIRES_REVIEW', `${serviceType}.${field} missing`);
+
+    const freePricing = structuredClone(entry.ownerPricing);
+    if (field === 'bedPrepLaborPerSqft') freePricing.pricing[field].needs_weeding = 0;
+    else freePricing.pricing[field] = 0;
+    const free = quote({ ...entry, ownerPricing: freePricing });
+    assert.equal(free.resultType, 'INSTANT_ESTIMATE_READY', `${serviceType}.${field}=0`);
+    const freeLine = free.lineItems.find(item => item.name === lineName);
+    assert.equal(freeLine.amountCents, 0, `${serviceType}.${lineName}`);
+    assert.equal(freeLine.noCharge, true, `${serviceType}.${lineName} no-charge marker`);
   }
 });
 
@@ -469,16 +483,26 @@ test('partial flat-roof calculations require valid measured partial scope', () =
   assert.equal(lineMap(quote({ ...entry, customerInputs: valid }))['Flat roof labor'], 143750);
 });
 
-test('custom service units require exact matching quantities and preserve configured ranges', () => {
+test('custom units are validated, but public quoting waits for an approved charge classification', () => {
   const ownerPricing = service('CUSTOM', { customPricingMode: 'range', low: 8000, high: 12000, unit: 'per_unit', minimumJob: 0 }, { service: 'Fixture install' });
   const customerInputs = { service: 'Fixture install', serviceConfirmed: true, unit: 'per_unit', itemCount: 3 };
-  const result = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs, ownerPricing, businessDefaults: defaults, currentMonth: 1 });
-  assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(result.lowEstimate, 240);
-  assert.equal(result.midEstimate, 300);
-  assert.equal(result.highEstimate, 360);
+  const publicResult = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs, ownerPricing, businessDefaults: defaults, currentMonth: 1 });
+  assert.equal(publicResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(publicResult.ownerDecisionRequired.some(item => item.kind === 'custom_charge_classification'), true);
+
+  assert.throws(
+    () => calculateServiceVNext('CUSTOM', customerInputs, ownerPricing.pricing, {}),
+    error => {
+      assert.equal(error.name, 'QuoteReviewError');
+      assert.deepEqual(error.ownerDecisionRequired.map(item => item.kind), ['custom_charge_classification']);
+      assert.equal(Object.hasOwn(error, 'lineItems'), false);
+      return true;
+    }
+  );
+
   const wrongUnit = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs: { ...customerInputs, unit: 'per_hour', hours: 3 }, ownerPricing, businessDefaults: defaults, currentMonth: 1 });
   assert.equal(wrongUnit.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(wrongUnit.invalidCustomerFields.includes('unit'), true);
 });
 
 test('mulch prep has no hidden half-rate branch', () => {
@@ -494,7 +518,7 @@ test('vinyl-plank underlayment follows every explicit owner rule', () => {
     const ownerPricing = structuredClone(base.ownerPricing);
     ownerPricing.pricing.vinylPlankUnderlaymentRule = rule;
     ownerPricing.pricing.underlaymentPerSqft = 50;
-    ownerPricing.priceBasisByCategory.material = 'sell_price';
+    ownerPricing.pricing.underlaymentPriceBasis = 'installed_area_sell_price';
     return ownerPricing;
   };
   assert.equal(Object.hasOwn(lineMap(quote(base)), 'Underlayment'), false);
@@ -519,14 +543,14 @@ test('per-service taxability changes taxable subtotal and is preserved in the re
 });
 
 test('sell-price categories are never marked up twice', () => {
-  const entry = happyCases.find(candidate => candidate.serviceType === 'INTERIOR_PAINTING');
+  const entry = happyCases.find(candidate => candidate.serviceType === 'CONCRETE_PATIO_SLAB');
   const markedDefaults = { ...defaults, markupPercent: 30 };
   const cost = quote(entry, { businessDefaults: markedDefaults });
   const sellOwner = { ...entry.ownerPricing, priceBasisByCategory: structuredClone(sellBasis) };
   const sell = quote({ ...entry, ownerPricing: sellOwner }, { businessDefaults: markedDefaults });
-  assert.equal(lineMap(cost).Markup, 49500);
+  assert.equal(lineMap(cost).Markup, 106167);
   assert.equal(Object.hasOwn(lineMap(sell), 'Markup'), false);
-  assert.deepEqual(sell.calculationRecord.options[0].scenarios.mid.markup.sellPriceLinesExcluded.sort(), ['Trim labor', 'Trim materials', 'Wall labor', 'Wall paint and materials'].sort());
+  assert.deepEqual(sell.calculationRecord.options[0].scenarios.mid.markup.sellPriceLinesExcluded.sort(), ['Concrete labor', 'Ready-mix concrete', 'Formwork', 'Base preparation'].sort());
 });
 
 test('minimum is pre-tax and every displayed range stays above the customer minimum floor', () => {
@@ -607,18 +631,18 @@ test('missing optional add-ons stay disclosed and never throw', () => {
 });
 
 test('every tier validates effective pricing and only its explicit override changes', () => {
-  const entry = happyCases.find(candidate => candidate.serviceType === 'SIDING_REPLACEMENT');
+  const entry = happyCases.find(candidate => candidate.serviceType === 'INTERIOR_PAINTING');
   const ownerPricing = structuredClone(entry.ownerPricing);
   ownerPricing.tiers = [
     { name: 'Good', overrides: {} },
-    { name: 'Better', overrides: { materialPerSqft: { vinyl: 900 } } },
-    { name: 'Broken', overrides: { laborPerSqft: { vinyl: 0 } } }
+    { name: 'Better', overrides: { materialPerWallSqftPerCoat: 40 } },
+    { name: 'Broken', overrides: { laborPerWallSqftPerCoat: -1 } }
   ];
   const result = quote({ ...entry, ownerPricing });
   assert.equal(result.options.length, 2);
-  assert.equal(lineMap(result.options[0])['Siding labor'], lineMap(result.options[1])['Siding labor']);
-  assert.equal(lineMap(result.options[0])['Siding materials'], 770000);
-  assert.equal(lineMap(result.options[1])['Siding materials'], 990000);
+  assert.equal(lineMap(result.options[0])['Wall labor'], lineMap(result.options[1])['Wall labor']);
+  assert.equal(lineMap(result.options[0])['Wall paint and materials'], 30000);
+  assert.equal(lineMap(result.options[1])['Wall paint and materials'], 40000);
   assert.equal(result.appliedRules.some(rule => rule.startsWith('Broken tier skipped:')), true);
 });
 

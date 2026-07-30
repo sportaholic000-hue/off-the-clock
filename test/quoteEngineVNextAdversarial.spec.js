@@ -15,6 +15,7 @@ import {
   vNextServiceStatus,
   withClass2Defaults
 } from '../server/quote-engine-vnext/index.js';
+import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -44,13 +45,23 @@ const defaults = {
 };
 
 function service(serviceType, pricing, overrides = {}) {
+  const configuredPricing = withClass2Defaults(serviceType, pricing);
+  if (serviceType === 'ROOFING_REPLACEMENT' && configuredPricing.underlaymentPerSquare && configuredPricing.underlaymentPriceBasis === undefined) {
+    configuredPricing.underlaymentPriceBasis = Object.fromEntries(Object.keys(configuredPricing.underlaymentPerSquare).map(key => [key, 'installed_area_sell_price']));
+  }
+  if (serviceType.startsWith('FLOORING_')) {
+    if (pricing.roomSizeThresholds === undefined) configuredPricing.roomSizeThresholds = { smallMaxSqft: 149, mediumMaxSqft: 299 };
+    if (configuredPricing.underlaymentPerSqft !== undefined && configuredPricing.underlaymentPriceBasis === undefined) configuredPricing.underlaymentPriceBasis = 'installed_area_sell_price';
+  }
+  const basis = structuredClone(costBasis);
+  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
     active: true,
     serviceType,
     service: serviceType,
-    pricing: withClass2Defaults(serviceType, pricing),
+    pricing: configuredPricing,
     feeRules: structuredClone(feeRules),
-    priceBasisByCategory: structuredClone(costBasis),
+    priceBasisByCategory: basis,
     taxabilityByCategory: structuredClone(taxability),
     peakMonths: [],
     peakSurchargePercent: 0,
@@ -197,7 +208,6 @@ function fencingInputs(overrides = {}) {
     fenceType: 'wood',
     fenceHeight: 6,
     gateCount: 0,
-    postCount: 10,
     terrainSlope: 'flat',
     ...overrides
   };
@@ -245,11 +255,11 @@ test('quote-time requests for an unconfigured offering require review', () => {
   assert.equal(result.missingOwnerFields.includes('materialPerSqft.tile'), true);
 });
 
-test('flat-roof activation requires an actual configured membrane and never relies on Average', () => {
+test('flat-roof activation requires both an actual offering and the mandated average fallback', () => {
   const actualOffering = flatService({
-    laborPerSqft: { epdm: 500 },
-    membraneCostPerSqft: { epdm: 700 },
-    tearOffPerSqft: { epdm: 200 }
+    laborPerSqft: { epdm: 500, average: 500 },
+    membraneCostPerSqft: { epdm: 700, average: 700 },
+    tearOffPerSqft: { epdm: 200, average: 200 }
   });
   const onlyAverage = flatService({
     laborPerSqft: { average: 500 },
@@ -281,7 +291,10 @@ test('misspelled Class 2 map keys fail closed', () => {
   });
   const result = run('ROOFING_REPLACEMENT', roofInputs(), ownerPricing);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.match(result.validationMessages.join(' '), /pitchMultiplier must contain exactly/);
+  assert.equal(result.unsupportedOwnerFields.includes('pitchMultiplier.medum'), true);
+  assert.equal(result.missingOwnerFields.includes('pitchMultiplier.medium'), true);
+  assert.equal(result.ownerDiagnostics.some(item => item.type === 'unsupported' && item.path === 'pitchMultiplier.medum'), true);
+  assert.equal(result.ownerDiagnostics.some(item => item.type === 'missing' && item.path === 'pitchMultiplier.medium'), true);
 });
 
 test('reversed flooring room-size thresholds fail shared validation', () => {
@@ -345,7 +358,7 @@ test('AI-suggested pricing and optional disposal overrides cannot quote before c
 
 test('customer review responses are sanitized at early and late gates', () => {
   const early = run('ROOFING_REPLACEMENT', roofInputs(), { ...roofService(), active: false }, { callerType: 'customer' });
-  const late = run('ROOFING_REPLACEMENT', roofInputs(), roofService({ laborPerSquare: { asphalt_shingle: 0 } }), { callerType: 'customer' });
+  const late = run('ROOFING_REPLACEMENT', roofInputs(), roofService({ laborPerSquare: { asphalt_shingle: -1 } }), { callerType: 'customer' });
   for (const result of [early, late]) {
     assert.deepEqual(Object.keys(result).sort(), ['customerMessage', 'quoteId', 'resultType']);
     assert.equal(JSON.stringify(result).includes('invalidOwnerFields'), false);
@@ -377,16 +390,20 @@ test('painting labor and material respond exactly to measured wall area and coat
   assert.equal(lineMap(three)['Wall paint and materials'], 15000);
 });
 
-test('fencing accepts confirmed post counts but fails closed on the mixed concrete-and-digging charge', () => {
-  const ten = run('FENCING_INSTALL', fencingInputs({ postCount: 10 }), fencingService());
-  const eleven = run('FENCING_INSTALL', fencingInputs({ postCount: 11 }), fencingService());
-  for (const result of [ten, eleven]) {
+test('fencing rejects caller post counts and exposes the missing geometry and mixed-charge decisions', () => {
+  const noCount = run('FENCING_INSTALL', fencingInputs(), fencingService());
+  assert.equal(noCount.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(noCount.ownerDecisionRequired.some(item => item.kind === 'post_geometry_contract'), true);
+  assert.equal(noCount.ownerDecisionRequired.some(item => item.kind === 'mixed_charge_allocation'), true);
+
+  for (const postCount of [10, 11]) {
+    const customer = validateCustomerInputs('FENCING_INSTALL', fencingInputs({ postCount }), fencingService().pricing);
+    assert.equal(customer.ok, false);
+    assert.equal(customer.invalidCustomerFields.includes('postCount'), true);
+    const result = run('FENCING_INSTALL', fencingInputs({ postCount }), fencingService());
     assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-    assert.equal(result.lineItems, undefined);
-    assert.equal(result.ownerDecisionRequired.some(item => item.kind === 'mixed_charge_allocation'), true);
-    assert.match(result.validationMessages.join(' '), /needs separate labor and material prices, or an explicit owner-confirmed allocation rule/);
+    assert.equal(result.invalidCustomerFields.includes('postCount'), true);
   }
-  assert.equal(validateCustomerInputs('FENCING_INSTALL', fencingInputs({ postCount: 11 }), fencingService().pricing).ok, true);
   const source = readFileSync('server/quote-engine-vnext/templates.js', 'utf8');
   assert.equal(source.includes('postSpacing'), false);
   assert.equal(source.includes('Math.sqrt'), false);
@@ -445,32 +462,90 @@ test('TAX_ALL taxes the full pre-tax subtotal regardless of category taxability 
   assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.taxableSubtotalCents, 15000);
 });
 
-test('service status validates every tier using effective merged pricing', () => {
-  const ownerPricing = sidingService({}, {
+test('service status and the real price-book path preserve valid tiers when another tier fails', () => {
+  const ownerPricing = interiorService({}, {
     tiers: [
       { name: 'Good', overrides: {} },
-      { name: 'Broken', overrides: { materialPerSqft: { vinyl: 0 } } }
+      { name: 'Broken', overrides: { materialPerWallSqftPerCoat: -1 } }
     ]
   });
   const status = vNextServiceStatus(ownerPricing);
-  assert.equal(status.status, 'NEEDS PRICING');
-  assert.equal(status.invalidOwnerFields.includes('Broken.materialPerSqft.vinyl'), true);
-  const result = run('SIDING_REPLACEMENT', sidingInputs(), ownerPricing);
-  assert.equal(result.options.length, 1);
-  assert.equal(result.appliedRules.some(rule => rule.startsWith('Broken tier skipped:')), true);
+  assert.equal(status.status, 'QUOTING LIVE');
+  assert.deepEqual(status.validTierNames, ['Good']);
+  assert.equal(status.failedTierDiagnostics.length, 1);
+  assert.equal(status.failedTierDiagnostics[0].tierName, 'Broken');
+  assert.equal(status.failedTierDiagnostics[0].invalidOwnerFields.includes('materialPerWallSqftPerCoat'), true);
+
+  const pricebook = { defaults, services: [ownerPricing] };
+  const owner = quoteFromVNextPricebook({
+    pricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
+  assert.equal(owner.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(owner.options.map(option => option.tierName), ['Good']);
+  assert.equal(owner.failedTierDiagnostics[0].tierName, 'Broken');
+
+  const customer = quoteFromVNextPricebook({
+    pricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'customer',
+    currentMonth: 1
+  });
+  assert.equal(customer.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(customer.options.map(option => option.tierName), ['Good']);
+  assert.match(customer.optionAvailabilityNotice, /fewer options/i);
+  assert.equal(JSON.stringify(customer).includes('failedTierDiagnostics'), false);
+});
+
+test('complete tier overrides can activate and quote even when the base pricing is incomplete', () => {
+  const ownerPricing = interiorService({}, {
+    tiers: ['Good', 'Better', 'Best'].map((name, index) => ({
+      name,
+      overrides: {
+        laborPerWallSqftPerCoat: 100 + (index * 25),
+        materialPerWallSqftPerCoat: 50 + (index * 10),
+        minimumJob: 0
+      }
+    }))
+  });
+  delete ownerPricing.pricing.laborPerWallSqftPerCoat;
+  delete ownerPricing.pricing.materialPerWallSqftPerCoat;
+  delete ownerPricing.pricing.minimumJob;
+  const status = vNextServiceStatus(ownerPricing);
+  assert.equal(status.status, 'QUOTING LIVE', JSON.stringify(status));
+  assert.deepEqual(status.validTierNames, ['Good', 'Better', 'Best']);
+  const result = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [ownerPricing] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
+  assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(result));
+  assert.deepEqual(result.options.map(option => option.tierName), ['Good', 'Better', 'Best']);
 });
 
 test('duplicate tier names fail before calculation', () => {
-  const ownerPricing = sidingService({}, {
+  const ownerPricing = interiorService({}, {
     tiers: [
       { name: 'Good', overrides: {} },
       { name: ' good ', overrides: {} }
     ]
   });
   assert.equal(vNextServiceStatus(ownerPricing).status, 'NEEDS PRICING');
-  const result = run('SIDING_REPLACEMENT', sidingInputs(), ownerPricing);
+  const result = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [ownerPricing] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.match(result.validationMessages.join(' '), /duplicates another tier name/);
+  assert.equal(result.ownerDiagnostics.some(item => item.path === 'tiers.1.name' && item.kind === 'duplicate_tier_name'), true);
 });
 
 test('custom ranges reject negative values and exact service-name mismatches', () => {
@@ -488,24 +563,34 @@ test('custom ranges reject negative values and exact service-name mismatches', (
   assert.equal(mismatch.invalidCustomerFields.includes('service'), true);
 });
 
-test('every custom pricing unit consumes only its matching confirmed quantity', () => {
+test('every custom quantity unit validates its matching input but all calculation paths fail closed', () => {
   const cases = [
-    ['flat', {}, 100],
-    ['per_hour', { hours: 2 }, 200],
-    ['per_unit', { itemCount: 3 }, 300],
-    ['per_sqft', { areaSqft: 4 }, 400],
-    ['per_LF', { linearFeet: 5 }, 500],
-    ['per_square', { roofSquares: 6 }, 600]
+    ['flat', {}],
+    ['per_hour', { hours: 2 }],
+    ['per_unit', { itemCount: 3 }],
+    ['per_sqft', { areaSqft: 4 }],
+    ['per_LF', { linearFeet: 5 }],
+    ['per_square', { roofSquares: 6 }]
   ];
-  for (const [unit, quantity, amountCents] of cases) {
+  for (const [unit, quantity] of cases) {
     const ownerPricing = service('CUSTOM', {
       customPricingMode: 'fixed', price: 100, unit, minimumJob: 0
     }, { service: 'Measured custom scope' });
-    const result = run('CUSTOM', {
+    const customerInputs = {
       service: 'Measured custom scope', serviceConfirmed: true, unit, ...quantity
-    }, ownerPricing);
-    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', unit);
-    assert.equal(result.lineItems[0].amountCents, amountCents, unit);
+    };
+    const publicResult = run('CUSTOM', customerInputs, ownerPricing);
+    assert.equal(publicResult.resultType, 'ESTIMATE_REQUIRES_REVIEW', unit);
+    assert.equal(publicResult.ownerDecisionRequired.some(item => item.kind === 'custom_charge_classification'), true, unit);
+    assert.throws(
+      () => calculateServiceVNext('CUSTOM', customerInputs, ownerPricing.pricing, {}),
+      error => {
+        assert.equal(error.name, 'QuoteReviewError', unit);
+        assert.deepEqual(error.ownerDecisionRequired.map(item => item.kind), ['custom_charge_classification'], unit);
+        assert.equal(Object.hasOwn(error, 'lineItems'), false, unit);
+        return true;
+      }
+    );
   }
 });
 
@@ -710,7 +795,7 @@ test('case-insensitive duplicate custom service names cannot activate or quote a
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
 });
 
-test('custom ranges record the taxed customer floor for a pre-tax minimum', () => {
+test('custom ranges remain fail-closed at public and raw boundaries pending charge classification', () => {
   const ownerPricing = service('CUSTOM', {
     customPricingMode: 'range',
     low: 10000,
@@ -719,17 +804,21 @@ test('custom ranges record the taxed customer floor for a pre-tax minimum', () =
     minimumJob: 15000
   }, { service: 'Cabinet adjustment' });
   ownerPricing.taxabilityByCategory.labor = true;
-  const result = run('CUSTOM', {
+  const customerInputs = {
     service: 'Cabinet adjustment',
     serviceConfirmed: true,
     unit: 'flat'
-  }, ownerPricing, {
-    businessDefaults: {
-      ...defaults,
-      taxMode: 'TAX_ALL',
-      taxPercent: 10
+  };
+  const result = run('CUSTOM', customerInputs, ownerPricing);
+  assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(result.ownerDecisionRequired.some(item => item.kind === 'custom_charge_classification'), true);
+  assert.throws(
+    () => calculateServiceVNext('CUSTOM', customerInputs, ownerPricing.pricing, {}),
+    error => {
+      assert.equal(error.name, 'QuoteReviewError');
+      assert.deepEqual(error.ownerDecisionRequired.map(item => item.kind), ['custom_charge_classification']);
+      assert.equal(Object.hasOwn(error, 'lineItems'), false);
+      return true;
     }
-  });
-  assert.equal(result.lowEstimate, 165);
-  assert.equal(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 16500);
+  );
 });

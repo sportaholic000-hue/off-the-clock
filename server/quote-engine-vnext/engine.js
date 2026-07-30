@@ -1,19 +1,38 @@
 import crypto from 'node:crypto';
 import {
   PRICE_BASIS_CATEGORIES,
+  MEASUREMENT_CONTRACTS,
   SERVICE_TYPES,
+  aiConfirmationFieldsVNext,
   allowedPricingFields,
+  inspectionOwnerDecisionsVNext,
   validateBusinessDefaults,
   validateCustomerInputs,
   validateOwnerPricing,
-  validateServiceRules
+  validateServiceRules,
+  validateServiceRulesDetailed
 } from './contracts.js';
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
+import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
 export const ENGINE_VERSION = 'quote-engine-vnext-audit-1';
 
+const QUOTE_REQUEST_FIELDS = new Set([
+  'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
+  'callerType', 'feeSelections', 'currentMonth', 'allowInactiveOwnerPreview'
+]);
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
+const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more configured options need owner review.';
+const CUSTOMER_SKIPPED_ADDONS = new Set([
+  'Ponding water surcharge',
+  'Clipping bagging and disposal',
+  'Lawn edging'
+]);
 const round = Math.round;
+const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
+  'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
+]);
+const INTERNAL_CUSTOMER_DRIVER_COPY = /\b(?:rate|cost|markup|overhead|margin)\b/i;
 
 const FEE_DEFAULT_FIELDS = {
   travel: 'travelFee',
@@ -54,6 +73,11 @@ const SERVICE_MINIMUM_FIELDS = {
 
 function review({
   quoteId = crypto.randomUUID(),
+  serviceType,
+  submittedCustomerInputs = {},
+  normalizedScope = null,
+  validatedMeasurements = [],
+  unconfirmedOwnerFields = [],
   reviewReason,
   missingCustomerFields = [],
   invalidCustomerFields = [],
@@ -72,6 +96,11 @@ function review({
   return {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
     quoteId,
+    serviceType,
+    submittedCustomerInputs,
+    normalizedScope,
+    validatedMeasurements,
+    unconfirmedOwnerFields,
     reviewReason,
     missingCustomerFields,
     invalidCustomerFields,
@@ -90,46 +119,107 @@ function review({
 }
 
 function isPlainObject(value) {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  try {
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+  } catch {
+    return false;
+  }
+}
+
+function cloneForEvidence(value, fallback) {
+  try {
+    return structuredClone(value);
+  } catch {
+    return structuredClone(fallback);
+  }
 }
 
 export function mergePricingVNext(base, override) {
-  if (!isPlainObject(base) || !isPlainObject(override)) return structuredClone(override);
+  if (!isPlainObject(base) || !isPlainObject(override)) {
+    throw new TypeError('Base pricing and tier overrides must both be objects.');
+  }
+  const baseSnapshot = snapshotPlainData(base, 'basePricing');
+  const overrideSnapshot = snapshotPlainData(override, 'tierOverrides');
+  for (const [label, snapshot] of [['Base pricing', baseSnapshot], ['Tier overrides', overrideSnapshot]]) {
+    if (!snapshot.ok) {
+      throw new TypeError(`${label} could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
+    }
+    if (snapshot.nonPlainPaths.length) {
+      throw new TypeError(`${label} must contain only plain data objects; ${snapshot.nonPlainPaths[0]} is not plain data.`);
+    }
+  }
+  base = baseSnapshot.value;
+  override = overrideSnapshot.value;
   const out = structuredClone(base);
   for (const [key, value] of Object.entries(override)) {
-    out[key] = isPlainObject(value) && isPlainObject(out[key])
+    const mergedValue = isPlainObject(value) && isPlainObject(out[key])
       ? mergePricingVNext(out[key], value)
       : structuredClone(value);
+    Object.defineProperty(out, key, {
+      value: mergedValue,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   }
   return out;
 }
 
-function extractPricing(ownerPricing, serviceType) {
-  if (isPlainObject(ownerPricing.pricing)) return structuredClone(ownerPricing.pricing);
+function extractPricing(ownerPricing) {
+  return isPlainObject(ownerPricing.pricing) ? structuredClone(ownerPricing.pricing) : {};
+}
+
+export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) {
+  const snapshot = snapshotPlainData(ownerPricing, 'ownerPricing');
+  if (!snapshot.ok) {
+    const path = snapshot.errorPath.startsWith('ownerPricing.')
+      ? snapshot.errorPath.slice('ownerPricing.'.length)
+      : snapshot.errorPath;
+    return [{ type: 'invalid', kind: 'tier_definition', path, message: `Owner pricing could not be read safely: ${snapshot.reason}.` }];
+  }
+  ownerPricing = snapshot.value;
+  if (!isPlainObject(ownerPricing)) {
+    return [{ type: 'invalid', kind: 'tier_definition', path: 'ownerPricing', message: 'Owner pricing must be an object before tiers can be validated.' }];
+  }
+  if (!SERVICE_TYPES.includes(serviceType)) {
+    return [{ type: 'invalid', kind: 'tier_definition', path: 'serviceType', message: 'Service type is unsupported.' }];
+  }
+  if (ownerPricing.tiers === undefined) return [];
+  const diagnostics = [];
+  if (!Array.isArray(ownerPricing.tiers)) return [{ type: 'invalid', kind: 'tier_definition', path: 'tiers', message: 'tiers must be an array containing at most three options.' }];
+  const arrayIssue = denseArrayIssue(ownerPricing.tiers);
+  if (arrayIssue) {
+    const path = arrayIssue.path ? `tiers.${arrayIssue.path}` : 'tiers';
+    diagnostics.push({ type: 'invalid', kind: 'tier_definition', path, message: `${path} is invalid: ${arrayIssue.reason}.` });
+  }
+  if (ownerPricing.tiers.length > 3) diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: 'tiers', message: 'tiers must contain at most three options.' });
   const allowed = new Set(allowedPricingFields(serviceType));
-  return Object.fromEntries(Object.entries(ownerPricing).filter(([key]) => allowed.has(key)));
+  const names = new Map();
+  for (let index = 0; index < ownerPricing.tiers.length; index += 1) {
+    const tierPath = `tiers.${index}`;
+    if (!Object.hasOwn(ownerPricing.tiers, index)) continue;
+    const tier = ownerPricing.tiers[index];
+    if (!isPlainObject(tier)) {
+      diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: tierPath, message: `${tierPath} must be an object.` });
+      continue;
+    }
+    if (typeof tier.name !== 'string' || !tier.name.trim()) diagnostics.push({ type: 'missing', kind: 'tier_definition', path: `${tierPath}.name`, message: `${tierPath}.name is required.` });
+    else {
+      const normalizedName = tier.name.trim().toLowerCase();
+      if (names.has(normalizedName)) {
+        diagnostics.push({ type: 'cross_field', kind: 'duplicate_tier_name', path: `${tierPath}.name`, message: `${tierPath}.name duplicates tiers.${names.get(normalizedName)}.name.` });
+      } else names.set(normalizedName, index);
+    }
+    if (!isPlainObject(tier.overrides)) diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: `${tierPath}.overrides`, message: `${tierPath}.overrides must be an object.` });
+    else for (const key of Object.keys(tier.overrides)) if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'tier_definition', path: `${tierPath}.overrides.${key}`, message: `${tierPath}.overrides.${key} is not supported for ${serviceType}.` });
+  }
+  return diagnostics;
 }
 
 export function validateTierDefinitionsVNext(ownerPricing, serviceType) {
-  if (ownerPricing.tiers === undefined) return [];
-  const errors = [];
-  if (!Array.isArray(ownerPricing.tiers) || ownerPricing.tiers.length > 3) return ['tiers must contain at most three options.'];
-  const allowed = new Set(allowedPricingFields(serviceType));
-  const names = new Set();
-  ownerPricing.tiers.forEach((tier, index) => {
-    if (!tier || typeof tier.name !== 'string' || !tier.name.trim()) errors.push(`Tier ${index + 1} requires a name.`);
-    else {
-      const normalizedName = tier.name.trim().toLowerCase();
-      if (names.has(normalizedName)) errors.push(`Tier ${index + 1} duplicates another tier name.`);
-      names.add(normalizedName);
-    }
-    if (!isPlainObject(tier?.overrides)) errors.push(`Tier ${index + 1} overrides must be an object.`);
-    else {
-      const unexpected = Object.keys(tier.overrides).filter(key => !allowed.has(key));
-      if (unexpected.length) errors.push(`Tier ${index + 1} contains unsupported price fields: ${unexpected.join(', ')}.`);
-    }
-  });
-  return errors;
+  return [...new Set(validateTierDefinitionsDetailedVNext(ownerPricing, serviceType).map(item => item.message))];
 }
 
 function checkedCents(value, path, { allowZero = true } = {}) {
@@ -140,23 +230,98 @@ function checkedCents(value, path, { allowZero = true } = {}) {
   }
   return value;
 }
+function validateRangedEvidence(line) {
+  const calculation = line?.calculation;
+  const range = line?.rangeAmountCents;
+  const fallbackPath = typeof calculation?.ratePath === 'string' && calculation.ratePath ? calculation.ratePath : 'rangePricing';
+  if (!isPlainObject(line) || !isPlainObject(calculation) || calculation.evidenceVariant !== 'ranged' || !isPlainObject(range) || !Array.isArray(calculation.multipliers)) {
+    throw new QuoteReviewError('Intrinsic range evidence is malformed.', { invalidOwnerFields: [fallbackPath] });
+  }
+  if (typeof calculation.quantity !== 'number' || !Number.isFinite(calculation.quantity) || calculation.quantity <= 0) {
+    throw new QuoteReviewError('Intrinsic range quantity is invalid.', { invalidOwnerFields: [fallbackPath] });
+  }
+  const multiplierProduct = calculation.multipliers.reduce((product, multiplier) => {
+    if (!isPlainObject(multiplier) || typeof multiplier.value !== 'number' || !Number.isFinite(multiplier.value) || multiplier.value < 0) {
+      throw new QuoteReviewError('Intrinsic range multiplier evidence is invalid.', { invalidOwnerFields: [fallbackPath] });
+    }
+    return product * multiplier.value;
+  }, 1);
+  const variants = [
+    { name: 'low', rate: calculation.lowRateCents, amount: range.low, path: 'low' },
+    { name: 'mid', rate: calculation.rateCents, amount: line.amountCents, path: fallbackPath },
+    { name: 'high', rate: calculation.highRateCents, amount: range.high, path: 'high' }
+  ];
+  const invalid = [];
+  for (const entry of variants) {
+    if (!Number.isSafeInteger(entry.rate) || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
+      invalid.push(entry.path);
+      continue;
+    }
+    const unrounded = calculation.quantity * entry.rate * multiplierProduct;
+    const expected = round(unrounded);
+    if (!Number.isFinite(unrounded) || !Number.isSafeInteger(expected) || expected !== entry.amount) invalid.push(entry.path);
+  }
+  if (calculation.lowRateCents > calculation.rateCents || calculation.rateCents > calculation.highRateCents || range.low > line.amountCents || line.amountCents > range.high) invalid.push(fallbackPath);
+  if (invalid.length) throw new QuoteReviewError('Intrinsic range evidence is unsafe or internally inconsistent.', { invalidOwnerFields: [...new Set(invalid)] });
+  return multiplierProduct;
+}
 
-function cloneLines(lines, variant) {
+
+export function materializeScenarioLinesVNext(lines, variant) {
+  if (!Array.isArray(lines) || !['low', 'mid', 'high'].includes(variant)) throw new TypeError('Scenario lines and a low, mid, or high variant are required.');
+  const snapshot = snapshotPlainData({ lines }, 'scenario');
+  if (!snapshot.ok) {
+    throw new TypeError(`Scenario lines could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
+  }
+  if (snapshot.nonPlainPaths.length) {
+    throw new TypeError(`Scenario lines must contain only plain data objects; ${snapshot.nonPlainPaths[0]} is not plain data.`);
+  }
+  lines = snapshot.value.lines;
+  const arrayIssue = denseArrayIssue(lines);
+  if (arrayIssue) {
+    const path = arrayIssue.path ? `scenario.lines.${arrayIssue.path}` : 'scenario.lines';
+    throw new TypeError(`Scenario lines are invalid at ${path}: ${arrayIssue.reason}.`);
+  }
   return lines.map(line => {
     const next = structuredClone(line);
-    if (line.rangeAmountCents && variant !== 'mid') next.amountCents = line.rangeAmountCents[variant];
+    if (line?.calculation?.evidenceVariant === 'ranged' || Object.hasOwn(line || {}, 'rangeAmountCents')) {
+      const selectedRateCents = variant === 'low'
+        ? line.calculation.lowRateCents
+        : variant === 'high'
+          ? line.calculation.highRateCents
+          : line.calculation.rateCents;
+      const selectedAmountCents = variant === 'mid' ? line.amountCents : line.rangeAmountCents[variant];
+      const multiplierProduct = validateRangedEvidence(line);
+      const unroundedCents = line.calculation.quantity * selectedRateCents * multiplierProduct;
+      next.amountCents = selectedAmountCents;
+      next.calculation.selectedVariant = variant;
+      next.calculation.rateCents = selectedRateCents;
+      next.calculation.unroundedCents = unroundedCents;
+      next.calculation.roundedAmountCents = selectedAmountCents;
+      if (selectedAmountCents === 0) {
+        next.noCharge = true;
+        next.noChargeReason = selectedRateCents === 0 ? 'configured_zero_price' : 'rounded_fractional_cent';
+      } else {
+        delete next.noCharge;
+        delete next.noChargeReason;
+      }
+    }
     return next;
   });
 }
 
 function feeSelection(mode, fee, feeSelections) {
   if (mode === 'owner_selected') {
-    const value = feeSelections?.owner?.[fee];
+    const value = isPlainObject(feeSelections?.owner) && Object.hasOwn(feeSelections.owner, fee)
+      ? feeSelections.owner[fee]
+      : undefined;
     if (typeof value !== 'boolean') throw new QuoteReviewError(`Owner selection for the ${fee} fee is required.`, { invalidOwnerFields: [`feeSelections.owner.${fee}`] });
     return value;
   }
   if (mode === 'customer_selected') {
-    const value = feeSelections?.customer?.[fee];
+    const value = isPlainObject(feeSelections?.customer) && Object.hasOwn(feeSelections.customer, fee)
+      ? feeSelections.customer[fee]
+      : undefined;
     if (typeof value !== 'boolean') throw new QuoteReviewError(`Customer selection for the ${fee} fee is required.`, { invalidCustomerFields: [`feeSelections.customer.${fee}`] });
     return value;
   }
@@ -179,12 +344,13 @@ function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections,
     } else if (mode === 'owner_selected' || mode === 'customer_selected') {
       applies = feeSelection(mode, fee, feeSelections);
     }
-    if (applies && amountCents > 0) {
+    if (applies) {
       lines.push({
         name: FEE_LINE_NAMES[fee],
         category: fee,
         amountCents,
         ownerVisible: true,
+        ...(amountCents === 0 ? { noCharge: true, noChargeReason: 'configured_zero_price' } : {}),
         customerVisible: false,
         calculation: {
           evidenceVariant: 'fixed_amount',
@@ -199,7 +365,7 @@ function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections,
         }
       });
     }
-    record.push({ fee, mode, physicalScopeSelected: template.feeScope[fee] === true, replaced: replaced.has(fee), applied: applies && amountCents > 0, amountCents: applies ? amountCents : 0, reason });
+    record.push({ fee, mode, physicalScopeSelected: template.feeScope[fee] === true, replaced: replaced.has(fee), applied: applies, charged: applies && amountCents > 0, noCharge: applies && amountCents === 0, amountCents: applies ? amountCents : 0, reason });
   }
 }
 
@@ -215,7 +381,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
   const laborSubtotalCents = lines.filter(line => line.category === 'labor').reduce((sum, line) => sum + line.amountCents, 0);
   const amountCents = active ? round(laborSubtotalCents * seasonal.percent / 100) : 0;
-  if (active && amountCents <= 0) throw new QuoteReviewError('Peak-season configuration did not produce a valid charge.', { invalidOwnerFields: ['peakSurchargePercent'] });
+  if (!Number.isSafeInteger(amountCents) || amountCents < 0) throw new QuoteReviewError('Peak-season configuration did not produce a valid charge.', { invalidOwnerFields: ['peakSurchargePercent'] });
   if (amountCents > 0) {
     lines.push({
       name: 'Peak season adjustment',
@@ -237,6 +403,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   record.configuredMonths = structuredClone(seasonal.months);
   record.percent = seasonal.percent;
   record.laborSubtotalCents = laborSubtotalCents;
+  record.seasonActive = active;
   record.applied = amountCents > 0;
   record.amountCents = amountCents;
 }
@@ -257,11 +424,21 @@ function applyTaxability(lines, ownerPricing, taxMode) {
   }
 }
 
+function effectiveLinePriceBasis(line, ownerPricing) {
+  return line.priceBasis || ownerPricing.priceBasisByCategory[line.category];
+}
+
 function applyMarkup(lines, ownerPricing, defaults, record) {
-  const eligibleLines = lines.filter(line =>
-    ownerPricing.priceBasisByCategory[line.category] === 'cost' &&
-    defaults.markupApplies[line.category] === true
-  );
+  const treatment = lines
+    .filter(line => PRICE_BASIS_CATEGORIES.includes(line.category))
+    .map(line => {
+      const effectivePriceBasis = effectiveLinePriceBasis(line, ownerPricing);
+      const markupEligible = effectivePriceBasis === 'cost' && defaults.markupApplies[line.category] === true;
+      line.calculation.effectivePriceBasis = effectivePriceBasis;
+      line.calculation.markupEligible = markupEligible;
+      return { line, effectivePriceBasis, markupEligible };
+    });
+  const eligibleLines = treatment.filter(item => item.markupEligible).map(item => item.line);
   const baseCents = eligibleLines.reduce((sum, line) => sum + line.amountCents, 0);
   const amountCents = markupAmount(baseCents, defaults);
   if (!Number.isSafeInteger(amountCents) || amountCents < 0) throw new QuoteReviewError('Markup configuration produced an invalid amount.', { invalidOwnerFields: ['markupPercent'] });
@@ -287,11 +464,21 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
     });
   }
   record.mode = defaults.markupMode;
+  record.lineTreatment = treatment.map(item => ({
+    name: item.line.name,
+    category: item.line.category,
+    amountCents: item.line.amountCents,
+    effectivePriceBasis: item.effectivePriceBasis,
+    markupConfiguredForCategory: defaults.markupApplies[item.line.category],
+    markupEligible: item.markupEligible
+  }));
   record.percent = defaults.markupPercent;
   record.baseCents = baseCents;
   record.amountCents = amountCents;
   record.eligibleLines = eligibleLines.map(line => ({ name: line.name, category: line.category, amountCents: line.amountCents, basis: 'cost' }));
-  record.sellPriceLinesExcluded = lines.filter(line => PRICE_BASIS_CATEGORIES.includes(line.category) && ownerPricing.priceBasisByCategory[line.category] === 'sell_price').map(line => line.name);
+  record.sellPriceLinesExcluded = lines
+    .filter(line => PRICE_BASIS_CATEGORIES.includes(line.category) && effectiveLinePriceBasis(line, ownerPricing) === 'sell_price')
+    .map(line => line.name);
   return { eligibleLines, amountCents };
 }
 
@@ -386,22 +573,38 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
 }
 
 function assertMoneyIntegrity(lines, finalTotalCents) {
+  const validNoChargeReasons = new Set(['configured_zero_price', 'configured_zero_percentage', 'zero_basis', 'rounded_fractional_cent']);
   for (const line of lines) {
-    const validZero = line.amountCents === 0 && line.noCharge === true;
+    const validZero = line.amountCents === 0 && line.noCharge === true && validNoChargeReasons.has(line.noChargeReason);
     if (!Number.isSafeInteger(line.amountCents) || line.amountCents < 0 || (line.amountCents === 0 && !validZero)) {
-      throw new QuoteReviewError(`${line.name || 'A line item'} contains an invalid money value.`);
+      throw new QuoteReviewError(`${line.name || 'A line item'} contains an invalid money value.`, {
+        invalidOwnerFields: [line.calculation?.ratePath || 'pricingCalculation']
+      });
     }
     if (!line.calculation?.evidenceVariant) {
-      throw new QuoteReviewError(`${line.name || 'A line item'} is missing its calculation evidence variant.`);
+      throw new QuoteReviewError(`${line.name || 'A line item'} is missing its calculation evidence variant.`, { invalidOwnerFields: ['pricingCalculation'] });
     }
   }
-  if (!Number.isSafeInteger(finalTotalCents) || finalTotalCents <= 0) {
-    throw new QuoteReviewError('The final quote total is invalid.');
+  const roundedFractionalLines = lines.filter(line => line.amountCents === 0 && line.noChargeReason === 'rounded_fractional_cent');
+  if (finalTotalCents === 0 && roundedFractionalLines.length) {
+    const responsiblePaths = unique(roundedFractionalLines.flatMap(line => [
+      line.calculation?.ratePath,
+      ...(line.calculation?.components || []).map(component => component.ratePath)
+    ]));
+    throw new QuoteReviewError('Positive configured pricing rounded the entire quote below one cent.', {
+      invalidOwnerFields: responsiblePaths.length ? responsiblePaths : ['pricingCalculation']
+    });
+  }
+  const explicitNoChargeTotal = finalTotalCents === 0 && lines.length > 0 && lines.every(line =>
+    line.amountCents === 0 && line.noCharge === true && line.noChargeReason !== 'rounded_fractional_cent'
+  );
+  if (!Number.isSafeInteger(finalTotalCents) || finalTotalCents < 0 || (finalTotalCents === 0 && !explicitNoChargeTotal)) {
+    throw new QuoteReviewError('The final quote total is invalid.', { invalidOwnerFields: ['pricingCalculation'] });
   }
 }
 
 function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month }) {
-  const lines = cloneLines(template.lineItems, variant);
+  const lines = materializeScenarioLinesVNext(template.lineItems, variant);
   const record = {
     variant,
     order: [],
@@ -438,6 +641,8 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   }
 
   assertMoneyIntegrity(lines, finalTotalCents);
+  record.lineItems = structuredClone(lines);
+  record.finalTotalCents = finalTotalCents;
   return { lines, finalTotalCents, minimumCents, record };
 }
 
@@ -451,17 +656,21 @@ function minimumCustomerFloor(minimumCents, defaults) {
     : minimumCents;
 }
 
-function roundedCustomerCents(valueCents) {
+function roundedCustomerCents(valueCents, incrementCents) {
   if (valueCents <= 0) return 0;
-  return Math.max(1, round(valueCents / 1000) * 1000);
+  return round(valueCents / incrementCents) * incrementCents;
 }
 
 function rangeForStandardQuote(totalCents, minimumCents, defaults) {
   const buffer = defaults.rangeBufferPercent;
   const minimumFloorCents = minimumCustomerFloor(minimumCents, defaults);
-  let midCents = roundedCustomerCents(totalCents);
-  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100));
-  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100));
+  if (totalCents === 0) {
+    return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer };
+  }
+  const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
+  let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
+  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100), roundingIncrementCents);
+  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100), roundingIncrementCents);
   lowCents = Math.max(lowCents, minimumFloorCents, 1);
   lowCents = Math.min(lowCents, totalCents);
   highCents = Math.max(highCents, totalCents, lowCents, 1);
@@ -477,8 +686,35 @@ function rangeForIntrinsicQuote(low, mid, high, defaults) {
   return { lowCents, midCents, highCents, minimumFloorCents: minimumCustomerFloor(low.minimumCents, defaults), buffer: null };
 }
 
+function assertRangeIntegrity(range) {
+  const values = [range.lowCents, range.midCents, range.highCents, range.minimumFloorCents];
+  if (values.some(value => !Number.isSafeInteger(value) || value < 0) ||
+      range.lowCents > range.midCents || range.midCents > range.highCents ||
+      range.lowCents < range.minimumFloorCents) {
+    throw new QuoteReviewError('The displayed estimate range cannot be represented safely in integer cents.', {
+      invalidOwnerFields: ['rangeBufferPercent']
+    });
+  }
+  return range;
+}
+
 function unique(values) {
   return [...new Set(values.filter(Boolean))];
+}
+
+function customerSafeDriverCopy(value) {
+  return typeof value === 'string' && value.trim().length > 0 && !INTERNAL_CUSTOMER_DRIVER_COPY.test(value);
+}
+
+function validatedMeasurementsFor(serviceType, normalized = {}) {
+  const fields = MEASUREMENT_CONTRACTS[serviceType]?.fields || {};
+  return Object.entries(normalized)
+    .filter(([name]) => fields[name]?.unit)
+    .map(([name, value]) => ({
+      name,
+      value: structuredClone(value),
+      unit: fields[name].unit
+    }));
 }
 
 function disclaimer(base, disclosures, skippedAddons) {
@@ -493,44 +729,30 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function inspectionOwnerDecision(serviceType, customerInputs) {
-  if (serviceType === 'INTERIOR_PAINTING' && customerInputs.surfaceCondition !== 'good') {
-    return [{
-      path: 'interiorPrepPricing',
-      kind: 'measured_prep_pricing_contract',
-      message: 'Approve a measured interior preparation scope and pricing contract.'
-    }];
-  }
-  if (serviceType === 'EXTERIOR_PAINTING' && customerInputs.surfaceCondition === 'poor') {
-    return [{
-      path: 'exteriorPrimerPricing',
-      kind: 'primer_pricing_contract',
-      message: 'Approve separate primer pricing or an explicit all-inclusive exterior rate rule.'
-    }];
-  }
-  if (serviceType.startsWith('CONCRETE_') && customerInputs.finishType === 'exposed_aggregate') {
-    return [{
-      path: 'exposedAggregateMaterialPricing',
-      kind: 'finish_material_pricing_contract',
-      message: 'Approve an exposed-aggregate material price or an explicit all-inclusive finish rule.'
-    }];
-  }
-  return [];
-}
-
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited }) {
   const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
   if (!customerValidation.ok) {
+    const normalizedScope = customerValidation.normalized ? structuredClone(customerValidation.normalized) : null;
+    const validatedMeasurements = normalizedScope
+      ? validatedMeasurementsFor(serviceType, normalizedScope)
+      : [];
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
-      ownerDecisionRequired: inspectionOwnerDecision(serviceType, customerInputs)
+      ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs),
+      normalizedScope,
+      validatedMeasurements
     });
   }
-  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing);
-  if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);
+  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing);
+  if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', {
+    ...ownerValidation,
+    normalizedScope: structuredClone(customerValidation.normalized),
+    validatedMeasurements: validatedMeasurementsFor(serviceType, customerValidation.normalized)
+  });
 
   const skippedAddons = [];
   const ctx = {
+    ownerPricing,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -552,21 +774,25 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     range = rangeForStandardQuote(mid.finalTotalCents, mid.minimumCents, defaults);
   }
 
+  assertRangeIntegrity(range);
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const optionDisclaimer = disclaimer(baseDisclaimer, template.disclosures, skippedAddons);
-  const priceDrivers = unique([
-    ...mid.lines
-      .filter(line => PRICE_BASIS_CATEGORIES.includes(line.category))
+  const rankedFinancialDrivers = unique(
+    mid.lines
+      .filter(line => line.amountCents > 0 && CUSTOMER_DRIVER_LINE_CATEGORIES.has(line.category) && customerSafeDriverCopy(line.customerDriver))
       .sort((left, right) => right.amountCents - left.amountCents)
-      .map(line => line.customerDriver || line.name),
-    ...template.priceDrivers
-  ]).slice(0, 4);
+      .map(line => line.customerDriver.trim())
+  ).slice(0, 4);
+  const mandatoryDrivers = unique(template.priceDrivers.filter(customerSafeDriverCopy).map(value => value.trim()));
+  const priceDrivers = unique([...rankedFinancialDrivers, ...mandatoryDrivers]);
   const calculationRecord = {
     engineVersion: ENGINE_VERSION,
     serviceType,
     tierName,
     normalizedCustomerInputs: structuredClone(customerInputs),
     measurements: structuredClone(template.measurements),
+    quantityDerivations: structuredClone(template.quantityDerivations),
+    ruleApplications: structuredClone(template.ruleApplications),
     assumptions: structuredClone(template.assumptions),
     disclosures: structuredClone(template.disclosures),
     lineItems: structuredClone(mid.lines),
@@ -575,6 +801,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       source: hasIntrinsicRange ? 'owner_configured_custom_range' : 'business_range_buffer',
       bufferPercent: range.buffer,
       effectiveRangeBufferPercent: range.buffer,
+      rangeBufferUsed: range.buffer,
       minimumCustomerFloorCents: range.minimumFloorCents,
       lowCents: range.lowCents,
       midCents: range.midCents,
@@ -582,55 +809,104 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       exactMidScenarioTotalCents: mid.finalTotalCents
     }
   };
-  return {
+  const customerProjection = {
     tierName,
     lowEstimate: toDollars(range.lowCents),
     midEstimate: toDollars(range.midCents),
     highEstimate: toDollars(range.highCents),
-    priceDrivers,
-    effectiveRangeBufferPercent: range.buffer,
-    lineItems: mid.lines,
-    skippedAddons,
+    priceDrivers: structuredClone(priceDrivers),
+    skippedAddons: structuredClone(skippedAddons),
     disclaimer: optionDisclaimer,
+    rangeBufferUsed: range.buffer
+  };
+  calculationRecord.customerProjection = structuredClone(customerProjection);
+  return {
+    ...customerProjection,
+    effectiveRangeBufferPercent: range.buffer,
+    lineItems: structuredClone(mid.lines),
     calculationRecord
   };
 }
 
-export function generateQuoteVNext({
-  serviceType,
-  customerInputs = {},
-  ownerPricing = {},
-  businessDefaults = {},
-  callerType = 'owner',
-  feeSelections = {},
-  currentMonth = new Date().getMonth() + 1,
-  allowInactiveOwnerPreview = false
-}) {
+export function generateQuoteVNext(input = {}) {
+  const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
+  const requestIsPlainObject = requestSnapshot.ok;
+  const callerDescriptor = ownDataValue(input, 'callerType');
+  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'customer' ? 'customer' : 'owner' };
+  const {
+    serviceType,
+    customerInputs = {},
+    ownerPricing = {},
+    businessDefaults = {},
+    callerType = 'owner',
+    feeSelections = {},
+    currentMonth = new Date().getMonth() + 1,
+    allowInactiveOwnerPreview = false
+  } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
   const quoteId = crypto.randomUUID();
+  const customerSafeOutput = callerType !== 'owner';
   const appliedRules = [];
-  const urgencyFlags = ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs.leakPresent === true
+  let unconfirmedOwnerFields = [];
+  const urgencyFlags = ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs?.leakPresent === true
     ? ['Active leak reported']
     : [];
   const finishReview = details => {
-    const result = review({ quoteId, appliedRules, urgencyFlags, ...details });
-    return callerType === 'customer' ? sanitizeForCustomerVNext(result) : result;
+    const result = review({
+      quoteId,
+      serviceType,
+      submittedCustomerInputs: cloneForEvidence(customerInputs, {}),
+      unconfirmedOwnerFields,
+      appliedRules,
+      urgencyFlags,
+      ...details
+    });
+    return customerSafeOutput ? sanitizeForCustomerVNext(result) : result;
   };
-  if (!SERVICE_TYPES.includes(serviceType)) return finishReview({ reviewReason: 'Unsupported service type.' });
-  if (ownerPricing.active !== true && !(callerType === 'owner' && allowInactiveOwnerPreview === true)) {
-    return finishReview({ reviewReason: 'This service is not active for customer quoting.' });
+  const unsupportedRequestField = requestIsPlainObject
+    ? Object.keys(requestSnapshot.value).find(field => !QUOTE_REQUEST_FIELDS.has(field))
+    : null;
+  if (unsupportedRequestField) return finishReview({ reviewReason: 'Quote request contains an unsupported field.', invalidCustomerFields: [`quoteRequest.${unsupportedRequestField}`] });
+
+  if (!requestIsPlainObject) {
+    const relativePath = requestSnapshot.errorPath.startsWith('quoteRequest.')
+      ? requestSnapshot.errorPath.slice('quoteRequest.'.length)
+      : requestSnapshot.errorPath;
+    const ownerPath = /^(ownerPricing|businessDefaults)(?:\.|$)/.test(relativePath);
+    return finishReview({
+      reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`,
+      ...(ownerPath ? { invalidOwnerFields: [relativePath] } : { invalidCustomerFields: [requestSnapshot.errorPath] })
+    });
   }
-  const basePricing = extractPricing(ownerPricing, serviceType);
+  const nonPlainPaths = new Set(requestSnapshot.nonPlainPaths || []);
+  if (nonPlainPaths.has('quoteRequest.customerInputs')) return finishReview({ reviewReason: 'Customer inputs must be an object.', invalidCustomerFields: ['customerInputs'] });
+  if (nonPlainPaths.has('quoteRequest.ownerPricing')) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
+  if (nonPlainPaths.has('quoteRequest.businessDefaults')) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
+  if (!['owner', 'customer'].includes(callerType)) return finishReview({ reviewReason: 'Caller type is invalid.', invalidCustomerFields: ['callerType'] });
+  if (!SERVICE_TYPES.includes(serviceType)) return finishReview({ reviewReason: 'Unsupported service type.', invalidCustomerFields: ['serviceType'] });
+  if (!isPlainObject(customerInputs)) return finishReview({ reviewReason: 'Customer inputs must be an object.', invalidCustomerFields: ['customerInputs'] });
+  if (!isPlainObject(ownerPricing)) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
+  if (!isPlainObject(businessDefaults)) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
+  const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
+  if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.' });
+  let basePricing;
+  try {
+    basePricing = extractPricing(ownerPricing, serviceType);
+  } catch {
+    return finishReview({ reviewReason: 'Pricing contains values that cannot be validated.', invalidOwnerFields: ['pricing'] });
+  }
 
   if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)) {
     const confirmed = isPlainObject(ownerPricing.confirmedFields) ? ownerPricing.confirmedFields : {};
-    const unconfirmed = Object.keys(basePricing).filter(field => confirmed[field] !== true);
-    if (Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length && confirmed.tiers !== true) unconfirmed.push('tiers');
-    if (unconfirmed.length) {
+    const unconfirmed = aiConfirmationFieldsVNext(ownerPricing, basePricing)
+      .filter(field => !Object.hasOwn(confirmed, field) || confirmed[field] !== true);
+    unconfirmedOwnerFields = unique(unconfirmed);
+    if (unconfirmedOwnerFields.length && !ownerPreview) {
       return finishReview({
-        reviewReason: 'AI-suggested pricing must be confirmed by the owner before quoting.',
-        missingOwnerFields: unique(unconfirmed)
+        reviewReason: 'AI-suggested pricing must be confirmed by the owner before customer quoting.',
+        missingOwnerFields: unconfirmedOwnerFields
       });
     }
+    if (unconfirmedOwnerFields.length) appliedRules.push(`Owner preview uses unconfirmed AI draft fields: ${unconfirmedOwnerFields.join(', ')}`);
   }
 
   if (serviceType === 'CUSTOM') {
@@ -648,29 +924,59 @@ export function generateQuoteVNext({
 
   const defaultValidation = validateBusinessDefaults(businessDefaults);
   if (!defaultValidation.ok) {
+    const ownerDiagnostics = defaultValidation.diagnostics.map(item => ({ ...item, path: `businessDefaults.${item.path}` }));
     return finishReview({
       reviewReason: 'Business-wide pricing settings are incomplete or invalid.',
-      missingOwnerFields: defaultValidation.missingFields.map(field => `businessDefaults.${field}`),
+      missingOwnerFields: ownerDiagnostics.filter(item => item.type === 'missing').map(item => item.path),
+      invalidOwnerFields: ownerDiagnostics.filter(item => ['invalid', 'unsupported'].includes(item.type)).map(item => item.path),
+      unsupportedOwnerFields: ownerDiagnostics.filter(item => item.type === 'unsupported').map(item => item.path),
+      ownerDiagnostics,
       validationMessages: defaultValidation.errors
     });
   }
-  const ruleErrors = validateServiceRules(ownerPricing);
-  const tierErrors = validateTierDefinitionsVNext(ownerPricing, serviceType);
-  if (ruleErrors.length || tierErrors.length) {
-    return finishReview({ reviewReason: 'Service pricing rules are incomplete or invalid.', validationMessages: [...ruleErrors, ...tierErrors] });
+  const ruleDiagnostics = validateServiceRulesDetailed(ownerPricing, serviceType);
+  const tierDiagnostics = validateTierDefinitionsDetailedVNext(ownerPricing, serviceType);
+  const configurationDiagnostics = [...ruleDiagnostics, ...tierDiagnostics];
+  if (configurationDiagnostics.length) {
+    const perTier = new Map();
+    for (const item of tierDiagnostics) {
+      const index = Number(item.path.match(/^tiers\.(\d+)/)?.[1]);
+      const key = Number.isInteger(index) ? index : -1;
+      if (!perTier.has(key)) perTier.set(key, []);
+      perTier.get(key).push(item);
+    }
+    const failedTierDiagnostics = [...perTier.entries()].map(([index, diagnostics]) => ({
+      tierName: index >= 0 ? ownerPricing.tiers?.[index]?.name || null : null,
+      reviewReason: 'Tier definition is incomplete or invalid.',
+      missingOwnerFields: diagnostics.filter(item => item.type === 'missing').map(item => item.path),
+      invalidOwnerFields: diagnostics.filter(item => ['invalid', 'unsupported', 'cross_field'].includes(item.type)).map(item => item.path),
+      unsupportedOwnerFields: diagnostics.filter(item => item.type === 'unsupported').map(item => item.path),
+      crossFieldOwnerFields: diagnostics.filter(item => item.type === 'cross_field').map(item => item.path),
+      ownerDiagnostics: diagnostics,
+      validationMessages: diagnostics.map(item => item.message)
+    }));
+    return finishReview({
+      reviewReason: 'Service pricing rules are incomplete or invalid.',
+      missingOwnerFields: configurationDiagnostics.filter(item => item.type === 'missing').map(item => item.path),
+      invalidOwnerFields: configurationDiagnostics.filter(item => ['invalid', 'unsupported', 'cross_field'].includes(item.type)).map(item => item.path),
+      unsupportedOwnerFields: configurationDiagnostics.filter(item => item.type === 'unsupported').map(item => item.path),
+      crossFieldOwnerFields: configurationDiagnostics.filter(item => item.type === 'cross_field').map(item => item.path),
+      ownerDiagnostics: configurationDiagnostics,
+      failedTierDiagnostics,
+      validationMessages: configurationDiagnostics.map(item => item.message)
+    });
   }
-  if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) {
-    return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
-  }
+  if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
   const tiers = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
     ? ownerPricing.tiers
     : [{ name: null, overrides: {} }];
   const options = [];
   const failed = [];
-  for (const tier of tiers) {
-    const pricing = mergePricingVNext(basePricing, tier.overrides || {});
+  for (const [tierIndex, tier] of tiers.entries()) {
+    let pricing = basePricing;
     try {
+      pricing = mergePricingVNext(basePricing, tier.overrides || {});
       options.push(optionRun({
         serviceType,
         customerInputs,
@@ -683,7 +989,19 @@ export function generateQuoteVNext({
         inherited: { appliedRules, urgencyFlags }
       }));
     } catch (error) {
-      if (!(error instanceof QuoteReviewError)) throw error;
+      if (!(error instanceof QuoteReviewError)) {
+        const tierPath = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
+          ? `tiers.${tierIndex}.overrides`
+          : 'pricing';
+        error = new QuoteReviewError('Tier pricing contains values that cannot be validated safely.', { invalidOwnerFields: [tierPath] });
+      }
+      if (!error.normalizedScope) {
+        const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
+        if (customerValidation.ok) {
+          error.normalizedScope = structuredClone(customerValidation.normalized);
+          error.validatedMeasurements = validatedMeasurementsFor(serviceType, customerValidation.normalized);
+        }
+      }
       failed.push({ tierName: tier.name, error });
       if (tier.name) appliedRules.push(`${tier.name} tier skipped: ${error.reviewReason}`);
     }
@@ -700,34 +1018,30 @@ export function generateQuoteVNext({
     ownerDiagnostics: error.ownerDiagnostics || [],
     ownerDecisionRequired: error.ownerDecisionRequired || [],
     validationMessages: error.validationMessages || [],
+    normalizedScope: error.normalizedScope || null,
+    validatedMeasurements: error.validatedMeasurements || [],
     inspectionFirst: error.inspectionFirst === true
   }));
 
   if (!options.length) {
     const firstFailure = failed[0]?.error || new QuoteReviewError('No pricing option could produce a complete quote.');
     const collect = field => unique(failed.flatMap(item => item.error?.[field] || []));
-    const result = review({
-      quoteId,
+    return finishReview({
       reviewReason: firstFailure.reviewReason,
       missingCustomerFields: collect('missingCustomerFields'),
       invalidCustomerFields: collect('invalidCustomerFields'),
       missingOwnerFields: collect('missingOwnerFields'),
-      invalidOwnerFields: unique([
-        ...collect('invalidOwnerFields'),
-        ...collect('unsupportedOwnerFields'),
-        ...collect('unexpectedOwnerFields')
-      ]),
+      invalidOwnerFields: unique([...collect('invalidOwnerFields'), ...collect('unsupportedOwnerFields'), ...collect('unexpectedOwnerFields')]),
       unsupportedOwnerFields: unique([...collect('unsupportedOwnerFields'), ...collect('unexpectedOwnerFields')]),
       crossFieldOwnerFields: collect('crossFieldOwnerFields'),
       ownerDiagnostics: failed.flatMap(item => item.error.ownerDiagnostics || []),
       ownerDecisionRequired: failed.flatMap(item => item.error.ownerDecisionRequired || []),
       failedTierDiagnostics,
       validationMessages: collect('validationMessages'),
-      inspectionFirst: failed.some(item => item.error.inspectionFirst === true),
-      appliedRules,
-      urgencyFlags
+      normalizedScope: firstFailure.normalizedScope || null,
+      validatedMeasurements: firstFailure.validatedMeasurements || [],
+      inspectionFirst: failed.some(item => item.error.inspectionFirst === true)
     });
-    return callerType === 'customer' ? sanitizeForCustomerVNext(result) : result;
   }
 
   const first = options[0];
@@ -736,53 +1050,199 @@ export function generateQuoteVNext({
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
     quoteId,
+    serviceType,
+    submittedCustomerInputs: structuredClone(customerInputs),
+    unconfirmedOwnerFields,
     lowEstimate: first.lowEstimate,
     midEstimate: first.midEstimate,
     highEstimate: first.highEstimate,
     options,
     priceDrivers: first.priceDrivers,
+    rangeBufferUsed: first.rangeBufferUsed,
     effectiveRangeBufferPercent: first.effectiveRangeBufferPercent,
     lineItems: first.lineItems,
     disclaimer: topDisclaimer,
     appliedRules,
     urgencyFlags,
     failedTierDiagnostics,
-    ...(failedTierDiagnostics.length ? { optionAvailabilityNotice: 'Fewer options are available because one or more configured options need owner review.' } : {}),
+    ...(failedTierDiagnostics.length ? { optionAvailabilityNotice: FEWER_OPTIONS_NOTICE } : {}),
     calculationRecord: {
       engineVersion: ENGINE_VERSION,
       quoteId,
       serviceType,
-      options: options.map(option => option.calculationRecord)
+      options: structuredClone(options.map(option => option.calculationRecord))
     }
   };
-  return callerType === 'customer' ? sanitizeForCustomerVNext(result) : result;
+  result.options = structuredClone(options);
+  result.priceDrivers = structuredClone(first.priceDrivers);
+  result.lineItems = structuredClone(first.lineItems);
+  return customerSafeOutput ? sanitizeForCustomerVNext(result) : result;
 }
-
 const CUSTOMER_OPTION_FIELDS = [
   'tierName', 'lowEstimate', 'midEstimate', 'highEstimate',
-  'priceDrivers', 'skippedAddons', 'disclaimer'
+  'priceDrivers', 'skippedAddons', 'disclaimer', 'rangeBufferUsed'
 ];
 
-function pick(source, keys) {
-  return Object.fromEntries(keys.filter(key => source?.[key] !== undefined).map(key => [key, source[key]]));
+function hasOwnValue(source, key) {
+  return isPlainObject(source) && Object.hasOwn(source, key) && source[key] !== undefined;
+}
+
+function denseArray(value, predicate, { allowEmpty = true } = {}) {
+  if (!Array.isArray(value) || (!allowEmpty && value.length === 0)) return false;
+  if (denseArrayIssue(value)) return false;
+  for (let index = 0; index < value.length; index += 1) {
+    if (!predicate(value[index])) return false;
+  }
+  return true;
+}
+
+function validCustomerDollars(value) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return false;
+  const cents = value * 100;
+  return Number.isSafeInteger(Math.round(cents)) && Math.abs(cents - Math.round(cents)) < 1e-7;
+}
+
+function validEstimateShape(source) {
+  if (!isPlainObject(source)) return false;
+  const fields = ['lowEstimate', 'midEstimate', 'highEstimate'];
+  if (fields.some(field => !hasOwnValue(source, field) || !validCustomerDollars(source[field]))) return false;
+  return source.lowEstimate <= source.midEstimate && source.midEstimate <= source.highEstimate;
+}
+
+function validCustomerDriverList(value) {
+  return denseArray(value, item => customerSafeDriverCopy(item), { allowEmpty: false });
+}
+
+function validSkippedAddonList(value) {
+  return denseArray(value, item => typeof item === 'string' && CUSTOMER_SKIPPED_ADDONS.has(item));
+}
+
+function validRangeBuffer(value) {
+  return value === null || (typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 25);
+}
+
+function validCustomerOption(option) {
+  if (!validEstimateShape(option) || !hasOwnValue(option, 'tierName') || !(option.tierName === null || (typeof option.tierName === 'string' && option.tierName.trim()))) return false;
+  if (!hasOwnValue(option, 'priceDrivers') || !validCustomerDriverList(option.priceDrivers)) return false;
+  if (!hasOwnValue(option, 'skippedAddons') || !validSkippedAddonList(option.skippedAddons)) return false;
+  if (!hasOwnValue(option, 'disclaimer') || typeof option.disclaimer !== 'string' || !option.disclaimer.trim()) return false;
+  if (!hasOwnValue(option, 'rangeBufferUsed') || !validRangeBuffer(option.rangeBufferUsed)) return false;
+  const record = option.calculationRecord;
+  const range = record?.range;
+  const projection = record?.customerProjection;
+  if (!isPlainObject(record) || !isPlainObject(range) || !isPlainObject(projection)) return false;
+  for (const [estimateField, centsField] of [
+    ['lowEstimate', 'lowCents'],
+    ['midEstimate', 'midCents'],
+    ['highEstimate', 'highCents']
+  ]) {
+    if (!Number.isSafeInteger(range[centsField]) || range[centsField] < 0 || !Object.is(option[estimateField], toDollars(range[centsField]))) return false;
+    if (!Object.is(projection[estimateField], option[estimateField])) return false;
+  }
+  if (!Object.is(range.rangeBufferUsed, option.rangeBufferUsed) || !Object.is(projection.rangeBufferUsed, option.rangeBufferUsed)) return false;
+  if (!Object.is(projection.tierName, option.tierName)) return false;
+  if (projection.disclaimer !== option.disclaimer) return false;
+  if (JSON.stringify(projection.priceDrivers) !== JSON.stringify(option.priceDrivers)) return false;
+  if (JSON.stringify(projection.skippedAddons) !== JSON.stringify(option.skippedAddons)) return false;
+  return true;
+}
+
+function customerProjectionMatchesFirstOption(result) {
+  const first = result.options[0];
+  for (const field of ['lowEstimate', 'midEstimate', 'highEstimate', 'rangeBufferUsed']) {
+    if (!Object.is(result[field], first[field])) return false;
+  }
+  if (JSON.stringify(result.priceDrivers) !== JSON.stringify(first.priceDrivers)) return false;
+  if (exclusionsMatch(result.options) && result.disclaimer !== first.disclaimer) return false;
+  const tierNames = result.options.map(option => option.tierName);
+  if (result.options.length > 1 && tierNames.some(name => name === null)) return false;
+  const namedTiers = tierNames.filter(name => name !== null);
+  if (new Set(namedTiers).size !== namedTiers.length) return false;
+  return true;
+}
+
+function customerReviewPayload(result) {
+  const payload = {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.'
+  };
+  const quoteId = ownDataValue(result, 'quoteId');
+  if (quoteId.ok && quoteId.present && typeof quoteId.value === 'string' && quoteId.value.trim()) payload.quoteId = quoteId.value;
+  return payload;
+}
+
+function pickOwn(source, keys) {
+  return Object.fromEntries(keys.filter(key => hasOwnValue(source, key)).map(key => [key, source[key]]));
 }
 
 export function sanitizeForCustomerVNext(result) {
-  if (result?.resultType !== 'INSTANT_ESTIMATE_READY') {
-    return {
-      resultType: 'ESTIMATE_REQUIRES_REVIEW',
-      customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
-      ...(result?.quoteId ? { quoteId: result.quoteId } : {})
-    };
+  const snapshot = snapshotPlainData(result, 'internalResult');
+  if (!snapshot.ok || snapshot.nonPlainPaths.length) return customerReviewPayload(result);
+  result = snapshot.value;
+  try {
+    const validReady = isPlainObject(result) &&
+      hasOwnValue(result, 'resultType') && result.resultType === 'INSTANT_ESTIMATE_READY' &&
+      hasOwnValue(result, 'quoteId') && typeof result.quoteId === 'string' && result.quoteId.trim() &&
+      validEstimateShape(result) &&
+      hasOwnValue(result, 'priceDrivers') && validCustomerDriverList(result.priceDrivers) &&
+      hasOwnValue(result, 'disclaimer') && typeof result.disclaimer === 'string' && result.disclaimer.trim() &&
+      hasOwnValue(result, 'rangeBufferUsed') && validRangeBuffer(result.rangeBufferUsed) &&
+      hasOwnValue(result, 'options') && denseArray(result.options, validCustomerOption, { allowEmpty: false }) &&
+      customerProjectionMatchesFirstOption(result) &&
+      (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
+    if (!validReady) return customerReviewPayload(result);
+    return structuredClone({
+      ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'rangeBufferUsed']),
+      options: result.options.map(option => pickOwn(option, CUSTOMER_OPTION_FIELDS))
+    });
+  } catch {
+    return customerReviewPayload(result);
   }
-  return {
-    ...pick(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice']),
-    options: (result.options || []).map(option => pick(option, CUSTOMER_OPTION_FIELDS))
-  };
+}
+
+export function buildInternalLeadVNext(input = {}) {
+  const snapshot = snapshotPlainData(input, 'leadInput');
+  if (!snapshot.ok || snapshot.nonPlainPaths.length) {
+    throw new TypeError('An unsanitized internal review result is required before building a lead.');
+  }
+  input = snapshot.value;
+  const { request = {}, internalResult } = input;
+  const requiredOwnFields = [
+    'resultType', 'quoteId', 'serviceType', 'submittedCustomerInputs',
+    'normalizedScope', 'validatedMeasurements', 'urgencyFlags'
+  ];
+  if (
+    !isPlainObject(request) ||
+    !isPlainObject(internalResult) ||
+    requiredOwnFields.some(field => !Object.hasOwn(internalResult, field)) ||
+    internalResult.resultType !== 'ESTIMATE_REQUIRES_REVIEW' ||
+    typeof internalResult.quoteId !== 'string' || !internalResult.quoteId.trim() ||
+    !SERVICE_TYPES.includes(internalResult.serviceType) ||
+    !isPlainObject(internalResult.submittedCustomerInputs) ||
+    !(internalResult.normalizedScope === null || isPlainObject(internalResult.normalizedScope)) ||
+    !denseArray(internalResult.validatedMeasurements, item => isPlainObject(item)) ||
+    !denseArray(internalResult.urgencyFlags, item => typeof item === 'string' && item.trim().length > 0)
+  ) {
+    throw new TypeError('An unsanitized internal review result is required before building a lead.');
+  }
+  try {
+    return {
+      quoteId: internalResult.quoteId,
+      serviceType: internalResult.serviceType,
+      originalRequest: structuredClone(request),
+      submittedCustomerInputs: structuredClone(internalResult.submittedCustomerInputs),
+      internalReviewResult: structuredClone(internalResult),
+      urgencyFlags: structuredClone(internalResult.urgencyFlags)
+    };
+  } catch {
+    throw new TypeError('The internal lead evidence must be safely cloneable.');
+  }
 }
 
 export function previewQuoteVNext(input) {
-  return generateQuoteVNext({ ...input, callerType: 'owner', allowInactiveOwnerPreview: true });
+  const snapshot = snapshotPlainData(input, 'quoteRequest');
+  if (!snapshot.ok) return generateQuoteVNext(input);
+  return generateQuoteVNext({ ...snapshot.value, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 export function liveQuoteVNext(input) {

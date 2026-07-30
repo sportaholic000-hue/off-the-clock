@@ -1,5 +1,10 @@
 export {
   ENGINE_VERSION,
+  buildInternalLeadVNext,
+  mergePricingVNext,
+  materializeScenarioLinesVNext,
+  validateTierDefinitionsVNext,
+  validateTierDefinitionsDetailedVNext,
   generateQuoteVNext,
   liveQuoteVNext,
   previewQuoteVNext,
@@ -16,9 +21,12 @@ export {
   TAXABILITY_CATEGORIES,
   contractMetadata,
   validateBusinessDefaults,
+  validateClass2FactorsDetailed,
   validateCustomerInputs,
   validateOwnerPricing,
+  validatePricingStructuresDetailed,
   validateServiceRules,
+  validateServiceRulesDetailed,
   withClass2Defaults
 } from './contracts.js';
 

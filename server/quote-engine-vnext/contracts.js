@@ -1,4 +1,12 @@
-export const SERVICE_TYPES = [
+import { denseArrayIssue, snapshotPlainData } from './safeData.js';
+
+function relativeSnapshotPath(snapshot, root) {
+  const prefix = `${root}.`;
+  return snapshot.errorPath.startsWith(prefix)
+    ? snapshot.errorPath.slice(prefix.length)
+    : snapshot.errorPath;
+}
+export const SERVICE_TYPES = Object.freeze([
   'ROOFING_REPLACEMENT', 'ROOFING_REPAIR',
   'FLAT_ROOF_REPLACEMENT', 'FLAT_ROOF_REPAIR',
   'INTERIOR_PAINTING', 'EXTERIOR_PAINTING',
@@ -9,25 +17,22 @@ export const SERVICE_TYPES = [
   'LANDSCAPING_CLEANUP', 'LANDSCAPING_MULCH',
   'LANDSCAPING_SOD', 'LANDSCAPING_PLANTING',
   'LANDSCAPING_MOWING', 'CUSTOM'
-];
+]);
 
-export const FEE_NAMES = ['travel', 'disposal', 'permit', 'overhead'];
-export const FEE_RULE_MODES = [
+export const FEE_NAMES = Object.freeze(['travel', 'disposal', 'permit', 'overhead']);
+export const FEE_RULE_MODES = Object.freeze([
   'not_applicable',
   'included_in_rates',
   'always',
   'when_scope_selected',
   'owner_selected',
   'customer_selected'
-];
-export const PRICE_BASIS_CATEGORIES = [
+]);
+export const PRICE_BASIS_CATEGORIES = Object.freeze([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment',
   'travel', 'disposal', 'permit', 'overhead', 'surcharge'
-];
-export const TAXABILITY_CATEGORIES = [
-  ...PRICE_BASIS_CATEGORIES,
-  'minimum_adjustment'
-];
+]);
+export const TAXABILITY_CATEGORIES = Object.freeze([...PRICE_BASIS_CATEGORIES]);
 
 export function repairSizeFromAffectedArea(serviceType, affectedArea) {
   if (typeof affectedArea !== 'number' || !Number.isFinite(affectedArea) || affectedArea <= 0) return null;
@@ -45,6 +50,7 @@ const PITCHES = ['low', 'medium', 'steep', 'very_steep'];
 const STORIES = [1, 2, 3];
 const ACCESS = ['easy', 'moderate', 'difficult'];
 const SLOPES = ['flat', 'moderate', 'steep'];
+const CANONICAL_SLUG = /^[a-z][a-z0-9_]*$/;
 
 const field = (label, unit, type, extra = {}) => ({ label, unit, type, ...extra });
 const numberField = (label, unit, min, max, extra = {}) => field(label, unit, 'number', { min, max, ...extra });
@@ -90,8 +96,17 @@ export const MEASUREMENT_CONTRACTS = {
       }
       return null;
     },
-    crossValidate(c) {
+    crossValidate(c, p) {
       const errors = [];
+      if (p.accessoryPricingMode !== 'itemized') {
+        for (const fieldName of ['starterLengthLF', 'dripEdgeLengthLF', 'ridgeCapLengthLF']) {
+          if (c[fieldName] !== undefined) errors.push({ field: fieldName, message: `${fieldName} is only valid with itemized roof accessory pricing.` });
+        }
+      }
+      if (c.serviceScope === 'full') {
+        if (c.partialPercent !== undefined) errors.push({ field: 'partialPercent', message: 'Affected percentage is only valid for a partial roof replacement.' });
+        if (c.partialAreaSqft !== undefined) errors.push({ field: 'partialAreaSqft', message: 'Affected roof area is only valid for a partial roof replacement.' });
+      }
       if (c.serviceScope === 'partial' && c.partialPercent !== undefined && c.partialAreaSqft !== undefined) {
         const expected = c.roofSizeInput * c.partialPercent / 100;
         if (Number.isFinite(expected) && Math.abs(expected - c.partialAreaSqft) > Math.max(1, expected * 0.01)) {
@@ -145,6 +160,10 @@ export const MEASUREMENT_CONTRACTS = {
     },
     crossValidate(c) {
       const errors = [];
+      if (c.serviceScope === 'full') {
+        if (c.partialPercent !== undefined) errors.push({ field: 'partialPercent', message: 'Affected percentage is only valid for a partial flat-roof replacement.' });
+        if (c.partialAreaSqft !== undefined) errors.push({ field: 'partialAreaSqft', message: 'Affected roof area is only valid for a partial flat-roof replacement.' });
+      }
       if (c.serviceScope === 'partial' && c.partialPercent !== undefined && c.partialAreaSqft !== undefined) {
         const expected = c.roofSqft * c.partialPercent / 100;
         if (Number.isFinite(expected) && Math.abs(expected - c.partialAreaSqft) > Math.max(1, expected * 0.01)) {
@@ -196,6 +215,12 @@ export const MEASUREMENT_CONTRACTS = {
       if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.';
       if (c.surfaceCondition !== 'good') return 'Wall preparation requires a confirmed measured preparation scope before pricing.';
       return null;
+    },
+    crossValidate(c) {
+      const errors = [];
+      if (c.ceilingsIncluded === false && c.ceilingAreaSqft !== undefined) errors.push({ field: 'ceilingAreaSqft', message: 'Ceiling area cannot be supplied when ceilings are not included.' });
+      if (c.trimIncluded === false && c.trimLengthLF !== undefined) errors.push({ field: 'trimLengthLF', message: 'Trim length cannot be supplied when trim is not included.' });
+      return errors;
     }
   }),
 
@@ -281,6 +306,9 @@ function flooringContract(replacement) {
       if (c.subfloorRepairAreaSqft !== undefined && c.sqft !== undefined && c.subfloorRepairAreaSqft > c.sqft) {
         errors.push({ field: 'subfloorRepairAreaSqft', message: 'Subfloor repair area cannot exceed the measured flooring area.' });
       }
+      if (replacement && c.subfloorIssues === false && c.subfloorRepairAreaSqft !== undefined) {
+        errors.push({ field: 'subfloorRepairAreaSqft', message: 'Subfloor repair area cannot be supplied when no subfloor issues are reported.' });
+      }
       return errors;
     }
   });
@@ -295,13 +323,12 @@ function fencingContract(replacement) {
       fenceHeight: enumField('Fence height', [4, 6, 8]),
       gateCount: numberField('Gate count', 'gates', 0, 10_000, { integer: true }),
       gateWidthTotalLF: numberField('Measured total gate-opening width', 'linear feet', 0, 100_000),
-      postCount: numberField('Confirmed planned post count', 'posts', 2, 100_000, { integer: true }),
       terrainSlope: enumField('Terrain slope', SLOPES),
       ...(replacement ? { oldFenceRemoval: booleanField('Old fence removal included') } : {})
     },
     required: c => [
       'linearFeet', 'lfMethod', 'fenceType', 'fenceHeight',
-      'gateCount', 'postCount', 'terrainSlope',
+      'gateCount', 'terrainSlope',
       ...(c.gateCount > 0 ? ['gateWidthTotalLF'] : []),
       ...(replacement ? ['oldFenceRemoval'] : [])
     ],
@@ -355,6 +382,19 @@ function concreteContract() {
         return 'Exposed-aggregate material pricing requires an approved owner pricing rule before quoting.';
       }
       return null;
+    },
+    crossValidate(c) {
+      const errors = [];
+      if (c.dimensionMethod === 'exact') {
+        if (c.areaSqft !== undefined) errors.push({ field: 'areaSqft', message: 'Measured area cannot be supplied when length and width are the selected slab measurement method.' });
+        if (c.perimeterLF !== undefined) errors.push({ field: 'perimeterLF', message: 'Measured perimeter cannot be supplied when length and width are the selected slab measurement method.' });
+      }
+      if (c.dimensionMethod === 'measured_area_perimeter') {
+        if (c.length !== undefined) errors.push({ field: 'length', message: 'Slab length cannot be supplied when measured area and perimeter are the selected method.' });
+        if (c.width !== undefined) errors.push({ field: 'width', message: 'Slab width cannot be supplied when measured area and perimeter are the selected method.' });
+      }
+      if (c.demolitionNeeded === false && c.demolitionAreaSqft !== undefined) errors.push({ field: 'demolitionAreaSqft', message: 'Demolition area cannot be supplied when demolition is not included.' });
+      return errors;
     }
   });
 }
@@ -395,6 +435,13 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
     if (c.bedCondition !== 'clean') out.push('bedSqft');
     if (c.edgingNeeded) out.push('edgeLF');
     return out;
+  },
+  crossValidate(c) {
+    const errors = [];
+    if (c.inputMethod === 'yards' && c.mulchDepth !== undefined) errors.push({ field: 'mulchDepth', message: 'Mulch depth cannot be supplied when cubic yards are entered directly.' });
+    if (c.bedCondition === 'clean' && c.bedSqft !== undefined) errors.push({ field: 'bedSqft', message: 'Bed preparation area cannot be supplied for a clean bed.' });
+    if (c.edgingNeeded === false && c.edgeLF !== undefined) errors.push({ field: 'edgeLF', message: 'Bed-edge length cannot be supplied when edging is not included.' });
+    return errors;
   }
 });
 
@@ -424,6 +471,13 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_PLANTING = commonContract({
     if (c.bedCondition !== 'clean') out.push('bedSqft');
     if (c.mulchNeeded) out.push('mulchYards', 'mulchType');
     return out;
+  },
+  crossValidate(c) {
+    const errors = [];
+    if (c.bedCondition === 'clean' && c.bedSqft !== undefined) errors.push({ field: 'bedSqft', message: 'Bed preparation area cannot be supplied for a clean planting bed.' });
+    if (c.mulchNeeded === false && c.mulchYards !== undefined) errors.push({ field: 'mulchYards', message: 'Mulch quantity cannot be supplied when mulch is not included.' });
+    if (c.mulchNeeded === false && c.mulchType !== undefined) errors.push({ field: 'mulchType', message: 'Mulch type cannot be supplied when mulch is not included.' });
+    return errors;
   }
 });
 
@@ -442,7 +496,11 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_MOWING = commonContract({
     if (c.edgingIncluded) out.push('edgingLengthLF');
     return out;
   },
-  inspection: c => c.sqftMethod === 'assumption' ? 'Measured mowable lawn area is required for a customer-ready quote.' : null
+  inspection: c => c.sqftMethod === 'assumption' ? 'Measured mowable lawn area is required for a customer-ready quote.' : null,
+  crossValidate(c) {
+    if (c.edgingIncluded === false && c.edgingLengthLF !== undefined) return [{ field: 'edgingLengthLF', message: 'Edging length cannot be supplied when lawn edging is not included.' }];
+    return [];
+  }
 });
 
 MEASUREMENT_CONTRACTS.SIDING_REPLACEMENT = commonContract({
@@ -462,7 +520,11 @@ MEASUREMENT_CONTRACTS.SIDING_REPLACEMENT = commonContract({
   },
   inspection: c => c.areaInputMethod === 'homesize'
     ? 'Measured siding wall area is required; home-size area maps are not used by the audit engine.'
-    : null
+    : null,
+  crossValidate(c) {
+    if (c.trimIncluded === false && c.trimLengthLF !== undefined) return [{ field: 'trimLengthLF', message: 'Siding trim length cannot be supplied when trim is not included.' }];
+    return [];
+  }
 });
 
 MEASUREMENT_CONTRACTS.SIDING_REPAIR = commonContract({
@@ -505,6 +567,17 @@ MEASUREMENT_CONTRACTS.CUSTOM = commonContract({
     if (c.unit !== undefined && p.unit !== undefined && c.unit !== p.unit) {
       errors.push({ field: 'unit', message: 'Customer quantity unit does not match the configured custom-service unit.' });
     }
+    const quantityFieldByUnit = {
+      per_hour: 'hours',
+      per_unit: 'itemCount',
+      per_sqft: 'areaSqft',
+      per_LF: 'linearFeet',
+      per_square: 'roofSquares'
+    };
+    const selectedQuantityField = quantityFieldByUnit[p.unit || c.unit];
+    for (const quantityField of Object.values(quantityFieldByUnit)) {
+      if (quantityField !== selectedQuantityField && c[quantityField] !== undefined) errors.push({ field: quantityField, message: `${quantityField} does not apply to the configured custom-service unit.` });
+    }
     return errors;
   }
 });
@@ -531,7 +604,7 @@ export const CLASS2_DEFINITIONS = {
   },
   EXTERIOR_PAINTING: {
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Exterior story labor multiplier', 'multiplier', 0.1, 5),
-    prepHoursPerSqft: factorMap({ fair: 0.008, poor: 0.02 }, 'Exterior preparation labor hours by condition', 'hours per square foot', 0.000001, 2)
+    prepHoursPerSqft: factorMap({ fair: 0.008 }, 'Exterior fair-condition preparation labor hours', 'hours per square foot', 0.000001, 2)
   },
   FLOORING_INSTALL: {
     wasteFactorByType: factorMap({ hardwood: 0.10, laminate: 0.08, vinyl_plank: 0.08, carpet: 0.10, tile: 0.12 }, 'Flooring material waste by type', 'decimal fraction', 0, 0.5),
@@ -540,15 +613,11 @@ export const CLASS2_DEFINITIONS = {
     roomSizeThresholds: factorMap({ smallMaxSqft: 150, mediumMaxSqft: 300 }, 'Average-room size thresholds', 'square feet', 1, 10_000)
   },
   FLOORING_REPLACEMENT: {},
-  FENCING_INSTALL: {
-    heightMultiplierLabor: factorMap({ 4: 0.85, 6: 1, 8: 1.20 }, 'Fence-height labor multiplier', 'multiplier', 0.1, 5),
-    heightMultiplierMaterial: factorMap({ 4: 0.80, 6: 1, 8: 1.35 }, 'Fence-height material multiplier', 'multiplier', 0.1, 5),
-    terrainMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.30 }, 'Fence terrain labor multiplier', 'multiplier', 0.1, 5)
-  },
+  FENCING_INSTALL: {},
   FENCING_REPLACEMENT: {},
   CONCRETE_DRIVEWAY: {
     concreteWasteFactor: factor(0.10, 'Concrete ordering waste allowance', 'decimal fraction', 0, 0.5),
-    finishMultiplier: factorMap({ broom: 1, smooth: 1.05, exposed_aggregate: 1.20, stamped: 1.50 }, 'Concrete finish labor multiplier', 'multiplier', 0.1, 5),
+    finishMultiplier: factorMap({ broom: 1, smooth: 1.05, stamped: 1.50 }, 'Concrete finish extra-labor multiplier', 'multiplier', 1, 5),
     accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Concrete access labor multiplier', 'multiplier', 0.1, 5)
   },
   CONCRETE_PATIO_SLAB: {},
@@ -580,13 +649,25 @@ export const CLASS2_DEFINITIONS = {
 CLASS2_DEFINITIONS.FLOORING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FLOORING_INSTALL);
 CLASS2_DEFINITIONS.FENCING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FENCING_INSTALL);
 CLASS2_DEFINITIONS.CONCRETE_PATIO_SLAB = structuredClone(CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY);
+deepFreeze(MEASUREMENT_CONTRACTS);
+deepFreeze(CLASS2_DEFINITIONS);
 
 export function withClass2Defaults(serviceType, pricing = {}) {
-  const next = structuredClone(pricing);
+  if (!SERVICE_TYPES.includes(serviceType)) throw new TypeError('Service type is unsupported.');
+  const snapshot = snapshotPlainData(pricing, 'pricing');
+  if (!snapshot.ok) {
+    if (!isRecord(pricing)) throw new TypeError('Pricing must be an object before Class 2 defaults can be applied.');
+    throw new TypeError(
+      `Pricing could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`
+    );
+  }
+  const next = snapshot.value;
   for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
     if (next[name] === undefined) next[name] = structuredClone(definition.defaultValue);
   }
-  return next;
+  // Snapshot trust is request-local. Never expose a mutable trusted object that
+  // could be changed after inspection and then supplied to another public API.
+  return structuredClone(next);
 }
 
 function missing(value) {
@@ -607,7 +688,7 @@ function validateFieldValue(definition, value) {
   }
   if (definition.type === 'enum') return definition.values.includes(value) ? null : `must be one of: ${definition.values.join(', ')}`;
   if (definition.type === 'boolean') return typeof value === 'boolean' ? null : 'must be true or false';
-  if (definition.type === 'slug') return typeof value === 'string' && /^[a-z][a-z0-9_]*$/.test(value) ? null : 'must be a canonical lowercase value';
+  if (definition.type === 'slug') return typeof value === 'string' && CANONICAL_SLUG.test(value) ? null : 'must be a canonical lowercase value';
   if (definition.type === 'string') {
     if (typeof value !== 'string') return 'must be text';
     const length = value.trim().length;
@@ -615,7 +696,7 @@ function validateFieldValue(definition, value) {
     return null;
   }
   if (definition.type === 'plant_counts') {
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return 'must be an object keyed by small, medium, and large';
+    if (!isRecord(value)) return 'must be an object keyed by small, medium, and large';
     const keys = Object.keys(value);
     if (keys.some(key => !SIZE_KEYS.includes(key)) || SIZE_KEYS.some(key => !keys.includes(key))) return 'must contain exactly small, medium, and large';
     if (SIZE_KEYS.some(key => !Number.isInteger(value[key]) || value[key] < 0 || value[key] > 1_000_000)) return 'must contain finite non-negative whole-number plant counts';
@@ -628,9 +709,24 @@ function validateFieldValue(definition, value) {
 export function validateCustomerInputs(serviceType, customerInputs = {}, pricing = {}) {
   const contract = MEASUREMENT_CONTRACTS[serviceType];
   if (!contract) return { ok: false, missingCustomerFields: [], invalidCustomerFields: ['serviceType'], reviewReason: 'Unsupported service type.' };
-  if (!customerInputs || typeof customerInputs !== 'object' || Array.isArray(customerInputs)) {
-    return { ok: false, missingCustomerFields: [], invalidCustomerFields: ['customerInputs'], reviewReason: 'Customer inputs must be an object.' };
+  const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
+  if (!customerSnapshot.ok) {
+    return {
+      ok: false, missingCustomerFields: [],
+      invalidCustomerFields: [relativeSnapshotPath(customerSnapshot, 'customerInputs')],
+      reviewReason: `Customer inputs could not be read safely: ${customerSnapshot.reason}.`
+    };
   }
+  customerInputs = customerSnapshot.value;
+  const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
+  if (!pricingSnapshot.ok) {
+    return {
+      ok: false, missingCustomerFields: [], invalidCustomerFields: [],
+      invalidOwnerFields: [relativeSnapshotPath(pricingSnapshot, 'pricing')],
+      reviewReason: `Pricing context could not be read safely: ${pricingSnapshot.reason}.`
+    };
+  }
+  pricing = pricingSnapshot.value;
   const allowed = new Set(Object.keys(contract.fields));
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
@@ -670,6 +766,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   if (inspectionReason) {
     return {
       ok: false,
+      normalized: structuredClone(customerInputs),
       missingCustomerFields: [],
       invalidCustomerFields: [],
       inspectionFirst: true,
@@ -679,57 +776,101 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   return { ok: true, normalized: structuredClone(customerInputs) };
 }
 
-function exactKeys(value, expectedKeys) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  const keys = Object.keys(value).sort();
-  return JSON.stringify(keys) === JSON.stringify([...expectedKeys].map(String).sort());
+
+export function inspectionOwnerDecisionsVNext(serviceType, customerInputs = {}) {
+  if (serviceType === 'INTERIOR_PAINTING' && ['fair', 'poor'].includes(customerInputs.surfaceCondition)) {
+    return [{
+      path: 'interiorPrepPricing',
+      kind: 'measured_prep_pricing_contract',
+      message: 'Approve a measured interior preparation scope and pricing contract.'
+    }];
+  }
+  if (serviceType === 'EXTERIOR_PAINTING' && customerInputs.surfaceCondition === 'poor') {
+    return [{
+      path: 'exteriorPrimerPricing',
+      kind: 'primer_pricing_contract',
+      message: 'Approve separate primer pricing or an explicit all-inclusive exterior rate rule.'
+    }];
+  }
+  if (serviceType.startsWith('CONCRETE_') && customerInputs.finishType === 'exposed_aggregate') {
+    return [{
+      path: 'exposedAggregateMaterialPricing',
+      kind: 'finish_material_pricing_contract',
+      message: 'Approve an exposed-aggregate material price or an explicit all-inclusive finish rule.'
+    }];
+  }
+  return [];
 }
 
-function validateFactorValue(value, definition, path, errors) {
-  const expected = definition.defaultValue;
-  if (typeof expected === 'number') {
-    if (typeof value !== 'number' || !Number.isFinite(value) || value < definition.min || value > definition.max) {
-      errors.push(`${path} must be a finite number from ${definition.min} to ${definition.max}.`);
+function ownerDiagnostic(type, kind, path, message) {
+  return { type, kind, path, message };
+}
+
+function validFactorLeaf(value, definition) {
+  return typeof value === 'number' && Number.isFinite(value) && value >= definition.min && value <= definition.max;
+}
+
+export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
+  const diagnostics = [];
+  if (!SERVICE_TYPES.includes(serviceType)) {
+    return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
+  }
+  const snapshot = snapshotPlainData(pricing, 'pricing');
+  if (!snapshot.ok) return [ownerDiagnostic(
+    'invalid', 'class2', relativeSnapshotPath(snapshot, 'pricing'),
+    `Pricing could not be read safely: ${snapshot.reason}.`
+  )];
+  pricing = snapshot.value;
+
+  for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
+    const expected = definition.defaultValue;
+    const value = pricing[name];
+    if (value === undefined) {
+      diagnostics.push(ownerDiagnostic('missing', 'class2', name, `${name} must be stored in the service price book.`));
+      continue;
     }
-    return;
-  }
-  if (!exactKeys(value, Object.keys(expected))) {
-    errors.push(`${path} must contain exactly: ${Object.keys(expected).join(', ')}.`);
-    return;
-  }
-  for (const key of Object.keys(expected)) {
-    const leaf = value[key];
-    if (typeof leaf !== 'number' || !Number.isFinite(leaf) || leaf < definition.min || leaf > definition.max) {
-      errors.push(`${path}.${key} must be a finite number from ${definition.min} to ${definition.max}.`);
+    if (typeof expected === 'number') {
+      if (!validFactorLeaf(value, definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', name, `${name} must be a finite number from ${definition.min} to ${definition.max}.`));
+      continue;
+    }
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      diagnostics.push(ownerDiagnostic('invalid', 'class2', name, `${name} must be an object with the exact supported keys.`));
+      continue;
+    }
+    const expectedKeys = Object.keys(expected).map(String);
+    for (const key of Object.keys(value)) {
+      if (!expectedKeys.includes(String(key))) diagnostics.push(ownerDiagnostic('unsupported', 'class2', `${name}.${key}`, `${name}.${key} is not a supported Class 2 factor.`));
+    }
+    for (const key of expectedKeys) {
+      const path = `${name}.${key}`;
+      if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'class2', path, `${path} is required.`));
+      else if (!validFactorLeaf(value[key], definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', path, `${path} must be a finite number from ${definition.min} to ${definition.max}.`));
     }
   }
+  const thresholds = pricing.roomSizeThresholds;
+  if (serviceType.startsWith('FLOORING_') && thresholds &&
+      Number.isFinite(thresholds.smallMaxSqft) && Number.isFinite(thresholds.mediumMaxSqft) &&
+      thresholds.smallMaxSqft >= thresholds.mediumMaxSqft) {
+    const message = 'roomSizeThresholds.smallMaxSqft must be less than roomSizeThresholds.mediumMaxSqft.';
+    diagnostics.push(ownerDiagnostic('cross_field', 'relationship', 'roomSizeThresholds.smallMaxSqft', message));
+    diagnostics.push(ownerDiagnostic('cross_field', 'relationship', 'roomSizeThresholds.mediumMaxSqft', message));
+  }
+  return diagnostics;
 }
 
 export function validateClass2Factors(serviceType, pricing = {}) {
-  const errors = [];
-  for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
-    if (pricing[name] === undefined) {
-      errors.push(`${name} must be stored in the service price book.`);
-      continue;
-    }
-    validateFactorValue(pricing[name], definition, name, errors);
-  }
-  if (serviceType.startsWith('FLOORING_') && pricing.roomSizeThresholds &&
-      pricing.roomSizeThresholds.smallMaxSqft >= pricing.roomSizeThresholds.mediumMaxSqft) {
-    errors.push('roomSizeThresholds.smallMaxSqft must be less than roomSizeThresholds.mediumMaxSqft.');
-  }
-  return errors;
+  return [...new Set(validateClass2FactorsDetailed(serviceType, pricing).map(item => item.message))];
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'accessoryPricingMode', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
+  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge'],
   INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
-  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'vinylPlankUnderlaymentRule'],
-  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft'],
+  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule'],
+  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft'],
   FENCING_INSTALL: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob'],
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
   CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft'],
@@ -748,9 +889,49 @@ export function allowedPricingFields(serviceType) {
   return [...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {})];
 }
 
+const AI_CONFIRMABLE_SERVICE_FIELDS = [
+  'feeRules',
+  'priceBasisByCategory',
+  'taxabilityByCategory',
+  'peakMonths',
+  'peakSurchargePercent',
+  'disclaimer'
+];
+
+export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
+  const fields = isRecord(pricing) ? Object.keys(pricing) : [];
+  if (!isRecord(service)) return fields;
+  for (const fieldName of AI_CONFIRMABLE_SERVICE_FIELDS) {
+    if (Object.hasOwn(service, fieldName)) fields.push(fieldName);
+  }
+  if (service.serviceType === 'CUSTOM' && Object.hasOwn(service, 'service')) fields.push('service');
+  if (Array.isArray(service.tiers) && service.tiers.length) fields.push('tiers');
+  return [...new Set(fields)];
+}
+
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
+const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
+const BUSINESS_DEFAULT_FIELDS = [
+  'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
+  'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
+  'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'
+];
+
 const nonNegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
-const positiveMoney = value => Number.isSafeInteger(value) && value > 0;
+function monthListIssue(value) {
+  if (!Array.isArray(value)) return { path: '', message: 'must be an array of month numbers from 1 through 12' };
+  const arrayIssue = denseArrayIssue(value);
+  if (arrayIssue) return {
+    path: arrayIssue.path,
+    message: arrayIssue.reason
+  };
+  for (let index = 0; index < value.length; index += 1) {
+    const month = value[index];
+    if (!Number.isInteger(month) || month < 1 || month > 12) return { path: String(index), message: 'must be a whole month number from 1 through 12' };
+  }
+  return null;
+}
+
 const nonNegativeMoney = value => Number.isSafeInteger(value) && value >= 0;
 
 const SCALAR_MONEY_FIELDS = {
@@ -776,36 +957,23 @@ const SCALAR_MONEY_FIELDS = {
   CUSTOM: ['price', 'low', 'high', 'minimumJob']
 };
 
-const ZERO_ALLOWED_MONEY_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
-const ZERO_ALLOWED_MONEY_KEYS = new Set([
-  'ROOFING_REPLACEMENT.deckingPerSheet',
-  'FLAT_ROOF_REPAIR.pondingWaterSurcharge',
-  'FLOORING_INSTALL.disposalPerSqft',
-  'FLOORING_INSTALL.perStepPrice',
-  'FLOORING_REPLACEMENT.disposalPerSqft',
-  'FLOORING_REPLACEMENT.perStepPrice',
-  'LANDSCAPING_MOWING.edgingPerLinearFoot',
-  'SIDING_REPLACEMENT.disposalPerSqft'
-]);
-
-function zeroAllowedMoney(serviceType, fieldName) {
-  return ZERO_ALLOWED_MONEY_FIELDS.has(fieldName) || ZERO_ALLOWED_MONEY_KEYS.has(`${serviceType}.${fieldName}`);
-}
-
 function scalarMoneyFields(serviceType) {
   return SCALAR_MONEY_FIELDS[serviceType] || [];
 }
 
 export function valueAtPath(source, path) {
-  return String(path).split('.').reduce((value, key) => value?.[key], source);
+  let value = source;
+  for (const key of String(path).split('.')) {
+    if (!isRecord(value) || !Object.hasOwn(value, key)) return undefined;
+    value = value[key];
+  }
+  return value;
 }
 
-const requirement = (path, label, options = {}) => ({ path, label, kind: 'positive_money', ...options });
+const requirement = (path, label, options = {}) => ({ path, label, kind: 'non_negative_money', ...options });
 
 export function vinylUnderlaymentApplies(customerInputs, pricing) {
   const type = customerInputs.newFlooringType;
-  if (['hardwood', 'laminate', 'carpet'].includes(type)) return true;
-  if (type === 'tile') return false;
   if (type !== 'vinyl_plank') return false;
   const rule = pricing.vinylPlankUnderlaymentRule;
   if (rule === 'always_included') return true;
@@ -822,6 +990,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add(`laborPerSquare.${c.replacementRoofType}`, 'Roof installation labor price for the selected replacement material');
     add(`materialCostPerSquare.${c.replacementRoofType}`, 'Roof material price for the selected replacement material');
     add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Installed-area underlayment sell price per roofing square');
+    out.push({ path: `underlaymentPriceBasis.${c.replacementRoofType}`, label: 'Underlayment price basis for the selected replacement material', kind: 'enum', values: ['installed_area_sell_price', 'cost'] });
     add(`tearOffPerSquare.${c.existingRoofType}`, 'Tear-off price for the existing roof material');
     add('minimumJob', 'Minimum roof replacement job price', { kind: 'minimum' });
     out.push({ path: 'accessoryPricingMode', label: 'Roof accessory pricing method', kind: 'enum', values: ['per_square_allin', 'itemized'] });
@@ -872,17 +1041,19 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add(`laborPerSqft.${c.newFlooringType}`, 'Flooring labor price for the selected flooring type');
     add(`materialPerSqft.${c.newFlooringType}`, 'Flooring material price for the selected flooring type');
     add('minimumJob', 'Minimum flooring job price', { kind: 'minimum' });
-    out.push({ path: 'vinylPlankUnderlaymentRule', label: 'Vinyl-plank underlayment rule', kind: 'enum', values: ['always_included', 'never_included', 'subfloor_condition', 'customer_selectable_addon', 'owner_review'] });
+    if (c.newFlooringType === 'vinyl_plank') out.push({ path: 'vinylPlankUnderlaymentRule', label: 'Vinyl-plank underlayment rule', kind: 'enum', values: ['always_included', 'never_included', 'subfloor_condition', 'customer_selectable_addon', 'owner_review'] });
     if (c.removalNeeded) add(`removalPerSqft.${c.existingFloorType}`, 'Removal price for the selected existing floor type');
     if (c.stairSteps > 0) add('perStepPrice', 'Stair installation price per step');
-    if (vinylUnderlaymentApplies(c, p)) add('underlaymentPerSqft', 'Installed-area underlayment sell price per square foot');
+    if (vinylUnderlaymentApplies(c, p)) {
+      add('underlaymentPerSqft', 'Installed-area underlayment sell price per square foot');
+      out.push({ path: 'underlaymentPriceBasis', label: 'Flooring underlayment price basis', kind: 'enum', values: ['installed_area_sell_price', 'cost'] });
+    }
     if (serviceType === 'FLOORING_REPLACEMENT' && c.subfloorIssues) add('subfloorAllowancePerSqft', 'Subfloor repair allowance per affected square foot');
   } else if (serviceType.startsWith('FENCING_')) {
     add(`laborPerLinearFoot.${c.fenceType}`, 'Fence labor price for the selected fence type');
     add(`materialPerLinearFoot.${c.fenceType}`, 'Fence material price for the selected fence type');
     out.push({ path: `postsIncludedInMaterial.${c.fenceType}`, label: 'Posts included in material rate for selected fence type', kind: 'boolean' });
     if (p.postsIncludedInMaterial?.[c.fenceType] === false) add(`postPrice.${c.fenceType}`, 'Fence post price for the selected fence type');
-    if (c.gateCount > 0) add(`gatePrice.${c.fenceType}`, "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.");
     add('minimumJob', 'Minimum fence job price', { kind: 'minimum' });
     if (serviceType === 'FENCING_REPLACEMENT' && c.oldFenceRemoval) add(`removalPerLinearFoot.${c.fenceType}`, 'Fence removal price for the selected fence type');
   } else if (serviceType.startsWith('CONCRETE_')) {
@@ -933,7 +1104,6 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add(`materialPerSqft.${c.sidingType}`, 'Siding material price for the selected siding type');
     add('minimumJob', 'Minimum siding job price', { kind: 'minimum' });
     if (c.oldSidingRemoval) add('removalPerSqft', 'Existing siding removal price per square foot');
-    if (c.trimIncluded) add('trimPerLinearFoot', 'Siding trim price per measured linear foot');
   } else if (serviceType === 'SIDING_REPAIR') {
     add('laborHourlyRate', 'Siding repair labor rate per hour');
     add('repairMinimum', 'Minimum siding repair visit price', { kind: 'minimum' });
@@ -955,7 +1125,6 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
 
 function validateRequirementValue(requirementDefinition, value) {
   if (requirementDefinition.kind === 'minimum') return nonNegativeMoney(value);
-  if (requirementDefinition.kind === 'positive_money') return positiveMoney(value);
   if (requirementDefinition.kind === 'positive_number') return positive(value);
   if (requirementDefinition.kind === 'non_negative_money') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'boolean') return typeof value === 'boolean';
@@ -964,136 +1133,212 @@ function validateRequirementValue(requirementDefinition, value) {
   return false;
 }
 
-function allNumericLeaves(value, predicate) {
-  if (typeof value === 'number') return predicate(value);
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  const values = Object.values(value);
-  return values.length > 0 && values.every(child => allNumericLeaves(child, predicate));
-}
-
-function mapUsesAllowedKeys(value, allowed, requireAll = false) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  const keys = Object.keys(value);
-  if (!keys.length || keys.some(key => !allowed.includes(key))) return false;
-  return !requireAll || allowed.every(key => keys.includes(key));
-}
 
 function leafPaths(value, prefix = '') {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return [prefix];
   return Object.keys(value).sort().flatMap(key => leafPaths(value[key], prefix ? `${prefix}.${key}` : key));
 }
 
-function sameShape(...values) {
-  if (values.some(value => value === undefined)) return true;
-  const shapes = values.map(value => JSON.stringify(leafPaths(value)));
-  return shapes.every(shape => shape === shapes[0]);
-}
-
-const hasOwn = (value, key) => Boolean(value) && typeof value === 'object' && Object.hasOwn(value, key);
-
-function validateRepairCube(value, firstLevelAllowed = null, leafPredicate = positive) {
-  if (!value || typeof value !== 'object' || Array.isArray(value) || !Object.keys(value).length) return false;
-  if (firstLevelAllowed && Object.keys(value).some(key => !firstLevelAllowed.includes(key))) return false;
-  return Object.values(value).every(second => {
-    if (!second || typeof second !== 'object' || Array.isArray(second) || !Object.keys(second).length) return false;
-    return Object.values(second).every(row => exactKeys(row, SIZE_KEYS) && SIZE_KEYS.every(size => leafPredicate(row[size])));
-  });
-}
-
-function validatePricingStructures(serviceType, p) {
-  const errors = [];
-  for (const name of scalarMoneyFields(serviceType)) {
-    if (p[name] === undefined) continue;
-    const zeroAllowed = zeroAllowedMoney(serviceType, name);
-    const valid = zeroAllowed ? nonNegativeMoney(p[name]) : positiveMoney(p[name]);
-    if (!valid) errors.push(`${name} must be ${zeroAllowed ? 'a non-negative' : 'a positive'} integer-cent amount.`);
+function isRecord(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  try {
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+  } catch {
+    return false;
   }
+}
+function deepFreeze(value) {
+  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
+  for (const nested of Object.values(value)) deepFreeze(nested);
+  return Object.freeze(value);
+}
 
-  if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) errors.push('baggingSurchargePercent must be from 0 to 500.');
-  const positiveMap = (name, allowed = null, requireAll = false, predicate = positiveMoney) => {
-    if (p[name] === undefined) return;
-    if ((allowed && !mapUsesAllowedKeys(p[name], allowed, requireAll)) || !allNumericLeaves(p[name], predicate)) errors.push(`${name} contains an unsupported, missing, zero, or invalid price.`);
-  };
+
+function structureDiagnostic(diagnostics, type, path, message, kind = 'structure') {
+  diagnostics.push(ownerDiagnostic(type, kind, path, message));
+}
+
+function inspectPriceMap(diagnostics, pricing, name, { allowedKeys = null, requireAll = false, predicate = nonNegativeMoney, canonicalKeys = false } = {}) {
+  const value = pricing[name];
+  if (value === undefined) return;
+  if (!isRecord(value) || !Object.keys(value).length) {
+    structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-empty price map.`);
+    return;
+  }
+  const keys = Object.keys(value);
+  if (allowedKeys) {
+    for (const key of keys) if (!allowedKeys.includes(key)) structureDiagnostic(diagnostics, 'unsupported', `${name}.${key}`, `${name}.${key} is not supported.`);
+    if (requireAll) for (const key of allowedKeys) if (!Object.hasOwn(value, key)) structureDiagnostic(diagnostics, 'missing', `${name}.${key}`, `${name}.${key} is required.`);
+  }
+  if (canonicalKeys) for (const key of keys) if (!CANONICAL_SLUG.test(key)) structureDiagnostic(diagnostics, 'invalid', `${name}.${key}`, `${name}.${key} must use a canonical lowercase key.`);
+  for (const key of keys) {
+    if ((allowedKeys && !allowedKeys.includes(key)) || (canonicalKeys && !CANONICAL_SLUG.test(key))) continue;
+    if (!predicate(value[key])) structureDiagnostic(diagnostics, 'invalid', `${name}.${key}`, `${name}.${key} contains an invalid value.`);
+  }
+}
+
+function inspectMatchingFirstLevelKeys(diagnostics, pricing, names, relationship) {
+  const union = new Set(names.flatMap(name => isRecord(pricing[name]) ? Object.keys(pricing[name]) : []));
+  for (const key of union) {
+    for (const name of names) {
+      if (!isRecord(pricing[name]) || !Object.hasOwn(pricing[name], key)) {
+        structureDiagnostic(diagnostics, 'missing', `${name}.${key}`, `${relationship} must contain matching keys.`, 'relationship');
+      }
+    }
+  }
+}
+
+function inspectRepairCube(diagnostics, value, name, { firstLevelAllowed = null, leafPredicate = positive } = {}) {
+  if (value === undefined) return;
+  if (!isRecord(value) || !Object.keys(value).length) {
+    structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-empty three-level pricing map.`);
+    return;
+  }
+  for (const [firstKey, secondLevel] of Object.entries(value)) {
+    const firstPath = `${name}.${firstKey}`;
+    if (firstLevelAllowed && !firstLevelAllowed.includes(firstKey)) {
+      structureDiagnostic(diagnostics, 'unsupported', firstPath, `${firstPath} is not supported.`);
+      continue;
+    }
+    if (!firstLevelAllowed && !CANONICAL_SLUG.test(firstKey)) {
+      structureDiagnostic(diagnostics, 'invalid', firstPath, `${firstPath} must use a canonical lowercase key.`);
+      continue;
+    }
+    if (!isRecord(secondLevel) || !Object.keys(secondLevel).length) {
+      structureDiagnostic(diagnostics, 'invalid', firstPath, `${firstPath} must contain at least one repair type.`);
+      continue;
+    }
+    for (const [secondKey, row] of Object.entries(secondLevel)) {
+      const rowPath = `${firstPath}.${secondKey}`;
+      if (!CANONICAL_SLUG.test(secondKey)) {
+        structureDiagnostic(diagnostics, 'invalid', rowPath, `${rowPath} must use a canonical lowercase key.`);
+        continue;
+      }
+      if (!isRecord(row)) {
+        structureDiagnostic(diagnostics, 'invalid', rowPath, `${rowPath} must contain small, medium, and large values.`);
+        continue;
+      }
+      for (const key of Object.keys(row)) if (!SIZE_KEYS.includes(key)) structureDiagnostic(diagnostics, 'unsupported', `${rowPath}.${key}`, `${rowPath}.${key} is not a supported repair-size key.`);
+      for (const size of SIZE_KEYS) {
+        const path = `${rowPath}.${size}`;
+        if (!Object.hasOwn(row, size)) structureDiagnostic(diagnostics, 'missing', path, `${path} is required.`);
+        else if (!leafPredicate(row[size])) structureDiagnostic(diagnostics, 'invalid', path, `${path} contains an invalid value.`);
+      }
+    }
+  }
+}
+
+function inspectMatchingLeafPaths(diagnostics, pricing, names, relationship) {
+  const pathsByName = new Map(names.map(name => [name, new Set(isRecord(pricing[name]) ? leafPaths(pricing[name]) : [])]));
+  const union = new Set([...pathsByName.values()].flatMap(paths => [...paths]));
+  for (const suffix of union) {
+    for (const name of names) {
+      if (!pathsByName.get(name).has(suffix)) structureDiagnostic(diagnostics, 'missing', `${name}.${suffix}`, `${relationship} must contain matching nested paths.`, 'relationship');
+    }
+  }
+}
+
+export function validatePricingStructuresDetailed(serviceType, p = {}) {
+  const diagnostics = [];
+  if (!SERVICE_TYPES.includes(serviceType)) {
+    return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
+  }
+  const snapshot = snapshotPlainData(p, 'pricing');
+  if (!snapshot.ok) return [ownerDiagnostic(
+    'invalid', 'pricing_structure', relativeSnapshotPath(snapshot, 'pricing'),
+    `Pricing could not be read safely: ${snapshot.reason}.`
+  )];
+  p = snapshot.value;
+
+  for (const name of scalarMoneyFields(serviceType)) {
+    if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
+  }
+  if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
+
   if (serviceType === 'ROOFING_REPLACEMENT') {
-    for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) positiveMap(name);
-    if (!sameShape(p.laborPerSquare, p.materialCostPerSquare, p.underlaymentPerSquare)) errors.push('Roof replacement labor, material, and underlayment offerings must use identical replacement-material keys.');
+    for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
+    inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSquare', 'materialCostPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis'], 'Roof replacement labor, material, underlayment, and underlayment-basis maps');
   }
   if (serviceType === 'ROOFING_REPAIR') {
-    if (p.repairHours !== undefined && !validateRepairCube(p.repairHours)) errors.push('repairHours must contain complete small, medium, and large rows.');
-    if (p.repairMaterialAllowance !== undefined && !validateRepairCube(p.repairMaterialAllowance, null, positiveMoney)) errors.push('repairMaterialAllowance must contain complete positive integer-cent rows.');
-    if (!sameShape(p.repairHours, p.repairMaterialAllowance)) errors.push('Roof repair hour and material maps must contain identical roof, repair, and size paths.');
+    inspectRepairCube(diagnostics, p.repairHours, 'repairHours');
+    inspectRepairCube(diagnostics, p.repairMaterialAllowance, 'repairMaterialAllowance', { leafPredicate: nonNegativeMoney });
+    inspectMatchingLeafPaths(diagnostics, p, ['repairHours', 'repairMaterialAllowance'], 'Roof repair hour and material maps');
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) positiveMap(name);
-    if (!sameShape(p.laborPerSqft, p.membraneCostPerSqft, p.tearOffPerSqft)) errors.push('Flat-roof labor, membrane, and tear-off maps must use identical membrane keys.');
+    for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) {
+      inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
+      if (isRecord(p[name]) && !Object.hasOwn(p[name], 'average')) structureDiagnostic(diagnostics, 'missing', `${name}.average`, `${name}.average is the required fallback price.`);
+    }
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft'], 'Flat-roof labor, membrane, and tear-off maps');
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    if (p.patchRepairHours !== undefined && !validateRepairCube(p.patchRepairHours)) errors.push('patchRepairHours must contain complete membrane, repair, and size rows.');
-    if (p.patchMaterialAllowance !== undefined && !validateRepairCube(p.patchMaterialAllowance, null, positiveMoney)) errors.push('patchMaterialAllowance must contain complete positive integer-cent rows.');
-    if (!sameShape(p.patchRepairHours, p.patchMaterialAllowance)) errors.push('Flat-roof repair hour and material maps must contain identical membrane, repair, and size paths.');
+    inspectRepairCube(diagnostics, p.patchRepairHours, 'patchRepairHours');
+    inspectRepairCube(diagnostics, p.patchMaterialAllowance, 'patchMaterialAllowance', { leafPredicate: nonNegativeMoney });
+    inspectMatchingLeafPaths(diagnostics, p, ['patchRepairHours', 'patchMaterialAllowance'], 'Flat-roof repair hour and material maps');
   }
   if (serviceType.startsWith('FLOORING_')) {
-    positiveMap('laborPerSqft', FLOORING_TYPES);
-    positiveMap('materialPerSqft', FLOORING_TYPES);
-    positiveMap('removalPerSqft', null, false, nonNegativeMoney);
-    if (!sameShape(p.laborPerSqft, p.materialPerSqft)) errors.push('Flooring labor and material maps must use identical offered flooring-type keys.');
+    inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: FLOORING_TYPES });
+    inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: FLOORING_TYPES });
+    inspectPriceMap(diagnostics, p, 'removalPerSqft', { canonicalKeys: true });
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Flooring labor and material maps');
+    if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
   }
   if (serviceType.startsWith('FENCING_')) {
-    for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot']) positiveMap(name);
-    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) positiveMap(name, null, false, nonNegativeMoney);
+    for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'gatePrice', 'removalPerLinearFoot']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     if (p.postsIncludedInMaterial !== undefined) {
-      if (!p.postsIncludedInMaterial || typeof p.postsIncludedInMaterial !== 'object' || Array.isArray(p.postsIncludedInMaterial) || !Object.values(p.postsIncludedInMaterial).every(value => typeof value === 'boolean')) errors.push('postsIncludedInMaterial must contain boolean values by fence type.');
+      if (!isRecord(p.postsIncludedInMaterial) || !Object.keys(p.postsIncludedInMaterial).length) structureDiagnostic(diagnostics, 'invalid', 'postsIncludedInMaterial', 'postsIncludedInMaterial must be a non-empty boolean map.');
+      else {
+        for (const [key, value] of Object.entries(p.postsIncludedInMaterial)) {
+          if (!CANONICAL_SLUG.test(key)) structureDiagnostic(diagnostics, 'invalid', `postsIncludedInMaterial.${key}`, `postsIncludedInMaterial.${key} must use a canonical lowercase key.`);
+          if (typeof value !== 'boolean') structureDiagnostic(diagnostics, 'invalid', `postsIncludedInMaterial.${key}`, `postsIncludedInMaterial.${key} must be true or false.`);
+        }
+      }
     }
-    if (!sameShape(p.laborPerLinearFoot, p.materialPerLinearFoot, p.postsIncludedInMaterial)) errors.push('Fence labor, material, and post-inclusion maps must use identical offered fence-type keys.');
-    const offeredFenceTypes = Object.keys(p.laborPerLinearFoot || {});
-    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) {
-      if (p[name] && Object.keys(p[name]).some(key => !offeredFenceTypes.includes(key))) errors.push(`${name} contains a fence type that is not offered.`);
-    }
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerLinearFoot', 'materialPerLinearFoot', 'postsIncludedInMaterial'], 'Fence labor, material, and post-inclusion maps');
+    const offered = new Set(isRecord(p.laborPerLinearFoot) ? Object.keys(p.laborPerLinearFoot) : []);
+    for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) if (isRecord(p[name])) for (const key of Object.keys(p[name])) if (!offered.has(key)) structureDiagnostic(diagnostics, 'unsupported', `${name}.${key}`, `${name}.${key} is not an offered fence type.`);
   }
   if (serviceType === 'LANDSCAPING_CLEANUP' && p.debrisPricing !== undefined) {
-    if (!exactKeys(p.debrisPricing, ['light', 'moderate', 'heavy']) || Object.values(p.debrisPricing).some(row => !exactKeys(row, ['laborMultiplier', 'disposalFlat']) || !positive(row.laborMultiplier) || !nonNegativeMoney(row.disposalFlat))) errors.push('debrisPricing must contain complete light, moderate, and heavy laborMultiplier/disposalFlat rows with non-negative integer-cent disposal charges.');
+    if (!isRecord(p.debrisPricing)) structureDiagnostic(diagnostics, 'invalid', 'debrisPricing', 'debrisPricing must contain complete debris-level rows.');
+    else {
+      for (const key of Object.keys(p.debrisPricing)) if (!['light', 'moderate', 'heavy'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${key}`, `debrisPricing.${key} is not supported.`);
+      for (const level of ['light', 'moderate', 'heavy']) {
+        const row = p.debrisPricing[level];
+        if (!isRecord(row)) {
+          structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}`, `debrisPricing.${level} is required.`);
+          continue;
+        }
+        for (const key of Object.keys(row)) if (!['laborMultiplier', 'disposalFlat'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${level}.${key}`, `debrisPricing.${level}.${key} is not supported.`);
+        if (!Object.hasOwn(row, 'laborMultiplier')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier is required.`);
+        else if (!positive(row.laborMultiplier)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier must be positive.`);
+        if (!Object.hasOwn(row, 'disposalFlat')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat is required.`);
+        else if (!nonNegativeMoney(row.disposalFlat)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat must be a non-negative integer-cent amount.`);
+      }
+    }
   }
-  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) positiveMap('mulchMaterialPerYard');
-  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType) && p.bedPrepLaborPerSqft !== undefined) positiveMap('bedPrepLaborPerSqft', ['needs_weeding', 'overgrown'], true);
+  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'mulchMaterialPerYard', { canonicalKeys: true });
+  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'bedPrepLaborPerSqft', { allowedKeys: ['needs_weeding', 'overgrown'], requireAll: p.bedPrepLaborPerSqft !== undefined });
   if (serviceType === 'LANDSCAPING_PLANTING') {
-    positiveMap('plantingLaborPerPlant', SIZE_KEYS, true);
-    positiveMap('plantMaterialAllowance', SIZE_KEYS, true);
+    inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: SIZE_KEYS, requireAll: true });
+    inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: SIZE_KEYS, requireAll: true });
   }
   if (serviceType === 'LANDSCAPING_MOWING') {
-    positiveMap('frequencyMultipliers', ['weekly', 'biweekly', 'monthly', 'one_time'], true, positive);
-    positiveMap('overgrowthMultipliers', ['maintained', 'overgrown', 'severe'], true, positive);
-    if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) errors.push('baggingSurchargePercent must be from 0 to 500.');
+    inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
+    inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
   }
   if (serviceType === 'SIDING_REPLACEMENT') {
-    positiveMap('laborPerSqft', SIDING_TYPES);
-    positiveMap('materialPerSqft', SIDING_TYPES);
-    if (!sameShape(p.laborPerSqft, p.materialPerSqft)) errors.push('Siding labor and material maps must use identical offered siding-type keys.');
+    inspectPriceMap(diagnostics, p, 'laborPerSqft', { allowedKeys: SIDING_TYPES });
+    inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: SIDING_TYPES });
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Siding labor and material maps');
   }
   if (serviceType === 'SIDING_REPAIR') {
-    if (p.repairHours !== undefined && !validateRepairCube(p.repairHours, SIDING_TYPES)) errors.push('repairHours must contain complete siding, damage, and size rows.');
-    if (p.materialAllowance !== undefined && !validateRepairCube(p.materialAllowance, SIDING_TYPES, positiveMoney)) errors.push('materialAllowance must contain complete positive integer-cent rows.');
-    if (!sameShape(p.repairHours, p.materialAllowance)) errors.push('Siding repair hour and material maps must contain identical siding, damage, and size paths.');
+    inspectRepairCube(diagnostics, p.repairHours, 'repairHours', { firstLevelAllowed: SIDING_TYPES });
+    inspectRepairCube(diagnostics, p.materialAllowance, 'materialAllowance', { firstLevelAllowed: SIDING_TYPES, leafPredicate: nonNegativeMoney });
+    inspectMatchingLeafPaths(diagnostics, p, ['repairHours', 'materialAllowance'], 'Siding repair hour and material maps');
   }
-  return errors;
-}
-
-const CROSS_FIELD_VALIDATION_PATHS = [
-  ['Roof replacement labor, material, and underlayment', ['laborPerSquare', 'materialCostPerSquare', 'underlaymentPerSquare']],
-  ['Roof repair hour and material', ['repairHours', 'repairMaterialAllowance']],
-  ['Flat-roof labor, membrane, and tear-off', ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']],
-  ['Flat-roof repair hour and material', ['patchRepairHours', 'patchMaterialAllowance']],
-  ['Flooring labor and material', ['laborPerSqft', 'materialPerSqft']],
-  ['Fence labor, material, and post-inclusion', ['laborPerLinearFoot', 'materialPerLinearFoot', 'postsIncludedInMaterial']],
-  ['Siding labor and material', ['laborPerSqft', 'materialPerSqft']],
-  ['Siding repair hour and material', ['repairHours', 'materialAllowance']],
-  ['roomSizeThresholds.smallMaxSqft', ['roomSizeThresholds.smallMaxSqft', 'roomSizeThresholds.mediumMaxSqft']]
-];
-
-function validationPaths(message, allowedFields) {
-  const cross = CROSS_FIELD_VALIDATION_PATHS.find(([prefix]) => message.startsWith(prefix));
-  if (cross) return { paths: cross[1], crossField: true };
-  const token = message.match(/^([A-Za-z][A-Za-z0-9_]*)/)?.[1];
-  return { paths: token && allowedFields.has(token) ? [token] : [], crossField: false };
+  return uniqueDiagnostics(diagnostics);
 }
 
 function uniqueDiagnostics(items) {
@@ -1106,123 +1351,250 @@ function uniqueDiagnostics(items) {
   });
 }
 
-export function validateOwnerPricing(serviceType, customerInputs, pricing = {}) {
+function blockedOwnerValidation(path, message) {
+  const diagnostic = ownerDiagnostic('invalid', 'owner_pricing', path, message);
+  return {
+    ok: false,
+    missingOwnerFields: [],
+    invalidOwnerFields: [path],
+    crossFieldOwnerFields: [],
+    unsupportedOwnerFields: [],
+    unexpectedOwnerFields: [],
+    ownerDecisionRequired: [],
+    ownerDiagnostics: [diagnostic],
+    validationMessages: [message]
+  };
+}
+
+export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, serviceRules = {}) {
+  if (!SERVICE_TYPES.includes(serviceType)) {
+    return blockedOwnerValidation('serviceType', 'Unsupported service type.');
+  }
+  const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
+  if (!pricingSnapshot.ok) return blockedOwnerValidation(
+    relativeSnapshotPath(pricingSnapshot, 'pricing'),
+    `Owner pricing could not be read safely: ${pricingSnapshot.reason}.`
+  );
+  pricing = pricingSnapshot.value;
+  const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
+  if (!customerSnapshot.ok) return blockedOwnerValidation(customerSnapshot.errorPath, `Customer inputs could not be read safely: ${customerSnapshot.reason}.`);
+  customerInputs = customerSnapshot.value;
+  const rulesSnapshot = snapshotPlainData(serviceRules, 'serviceRules');
+  if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
+  serviceRules = rulesSnapshot.value;
   const allowed = new Set(allowedPricingFields(serviceType));
   const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
-  const structuralErrors = validatePricingStructures(serviceType, pricing);
-  const class2Errors = validateClass2Factors(serviceType, pricing);
+  const structureDiagnostics = validatePricingStructuresDetailed(serviceType, pricing);
+  const class2Diagnostics = validateClass2FactorsDetailed(serviceType, pricing);
   const missingOwnerFields = [];
   const invalidOwnerFields = [];
   const crossFieldOwnerFields = [];
-  const ownerDiagnostics = [];
+  const ownerDiagnostics = [...structureDiagnostics, ...class2Diagnostics];
+
+  for (const diagnostic of ownerDiagnostics) {
+    if (diagnostic.type === 'missing') missingOwnerFields.push(diagnostic.path);
+    else if (diagnostic.type === 'unsupported') unsupportedOwnerFields.push(diagnostic.path);
+    else if (diagnostic.type === 'cross_field') crossFieldOwnerFields.push(diagnostic.path);
+    else invalidOwnerFields.push(diagnostic.path);
+  }
 
   for (const item of ownerRequirements(serviceType, customerInputs, pricing)) {
     const value = valueAtPath(pricing, item.path);
     if (missing(value)) {
       missingOwnerFields.push(item.path);
-      ownerDiagnostics.push({ type: 'missing', kind: item.kind, path: item.path, message: `${item.label} is required.` });
+      ownerDiagnostics.push(ownerDiagnostic('missing', item.kind, item.path, `${item.label} is required.`));
     } else if (!validateRequirementValue(item, value)) {
       invalidOwnerFields.push(item.path);
-      ownerDiagnostics.push({ type: 'invalid', kind: item.kind, path: item.path, message: `${item.label} is invalid.` });
+      ownerDiagnostics.push(ownerDiagnostic('invalid', item.kind, item.path, `${item.label} is invalid.`));
     }
   }
 
-  for (const message of [...structuralErrors, ...class2Errors]) {
-    const details = validationPaths(message, allowed);
-    for (const path of details.paths) {
-      if (details.crossField) crossFieldOwnerFields.push(path);
-      else invalidOwnerFields.push(path);
-      ownerDiagnostics.push({ type: details.crossField ? 'cross_field' : 'invalid', kind: details.crossField ? 'relationship' : 'structure', path, message });
-    }
-  }
-
-  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && positive(pricing.low) && positive(pricing.high) && pricing.high <= pricing.low) {
+  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && nonNegativeMoney(pricing.low) && nonNegativeMoney(pricing.high) && pricing.high <= pricing.low) {
     invalidOwnerFields.push('high');
     crossFieldOwnerFields.push('low', 'high');
-    ownerDiagnostics.push({ type: 'cross_field', kind: 'range_order', path: 'high', message: 'Custom range high price must be greater than low price.' });
+    ownerDiagnostics.push(ownerDiagnostic('cross_field', 'range_order', 'high', 'Custom range high price must be greater than low price.'));
   }
 
   const ownerDecisionRequired = [];
+  const requireDecision = (path, kind, message) => ownerDecisionRequired.push({ path, kind, message });
   if (serviceType.startsWith('FENCING_')) {
-    const decisions = [{
-      path: 'concretePerPost',
-      kind: 'mixed_charge_allocation',
-      message: 'Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule.'
-    }];
-    if (customerInputs.gateCount > 0) {
-      decisions.push({
-        path: `gatePrice.${customerInputs.fenceType}`,
-        kind: 'gate_width_pricing_contract',
-        message: 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.'
-      });
-    }
-    ownerDecisionRequired.push(...decisions);
-    ownerDiagnostics.push(...decisions.map(decision => ({ type: 'owner_decision', ...decision })));
+    requireDecision('postDerivationRule', 'post_geometry_contract', 'Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted.');
+    requireDecision('concretePerPost', 'mixed_charge_allocation', 'Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule.');
+    if (customerInputs.gateCount > 0) requireDecision(`gatePrice.${customerInputs.fenceType}`, 'gate_width_pricing_contract', 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.');
   }
+  if (serviceType === 'ROOFING_REPLACEMENT') {
+    const basisPath = `underlaymentPriceBasis.${customerInputs.replacementRoofType}`;
+    if (valueAtPath(pricing, basisPath) === 'cost') requireDecision(basisPath, 'purchasable_underlayment_contract', 'Cost-based roof underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
+    if (customerInputs.serviceScope === 'partial' && customerInputs.partialAreaSqft !== undefined && customerInputs.partialPercent !== undefined) {
+      requireDecision('partialMeasurementReconciliation', 'partial_measurement_reconciliation', 'Approve whether measured partial area or affected percentage controls when both are supplied, and the permitted reconciliation tolerance.');
+    }
+  }
+  if (serviceType === 'FLAT_ROOF_REPLACEMENT' && customerInputs.serviceScope === 'partial' &&
+      customerInputs.partialAreaSqft !== undefined && customerInputs.partialPercent !== undefined) {
+    requireDecision('partialMeasurementReconciliation', 'partial_measurement_reconciliation', 'Approve whether measured partial area or affected percentage controls when both are supplied, and the permitted reconciliation tolerance.');
+  }
+  if (serviceType.startsWith('FLOORING_')) {
+    if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType)) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
+    if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost') requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
+    const averageRoom = typeof customerInputs.sqft === 'number' && typeof customerInputs.roomCount === 'number' && customerInputs.roomCount > 0
+      ? customerInputs.sqft / customerInputs.roomCount
+      : null;
+    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none') requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
+    const thresholds = pricing.roomSizeThresholds;
+    if (Number.isFinite(averageRoom) && isRecord(thresholds) && (averageRoom === thresholds.smallMaxSqft || averageRoom === thresholds.mediumMaxSqft)) requireDecision('roomSizeThresholds', 'inclusive_boundary_contract', 'Approve whether flooring average-room maximum thresholds are inclusive. Quotes exactly on a threshold remain review-only.');
+  }
+  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost') requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
+  if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
+  if (serviceType === 'CUSTOM') requireDecision('customChargeClassification', 'custom_charge_classification', 'Classify the custom charge as labor, material, removal, disposal, equipment, permit, or an explicit mixed allocation before quoting.');
 
-  for (const path of unsupportedOwnerFields) ownerDiagnostics.push({ type: 'unsupported', kind: 'field', path, message: 'This pricing field is not supported for the selected service.' });
+  ownerDiagnostics.push(...ownerDecisionRequired.map(decision => ownerDiagnostic('owner_decision', decision.kind, decision.path, decision.message)));
+  for (const path of unsupportedOwnerFields) ownerDiagnostics.push(ownerDiagnostic('unsupported', 'field', path, 'This pricing field is not supported for the selected service.'));
 
-  const uniqueMissingOwnerFields = [...new Set(missingOwnerFields)];
-  const invalid = [...new Set(invalidOwnerFields)];
-  const cross = [...new Set(crossFieldOwnerFields)];
+  const missingFields = [...new Set(missingOwnerFields)];
+  const invalidFields = [...new Set(invalidOwnerFields)];
+  const unsupportedFields = [...new Set(unsupportedOwnerFields)];
+  const crossFields = [...new Set(crossFieldOwnerFields)];
+  const diagnostics = uniqueDiagnostics(ownerDiagnostics);
+  const validationMessages = [...new Set([...diagnostics.map(item => item.message), ...ownerDecisionRequired.map(item => item.message)])];
   return {
-    ok: !unsupportedOwnerFields.length && !structuralErrors.length && !class2Errors.length && !uniqueMissingOwnerFields.length && !invalid.length && !ownerDecisionRequired.length,
-    missingOwnerFields: uniqueMissingOwnerFields,
-    invalidOwnerFields: invalid,
-    crossFieldOwnerFields: cross,
-    unsupportedOwnerFields,
-    unexpectedOwnerFields: unsupportedOwnerFields,
+    ok: !missingFields.length && !invalidFields.length && !unsupportedFields.length && !crossFields.length && !ownerDecisionRequired.length,
+    missingOwnerFields: missingFields,
+    invalidOwnerFields: invalidFields,
+    crossFieldOwnerFields: crossFields,
+    unsupportedOwnerFields: unsupportedFields,
+    unexpectedOwnerFields: unsupportedFields,
     ownerDecisionRequired,
-    ownerDiagnostics: uniqueDiagnostics(ownerDiagnostics),
-    validationMessages: [...structuralErrors, ...class2Errors, ...ownerDecisionRequired.map(item => item.message)]
+    ownerDiagnostics: diagnostics,
+    validationMessages
   };
 }
 
-function exactObject(value, keys, validator) {
-  return exactKeys(value, keys) && keys.every(key => validator(value[key], key));
+function inspectRuleMap(diagnostics, source, name, keys, validator, expectedCopy) {
+  const value = source[name];
+  if (!isRecord(value)) {
+    if (missing(value)) for (const key of keys) diagnostics.push(ownerDiagnostic('missing', 'service_rule', `${name}.${key}`, `${name}.${key} is required.`));
+    else diagnostics.push(ownerDiagnostic('invalid', 'service_rule', name, `${name} must be an object.`));
+    return;
+  }
+  for (const key of Object.keys(value)) if (!keys.includes(key)) diagnostics.push(ownerDiagnostic('unsupported', 'service_rule', `${name}.${key}`, `${name}.${key} is not supported.`));
+  for (const key of keys) {
+    const path = `${name}.${key}`;
+    if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'service_rule', path, `${path} is required.`));
+    else if (!validator(value[key])) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', path, `${path} ${expectedCopy}.`));
+  }
 }
 
-export function validateServiceRules(ownerPricing = {}) {
-  const errors = [];
-  if (!exactObject(ownerPricing.feeRules, FEE_NAMES, value => FEE_RULE_MODES.includes(value))) {
-    errors.push(`feeRules must contain exactly ${FEE_NAMES.join(', ')} using supported applicability modes.`);
+export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
+  const snapshot = snapshotPlainData(ownerPricing, 'ownerPricing');
+  if (!snapshot.ok) return [ownerDiagnostic(
+    'invalid', 'service_rule', relativeSnapshotPath(snapshot, 'ownerPricing'),
+    `Owner pricing rules could not be read safely: ${snapshot.reason}.`
+  )];
+  ownerPricing = snapshot.value;
+  serviceType ||= ownerPricing.serviceType;
+  const diagnostics = [];
+  const nestedPricing = ownerPricing.pricing;
+  const hasNestedPricing = isRecord(nestedPricing);
+  if (nestedPricing === undefined) {
+    diagnostics.push(ownerDiagnostic('missing', 'service_rule', 'pricing', 'pricing must be stored as an object on the service.'));
+  } else if (!hasNestedPricing) {
+    diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'pricing', 'pricing must be an object.'));
   }
-  if (!exactObject(ownerPricing.priceBasisByCategory, PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value))) {
-    errors.push(`priceBasisByCategory must explicitly classify exactly: ${PRICE_BASIS_CATEGORIES.join(', ')}.`);
+  for (const key of Object.keys(ownerPricing)) {
+    if (!ALL_PRICING_FIELDS.has(key)) continue;
+    diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_pricing', key, `${key} must be stored inside pricing, not at the service root.`));
   }
-  if (!exactObject(ownerPricing.taxabilityByCategory, TAXABILITY_CATEGORIES, value => typeof value === 'boolean')) {
-    errors.push(`taxabilityByCategory must contain an explicit boolean for exactly: ${TAXABILITY_CATEGORIES.join(', ')}.`);
+  for (const key of BUSINESS_DEFAULT_FIELDS.filter(name => !['peakMonths', 'peakSurchargePercent'].includes(name))) {
+    if (Object.hasOwn(ownerPricing, key)) diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_business_default', key, `${key} is a business-wide default and cannot be stored on a service.`));
   }
-  if (ownerPricing.peakMonths !== undefined && (!Array.isArray(ownerPricing.peakMonths) || ownerPricing.peakMonths.some(month => !Number.isInteger(month) || month < 1 || month > 12))) errors.push('peakMonths must contain month numbers 1 through 12.');
-  if (ownerPricing.peakSurchargePercent !== undefined && (!nonNegative(ownerPricing.peakSurchargePercent) || ownerPricing.peakSurchargePercent > 500)) errors.push('peakSurchargePercent must be from 0 to 500.');
-  return errors;
+  if (ownerPricing.source !== undefined && !['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)) {
+    diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'source', 'source must be AI_SUGGESTED or AI_INTERVIEW when it is present.'));
+  }
+  if (ownerPricing.disclaimer !== undefined && (typeof ownerPricing.disclaimer !== 'string' || !ownerPricing.disclaimer.trim())) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'disclaimer', 'disclaimer must be non-empty text when it is present.'));
+  inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
+  inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
+  inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
+  if (ownerPricing.peakMonths !== undefined) {
+    const issue = monthListIssue(ownerPricing.peakMonths);
+    const path = issue?.path ? `peakMonths.${issue.path}` : 'peakMonths';
+    if (issue) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', path, `${path} ${issue.message}.`));
+  }
+  if (ownerPricing.peakSurchargePercent !== undefined && (!nonNegative(ownerPricing.peakSurchargePercent) || ownerPricing.peakSurchargePercent > 500)) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.'));
+  return uniqueDiagnostics(diagnostics);
+}
+
+export function validateServiceRules(ownerPricing = {}, serviceType) {
+  return [...new Set(validateServiceRulesDetailed(ownerPricing, serviceType).map(item => item.message))];
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = ['markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent', 'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'];
-  const missingFields = required.filter(name => missing(defaults[name]));
-  const errors = [];
-  const allowed = new Set(required);
-  const unexpected = Object.keys(defaults).filter(key => !allowed.has(key));
-  if (unexpected.length) errors.push(`Unsupported business defaults: ${unexpected.join(', ')}.`);
-  if (!['markup', 'margin'].includes(defaults.markupMode)) errors.push('markupMode must be markup or margin.');
-  if (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100) || defaults.markupPercent > 1000) errors.push('markupPercent is outside its supported range.');
-  for (const name of ['overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee']) if (!nonNegativeMoney(defaults[name])) errors.push(`${name} must be a non-negative integer-cent amount.`);
-  if (!['TAX_NONE', 'TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode)) errors.push('taxMode is invalid.');
-  if (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100) errors.push('taxPercent must be from 0 to 100.');
-  if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) errors.push('TAX_NONE requires a zero taxPercent.');
-  if (defaults.taxMode !== 'TAX_NONE' && defaults.taxPercent <= 0) errors.push('A taxable mode requires a positive taxPercent.');
-  if (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25) errors.push('rangeBufferPercent must be from 0 to 25.');
-  if (!exactObject(defaults.markupApplies, PRICE_BASIS_CATEGORIES, value => typeof value === 'boolean')) errors.push(`markupApplies must contain explicit booleans for exactly: ${PRICE_BASIS_CATEGORIES.join(', ')}.`);
-  if (!Array.isArray(defaults.peakMonths) || defaults.peakMonths.some(month => !Number.isInteger(month) || month < 1 || month > 12)) errors.push('peakMonths must contain month numbers 1 through 12.');
-  if (!nonNegative(defaults.peakSurchargePercent) || defaults.peakSurchargePercent > 500) errors.push('peakSurchargePercent must be from 0 to 500.');
-  return { ok: !missingFields.length && !errors.length, missingFields, errors };
+  const required = BUSINESS_DEFAULT_FIELDS;
+  const snapshot = snapshotPlainData(defaults, 'businessDefaults');
+  if (!snapshot.ok) {
+    const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
+    const diagnostic = ownerDiagnostic('invalid', 'business_default', snapshot.errorPath, message);
+    return {
+      ok: false,
+      missingFields: [],
+      invalidFields: [snapshot.errorPath],
+      unsupportedFields: [],
+      diagnostics: [diagnostic],
+      errors: [diagnostic.message]
+    };
+  }
+  defaults = snapshot.value;
+  const missingFields = required.filter(name => !Object.hasOwn(defaults, name) || missing(defaults[name]));
+  const invalidFields = [];
+  const unsupportedFields = Object.keys(defaults).filter(key => !required.includes(key));
+  const diagnostics = [
+    ...missingFields.map(path => ownerDiagnostic('missing', 'business_default', path, `${path} is required.`)),
+    ...unsupportedFields.map(path => ownerDiagnostic('unsupported', 'business_default', path, `${path} is not a supported business default.`))
+  ];
+  const invalid = (path, message) => {
+    invalidFields.push(path);
+    diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
+  };
+  if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
+  if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100) || defaults.markupPercent > 1000)) invalid('markupPercent', 'markupPercent is outside its supported range.');
+  for (const name of ['overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee']) if (!missing(defaults[name]) && !nonNegativeMoney(defaults[name])) invalid(name, `${name} must be a non-negative integer-cent amount.`);
+  if (!missing(defaults.taxMode) && !['TAX_NONE', 'TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode)) invalid('taxMode', 'taxMode is invalid.');
+  if (!missing(defaults.taxPercent) && (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100)) invalid('taxPercent', 'taxPercent must be from 0 to 100.');
+  if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) invalid('taxPercent', 'TAX_NONE requires a zero taxPercent.');
+  if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
+  if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
+  const markupDiagnostics = [];
+  inspectRuleMap(markupDiagnostics, defaults, 'markupApplies', PRICE_BASIS_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
+  for (const item of markupDiagnostics) {
+    diagnostics.push({ ...item, kind: 'business_default' });
+    if (item.type === 'missing') missingFields.push(item.path);
+    else if (item.type === 'unsupported') unsupportedFields.push(item.path);
+    else invalidFields.push(item.path);
+  }
+  if (!missing(defaults.peakMonths)) {
+    const issue = monthListIssue(defaults.peakMonths);
+    const path = issue?.path ? `peakMonths.${issue.path}` : 'peakMonths';
+    if (issue) invalid(path, `${path} ${issue.message}.`);
+  }
+  if (!missing(defaults.peakSurchargePercent) && (!nonNegative(defaults.peakSurchargePercent) || defaults.peakSurchargePercent > 500)) invalid('peakSurchargePercent', 'peakSurchargePercent must be from 0 to 500.');
+  const finalDiagnostics = uniqueDiagnostics(diagnostics);
+  const errors = [...new Set(finalDiagnostics.filter(item => item.type !== 'missing').map(item => item.message))];
+  const finalMissing = [...new Set(missingFields)];
+  const finalInvalid = [...new Set(invalidFields)];
+  const finalUnsupported = [...new Set(unsupportedFields)];
+  return {
+    ok: !finalMissing.length && !finalInvalid.length && !finalUnsupported.length,
+    missingFields: finalMissing,
+    invalidFields: finalInvalid,
+    unsupportedFields: finalUnsupported,
+    diagnostics: finalDiagnostics,
+    errors
+  };
 }
 
 export function contractMetadata() {
   return SERVICE_TYPES.map(serviceType => ({
     serviceType,
-    customerFields: Object.entries(MEASUREMENT_CONTRACTS[serviceType].fields).map(([name, definition]) => ({ name, ...definition })),
+    customerFields: Object.entries(MEASUREMENT_CONTRACTS[serviceType].fields).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
     class2Fields: Object.entries(CLASS2_DEFINITIONS[serviceType] || {}).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
     allowedPricingFields: allowedPricingFields(serviceType)
   }));
