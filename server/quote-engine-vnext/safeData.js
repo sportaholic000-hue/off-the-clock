@@ -1,4 +1,5 @@
-const SNAPSHOT_VALUES = new WeakSet();
+const MAX_SNAPSHOT_DEPTH = 100;
+const MAX_SNAPSHOT_VALUES = 100_000;
 
 function fail(path, reason) {
   return { ok: false, value: undefined, errorPath: path, reason };
@@ -8,10 +9,11 @@ function joinPath(path, key) {
   return path ? `${path}.${String(key)}` : String(key);
 }
 
-function clonePlainData(value, path, ancestors, nonPlainPaths, isRoot = false) {
+function clonePlainData(value, path, ancestors, nonPlainPaths, state, depth = 0, isRoot = false) {
+  state.values += 1;
+  if (state.values > MAX_SNAPSHOT_VALUES) return fail(path, `quote data exceeds ${MAX_SNAPSHOT_VALUES} inspected values`);
+  if (depth > MAX_SNAPSHOT_DEPTH) return fail(path, `quote data nesting exceeds ${MAX_SNAPSHOT_DEPTH} levels`);
   if (value === null || typeof value !== 'object') return { ok: true, value };
-  if (SNAPSHOT_VALUES.has(value)) return { ok: true, value };
-
 
   let prototype;
   let descriptors;
@@ -31,7 +33,6 @@ function clonePlainData(value, path, ancestors, nonPlainPaths, isRoot = false) {
   ancestors.add(value);
 
   const output = array ? new Array(value.length) : Object.create(prototype === null ? null : Object.prototype);
-  SNAPSHOT_VALUES.add(output);
   for (const key of Reflect.ownKeys(descriptors)) {
     const descriptor = descriptors[key];
     if (!descriptor.enumerable) continue;
@@ -44,7 +45,7 @@ function clonePlainData(value, path, ancestors, nonPlainPaths, isRoot = false) {
       ancestors.delete(value);
       return fail(propertyPath, 'accessor properties are not accepted as quote data');
     }
-    const cloned = clonePlainData(descriptor.value, propertyPath, ancestors, nonPlainPaths);
+    const cloned = clonePlainData(descriptor.value, propertyPath, ancestors, nonPlainPaths, state, depth + 1);
     if (!cloned.ok) {
       ancestors.delete(value);
       return cloned;
@@ -64,9 +65,8 @@ export function snapshotPlainData(value, rootPath = 'value') {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return fail(rootPath, 'value must be a plain data object');
   }
-  if (SNAPSHOT_VALUES.has(value)) return { ok: true, value, nonPlainPaths: [] };
   const nonPlainPaths = [];
-  const snapshot = clonePlainData(value, rootPath, new Set(), nonPlainPaths, true);
+  const snapshot = clonePlainData(value, rootPath, new Set(), nonPlainPaths, { values: 0 }, 0, true);
   return snapshot.ok ? { ...snapshot, nonPlainPaths } : snapshot;
 }
 

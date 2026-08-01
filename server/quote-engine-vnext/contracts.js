@@ -1511,6 +1511,25 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'source', 'source must be AI_SUGGESTED or AI_INTERVIEW when it is present.'));
   }
   if (ownerPricing.disclaimer !== undefined && (typeof ownerPricing.disclaimer !== 'string' || !ownerPricing.disclaimer.trim())) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'disclaimer', 'disclaimer must be non-empty text when it is present.'));
+  if (ownerPricing.confirmedFields !== undefined) {
+    if (!isRecord(ownerPricing.confirmedFields)) {
+      diagnostics.push(ownerDiagnostic('invalid', 'ai_confirmation', 'confirmedFields', 'confirmedFields must be an object of explicit boolean approvals.'));
+    } else {
+      const confirmableFields = new Set(
+        ['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)
+          ? aiConfirmationFieldsVNext(ownerPricing, hasNestedPricing ? nestedPricing : {})
+          : []
+      );
+      for (const [field, value] of Object.entries(ownerPricing.confirmedFields)) {
+        const path = `confirmedFields.${field}`;
+        if (!confirmableFields.has(field)) {
+          diagnostics.push(ownerDiagnostic('unsupported', 'ai_confirmation', path, `${path} does not match a confirmable field on this service.`));
+        } else if (typeof value !== 'boolean') {
+          diagnostics.push(ownerDiagnostic('invalid', 'ai_confirmation', path, `${path} must be true or false.`));
+        }
+      }
+    }
+  }
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
   inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
   inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');

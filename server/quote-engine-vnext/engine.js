@@ -136,27 +136,42 @@ function cloneForEvidence(value, fallback) {
   }
 }
 
-export function mergePricingVNext(base, override) {
-  if (!isPlainObject(base) || !isPlainObject(override)) {
-    throw new TypeError('Base pricing and tier overrides must both be objects.');
+function pricingSnapshotOrThrow(value, path) {
+  if (!isPlainObject(value)) {
+    throw new TypeError(`${path} must be an object.`);
   }
-  const baseSnapshot = snapshotPlainData(base, 'basePricing');
-  const overrideSnapshot = snapshotPlainData(override, 'tierOverrides');
-  for (const [label, snapshot] of [['Base pricing', baseSnapshot], ['Tier overrides', overrideSnapshot]]) {
-    if (!snapshot.ok) {
-      throw new TypeError(`${label} could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
-    }
-    if (snapshot.nonPlainPaths.length) {
-      throw new TypeError(`${label} must contain only plain data objects; ${snapshot.nonPlainPaths[0]} is not plain data.`);
-    }
+  const snapshot = snapshotPlainData(value, path);
+  if (!snapshot.ok) {
+    throw new TypeError(`${path} could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
   }
-  base = baseSnapshot.value;
-  override = overrideSnapshot.value;
-  const out = structuredClone(base);
+  if (snapshot.nonPlainPaths.length) {
+    throw new TypeError(`${path} must contain only plain data objects; ${snapshot.nonPlainPaths[0]} is not plain data.`);
+  }
+  return snapshot.value;
+}
+
+function clonePricingForDiagnostics(value) {
+  if (value === null || typeof value !== 'object') return value;
+  const out = Array.isArray(value)
+    ? new Array(value.length)
+    : Object.create(Object.getPrototypeOf(value) === null ? null : Object.prototype);
+  for (const key of Object.keys(value)) {
+    Object.defineProperty(out, key, {
+      value: clonePricingForDiagnostics(value[key]),
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  }
+  return out;
+}
+
+function mergePricingSnapshots(base, override) {
+  const out = clonePricingForDiagnostics(base);
   for (const [key, value] of Object.entries(override)) {
     const mergedValue = isPlainObject(value) && isPlainObject(out[key])
-      ? mergePricingVNext(out[key], value)
-      : structuredClone(value);
+      ? mergePricingSnapshots(out[key], value)
+      : clonePricingForDiagnostics(value);
     Object.defineProperty(out, key, {
       value: mergedValue,
       enumerable: true,
@@ -167,8 +182,29 @@ export function mergePricingVNext(base, override) {
   return out;
 }
 
+export function mergePricingForValidationVNext(base, override) {
+  if (!isPlainObject(base) || !isPlainObject(override)) {
+    throw new TypeError('Base pricing and tier overrides must both be objects.');
+  }
+  return mergePricingSnapshots(
+    pricingSnapshotOrThrow(base, 'basePricing'),
+    pricingSnapshotOrThrow(override, 'tierOverrides')
+  );
+}
+
+export function mergePricingVNext(base, override) {
+  const merged = mergePricingForValidationVNext(base, override);
+  try {
+    return structuredClone(merged);
+  } catch {
+    throw new TypeError('Merged pricing contains values that cannot be returned as plain quote data.');
+  }
+}
+
 function extractPricing(ownerPricing) {
-  return isPlainObject(ownerPricing.pricing) ? structuredClone(ownerPricing.pricing) : {};
+  return isPlainObject(ownerPricing.pricing)
+    ? clonePricingForDiagnostics(ownerPricing.pricing)
+    : {};
 }
 
 export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) {
@@ -205,8 +241,12 @@ export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) 
       diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: tierPath, message: `${tierPath} must be an object.` });
       continue;
     }
+    for (const key of Object.keys(tier)) {
+      if (!['name', 'overrides'].includes(key)) diagnostics.push({ type: 'unsupported', kind: 'tier_definition', path: `${tierPath}.${key}`, message: `${tierPath}.${key} is not supported.` });
+    }
     if (typeof tier.name !== 'string' || !tier.name.trim()) diagnostics.push({ type: 'missing', kind: 'tier_definition', path: `${tierPath}.name`, message: `${tierPath}.name is required.` });
     else {
+      if (tier.name !== tier.name.trim()) diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: `${tierPath}.name`, message: `${tierPath}.name cannot have leading or trailing whitespace.` });
       const normalizedName = tier.name.trim().toLowerCase();
       if (names.has(normalizedName)) {
         diagnostics.push({ type: 'cross_field', kind: 'duplicate_tier_name', path: `${tierPath}.name`, message: `${tierPath}.name duplicates tiers.${names.get(normalizedName)}.name.` });
@@ -266,6 +306,48 @@ function validateRangedEvidence(line) {
   return multiplierProduct;
 }
 
+
+function validateFeeSelectionRequest(ownerPricing, feeSelections) {
+  const invalidOwnerFields = [];
+  const invalidCustomerFields = [];
+  const feeNames = Object.keys(FEE_DEFAULT_FIELDS);
+  if (!isPlainObject(feeSelections)) {
+    return { invalidOwnerFields, invalidCustomerFields: ['feeSelections'] };
+  }
+  for (const key of Object.keys(feeSelections)) {
+    if (!['owner', 'customer'].includes(key)) invalidCustomerFields.push(`feeSelections.${key}`);
+  }
+  for (const side of ['owner', 'customer']) {
+    if (!Object.hasOwn(feeSelections, side)) continue;
+    const target = side === 'owner' ? invalidOwnerFields : invalidCustomerFields;
+    const selections = feeSelections[side];
+    if (!isPlainObject(selections)) {
+      target.push(`feeSelections.${side}`);
+      continue;
+    }
+    for (const [fee, value] of Object.entries(selections)) {
+      const path = `feeSelections.${side}.${fee}`;
+      if (!feeNames.includes(fee) || typeof value !== 'boolean') target.push(path);
+    }
+  }
+  for (const fee of feeNames) {
+    const mode = ownerPricing.feeRules[fee];
+    if (mode === 'owner_selected') {
+      if (!isPlainObject(feeSelections.owner) || !Object.hasOwn(feeSelections.owner, fee) || typeof feeSelections.owner[fee] !== 'boolean') {
+        invalidOwnerFields.push(`feeSelections.owner.${fee}`);
+      }
+    }
+    if (mode === 'customer_selected') {
+      if (!isPlainObject(feeSelections.customer) || !Object.hasOwn(feeSelections.customer, fee) || typeof feeSelections.customer[fee] !== 'boolean') {
+        invalidCustomerFields.push(`feeSelections.customer.${fee}`);
+      }
+    }
+  }
+  return {
+    invalidOwnerFields: unique(invalidOwnerFields),
+    invalidCustomerFields: unique(invalidCustomerFields)
+  };
+}
 
 export function materializeScenarioLinesVNext(lines, variant) {
   if (!Array.isArray(lines) || !['low', 'mid', 'high'].includes(variant)) throw new TypeError('Scenario lines and a low, mid, or high variant are required.');
@@ -877,6 +959,35 @@ export function generateQuoteVNext(input = {}) {
       ...(ownerPath ? { invalidOwnerFields: [relativePath] } : { invalidCustomerFields: [requestSnapshot.errorPath] })
     });
   }
+  const nestedNonPlainPath = requestSnapshot.nonPlainPaths?.find(
+    path =>
+      !path.startsWith('quoteRequest.feeSelections.') &&
+      path !== 'quoteRequest.ownerPricing.confirmedFields' &&
+      !path.startsWith('quoteRequest.ownerPricing.confirmedFields.')
+  );
+  if (nestedNonPlainPath) {
+    let relativePath = nestedNonPlainPath;
+    if (relativePath.startsWith('quoteRequest.')) {
+      relativePath = relativePath.slice('quoteRequest.'.length);
+    }
+    const ownerPath = /^(ownerPricing|businessDefaults)(?:\.|$)/.test(relativePath);
+    if (ownerPath) {
+      let ownerFieldPath = relativePath;
+      if (ownerFieldPath.startsWith('ownerPricing.pricing.')) {
+        ownerFieldPath = ownerFieldPath.slice('ownerPricing.pricing.'.length);
+      } else if (ownerFieldPath.startsWith('ownerPricing.')) {
+        ownerFieldPath = ownerFieldPath.slice('ownerPricing.'.length);
+      }
+      return finishReview({
+        reviewReason: 'Quote request must contain only plain data objects.',
+        invalidOwnerFields: [ownerFieldPath]
+      });
+    }
+    return finishReview({
+      reviewReason: 'Quote request must contain only plain data objects.',
+      invalidCustomerFields: [relativePath]
+    });
+  }
   const nonPlainPaths = new Set(requestSnapshot.nonPlainPaths || []);
   if (nonPlainPaths.has('quoteRequest.customerInputs')) return finishReview({ reviewReason: 'Customer inputs must be an object.', invalidCustomerFields: ['customerInputs'] });
   if (nonPlainPaths.has('quoteRequest.ownerPricing')) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
@@ -966,6 +1077,13 @@ export function generateQuoteVNext(input = {}) {
       validationMessages: configurationDiagnostics.map(item => item.message)
     });
   }
+  const feeSelectionValidation = validateFeeSelectionRequest(ownerPricing, feeSelections);
+  if (feeSelectionValidation.invalidOwnerFields.length || feeSelectionValidation.invalidCustomerFields.length) {
+    return finishReview({
+      reviewReason: 'Fee selections are incomplete or invalid.',
+      ...feeSelectionValidation
+    });
+  }
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
   const tiers = Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
@@ -976,7 +1094,7 @@ export function generateQuoteVNext(input = {}) {
   for (const [tierIndex, tier] of tiers.entries()) {
     let pricing = basePricing;
     try {
-      pricing = mergePricingVNext(basePricing, tier.overrides || {});
+      pricing = mergePricingForValidationVNext(basePricing, tier.overrides || {});
       options.push(optionRun({
         serviceType,
         customerInputs,
@@ -1121,8 +1239,96 @@ function validRangeBuffer(value) {
   return value === null || (typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 25);
 }
 
-function validCustomerOption(option) {
-  if (!validEstimateShape(option) || !hasOwnValue(option, 'tierName') || !(option.tierName === null || (typeof option.tierName === 'string' && option.tierName.trim()))) return false;
+function plainDataEqual(left, right) {
+  if (Object.is(left, right)) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length || denseArrayIssue(left) || denseArrayIssue(right)) return false;
+    return left.every((value, index) => plainDataEqual(value, right[index]));
+  }
+  if (!isPlainObject(left) || !isPlainObject(right)) return false;
+  const leftKeys = Object.keys(left).sort();
+  const rightKeys = Object.keys(right).sort();
+  if (leftKeys.length !== rightKeys.length || leftKeys.some((key, index) => key !== rightKeys[index])) return false;
+  return leftKeys.every(key => plainDataEqual(left[key], right[key]));
+}
+
+function validScenarioRecord(scenario, variant) {
+  if (!isPlainObject(scenario) || scenario.variant !== variant) return false;
+  if (!Number.isSafeInteger(scenario.finalTotalCents) || scenario.finalTotalCents < 0) return false;
+  if (!denseArray(scenario.lineItems, line => isPlainObject(line) && Number.isSafeInteger(line.amountCents) && line.amountCents >= 0, { allowEmpty: false })) return false;
+  let lineTotalCents = 0;
+  for (const line of scenario.lineItems) {
+    lineTotalCents += line.amountCents;
+    if (!Number.isSafeInteger(lineTotalCents)) return false;
+  }
+  return lineTotalCents === scenario.finalTotalCents;
+}
+
+function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
+  if (!Number.isSafeInteger(totalCents) || totalCents < 0 ||
+      !Number.isSafeInteger(minimumFloorCents) || minimumFloorCents < 0 ||
+      typeof buffer !== 'number' || !Number.isFinite(buffer) || buffer < 0 || buffer > 25) return null;
+  if (totalCents === 0) {
+    return minimumFloorCents === 0
+      ? { lowCents: 0, midCents: 0, highCents: 0 }
+      : null;
+  }
+  const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
+  let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
+  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100), roundingIncrementCents);
+  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100), roundingIncrementCents);
+  lowCents = Math.min(Math.max(lowCents, minimumFloorCents, 1), totalCents);
+  highCents = Math.max(highCents, totalCents, lowCents, 1);
+  midCents = Math.min(Math.max(midCents, lowCents, 1), highCents);
+  const values = [lowCents, midCents, highCents];
+  return values.every(Number.isSafeInteger) ? { lowCents, midCents, highCents } : null;
+}
+
+function calculationEvidenceMatchesOption(option, record, range) {
+  if (record.engineVersion !== ENGINE_VERSION || !SERVICE_TYPES.includes(record.serviceType) || !Object.is(record.tierName, option.tierName)) return false;
+  if (!plainDataEqual(option.lineItems, record.lineItems)) return false;
+  if (!Number.isSafeInteger(range.minimumCustomerFloorCents) || range.minimumCustomerFloorCents < 0) return false;
+  if (!Object.is(range.bufferPercent, option.rangeBufferUsed) ||
+      !Object.is(range.effectiveRangeBufferPercent, option.rangeBufferUsed) ||
+      !Object.is(range.rangeBufferUsed, option.rangeBufferUsed)) return false;
+  const scenarioKeys = isPlainObject(record.scenarios) ? Object.keys(record.scenarios).sort() : [];
+  let expectedRange;
+  if (range.source === 'business_range_buffer') {
+    if (!plainDataEqual(scenarioKeys, ['mid']) || option.rangeBufferUsed === null || !validScenarioRecord(record.scenarios.mid, 'mid')) return false;
+    expectedRange = standardRangeFromEvidence(
+      record.scenarios.mid.finalTotalCents,
+      range.minimumCustomerFloorCents,
+      option.rangeBufferUsed
+    );
+  } else if (range.source === 'owner_configured_custom_range') {
+    if (!plainDataEqual(scenarioKeys, ['high', 'low', 'mid']) || option.rangeBufferUsed !== null) return false;
+    if (!validScenarioRecord(record.scenarios.low, 'low') ||
+        !validScenarioRecord(record.scenarios.mid, 'mid') ||
+        !validScenarioRecord(record.scenarios.high, 'high')) return false;
+    const totals = [
+      record.scenarios.low.finalTotalCents,
+      record.scenarios.mid.finalTotalCents,
+      record.scenarios.high.finalTotalCents
+    ];
+    expectedRange = {
+      lowCents: Math.min(...totals),
+      midCents: Math.min(Math.max(totals[1], Math.min(...totals)), Math.max(...totals)),
+      highCents: Math.max(...totals)
+    };
+  } else {
+    return false;
+  }
+  if (!expectedRange || !plainDataEqual(record.lineItems, record.scenarios.mid.lineItems)) return false;
+  if (!Number.isSafeInteger(range.exactMidScenarioTotalCents) ||
+      range.exactMidScenarioTotalCents !== record.scenarios.mid.finalTotalCents ||
+      range.minimumCustomerFloorCents > expectedRange.lowCents) return false;
+  return ['lowCents', 'midCents', 'highCents'].every(field => range[field] === expectedRange[field]);
+}
+
+function validCustomerOption(option, expectedServiceType) {
+  const validTierName = option?.tierName === null ||
+    (typeof option?.tierName === 'string' && option.tierName.length > 0 && option.tierName === option.tierName.trim());
+  if (!validEstimateShape(option) || !hasOwnValue(option, 'tierName') || !validTierName) return false;
   if (!hasOwnValue(option, 'priceDrivers') || !validCustomerDriverList(option.priceDrivers)) return false;
   if (!hasOwnValue(option, 'skippedAddons') || !validSkippedAddonList(option.skippedAddons)) return false;
   if (!hasOwnValue(option, 'disclaimer') || typeof option.disclaimer !== 'string' || !option.disclaimer.trim()) return false;
@@ -1130,7 +1336,8 @@ function validCustomerOption(option) {
   const record = option.calculationRecord;
   const range = record?.range;
   const projection = record?.customerProjection;
-  if (!isPlainObject(record) || !isPlainObject(range) || !isPlainObject(projection)) return false;
+  if (!isPlainObject(record) || record.serviceType !== expectedServiceType || !isPlainObject(range) || !isPlainObject(projection)) return false;
+  if (!calculationEvidenceMatchesOption(option, record, range)) return false;
   for (const [estimateField, centsField] of [
     ['lowEstimate', 'lowCents'],
     ['midEstimate', 'midCents'],
@@ -1139,12 +1346,25 @@ function validCustomerOption(option) {
     if (!Number.isSafeInteger(range[centsField]) || range[centsField] < 0 || !Object.is(option[estimateField], toDollars(range[centsField]))) return false;
     if (!Object.is(projection[estimateField], option[estimateField])) return false;
   }
-  if (!Object.is(range.rangeBufferUsed, option.rangeBufferUsed) || !Object.is(projection.rangeBufferUsed, option.rangeBufferUsed)) return false;
+  if (!Object.is(projection.rangeBufferUsed, option.rangeBufferUsed)) return false;
   if (!Object.is(projection.tierName, option.tierName)) return false;
   if (projection.disclaimer !== option.disclaimer) return false;
-  if (JSON.stringify(projection.priceDrivers) !== JSON.stringify(option.priceDrivers)) return false;
-  if (JSON.stringify(projection.skippedAddons) !== JSON.stringify(option.skippedAddons)) return false;
+  if (!plainDataEqual(projection.priceDrivers, option.priceDrivers)) return false;
+  if (!plainDataEqual(projection.skippedAddons, option.skippedAddons)) return false;
   return true;
+}
+
+function rootCalculationRecordMatches(result) {
+  const record = result.calculationRecord;
+  if (!isPlainObject(record) ||
+      record.engineVersion !== ENGINE_VERSION ||
+      record.quoteId !== result.quoteId ||
+      record.serviceType !== result.serviceType ||
+      !denseArray(record.options, item => isPlainObject(item), { allowEmpty: false }) ||
+      record.options.length !== result.options.length) return false;
+  return record.options.every((optionRecord, index) =>
+    plainDataEqual(optionRecord, result.options[index].calculationRecord)
+  );
 }
 
 function customerProjectionMatchesFirstOption(result) {
@@ -1152,7 +1372,8 @@ function customerProjectionMatchesFirstOption(result) {
   for (const field of ['lowEstimate', 'midEstimate', 'highEstimate', 'rangeBufferUsed']) {
     if (!Object.is(result[field], first[field])) return false;
   }
-  if (JSON.stringify(result.priceDrivers) !== JSON.stringify(first.priceDrivers)) return false;
+  if (!plainDataEqual(result.priceDrivers, first.priceDrivers)) return false;
+  if (!plainDataEqual(result.lineItems, first.lineItems)) return false;
   if (exclusionsMatch(result.options) && result.disclaimer !== first.disclaimer) return false;
   const tierNames = result.options.map(option => option.tierName);
   if (result.options.length > 1 && tierNames.some(name => name === null)) return false;
@@ -1183,11 +1404,13 @@ export function sanitizeForCustomerVNext(result) {
     const validReady = isPlainObject(result) &&
       hasOwnValue(result, 'resultType') && result.resultType === 'INSTANT_ESTIMATE_READY' &&
       hasOwnValue(result, 'quoteId') && typeof result.quoteId === 'string' && result.quoteId.trim() &&
+      hasOwnValue(result, 'serviceType') && SERVICE_TYPES.includes(result.serviceType) &&
       validEstimateShape(result) &&
       hasOwnValue(result, 'priceDrivers') && validCustomerDriverList(result.priceDrivers) &&
       hasOwnValue(result, 'disclaimer') && typeof result.disclaimer === 'string' && result.disclaimer.trim() &&
       hasOwnValue(result, 'rangeBufferUsed') && validRangeBuffer(result.rangeBufferUsed) &&
-      hasOwnValue(result, 'options') && denseArray(result.options, validCustomerOption, { allowEmpty: false }) &&
+      hasOwnValue(result, 'options') && denseArray(result.options, option => validCustomerOption(option, result.serviceType), { allowEmpty: false }) &&
+      rootCalculationRecordMatches(result) &&
       customerProjectionMatchesFirstOption(result) &&
       (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
     if (!validReady) return customerReviewPayload(result);

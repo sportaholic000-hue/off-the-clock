@@ -587,7 +587,7 @@ test('preview and live price-book paths use identical validation and calculation
   const completeService = structuredClone(entry.ownerPricing);
   Object.assign(completeService.pricing, { demolitionPerSqft: 300, wireReinforcementPerSqft: 150, rebarReinforcementPerSqft: 250, stampedMaterialPerSqft: 100 });
   const pricebook = { defaults, services: [completeService] };
-  const activation = vNextServiceStatus(completeService);
+  const activation = vNextServiceStatus(completeService, defaults);
   assert.equal(activation.status, 'QUOTING LIVE', JSON.stringify(activation));
   const preview = previewFromVNextPricebook({ pricebook, serviceType: entry.serviceType, customerInputs: entry.customerInputs, currentMonth: 1 });
   const live = quoteFromVNextPricebook({ pricebook, serviceType: entry.serviceType, customerInputs: entry.customerInputs, callerType: 'owner', currentMonth: 1 });
@@ -602,7 +602,7 @@ test('inactive and AI-unconfirmed services cannot produce customer-ready quotes'
   const inactive = quote({ ...entry, ownerPricing: { ...entry.ownerPricing, active: false } });
   assert.equal(inactive.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   const aiService = { ...entry.ownerPricing, source: 'AI_SUGGESTED', confirmedFields: {} };
-  const status = vNextServiceStatus(aiService);
+  const status = vNextServiceStatus(aiService, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
 });
 

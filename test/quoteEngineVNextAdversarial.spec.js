@@ -242,7 +242,7 @@ test('activation validates every configured offering, not only the first map key
     laborPerSqft: { vinyl_plank: 300, tile: { misspelled: 450 } },
     materialPerSqft: { vinyl_plank: 500, tile: { misspelled: 700 } }
   });
-  const status = vNextServiceStatus(ownerPricing);
+  const status = vNextServiceStatus(ownerPricing, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.invalidOwnerFields.includes('laborPerSqft.tile'), true);
   assert.equal(status.invalidOwnerFields.includes('materialPerSqft.tile'), true);
@@ -266,8 +266,8 @@ test('flat-roof activation requires both an actual offering and the mandated ave
     membraneCostPerSqft: { average: 700 },
     tearOffPerSqft: { average: 200 }
   });
-  assert.equal(vNextServiceStatus(actualOffering).status, 'QUOTING LIVE');
-  assert.equal(vNextServiceStatus(onlyAverage).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(actualOffering, defaults).status, 'QUOTING LIVE');
+  assert.equal(vNextServiceStatus(onlyAverage, defaults).status, 'NEEDS PRICING');
 });
 
 test('a medium repair cannot quote from a nested map containing only small', () => {
@@ -302,7 +302,7 @@ test('reversed flooring room-size thresholds fail shared validation', () => {
   const owner = validateOwnerPricing('FLOORING_INSTALL', flooringInputs(), ownerPricing.pricing);
   assert.equal(owner.ok, false);
   assert.match(owner.validationMessages.join(' '), /smallMaxSqft must be less/);
-  assert.equal(vNextServiceStatus(ownerPricing).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(ownerPricing, defaults).status, 'NEEDS PRICING');
 });
 
 test('itemized roofing cannot activate or quote with an accessory price missing', () => {
@@ -312,7 +312,7 @@ test('itemized roofing cannot activate or quote with an accessory price missing'
     dripEdgePerLF: 200
   });
   const inputs = roofInputs({ starterLengthLF: 100, dripEdgeLengthLF: 100, ridgeCapLengthLF: 20 });
-  const status = vNextServiceStatus(ownerPricing);
+  const status = vNextServiceStatus(ownerPricing, defaults);
   const result = run('ROOFING_REPLACEMENT', inputs, ownerPricing);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.missingOwnerFields.includes('ridgeCapPerLF'), true);
@@ -334,7 +334,7 @@ test('an explicitly confirmed zero accessory length is recorded as no physical s
 
 test('fractional cents and unsupported pricing controls are rejected', () => {
   const fractional = flooringService({ laborPerSqft: { vinyl_plank: 300.5 } });
-  assert.equal(vNextServiceStatus(fractional).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(fractional, defaults).status, 'NEEDS PRICING');
   const unsupported = roofService({ repairMinimum: 10000 });
   const result = run('ROOFING_REPLACEMENT', roofInputs(), unsupported);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
@@ -469,7 +469,7 @@ test('service status and the real price-book path preserve valid tiers when anot
       { name: 'Broken', overrides: { materialPerWallSqftPerCoat: -1 } }
     ]
   });
-  const status = vNextServiceStatus(ownerPricing);
+  const status = vNextServiceStatus(ownerPricing, defaults);
   assert.equal(status.status, 'QUOTING LIVE');
   assert.deepEqual(status.validTierNames, ['Good']);
   assert.equal(status.failedTierDiagnostics.length, 1);
@@ -515,7 +515,7 @@ test('complete tier overrides can activate and quote even when the base pricing 
   delete ownerPricing.pricing.laborPerWallSqftPerCoat;
   delete ownerPricing.pricing.materialPerWallSqftPerCoat;
   delete ownerPricing.pricing.minimumJob;
-  const status = vNextServiceStatus(ownerPricing);
+  const status = vNextServiceStatus(ownerPricing, defaults);
   assert.equal(status.status, 'QUOTING LIVE', JSON.stringify(status));
   assert.deepEqual(status.validTierNames, ['Good', 'Better', 'Best']);
   const result = quoteFromVNextPricebook({
@@ -536,7 +536,7 @@ test('duplicate tier names fail before calculation', () => {
       { name: ' good ', overrides: {} }
     ]
   });
-  assert.equal(vNextServiceStatus(ownerPricing).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(ownerPricing, defaults).status, 'NEEDS PRICING');
   const result = quoteFromVNextPricebook({
     pricebook: { defaults, services: [ownerPricing] },
     serviceType: 'INTERIOR_PAINTING',
@@ -552,7 +552,7 @@ test('custom ranges reject negative values and exact service-name mismatches', (
   const negative = service('CUSTOM', {
     customPricingMode: 'range', low: -1, high: 10000, unit: 'flat', minimumJob: 0
   }, { service: 'Cabinet adjustment' });
-  assert.equal(vNextServiceStatus(negative).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(negative, defaults).status, 'NEEDS PRICING');
   const valid = service('CUSTOM', {
     customPricingMode: 'fixed', price: 10000, unit: 'flat', minimumJob: 0
   }, { service: 'Cabinet adjustment' });

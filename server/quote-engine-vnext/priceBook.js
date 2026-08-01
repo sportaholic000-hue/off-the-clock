@@ -16,7 +16,7 @@ import {
 } from './contracts.js';
 import {
   generateQuoteVNext,
-  mergePricingVNext,
+  mergePricingForValidationVNext,
   sanitizeForCustomerVNext,
   validateTierDefinitionsVNext,
   validateTierDefinitionsDetailedVNext
@@ -398,11 +398,35 @@ export function vNextServiceStatus(service, businessDefaults = null) {
     type: 'invalid', kind: 'service', path: snapshot.errorPath,
     message: `Service could not be read safely: ${snapshot.reason}.`
   }]);
+  const blockingServicePath = snapshot.nonPlainPaths.find(path => !/^service\.confirmedFields(?:\.|$)/.test(path));
+  if (blockingServicePath) {
+    let path = blockingServicePath;
+    if (path.startsWith('service.pricing.')) {
+      path = path.slice('service.pricing.'.length);
+    } else if (path.startsWith('service.')) {
+      path = path.slice('service.'.length);
+    }
+    return statusFromDiagnostics(null, [
+      { type: 'invalid', kind: 'service', path, message: `${path} must be a plain data value.` }
+    ]);
+  }
   service = snapshot.value;
   if (!isPlainRecord(service)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'service', message: 'Service must be an object.' }]);
   if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'serviceType', message: 'Service type is unsupported.' }]);
   const pricing = pricingOf(service);
-  const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType)];
+  const defaultValidation = businessDefaults === null || businessDefaults === undefined
+    ? {
+        ok: false,
+        diagnostics: [{ type: 'missing', kind: 'business_default', path: 'businessDefaults', message: 'Complete business defaults are required before quoting can be live.' }]
+      }
+    : validateBusinessDefaults(businessDefaults);
+  const defaultDiagnostics = defaultValidation.diagnostics.map(item => ({
+    ...item,
+    path: item.path === 'businessDefaults' || item.path.startsWith('businessDefaults.')
+      ? item.path
+      : `businessDefaults.${item.path}`
+  }));
+  const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType), ...defaultDiagnostics];
   if (service.active !== true) diagnostics.push({ type: 'invalid', kind: 'activation', path: 'active', message: 'Service is not enabled for customer quoting.' });
   if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) diagnostics.push({ type: 'invalid', kind: 'service', path: 'service', message: 'Custom service requires a specific configured offering name.' });
 
@@ -421,7 +445,7 @@ export function vNextServiceStatus(service, businessDefaults = null) {
     : [{ tier: { name: null, overrides: {} }, index: null }];
   const variants = tierEntries.map(({ tier, index }) => {
     try {
-      return evaluateActivationVariant(service, mergePricingVNext(pricing, tier.overrides || {}), tier.name, index, businessDefaults);
+      return evaluateActivationVariant(service, mergePricingForValidationVNext(pricing, tier.overrides || {}), tier.name, index, defaultValidation.ok ? businessDefaults : null);
     } catch {
       const path = index === null ? 'pricing' : `tiers.${index}.overrides`;
       return {
@@ -437,10 +461,10 @@ export function vNextServiceStatus(service, businessDefaults = null) {
   const failedTierDiagnostics = variants.filter(variant => !variant.ok).map(variant => ({
     tierName: variant.tierName,
     reviewReason: variant.reviewReason,
-    missingOwnerFields: variant.diagnostics.filter(item => item.type === 'missing').map(item => item.path),
-    invalidOwnerFields: variant.diagnostics.filter(item => ['invalid', 'unsupported', 'cross_field', 'owner_decision'].includes(item.type)).map(item => item.path),
-    unsupportedOwnerFields: variant.diagnostics.filter(item => item.type === 'unsupported').map(item => item.path),
-    crossFieldOwnerFields: variant.diagnostics.filter(item => item.type === 'cross_field').map(item => item.path),
+    missingOwnerFields: [...new Set(variant.diagnostics.filter(item => item.type === 'missing').map(item => item.path))],
+    invalidOwnerFields: [...new Set(variant.diagnostics.filter(item => ['invalid', 'unsupported', 'cross_field', 'owner_decision'].includes(item.type)).map(item => item.path))],
+    unsupportedOwnerFields: [...new Set(variant.diagnostics.filter(item => item.type === 'unsupported').map(item => item.path))],
+    crossFieldOwnerFields: [...new Set(variant.diagnostics.filter(item => item.type === 'cross_field').map(item => item.path))],
     ownerDiagnostics: variant.diagnostics,
     ownerDecisionRequired: variant.diagnostics.filter(item => item.type === 'owner_decision').map(({ path, kind, message }) => ({ path, kind, message })),
     validationMessages: variant.diagnostics.map(item => item.message)
@@ -464,6 +488,14 @@ export function vNextPricebookStatuses(pricebook) {
     type: 'invalid', kind: 'pricebook', path: snapshot.errorPath,
     message: `Price book could not be read safely: ${snapshot.reason}.`
   }])];
+  const blockingPricebookPath = snapshot.nonPlainPaths.find(path => !/^pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path));
+  if (blockingPricebookPath) {
+    const path = blockingPricebookPath;
+    return [statusFromDiagnostics(null, [{
+      type: 'invalid', kind: 'pricebook', path,
+      message: `${path} must be a plain data value.`
+    }])];
+  }
   pricebook = snapshot.value;
   const services = isPlainRecord(pricebook) && Array.isArray(pricebook.services) ? pricebook.services : [];
   const servicesIssue = denseArrayIssue(services);
@@ -485,7 +517,7 @@ export function vNextPricebookStatuses(pricebook) {
   for (const identity of identities) if (identity) counts.set(identity, (counts.get(identity) || 0) + 1);
 
   return Array.from(services, (service, index) => {
-    const status = vNextServiceStatus(service, defaultValidation.ok ? defaultSource : null);
+    const status = vNextServiceStatus(service, defaultSource);
     const duplicateDiagnostics = identities[index] && counts.get(identities[index]) > 1
       ? [{ type: 'invalid', kind: 'duplicate_service', path: `services.${index}`, message: 'Price book contains an ambiguous duplicate service definition.' }]
       : [];
@@ -510,6 +542,17 @@ export function validateVNextPricebook(pricebook) {
   if (!snapshot.ok) return {
     ok: false, errors: [`Price book could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`], statuses: []
   };
+  const blockingValidationPath = snapshot.nonPlainPaths.find(path => !/^pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path));
+  if (blockingValidationPath) {
+    const path = blockingValidationPath;
+    return {
+      ok: false,
+      errors: [`Price book contains a non-plain value at ${path}.`],
+      statuses: [statusFromDiagnostics(null, [{
+        type: 'invalid', kind: 'pricebook', path, message: `${path} must be a plain data value.`
+      }])]
+    };
+  }
   pricebook = snapshot.value;
   if (!Array.isArray(pricebook.services)) return { ok: false, errors: ['Price book services must be an array.'], statuses: [] };
   const servicesIssue = denseArrayIssue(pricebook.services);
@@ -578,6 +621,16 @@ export function quoteFromVNextPricebook(input = {}) {
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
   if (!requestIsPlainObject) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`, path: requestSnapshot.errorPath, kind: 'invalid_request' });
+  const blockingNonPlainPath = requestSnapshot.nonPlainPaths.find(
+    path =>
+      !path.startsWith('quoteRequest.feeSelections.') &&
+      !/^quoteRequest\.pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path)
+  );
+  if (blockingNonPlainPath) {
+    let path = blockingNonPlainPath;
+    if (path.startsWith('quoteRequest.')) path = path.slice('quoteRequest.'.length);
+    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request must contain only plain data objects.', path, kind: 'invalid_request' });
+  }
   const unsupportedRequestField = Object.keys(requestSnapshot.value).find(field => !PRICEBOOK_QUOTE_REQUEST_FIELDS.has(field));
   if (unsupportedRequestField) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request contains an unsupported field.', path: `quoteRequest.${unsupportedRequestField}`, kind: 'invalid_request' });
   const services = isPlainRecord(pricebook) && Array.isArray(pricebook.services) ? pricebook.services : [];

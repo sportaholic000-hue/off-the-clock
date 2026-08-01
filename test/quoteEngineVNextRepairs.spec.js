@@ -31,6 +31,8 @@ import {
   withClass2Defaults
 } from '../server/quote-engine-vnext/index.js';
 import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
+import { aiConfirmationFieldsVNext } from '../server/quote-engine-vnext/contracts.js';
+import { snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -1061,7 +1063,7 @@ test('repair 29: the real price-book preview can calculate an unconfirmed AI dra
   const before = structuredClone(aiDraft.confirmedFields);
   const pricebook = { defaults, services: [aiDraft] };
 
-  const status = vNextServiceStatus(aiDraft);
+  const status = vNextServiceStatus(aiDraft, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.missingOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), true);
 
@@ -1694,7 +1696,7 @@ test('repair 40: invalid provenance and disclaimer values fail every status, pre
       trimMaterialPerLF: true
     }
   });
-  const sourceStatus = vNextServiceStatus(invalidSource);
+  const sourceStatus = vNextServiceStatus(invalidSource, defaults);
   assert.equal(sourceStatus.status, 'NEEDS PRICING');
   assert.equal(sourceStatus.invalidOwnerFields.includes('source'), true);
   assert.equal(sourceStatus.ownerDiagnostics.some(item => item.type === 'invalid' && item.path === 'source'), true);
@@ -1718,7 +1720,7 @@ test('repair 40: invalid provenance and disclaimer values fail every status, pre
   assert.deepEqual(Object.keys(customer).sort(), ['customerMessage', 'quoteId', 'resultType']);
 
   const invalidDisclaimer = interiorService({}, { disclaimer: '   ' });
-  const disclaimerStatus = vNextServiceStatus(invalidDisclaimer);
+  const disclaimerStatus = vNextServiceStatus(invalidDisclaimer, defaults);
   assert.equal(disclaimerStatus.status, 'NEEDS PRICING');
   assert.equal(disclaimerStatus.invalidOwnerFields.includes('disclaimer'), true);
 });
@@ -1788,7 +1790,7 @@ test('repair 42: every open shaped-map family rejects noncanonical keys at the e
 
   const malformed = roofService();
   malformed.pricing.laborPerSquare = { 'asphalt-shingle': 5000 };
-  const status = vNextServiceStatus(malformed);
+  const status = vNextServiceStatus(malformed, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.invalidOwnerFields.includes('laborPerSquare.asphalt-shingle'), true);
   const quote = run('ROOFING_REPLACEMENT', roofInputs(), malformed);
@@ -1799,7 +1801,7 @@ test('repair 42: every open shaped-map family rejects noncanonical keys at the e
 test('repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation', () => {
   const ownerPricing = concreteService();
   ownerPricing.pricing.finishMultiplier.broom = 0.9;
-  const status = vNextServiceStatus(ownerPricing);
+  const status = vNextServiceStatus(ownerPricing, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.invalidOwnerFields.includes('finishMultiplier.broom'), true);
 
@@ -2023,14 +2025,14 @@ test('repair 46: blocked scopes expose only executable Class 2 controls and the 
     laborHourlyRate: 10000,
     prepHoursPerSqft: { fair: 0.008, poor: 0.02 }
   });
-  const exteriorStatus = vNextServiceStatus(staleExterior);
+  const exteriorStatus = vNextServiceStatus(staleExterior, defaults);
   assert.equal(exteriorStatus.status, 'NEEDS PRICING');
   assert.equal(exteriorStatus.unsupportedOwnerFields.includes('prepHoursPerSqft.poor'), true);
 
   const staleConcrete = concreteService({
     finishMultiplier: { broom: 1, smooth: 1.05, exposed_aggregate: 1.2, stamped: 1.5 }
   });
-  const concreteStatus = vNextServiceStatus(staleConcrete);
+  const concreteStatus = vNextServiceStatus(staleConcrete, defaults);
   assert.equal(concreteStatus.status, 'NEEDS PRICING');
   assert.equal(concreteStatus.unsupportedOwnerFields.includes('finishMultiplier.exposed_aggregate'), true);
 
@@ -2082,7 +2084,7 @@ test('repair 47: intrinsic range multiplication and midpoint arithmetic stay wit
 });
 test('repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed', () => {
   const assertReadyCases = (serviceType, ownerPricing, cases, knownUnconsumed = []) => {
-    const status = vNextServiceStatus(ownerPricing);
+    const status = vNextServiceStatus(ownerPricing, defaults);
     assert.equal(status.status, 'QUOTING LIVE', serviceType + ': ' + JSON.stringify(status));
     const pricebook = { defaults, services: [ownerPricing] };
     const baselineSignatures = [];
@@ -2264,7 +2266,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     for (const [path, sample] of consumedPricingSamples) {
       const missing = structuredClone(ownerPricing);
       deletePricingLeaf(missing.pricing, path);
-      const missingStatus = vNextServiceStatus(missing);
+      const missingStatus = vNextServiceStatus(missing, defaults);
       const label = serviceType + ' missing consumed owner pricing ' + path;
       const rerun = quoteFromVNextPricebook({
         pricebook: { defaults, services: [missing] },
@@ -2329,7 +2331,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       for (const corruption of corruptions) {
         const corrupted = structuredClone(ownerPricing);
         setPricingLeaf(corrupted.pricing, path, corruption);
-        const corruptedStatus = vNextServiceStatus(corrupted);
+        const corruptedStatus = vNextServiceStatus(corrupted, defaults);
         const label = serviceType + ' invalid owner pricing ' + path + ' = ' + String(corruption);
         assert.equal(corruptedStatus.status, 'NEEDS PRICING', label + ': ' + JSON.stringify(corruptedStatus));
         assert.equal(
@@ -2346,7 +2348,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         : /^(?:repairHours|patchRepairHours)(?:\.|$)|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\./.test(path);
       const zeroed = structuredClone(ownerPricing);
       setPricingLeaf(zeroed.pricing, path, 0);
-      const zeroStatus = vNextServiceStatus(zeroed);
+      const zeroStatus = vNextServiceStatus(zeroed, defaults);
       const zeroLabel = serviceType + ' configured zero pricing ' + path;
       if (requiresPositive) {
         assert.equal(zeroStatus.status, 'NEEDS PRICING', zeroLabel);
@@ -2390,7 +2392,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       assert.notEqual(alternative, original, serviceType + ' differential mutation did not change ' + path);
       const changed = structuredClone(ownerPricing);
       setPricingLeaf(changed.pricing, path, alternative);
-      const changedStatus = vNextServiceStatus(changed);
+      const changedStatus = vNextServiceStatus(changed, defaults);
       let observed = changedStatus.status !== 'QUOTING LIVE';
       if (observed) {
         const diagnostics = [
@@ -2955,7 +2957,7 @@ test('repair 50: misplaced quote-affecting service controls fail closed instead 
   misplaced.minimumJob = 999999;
   misplaced.markupPercent = 500;
 
-  const status = vNextServiceStatus(misplaced);
+  const status = vNextServiceStatus(misplaced, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.unsupportedOwnerFields.includes('minimumJob'), true);
   assert.equal(status.unsupportedOwnerFields.includes('markupPercent'), true);
@@ -2970,7 +2972,7 @@ test('repair 50: misplaced quote-affecting service controls fail closed instead 
 
   const malformedContainer = interiorService();
   malformedContainer.pricing = [];
-  const malformedStatus = vNextServiceStatus(malformedContainer);
+  const malformedStatus = vNextServiceStatus(malformedContainer, defaults);
   assert.equal(malformedStatus.status, 'NEEDS PRICING');
   assert.equal(malformedStatus.invalidOwnerFields.includes('pricing'), true);
 });
@@ -2999,7 +3001,8 @@ test('repair 51: malformed top-level quote containers return review diagnostics 
   uncloneable.pricing.invalidFunction = () => 1;
   const uncloneableResult = run('INTERIOR_PAINTING', interiorInputs(), uncloneable);
   assert.equal(uncloneableResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.equal(uncloneableResult.invalidOwnerFields.includes('pricing'), true);
+  assert.equal(uncloneableResult.invalidOwnerFields.includes('invalidFunction'), true);
+  assert.equal(uncloneableResult.unsupportedOwnerFields.includes('invalidFunction'), true);
 
   const customerSafe = run('INTERIOR_PAINTING', interiorInputs(), null, { callerType: 'customer' });
   assert.deepEqual(Object.keys(customerSafe).sort(), ['customerMessage', 'quoteId', 'resultType']);
@@ -3007,7 +3010,7 @@ test('repair 51: malformed top-level quote containers return review diagnostics 
 
 test('repair 52: activation executes formulas and cannot mark an overflowing service live', () => {
   const overflowing = interiorService({ laborPerWallSqftPerCoat: Number.MAX_SAFE_INTEGER });
-  const status = vNextServiceStatus(overflowing);
+  const status = vNextServiceStatus(overflowing, defaults);
   assert.equal(status.status, 'NEEDS PRICING');
   assert.equal(status.invalidOwnerFields.includes('laborPerWallSqftPerCoat'), true);
   assert.equal(status.ownerDiagnostics.some(item => item.kind === 'activation_calculation' && item.path === 'laborPerWallSqftPerCoat'), true);
@@ -3022,7 +3025,7 @@ test('repair 52: activation executes formulas and cannot mark an overflowing ser
       { name: 'Overflowing', overrides: { laborPerWallSqftPerCoat: Number.MAX_SAFE_INTEGER } }
     ]
   });
-  const tierStatus = vNextServiceStatus(tiered);
+  const tierStatus = vNextServiceStatus(tiered, defaults);
   assert.equal(tierStatus.status, 'QUOTING LIVE');
   assert.deepEqual(tierStatus.validTierNames, ['Executable']);
   assert.equal(tierStatus.failedTierDiagnostics[0].tierName, 'Overflowing');
@@ -3090,10 +3093,10 @@ test('repair 54: exported validators and tier boundaries fail closed on malforme
   });
   let status;
   assert.doesNotThrow(() => {
-    status = vNextServiceStatus(unsafeTier);
+    status = vNextServiceStatus(unsafeTier, defaults);
   });
   assert.equal(status.status, 'NEEDS PRICING');
-  assert.equal(status.failedTierDiagnostics[0].invalidOwnerFields.includes('tiers.0.overrides'), true);
+  assert.equal(status.failedTierDiagnostics[0].invalidOwnerFields.includes('laborPerWallSqftPerCoat'), true);
 
   let preview;
   assert.doesNotThrow(() => {
@@ -3105,7 +3108,7 @@ test('repair 54: exported validators and tier boundaries fail closed on malforme
     });
   });
   assert.equal(preview.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.equal(preview.invalidOwnerFields.includes('tiers.0.overrides'), true);
+  assert.equal(preview.invalidOwnerFields.includes('laborPerWallSqftPerCoat'), true);
 
   let lookup;
   assert.doesNotThrow(() => {
@@ -3895,14 +3898,14 @@ test('repair 60: exported raw boundaries reject unresolved custom classification
 
 test('repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline', () => {
   const ordinaryOwner = interiorService();
-  assert.equal(vNextServiceStatus(ordinaryOwner).status, 'QUOTING LIVE');
+  assert.equal(vNextServiceStatus(ordinaryOwner, defaults).status, 'QUOTING LIVE');
   assert.equal(vNextPricebookStatuses({ defaults, services: [ordinaryOwner] })[0].status, 'QUOTING LIVE');
 
   const overheadOwner = interiorService({}, {
     feeRules: { ...feeRules, overhead: 'always' }
   });
   const overheadDefaults = { ...defaults, overheadFixed: Number.MAX_SAFE_INTEGER };
-  assert.equal(vNextServiceStatus(overheadOwner).status, 'QUOTING LIVE');
+  assert.equal(vNextServiceStatus(overheadOwner, defaults).status, 'QUOTING LIVE');
   const overheadStatus = vNextPricebookStatuses({ defaults: overheadDefaults, services: [overheadOwner] })[0];
   assert.equal(overheadStatus.status, 'NEEDS PRICING');
   assert.equal(overheadStatus.invalidOwnerFields.includes('pricingCalculation'), true, JSON.stringify(overheadStatus));
@@ -3919,7 +3922,7 @@ test('repair 61: price-book LIVE status executes fees, markup, add-ons, and fina
     laborPerWallSqftPerCoat: 1_000_000_000,
     materialPerWallSqftPerCoat: 0
   });
-  assert.equal(vNextServiceStatus(markupOwner).status, 'QUOTING LIVE');
+  assert.equal(vNextServiceStatus(markupOwner, defaults).status, 'QUOTING LIVE');
   const markupStatus = vNextPricebookStatuses({
     defaults: { ...defaults, markupPercent: 1000 },
     services: [markupOwner]
@@ -3929,7 +3932,7 @@ test('repair 61: price-book LIVE status executes fees, markup, add-ons, and fina
 
   const flatRepair = repairFixture('FLAT_ROOF_REPAIR').ownerPricing;
   flatRepair.pricing.pondingWaterSurcharge = Number.MAX_SAFE_INTEGER;
-  const flatStatus = vNextServiceStatus(flatRepair);
+  const flatStatus = vNextServiceStatus(flatRepair, defaults);
   assert.equal(flatStatus.status, 'NEEDS PRICING');
   assert.equal(flatStatus.invalidOwnerFields.includes('pricingCalculation'), true, JSON.stringify(flatStatus));
 
@@ -3939,7 +3942,7 @@ test('repair 61: price-book LIVE status executes fees, markup, add-ons, and fina
     frequencyMultipliers: { weekly: 1, biweekly: 1.1, monthly: 1.2, one_time: 1.4 },
     overgrowthMultipliers: { maintained: 1, overgrown: 1.5, severe: 2 }
   });
-  const mowingStatus = vNextServiceStatus(mowing);
+  const mowingStatus = vNextServiceStatus(mowing, defaults);
   assert.equal(mowingStatus.status, 'QUOTING LIVE', JSON.stringify(mowingStatus));
 });
 
@@ -5072,4 +5075,485 @@ test('repair 80: customer projections are independent and bound to safe calculat
       quoteId: safeSource.quoteId
     });
   }
+});
+
+test('repair 81: malformed pricing primitives retain exact paths through direct and price-book execution', () => {
+  const malformedBase = interiorService();
+  malformedBase.pricing.invalidFunction = () => 1;
+  const directBase = run('INTERIOR_PAINTING', interiorInputs(), malformedBase);
+  assert.equal(directBase.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(directBase.invalidOwnerFields.includes('invalidFunction'), true, JSON.stringify(directBase));
+  assert.equal(directBase.unsupportedOwnerFields.includes('invalidFunction'), true, JSON.stringify(directBase));
+
+  const baseStatus = vNextServiceStatus(malformedBase, defaults);
+  assert.equal(baseStatus.status, 'NEEDS PRICING');
+  assert.equal(baseStatus.failedTierDiagnostics[0].invalidOwnerFields.includes('invalidFunction'), true, JSON.stringify(baseStatus));
+
+  const malformedOnlyTier = interiorService({}, {
+    tiers: [{ name: 'Unsafe', overrides: { laborPerWallSqftPerCoat: () => 1 } }]
+  });
+  const malformedOnlyStatus = vNextServiceStatus(malformedOnlyTier, defaults);
+  assert.equal(malformedOnlyStatus.status, 'NEEDS PRICING');
+  assert.deepEqual(malformedOnlyStatus.failedTierDiagnostics[0].invalidOwnerFields, ['laborPerWallSqftPerCoat']);
+
+  const isolatedTier = interiorService({}, {
+    tiers: [
+      { name: 'Good', overrides: {} },
+      { name: 'Unsafe', overrides: { laborPerWallSqftPerCoat: () => 1 } }
+    ]
+  });
+  const isolatedStatus = vNextServiceStatus(isolatedTier, defaults);
+  assert.equal(isolatedStatus.status, 'QUOTING LIVE', JSON.stringify(isolatedStatus));
+  assert.deepEqual(isolatedStatus.validTierNames, ['Good']);
+  assert.deepEqual(isolatedStatus.failedTierDiagnostics[0].invalidOwnerFields, ['laborPerWallSqftPerCoat']);
+
+  const isolatedCustomer = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [isolatedTier] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'customer',
+    currentMonth: 1
+  });
+  assert.equal(isolatedCustomer.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(isolatedCustomer));
+  assert.deepEqual(isolatedCustomer.options.map(option => option.tierName), ['Good']);
+  assert.equal(isolatedCustomer.optionAvailabilityNotice, 'Fewer options are available because one or more configured options need owner review.');
+
+  const symbolPrice = interiorService();
+  symbolPrice.pricing.minimumJob = Symbol('free');
+  const symbolResult = run('INTERIOR_PAINTING', interiorInputs(), symbolPrice);
+  assert.equal(symbolResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(symbolResult.invalidOwnerFields.includes('minimumJob'), true, JSON.stringify(symbolResult));
+
+  const nonPlainRoof = roofService();
+  nonPlainRoof.pricing.pitchMultiplier.medium = new Date(0);
+  const directNonPlain = run('ROOFING_REPLACEMENT', roofInputs(), nonPlainRoof);
+  assert.deepEqual(directNonPlain.invalidOwnerFields, ['pitchMultiplier.medium']);
+
+  const serviceNonPlain = vNextServiceStatus(nonPlainRoof, defaults);
+  assert.deepEqual(serviceNonPlain.invalidOwnerFields, ['pitchMultiplier.medium']);
+
+  const nonPlainPricebook = { defaults, services: [nonPlainRoof] };
+  const pricebookStatuses = vNextPricebookStatuses(nonPlainPricebook);
+  assert.deepEqual(pricebookStatuses[0].invalidOwnerFields, ['pricebook.services.0.pricing.pitchMultiplier.medium']);
+  const pricebookValidation = validateVNextPricebook(nonPlainPricebook);
+  assert.equal(pricebookValidation.ok, false);
+  assert.equal(pricebookValidation.errors.some(message => message.includes('pricebook.services.0.pricing.pitchMultiplier.medium')), true);
+  const pricebookQuote = quoteFromVNextPricebook({
+    pricebook: nonPlainPricebook,
+    serviceType: 'ROOFING_REPLACEMENT',
+    customerInputs: roofInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
+  assert.deepEqual(pricebookQuote.invalidOwnerFields, ['pricebook.services.0.pricing.pitchMultiplier.medium']);
+
+  assert.throws(
+    () => mergePricingVNext({ laborPerWallSqftPerCoat: () => 1 }, {}),
+    /cannot be returned as plain quote data/
+  );
+});
+
+test('repair 82: prototype-backed approvals confirm nothing across status, preview, and live price-book APIs', () => {
+  const aiOwner = interiorService({}, { source: 'AI_SUGGESTED' });
+  const confirmationFields = [
+    ...Object.keys(aiOwner.pricing),
+    'feeRules',
+    'priceBasisByCategory',
+    'taxabilityByCategory',
+    'peakMonths',
+    'peakSurchargePercent'
+  ].sort();
+  aiOwner.confirmedFields = Object.create(Object.fromEntries(confirmationFields.map(field => [field, true])));
+  const expectedStatusPaths = confirmationFields.map(field => `confirmedFields.${field}`).sort();
+
+  const directStatus = vNextServiceStatus(aiOwner, defaults);
+  assert.equal(directStatus.status, 'NEEDS PRICING');
+  assert.deepEqual([...directStatus.missingOwnerFields].sort(), expectedStatusPaths);
+
+  const pricebook = { defaults, services: [aiOwner] };
+  const pricebookStatus = vNextPricebookStatuses(pricebook)[0];
+  assert.equal(pricebookStatus.status, 'NEEDS PRICING');
+  assert.deepEqual([...pricebookStatus.missingOwnerFields].sort(), expectedStatusPaths);
+
+  const validation = validateVNextPricebook(pricebook);
+  assert.equal(validation.ok, false);
+  assert.deepEqual([...validation.statuses[0].missingOwnerFields].sort(), expectedStatusPaths);
+
+  const ownerQuote = quoteFromVNextPricebook({
+    pricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
+  assert.equal(ownerQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual([...ownerQuote.missingOwnerFields].sort(), confirmationFields);
+
+  const preview = previewFromVNextPricebook({
+    pricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    currentMonth: 1
+  });
+  assert.equal(preview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(preview));
+  assert.deepEqual([...preview.unconfirmedOwnerFields].sort(), confirmationFields);
+  assert.equal(Object.keys(aiOwner.confirmedFields).length, 0);
+
+  const customerQuote = quoteFromVNextPricebook({
+    pricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'customer',
+    currentMonth: 1
+  });
+  assert.deepEqual(Object.keys(customerQuote).sort(), ['customerMessage', 'quoteId', 'resultType']);
+
+  const ownerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'owner_selected' }
+  });
+  const hiddenOwnerFee = quoteFromVNextPricebook({
+    pricebook: { defaults: { ...defaults, travelFee: 500 }, services: [ownerSelected] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    feeSelections: { owner: Object.create({ travel: true }) },
+    currentMonth: 1
+  });
+  assert.deepEqual(hiddenOwnerFee.invalidOwnerFields, ['feeSelections.owner.travel']);
+
+  const customerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'customer_selected' }
+  });
+  const hiddenCustomerFee = quoteFromVNextPricebook({
+    pricebook: { defaults: { ...defaults, travelFee: 500 }, services: [customerSelected] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    feeSelections: { customer: Object.create({ travel: true }) },
+    currentMonth: 1
+  });
+  assert.deepEqual(hiddenCustomerFee.invalidCustomerFields, ['feeSelections.customer.travel']);
+});
+
+test('repair 83: an exported service status cannot report LIVE without complete business defaults', () => {
+  const configured = interiorService();
+  const missingDefaults = vNextServiceStatus(configured);
+  assert.equal(missingDefaults.status, 'NEEDS PRICING');
+  assert.deepEqual(missingDefaults.missingOwnerFields, ['businessDefaults']);
+  assert.equal(missingDefaults.validationErrors.includes('Complete business defaults are required before quoting can be live.'), true);
+
+  const complete = vNextServiceStatus(configured, defaults);
+  assert.equal(complete.status, 'QUOTING LIVE', JSON.stringify(complete));
+
+  const invalidDefaults = { ...defaults, markupPercent: -1 };
+  const invalid = vNextServiceStatus(configured, invalidDefaults);
+  assert.equal(invalid.status, 'NEEDS PRICING');
+  assert.equal(invalid.invalidOwnerFields.includes('businessDefaults.markupPercent'), true, JSON.stringify(invalid));
+
+  const wholeBook = vNextPricebookStatuses({ defaults: invalidDefaults, services: [configured] })[0];
+  assert.equal(wholeBook.status, 'NEEDS PRICING');
+  assert.equal(wholeBook.invalidOwnerFields.includes('businessDefaults.markupPercent'), true, JSON.stringify(wholeBook));
+});
+
+test('repair 84: fee selections and tier definitions enforce exact supported request shapes', () => {
+  const ownerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'owner_selected' }
+  });
+  const directCases = [
+    {
+      label: 'array container',
+      feeSelections: [],
+      invalidOwnerFields: [],
+      invalidCustomerFields: ['feeSelections']
+    },
+    {
+      label: 'unsupported root key',
+      feeSelections: { owner: { travel: true }, operator: { travel: true } },
+      invalidOwnerFields: [],
+      invalidCustomerFields: ['feeSelections.operator']
+    },
+    {
+      label: 'misspelled owner key',
+      feeSelections: { owner: { travel: true, travle: true } },
+      invalidOwnerFields: ['feeSelections.owner.travle'],
+      invalidCustomerFields: []
+    },
+    {
+      label: 'wrong owner value type',
+      feeSelections: { owner: { travel: 'yes' } },
+      invalidOwnerFields: ['feeSelections.owner.travel'],
+      invalidCustomerFields: []
+    },
+    {
+      label: 'missing selected owner decision',
+      feeSelections: {},
+      invalidOwnerFields: ['feeSelections.owner.travel'],
+      invalidCustomerFields: []
+    }
+  ];
+  for (const entry of directCases) {
+    const result = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+      feeSelections: entry.feeSelections
+    });
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', entry.label);
+    assert.deepEqual(result.invalidOwnerFields, entry.invalidOwnerFields, entry.label);
+    assert.deepEqual(result.invalidCustomerFields, entry.invalidCustomerFields, entry.label);
+  }
+
+  const customerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'customer_selected' }
+  });
+  const misspelledCustomer = run('INTERIOR_PAINTING', interiorInputs(), customerSelected, {
+    feeSelections: { customer: { travel: true, travle: false } }
+  });
+  assert.deepEqual(misspelledCustomer.invalidCustomerFields, ['feeSelections.customer.travle']);
+  const missingCustomer = run('INTERIOR_PAINTING', interiorInputs(), customerSelected);
+  assert.deepEqual(missingCustomer.invalidCustomerFields, ['feeSelections.customer.travel']);
+
+  const ownerPricebook = { defaults, services: [ownerSelected] };
+  const throughPricebook = quoteFromVNextPricebook({
+    pricebook: ownerPricebook,
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    feeSelections: { owner: { travel: true, travle: true } },
+    currentMonth: 1
+  });
+  assert.deepEqual(throughPricebook.invalidOwnerFields, ['feeSelections.owner.travle']);
+
+  const customerSafe = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [customerSelected] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'customer',
+    feeSelections: { customer: { travel: true, travle: true } },
+    currentMonth: 1
+  });
+  assert.deepEqual(Object.keys(customerSafe).sort(), ['customerMessage', 'quoteId', 'resultType']);
+  assert.equal(customerSafe.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+
+  const extraTierField = interiorService({}, {
+    tiers: [{ name: 'Good', overrides: {}, hiddenPrice: 100 }]
+  });
+  const extraStatus = vNextServiceStatus(extraTierField, defaults);
+  assert.equal(extraStatus.status, 'NEEDS PRICING');
+  assert.equal(extraStatus.unsupportedOwnerFields.includes('tiers.0.hiddenPrice'), true, JSON.stringify(extraStatus));
+  const extraDirect = run('INTERIOR_PAINTING', interiorInputs(), extraTierField);
+  assert.equal(extraDirect.unsupportedOwnerFields.includes('tiers.0.hiddenPrice'), true, JSON.stringify(extraDirect));
+  const extraPricebook = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [extraTierField] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  });
+  assert.equal(extraPricebook.unsupportedOwnerFields.includes('tiers.0.hiddenPrice'), true, JSON.stringify(extraPricebook));
+
+  const paddedTierName = interiorService({}, {
+    tiers: [{ name: ' Good ', overrides: {} }]
+  });
+  const paddedStatus = vNextServiceStatus(paddedTierName, defaults);
+  assert.equal(paddedStatus.status, 'NEEDS PRICING');
+  assert.equal(paddedStatus.invalidOwnerFields.includes('tiers.0.name'), true, JSON.stringify(paddedStatus));
+  const paddedCustomer = run('INTERIOR_PAINTING', interiorInputs(), paddedTierName, { callerType: 'customer' });
+  assert.equal(paddedCustomer.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(Object.keys(paddedCustomer).sort(), ['customerMessage', 'quoteId', 'resultType']);
+});
+
+test('repair 85: mutation after snapshot cannot bypass any later public boundary inspection', () => {
+  const trustedEngineRequest = snapshotPlainData({ serviceType: 'INTERIOR_PAINTING' }, 'quoteRequest').value;
+  let engineGetterReads = 0;
+  Object.defineProperty(trustedEngineRequest, 'serviceType', {
+    enumerable: true,
+    get() {
+      engineGetterReads += 1;
+      throw new Error('post-snapshot engine accessor executed');
+    }
+  });
+  let engineResult;
+  assert.doesNotThrow(() => { engineResult = generateQuoteVNext(trustedEngineRequest); });
+  assert.equal(engineGetterReads, 0);
+  assert.equal(engineResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(engineResult.invalidCustomerFields, ['quoteRequest.serviceType']);
+
+  const trustedLookup = snapshotPlainData({
+    pricebook: { defaults, services: [interiorService()] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  }, 'quoteRequest').value;
+  let lookupGetterReads = 0;
+  Object.defineProperty(trustedLookup, 'serviceType', {
+    enumerable: true,
+    get() {
+      lookupGetterReads += 1;
+      throw new Error('post-snapshot lookup accessor executed');
+    }
+  });
+  let lookupResult;
+  assert.doesNotThrow(() => { lookupResult = quoteFromVNextPricebook(trustedLookup); });
+  assert.equal(lookupGetterReads, 0);
+  assert.equal(lookupResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+
+  const ready = run('INTERIOR_PAINTING', interiorInputs(), interiorService());
+  const trustedReady = snapshotPlainData(ready, 'internalResult').value;
+  let sanitizerGetterReads = 0;
+  Object.defineProperty(trustedReady, 'options', {
+    enumerable: true,
+    get() {
+      sanitizerGetterReads += 1;
+      throw new Error('post-snapshot sanitizer accessor executed');
+    }
+  });
+  const sanitized = sanitizeForCustomerVNext(trustedReady);
+  assert.equal(sanitizerGetterReads, 0);
+  assert.equal(sanitized.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(sanitized.quoteId, ready.quoteId);
+});
+
+test('repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record', () => {
+  const ready = run('INTERIOR_PAINTING', interiorInputs(), interiorService());
+  assert.equal(ready.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(ready));
+
+  const alteredScenarioTotal = structuredClone(ready);
+  for (const record of [
+    alteredScenarioTotal.options[0].calculationRecord,
+    alteredScenarioTotal.calculationRecord.options[0]
+  ]) {
+    record.scenarios.mid.finalTotalCents += 1;
+  }
+
+  const alteredLineEvidence = structuredClone(ready);
+  alteredLineEvidence.options[0].lineItems[0].amountCents += 1;
+  for (const record of [
+    alteredLineEvidence.options[0].calculationRecord,
+    alteredLineEvidence.calculationRecord.options[0]
+  ]) {
+    record.lineItems[0].amountCents += 1;
+    record.scenarios.mid.lineItems[0].amountCents += 1;
+    record.scenarios.mid.finalTotalCents += 1;
+    record.range.exactMidScenarioTotalCents += 1;
+  }
+
+  const shiftedProjection = structuredClone(ready);
+  for (const field of ['lowEstimate', 'midEstimate', 'highEstimate']) {
+    shiftedProjection[field] += 0.01;
+    shiftedProjection.options[0][field] += 0.01;
+    shiftedProjection.options[0].calculationRecord.customerProjection[field] += 0.01;
+    shiftedProjection.calculationRecord.options[0].customerProjection[field] += 0.01;
+  }
+  for (const field of ['lowCents', 'midCents', 'highCents']) {
+    shiftedProjection.options[0].calculationRecord.range[field] += 1;
+    shiftedProjection.calculationRecord.options[0].range[field] += 1;
+  }
+
+  const mismatchedRootRecord = structuredClone(ready);
+  mismatchedRootRecord.calculationRecord.options[0].range.midCents += 1;
+
+  for (const malformed of [
+    alteredScenarioTotal,
+    alteredLineEvidence,
+    shiftedProjection,
+    mismatchedRootRecord
+  ]) {
+    assert.deepEqual(sanitizeForCustomerVNext(malformed), {
+      resultType: 'ESTIMATE_REQUIRES_REVIEW',
+      customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
+      quoteId: ready.quoteId
+    });
+  }
+});
+
+test('repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary', () => {
+  const aiService = interiorService({}, { source: 'AI_SUGGESTED' });
+  const confirmationFields = aiConfirmationFieldsVNext(aiService, aiService.pricing);
+  aiService.confirmedFields = Object.fromEntries(confirmationFields.map(field => [field, true]));
+  assert.equal(vNextServiceStatus(aiService, defaults).status, 'QUOTING LIVE');
+
+  const misspelled = structuredClone(aiService);
+  misspelled.confirmedFields.laborPerWalSqftPerCoat = true;
+  const misspelledStatus = vNextServiceStatus(misspelled, defaults);
+  assert.equal(misspelledStatus.status, 'NEEDS PRICING');
+  assert.equal(misspelledStatus.unsupportedOwnerFields.includes('confirmedFields.laborPerWalSqftPerCoat'), true, JSON.stringify(misspelledStatus));
+  const misspelledPreview = previewFromVNextPricebook({
+    pricebook: { defaults, services: [misspelled] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    currentMonth: 1
+  });
+  assert.equal(misspelledPreview.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(misspelledPreview.unsupportedOwnerFields.includes('confirmedFields.laborPerWalSqftPerCoat'), true, JSON.stringify(misspelledPreview));
+
+  const wrongType = structuredClone(aiService);
+  wrongType.confirmedFields.laborPerWallSqftPerCoat = 'yes';
+  const wrongTypeStatus = vNextServiceStatus(wrongType, defaults);
+  assert.equal(wrongTypeStatus.status, 'NEEDS PRICING');
+  assert.equal(wrongTypeStatus.invalidOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), true, JSON.stringify(wrongTypeStatus));
+  assert.equal(wrongTypeStatus.missingOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), true, JSON.stringify(wrongTypeStatus));
+
+  const explicitlyUnconfirmed = structuredClone(aiService);
+  explicitlyUnconfirmed.confirmedFields.laborPerWallSqftPerCoat = false;
+  const unconfirmedStatus = vNextServiceStatus(explicitlyUnconfirmed, defaults);
+  assert.equal(unconfirmedStatus.status, 'NEEDS PRICING');
+  assert.equal(unconfirmedStatus.invalidOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), false);
+  assert.equal(unconfirmedStatus.missingOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), true);
+
+  const manualWithIgnoredApproval = interiorService({}, {
+    confirmedFields: { laborPerWallSqftPerCoat: true }
+  });
+  const manualStatus = vNextServiceStatus(manualWithIgnoredApproval, defaults);
+  assert.equal(manualStatus.status, 'NEEDS PRICING');
+  assert.equal(manualStatus.unsupportedOwnerFields.includes('confirmedFields.laborPerWallSqftPerCoat'), true, JSON.stringify(manualStatus));
+  assert.equal(vNextServiceStatus(interiorService({}, { confirmedFields: {} }), defaults).status, 'QUOTING LIVE');
+});
+test('repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary', () => {
+  const nested = depth => {
+    const root = {};
+    let cursor = root;
+    for (let index = 0; index < depth; index += 1) {
+      cursor.next = {};
+      cursor = cursor.next;
+    }
+    return root;
+  };
+  const deep = nested(150);
+
+  const directSnapshot = snapshotPlainData({ deep }, 'probe');
+  assert.equal(directSnapshot.ok, false);
+  assert.match(directSnapshot.reason, /nesting exceeds 100 levels/);
+
+  let engineResult;
+  assert.doesNotThrow(() => {
+    engineResult = generateQuoteVNext({
+      serviceType: 'INTERIOR_PAINTING',
+      customerInputs: deep
+    });
+  });
+  assert.equal(engineResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.match(engineResult.reviewReason, /nesting exceeds 100 levels/);
+
+  let lookupResult;
+  assert.doesNotThrow(() => {
+    lookupResult = quoteFromVNextPricebook({
+      pricebook: { defaults, services: [interiorService()] },
+      serviceType: 'INTERIOR_PAINTING',
+      customerInputs: deep,
+      callerType: 'owner',
+      currentMonth: 1
+    });
+  });
+  assert.equal(lookupResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.match(lookupResult.reviewReason, /nesting exceeds 100 levels/);
+
+  const ready = run('INTERIOR_PAINTING', interiorInputs(), interiorService());
+  const malformedReady = structuredClone(ready);
+  malformedReady.deep = deep;
+  let customerResult;
+  assert.doesNotThrow(() => { customerResult = sanitizeForCustomerVNext(malformedReady); });
+  assert.deepEqual(customerResult, {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
+    quoteId: ready.quoteId
+  });
 });
