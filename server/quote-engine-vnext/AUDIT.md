@@ -95,6 +95,28 @@ Additional fail-closed structural safeguards include:
   cannot fall below the final customer floor for the selected mode.
 - The canonical result field is `rangeBufferUsed`. The prior alias remains on
   owner results temporarily, while customer output uses the canonical field.
+- Raw quote and price-book quote APIs treat omitted, malformed, or unsupported
+  caller context as customer context. Only an explicit own `callerType: owner`
+  can receive internal evidence. The owner-preview wrappers deliberately set
+  that context and therefore require authenticated owner-only integration.
+- Public data snapshots reject accessors, cycles, functions, symbols,
+  prototype-backed values, sparse or named arrays, nesting beyond 100 levels,
+  more than 100,000 inspected values, and arrays longer than 10,000 entries.
+  These are defensive request-boundary limits, not pricing limits.
+- The internal calculator snapshots customer inputs, pricing, and service-rule
+  context once, then validates and calculates only from those snapshots.
+  Proxy getters, accessors, and time-of-check/time-of-use mutations cannot
+  change a rate after validation.
+- Standalone validators, service status, preview, live quote, materialization,
+  tier, and business-default paths reject nested non-plain data consistently.
+  Preview wrappers preserve invalid nested shapes for canonical validation
+  instead of laundering them through a shallow copy.
+- Monetary products, percentages, margin conversion, tax, minimum tax floors,
+  and displayed range buffers use normalized exact decimal fractions through
+  the rounding decision. No epsilon is used. Every quantity, multiplier, and
+  unrounded money result carries normalized numerator/denominator evidence,
+  and generation plus customer sanitization independently recompute it.
+
 
 ## Remaining visible assumptions
 
@@ -185,9 +207,10 @@ criteria and approved default values remain release decisions:
     explicit `taxabilityByCategory` map, while older global prose prohibits tax
     on some categories. The candidate follows the later VNext directive. The
     governing text must be reconciled before integration.
-17. When both partial area and percentage are supplied, the candidate accepts
-    agreement within the larger of one square foot or one percent of the
-    percentage-derived area. That tolerance needs explicit owner approval.
+17. When both partial area and percentage are supplied, the candidate fails
+    closed instead of choosing one or accepting a tolerance. The owner must
+    decide whether one input has precedence or whether an explicit measured
+    reconciliation rule should replace that gate.
 18. The pure engine requires an explicit boolean for every owner-selected fee,
     but it cannot authenticate who supplied that boolean. Production must bind
     `feeSelections.owner` to an authenticated owner action.
@@ -195,6 +218,10 @@ criteria and approved default values remain release decisions:
     products even when a service offers only a subset. Quotes consume only the
     selected offered product, but the owner must decide whether dormant factor
     rows are hidden, retained, or removed in the eventual editor contract.
+20. The pure candidate exposes owner-preview helpers that intentionally return
+    internal calculation evidence. Production must authenticate and authorize
+    those helpers as owner-only operations; omitted caller context on raw quote
+    APIs is customer-safe but is not a substitute for route authorization.
 
 ## Calculation and customer evidence
 
@@ -204,6 +231,13 @@ multipliers, fee decisions, seasonal decisions, markup basis, minimum basis,
 taxable and non-taxable subtotals, tax, scenario totals, and range derivation.
 Each line declares `quantity_rate`, `fixed_amount`, `percentage_derived`,
 `composite`, or `ranged` evidence sufficient to reproduce its rounded cents.
+Derived quantities and unrounded money retain normalized decimal-fraction
+evidence as base-10-derived numerator and denominator strings so repeating
+quantities such as cubic-yard conversions do not depend on a binary floating
+approximation at the half-cent boundary. Positive values exactly at half a cent
+round up; values genuinely below half remain down. The customer sanitizer
+recomputes line evidence and rejects a result when cloned records, fractions,
+or rounded amounts have been forged together.
 
 Every internal review result retains service type, original submitted customer
 inputs, normalized scope when validation reached that point, validated
@@ -215,6 +249,10 @@ Customer results are allowlisted to ranges, approved price drivers,
 per-option exclusions/disclaimers, and quote identity. Review diagnostics,
 line items, owner rates, factors, fee rules, tax rules, and calculation records
 are removed.
+
+An omitted caller type on either raw quote path is treated as customer context.
+Internal evidence is returned only for an explicit owner caller or through an
+owner-preview helper, which remains an integration authorization boundary.
 
 No production route currently persists the lead envelope. That integration
 remains a release gate and is not represented as complete by these engine

@@ -12,6 +12,20 @@ import {
   validateServiceRules,
   validateServiceRulesDetailed
 } from './contracts.js';
+import {
+  exactDecimal,
+  exactAdd,
+  exactCompare,
+  exactDivide,
+  exactEvidence,
+  exactEvidenceMatches,
+  exactFromEvidence,
+  exactIsSafeInteger,
+  exactMultiply,
+  exactRound,
+  exactSubtract,
+  exactToNumber
+} from './exactMath.js';
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
@@ -28,7 +42,6 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   'Clipping bagging and disposal',
   'Lawn edging'
 ]);
-const round = Math.round;
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
 ]);
@@ -215,6 +228,13 @@ export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) 
       : snapshot.errorPath;
     return [{ type: 'invalid', kind: 'tier_definition', path, message: `Owner pricing could not be read safely: ${snapshot.reason}.` }];
   }
+  if (snapshot.nonPlainPaths.length) {
+    const unsafePath = snapshot.nonPlainPaths[0];
+    const path = unsafePath.startsWith('ownerPricing.')
+      ? unsafePath.slice('ownerPricing.'.length)
+      : unsafePath;
+    return [{ type: 'invalid', kind: 'tier_definition', path, message: `${path} must be a plain data value.` }];
+  }
   ownerPricing = snapshot.value;
   if (!isPlainObject(ownerPricing)) {
     return [{ type: 'invalid', kind: 'tier_definition', path: 'ownerPricing', message: 'Owner pricing must be an object before tiers can be validated.' }];
@@ -270,6 +290,25 @@ function checkedCents(value, path, { allowZero = true } = {}) {
   }
   return value;
 }
+function exactPercentOf(basis, percent) {
+  return exactDivide(exactMultiply(basis, percent), 100);
+}
+
+function exactMoneyResult(exactValue, path, message) {
+  try {
+    const amountCents = exactRound(exactValue);
+    const unroundedCents = exactToNumber(exactValue);
+    if (!Number.isSafeInteger(amountCents) || amountCents < 0 || !Number.isFinite(unroundedCents) || unroundedCents < 0) {
+      throw new RangeError('Unsafe exact money result.');
+    }
+    return { amountCents, unroundedCents, exactUnroundedCents: exactEvidence(exactValue) };
+  } catch {
+    throw new QuoteReviewError(message, {
+      invalidOwnerFields: Array.isArray(path) ? path : [path]
+    });
+  }
+}
+
 function validateRangedEvidence(line) {
   const calculation = line?.calculation;
   const range = line?.rangeAmountCents;
@@ -280,30 +319,64 @@ function validateRangedEvidence(line) {
   if (typeof calculation.quantity !== 'number' || !Number.isFinite(calculation.quantity) || calculation.quantity <= 0) {
     throw new QuoteReviewError('Intrinsic range quantity is invalid.', { invalidOwnerFields: [fallbackPath] });
   }
-  const multiplierProduct = calculation.multipliers.reduce((product, multiplier) => {
-    if (!isPlainObject(multiplier) || typeof multiplier.value !== 'number' || !Number.isFinite(multiplier.value) || multiplier.value < 0) {
+  let exactQuantity;
+  const exactMultipliers = [];
+  try {
+    exactQuantity = exactFromEvidence(calculation.exactQuantity);
+    if (!Object.is(exactToNumber(exactQuantity), calculation.quantity)) throw new TypeError('Quantity evidence does not match.');
+    for (const multiplier of calculation.multipliers) {
+      if (!isPlainObject(multiplier) || typeof multiplier.value !== 'number' || !Number.isFinite(multiplier.value) || multiplier.value < 0) {
+        throw new TypeError('Multiplier value is invalid.');
+      }
+      const exactMultiplier = exactFromEvidence(multiplier.exactValue);
+      if (!Object.is(exactToNumber(exactMultiplier), multiplier.value)) throw new TypeError('Multiplier evidence does not match.');
+      exactMultipliers.push(exactMultiplier);
+    }
+  } catch {
+    if (calculation.multipliers.some(multiplier =>
+      !isPlainObject(multiplier) || typeof multiplier.value !== 'number' || !Number.isFinite(multiplier.value) || multiplier.value < 0
+    )) {
       throw new QuoteReviewError('Intrinsic range multiplier evidence is invalid.', { invalidOwnerFields: [fallbackPath] });
     }
-    return product * multiplier.value;
-  }, 1);
+    throw new QuoteReviewError('Intrinsic range exact evidence is malformed or inconsistent.', { invalidOwnerFields: [fallbackPath] });
+  }
   const variants = [
     { name: 'low', rate: calculation.lowRateCents, amount: range.low, path: 'low' },
-    { name: 'mid', rate: calculation.rateCents, amount: line.amountCents, path: fallbackPath },
+    { name: 'mid', rate: calculation.midRateCents, amount: calculation.midAmountCents, path: fallbackPath },
     { name: 'high', rate: calculation.highRateCents, amount: range.high, path: 'high' }
   ];
   const invalid = [];
+  const computed = new Map();
   for (const entry of variants) {
     if (!Number.isSafeInteger(entry.rate) || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
       invalid.push(entry.path);
       continue;
     }
-    const unrounded = calculation.quantity * entry.rate * multiplierProduct;
-    const expected = round(unrounded);
-    if (!Number.isFinite(unrounded) || !Number.isSafeInteger(expected) || expected !== entry.amount) invalid.push(entry.path);
+    try {
+      const exactUnrounded = exactMultiply(exactQuantity, entry.rate, ...exactMultipliers);
+      const expected = exactRound(exactUnrounded);
+      if (expected !== entry.amount) invalid.push(entry.path);
+      computed.set(entry.name, exactUnrounded);
+    } catch {
+      invalid.push(entry.path);
+    }
   }
-  if (calculation.lowRateCents > calculation.rateCents || calculation.rateCents > calculation.highRateCents || range.low > line.amountCents || line.amountCents > range.high) invalid.push(fallbackPath);
+  const selectedVariant = calculation.selectedVariant ?? 'mid';
+  const selected = variants.find(entry => entry.name === selectedVariant);
+  const selectedExact = computed.get(selectedVariant);
+  if (!selected || !selectedExact ||
+      calculation.rateCents !== selected.rate ||
+      line.amountCents !== selected.amount ||
+      calculation.roundedAmountCents !== selected.amount ||
+      !Number.isFinite(calculation.unroundedCents) ||
+      !Object.is(calculation.unroundedCents, exactToNumber(selectedExact)) ||
+      !exactEvidenceMatches(selectedExact, calculation.exactUnroundedCents)) {
+    invalid.push(fallbackPath);
+  }
+  if (calculation.lowRateCents > calculation.midRateCents || calculation.midRateCents > calculation.highRateCents ||
+      range.low > calculation.midAmountCents || calculation.midAmountCents > range.high) invalid.push(fallbackPath);
   if (invalid.length) throw new QuoteReviewError('Intrinsic range evidence is unsafe or internally inconsistent.', { invalidOwnerFields: [...new Set(invalid)] });
-  return multiplierProduct;
+  return { exactQuantity, exactMultipliers };
 }
 
 
@@ -371,14 +444,15 @@ export function materializeScenarioLinesVNext(lines, variant) {
         ? line.calculation.lowRateCents
         : variant === 'high'
           ? line.calculation.highRateCents
-          : line.calculation.rateCents;
-      const selectedAmountCents = variant === 'mid' ? line.amountCents : line.rangeAmountCents[variant];
-      const multiplierProduct = validateRangedEvidence(line);
-      const unroundedCents = line.calculation.quantity * selectedRateCents * multiplierProduct;
+          : line.calculation.midRateCents;
+      const selectedAmountCents = variant === 'mid' ? line.calculation.midAmountCents : line.rangeAmountCents[variant];
+      const evidence = validateRangedEvidence(line);
+      const exactUnroundedCents = exactMultiply(evidence.exactQuantity, selectedRateCents, ...evidence.exactMultipliers);
       next.amountCents = selectedAmountCents;
       next.calculation.selectedVariant = variant;
       next.calculation.rateCents = selectedRateCents;
-      next.calculation.unroundedCents = unroundedCents;
+      next.calculation.unroundedCents = exactToNumber(exactUnroundedCents);
+      next.calculation.exactUnroundedCents = exactEvidence(exactUnroundedCents);
       next.calculation.roundedAmountCents = selectedAmountCents;
       if (selectedAmountCents === 0) {
         next.noCharge = true;
@@ -462,8 +536,8 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
   const laborSubtotalCents = lines.filter(line => line.category === 'labor').reduce((sum, line) => sum + line.amountCents, 0);
-  const amountCents = active ? round(laborSubtotalCents * seasonal.percent / 100) : 0;
-  if (!Number.isSafeInteger(amountCents) || amountCents < 0) throw new QuoteReviewError('Peak-season configuration did not produce a valid charge.', { invalidOwnerFields: ['peakSurchargePercent'] });
+  const seasonalMoney = exactMoneyResult(active ? exactPercentOf(laborSubtotalCents, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
+  const amountCents = seasonalMoney.amountCents;
   if (amountCents > 0) {
     lines.push({
       name: 'Peak season adjustment',
@@ -476,7 +550,8 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
         basisCategory: 'labor',
         basisAmountCents: laborSubtotalCents,
         percent: seasonal.percent,
-        unroundedCents: laborSubtotalCents * seasonal.percent / 100,
+        unroundedCents: seasonalMoney.unroundedCents,
+        exactUnroundedCents: seasonalMoney.exactUnroundedCents,
         roundedAmountCents: amountCents
       }
     });
@@ -490,12 +565,20 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   record.amountCents = amountCents;
 }
 
-function markupAmount(baseCents, defaults) {
-  if (baseCents <= 0 || defaults.markupPercent === 0) return 0;
-  const fraction = defaults.markupPercent / 100;
+function exactMarkupValue(baseCents, defaults) {
+  if (baseCents <= 0 || defaults.markupPercent === 0) return exactDecimal(0);
+  const fraction = exactDivide(defaults.markupPercent, 100);
   return defaults.markupMode === 'margin'
-    ? round(baseCents / (1 - fraction)) - baseCents
-    : round(baseCents * fraction);
+    ? exactSubtract(exactDivide(baseCents, exactSubtract(1, fraction)), baseCents)
+    : exactMultiply(baseCents, fraction);
+}
+
+function markupMoneyResult(baseCents, defaults) {
+  return exactMoneyResult(exactMarkupValue(baseCents, defaults), 'markupPercent', 'Markup configuration produced an invalid amount.');
+}
+
+function markupAmount(baseCents, defaults) {
+  return markupMoneyResult(baseCents, defaults).amountCents;
 }
 
 function applyTaxability(lines, ownerPricing, taxMode) {
@@ -522,8 +605,8 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
     });
   const eligibleLines = treatment.filter(item => item.markupEligible).map(item => item.line);
   const baseCents = eligibleLines.reduce((sum, line) => sum + line.amountCents, 0);
-  const amountCents = markupAmount(baseCents, defaults);
-  if (!Number.isSafeInteger(amountCents) || amountCents < 0) throw new QuoteReviewError('Markup configuration produced an invalid amount.', { invalidOwnerFields: ['markupPercent'] });
+  const markupMoney = markupMoneyResult(baseCents, defaults);
+  const amountCents = markupMoney.amountCents;
   if (amountCents > 0) {
     lines.push({
       name: 'Markup',
@@ -538,9 +621,8 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
         mode: defaults.markupMode,
         percent: defaults.markupPercent,
         includedLineIndexes: eligibleLines.map(line => lines.indexOf(line)),
-        unroundedCents: defaults.markupMode === 'margin'
-          ? baseCents / (1 - defaults.markupPercent / 100) - baseCents
-          : baseCents * defaults.markupPercent / 100,
+        unroundedCents: markupMoney.unroundedCents,
+        exactUnroundedCents: markupMoney.exactUnroundedCents,
         roundedAmountCents: amountCents
       }
     });
@@ -619,9 +701,8 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     taxableSubtotalCents += taxableMarkupCents;
   }
 
-  const unroundedTaxCents = taxableSubtotalCents * defaults.taxPercent / 100;
-  const taxCents = defaults.taxMode === 'TAX_NONE' ? 0 : round(unroundedTaxCents);
-  if (!Number.isSafeInteger(taxCents) || taxCents < 0) throw new QuoteReviewError('Tax configuration produced an invalid amount.', { invalidOwnerFields: ['taxPercent'] });
+  const taxMoney = exactMoneyResult(defaults.taxMode === 'TAX_NONE' ? exactDecimal(0) : exactPercentOf(taxableSubtotalCents, defaults.taxPercent), 'taxPercent', 'Tax configuration produced an invalid amount.');
+  const taxCents = taxMoney.amountCents;
   if (taxCents > 0) {
     lines.push({
       name: 'Tax',
@@ -637,7 +718,8 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
         taxPercent: defaults.taxPercent,
         basisAmountCents: taxableSubtotalCents,
         taxableSubtotalCents,
-        unroundedCents: unroundedTaxCents,
+        unroundedCents: taxMoney.unroundedCents,
+        exactUnroundedCents: taxMoney.exactUnroundedCents,
         roundedAmountCents: taxCents
       }
     });
@@ -654,17 +736,122 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
   return record.finalTotalCents;
 }
 
-function assertMoneyIntegrity(lines, finalTotalCents) {
+function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < (positive ? Number.EPSILON : 0)) return null;
+  try {
+    const exact = exactFromEvidence(evidence);
+    if (!Object.is(exactToNumber(exact), value) || exactCompare(exact, 0) < (positive ? 1 : 0)) return null;
+    return exact;
+  } catch {
+    return null;
+  }
+}
+
+function validQuantityRateEvidence(calculation, expectedAmountCents) {
+  if (!isPlainObject(calculation) || !Number.isSafeInteger(calculation.rateCents) || calculation.rateCents < 0 ||
+      !Array.isArray(calculation.multipliers)) return false;
+  const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: true });
+  if (!quantity || denseArrayIssue(calculation.multipliers)) return false;
+  const multipliers = [];
+  for (const multiplier of calculation.multipliers) {
+    if (!isPlainObject(multiplier)) return false;
+    const exact = exactOperandFromEvidence(multiplier.value, multiplier.exactValue);
+    if (!exact) return false;
+    multipliers.push(exact);
+  }
+  try {
+    const exactUnrounded = exactMultiply(quantity, calculation.rateCents, ...multipliers);
+    return Number.isFinite(calculation.unroundedCents) &&
+      Object.is(calculation.unroundedCents, exactToNumber(exactUnrounded)) &&
+      exactEvidenceMatches(exactUnrounded, calculation.exactUnroundedCents) &&
+      exactRound(exactUnrounded) === expectedAmountCents &&
+      calculation.roundedAmountCents === expectedAmountCents;
+  } catch {
+    return false;
+  }
+}
+
+function validFixedEvidence(calculation, expectedAmountCents) {
+  if (calculation.roundedAmountCents !== expectedAmountCents) return false;
+  if (Object.hasOwn(calculation, 'subtotalBeforeMinimumCents')) {
+    return Number.isSafeInteger(calculation.subtotalBeforeMinimumCents) && calculation.subtotalBeforeMinimumCents >= 0 &&
+      Number.isSafeInteger(calculation.effectiveMinimumCents) && calculation.effectiveMinimumCents >= 0 &&
+      Math.max(0, calculation.effectiveMinimumCents - calculation.subtotalBeforeMinimumCents) === expectedAmountCents;
+  }
+  return Number.isSafeInteger(calculation.amountCents) && calculation.amountCents === expectedAmountCents;
+}
+
+function validPercentageEvidence(calculation, expectedAmountCents) {
+  if (!Number.isSafeInteger(calculation.basisAmountCents) || calculation.basisAmountCents < 0 ||
+      typeof calculation.percent !== 'number' || !Number.isFinite(calculation.percent) ||
+      calculation.percent < 0 || calculation.percent > 500 ||
+      (calculation.mode !== undefined && !['markup', 'margin'].includes(calculation.mode)) ||
+      (calculation.mode === 'margin' && calculation.percent >= 100)) return false;
+  try {
+    const exactUnrounded = calculation.mode === 'margin'
+      ? exactSubtract(
+          exactDivide(calculation.basisAmountCents, exactSubtract(1, exactDivide(calculation.percent, 100))),
+          calculation.basisAmountCents
+        )
+      : exactPercentOf(calculation.basisAmountCents, calculation.percent);
+    return Number.isFinite(calculation.unroundedCents) &&
+      Object.is(calculation.unroundedCents, exactToNumber(exactUnrounded)) &&
+      exactEvidenceMatches(exactUnrounded, calculation.exactUnroundedCents) &&
+      exactRound(exactUnrounded) === expectedAmountCents &&
+      calculation.roundedAmountCents === expectedAmountCents;
+  } catch {
+    return false;
+  }
+}
+
+function validCompositeEvidence(calculation, expectedAmountCents) {
+  if (!Array.isArray(calculation.components) || calculation.components.length === 0 || denseArrayIssue(calculation.components)) return false;
+  let total = 0;
+  for (const component of calculation.components) {
+    if (!isPlainObject(component) || !Number.isSafeInteger(component.amountCents) || component.amountCents < 0 ||
+        !validQuantityRateEvidence(component, component.amountCents)) return false;
+    total += component.amountCents;
+    if (!Number.isSafeInteger(total)) return false;
+  }
+  return total === expectedAmountCents && calculation.roundedAmountCents === expectedAmountCents;
+}
+
+function validLineCalculationEvidence(line) {
+  if (!isPlainObject(line) || !Number.isSafeInteger(line.amountCents) || line.amountCents < 0 || !isPlainObject(line.calculation)) return false;
   const validNoChargeReasons = new Set(['configured_zero_price', 'configured_zero_percentage', 'zero_basis', 'rounded_fractional_cent']);
+  if (line.amountCents === 0) {
+    if (line.noCharge !== true || !validNoChargeReasons.has(line.noChargeReason)) return false;
+  } else if (Object.hasOwn(line, 'noCharge') || Object.hasOwn(line, 'noChargeReason')) {
+    return false;
+  }
+  if (line.calculation.evidenceVariant === 'quantity_rate') {
+    return validQuantityRateEvidence(line.calculation, line.amountCents);
+  }
+  if (line.calculation.evidenceVariant === 'ranged') {
+    try {
+      validateRangedEvidence(line);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  if (line.calculation.evidenceVariant === 'fixed_amount') {
+    return validFixedEvidence(line.calculation, line.amountCents);
+  }
+  if (line.calculation.evidenceVariant === 'percentage_derived') {
+    return validPercentageEvidence(line.calculation, line.amountCents);
+  }
+  if (line.calculation.evidenceVariant === 'composite') {
+    return validCompositeEvidence(line.calculation, line.amountCents);
+  }
+  return false;
+}
+function assertMoneyIntegrity(lines, finalTotalCents) {
   for (const line of lines) {
-    const validZero = line.amountCents === 0 && line.noCharge === true && validNoChargeReasons.has(line.noChargeReason);
-    if (!Number.isSafeInteger(line.amountCents) || line.amountCents < 0 || (line.amountCents === 0 && !validZero)) {
-      throw new QuoteReviewError(`${line.name || 'A line item'} contains an invalid money value.`, {
+    if (!validLineCalculationEvidence(line)) {
+      throw new QuoteReviewError(`${line.name || 'A line item'} contains invalid or irreproducible calculation evidence.`, {
         invalidOwnerFields: [line.calculation?.ratePath || 'pricingCalculation']
       });
-    }
-    if (!line.calculation?.evidenceVariant) {
-      throw new QuoteReviewError(`${line.name || 'A line item'} is missing its calculation evidence variant.`, { invalidOwnerFields: ['pricingCalculation'] });
     }
   }
   const roundedFractionalLines = lines.filter(line => line.amountCents === 0 && line.noChargeReason === 'rounded_fractional_cent');
@@ -733,14 +920,24 @@ function toDollars(cents) {
 }
 
 function minimumCustomerFloor(minimumCents, defaults) {
-  return defaults.taxMode === 'TAX_ALL'
-    ? minimumCents + round(minimumCents * defaults.taxPercent / 100)
-    : minimumCents;
+  if (defaults.taxMode !== 'TAX_ALL') return minimumCents;
+  return exactMoneyResult(
+    exactAdd(minimumCents, exactPercentOf(minimumCents, defaults.taxPercent)),
+    'taxPercent',
+    'The taxed minimum cannot be represented safely in integer cents.'
+  ).amountCents;
 }
 
 function roundedCustomerCents(valueCents, incrementCents) {
-  if (valueCents <= 0) return 0;
-  return round(valueCents / incrementCents) * incrementCents;
+  try {
+    if (exactCompare(valueCents, 0) <= 0) return 0;
+    const roundedUnits = exactRound(exactDivide(valueCents, incrementCents));
+    const roundedCents = exactMultiply(roundedUnits, incrementCents);
+    if (!exactIsSafeInteger(roundedCents)) throw new RangeError('Rounded customer value is unsafe.');
+    return exactToNumber(roundedCents);
+  } catch {
+    throw new QuoteReviewError('The displayed estimate range cannot be represented safely in integer cents.', { invalidOwnerFields: ['rangeBufferPercent'] });
+  }
 }
 
 function rangeForStandardQuote(totalCents, minimumCents, defaults) {
@@ -751,8 +948,8 @@ function rangeForStandardQuote(totalCents, minimumCents, defaults) {
   }
   const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
   let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
-  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100), roundingIncrementCents);
-  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100), roundingIncrementCents);
+  let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
+  let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
   lowCents = Math.max(lowCents, minimumFloorCents, 1);
   lowCents = Math.min(lowCents, totalCents);
   highCents = Math.max(highCents, totalCents, lowCents, 1);
@@ -1216,8 +1413,12 @@ function denseArray(value, predicate, { allowEmpty = true } = {}) {
 
 function validCustomerDollars(value) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return false;
-  const cents = value * 100;
-  return Number.isSafeInteger(Math.round(cents)) && Math.abs(cents - Math.round(cents)) < 1e-7;
+  try {
+    const cents = exactMultiply(value, 100);
+    return exactCompare(cents, 0) >= 0 && exactIsSafeInteger(cents);
+  } catch {
+    return false;
+  }
 }
 
 function validEstimateShape(source) {
@@ -1255,7 +1456,7 @@ function plainDataEqual(left, right) {
 function validScenarioRecord(scenario, variant) {
   if (!isPlainObject(scenario) || scenario.variant !== variant) return false;
   if (!Number.isSafeInteger(scenario.finalTotalCents) || scenario.finalTotalCents < 0) return false;
-  if (!denseArray(scenario.lineItems, line => isPlainObject(line) && Number.isSafeInteger(line.amountCents) && line.amountCents >= 0, { allowEmpty: false })) return false;
+  if (!denseArray(scenario.lineItems, validLineCalculationEvidence, { allowEmpty: false })) return false;
   let lineTotalCents = 0;
   for (const line of scenario.lineItems) {
     lineTotalCents += line.amountCents;
@@ -1273,15 +1474,19 @@ function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
       ? { lowCents: 0, midCents: 0, highCents: 0 }
       : null;
   }
-  const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
-  let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
-  let lowCents = roundedCustomerCents(midCents * (1 - buffer / 100), roundingIncrementCents);
-  let highCents = roundedCustomerCents(midCents * (1 + buffer / 100), roundingIncrementCents);
-  lowCents = Math.min(Math.max(lowCents, minimumFloorCents, 1), totalCents);
-  highCents = Math.max(highCents, totalCents, lowCents, 1);
-  midCents = Math.min(Math.max(midCents, lowCents, 1), highCents);
-  const values = [lowCents, midCents, highCents];
-  return values.every(Number.isSafeInteger) ? { lowCents, midCents, highCents } : null;
+  try {
+    const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
+    let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
+    let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
+    let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
+    lowCents = Math.min(Math.max(lowCents, minimumFloorCents, 1), totalCents);
+    highCents = Math.max(highCents, totalCents, lowCents, 1);
+    midCents = Math.min(Math.max(midCents, lowCents, 1), highCents);
+    const values = [lowCents, midCents, highCents];
+    return values.every(Number.isSafeInteger) ? { lowCents, midCents, highCents } : null;
+  } catch {
+    return null;
+  }
 }
 
 function calculationEvidenceMatchesOption(option, record, range) {
@@ -1462,10 +1667,28 @@ export function buildInternalLeadVNext(input = {}) {
   }
 }
 
+function previewRequestFromSnapshot(input, snapshot) {
+  if (!snapshot.nonPlainPaths.length) return snapshot.value;
+  const request = {};
+  for (const key of Object.keys(snapshot.value)) {
+    const descriptor = ownDataValue(input, key);
+    if (!descriptor.ok || !descriptor.present) return null;
+    Object.defineProperty(request, key, {
+      value: descriptor.value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  }
+  return request;
+}
+
 export function previewQuoteVNext(input) {
   const snapshot = snapshotPlainData(input, 'quoteRequest');
   if (!snapshot.ok) return generateQuoteVNext(input);
-  return generateQuoteVNext({ ...snapshot.value, callerType: 'owner', allowInactiveOwnerPreview: true });
+  const request = previewRequestFromSnapshot(input, snapshot);
+  if (!request) return generateQuoteVNext(input);
+  return generateQuoteVNext({ ...request, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 export function liveQuoteVNext(input) {

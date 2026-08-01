@@ -6,6 +6,13 @@ function relativeSnapshotPath(snapshot, root) {
     ? snapshot.errorPath.slice(prefix.length)
     : snapshot.errorPath;
 }
+
+function firstNonPlainPath(snapshot, root) {
+  const path = snapshot.nonPlainPaths?.[0];
+  if (!path) return null;
+  const prefix = `${root}.`;
+  return path.startsWith(prefix) ? path.slice(prefix.length) : path;
+}
 export const SERVICE_TYPES = Object.freeze([
   'ROOFING_REPLACEMENT', 'ROOFING_REPAIR',
   'FLAT_ROOF_REPLACEMENT', 'FLAT_ROOF_REPAIR',
@@ -661,6 +668,10 @@ export function withClass2Defaults(serviceType, pricing = {}) {
       `Pricing could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`
     );
   }
+  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
+  if (nonPlainPath) {
+    throw new TypeError(`Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`);
+  }
   const next = snapshot.value;
   for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
     if (next[name] === undefined) next[name] = structuredClone(definition.defaultValue);
@@ -717,6 +728,13 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       reviewReason: `Customer inputs could not be read safely: ${customerSnapshot.reason}.`
     };
   }
+  const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
+  if (customerNonPlainPath) return {
+    ok: false,
+    missingCustomerFields: [],
+    invalidCustomerFields: [customerNonPlainPath],
+    reviewReason: `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`
+  };
   customerInputs = customerSnapshot.value;
   const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
   if (!pricingSnapshot.ok) {
@@ -726,6 +744,14 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       reviewReason: `Pricing context could not be read safely: ${pricingSnapshot.reason}.`
     };
   }
+  const pricingNonPlainPath = firstNonPlainPath(pricingSnapshot, 'pricing');
+  if (pricingNonPlainPath) return {
+    ok: false,
+    missingCustomerFields: [],
+    invalidCustomerFields: [],
+    invalidOwnerFields: [pricingNonPlainPath],
+    reviewReason: `Pricing context must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`
+  };
   pricing = pricingSnapshot.value;
   const allowed = new Set(Object.keys(contract.fields));
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
@@ -819,6 +845,11 @@ export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
   if (!snapshot.ok) return [ownerDiagnostic(
     'invalid', 'class2', relativeSnapshotPath(snapshot, 'pricing'),
     `Pricing could not be read safely: ${snapshot.reason}.`
+  )];
+  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
+  if (nonPlainPath) return [ownerDiagnostic(
+    'invalid', 'class2', nonPlainPath,
+    `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
   )];
   pricing = snapshot.value;
 
@@ -1249,6 +1280,11 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     'invalid', 'pricing_structure', relativeSnapshotPath(snapshot, 'pricing'),
     `Pricing could not be read safely: ${snapshot.reason}.`
   )];
+  const nonPlainPath = firstNonPlainPath(snapshot, 'pricing');
+  if (nonPlainPath) return [ownerDiagnostic(
+    'invalid', 'pricing_structure', nonPlainPath,
+    `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
+  )];
   p = snapshot.value;
 
   for (const name of scalarMoneyFields(serviceType)) {
@@ -1375,12 +1411,18 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     relativeSnapshotPath(pricingSnapshot, 'pricing'),
     `Owner pricing could not be read safely: ${pricingSnapshot.reason}.`
   );
+  const pricingNonPlainPath = firstNonPlainPath(pricingSnapshot, 'pricing');
+  if (pricingNonPlainPath) return blockedOwnerValidation(pricingNonPlainPath, `Owner pricing must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`);
   pricing = pricingSnapshot.value;
   const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
   if (!customerSnapshot.ok) return blockedOwnerValidation(customerSnapshot.errorPath, `Customer inputs could not be read safely: ${customerSnapshot.reason}.`);
+  const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
+  if (customerNonPlainPath) return blockedOwnerValidation(customerNonPlainPath, `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`);
   customerInputs = customerSnapshot.value;
   const rulesSnapshot = snapshotPlainData(serviceRules, 'serviceRules');
   if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
+  const rulesNonPlainPath = firstNonPlainPath(rulesSnapshot, 'serviceRules');
+  if (rulesNonPlainPath) return blockedOwnerValidation(rulesNonPlainPath, `Service rules must contain only plain data objects; ${rulesNonPlainPath} is not plain data.`);
   serviceRules = rulesSnapshot.value;
   const allowed = new Set(allowedPricingFields(serviceType));
   const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
@@ -1490,6 +1532,11 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     'invalid', 'service_rule', relativeSnapshotPath(snapshot, 'ownerPricing'),
     `Owner pricing rules could not be read safely: ${snapshot.reason}.`
   )];
+  const nonPlainPath = firstNonPlainPath(snapshot, 'ownerPricing');
+  if (nonPlainPath) return [ownerDiagnostic(
+    'invalid', 'service_rule', nonPlainPath,
+    `Owner pricing rules must contain only plain data objects; ${nonPlainPath} is not plain data.`
+  )];
   ownerPricing = snapshot.value;
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
@@ -1559,6 +1606,19 @@ export function validateBusinessDefaults(defaults = {}) {
       unsupportedFields: [],
       diagnostics: [diagnostic],
       errors: [diagnostic.message]
+    };
+  }
+  const nonPlainPath = firstNonPlainPath(snapshot, 'businessDefaults');
+  if (nonPlainPath) {
+    const message = `Business defaults must contain only plain data objects; ${nonPlainPath} is not plain data.`;
+    const diagnostic = ownerDiagnostic('invalid', 'business_default', nonPlainPath, message);
+    return {
+      ok: false,
+      missingFields: [],
+      invalidFields: [nonPlainPath],
+      unsupportedFields: [],
+      diagnostics: [diagnostic],
+      errors: [message]
     };
   }
   defaults = snapshot.value;

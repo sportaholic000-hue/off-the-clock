@@ -667,10 +667,28 @@ export function quoteFromVNextPricebook(input = {}) {
   });
 }
 
+function previewRequestFromSnapshot(input, snapshot) {
+  if (!snapshot.nonPlainPaths.length) return snapshot.value;
+  const request = {};
+  for (const key of Object.keys(snapshot.value)) {
+    const descriptor = ownDataValue(input, key);
+    if (!descriptor.ok || !descriptor.present) return null;
+    Object.defineProperty(request, key, {
+      value: descriptor.value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  }
+  return request;
+}
+
 export function previewFromVNextPricebook(input) {
   const snapshot = snapshotPlainData(input, 'quoteRequest');
   if (!snapshot.ok) return quoteFromVNextPricebook(input);
-  return quoteFromVNextPricebook({ ...snapshot.value, callerType: 'owner', allowInactiveOwnerPreview: true });
+  const request = previewRequestFromSnapshot(input, snapshot);
+  if (!request) return quoteFromVNextPricebook(input);
+  return quoteFromVNextPricebook({ ...request, callerType: 'owner', allowInactiveOwnerPreview: true });
 }
 
 function fieldCopy(serviceType, field) {
@@ -701,6 +719,10 @@ export function materializeVNextService(service) {
   if (!snapshot.ok) {
     if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');
     throw new TypeError(`Service could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
+  }
+  if (snapshot.nonPlainPaths.length) {
+    const path = snapshot.nonPlainPaths[0];
+    throw new TypeError(`Service must contain only plain data objects; ${path} is not plain data.`);
   }
   service = snapshot.value;
   if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');

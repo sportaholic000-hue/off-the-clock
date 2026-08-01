@@ -26,6 +26,7 @@ import {
   validateServiceRulesDetailed,
   validateVNextPricebook,
   validateTierDefinitionsDetailedVNext,
+  validateTierDefinitionsVNext,
   vNextPricebookStatuses,
   vNextServiceStatus,
   withClass2Defaults
@@ -111,28 +112,119 @@ function scenario(result, variant = 'mid') {
   return result.calculationRecord.options[0].scenarios[variant];
 }
 
+function oracleGcd(left, right) {
+  left = left < 0n ? -left : left;
+  right = right < 0n ? -right : right;
+  while (right !== 0n) [left, right] = [right, left % right];
+  return left;
+}
+
+function oracleRational(numerator, denominator = 1n) {
+  if (denominator < 0n) [numerator, denominator] = [-numerator, -denominator];
+  if (numerator === 0n) return { numerator: 0n, denominator: 1n };
+  const divisor = oracleGcd(numerator, denominator);
+  return { numerator: numerator / divisor, denominator: denominator / divisor };
+}
+
+function oracleDecimal(value) {
+  if (value && typeof value === 'object' && typeof value.numerator === 'bigint') return value;
+  if (value && typeof value === 'object' && typeof value.numerator === 'string' && typeof value.denominator === 'string') {
+    return oracleRational(BigInt(value.numerator), BigInt(value.denominator));
+  }
+  assert.equal(typeof value, 'number');
+  assert.equal(Number.isFinite(value), true);
+  const match = /^([+-]?)(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i.exec(value.toString());
+  assert.ok(match);
+  const [, sign, whole, fraction = '', exponentText = '0'] = match;
+  let numerator = BigInt((whole + fraction).replace(/^0+(?=\d)/, '') || '0');
+  const scale = fraction.length - Number(exponentText);
+  let denominator = 1n;
+  if (scale > 0) denominator = 10n ** BigInt(scale);
+  else if (scale < 0) numerator *= 10n ** BigInt(-scale);
+  if (sign === '-') numerator = -numerator;
+  return oracleRational(numerator, denominator);
+}
+
+function oracleMultiply(...values) {
+  return values.reduce((product, value) => {
+    const next = oracleDecimal(value);
+    return oracleRational(product.numerator * next.numerator, product.denominator * next.denominator);
+  }, oracleRational(1n));
+}
+
+function oracleSubtract(left, right) {
+  left = oracleDecimal(left);
+  right = oracleDecimal(right);
+  return oracleRational(
+    left.numerator * right.denominator - right.numerator * left.denominator,
+    left.denominator * right.denominator
+  );
+}
+
+function oracleDivide(left, right) {
+  left = oracleDecimal(left);
+  right = oracleDecimal(right);
+  assert.notEqual(right.numerator, 0n);
+  return oracleRational(left.numerator * right.denominator, left.denominator * right.numerator);
+}
+
+function oracleRound(value) {
+  value = oracleDecimal(value);
+  assert.ok(value.numerator >= 0n);
+  const quotient = value.numerator / value.denominator;
+  const remainder = value.numerator % value.denominator;
+  return Number(remainder * 2n >= value.denominator ? quotient + 1n : quotient);
+}
+
+function oracleNumber(value) {
+  value = oracleDecimal(value);
+  return Number(value.numerator) / Number(value.denominator);
+}
+
+function oracleEvidence(value) {
+  value = oracleDecimal(value);
+  return { numerator: value.numerator.toString(), denominator: value.denominator.toString() };
+}
+
 function assertLineReproducible(item) {
   const calculation = item.calculation;
   let expected;
   if (['quantity_rate', 'ranged'].includes(calculation.evidenceVariant)) {
-    const multiplier = calculation.multipliers.reduce((product, entry) => product * entry.value, 1);
-    expected = Math.round(calculation.quantity * calculation.rateCents * multiplier);
+    const quantity = oracleDecimal(calculation.exactQuantity);
+    assert.equal(Object.is(oracleNumber(quantity), calculation.quantity), true);
+    const multipliers = calculation.multipliers.map(entry => {
+      const exact = oracleDecimal(entry.exactValue);
+      assert.equal(Object.is(oracleNumber(exact), entry.value), true);
+      return exact;
+    });
+    const exactUnrounded = oracleMultiply(quantity, calculation.rateCents, ...multipliers);
+    assert.deepEqual(calculation.exactUnroundedCents, oracleEvidence(exactUnrounded));
+    assert.equal(Object.is(calculation.unroundedCents, oracleNumber(exactUnrounded)), true);
+    expected = oracleRound(exactUnrounded);
     if (calculation.evidenceVariant === 'ranged') {
-      assert.equal(item.rangeAmountCents.low, Math.round(calculation.quantity * calculation.lowRateCents * multiplier));
-      assert.equal(item.rangeAmountCents.high, Math.round(calculation.quantity * calculation.highRateCents * multiplier));
+      assert.equal(item.rangeAmountCents.low, oracleRound(oracleMultiply(quantity, calculation.lowRateCents, ...multipliers)));
+      assert.equal(calculation.midAmountCents, oracleRound(oracleMultiply(quantity, calculation.midRateCents, ...multipliers)));
+      assert.equal(item.rangeAmountCents.high, oracleRound(oracleMultiply(quantity, calculation.highRateCents, ...multipliers)));
     }
   } else if (calculation.evidenceVariant === 'fixed_amount') {
     expected = calculation.subtotalBeforeMinimumCents === undefined
       ? calculation.amountCents
       : Math.max(0, calculation.effectiveMinimumCents - calculation.subtotalBeforeMinimumCents);
   } else if (calculation.evidenceVariant === 'percentage_derived') {
-    expected = calculation.mode === 'margin'
-      ? Math.round(calculation.basisAmountCents / (1 - calculation.percent / 100)) - calculation.basisAmountCents
-      : Math.round(calculation.basisAmountCents * calculation.percent / 100);
+    const fraction = oracleDivide(calculation.percent, 100);
+    const exactUnrounded = calculation.mode === 'margin'
+      ? oracleSubtract(oracleDivide(calculation.basisAmountCents, oracleSubtract(1, fraction)), calculation.basisAmountCents)
+      : oracleMultiply(calculation.basisAmountCents, fraction);
+    assert.deepEqual(calculation.exactUnroundedCents, oracleEvidence(exactUnrounded));
+    assert.equal(Object.is(calculation.unroundedCents, oracleNumber(exactUnrounded)), true);
+    expected = oracleRound(exactUnrounded);
   } else if (calculation.evidenceVariant === 'composite') {
     expected = calculation.components.reduce((sum, component) => {
-      const multiplier = component.multipliers.reduce((product, entry) => product * entry.value, 1);
-      const componentExpected = Math.round(component.quantity * component.rateCents * multiplier);
+      const quantity = oracleDecimal(component.exactQuantity);
+      const multipliers = component.multipliers.map(entry => oracleDecimal(entry.exactValue));
+      const exactUnrounded = oracleMultiply(quantity, component.rateCents, ...multipliers);
+      assert.deepEqual(component.exactUnroundedCents, oracleEvidence(exactUnrounded));
+      const componentExpected = oracleRound(exactUnrounded);
       assert.equal(component.amountCents, componentExpected);
       return sum + componentExpected;
     }, 0);
@@ -144,8 +236,10 @@ function assertLineReproducible(item) {
 }
 
 function rangedEvidenceLine({ quantity = 1, lowRateCents, highRateCents, ratePath = 'rangePricing' }) {
-  const rateCents = lowRateCents + Math.round((highRateCents - lowRateCents) / 2);
-  const amountCents = Math.round(quantity * rateCents);
+  const exactQuantity = oracleDecimal(quantity);
+  const rateCents = lowRateCents + oracleRound(oracleDivide(highRateCents - lowRateCents, 2));
+  const exactUnrounded = oracleMultiply(exactQuantity, rateCents);
+  const amountCents = oracleRound(exactUnrounded);
   return {
     name: 'Intrinsic range evidence fixture',
     category: 'equipment',
@@ -156,18 +250,22 @@ function rangedEvidenceLine({ quantity = 1, lowRateCents, highRateCents, ratePat
     calculation: {
       evidenceVariant: 'ranged',
       quantity,
+      exactQuantity: oracleEvidence(exactQuantity),
       unit: 'measured units',
       rateCents,
+      midRateCents: rateCents,
+      midAmountCents: amountCents,
       ratePath,
       lowRateCents,
       highRateCents,
       multipliers: [],
-      unroundedCents: quantity * rateCents,
+      unroundedCents: oracleNumber(exactUnrounded),
+      exactUnroundedCents: oracleEvidence(exactUnrounded),
       roundedAmountCents: amountCents
     },
     rangeAmountCents: {
-      low: Math.round(quantity * lowRateCents),
-      high: Math.round(quantity * highRateCents)
+      low: oracleRound(oracleMultiply(exactQuantity, lowRateCents)),
+      high: oracleRound(oracleMultiply(exactQuantity, highRateCents))
     }
   };
 }
@@ -5657,4 +5755,343 @@ test('repair 90: omitted caller context is customer-safe and only explicit owner
   const pricebookPreview = previewFromVNextPricebook(pricebookRequest);
   assert.equal(Array.isArray(directPreview.lineItems), true);
   assert.equal(Array.isArray(pricebookPreview.lineItems), true);
+});
+test('repair 91: the direct calculator never rereads validated proxies or accessor-backed context', () => {
+  const owner = interiorService();
+  let pricingReads = 0;
+  const pricingProxy = new Proxy(owner.pricing, {
+    get(target, key, receiver) {
+      pricingReads += 1;
+      if (key === 'laborPerWallSqftPerCoat') throw new Error('validated pricing was reread');
+      return Reflect.get(target, key, receiver);
+    }
+  });
+  let calculated;
+  assert.doesNotThrow(() => {
+    calculated = calculateServiceVNext(
+      'INTERIOR_PAINTING',
+      interiorInputs(),
+      pricingProxy,
+      { ownerPricing: owner }
+    );
+  });
+  assert.equal(pricingReads, 0);
+  assert.equal(lineAmount(calculated, 'Wall labor'), 10000);
+  assert.equal(lineAmount(calculated, 'Wall paint and materials'), 5000);
+
+  let ownerRulesReads = 0;
+  const accessorRules = {};
+  Object.defineProperty(accessorRules, 'ownerPricing', {
+    enumerable: true,
+    get() {
+      ownerRulesReads += 1;
+      throw new Error('owner pricing context getter executed');
+    }
+  });
+  assert.throws(
+    () => calculateServiceVNext('INTERIOR_PAINTING', interiorInputs(), owner.pricing, accessorRules),
+    error => {
+      assert.equal(error.name, 'QuoteReviewError');
+      assert.deepEqual(error.invalidOwnerFields, ['serviceRules.ownerPricing']);
+      return true;
+    }
+  );
+  assert.equal(ownerRulesReads, 0);
+
+  const flatRepair = repairFixture('FLAT_ROOF_REPAIR');
+  let addonGetterReads = 0;
+  const accessorAddonContext = { ownerPricing: flatRepair.ownerPricing };
+  Object.defineProperty(accessorAddonContext, 'skipAddon', {
+    enumerable: true,
+    get() {
+      addonGetterReads += 1;
+      throw new Error('add-on context getter executed');
+    }
+  });
+  assert.throws(
+    () => calculateServiceVNext(
+      'FLAT_ROOF_REPAIR',
+      { ...flatRepair.inputs, pondingWater: true },
+      flatRepair.ownerPricing.pricing,
+      accessorAddonContext
+    ),
+    error => {
+      assert.equal(error.name, 'QuoteReviewError');
+      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
+      return true;
+    }
+  );
+  assert.equal(addonGetterReads, 0);
+
+  assert.throws(
+    () => calculateServiceVNext(
+      'FLAT_ROOF_REPAIR',
+      { ...flatRepair.inputs, pondingWater: true },
+      flatRepair.ownerPricing.pricing,
+      { ownerPricing: flatRepair.ownerPricing, skipAddon() { throw new Error('callback failed'); } }
+    ),
+    error => {
+      assert.equal(error.name, 'QuoteReviewError');
+      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
+      return true;
+    }
+  );
+});
+test('repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data', () => {
+  const owner = interiorService();
+  const prototypeBackedFactors = Object.create({ hiddenMultiplier: 9 });
+  Object.assign(prototypeBackedFactors, owner.pricing.wallHeightLaborMultiplier);
+  owner.pricing.wallHeightLaborMultiplier = prototypeBackedFactors;
+
+  const ownerValidation = validateOwnerPricing('INTERIOR_PAINTING', interiorInputs(), owner.pricing, owner);
+  assert.equal(ownerValidation.ok, false);
+  assert.deepEqual(ownerValidation.invalidOwnerFields, ['wallHeightLaborMultiplier']);
+  assert.deepEqual(
+    validateClass2FactorsDetailed('INTERIOR_PAINTING', owner.pricing).map(item => item.path),
+    ['wallHeightLaborMultiplier']
+  );
+  assert.deepEqual(
+    validatePricingStructuresDetailed('INTERIOR_PAINTING', owner.pricing).map(item => item.path),
+    ['wallHeightLaborMultiplier']
+  );
+  assert.deepEqual(
+    validateCustomerInputs('INTERIOR_PAINTING', interiorInputs(), owner.pricing).invalidOwnerFields,
+    ['wallHeightLaborMultiplier']
+  );
+  assert.throws(
+    () => withClass2Defaults('INTERIOR_PAINTING', owner.pricing),
+    /wallHeightLaborMultiplier is not plain data/
+  );
+  assert.equal(
+    validateServiceRulesDetailed(owner, 'INTERIOR_PAINTING')[0].path,
+    'pricing.wallHeightLaborMultiplier'
+  );
+  assert.equal(
+    validateTierDefinitionsDetailedVNext(owner, 'INTERIOR_PAINTING')[0].path,
+    'pricing.wallHeightLaborMultiplier'
+  );
+  assert.match(
+    validateTierDefinitionsVNext(owner, 'INTERIOR_PAINTING')[0],
+    /plain data value/
+  );
+  assert.throws(
+    () => materializeVNextService(owner),
+    /service\.pricing\.wallHeightLaborMultiplier is not plain data/
+  );
+
+  const directRequest = {
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    ownerPricing: owner,
+    businessDefaults: defaults,
+    callerType: 'owner',
+    currentMonth: 1
+  };
+  for (const result of [
+    generateQuoteVNext(directRequest),
+    previewQuoteVNext(directRequest)
+  ]) {
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(result.invalidOwnerFields, ['wallHeightLaborMultiplier']);
+  }
+
+  const pricebookRequest = {
+    pricebook: { defaults, services: [owner] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    currentMonth: 1
+  };
+  for (const result of [
+    quoteFromVNextPricebook(pricebookRequest),
+    previewFromVNextPricebook(pricebookRequest)
+  ]) {
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(result.invalidOwnerFields, ['pricebook.services.0.pricing.wallHeightLaborMultiplier']);
+  }
+
+  const plantsBySize = Object.create({ ignoredSize: 1 });
+  Object.assign(plantsBySize, { small: 1, medium: 0, large: 0 });
+  const customerValidation = validateCustomerInputs(
+    'LANDSCAPING_PLANTING',
+    { plantsBySize },
+    {}
+  );
+  assert.equal(customerValidation.ok, false);
+  assert.deepEqual(customerValidation.invalidCustomerFields, ['plantsBySize']);
+
+  const nonPlainDefaults = structuredClone(defaults);
+  const markupMap = Object.create({ hiddenCategory: true });
+  Object.assign(markupMap, nonPlainDefaults.markupApplies);
+  nonPlainDefaults.markupApplies = markupMap;
+  const defaultsValidation = validateBusinessDefaults(nonPlainDefaults);
+  assert.equal(defaultsValidation.ok, false);
+  assert.deepEqual(defaultsValidation.invalidFields, ['markupApplies']);
+
+  const ruleOwner = interiorService();
+  const feeMap = Object.create({ hiddenFee: 'always' });
+  Object.assign(feeMap, ruleOwner.feeRules);
+  ruleOwner.feeRules = feeMap;
+  assert.deepEqual(
+    validateServiceRulesDetailed(ruleOwner, 'INTERIOR_PAINTING').map(item => item.path),
+    ['feeRules']
+  );
+});
+
+test('repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities', () => {
+  assert.equal(Math.round(1.005 * 100), 100, 'the native floating-point defect must remain reproducible');
+  const ownerPricing = service('LANDSCAPING_MULCH', {
+    mulchMaterialPerYard: { brown: 100 },
+    mulchInstallLaborPerYard: 100,
+    mulchOverageFactor: 1,
+    minimumServiceCharge: 0
+  });
+
+  const measuredQuote = run('LANDSCAPING_MULCH', {
+    inputMethod: 'yards',
+    mulchArea: 1.005,
+    mulchType: 'brown',
+    bedCondition: 'clean',
+    edgingNeeded: false
+  }, ownerPricing);
+  assert.equal(measuredQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(measuredQuote));
+  assert.equal(lineAmount(measuredQuote, 'Mulch material'), 101);
+  assert.equal(lineAmount(measuredQuote, 'Mulch installation labor'), 101);
+  for (const item of scenario(measuredQuote).lineItems) assertLineReproducible(item);
+  assert.deepEqual(
+    line(measuredQuote, 'Mulch installation labor').calculation.exactUnroundedCents,
+    { numerator: '201', denominator: '2' }
+  );
+
+  const derivedQuote = run('LANDSCAPING_MULCH', {
+    inputMethod: 'sqft',
+    mulchArea: 325.62,
+    mulchDepth: 1,
+    mulchType: 'brown',
+    bedCondition: 'clean',
+    edgingNeeded: false
+  }, ownerPricing);
+  assert.equal(derivedQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(derivedQuote));
+  assert.equal(lineAmount(derivedQuote, 'Mulch material'), 101);
+  assert.equal(lineAmount(derivedQuote, 'Mulch installation labor'), 101);
+  assert.deepEqual(
+    derivedQuote.calculationRecord.options[0].quantityDerivations.find(item => item.name === 'installedMulchYards').exactResult,
+    { numerator: '201', denominator: '200' }
+  );
+  for (const item of scenario(derivedQuote).lineItems) assertLineReproducible(item);
+
+  const belowHalf = run('LANDSCAPING_MULCH', {
+    inputMethod: 'yards',
+    mulchArea: 1.0049999999999997,
+    mulchType: 'brown',
+    bedCondition: 'clean',
+    edgingNeeded: false
+  }, ownerPricing);
+  assert.equal(belowHalf.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(belowHalf));
+  assert.equal(lineAmount(belowHalf, 'Mulch material'), 100, 'a true value below half a cent must not be epsilon-rounded up');
+  assert.equal(lineAmount(belowHalf, 'Mulch installation labor'), 100);
+});
+
+test('repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding', () => {
+  const pricedInterior = interiorService({
+    laborPerWallSqftPerCoat: 100,
+    materialPerWallSqftPerCoat: 0
+  }, {
+    peakMonths: [1],
+    peakSurchargePercent: 0.5
+  });
+  const percentageQuote = run('INTERIOR_PAINTING', interiorInputs({
+    wallAreaSqft: 1,
+    coats: 1,
+    wallHeight: 'standard',
+    ceilingsIncluded: false,
+    trimIncluded: false
+  }), pricedInterior, {
+    businessDefaults: {
+      ...defaults,
+      markupPercent: 0.5,
+      taxMode: 'TAX_ALL',
+      taxPercent: 0.5,
+      rangeBufferPercent: 0.5
+    }
+  });
+  assert.equal(percentageQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(percentageQuote));
+  assert.equal(lineAmount(percentageQuote, 'Peak season adjustment'), 1);
+  assert.equal(lineAmount(percentageQuote, 'Markup'), 1);
+  assert.equal(lineAmount(percentageQuote, 'Tax'), 1);
+  for (const item of scenario(percentageQuote).lineItems) assertLineReproducible(item);
+
+  const rangeQuote = run('INTERIOR_PAINTING', interiorInputs({
+    wallAreaSqft: 1,
+    coats: 1,
+    wallHeight: 'standard',
+    ceilingsIncluded: false,
+    trimIncluded: false
+  }), interiorService({
+    laborPerWallSqftPerCoat: 100,
+    materialPerWallSqftPerCoat: 0
+  }), {
+    businessDefaults: { ...defaults, rangeBufferPercent: 0.5 }
+  });
+  assert.deepEqual(
+    { low: rangeQuote.lowEstimate, mid: rangeQuote.midEstimate, high: rangeQuote.highEstimate },
+    { low: 1, mid: 1, high: 1.01 }
+  );
+
+  const mowingQuote = run('LANDSCAPING_MOWING', {
+    yardSqft: 100,
+    sqftMethod: 'exact',
+    serviceFrequency: 'weekly',
+    grassCondition: 'maintained',
+    bagClippings: true,
+    edgingIncluded: false
+  }, service('LANDSCAPING_MOWING', {
+    mowingBaseRatePerSqft: 1,
+    minimumServiceCharge: 0,
+    frequencyMultipliers: { weekly: 1, biweekly: 1, monthly: 1, one_time: 1 },
+    overgrowthMultipliers: { maintained: 1, overgrown: 1, severe: 1 },
+    baggingSurchargePercent: 0.5
+  }));
+  assert.equal(mowingQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(mowingQuote));
+  assert.equal(lineAmount(mowingQuote, 'Clipping bagging and disposal'), 1);
+  assertLineReproducible(line(mowingQuote, 'Clipping bagging and disposal'));
+});
+
+test('repair 94: customer sanitization independently rejects forged exact line evidence', () => {
+  const source = run('INTERIOR_PAINTING', interiorInputs(), interiorService());
+  assert.equal(source.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(source));
+  const forged = structuredClone(source);
+  const corruptedEvidence = { numerator: '1', denominator: '1' };
+
+  forged.lineItems[0].calculation.exactUnroundedCents = structuredClone(corruptedEvidence);
+  forged.options[0].lineItems[0].calculation.exactUnroundedCents = structuredClone(corruptedEvidence);
+  forged.options[0].calculationRecord.lineItems[0].calculation.exactUnroundedCents = structuredClone(corruptedEvidence);
+  forged.options[0].calculationRecord.scenarios.mid.lineItems[0].calculation.exactUnroundedCents = structuredClone(corruptedEvidence);
+  forged.calculationRecord.options[0] = structuredClone(forged.options[0].calculationRecord);
+
+  assert.deepEqual(sanitizeForCustomerVNext(forged), {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
+    quoteId: source.quoteId
+  });
+
+  const forgedAmount = structuredClone(source);
+  for (const item of [
+    forgedAmount.lineItems[0],
+    forgedAmount.options[0].lineItems[0],
+    forgedAmount.options[0].calculationRecord.lineItems[0],
+    forgedAmount.options[0].calculationRecord.scenarios.mid.lineItems[0]
+  ]) {
+    item.amountCents += 1;
+    item.calculation.roundedAmountCents += 1;
+  }
+  forgedAmount.options[0].calculationRecord.scenarios.mid.finalTotalCents += 1;
+  forgedAmount.options[0].calculationRecord.range.exactMidScenarioTotalCents += 1;
+  forgedAmount.calculationRecord.options[0] = structuredClone(forgedAmount.options[0].calculationRecord);
+
+  assert.deepEqual(sanitizeForCustomerVNext(forgedAmount), {
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
+    quoteId: source.quoteId
+  });
 });
