@@ -1,5 +1,6 @@
 const MAX_SNAPSHOT_DEPTH = 100;
 const MAX_SNAPSHOT_VALUES = 100_000;
+const MAX_SNAPSHOT_ARRAY_LENGTH = 10_000;
 
 function fail(path, reason) {
   return { ok: false, value: undefined, errorPath: path, reason };
@@ -25,6 +26,7 @@ function clonePlainData(value, path, ancestors, nonPlainPaths, state, depth = 0,
   }
 
   const array = Array.isArray(value);
+  if (array && value.length > MAX_SNAPSHOT_ARRAY_LENGTH) return fail(path, `arrays may contain at most ${MAX_SNAPSHOT_ARRAY_LENGTH} entries`);
   if (!array && prototype !== Object.prototype && prototype !== null) {
     if (isRoot) return fail(path, 'value is not a plain data object');
     nonPlainPaths.push(path);
@@ -72,6 +74,7 @@ export function snapshotPlainData(value, rootPath = 'value') {
 
 export function denseArrayIssue(value) {
   if (!Array.isArray(value)) return { path: '', reason: 'must be an array' };
+  if (value.length > MAX_SNAPSHOT_ARRAY_LENGTH) return { path: '', reason: `may contain at most ${MAX_SNAPSHOT_ARRAY_LENGTH} entries` };
   for (let index = 0; index < value.length; index += 1) {
     if (!Object.hasOwn(value, index)) return { path: String(index), reason: 'array entry is missing' };
   }

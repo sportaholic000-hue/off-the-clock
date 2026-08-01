@@ -610,12 +610,12 @@ export function quoteFromVNextPricebook(input = {}) {
   const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
   const requestIsPlainObject = requestSnapshot.ok;
   const callerDescriptor = ownDataValue(input, 'callerType');
-  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'customer' ? 'customer' : 'owner' };
+  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'owner' ? 'owner' : 'customer' };
   const {
     pricebook,
     serviceType,
     customerInputs,
-    callerType = 'owner',
+    callerType = 'customer',
     feeSelections,
     currentMonth,
     allowInactiveOwnerPreview = false

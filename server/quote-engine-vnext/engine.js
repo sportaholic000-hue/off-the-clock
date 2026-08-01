@@ -914,13 +914,13 @@ export function generateQuoteVNext(input = {}) {
   const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
   const requestIsPlainObject = requestSnapshot.ok;
   const callerDescriptor = ownDataValue(input, 'callerType');
-  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'customer' ? 'customer' : 'owner' };
+  const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'owner' ? 'owner' : 'customer' };
   const {
     serviceType,
     customerInputs = {},
     ownerPricing = {},
     businessDefaults = {},
-    callerType = 'owner',
+    callerType = 'customer',
     feeSelections = {},
     currentMonth = new Date().getMonth() + 1,
     allowInactiveOwnerPreview = false

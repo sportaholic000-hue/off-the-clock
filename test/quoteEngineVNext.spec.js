@@ -82,6 +82,7 @@ function quote(entry, overrides = {}) {
     customerInputs: entry.customerInputs,
     ownerPricing: entry.ownerPricing,
     businessDefaults: defaults,
+    callerType: 'owner',
     currentMonth: 1,
     ...overrides
   });
@@ -486,7 +487,7 @@ test('partial flat-roof calculations require valid measured partial scope', () =
 test('custom units are validated, but public quoting waits for an approved charge classification', () => {
   const ownerPricing = service('CUSTOM', { customPricingMode: 'range', low: 8000, high: 12000, unit: 'per_unit', minimumJob: 0 }, { service: 'Fixture install' });
   const customerInputs = { service: 'Fixture install', serviceConfirmed: true, unit: 'per_unit', itemCount: 3 };
-  const publicResult = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs, ownerPricing, businessDefaults: defaults, currentMonth: 1 });
+  const publicResult = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs, ownerPricing, businessDefaults: defaults, callerType: 'owner', currentMonth: 1 });
   assert.equal(publicResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(publicResult.ownerDecisionRequired.some(item => item.kind === 'custom_charge_classification'), true);
 
@@ -500,7 +501,7 @@ test('custom units are validated, but public quoting waits for an approved charg
     }
   );
 
-  const wrongUnit = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs: { ...customerInputs, unit: 'per_hour', hours: 3 }, ownerPricing, businessDefaults: defaults, currentMonth: 1 });
+  const wrongUnit = generateQuoteVNext({ serviceType: 'CUSTOM', customerInputs: { ...customerInputs, unit: 'per_hour', hours: 3 }, ownerPricing, businessDefaults: defaults, callerType: 'owner', currentMonth: 1 });
   assert.equal(wrongUnit.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(wrongUnit.invalidCustomerFields.includes('unit'), true);
 });

@@ -32,7 +32,7 @@ import {
 } from '../server/quote-engine-vnext/index.js';
 import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js';
 import { aiConfirmationFieldsVNext } from '../server/quote-engine-vnext/contracts.js';
-import { snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
+import { denseArrayIssue, snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -93,6 +93,7 @@ function run(serviceType, customerInputs, ownerPricing, overrides = {}) {
     customerInputs,
     ownerPricing,
     businessDefaults: defaults,
+    callerType: 'owner',
     currentMonth: 1,
     ...overrides
   });
@@ -3306,6 +3307,7 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
                       customerInputs: { sodSqft: 13, sqftMethod: 'exact', groundPrepNeeded: false, slope: 'flat', accessDifficulty: 'easy' },
                       ownerPricing,
                       businessDefaults: config,
+                      callerType: 'owner',
                       currentMonth: 1
                     });
                     const label = [
@@ -3646,6 +3648,7 @@ test('repair 57: every selected common fee follows its exact owner or customer b
           ownerPricing,
           businessDefaults: feeDefaults,
           feeSelections,
+          callerType: 'owner',
           currentMonth: 1
         });
         const label = fee + ':' + mode + ':' + selected;
@@ -3686,6 +3689,7 @@ test('repair 57: every selected common fee follows its exact owner or customer b
         customerInputs: inputs,
         ownerPricing,
         businessDefaults: feeDefaults,
+        callerType: 'owner',
         currentMonth: 1
       });
       assert.equal(missingSelection.resultType, 'ESTIMATE_REQUIRES_REVIEW', fee + ':' + mode);
@@ -3808,7 +3812,7 @@ test('repair 58: cross-field and shaped-structure validators reject every advers
 test('repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior', () => {
   const missing = generateQuoteVNext();
   assert.equal(missing.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(missing.invalidCustomerFields, ['serviceType']);
+  assert.deepEqual(Object.keys(missing).sort(), ['customerMessage', 'quoteId', 'resultType']);
   assert.equal(liveQuoteVNext().resultType, 'ESTIMATE_REQUIRES_REVIEW');
 
   const inactive = interiorService();
@@ -3912,6 +3916,7 @@ test('repair 61: price-book LIVE status executes fees, markup, add-ons, and fina
   const overheadQuote = quoteFromVNextPricebook({
     pricebook: { defaults: overheadDefaults, services: [overheadOwner] },
     serviceType: 'INTERIOR_PAINTING',
+    callerType: 'owner',
     customerInputs: interiorInputs(),
     currentMonth: 1
   });
@@ -3972,6 +3977,7 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
   const poisonedQuote = quoteFromVNextPricebook({
     pricebook: { defaults, services: [poisonedOwner] },
     serviceType: 'FLOORING_INSTALL',
+    callerType: 'owner',
     customerInputs: flooringInputs({ newFlooringType: 'tile' }),
     currentMonth: 1
   });
@@ -3987,6 +3993,7 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
   const cleanQuote = quoteFromVNextPricebook({
     pricebook: { defaults, services: [cleanOwner] },
     serviceType: 'FLOORING_INSTALL',
+    callerType: 'owner',
     customerInputs: flooringInputs({ newFlooringType: 'tile' }),
     currentMonth: 1
   });
@@ -3999,6 +4006,7 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
     serviceType: 'INTERIOR_PAINTING',
     customerInputs: interiorInputs(),
     ownerPricing: interiorService(),
+    callerType: 'owner',
     businessDefaults: inheritedDefaults,
     currentMonth: 1
   });
@@ -4011,6 +4019,7 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
     customerInputs: interiorInputs(),
     ownerPricing: selectedFeeOwner,
     businessDefaults: { ...defaults, travelFee: 500 },
+    callerType: 'owner',
     feeSelections: { owner: Object.create({ travel: true }) },
     currentMonth: 1
   });
@@ -4487,6 +4496,7 @@ test('repair 68: nested pricing is the one canonical service shape across status
     serviceType: 'INTERIOR_PAINTING',
     customerInputs,
     ownerPricing: flat,
+    callerType: 'owner',
     businessDefaults: defaults,
     currentMonth: 1
   });
@@ -4604,7 +4614,7 @@ test('repair 71: accessor-backed public requests fail closed without leaking cus
   let generated;
   assert.doesNotThrow(() => { generated = generateQuoteVNext(accessorRecord('serviceType')); });
   assert.equal(generated.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(generated.invalidCustomerFields, ['quoteRequest.serviceType']);
+  assert.deepEqual(Object.keys(generated).sort(), ['customerMessage', 'quoteId', 'resultType']);
 
   const customerRequest = { callerType: 'customer' };
   Object.defineProperty(customerRequest, 'ownerPricing', {
@@ -4621,7 +4631,7 @@ test('repair 71: accessor-backed public requests fail closed without leaking cus
     let result;
     assert.doesNotThrow(() => { result = invoke(); });
     assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-    assert.deepEqual(result.invalidOwnerFields, ['quoteRequest.pricebook']);
+    assert.deepEqual(Object.keys(result).sort(), ['customerMessage', 'quoteId', 'resultType']);
   }
 
   const customerLookup = { callerType: 'customer' };
@@ -4759,7 +4769,7 @@ test('repair 74: snapshot trust is non-observable and cannot be forged through a
   assert.equal(mutatedSnapshotResult.invalidOwnerFields.includes('minimumJob'), true);
 
   let getterReads = 0;
-  const forged = {};
+  const forged = { callerType: 'owner' };
   Object.defineProperty(forged, 'serviceType', {
     enumerable: true,
     get() {
@@ -4917,6 +4927,7 @@ test('repair 77: function and symbol values fail at their exact quote-data paths
         customerInputs: interiorInputs(),
         ownerPricing: interiorService(),
         businessDefaults: defaults,
+        callerType: 'owner',
         [key]: value
       });
     });
@@ -5361,7 +5372,7 @@ test('repair 84: fee selections and tier definitions enforce exact supported req
 });
 
 test('repair 85: mutation after snapshot cannot bypass any later public boundary inspection', () => {
-  const trustedEngineRequest = snapshotPlainData({ serviceType: 'INTERIOR_PAINTING' }, 'quoteRequest').value;
+  const trustedEngineRequest = snapshotPlainData({ serviceType: 'INTERIOR_PAINTING', callerType: 'owner' }, 'quoteRequest').value;
   let engineGetterReads = 0;
   Object.defineProperty(trustedEngineRequest, 'serviceType', {
     enumerable: true,
@@ -5527,7 +5538,8 @@ test('repair 88: deeply nested quote data fails closed without executing past th
   assert.doesNotThrow(() => {
     engineResult = generateQuoteVNext({
       serviceType: 'INTERIOR_PAINTING',
-      customerInputs: deep
+      customerInputs: deep,
+      callerType: 'owner'
     });
   });
   assert.equal(engineResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
@@ -5556,4 +5568,93 @@ test('repair 88: deeply nested quote data fails closed without executing past th
     customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
     quoteId: ready.quoteId
   });
+});
+test('repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary', () => {
+  const oversized = new Array(10_001);
+  assert.deepEqual(denseArrayIssue(oversized), {
+    path: '',
+    reason: 'may contain at most 10000 entries'
+  });
+
+  const snapshot = snapshotPlainData({ oversized }, 'probe');
+  assert.equal(snapshot.ok, false);
+  assert.equal(snapshot.errorPath, 'probe.oversized');
+  assert.match(snapshot.reason, /at most 10000 entries/);
+
+  let engineResult;
+  assert.doesNotThrow(() => {
+    engineResult = generateQuoteVNext({
+      serviceType: 'INTERIOR_PAINTING',
+      customerInputs: { oversized },
+      callerType: 'owner'
+    });
+  });
+  assert.equal(engineResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.match(engineResult.reviewReason, /at most 10000 entries/);
+
+  let lookupResult;
+  assert.doesNotThrow(() => {
+    lookupResult = quoteFromVNextPricebook({
+      pricebook: { defaults, services: oversized },
+      serviceType: 'INTERIOR_PAINTING',
+      customerInputs: interiorInputs(),
+      callerType: 'owner',
+      currentMonth: 1
+    });
+  });
+  assert.equal(lookupResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.match(lookupResult.reviewReason, /at most 10000 entries/);
+
+  assert.throws(
+    () => materializeScenarioLinesVNext(oversized, 'mid'),
+    /at most 10000 entries/
+  );
+});
+test('repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence', () => {
+  const ownerPricing = interiorService();
+  const directRequest = {
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    ownerPricing,
+    businessDefaults: defaults,
+    currentMonth: 1
+  };
+  const pricebookRequest = {
+    pricebook: { defaults, services: [ownerPricing] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    currentMonth: 1
+  };
+
+  for (const result of [
+    generateQuoteVNext(directRequest),
+    liveQuoteVNext(directRequest),
+    quoteFromVNextPricebook(pricebookRequest)
+  ]) {
+    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(result));
+    for (const internalField of [
+      'lineItems', 'calculationRecord', 'submittedCustomerInputs',
+      'serviceType', 'appliedRules', 'failedTierDiagnostics'
+    ]) {
+      assert.equal(Object.hasOwn(result, internalField), false, internalField);
+    }
+  }
+
+  for (const malformed of [
+    generateQuoteVNext(null),
+    quoteFromVNextPricebook(null)
+  ]) {
+    assert.equal(malformed.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(Object.keys(malformed).sort(), ['customerMessage', 'quoteId', 'resultType']);
+    assert.equal(typeof malformed.quoteId, 'string');
+  }
+
+  const explicitOwner = generateQuoteVNext({ ...directRequest, callerType: 'owner' });
+  assert.equal(Array.isArray(explicitOwner.lineItems), true);
+  assert.equal(Object.hasOwn(explicitOwner, 'calculationRecord'), true);
+
+  const directPreview = previewQuoteVNext(directRequest);
+  const pricebookPreview = previewFromVNextPricebook(pricebookRequest);
+  assert.equal(Array.isArray(directPreview.lineItems), true);
+  assert.equal(Array.isArray(pricebookPreview.lineItems), true);
 });

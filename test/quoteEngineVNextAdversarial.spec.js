@@ -75,6 +75,7 @@ function run(serviceType, customerInputs, ownerPricing, overrides = {}) {
     customerInputs,
     ownerPricing,
     businessDefaults: defaults,
+    callerType: 'owner',
     currentMonth: 1,
     ...overrides
   });
