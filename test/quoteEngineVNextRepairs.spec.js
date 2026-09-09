@@ -6455,10 +6455,15 @@ test('repair 102: request diagnostics retain owner versus customer responsibilit
   class Selections { constructor() { this.travel = true; } }
   const customerReview = quoteId => ({ resultType: 'ESTIMATE_REQUIRES_REVIEW', customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.', quoteId });
   for (const [entry, request] of [[generateQuoteVNext, direct], [quoteFromVNextPricebook, book]]) {
-    const valid = entry({ ...request, feeSelections: { owner: { travel: true } } });
-    assert.equal(valid.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(valid));
     for (const side of ['owner', 'customer']) {
-      const result = entry({ ...request, feeSelections: { [side]: new Selections() } });
+      const matchingRequest = structuredClone(request);
+      const matchingService = entry === generateQuoteVNext ? matchingRequest.ownerPricing : matchingRequest.pricebook.services[0];
+      matchingService.feeRules.travel = side === 'owner' ? 'owner_selected' : 'customer_selected';
+      const valid = entry({ ...matchingRequest, feeSelections: { [side]: { travel: true } } });
+      assert.equal(valid.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(valid));
+      assert.equal(sanitizeForCustomerVNext(valid).resultType, 'INSTANT_ESTIMATE_READY');
+      // Keep the matching fee mode and every other request field fixed.
+      const result = entry({ ...matchingRequest, feeSelections: { [side]: new Selections() } });
       assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
       assert.deepEqual(result[side === 'owner' ? 'invalidOwnerFields' : 'invalidCustomerFields'], [`feeSelections.${side}`]);
       assert.deepEqual(result[side === 'owner' ? 'invalidCustomerFields' : 'invalidOwnerFields'], []);
@@ -6466,7 +6471,7 @@ test('repair 102: request diagnostics retain owner versus customer responsibilit
       let getterCalls = 0;
       const selection = {};
       Object.defineProperty(selection, 'travel', { enumerable: true, get() { getterCalls++; return true; } });
-      const accessorResult = entry({ ...request, feeSelections: { [side]: selection } });
+      const accessorResult = entry({ ...matchingRequest, feeSelections: { [side]: selection } });
       assert.equal(getterCalls, 0);
       assert.equal(accessorResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
       const expectedPath = entry === generateQuoteVNext && side === 'owner' ? 'feeSelections.owner.travel' : `quoteRequest.feeSelections.${side}.travel`;
