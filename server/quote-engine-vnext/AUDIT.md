@@ -268,5 +268,12 @@ npm run gate:quote-vnext
 ```
 
 The gate also proves that production `server/src` has no import of this
-candidate. Existing Phase 0-2 gates and the production client build must still
-be run separately before handing the branch to independent audit.
+candidate. The latest 2026-09-09 owner instruction limits this isolated
+checkpoint to focused VNext and quote-engine tests; Phase 0, client builds,
+dependency changes, and CI work are deferred and must not be performed here.
+
+## 2026-09-09 continuation checkpoint
+
+The starting local and remote SHA was `b4e1c13ee3029744939de3a2004e9ead8876393c` with five modified source/test files. Repair 81 was already committed. Existing uncommitted Repairs 95–100 were preserved and completed; additional positive-value, diagnostic-responsibility, and exact-multiplier regression coverage is recorded as Repairs 101–103. Structured ranged errors were restored without removing the general evidence guard, and the concrete overflow fixture was updated to exercise safe-integer overflow within the current measurement domain.
+
+See [COMPLETION.md](./COMPLETION.md) for exact defects, independent arithmetic controls, the expanded owner-decision register, and verification requirements. The current owner instruction settles the historical item 3 engine behavior in favor of measured inputs or review. All remaining pricing-model, migration, authorization, persistence, and measurable-criteria decisions remain unchanged. This checkpoint does not approve production integration.

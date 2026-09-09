@@ -229,7 +229,7 @@ function activationScenarios(service) {
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') {
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const dimensions = [
-      { dimensionMethod: 'exact', length: 100_000, width: 100_000 },
+      { dimensionMethod: 'exact', length: 10_000, width: 1_000 },
       { dimensionMethod: 'measured_area_perimeter', areaSqft: 10_000_000, perimeterLF: 1_000_000 }
     ];
     return dimensions.flatMap(dimension => ['broom', 'smooth', 'stamped'].flatMap(finishType => ['none', 'wire_mesh', 'rebar'].map(reinforcement => ({
@@ -300,10 +300,15 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   };
 }
 
-const ACTIVATION_FEE_SELECTIONS = {
-  owner: { travel: true, disposal: true, permit: true, overhead: true },
-  customer: { travel: true, disposal: true, permit: true, overhead: true }
-};
+function activationFeeSelections(service) {
+  const selections = { owner: {}, customer: {} };
+  for (const fee of ['travel', 'disposal', 'permit', 'overhead']) {
+    const mode = service.feeRules?.[fee];
+    if (mode === 'owner_selected') selections.owner[fee] = true;
+    if (mode === 'customer_selected') selections.customer[fee] = true;
+  }
+  return selections;
+}
 
 function appendActivationReviewDiagnostics(diagnostics, result) {
   const before = diagnostics.length;
@@ -361,7 +366,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
           ownerPricing: { ...service, active: true, pricing: effectivePricing, tiers: [] },
           businessDefaults,
           callerType: 'owner',
-          feeSelections: ACTIVATION_FEE_SELECTIONS,
+          feeSelections: activationFeeSelections(service),
           currentMonth: activationMonth(service, businessDefaults),
           allowInactiveOwnerPreview: true
         });
@@ -398,7 +403,7 @@ export function vNextServiceStatus(service, businessDefaults = null) {
     type: 'invalid', kind: 'service', path: snapshot.errorPath,
     message: `Service could not be read safely: ${snapshot.reason}.`
   }]);
-  const blockingServicePath = snapshot.nonPlainPaths.find(path => !/^service\.confirmedFields(?:\.|$)/.test(path));
+  const blockingServicePath = snapshot.nonPlainPaths[0];
   if (blockingServicePath) {
     let path = blockingServicePath;
     if (path.startsWith('service.pricing.')) {
@@ -488,7 +493,7 @@ export function vNextPricebookStatuses(pricebook) {
     type: 'invalid', kind: 'pricebook', path: snapshot.errorPath,
     message: `Price book could not be read safely: ${snapshot.reason}.`
   }])];
-  const blockingPricebookPath = snapshot.nonPlainPaths.find(path => !/^pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path));
+  const blockingPricebookPath = snapshot.nonPlainPaths[0];
   if (blockingPricebookPath) {
     const path = blockingPricebookPath;
     return [statusFromDiagnostics(null, [{
@@ -542,7 +547,7 @@ export function validateVNextPricebook(pricebook) {
   if (!snapshot.ok) return {
     ok: false, errors: [`Price book could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`], statuses: []
   };
-  const blockingValidationPath = snapshot.nonPlainPaths.find(path => !/^pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path));
+  const blockingValidationPath = snapshot.nonPlainPaths[0];
   if (blockingValidationPath) {
     const path = blockingValidationPath;
     return {
@@ -579,7 +584,7 @@ export function validateVNextPricebook(pricebook) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], statuses };
 }
 
-function serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason, path, kind }) {
+function serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason, path, kind, diagnosticOwner = 'owner' }) {
   const ownerDiagnostic = { type: 'invalid', kind, path, message: reviewReason };
   const result = {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
@@ -590,12 +595,12 @@ function serviceLookupReview({ serviceType, customerInputs, callerType, reviewRe
     validatedMeasurements: [],
     reviewReason,
     missingCustomerFields: [],
-    invalidCustomerFields: [],
+    invalidCustomerFields: diagnosticOwner === 'customer' ? [path] : [],
     missingOwnerFields: [],
-    invalidOwnerFields: [path],
+    invalidOwnerFields: diagnosticOwner === 'owner' ? [path] : [],
     unsupportedOwnerFields: [],
     crossFieldOwnerFields: [],
-    ownerDiagnostics: [ownerDiagnostic],
+    ownerDiagnostics: diagnosticOwner === 'owner' ? [ownerDiagnostic] : [],
     ownerDecisionRequired: [],
     failedTierDiagnostics: [],
     validationMessages: [reviewReason],
@@ -605,6 +610,11 @@ function serviceLookupReview({ serviceType, customerInputs, callerType, reviewRe
   };
   return callerType === 'owner' ? result : sanitizeForCustomerVNext(result);
 }
+function pricebookRequestDiagnosticOwner(path) {
+  const relativePath = String(path || '').replace(/^quoteRequest\./, '');
+  return /^(pricebook|feeSelections\.owner)(?:\.|$)/.test(relativePath) ? 'owner' : 'customer';
+}
+
 
 export function quoteFromVNextPricebook(input = {}) {
   const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
@@ -620,26 +630,22 @@ export function quoteFromVNextPricebook(input = {}) {
     currentMonth,
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
-  if (!requestIsPlainObject) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`, path: requestSnapshot.errorPath, kind: 'invalid_request' });
-  const blockingNonPlainPath = requestSnapshot.nonPlainPaths.find(
-    path =>
-      !path.startsWith('quoteRequest.feeSelections.') &&
-      !/^quoteRequest\.pricebook\.services\.\d+\.confirmedFields(?:\.|$)/.test(path)
-  );
+  if (!requestIsPlainObject) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`, path: requestSnapshot.errorPath, kind: 'invalid_request', diagnosticOwner: pricebookRequestDiagnosticOwner(requestSnapshot.errorPath) });
+  const blockingNonPlainPath = requestSnapshot.nonPlainPaths[0];
   if (blockingNonPlainPath) {
     let path = blockingNonPlainPath;
     if (path.startsWith('quoteRequest.')) path = path.slice('quoteRequest.'.length);
-    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request must contain only plain data objects.', path, kind: 'invalid_request' });
+    return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request must contain only plain data objects.', path, kind: 'invalid_request', diagnosticOwner: pricebookRequestDiagnosticOwner(path) });
   }
   const unsupportedRequestField = Object.keys(requestSnapshot.value).find(field => !PRICEBOOK_QUOTE_REQUEST_FIELDS.has(field));
-  if (unsupportedRequestField) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request contains an unsupported field.', path: `quoteRequest.${unsupportedRequestField}`, kind: 'invalid_request' });
+  if (unsupportedRequestField) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: 'Price-book quote request contains an unsupported field.', path: `quoteRequest.${unsupportedRequestField}`, kind: 'invalid_request', diagnosticOwner: 'customer' });
   const services = isPlainRecord(pricebook) && Array.isArray(pricebook.services) ? pricebook.services : [];
   const servicesIssue = denseArrayIssue(services);
   if (servicesIssue) {
     const path = servicesIssue.path ? `pricebook.services.${servicesIssue.path}` : 'pricebook.services';
     return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Price book services are invalid at ${path}: ${servicesIssue.reason}.`, path, kind: 'pricebook_services' });
   }
-  if (!SERVICE_TYPES.includes(serviceType)) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Unsupported service type: ${serviceType}.`, path: 'serviceType', kind: 'unsupported_service' });
+  if (!SERVICE_TYPES.includes(serviceType)) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Unsupported service type: ${serviceType}.`, path: 'serviceType', kind: 'unsupported_service', diagnosticOwner: 'customer' });
   const builtIn = serviceType !== 'CUSTOM';
   const requestedCustomService = isPlainRecord(customerInputs) && typeof customerInputs.service === 'string' ? customerInputs.service : '';
   const requestedCustomName = requestedCustomService.trim().toLowerCase();

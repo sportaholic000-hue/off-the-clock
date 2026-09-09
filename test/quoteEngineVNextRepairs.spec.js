@@ -4122,20 +4122,13 @@ test('repair 62: inherited properties and prototype-shaped tier overrides cannot
     currentMonth: 1
   });
   assert.equal(inheritedFeeSelection.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.equal(inheritedFeeSelection.invalidOwnerFields.includes('feeSelections.owner.travel'), true);
+  assert.deepEqual(inheritedFeeSelection.invalidOwnerFields, ['feeSelections.owner']);
 
   const aiOwner = interiorService({}, { source: 'AI_SUGGESTED' });
   aiOwner.confirmedFields = Object.create(Object.fromEntries(Object.keys(aiOwner.pricing).map(field => [field, true])));
   const inheritedConfirmation = run('INTERIOR_PAINTING', interiorInputs(), aiOwner);
   assert.equal(inheritedConfirmation.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(
-    [...inheritedConfirmation.missingOwnerFields].sort(),
-    [
-      ...Object.keys(aiOwner.pricing),
-      'feeRules', 'priceBasisByCategory', 'taxabilityByCategory',
-      'peakMonths', 'peakSurchargePercent'
-    ].sort()
-  );
+  assert.deepEqual(inheritedConfirmation.invalidOwnerFields, ['confirmedFields']);
 });
 
 test('repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent', () => {
@@ -4353,7 +4346,7 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
   });
 
   const concreteOverflow = concreteService({
-    laborPerSqft: 1_000_000,
+    laborPerSqft: 1_000_000_000,
     demolitionPerSqft: 0,
     basePrepPerSqft: 0,
     wireReinforcementPerSqft: 0,
@@ -4364,7 +4357,7 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     serviceType: 'CONCRETE_DRIVEWAY',
     ownerPricing: concreteOverflow,
     customerInputs: concreteInputs({
-      length: 100_000, width: 100_000, thickness: 24,
+      length: 10_000, width: 1_000, thickness: 24,
       demolitionNeeded: true, demolitionAreaSqft: 10_000_000,
       accessDifficulty: 'difficult', baseNeeded: true
     }),
@@ -5262,7 +5255,7 @@ test('repair 81: malformed pricing primitives retain exact paths through direct 
   );
 });
 
-test('repair 82: prototype-backed approvals confirm nothing across status, preview, and live price-book APIs', () => {
+test('repair 82: prototype-backed approvals and fee selections are rejected across public APIs', () => {
   const aiOwner = interiorService({}, { source: 'AI_SUGGESTED' });
   const confirmationFields = [
     ...Object.keys(aiOwner.pricing),
@@ -5273,20 +5266,19 @@ test('repair 82: prototype-backed approvals confirm nothing across status, previ
     'peakSurchargePercent'
   ].sort();
   aiOwner.confirmedFields = Object.create(Object.fromEntries(confirmationFields.map(field => [field, true])));
-  const expectedStatusPaths = confirmationFields.map(field => `confirmedFields.${field}`).sort();
 
   const directStatus = vNextServiceStatus(aiOwner, defaults);
   assert.equal(directStatus.status, 'NEEDS PRICING');
-  assert.deepEqual([...directStatus.missingOwnerFields].sort(), expectedStatusPaths);
+  assert.deepEqual(directStatus.invalidOwnerFields, ['confirmedFields']);
 
   const pricebook = { defaults, services: [aiOwner] };
   const pricebookStatus = vNextPricebookStatuses(pricebook)[0];
   assert.equal(pricebookStatus.status, 'NEEDS PRICING');
-  assert.deepEqual([...pricebookStatus.missingOwnerFields].sort(), expectedStatusPaths);
+  assert.deepEqual(pricebookStatus.invalidOwnerFields, ['pricebook.services.0.confirmedFields']);
 
   const validation = validateVNextPricebook(pricebook);
   assert.equal(validation.ok, false);
-  assert.deepEqual([...validation.statuses[0].missingOwnerFields].sort(), expectedStatusPaths);
+  assert.deepEqual(validation.statuses[0].invalidOwnerFields, ['pricebook.services.0.confirmedFields']);
 
   const ownerQuote = quoteFromVNextPricebook({
     pricebook,
@@ -5296,7 +5288,7 @@ test('repair 82: prototype-backed approvals confirm nothing across status, previ
     currentMonth: 1
   });
   assert.equal(ownerQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual([...ownerQuote.missingOwnerFields].sort(), confirmationFields);
+  assert.deepEqual(ownerQuote.invalidOwnerFields, ['pricebook.services.0.confirmedFields']);
 
   const preview = previewFromVNextPricebook({
     pricebook,
@@ -5304,8 +5296,8 @@ test('repair 82: prototype-backed approvals confirm nothing across status, previ
     customerInputs: interiorInputs(),
     currentMonth: 1
   });
-  assert.equal(preview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(preview));
-  assert.deepEqual([...preview.unconfirmedOwnerFields].sort(), confirmationFields);
+  assert.equal(preview.resultType, 'ESTIMATE_REQUIRES_REVIEW', JSON.stringify(preview));
+  assert.deepEqual(preview.invalidOwnerFields, ['pricebook.services.0.confirmedFields']);
   assert.equal(Object.keys(aiOwner.confirmedFields).length, 0);
 
   const customerQuote = quoteFromVNextPricebook({
@@ -5328,7 +5320,7 @@ test('repair 82: prototype-backed approvals confirm nothing across status, previ
     feeSelections: { owner: Object.create({ travel: true }) },
     currentMonth: 1
   });
-  assert.deepEqual(hiddenOwnerFee.invalidOwnerFields, ['feeSelections.owner.travel']);
+  assert.deepEqual(hiddenOwnerFee.invalidOwnerFields, ['feeSelections.owner']);
 
   const customerSelected = interiorService({}, {
     feeRules: { ...feeRules, travel: 'customer_selected' }
@@ -5341,7 +5333,7 @@ test('repair 82: prototype-backed approvals confirm nothing across status, previ
     feeSelections: { customer: Object.create({ travel: true }) },
     currentMonth: 1
   });
-  assert.deepEqual(hiddenCustomerFee.invalidCustomerFields, ['feeSelections.customer.travel']);
+  assert.deepEqual(hiddenCustomerFee.invalidCustomerFields, ['feeSelections.customer']);
 });
 
 test('repair 83: an exported service status cannot report LIVE without complete business defaults', () => {
@@ -6094,4 +6086,432 @@ test('repair 94: customer sanitization independently rejects forged exact line e
     customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
     quoteId: source.quoteId
   });
+});
+test('repair 95: preview-only results cannot be laundered into customer-ready estimates', () => {
+  const request = {
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    businessDefaults: defaults,
+    currentMonth: 1
+  };
+  const customerReview = quoteId => ({
+    resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.',
+    quoteId
+  });
+
+  const inactiveOwner = interiorService({}, { active: false });
+  const inactivePreview = previewQuoteVNext({ ...request, ownerPricing: inactiveOwner });
+  assert.equal(inactivePreview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(inactivePreview));
+  assert.equal(inactivePreview.customerEligible, false);
+  assert.equal(inactivePreview.calculationRecord.customerEligible, false);
+  assert.deepEqual(sanitizeForCustomerVNext(inactivePreview), customerReview(inactivePreview.quoteId));
+
+  const inactivePricebookPreview = previewFromVNextPricebook({
+    pricebook: { defaults, services: [inactiveOwner] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    currentMonth: 1
+  });
+  assert.equal(inactivePricebookPreview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(inactivePricebookPreview));
+  assert.equal(inactivePricebookPreview.customerEligible, false);
+  assert.deepEqual(
+    sanitizeForCustomerVNext(inactivePricebookPreview),
+    customerReview(inactivePricebookPreview.quoteId)
+  );
+
+  const aiDraft = interiorService({}, {
+    source: 'AI_SUGGESTED',
+    confirmedFields: {}
+  });
+  const unconfirmedPreview = previewQuoteVNext({ ...request, ownerPricing: aiDraft });
+  assert.equal(unconfirmedPreview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(unconfirmedPreview));
+  assert.equal(unconfirmedPreview.unconfirmedOwnerFields.length > 0, true);
+  assert.equal(unconfirmedPreview.customerEligible, false);
+  assert.equal(unconfirmedPreview.calculationRecord.customerEligible, false);
+  assert.deepEqual(sanitizeForCustomerVNext(unconfirmedPreview), customerReview(unconfirmedPreview.quoteId));
+  assert.deepEqual(aiDraft.confirmedFields, {});
+
+  const confirmedAI = structuredClone(aiDraft);
+  confirmedAI.confirmedFields = Object.fromEntries(
+    aiConfirmationFieldsVNext(confirmedAI, confirmedAI.pricing).map(field => [field, true])
+  );
+  const confirmedPreview = previewQuoteVNext({ ...request, ownerPricing: confirmedAI });
+  assert.equal(confirmedPreview.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(confirmedPreview));
+  assert.deepEqual(confirmedPreview.unconfirmedOwnerFields, []);
+  assert.equal(confirmedPreview.customerEligible, true);
+  assert.equal(confirmedPreview.calculationRecord.customerEligible, true);
+  assert.equal(sanitizeForCustomerVNext(confirmedPreview).resultType, 'INSTANT_ESTIMATE_READY');
+});
+
+test('repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries', () => {
+  class BooleanSelections {
+    constructor(fields) {
+      for (const field of fields) this[field] = true;
+    }
+  }
+
+  const aiOwner = interiorService({}, { source: 'AI_SUGGESTED' });
+  const confirmationFields = aiConfirmationFieldsVNext(aiOwner, aiOwner.pricing);
+  aiOwner.confirmedFields = new BooleanSelections(confirmationFields);
+
+  const status = vNextServiceStatus(aiOwner, defaults);
+  assert.equal(status.status, 'NEEDS PRICING');
+  assert.deepEqual(status.invalidOwnerFields, ['confirmedFields']);
+
+  for (const result of [
+    run('INTERIOR_PAINTING', interiorInputs(), aiOwner),
+    previewQuoteVNext({
+      serviceType: 'INTERIOR_PAINTING',
+      customerInputs: interiorInputs(),
+      ownerPricing: aiOwner,
+      businessDefaults: defaults,
+      currentMonth: 1
+    })
+  ]) {
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(result.invalidOwnerFields, ['confirmedFields']);
+  }
+
+  const ownerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'owner_selected' }
+  });
+  const classOwnerSelection = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { owner: new BooleanSelections(['travel']) }
+  });
+  assert.deepEqual(classOwnerSelection.invalidOwnerFields, ['feeSelections.owner']);
+
+  const customerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'customer_selected' }
+  });
+  const classCustomerSelection = run('INTERIOR_PAINTING', interiorInputs(), customerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { customer: new BooleanSelections(['travel']) }
+  });
+  assert.deepEqual(classCustomerSelection.invalidCustomerFields, ['feeSelections.customer']);
+
+  const plainSelection = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { owner: { travel: true } }
+  });
+  assert.equal(plainSelection.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(plainSelection));
+  assert.equal(lineAmount(plainSelection, 'Travel'), 500);
+});
+
+test('repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence', () => {
+  for (const [markupPercent, expectedMarkupCents] of [
+    [499.99, 49999],
+    [499.99999999999994, 50000],
+    [500, 50000],
+    [500.00000000000006, 50000],
+    [500.01, 50001],
+    [600, 60000],
+    [999.99, 99999],
+    [999.9999999999999, 100000],
+    [1000, 100000]
+  ]) {
+    const configuredDefaults = {
+      ...defaults,
+      markupPercent,
+      markupMode: 'markup',
+      rangeBufferPercent: 0
+    };
+    assert.equal(validateBusinessDefaults(configuredDefaults).ok, true, String(markupPercent));
+    const result = run('INTERIOR_PAINTING', interiorInputs(), interiorService(), {
+      businessDefaults: configuredDefaults
+    });
+    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(result));
+    const markupLine = line(result, 'Markup');
+    assert.equal(markupLine.calculation.basisAmountCents, 10000);
+    assert.equal(markupLine.calculation.percent, markupPercent);
+    assert.equal(markupLine.amountCents, expectedMarkupCents);
+    assertLineReproducible(markupLine);
+    assert.equal(sanitizeForCustomerVNext(result).resultType, 'INSTANT_ESTIMATE_READY');
+  }
+
+  const aboveValidatedMaximum = { ...defaults, markupPercent: 1000.0000000000001, rangeBufferPercent: 0 };
+  const validation = validateBusinessDefaults(aboveValidatedMaximum);
+  assert.equal(validation.ok, false);
+  assert.deepEqual(validation.invalidFields, ['markupPercent']);
+  const rejected = run('INTERIOR_PAINTING', interiorInputs(), interiorService(), {
+    businessDefaults: aboveValidatedMaximum
+  });
+  assert.equal(rejected.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(rejected.invalidOwnerFields, ['businessDefaults.markupPercent']);
+});
+
+test('repair 98: fee selections are accepted only for the matching configured selection mode', () => {
+  const noSelectionMode = interiorService();
+  for (const selected of [false, true]) {
+    const ownerInput = run('INTERIOR_PAINTING', interiorInputs(), noSelectionMode, {
+      feeSelections: { owner: { travel: selected } }
+    });
+    assert.equal(ownerInput.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(ownerInput.invalidOwnerFields, ['feeSelections.owner.travel']);
+
+    const customerInput = run('INTERIOR_PAINTING', interiorInputs(), noSelectionMode, {
+      feeSelections: { customer: { travel: selected } }
+    });
+    assert.equal(customerInput.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(customerInput.invalidCustomerFields, ['feeSelections.customer.travel']);
+  }
+
+  const ownerSelected = interiorService({}, {
+    feeRules: { ...feeRules, travel: 'owner_selected' }
+  });
+  const selectedOwnerFee = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { owner: { travel: true } }
+  });
+  assert.equal(selectedOwnerFee.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(lineAmount(selectedOwnerFee, 'Travel'), 500);
+
+  const declinedOwnerFee = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { owner: { travel: false } }
+  });
+  assert.equal(declinedOwnerFee.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(line(declinedOwnerFee, 'Travel'), undefined);
+
+  const wrongSide = run('INTERIOR_PAINTING', interiorInputs(), ownerSelected, {
+    businessDefaults: { ...defaults, travelFee: 500 },
+    feeSelections: { owner: { travel: true }, customer: { travel: false } }
+  });
+  assert.deepEqual(wrongSide.invalidCustomerFields, ['feeSelections.customer.travel']);
+
+  const throughPricebook = quoteFromVNextPricebook({
+    pricebook: { defaults, services: [noSelectionMode] },
+    serviceType: 'INTERIOR_PAINTING',
+    customerInputs: interiorInputs(),
+    callerType: 'owner',
+    feeSelections: { customer: { travel: true } },
+    currentMonth: 1
+  });
+  assert.equal(throughPricebook.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(throughPricebook.invalidCustomerFields, ['feeSelections.customer.travel']);
+});
+
+test('repair 99: the exported scenario materializer never returns an unvalidated regular line', () => {
+  const ready = run('INTERIOR_PAINTING', interiorInputs(), interiorService());
+  assert.equal(ready.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(ready));
+  const regularLine = line(ready, 'Wall labor');
+  assert.deepEqual(materializeScenarioLinesVNext([regularLine], 'mid'), [regularLine]);
+
+  const forgedRate = structuredClone(regularLine);
+  forgedRate.calculation.rateCents += 1;
+  assert.throws(
+    () => materializeScenarioLinesVNext([forgedRate], 'mid'),
+    /complete reproducible calculation evidence/
+  );
+  assert.throws(
+    () => materializeScenarioLinesVNext([{ name: 'Fabricated line', amountCents: 1 }], 'mid'),
+    /complete reproducible calculation evidence/
+  );
+  assert.throws(
+    () => materializeScenarioLinesVNext([], 'mid'),
+    /complete reproducible calculation evidence/
+  );
+
+  const ranged = rangedEvidenceLine({ quantity: 2, lowRateCents: 100, highRateCents: 300 });
+  const materialized = materializeScenarioLinesVNext([ranged], 'high');
+  assert.equal(materialized[0].amountCents, 600);
+  assert.equal(materialized[0].calculation.selectedVariant, 'high');
+});
+
+test('repair 100: exact concrete dimensions obey the same practical area bound as direct area input', () => {
+  const owner = concreteService({
+    demolitionPerSqft: 0,
+    basePrepPerSqft: 0,
+    wireReinforcementPerSqft: 0,
+    rebarReinforcementPerSqft: 0,
+    stampedMaterialPerSqft: 0,
+    disposalPerSqft: 0
+  });
+  const atLimitInputs = concreteInputs({ length: 10_000, width: 1_000 });
+  const atLimit = run('CONCRETE_DRIVEWAY', atLimitInputs, owner);
+  assert.equal(atLimit.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(atLimit));
+  assert.equal(lineAmount(atLimit, 'Concrete labor'), 6_000_000_000);
+  for (const item of atLimit.lineItems) assertLineReproducible(item);
+
+  const aboveLimitInputs = concreteInputs({ length: 10_000, width: 1_000.0001 });
+  const customerValidation = validateCustomerInputs(
+    'CONCRETE_DRIVEWAY',
+    aboveLimitInputs,
+    owner.pricing
+  );
+  assert.equal(customerValidation.ok, false);
+  assert.deepEqual(customerValidation.invalidCustomerFields.sort(), ['length', 'width']);
+  const aboveLimit = run('CONCRETE_DRIVEWAY', aboveLimitInputs, owner);
+  assert.equal(aboveLimit.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(aboveLimit.invalidCustomerFields.sort(), ['length', 'width']);
+
+  const measuredAreaAtLimit = run('CONCRETE_DRIVEWAY', {
+    dimensionMethod: 'measured_area_perimeter',
+    areaSqft: 10_000_000,
+    perimeterLF: 22_000,
+    thickness: 4,
+    finishType: 'broom',
+    demolitionNeeded: false,
+    reinforcement: 'none',
+    accessDifficulty: 'easy',
+    baseNeeded: false
+  }, owner);
+  assert.equal(measuredAreaAtLimit.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(measuredAreaAtLimit));
+
+  // 125 * 80,000 is exactly 10,000,000; only width changes at its
+  // adjacent representable values. The two services share this contract.
+  for (const serviceType of ['CONCRETE_DRIVEWAY', 'CONCRETE_PATIO_SLAB']) {
+    const configured = { ...owner, serviceType, service: serviceType };
+    for (const [width, ready] of [[79999.99999999999, true], [80000, true], [80000.00000000001, false]]) {
+      const result = run(serviceType, concreteInputs({ length: 125, width }), configured);
+      assert.equal(result.resultType, ready ? 'INSTANT_ESTIMATE_READY' : 'ESTIMATE_REQUIRES_REVIEW', JSON.stringify(result));
+      if (ready) {
+        assert.equal(lineAmount(result, 'Concrete labor'), 6_000_000_000);
+        for (const item of result.lineItems) assertLineReproducible(item);
+        assert.equal(sanitizeForCustomerVNext(result).resultType, 'INSTANT_ESTIMATE_READY');
+      } else {
+        assert.deepEqual(result.invalidCustomerFields.sort(), ['length', 'width']);
+        assert.deepEqual(Object.keys(sanitizeForCustomerVNext(result)).sort(), ['customerMessage', 'quoteId', 'resultType']);
+      }
+    }
+    // Independent integer-decimal product: 10,000,000 + 181/500,000,000,000.
+    assert.ok(1002n * 9980039920159681n > 10_000_000n * 10n * 100_000_000_000n);
+    assert.equal(100.2 * 99800.39920159681, 10_000_000); // rounded binary trap
+    const trap = run(serviceType, concreteInputs({ length: 100.2, width: 99800.39920159681 }), configured);
+    assert.equal(trap.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(trap.invalidCustomerFields.sort(), ['length', 'width']);
+  }
+
+  const status = vNextServiceStatus(owner, defaults);
+  assert.equal(status.status, 'QUOTING LIVE', JSON.stringify(status));
+});
+
+
+test('repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values', () => {
+  const fixture = repairFixture('ROOFING_REPAIR');
+  const inputs = { ...fixture.inputs, affectedArea: fixture.first - 1 };
+  const path = `repairHours.${inputs.roofType}.${inputs.repairType}.small`;
+  // Hourly rate is 10^15 cents. These literal decimal hours produce 0.01,
+  // 0.222..., and amounts immediately around half a cent, independently.
+  for (const [hours, expectedCents] of [
+    [1e-17, 0],
+    [2.2204460492503128e-16, 0],
+    [Number.EPSILON, 0],
+    [2.2204460492503136e-16, 0],
+    [4.999999999999999e-16, 0],
+    [5e-16, 1],
+    [5.000000000000001e-16, 1]
+  ]) {
+    const owner = structuredClone(fixture.ownerPricing);
+    owner.pricing.laborHourlyRate = 1_000_000_000_000_000;
+    owner.pricing.repairHours[inputs.roofType][inputs.repairType].small = hours;
+    owner.pricing.repairMaterialAllowance[inputs.roofType][inputs.repairType].small = 1000;
+    const result = run('ROOFING_REPAIR', inputs, owner);
+    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(result));
+    const labor = line(result, fixture.laborLine);
+    assert.deepEqual(labor.calculation.exactQuantity, oracleEvidence(oracleDecimal(hours)));
+    assert.equal(labor.amountCents, expectedCents);
+    assertLineReproducible(labor);
+    if (expectedCents === 0) assert.equal(labor.noChargeReason, 'rounded_fractional_cent');
+    assert.equal(sanitizeForCustomerVNext(result).resultType, 'INSTANT_ESTIMATE_READY');
+  }
+  for (const hours of [0, -1e-17]) {
+    const owner = structuredClone(fixture.ownerPricing);
+    owner.pricing.laborHourlyRate = 1_000_000_000_000_000;
+    owner.pricing.repairMaterialAllowance[inputs.roofType][inputs.repairType].small = 1000;
+    owner.pricing.repairHours[inputs.roofType][inputs.repairType].small = hours;
+    const result = run('ROOFING_REPAIR', inputs, owner);
+    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    assert.deepEqual(result.invalidOwnerFields, [path]);
+  }
+
+  const mowingInputs = { yardSqft: 100, sqftMethod: 'exact', serviceFrequency: 'weekly', grassCondition: 'maintained', bagClippings: false, edgingIncluded: false };
+  for (const [factor, expectedCents] of [[1e-17, 1], [2.2204460492503128e-16, 22], [Number.EPSILON, 22], [2.2204460492503136e-16, 22]]) {
+    const owner = service('LANDSCAPING_MOWING', {
+      mowingBaseRatePerSqft: 1_000_000_000_000_000, minimumServiceCharge: 0,
+      frequencyMultipliers: { weekly: factor, biweekly: 1, monthly: 1, one_time: 1 },
+      overgrowthMultipliers: { maintained: 1, overgrown: 1, severe: 1 }
+    });
+    const result = run('LANDSCAPING_MOWING', mowingInputs, owner);
+    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(result));
+    assert.equal(lineAmount(result, 'Mowing labor'), expectedCents);
+    assertLineReproducible(line(result, 'Mowing labor'));
+    assert.equal(sanitizeForCustomerVNext(result).resultType, 'INSTANT_ESTIMATE_READY');
+    for (const invalidFactor of [0, -1e-17]) {
+      const invalidOwner = structuredClone(owner);
+      invalidOwner.pricing.frequencyMultipliers.weekly = invalidFactor;
+      const rejected = run('LANDSCAPING_MOWING', mowingInputs, invalidOwner);
+      assert.equal(rejected.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+      assert.deepEqual(rejected.invalidOwnerFields, ['frequencyMultipliers.weekly']);
+    }
+  }
+});
+
+test('repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries', () => {
+  const owner = interiorService({}, { feeRules: { ...feeRules, travel: 'owner_selected' } });
+  const direct = { serviceType: 'INTERIOR_PAINTING', customerInputs: interiorInputs(), ownerPricing: owner, businessDefaults: defaults, callerType: 'owner', currentMonth: 1 };
+  const book = { serviceType: 'INTERIOR_PAINTING', customerInputs: interiorInputs(), pricebook: { defaults, services: [owner] }, callerType: 'owner', currentMonth: 1 };
+  class Selections { constructor() { this.travel = true; } }
+  const customerReview = quoteId => ({ resultType: 'ESTIMATE_REQUIRES_REVIEW', customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.', quoteId });
+  for (const [entry, request] of [[generateQuoteVNext, direct], [quoteFromVNextPricebook, book]]) {
+    const valid = entry({ ...request, feeSelections: { owner: { travel: true } } });
+    assert.equal(valid.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(valid));
+    for (const side of ['owner', 'customer']) {
+      const result = entry({ ...request, feeSelections: { [side]: new Selections() } });
+      assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+      assert.deepEqual(result[side === 'owner' ? 'invalidOwnerFields' : 'invalidCustomerFields'], [`feeSelections.${side}`]);
+      assert.deepEqual(result[side === 'owner' ? 'invalidCustomerFields' : 'invalidOwnerFields'], []);
+      assert.deepEqual(sanitizeForCustomerVNext(result), customerReview(result.quoteId));
+      let getterCalls = 0;
+      const selection = {};
+      Object.defineProperty(selection, 'travel', { enumerable: true, get() { getterCalls++; return true; } });
+      const accessorResult = entry({ ...request, feeSelections: { [side]: selection } });
+      assert.equal(getterCalls, 0);
+      assert.equal(accessorResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+      const expectedPath = entry === generateQuoteVNext && side === 'owner' ? 'feeSelections.owner.travel' : `quoteRequest.feeSelections.${side}.travel`;
+      assert.deepEqual(accessorResult[side === 'owner' ? 'invalidOwnerFields' : 'invalidCustomerFields'], [expectedPath]);
+      assert.deepEqual(accessorResult[side === 'owner' ? 'invalidCustomerFields' : 'invalidOwnerFields'], []);
+      assert.deepEqual(sanitizeForCustomerVNext(accessorResult), customerReview(accessorResult.quoteId));
+    }
+  }
+  for (const [patch, expected] of [[{ serviceType: 'UNSUPPORTED' }, 'serviceType'], [{ ignored: true }, 'quoteRequest.ignored']]) {
+    const result = quoteFromVNextPricebook({ ...book, ...patch });
+    assert.deepEqual(result.invalidCustomerFields, [expected]);
+    assert.deepEqual(result.invalidOwnerFields, []);
+    assert.deepEqual(result.ownerDiagnostics, []);
+    assert.deepEqual(sanitizeForCustomerVNext(result), customerReview(result.quoteId));
+  }
+  const absentService = quoteFromVNextPricebook({ ...book, pricebook: { defaults, services: [] } });
+  assert.deepEqual(absentService.invalidOwnerFields, ['services']);
+  assert.deepEqual(absentService.invalidCustomerFields, []);
+});
+
+test('repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections', () => {
+  for (const [factor, wallCents, concreteCents] of [
+    [1, 10000, 120000],
+    [1.1000000000000016, 11000, 132000],
+    [1.1000000000000019, 11000, 132000],
+    [1.100000000000002, 11000, 132000]
+  ]) {
+    const paintingOwner = interiorService();
+    paintingOwner.pricing.wallHeightLaborMultiplier.standard = factor;
+    const painting = run('INTERIOR_PAINTING', interiorInputs(), paintingOwner);
+    assert.equal(painting.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(painting));
+    const wall = line(painting, 'Wall labor');
+    assert.equal(wall.amountCents, wallCents);
+    assert.deepEqual(wall.calculation.multipliers[0].exactValue, oracleEvidence(oracleDecimal(factor)));
+    assertLineReproducible(wall);
+    assert.equal(sanitizeForCustomerVNext(painting).resultType, 'INSTANT_ESTIMATE_READY');
+
+    const concreteOwner = concreteService();
+    concreteOwner.pricing.accessMultiplier.easy = factor;
+    const concrete = run('CONCRETE_DRIVEWAY', concreteInputs(), concreteOwner);
+    assert.equal(concrete.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(concrete));
+    const labor = line(concrete, 'Concrete labor');
+    assert.equal(labor.amountCents, concreteCents);
+    assert.deepEqual(labor.calculation.components[0].multipliers[0].exactValue, oracleEvidence(oracleDecimal(factor)));
+    assertLineReproducible(labor);
+    assert.equal(sanitizeForCustomerVNext(concrete).resultType, 'INSTANT_ESTIMATE_READY');
+  }
 });

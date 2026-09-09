@@ -1,4 +1,5 @@
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
+import { exactCompare, exactMultiply } from './exactMath.js';
 
 function relativeSnapshotPath(snapshot, root) {
   const prefix = `${root}.`;
@@ -395,6 +396,11 @@ function concreteContract() {
       if (c.dimensionMethod === 'exact') {
         if (c.areaSqft !== undefined) errors.push({ field: 'areaSqft', message: 'Measured area cannot be supplied when length and width are the selected slab measurement method.' });
         if (c.perimeterLF !== undefined) errors.push({ field: 'perimeterLF', message: 'Measured perimeter cannot be supplied when length and width are the selected slab measurement method.' });
+        if (Number.isFinite(c.length) && Number.isFinite(c.width) && exactCompare(exactMultiply(c.length, c.width), 10_000_000) > 0) {
+          const message = 'Measured slab length and width produce an area above the supported 10,000,000 square-foot limit.';
+          errors.push({ field: 'length', message });
+          errors.push({ field: 'width', message });
+        }
       }
       if (c.dimensionMethod === 'measured_area_perimeter') {
         if (c.length !== undefined) errors.push({ field: 'length', message: 'Slab length cannot be supplied when measured area and perimeter are the selected method.' });

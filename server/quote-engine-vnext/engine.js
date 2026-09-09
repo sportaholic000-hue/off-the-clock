@@ -400,7 +400,8 @@ function validateFeeSelectionRequest(ownerPricing, feeSelections) {
     }
     for (const [fee, value] of Object.entries(selections)) {
       const path = `feeSelections.${side}.${fee}`;
-      if (!feeNames.includes(fee) || typeof value !== 'boolean') target.push(path);
+      const expectedMode = side === 'owner' ? 'owner_selected' : 'customer_selected';
+      if (!feeNames.includes(fee) || typeof value !== 'boolean' || ownerPricing.feeRules[fee] !== expectedMode) target.push(path);
     }
   }
   for (const fee of feeNames) {
@@ -436,6 +437,16 @@ export function materializeScenarioLinesVNext(lines, variant) {
   if (arrayIssue) {
     const path = arrayIssue.path ? `scenario.lines.${arrayIssue.path}` : 'scenario.lines';
     throw new TypeError(`Scenario lines are invalid at ${path}: ${arrayIssue.reason}.`);
+  }
+  // Preserve exact ranged owner diagnostics before the general evidence guard.
+  // The general guard still checks regular lines and all no-charge tags.
+  for (const line of lines) {
+    if (line?.calculation?.evidenceVariant === 'ranged' || Object.hasOwn(line || {}, 'rangeAmountCents')) {
+      validateRangedEvidence(line);
+    }
+  }
+  if (lines.length === 0 || lines.some(line => !validLineCalculationEvidence(line))) {
+    throw new TypeError('Scenario lines must contain complete reproducible calculation evidence.');
   }
   return lines.map(line => {
     const next = structuredClone(line);
@@ -737,7 +748,7 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
 }
 
 function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < (positive ? Number.EPSILON : 0)) return null;
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || (positive && value === 0)) return null;
   try {
     const exact = exactFromEvidence(evidence);
     if (!Object.is(exactToNumber(exact), value) || exactCompare(exact, 0) < (positive ? 1 : 0)) return null;
@@ -782,9 +793,10 @@ function validFixedEvidence(calculation, expectedAmountCents) {
 }
 
 function validPercentageEvidence(calculation, expectedAmountCents) {
+  const maximumPercent = calculation.mode === 'markup' ? 1000 : 500;
   if (!Number.isSafeInteger(calculation.basisAmountCents) || calculation.basisAmountCents < 0 ||
       typeof calculation.percent !== 'number' || !Number.isFinite(calculation.percent) ||
-      calculation.percent < 0 || calculation.percent > 500 ||
+      calculation.percent < 0 || calculation.percent > maximumPercent ||
       (calculation.mode !== undefined && !['markup', 'margin'].includes(calculation.mode)) ||
       (calculation.mode === 'margin' && calculation.percent >= 100)) return false;
   try {
@@ -1150,24 +1162,19 @@ export function generateQuoteVNext(input = {}) {
     const relativePath = requestSnapshot.errorPath.startsWith('quoteRequest.')
       ? requestSnapshot.errorPath.slice('quoteRequest.'.length)
       : requestSnapshot.errorPath;
-    const ownerPath = /^(ownerPricing|businessDefaults)(?:\.|$)/.test(relativePath);
+    const ownerPath = /^(ownerPricing|businessDefaults|feeSelections\.owner)(?:\.|$)/.test(relativePath);
     return finishReview({
       reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`,
       ...(ownerPath ? { invalidOwnerFields: [relativePath] } : { invalidCustomerFields: [requestSnapshot.errorPath] })
     });
   }
-  const nestedNonPlainPath = requestSnapshot.nonPlainPaths?.find(
-    path =>
-      !path.startsWith('quoteRequest.feeSelections.') &&
-      path !== 'quoteRequest.ownerPricing.confirmedFields' &&
-      !path.startsWith('quoteRequest.ownerPricing.confirmedFields.')
-  );
+  const nestedNonPlainPath = requestSnapshot.nonPlainPaths?.[0];
   if (nestedNonPlainPath) {
     let relativePath = nestedNonPlainPath;
     if (relativePath.startsWith('quoteRequest.')) {
       relativePath = relativePath.slice('quoteRequest.'.length);
     }
-    const ownerPath = /^(ownerPricing|businessDefaults)(?:\.|$)/.test(relativePath);
+    const ownerPath = /^(ownerPricing|businessDefaults|feeSelections\.owner)(?:\.|$)/.test(relativePath);
     if (ownerPath) {
       let ownerFieldPath = relativePath;
       if (ownerFieldPath.startsWith('ownerPricing.pricing.')) {
@@ -1381,11 +1388,13 @@ export function generateQuoteVNext(input = {}) {
     urgencyFlags,
     failedTierDiagnostics,
     ...(failedTierDiagnostics.length ? { optionAvailabilityNotice: FEWER_OPTIONS_NOTICE } : {}),
+    customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     calculationRecord: {
       engineVersion: ENGINE_VERSION,
       quoteId,
       serviceType,
-      options: structuredClone(options.map(option => option.calculationRecord))
+      options: structuredClone(options.map(option => option.calculationRecord)),
+      customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     }
   };
   result.options = structuredClone(options);
@@ -1566,6 +1575,7 @@ function rootCalculationRecordMatches(result) {
       record.quoteId !== result.quoteId ||
       record.serviceType !== result.serviceType ||
       !denseArray(record.options, item => isPlainObject(item), { allowEmpty: false }) ||
+      record.customerEligible !== result.customerEligible ||
       record.options.length !== result.options.length) return false;
   return record.options.every((optionRecord, index) =>
     plainDataEqual(optionRecord, result.options[index].calculationRecord)
@@ -1611,6 +1621,8 @@ export function sanitizeForCustomerVNext(result) {
       hasOwnValue(result, 'quoteId') && typeof result.quoteId === 'string' && result.quoteId.trim() &&
       hasOwnValue(result, 'serviceType') && SERVICE_TYPES.includes(result.serviceType) &&
       validEstimateShape(result) &&
+      hasOwnValue(result, 'customerEligible') && result.customerEligible === true &&
+      hasOwnValue(result, 'unconfirmedOwnerFields') && denseArray(result.unconfirmedOwnerFields, item => typeof item === 'string') && result.unconfirmedOwnerFields.length === 0 &&
       hasOwnValue(result, 'priceDrivers') && validCustomerDriverList(result.priceDrivers) &&
       hasOwnValue(result, 'disclaimer') && typeof result.disclaimer === 'string' && result.disclaimer.trim() &&
       hasOwnValue(result, 'rangeBufferUsed') && validRangeBuffer(result.rangeBufferUsed) &&

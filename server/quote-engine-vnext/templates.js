@@ -14,6 +14,7 @@ import {
   exactDecimal,
   exactDivide,
   exactEvidence,
+  exactFromEvidence,
   exactMultiply,
   exactRound,
   exactSubtract,
@@ -63,7 +64,7 @@ function money(value, path, { allowZero = true } = {}) {
 }
 
 function quantityFactor(value, path, { allowZero = false } = {}) {
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < (allowZero ? 0 : Number.EPSILON)) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || (!allowZero && value === 0)) {
     throw new QuoteReviewError('A quantity factor is missing or invalid.', {
       invalidOwnerFields: [path]
     });
@@ -132,7 +133,7 @@ function makeLine({
   let unroundedCents;
   let amountCents;
   try {
-    exactUnroundedCents = exactMultiply(exactQuantity, rateCents, ...checkedMultipliers.map(multiplier => exactDecimal(multiplier.value)));
+    exactUnroundedCents = exactMultiply(exactQuantity, rateCents, ...checkedMultipliers.map(multiplier => exactFromEvidence(multiplier.exactValue)));
     unroundedCents = exactToNumber(exactUnroundedCents);
     amountCents = exactRound(exactUnroundedCents);
   } catch {
@@ -174,7 +175,7 @@ function makeLine({
     let lowAmountCents;
     let highAmountCents;
     try {
-      const exactMultipliers = checkedMultipliers.map(multiplier => exactDecimal(multiplier.value));
+      const exactMultipliers = checkedMultipliers.map(multiplier => exactFromEvidence(multiplier.exactValue));
       lowAmountCents = exactRound(exactMultiply(exactQuantity, low, ...exactMultipliers));
       highAmountCents = exactRound(exactMultiply(exactQuantity, high, ...exactMultipliers));
     } catch {
@@ -222,7 +223,7 @@ function makeCompositeLine({ name, category, components, customerDriver }) {
         const value = quantityFactor(exactToNumber(exactValue), multiplier.path, { allowZero: multiplier.allowZero });
         return { ...multiplier, value, exactValue: exactEvidence(exactValue) };
       });
-      exactUnroundedCents = exactMultiply(exactQuantity, component.rateCents, ...multipliers.map(multiplier => exactDecimal(multiplier.value)));
+      exactUnroundedCents = exactMultiply(exactQuantity, component.rateCents, ...multipliers.map(multiplier => exactFromEvidence(multiplier.exactValue)));
       unroundedCents = exactToNumber(exactUnroundedCents);
       amountCents = exactRound(exactUnroundedCents);
     } catch (error) {
