@@ -98,7 +98,24 @@ export function exactCompare(left, right) {
 
 export function exactToNumber(value) {
   const exact = exactDecimal(value);
-  const converted = Number(exact.numerator) / Number(exact.denominator);
+  const n=Number(exact.numerator),d=Number(exact.denominator);
+  let converted;
+  if(Number.isFinite(n)&&Number.isFinite(d)) converted=n/d;
+  else {
+    // Direct rational-to-binary conversion, nearest/ties-even, including subnormals.
+    const negative=exact.numerator<0n, numerator=negative?-exact.numerator:exact.numerator, denominator=exact.denominator;
+    if(numerator===0n)return 0;
+    let exponent=numerator.toString(2).length-denominator.toString(2).length;
+    if(exponent>=0 ? numerator<(denominator<<BigInt(exponent)) : (numerator<<BigInt(-exponent))<denominator)exponent--;
+    const quantum=Math.max(exponent-52,-1074);
+    const scaledNumerator=quantum<0?numerator<<BigInt(-quantum):numerator;
+    const scaledDenominator=quantum>0?denominator<<BigInt(quantum):denominator;
+    let mantissa=scaledNumerator/scaledDenominator;
+    const remainder=scaledNumerator%scaledDenominator;
+    if(remainder*2n>scaledDenominator||(remainder*2n===scaledDenominator&&mantissa%2n===1n))mantissa++;
+    converted=Number(mantissa)*2**quantum;
+    if(negative)converted=-converted;
+  }
   if (!Number.isFinite(converted)) throw new RangeError('Exact value cannot be represented as a finite number.');
   return converted;
 }
@@ -132,7 +149,7 @@ export function exactFromEvidence(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value) ||
       Object.keys(value).length !== 2 || !Object.hasOwn(value, 'numerator') || !Object.hasOwn(value, 'denominator') ||
       typeof value.numerator !== 'string' || typeof value.denominator !== 'string' ||
-      value.numerator.length > 400 || value.denominator.length > 400 ||
+      value.numerator.length > 2048 || value.denominator.length > 2048 ||
       !SIGNED_INTEGER_PATTERN.test(value.numerator) || !INTEGER_PATTERN.test(value.denominator) || value.denominator === '0') {
     throw new TypeError('Exact evidence must contain canonical numerator and denominator strings.');
   }

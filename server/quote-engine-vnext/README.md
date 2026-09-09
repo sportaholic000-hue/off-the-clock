@@ -1,5 +1,7 @@
 # Quote Engine vNext Audit Candidate
 
+Current September 9 pass: [Repairs104–127](AUDIT_REPAIRS_104_127.md), starting at `68476197550ea83c52e23e8d9902526c08c61a77`. That report supersedes older behavior descriptions below for approval binding, membrane selection, scope gates, geometry, fractional mowing rates and range rounding. Historical test results below are not evidence for the new snapshot.
+
 This directory is an isolated accuracy-repair candidate. Nothing in the
 production server imports it, and no production route points to it.
 

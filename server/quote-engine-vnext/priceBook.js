@@ -3,6 +3,7 @@ import {
   CLASS2_DEFINITIONS,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
+  hasCurrentApprovalVNext,
   allowedPricingFields,
   contractMetadata,
   validateClass2FactorsDetailed,
@@ -65,6 +66,9 @@ const SERVICE_NAMES = {
 };
 
 const NEW_FIELD_COPY = {
+  materialCostPerSquare: {label:'Roof base material price per square for the selected accessory method',help:'In per_square_allin mode the base includes starter, drip edge, ridge cap, flashing, and vents. In itemized mode the base must EXCLUDE separately priced starter, drip edge, and ridge cap; explicit materialAccessoryBasis confirmation is required before activation.'},
+  materialAccessoryBasis: {label:'Base material excludes itemized roof accessories',help:'Confirm excludes_itemized_accessories only after checking the current base rate excludes the separately priced starter, drip edge, and ridge cap. Legacy all-in rates must be re-entered or explicitly reviewed.'},
+  mowingBaseRatePerSqft: {label:'Mowing labor cents per measured square foot (fractional cents supported)',help:'Enter cents, including fractional cents: 0.5 cents per square foot is $50 per 10,000 square feet before confirmed frequency and grass-condition adjustments. Existing whole-cent rates retain their units.'},
   laborPerWallSqftPerCoat: { label: 'Wall painting labor price per measured wall square foot, per coat', help: 'Labor price multiplied by measured paintable wall area and the confirmed number of finish coats.' },
   materialPerWallSqftPerCoat: { label: 'Wall paint material price per measured wall square foot, per coat', help: 'Paint and material price multiplied by measured paintable wall area and the confirmed number of finish coats.' },
   ceilingLaborPerSqftPerCoat: { label: 'Ceiling painting labor price per measured ceiling square foot, per coat', help: 'Labor price used only when ceilings are included, multiplied by measured ceiling area and confirmed coats.' },
@@ -81,7 +85,7 @@ const NEW_FIELD_COPY = {
   gatePrice: { label: "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.", help: 'Selected gates remain review-only until the owner approves a measured-width pricing model and rates; the existing per-gate value is not reinterpreted.' },
   trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Held for owner review until labor and material are separately priced or an explicit category and allocation rule is approved.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
-  deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. The configured per-sheet price is disclosed for possible additional decking without inventing a sheet count.' },
+  deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
   roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Defines small and medium average-room area boundaries used by the room-complexity labor factor. Quotes exactly on a boundary remain review-only until inclusive-boundary behavior is approved.' },
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
@@ -181,10 +185,9 @@ function activationScenarios(service) {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
     const membraneTypes = configured.length ? configured : ['epdm'];
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
-    const scenarios = membraneTypes.flatMap(membraneType => [
-        { roofSqft: 2_000_000, sqftMethod: 'exact', membraneType, existingLayers: 10, accessDifficulty, serviceScope: 'full', buildingType: 'residential' },
-        { roofSqft: 2_000_000, sqftMethod: 'exact', membraneType, existingLayers: 10, accessDifficulty, serviceScope: 'full', buildingType: 'commercial' }
-      ]);
+    const configuredExistingTypes = keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
+    const existingTypes = configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
+    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential'})));
 
     return scenarios;
   }
@@ -197,7 +200,7 @@ function activationScenarios(service) {
   }
   if (serviceType === 'INTERIOR_PAINTING') {
     const wallHeight = greatestConfiguredKey(p.wallHeightLaborMultiplier, ['standard', 'high', 'vaulted'], 'high');
-    return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 2_000_000, wallHeight, surfaceCondition: 'good', coats: 3, ceilingsIncluded: true, ceilingAreaSqft: 1_000_000, trimIncluded: true, trimLengthLF: 1_000_000 }];
+    return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 2_000_000, wallHeight, wallScopeUniform: true, surfaceCondition: 'good', coats: 3, ceilingsIncluded: true, ceilingAreaSqft: 1_000_000, ceilingCoats: 3, trimIncluded: true, trimLengthLF: 1_000_000 }];
   }
   if (serviceType === 'EXTERIOR_PAINTING') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
@@ -211,8 +214,8 @@ function activationScenarios(service) {
     const roomBands = flooringRoomBands(p);
     const scenario = (flooringType, existingFloorType, removalNeeded, roomBand) => ({
       sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
-      existingFloorType, removalNeeded,
-      roomCount: roomBand.roomCount, layoutPattern, stairSteps: p.perStepPrice !== undefined ? 10_000 : 0,
+      existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
+      roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: true } : {}),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'requires_underlayment' } : {}),
       ...(replacement ? { subfloorIssues: p.subfloorAllowancePerSqft !== undefined, ...(p.subfloorAllowancePerSqft !== undefined ? { subfloorRepairAreaSqft: roomBand.sqft } : {}) } : {})
@@ -230,11 +233,20 @@ function activationScenarios(service) {
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const dimensions = [
       { dimensionMethod: 'exact', length: 10_000, width: 1_000 },
-      { dimensionMethod: 'measured_area_perimeter', areaSqft: 10_000_000, perimeterLF: 1_000_000 }
+      // Measured synthetic comb: base 200000*20 plus four fingers totals
+      // exactly 10,000,000 sqft; base perimeter plus twice finger heights is 1,000,000 LF.
+      { dimensionMethod:'measured_outline', outlinePoints:[
+        {x:-100000,y:-20},{x:100000,y:-20},{x:100000,y:0},
+        {x:4020,y:0},{x:4020,y:74995},{x:4000,y:74995},{x:4000,y:0},
+        {x:3020,y:0},{x:3020,y:74995},{x:3000,y:74995},{x:3000,y:0},
+        {x:2019,y:0},{x:2019,y:74795},{x:2000,y:74795},{x:2000,y:0},
+        {x:1021,y:0},{x:1021,y:75195},{x:1000,y:75195},{x:1000,y:0},
+        {x:-100000,y:0},{x:-100000,y:-20}
+      ] }
     ];
     return dimensions.flatMap(dimension => ['broom', 'smooth', 'stamped'].flatMap(finishType => ['none', 'wire_mesh', 'rebar'].map(reinforcement => ({
       ...dimension, thickness: 24, finishType,
-      demolitionNeeded: true, demolitionAreaSqft: 10_000_000,
+      demolitionNeeded: false,
       reinforcement, accessDifficulty, baseNeeded: true
     }))));
   }
@@ -259,7 +271,7 @@ function activationScenarios(service) {
   }
   if (serviceType === 'SIDING_REPLACEMENT') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 2_000_000, sidingType, stories, oldSidingRemoval: p.removalPerSqft !== undefined, trimIncluded: false }));
+    return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 2_000_000, sidingType, stories, oldSidingRemoval: false, trimIncluded: false }));
   }
   if (serviceType === 'SIDING_REPAIR') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
@@ -342,7 +354,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     ...validatePricingStructuresDetailed(service.serviceType, effectivePricing),
     ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
   );
-  for (const customerInputs of scenarios) {
+  for (const scenarioInputs of scenarios) {
+    const customerInputs = { ...scenarioInputs, ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
     const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing);
     if (!customer.ok) {
       for (const path of customer.missingCustomerFields || []) diagnostics.push({ type: 'missing', kind: 'activation_scenario', path: `customerInputs.${path}`, message: customer.reviewReason });
@@ -363,7 +376,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
         const pipelineResult = generateQuoteVNext({
           serviceType: service.serviceType,
           customerInputs: customer.normalized,
-          ownerPricing: { ...service, active: true, pricing: effectivePricing, tiers: [] },
+          ownerPricing: { ...service, active: true, pricing: effectivePricing, tiers: [],
+            ...(service.confirmedFields ? {confirmedFields:Object.fromEntries(Object.entries(service.confirmedFields).filter(([key])=>key!=='tiers'))}:{}),
+            ...(service.approvedValues ? {approvedValues:Object.fromEntries(Object.entries(service.approvedValues).filter(([key])=>key!=='tiers'))}:{}) },
           businessDefaults,
           callerType: 'owner',
           feeSelections: activationFeeSelections(service),
@@ -440,7 +455,7 @@ export function vNextServiceStatus(service, businessDefaults = null) {
   if (AI_SOURCES.has(service.source)) {
     const confirmed = isPlainRecord(service.confirmedFields) ? service.confirmedFields : {};
     for (const field of aiConfirmationFieldsVNext(service, pricing)) {
-      if (!Object.hasOwn(confirmed, field) || confirmed[field] !== true) diagnostics.push({ type: 'missing', kind: 'ai_confirmation', path: `confirmedFields.${field}`, message: `${field} must be individually confirmed before customer quoting.` });
+      if (!hasCurrentApprovalVNext(service, pricing, field)) diagnostics.push({ type: 'missing', kind: 'ai_confirmation', path: `confirmedFields.${field}`, message: `${field} must be individually confirmed before customer quoting.` });
     }
   }
 

@@ -130,7 +130,7 @@ function flatInputs(overrides = {}) {
   return {
     roofSqft: 1000,
     sqftMethod: 'exact',
-    membraneType: 'epdm',
+    membraneType: 'epdm', replacementMembraneType: 'epdm',
     existingLayers: 1,
     accessDifficulty: 'easy',
     serviceScope: 'full',
@@ -156,11 +156,12 @@ function interiorInputs(overrides = {}) {
   return {
     areaInputMethod: 'wall_sqft',
     wallAreaSqft: 100,
-    wallHeight: 'standard',
+    wallHeight: 'standard', wallScopeUniform: true,
     surfaceCondition: 'good',
     coats: 2,
     ceilingsIncluded: false,
     trimIncluded: false,
+    ...(overrides.ceilingsIncluded === true ? { ceilingCoats: overrides.coats ?? 2 } : {}),
     ...overrides
   };
 }
@@ -308,7 +309,7 @@ test('reversed flooring room-size thresholds fail shared validation', () => {
 
 test('itemized roofing cannot activate or quote with an accessory price missing', () => {
   const ownerPricing = roofService({
-    accessoryPricingMode: 'itemized',
+    accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories',
     starterPerLF: 100,
     dripEdgePerLF: 200
   });
@@ -322,7 +323,7 @@ test('itemized roofing cannot activate or quote with an accessory price missing'
 
 test('an explicitly confirmed zero accessory length is recorded as no physical scope', () => {
   const ownerPricing = roofService({
-    accessoryPricingMode: 'itemized', starterPerLF: 100,
+    accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories', starterPerLF: 100,
     dripEdgePerLF: 200, ridgeCapPerLF: 300
   });
   const inputs = roofInputs({ starterLengthLF: 100, dripEdgeLengthLF: 100, ridgeCapLengthLF: 0 });
@@ -422,7 +423,8 @@ test('common disposal applies only to physical scope and is not triggered by ski
     sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true,
     slope: 'flat', accessDifficulty: 'easy'
   }, sod, { businessDefaults: feeDefaults });
-  assert.equal(lineMap(sodResult).Disposal, 10000);
+  assert.equal(lineMap(sodResult).Disposal, undefined);
+  assert.equal(lineMap(sodResult)['Ground preparation'],50000);
 
   const mowing = service('LANDSCAPING_MOWING', {
     mowingBaseRatePerSqft: 2,
@@ -699,9 +701,9 @@ test('supported concrete finishes round the base and finish-extra components ind
     minimumJob: 0
   });
   const result = run('CONCRETE_DRIVEWAY', {
-    dimensionMethod: 'measured_area_perimeter',
-    areaSqft: 1.01,
-    perimeterLF: 4.1,
+    dimensionMethod: 'exact',
+    length: 1.01,
+    width: 1,
     thickness: 2,
     finishType: 'smooth',
     demolitionNeeded: false,

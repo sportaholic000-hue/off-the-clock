@@ -39,3 +39,5 @@ export {
   vNextPricebookStatuses,
   vNextServiceStatus
 } from './priceBook.js';
+
+export { approveVNextValues } from './contracts.js';

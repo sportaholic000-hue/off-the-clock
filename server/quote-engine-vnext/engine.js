@@ -4,6 +4,8 @@ import {
   MEASUREMENT_CONTRACTS,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
+  hasCurrentApprovalVNext,
+  equalApprovalDataVNext,
   allowedPricingFields,
   inspectionOwnerDecisionsVNext,
   validateBusinessDefaults,
@@ -147,6 +149,23 @@ function cloneForEvidence(value, fallback) {
   } catch {
     return structuredClone(fallback);
   }
+}
+
+// Diagnostic evidence may include rejected tiers. Keep their paths and invalid
+// value types without cloning executable/non-JSON primitives into a quote record.
+// This representation is never used as calculation input.
+function cloneConfigurationEvidence(value) {
+  if (['function', 'symbol', 'bigint'].includes(typeof value)) {
+    return { invalidValueType: typeof value };
+  }
+  if (typeof value === 'number' && !Number.isFinite(value)) {
+    return { invalidValueType: 'number', invalidValue: String(value) };
+  }
+  if (Array.isArray(value)) return value.map(cloneConfigurationEvidence);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, cloneConfigurationEvidence(entry)]));
+  }
+  return value;
 }
 
 function pricingSnapshotOrThrow(value, path) {
@@ -380,7 +399,7 @@ function validateRangedEvidence(line) {
 }
 
 
-function validateFeeSelectionRequest(ownerPricing, feeSelections) {
+function validateFeeSelectionRequest(ownerPricing, feeSelections, replacedFees = [], requirePresence = false) {
   const invalidOwnerFields = [];
   const invalidCustomerFields = [];
   const feeNames = Object.keys(FEE_DEFAULT_FIELDS);
@@ -405,6 +424,7 @@ function validateFeeSelectionRequest(ownerPricing, feeSelections) {
     }
   }
   for (const fee of feeNames) {
+    if(!requirePresence || replacedFees.includes(fee))continue;
     const mode = ownerPricing.feeRules[fee];
     if (mode === 'owner_selected') {
       if (!isPlainObject(feeSelections.owner) || !Object.hasOwn(feeSelections.owner, fee) || typeof feeSelections.owner[fee] !== 'boolean') {
@@ -759,7 +779,7 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
 }
 
 function validQuantityRateEvidence(calculation, expectedAmountCents) {
-  if (!isPlainObject(calculation) || !Number.isSafeInteger(calculation.rateCents) || calculation.rateCents < 0 ||
+  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || (calculation.ratePath==='mowingBaseRatePerSqft' && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
   const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: true });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;
@@ -958,7 +978,7 @@ function rangeForStandardQuote(totalCents, minimumCents, defaults) {
   if (totalCents === 0) {
     return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer };
   }
-  const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
+  const roundingIncrementCents = 1;
   let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
   let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
   let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
@@ -1052,6 +1072,10 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  template.feeScope.permit = customerInputs.permitRequired === true;
+  if(ownerPricing.feeRules.permit==='when_scope_selected' && typeof customerInputs.permitRequired!=='boolean')throw new QuoteReviewError('Confirm whether this project requires the permit charge.',{missingCustomerFields:['permitRequired']});
+  const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
+  if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
   const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
   const hasIntrinsicRange = template.lineItems.some(line => line.rangeAmountCents);
   let range;
@@ -1202,7 +1226,7 @@ export function generateQuoteVNext(input = {}) {
   if (!isPlainObject(ownerPricing)) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
   if (!isPlainObject(businessDefaults)) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
   const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
-  if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.' });
+  if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.', invalidOwnerFields: ['active'] });
   let basePricing;
   try {
     basePricing = extractPricing(ownerPricing, serviceType);
@@ -1213,7 +1237,7 @@ export function generateQuoteVNext(input = {}) {
   if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(ownerPricing.source)) {
     const confirmed = isPlainObject(ownerPricing.confirmedFields) ? ownerPricing.confirmedFields : {};
     const unconfirmed = aiConfirmationFieldsVNext(ownerPricing, basePricing)
-      .filter(field => !Object.hasOwn(confirmed, field) || confirmed[field] !== true);
+      .filter(field => !hasCurrentApprovalVNext(ownerPricing, basePricing, field));
     unconfirmedOwnerFields = unique(unconfirmed);
     if (unconfirmedOwnerFields.length && !ownerPreview) {
       return finishReview({
@@ -1394,6 +1418,7 @@ export function generateQuoteVNext(input = {}) {
       quoteId,
       serviceType,
       options: structuredClone(options.map(option => option.calculationRecord)),
+      ownerConfiguration: cloneConfigurationEvidence({ ...ownerPricing, pricing: basePricing }),
       customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     }
   };
@@ -1484,7 +1509,7 @@ function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
       : null;
   }
   try {
-    const roundingIncrementCents = totalCents < 1000 ? 1 : 1000;
+    const roundingIncrementCents = 1;
     let midCents = roundedCustomerCents(totalCents, roundingIncrementCents);
     let lowCents = roundedCustomerCents(exactMultiply(midCents, exactSubtract(1, exactDivide(buffer, 100))), roundingIncrementCents);
     let highCents = roundedCustomerCents(exactMultiply(midCents, exactAdd(1, exactDivide(buffer, 100))), roundingIncrementCents);
@@ -1569,6 +1594,12 @@ function validCustomerOption(option, expectedServiceType) {
 }
 
 function rootCalculationRecordMatches(result) {
+  const configuration=result.calculationRecord?.ownerConfiguration;
+  if(!isPlainObject(configuration)||configuration.active!==true)return false;
+  if(['AI_SUGGESTED','AI_INTERVIEW'].includes(configuration.source)){
+    if(configuration.serviceType!==result.serviceType||!isPlainObject(configuration.pricing))return false;
+    if(aiConfirmationFieldsVNext(configuration,configuration.pricing).some(field=>!hasCurrentApprovalVNext(configuration,configuration.pricing,field)))return false;
+  }
   const record = result.calculationRecord;
   if (!isPlainObject(record) ||
       record.engineVersion !== ENGINE_VERSION ||
@@ -1648,7 +1679,7 @@ export function buildInternalLeadVNext(input = {}) {
   input = snapshot.value;
   const { request = {}, internalResult } = input;
   const requiredOwnFields = [
-    'resultType', 'quoteId', 'serviceType', 'submittedCustomerInputs',
+    'resultType', 'quoteId', 'serviceType', 'reviewReason', 'submittedCustomerInputs',
     'normalizedScope', 'validatedMeasurements', 'urgencyFlags'
   ];
   if (
@@ -1656,6 +1687,9 @@ export function buildInternalLeadVNext(input = {}) {
     !isPlainObject(internalResult) ||
     requiredOwnFields.some(field => !Object.hasOwn(internalResult, field)) ||
     internalResult.resultType !== 'ESTIMATE_REQUIRES_REVIEW' ||
+    typeof internalResult.reviewReason!=='string' || !internalResult.reviewReason.trim() ||
+    !(internalResult.inspectionFirst===true || ['missingCustomerFields','invalidCustomerFields','missingOwnerFields','invalidOwnerFields','unsupportedOwnerFields','crossFieldOwnerFields','unconfirmedOwnerFields'].some(key=>denseArray(internalResult[key],v=>typeof v==='string'&&v.trim())&&internalResult[key].length) || ['ownerDiagnostics','ownerDecisionRequired'].some(key=>denseArray(internalResult[key],v=>isPlainObject(v)&&typeof v.message==='string'&&v.message.trim())&&internalResult[key].length)) ||
+    request.serviceType!==internalResult.serviceType || !isPlainObject(request.customerInputs) || !equalApprovalDataVNext(request.customerInputs,internalResult.submittedCustomerInputs) ||
     typeof internalResult.quoteId !== 'string' || !internalResult.quoteId.trim() ||
     !SERVICE_TYPES.includes(internalResult.serviceType) ||
     !isPlainObject(internalResult.submittedCustomerInputs) ||

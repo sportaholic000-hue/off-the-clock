@@ -1,5 +1,6 @@
+import { measuredOutlineVNext } from './geometry.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
-import { exactCompare, exactMultiply } from './exactMath.js';
+import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
 function relativeSnapshotPath(snapshot, root) {
   const prefix = `${root}.`;
@@ -70,7 +71,7 @@ const measuredArea = numberField('Measured area', 'square feet', 1, 1_000_000);
 const measuredLength = numberField('Confirmed measured length', 'linear feet', 0, 1_000_000);
 
 function commonContract({ fields, required, inspection, crossValidate }) {
-  return { fields, required, inspection, crossValidate };
+  return { fields: { ...fields, permitRequired: booleanField('Permit required for this measured project') }, required, inspection, crossValidate };
 }
 
 export const MEASUREMENT_CONTRACTS = {
@@ -362,7 +363,7 @@ function fencingContract(replacement) {
 function concreteContract() {
   return commonContract({
     fields: {
-      dimensionMethod: enumField('Slab measurement method', ['exact', 'measured_area_perimeter', 'area_only', 'assumption']),
+      dimensionMethod: enumField('Slab measurement method', ['exact', 'measured_area_perimeter', 'measured_outline', 'area_only', 'assumption']),
       length: numberField('Measured slab length', 'feet', 0.1, 100_000),
       width: numberField('Measured slab width', 'feet', 0.1, 100_000),
       areaSqft: numberField('Measured slab area', 'square feet', 1, 10_000_000),
@@ -662,6 +663,69 @@ export const CLASS2_DEFINITIONS = {
 CLASS2_DEFINITIONS.FLOORING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FLOORING_INSTALL);
 CLASS2_DEFINITIONS.FENCING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FENCING_INSTALL);
 CLASS2_DEFINITIONS.CONCRETE_PATIO_SLAB = structuredClone(CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY);
+
+// Repairs 107, 110, 112, 120-127: explicit facts or review, never inferred scope.
+function extendMeasuredContract(type, fields, requiredFacts, inspect, cross) {
+  const contract = MEASUREMENT_CONTRACTS[type];
+  Object.assign(contract.fields, fields);
+  const previousRequired = contract.required, previousInspection = contract.inspection, previousCross = contract.crossValidate;
+  contract.required = (c,p) => [...(previousRequired?.(c,p) || []), ...requiredFacts(c,p)];
+  contract.inspection = (c,p) => previousInspection?.(c,p) || inspect?.(c,p) || null;
+  contract.crossValidate = (c,p) => [...(previousCross?.(c,p) || []), ...(cross?.(c,p) || [])];
+}
+for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])extendMeasuredContract(type,
+ {outlinePoints:field('Closed measured orthogonal outline coordinates','feet','orthogonal_outline')},c=>c.dimensionMethod==='measured_outline'?['outlinePoints']:[],null,
+ c=>c.dimensionMethod==='measured_outline'?['length','width','areaSqft','perimeterLF'].filter(k=>c[k]!==undefined).map(field=>({field,message:'Measured outline derives area and perimeter; duplicate geometry inputs are not accepted.'})):c.outlinePoints!==undefined?[{field:'outlinePoints',message:'Outline points require the measured_outline method.'}]:[]);
+const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average'].includes(c.repairType) || (c.leakPresent && c.leakSourceIdentified !== true);
+for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract(type,
+  { leakSourceIdentified: booleanField('Leak source specifically identified') }, () => [],
+  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null);
+for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
+  if(c.serviceScope !== 'partial') return [];
+  const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
+  if(typeof total !== 'number' || !Number.isFinite(total)) return [];
+  const errors=[];
+  for(const name of ['partialAreaSqft','partialPercent']) {
+    if(typeof c[name] !== 'number' || !Number.isFinite(c[name])) continue;
+    const area = name === 'partialPercent' ? exactDivide(exactMultiply(total,c[name]),100) : c[name];
+    const domain=MEASUREMENT_CONTRACTS[type].fields.partialAreaSqft;
+    if(exactCompare(area,domain.min)<0 || exactCompare(area,domain.max)>0 || exactCompare(area,total)>=0)
+      errors.push({field:name,message:'Partial area must satisfy the measured-area bounds and be strictly smaller than the total roof area.'});
+  }
+  return errors;
+});
+extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugField('Replacement membrane type')}, () => ['replacementMembraneType'],
+ c => ['unknown','average'].includes(c.membraneType) || ['unknown','average'].includes(c.replacementMembraneType)
+  ? 'Both existing and replacement membrane systems must be identified.'
+  : c.buildingType === 'commercial' ? 'Commercial insulation and coverboard scope, system, and measured area require owner verification; building type does not establish that scope.' : null);
+for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
+ {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
+ c=>c.stairSteps>0?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
+ c=>c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]);
+extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],c=>c.oldSidingRemoval?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
+for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
+ c=>c.demolitionNeeded?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
+ :c.dimensionMethod==='measured_area_perimeter'?'Measured outline segments or an independently verified takeoff are required to establish the concrete geometry.':null,
+ c=>{
+   const errors=[];
+   if(c.dimensionMethod==='exact' && Number.isFinite(c.length) && Number.isFinite(c.width)){
+     const area=exactMultiply(c.length,c.width),domain=MEASUREMENT_CONTRACTS[type].fields.areaSqft;
+     if(exactCompare(area,domain.min)<0 || exactCompare(area,domain.max)>0)errors.push({field:'length',message:'Derived concrete area must satisfy the direct measured-area bounds.'});
+   }
+   // P^2 >= 4*pi*A is necessary for every simple planar shape. 12*A is a conservative exact rejection bound.
+   if(c.dimensionMethod==='measured_area_perimeter' && Number.isFinite(c.areaSqft) && Number.isFinite(c.perimeterLF) && exactCompare(exactMultiply(c.perimeterLF,c.perimeterLF),exactMultiply(12,c.areaSqft))<0)
+     errors.push({field:'perimeterLF',message:'The supplied area and perimeter are physically impossible for a simple planar slab.'});
+   return errors;
+ });
+extendMeasuredContract('INTERIOR_PAINTING',{
+ wallScopeUniform:booleanField('All wall area shares the confirmed height, access, and finish-coat count'),
+ ceilingCoats:numberField('Independently confirmed ceiling finish coats','coats',1,3,{integer:true})
+},c=>['wallScopeUniform',...(c.ceilingsIncluded?['ceilingCoats']:[])],
+ c=>c.wallScopeUniform!==true?'Mixed wall height, access, or coat zones require separate measured scope or inspection.':null,
+ c=>c.ceilingsIncluded===false && c.ceilingCoats!==undefined?[{field:'ceilingCoats',message:'Ceiling coats cannot be supplied when ceilings are excluded.'}]:[]);
+extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Exterior substrate and coating system need a supported owner contract; fair preparation also needs measured affected scope or an explicitly bounded package.');
+extendMeasuredContract('LANDSCAPING_SOD',{separateDisposalSelected:booleanField('Separate project debris disposal selected')},()=>[]);
+
 deepFreeze(MEASUREMENT_CONTRACTS);
 deepFreeze(CLASS2_DEFINITIONS);
 
@@ -692,6 +756,7 @@ function missing(value) {
 }
 
 function validateFieldValue(definition, value) {
+  if (definition.type === 'orthogonal_outline') { try { measuredOutlineVNext(value); return null; } catch(error) { return error.message; } }
   if (definition.type === 'number') {
     if (typeof value !== 'number' || !Number.isFinite(value)) return 'must be a finite number';
     if (value < definition.min || value > definition.max) return `must be between ${definition.min} and ${definition.max} ${definition.unit || ''}`.trim();
@@ -809,7 +874,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
 }
 
 
-export function inspectionOwnerDecisionsVNext(serviceType, customerInputs = {}) {
+function previousInspectionOwnerDecisionsVNext(serviceType, customerInputs = {}) {
   if (serviceType === 'INTERIOR_PAINTING' && ['fair', 'poor'].includes(customerInputs.surfaceCondition)) {
     return [{
       path: 'interiorPrepPricing',
@@ -900,7 +965,7 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
+  ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge'],
@@ -932,7 +997,7 @@ const AI_CONFIRMABLE_SERVICE_FIELDS = [
   'taxabilityByCategory',
   'peakMonths',
   'peakSurchargePercent',
-  'disclaimer'
+  'disclaimer', 'disposalScope'
 ];
 
 export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
@@ -988,7 +1053,7 @@ const SCALAR_MONEY_FIELDS = {
   LANDSCAPING_MULCH: ['mulchInstallLaborPerYard', 'minimumServiceCharge', 'edgingPerLinearFoot'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft'],
   LANDSCAPING_PLANTING: ['minimumServiceCharge', 'mulchInstallLaborPerYard'],
-  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'edgingPerLinearFoot'],
+  LANDSCAPING_MOWING: ['minimumServiceCharge', 'edgingPerLinearFoot'],
   SIDING_REPLACEMENT: ['minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum'],
   CUSTOM: ['price', 'low', 'high', 'minimumJob']
@@ -1032,6 +1097,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add('minimumJob', 'Minimum roof replacement job price', { kind: 'minimum' });
     out.push({ path: 'accessoryPricingMode', label: 'Roof accessory pricing method', kind: 'enum', values: ['per_square_allin', 'itemized'] });
     if (p.accessoryPricingMode === 'itemized') {
+      out.push({path:'materialAccessoryBasis',label:'Base material excludes separately itemized starter, drip edge, and ridge cap',kind:'enum',values:['excludes_itemized_accessories']});
       if (c.starterLengthLF > 0) add('starterPerLF', 'Starter strip price per linear foot');
       if (c.dripEdgeLengthLF > 0) add('dripEdgePerLF', 'Drip edge price per linear foot');
       if (c.ridgeCapLengthLF > 0) add('ridgeCapPerLF', 'Ridge cap price per linear foot');
@@ -1044,12 +1110,12 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add(`repairHours.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair labor hours for the measured affected-area category', { kind: 'positive_number' });
     add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair material allowance for the measured affected-area category');
   } else if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
-    const membrane = c.membraneType;
+    const membrane = c.replacementMembraneType;
     add(`laborPerSqft.${membrane}`, 'Flat-roof labor price for the selected membrane');
     add(`membraneCostPerSqft.${membrane}`, 'Flat-roof membrane price for the selected membrane');
-    add(`tearOffPerSqft.${membrane}`, 'Flat-roof tear-off price for the selected membrane');
+    add(`tearOffPerSqft.${c.membraneType}`, 'Flat-roof tear-off price for the selected membrane');
     add('minimumJob', 'Minimum flat-roof job price', { kind: 'minimum' });
-    if (c.buildingType === 'commercial') add('insulationPerSqft', 'Commercial insulation and coverboard price per square foot');
+
   } else if (serviceType === 'FLAT_ROOF_REPAIR') {
     add('laborHourlyRate', 'Flat-roof repair labor rate per hour');
     add('repairMinimum', 'Minimum flat-roof repair visit price', { kind: 'minimum' });
@@ -1132,7 +1198,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
       add('mulchInstallLaborPerYard', 'Mulch installation labor price per cubic yard');
     }
   } else if (serviceType === 'LANDSCAPING_MOWING') {
-    add('mowingBaseRatePerSqft', 'Mowing labor price per measured square foot');
+    add('mowingBaseRatePerSqft', 'Mowing labor cents per measured square foot (fractional cents supported)', {kind:'non_negative_number'});
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
@@ -1162,6 +1228,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
 
 function validateRequirementValue(requirementDefinition, value) {
   if (requirementDefinition.kind === 'minimum') return nonNegativeMoney(value);
+  if (requirementDefinition.kind === 'non_negative_number') return nonNegative(value) && value <= Number.MAX_SAFE_INTEGER;
   if (requirementDefinition.kind === 'positive_number') return positive(value);
   if (requirementDefinition.kind === 'non_negative_money') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'boolean') return typeof value === 'boolean';
@@ -1215,8 +1282,8 @@ function inspectPriceMap(diagnostics, pricing, name, { allowedKeys = null, requi
   }
 }
 
-function inspectMatchingFirstLevelKeys(diagnostics, pricing, names, relationship) {
-  const union = new Set(names.flatMap(name => isRecord(pricing[name]) ? Object.keys(pricing[name]) : []));
+function inspectMatchingFirstLevelKeys(diagnostics, pricing, names, relationship, ignoredKeys = []) {
+  const union = new Set(names.flatMap(name => isRecord(pricing[name]) ? Object.keys(pricing[name]) : []).filter(key => !ignoredKeys.includes(key)));
   for (const key of union) {
     for (const name of names) {
       if (!isRecord(pricing[name]) || !Object.hasOwn(pricing[name], key)) {
@@ -1299,6 +1366,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
 
   if (serviceType === 'ROOFING_REPLACEMENT') {
+    if(p.materialAccessoryBasis!==undefined && (p.materialAccessoryBasis!=='excludes_itemized_accessories'||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and the exact excludes_itemized_accessories value.');
     for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
     inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSquare', 'materialCostPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis'], 'Roof replacement labor, material, underlayment, and underlayment-basis maps');
@@ -1311,9 +1379,9 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     for (const name of ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft']) {
       inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
-      if (isRecord(p[name]) && !Object.hasOwn(p[name], 'average')) structureDiagnostic(diagnostics, 'missing', `${name}.average`, `${name}.average is the required fallback price.`);
     }
-    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft'], 'Flat-roof labor, membrane, and tear-off maps');
+    // A retained historical average is validated as data, but never offered or required in another map.
+    inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'membraneCostPerSqft'], 'Replacement membrane labor and material maps', ['average']);
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
     inspectRepairCube(diagnostics, p.patchRepairHours, 'patchRepairHours');
@@ -1367,6 +1435,12 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: SIZE_KEYS, requireAll: true });
   }
   if (serviceType === 'LANDSCAPING_MOWING') {
+    if (p.mowingBaseRatePerSqft !== undefined && (!nonNegative(p.mowingBaseRatePerSqft) || p.mowingBaseRatePerSqft > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics,'invalid','mowingBaseRatePerSqft','Mowing rate must be finite nonnegative cents per square foot, up to MAX_SAFE_INTEGER; fractional cents are supported.');
+    for(const [f,factor] of Object.entries(isRecord(p.frequencyMultipliers)?p.frequencyMultipliers:{})) for(const [g,growth] of Object.entries(isRecord(p.overgrowthMultipliers)?p.overgrowthMultipliers:{})) {
+      if(!positive(factor)||!positive(growth))continue;
+      try {const product=exactMultiply(factor,growth);exactToNumber(product);exactFromEvidence(exactEvidence(product));}
+      catch {for(const path of [`frequencyMultipliers.${f}`,`overgrowthMultipliers.${g}`])structureDiagnostic(diagnostics,'invalid',path,'The selected factor combination exceeds the supported exact-evidence domain.');}
+    }
     inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
     inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
   }
@@ -1485,11 +1559,11 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType)) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost') requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
     const averageRoom = typeof customerInputs.sqft === 'number' && typeof customerInputs.roomCount === 'number' && customerInputs.roomCount > 0
-      ? customerInputs.sqft / customerInputs.roomCount
+      ? exactDivide(customerInputs.sqft, customerInputs.roomCount)
       : null;
     if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none') requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
     const thresholds = pricing.roomSizeThresholds;
-    if (Number.isFinite(averageRoom) && isRecord(thresholds) && (averageRoom === thresholds.smallMaxSqft || averageRoom === thresholds.mediumMaxSqft)) requireDecision('roomSizeThresholds', 'inclusive_boundary_contract', 'Approve whether flooring average-room maximum thresholds are inclusive. Quotes exactly on a threshold remain review-only.');
+    if (averageRoom !== null && isRecord(thresholds) && Number.isFinite(thresholds.smallMaxSqft) && Number.isFinite(thresholds.mediumMaxSqft) && (exactCompare(averageRoom, thresholds.smallMaxSqft) === 0 || exactCompare(averageRoom, thresholds.mediumMaxSqft) === 0)) requireDecision('roomSizeThresholds', 'inclusive_boundary_contract', 'Approve whether flooring average-room maximum thresholds are inclusive. Quotes exactly on a threshold remain review-only.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost') requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
   if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
@@ -1546,6 +1620,9 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   ownerPricing = snapshot.value;
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
+  const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope']);
+  for(const key of Object.keys(ownerPricing)) if(!supportedRoot.has(key) && !ALL_PRICING_FIELDS.has(key) && !BUSINESS_DEFAULT_FIELDS.includes(key)) diagnostics.push(ownerDiagnostic('unsupported','service_root',key,'Unsupported service setting; migrate or explicitly configure its VNext contract before quoting.'));
+  if(ownerPricing.disposalScope!==undefined && (serviceType!=='LANDSCAPING_SOD'||ownerPricing.disposalScope!=='separate_project_debris')) diagnostics.push(ownerDiagnostic('invalid','service_rule','disposalScope','Only explicitly separate sod-project debris is supported.'));
   const nestedPricing = ownerPricing.pricing;
   const hasNestedPricing = isRecord(nestedPricing);
   if (nestedPricing === undefined) {
@@ -1581,6 +1658,14 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
           diagnostics.push(ownerDiagnostic('invalid', 'ai_confirmation', path, `${path} must be true or false.`));
         }
       }
+    }
+  }
+  if(ownerPricing.approvedValues!==undefined){
+    const fields=['AI_SUGGESTED','AI_INTERVIEW'].includes(ownerPricing.source)?aiConfirmationFieldsVNext(ownerPricing,nestedPricing||{}):[];
+    if(!isRecord(ownerPricing.approvedValues))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues','Approved values must be a plain field-to-approval map.'));
+    else for(const [field,record] of Object.entries(ownerPricing.approvedValues)){
+      if(!fields.includes(field))diagnostics.push(ownerDiagnostic('unsupported','ai_confirmation','approvedValues.'+field,'Approval does not match a confirmable service field.'));
+      else if(!isRecord(record)||Object.keys(record).length!==5||!Object.hasOwn(record,'value')||record.serviceType!==serviceType||['ownerId','operationId','approvedAt'].some(key=>typeof record[key]!=='string'||!record[key].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(record.approvedAt)||!Number.isFinite(Date.parse(record.approvedAt)))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues.'+field,'Approval must retain the exact value, service identity, owner, operation, and timestamp.'));
     }
   }
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
@@ -1683,4 +1768,44 @@ export function contractMetadata() {
     class2Fields: Object.entries(CLASS2_DEFINITIONS[serviceType] || {}).map(([name, definition]) => ({ name, ...structuredClone(definition) })),
     allowedPricingFields: allowedPricingFields(serviceType)
   }));
+}
+
+// A pure approval operation. An owner-only adapter must authenticate/authorize ownerId
+// before calling and persist its returned snapshot atomically. This is not authentication.
+export function equalApprovalDataVNext(left,right) {
+  const canonical = value => Array.isArray(value) ? value.map(canonical) : isRecord(value)
+    ? Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])) : value;
+  return JSON.stringify(canonical(left))===JSON.stringify(canonical(right));
+}
+export function hasCurrentApprovalVNext(service,pricing,field) {
+  const approval=service.approvedValues?.[field];
+  const value=Object.hasOwn(pricing,field)?pricing[field]:service[field];
+  return service.confirmedFields?.[field]===true && isRecord(approval) && approval.serviceType===service.serviceType &&
+    ['ownerId','operationId','approvedAt'].every(key=>typeof approval[key]==='string'&&approval[key].trim()) &&
+    /^\d{4}-\d{2}-\d{2}T/.test(approval.approvedAt) && Number.isFinite(Date.parse(approval.approvedAt)) &&
+    Object.keys(approval).length===5 && Object.hasOwn(approval,'value') && equalApprovalDataVNext(value,approval.value);
+}
+export function approveVNextValues(input,operation) {
+  const serviceSnapshot=snapshotPlainData(input,'service'), opSnapshot=snapshotPlainData(operation,'approval');
+  if(!serviceSnapshot.ok||serviceSnapshot.nonPlainPaths.length||!opSnapshot.ok||opSnapshot.nonPlainPaths.length)throw new TypeError('Approval requires plain data.');
+  const service=serviceSnapshot.value, op=opSnapshot.value;
+  if(!isRecord(service)||!isRecord(op)||!['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)||!SERVICE_TYPES.includes(service.serviceType))throw new TypeError('Approval requires an AI-originated service.');
+  const allowed=aiConfirmationFieldsVNext(service,service.pricing);
+  if(Object.keys(op).some(k=>!['fields','ownerId','operationId','approvedAt'].includes(k))||!Array.isArray(op.fields)||denseArrayIssue(op.fields)||!op.fields.length||new Set(op.fields).size!==op.fields.length||op.fields.some(k=>!allowed.includes(k))||['ownerId','operationId','approvedAt'].some(k=>typeof op[k]!=='string'||!op[k].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(op.approvedAt)||!Number.isFinite(Date.parse(op.approvedAt)))throw new TypeError('Explicit fields and auditable owner, operation, and timestamp are required.');
+  service.confirmedFields={...(isRecord(service.confirmedFields)?service.confirmedFields:{})};
+  service.approvedValues={...(isRecord(service.approvedValues)?service.approvedValues:{})};
+  for(const field of op.fields){service.confirmedFields[field]=true;service.approvedValues[field]={value:structuredClone(Object.hasOwn(service.pricing,field)?service.pricing[field]:service[field]),serviceType:service.serviceType,ownerId:op.ownerId,operationId:op.operationId,approvedAt:op.approvedAt};}
+  return service;
+}
+
+export function inspectionOwnerDecisionsVNext(type,c={}) {
+ const decisions=previousInspectionOwnerDecisionsVNext(type,c);
+ const add=(path,kind,message)=>decisions.push({path,kind,message});
+ if(type.startsWith('FLOORING_')&&c.stairSteps>0)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');
+ if(type==='SIDING_REPLACEMENT'&&c.oldSidingRemoval)add('removalPerSqft','existing_siding_removal_contract','Confirm existing siding type, measured removal area, and the supported removal-price scope.');
+ if(type==='SIDING_REPLACEMENT'&&c.trimIncluded)add('trimPerLinearFoot','mixed_charge_classification','Confirm trim labor/material allocation.');
+ if(type.startsWith('CONCRETE_')&&c.demolitionNeeded)add('demolitionPerSqft','existing_slab_demolition_contract','Define the existing slab facts or explicit bounded package covered by the demolition price.');
+ if(type==='FLAT_ROOF_REPLACEMENT'&&c.buildingType==='commercial')add('insulationPerSqft','insulation_scope_contract','Confirm insulation and coverboard scope, systems, and measured areas before pricing.');
+ if(type==='EXTERIOR_PAINTING')add('exteriorCoatingScope','exterior_coating_scope_contract','Define supported substrate/coating systems and measured preparation scope or a bounded all-area package.');
+ return decisions;
 }

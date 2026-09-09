@@ -105,7 +105,7 @@ const happyCases = [
       materialCostPerSquare: { asphalt_shingle: 10000 },
       tearOffPerSquare: { asphalt_shingle: 2000 },
       underlaymentPerSquare: { asphalt_shingle: 1500 },
-      accessoryPricingMode: 'itemized', starterPerLF: 100,
+      accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories', starterPerLF: 100,
       dripEdgePerLF: 200, ridgeCapPerLF: 300, deckingPerSheet: 5000,
       minimumJob: 0
     }, { priceBasisByCategory: { ...costBasis, material: 'sell_price' } }),
@@ -128,7 +128,7 @@ const happyCases = [
   {
     name: 'flat roof replacement uses measured area and layer count',
     serviceType: 'FLAT_ROOF_REPLACEMENT',
-    customerInputs: { roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', existingLayers: 2, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' },
+    customerInputs: { roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm', existingLayers: 2, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' },
     ownerPricing: service('FLAT_ROOF_REPLACEMENT', {
       laborPerSqft: { epdm: 500, average: 500 }, membraneCostPerSqft: { epdm: 700, average: 700 },
       tearOffPerSqft: { epdm: 200, average: 200 }, minimumJob: 0,
@@ -150,7 +150,7 @@ const happyCases = [
   {
     name: 'interior painting uses measured trim length',
     serviceType: 'INTERIOR_PAINTING',
-    customerInputs: { areaInputMethod: 'wall_sqft', wallAreaSqft: 500, wallHeight: 'standard', surfaceCondition: 'good', coats: 2, ceilingsIncluded: false, trimIncluded: true, trimLengthLF: 200 },
+    customerInputs: { areaInputMethod: 'wall_sqft', wallAreaSqft: 500, wallHeight: 'standard', wallScopeUniform: true, surfaceCondition: 'good', coats: 2, ceilingsIncluded: false, trimIncluded: true, trimLengthLF: 200 },
     ownerPricing: service('INTERIOR_PAINTING', {
       laborPerWallSqftPerCoat: 100, materialPerWallSqftPerCoat: 30,
       minimumJob: 0,
@@ -182,13 +182,13 @@ const happyCases = [
   {
     name: 'flooring replacement prices measured removal and subfloor scope',
     serviceType: 'FLOORING_REPLACEMENT',
-    customerInputs: { sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, roomCount: 2, layoutPattern: 'straight', stairSteps: 2, subfloorIssues: true, subfloorRepairAreaSqft: 30 },
+    customerInputs: { sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, removalAreaSqft: 300, roomCount: 2, layoutPattern: 'straight', stairSteps: 0, subfloorIssues: true, subfloorRepairAreaSqft: 30 },
     ownerPricing: service('FLOORING_REPLACEMENT', {
       laborPerSqft: { tile: 300 }, materialPerSqft: { tile: 500 }, minimumJob: 0,
       removalPerSqft: { vinyl: 100 }, perStepPrice: 10000,
       subfloorAllowancePerSqft: 200, vinylPlankUnderlaymentRule: 'never_included'
     }),
-    expected: { lines: { 'Flooring labor': 99000, 'Flooring materials': 168000, 'Existing flooring removal': 30000, 'Stair installation': 20000, 'Subfloor repair allowance': 6000 }, low: 2910, mid: 3230, high: 3550 }
+    expected: { lines: { 'Flooring labor': 99000, 'Flooring materials': 168000, 'Existing flooring removal': 30000, 'Subfloor repair allowance': 6000 }, low: 2910, mid: 3230, high: 3550 }
   },
   {
     name: 'fencing installation defers the mixed concrete-and-digging allocation',
@@ -324,6 +324,8 @@ const happyCases = [
 ];
 
 for (const entry of happyCases) {
+  if(entry.serviceType==='EXTERIOR_PAINTING')entry.expectedOwnerDecision='exterior_coating_scope_contract';
+  if(entry.expected){const total=Object.values(entry.expected.lines).reduce((a,b)=>a+b,0);entry.expected.low=Number((BigInt(total)*90n+50n)/100n)/100;entry.expected.mid=total/100;entry.expected.high=Number((BigInt(total)*110n+50n)/100n)/100;}
   test(`${entry.expectedOwnerDecision ? 'vNext fail-closed contract' : 'vNext hand calculation'}: ${entry.name}`, () => {
     const result = quote(entry);
     if (entry.expectedOwnerDecision) {
