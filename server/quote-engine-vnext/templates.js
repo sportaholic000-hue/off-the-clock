@@ -478,7 +478,8 @@ function calculateRoofReplacement(c, p, ctx) {
   const deckingUnitPrice = optionalMoney(p.deckingPerSheet, 'deckingPerSheet');
   if (deckingUnitPrice !== undefined) {
     if (ctx.ownerPricing?.priceBasisByCategory?.material === 'sell_price') out.priceDrivers.push(`Decking replacement, if needed, billed at $${(deckingUnitPrice / 100).toFixed(2)}/sheet`);
-    else out.priceDrivers.push('Additional decking requires a confirmed sheet count and a reviewed customer charge.');
+    else if (c.deckingSheets === undefined) out.priceDrivers.push('Additional decking requires a confirmed sheet count and a reviewed customer charge.');
+    else out.priceDrivers.push(c.deckingSheets > 0 ? 'Confirmed decking replacement is included in this estimate.' : 'No decking replacement is included in the confirmed scope.');
   }
   if (c.deckingSheets !== undefined) {
     recordMeasurement(out, 'deckingSheets', c.deckingSheets, 'confirmed sheets');
@@ -1160,7 +1161,8 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     throw new QuoteReviewError(`Pricing could not be read safely: ${reason}.`, { invalidOwnerFields: [path] });
   }
   pricing = pricingSnapshot.value;
-  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
+  const serviceRules = serviceRulesFromContext(ctx);
+  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, serviceRules);
   if (!customerValidation.ok) {
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
@@ -1168,8 +1170,8 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     });
   }
   customerInputs = customerValidation.normalized;
-  const serviceRules = serviceRulesFromContext(ctx);
-  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, serviceRules);
+  const tier = ownDataValue(ctx, 'tierName');
+  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!ownerValidation.ok) {
     throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);
   }

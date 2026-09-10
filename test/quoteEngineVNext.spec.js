@@ -1,3 +1,4 @@
+import {fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -59,6 +60,8 @@ function service(serviceType, pricing, overrides = {}) {
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
+    ...fixtureIdentity(overrides.source || 'MANUAL', overrides.id),
+    knownOfferings: fixtureOfferings(serviceType),
     active: true,
     serviceType,
     service: serviceType,
@@ -92,14 +95,14 @@ const happyCases = [
   {
     name: 'roof replacement uses measured itemized accessory lengths',
     serviceType: 'ROOFING_REPLACEMENT',
-    customerInputs: {
+    customerInputs: confirmedFixtureInputs({
       roofSizeMethod: 'roof_measured', roofSizeInput: 1000,
       existingRoofType: 'asphalt_shingle', replacementRoofType: 'asphalt_shingle',
       pitch: 'low', stories: 1, existingLayers: 1,
       roofComplexity: 'simple', serviceScope: 'full',
       starterLengthLF: 100, dripEdgeLengthLF: 100,
       ridgeCapLengthLF: 20, deckingSheets: 2
-    },
+    }),
     ownerPricing: service('ROOFING_REPLACEMENT', {
       laborPerSquare: { asphalt_shingle: 5000 },
       materialCostPerSquare: { asphalt_shingle: 10000 },
@@ -117,7 +120,7 @@ const happyCases = [
   {
     name: 'roof repair maps the canonical medium size exactly',
     serviceType: 'ROOFING_REPAIR',
-    customerInputs: { repairType: 'shingle_patch', affectedArea: 100, roofType: 'asphalt_shingle', pitch: 'medium', stories: 2, leakPresent: false },
+    customerInputs: confirmedFixtureInputs({ repairType: 'shingle_patch', affectedArea: 100, roofType: 'asphalt_shingle', pitch: 'medium', stories: 2, leakPresent: false }),
     ownerPricing: service('ROOFING_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       repairHours: { asphalt_shingle: { shingle_patch: { small: 2, medium: 4, large: 8 } } },
@@ -128,7 +131,7 @@ const happyCases = [
   {
     name: 'flat roof replacement uses measured area and layer count',
     serviceType: 'FLAT_ROOF_REPLACEMENT',
-    customerInputs: { roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm', existingLayers: 2, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' },
+    customerInputs: confirmedFixtureInputs({ roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm', existingLayers: 2, accessDifficulty: 'moderate', serviceScope: 'full', buildingType: 'residential' }),
     ownerPricing: service('FLAT_ROOF_REPLACEMENT', {
       laborPerSqft: { epdm: 500, average: 500 }, membraneCostPerSqft: { epdm: 700, average: 700 },
       tearOffPerSqft: { epdm: 200, average: 200 }, minimumJob: 0,
@@ -139,7 +142,7 @@ const happyCases = [
   {
     name: 'flat roof repair consumes the selected nested size price',
     serviceType: 'FLAT_ROOF_REPAIR',
-    customerInputs: { repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: false },
+    customerInputs: confirmedFixtureInputs({ repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: false }),
     ownerPricing: service('FLAT_ROOF_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       patchRepairHours: { epdm: { seam_patch: { small: 3, medium: 5, large: 8 } } },
@@ -172,7 +175,7 @@ const happyCases = [
   {
     name: 'flooring installation uses measured area and explicit vinyl rule',
     serviceType: 'FLOORING_INSTALL',
-    customerInputs: { sqft: 300, sqftMethod: 'exact', newFlooringType: 'vinyl_plank', existingFloorType: 'none', removalNeeded: false, roomCount: 1, layoutPattern: 'straight', stairSteps: 0 },
+    customerInputs: confirmedFixtureInputs({ sqft: 300, sqftMethod: 'exact', newFlooringType: 'vinyl_plank', existingFloorType: 'none', removalNeeded: false, roomCount: 1, layoutPattern: 'straight', stairSteps: 0 }),
     ownerPricing: service('FLOORING_INSTALL', {
       laborPerSqft: { vinyl_plank: 300 }, materialPerSqft: { vinyl_plank: 500 },
       minimumJob: 0, vinylPlankUnderlaymentRule: 'never_included'
@@ -182,7 +185,7 @@ const happyCases = [
   {
     name: 'flooring replacement prices measured removal and subfloor scope',
     serviceType: 'FLOORING_REPLACEMENT',
-    customerInputs: { sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, removalAreaSqft: 300, roomCount: 2, layoutPattern: 'straight', stairSteps: 0, subfloorIssues: true, subfloorRepairAreaSqft: 30 },
+    customerInputs: confirmedFixtureInputs({ sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, removalAreaSqft: 300, roomCount: 2, layoutPattern: 'straight', stairSteps: 0, subfloorIssues: true, subfloorRepairAreaSqft: 30 }),
     ownerPricing: service('FLOORING_REPLACEMENT', {
       laborPerSqft: { tile: 300 }, materialPerSqft: { tile: 500 }, minimumJob: 0,
       removalPerSqft: { vinyl: 100 }, perStepPrice: 10000,
@@ -193,7 +196,7 @@ const happyCases = [
   {
     name: 'fencing installation defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_INSTALL',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat' },
+    customerInputs: confirmedFixtureInputs({ linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat' }),
     ownerPricing: service('FENCING_INSTALL', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
@@ -204,7 +207,7 @@ const happyCases = [
   {
     name: 'fencing replacement defers the mixed concrete-and-digging allocation',
     serviceType: 'FENCING_REPLACEMENT',
-    customerInputs: { linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat', oldFenceRemoval: true },
+    customerInputs: confirmedFixtureInputs({ linearFeet: 100, lfMethod: 'exact', fenceType: 'wood', fenceHeight: 6, gateCount: 1, gateWidthTotalLF: 4, terrainSlope: 'flat', oldFenceRemoval: true }),
     ownerPricing: service('FENCING_REPLACEMENT', {
       laborPerLinearFoot: { wood: 1000 }, materialPerLinearFoot: { wood: 2000 },
       postPrice: { wood: 2500 }, concretePerPost: 700,
@@ -252,7 +255,7 @@ const happyCases = [
   {
     name: 'mulch bed preparation uses direct condition pricing without hidden multiplier',
     serviceType: 'LANDSCAPING_MULCH',
-    customerInputs: { inputMethod: 'sqft', mulchArea: 270, mulchDepth: 3, mulchType: 'brown', bedCondition: 'needs_weeding', bedSqft: 270, edgingNeeded: true, edgeLF: 100 },
+    customerInputs: confirmedFixtureInputs({ inputMethod: 'sqft', mulchArea: 270, mulchDepth: 3, mulchType: 'brown', bedCondition: 'needs_weeding', bedSqft: 270, edgingNeeded: true, edgeLF: 100 }),
     ownerPricing: service('LANDSCAPING_MULCH', {
       mulchMaterialPerYard: { brown: 5000 }, mulchInstallLaborPerYard: 3000,
       minimumServiceCharge: 0,
@@ -306,7 +309,7 @@ const happyCases = [
   {
     name: 'siding repair consumes material-type and damage-specific rates',
     serviceType: 'SIDING_REPAIR',
-    customerInputs: { sidingType: 'vinyl', damageLevel: 'minor', affectedArea: 50, stories: 2 },
+    customerInputs: confirmedFixtureInputs({ sidingType: 'vinyl', damageLevel: 'minor', affectedArea: 50, stories: 2 }),
     ownerPricing: service('SIDING_REPAIR', {
       laborHourlyRate: 10000, repairMinimum: 0,
       repairHours: { vinyl: { minor: { small: 2, medium: 4, large: 8 } } },
@@ -324,8 +327,9 @@ const happyCases = [
 ];
 
 for (const entry of happyCases) {
+  entry.customerInputs=confirmedFixtureInputs(entry.customerInputs);
   if(entry.serviceType==='EXTERIOR_PAINTING')entry.expectedOwnerDecision='exterior_coating_scope_contract';
-  if(entry.expected){const total=Object.values(entry.expected.lines).reduce((a,b)=>a+b,0);entry.expected.low=Number((BigInt(total)*90n+50n)/100n)/100;entry.expected.mid=total/100;entry.expected.high=Number((BigInt(total)*110n+50n)/100n)/100;}
+  if(entry.expected){const total=Object.values(entry.expected.lines).reduce((a,b)=>a+b,0);entry.expected.low=Number(((BigInt(total)*90n+50n)/100n)/100n);entry.expected.mid=Number((BigInt(total)+50n)/100n);entry.expected.high=Number((((BigInt(total)*110n+50n)/100n)+99n)/100n);}
   test(`${entry.expectedOwnerDecision ? 'vNext fail-closed contract' : 'vNext hand calculation'}: ${entry.name}`, () => {
     const result = quote(entry);
     if (entry.expectedOwnerDecision) {
@@ -346,7 +350,7 @@ const malformedCases = [
   ['ROOFING_REPLACEMENT', 'roofSizeInput', value => ({ ...value, roofSizeInput: 0 })],
   ['ROOFING_REPAIR', 'affectedArea', value => ({ ...value, affectedArea: 0 })],
   ['FLAT_ROOF_REPLACEMENT', 'existingLayers', value => ({ ...value, existingLayers: 0 })],
-  ['FLAT_ROOF_REPAIR', 'membraneType', value => ({ ...value, membraneType: 'NOT VALID' })],
+  ['FLAT_ROOF_REPAIR', 'membraneType', value => (confirmedFixtureInputs({ ...value, membraneType: 'NOT VALID' }))],
   ['INTERIOR_PAINTING', 'coats', value => ({ ...value, coats: 4 })],
   ['EXTERIOR_PAINTING', 'exteriorAreaSqft', value => ({ ...value, exteriorAreaSqft: Infinity })],
   ['FLOORING_INSTALL', 'sqft', value => ({ ...value, sqft: -1 })],
@@ -459,7 +463,10 @@ test('selected mandatory scope distinguishes missing prices from intentionally f
     const freePricing = structuredClone(entry.ownerPricing);
     if (field === 'bedPrepLaborPerSqft') freePricing.pricing[field].needs_weeding = 0;
     else freePricing.pricing[field] = 0;
-    const free = quote({ ...entry, ownerPricing: freePricing });
+    assert.equal(quote({ ...entry, ownerPricing: freePricing }).resultType, 'ESTIMATE_REQUIRES_REVIEW');
+    const includedIn={ROOFING_REPLACEMENT:'laborPerSquare.asphalt_shingle',INTERIOR_PAINTING:'laborPerWallSqftPerCoat',FLOORING_REPLACEMENT:'laborPerSqft.'+entry.customerInputs.newFlooringType,CONCRETE_DRIVEWAY:'laborPerSqft',LANDSCAPING_MULCH:'mulchInstallLaborPerYard',LANDSCAPING_SOD:'sodInstallLaborPerSqft'}[serviceType];
+    const path=field==='bedPrepLaborPerSqft'?field+'.needs_weeding':field;
+    const free = quote({ ...entry, ownerPricing: includedFixture(freePricing,{[path]:includedIn}) });
     assert.equal(free.resultType, 'INSTANT_ESTIMATE_READY', `${serviceType}.${field}=0`);
     const freeLine = free.lineItems.find(item => item.name === lineName);
     assert.equal(freeLine.amountCents, 0, `${serviceType}.${lineName}`);

@@ -24,7 +24,10 @@ export function measuredOutlineVNext(input) {
   for(let i=0;i<last;i++)for(let j=i+1;j<last;j++){
     const a=edges[i],b=edges[j],adjacent=j===i+1||(i===0&&j===last-1);
     const intersects=Math.max(a.minX,b.minX)<=Math.min(a.maxX,b.maxX)&&Math.max(a.minY,b.minY)<=Math.min(a.maxY,b.maxY);
-    if(intersects&&(!adjacent||a.vertical===b.vertical))throw new TypeError('Outline edges cannot overlap, touch nonadjacent edges, or cross.');
+    const collinearOverlap = a.vertical === b.vertical && (a.vertical
+      ? Math.max(a.minY, b.minY) < Math.min(a.maxY, b.maxY)
+      : Math.max(a.minX, b.minX) < Math.min(a.maxX, b.maxX));
+    if(intersects&&(!adjacent||collinearOverlap))throw new TypeError('Outline edges cannot overlap, touch nonadjacent edges, or cross.');
   }
   const area=exactDivide(exactCompare(twiceArea,0)<0?exactMultiply(twiceArea,-1):twiceArea,2);
   if(exactCompare(area,1)<0||exactCompare(area,10000000)>0||exactCompare(perimeter,0.1)<0||exactCompare(perimeter,1000000)>0)throw new TypeError('Derived outline area and perimeter must satisfy the direct measurement bounds.');

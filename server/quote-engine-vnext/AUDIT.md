@@ -1,6 +1,6 @@
 # Quote Engine vNext Audit Notes
 
-Current September 9 pass: [Repairs104–127](AUDIT_REPAIRS_104_127.md), starting at `68476197550ea83c52e23e8d9902526c08c61a77`. That report supersedes older behavior descriptions below for approval binding, membrane selection, scope gates, geometry, fractional mowing rates and range rounding. Historical test results below are not evidence for the new snapshot.
+Current pass: [Repairs 128–138](AUDIT_REPAIRS_128_138.md), frozen start `7dfc86dc212599e4132d48d693b798a567eb2239`. Its explicit zero, whole-dollar customer-range, identity/origin, certainty, and projection contracts supersede conflicting historical candidate descriptions. Earlier counts are historical, not verification of this snapshot.
 
 ## Status and boundary
 
@@ -89,8 +89,7 @@ Additional fail-closed structural safeguards include:
 - Structured diagnostics retain exact missing, invalid, unsupported, and
   cross-field dotted paths for Class 2 maps, repair cubes, debris rows, rule
   maps, business defaults, and tier definitions.
-- Configured integer-cent zero means intentionally free for every money field.
-  Missing, invalid, positive, and zero values remain distinct.
+- Zero is field-specific. Required core zeros need an explicit audited free/included classification; an entire zero quote needs an explicitly free complete offering. Minima, physical quantities, optional add-ons, and disposal retain their supported zero meanings.
 - Range buffering preserves the configured tax-mode minimum semantics:
   `TAX_NONE` has no tax, `TAX_MATERIALS` applies the minimum after materials
   tax, and `TAX_ALL` applies the minimum before tax. The displayed low value
@@ -186,9 +185,7 @@ criteria and approved default values remain release decisions:
 9. Interior preparation, exterior primer, exposed aggregate, and exact flooring
    threshold boundaries need approved pricing or behavior contracts. These
    selected paths fail closed.
-10. Maximum permissible margin remains undecided. The arithmetic validates a
-    finite margin below 100 percent, but that mathematical domain is not an
-    approved product safety limit.
+
 11. First-coat versus additional-coat labor, interior primer requirements, and
     valid wall-height productivity factors remain undecided.
 12. Objective selection criteria remain undecided for plant size, debris,
@@ -201,10 +198,8 @@ criteria and approved default values remain release decisions:
     follow-up. This isolated candidate supplies the envelope but does not wire
     or persist it.
 
-15. The older flat-roof shape requires an `average` key, while the later
-    accuracy ruling requires unknown membrane and layer facts to fail closed.
-    The candidate requires `average` structurally but never consumes it. The
-    owner must decide whether that dormant key remains required or is removed.
+15. Resolved by Repair 113: named membrane maps do not require dormant Average keys. Unknown systems remain review-only.
+
 16. The later VNext directive makes `TAX_MATERIALS` follow each service's
     explicit `taxabilityByCategory` map, while older global prose prohibits tax
     on some categories. The candidate follows the later VNext directive. The

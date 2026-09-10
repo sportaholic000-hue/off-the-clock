@@ -1,3 +1,4 @@
+import {fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -56,6 +57,8 @@ function service(serviceType, pricing, overrides = {}) {
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
+    ...fixtureIdentity(overrides.source || 'MANUAL', overrides.id),
+    knownOfferings: fixtureOfferings(serviceType),
     active: true,
     serviceType,
     service: serviceType,
@@ -101,7 +104,7 @@ function roofService(pricing = {}, overrides = {}) {
 }
 
 function roofInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     roofSizeMethod: 'roof_measured',
     roofSizeInput: 1000,
     existingRoofType: 'asphalt_shingle',
@@ -112,7 +115,7 @@ function roofInputs(overrides = {}) {
     roofComplexity: 'simple',
     serviceScope: 'full',
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function flatService(pricing = {}, overrides = {}) {
@@ -127,7 +130,7 @@ function flatService(pricing = {}, overrides = {}) {
 }
 
 function flatInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     roofSqft: 1000,
     sqftMethod: 'exact',
     membraneType: 'epdm', replacementMembraneType: 'epdm',
@@ -136,7 +139,7 @@ function flatInputs(overrides = {}) {
     serviceScope: 'full',
     buildingType: 'residential',
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function interiorService(pricing = {}, overrides = {}) {
@@ -153,7 +156,7 @@ function interiorService(pricing = {}, overrides = {}) {
 }
 
 function interiorInputs(overrides = {}) {
-  return {
+  const inputs = {
     areaInputMethod: 'wall_sqft',
     wallAreaSqft: 100,
     wallHeight: 'standard', wallScopeUniform: true,
@@ -163,7 +166,7 @@ function interiorInputs(overrides = {}) {
     trimIncluded: false,
     ...(overrides.ceilingsIncluded === true ? { ceilingCoats: overrides.coats ?? 2 } : {}),
     ...overrides
-  };
+  };  return confirmedFixtureInputs(inputs);
 }
 
 function flooringService(pricing = {}, overrides = {}) {
@@ -177,7 +180,7 @@ function flooringService(pricing = {}, overrides = {}) {
 }
 
 function flooringInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     sqft: 300,
     sqftMethod: 'exact',
     newFlooringType: 'vinyl_plank',
@@ -187,7 +190,7 @@ function flooringInputs(overrides = {}) {
     layoutPattern: 'straight',
     stairSteps: 0,
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function fencingService(pricing = {}, overrides = {}) {
@@ -204,7 +207,7 @@ function fencingService(pricing = {}, overrides = {}) {
 }
 
 function fencingInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     linearFeet: 100,
     lfMethod: 'exact',
     fenceType: 'wood',
@@ -212,7 +215,7 @@ function fencingInputs(overrides = {}) {
     gateCount: 0,
     terrainSlope: 'flat',
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function sidingService(pricing = {}, overrides = {}) {
@@ -227,7 +230,7 @@ function sidingService(pricing = {}, overrides = {}) {
 }
 
 function sidingInputs(overrides = {}) {
-  return {
+  const inputs = {
     areaInputMethod: 'sqft',
     sidingAreaSqft: 1000,
     sidingType: 'vinyl',
@@ -236,7 +239,7 @@ function sidingInputs(overrides = {}) {
     trimIncluded: true,
     trimLengthLF: 200,
     ...overrides
-  };
+  };  return confirmedFixtureInputs(inputs);
 }
 
 test('activation validates every configured offering, not only the first map key', () => {
@@ -279,10 +282,10 @@ test('a medium repair cannot quote from a nested map containing only small', () 
     repairHours: { asphalt_shingle: { patch: { small: 2 } } },
     repairMaterialAllowance: { asphalt_shingle: { patch: { small: 5000 } } }
   });
-  const result = run('ROOFING_REPAIR', {
+  const result = run('ROOFING_REPAIR', confirmedFixtureInputs({
     repairType: 'patch', affectedArea: 100, roofType: 'asphalt_shingle',
     pitch: 'low', stories: 1, leakPresent: false
-  }, ownerPricing);
+  }), ownerPricing);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(result.missingOwnerFields.includes('repairHours.asphalt_shingle.patch.medium'), true);
 });
@@ -449,7 +452,7 @@ test('mulch disposal scope follows measured bed preparation scope', () => {
     edgingPerLinearFoot: 50
   }, { feeRules: { ...feeRules, disposal: 'when_scope_selected' } });
   const feeDefaults = { ...defaults, disposalFee: 10000 };
-  const base = { inputMethod: 'sqft', mulchArea: 270, mulchDepth: 3, mulchType: 'brown', edgingNeeded: false };
+  const base = confirmedFixtureInputs({ inputMethod: 'sqft', mulchArea: 270, mulchDepth: 3, mulchType: 'brown', edgingNeeded: false });
   const clean = run('LANDSCAPING_MULCH', { ...base, bedCondition: 'clean' }, ownerPricing, { businessDefaults: feeDefaults });
   const prepared = run('LANDSCAPING_MULCH', { ...base, bedCondition: 'needs_weeding', bedSqft: 270 }, ownerPricing, { businessDefaults: feeDefaults });
   assert.equal(Object.hasOwn(lineMap(clean), 'Disposal'), false);
@@ -599,7 +602,7 @@ test('every custom quantity unit validates its matching input but all calculatio
 
 test('unknown flat-roof facts require inspection and obsolete assumption controls are rejected', () => {
   for (const inputs of [
-    flatInputs({ membraneType: 'unknown' }),
+    flatInputs(confirmedFixtureInputs({ membraneType: 'unknown' })),
     flatInputs({ existingLayers: 'unknown' })
   ]) {
     const result = run('FLAT_ROOF_REPLACEMENT', inputs, flatService());
@@ -643,8 +646,8 @@ test('candidate price-book metadata has specific labels instead of generic raw-k
   }
   const fencing = metadata.find(serviceMetadata => serviceMetadata.serviceType === 'FENCING_INSTALL');
   const fencingFields = Object.fromEntries(fencing.pricingFields.map(field => [field.field, field]));
-  assert.equal(fencingFields.concretePerPost.label, 'Concrete + digging cost per post at your local frost/set depth.');
-  assert.equal(fencingFields.gatePrice.label, "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.");
+  assert.equal(fencingFields.concretePerPost.label, 'Concrete + digging cost per post at your local frost/set depth. — review only');
+  assert.equal(fencingFields.gatePrice.label, "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below. — review only");
 });
 
 test('owner-selected common fees require an explicit owner decision', () => {

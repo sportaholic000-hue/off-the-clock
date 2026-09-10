@@ -40,4 +40,4 @@ export {
   vNextServiceStatus
 } from './priceBook.js';
 
-export { approveVNextValues } from './contracts.js';
+export { approveVNextValues, editVNextService } from './contracts.js';

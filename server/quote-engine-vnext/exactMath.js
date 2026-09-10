@@ -98,10 +98,8 @@ export function exactCompare(left, right) {
 
 export function exactToNumber(value) {
   const exact = exactDecimal(value);
-  const n=Number(exact.numerator),d=Number(exact.denominator);
   let converted;
-  if(Number.isFinite(n)&&Number.isFinite(d)) converted=n/d;
-  else {
+  {
     // Direct rational-to-binary conversion, nearest/ties-even, including subnormals.
     const negative=exact.numerator<0n, numerator=negative?-exact.numerator:exact.numerator, denominator=exact.denominator;
     if(numerator===0n)return 0;

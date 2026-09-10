@@ -1,3 +1,7 @@
+import {exactToNumber as projectExact} from '../server/quote-engine-vnext/exactMath.js';
+import {ENGINE_VERSION as currentEngineVersion} from '../server/quote-engine-vnext/engine.js';
+import {editVNextService} from '../server/quote-engine-vnext/index.js';
+import {fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -76,6 +80,8 @@ function service(serviceType, pricing, overrides = {}) {
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
+    ...fixtureIdentity(overrides.source || 'MANUAL', overrides.id),
+    knownOfferings: fixtureOfferings(serviceType),
     active: true,
     serviceType,
     service: serviceType,
@@ -178,8 +184,7 @@ function oracleRound(value) {
 }
 
 function oracleNumber(value) {
-  const exact=oracleDecimal(value),n=Number(exact.numerator),d=Number(exact.denominator);
-  if(Number.isFinite(n)&&Number.isFinite(d))return n/d;
+  const exact=oracleDecimal(value);
   // Independent decimal long-division projection (production uses binary rounding).
   const scaled=exact.numerator*10n**4096n/exact.denominator;
   return Number(scaled.toString()+'e-4096');
@@ -287,8 +292,11 @@ function interiorService(pricing = {}, overrides = {}) {
   }, overrides);
 }
 
+function includedWallPaintService(pricing={}, overrides={}) {
+  return includedFixture(interiorService(pricing,overrides),{materialPerWallSqftPerCoat:'laborPerWallSqftPerCoat'});
+}
 function interiorInputs(overrides = {}) {
-  return {
+  const inputs = {
     areaInputMethod: 'wall_sqft',
     wallAreaSqft: 100,
     wallHeight: 'standard', wallScopeUniform: true,
@@ -299,6 +307,7 @@ function interiorInputs(overrides = {}) {
     ...(overrides.ceilingsIncluded === true ? { ceilingCoats: overrides.coats ?? 1 } : {}),
     ...overrides
   };
+  return confirmedFixtureInputs(inputs);
 }
 
 function roofService(pricing = {}, overrides = {}) {
@@ -314,7 +323,7 @@ function roofService(pricing = {}, overrides = {}) {
 }
 
 function roofInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     roofSizeMethod: 'roof_measured',
     roofSizeInput: 1000,
     existingRoofType: 'asphalt_shingle',
@@ -325,7 +334,7 @@ function roofInputs(overrides = {}) {
     roofComplexity: 'simple',
     serviceScope: 'full',
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function flooringService(pricing = {}, overrides = {}) {
@@ -341,7 +350,7 @@ function flooringService(pricing = {}, overrides = {}) {
 }
 
 function flooringInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     sqft: 300,
     sqftMethod: 'exact',
     newFlooringType: 'vinyl_plank',
@@ -351,7 +360,7 @@ function flooringInputs(overrides = {}) {
     layoutPattern: 'straight',
     stairSteps: 0,
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function fenceService(pricing = {}, overrides = {}) {
@@ -368,7 +377,7 @@ function fenceService(pricing = {}, overrides = {}) {
 }
 
 function fenceInputs(overrides = {}) {
-  return {
+  const inputs = confirmedFixtureInputs({
     linearFeet: 100,
     lfMethod: 'exact',
     fenceType: 'wood',
@@ -377,7 +386,7 @@ function fenceInputs(overrides = {}) {
     gateWidthTotalLF: 0,
     terrainSlope: 'flat',
     ...overrides
-  };
+  });  return confirmedFixtureInputs(inputs);
 }
 
 function concreteService(pricing = {}, serviceType = 'CONCRETE_DRIVEWAY') {
@@ -391,7 +400,7 @@ function concreteService(pricing = {}, serviceType = 'CONCRETE_DRIVEWAY') {
 }
 
 function concreteInputs(overrides = {}) {
-  return {
+  const inputs = {
     dimensionMethod: 'exact',
     length: 20,
     width: 10,
@@ -402,7 +411,7 @@ function concreteInputs(overrides = {}) {
     accessDifficulty: 'easy',
     baseNeeded: false,
     ...overrides
-  };
+  };  return confirmedFixtureInputs(inputs);
 }
 
 test('repair 1: tax modes use independently calculated bases', () => {
@@ -473,7 +482,7 @@ test('repair 3: minimum floor uses tax attributable to the minimum scenario', ()
   assert.notEqual(result.calculationRecord.options[0].range.minimumCustomerFloorCents, 11500);
 });
 
-test('repair 5: positive totals never round to a zero customer value', () => {
+test('repair 5: positive cent totals remain exact and free complete offerings require classification', () => {
   const expectedRanges = new Map([
     [1, [1, 1, 1]],
     [499, [374, 499, 624]],
@@ -484,7 +493,7 @@ test('repair 5: positive totals never round to a zero customer value', () => {
     [1001, [751, 1001, 1251]]
   ]);
   for (const [price, expectedRange] of expectedRanges) {
-    const ownerPricing = interiorService({
+    const ownerPricing = includedWallPaintService({
       laborPerWallSqftPerCoat: price,
       materialPerWallSqftPerCoat: 0,
       minimumJob: 0
@@ -501,11 +510,11 @@ test('repair 5: positive totals never round to a zero customer value', () => {
   const free = run(
     'INTERIOR_PAINTING',
     interiorInputs({ wallAreaSqft: 1, coats: 1 }),
-    interiorService({
+    freeFixture(interiorService({
       laborPerWallSqftPerCoat: 0,
       materialPerWallSqftPerCoat: 0,
       minimumJob: 0
-    }),
+    })),
     { businessDefaults: { ...defaults, rangeBufferPercent: 25 } }
   );
   assert.equal(free.resultType, 'INSTANT_ESTIMATE_READY');
@@ -612,9 +621,9 @@ test('repair 11: unknown flat-roof membrane or layer count always requires revie
     tearOffPerSqft: { epdm: 200, average: 225 },
     minimumJob: 0
   });
-  const base = { roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm', existingLayers: 1, accessDifficulty: 'easy', serviceScope: 'full', buildingType: 'residential' };
+  const base = confirmedFixtureInputs({ roofSqft: 1000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm', existingLayers: 1, accessDifficulty: 'easy', serviceScope: 'full', buildingType: 'residential' });
   assert.equal(run('FLAT_ROOF_REPLACEMENT', base, ownerPricing).resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(run('FLAT_ROOF_REPLACEMENT', { ...base, membraneType: 'unknown' }, ownerPricing).resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(run('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({ ...base, membraneType: 'unknown' }), ownerPricing).resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(run('FLAT_ROOF_REPLACEMENT', { ...base, existingLayers: 'unknown' }, ownerPricing).resultType, 'ESTIMATE_REQUIRES_REVIEW');
 });
 
@@ -626,7 +635,7 @@ function repairFixture(serviceType) {
       repairHours: { asphalt_shingle: { patch: { small: 1, medium: 2, large: 3 } } },
       repairMaterialAllowance: { asphalt_shingle: { patch: { small: 1000, medium: 2000, large: 3000 } } }
     }),
-    inputs: { repairType: 'patch', affectedArea: 10, roofType: 'asphalt_shingle', pitch: 'low', stories: 1, leakPresent: false },
+    inputs: confirmedFixtureInputs({ repairType: 'patch', affectedArea: 10, roofType: 'asphalt_shingle', pitch: 'low', stories: 1, leakPresent: false }),
     first: 50,
     second: 200,
     laborLine: 'Repair labor'
@@ -638,7 +647,7 @@ function repairFixture(serviceType) {
       patchRepairHours: { epdm: { seam_patch: { small: 1, medium: 2, large: 3 } } },
       patchMaterialAllowance: { epdm: { seam_patch: { small: 1000, medium: 2000, large: 3000 } } }
     }),
-    inputs: { repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: false },
+    inputs: confirmedFixtureInputs({ repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: false }),
     first: 20,
     second: 80,
     laborLine: 'Flat roof repair labor'
@@ -650,7 +659,7 @@ function repairFixture(serviceType) {
       repairHours: { vinyl: { minor: { small: 1, medium: 2, large: 3 } } },
       materialAllowance: { vinyl: { minor: { small: 1000, medium: 2000, large: 3000 } } }
     }),
-    inputs: { sidingType: 'vinyl', damageLevel: 'minor', affectedArea: 10, stories: 1 },
+    inputs: confirmedFixtureInputs({ sidingType: 'vinyl', damageLevel: 'minor', affectedArea: 10, stories: 1 }),
     first: 20,
     second: 80,
     laborLine: 'Siding repair labor'
@@ -729,14 +738,14 @@ test('repair 14: selected gate widths fail closed without an approved width-pric
 
 test('repair 15: corner count is not required and cannot be silently ignored', () => {
   const validInputs = fenceInputs();
-  const validContract = validateCustomerInputs('FENCING_INSTALL', validInputs, fenceService().pricing);
+  const validContract = validateCustomerInputs('FENCING_INSTALL', validInputs, fenceService().pricing, fenceService());
   assert.equal(validContract.ok, true);
 
   const heldForOwnerDecision = run('FENCING_INSTALL', validInputs, fenceService());
   assert.equal(heldForOwnerDecision.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.deepEqual(heldForOwnerDecision.invalidCustomerFields, []);
 
-  const supplied = validateCustomerInputs('FENCING_INSTALL', { ...validInputs, cornerCount: 2 }, fenceService().pricing);
+  const supplied = validateCustomerInputs('FENCING_INSTALL', { ...validInputs, cornerCount: 2 }, fenceService().pricing, fenceService());
   assert.equal(supplied.ok, false);
   assert.equal(supplied.invalidCustomerFields.includes('cornerCount'), true);
 });
@@ -744,17 +753,17 @@ test('repair 15: corner count is not required and cannot be silently ignored', (
 test('repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar', () => {
   const gatelessInputs = fenceInputs({ gateWidthTotalLF: undefined });
   const gatelessMissingPrice = fenceService({ gatePrice: undefined });
-  const gateless = validateOwnerPricing('FENCING_INSTALL', gatelessInputs, gatelessMissingPrice.pricing);
+  const gateless = validateOwnerPricing('FENCING_INSTALL', gatelessInputs, gatelessMissingPrice.pricing, gatelessMissingPrice);
   assert.equal(gateless.missingOwnerFields.includes('gatePrice.wood'), false);
 
-  const zeroWidth = validateCustomerInputs('FENCING_INSTALL', fenceInputs({ gateWidthTotalLF: 0 }), gatelessMissingPrice.pricing);
+  const zeroWidth = validateCustomerInputs('FENCING_INSTALL', fenceInputs({ gateWidthTotalLF: 0 }), gatelessMissingPrice.pricing, gatelessMissingPrice);
   assert.equal(zeroWidth.ok, true);
-  const impossibleWidth = validateCustomerInputs('FENCING_INSTALL', fenceInputs({ gateWidthTotalLF: 4 }), gatelessMissingPrice.pricing);
+  const impossibleWidth = validateCustomerInputs('FENCING_INSTALL', fenceInputs({ gateWidthTotalLF: 4 }), gatelessMissingPrice.pricing, gatelessMissingPrice);
   assert.equal(impossibleWidth.ok, false);
   assert.equal(impossibleWidth.invalidCustomerFields.includes('gateWidthTotalLF'), true);
 
   const selectedInputs = fenceInputs({ gateCount: 1, gateWidthTotalLF: 4 });
-  const selectedMissingPrice = validateOwnerPricing('FENCING_INSTALL', selectedInputs, gatelessMissingPrice.pricing);
+  const selectedMissingPrice = validateOwnerPricing('FENCING_INSTALL', selectedInputs, gatelessMissingPrice.pricing, gatelessMissingPrice);
   assert.equal(selectedMissingPrice.missingOwnerFields.includes('gatePrice.wood'), false);
   assert.equal(selectedMissingPrice.ownerDecisionRequired.some(item => item.kind === 'gate_width_pricing_contract' && item.path === 'gatePrice.wood'), true);
 
@@ -835,7 +844,7 @@ test('repair 19: zero and missing remain distinct for conditional prices', () =>
     patchRepairHours: { epdm: { seam_patch: { small: 1, medium: 2, large: 3 } } },
     patchMaterialAllowance: { epdm: { seam_patch: { small: 1000, medium: 2000, large: 3000 } } }
   });
-  const ponding = run('FLAT_ROOF_REPAIR', { repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: true }, pondingPricing);
+  const ponding = run('FLAT_ROOF_REPAIR', confirmedFixtureInputs({ repairType: 'seam_patch', affectedArea: 10, membraneType: 'epdm', leakPresent: false, pondingWater: true }), pondingPricing);
   assert.equal(ponding.resultType, 'INSTANT_ESTIMATE_READY');
   assert.deepEqual(ponding.options[0].skippedAddons, []);
   assert.equal(lineAmount(ponding, 'Ponding water surcharge'), 0);
@@ -1136,7 +1145,7 @@ test('repair 27: measured quotes expose the exact effective range buffer', () =>
     tearOffPerSqft: { epdm: 200 },
     minimumJob: 0
   });
-  const unknown = run('FLAT_ROOF_REPLACEMENT', { roofSqft: 1000, sqftMethod: 'exact', membraneType: 'unknown', replacementMembraneType: 'epdm', existingLayers: 1, accessDifficulty: 'easy', serviceScope: 'full', buildingType: 'residential' }, flat);
+  const unknown = run('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({ roofSqft: 1000, sqftMethod: 'exact', membraneType: 'unknown', replacementMembraneType: 'epdm', existingLayers: 1, accessDifficulty: 'easy', serviceScope: 'full', buildingType: 'residential' }), flat);
   assert.equal(unknown.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(unknown.rangeBufferUsed, undefined);
   assert.equal(unknown.effectiveRangeBufferPercent, undefined);
@@ -1198,7 +1207,7 @@ test('repair 29: the real price-book preview can calculate an unconfirmed AI dra
   assert.deepEqual(aiDraft.confirmedFields, before);
 });
 
-test('repair 30: configured zero money is intentionally free across disposal and selected scope', () => {
+test('repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero', () => {
   const assertFree = (result, lineName) => {
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', lineName + ': ' + JSON.stringify(result));
     assert.equal(lineAmount(result, lineName), 0, lineName);
@@ -1221,7 +1230,7 @@ test('repair 30: configured zero money is intentionally free across disposal and
     minimumJob: 0,
     disposalPerSqft: 0
   }, { feeRules: { ...feeRules, disposal: 'when_scope_selected' } });
-  const flat = run('FLAT_ROOF_REPLACEMENT', {
+  const flat = run('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({
     roofSqft: 1000,
     sqftMethod: 'exact',
     membraneType: 'epdm', replacementMembraneType: 'epdm',
@@ -1229,7 +1238,7 @@ test('repair 30: configured zero money is intentionally free across disposal and
     accessDifficulty: 'easy',
     serviceScope: 'full',
     buildingType: 'residential'
-  }, flatOwner, { businessDefaults: disposalDefaults });
+  }), flatOwner, { businessDefaults: disposalDefaults });
   assertFree(flat, 'Flat-roof disposal');
   assert.equal(line(flat, 'Disposal'), undefined);
 
@@ -1237,10 +1246,11 @@ test('repair 30: configured zero money is intentionally free across disposal and
     removalPerSqft: { carpet: 0 },
     disposalPerSqft: 0
   }, { feeRules: { ...feeRules, disposal: 'when_scope_selected' } });
-  const flooring = run('FLOORING_INSTALL', flooringInputs({
+  const classifiedFlooring = includedFixture(flooringOwner,{'removalPerSqft.carpet':'laborPerSqft.vinyl_plank'});
+  const flooring = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'carpet',
     removalNeeded: true, removalAreaSqft: 300
-  }), flooringOwner, { businessDefaults: disposalDefaults });
+  })), classifiedFlooring, { businessDefaults: disposalDefaults });
   assertFree(flooring, 'Existing flooring removal');
   assertFree(flooring, 'Flooring disposal');
   assert.equal(line(flooring, 'Disposal'), undefined);
@@ -1295,14 +1305,14 @@ test('repair 30: configured zero money is intentionally free across disposal and
   assertFree(cleanup, 'Debris disposal');
   assertFree(cleanup, 'Additional haul-away');
 
-  const mulch = run('LANDSCAPING_MULCH', {
+  const mulch = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'yards',
     mulchArea: 2,
     mulchType: 'brown',
     bedCondition: 'clean',
     edgingNeeded: true,
     edgeLF: 50
-  }, service('LANDSCAPING_MULCH', {
+  }), service('LANDSCAPING_MULCH', {
     mulchMaterialPerYard: { brown: 5000 },
     mulchInstallLaborPerYard: 3000,
     minimumServiceCharge: 0,
@@ -1320,7 +1330,8 @@ test('repair 30: configured zero money is intentionally free across disposal and
     dripEdgePerLF: 0,
     ridgeCapPerLF: 0
   }));
-  for (const lineName of ['Starter strip', 'Drip edge', 'Ridge cap']) assertFree(itemized, lineName);
+  assert.equal(itemized.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  for (const path of ['starterPerLF','dripEdgePerLF','ridgeCapPerLF']) assert.ok(itemized.missingOwnerFields.includes(path));
 
   const fencePricing = service('FENCING_REPLACEMENT', {
     laborPerLinearFoot: { wood: 1000 },
@@ -1423,7 +1434,7 @@ test('repair 33: conditional customer fields are rejected whenever their selecte
   ]);
   checks.push([
     'flat-roof partial area on full replacement',
-    validateCustomerInputs('FLAT_ROOF_REPLACEMENT', {
+    validateCustomerInputs('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({
       roofSqft: 1000,
       sqftMethod: 'exact',
       membraneType: 'epdm', replacementMembraneType: 'epdm',
@@ -1432,7 +1443,7 @@ test('repair 33: conditional customer fields are rejected whenever their selecte
       serviceScope: 'full',
       buildingType: 'residential',
       partialAreaSqft: 100
-    }, {}),
+    }), {}),
     ['partialAreaSqft']
   ]);
   checks.push([
@@ -1471,19 +1482,19 @@ test('repair 33: conditional customer fields are rejected whenever their selecte
   ]);
   checks.push([
     'mulch depth on direct-yards input',
-    validateCustomerInputs('LANDSCAPING_MULCH', {
+    validateCustomerInputs('LANDSCAPING_MULCH', confirmedFixtureInputs({
       inputMethod: 'yards',
       mulchArea: 3,
       mulchDepth: 3,
       mulchType: 'brown',
       bedCondition: 'clean',
       edgingNeeded: false
-    }, {}),
+    }), {}),
     ['mulchDepth']
   ]);
   checks.push([
     'clean mulch bed preparation and unselected edging',
-    validateCustomerInputs('LANDSCAPING_MULCH', {
+    validateCustomerInputs('LANDSCAPING_MULCH', confirmedFixtureInputs({
       inputMethod: 'yards',
       mulchArea: 3,
       mulchType: 'brown',
@@ -1491,7 +1502,7 @@ test('repair 33: conditional customer fields are rejected whenever their selecte
       bedSqft: 100,
       edgingNeeded: false,
       edgeLF: 20
-    }, {}),
+    }), {}),
     ['bedSqft', 'edgeLF']
   ]);
   checks.push([
@@ -1671,7 +1682,7 @@ test('repair 37: metadata and customer results describe only behavior the candid
   const exterior = metadata.find(item => item.serviceType === 'EXTERIOR_PAINTING');
   const exteriorLabor = exterior.pricingFields.find(item => item.field === 'exteriorLaborPerSqftPerCoat');
   assert.equal(/owner-configured primer coats/i.test(exteriorLabor.help), false);
-  assert.match(exteriorLabor.help, /Poor surfaces remain review-only/);
+  assert.match(exteriorLabor.help, /Every exterior painting request: review only/);
 
   for (const serviceMetadata of metadata) {
     for (const factor of serviceMetadata.class2Fields) {
@@ -1939,7 +1950,7 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     tearOffPerSqft: { epdm: 200, average: 225 },
     minimumJob: 0
   });
-  const flat = run('FLAT_ROOF_REPLACEMENT', {
+  const flat = run('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({
     roofSqft: 2000,
     sqftMethod: 'exact',
     membraneType: 'epdm', replacementMembraneType: 'epdm',
@@ -1948,7 +1959,7 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     serviceScope: 'partial',
     partialPercent: 25,
     buildingType: 'residential'
-  }, flatOwner);
+  }), flatOwner);
   assert.equal(getDerivation(flat, 'selectedFlatRoofAreaSqft').result, 500);
   assert.equal(getDerivation(flat, 'flatRoofTearOffAreaSqft').result, 1000);
   assert.equal(line(flat, 'Tear-off').calculation.quantity, 1000);
@@ -2001,14 +2012,14 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
   close(concreteVolume.result, 200 * (4 / 12) / 27 * 1.1, 'concrete cubic yards');
   close(line(concrete, 'Ready-mix concrete').calculation.quantity, concreteVolume.result, 'concrete line quantity');
 
-  const mulch = run('LANDSCAPING_MULCH', {
+  const mulch = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'sqft',
     mulchArea: 1080,
     mulchDepth: 3,
     mulchType: 'brown',
     bedCondition: 'clean',
     edgingNeeded: false
-  }, service('LANDSCAPING_MULCH', {
+  }), service('LANDSCAPING_MULCH', {
     mulchMaterialPerYard: { brown: 5000 },
     mulchInstallLaborPerYard: 3000,
     minimumServiceCharge: 0
@@ -2030,13 +2041,13 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
   assert.equal(getDerivation(sod, 'sodOrderSqft').result, 1050);
   assert.equal(line(sod, 'Sod material').calculation.quantity, 1050);
 
-  const planting = run('LANDSCAPING_PLANTING', {
+  const planting = run('LANDSCAPING_PLANTING', confirmedFixtureInputs({
     plantsBySize: { small: 1, medium: 1, large: 0 },
     bedCondition: 'clean',
     mulchNeeded: true,
     mulchYards: 2,
     mulchType: 'brown'
-  }, service('LANDSCAPING_PLANTING', {
+  }), service('LANDSCAPING_PLANTING', {
     plantingLaborPerPlant: { small: 1000, medium: 2000, large: 3000 },
     plantMaterialAllowance: { small: 2000, medium: 4000, large: 6000 },
     minimumServiceCharge: 0,
@@ -2183,6 +2194,7 @@ test('repair 47: intrinsic range multiplication and midpoint arithmetic stay wit
 });
 test('repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed', () => {
   const assertReadyCases = (serviceType, ownerPricing, cases, knownUnconsumed = []) => {
+    for(let index=0;index<cases.length;index++)cases[index]=confirmedFixtureInputs(cases[index]);
     const reviewScope=c=>serviceType==='EXTERIOR_PAINTING'||(serviceType==='FLAT_ROOF_REPLACEMENT'&&c.buildingType==='commercial')||(serviceType.startsWith('FLOORING_')&&c.stairSteps>0)||(serviceType.startsWith('CONCRETE_')&&c.demolitionNeeded)||(serviceType==='SIDING_REPLACEMENT'&&c.oldSidingRemoval);
     for(const c of cases.filter(reviewScope)){
       const result=run(serviceType,c,ownerPricing);assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(result));assert.ok(result.inspectionFirst);assert.ok(result.ownerDecisionRequired.length);assert.deepEqual(result.submittedCustomerInputs,c);assert.equal(sanitizeForCustomerVNext(result).lowEstimate,undefined);
@@ -2300,12 +2312,13 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const label = serviceType + ' invalid customer field ' + field;
       assert.equal(review.resultType, 'ESTIMATE_REQUIRES_REVIEW', label + ': ' + JSON.stringify(review));
       assert.equal(
-        [...(review.missingCustomerFields || []), ...(review.invalidCustomerFields || [])].includes(field),
+        [...(review.missingCustomerFields || []), ...(review.invalidCustomerFields || [])].some(path=>path===field||path.startsWith(field+'.')),
         true,
         label
       );
     }
     const validAlternative = (definition, original) => {
+      if (definition.type === 'confirmed_facts') { const next=structuredClone(original); next[Object.keys(next)[0]].status='unknown'; return next; }
       if (definition.type === 'boolean') return !original;
       if (definition.type === 'enum') return definition.values.find(value => value !== original);
       if (definition.type === 'slug') return original === 'audit_alternate' ? 'audit_second' : 'audit_alternate';
@@ -2461,6 +2474,22 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       if (requiresPositive) {
         assert.equal(zeroStatus.status, 'NEEDS PRICING', zeroLabel);
         assert.equal(zeroStatus.ownerDiagnostics.some(item => item.path === path), true, zeroLabel);
+        continue;
+      }
+      // Owner ruling: minima, physical-zero factors, optional add-ons and disposal
+      // retain zero semantics. Indispensable selected rates need classification.
+      const permittedZero = !!class2 || /^(minimumJob|minimumServiceCharge|repairMinimum|disposalPerSquare|disposalPerSqft|disposalPerLF|baggingSurchargePercent|edgingPerLinearFoot|pondingWaterSurcharge|haulAwayFee)$|\.disposalFlat$/.test(path) ||
+        knownUnconsumed.includes(path);
+      if (!permittedZero) {
+        assert.equal(zeroStatus.status,'NEEDS PRICING',zeroLabel);
+        assert.ok(zeroStatus.missingOwnerFields.includes(path),zeroLabel);
+        const sample=consumedPricingSamples.get(path);
+        if(sample){
+          const held=quoteFromVNextPricebook({pricebook:{defaults,services:[zeroed]},serviceType,customerInputs:sample.customerInputs,callerType:'owner',currentMonth:1});
+          assert.equal(held.resultType,'ESTIMATE_REQUIRES_REVIEW',zeroLabel+': '+JSON.stringify(held));
+          assert.ok(held.missingOwnerFields.includes(path),zeroLabel);
+          assert.equal(sanitizeForCustomerVNext(held).lowEstimate,undefined);
+        }
         continue;
       }
       assert.equal(zeroStatus.status, 'QUOTING LIVE', zeroLabel + ': ' + JSON.stringify(zeroStatus));
@@ -2935,7 +2964,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   for (const sidingType of sidingTypes) {
     for (const stories of [1, 2, 3]) {
       for (const affectedArea of [10, 50, 100]) {
-        sidingRepairCases.push({ sidingType, damageLevel: 'minor', affectedArea, stories });
+        sidingRepairCases.push(confirmedFixtureInputs({ sidingType, damageLevel: 'minor', affectedArea, stories }));
       }
     }
   }
@@ -3031,13 +3060,13 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   }
 });
 test('repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge', () => {
-  const ownerPricing = interiorService({
+  const ownerPricing = freeFixture(interiorService({
     laborPerWallSqftPerCoat: 0,
     materialPerWallSqftPerCoat: 0
   }, {
     peakMonths: [1],
     peakSurchargePercent: 25
-  });
+  }));
   const result = run('INTERIOR_PAINTING', interiorInputs(), ownerPricing, { currentMonth: 1 });
   assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
   assert.deepEqual([result.lowEstimate, result.midEstimate, result.highEstimate], [0, 0, 0]);
@@ -3153,7 +3182,7 @@ test('repair 52: activation executes formulas and cannot mark an overflowing ser
 });
 
 test('repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows', () => {
-  const nearLimit = interiorService({
+  const nearLimit = includedWallPaintService({
     laborPerWallSqftPerCoat: Number.MAX_SAFE_INTEGER,
     materialPerWallSqftPerCoat: 0
   });
@@ -3166,7 +3195,7 @@ test('repair 53: displayed ranges fail closed before integer-cent rounding or bu
   const representable = run(
     'INTERIOR_PAINTING',
     interiorInputs({ wallAreaSqft: 1 }),
-    interiorService({
+    includedWallPaintService({
       laborPerWallSqftPerCoat: representableRate,
       materialPerWallSqftPerCoat: 0
     })
@@ -3468,7 +3497,7 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
                     );
                     assert.deepEqual(
                       [result.lowEstimate, result.midEstimate, result.highEstimate],
-                      [expected.range.lowCents / 100, expected.range.midCents / 100, expected.range.highCents / 100],
+                      rangeBufferPercent===0 ? [expected.range.lowCents / 100, expected.range.midCents / 100, expected.range.highCents / 100] : [Math.floor(expected.range.lowCents/100),Math.floor((expected.range.midCents+50)/100),Math.ceil(expected.range.highCents/100)],
                       label + ' displayed range'
                     );
                     caseCount += 1;
@@ -3510,7 +3539,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     tearOffPerSqft: { epdm: 200, average: 225 },
     minimumJob: 0
   }).pricing;
-  const unknownFlat = captureReview(() => calculateServiceVNext('FLAT_ROOF_REPLACEMENT', {
+  const unknownFlat = captureReview(() => calculateServiceVNext('FLAT_ROOF_REPLACEMENT', confirmedFixtureInputs({
     roofSqft: 1000,
     sqftMethod: 'exact',
     membraneType: 'unknown', replacementMembraneType: 'epdm',
@@ -3518,7 +3547,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     accessDifficulty: 'easy',
     serviceScope: 'full',
     buildingType: 'residential'
-  }, flatReplacementPricing));
+  }), flatReplacementPricing));
   assert.equal(unknownFlat.inspectionFirst, true);
   assert.match(unknownFlat.reviewReason, /membrane type/i);
   assert.equal(Object.hasOwn(unknownFlat, 'lineItems'), false);
@@ -3591,7 +3620,8 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
   const undisclosedAddon = captureReview(() => calculateServiceVNext(
     'FLAT_ROOF_REPAIR',
     { ...flatRepair.inputs, pondingWater: true },
-    flatRepair.ownerPricing.pricing
+    flatRepair.ownerPricing.pricing,
+    {ownerPricing:flatRepair.ownerPricing}
   ));
   assert.deepEqual(undisclosedAddon.invalidOwnerFields, ['addonDisclosureContext']);
 
@@ -3612,7 +3642,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
   }, mowingPricing));
   assert.deepEqual(undisclosedMowingAddon.invalidOwnerFields, ['addonDisclosureContext']);
 
-  const gatelessFence = captureReview(() => calculateServiceVNext('FENCING_INSTALL', fenceInputs(), fenceService().pricing));
+  const gatelessFence = captureReview(() => calculateServiceVNext('FENCING_INSTALL', fenceInputs(), fenceService().pricing, {ownerPricing:fenceService()}));
   assert.deepEqual(gatelessFence.ownerDecisionRequired.map(item => item.kind), [
     'post_geometry_contract',
     'mixed_charge_allocation'
@@ -3620,7 +3650,8 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
   const gatedFence = captureReview(() => calculateServiceVNext(
     'FENCING_INSTALL',
     fenceInputs({ gateCount: 1, gateWidthTotalLF: 4 }),
-    fenceService().pricing
+    fenceService().pricing,
+    {ownerPricing:fenceService()}
   ));
   assert.deepEqual(gatedFence.ownerDecisionRequired.map(item => item.kind), [
     'post_geometry_contract',
@@ -3820,7 +3851,7 @@ test('repair 58: cross-field and shaped-structure validators reject every advers
 
   const floorPricing = flooringService().pricing;
   for (const [inputs, field] of [
-    [flooringInputs({ removalNeeded: true, existingFloorType: 'none' }), 'existingFloorType'],
+    [flooringInputs(confirmedFixtureInputs({ removalNeeded: true, existingFloorType: 'none' })), 'existingFloorType'],
     [flooringInputs({ underlaymentSelected: true }), 'underlaymentSelected'],
     [flooringInputs({ subfloorCondition: 'good' }), 'subfloorCondition']
   ]) {
@@ -4009,11 +4040,11 @@ test('repair 60: exported raw boundaries reject unresolved custom classification
 });
 
 test('repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline', () => {
-  const ordinaryOwner = interiorService();
+  const ordinaryOwner = includedWallPaintService();
   assert.equal(vNextServiceStatus(ordinaryOwner, defaults).status, 'QUOTING LIVE');
   assert.equal(vNextPricebookStatuses({ defaults, services: [ordinaryOwner] })[0].status, 'QUOTING LIVE');
 
-  const overheadOwner = interiorService({}, {
+  const overheadOwner = includedWallPaintService({}, {
     feeRules: { ...feeRules, overhead: 'always' }
   });
   const overheadDefaults = { ...defaults, overheadFixed: Number.MAX_SAFE_INTEGER };
@@ -4031,7 +4062,7 @@ test('repair 61: price-book LIVE status executes fees, markup, add-ons, and fina
   assert.equal(overheadQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.equal(overheadQuote.invalidOwnerFields.includes('pricingCalculation'), true);
 
-  const markupOwner = interiorService({
+  const markupOwner = includedWallPaintService({
     laborPerWallSqftPerCoat: 1_000_000_000,
     materialPerWallSqftPerCoat: 0
   });
@@ -4170,10 +4201,10 @@ test('repair 63: zero-charge evidence distinguishes configured free prices from 
     { applied: false, charged: false, noCharge: false }
   );
 
-  const mulchInputs = {
+  const mulchInputs = confirmedFixtureInputs({
     inputMethod: 'yards', mulchArea: 0.01, mulchType: 'brown',
     bedCondition: 'clean', edgingNeeded: false
-  };
+  });
   const subCent = run('LANDSCAPING_MULCH', mulchInputs, service('LANDSCAPING_MULCH', {
     mulchMaterialPerYard: { brown: 1 },
     mulchInstallLaborPerYard: 1,
@@ -4183,11 +4214,11 @@ test('repair 63: zero-charge evidence distinguishes configured free prices from 
   assert.equal(subCent.invalidOwnerFields.includes('mulchMaterialPerYard.brown'), true, JSON.stringify(subCent));
   assert.equal(subCent.invalidOwnerFields.includes('mulchInstallLaborPerYard'), true, JSON.stringify(subCent));
 
-  const intentionallyFree = run('LANDSCAPING_MULCH', mulchInputs, service('LANDSCAPING_MULCH', {
+  const intentionallyFree = run('LANDSCAPING_MULCH', mulchInputs, freeFixture(service('LANDSCAPING_MULCH', {
     mulchMaterialPerYard: { brown: 0 },
     mulchInstallLaborPerYard: 0,
     minimumServiceCharge: 0
-  }));
+  })));
   assert.equal(intentionallyFree.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(intentionallyFree));
   assert.deepEqual([intentionallyFree.lowEstimate, intentionallyFree.midEstimate, intentionallyFree.highEstimate], [0, 0, 0]);
   assert.equal(intentionallyFree.lineItems.every(item => item.noChargeReason === 'configured_zero_price'), true);
@@ -4216,6 +4247,7 @@ test('repair 64: AI-sourced service rules cannot change a customer quote before 
     services: [aiDraft]
   };
   const requiredRuleConfirmations = [
+    'knownOfferings',
     'feeRules',
     'priceBasisByCategory',
     'taxabilityByCategory',
@@ -4246,7 +4278,7 @@ test('repair 64: AI-sourced service rules cannot change a customer quote before 
   assert.equal(lineAmount(preview, 'Wall paint and materials'), 5000);
   assert.equal(lineAmount(preview, 'Overhead'), 12345);
   assert.equal(lineAmount(preview, 'Peak season adjustment'), 5000);
-  assert.deepEqual([preview.lowEstimate, preview.midEstimate, preview.highEstimate], [291.11, 323.45, 355.8]);
+  assert.deepEqual([preview.lowEstimate, preview.midEstimate, preview.highEstimate], [291, 323, 356]);
   assert.deepEqual(aiDraft.confirmedFields, before);
 
   const blockedOwner = quoteFromVNextPricebook({
@@ -4297,8 +4329,9 @@ test('repair 64: AI-sourced service rules cannot change a customer quote before 
     callerType: 'owner',
     currentMonth: 1
   });
-  assert.equal(manualQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(manualQuote));
-  assert.deepEqual(manualQuote.unconfirmedOwnerFields, []);
+  assert.equal(manualQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW', JSON.stringify(manualQuote));
+  assert.ok(manualQuote.missingOwnerFields.includes('source'));
+  assert.ok(manualQuote.invalidOwnerFields.includes('origin'));
 });
 
 test('repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade', () => {
@@ -4356,14 +4389,14 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     expectedPaths: ['laborPerSqft.vinyl_plank', 'roomComplexityMultiplier.medium']
   });
 
-  const concreteOverflow = concreteService({
+  const concreteOverflow = includedFixture(concreteService({
     laborPerSqft: 1_000_000_000,
     demolitionPerSqft: 0,
     basePrepPerSqft: 0,
     wireReinforcementPerSqft: 0,
     rebarReinforcementPerSqft: 0,
     stampedMaterialPerSqft: 0
-  });
+  }),{basePrepPerSqft:'laborPerSqft',wireReinforcementPerSqft:'laborPerSqft',rebarReinforcementPerSqft:'laborPerSqft',stampedMaterialPerSqft:'laborPerSqft'});
   assertBlockedAtStatusAndQuote({
     serviceType: 'CONCRETE_DRIVEWAY',
     ownerPricing: concreteOverflow,
@@ -4392,13 +4425,13 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     expectedPaths: ['cleanupBaseRatePerSqft', 'debrisPricing.heavy.laborMultiplier', 'slopeMultiplier.steep']
   });
 
-  const sidingOverflow = service('SIDING_REPLACEMENT', {
+  const sidingOverflow = includedFixture(service('SIDING_REPLACEMENT', {
     laborPerSqft: { vinyl: 4_000_000_000 },
     materialPerSqft: { vinyl: 0 },
     minimumJob: 0,
     removalPerSqft: 0,
     disposalPerSqft: 0
-  });
+  }),{'materialPerSqft.vinyl':'laborPerSqft.vinyl'});
   assertBlockedAtStatusAndQuote({
     serviceType: 'SIDING_REPLACEMENT',
     ownerPricing: sidingOverflow,
@@ -4409,13 +4442,13 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     expectedPaths: ['laborPerSqft.vinyl', 'storyMultiplier.3']
   });
 
-  const ordinaryConcrete = concreteService({
+  const ordinaryConcrete = includedFixture(concreteService({
     demolitionPerSqft: 0,
     basePrepPerSqft: 0,
     wireReinforcementPerSqft: 0,
     rebarReinforcementPerSqft: 0,
     stampedMaterialPerSqft: 0
-  });
+  }),{basePrepPerSqft:'laborPerSqft',wireReinforcementPerSqft:'laborPerSqft',rebarReinforcementPerSqft:'laborPerSqft',stampedMaterialPerSqft:'laborPerSqft'});
   const ordinaryCleanup = service('LANDSCAPING_CLEANUP', {
     cleanupBaseRatePerSqft: 10,
     debrisPricing: {
@@ -4644,11 +4677,11 @@ test('repair 69: unresolved dual partial measurements and flooring overlays fail
     tearOffPerSqft: { epdm: 200, average: 225 },
     minimumJob: 0
   });
-  const flatBase = {
+  const flatBase = confirmedFixtureInputs({
     roofSqft: 2000, sqftMethod: 'exact', membraneType: 'epdm', replacementMembraneType: 'epdm',
     existingLayers: 2, accessDifficulty: 'easy', serviceScope: 'partial',
     buildingType: 'residential'
-  };
+  });
   const flatBoth = run('FLAT_ROOF_REPLACEMENT', {
     ...flatBase, partialAreaSqft: 500, partialPercent: 25
   }, flatOwner);
@@ -4661,16 +4694,16 @@ test('repair 69: unresolved dual partial measurements and flooring overlays fail
     ...flatBase, partialPercent: 25
   }, flatOwner).resultType, 'INSTANT_ESTIMATE_READY');
 
-  const overlay = run('FLOORING_INSTALL', flooringInputs({
+  const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'tile',
     removalNeeded: false
-  }), flooringService());
+  })), flooringService());
   assert.equal(overlay.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.deepEqual(overlay.ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
-  assert.equal(run('FLOORING_INSTALL', flooringInputs({
+  assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'none',
     removalNeeded: false
-  }), flooringService()).resultType, 'INSTANT_ESTIMATE_READY');
+  })), flooringService()).resultType, 'INSTANT_ESTIMATE_READY');
 });
 
 test('repair 70: malformed business-default containers keep one exact root path across public APIs', () => {
@@ -5049,7 +5082,8 @@ test('repair 78: landscaping fields explicitly sold as labor use labor financial
     peakMonths: [1],
     peakSurchargePercent: 10
   });
-  const mulch = run('LANDSCAPING_MULCH', {
+  const classifiedMulch=includedFixture(mulchOwner,{'mulchMaterialPerYard.brown':'bedPrepLaborPerSqft.needs_weeding',mulchInstallLaborPerYard:'bedPrepLaborPerSqft.needs_weeding'});
+  const mulch = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'yards',
     mulchArea: 1,
     mulchType: 'brown',
@@ -5057,7 +5091,7 @@ test('repair 78: landscaping fields explicitly sold as labor use labor financial
     bedSqft: 100,
     edgingNeeded: true,
     edgeLF: 10
-  }, mulchOwner);
+  }), classifiedMulch);
   assert.equal(mulch.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(mulch));
   assert.deepEqual(
     ['Bed preparation', 'Bed edging'].map(name => ({
@@ -5080,7 +5114,7 @@ test('repair 78: landscaping fields explicitly sold as labor use labor financial
     bedCondition: 'overgrown',
     bedSqft: 50,
     mulchNeeded: false
-  }, service('LANDSCAPING_PLANTING', {
+  }, includedFixture(service('LANDSCAPING_PLANTING', {
     plantingLaborPerPlant: { small: 1000, medium: 2000, large: 3000 },
     plantMaterialAllowance: { small: 0, medium: 0, large: 0 },
     minimumServiceCharge: 0,
@@ -5090,7 +5124,7 @@ test('repair 78: landscaping fields explicitly sold as labor use labor financial
   }, {
     peakMonths: [1],
     peakSurchargePercent: 10
-  }));
+  }),{'plantMaterialAllowance.small':'plantingLaborPerPlant.small'}));
   assert.equal(planting.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(planting));
   assert.equal(line(planting, 'Bed preparation').category, 'labor');
   assert.equal(line(planting, 'Peak season adjustment').calculation.basisAmountCents, 6000);
@@ -5964,13 +5998,13 @@ test('repair 93: exact decimal half-cents round correctly without an epsilon acr
     minimumServiceCharge: 0
   });
 
-  const measuredQuote = run('LANDSCAPING_MULCH', {
+  const measuredQuote = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'yards',
     mulchArea: 1.005,
     mulchType: 'brown',
     bedCondition: 'clean',
     edgingNeeded: false
-  }, ownerPricing);
+  }), ownerPricing);
   assert.equal(measuredQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(measuredQuote));
   assert.equal(lineAmount(measuredQuote, 'Mulch material'), 101);
   assert.equal(lineAmount(measuredQuote, 'Mulch installation labor'), 101);
@@ -5980,14 +6014,14 @@ test('repair 93: exact decimal half-cents round correctly without an epsilon acr
     { numerator: '201', denominator: '2' }
   );
 
-  const derivedQuote = run('LANDSCAPING_MULCH', {
+  const derivedQuote = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'sqft',
     mulchArea: 325.62,
     mulchDepth: 1,
     mulchType: 'brown',
     bedCondition: 'clean',
     edgingNeeded: false
-  }, ownerPricing);
+  }), ownerPricing);
   assert.equal(derivedQuote.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(derivedQuote));
   assert.equal(lineAmount(derivedQuote, 'Mulch material'), 101);
   assert.equal(lineAmount(derivedQuote, 'Mulch installation labor'), 101);
@@ -5997,20 +6031,20 @@ test('repair 93: exact decimal half-cents round correctly without an epsilon acr
   );
   for (const item of scenario(derivedQuote).lineItems) assertLineReproducible(item);
 
-  const belowHalf = run('LANDSCAPING_MULCH', {
+  const belowHalf = run('LANDSCAPING_MULCH', confirmedFixtureInputs({
     inputMethod: 'yards',
     mulchArea: 1.0049999999999997,
     mulchType: 'brown',
     bedCondition: 'clean',
     edgingNeeded: false
-  }, ownerPricing);
+  }), ownerPricing);
   assert.equal(belowHalf.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(belowHalf));
   assert.equal(lineAmount(belowHalf, 'Mulch material'), 100, 'a true value below half a cent must not be epsilon-rounded up');
   assert.equal(lineAmount(belowHalf, 'Mulch installation labor'), 100);
 });
 
 test('repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding', () => {
-  const pricedInterior = interiorService({
+  const pricedInterior = includedWallPaintService({
     laborPerWallSqftPerCoat: 100,
     materialPerWallSqftPerCoat: 0
   }, {
@@ -6044,7 +6078,7 @@ test('repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-
     wallHeight: 'standard', wallScopeUniform: true,
     ceilingsIncluded: false,
     trimIncluded: false
-  }), interiorService({
+  }), includedWallPaintService({
     laborPerWallSqftPerCoat: 100,
     materialPerWallSqftPerCoat: 0
   }), {
@@ -6052,7 +6086,7 @@ test('repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-
   });
   assert.deepEqual(
     { low: rangeQuote.lowEstimate, mid: rangeQuote.midEstimate, high: rangeQuote.highEstimate },
-    { low: 1, mid: 1, high: 1.01 }
+    { low: 1, mid: 1, high: 2 }
   );
 
   const mowingQuote = run('LANDSCAPING_MOWING', {
@@ -6343,14 +6377,14 @@ test('repair 99: the exported scenario materializer never returns an unvalidated
 });
 
 test('repair 100: exact concrete dimensions obey the same practical area bound as direct area input', () => {
-  const owner = concreteService({
+  const owner = includedFixture(concreteService({
     demolitionPerSqft: 0,
     basePrepPerSqft: 0,
     wireReinforcementPerSqft: 0,
     rebarReinforcementPerSqft: 0,
     stampedMaterialPerSqft: 0,
     disposalPerSqft: 0
-  });
+  }),{basePrepPerSqft:'laborPerSqft',wireReinforcementPerSqft:'laborPerSqft',rebarReinforcementPerSqft:'laborPerSqft',stampedMaterialPerSqft:'laborPerSqft'});
   const atLimitInputs = concreteInputs({ length: 10_000, width: 1_000 });
   const atLimit = run('CONCRETE_DRIVEWAY', atLimitInputs, owner);
   assert.equal(atLimit.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(atLimit));
@@ -6574,7 +6608,7 @@ function auditInspect(result) {
 function auditRun(c,p,options={}) {return auditInspect(run(p.serviceType,c,p,options));}
 function auditApprove(p,fields=aiConfirmationFieldsVNext(p,p.pricing),operationId='fixture-approval-1'){return approveVNextValues(p,{fields,ownerId:'internal-fixture-owner',operationId,approvedAt:'2026-09-09T12:00:00.000Z'});}
 const auditFlatP=()=>service('FLAT_ROOF_REPLACEMENT',{laborPerSqft:{epdm:500,tpo:600},membraneCostPerSqft:{epdm:700,tpo:800},tearOffPerSqft:{epdm:200,tpo:300},minimumJob:0,insulationPerSqft:250});
-const auditFlatC=()=>({roofSqft:1000,sqftMethod:'exact',membraneType:'epdm',replacementMembraneType:'tpo',existingLayers:1,accessDifficulty:'easy',serviceScope:'full',buildingType:'residential'});
+const auditFlatC=()=>(confirmedFixtureInputs({roofSqft:1000,sqftMethod:'exact',membraneType:'epdm',replacementMembraneType:'tpo',existingLayers:1,accessDifficulty:'easy',serviceScope:'full',buildingType:'residential'}));
 const auditMowP=()=>service('LANDSCAPING_MOWING',{mowingBaseRatePerSqft:1,minimumServiceCharge:0,frequencyMultipliers:{weekly:1,biweekly:1,monthly:1,one_time:1},overgrowthMultipliers:{maintained:1,overgrown:1,severe:1}});
 const auditMowC=()=>({yardSqft:10000,sqftMethod:'exact',serviceFrequency:'weekly',grassCondition:'maintained',bagClippings:false,edgingIncluded:false});
 const auditSodP=()=>service('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:100,minimumServiceCharge:0});
@@ -6604,7 +6638,7 @@ test('repair 106: included and explicitly exclusive itemized accessories charge 
   const metadata=getVNextPriceBookMetadata().find(x=>x.serviceType==='ROOFING_REPLACEMENT');assert.ok(JSON.stringify(metadata).includes('EXCLUDE'));
 });
 test('repair 107: flat roof existing membrane selects removal and explicit replacement selects installation',()=>{
-  for(const [oldType,newType,expected] of [['epdm','tpo',[600000,800000,200000]],['tpo','epdm',[500000,700000,300000]],['epdm','epdm',[500000,700000,200000]]]){const r=auditRun({...auditFlatC(),membraneType:oldType,replacementMembraneType:newType},auditFlatP());assert.deepEqual(['Flat roof labor','Membrane','Tear-off'].map(n=>lineAmount(r,n)),expected);}
+  for(const [oldType,newType,expected] of [['epdm','tpo',[600000,800000,200000]],['tpo','epdm',[500000,700000,300000]],['epdm','epdm',[500000,700000,200000]]]){const r=auditRun(confirmedFixtureInputs({...auditFlatC(),membraneType:oldType,replacementMembraneType:newType}),auditFlatP());assert.deepEqual(['Flat roof labor','Membrane','Tear-off'].map(n=>lineAmount(r,n)),expected);}
   for(const field of ['membraneType','replacementMembraneType'])for(const value of [undefined,'unknown','average'])assert.equal(auditRun({...auditFlatC(),[field]:value},auditFlatP()).resultType,auditReview);
 });
 test('repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris',()=>{
@@ -6631,17 +6665,17 @@ test('repair 111: decimal flooring equality gate uses exact division and adjacen
 });
 test('repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates',()=>{
  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR'])for(const slug of ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average','named_patch']){
-   const flat=type==='FLAT_ROOF_REPAIR',p=service(type,{laborHourlyRate:10000,repairMinimum:0,[flat?'patchRepairHours':'repairHours']:{epdm:{[slug]:{small:1,medium:1,large:1}}},[flat?'patchMaterialAllowance':'repairMaterialAllowance']:{epdm:{[slug]:{small:100,medium:100,large:100}}}}),c={repairType:slug,affectedArea:1,leakPresent:true,...(flat?{membraneType:'epdm',pondingWater:false}:{roofType:'epdm',pitch:'low',stories:1})};
-   assert.equal(auditRun(c,p).resultType,auditReview);const identified=auditRun({...c,leakSourceIdentified:true},p);assert.equal(identified.resultType,slug==='named_patch'?auditReady:auditReview);
+   const flat=type==='FLAT_ROOF_REPAIR',p=service(type,{laborHourlyRate:10000,repairMinimum:0,[flat?'patchRepairHours':'repairHours']:{epdm:{[slug]:{small:1,medium:1,large:1}}},[flat?'patchMaterialAllowance':'repairMaterialAllowance']:{epdm:{[slug]:{small:100,medium:100,large:100}}}}),c={repairType:slug,affectedArea:1,leakPresent:true,...(flat?confirmedFixtureInputs({membraneType:'epdm',pondingWater:false}):confirmedFixtureInputs({roofType:'epdm',pitch:'low',stories:1}))};
+   assert.equal(auditRun(c,p).resultType,auditReview);const identified=auditRun(confirmedFixtureInputs({...c,leakSourceIdentified:true}),p);assert.equal(identified.resultType,slug==='named_patch'?auditReady:auditReview);
  }
 });
 test('repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back',()=>{
- assert.equal(vNextServiceStatus(auditFlatP(),defaults).status,'QUOTING LIVE');assert.equal(auditRun(auditFlatC(),auditFlatP()).resultType,auditReady);assert.equal(auditRun({...auditFlatC(),membraneType:'unknown'},auditFlatP()).resultType,auditReview);
+ assert.equal(vNextServiceStatus(auditFlatP(),defaults).status,'QUOTING LIVE');assert.equal(auditRun(auditFlatC(),auditFlatP()).resultType,auditReady);assert.equal(auditRun(confirmedFixtureInputs({...auditFlatC(),membraneType:'unknown'}),auditFlatP()).resultType,auditReview);
  for(const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft']){
    const p=auditFlatP();p.pricing[field].average=777;
    assert.equal(vNextServiceStatus(p,defaults).status,'QUOTING LIVE','A dormant '+field+'.average must not require averages in another map');
    const result=auditRun(auditFlatC(),p);assert.equal(result.resultType,auditReady);assert.equal(scenario(result).tax.finalTotalCents,1600000); // 1000 sqft: TPO labor600 + TPO material800 + EPDM tear-off200 cents/sqft.
-   assert.equal(auditRun({...auditFlatC(),membraneType:'average'},p).resultType,auditReview);
+   assert.equal(auditRun(confirmedFixtureInputs({...auditFlatC(),membraneType:'average'}),p).resultType,auditReview);
    delete p.pricing.membraneCostPerSqft.tpo;
    const missing=auditRun(auditFlatC(),p);assert.equal(missing.resultType,auditReview);assert.ok(missing.missingOwnerFields.includes('membraneCostPerSqft.tpo'));
  }
@@ -6670,13 +6704,13 @@ test('repair 118: smallest finite factors and their products remain exact while 
  const overflow=auditMowP();overflow.pricing.frequencyMultipliers.weekly=1e308;overflow.pricing.overgrowthMultipliers.maintained=1e308;assert.ok(validatePricingStructuresDetailed(overflow.serviceType,overflow.pricing).some(x=>x.path==='frequencyMultipliers.weekly'));
 });
 test('repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries',()=>{
- for(const buffer of [0,10,25])for(const cents of [999,1000,1001,1499,1500,1501,1999,2000,2001]){const r=auditRun(interiorInputs({wallAreaSqft:1}),interiorService({laborPerWallSqftPerCoat:cents,materialPerWallSqftPerCoat:0}),{businessDefaults:{...defaults,rangeBufferPercent:buffer}});const range=r.calculationRecord.options[0].range;assert.deepEqual([range.lowCents,range.midCents,range.highCents],[Math.floor((cents*(100-buffer)+50)/100),cents,Math.floor((cents*(100+buffer)+50)/100)]);}
+ for(const buffer of [0,10,25])for(const cents of [999,1000,1001,1499,1500,1501,1999,2000,2001]){const r=auditRun(interiorInputs({wallAreaSqft:1}),includedWallPaintService({laborPerWallSqftPerCoat:cents,materialPerWallSqftPerCoat:0}),{businessDefaults:{...defaults,rangeBufferPercent:buffer}});const range=r.calculationRecord.options[0].range;assert.deepEqual([range.lowCents,range.midCents,range.highCents],[Math.floor((cents*(100-buffer)+50)/100),cents,Math.floor((cents*(100+buffer)+50)/100)]);}
 });
 test('repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists',()=>{
  for(const count of [0,1,2]){const r=auditRun(flooringInputs({stairSteps:count}),flooringService());assert.equal(r.resultType,count===0?auditReady:auditReview);if(count)assert.ok(r.inspectionFirst);}
 });
 test('repair 121: flooring removal and disposal use only independently measured removal area',()=>{
- const p=flooringService({removalPerSqft:{vinyl:100},disposalPerSqft:50}),c=flooringInputs({removalNeeded:true,existingFloorType:'vinyl'});assert.equal(auditRun(c,p).resultType,auditReview);
+ const p=flooringService({removalPerSqft:{vinyl:100},disposalPerSqft:50}),c=flooringInputs(confirmedFixtureInputs({removalNeeded:true,existingFloorType:'vinyl'}));assert.equal(auditRun(c,p).resultType,auditReview);
  for(const area of [0.999,1,1.001,100,999999.999,1000000,1000000.001]){const r=auditRun({...c,removalAreaSqft:area},p);assert.equal(r.resultType,area>=1&&area<=1000000?auditReady:auditReview);if(r.resultType===auditReady){assert.equal(lineAmount(r,'Existing flooring removal'),oracleRound(oracleMultiply(oracleDecimal(area),100)));assert.equal(lineAmount(r,'Flooring disposal'),oracleRound(oracleMultiply(oracleDecimal(area),50)));assert.equal(lineAmount(r,'Flooring materials'),162000);}}
  assert.equal(auditRun(flooringInputs({removalAreaSqft:100}),p).resultType,auditReview);
 });
@@ -6716,4 +6750,353 @@ test('repair 126: wall uniformity is explicit and ceiling coats are independentl
 });
 test('repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract',()=>{
  const p=service('EXTERIOR_PAINTING',{exteriorLaborPerSqftPerCoat:100,materialPerSqftPerCoat:50,laborHourlyRate:10000,minimumJob:0});for(const condition of ['good','fair','poor']){const r=auditRun({areaInputMethod:'wall_sqft',exteriorAreaSqft:100,stories:1,surfaceCondition:condition,coats:2},p);assert.equal(r.resultType,auditReview);assert.ok(r.inspectionFirst);}assert.equal(auditRun(interiorInputs(),interiorService()).resultType,auditReady);
+});
+
+function currentInspect(result) {
+  auditInspect(result);
+  assert.equal(result.engineVersion, currentEngineVersion);
+  assert.deepEqual(structuredClone(result), result);
+  const customer = sanitizeForCustomerVNext(result);
+  if (result.resultType === auditReady) {
+    assert.equal(result.calculationRecord.serviceId, result.serviceId);
+    assert.equal(result.calculationRecord.engineVersion, currentEngineVersion);
+    for (const option of result.options) {
+      assert.equal(option.calculationRecord.engineVersion, currentEngineVersion);
+      assert.equal(option.calculationRecord.serviceId, result.serviceId);
+      const r=option.calculationRecord.range;
+      const exact=r.bufferPercent===0 && r.source==='business_range_buffer' && r.lowCents===r.highCents;
+      assert.deepEqual([option.lowEstimate,option.midEstimate,option.highEstimate], exact
+        ? [r.lowCents/100,r.midCents/100,r.highCents/100]
+        : [Number(BigInt(r.lowCents)/100n),Number((BigInt(r.midCents)+50n)/100n),Number((BigInt(r.highCents)+99n)/100n)]);
+      assert.ok(option.lowEstimate*100 <= r.lowCents);
+      assert.ok(option.highEstimate*100 >= r.highCents);
+    }
+    assert.equal(/ownerId|serviceId|engineVersion|approvedValues|knownOfferings|confirmedFacts|ratePath|rateCents|markup|margin/i.test(JSON.stringify(customer)),false);
+  } else assert.deepEqual(Object.keys(customer).sort(),['customerMessage','quoteId','resultType']);
+  return result;
+}
+function currentRun(c,p,options={}) {
+  return currentInspect(generateQuoteVNext({serviceType:p.serviceType,customerInputs:c,ownerPricing:p,businessDefaults:defaults,callerType:'owner',currentMonth:1,...options}));
+}
+function currentRepairFixture(type) {
+  const flat=type==='FLAT_ROOF_REPAIR',siding=type==='SIDING_REPAIR';
+  const p=service(type,siding
+    ? {laborHourlyRate:10000,repairMinimum:0,repairHours:{vinyl:{minor:{small:2,medium:4,large:8}}},materialAllowance:{vinyl:{minor:{small:4000,medium:8000,large:16000}}}}
+    : flat ? {laborHourlyRate:10000,repairMinimum:0,patchRepairHours:{epdm:{seam_patch:{small:2,medium:4,large:8}}},patchMaterialAllowance:{epdm:{seam_patch:{small:4000,medium:8000,large:16000}}}}
+    : {laborHourlyRate:10000,repairMinimum:0,repairHours:{asphalt_shingle:{shingle_patch:{small:2,medium:4,large:8}}},repairMaterialAllowance:{asphalt_shingle:{shingle_patch:{small:4000,medium:8000,large:16000}}}});
+  const c=confirmedFixtureInputs(siding ? confirmedFixtureInputs({sidingType:'vinyl',damageLevel:'minor',affectedArea:10,stories:1})
+    : flat ? confirmedFixtureInputs({membraneType:'epdm',repairType:'seam_patch',affectedArea:10,leakPresent:false,pondingWater:false})
+    : confirmedFixtureInputs({roofType:'asphalt_shingle',repairType:'shingle_patch',affectedArea:25,pitch:'low',stories:1,leakPresent:false}));
+  return {p,c};
+}
+test('repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers',()=>{
+  const c=interiorInputs(),p=interiorService();
+  assert.equal(scenario(currentRun(c,p)).finalTotalCents,15000);
+  for(const field of ['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat']){
+    for(const value of [-1,0,1]){
+      const changed=structuredClone(p);changed.pricing[field]=value;
+      const r=currentRun(c,changed);
+      assert.equal(r.resultType,value>0?auditReady:auditReview);
+      if(value===0)assert.ok(r.missingOwnerFields.includes(field));
+    }
+  }
+  const tampered=currentRun(c,p);tampered.calculationRecord.ownerConfiguration.pricing.laborPerWallSqftPerCoat=0;
+  assert.equal(sanitizeForCustomerVNext(tampered).resultType,auditReview);
+  const zero=interiorService({laborPerWallSqftPerCoat:0,materialPerWallSqftPerCoat:0});
+  assert.equal(currentRun(c,zero).resultType,auditReview);
+  const free=currentRun(c,freeFixture(zero));
+  assert.equal(scenario(free).finalTotalCents,0);
+  assert.deepEqual([free.lowEstimate,free.midEstimate,free.highEstimate],[0,0,0]);
+  assert.equal(currentRun(c,freeFixture(p)).resultType,auditReview);
+  const included=freeFixture(interiorService({materialPerWallSqftPerCoat:0}),{freeCompleteService:false,includedPrices:{materialPerWallSqftPerCoat:'laborPerWallSqftPerCoat'}});
+  assert.equal(scenario(currentRun(c,included)).finalTotalCents,10000);
+  const wrong=structuredClone(included);wrong.zeroPricePolicy.includedPrices.materialPerWallSqftPerCoat='minimumJob';
+  assert.equal(currentRun(c,wrong).resultType,auditReview);
+  const roof=roofService();roof.pricing.laborPerSquare.asphalt_shingle=0;
+  assert.equal(currentRun(roofInputs(),roof).resultType,auditReview);
+  const repair=currentRepairFixture('ROOFING_REPAIR');
+  assert.equal(scenario(currentRun(repair.c,repair.p)).finalTotalCents,24000);
+  repair.p.pricing.repairMaterialAllowance.asphalt_shingle.shingle_patch.small=0;
+  assert.equal(currentRun(repair.c,repair.p).resultType,auditReview);
+  const tiers=interiorService({}, {tiers:[{name:'Good',overrides:{}},{name:'Zero',overrides:{laborPerWallSqftPerCoat:0}}]});
+  const r=currentRun(c,tiers);assert.equal(r.resultType,auditReady);assert.deepEqual(r.options.map(o=>o.tierName),['Good']);assert.equal(r.failedTierDiagnostics[0].tierName,'Zero');
+  const freeTier=interiorService({}, {tiers:[{name:'Good',overrides:{}},{name:'Free',overrides:{laborPerWallSqftPerCoat:0,materialPerWallSqftPerCoat:0,ceilingLaborPerSqftPerCoat:0,ceilingMaterialPerSqftPerCoat:0,trimLaborPerLF:0,trimMaterialPerLF:0}}]});
+  assert.deepEqual(currentRun(c,freeTier).options.map(o=>o.tierName),['Good']);
+  const designated=freeFixture(freeTier,{freeCompleteService:false,freeTiers:['Free']});
+  for(const tiers of [{},null,'Free']) {const malformed=structuredClone(designated);malformed.tiers=tiers;assert.equal(currentRun(c,malformed).resultType,auditReview);}
+  for(const field of ['serviceId','ownerId','operationId','approvedAt']) {const malformed=structuredClone(designated);malformed.zeroPricePolicy[field]=undefined;assert.equal(currentRun(c,malformed).resultType,auditReview);}
+  const offers=currentRun(c,designated);
+  assert.deepEqual(offers.options.map(o=>[o.tierName,o.calculationRecord.scenarios.mid.finalTotalCents]),[['Good',15000],['Free',0]]);
+  assert.equal(vNextServiceStatus(designated,defaults).status,'QUOTING LIVE');
+  assert.deepEqual(vNextServiceStatus(designated,defaults).validTierNames,['Good','Free']);
+  const aiOffering=service('INTERIOR_PAINTING',freeTier.pricing,{source:'AI_SUGGESTED',tiers:[{name:'Good',overrides:{laborPerWallSqftPerCoat:101}},freeTier.tiers[1]]});
+  const approvedOffering=auditApprove(freeFixture(aiOffering,{freeCompleteService:false,freeTiers:['Free']}));
+  const aiQuote=currentRun(c,approvedOffering);
+  assert.deepEqual(aiQuote.options.map(o=>[o.tierName,o.calculationRecord.scenarios.mid.finalTotalCents]),[['Good',15100],['Free',0]]);
+  const aiStatus=vNextServiceStatus(approvedOffering,defaults);
+  assert.deepEqual(aiStatus.validTierNames,['Good','Free'],JSON.stringify({aiQuote,aiStatus}));
+  const staleOffering=structuredClone(approvedOffering);staleOffering.tiers[0].overrides.laborPerWallSqftPerCoat=102;
+  assert.equal(currentRun(c,staleOffering).resultType,auditReview);
+  assert.equal(vNextServiceStatus(staleOffering,defaults).status,'NEEDS PRICING');
+
+  const mow=auditMowP();mow.pricing.baggingSurchargePercent=0;
+  assert.equal(currentRun({...auditMowC(),bagClippings:true},mow).resultType,auditReady);
+
+  // Activation must exercise each consumed preparation branch, including the
+  // lower-priced needs_weeding branch that a maximum-only probe would miss.
+  const planting=service('LANDSCAPING_PLANTING',{
+    plantingLaborPerPlant:{small:1000,medium:2000,large:3000},
+    plantMaterialAllowance:{small:2000,medium:4000,large:6000},
+    minimumServiceCharge:0,bedPrepLaborPerSqft:{needs_weeding:20,overgrown:40},
+    mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:3000
+  });
+  const selected={plantsBySize:{small:1,medium:0,large:0},bedCondition:'needs_weeding',bedSqft:10,mulchNeeded:false};
+  const clean={plantsBySize:{small:1,medium:0,large:0},bedCondition:'clean',mulchNeeded:false};
+  const evidence=[];
+  for(const value of [-1,0,1]){
+    const changed=structuredClone(planting);changed.pricing.bedPrepLaborPerSqft.needs_weeding=value;
+    const quote=currentRun(selected,changed),status=vNextServiceStatus(changed,defaults);
+    evidence.push({value,quote,status});
+    assert.equal(quote.resultType,value>0?auditReady:auditReview);
+    if(value===0)assert.ok(quote.missingOwnerFields.includes('bedPrepLaborPerSqft.needs_weeding'));
+    if(value===1)assert.equal(scenario(quote).finalTotalCents,3010); // 1000 + 2000 + 10 cents.
+    if(value>=0)assert.equal(scenario(currentRun(clean,changed)).finalTotalCents,3000);
+  }
+  for(const {value,status} of evidence){
+    assert.equal(status.status,value>0?'QUOTING LIVE':'NEEDS PRICING',JSON.stringify(evidence));
+    if(value===0)assert.ok(status.missingOwnerFields.includes('bedPrepLaborPerSqft.needs_weeding'));
+  }
+});
+test('repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity',()=>{
+  const p=interiorService({}, {id:'30b0b04f-f459-4e8e-8a1f-aa0ce9310de4'}),c=interiorInputs();
+  const request={pricebook:{services:[p],defaults},serviceType:p.serviceType,customerInputs:c,currentMonth:1,callerType:'owner'};
+  assert.equal(vNextServiceStatus(p,defaults).status,'QUOTING LIVE');
+  for(const r of [previewFromVNextPricebook(request),quoteFromVNextPricebook(request)])assert.equal(currentInspect(r).serviceId,p.id);
+  for(const id of [undefined,'bad-id']){const bad=structuredClone(p);if(id===undefined)delete bad.id;else bad.id=id;const r=currentRun(c,bad);assert.equal(r.resultType,auditReview);assert.ok([...r.invalidOwnerFields,...r.missingOwnerFields].includes('id'));}
+  const missing={...c};delete missing.wallAreaSqft;
+  const internal=currentRun(missing,p);
+  const lead=buildInternalLeadVNext({request:{serviceType:p.serviceType,customerInputs:missing,ownerPricing:p},internalResult:internal});
+  assert.equal(lead.serviceId,p.id);assert.equal(lead.internalReviewResult.serviceId,p.id);
+  const duplicate=quoteFromVNextPricebook({...request,pricebook:{services:[p,interiorService()],defaults}});
+  assert.equal(currentInspect(duplicate).resultType,auditReview);assert.ok(duplicate.ownerDiagnostics.some(d=>d.kind==='duplicate_service'));
+});
+test('repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying',()=>{
+  const c=interiorInputs(),p=auditApprove(interiorService({}, {source:'AI_SUGGESTED'}));
+  assert.equal(currentRun(c,p).resultType,auditReady);
+  for(const key of ['source','origin','confirmedFields','approvedValues']){
+    const bad=structuredClone(p);delete bad[key];assert.equal(currentRun(c,bad).resultType,auditReview);
+  }
+  const all=structuredClone(p);for(const key of ['source','origin','confirmedFields','approvedValues'])delete all[key];
+  assert.equal(currentRun(c,all).resultType,auditReview);
+  const copied=interiorService({}, {source:'AI_SUGGESTED'});copied.approvedValues=structuredClone(p.approvedValues);copied.confirmedFields=structuredClone(p.confirmedFields);
+  assert.equal(currentRun(c,copied).resultType,auditReview);
+  for(const key of ['id','source','origin','confirmedFields','approvedValues'])assert.throws(()=>editVNextService(p,{[key]:p[key]}),/cannot change/);
+  let getterCalls=0;const hostile={};Object.defineProperty(hostile,'pricing',{enumerable:true,get(){getterCalls++;return p.pricing;}});
+  assert.throws(()=>editVNextService(p,hostile));assert.equal(getterCalls,0);
+  const edit=editVNextService(p,{service:'Owner edited label'});assert.equal(currentRun(c,edit).resultType,auditReady);
+  const manual=interiorService();assert.equal(currentRun(c,manual).resultType,auditReady);
+  const convert=structuredClone(p);convert.source='MANUAL';delete convert.approvedValues;delete convert.confirmedFields;
+  assert.equal(currentRun(c,convert).resultType,auditReview);
+  for(const key of ['value','serviceId','ownerId','operationId','approvedAt']){
+    const bad=structuredClone(p);const a=bad.approvedValues.laborPerWallSqftPerCoat;
+    a[key]=key==='value'?101:key==='approvedAt'?'invalid':key==='operationId'?'':'different';
+    assert.equal(currentRun(c,bad).resultType,auditReview);
+  }
+  assert.throws(()=>approveVNextValues(p,{fields:['minimumJob'],ownerId:'another-owner',operationId:'x',approvedAt:'2026-09-09T12:00:00.000Z'}));
+});
+test('repair 131: price-map aliases require affirmative registered offering facts across materials and repairs',()=>{
+  const cases=[
+    {p:roofService(),c:roofInputs(),fields:{existingRoofType:['tearOffPerSquare'],replacementRoofType:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']}},
+    {p:auditFlatP(),c:confirmedFixtureInputs(auditFlatC()),fields:{membraneType:['tearOffPerSqft'],replacementMembraneType:['laborPerSqft','membraneCostPerSqft']}}
+  ];
+  for(const {p,c,fields} of cases){
+    assert.equal(currentRun(c,p).resultType,auditReady);
+    for(const [field,maps] of Object.entries(fields)){
+      const tampered=currentRun(c,p);
+      tampered.submittedCustomerInputs.confirmedFacts[field].status='unknown';
+      for(const option of tampered.options)option.calculationRecord.normalizedCustomerInputs.confirmedFacts[field].status='unknown';
+      tampered.calculationRecord.options=structuredClone(tampered.options.map(option=>option.calculationRecord));
+      assert.equal(sanitizeForCustomerVNext(tampered).resultType,auditReview);
+      const noRegistry=structuredClone(p);delete noRegistry.knownOfferings[field];
+      const held=currentRun(c,noRegistry);assert.ok(held.missingOwnerFields.includes('knownOfferings.'+field));
+      const removed=structuredClone(c);delete removed.confirmedFacts[field];
+      assert.equal(currentRun(removed,p).resultType,auditReview);
+      for(const alias of ['not_identified','mystery_source','cannot_locate','unknown_problem','new_unrecognized_alias']){
+        const changed=structuredClone(p);for(const map of maps)changed.pricing[map][alias]=changed.pricing[map][c[field]];
+        const bad=structuredClone(c);bad[field]=alias;
+        assert.equal(currentRun(bad,changed).resultType,auditReview);
+        const unknown=structuredClone(c);unknown.confirmedFacts[field].status='unknown';
+        assert.equal(currentRun(unknown,p).resultType,auditReview);
+      }
+    }
+  }
+  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']){
+    const {p,c}=currentRepairFixture(type),field=type==='SIDING_REPAIR'?'damageLevel':'repairType';
+    assert.equal(currentRun(c,p).resultType,auditReady);
+    const maps=type==='FLAT_ROOF_REPAIR'?['patchRepairHours','patchMaterialAllowance']:type==='SIDING_REPAIR'?['repairHours','materialAllowance']:['repairHours','repairMaterialAllowance'];
+    const material=type==='FLAT_ROOF_REPAIR'?c.membraneType:type==='SIDING_REPAIR'?c.sidingType:c.roofType;
+    for(const alias of ['not_identified','mystery_source','cannot_locate','unknown_problem','new_unrecognized_alias']){
+      const changed=structuredClone(p);for(const map of maps)changed.pricing[map][material][alias]=structuredClone(changed.pricing[map][material][c[field]]);
+      const bad={...c,[field]:alias,...(type==='SIDING_REPAIR'?{}:{leakPresent:true,leakSourceIdentified:true})};
+      assert.equal(currentRun(bad,changed).resultType,auditReview);
+    }
+    const unknown=structuredClone(c);unknown.confirmedFacts[field].status='unknown';
+    if(type!=='SIDING_REPAIR'){unknown.leakPresent=true;unknown.leakSourceIdentified=true;}
+    assert.equal(currentRun(unknown,p).resultType,auditReview);
+  }
+});
+test('repair 132: sod separate disposal uses one shared quote activation metadata and customer contract',()=>{
+  const p=auditSodP();p.disposalScope='separate_project_debris';p.feeRules.disposal='when_scope_selected';
+  const d={...defaults,disposalFee:12345};
+  assert.equal(vNextServiceStatus(p,d).status,'QUOTING LIVE');
+  const metadata=getVNextPriceBookMetadata().find(m=>m.serviceType===p.serviceType);
+  assert.ok(metadata.ruleFields.some(f=>f.field==='disposalScope'&&f.help.includes('separate_project_debris')));
+  for(const selected of [false,true]){
+    const c={...auditSodC(),separateDisposalSelected:selected};
+    assert.equal(validateCustomerInputs(p.serviceType,c,p.pricing,p).ok,true);
+    const r=currentRun(c,p,{businessDefaults:d});
+    assert.equal(p.pricing.sodWasteFactor,0.05);
+    // 100 measured sq ft + 5% material waste = 105 bought sq ft. Labor/prep use 100.
+    assert.equal(scenario(r).finalTotalCents,105*100+100*100+100*100+(selected?12345:0));
+    assert.equal(r.lineItems.filter(l=>l.name==='Disposal').length,selected?1:0);
+    assert.equal(lineAmount(r,'Ground preparation'),10000);
+  }
+  assert.equal(currentRun(auditSodC(),p,{businessDefaults:d}).resultType,auditReview);
+  const unsafeDefaults={...d,disposalFee:Number.MAX_SAFE_INTEGER};
+  assert.equal(currentRun({...auditSodC(),separateDisposalSelected:false},p,{businessDefaults:unsafeDefaults}).resultType,auditReady);
+  assert.equal(currentRun({...auditSodC(),separateDisposalSelected:true},p,{businessDefaults:unsafeDefaults}).resultType,auditReview);
+  assert.equal(vNextServiceStatus(p,unsafeDefaults).status,'NEEDS PRICING');
+  const plain=auditSodP();
+  for(const selected of [false,true]){
+    const c={...auditSodC(),separateDisposalSelected:selected};
+    assert.equal(validateCustomerInputs(plain.serviceType,c,plain.pricing,plain).ok,false);
+    assert.equal(currentRun(c,plain).resultType,auditReview);
+  }
+});
+test('repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices',()=>{
+  for(const basis of ['cost','sell_price'])for(const sheets of [undefined,0,1,2]){
+    const p=roofService({deckingPerSheet:5000},{priceBasisByCategory:{...costBasis,material:basis}});
+    const c=roofInputs();if(sheets!==undefined)c.deckingSheets=sheets;
+    const r=currentRun(c,p,{businessDefaults:{...defaults,markupPercent:25}});
+    const customer=sanitizeForCustomerVNext(r),copy=JSON.stringify(customer);
+    if(basis==='cost'){
+      assert.equal(copy.includes('$50.00/sheet'),false);
+      assert.equal(copy.includes('requires a confirmed sheet count'),sheets===undefined);
+    }else assert.ok(copy.includes('$50.00/sheet'));
+    assert.equal(lineAmount(r,'Decking replacement')??0,(sheets??0)*5000);
+  }
+});
+test('repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice',()=>{
+  const metadata=getVNextPriceBookMetadata();
+  const flat=metadata.find(m=>m.serviceType==='FLAT_ROOF_REPLACEMENT');
+  for(const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft']){
+    const copy=flat.pricingFields.find(f=>f.field===field);
+    assert.equal(/average/i.test(copy.help),false);
+  }
+  const expected={FLOORING_INSTALL:'Stairs',SIDING_REPLACEMENT:'removal',CONCRETE_DRIVEWAY:'Demolition',FLAT_ROOF_REPLACEMENT:'Commercial',FENCING_INSTALL:'Every fence',CUSTOM:'Every custom',EXTERIOR_PAINTING:'Every exterior'};
+  for(const [type,word] of Object.entries(expected)){
+    const m=metadata.find(m=>m.serviceType===type);
+    const scope=m.reviewOnlyScopes.find(s=>s.when.toLowerCase().includes(word.toLowerCase()));
+    assert.ok(scope);assert.ok(scope.ownerDecisions.length,type);
+    assert.ok(m.pricingFields.some(f=>f.reviewOnly===true),type);
+  }
+  assert.ok(metadata.find(m=>m.serviceType==='CONCRETE_DRIVEWAY').reviewOnlyScopes.some(s=>s.when.includes('Exposed')));
+  assert.equal(metadata.find(m=>m.serviceType==='LANDSCAPING_MOWING').reviewOnlyScopes.length,0);
+});
+test('repair 135: lead urgency must equal the independently derived roof-leak facts',()=>{
+  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR'])for(const leak of [false,true]){
+    const {p,c}=currentRepairFixture(type);c.leakPresent=leak;if(leak)c.leakSourceIdentified=true;delete c.affectedArea;
+    const request={serviceType:type,customerInputs:c,ownerPricing:p},r=currentRun(c,p);
+    const lead=buildInternalLeadVNext({request,internalResult:r});
+    assert.deepEqual(lead.urgencyFlags,leak?['Active leak reported']:[]);
+    assert.equal(lead.quoteId,r.quoteId);assert.equal(lead.serviceId,p.id);assert.equal(lead.engineVersion,currentEngineVersion);
+    const tampered=structuredClone(r);tampered.urgencyFlags=leak?[]:['Active leak reported'];
+    assert.throws(()=>buildInternalLeadVNext({request,internalResult:tampered}));
+    assert.deepEqual(buildInternalLeadVNext({request,internalResult:r}),lead);
+  }
+});
+test('repair 136: ready review and lead records require the current immutable behavior build identifier',()=>{
+  assert.notEqual(currentEngineVersion,'quote-engine-vnext-audit-1');
+  const p=interiorService(),c=interiorInputs(),r=currentRun(c,p);
+  for(const target of ['root','calculation','option']){
+    const changed=structuredClone(r);
+    if(target==='root')changed.engineVersion='quote-engine-vnext-audit-1';
+    if(target==='calculation')changed.calculationRecord.engineVersion='quote-engine-vnext-audit-1';
+    if(target==='option')changed.options[0].calculationRecord.engineVersion='quote-engine-vnext-audit-1';
+    assert.equal(sanitizeForCustomerVNext(changed).resultType,auditReview);
+  }
+  assert.equal(sanitizeForCustomerVNext(r).resultType,auditReady);
+  delete c.wallAreaSqft;const review=currentRun(c,p),request={serviceType:p.serviceType,customerInputs:c,ownerPricing:p};
+  const bad=structuredClone(review);bad.engineVersion='quote-engine-vnext-audit-1';
+  assert.throws(()=>buildInternalLeadVNext({request,internalResult:bad}));
+  assert.equal(buildInternalLeadVNext({request,internalResult:review}).engineVersion,currentEngineVersion);
+});
+test('repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals',()=>{
+  const n=5080245942540820752868626828963n,d=50000000000000000000000000000000000000000000n;
+  const value=projectExact({numerator:n,denominator:d});
+  assert.equal(value,1.0160491885081641e-13);assert.notEqual(value,Number(n)/Number(d));
+  const rationalCases=[{numerator:n,denominator:d}];
+  for(const sign of [-1n,1n]){
+    // The normal midpoint between 1 and 1+2^-52, and values on either side.
+    for(const delta of [-1n,0n,1n])rationalCases.push({numerator:sign*((2n**53n+1n)*2n+delta),denominator:2n**54n});
+    // Half the smallest subnormal and the next halfway, with exact neighbors.
+    for(const center of [2n,6n])for(const delta of [-1n,0n,1n])rationalCases.push({numerator:sign*(center+delta),denominator:2n**1076n});
+  }
+  for(const q of rationalCases)assert.ok(Object.is(projectExact(q),oracleNumber(q)));
+  assert.equal(scenario(currentRun(interiorInputs(),interiorService())).finalTotalCents,15000);
+});
+test('repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure',()=>{
+  for(const [x,y] of [[10,20],[10.2,20.4]]){
+    const p=concreteService(),simple=[{x:0,y:0},{x,y:0},{x,y},{x:0,y},{x:0,y:0}];
+    const middle=[simple[0],{x:x/2,y:0},...simple.slice(1)];
+    const base={dimensionMethod:'measured_outline',outlinePoints:simple,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false};
+    const a=currentRun(base,p),b=currentRun({...base,outlinePoints:middle},p);
+    const rotated=[...middle.slice(1,-1),middle[0],middle[1]];
+    assert.deepEqual(currentRun({...base,outlinePoints:rotated},p).lineItems,a.lineItems);
+    if(x===10)for(const [at,ready] of [[9.999999999999998,true],[10,false],[10.000000000000002,false]])assert.equal(currentRun({...base,outlinePoints:[simple[0],{x:at,y:0},...simple.slice(1)]},p).resultType,ready?auditReady:auditReview);
+    assert.equal(a.resultType,auditReady);assert.deepEqual(a.lineItems,b.lineItems);
+    assert.equal(p.pricing.concreteWasteFactor,0.1);
+    // Measured 10x20 or 10.2x20.4 rectangles: independently derived area,
+    // perimeter, 4-inch volume (12 inches/foot and 27 cubic feet/yard), plus 10% ordering waste.
+    const expected=x===10?{area:200,perimeter:60,labor:120000,formwork:150000,material:48889,total:318889}
+      :{area:208.08,perimeter:61.2,labor:124848,formwork:153000,material:50864,total:328712};
+    assert.equal(lineAmount(a,'Concrete labor'),expected.labor);
+    assert.equal(lineAmount(a,'Formwork'),expected.formwork);
+    assert.equal(a.lineItems.find(l=>l.calculation.ratePath==='concreteCostPerCubicYard').amountCents,expected.material);
+    assert.equal(scenario(a).finalTotalCents,expected.total);
+    assert.deepEqual([a.lowEstimate,a.midEstimate,a.highEstimate],[b.lowEstimate,b.midEstimate,b.highEstimate]);
+    const bad=[
+      [simple[0],{x:3*x/4,y:0},{x:x/2,y:0},...simple.slice(1)],
+      simple.slice(0,-1),
+      [simple[0],{x,y:1},...simple.slice(2)],
+      [{x:0,y:0},{x:10,y:0},{x:10,y:10},{x:5,y:10},{x:5,y:0},{x:0,y:0}],
+      [{x:0,y:0},{x:10,y:0},{x:10,y:10},{x:-5,y:10},{x:-5,y:5},{x:15,y:5},{x:15,y:-5},{x:0,y:-5},{x:0,y:0}]
+    ];
+    for(const points of bad)assert.equal(currentRun({...base,outlinePoints:points},p).resultType,auditReview);
+  }
+});
+test('owner ruling: customer ranges expand to whole dollars while exact single prices retain cents',()=>{
+  const p=auditMowP();
+  for(const cents of [949,950,951,999,1000,1001]){
+    const r=currentRun({...auditMowC(),yardSqft:cents},p);
+    assert.equal(scenario(r).finalTotalCents,cents);
+    assert.deepEqual([r.lowEstimate,r.midEstimate,r.highEstimate],[Math.floor(Math.round(cents*0.9)/100),Math.floor((cents+50)/100),Math.ceil(Math.round(cents*1.1)/100)]);
+    const exact=currentRun({...auditMowC(),yardSqft:cents},p,{businessDefaults:{...defaults,rangeBufferPercent:0}});
+    assert.deepEqual([exact.lowEstimate,exact.midEstimate,exact.highEstimate],[cents/100,cents/100,cents/100]);
+  }
+});
+test('owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap',()=>{
+  for(const [percent,total] of [[0,10000],[90,100000],[99,1000000],[99.9,10000000],[99.99,100000000]]){
+    const r=currentRun(auditMowC(),auditMowP(),{businessDefaults:{...defaults,markupMode:'margin',markupPercent:percent,rangeBufferPercent:0}});
+    assert.equal(scenario(r).finalTotalCents,total);
+    assert.equal(scenario(r).markup.amountCents,total-10000);
+  }
+  const justBelow=99.99999999999999;
+  assert.equal(validateBusinessDefaults({...defaults,markupMode:'margin',markupPercent:justBelow}).ok,true);
+  const sell=auditMowP();sell.priceBasisByCategory=structuredClone(sellBasis);
+  assert.equal(currentRun(auditMowC(),sell,{businessDefaults:{...defaults,markupMode:'margin',markupPercent:justBelow}}).resultType,auditReady);
+  assert.equal(currentRun(auditMowC(),auditMowP(),{businessDefaults:{...defaults,markupMode:'margin',markupPercent:justBelow}}).resultType,auditReview);
+  for(const percent of [-0.001,100,100.00000000000001,100.001,Infinity,NaN])assert.equal(currentRun(auditMowC(),auditMowP(),{businessDefaults:{...defaults,markupMode:'margin',markupPercent:percent}}).resultType,auditReview);
+  const high=auditMowP();high.pricing.mowingBaseRatePerSqft=Number.MAX_SAFE_INTEGER;
+  assert.equal(currentRun(auditMowC(),high,{businessDefaults:{...defaults,markupMode:'margin',markupPercent:99.9}}).resultType,auditReview);
 });

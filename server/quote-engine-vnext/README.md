@@ -1,6 +1,6 @@
 # Quote Engine vNext Audit Candidate
 
-Current September 9 pass: [Repairs104–127](AUDIT_REPAIRS_104_127.md), starting at `68476197550ea83c52e23e8d9902526c08c61a77`. That report supersedes older behavior descriptions below for approval binding, membrane selection, scope gates, geometry, fractional mowing rates and range rounding. Historical test results below are not evidence for the new snapshot.
+Current pass: [Repairs 128–138](AUDIT_REPAIRS_128_138.md), frozen start `7dfc86dc212599e4132d48d693b798a567eb2239`. Its explicit zero, whole-dollar customer-range, identity/origin, certainty, and projection contracts supersede conflicting historical candidate descriptions. Earlier counts are historical, not verification of this snapshot.
 
 This directory is an isolated accuracy-repair candidate. Nothing in the
 production server imports it, and no production route points to it.
@@ -110,7 +110,6 @@ No affected path duplicates, splits, reclassifies, or silently reuses a rate.
 These decisions cannot be inferred by an arithmetic engine and remain explicit
 production-cutover blockers:
 
-- Maximum permissible margin.
 - First-coat versus additional-coat labor pricing.
 - Interior primer scope and pricing.
 - Objective wall-height productivity factors.
@@ -130,4 +129,4 @@ persists that envelope yet. Production and integration remain untouched.
 
 ## Completion checkpoint
 
-See [COMPLETION.md](./COMPLETION.md) for the 2026-09-09 continuation, regression evidence, and narrow remaining owner rulings. Inactive or unconfirmed owner previews carry `customerEligible: false` in the result and root calculation record; customer sanitization rejects those previews. Numeric quantity and multiplier fields are floating-point views; their exact fractions remain authoritative for calculation and reproduction. Scenario materialization validates regular and ranged evidence before returning any line. Both concrete services enforce the 10,000,000-square-foot area limit using exact decimal arithmetic for measured dimensions as well as accepting the bounded direct-area contract.
+See [COMPLETION.md](./COMPLETION.md) for the 2026-09-09 continuation, regression evidence, and narrow remaining owner rulings. Inactive or unconfirmed owner previews carry `customerEligible: false` in the result and root calculation record; customer sanitization rejects those previews. Numeric quantity and multiplier fields are floating-point views; their exact fractions remain authoritative for calculation and reproduction. Scenario materialization validates regular and ranged evidence before returning any line. Both concrete services enforce the 10,000,000-square-foot area limit using exact decimal arithmetic for measured dimensions and measured orthogonal outlines; unverified area/perimeter-only geometry remains review-only.

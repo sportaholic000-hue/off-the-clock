@@ -1,6 +1,7 @@
 // Run from repository root: node --experimental-vm-modules test/quoteEngineVNextReplay.mjs <output-directory>
-// Executes the audit regressions through an independent in-memory module loader,
-// then inspects every returned field and customer allowlist. No repository mutation.
+// Instrumented regression replay through an in-memory module loader,
+// inspecting every returned field and customer allowlist. This is not an independent external audit.
+// No repository mutation. Activation generateQuoteVNext calls are captured as well.
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -12,11 +13,11 @@ const outputPath=path.resolve(output);
 if(outputPath===root||outputPath.startsWith(root+path.sep))throw new TypeError('Evidence output must be outside the repository.');
 fs.mkdirSync(outputPath,{recursive:true});
 const cache=new Map(),captures=[],tests=[];let activeTest='',depth=0,objects=0,leaves=0,publicReady=0,publicReview=0;
-const selected=/^repair (10[4-9]|11[0-9]|12[0-7]):/;
+const selected=/^repair (12[89]|13[0-8]):|^owner ruling:/;
 globalThis.__vnextAuditCapture=(entry,fn,args)=>{
  const outer=depth++===0;
- try{const result=fn(...args);if(outer&&selected.test(activeTest))captures.push({test:activeTest,entry,args:structuredClone(args),result:structuredClone(result)});return result;}
- catch(error){if(outer&&selected.test(activeTest))captures.push({test:activeTest,entry,error:{name:error.name,message:error.message}});throw error;}
+ try{const result=fn(...args);if((outer||entry==='generateQuoteVNext')&&selected.test(activeTest))captures.push({test:activeTest,entry,args:structuredClone(args),result:structuredClone(result)});return result;}
+ catch(error){if((outer||entry==='generateQuoteVNext')&&selected.test(activeTest))captures.push({test:activeTest,entry,error:{name:error.name,message:error.message}});throw error;}
  finally{depth--;}
 };
 const fakeTest=(name,fn)=>{if(!selected.test(name))return;activeTest=name;try{fn();tests.push({name,pass:true});}catch(error){tests.push({name,pass:false,error:{name:error.name,message:error.message,stack:error.stack}});}activeTest='';};
@@ -49,9 +50,11 @@ for(const capture of captures){
  if(capture.entry==='generateQuoteVNext'&&r?.submittedCustomerInputs){assert.equal(r.serviceType,capture.args[0].serviceType);assert.deepEqual(r.submittedCustomerInputs,capture.args[0].customerInputs);}
 }
 const sourceHashes=Object.fromEntries([...cache.keys()].filter(k=>!k.startsWith('node:')).map(k=>[path.relative(root,k).replaceAll('\\','/'),createHash('sha256').update(fs.readFileSync(k)).digest('hex')]));
-const report={tests,captureCount:captures.length,inspection:{objects,leaves,publicReady,publicReview},sourceHashes};
+const sodActivationSelections=[...new Set(captures.filter(c=>c.test.startsWith('repair 132:')&&c.entry==='generateQuoteVNext'&&c.args?.[0]?.allowInactiveOwnerPreview===true).map(c=>c.args[0].customerInputs.separateDisposalSelected))].sort();
+assert.deepEqual(sodActivationSelections,[false,true]);
+const report={tests,captureCount:captures.length,sodActivationSelections,inspection:{objects,leaves,publicReady,publicReview},sourceHashes};
 const encode=(_,v)=>typeof v==='number'&&!Number.isFinite(v)?{nonJsonNumber:String(v)}:v===undefined?{nonJsonValue:'undefined'}:v;
 fs.writeFileSync(path.join(outputPath,'replay-captures.json'),JSON.stringify({report,captures},encode,2));
 fs.writeFileSync(path.join(outputPath,'replay-summary.json'),JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
-assert.equal(tests.length,24);assert.equal(tests.filter(t=>!t.pass).length,0);
+assert.equal(tests.length,13);assert.equal(tests.filter(t=>!t.pass).length,0);

@@ -5,6 +5,8 @@ import {
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
+  identityDiagnosticsVNext,
+  freeOfferingVNext,
   equalApprovalDataVNext,
   allowedPricingFields,
   inspectionOwnerDecisionsVNext,
@@ -31,7 +33,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-audit-1';
+export const ENGINE_VERSION = 'quote-engine-vnext-r128-138-20260909-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -86,8 +88,13 @@ const SERVICE_MINIMUM_FIELDS = {
   CUSTOM: 'minimumJob'
 };
 
+function derivedUrgency(serviceType, customerInputs) {
+  return ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs?.leakPresent === true ? ['Active leak reported'] : [];
+}
+
 function review({
   quoteId = crypto.randomUUID(),
+  serviceId = null,
   serviceType,
   submittedCustomerInputs = {},
   normalizedScope = null,
@@ -110,6 +117,8 @@ function review({
 }) {
   return {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
+    engineVersion: ENGINE_VERSION,
+    serviceId,
     quoteId,
     serviceType,
     submittedCustomerInputs,
@@ -1041,7 +1050,7 @@ function exclusionsMatch(options) {
 }
 
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited }) {
-  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
+  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
   if (!customerValidation.ok) {
     const normalizedScope = customerValidation.normalized ? structuredClone(customerValidation.normalized) : null;
     const validatedMeasurements = normalizedScope
@@ -1054,7 +1063,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       validatedMeasurements
     });
   }
-  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing);
+  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing, tierName);
   if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', {
     ...ownerValidation,
     normalizedScope: structuredClone(customerValidation.normalized),
@@ -1064,6 +1073,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const skippedAddons = [];
   const ctx = {
     ownerPricing,
+    tierName,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -1090,6 +1100,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   }
 
   assertRangeIntegrity(range);
+  const freeOffering = freeOfferingVNext(ownerPricing, tierName);
+  if ((!freeOffering && range.highCents === 0) || (freeOffering && range.highCents !== 0)) throw new QuoteReviewError('A zero total requires an explicit free complete offering; a free offering cannot contain a positive charge.', { invalidOwnerFields: ['zeroPricePolicy'] });
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const optionDisclaimer = disclaimer(baseDisclaimer, template.disclosures, skippedAddons);
   const rankedFinancialDrivers = unique(
@@ -1102,6 +1114,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const priceDrivers = unique([...rankedFinancialDrivers, ...mandatoryDrivers]);
   const calculationRecord = {
     engineVersion: ENGINE_VERSION,
+    serviceId: ownerPricing.id ?? null,
+    freeOffering,
     serviceType,
     tierName,
     normalizedCustomerInputs: structuredClone(customerInputs),
@@ -1126,9 +1140,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   };
   const customerProjection = {
     tierName,
-    lowEstimate: toDollars(range.lowCents),
-    midEstimate: toDollars(range.midCents),
-    highEstimate: toDollars(range.highCents),
+    ...displayedEstimates(calculationRecord.range),
     priceDrivers: structuredClone(priceDrivers),
     skippedAddons: structuredClone(skippedAddons),
     disclaimer: optionDisclaimer,
@@ -1162,12 +1174,11 @@ export function generateQuoteVNext(input = {}) {
   const customerSafeOutput = callerType !== 'owner';
   const appliedRules = [];
   let unconfirmedOwnerFields = [];
-  const urgencyFlags = ['ROOFING_REPAIR', 'FLAT_ROOF_REPAIR'].includes(serviceType) && customerInputs?.leakPresent === true
-    ? ['Active leak reported']
-    : [];
+  const urgencyFlags = derivedUrgency(serviceType, customerInputs);
   const finishReview = details => {
     const result = review({
       quoteId,
+      serviceId: typeof ownerPricing?.id === 'string' ? ownerPricing.id : null,
       serviceType,
       submittedCustomerInputs: cloneForEvidence(customerInputs, {}),
       unconfirmedOwnerFields,
@@ -1342,7 +1353,7 @@ export function generateQuoteVNext(input = {}) {
         error = new QuoteReviewError('Tier pricing contains values that cannot be validated safely.', { invalidOwnerFields: [tierPath] });
       }
       if (!error.normalizedScope) {
-        const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing);
+        const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
         if (customerValidation.ok) {
           error.normalizedScope = structuredClone(customerValidation.normalized);
           error.validatedMeasurements = validatedMeasurementsFor(serviceType, customerValidation.normalized);
@@ -1395,6 +1406,8 @@ export function generateQuoteVNext(input = {}) {
   const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, [], []);
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
+    engineVersion: ENGINE_VERSION,
+    serviceId: ownerPricing.id ?? null,
     quoteId,
     serviceType,
     submittedCustomerInputs: structuredClone(customerInputs),
@@ -1415,6 +1428,7 @@ export function generateQuoteVNext(input = {}) {
     customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     calculationRecord: {
       engineVersion: ENGINE_VERSION,
+      serviceId: ownerPricing.id ?? null,
       quoteId,
       serviceType,
       options: structuredClone(options.map(option => option.calculationRecord)),
@@ -1564,6 +1578,17 @@ function calculationEvidenceMatchesOption(option, record, range) {
   return ['lowCents', 'midCents', 'highCents'].every(field => range[field] === expectedRange[field]);
 }
 
+function displayedEstimates(range) {
+  const exactSingle = range.source === 'business_range_buffer' && range.bufferPercent === 0 &&
+    range.lowCents === range.midCents && range.midCents === range.highCents;
+  if (exactSingle) return { lowEstimate: toDollars(range.lowCents), midEstimate: toDollars(range.midCents), highEstimate: toDollars(range.highCents) };
+  const low = BigInt(range.lowCents) / 100n;
+  const high = (BigInt(range.highCents) + 99n) / 100n;
+  const mid = (BigInt(range.midCents) + 50n) / 100n;
+  if (high * 100n > BigInt(Number.MAX_SAFE_INTEGER)) throw new RangeError('Displayed range exceeds the safe monetary domain.');
+  return { lowEstimate: Number(low), midEstimate: Number(mid), highEstimate: Number(high) };
+}
+
 function validCustomerOption(option, expectedServiceType) {
   const validTierName = option?.tierName === null ||
     (typeof option?.tierName === 'string' && option.tierName.length > 0 && option.tierName === option.tierName.trim());
@@ -1577,12 +1602,13 @@ function validCustomerOption(option, expectedServiceType) {
   const projection = record?.customerProjection;
   if (!isPlainObject(record) || record.serviceType !== expectedServiceType || !isPlainObject(range) || !isPlainObject(projection)) return false;
   if (!calculationEvidenceMatchesOption(option, record, range)) return false;
+  const displayed = displayedEstimates(range);
   for (const [estimateField, centsField] of [
     ['lowEstimate', 'lowCents'],
     ['midEstimate', 'midCents'],
     ['highEstimate', 'highCents']
   ]) {
-    if (!Number.isSafeInteger(range[centsField]) || range[centsField] < 0 || !Object.is(option[estimateField], toDollars(range[centsField]))) return false;
+    if (!Number.isSafeInteger(range[centsField]) || range[centsField] < 0 || !Object.is(option[estimateField], displayed[estimateField])) return false;
     if (!Object.is(projection[estimateField], option[estimateField])) return false;
   }
   if (!Object.is(projection.rangeBufferUsed, option.rangeBufferUsed)) return false;
@@ -1595,21 +1621,33 @@ function validCustomerOption(option, expectedServiceType) {
 
 function rootCalculationRecordMatches(result) {
   const configuration=result.calculationRecord?.ownerConfiguration;
-  if(!isPlainObject(configuration)||configuration.active!==true)return false;
+  if(!isPlainObject(configuration)||configuration.active!==true||identityDiagnosticsVNext(configuration).length)return false;
+  for (const option of result.options) {
+    const inputs=option.calculationRecord.normalizedCustomerInputs;
+    if (!plainDataEqual(inputs,result.submittedCustomerInputs)) return false;
+    const tier=option.tierName===null?null:configuration.tiers?.find(t=>t.name===option.tierName);
+    if (option.tierName!==null && !tier) return false;
+    const pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
+    if (!validateCustomerInputs(result.serviceType,inputs,pricing,configuration).ok ||
+        !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
+    const free = freeOfferingVNext(configuration, option.tierName);
+    if (option.calculationRecord.freeOffering !== free || (option.calculationRecord.range.highCents === 0) !== free) return false;
+  }
   if(['AI_SUGGESTED','AI_INTERVIEW'].includes(configuration.source)){
     if(configuration.serviceType!==result.serviceType||!isPlainObject(configuration.pricing))return false;
     if(aiConfirmationFieldsVNext(configuration,configuration.pricing).some(field=>!hasCurrentApprovalVNext(configuration,configuration.pricing,field)))return false;
   }
   const record = result.calculationRecord;
   if (!isPlainObject(record) ||
-      record.engineVersion !== ENGINE_VERSION ||
+      result.engineVersion !== ENGINE_VERSION || record.engineVersion !== ENGINE_VERSION ||
+      record.serviceId !== result.serviceId || result.serviceId !== (configuration.id ?? null) ||
       record.quoteId !== result.quoteId ||
       record.serviceType !== result.serviceType ||
       !denseArray(record.options, item => isPlainObject(item), { allowEmpty: false }) ||
       record.customerEligible !== result.customerEligible ||
       record.options.length !== result.options.length) return false;
   return record.options.every((optionRecord, index) =>
-    plainDataEqual(optionRecord, result.options[index].calculationRecord)
+    optionRecord.serviceId === result.serviceId && plainDataEqual(optionRecord, result.options[index].calculationRecord)
   );
 }
 
@@ -1680,13 +1718,16 @@ export function buildInternalLeadVNext(input = {}) {
   const { request = {}, internalResult } = input;
   const requiredOwnFields = [
     'resultType', 'quoteId', 'serviceType', 'reviewReason', 'submittedCustomerInputs',
-    'normalizedScope', 'validatedMeasurements', 'urgencyFlags'
+    'normalizedScope', 'validatedMeasurements', 'urgencyFlags', 'engineVersion', 'serviceId'
   ];
   if (
     !isPlainObject(request) ||
     !isPlainObject(internalResult) ||
     requiredOwnFields.some(field => !Object.hasOwn(internalResult, field)) ||
     internalResult.resultType !== 'ESTIMATE_REQUIRES_REVIEW' ||
+    internalResult.engineVersion !== ENGINE_VERSION ||
+    !plainDataEqual(internalResult.urgencyFlags, derivedUrgency(request.serviceType, request.customerInputs)) ||
+    (request.ownerPricing && internalResult.serviceId !== (request.ownerPricing.id ?? null)) ||
     typeof internalResult.reviewReason!=='string' || !internalResult.reviewReason.trim() ||
     !(internalResult.inspectionFirst===true || ['missingCustomerFields','invalidCustomerFields','missingOwnerFields','invalidOwnerFields','unsupportedOwnerFields','crossFieldOwnerFields','unconfirmedOwnerFields'].some(key=>denseArray(internalResult[key],v=>typeof v==='string'&&v.trim())&&internalResult[key].length) || ['ownerDiagnostics','ownerDecisionRequired'].some(key=>denseArray(internalResult[key],v=>isPlainObject(v)&&typeof v.message==='string'&&v.message.trim())&&internalResult[key].length)) ||
     request.serviceType!==internalResult.serviceType || !isPlainObject(request.customerInputs) || !equalApprovalDataVNext(request.customerInputs,internalResult.submittedCustomerInputs) ||
@@ -1702,6 +1743,8 @@ export function buildInternalLeadVNext(input = {}) {
   try {
     return {
       quoteId: internalResult.quoteId,
+      serviceId: internalResult.serviceId,
+      engineVersion: internalResult.engineVersion,
       serviceType: internalResult.serviceType,
       originalRequest: structuredClone(request),
       submittedCustomerInputs: structuredClone(internalResult.submittedCustomerInputs),
