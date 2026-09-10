@@ -60,7 +60,7 @@ function service(serviceType, pricing, overrides = {}) {
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
-    ...fixtureIdentity(overrides.source || 'MANUAL', overrides.id),
+    ...fixtureIdentity(overrides.source || 'MANUAL', overrides.id, serviceType),
     knownOfferings: fixtureOfferings(serviceType),
     active: true,
     serviceType,

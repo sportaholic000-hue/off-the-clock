@@ -1,6 +1,8 @@
 # Quote Engine vNext Audit Notes
 
-Current precision follow-up: [service-wide financial verification and composite rounding provenance](AUDIT_PRECISION_20260910.md), starting at `3261560b5e7b5fefe9de6957a676e4464624503a`. This retains all earlier protections. See the delivery report for final-commit execution results.
+Current pass: [Repairs 147–150](AUDIT_REPAIRS_147_150.md), frozen start `47e88279d54e52e6af6f19a79e9df8dbe1231685`. The owner's latest identity, free-minimum, sub-dollar display and inclusion-path rules govern this snapshot. Final-SHA execution results belong to the delivery report.
+
+Accepted precision follow-up: [service-wide financial verification and composite rounding provenance](AUDIT_PRECISION_20260910.md), starting at `3261560b5e7b5fefe9de6957a676e4464624503a`. This retains all earlier protections. See the delivery report for final-commit execution results.
 
 Previous pass: [Repairs 139–146](AUDIT_REPAIRS_139_146.md), frozen start `0242784d5835ee2f0ca6f0c5c1c8098a2f0a3e8f`. Its exact selector identity, unique service IDs, diagnostic ownership, lead identity, included-price classification, metadata and configured-evidence binding contracts supersede conflicting historical descriptions. Earlier counts are historical, not verification of this snapshot.
 

@@ -7,6 +7,9 @@ import {
   hasCurrentApprovalVNext,
   identityDiagnosticsVNext,
   validServiceIdVNext,
+  sameServiceIdVNext,
+  canonicalServiceIdentityVNext,
+  canonicalCustomerIdentityVNext,
   freeOfferingVNext,
   equalApprovalDataVNext,
   allowedPricingFields,
@@ -34,7 +37,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-precision-20260910-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-r147-150-20260910-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -694,10 +697,11 @@ function effectiveMinimum(serviceType, pricing, defaults) {
   return { amountCents: Math.max(serviceMinimum, businessMinimum), serviceField, serviceMinimum, businessMinimum };
 }
 
-function applyMinimum(lines, serviceType, pricing, defaults, record, basis) {
+function applyMinimum(lines, serviceType, pricing, defaults, record, basis, freeOffering) {
   const minimum = effectiveMinimum(serviceType, pricing, defaults);
   const subtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
-  const adjustmentCents = Math.max(0, minimum.amountCents - subtotalCents);
+  const effectiveMinimumCents = freeOffering ? 0 : minimum.amountCents;
+  const adjustmentCents = Math.max(0, effectiveMinimumCents - subtotalCents);
   if (adjustmentCents > 0) {
     lines.push({
       name: 'Minimum price adjustment',
@@ -720,10 +724,15 @@ function applyMinimum(lines, serviceType, pricing, defaults, record, basis) {
   record.businessMinimumCents = minimum.businessMinimum;
   record.serviceMinimumField = minimum.serviceField;
   record.serviceMinimumCents = minimum.serviceMinimum;
-  record.effectiveMinimumCents = minimum.amountCents;
+  record.effectiveMinimumCents = effectiveMinimumCents;
+  if (freeOffering) {
+    record.bypassed = true;
+    record.bypassReason = 'explicit_free_offering';
+    record.configuredMinimumCents = minimum.amountCents;
+  }
   record.adjustmentCents = adjustmentCents;
   record.applied = adjustmentCents > 0;
-  return minimum.amountCents;
+  return effectiveMinimumCents;
 }
 
 function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
@@ -914,7 +923,7 @@ function assertMoneyIntegrity(lines, finalTotalCents) {
   }
 }
 
-function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month }) {
+function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering }) {
   const lines = materializeScenarioLinesVNext(template.lineItems, variant);
   const record = {
     variant,
@@ -939,13 +948,13 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   if (defaults.taxMode === 'TAX_MATERIALS') {
     applyTax(lines, ownerPricing, defaults, markup, record.tax);
     record.order.push('tax');
-    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, 'post_tax');
+    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, 'post_tax', freeOffering);
     record.order.push('minimum');
     finalTotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
     record.tax.finalTotalCents = finalTotalCents;
   } else {
     const basis = defaults.taxMode === 'TAX_ALL' ? 'pre_tax' : 'post_markup';
-    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis);
+    minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis, freeOffering);
     record.order.push('minimum');
     finalTotalCents = applyTax(lines, ownerPricing, defaults, markup, record.tax);
     if (defaults.taxMode === 'TAX_ALL') record.order.push('tax');
@@ -1064,6 +1073,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       validatedMeasurements
     });
   }
+  customerInputs = customerValidation.normalized;
   const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing, tierName);
   if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', {
     ...ownerValidation,
@@ -1087,13 +1097,14 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if(ownerPricing.feeRules.permit==='when_scope_selected' && typeof customerInputs.permitRequired!=='boolean')throw new QuoteReviewError('Confirm whether this project requires the permit charge.',{missingCustomerFields:['permitRequired']});
   const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
   if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
-  const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
+  const freeOffering = freeOfferingVNext(ownerPricing, tierName);
+  const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
   const hasIntrinsicRange = template.lineItems.some(line => line.rangeAmountCents);
   let range;
   let scenarioRecords = { mid: mid.record };
   if (hasIntrinsicRange) {
-    const low = runScenario({ variant: 'low', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
-    const high = runScenario({ variant: 'high', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month });
+    const low = runScenario({ variant: 'low', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
+    const high = runScenario({ variant: 'high', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
     range = rangeForIntrinsicQuote(low, mid, high, defaults);
     scenarioRecords = { low: low.record, mid: mid.record, high: high.record };
   } else {
@@ -1101,7 +1112,6 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   }
 
   assertRangeIntegrity(range);
-  const freeOffering = freeOfferingVNext(ownerPricing, tierName);
   if ((!freeOffering && range.highCents === 0) || (freeOffering && range.highCents !== 0)) throw new QuoteReviewError('A zero total requires an explicit free complete offering; a free offering cannot contain a positive charge.', { invalidOwnerFields: ['zeroPricePolicy'] });
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const optionDisclaimer = disclaimer(baseDisclaimer, template.disclosures, skippedAddons);
@@ -1161,7 +1171,7 @@ export function generateQuoteVNext(input = {}) {
   const requestIsPlainObject = requestSnapshot.ok;
   const callerDescriptor = ownDataValue(input, 'callerType');
   const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'owner' ? 'owner' : 'customer' };
-  const {
+  let {
     serviceType,
     customerInputs = {},
     ownerPricing = {},
@@ -1179,7 +1189,7 @@ export function generateQuoteVNext(input = {}) {
   const finishReview = details => {
     const result = review({
       quoteId,
-      serviceId: typeof ownerPricing?.id === 'string' ? ownerPricing.id : null,
+      serviceId: validServiceIdVNext(ownerPricing?.id) ? ownerPricing.id.toLowerCase() : typeof ownerPricing?.id === 'string' ? ownerPricing.id : null,
       serviceType,
       submittedCustomerInputs: cloneForEvidence(customerInputs, {}),
       unconfirmedOwnerFields,
@@ -1237,6 +1247,9 @@ export function generateQuoteVNext(input = {}) {
   if (!isPlainObject(customerInputs)) return finishReview({ reviewReason: 'Customer inputs must be an object.', invalidCustomerFields: ['customerInputs'] });
   if (!isPlainObject(ownerPricing)) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
   if (!isPlainObject(businessDefaults)) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
+  ownerPricing = canonicalServiceIdentityVNext(ownerPricing);
+  const identityDiagnostics = identityDiagnosticsVNext(ownerPricing, serviceType);
+  if (identityDiagnostics.length) return finishReview({reviewReason:'Service identity and type do not agree.',ownerDiagnostics:identityDiagnostics,missingOwnerFields:identityDiagnostics.filter(d=>d.type==='missing').map(d=>d.path),invalidOwnerFields:identityDiagnostics.filter(d=>d.type!=='missing').map(d=>d.path)});
   const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
   if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.', invalidOwnerFields: ['active'] });
   let basePricing;
@@ -1587,6 +1600,10 @@ function displayedEstimates(range) {
   const low = BigInt(range.lowCents) / 100n;
   const high = (BigInt(range.highCents) + 99n) / 100n;
   const mid = (BigInt(range.midCents) + 50n) / 100n;
+  // Keep a positive sub-dollar range visibly distinct from an explicitly free offering.
+  if ((range.lowCents > 0 && low === 0n) || (range.midCents > 0 && mid === 0n) || (range.highCents > 0 && high === 0n)) {
+    return { lowEstimate: toDollars(range.lowCents), midEstimate: toDollars(range.midCents), highEstimate: toDollars(range.highCents) };
+  }
   if (high * 100n > BigInt(Number.MAX_SAFE_INTEGER)) throw new RangeError('Displayed range exceeds the safe monetary domain.');
   return { lowEstimate: Number(low), midEstimate: Number(mid), highEstimate: Number(high) };
 }
@@ -1623,10 +1640,10 @@ function validCustomerOption(option, expectedServiceType) {
 
 function rootCalculationRecordMatches(result) {
   const configuration=result.calculationRecord?.ownerConfiguration;
-  if(!isPlainObject(configuration)||configuration.active!==true||identityDiagnosticsVNext(configuration).length)return false;
+  if(!isPlainObject(configuration)||configuration.active!==true||identityDiagnosticsVNext(configuration, result.serviceType).length)return false;
   for (const option of result.options) {
     const inputs=option.calculationRecord.normalizedCustomerInputs;
-    if (!plainDataEqual(inputs,result.submittedCustomerInputs)) return false;
+    if (!plainDataEqual(inputs,canonicalCustomerIdentityVNext(result.submittedCustomerInputs))) return false;
     const tier=option.tierName===null?null:configuration.tiers?.find(t=>t.name===option.tierName);
     if (option.tierName!==null && !tier) return false;
     const pricing=tier?mergePricingVNext(configuration.pricing,tier.overrides):configuration.pricing;
@@ -1726,7 +1743,7 @@ export function sanitizeForCustomerVNext(result) {
 function leadServiceIdentityMatches(request,result) {
   const explicit=Object.hasOwn(request,'serviceId'),configured=isPlainObject(request.ownerPricing);
   if(validServiceIdVNext(result.serviceId))return (explicit||configured) &&
-    (!explicit||request.serviceId===result.serviceId) && (!configured||request.ownerPricing.id===result.serviceId);
+    (!explicit||sameServiceIdVNext(request.serviceId,result.serviceId)) && (!configured||sameServiceIdVNext(request.ownerPricing.id,result.serviceId));
   const resolution=result.serviceResolution;
   return result.serviceId===null && explicit && request.serviceId===null && !configured &&
     isPlainObject(resolution) && Object.keys(resolution).length===2 && resolution.serviceId===null && ['missing','ambiguous'].includes(resolution.status) &&
@@ -1740,6 +1757,7 @@ export function buildInternalLeadVNext(input = {}) {
   }
   input = snapshot.value;
   const { request = {}, internalResult } = input;
+  if (isPlainObject(internalResult) && validServiceIdVNext(internalResult.serviceId)) internalResult.serviceId = internalResult.serviceId.toLowerCase();
   const requiredOwnFields = [
     'resultType', 'quoteId', 'serviceType', 'reviewReason', 'submittedCustomerInputs',
     'normalizedScope', 'validatedMeasurements', 'urgencyFlags', 'engineVersion', 'serviceId'

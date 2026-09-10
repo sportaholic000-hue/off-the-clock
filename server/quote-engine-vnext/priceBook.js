@@ -6,6 +6,7 @@ import {
   hasCurrentApprovalVNext,
   freeOfferingVNext,
   validServiceIdVNext,
+  canonicalServiceIdentityVNext,
   inspectionOwnerDecisionsVNext,
   allowedPricingFields,
   contractMetadata,
@@ -73,7 +74,7 @@ const NEW_FIELD_COPY = {
   disposalScope: {label:'Separate sod-project debris disposal',help:'Only separate_project_debris is supported. Customer separateDisposalSelected must be explicitly true or false. Old-lawn disposal stays included in ground preparation.'},
   knownOfferings: {label:'Explicitly known price-selecting offerings',help:'Register stable offering UUIDs separately from pricing. Matching price-map keys do not establish customer facts.'},
   zeroPricePolicy: {label:'Explicit free offerings and included required prices',help:'Audited service and owner approval is required. Zero core rates without this classification are incomplete; zero minima mean no minimum.'},
-  origin: {label:'Immutable service creation receipt',help:'Protected persisted serviceId, source, ownerId, operationId, and createdAt; ordinary edits cannot change origin.'},
+  origin: {label:'Immutable service creation receipt',help:'Protected persisted serviceId, serviceType, source, ownerId, operationId, and createdAt; ordinary edits cannot change origin.'},
   materialCostPerSquare: {label:'Roof base material price per square for the selected accessory method',help:'In per_square_allin mode the base includes starter, drip edge, ridge cap, flashing, and vents. In itemized mode the base must EXCLUDE separately priced starter, drip edge, and ridge cap; explicit materialAccessoryBasis confirmation is required before activation.'},
   materialAccessoryBasis: {label:'Base material excludes itemized roof accessories',help:'Confirm excludes_itemized_accessories only after checking the current base rate excludes the separately priced starter, drip edge, and ridge cap. Legacy all-in rates must be re-entered or explicitly reviewed.'},
   mowingBaseRatePerSqft: {label:'Mowing labor cents per measured square foot (fractional cents supported)',help:'Enter cents, including fractional cents: 0.5 cents per square foot is $50 per 10,000 square feet before confirmed frequency and grass-condition adjustments. Existing whole-cent rates retain their units.'},
@@ -450,6 +451,7 @@ export function vNextServiceStatus(service, businessDefaults = null) {
   }
   service = snapshot.value;
   if (!isPlainRecord(service)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'service', message: 'Service must be an object.' }]);
+  service = canonicalServiceIdentityVNext(service);
   if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'serviceType', message: 'Service type is unsupported.' }]);
   const pricing = pricingOf(service);
   const defaultValidation = businessDefaults === null || businessDefaults === undefined
@@ -815,7 +817,7 @@ export function materializeVNextService(service) {
   if (!isPlainRecord(service)) throw new TypeError('Service must be an object.');
   if (!SERVICE_TYPES.includes(service.serviceType)) throw new TypeError('Service type is unsupported.');
   if (service.pricing !== undefined && !isPlainRecord(service.pricing)) throw new TypeError('Service pricing must be an object.');
-  const next = structuredClone(service);
+  const next = canonicalServiceIdentityVNext(service);
   next.pricing ||= {};
   for (const [field, definition] of Object.entries(CLASS2_DEFINITIONS[next.serviceType] || {})) {
     if (next.pricing[field] === undefined) next.pricing[field] = structuredClone(definition.defaultValue);

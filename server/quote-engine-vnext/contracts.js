@@ -880,7 +880,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     const fact = facts?.[name];
     if (!isRecord(fact)) missingCustomerFields.push('confirmedFacts.' + name);
     else if (Object.keys(fact).length !== 4 || fact.status !== 'identified' || fact.field !== name || fact.value !== selected ||
-        !validServiceIdVNext(fact.offeringId) || fact.offeringId !== offeringId) {
+        !validServiceIdVNext(fact.offeringId) || !sameServiceIdVNext(fact.offeringId, offeringId)) {
       invalidCustomerFields.push('confirmedFacts.' + name);
       validationMessages.push(name + ' requires confirmation of this exact selector, value, and known offering UUID.');
     }
@@ -927,7 +927,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       reviewReason: inspectionReason
     };
   }
-  return { ok: true, normalized: structuredClone(customerInputs) };
+  return { ok: true, normalized: canonicalCustomerIdentityVNext(customerInputs) };
 }
 
 
@@ -1568,7 +1568,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   const missingOwnerFields = [];
   const invalidOwnerFields = [];
   const crossFieldOwnerFields = [];
-  const ownerDiagnostics = [...structureDiagnostics, ...class2Diagnostics];
+  const ownerDiagnostics = [...structureDiagnostics, ...class2Diagnostics, ...includedPathDiagnosticsVNext(serviceRules, pricing)];
 
   for (const diagnostic of ownerDiagnostics) {
     if (diagnostic.type === 'missing') missingOwnerFields.push(diagnostic.path);
@@ -1679,7 +1679,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     'invalid', 'service_rule', nonPlainPath,
     `Owner pricing rules must contain only plain data objects; ${nonPlainPath} is not plain data.`
   )];
-  ownerPricing = snapshot.value;
+  ownerPricing = canonicalServiceIdentityVNext(snapshot.value);
   serviceType ||= ownerPricing.serviceType;
   const diagnostics = [];
   const supportedRoot = new Set(['active','serviceType','service','pricing','source','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','id','origin','zeroPricePolicy','knownOfferings']);
@@ -1699,7 +1699,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   for (const key of BUSINESS_DEFAULT_FIELDS.filter(name => !['peakMonths', 'peakSurchargePercent'].includes(name))) {
     if (Object.hasOwn(ownerPricing, key)) diagnostics.push(ownerDiagnostic('unsupported', 'misplaced_business_default', key, `${key} is a business-wide default and cannot be stored on a service.`));
   }
-  diagnostics.push(...identityDiagnosticsVNext(ownerPricing));
+  diagnostics.push(...identityDiagnosticsVNext(ownerPricing, serviceType));
   diagnostics.push(...zeroPolicyDiagnosticsVNext(ownerPricing));
   if (ownerPricing.knownOfferings !== undefined) {
     const maps = ownerPricing.knownOfferings;
@@ -1734,7 +1734,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     if(!isRecord(ownerPricing.approvedValues))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues','Approved values must be a plain field-to-approval map.'));
     else for(const [field,record] of Object.entries(ownerPricing.approvedValues)){
       if(!fields.includes(field))diagnostics.push(ownerDiagnostic('unsupported','ai_confirmation','approvedValues.'+field,'Approval does not match a confirmable service field.'));
-      else if(!isRecord(record)||Object.keys(record).length!==6||!Object.hasOwn(record,'value')||record.serviceType!==serviceType||record.serviceId!==ownerPricing.id||record.ownerId!==ownerPricing.origin?.ownerId||['ownerId','operationId','approvedAt'].some(key=>typeof record[key]!=='string'||!record[key].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(record.approvedAt)||!Number.isFinite(Date.parse(record.approvedAt)))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues.'+field,'Approval must retain the exact value, service identity, owner, operation, and timestamp.'));
+      else if(!isRecord(record)||Object.keys(record).length!==6||!Object.hasOwn(record,'value')||record.serviceType!==serviceType||!sameServiceIdVNext(record.serviceId,ownerPricing.id)||record.ownerId!==ownerPricing.origin?.ownerId||['ownerId','operationId','approvedAt'].some(key=>typeof record[key]!=='string'||!record[key].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(record.approvedAt)||!Number.isFinite(Date.parse(record.approvedAt)))diagnostics.push(ownerDiagnostic('invalid','ai_confirmation','approvedValues.'+field,'Approval must retain the exact value, service identity, owner, operation, and timestamp.'));
     }
   }
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
@@ -1847,9 +1847,10 @@ export function equalApprovalDataVNext(left,right) {
   return JSON.stringify(canonical(left))===JSON.stringify(canonical(right));
 }
 export function hasCurrentApprovalVNext(service,pricing,field) {
+  try { service = canonicalServiceIdentityVNext(service); } catch { return false; }
   const approval=service.approvedValues?.[field];
   const value=Object.hasOwn(pricing,field)?pricing[field]:service[field];
-  return service.confirmedFields?.[field]===true && isRecord(approval) && approval.serviceType===service.serviceType && approval.serviceId===service.id && approval.ownerId===service.origin?.ownerId && identityDiagnosticsVNext(service).length===0 &&
+  return service.confirmedFields?.[field]===true && isRecord(approval) && approval.serviceType===service.serviceType && sameServiceIdVNext(approval.serviceId,service.id) && approval.ownerId===service.origin?.ownerId && identityDiagnosticsVNext(service).length===0 &&
     ['ownerId','operationId','approvedAt'].every(key=>typeof approval[key]==='string'&&approval[key].trim()) &&
     /^\d{4}-\d{2}-\d{2}T/.test(approval.approvedAt) && Number.isFinite(Date.parse(approval.approvedAt)) &&
     Object.keys(approval).length===6 && Object.hasOwn(approval,'value') && equalApprovalDataVNext(value,approval.value);
@@ -1857,7 +1858,7 @@ export function hasCurrentApprovalVNext(service,pricing,field) {
 export function approveVNextValues(input,operation) {
   const serviceSnapshot=snapshotPlainData(input,'service'), opSnapshot=snapshotPlainData(operation,'approval');
   if(!serviceSnapshot.ok||serviceSnapshot.nonPlainPaths.length||!opSnapshot.ok||opSnapshot.nonPlainPaths.length)throw new TypeError('Approval requires plain data.');
-  const service=serviceSnapshot.value, op=opSnapshot.value;
+  const service=canonicalServiceIdentityVNext(serviceSnapshot.value), op=opSnapshot.value;
   if(!isRecord(service)||!isRecord(op)||!['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)||!SERVICE_TYPES.includes(service.serviceType))throw new TypeError('Approval requires an AI-originated service.');
   if (identityDiagnosticsVNext(service).length || op.ownerId !== service.origin.ownerId) throw new TypeError('Approval must match the persisted service and its authenticated owner context.');
   const allowed=aiConfirmationFieldsVNext(service,service.pricing);
@@ -1886,28 +1887,131 @@ export function validServiceIdVNext(value) {
 }
 const auditText = value => typeof value === 'string' && value.trim().length > 0;
 const auditTime = value => auditText(value) && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
-export function identityDiagnosticsVNext(service) {
+
+export function sameServiceIdVNext(left, right) {
+  return validServiceIdVNext(left) && validServiceIdVNext(right) && left.toLowerCase() === right.toLowerCase();
+}
+function canonicalUuid(value) { return validServiceIdVNext(value) ? value.toLowerCase() : value; }
+function canonicalOfferingRegistry(registries) {
+  if (!isRecord(registries)) return;
+  for (const values of Object.values(registries)) if (isRecord(values)) {
+    for (const key of Object.keys(values)) values[key] = canonicalUuid(values[key]);
+  }
+}
+export function canonicalServiceIdentityVNext(input) {
+  const snapshot = snapshotPlainData(input, 'service');
+  if (!snapshot.ok || snapshot.nonPlainPaths.length || !isRecord(snapshot.value)) throw new TypeError('Service identity requires plain data.');
+  const service = snapshot.value;
+  if (Object.hasOwn(service, 'id')) service.id = canonicalUuid(service.id);
+  if (isRecord(service.origin) && Object.hasOwn(service.origin, 'serviceId')) service.origin.serviceId = canonicalUuid(service.origin.serviceId);
+  if (isRecord(service.zeroPricePolicy) && Object.hasOwn(service.zeroPricePolicy, 'serviceId')) service.zeroPricePolicy.serviceId = canonicalUuid(service.zeroPricePolicy.serviceId);
+  canonicalOfferingRegistry(service.knownOfferings);
+  if (isRecord(service.approvedValues)) for (const [field, approval] of Object.entries(service.approvedValues)) if (isRecord(approval)) {
+    if (Object.hasOwn(approval, 'serviceId')) approval.serviceId = canonicalUuid(approval.serviceId);
+    if (field === 'knownOfferings') canonicalOfferingRegistry(approval.value);
+    if (field === 'zeroPricePolicy' && isRecord(approval.value) && Object.hasOwn(approval.value, 'serviceId')) approval.value.serviceId = canonicalUuid(approval.value.serviceId);
+  }
+  return service;
+}
+export function canonicalCustomerIdentityVNext(input) {
+  const snapshot = snapshotPlainData(input, 'customerInputs');
+  if (!snapshot.ok || snapshot.nonPlainPaths.length || !isRecord(snapshot.value)) throw new TypeError('Customer identity requires plain data.');
+  const customer = snapshot.value;
+  if (isRecord(customer.confirmedFacts)) for (const fact of Object.values(customer.confirmedFacts)) {
+    if (isRecord(fact) && Object.hasOwn(fact, 'offeringId')) fact.offeringId = canonicalUuid(fact.offeringId);
+  }
+  return customer;
+}
+
+export function identityDiagnosticsVNext(service, requestedType = service?.serviceType) {
+  if (!isRecord(service)) return [ownerDiagnostic('invalid', 'service_identity', 'service', 'A persisted service object is required.')];
   const out = [];
   const add = (path, message) => out.push(ownerDiagnostic(service[path] === undefined ? 'missing' : 'invalid', 'service_identity', path, message));
   if (!validServiceIdVNext(service.id)) add('id', 'A valid persisted service UUID is required.');
+  if (!SERVICE_TYPES.includes(service.serviceType)) add('serviceType', 'A supported persisted serviceType is required.');
+  else if (service.serviceType !== requestedType) add('serviceType', 'Requested serviceType must equal the persisted serviceType.');
   if (!['MANUAL', 'AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source)) add('source', 'Explicit MANUAL, AI_SUGGESTED, or AI_INTERVIEW source is required; deleting origin does not create a manual service.');
   const o = service.origin;
-  if (!isRecord(o) || Object.keys(o).length !== 5 || o.serviceId !== service.id || o.source !== service.source ||
+  if (!isRecord(o) || Object.keys(o).length !== 6 || !sameServiceIdVNext(o.serviceId, service.id) || o.source !== service.source ||
       !auditText(o.ownerId) || !auditText(o.operationId) || !auditTime(o.createdAt)) {
-    add('origin', 'Retain the immutable creation receipt: serviceId, source, ownerId, operationId, and createdAt. Source must match that receipt.');
+    add('origin', 'Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt.');
+  }
+  if (isRecord(o) && (!SERVICE_TYPES.includes(o.serviceType) || o.serviceType !== service.serviceType)) {
+    out.push(ownerDiagnostic(o.serviceType === undefined ? 'missing' : 'invalid', 'service_identity', 'origin.serviceType', 'Creation-receipt serviceType must equal the persisted serviceType; changing type requires a new identity and creation receipt.'));
   }
   return out;
 }
+
+
+function supportedIncludedPricePath(serviceType, path) {
+  if (typeof path !== 'string' || !SERVICE_TYPES.includes(serviceType)) return false;
+  const parts = path.split('.'), [root, key, leaf, size] = parts;
+  if (!allowedPricingFields(serviceType).includes(root)) return false;
+  if (parts.length === 1) return (
+    scalarMoneyFields(serviceType).includes(root) && !['minimumJob','repairMinimum','minimumServiceCharge'].includes(root)
+  ) || (serviceType === 'LANDSCAPING_MOWING' && root === 'mowingBaseRatePerSqft');
+  const openMaps = {
+    ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
+    FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
+    FLOORING_INSTALL:['removalPerSqft'], FLOORING_REPLACEMENT:['removalPerSqft'],
+    FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
+    FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
+    LANDSCAPING_MULCH:['mulchMaterialPerYard'], LANDSCAPING_PLANTING:['mulchMaterialPerYard']
+  };
+  if (parts.length === 2) {
+    if (openMaps[serviceType]?.includes(root)) return CANONICAL_SLUG.test(key);
+    if (serviceType.startsWith('FLOORING_') && ['laborPerSqft','materialPerSqft'].includes(root)) return FLOORING_TYPES.includes(key);
+    if (serviceType === 'SIDING_REPLACEMENT' && ['laborPerSqft','materialPerSqft'].includes(root)) return SIDING_TYPES.includes(key);
+    if (['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(serviceType) && root === 'bedPrepLaborPerSqft') return ['needs_weeding','overgrown'].includes(key);
+    if (serviceType === 'LANDSCAPING_PLANTING' && ['plantingLaborPerPlant','plantMaterialAllowance'].includes(root)) return SIZE_KEYS.includes(key);
+  }
+  if (parts.length === 3) return serviceType === 'LANDSCAPING_CLEANUP' && root === 'debrisPricing' && ['light','moderate','heavy'].includes(key) && leaf === 'disposalFlat';
+  if (parts.length === 4) {
+    const materialMap = {ROOFING_REPAIR:'repairMaterialAllowance',FLAT_ROOF_REPAIR:'patchMaterialAllowance',SIDING_REPAIR:'materialAllowance'}[serviceType];
+    return root === materialMap && (serviceType === 'SIDING_REPAIR' ? SIDING_TYPES.includes(key) : CANONICAL_SLUG.test(key)) && CANONICAL_SLUG.test(leaf) && SIZE_KEYS.includes(size);
+  }
+  return false;
+}
+function includedPathDiagnosticsVNext(service, pricing) {
+  const mappings = service.zeroPricePolicy?.includedPrices;
+  if (!isRecord(mappings)) return [];
+  const out = [], configured = path => valueAtPath(service.pricing, path) !== undefined ||
+    (Array.isArray(service.tiers) && service.tiers.some(t => valueAtPath(t?.overrides, path) !== undefined));
+  const validPrice = (path, value) => path === 'mowingBaseRatePerSqft' && service.serviceType === 'LANDSCAPING_MOWING'
+    ? nonNegative(value) && value <= Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
+  for (const [source, covering] of Object.entries(mappings)) {
+    const path = 'zeroPricePolicy.includedPrices.' + source;
+    for (const [role, pricePath] of [['source',source],['covering',covering]]) {
+      if (!supportedIncludedPricePath(service.serviceType, pricePath) || !configured(pricePath)) {
+        out.push(ownerDiagnostic('invalid','included_price_path',path,'The '+role+' path '+String(pricePath)+' must name an explicitly configured price in this exact service contract or one of its tiers.'));
+      }
+    }
+    if (pricing !== undefined && supportedIncludedPricePath(service.serviceType, source)) {
+      const value = valueAtPath(pricing, source);
+      // A source absent from this variant belongs to another configured tier.
+      // A present source is checked even when it is not selected by this request.
+      if (value !== undefined) {
+        const coveringValue = valueAtPath(pricing, covering);
+        if (!validPrice(source, value) || !supportedIncludedPricePath(service.serviceType, covering) ||
+            !validPrice(covering, coveringValue) || (value === 0 && coveringValue === 0)) {
+          out.push(ownerDiagnostic('invalid','included_price_path',path,'The effective tier must retain valid source and covering prices; an included zero needs a positive covering price.'));
+        }
+      }
+    }
+  }
+  return uniqueDiagnostics(out);
+}
+
 function zeroPolicyDiagnosticsVNext(service) {
   const p = service.zeroPricePolicy;
   if (p === undefined) return [];
-  const valid = isRecord(p) && Object.keys(p).length === 7 && validServiceIdVNext(p.serviceId) && p.serviceId === service.id &&
+  const valid = isRecord(p) && Object.keys(p).length === 7 && validServiceIdVNext(p.serviceId) && sameServiceIdVNext(p.serviceId, service.id) &&
     auditText(p.ownerId) && p.ownerId === service.origin?.ownerId && auditText(p.operationId) && auditTime(p.approvedAt) &&
     typeof p.freeCompleteService === 'boolean' && Array.isArray(p.freeTiers) && !denseArrayIssue(p.freeTiers) &&
     p.freeTiers.every(name => auditText(name) && name === name.trim() && Array.isArray(service.tiers) && service.tiers.some(t => t?.name === name)) &&
     new Set(p.freeTiers).size === p.freeTiers.length && isRecord(p.includedPrices) &&
     Object.entries(p.includedPrices).every(([path, includedIn]) => auditText(path) && auditText(includedIn) && path !== includedIn);
-  return valid ? [] : [ownerDiagnostic('invalid', 'zero_price_policy', 'zeroPricePolicy', 'Zero-price policy must explicitly bind the persisted service, owner approval, free offerings, and included-price paths.')];
+  return valid ? includedPathDiagnosticsVNext(service) : [ownerDiagnostic('invalid', 'zero_price_policy', 'zeroPricePolicy', 'Zero-price policy must explicitly bind the persisted service, owner approval, free offerings, and included-price paths.')];
 }
 export function freeOfferingVNext(service, tierName = null) {
   const p = service.zeroPricePolicy;
@@ -1931,8 +2035,8 @@ export function editVNextService(input, changes) {
   const current = snapshotPlainData(input, 'service'), patch = snapshotPlainData(changes, 'changes');
   if (!current.ok || current.nonPlainPaths.length || !patch.ok || patch.nonPlainPaths.length ||
       identityDiagnosticsVNext(current.value).length) throw new TypeError('Ordinary edits require a valid persisted service and plain changes.');
-  if (['id', 'source', 'origin', 'confirmedFields', 'approvedValues'].some(key => Object.hasOwn(patch.value, key))) throw new TypeError('Ordinary edits cannot change persisted identity, origin, or approval receipts.');
-  return structuredClone({ ...current.value, ...patch.value });
+  if (['id', 'serviceType', 'source', 'origin', 'confirmedFields', 'approvedValues'].some(key => Object.hasOwn(patch.value, key))) throw new TypeError('Ordinary edits cannot change persisted identity, origin, or approval receipts.');
+  return canonicalServiceIdentityVNext({ ...current.value, ...patch.value });
 }
 
 // IDs are one-to-one within a selector. Different selectors may have their own

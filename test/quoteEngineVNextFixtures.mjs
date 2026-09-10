@@ -15,8 +15,9 @@ function offeringId(field,value) {
  const h=createHash('sha256').update('VNext synthetic known offering: '+field+':'+value).digest('hex');
  return h.slice(0,8)+'-'+h.slice(8,12)+'-4'+h.slice(13,16)+'-8'+h.slice(17,20)+'-'+h.slice(20,32);
 }
-export function fixtureIdentity(source='MANUAL', id=randomUUID()) {
- return {id,source,origin:{serviceId:id,source,ownerId:'internal-fixture-owner',operationId:'fixture-created',createdAt:'2026-09-09T12:00:00.000Z'}};
+export function fixtureIdentity(source='MANUAL', id=randomUUID(), serviceType) {
+ if (!MEASUREMENT_CONTRACTS[serviceType]) throw new TypeError('Synthetic creation receipt requires its explicit serviceType.');
+ return {id,source,origin:{serviceId:id,serviceType,source,ownerId:'internal-fixture-owner',operationId:'fixture-created',createdAt:'2026-09-09T12:00:00.000Z'}};
 }
 export function fixtureOfferings(type) {
  return Object.fromEntries(Object.keys(MEASUREMENT_CONTRACTS[type].fields).filter(field=>known[field]).map(field=>[field,Object.fromEntries(known[field].map(value=>[value,offeringId(field,value)]))]));
