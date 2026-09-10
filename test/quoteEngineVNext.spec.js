@@ -722,3 +722,191 @@ test('the isolated candidate is not imported by the production server', () => {
   assert.equal(productionServer.includes('quote-engine-vnext'), false);
   assert.equal(productionServer.includes('generateQuoteVNext'), false);
 });
+
+
+// These expectations start from the explicit hand-calculated service line tables
+// above. Financial arithmetic uses independent integer fractions, never the
+// engine's exactMath helpers or returned rates, categories, bases or subtotals.
+const precisionCategories = {
+  'Roofing labor':'labor','Field materials':'material','Tear-off':'removal',
+  'Underlayment':'material','Starter strip':'material','Drip edge':'material','Ridge cap':'material','Decking replacement':'material',
+  'Repair labor':'labor','Repair materials':'material','Flat roof labor':'labor','Membrane':'material',
+  'Flat roof repair labor':'labor','Flat roof repair materials':'material',
+  'Wall labor':'labor','Wall paint and materials':'material','Trim labor':'labor','Trim materials':'material',
+  'Flooring labor':'labor','Flooring materials':'material','Existing flooring removal':'removal','Subfloor repair allowance':'prep',
+  'Concrete labor':'labor','Ready-mix concrete':'material','Formwork':'material','Base preparation':'prep','Wire mesh reinforcement':'material',
+  'Cleanup labor':'labor','Debris disposal':'disposal','Additional haul-away':'disposal',
+  'Bed preparation':'labor','Mulch material':'material','Mulch installation labor':'labor','Bed edging':'labor',
+  'Sod material':'material','Sod installation labor':'labor','Ground preparation':'prep',
+  'Small plant installation labor':'labor','Small plant material allowance':'material',
+  'Medium plant installation labor':'labor','Medium plant material allowance':'material',
+  'Large plant installation labor':'labor','Large plant material allowance':'material',
+  'Mowing labor':'labor','Clipping bagging and disposal':'disposal','Lawn edging':'addon',
+  'Siding labor':'labor','Siding materials':'material','Siding repair labor':'labor','Siding repair materials':'material'
+};
+const precisionEntries = happyCases.map(original => {
+  const entry=structuredClone(original);
+  if(entry.serviceType==='SIDING_REPLACEMENT'){
+    entry.customerInputs.oldSidingRemoval=false;entry.customerInputs.trimIncluded=false;delete entry.customerInputs.trimLengthLF;
+    delete entry.expectedOwnerDecision;
+    // 1,000 measured sq ft * 400 labor cents; 1,100 waste-adjusted sq ft * 700 material cents.
+    entry.expected={lines:{'Siding labor':400000,'Siding materials':770000}};
+  }
+  return entry;
+});
+function precisionFraction(value) {
+  const [whole,part='']=String(value).split('.');
+  return [BigInt(whole+part),10n**BigInt(part.length)];
+}
+function precisionRound(n,d=1n) {assert.ok(n>=0n&&d>0n);return Number((2n*n+d)/(2n*d));}
+function precisionPercent(cents,percent) {const[n,d]=precisionFraction(percent);return precisionRound(BigInt(cents)*n,100n*d);}
+function precisionMarkup(cents,b) {
+  const[n,d]=precisionFraction(b.markupPercent);
+  return b.markupMode==='margin'?precisionRound(BigInt(cents)*100n*d,100n*d-n)-cents:precisionPercent(cents,b.markupPercent);
+}
+function precisionMinimumField(entry) {
+  const keys=['minimumJob','repairMinimum','minimumServiceCharge'].filter(k=>Object.hasOwn(entry.ownerPricing.pricing,k));
+  assert.equal(keys.length,1);return keys[0];
+}
+function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
+  const lines=Object.entries(entry.expected.lines).map(([name,cents])=>{
+    assert.ok(precisionCategories[name],name);return {name,cents,category:precisionCategories[name]};
+  });
+  for(const fee of fees)lines.push({...fee});
+  const months=p.peakMonths===undefined?b.peakMonths:p.peakMonths,percent=p.peakSurchargePercent===undefined?b.peakSurchargePercent:p.peakSurchargePercent;
+  const labor=lines.filter(l=>l.category==='labor').reduce((sum,l)=>sum+l.cents,0);
+  const seasonal=months.includes(month)?precisionPercent(labor,percent):0;
+  if(seasonal)lines.push({name:'Peak season adjustment',cents:seasonal,category:'surcharge'});
+  const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;
+  const sum=values=>values.reduce((total,l)=>total+l.cents,0);
+  const base=sum(lines.filter(eligible)),markup=precisionMarkup(base,b),subtotal=sum(lines)+markup;
+  const taxable=lines.filter(l=>p.taxabilityByCategory[l.category]===true);
+  const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
+  const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
+  const tax=b.taxMode==='TAX_NONE'?0:precisionPercent(b.taxMode==='TAX_ALL'?Math.max(subtotal,minimum):taxableSubtotal,b.taxPercent);
+  const adjustment=Math.max(0,minimum-(subtotal+(b.taxMode==='TAX_MATERIALS'?tax:0)));
+  const total=subtotal+adjustment+tax;
+  const amounts=Object.fromEntries(lines.map(l=>[l.name,l.cents]));
+  if(markup)amounts.Markup=markup;
+  if(tax)amounts.Tax=tax;
+  if(adjustment)amounts['Minimum price adjustment']=adjustment;
+  const floor=minimum+(b.taxMode==='TAX_ALL'?precisionPercent(minimum,b.taxPercent):0);
+  const low=Math.max(precisionPercent(total,100-b.rangeBufferPercent),floor,1),high=precisionPercent(total,100+b.rangeBufferPercent);
+  const display=b.rangeBufferPercent===0?[total/100,total/100,total/100]:[Math.floor(low/100),precisionRound(BigInt(total),100n),Math.ceil(high/100)];
+  return {amounts,total,markup,tax,adjustment,subtotal,floor,range:[low,total,high],display};
+}
+function precisionInspect(value) {
+  if(value===null||typeof value!=='object'){
+    if(typeof value==='number')assert.ok(Number.isFinite(value));
+    assert.ok(!['function','symbol','bigint'].includes(typeof value));return;
+  }
+  for(const d of Object.values(Object.getOwnPropertyDescriptors(value))){assert.ok(Object.hasOwn(d,'value'));precisionInspect(d.value);}
+}
+const precisionPublicKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','options','priceDrivers','quoteId','rangeBufferUsed','resultType'];
+const precisionOptionKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','priceDrivers','rangeBufferUsed','skippedAddons','tierName'];
+let precisionChecks=0;
+function precisionCheck(entry,p,b,extras={}) {
+  precisionChecks++;
+  const expected=precisionExpected(entry,p,b,extras);
+  const request={serviceType:entry.serviceType,customerInputs:entry.customerInputs,ownerPricing:p,businessDefaults:b,callerType:'owner',currentMonth:extras.month??1,feeSelections:extras.feeSelections??{}};
+  const r=generateQuoteVNext(request);precisionInspect(r);
+  assert.equal(r.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify({request,result:r}));
+  assert.deepEqual(r.submittedCustomerInputs,entry.customerInputs);assert.equal(r.serviceId,p.id);
+  assert.deepEqual(r.calculationRecord.financialInputs,{businessDefaults:b,feeSelections:request.feeSelections,currentMonth:request.currentMonth});
+  assert.deepEqual(r.calculationRecord.options,r.options.map(o=>o.calculationRecord));
+  for(const option of r.options){
+    assert.deepEqual(Object.keys(option.calculationRecord.scenarios),['mid']);
+    assert.equal(option.calculationRecord.scenarios.mid.finalTotalCents,expected.total);
+    for(const s of Object.values(option.calculationRecord.scenarios)){
+      assert.deepEqual(Object.fromEntries(s.lineItems.map(l=>[l.name,l.amountCents])),expected.amounts);
+      assert.equal(s.markup.amountCents,expected.markup);assert.equal(s.tax.taxCents,expected.tax);assert.equal(s.minimum.adjustmentCents,expected.adjustment);
+      assert.equal(s.lineItems.reduce((sum,l)=>sum+BigInt(l.amountCents),0n),BigInt(expected.total));
+    }
+    const range=option.calculationRecord.range;
+    assert.deepEqual([range.lowCents,range.midCents,range.highCents],expected.range);
+    assert.equal(range.minimumCustomerFloorCents,expected.floor);
+    assert.deepEqual([option.lowEstimate,option.midEstimate,option.highEstimate],expected.display);
+  }
+  const publicResult=sanitizeForCustomerVNext(r);precisionInspect(publicResult);
+  assert.equal(publicResult.resultType,'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(Object.keys(publicResult).filter(k=>k!=='optionAvailabilityNotice').sort(),precisionPublicKeys);
+  assert.deepEqual([publicResult.lowEstimate,publicResult.midEstimate,publicResult.highEstimate],expected.display);
+  for(const option of publicResult.options)assert.deepEqual(Object.keys(option).sort(),precisionOptionKeys);
+  assert.equal(/ratePath|rateCents|ownerConfiguration|financialInputs|noChargeReason|markup|margin|overhead/i.test(JSON.stringify(publicResult)),false);
+  return r;
+}
+test('precision follow-up: all-service catalog covers every registered ready or review path and public entry point',()=>{
+  assert.deepEqual(precisionEntries.map(e=>e.serviceType).sort(),[...SERVICE_TYPES].sort());
+  let ready=0,review=0;
+  for(const entry of precisionEntries){
+    const p=entry.ownerPricing,c=entry.customerInputs,request={serviceType:entry.serviceType,customerInputs:c,pricebook:{defaults,services:[p]},currentMonth:1};
+    if(entry.expectedOwnerDecision){
+      review++;
+      for(const r of [quote(entry),previewFromVNextPricebook(request),quoteFromVNextPricebook({...request,callerType:'owner'})]){
+        precisionInspect(r);assert.equal(r.resultType,'ESTIMATE_REQUIRES_REVIEW');
+        assert.ok(r.ownerDecisionRequired.some(d=>d.kind===entry.expectedOwnerDecision));
+        assert.deepEqual(Object.keys(sanitizeForCustomerVNext(r)).sort(),['customerMessage','quoteId','resultType']);
+      }
+      continue;
+    }
+    ready++;const r=precisionCheck(entry,p,defaults);
+    for(const result of [previewFromVNextPricebook(request),quoteFromVNextPricebook({...request,callerType:'owner'})]){
+      precisionInspect(result);assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.deepEqual(result.lineItems,r.lineItems);
+    }
+    for(const result of [quoteFromVNextPricebook(request),generateQuoteVNext({serviceType:entry.serviceType,customerInputs:c,ownerPricing:p,businessDefaults:defaults,currentMonth:1})]){
+      precisionInspect(result);assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
+      assert.deepEqual(Object.keys(result).sort(),precisionPublicKeys);
+      assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[r.lowEstimate,r.midEstimate,r.highEstimate]);
+    }
+  }
+  assert.equal(ready,16);assert.equal(review,4);
+});
+for(const entry of precisionEntries.filter(e=>!e.expectedOwnerDecision)){
+  test('precision follow-up: '+entry.serviceType+' independent finance matrix fees tiers minima and range boundaries',t=>{
+    const startChecks=precisionChecks;
+    const original=entry.ownerPricing;
+    for(const basis of ['configured','sell_price']){
+      const p=structuredClone(original);if(basis==='sell_price')p.priceBasisByCategory=structuredClone(sellBasis);
+      for(const taxMode of ['TAX_NONE','TAX_MATERIALS','TAX_ALL'])for(const [markupMode,markupPercent]of [['markup',0],['markup',17.5],['margin',17.5],['margin',90],['margin',99],['margin',99.9]]){
+        precisionCheck(entry,p,{...defaults,taxMode,taxPercent:taxMode==='TAX_NONE'?0:7.5,markupMode,markupPercent});
+      }
+    }
+    const taxed={...defaults,markupPercent:17.5,taxMode:'TAX_MATERIALS',taxPercent:7.5};
+    for(const category of PRICE_BASIS_CATEGORIES)precisionCheck(entry,original,{...taxed,markupApplies:{...taxed.markupApplies,[category]:false}});
+    for(const category of TAXABILITY_CATEGORIES){
+      const p=structuredClone(original);p.taxabilityByCategory[category]=!p.taxabilityByCategory[category];precisionCheck(entry,p,taxed);
+    }
+    const feeDefaults={...taxed,travelFee:233,overheadFixed:379,permitFee:401,disposalFee:503};
+    const feeOwner=structuredClone(original);for(const fee of Object.keys(feeRules))feeOwner.feeRules[fee]='always';
+    const fees=[{name:'Travel',category:'travel',cents:233},{name:'Overhead',category:'overhead',cents:379},{name:'Permit',category:'permit',cents:401}];
+    if(!['LANDSCAPING_CLEANUP','LANDSCAPING_SOD','LANDSCAPING_MOWING'].includes(entry.serviceType))fees.push({name:'Disposal',category:'disposal',cents:503});
+    precisionCheck(entry,feeOwner,feeDefaults,{fees});
+    for(const mode of ['owner_selected','customer_selected'])for(const selected of [false,true]){
+      const p=structuredClone(original);p.feeRules.travel=mode;const actor=mode==='owner_selected'?'owner':'customer';
+      precisionCheck(entry,p,feeDefaults,{feeSelections:{[actor]:{travel:selected}},fees:selected?[{name:'Travel',category:'travel',cents:233}]:[]});
+      const missing=generateQuoteVNext({serviceType:entry.serviceType,customerInputs:entry.customerInputs,ownerPricing:p,businessDefaults:feeDefaults,callerType:'owner',currentMonth:1});
+      precisionInspect(missing);assert.equal(missing.resultType,'ESTIMATE_REQUIRES_REVIEW');
+    }
+    const seasonal=structuredClone(original);seasonal.peakMonths=[1];seasonal.peakSurchargePercent=7.5;
+    for(const month of [1,2])precisionCheck(entry,seasonal,taxed,{month});
+    const inherited=structuredClone(original);delete inherited.peakMonths;delete inherited.peakSurchargePercent;
+    precisionCheck(entry,inherited,{...taxed,peakMonths:[1],peakSurchargePercent:7.5});
+    const minField=precisionMinimumField(entry);
+    for(const taxMode of ['TAX_NONE','TAX_MATERIALS','TAX_ALL']){
+      const b={...taxed,taxMode,taxPercent:taxMode==='TAX_NONE'?0:7.5};
+      const e=precisionExpected(entry,original,b),threshold=taxMode==='TAX_ALL'?e.subtotal:e.total;
+      for(const amount of [threshold-1,threshold,threshold+1]){
+        const p=structuredClone(original);p.pricing[minField]=amount;precisionCheck(entry,p,b);
+        precisionCheck(entry,original,{...b,minimumJobPrice:amount});
+      }
+    }
+    for(const rangeBufferPercent of [0,0.5,10,25])precisionCheck(entry,original,{...taxed,rangeBufferPercent});
+    const tiered=structuredClone(original);tiered.tiers=[{name:'First',overrides:{}},{name:'Second',overrides:{}},{name:'Invalid',overrides:{[minField]:-1}}];
+    const tiers=precisionCheck(entry,tiered,taxed);assert.deepEqual(tiers.options.map(o=>o.tierName),['First','Second']);assert.equal(tiers.failedTierDiagnostics[0].tierName,'Invalid');
+    for(const markupPercent of [100,100.1,Infinity]){
+      const r=generateQuoteVNext({serviceType:entry.serviceType,customerInputs:entry.customerInputs,ownerPricing:original,businessDefaults:{...defaults,markupMode:'margin',markupPercent},callerType:'owner',currentMonth:1});
+      precisionInspect(r);assert.equal(r.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(Object.keys(sanitizeForCustomerVNext(r)).sort(),['customerMessage','quoteId','resultType']);
+    }
+    t.diagnostic(JSON.stringify({serviceType:entry.serviceType,independentReadyChecks:precisionChecks-startChecks,reviewControls:7}));
+  });
+}

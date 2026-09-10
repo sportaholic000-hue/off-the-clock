@@ -1254,14 +1254,17 @@ function recordNoChargeClassification(result, rules) {
     if(holder.amountCents!==0)continue;
     const includedIn=rules.zeroPricePolicy?.includedPrices?.[path];
     if(calculation.quantity===0){holder.noCharge=true;holder.noChargeReason='zero_physical_scope';continue;}
-    if(includedIn && (calculation.rateCents===0 || calculation.amountCents===0)){
+    // A composite component's amountCents is rounded output, not its configured price.
+    const zeroConfiguredPrice = calculation.rateCents === 0 ||
+      (calculation.evidenceVariant === 'fixed_amount' && calculation.amountCents === 0);
+    if(includedIn && zeroConfiguredPrice){
       const covering=entries.filter(other=>other.path===includedIn && other.holder.amountCents>0);
       if(!covering.length || covering.some(other=>other.category!==entry.category || other.basis!==entry.basis)){
         const diagnostic={path:'zeroPricePolicy.includedPrices.'+path,kind:'included_price_allocation',message:'Included pricing requires a billed covering component with the same financial category and price basis; a different category or basis needs an explicit owner allocation contract.'};
         throw new QuoteReviewError(diagnostic.message,{ownerDecisionRequired:[diagnostic],ownerDiagnostics:[{type:'owner_decision',...diagnostic}],crossFieldOwnerFields:[diagnostic.path]});
       }
       holder.noCharge=true;holder.noChargeReason='included_in_another_price';holder.includedInPricePath=includedIn;
-    } else if(calculation.rateCents===0 || calculation.amountCents===0) {
+    } else if(zeroConfiguredPrice) {
       holder.noCharge=true;holder.noChargeReason='explicitly_free';
     } else if(calculation.evidenceVariant===undefined){
       holder.noCharge=true;holder.noChargeReason='rounded_fractional_cent';

@@ -7309,3 +7309,36 @@ test('repair 146: free included zero physical scope and sub-cent rounding have d
   for(const result of [included,free,noScope,fractional])assert.equal(/includedInPricePath|ratePath|rateCents|noChargeReason/.test(JSON.stringify(sanitizeForCustomerVNext(result))),false);
   const positive=currentRun(roofInputs({deckingSheets:1}),roofService({deckingPerSheet:5000}));assert.equal(lineAmount(positive,'Decking replacement'),5000);assert.equal(line(positive,'Decking replacement').noChargeReason,undefined);
 });
+
+test('precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion',()=>{
+  for(const serviceType of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']){
+    for(const finish of [1,1.0196,1.02,1.0204]){
+      const p=concreteService({laborPerSqft:1},serviceType);p.pricing.finishMultiplier.smooth=finish;
+      const c=concreteInputs({length:5,width:5,finishType:'smooth'});
+      for(const owner of [p,includedFixture(structuredClone(p),{laborPerSqft:'concreteCostPerCubicYard'})]){
+        const r=currentRun(c,owner);assert.equal(r.resultType,auditReady,JSON.stringify(r));
+        const labor=line(r,'Concrete labor'),components=labor.calculation.components;
+        // 25 sq ft * 1 cent base = 25 cents. Finish extras are 0, .49, .50, .51 cents.
+        assert.equal(labor.amountCents,finish<1.02?25:26);
+        assert.equal(components.length,finish===1?1:2);
+        if(finish>1){
+          const extra=components[1],expected=finish<1.02?0:1;
+          assert.equal(extra.amountCents,expected);
+          assert.equal(extra.noChargeReason,expected===0?'rounded_fractional_cent':undefined);
+          assert.equal(extra.includedInPricePath,undefined);
+        }
+        assert.equal(scenario(r).finalTotalCents,finish<1.02?56136:56137);
+        const direct=calculateServiceVNext(serviceType,c,owner.pricing,{ownerPricing:owner});
+        assert.deepEqual(line(direct,'Concrete labor').calculation.components,components);
+        assert.equal(/ratePath|noChargeReason|includedInPricePath/.test(JSON.stringify(sanitizeForCustomerVNext(r))),false);
+      }
+    }
+    const p=freeFixture(concreteService({laborPerSqft:0,concreteCostPerCubicYard:0,formworkPerLF:0},serviceType));
+    const c=concreteInputs({length:5,width:5,finishType:'smooth'});
+    const free=currentRun(c,p);
+    assert.equal(scenario(free).finalTotalCents,0);
+    assert.ok(line(free,'Concrete labor').calculation.components.every(x=>x.noChargeReason==='explicitly_free'));
+    const unclassified=structuredClone(p);delete unclassified.zeroPricePolicy;
+    assert.equal(currentRun(c,unclassified).resultType,auditReview);
+  }
+});

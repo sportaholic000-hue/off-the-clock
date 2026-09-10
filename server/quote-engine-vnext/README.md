@@ -1,6 +1,8 @@
 # Quote Engine vNext Audit Candidate
 
-Current pass: [Repairs 139–146](AUDIT_REPAIRS_139_146.md), frozen start `0242784d5835ee2f0ca6f0c5c1c8098a2f0a3e8f`. Its exact selector identity, unique service IDs, diagnostic ownership, lead identity, included-price classification, metadata and configured-evidence binding contracts supersede conflicting historical descriptions. Earlier counts are historical, not verification of this snapshot.
+Current precision follow-up: [service-wide financial verification and composite rounding provenance](AUDIT_PRECISION_20260910.md), starting at `3261560b5e7b5fefe9de6957a676e4464624503a`. This retains all earlier protections. See the delivery report for final-commit execution results.
+
+Previous pass: [Repairs 139–146](AUDIT_REPAIRS_139_146.md), frozen start `0242784d5835ee2f0ca6f0c5c1c8098a2f0a3e8f`. Its exact selector identity, unique service IDs, diagnostic ownership, lead identity, included-price classification, metadata and configured-evidence binding contracts supersede conflicting historical descriptions. Earlier counts are historical, not verification of this snapshot.
 
 This directory is an isolated accuracy-repair candidate. Nothing in the
 production server imports it, and no production route points to it.
