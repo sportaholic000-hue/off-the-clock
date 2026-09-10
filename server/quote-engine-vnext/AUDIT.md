@@ -1,6 +1,6 @@
 # Quote Engine vNext Audit Notes
 
-Current pass: [Repairs 128–138](AUDIT_REPAIRS_128_138.md), frozen start `7dfc86dc212599e4132d48d693b798a567eb2239`. Its explicit zero, whole-dollar customer-range, identity/origin, certainty, and projection contracts supersede conflicting historical candidate descriptions. Earlier counts are historical, not verification of this snapshot.
+Current pass: [Repairs 139–146](AUDIT_REPAIRS_139_146.md), frozen start `0242784d5835ee2f0ca6f0c5c1c8098a2f0a3e8f`. Its exact selector identity, unique service IDs, diagnostic ownership, lead identity, included-price classification, metadata and configured-evidence binding contracts supersede conflicting historical descriptions. Earlier counts are historical, not verification of this snapshot.
 
 ## Status and boundary
 

@@ -104,6 +104,7 @@ function makeLine({
   highRateCents,
   priceBasis,
   allowZeroRate = true,
+  allowZeroQuantity = false,
 }) {
   let exactQuantity;
   let numericQuantity;
@@ -113,7 +114,7 @@ function makeLine({
   } catch {
     throw new QuoteReviewError(`${name} did not receive a finite measured quantity.`);
   }
-  measured(numericQuantity, `${name} quantity`);
+  if (!(allowZeroQuantity && numericQuantity === 0)) measured(numericQuantity, `${name} quantity`);
   if(ratePath==='mowingBaseRatePerSqft') { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent mowing rate.',{invalidOwnerFields:[ratePath]}); }
   else money(rateCents, ratePath, { allowZero: allowZeroRate });
   const checkedMultipliers = multipliers.map(multiplier => {
@@ -155,7 +156,7 @@ function makeLine({
     amountCents,
     ownerVisible: true,
     customerVisible: false,
-    ...(amountCents === 0 ? { noCharge: true, noChargeReason: rateCents === 0 ? 'configured_zero_price' : 'rounded_fractional_cent' } : {}),
+    ...(amountCents === 0 ? { noCharge: true, noChargeReason: numericQuantity === 0 ? 'zero_physical_scope' : rateCents === 0 ? 'explicitly_free' : 'rounded_fractional_cent' } : {}),
     calculation: {
       evidenceVariant: lowRateCents !== undefined || highRateCents !== undefined ? 'ranged' : 'quantity_rate',
       quantity: numericQuantity,
@@ -256,7 +257,7 @@ function makeCompositeLine({ name, category, components, customerDriver }) {
     });
   }
   const noChargeReason = amountCents === 0
-    ? normalized.every(component => component.rateCents === 0) ? 'configured_zero_price' : 'rounded_fractional_cent'
+    ? normalized.every(component => component.rateCents === 0) ? 'explicitly_free' : 'rounded_fractional_cent'
     : null;
   return {
     name,
@@ -278,7 +279,7 @@ function fixedLine(name, category, amountCents, ratePath, customerDriver, { allo
     amountCents: checked,
     ownerVisible: true,
     customerVisible: false,
-    ...(checked === 0 ? { noCharge: true, noChargeReason: 'configured_zero_price' } : {}),
+    ...(checked === 0 ? { noCharge: true, noChargeReason: 'explicitly_free' } : {}),
     calculation: {
       evidenceVariant: 'fixed_amount',
       amountCents: checked,
@@ -483,7 +484,7 @@ function calculateRoofReplacement(c, p, ctx) {
   }
   if (c.deckingSheets !== undefined) {
     recordMeasurement(out, 'deckingSheets', c.deckingSheets, 'confirmed sheets');
-    if (c.deckingSheets > 0) add(out, makeLine({ name: 'Decking replacement', category: 'material', quantity: c.deckingSheets, unit: 'confirmed sheets', rateCents: p.deckingPerSheet, ratePath: 'deckingPerSheet', customerDriver: `${c.deckingSheets} decking sheet${c.deckingSheets === 1 ? '' : 's'} included` }));
+    if (c.deckingSheets > 0 || deckingUnitPrice !== undefined) add(out, makeLine({ name: 'Decking replacement', category: 'material', quantity: c.deckingSheets, allowZeroQuantity: true, unit: 'confirmed sheets', rateCents: p.deckingPerSheet, ratePath: 'deckingPerSheet', ...(c.deckingSheets > 0 ? {customerDriver: `${c.deckingSheets} decking sheet${c.deckingSheets === 1 ? '' : 's'} included`} : {}) }));
   }
 
   out.feeScope.disposal = layers > 0;
@@ -1209,22 +1210,23 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
           throw new QuoteReviewError('Optional add-on exclusions require an engine disclosure context.', { invalidOwnerFields: ['addonDisclosureContext'] });
         }
       };
-  if (serviceType === 'ROOFING_REPLACEMENT') return calculateRoofReplacement(customerInputs, pricing, ctx);
-  if (serviceType === 'ROOFING_REPAIR') return calculateRoofRepair(customerInputs, pricing, ctx);
-  if (serviceType === 'FLAT_ROOF_REPLACEMENT') return calculateFlatRoofReplacement(customerInputs, pricing, ctx);
-  if (serviceType === 'FLAT_ROOF_REPAIR') return calculateFlatRoofRepair(customerInputs, pricing, addonContext);
-  if (serviceType === 'INTERIOR_PAINTING') return calculateInteriorPainting(customerInputs, pricing);
-  if (serviceType === 'EXTERIOR_PAINTING') return calculateExteriorPainting(customerInputs, pricing);
-  if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') return calculateFlooring(serviceType, customerInputs, pricing, ctx);
-  if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') return calculateFencing(serviceType, customerInputs, pricing);
-  if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return calculateConcrete(serviceType, customerInputs, pricing);
-  if (serviceType === 'LANDSCAPING_CLEANUP') return calculateCleanup(customerInputs, pricing);
-  if (serviceType === 'LANDSCAPING_MULCH') return calculateMulch(customerInputs, pricing);
-  if (serviceType === 'LANDSCAPING_SOD') return calculateSod(customerInputs, pricing, ctx);
-  if (serviceType === 'LANDSCAPING_PLANTING') return calculatePlanting(customerInputs, pricing);
-  if (serviceType === 'LANDSCAPING_MOWING') return calculateMowing(customerInputs, pricing, addonContext);
-  if (serviceType === 'SIDING_REPLACEMENT') return calculateSidingReplacement(customerInputs, pricing);
-  if (serviceType === 'SIDING_REPAIR') return calculateSidingRepair(customerInputs, pricing);
+  const finalize = result => recordNoChargeClassification(result, serviceRules);
+  if (serviceType === 'ROOFING_REPLACEMENT') return finalize(calculateRoofReplacement(customerInputs, pricing, ctx));
+  if (serviceType === 'ROOFING_REPAIR') return finalize(calculateRoofRepair(customerInputs, pricing, ctx));
+  if (serviceType === 'FLAT_ROOF_REPLACEMENT') return finalize(calculateFlatRoofReplacement(customerInputs, pricing, ctx));
+  if (serviceType === 'FLAT_ROOF_REPAIR') return finalize(calculateFlatRoofRepair(customerInputs, pricing, addonContext));
+  if (serviceType === 'INTERIOR_PAINTING') return finalize(calculateInteriorPainting(customerInputs, pricing));
+  if (serviceType === 'EXTERIOR_PAINTING') return finalize(calculateExteriorPainting(customerInputs, pricing));
+  if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') return finalize(calculateFlooring(serviceType, customerInputs, pricing, ctx));
+  if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') return finalize(calculateFencing(serviceType, customerInputs, pricing));
+  if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return finalize(calculateConcrete(serviceType, customerInputs, pricing));
+  if (serviceType === 'LANDSCAPING_CLEANUP') return finalize(calculateCleanup(customerInputs, pricing));
+  if (serviceType === 'LANDSCAPING_MULCH') return finalize(calculateMulch(customerInputs, pricing));
+  if (serviceType === 'LANDSCAPING_SOD') return finalize(calculateSod(customerInputs, pricing, ctx));
+  if (serviceType === 'LANDSCAPING_PLANTING') return finalize(calculatePlanting(customerInputs, pricing));
+  if (serviceType === 'LANDSCAPING_MOWING') return finalize(calculateMowing(customerInputs, pricing, addonContext));
+  if (serviceType === 'SIDING_REPLACEMENT') return finalize(calculateSidingReplacement(customerInputs, pricing));
+  if (serviceType === 'SIDING_REPAIR') return finalize(calculateSidingRepair(customerInputs, pricing));
   const decision = {
     path: 'customChargeClassification',
     kind: 'custom_charge_classification',
@@ -1235,4 +1237,43 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     ownerDiagnostics: [{ type: 'owner_decision', ...decision }],
     validationMessages: [decision.message]
   });
+}
+
+
+// Included prices retain the category and basis of the concrete billed
+// components. An allocation across categories or bases is never inferred.
+function recordNoChargeClassification(result, rules) {
+  const entries=[];
+  for(const line of result.lineItems){
+    const components=line.calculation.evidenceVariant==='composite'?line.calculation.components:null;
+    if(components)for(const component of components)entries.push({holder:component,calculation:component,path:component.ratePath,category:line.category,basis:component.priceBasis||line.priceBasis||rules.priceBasisByCategory?.[line.category]});
+    else entries.push({holder:line,calculation:line.calculation,path:line.calculation.ratePath,category:line.category,basis:line.priceBasis||rules.priceBasisByCategory?.[line.category]});
+  }
+  for(const entry of entries){
+    const {holder,calculation,path}=entry;
+    if(holder.amountCents!==0)continue;
+    const includedIn=rules.zeroPricePolicy?.includedPrices?.[path];
+    if(calculation.quantity===0){holder.noCharge=true;holder.noChargeReason='zero_physical_scope';continue;}
+    if(includedIn && (calculation.rateCents===0 || calculation.amountCents===0)){
+      const covering=entries.filter(other=>other.path===includedIn && other.holder.amountCents>0);
+      if(!covering.length || covering.some(other=>other.category!==entry.category || other.basis!==entry.basis)){
+        const diagnostic={path:'zeroPricePolicy.includedPrices.'+path,kind:'included_price_allocation',message:'Included pricing requires a billed covering component with the same financial category and price basis; a different category or basis needs an explicit owner allocation contract.'};
+        throw new QuoteReviewError(diagnostic.message,{ownerDecisionRequired:[diagnostic],ownerDiagnostics:[{type:'owner_decision',...diagnostic}],crossFieldOwnerFields:[diagnostic.path]});
+      }
+      holder.noCharge=true;holder.noChargeReason='included_in_another_price';holder.includedInPricePath=includedIn;
+    } else if(calculation.rateCents===0 || calculation.amountCents===0) {
+      holder.noCharge=true;holder.noChargeReason='explicitly_free';
+    } else if(calculation.evidenceVariant===undefined){
+      holder.noCharge=true;holder.noChargeReason='rounded_fractional_cent';
+    }
+  }
+  for(const line of result.lineItems){
+    if(line.amountCents!==0 || line.calculation.evidenceVariant!=='composite')continue;
+    const components=line.calculation.components, included=[...new Set(components.map(c=>c.includedInPricePath).filter(Boolean))];
+    if(included.length){line.noChargeReason='included_in_another_price';if(included.length===1)line.includedInPricePath=included[0];else line.includedInPricePaths=included;}
+    else if(components.every(c=>c.noChargeReason==='zero_physical_scope'))line.noChargeReason='zero_physical_scope';
+    else if(components.every(c=>c.noChargeReason==='explicitly_free'))line.noChargeReason='explicitly_free';
+    else line.noChargeReason='rounded_fractional_cent';
+  }
+  return result;
 }

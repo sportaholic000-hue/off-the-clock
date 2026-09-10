@@ -851,21 +851,38 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   }
   const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && !(name === 'existingFloorType' && customerInputs[name] === 'none')).map(([name]) => name);
   const facts = customerInputs.confirmedFacts;
-  const missingOfferingMaps = selectors.filter(name => !isRecord(serviceRules.knownOfferings?.[name]));
+  const missingOfferingMaps = [], offeringOwnerDiagnostics = [], unsupportedOfferingFields = [];
   if (facts !== undefined && isRecord(facts)) for (const name of Object.keys(facts)) {
     if (!selectors.includes(name)) invalidCustomerFields.push('confirmedFacts.' + name);
   }
   for (const name of selectors) {
-    const fact = facts?.[name];
-    const offeringId = serviceRules.knownOfferings?.[name]?.[customerInputs[name]];
-    if (!isRecord(fact)) missingCustomerFields.push('confirmedFacts.' + name);
-    else if (Object.keys(fact).length !== 2 || fact.status !== 'identified' || !validServiceIdVNext(fact.offeringId) || fact.offeringId !== offeringId) {
-      invalidCustomerFields.push('confirmedFacts.' + name);
-      validationMessages.push(name + ' requires affirmative confirmation of a specific known owner offering; matching a price-map key is insufficient.');
+    // Diagnose the unavailable owner contract before assessing a customer's fact
+    // against it. One absent registry must not manufacture two responsible parties.
+    const registry = serviceRules.knownOfferings?.[name], selected = customerInputs[name];
+    if (!isRecord(registry)) {
+      missingOfferingMaps.push(name);
+      offeringOwnerDiagnostics.push(ownerDiagnostic('missing','known_offerings','knownOfferings.'+name,'Configure the owner offering registry before validating this selection.'));
+      continue;
     }
+    const registryErrors = offeringRegistryDiagnosticsVNext(name, registry);
+    if (registryErrors.length) { offeringOwnerDiagnostics.push(...registryErrors); continue; }
+    const offeringId = Object.hasOwn(registry, selected) ? registry[selected] : undefined;
     if (!validServiceIdVNext(offeringId)) {
-      invalidCustomerFields.push(name);
-      validationMessages.push(name + ' is not an explicitly registered known owner offering.');
+      if (hasSelectedOfferingPriceVNext(serviceType, customerInputs, pricing, name)) {
+        offeringOwnerDiagnostics.push(ownerDiagnostic('invalid','offering_registry_inconsistency','knownOfferings.'+name+'.'+selected,'The configured price selector is absent from the owner offering registry.'));
+      } else {
+        unsupportedOfferingFields.push(name);
+        invalidCustomerFields.push(name);
+        validationMessages.push(name+' is not an offered service option.');
+      }
+      continue;
+    }
+    const fact = facts?.[name];
+    if (!isRecord(fact)) missingCustomerFields.push('confirmedFacts.' + name);
+    else if (Object.keys(fact).length !== 4 || fact.status !== 'identified' || fact.field !== name || fact.value !== selected ||
+        !validServiceIdVNext(fact.offeringId) || fact.offeringId !== offeringId) {
+      invalidCustomerFields.push('confirmedFacts.' + name);
+      validationMessages.push(name + ' requires confirmation of this exact selector, value, and known offering UUID.');
     }
   }
   if (serviceType === 'LANDSCAPING_SOD') {
@@ -885,16 +902,16 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     validationMessages.push(error.message);
   }
   const explicitInspection = contract.inspection?.(customerInputs, pricing);
-  const factVerificationNeeded = [...missingCustomerFields, ...invalidCustomerFields].some(path => path.startsWith('confirmedFacts.') || selectors.includes(path));
-  if (missingOfferingMaps.length || missingCustomerFields.length || invalidCustomerFields.length) {
+  const factVerificationNeeded = [...missingCustomerFields, ...invalidCustomerFields].some(path => path.startsWith('confirmedFacts.') || (selectors.includes(path) && !unsupportedOfferingFields.includes(path)));
+  if (offeringOwnerDiagnostics.length || missingCustomerFields.length || invalidCustomerFields.length) {
     return {
       ok: false,
       missingCustomerFields,
-      ...(missingOfferingMaps.length ? {missingOwnerFields:missingOfferingMaps.map(name=>'knownOfferings.'+name)} : {}),
+      ...(offeringOwnerDiagnostics.length ? { ownerDiagnostics:offeringOwnerDiagnostics, missingOwnerFields:offeringOwnerDiagnostics.filter(d=>d.type==='missing').map(d=>d.path), invalidOwnerFields:offeringOwnerDiagnostics.filter(d=>d.type!=='missing').map(d=>d.path) } : {}),
       invalidCustomerFields: [...new Set(invalidCustomerFields)],
       validationMessages,
       ...((explicitInspection || factVerificationNeeded) ? { inspectionFirst: true } : {}),
-      reviewReason: explicitInspection || (factVerificationNeeded ? 'Price-selecting project facts require affirmative confirmation of known offerings before pricing.' : null) || (missingCustomerFields.length
+      reviewReason: explicitInspection || (offeringOwnerDiagnostics.length ? 'Owner offering registries are incomplete or inconsistent.' : null) || (unsupportedOfferingFields.length ? 'The selected value is not an offered service option.' : null) || (factVerificationNeeded ? 'Price-selecting project facts require affirmative confirmation of known offerings before pricing.' : null) || (missingCustomerFields.length
         ? 'Required measured project details were not provided.'
         : 'Project details were invalid or internally inconsistent.')
     };
@@ -1686,12 +1703,10 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   diagnostics.push(...zeroPolicyDiagnosticsVNext(ownerPricing));
   if (ownerPricing.knownOfferings !== undefined) {
     const maps = ownerPricing.knownOfferings;
-    if (!isRecord(maps)) diagnostics.push(ownerDiagnostic('invalid', 'known_offerings', 'knownOfferings', 'Known offerings must be an explicit selector-to-offering registry.'));
+    if (!isRecord(maps)) diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings','Known offerings must be an explicit selector-to-offering registry.'));
     else for (const [field, values] of Object.entries(maps)) {
-      if (MEASUREMENT_CONTRACTS[serviceType]?.fields[field]?.type !== 'slug' || !isRecord(values) ||
-          Object.entries(values).some(([value, id]) => !CANONICAL_SLUG.test(value) || !validServiceIdVNext(id))) {
-        diagnostics.push(ownerDiagnostic('invalid', 'known_offerings', 'knownOfferings.' + field, 'Each supported price selector requires canonical known values with stable offering UUIDs.'));
-      }
+      if (MEASUREMENT_CONTRACTS[serviceType]?.fields[field]?.type !== 'slug') diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings.'+field,'This is not an open offering selector.'));
+      else diagnostics.push(...offeringRegistryDiagnosticsVNext(field,values));
     }
   }
   if (ownerPricing.disclaimer !== undefined && (typeof ownerPricing.disclaimer !== 'string' || !ownerPricing.disclaimer.trim())) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', 'disclaimer', 'disclaimer must be non-empty text when it is present.'));
@@ -1918,4 +1933,30 @@ export function editVNextService(input, changes) {
       identityDiagnosticsVNext(current.value).length) throw new TypeError('Ordinary edits require a valid persisted service and plain changes.');
   if (['id', 'source', 'origin', 'confirmedFields', 'approvedValues'].some(key => Object.hasOwn(patch.value, key))) throw new TypeError('Ordinary edits cannot change persisted identity, origin, or approval receipts.');
   return structuredClone({ ...current.value, ...patch.value });
+}
+
+// IDs are one-to-one within a selector. Different selectors may have their own
+// registries, but a customer fact must also name its exact field and value.
+function offeringRegistryDiagnosticsVNext(field, values) {
+  const root='knownOfferings.'+field;
+  if(!isRecord(values))return [ownerDiagnostic('invalid','known_offerings',root,'Known offerings must be a plain value-to-UUID map.')];
+  const out=[],groups=new Map();
+  for(const [value,id] of Object.entries(values)){
+    if(!CANONICAL_SLUG.test(value)||!validServiceIdVNext(id)){out.push(ownerDiagnostic('invalid','known_offerings',root+'.'+value,'Each offered value requires a canonical slug and valid UUID.'));continue;}
+    const key=id.toLowerCase();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(value);
+  }
+  for(const values of groups.values())if(values.length>1)for(const value of values)out.push(ownerDiagnostic('invalid','duplicate_offering_id',root+'.'+value,'An offering UUID must identify exactly one value within this selector.'));
+  return out;
+}
+function hasSelectedOfferingPriceVNext(type,c,p,field) {
+  const value=c[field], present=(root,...parents)=>{let map=p[root];for(const key of parents)map=isRecord(map)?map[key]:undefined;return isRecord(map)&&Object.hasOwn(map,value);};
+  if(type==='ROOFING_REPLACEMENT')return (field==='existingRoofType'?['tearOffPerSquare']:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare']).some(root=>present(root));
+  if(type==='ROOFING_REPAIR')return ['repairHours','repairMaterialAllowance'].some(root=>field==='roofType'?present(root):present(root,c.roofType));
+  if(type==='FLAT_ROOF_REPLACEMENT')return (field==='membraneType'?['tearOffPerSqft']:['laborPerSqft','membraneCostPerSqft']).some(root=>present(root));
+  if(type==='FLAT_ROOF_REPAIR')return ['patchRepairHours','patchMaterialAllowance'].some(root=>field==='membraneType'?present(root):present(root,c.membraneType));
+  if(type==='SIDING_REPAIR')return ['repairHours','materialAllowance'].some(root=>present(root,c.sidingType));
+  if(type.startsWith('FLOORING_'))return ['removalPerSqft','disposalPerSqft'].some(root=>present(root));
+  if(type.startsWith('FENCING_'))return ['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'].some(root=>present(root));
+  if(field==='mulchType')return present('mulchMaterialPerYard');
+  return false;
 }

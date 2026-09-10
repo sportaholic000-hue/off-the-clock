@@ -6,6 +6,7 @@ import {
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
   identityDiagnosticsVNext,
+  validServiceIdVNext,
   freeOfferingVNext,
   equalApprovalDataVNext,
   allowedPricingFields,
@@ -33,7 +34,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-r128-138-20260909-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-r139-146-20260910-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -496,7 +497,7 @@ export function materializeScenarioLinesVNext(lines, variant) {
       next.calculation.roundedAmountCents = selectedAmountCents;
       if (selectedAmountCents === 0) {
         next.noCharge = true;
-        next.noChargeReason = selectedRateCents === 0 ? 'configured_zero_price' : 'rounded_fractional_cent';
+        next.noChargeReason = selectedRateCents === 0 ? 'explicitly_free' : 'rounded_fractional_cent';
       } else {
         delete next.noCharge;
         delete next.noChargeReason;
@@ -546,7 +547,7 @@ function applyCommonFees(lines, template, ownerPricing, defaults, feeSelections,
         category: fee,
         amountCents,
         ownerVisible: true,
-        ...(amountCents === 0 ? { noCharge: true, noChargeReason: 'configured_zero_price' } : {}),
+        ...(amountCents === 0 ? { noCharge: true, noChargeReason: 'explicitly_free' } : {}),
         customerVisible: false,
         calculation: {
           evidenceVariant: 'fixed_amount',
@@ -787,10 +788,10 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
   }
 }
 
-function validQuantityRateEvidence(calculation, expectedAmountCents) {
+function validQuantityRateEvidence(calculation, expectedAmountCents, allowZeroQuantity = false) {
   if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || (calculation.ratePath==='mowingBaseRatePerSqft' && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
-  const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: true });
+  const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: !allowZeroQuantity });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;
   const multipliers = [];
   for (const multiplier of calculation.multipliers) {
@@ -859,14 +860,14 @@ function validCompositeEvidence(calculation, expectedAmountCents) {
 
 function validLineCalculationEvidence(line) {
   if (!isPlainObject(line) || !Number.isSafeInteger(line.amountCents) || line.amountCents < 0 || !isPlainObject(line.calculation)) return false;
-  const validNoChargeReasons = new Set(['configured_zero_price', 'configured_zero_percentage', 'zero_basis', 'rounded_fractional_cent']);
+  const validNoChargeReasons = new Set(['explicitly_free', 'included_in_another_price', 'zero_physical_scope', 'configured_zero_percentage', 'zero_basis', 'rounded_fractional_cent']);
   if (line.amountCents === 0) {
     if (line.noCharge !== true || !validNoChargeReasons.has(line.noChargeReason)) return false;
   } else if (Object.hasOwn(line, 'noCharge') || Object.hasOwn(line, 'noChargeReason')) {
     return false;
   }
   if (line.calculation.evidenceVariant === 'quantity_rate') {
-    return validQuantityRateEvidence(line.calculation, line.amountCents);
+    return validQuantityRateEvidence(line.calculation, line.amountCents, line.amountCents === 0 && line.noChargeReason === 'zero_physical_scope');
   }
   if (line.calculation.evidenceVariant === 'ranged') {
     try {
@@ -1433,6 +1434,7 @@ export function generateQuoteVNext(input = {}) {
       serviceType,
       options: structuredClone(options.map(option => option.calculationRecord)),
       ownerConfiguration: cloneConfigurationEvidence({ ...ownerPricing, pricing: basePricing }),
+      financialInputs: structuredClone({ businessDefaults, feeSelections, currentMonth }),
       customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     }
   };
@@ -1651,6 +1653,17 @@ function rootCalculationRecordMatches(result) {
   );
 }
 
+// Recompute from the retained configuration and complete financial request.
+// An internally consistent different price is not evidence for this price book.
+function configuredCalculationMatches(result) {
+  const inputs=result.calculationRecord.financialInputs;
+  if(!isPlainObject(inputs)||Object.keys(inputs).length!==3||!['businessDefaults','feeSelections','currentMonth'].every(k=>Object.hasOwn(inputs,k)))return false;
+  const reproduced=generateQuoteVNext({serviceType:result.serviceType,customerInputs:result.submittedCustomerInputs,ownerPricing:result.calculationRecord.ownerConfiguration,...inputs,callerType:'owner'});
+  if(reproduced.resultType!=='INSTANT_ESTIMATE_READY'||reproduced.customerEligible!==true)return false;
+  return plainDataEqual(reproduced.options,result.options) &&
+    ['lowEstimate','midEstimate','highEstimate','rangeBufferUsed','effectiveRangeBufferPercent','priceDrivers','lineItems','disclaimer','optionAvailabilityNotice'].every(k=>plainDataEqual(reproduced[k],result[k]));
+}
+
 function customerProjectionMatchesFirstOption(result) {
   const first = result.options[0];
   for (const field of ['lowEstimate', 'midEstimate', 'highEstimate', 'rangeBufferUsed']) {
@@ -1697,6 +1710,7 @@ export function sanitizeForCustomerVNext(result) {
       hasOwnValue(result, 'rangeBufferUsed') && validRangeBuffer(result.rangeBufferUsed) &&
       hasOwnValue(result, 'options') && denseArray(result.options, option => validCustomerOption(option, result.serviceType), { allowEmpty: false }) &&
       rootCalculationRecordMatches(result) &&
+      configuredCalculationMatches(result) &&
       customerProjectionMatchesFirstOption(result) &&
       (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
     if (!validReady) return customerReviewPayload(result);
@@ -1707,6 +1721,16 @@ export function sanitizeForCustomerVNext(result) {
   } catch {
     return customerReviewPayload(result);
   }
+}
+
+function leadServiceIdentityMatches(request,result) {
+  const explicit=Object.hasOwn(request,'serviceId'),configured=isPlainObject(request.ownerPricing);
+  if(validServiceIdVNext(result.serviceId))return (explicit||configured) &&
+    (!explicit||request.serviceId===result.serviceId) && (!configured||request.ownerPricing.id===result.serviceId);
+  const resolution=result.serviceResolution;
+  return result.serviceId===null && explicit && request.serviceId===null && !configured &&
+    isPlainObject(resolution) && Object.keys(resolution).length===2 && resolution.serviceId===null && ['missing','ambiguous'].includes(resolution.status) &&
+    result.ownerDiagnostics?.some(d=>d.kind===(resolution.status==='missing'?'missing_service':'duplicate_service') || (resolution.status==='ambiguous'&&d.kind==='duplicate_service_id'));
 }
 
 export function buildInternalLeadVNext(input = {}) {
@@ -1727,7 +1751,7 @@ export function buildInternalLeadVNext(input = {}) {
     internalResult.resultType !== 'ESTIMATE_REQUIRES_REVIEW' ||
     internalResult.engineVersion !== ENGINE_VERSION ||
     !plainDataEqual(internalResult.urgencyFlags, derivedUrgency(request.serviceType, request.customerInputs)) ||
-    (request.ownerPricing && internalResult.serviceId !== (request.ownerPricing.id ?? null)) ||
+    !leadServiceIdentityMatches(request, internalResult) ||
     typeof internalResult.reviewReason!=='string' || !internalResult.reviewReason.trim() ||
     !(internalResult.inspectionFirst===true || ['missingCustomerFields','invalidCustomerFields','missingOwnerFields','invalidOwnerFields','unsupportedOwnerFields','crossFieldOwnerFields','unconfirmedOwnerFields'].some(key=>denseArray(internalResult[key],v=>typeof v==='string'&&v.trim())&&internalResult[key].length) || ['ownerDiagnostics','ownerDecisionRequired'].some(key=>denseArray(internalResult[key],v=>isPlainObject(v)&&typeof v.message==='string'&&v.message.trim())&&internalResult[key].length)) ||
     request.serviceType!==internalResult.serviceType || !isPlainObject(request.customerInputs) || !equalApprovalDataVNext(request.customerInputs,internalResult.submittedCustomerInputs) ||

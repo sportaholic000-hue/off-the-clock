@@ -464,9 +464,14 @@ test('selected mandatory scope distinguishes missing prices from intentionally f
     if (field === 'bedPrepLaborPerSqft') freePricing.pricing[field].needs_weeding = 0;
     else freePricing.pricing[field] = 0;
     assert.equal(quote({ ...entry, ownerPricing: freePricing }).resultType, 'ESTIMATE_REQUIRES_REVIEW');
-    const includedIn={ROOFING_REPLACEMENT:'laborPerSquare.asphalt_shingle',INTERIOR_PAINTING:'laborPerWallSqftPerCoat',FLOORING_REPLACEMENT:'laborPerSqft.'+entry.customerInputs.newFlooringType,CONCRETE_DRIVEWAY:'laborPerSqft',LANDSCAPING_MULCH:'mulchInstallLaborPerYard',LANDSCAPING_SOD:'sodInstallLaborPerSqft'}[serviceType];
+    const includedIn={ROOFING_REPLACEMENT:'materialCostPerSquare.asphalt_shingle',INTERIOR_PAINTING:'laborPerWallSqftPerCoat',FLOORING_REPLACEMENT:'laborPerSqft.'+entry.customerInputs.newFlooringType,CONCRETE_DRIVEWAY:'laborPerSqft',LANDSCAPING_MULCH:'mulchInstallLaborPerYard',LANDSCAPING_SOD:'sodInstallLaborPerSqft'}[serviceType];
     const path=field==='bedPrepLaborPerSqft'?field+'.needs_weeding':field;
     const free = quote({ ...entry, ownerPricing: includedFixture(freePricing,{[path]:includedIn}) });
+    if (['FLOORING_REPLACEMENT','CONCRETE_DRIVEWAY','LANDSCAPING_SOD'].includes(serviceType)) {
+      assert.equal(free.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+      assert.ok(free.ownerDecisionRequired.some(d=>d.kind==='included_price_allocation'));
+      continue;
+    }
     assert.equal(free.resultType, 'INSTANT_ESTIMATE_READY', `${serviceType}.${field}=0`);
     const freeLine = free.lineItems.find(item => item.name === lineName);
     assert.equal(freeLine.amountCents, 0, `${serviceType}.${lineName}`);

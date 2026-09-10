@@ -13,7 +13,7 @@ const outputPath=path.resolve(output);
 if(outputPath===root||outputPath.startsWith(root+path.sep))throw new TypeError('Evidence output must be outside the repository.');
 fs.mkdirSync(outputPath,{recursive:true});
 const cache=new Map(),captures=[],tests=[];let activeTest='',depth=0,objects=0,leaves=0,publicReady=0,publicReview=0;
-const selected=/^repair (12[89]|13[0-8]):|^owner ruling:/;
+const selected=/^repair (139|14[0-6]):/;
 globalThis.__vnextAuditCapture=(entry,fn,args)=>{
  const outer=depth++===0;
  try{const result=fn(...args);if((outer||entry==='generateQuoteVNext')&&selected.test(activeTest))captures.push({test:activeTest,entry,args:structuredClone(args),result:structuredClone(result)});return result;}
@@ -50,11 +50,11 @@ for(const capture of captures){
  if(capture.entry==='generateQuoteVNext'&&r?.submittedCustomerInputs){assert.equal(r.serviceType,capture.args[0].serviceType);assert.deepEqual(r.submittedCustomerInputs,capture.args[0].customerInputs);}
 }
 const sourceHashes=Object.fromEntries([...cache.keys()].filter(k=>!k.startsWith('node:')).map(k=>[path.relative(root,k).replaceAll('\\','/'),createHash('sha256').update(fs.readFileSync(k)).digest('hex')]));
-const sodActivationSelections=[...new Set(captures.filter(c=>c.test.startsWith('repair 132:')&&c.entry==='generateQuoteVNext'&&c.args?.[0]?.allowInactiveOwnerPreview===true).map(c=>c.args[0].customerInputs.separateDisposalSelected))].sort();
-assert.deepEqual(sodActivationSelections,[false,true]);
-const report={tests,captureCount:captures.length,sodActivationSelections,inspection:{objects,leaves,publicReady,publicReview},sourceHashes};
+const configuredQuoteExecutions=captures.filter(c=>c.entry==='generateQuoteVNext').length;
+assert.ok(configuredQuoteExecutions>0);
+const report={tests,captureCount:captures.length,configuredQuoteExecutions,inspection:{objects,leaves,publicReady,publicReview},sourceHashes};
 const encode=(_,v)=>typeof v==='number'&&!Number.isFinite(v)?{nonJsonNumber:String(v)}:v===undefined?{nonJsonValue:'undefined'}:v;
 fs.writeFileSync(path.join(outputPath,'replay-captures.json'),JSON.stringify({report,captures},encode,2));
 fs.writeFileSync(path.join(outputPath,'replay-summary.json'),JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
-assert.equal(tests.length,13);assert.equal(tests.filter(t=>!t.pass).length,0);
+assert.equal(tests.length,8);assert.equal(tests.filter(t=>!t.pass).length,0);

@@ -5,6 +5,7 @@ import {
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
   freeOfferingVNext,
+  validServiceIdVNext,
   inspectionOwnerDecisionsVNext,
   allowedPricingFields,
   contractMetadata,
@@ -368,7 +369,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     const customerInputs = { ...scenarioInputs, ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
     // Synthetic activation probes test only explicitly registered offerings. They
     // establish no facts about a real customer project.
-    const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', offeringId: values[customerInputs[field]] }]));
+    const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', field, value: customerInputs[field], offeringId: values[customerInputs[field]] }]));
     if (Object.keys(confirmations).length) customerInputs.confirmedFacts = confirmations;
     const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing, service);
     if (!customer.ok) {
@@ -553,12 +554,13 @@ export function vNextPricebookStatuses(pricebook) {
   const counts = new Map();
   for (const identity of identities) if (identity) counts.set(identity, (counts.get(identity) || 0) + 1);
 
+  const duplicateIds = duplicateServiceIdDiagnostics(services);
   return Array.from(services, (service, index) => {
     const status = vNextServiceStatus(service, defaultSource);
     const duplicateDiagnostics = identities[index] && counts.get(identities[index]) > 1
       ? [{ type: 'invalid', kind: 'duplicate_service', path: `services.${index}`, message: 'Price book contains an ambiguous duplicate service definition.' }]
       : [];
-    const diagnostics = uniqueStatusDiagnostics([...status.ownerDiagnostics, ...defaultDiagnostics, ...duplicateDiagnostics]);
+    const diagnostics = uniqueStatusDiagnostics([...status.ownerDiagnostics, ...defaultDiagnostics, ...duplicateDiagnostics, ...duplicateIds.filter(d=>d.path===`services.${index}.id`)]);
     const invalidTypes = new Set(['invalid', 'unsupported', 'cross_field', 'owner_decision']);
     return {
       ...status,
@@ -572,6 +574,14 @@ export function vNextPricebookStatuses(pricebook) {
     };
   });
 }
+
+function duplicateServiceIdDiagnostics(services) {
+  const groups=new Map(),out=[];
+  services.forEach((service,index)=>{if(!validServiceIdVNext(service?.id))return;const id=service.id.toLowerCase();if(!groups.has(id))groups.set(id,[]);groups.get(id).push(index);});
+  for(const indexes of groups.values())if(indexes.length>1)for(const index of indexes)out.push({type:'invalid',kind:'duplicate_service_id',path:'services.'+index+'.id',message:'A persisted service UUID must identify exactly one service in this price book.'});
+  return out;
+}
+
 export function validateVNextPricebook(pricebook) {
   const errors = [];
   if (!isPlainRecord(pricebook)) return { ok: false, errors: ['Price book must be an object.'], statuses: [] };
@@ -616,12 +626,13 @@ export function validateVNextPricebook(pricebook) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], statuses };
 }
 
-function serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason, path, kind, diagnosticOwner = 'owner' }) {
+function serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason, path, kind, diagnosticOwner = 'owner', diagnostics = null }) {
   const ownerDiagnostic = { type: 'invalid', kind, path, message: reviewReason };
   const result = {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
     engineVersion: ENGINE_VERSION,
     serviceId: null,
+    serviceResolution: { status: kind === 'missing_service' ? 'missing' : ['duplicate_service','duplicate_service_id'].includes(kind) ? 'ambiguous' : 'invalid', serviceId: null },
     quoteId: crypto.randomUUID(),
     serviceType,
     submittedCustomerInputs: cloneForStatus(customerInputs, {}),
@@ -631,10 +642,10 @@ function serviceLookupReview({ serviceType, customerInputs, callerType, reviewRe
     missingCustomerFields: [],
     invalidCustomerFields: diagnosticOwner === 'customer' ? [path] : [],
     missingOwnerFields: [],
-    invalidOwnerFields: diagnosticOwner === 'owner' ? [path] : [],
+    invalidOwnerFields: diagnosticOwner === 'owner' ? diagnostics ? diagnostics.map(d=>d.path) : [path] : [],
     unsupportedOwnerFields: [],
     crossFieldOwnerFields: [],
-    ownerDiagnostics: diagnosticOwner === 'owner' ? [ownerDiagnostic] : [],
+    ownerDiagnostics: diagnosticOwner === 'owner' ? diagnostics || [ownerDiagnostic] : [],
     ownerDecisionRequired: [],
     failedTierDiagnostics: [],
     validationMessages: [reviewReason],
@@ -694,6 +705,8 @@ export function quoteFromVNextPricebook(input = {}) {
     const description = builtIn ? serviceType : `custom service "${requestedCustomService}"`;
     return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Multiple matching service definitions make ${description} ambiguous.`, path: 'services', kind: 'duplicate_service' });
   }
+  const duplicateIds=duplicateServiceIdDiagnostics(services);
+  if(duplicateIds.length)return serviceLookupReview({serviceType,customerInputs,callerType,reviewReason:'Price book contains colliding persisted service identities.',path:duplicateIds[0].path,kind:'duplicate_service_id',diagnostics:duplicateIds});
   const service = matches[0];
   return generateQuoteVNext({
     serviceType: service.serviceType,
@@ -736,12 +749,12 @@ export function reviewOnlyScopesVNext(serviceType) {
   const add = (when, inputs, fields, always = false) => definitions.push({when, inputs, fields, always});
   if (serviceType.startsWith('FLOORING_')) add('Stairs selected', {stairSteps:1}, ['perStepPrice']);
   if (serviceType === 'SIDING_REPLACEMENT') {
-    add('Existing siding removal selected', {oldSidingRemoval:true}, ['removalPerSqft']);
+    add('Existing siding removal selected', {oldSidingRemoval:true}, ['removalPerSqft','disposalPerSqft']);
     add('Trim selected', {trimIncluded:true}, ['trimPerLinearFoot']);
   }
   if (serviceType.startsWith('CONCRETE_')) {
-    add('Demolition selected', {demolitionNeeded:true}, ['demolitionPerSqft']);
-    add('Exposed aggregate selected', {finishType:'exposed_aggregate'}, ['finishLaborMultiplier']);
+    add('Demolition selected', {demolitionNeeded:true}, ['demolitionPerSqft','disposalPerSqft']);
+    add('Exposed aggregate selected', {finishType:'exposed_aggregate'}, ['finishMultiplier']);
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') add('Commercial insulation scope', {buildingType:'commercial'}, ['insulationPerSqft']);
   if (serviceType.startsWith('FENCING_')) add('Every fence request', {}, [], true);
