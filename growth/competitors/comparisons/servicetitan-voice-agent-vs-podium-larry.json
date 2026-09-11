@@ -1,0 +1,85 @@
+{
+  "kind": "head",
+  "slug": "servicetitan-voice-agent-vs-podium-larry",
+  "title": "ServiceTitan Voice Agent vs Podium Larry",
+  "seo_title": "ServiceTitan Voice Agent vs Podium Larry: Pricing & Business Fit",
+  "description": "Compare ServiceTitan Voice Agent and Podium Larry on dispatch context, platform commitment, published pricing and the difference between a fee and a project quote.",
+  "intro": "Compare ServiceTitan Voice Agent and Podium Larry on dispatch context, platform commitment, published pricing and the difference between a fee and a project quote.",
+  "verdict": "ServiceTitan Voice Agent is the native baseline for a business staying on ServiceTitan. Podium’s home-services offer combines Larry with its own FSM. Decide whether you are changing the operator or the operating platform first.",
+  "rows": [
+    [
+      "Platform",
+      "Runs with ServiceTitan account context. [[st-settings]]",
+      "Home-services offer includes Larry and Podium FSM. [[podium-plans]]"
+    ],
+    [
+      "Pricing workflow",
+      "Configurable dispatch-fee messages. [[st-settings]]",
+      "Price-book access and service fees. [[podium-larry]]"
+    ],
+    [
+      "Public pricing",
+      "Indexed offer: $2.75/call; account costs separate. [[st-pricing]]",
+      "Sales quote on reviewed plans. [[podium-plans]]"
+    ],
+    [
+      "Location/brand control",
+      "Multiple agent configurations are documented. [[st-multi]]",
+      "Demonstrate the proposed setup for each brand and number."
+    ],
+    [
+      "Buying question",
+      "What does the native feature add to the system you retain?",
+      "What must move into the advertised operating system?"
+    ]
+  ],
+  "sections": [
+    [
+      "platform",
+      "Do not compare an add-on with a migration",
+      [
+        "A company that already uses ServiceTitan has a different starting point from one selecting its first field-service platform. Count the software you will keep, the features you will add, and the records you would need to move.",
+        "Podium’s FSM page describes replacing scheduling and dispatch tools. That may be precisely what a buyer wants, but it should not be hidden inside an answering-service comparison. [[podium-fsm]]",
+        "Make a list of workflows that must remain uninterrupted: repeat-customer identification, job notes, estimates, appointments and owner follow-up. Ask the proposed vendor configuration to demonstrate them, not merely list integration logos."
+      ]
+    ],
+    [
+      "fees",
+      "Both can discuss prices; define which price",
+      [
+        "ServiceTitan documents dispatch-fee messages; Podium describes price-book and service-fee handling. Neither should be described as unable to give a number. [[st-settings]] [[podium-larry]]",
+        "The buyer’s question is whether that number answers the customer’s request. A fee for attending the property is not necessarily the installed project price, and an estimate appointment is not itself an estimate.",
+        "Use a representative job with selected removal and one unresolved measurement. A good result may be a complete quote or a clear owner-review request. An unsupported number with missing scope is not a better result."
+      ]
+    ],
+    [
+      "control",
+      "Test the rules for your actual team",
+      [
+        "ServiceTitan documents escalation across different phone configurations and separate agents for brands or service lines. Test the correct job types, messages and destinations for each setup rather than assuming one successful call covers all of them. [[st-escalation]] [[st-multi]]",
+        "Run the equivalent test in the proposed Podium setup. Give the wrong service location, request an unavailable appointment and ask for a person. Record both what the customer hears and what the office receives.",
+        "Evaluate ordinary non-emergency test cases; do not create a real emergency or contact emergency services to test a software demo."
+      ]
+    ],
+    [
+      "cost",
+      "What the public figures do and do not tell you",
+      [
+        "The indexed ServiceTitan offer publishes a per-call amount and rate-lock terms. It is not a complete price for the underlying system. Podium’s home-services plans require a sales quote. A credible cost comparison needs both proposals. [[st-pricing]] [[podium-plans]]",
+        "Ask for the billable-call definition, account requirements, included support and any additional modules. Use the same call mix and business assumptions on both sides.",
+        "Off The Clock belongs in a separate quote-led evaluation when the desired outcome is the supported project price without buying a new full FSM. That does not imply native ServiceTitan integration or approval of any live connection."
+      ]
+    ]
+  ],
+  "questions": [
+    "Which existing software is retained and which would be replaced?",
+    "Which amount does the agent actually give: service fee, complete job price or something else?",
+    "Do brand, location and exception rules survive from call to office record?"
+  ],
+  "decision": "Choose the native agent when you intend to keep ServiceTitan and it meets the requirement. Evaluate Larry as part of the actual Podium offer. Add Off The Clock when the decision turns on owner-priced project quoting rather than an FSM replacement.",
+  "related": [
+    "alternatives/servicetitan-voice-agent/index.html",
+    "alternatives/podium-larry/index.html",
+    "compare/podium-larry-vs-sameday-ai/index.html"
+  ]
+}
