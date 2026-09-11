@@ -1,57 +1,63 @@
 # Off The Clock AI — isolated growth work
 
-## Delivered for review
+## Current delivery: named competitor library
 
-The standalone V2 acquisition source is preserved unchanged. A separate five-page comparison and resources site is built from the source in this folder. Nothing is merged or deployed.
+The review site now has **15 pages: seven company-named alternatives guides, five head-to-head comparisons and three hubs**. The original V2 acquisition tools remain byte-identical. Nothing is merged or deployed.
 
 - Branch: `growth/public-pages-review`.
-- Base: `ed12dca1253a8790c885b071ab6037e05632bea0` on main.
-- Tested functional source checkpoint: `b3124a03b8b9c4014ae2b6fad7bf9118dff3c9f4`; subsequent delivery commits add documentation only.
-- Change boundary: additions under `growth/` only. Do not change either quote engine, saved price books, onboarding, authentication, application routes, shared styles, dependencies, workflows, providers or deployment settings.
+- Original base: `ed12dca1253a8790c885b071ab6037e05632bea0` on main.
+- Expansion starts at: `063787e5f30a5611f7b0c5b0ecce681861c10767`.
+- Tested expansion functional source: `2f610b81ed4c88d4cd98ef9b33cf2cd33ccf4714`; subsequent delivery commits change documentation only.
+- Boundary: work below `growth/` only. Do not change either quote engine, price books, onboarding, authentication, app routes, shared app styles, dependencies, workflows, providers, deployment configuration or application specifications.
 
-## Saved in the repository
+## Built coverage
 
-- `v2/`: six original V2 source files and all three Node test suites. The guided challenge, calculator and collection-only intake are not rewritten.
-- `build_public.py`: complete content, page templates and standard-library builder for the new review site.
-- `public/assets/`: isolated public-page styles and progressive search/filter behavior.
-- `tests/check_public.py`: repeatable static-document and Chromium interaction checks.
-- `research/RESEARCH_AND_CHANGES.md`: original-draft provenance, official sources, factual corrections, editorial adaptations and publication limits.
-- `evidence/VERIFICATION.md`: exact-source results, method, retained development failures and limitations.
+Alternatives: **Podium Larry; Sameday AI; Avoca; Jobber Receptionist; Housecall Pro CSR AI; ServiceTitan Voice Agent; Ruby**.
 
-Generated HTML, the ready-to-open single-file review, raw execution logs, screenshots, per-check JSON and unmodified source drafts are supplied in the downloadable review package. They are reproducible from this source but are not committed as duplicate generated pages or binary screenshots.
+Head-to-head: **Podium Larry vs Sameday AI; Sameday AI vs Avoca; Jobber Receptionist vs Housecall Pro CSR AI; ServiceTitan Voice Agent vs Podium Larry; Smith.ai vs Ruby**.
 
-## Build the independent review
+Hubs: comparison library, company-led alternatives directory, and resources. Every displayed guide card opens a completed page. The wider content map, including quoting/estimating competitors, is not yet fully implemented.
 
-From the repository root, using an existing Python installation:
+## Repository layout
+
+- `competitors/content.json`: source register, shared vendor facts and explicit article order.
+- `competitors/alternatives/`, `competitors/comparisons/`: ten separately editable researched articles.
+- `build_competitor_library.py`: expanded builder; reuses the existing renderer without editing it.
+- `build_public.py`, `public/assets/`: preserved five-page renderer and isolated styles/search logic.
+- `v2/`: unchanged original tools and three Node test suites.
+- `tests/check_competitor_library.py`: expanded static/browser verification.
+- `research/COMPETITOR_EXPANSION_20260911.md`: source provenance and explicit factual/editorial changes.
+- `evidence/COMPETITOR_EXPANSION_VERIFICATION.md`: executed results, development failures and limitations.
+
+Generated HTML, portable review, full logs, source manifests and screenshots are in the delivery ZIP rather than committed as duplicate outputs. Source and verification instructions are committed.
+
+## Build the expanded review
+
+Using the existing Python installation, from repository root:
 
 ```sh
-python growth/build_public.py
+python growth/build_competitor_library.py
 ```
 
-No dependencies are installed, and only growth outputs are written. The builder generates:
+This writes only growth outputs, performs no network requests and installs nothing. Open the generated `growth/Off_The_Clock_Public_Pages_Review.html` for the portable navigator, or `growth/public/START_HERE.html` for separate-page review. Individual articles have separate paths under `public/compare/` and `public/alternatives/`. `public/page-manifest.json` lists all fifteen pages.
 
-| Output | Purpose |
-|---|---|
-| `Off_The_Clock_Public_Pages_Review.html` | Portable single-file review navigator |
-| `public/START_HERE.html` | Separate-page review launcher |
-| `public/compare/index.html` | Searchable comparison hub |
-| `public/alternatives/index.html` | Alternatives hub |
-| `public/compare/smith-ai-vs-ruby/index.html` | Full head-to-head buying guide |
-| `public/alternatives/ruby/index.html` | Six-option alternatives guide |
-| `public/resources/index.html` | Tools, guides and concept directory |
-| `public/resources/five-call-checklist.txt` | Downloadable evaluation worksheet |
-| `public/tools/growth-v2.html` | Byte-identical original V2 tool |
-
-The generated V2 HTML must match SHA256 `82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79`; the builder rejects a mismatch.
+The V2 output `public/tools/growth-v2.html` must retain SHA256 `82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79`; the builder rejects a mismatch.
 
 ## Verification
 
-44/44 original V2 Node tests and 82/82 new static/browser checks passed. Source files were compared with GitHub blob hashes. All five new pages were exercised at 320, 375, 390, 768, 1024 and 1440 pixels without horizontal overflow.
+```sh
+node --test growth/v2/tests/*.test.cjs
+python growth/tests/check_competitor_library.py
+```
 
-The exact generated HTML was rendered and exercised in Chromium. The audit browser blocked direct file/URL navigation, so tests used `set_content`; direct launch/hosting is not claimed as verified. See `evidence/VERIFICATION.md` for commands and limitations. The source test uses the audit environment's existing Playwright/Chromium; viewing the delivered HTML does not require those test tools.
+Actual results: **44/44 V2 tests and 264/264 expanded checks passed**. Browser tests require the audit environment's already-installed Playwright and Chromium. Do not install or reconfigure a user's machine merely to reproduce them without permission. Viewing the portable preview does not require those test tools.
 
-## Publication remains a separate decision
+The browser environment blocked direct file navigation; exact final HTML and the portable navigator were exercised in Chromium using `set_content`. All fifteen pages passed width checks at 320, 375, 390, 768, 1024 and 1440 pixels. Direct launch, other browsers and live hosting remain unverified.
 
-All pages are noindex private review builds. Internal links resolve only to delivered pages and functioning local tools. No signup, live demo, pilot enrollment, account, hosted quote, QR destination or lead delivery is fabricated. Existing homepage design and production routes are unchanged.
+The old `build_public.py` plus `tests/check_public.py` pair still reproduces the previous five-page checkpoint. The old test expects two guides and should not be run against the expanded output as if its old counts were still the requirement. The expanded suite covers the new counts and retained relevant behavior.
 
-Approve the content adaptations and actual live destinations before publication. Reconfirm vendor facts, especially the explicitly limited Dialzara search snapshot. Then assign hosting, canonical URLs, social images and live calls to action separately. Do not silently connect these pages to Codex's engine work or use them as evidence that a production phase is complete.
+## Publication is separate
+
+The review remains noindex. Company names appear in titles, H1s, routes and cards; guide links are available without JavaScript. This is not a ranking guarantee, keyword-volume study or a completed SEO launch.
+
+No live signup, demo, pilot enrollment, customer quote, appointment or lead delivery is fabricated. Calls to action resolve to actual local tools. Approve factual adaptations, product claims, live destinations, canonical URLs and final launch settings before publication. Do not weaken isolation or connect this growth work to Codex's engine repairs.
