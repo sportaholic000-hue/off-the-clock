@@ -1,0 +1,66 @@
+{
+  "kind": "alternatives",
+  "slug": "avoca",
+  "title": "Avoca Alternatives for Service Businesses",
+  "seo_title": "Avoca Alternatives: Compare Options & Fit",
+  "description": "Compare Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist as alternatives to Avoca for service businesses.",
+  "intro": "Compare Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist as alternatives to Avoca for service businesses.",
+  "verdict": "Evaluate Off The Clock when pricing the actual job is the priority. Compare Sameday for a broader phone operation, or a native Jobber/ServiceTitan option when keeping your current platform is the main requirement.",
+  "reason": [
+    "Avoca is more than an AI voice on the phone. Its material describes call scoring and a Human in the Loop program staffed by Avoca-trained CSRs. A useful alternative must be judged against the modules and coverage you actually need. [[avoca-coach]] [[avoca-human]]",
+    "First decide what is failing in your present process. Is it unanswered inquiries, appointment handling, calls that need a person, or owners still having to price every project? These problems can require different products even when their feature lists overlap.",
+    "The reviewed Avoca pages are demo-led and do not establish a numerical subscription price. Obtain a written offer instead of filling that gap with a third-party estimate. Ask whether coaching, campaigns, human handling and integrations are part of the same purchase. [[avoca-product]]"
+  ],
+  "choices": [
+    [
+      "otc",
+      "When the pricing conversation keeps returning to you",
+      "Off The Clock’s reason to be on the shortlist is QuoteDone. Use the evaluation to distinguish a complete owner-priced job from a booked estimate or a lead that still needs pricing. The correct review path is also an outcome worth testing."
+    ],
+    [
+      "sameday",
+      "When phones and follow-up are a broader requirement",
+      "Compare the tasks your office does around the call, not just the voice quality. Walk through a returning customer, an appointment change and follow-up ownership. Define exactly which jobs the AI may complete."
+    ],
+    [
+      "st",
+      "When ServiceTitan should remain the center",
+      "Use the native option as a baseline against an added front-office vendor. Check what the agent can do with your booking rules and what a supervisor can inspect afterward."
+    ],
+    [
+      "jobber",
+      "When a Jobber-native answering feature is enough",
+      "For an existing Jobber business, start with the actual incremental feature and bill. Do not buy a broader contact-center package simply because the original shortlist contained one."
+    ]
+  ],
+  "scenario": {
+    "title": "The test: a handoff that does not restart the conversation",
+    "text": "Ask an ordinary service question, explain a complication, then request a person. Evaluate the handoff as a complete experience. A transfer button is not the same thing as the right person receiving the right job details.",
+    "checks": [
+      "Who receives the call: your team, a contracted external team or another queue?",
+      "Which scope, customer context and unanswered questions survive the transfer?",
+      "When nobody is available, what reaches the owner and what does the customer hear?"
+    ]
+  },
+  "questions": [
+    "Who supplies the human escalation team, during which hours, and at what cost?",
+    "Which reporting and coaching modules are included rather than optional?",
+    "Can your team see and correct an incorrect outcome classification?"
+  ],
+  "decision": "Keep Avoca in consideration when coaching, escalation and connected front-office operations are the real requirement. Choose a narrower product deliberately when those extras are not needed. For an owner whose unfinished task is the quote, evaluate Off The Clock against that task directly.",
+  "faqs": [
+    [
+      "Does Avoca offer human backup?",
+      "Yes. Its Human in the Loop program uses Avoca-trained CSRs. Confirm whether that program and its coverage are included in your proposal. [[avoca-human]]"
+    ],
+    [
+      "Does Avoca support ServiceTitan?",
+      "Its official integration page describes direct booking and customer-context writeback while the office continues using ServiceTitan. [[avoca-servicetitan]]"
+    ]
+  ],
+  "related": [
+    "compare/sameday-ai-vs-avoca/index.html",
+    "alternatives/servicetitan-voice-agent/index.html",
+    "alternatives/jobber-receptionist/index.html"
+  ]
+}
