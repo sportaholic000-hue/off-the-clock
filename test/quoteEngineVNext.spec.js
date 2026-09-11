@@ -630,19 +630,23 @@ test('customer payload remains strictly allowlisted while owner record remains c
   assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 241000);
 });
 
-test('missing optional add-ons stay disclosed and never throw', () => {
+test('selected scope with missing prices reviews without omitting the request', () => {
   const flat = happyCases.find(candidate => candidate.serviceType === 'FLAT_ROOF_REPAIR');
   const flatInputs = { ...flat.customerInputs, pondingWater: true };
   const flatResult = quote({ ...flat, customerInputs: flatInputs });
-  assert.deepEqual(flatResult.options[0].skippedAddons, ['Ponding water surcharge']);
-  assert.match(flatResult.options[0].disclaimer, /does not include: Ponding water surcharge/);
+  assert.equal(flatResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(flatResult.missingOwnerFields, ['pondingWaterSurcharge']);
+  assert.deepEqual(flatResult.submittedCustomerInputs, flatInputs);
+  assert.deepEqual(Object.keys(sanitizeForCustomerVNext(flatResult)).sort(), ['customerMessage', 'quoteId', 'resultType']);
 
   const mowing = happyCases.find(candidate => candidate.serviceType === 'LANDSCAPING_MOWING');
   const ownerPricing = structuredClone(mowing.ownerPricing);
   delete ownerPricing.pricing.baggingSurchargePercent;
   delete ownerPricing.pricing.edgingPerLinearFoot;
   const mowingResult = quote({ ...mowing, ownerPricing });
-  assert.deepEqual(mowingResult.options[0].skippedAddons.sort(), ['Clipping bagging and disposal', 'Lawn edging'].sort());
+  assert.equal(mowingResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(mowingResult.missingOwnerFields.sort(), ['baggingSurchargePercent', 'edgingPerLinearFoot']);
+  assert.deepEqual(mowingResult.submittedCustomerInputs, mowing.customerInputs);
 });
 
 test('every tier validates effective pricing and only its explicit override changes', () => {
@@ -792,7 +796,8 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   if(adjustment)amounts['Minimum price adjustment']=adjustment;
   const floor=minimum+(b.taxMode==='TAX_ALL'?precisionPercent(minimum,b.taxPercent):0);
   const low=Math.max(precisionPercent(total,100-b.rangeBufferPercent),floor,1),high=precisionPercent(total,100+b.rangeBufferPercent);
-  const display=b.rangeBufferPercent===0?[total/100,total/100,total/100]:[Math.floor(low/100),precisionRound(BigInt(total),100n),Math.ceil(high/100)];
+  const preserveCents=b.rangeBufferPercent===0 || (low>0&&low<100) || Math.floor(low/100)*100<floor;
+  const display=preserveCents?[low/100,total/100,high/100]:[Math.floor(low/100),precisionRound(BigInt(total),100n),Math.ceil(high/100)];
   return {amounts,total,markup,tax,adjustment,subtotal,floor,range:[low,total,high],display};
 }
 function precisionInspect(value) {

@@ -586,7 +586,7 @@ function calculateFlatRoofRepair(c, p, ctx) {
   add(out, fixedLine('Flat roof repair materials', 'material', valueAtPath(p, materialPath), materialPath));
   if (c.pondingWater) {
     const rate = addonMoney(p.pondingWaterSurcharge, 'pondingWaterSurcharge');
-    if (rate === undefined) ctx.skipAddon('Ponding water surcharge');
+    if (rate === undefined) throw new QuoteReviewError('Selected ponding-water treatment requires a price.', { missingOwnerFields: ['pondingWaterSurcharge'] });
     else add(out, fixedLine('Ponding water surcharge', 'addon', rate, 'pondingWaterSurcharge', undefined, { allowZero: true }));
   }
   out.measurements.push({ name: 'affectedAreaSqft', value: c.affectedArea, unit: 'square feet', source: 'customer_measured', derivedCategory: repairSize });
@@ -996,7 +996,7 @@ function calculateMowing(c, p, ctx) {
   let baggingPriced = false;
   if (c.bagClippings) {
     const percent = addonPercent(p.baggingSurchargePercent, 'baggingSurchargePercent');
-    if (percent === undefined) ctx.skipAddon('Clipping bagging and disposal');
+    if (percent === undefined) throw new QuoteReviewError('Selected clipping bagging and disposal requires a price.', { missingOwnerFields: ['baggingSurchargePercent'] });
     else {
       const exactAmount = exactDivide(exactMultiply(labor.amountCents, percent), 100);
       const amount = exactRound(exactAmount);
@@ -1030,7 +1030,7 @@ function calculateMowing(c, p, ctx) {
   }
   if (c.edgingIncluded) {
     const rate = addonMoney(p.edgingPerLinearFoot, 'edgingPerLinearFoot');
-    if (rate === undefined) ctx.skipAddon('Lawn edging');
+    if (rate === undefined) throw new QuoteReviewError('Selected lawn edging requires a price.', { missingOwnerFields: ['edgingPerLinearFoot'] });
     else add(out, makeLine({ name: 'Lawn edging', category: 'addon', quantity: c.edgingLengthLF, unit: 'measured linear feet', rateCents: rate, ratePath: 'edgingPerLinearFoot', customerDriver: `${c.edgingLengthLF} measured linear feet of edging`, allowZeroRate: true }));
   }
   out.feeScope.disposal = baggingPriced;

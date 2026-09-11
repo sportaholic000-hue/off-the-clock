@@ -863,7 +863,9 @@ test('repair 19: zero and missing remain distinct for conditional prices', () =>
   delete missing.pricing.baggingSurchargePercent;
   delete missing.pricing.edgingPerLinearFoot;
   const omitted = run('LANDSCAPING_MOWING', mowingInputs, missing);
-  assert.deepEqual(omitted.options[0].skippedAddons.sort(), ['Clipping bagging and disposal', 'Lawn edging'].sort());
+  assert.equal(omitted.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(omitted.missingOwnerFields.sort(), ['baggingSurchargePercent', 'edgingPerLinearFoot']);
+  assert.deepEqual(omitted.submittedCustomerInputs, mowingInputs);
 });
 
 test('repair 20: owner preview evaluates a valid inactive draft without enabling customer quote', () => {
@@ -3496,7 +3498,7 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
                     );
                     assert.deepEqual(
                       [result.lowEstimate, result.midEstimate, result.highEstimate],
-                      rangeBufferPercent===0 ? [expected.range.lowCents / 100, expected.range.midCents / 100, expected.range.highCents / 100] : [Math.floor(expected.range.lowCents/100),Math.floor((expected.range.midCents+50)/100),Math.ceil(expected.range.highCents/100)],
+                      (rangeBufferPercent===0 || Math.floor(expected.range.lowCents/100)*100<expected.range.minimumFloorCents) ? [expected.range.lowCents / 100, expected.range.midCents / 100, expected.range.highCents / 100] : [Math.floor(expected.range.lowCents/100),Math.floor((expected.range.midCents+50)/100),Math.ceil(expected.range.highCents/100)],
                       label + ' displayed range'
                     );
                     caseCount += 1;
@@ -3622,7 +3624,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     flatRepair.ownerPricing.pricing,
     {ownerPricing:flatRepair.ownerPricing}
   ));
-  assert.deepEqual(undisclosedAddon.invalidOwnerFields, ['addonDisclosureContext']);
+  assert.deepEqual(undisclosedAddon.missingOwnerFields, ['pondingWaterSurcharge']);
 
   const mowingPricing = service('LANDSCAPING_MOWING', {
     mowingBaseRatePerSqft: 10,
@@ -3639,7 +3641,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     bagClippings: true,
     edgingIncluded: false
   }, mowingPricing));
-  assert.deepEqual(undisclosedMowingAddon.invalidOwnerFields, ['addonDisclosureContext']);
+  assert.deepEqual(undisclosedMowingAddon.missingOwnerFields, ['baggingSurchargePercent']);
 
   const gatelessFence = captureReview(() => calculateServiceVNext('FENCING_INSTALL', fenceInputs(), fenceService().pricing, {ownerPricing:fenceService()}));
   assert.deepEqual(gatelessFence.ownerDecisionRequired.map(item => item.kind), [
@@ -5867,25 +5869,27 @@ test('repair 91: the direct calculator never rereads validated proxies or access
     ),
     error => {
       assert.equal(error.name, 'QuoteReviewError');
-      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
+      assert.deepEqual(error.missingOwnerFields, ['pondingWaterSurcharge']);
       return true;
     }
   );
   assert.equal(addonGetterReads, 0);
 
+  let skippedCalls = 0;
   assert.throws(
     () => calculateServiceVNext(
       'FLAT_ROOF_REPAIR',
       { ...flatRepair.inputs, pondingWater: true },
       flatRepair.ownerPricing.pricing,
-      { ownerPricing: flatRepair.ownerPricing, skipAddon() { throw new Error('callback failed'); } }
+      { ownerPricing: flatRepair.ownerPricing, skipAddon() { skippedCalls++; throw new Error('callback failed'); } }
     ),
     error => {
       assert.equal(error.name, 'QuoteReviewError');
-      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
+      assert.deepEqual(error.missingOwnerFields, ['pondingWaterSurcharge']);
       return true;
     }
   );
+  assert.equal(skippedCalls, 0);
 });
 test('repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data', () => {
   const owner = interiorService();
@@ -6265,7 +6269,10 @@ test('repair 97: every markup percentage accepted by defaults validation has rep
     [600, 60000],
     [999.99, 99999],
     [999.9999999999999, 100000],
-    [1000, 100000]
+    [1000, 100000],
+    [1000.0000000000001, 100000],
+    [1000.01, 100001],
+    [1200, 120000]
   ]) {
     const configuredDefaults = {
       ...defaults,
@@ -6286,12 +6293,13 @@ test('repair 97: every markup percentage accepted by defaults validation has rep
     assert.equal(sanitizeForCustomerVNext(result).resultType, 'INSTANT_ESTIMATE_READY');
   }
 
-  const aboveValidatedMaximum = { ...defaults, markupPercent: 1000.0000000000001, rangeBufferPercent: 0 };
-  const validation = validateBusinessDefaults(aboveValidatedMaximum);
+  // The former commercial cap is superseded; invalid negative markup still reviews.
+  const invalidMarkup = { ...defaults, markupPercent: -1, rangeBufferPercent: 0 };
+  const validation = validateBusinessDefaults(invalidMarkup);
   assert.equal(validation.ok, false);
   assert.deepEqual(validation.invalidFields, ['markupPercent']);
   const rejected = run('INTERIOR_PAINTING', interiorInputs(), interiorService(), {
-    businessDefaults: aboveValidatedMaximum
+    businessDefaults: invalidMarkup
   });
   assert.equal(rejected.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.deepEqual(rejected.invalidOwnerFields, ['businessDefaults.markupPercent']);
@@ -6765,7 +6773,8 @@ function currentInspect(result) {
       const r=option.calculationRecord.range;
       const exact=r.bufferPercent===0 && r.source==='business_range_buffer' && r.lowCents===r.highCents;
       const subDollar=r.lowCents>0&&r.lowCents<100;
-      assert.deepEqual([option.lowEstimate,option.midEstimate,option.highEstimate], (exact||subDollar)
+      const minimumWouldBeUndercut=Math.floor(r.lowCents/100)*100<r.minimumCustomerFloorCents;
+      assert.deepEqual([option.lowEstimate,option.midEstimate,option.highEstimate], (exact||subDollar||minimumWouldBeUndercut)
         ? [r.lowCents/100,r.midCents/100,r.highCents/100]
         : [Number(BigInt(r.lowCents)/100n),Number((BigInt(r.midCents)+50n)/100n),Number((BigInt(r.highCents)+99n)/100n)]);
       assert.ok(oracleSubtract(oracleMultiply(option.lowEstimate,100),r.lowCents).numerator <= 0n);
@@ -7550,4 +7559,264 @@ test('repair 150: dormant tier inclusion is validated using effective tier price
   assert.ok(validateServiceRulesDetailed(configured,p.serviceType).every(d=>d.kind!=='included_price_path'));
   const unconfigured=structuredClone(configured);unconfigured.tiers[1].overrides={};
   assert.ok(currentRun(c,unconfigured).ownerDiagnostics.some(d=>d.path==='zeroPricePolicy.includedPrices.ceilingMaterialPerSqftPerCoat'));
+});
+
+
+// Revised owner handoff, starting at 6036cdb. Literal monetary expectations below
+// are derived from stated fixture prices, independently of candidate helpers.
+function handoffMowing(overrides = {}) {
+  return service('LANDSCAPING_MOWING', {
+    mowingBaseRatePerSqft: 10000, minimumServiceCharge: 0,
+    frequencyMultipliers: { weekly: 1, biweekly: 1.2, monthly: 1.5, one_time: 1.8 },
+    overgrowthMultipliers: { maintained: 1, overgrown: 1.5, severe: 2 },
+    baggingSurchargePercent: 10, edgingPerLinearFoot: 100, ...overrides
+  });
+}
+function handoffLawn(overrides = {}) {
+  return { yardSqft: 1, sqftMethod: 'exact', serviceFrequency: 'weekly',
+    grassCondition: 'maintained', bagClippings: false, edgingIncluded: false, ...overrides };
+}
+function handoffRequest(p, c, b = {}) {
+  return { serviceType: p.serviceType, customerInputs: c, ownerPricing: p,
+    businessDefaults: { ...defaults, rangeBufferPercent: 0, ...b }, callerType: 'owner', currentMonth: 1 };
+}
+function handoffPaths(request) {
+  const book = { pricebook: { defaults: request.businessDefaults, services: [request.ownerPricing] },
+    serviceType: request.serviceType, customerInputs: request.customerInputs, currentMonth: 1, callerType: 'owner' };
+  const results = [generateQuoteVNext(request), previewQuoteVNext(request), quoteFromVNextPricebook(book), previewFromVNextPricebook(book)];
+  for (const result of results) currentInspect(result);
+  const customer = quoteFromVNextPricebook({ ...book, callerType: 'customer' });
+  assert.equal(customer.resultType, sanitizeForCustomerVNext(results[0]).resultType);
+  const withoutId = r => { const copy = structuredClone(r); delete copy.quoteId; return copy; };
+  assert.deepEqual(withoutId(customer), withoutId(sanitizeForCustomerVNext(results[0])));
+  return results;
+}
+function handoffTotal(result, expected) {
+  assert.equal(result.resultType, auditReady, JSON.stringify(result));
+  for (const option of result.options) {
+    assert.equal(option.calculationRecord.scenarios.mid.finalTotalCents, expected);
+    assert.deepEqual(option.skippedAddons, []);
+  }
+}
+
+test('handoff A: unrestricted markup has exact positive boundary and gross-margin controls', () => {
+  const p = handoffMowing(), c = handoffLawn();
+  // One measured square foot at 10000 cents and both owner factors 1 gives $100 cost.
+  for (const [percent, total] of [[0,10000],[50,15000],[99.99,19999],[100,20000],[100.01,20001],
+    [149.99,24999],[150,25000],[150.01,25001],[499.99,59999],[500,60000],[500.01,60001],
+    [999.99,109999],[1000,110000],[1000.0000000000001,110000],[1000.01,110001],[1200,130000],[1000000,100010000]]) {
+    const request = handoffRequest(p,c,{markupPercent:percent});
+    assert.equal(validateBusinessDefaults(request.businessDefaults).ok,true);
+    const result = currentInspect(generateQuoteVNext(request));
+    handoffTotal(result,total);
+    assert.equal(scenario(result).markup.percent,percent);
+    assert.equal(scenario(result).markup.amountCents,total-10000);
+  }
+  for (const [percent,total] of [[0,10000],[50,20000],[90,100000],[99,1000000],[99.9,10000000]]) {
+    handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupMode:'margin',markupPercent:percent}))),total);
+  }
+  for (const percent of [-1,NaN,Infinity,-Infinity]) {
+    assert.equal(currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupPercent:percent}))).resultType,auditReview);
+  }
+  for (const percent of [100,100.00000000000001,1200]) {
+    assert.equal(currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupMode:'margin',markupPercent:percent}))).resultType,auditReview);
+  }
+  // A technical monetary overflow is separate from percentage validation.
+  const overflow = handoffRequest(p,c,{markupPercent:1e308});
+  assert.equal(validateBusinessDefaults(overflow.businessDefaults).ok,true);
+  const blocked = currentInspect(generateQuoteVNext(overflow));
+  assert.equal(blocked.resultType,auditReview);
+  assert.ok(blocked.invalidOwnerFields.includes('markupPercent'));
+  // The same finite percentage is valid when there is no eligible cost to mark up.
+  const sold = structuredClone(p); sold.priceBasisByCategory.labor='sell_price';
+  handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(sold,c,{markupPercent:1e308}))),10000);
+  // Ordinary markup does not relax the distinct optional surcharge contract.
+  const badBag = handoffMowing({baggingSurchargePercent:500.01});
+  assert.equal(currentInspect(generateQuoteVNext(handoffRequest(badBag,handoffLawn({bagClippings:true})))).resultType,auditReview);
+});
+
+test('handoff A: quote preview price-book activation and evidence agree above the former cap', () => {
+  const p=handoffMowing(), c=handoffLawn(), request=handoffRequest(p,c,{markupPercent:1200});
+  for(const result of handoffPaths(request)) handoffTotal(result,130000);
+  assert.equal(vNextServiceStatus(p,request.businessDefaults).status,'QUOTING LIVE');
+  assert.equal(validateVNextPricebook({defaults:request.businessDefaults,services:[p]}).ok,true);
+  const sold=structuredClone(p);sold.priceBasisByCategory.labor='sell_price';
+  for(const result of handoffPaths(handoffRequest(sold,c,{markupPercent:1200})))handoffTotal(result,10000);
+  handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupPercent:1200,markupApplies:{...markupApplies,labor:false}}))),10000);
+  const inactive={...p,active:false};const frozen=structuredClone(inactive);
+  const preview=previewQuoteVNext(handoffRequest(inactive,c,{markupPercent:1200}));
+  handoffTotal(preview,130000);assert.equal(preview.customerEligible,false);
+  assert.equal(sanitizeForCustomerVNext(preview).resultType,auditReview);assert.deepEqual(inactive,frozen);
+  const valid=generateQuoteVNext(request), forged=structuredClone(valid);
+  forged.calculationRecord.financialInputs.businessDefaults.markupPercent=1199;
+  assert.equal(sanitizeForCustomerVNext(forged).resultType,auditReview);
+});
+
+test('handoff A: high markup preserves category tax fee and tier arithmetic', () => {
+  const p=handoffMowing(), c=handoffLawn({bagClippings:true,edgingIncluded:true,edgingLengthLF:10});
+  p.feeRules.travel='always';p.taxabilityByCategory.addon=true;p.taxabilityByCategory.disposal=true;
+  // Labor10000 + bagging1000 + edging1000 + travel500 =12500; markup1200%=150000.
+  // TAX_MATERIALS configured taxable extras2000 + their markup24000 =>2600 tax.
+  for(const [taxMode,total] of [['TAX_NONE',162500],['TAX_MATERIALS',165100],['TAX_ALL',178750]]) {
+    const r=currentInspect(generateQuoteVNext(handoffRequest(p,c,{markupPercent:1200,travelFee:500,taxMode,taxPercent:taxMode==='TAX_NONE'?0:10})));
+    handoffTotal(r,total);assert.equal(lineAmount(r,'Travel'),500);
+    assert.equal(lineAmount(r,'Clipping bagging and disposal'),1000);assert.equal(lineAmount(r,'Lawn edging'),1000);
+  }
+  const tiers=handoffMowing();tiers.tiers=[{name:'Base',overrides:{}},{name:'Higher',overrides:{mowingBaseRatePerSqft:20000}}];
+  const r=currentInspect(generateQuoteVNext(handoffRequest(tiers,handoffLawn(),{markupPercent:1200})));
+  assert.deepEqual(r.options.map(o=>o.calculationRecord.scenarios.mid.finalTotalCents),[130000,260000]);
+});
+
+function handoffSelections() {
+  const flat=service('FLAT_ROOF_REPAIR',{laborHourlyRate:10000,repairMinimum:0,
+    patchRepairHours:{epdm:{seam_patch:{small:2,medium:4,large:8}}},
+    patchMaterialAllowance:{epdm:{seam_patch:{small:4000,medium:8000,large:16000}}},pondingWaterSurcharge:1000});
+  const flatInputs=confirmedFixtureInputs({repairType:'seam_patch',affectedArea:10,membraneType:'epdm',leakPresent:false,pondingWater:false});
+  return [
+    {p:handoffMowing(),c:handoffLawn(),select:{bagClippings:true},field:'baggingSurchargePercent',name:'Clipping bagging and disposal',base:10000,rate:10,one:100},
+    {p:handoffMowing(),c:handoffLawn(),select:{edgingIncluded:true,edgingLengthLF:10},field:'edgingPerLinearFoot',name:'Lawn edging',base:10000,rate:100,one:10},
+    {p:flat,c:flatInputs,select:{pondingWater:true},field:'pondingWaterSurcharge',name:'Ponding water surcharge',base:24000,rate:1000,one:1}
+  ];
+}
+
+test('handoff B: each missing selected price reviews and retains complete actionable scope', () => {
+  for(const f of handoffSelections()) {
+    for(const missing of [undefined,null,'']) {
+      const p=structuredClone(f.p);if(missing===undefined)delete p.pricing[f.field];else p.pricing[f.field]=missing;
+      const c={...f.c,...f.select}, request=handoffRequest(p,c);
+      for(const result of handoffPaths(request)) {
+        assert.equal(result.resultType,auditReview,JSON.stringify(result));
+        assert.deepEqual(result.missingOwnerFields,[f.field]);
+        assert.deepEqual(result.submittedCustomerInputs,c);assert.deepEqual(result.normalizedScope,c);
+      }
+      const internal=generateQuoteVNext(request),lead=buildInternalLeadVNext({request,internalResult:internal});
+      assert.deepEqual(lead.originalRequest,request);assert.deepEqual(lead.submittedCustomerInputs,c);
+      assert.throws(()=>calculateServiceVNext(p.serviceType,c,p.pricing,{ownerPricing:p,skipAddon(){throw Error('must not omit');}}),e=>e.missingOwnerFields?.includes(f.field));
+      if (missing === undefined) {
+        const baseRequest=handoffRequest(p,f.c);
+        for(const result of handoffPaths(baseRequest))handoffTotal(result,f.base);
+        assert.equal(vNextServiceStatus(p,baseRequest.businessDefaults).status,'QUOTING LIVE');
+      }
+    }
+  }
+});
+
+test('handoff B: priced and explicitly zero selections charge once with signed price boundaries', () => {
+  for(const f of handoffSelections())for(const [rate,extra] of [[-1,null],[0,0],[1,f.one],[f.rate,1000]]) {
+    const p=structuredClone(f.p);p.pricing[f.field]=rate;
+    const request=handoffRequest(p,{...f.c,...f.select}),result=currentInspect(generateQuoteVNext(request));
+    if(rate<0){assert.equal(result.resultType,auditReview);continue;}
+    handoffTotal(result,f.base+extra);
+    assert.equal(result.options[0].lineItems.filter(l=>l.name===f.name).length,1);
+    assert.equal(lineAmount(result,f.name),extra);
+    if(rate===0)assert.equal(line(result,f.name).noCharge,true);
+    assert.equal(vNextServiceStatus(p,request.businessDefaults).status,'QUOTING LIVE');
+  }
+  const p=handoffMowing();p.feeRules.disposal='always';
+  const c=handoffLawn({bagClippings:true});
+  const priced=currentInspect(generateQuoteVNext(handoffRequest(p,c,{disposalFee:50000})));
+  handoffTotal(priced,11000);assert.equal(priced.lineItems.some(l=>l.name==='Disposal'),false);
+  handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(p,handoffLawn(),{disposalFee:50000}))),60000);
+  // Selected mowing edging uses the existing 0.1-LF minimum; no-edging is the false selection.
+  for (const length of [0,0.0999,0.1,0.1001]) {
+    const result=currentInspect(generateQuoteVNext(handoffRequest(p,handoffLawn({edgingIncluded:true,edgingLengthLF:length}),{disposalFee:50000})));
+    if (length<0.1) { assert.equal(result.resultType,auditReview); assert.deepEqual(result.invalidCustomerFields,['edgingLengthLF']); }
+    else { handoffTotal(result,60010); assert.equal(lineAmount(result,'Lawn edging'),10); }
+  }
+  const malformed=handoffMowing({baggingSurchargePercent:null});
+  const blocked=currentInspect(generateQuoteVNext(handoffRequest(malformed,handoffLawn())));
+  assert.equal(blocked.resultType,auditReview);assert.ok(blocked.invalidOwnerFields.includes('baggingSurchargePercent'));
+});
+
+test('handoff B: only complete selected tiers survive and changed prices invalidate AI approval', () => {
+  for(const f of handoffSelections()) {
+    const p=structuredClone(f.p);delete p.pricing[f.field];
+    p.tiers=[{name:'Incomplete',overrides:{}},{name:'Complete',overrides:{[f.field]:f.rate}}];
+    for(const result of handoffPaths(handoffRequest(p,{...f.c,...f.select}))) {
+      handoffTotal(result,f.base+1000);assert.deepEqual(result.options.map(o=>o.tierName),['Complete']);
+      assert.deepEqual(result.failedTierDiagnostics[0].missingOwnerFields,[f.field]);
+      assert.ok(result.optionAvailabilityNotice);
+    }
+    const unselected=currentInspect(generateQuoteVNext(handoffRequest(p,f.c)));
+    assert.deepEqual(unselected.options.map(o=>o.tierName),['Incomplete','Complete']);handoffTotal(unselected,f.base);
+    const draft={...f.p,...fixtureIdentity('AI_SUGGESTED',undefined,f.p.serviceType)};
+    const approved=approveVNextValues(draft,{fields:aiConfirmationFieldsVNext(draft,draft.pricing),ownerId:draft.origin.ownerId,operationId:'handoff-approve',approvedAt:'2026-09-10T12:00:00.000Z'});
+    const c={...f.c,...f.select};handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(approved,c))),f.base+1000);
+    const changed=structuredClone(approved);changed.pricing[f.field]=0;
+    const changedRequest=handoffRequest(changed,c),blocked=currentInspect(generateQuoteVNext(changedRequest));
+    assert.equal(blocked.resultType,auditReview);assert.ok(blocked.unconfirmedOwnerFields.includes(f.field));
+    const preview=previewQuoteVNext(changedRequest);handoffTotal(preview,f.base);
+    assert.equal(preview.customerEligible,false);assert.equal(sanitizeForCustomerVNext(preview).resultType,auditReview);
+    const reapproved=approveVNextValues(changed,{fields:[f.field],ownerId:draft.origin.ownerId,operationId:'handoff-reapprove',approvedAt:'2026-09-10T12:01:00.000Z'});
+    handoffTotal(currentInspect(generateQuoteVNext(handoffRequest(reapproved,c))),f.base);
+  }
+});
+
+test('handoff C: customer minima retain exact cents across all tax modes service floors and buffers', () => {
+  for(const taxMode of ['TAX_NONE','TAX_MATERIALS','TAX_ALL'])for(const minimum of [19999,20000,20001])for(const buffer of [0,0.5,10,25])for(const source of ['business','service']) {
+    const p=handoffMowing(source==='service'?{minimumServiceCharge:minimum}:{});
+    const b={minimumJobPrice:source==='business'?minimum:0,taxMode,taxPercent:taxMode==='TAX_NONE'?0:10,rangeBufferPercent:buffer};
+    // The $100 nontaxable cost is below the floor. Only TAX_ALL adds floor tax.
+    const floor=taxMode==='TAX_ALL'?Number((BigInt(minimum)*110n+50n)/100n):minimum;
+    const high=Number((BigInt(floor)*BigInt(200+2*buffer)+100n)/200n);
+    const r=currentInspect(generateQuoteVNext(handoffRequest(p,handoffLawn(),b)));handoffTotal(r,floor);
+    const range=r.options[0].calculationRecord.range;
+    assert.deepEqual([range.lowCents,range.midCents,range.highCents],[floor,floor,high]);
+    assert.equal(range.minimumCustomerFloorCents,floor);
+    const expected=buffer===0||floor%100!==0?[floor/100,floor/100,high/100]:[floor/100,floor/100,Math.ceil(high/100)];
+    const safe=sanitizeForCustomerVNext(r);assert.deepEqual([safe.lowEstimate,safe.midEstimate,safe.highEstimate],expected);
+    assert.ok(oracleSubtract(oracleMultiply(safe.lowEstimate,100),floor).numerator>=0n);
+    assert.ok(oracleSubtract(oracleMultiply(safe.midEstimate,100),floor).numerator>=0n);
+  }
+});
+
+test('handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges', () => {
+  const p=handoffMowing(),c=handoffLawn();
+  for(const result of handoffPaths(handoffRequest(p,c,{minimumJobPrice:20001,rangeBufferPercent:10}))) {
+    handoffTotal(result,20001);assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[200.01,200.01,220.01]);
+  }
+  const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
+  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',20001,1000,9001],['TAX_ALL',22001,2000,10001]]) {
+    const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
+    handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);
+    assert.equal(result.lowEstimate,total/100);assert.equal(result.midEstimate,total/100);
+  }
+  const tiered=handoffMowing();tiered.tiers=[{name:'Fractional',overrides:{minimumServiceCharge:20001}},{name:'Whole',overrides:{minimumServiceCharge:25000}}];
+  const tierResult=currentInspect(generateQuoteVNext(handoffRequest(tiered,c,{rangeBufferPercent:10})));
+  assert.deepEqual(tierResult.options.map(o=>[o.lowEstimate,o.midEstimate,o.highEstimate]),[[200.01,200.01,220.01],[250,250,275]]);
+  const ordinary=currentInspect(generateQuoteVNext(handoffRequest(p,handoffLawn({yardSqft:4}),{minimumJobPrice:20001,rangeBufferPercent:10})));
+  assert.deepEqual([ordinary.lowEstimate,ordinary.midEstimate,ordinary.highEstimate],[360,400,440]);handoffTotal(ordinary,40000);
+  const valid=generateQuoteVNext(handoffRequest(p,c,{minimumJobPrice:20001,rangeBufferPercent:10}));
+  const forged=structuredClone(valid);forged.lowEstimate=200;forged.options[0].lowEstimate=200;
+  forged.options[0].calculationRecord.customerProjection.lowEstimate=200;
+  forged.calculationRecord.options[0].customerProjection.lowEstimate=200;
+  assert.equal(sanitizeForCustomerVNext(forged).resultType,auditReview);
+  const exact=currentInspect(generateQuoteVNext(handoffRequest(p,c,{minimumJobPrice:20001,rangeBufferPercent:0})));
+  assert.deepEqual([exact.lowEstimate,exact.midEstimate,exact.highEstimate],[200.01,200.01,200.01]);
+});
+
+test('handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior', () => {
+  for(const [rate,display] of [[1,[0.01,0.01,0.01]],[49,[0.44,0.49,0.54]],[50,[0.45,0.5,0.55]],
+    [99,[0.89,0.99,1.09]],[100,[0.9,1,1.1]],[101,[0.91,1.01,1.11]],[110,[0.99,1.1,1.21]],[111,[1,1,2]],[112,[1,1,2]]]) {
+    const r=currentInspect(generateQuoteVNext(handoffRequest(handoffMowing({mowingBaseRatePerSqft:rate}),handoffLawn(),{rangeBufferPercent:10})));
+    assert.deepEqual([r.lowEstimate,r.midEstimate,r.highEstimate],display);
+  }
+  const zero=handoffMowing({mowingBaseRatePerSqft:0}),free=freeFixture(zero);
+  const request=handoffRequest(free,handoffLawn(),{minimumJobPrice:20001,rangeBufferPercent:10,markupPercent:1200});
+  const r=currentInspect(generateQuoteVNext(request));handoffTotal(r,0);
+  assert.deepEqual([r.lowEstimate,r.midEstimate,r.highEstimate],[0,0,0]);
+  assert.equal(currentInspect(generateQuoteVNext({...request,ownerPricing:zero})).resultType,auditReview);
+  for(const minimum of [Number.MAX_SAFE_INTEGER-1,Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER+1]) {
+    const unsafe=currentInspect(generateQuoteVNext(handoffRequest(handoffMowing(),handoffLawn(),{minimumJobPrice:minimum,rangeBufferPercent:25})));
+    assert.equal(unsafe.resultType,auditReview); // Buffer exceeds safe integer cents, or the configured minimum itself does.
+  }
+});
+
+
+test('handoff B: candidate metadata identifies missing selected prices without changing production copy', () => {
+  const metadata=getVNextPriceBookMetadata();
+  for(const [type,field] of [['LANDSCAPING_MOWING','baggingSurchargePercent'],['LANDSCAPING_MOWING','edgingPerLinearFoot'],['FLAT_ROOF_REPAIR','pondingWaterSurcharge']]) {
+    const value=metadata.find(s=>s.serviceType===type).pricingFields.find(f=>f.field===field);
+    assert.match(value.help,/Required when/);assert.match(value.help,/Missing pricing returns review/);assert.match(value.help,/explicit zero/i);
+  }
 });

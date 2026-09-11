@@ -37,7 +37,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-r147-150-20260910-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-handoff-abc-20260910-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -832,10 +832,10 @@ function validFixedEvidence(calculation, expectedAmountCents) {
 }
 
 function validPercentageEvidence(calculation, expectedAmountCents) {
-  const maximumPercent = calculation.mode === 'markup' ? 1000 : 500;
+  // Ordinary owner markup has no commercial cap. Other percentage contracts retain their bounds.
   if (!Number.isSafeInteger(calculation.basisAmountCents) || calculation.basisAmountCents < 0 ||
       typeof calculation.percent !== 'number' || !Number.isFinite(calculation.percent) ||
-      calculation.percent < 0 || calculation.percent > maximumPercent ||
+      calculation.percent < 0 || (calculation.mode !== 'markup' && calculation.percent > 500) ||
       (calculation.mode !== undefined && !['markup', 'margin'].includes(calculation.mode)) ||
       (calculation.mode === 'margin' && calculation.percent >= 100)) return false;
   try {
@@ -1600,8 +1600,10 @@ function displayedEstimates(range) {
   const low = BigInt(range.lowCents) / 100n;
   const high = (BigInt(range.highCents) + 99n) / 100n;
   const mid = (BigInt(range.midCents) + 50n) / 100n;
-  // Keep a positive sub-dollar range visibly distinct from an explicitly free offering.
-  if ((range.lowCents > 0 && low === 0n) || (range.midCents > 0 && mid === 0n) || (range.highCents > 0 && high === 0n)) {
+  // Preserve cents when whole dollars would imply free scope or undercut the
+  // tax-mode customer minimum. Raising the low instead would narrow the range.
+  const belowMinimum = low * 100n < BigInt(range.minimumCustomerFloorCents);
+  if (belowMinimum || (range.lowCents > 0 && low === 0n) || (range.midCents > 0 && mid === 0n) || (range.highCents > 0 && high === 0n)) {
     return { lowEstimate: toDollars(range.lowCents), midEstimate: toDollars(range.midCents), highEstimate: toDollars(range.highCents) };
   }
   if (high * 100n > BigInt(Number.MAX_SAFE_INTEGER)) throw new RangeError('Displayed range exceeds the safe monetary domain.');

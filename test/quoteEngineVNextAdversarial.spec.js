@@ -414,7 +414,7 @@ test('fencing rejects caller post counts and exposes the missing geometry and mi
   assert.equal(source.includes('Math.sqrt'), false);
 });
 
-test('common disposal applies only to physical scope and is not triggered by skipped mowing add-ons', () => {
+test('common disposal follows physical scope and cannot substitute for missing selected bagging pricing', () => {
   const feeDefaults = { ...defaults, disposalFee: 10000 };
   const sod = service('LANDSCAPING_SOD', {
     sodMaterialPerSqft: 75,
@@ -439,8 +439,12 @@ test('common disposal applies only to physical scope and is not triggered by ski
     yardSqft: 5000, sqftMethod: 'exact', serviceFrequency: 'weekly',
     grassCondition: 'maintained', bagClippings: true, edgingIncluded: false
   }, mowing, { businessDefaults: feeDefaults });
-  assert.equal(Object.hasOwn(lineMap(mowingResult), 'Disposal'), false);
-  assert.deepEqual(mowingResult.options[0].skippedAddons, ['Clipping bagging and disposal']);
+  assert.equal(mowingResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(mowingResult.missingOwnerFields, ['baggingSurchargePercent']);
+  assert.equal(mowingResult.submittedCustomerInputs.bagClippings, true);
+  const unselected = run('LANDSCAPING_MOWING', { ...mowingResult.submittedCustomerInputs, bagClippings: false }, mowing, { businessDefaults: feeDefaults });
+  assert.equal(unselected.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.equal(Object.hasOwn(lineMap(unselected), 'Disposal'), false);
 });
 
 test('mulch disposal scope follows measured bed preparation scope', () => {

@@ -71,6 +71,10 @@ const SERVICE_NAMES = {
 };
 
 const NEW_FIELD_COPY = {
+  baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Required when clipping bagging and disposal is selected. Missing pricing returns review. An explicit zero percentage means this optional scope is free; a positive percentage applies to mowing labor once and replaces common disposal.'},
+  edgingPerLinearFoot: {label:'Landscape edging labor price per measured linear foot',help:'Required when edging is selected. Missing pricing returns review. An explicit zero rate means this optional scope is free; a positive rate uses the confirmed edging length.'},
+  pondingWaterSurcharge: {label:'Selected ponding-water treatment fixed price',help:'Required when ponding-water treatment is selected. Missing pricing returns review. An explicit zero price means this optional scope is free; a positive fixed price is charged once.'},
+
   disposalScope: {label:'Separate sod-project debris disposal',help:'Only separate_project_debris is supported. Customer separateDisposalSelected must be explicitly true or false. Old-lawn disposal stays included in ground preparation.'},
   knownOfferings: {label:'Explicitly known price-selecting offerings',help:'Register stable offering UUIDs separately from pricing. Matching price-map keys do not establish customer facts.'},
   zeroPricePolicy: {label:'Explicit free offerings and included required prices',help:'Audited service and owner approval is required. Zero core rates without this classification are incomplete; zero minima mean no minimum.'},
@@ -202,7 +206,9 @@ function activationScenarios(service) {
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
     const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false }));
-    return base.flatMap(inputs => [
+    // Probe optional treatment when configured; real selected requests always
+    // require its price. An unpriced extra does not disable complete base repairs.
+    return [undefined, null, ''].includes(p.pondingWaterSurcharge) ? base : base.flatMap(inputs => [
       inputs,
       { ...inputs, pondingWater: true }
     ]);
@@ -279,7 +285,12 @@ function activationScenarios(service) {
   if (serviceType === 'LANDSCAPING_MOWING') {
     const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
     const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
-    return [{ yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: true, edgingIncluded: true, edgingLengthLF: 1_000_000 }];
+    const base = { yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false };
+    const bagClippings = ![undefined, null, ''].includes(p.baggingSurchargePercent);
+    const edgingIncluded = ![undefined, null, ''].includes(p.edgingPerLinearFoot);
+    return !bagClippings && !edgingIncluded ? [base] : [base, {
+      ...base, bagClippings, edgingIncluded, ...(edgingIncluded ? { edgingLengthLF: 1_000_000 } : {})
+    }];
   }
   if (serviceType === 'SIDING_REPLACEMENT') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);

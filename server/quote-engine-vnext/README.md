@@ -1,5 +1,7 @@
 # Quote Engine vNext Audit Candidate
 
+Current checkpoint: [Revised owner handoff corrections A–C](HANDOFF_ABC.md), starting at `6036cdb57231993ab0f11f790d366c0cf825457d`. Ordinary markup has no commercial cap; every selected extra requires pricing or a supported explicit zero; customer display preserves the tax-mode minimum. This supersedes contradictory historical descriptions below. Final-commit execution evidence belongs to the delivery report.
+
 Current pass: [Repairs 147–150](AUDIT_REPAIRS_147_150.md), frozen start `47e88279d54e52e6af6f19a79e9df8dbe1231685`. The owner's latest identity, free-minimum, sub-dollar display and inclusion-path rules govern this snapshot. Final-SHA execution results belong to the delivery report.
 
 Accepted precision follow-up: [service-wide financial verification and composite rounding provenance](AUDIT_PRECISION_20260910.md), starting at `3261560b5e7b5fefe9de6957a676e4464624503a`. This retains all earlier protections. See the delivery report for final-commit execution results.

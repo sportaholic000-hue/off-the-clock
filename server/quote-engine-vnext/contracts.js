@@ -1179,6 +1179,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
     add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
+    if (c.pondingWater) add('pondingWaterSurcharge', 'Selected ponding-water treatment price');
   } else if (serviceType === 'INTERIOR_PAINTING') {
     add('laborPerWallSqftPerCoat', 'Wall painting labor price per measured wall square foot per coat');
     add('materialPerWallSqftPerCoat', 'Wall paint material price per measured wall square foot per coat');
@@ -1259,6 +1260,8 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
+    if (c.bagClippings) add('baggingSurchargePercent', 'Selected clipping bagging and disposal percentage', { kind: 'non_negative_number' });
+    if (c.edgingIncluded) add('edgingPerLinearFoot', 'Selected lawn edging price per measured linear foot');
   } else if (serviceType === 'SIDING_REPLACEMENT') {
     add(`laborPerSqft.${c.sidingType}`, 'Siding labor price for the selected siding type');
     add(`materialPerSqft.${c.sidingType}`, 'Siding material price for the selected siding type');
@@ -1794,7 +1797,7 @@ export function validateBusinessDefaults(defaults = {}) {
     diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
   };
   if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
-  if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100) || defaults.markupPercent > 1000)) invalid('markupPercent', 'markupPercent is outside its supported range.');
+  if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');
   for (const name of ['overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee']) if (!missing(defaults[name]) && !nonNegativeMoney(defaults[name])) invalid(name, `${name} must be a non-negative integer-cent amount.`);
   if (!missing(defaults.taxMode) && !['TAX_NONE', 'TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode)) invalid('taxMode', 'taxMode is invalid.');
   if (!missing(defaults.taxPercent) && (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100)) invalid('taxPercent', 'taxPercent must be from 0 to 100.');
@@ -2020,7 +2023,7 @@ export function freeOfferingVNext(service, tierName = null) {
 }
 function corePriceRequirementVNext(item) {
   return ['non_negative_money', 'non_negative_number'].includes(item.kind) &&
-    !['haulAwayFee', 'edgingPerLinearFoot'].includes(item.path) && !item.path.endsWith('.disposalFlat');
+    !['haulAwayFee', 'edgingPerLinearFoot', 'baggingSurchargePercent', 'pondingWaterSurcharge'].includes(item.path) && !item.path.endsWith('.disposalFlat');
 }
 function includedCorePriceVNext(service, pricing, required, path) {
   if (zeroPolicyDiagnosticsVNext(service).length) return false;
