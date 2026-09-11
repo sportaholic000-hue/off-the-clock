@@ -872,7 +872,7 @@ for(const entry of precisionEntries.filter(e=>!e.expectedOwnerDecision)){
     const original=entry.ownerPricing;
     for(const basis of ['configured','sell_price']){
       const p=structuredClone(original);if(basis==='sell_price')p.priceBasisByCategory=structuredClone(sellBasis);
-      for(const taxMode of ['TAX_NONE','TAX_MATERIALS','TAX_ALL'])for(const [markupMode,markupPercent]of [['markup',0],['markup',17.5],['margin',17.5],['margin',90],['margin',99],['margin',99.9]]){
+      for(const taxMode of ['TAX_NONE','TAX_MATERIALS','TAX_ALL'])for(const [markupMode,markupPercent]of [['markup',0],['markup',17.5],['markup',1200],['margin',17.5],['margin',90],['margin',99],['margin',99.9]]){
         precisionCheck(entry,p,{...defaults,taxMode,taxPercent:taxMode==='TAX_NONE'?0:7.5,markupMode,markupPercent});
       }
     }
