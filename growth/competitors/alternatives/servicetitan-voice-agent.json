@@ -1,0 +1,66 @@
+{
+  "kind": "alternatives",
+  "slug": "servicetitan-voice-agent",
+  "title": "ServiceTitan Voice Agent Alternatives for Service Businesses",
+  "seo_title": "ServiceTitan Voice Agent Alternatives: Compare Options & Fit",
+  "description": "Compare Off The Clock AI, Avoca, Sameday AI and Podium Larry as ServiceTitan Voice Agent alternatives. Separate voice automation from an FSM migration.",
+  "intro": "Compare Off The Clock AI, Avoca, Sameday AI and Podium Larry as ServiceTitan Voice Agent alternatives. Separate voice automation from an FSM migration.",
+  "verdict": "For an existing ServiceTitan business, compare Avoca or Sameday as connected operator choices. Evaluate Off The Clock for the supported project-pricing requirement. Consider Podium when changing the operating platform is intentional.",
+  "reason": [
+    "The starting question is whether ServiceTitan should remain your system of record. A Voice Agent alternative and a ServiceTitan replacement are different decisions. Preserve that distinction when comparing subscription costs, booking behavior and migration effort.",
+    "ServiceTitan’s documentation covers job types, dispatch-fee messages, follow-up questions and escalation. The feature is documented across basic Phones, Phones Pro and Contact Center Pro, so describing it as enterprise-contact-center-only is too narrow. [[st-settings]] [[st-escalation]]",
+    "A public ServiceTitan offer lists $2.75 per call, usage-based monthly billing and a 12-month rate lock. This is an official indexed offer, not a verified all-in account quote; the underlying ServiceTitan costs and eligibility remain separate. [[st-pricing]]"
+  ],
+  "choices": [
+    [
+      "otc",
+      "When stating the dispatch fee is not the whole requirement",
+      "A trip fee can answer what it costs to attend, without pricing the requested project. Use QuoteDone’s real-job evaluation to examine that distinction. Do not assume a native ServiceTitan connector from the ability to keep existing business tools."
+    ],
+    [
+      "avoca",
+      "When ServiceTitan stays and the front office changes",
+      "Its ServiceTitan integration is expressly documented. Test where the new job appears, how returning customers are matched, and which notes reach the office. Include the price of any additional coaching or human handling you need."
+    ],
+    [
+      "sameday",
+      "When you want a connected phone-and-scheduling operation",
+      "Compare the scheduling and campaign scope with your actual requirements. Ask for the full bill and a demonstration inside the relevant account rather than using minutes-to-calls assumptions to declare a winner."
+    ],
+    [
+      "podium",
+      "When the whole operating system is up for review",
+      "Podium’s home-services FSM is an alternative platform purchase. Price the move as such, including which existing processes and records you need to retain. A new receptionist alone should not accidentally decide your entire software migration."
+    ]
+  ],
+  "scenario": {
+    "title": "The test: a change in booking rules, not just a new booking",
+    "text": "Create two non-production job types with different appointment requirements and dispatch-fee messages. Test a supported booking, a request outside the configured rules and a caller who needs a person. The aim is to identify which decisions remain under your control.",
+    "checks": [
+      "Does the customer hear the fee applicable to the selected job type?",
+      "Does the product respect the current availability and escalation rules?",
+      "Is the final record attached to the right customer and business, with the latest request intact?"
+    ]
+  },
+  "questions": [
+    "What counts as a billable call, and what is the underlying platform cost?",
+    "Which phone setup and account permissions are required?",
+    "How are independent brands or locations configured and checked?"
+  ],
+  "decision": "Keep the native Voice Agent as a baseline when you want ServiceTitan to stay. Compare an external operator for specific gaps. Evaluate Off The Clock when those gaps center on the supported project price, and Podium when the wider platform change is part of the goal.",
+  "faqs": [
+    [
+      "Does Voice Agent only work with Contact Center Pro?",
+      "No. The reviewed release documentation also covers basic Phones and Phones Pro. Check which setup applies to your account. [[st-escalation]]"
+    ],
+    [
+      "Can different brands use different agents?",
+      "ServiceTitan documents independent agents for brands, service lines or locations within one account. Confirm how that configuration fits your numbers and permissions. [[st-multi]]"
+    ]
+  ],
+  "related": [
+    "compare/servicetitan-voice-agent-vs-podium-larry/index.html",
+    "alternatives/avoca/index.html",
+    "alternatives/sameday-ai/index.html"
+  ]
+}
