@@ -1,0 +1,66 @@
+{
+  "kind": "alternatives",
+  "slug": "podium-larry",
+  "title": "Podium Larry Alternatives for Service Businesses",
+  "seo_title": "Podium Larry Alternatives: Compare Options & Fit",
+  "description": "Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI as alternatives to Podium Larry. Decide what you want to keep before switching.",
+  "intro": "Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI as alternatives to Podium Larry. Decide what you want to keep before switching.",
+  "verdict": "Choose Off The Clock when the central requirement is owner-priced job quoting without a full operating-system replacement. Compare Sameday or Avoca for connected front-office workflows. Consider CSR AI when you already intend to run on Housecall Pro.",
+  "reason": [
+    "Replacing Larry and replacing Podium are different projects. Podium’s published home-services package combines Larry with an FSM, while its FSM page describes dispatch, technician estimates and payments. A receptionist-only substitute is not automatically a replacement for that package. [[podium-plans]] [[podium-fsm]]",
+    "Write down which parts of the operation you actually want to change. Keep a separate column for tools that should remain: your customer records, job schedule, invoicing and accounting. That makes the shortlist narrower and the eventual demonstration more useful.",
+    "Do not base this choice on the claim that Larry cannot give prices. Podium explicitly describes pricing and service-fee handling. The useful question is whether the demonstrated workflow handles your particular measured job, selected extras and exceptions. [[podium-larry]]"
+  ],
+  "choices": [
+    [
+      "otc",
+      "When the quote is the missing step",
+      "Evaluate the customer’s complete pricing request, not a diagnostic fee alone. Bring a normal project with a separately priced extra and one fact that may need verification. The point is to see whether the business’s rules remain intact from inquiry to next step."
+    ],
+    [
+      "sameday",
+      "When you want a connected phone operation",
+      "Keep this on the shortlist when the phone team, calendar and existing field-service software need to operate together. Demonstrate a returning customer and a changed appointment, not only a new lead with an empty calendar."
+    ],
+    [
+      "avoca",
+      "When escalation and coaching matter",
+      "Use the demo to follow one call across AI and a human. Check the context the person receives and how the final outcome is recorded. Human escalation should solve an exception, not force the customer to repeat the job."
+    ],
+    [
+      "hcp",
+      "When Housecall Pro is the system you want",
+      "This is an ecosystem choice, not a drop-in Larry replacement. Evaluate the HCP account as a whole before treating its native answering add-on as the reason to migrate."
+    ]
+  ],
+  "scenario": {
+    "title": "The test: a service fee is not the entire project",
+    "text": "Give every shortlisted provider the same non-emergency project: a measured flooring installation, a separately measured removal area and a selected stair option. Supply your own rules; leave one necessary detail explicitly unknown. This is a buyer-written test, not a claim that any provider has passed it.",
+    "checks": [
+      "Record whether the output prices the requested project, books an estimate visit, or requests review.",
+      "Check that the selected stair option remains visible even when it cannot yet be priced.",
+      "Confirm where the owner sees the unresolved facts and who is responsible for the next step."
+    ]
+  },
+  "questions": [
+    "What existing Podium functions would remain, be replaced or need a second vendor?",
+    "Does the written offer include the answering product, software access, human handling and usage?",
+    "Can the complete conversation and resulting record be exported before a switch?"
+  ],
+  "decision": "Start with Off The Clock when job pricing is the reason you are looking beyond Larry. Keep Podium on the shortlist when the broader FSM is itself the desired purchase. A better call outcome should not require an accidental rebuild of the business.",
+  "faqs": [
+    [
+      "Does Larry already give prices?",
+      "Yes, Podium describes pricing and service fees. Test whether that covers your actual project rather than assuming all pricing workflows are equivalent. [[podium-larry]]"
+    ],
+    [
+      "Is there a public Larry-only price?",
+      "The reviewed home-services plan asks for a sales quote. It does not establish a numerical Larry-only rate. [[podium-plans]]"
+    ]
+  ],
+  "related": [
+    "compare/podium-larry-vs-sameday-ai/index.html",
+    "compare/servicetitan-voice-agent-vs-podium-larry/index.html",
+    "alternatives/sameday-ai/index.html"
+  ]
+}
