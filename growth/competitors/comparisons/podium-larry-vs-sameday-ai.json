@@ -1,0 +1,84 @@
+{
+  "kind": "head",
+  "slug": "podium-larry-vs-sameday-ai",
+  "title": "Podium Larry vs Sameday AI",
+  "seo_title": "Podium Larry vs Sameday AI: Pricing & Business Fit",
+  "description": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
+  "intro": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
+  "verdict": "Start with the system you want to keep. Podium’s home-services offer pairs Larry with its FSM; Sameday emphasizes connected phone and scheduling workflows. Add Off The Clock to the evaluation when owner-priced project quoting is the deciding requirement.",
+  "rows": [
+    [
+      "Product scope",
+      "Larry with a home-services FSM. [[podium-plans]]",
+      "Phones, AI handling, scheduling and campaigns. [[sameday-product]]"
+    ],
+    [
+      "Published price",
+      "Sales quote. [[podium-plans]]",
+      "From $449/500 minutes; $789/1,000 minutes. [[sameday-pricing]]"
+    ],
+    [
+      "Scheduling context",
+      "Podium dispatch and technician availability. [[podium-fsm]]",
+      "Connections including ServiceTitan and Jobber. [[sameday-integrations]]"
+    ],
+    [
+      "Pricing question",
+      "Price-book and service-fee handling is described. [[podium-larry]]",
+      "Require a demonstration of your actual pricing workflow; do not infer its limits from a plan name."
+    ],
+    [
+      "Buying decision",
+      "Are you also buying a new field-service platform?",
+      "Which connected actions and phone features are included?"
+    ]
+  ],
+  "sections": [
+    [
+      "platform",
+      "Choose the operating model before the voice",
+      [
+        "These are not two interchangeable audio interfaces. Decide whether scheduling, customer records, estimates and payments should remain where they are today. That decision changes what an integration must do and which costs belong in the comparison.",
+        "Podium’s FSM page describes a replacement for scheduling and dispatch tools. Sameday’s directory presents integrations with existing field-service software. Those are different purchase shapes; confirm the actual proposed configuration instead of assuming every product requires the same migration. [[podium-fsm]] [[sameday-integrations]]",
+        "Ask each vendor to demonstrate a returning customer and a reschedule. A clean first-time booking can conceal whether the office will need to reconcile duplicate customer records or conflicting appointment updates."
+      ]
+    ],
+    [
+      "pricing",
+      "Compare the whole bill, not a convenient headline",
+      [
+        "Sameday’s published plan allowances make a starting budget possible. Podium’s home-services offer requires a sales quote. Do not fill that missing number with a price from an unrelated Podium package. [[sameday-pricing]] [[podium-plans]]",
+        "Use the same business assumptions in both proposals: number of locations, users, customer inquiries, required modules and support. Separate the cost of existing software you would retain from software you would replace.",
+        "Do not assume a call equals a minute, or manufacture a saving from an invented average call duration. Obtain a representative usage sample and ask how the exact offer bills it."
+      ]
+    ],
+    [
+      "job-price",
+      "Ask for the project outcome, not a pricing checkbox",
+      [
+        "Podium explicitly describes giving prices and service fees. That deserves to be acknowledged. It does not make a published example proof that an arbitrary measured project and every selected extra are supported. [[podium-larry]]",
+        "Our proposed buying test is a customer who asks for an installation, adds removal and then admits one important measurement is uncertain. Record whether the product calculates a complete price, books an estimate or hands the request to the owner.",
+        "A correct review request can be the right answer. The failure to watch for is an attractive price that quietly excludes the hard part of the customer’s request. Apply the same test to Off The Clock, not just its competitors."
+      ]
+    ],
+    [
+      "off-the-clock",
+      "When Off The Clock belongs on this shortlist",
+      [
+        "Off The Clock is built around the operator plus QuoteDone: the business’s pricing applied to supported job details, with the website quote widget as a separate customer entry point. It is not being proposed as a full technician-management replacement.",
+        "That makes it relevant when the owner still has to finish the price conversation after an otherwise successful call. The evaluation should use the owner’s real pricing rules—not a sample total adjusted to make the demonstration look right."
+      ]
+    ]
+  ],
+  "questions": [
+    "What would you have to migrate before the first real call?",
+    "Does a scope change update the result and owner record consistently?",
+    "What is included in the signed offer, rather than demonstrated as an optional extra?"
+  ],
+  "decision": "Choose Podium for an intentional platform-and-operator purchase, or Sameday for the connected phone operation that meets your requirements. Choose to evaluate Off The Clock when the differentiating task is the project quote itself.",
+  "related": [
+    "alternatives/podium-larry/index.html",
+    "alternatives/sameday-ai/index.html",
+    "compare/sameday-ai-vs-avoca/index.html"
+  ]
+}
