@@ -3,91 +3,81 @@
   "slug": "servicetitan-voice-agent-vs-podium-larry",
   "title": "ServiceTitan Voice Agent vs Podium Larry",
   "seo_title": "ServiceTitan Voice Agent vs Podium Larry: Pricing & Business Fit",
-  "description": "Compare ServiceTitan Voice Agent and Podium Larry on dispatch context, platform commitment, published pricing and the difference between a fee and a project quote.",
-  "intro": "Compare ServiceTitan Voice Agent and Podium Larry on dispatch context, platform commitment, published pricing and the difference between a fee and a project quote.",
-  "verdict": "ServiceTitan Voice Agent uses ServiceTitan context; Larry sits within Podium’s home-services offer. Choose Off The Clock when the result you want is answering, supported project quoting and booking without purchasing a different field-service platform. QuoteDone applies your prices to the job—not just the fee for attending.",
+  "description": "ServiceTitan Voice Agent vs Podium Larry: compare native booking, dispatch fees, bundled software and costs, plus Off The Clock’s job quotes.",
+  "intro": "ServiceTitan automates calls within its account. Podium packages Larry with an operating system. Off The Clock gives you a separate operator built around the customer’s job price.",
+  "verdict": "Choose Off The Clock when the purchase is about answering, pricing and booking the job—not replacing your field-service platform. QuoteDone extends your rates to both calls and website inquiries.",
   "rows": [
     [
-      "Platform",
-      "Runs with ServiceTitan account context. [[st-settings]]",
-      "Home-services offer includes Larry and Podium FSM. [[podium-plans]]"
+      "Business context",
+      "Uses ServiceTitan account and job-type configuration. [[st-settings]]",
+      "Uses price book, customer history and dispatch-board context. [[podium-larry]]"
     ],
     [
-      "Pricing workflow",
+      "Advertised purchase",
+      "Voice Agent usage alongside the underlying ServiceTitan account. [[st-pricing]]",
+      "Larry plus FSM in the reviewed home-services package. [[podium-plans]]"
+    ],
+    [
+      "Pricing answers",
       "Configurable dispatch-fee messages. [[st-settings]]",
-      "Price-book access and service fees. [[podium-larry]]"
+      "Price-book and service-fee communication. [[podium-larry]]"
     ],
     [
-      "Public pricing",
-      "Indexed offer: $2.75/call; account costs separate. [[st-pricing]]",
-      "Sales quote on reviewed plans. [[podium-plans]]"
+      "Public amount",
+      "Indexed offer: $2.75 per call. [[st-pricing]]",
+      "Sales quote; no numerical amount on reviewed plans. [[podium-plans]]"
     ],
     [
-      "Location/brand control",
-      "Multiple agent configurations are documented. [[st-multi]]",
-      "Demonstrate the proposed setup for each brand and number."
+      "Brands and service lines",
+      "Multiple agent instances can have separate settings. [[st-multi]]",
+      "A numeric agent/location allowance is not specified in the reviewed package. [[podium-plans]]"
     ],
     [
-      "Buying question",
-      "What does the native feature add to the system you retain?",
-      "What must move into the advertised operating system?"
+      "What the figure excludes",
+      "The public usage amount is not an entire ServiceTitan subscription. [[st-pricing]]",
+      "No defensible price comparison is possible without the actual offer. [[podium-plans]]"
     ]
   ],
   "sections": [
     [
+      "context",
+      "Native account context is real—but it is not a job quote",
+      [
+        "ServiceTitan’s controls tie the agent to job types, follow-up questions and dispatch-fee messages. Podium describes access to its dispatch board, price book, technician availability and customer history. Neither product should be portrayed as a disconnected message pad. [[st-settings]] [[podium-larry]]",
+        "The remaining question is what the price represents. A configured attendance fee can answer “what does the visit cost?” without answering “what does this project cost?” Those are different amounts, not different labels for the same feature."
+      ]
+    ],
+    [
       "off-the-clock",
-      "The operator that handles the supported job price",
+      "QuoteDone makes the project the unit of the conversation",
       [
-        "A customer asking what the project costs is asking a different question from what the visit costs. Off The Clock handles straightforward service prices and brings QuoteDone into the conversation for supported variable jobs.",
-        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
-        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
-      ]
-    ],
-    [
-      "platform",
-      "Do not compare an add-on with a migration",
-      [
-        "A company that already uses ServiceTitan has a different starting point from one selecting its first field-service platform. Count the software you will keep, the features you will add, and the records you would need to move.",
-        "Podium’s FSM page describes replacing scheduling and dispatch tools. That may be precisely what a buyer wants, but it should not be hidden inside an answering-service comparison. [[podium-fsm]]",
-        "Make a list of workflows that must remain uninterrupted: repeat-customer identification, job notes, estimates, appointments and owner follow-up. Ask the proposed vendor configuration to demonstrate them, not merely list integration logos."
-      ]
-    ],
-    [
-      "fees",
-      "Both can discuss prices; define which price",
-      [
-        "ServiceTitan documents dispatch-fee messages; Podium describes price-book and service-fee handling. Neither should be described as unable to give a number. [[st-settings]] [[podium-larry]]",
-        "The buyer’s question is whether that number answers the customer’s request. A fee for attending the property is not necessarily the installed project price, and an estimate appointment is not itself an estimate.",
-        "Use a representative job with selected removal and one unresolved measurement. A good result may be a complete quote or a clear owner-review request. An unsupported number with missing scope is not a better result."
-      ]
-    ],
-    [
-      "control",
-      "Test the rules for your actual team",
-      [
-        "ServiceTitan documents escalation across different phone configurations and separate agents for brands or service lines. Test the correct job types, messages and destinations for each setup rather than assuming one successful call covers all of them. [[st-escalation]] [[st-multi]]",
-        "Run the equivalent test in the proposed Podium setup. Give the wrong service location, request an unavailable appointment and ask for a person. Record both what the customer hears and what the office receives.",
-        "Evaluate ordinary non-emergency test cases; do not create a real emergency or contact emergency services to test a software demo."
+        "A roof-repair request can depend on the confirmed repair details and measured affected area. QuoteDone combines supported inputs with the owner’s rates instead of promoting a trip fee into an entire job price.",
+        "The operator answers questions, books, transfers and follows up around that calculation. Website visitors can start through the QuoteDone widget. If diagnosis or measurements are still needed, the complete request comes to the owner with the collected details and no unsupported total.",
+        "That is Off The Clock’s reason to be here: a complete operator with owner-controlled quoting. It does not require a new technician-management platform, and a native ServiceTitan connector is not part of this comparison."
       ]
     ],
     [
       "cost",
-      "What the public figures do and do not tell you",
+      "Three different commercial offers",
       [
-        "The indexed ServiceTitan offer publishes a per-call amount and rate-lock terms. It is not a complete price for the underlying system. Podium’s home-services plans require a sales quote. A credible cost comparison needs both proposals. [[st-pricing]] [[podium-plans]]",
-        "Ask for the billable-call definition, account requirements, included support and any additional modules. Use the same call mix and business assumptions on both sides."
+        "ServiceTitan’s indexed public Voice Agent offer is $2.75 per call with a 12-month rate lock and monthly usage billing. The direct page is JavaScript-rendered; the source register records the indexed retrieval. Podium’s home-services plan requires a sales quote. [[st-pricing]] [[podium-plans]]",
+        "QuoteDone is $279 per month with 1,200 minutes, the operator and website quote widget. Extra usage is $0.35 per minute; there is no setup fee. The per-call and per-minute offers require actual call-duration data to compare usage costs."
+      ]
+    ],
+    [
+      "control",
+      "Separate business rules from software replacement",
+      [
+        "ServiceTitan documents multiple agents with independent greetings, job types, fees and number assignments. Podium’s advertised bundle includes the wider dispatch, technician and payment system. Those are different forms of operational scope. [[st-multi]] [[podium-plans]]",
+        "Off The Clock keeps its focus on incoming customers and the owner’s pricing. You retain decisions about rates, included scope and which exceptions require you. The aim is to remove repetitive quote conversations, not ownership of the quote."
       ]
     ]
   ],
-  "questions": [
-    "Which existing software is retained and which would be replaced?",
-    "Which amount does the agent actually give: service fee, complete job price or something else?",
-    "Do brand, location and exception rules survive from call to office record?"
-  ],
-  "decision": "Choose Off The Clock for the supported job price and the complete incoming conversation: answering, questions, booking, transfers and follow-up. QuoteDone extends your pricing to website visitors too. Your decision to retain field-service software does not have to make its native voice agent the automatic choice.",
+  "decision": "Choose Off The Clock when your customer needs the job price—not merely the visit fee—and you want the operator to handle that next step. QuoteDone gives your rates a role in the inquiry without making a platform migration the price of admission.",
   "related": [
     "alternatives/servicetitan-voice-agent/index.html",
     "alternatives/podium-larry/index.html",
     "compare/podium-larry-vs-sameday-ai/index.html"
-  ]
+  ],
+  "card_description": "A native per-call agent versus Larry’s bundled platform. Distinguish dispatch-fee answers from QuoteDone’s owner-priced project calculation."
 }

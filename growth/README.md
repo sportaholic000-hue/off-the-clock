@@ -1,54 +1,54 @@
 # Off The Clock AI — isolated growth work
 
-## Current checkpoint: corrected sales positioning
+## Current delivery
 
-The library contains 12 company-named guides and three hubs. The sales-copy correction replaces incumbent-first recommendations and tentative Off The Clock positioning with the complete operator-and-QuoteDone case. See [the correction record](evidence/SALES_COPY_CORRECTION_20260911.md) for the specific changes and source boundaries. No new pages were added in this correction.
+The existing **15-page library: 12 guides and three hubs** has a completed editorial pass. The guides make the case for Off The Clock's complete operator and QuoteDone with developed competitor-specific comparisons, visible offer details and accurate local-brief actions. The original V2 tools remain byte-identical.
 
-- Branch: growth/public-pages-review.
-- Original main base: ed12dca1253a8790c885b071ab6037e05632bea0.
-- This correction starts at growth commit 3acba3504e62b1cd51ce84a41d16412fdd38a2d8.
-- Work is confined to growth/. Do not change either quote engine, price books, onboarding, authentication, app routes, shared app styles, dependencies, workflows, providers, deployment configuration or application specifications.
-- Nothing is merged, deployed or enabled for indexing.
+- Branch: `growth/public-pages-review`.
+- Original main base: `ed12dca1253a8790c885b071ab6037e05632bea0`.
+- This editorial pass starts at `8fe8dd75f3cc903b0711374c52c97ad4cf1f5f04`.
+- Boundary: files under `growth/` only. Do not change the engines, price books, onboarding, authentication, app routes, shared app styles, dependencies, providers, workflows, deployment settings or application specifications.
+- Nothing is merged or deployed. Review pages remain noindex.
 
-## Built coverage
+## Coverage
 
-Alternatives: Podium Larry, Sameday AI, Avoca, Jobber Receptionist, Housecall Pro CSR AI, ServiceTitan Voice Agent, and Ruby.
+Alternatives: Podium Larry, Sameday AI, Avoca, Jobber Receptionist, Housecall Pro CSR AI, ServiceTitan Voice Agent, Ruby.
 
 Head-to-head: Podium Larry vs Sameday AI; Sameday AI vs Avoca; Jobber Receptionist vs Housecall Pro CSR AI; ServiceTitan Voice Agent vs Podium Larry; Smith.ai vs Ruby.
 
-Hubs: comparison library, company-led alternatives directory and resources. Every guide card opens a completed article. The wider content map is not yet fully implemented.
+Hubs: comparison directory, company-led alternatives directory and resources. Every displayed guide link opens a delivered article. This is the completed existing page set, not a claim that the wider content map has all been built.
 
-## Source and output
+## Build and verify
 
-- competitors/content.json: source register, vendor records and article order.
-- competitors/alternatives/ and competitors/comparisons/: ten separately editable articles.
-- build_competitor_library.py: expanded-library builder.
-- build_public.py: base renderer and the original two articles; also corrected in this copy pass.
-- public/assets/: unchanged independent page styling and search behavior.
-- v2/: original acquisition-tool sources and three Node test suites, unchanged.
-- tests/: reproducible static/browser checks, unchanged by the copy correction.
-- research/ and evidence/: prior source research and checkpoint-specific verification.
-
-Generated pages, the portable review, raw logs and screenshots are provided in the delivery ZIP. They are reproducible from committed source rather than committed as duplicate outputs. Original Library content is not overwritten.
-
-## Build and check
-
-From the repository root using existing tools:
+Using the existing Python and Node installations from the repository root:
 
 ```sh
 python growth/build_competitor_library.py
 node --test growth/v2/tests/*.test.cjs
 python growth/tests/check_competitor_library.py
+python growth/tests/check_editorial.py
 ```
 
-The builder writes only growth outputs, makes no network requests and installs nothing. Open growth/Off_The_Clock_Public_Pages_Review.html for the portable navigator or growth/public/START_HERE.html for separate-page review. public/page-manifest.json lists the fifteen pages.
+The builder installs nothing, performs no network requests and writes only growth outputs. Browser verification uses the audit environment's existing Playwright and Chromium; installing or changing a user's tools requires separate permission.
 
-Final correction checks: 44/44 V2 tests and 264/264 expanded static/browser checks passed. Tests verify function and layout, not the persuasiveness of sales copy. Chromium tests use the environment’s existing Playwright and set_content because direct file navigation is blocked. Do not install or reconfigure a user’s machine to reproduce them without permission.
+Open the generated `growth/Off_The_Clock_Public_Pages_Review.html` for the portable navigator or `growth/public/START_HERE.html` for individual pages. `growth/public/page-manifest.json` lists all 15 routes. The V2 output must retain SHA256 `82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79`; the builder rejects a mismatch.
 
-The generated V2 tool retains SHA256 82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79; the builder rejects a mismatch. The old five-page builder/test pair is for the smaller checkpoint; the expanded suite is the applicable check for this library.
+Final results: **44/44 V2 tests, 264/264 static/browser checks, 60/60 editorial assertions**. Details and retained failure history: `evidence/EDITORIAL_COMPLETION_20260911.md`. The exact HTML was tested inside Chromium; direct file navigation was blocked by environment policy. Direct launch, other browsers and live hosting are not claimed as verified.
 
-## Publication remains separate
+## Source layout
 
-Pages remain noindex private review builds. Stronger sales positioning does not establish production availability. Live signup, demo, pilot enrollment, quoting and lead delivery are not connected here. Calls to action use actual local tools and disclose their behavior.
+- `competitors/`: source register and ten independently editable article JSON files.
+- `build_competitor_library.py`: complete 15-page builder using the shared renderer.
+- `build_public.py`: shared frames, the original two guides, resource page and portable navigator.
+- `public/assets/`: unchanged standalone page styles and search behavior.
+- `v2/`: unchanged calculator, Challenge and collection-only link preview.
+- `tests/`: functional and editorial requirements checks.
+- `research/` and `evidence/`: source provenance, factual changes, verification and earlier checkpoints.
 
-Competitor facts and source limitations were preserved, not newly researched in the copy pass. Reconfirm facts and approve product claims, real destinations, canonical URLs and launch settings before publishing. Keep this growth work separate from Codex’s engine assignment.
+The download package includes generated pages, current screenshots, logs and exact-source manifests. Duplicate generated HTML and screenshots are not required for rebuilding the committed source.
+
+## Commercial and publication boundaries
+
+The pages describe the owner's product offer; they are not proof that live runtime features have passed acceptance. Competitor facts are linked and source limitations remain visible. No native connection, outsourced-human staffing, guaranteed saving or universal job support is fabricated.
+
+Challenge links prepare a local brief; they do not issue a quote or submit an application. The calculator is standalone and does not read a price book. Publication, live CTA destinations and any production integration remain separate authorized actions.

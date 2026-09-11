@@ -3,83 +3,73 @@
   "slug": "podium-larry-vs-sameday-ai",
   "title": "Podium Larry vs Sameday AI",
   "seo_title": "Podium Larry vs Sameday AI: Pricing & Business Fit",
-  "description": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
-  "intro": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
-  "verdict": "Podium Larry pairs its operator with Podium’s home-services platform; Sameday brings connected phone and scheduling tools. For a service business that wants answering, owner-priced job quotes and booking without a new field-service platform, choose Off The Clock.",
+  "description": "Podium Larry vs Sameday AI: compare the bundled FSM, connected scheduling, published plan costs and Off The Clock’s job-quoting alternative.",
+  "intro": "Podium packages Larry with a field-service system. Sameday connects a phone operation to existing software. Off The Clock makes the customer’s job price the reason to choose its operator.",
+  "verdict": "For service businesses buying an operator to answer, quote and book, our recommendation is Off The Clock. You get QuoteDone’s owner-priced job calculation without making a new field-service platform part of the purchase.",
   "rows": [
     [
-      "Product scope",
-      "Larry with a home-services FSM. [[podium-plans]]",
-      "Phones, AI handling, scheduling and campaigns. [[sameday-product]]"
+      "Core purchase",
+      "Larry and Podium FSM in the advertised home-services package. [[podium-plans]]",
+      "AI CSRs, phones, scheduling, campaigns and coaching. [[sameday-product]]"
     ],
     [
-      "Published price",
-      "Sales quote. [[podium-plans]]",
-      "From $449/500 minutes; $789/1,000 minutes. [[sameday-pricing]]"
+      "Booking context",
+      "Dispatch board, technician availability and customer history. [[podium-larry]]",
+      "Connected scheduling; ServiceTitan and Jobber appear in its directory. [[sameday-integrations]]"
     ],
     [
-      "Scheduling context",
-      "Podium dispatch and technician availability. [[podium-fsm]]",
-      "Connections including ServiceTitan and Jobber. [[sameday-integrations]]"
+      "Pricing information",
+      "Price-book access and service-fee communication are described. [[podium-larry]]",
+      "The reviewed pricing page focuses on answering and scheduling; it does not establish a measured project-quote workflow. [[sameday-pricing]]"
     ],
     [
-      "Pricing question",
-      "Price-book and service-fee handling is described. [[podium-larry]]",
-      "Require a demonstration of your actual pricing workflow; do not infer its limits from a plan name."
+      "Published subscription",
+      "Sales quote; no numerical amount on the reviewed plan page. [[podium-plans]]",
+      "Launch from $449/month; Scale from $789/month. [[sameday-pricing]]"
     ],
     [
-      "Buying decision",
-      "Are you also buying a new field-service platform?",
-      "Which connected actions and phone features are included?"
+      "Included usage",
+      "Not numerically established on that public plan page. [[podium-plans]]",
+      "Launch: 500 minutes. Scale: 1,000 minutes. [[sameday-pricing]]"
+    ],
+    [
+      "Locations",
+      "The reviewed package does not state a numeric location allowance. [[podium-plans]]",
+      "Launch: 3. Scale: unlimited. [[sameday-pricing]]"
     ]
   ],
   "sections": [
     [
-      "off-the-clock",
-      "Why choose Off The Clock instead?",
-      [
-        "The choice is not limited to moving your operation into another platform or improving how calls reach the calendar. Off The Clock combines an AI operator with QuoteDone to handle the supported job price as part of the inquiry.",
-        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
-        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
-      ]
-    ],
-    [
       "platform",
-      "Choose the operating model before the voice",
+      "The platform decision is bigger than the phone",
       [
-        "These are not two interchangeable audio interfaces. Decide whether scheduling, customer records, estimates and payments should remain where they are today. That decision changes what an integration must do and which costs belong in the comparison.",
-        "Podium’s FSM page describes a replacement for scheduling and dispatch tools. Sameday’s directory presents integrations with existing field-service software. Those are different purchase shapes; confirm the actual proposed configuration instead of assuming every product requires the same migration. [[podium-fsm]] [[sameday-integrations]]",
-        "Ask each vendor to demonstrate a returning customer and a reschedule. A clean first-time booking can conceal whether the office will need to reconcile duplicate customer records or conflicting appointment updates."
+        "Podium’s package includes dispatch, a technician app, estimates, a price book, payments and job history. Sameday instead lists connections to systems such as Jobber and ServiceTitan alongside its phone products. One offer includes the field-service platform; the other describes connections to existing ones. [[podium-plans]] [[sameday-integrations]]",
+        "Off The Clock is a separate operator-and-QuoteDone offer. It does not ask you to buy a replacement field-service platform to handle incoming pricing questions. You can retain existing business software; the data exchanged with it depends on the integration actually available."
       ]
     ],
     [
-      "pricing",
-      "Compare the whole bill, not a convenient headline",
+      "off-the-clock",
+      "The price should describe the job",
       [
-        "Sameday’s published plan allowances make a starting budget possible. Podium’s home-services offer requires a sales quote. Do not fill that missing number with a price from an unrelated Podium package. [[sameday-pricing]] [[podium-plans]]",
-        "Use the same business assumptions in both proposals: number of locations, users, customer inquiries, required modules and support. Separate the cost of existing software you would retain from software you would replace.",
-        "Do not assume a call equals a minute, or manufacture a saving from an invented average call duration. Obtain a representative usage sample and ask how the exact offer bills it."
+        "Larry can communicate prices. The useful dividing line is not price versus no price; it is a configured service amount versus a quote based on the customer’s requested scope. [[podium-larry]]",
+        "A mulch inquiry changes when the customer includes bed preparation and edging. QuoteDone uses the supported measurements and your rates for those items together. An unpriced selection sends the complete request to you; it does not silently vanish from a reassuring total.",
+        "The operator handles the conversation around that calculation: business questions, booking, transfers and follow-up. The QuoteDone widget gives customers the same pricing approach when they start on your website."
       ]
     ],
     [
-      "job-price",
-      "Ask for the project outcome, not a pricing checkbox",
+      "cost",
+      "A defined offer beside two different packages",
       [
-        "Podium explicitly describes giving prices and service fees. That deserves to be acknowledged. It does not make a published example proof that an arbitrary measured project and every selected extra are supported. [[podium-larry]]",
-        "Our proposed buying test is a customer who asks for an installation, adds removal and then admits one important measurement is uncertain. Record whether the product calculates a complete price, books an estimate or hands the request to the owner.",
-        "A correct review request can be the right answer. The failure to watch for is an attractive price that quietly excludes the hard part of the customer’s request. Apply the same test to Off The Clock, not just its competitors."
+        "QuoteDone is $279 per month with 1,200 minutes, plus $0.35 per extra minute and no setup fee. That includes the operator and website quote widget. Sameday’s displayed entry packages are $449/500 minutes and $789/1,000 minutes; they have different inclusions, including location allowances. [[sameday-pricing]]",
+        "Podium’s reviewed plans page uses a sales quote rather than a numerical subscription price. The choice is a quoted platform bundle, Sameday’s listed phone packages, or Off The Clock’s explicit operator-and-quoting offer. [[podium-plans]]"
       ]
     ]
   ],
-  "questions": [
-    "What would you have to migrate before the first real call?",
-    "Does a scope change update the result and owner record consistently?",
-    "What is included in the signed offer, rather than demonstrated as an optional extra?"
-  ],
-  "decision": "Choose Off The Clock to answer the call, price the supported job and book the appointment without buying a replacement field-service platform. QuoteDone puts your rates into the conversation and adds website quoting, while the operator handles business questions, transfers and follow-up. The point is to take the customer’s next step off your hands—not give you another system to run.",
+  "decision": "Choose Off The Clock when the outcome you need is the complete customer inquiry—not another platform to administer. QuoteDone gives your own pricing a place in that conversation, before the routine quote becomes another item on your list.",
   "related": [
     "alternatives/podium-larry/index.html",
     "alternatives/sameday-ai/index.html",
     "compare/sameday-ai-vs-avoca/index.html"
-  ]
+  ],
+  "card_description": "A bundled field-service system versus connected scheduling: compare Larry and Sameday, then see the separate operator-and-QuoteDone offer."
 }

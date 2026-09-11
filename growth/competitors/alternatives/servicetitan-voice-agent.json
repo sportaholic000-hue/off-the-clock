@@ -3,64 +3,69 @@
   "slug": "servicetitan-voice-agent",
   "title": "ServiceTitan Voice Agent Alternatives for Service Businesses",
   "seo_title": "ServiceTitan Voice Agent Alternatives: Compare Options & Fit",
-  "description": "Compare Off The Clock AI, Avoca, Sameday AI and Podium Larry as ServiceTitan Voice Agent alternatives. Separate voice automation from an FSM migration.",
-  "intro": "Looking for a ServiceTitan Voice Agent alternative? Compare Off The Clock AI, Avoca, Sameday AI and Podium Larry. Off The Clock combines call handling with QuoteDone’s supported project quotes without requiring a new field-service platform.",
-  "verdict": "Choose Off The Clock when your customers need the supported job priced—not just the visit fee explained. The operator answers questions, books, transfers and follows up; QuoteDone applies your rates to job details on the phone and through a website quote widget.",
+  "description": "Compare ServiceTitan Voice Agent alternatives: Off The Clock AI, Podium, Sameday and Avoca. Per-call pricing, dispatch context and job quotes.",
+  "intro": "Your customer asked what the project costs. The fee for coming out is only part of that answer.",
+  "verdict": "Choose Off The Clock when the goal is a priced job and a booked appointment without buying a new field-service platform. QuoteDone applies your rates to the project—not simply the fee for the visit.",
   "reason": [
-    "You can keep the business software you rely on and still ask more of the incoming call. Off The Clock is built around answering, supported job pricing, booking and follow-up, not making you purchase a new field-service platform to improve that conversation.",
-    "ServiceTitan’s documentation covers job types, dispatch-fee messages, follow-up questions and escalation. The feature is documented across basic Phones, Phones Pro and Contact Center Pro, so describing it as enterprise-contact-center-only is too narrow. [[st-settings]] [[st-escalation]]",
-    "A public ServiceTitan offer lists $2.75 per call, usage-based monthly billing and a 12-month rate lock. This is an official indexed offer, not a verified all-in account quote; the underlying ServiceTitan costs and eligibility remain separate. [[st-pricing]]"
+    "ServiceTitan Voice Agent uses the business’s configured job types and booking context. Its settings include dispatch-fee messages for an unspecified fee, a free visit or a specific amount. Those are useful pricing answers, but a dispatch fee is not automatically the project total. [[st-settings]]",
+    "The official indexed public offer lists $2.75 per call. That is an agent usage rate, not a complete ServiceTitan subscription. Multiple-agent configurations also allow distinct settings for brands or service lines. [[st-pricing]] [[st-multi]]",
+    "Off The Clock’s proposition is the customer inquiry itself: answer, establish the supported job price, book and follow up. QuoteDone gives phone and website inquiries a route through your own pricing without turning the purchase into a new field-service system."
   ],
   "choices": [
     [
       "otc",
-      "Price the supported project, not only the visit",
-      "A dispatch fee answers the cost of attending. QuoteDone addresses the supported job itself: the measurements, selected scope and owner-entered rates. That sits alongside the operator’s answering, booking, transfer and follow-up roles, with the website quote widget extending the same proposition beyond the phone."
-    ],
-    [
-      "avoca",
-      "Coaching and human-escalation options",
-      "Its ServiceTitan integration is expressly documented. Test where the new job appears, how returning customers are matched, and which notes reach the office. Include the price of any additional coaching or human handling you need."
-    ],
-    [
-      "sameday",
-      "Connected phone and scheduling tools",
-      "Compare the scheduling and campaign scope with your actual requirements. Ask for the full bill and a demonstration inside the relevant account rather than using minutes-to-calls assumptions to declare a winner."
+      "Calculate the supported job, not only the visit fee",
+      "Your labor, materials and selected extras belong to the job the customer asked about. QuoteDone uses the supported inputs and owner-approved pricing; an unresolved quantity stays in a complete request for owner review. A transfer to your business remains available when a person is needed."
     ],
     [
       "podium",
-      "Larry within the Podium platform",
-      "Podium’s home-services FSM is an alternative platform purchase. Price the move as such, including which existing processes and records you need to retain. A new receptionist alone should not accidentally decide your entire software migration."
-    ]
-  ],
-  "scenario": {
-    "title": "The test: a change in booking rules, not just a new booking",
-    "text": "Create two non-production job types with different appointment requirements and dispatch-fee messages. Test a supported booking, a request outside the configured rules and a caller who needs a person. The aim is to identify which decisions remain under your control.",
-    "checks": [
-      "Does the customer hear the fee applicable to the selected job type?",
-      "Does the product respect the current availability and escalation rules?",
-      "Is the final record attached to the right customer and business, with the latest request intact?"
-    ]
-  },
-  "questions": [
-    "What counts as a billable call, and what is the underlying platform cost?",
-    "Which phone setup and account permissions are required?",
-    "How are independent brands or locations configured and checked?"
-  ],
-  "decision": "Choose Off The Clock when you want the supported project quote handled as part of the customer inquiry. Answering, business questions, booking, transfers and follow-up come with the operator; QuoteDone adds your pricing and the website quote widget. Keep the field-service software you need without making its native receptionist your default choice.",
-  "faqs": [
-    [
-      "Does Voice Agent only work with Contact Center Pro?",
-      "No. The reviewed release documentation also covers basic Phones and Phones Pro. Check which setup applies to your account. [[st-escalation]]"
+      "An operator within a bundled operating system",
+      "Larry has price-book and dispatch-board access. Podium’s advertised home-services package includes its FSM as well. That wider bundle is a different purchase from adding an operator beside the software you already use. [[podium-larry]] [[podium-plans]]"
     ],
     [
-      "Can different brands use different agents?",
-      "ServiceTitan documents independent agents for brands, service lines or locations within one account. Confirm how that configuration fits your numbers and permissions. [[st-multi]]"
+      "sameday",
+      "Connected scheduling and phone products",
+      "Sameday lists ServiceTitan in its integration directory and publishes minute-based packages. Phones, campaigns and coaching are also part of the product range. Specific connected actions remain dependent on the purchased setup. [[sameday-integrations]] [[sameday-product]]"
+    ],
+    [
+      "avoca",
+      "A connected front office with call coaching",
+      "Avoca documents direct ServiceTitan booking and customer-context writeback, alongside Coach and its trained-human program. The selected modules and human-program terms determine what is included. [[avoca-servicetitan]] [[avoca-coach]]"
+    ]
+  ],
+  "decision": "Choose Off The Clock when pricing the job is the result you want from the inquiry. Keep the business software you need, while QuoteDone carries your own prices to the customer on the phone and your website.",
+  "faqs": [
+    [
+      "Does ServiceTitan Voice Agent only serve enterprise contact centers?",
+      "No. ServiceTitan documents Voice Agent features across different phone configurations. [[st-escalation]]"
+    ],
+    [
+      "Is the $2.75 figure the total cost of ServiceTitan?",
+      "No. It is the Voice Agent per-call amount in the indexed official offer. The direct page is JavaScript-rendered; the source note identifies the retrieval method. Account costs and offer eligibility are separate. [[st-pricing]]"
     ]
   ],
   "related": [
     "compare/servicetitan-voice-agent-vs-podium-larry/index.html",
     "alternatives/avoca/index.html",
     "alternatives/sameday-ai/index.html"
+  ],
+  "card_description": "Compare ServiceTitan’s per-call voice offer and dispatch-fee controls with QuoteDone’s job-pricing subscription and three named alternatives.",
+  "sections": [
+    [
+      "billing",
+      "Compare calls with calls—and minutes with minutes",
+      [
+        "QuoteDone is $279 per month with 1,200 included minutes and $0.35 per extra minute; the offer includes the operator and website quote widget with no setup fee. ServiceTitan’s indexed $2.75 rate is per call. There is no universal call-to-minute conversion. [[st-pricing]]",
+        "The useful comparison is your recorded usage alongside the job each product completes. Call duration matters for the usage comparison; a new ServiceTitan customer must also account for the underlying software subscription."
+      ]
+    ],
+    [
+      "job",
+      "Answer the question the customer actually asked",
+      [
+        "A customer requesting a roof repair wants to understand the repair, not only the cost of having someone attend. The affected area, confirmed repair details and your pricing determine whether a supported quote can be produced.",
+        "QuoteDone keeps those facts and the selected scope together. When diagnosis or measurements are still needed, the request reaches you with that uncertainty intact. The operator removes repeat intake where it can; it does not replace inspection with guesswork."
+      ]
+    ]
   ]
 }

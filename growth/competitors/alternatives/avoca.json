@@ -3,64 +3,69 @@
   "slug": "avoca",
   "title": "Avoca Alternatives for Service Businesses",
   "seo_title": "Avoca Alternatives: Compare Options & Fit",
-  "description": "Compare Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist as alternatives to Avoca for service businesses.",
-  "intro": "Comparing Avoca alternatives? See Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist side by side. Off The Clock combines the AI operator with QuoteDone to handle the price conversation as well as the call.",
-  "verdict": "Choose Off The Clock when the result you want is an answered call, an owner-priced job quote and a booked appointment. The operator handles questions, transfers and follow-up; QuoteDone carries your pricing into supported project inquiries and the website widget.",
+  "description": "Compare Avoca alternatives for service businesses. Off The Clock AI, Sameday, ServiceTitan and Jobber: quoting, human backup, coaching and costs.",
+  "intro": "Call coaching can improve a conversation. QuoteDone changes who has to finish the quote after it.",
+  "verdict": "Choose Off The Clock when you want your operator to carry the inquiry through the job price and booking. QuoteDone adds your rates and website quoting—not another pricing callback for you.",
   "reason": [
-    "Your business needs more than a call that has been answered, scored or passed on. It needs the customer’s next step handled. Off The Clock combines the operator’s day-to-day role with QuoteDone so supported jobs can be priced before the conversation returns to you.",
-    "Avoca is more than an AI voice on the phone. Its material describes call scoring and a Human in the Loop program staffed by Avoca-trained CSRs. A useful alternative must be judged against the modules and coverage you actually need. [[avoca-coach]] [[avoca-human]]",
-    "The reviewed Avoca pages are demo-led and do not establish a numerical subscription price. Obtain a written offer instead of filling that gap with a third-party estimate. Ask whether coaching, campaigns, human handling and integrations are part of the same purchase. [[avoca-product]]"
+    "Avoca’s offer includes inbound AI, outbound campaigns, web chat and Coach. It also documents a Human in the Loop program staffed by Avoca-trained CSRs in North America. Those are real distinctions and should not be reduced to a generic “AI receptionist” label. [[avoca-product]] [[avoca-human]]",
+    "A scored call, a human handoff and a calculated job quote solve different problems. Coaching helps a team assess conversations. External human coverage provides another person. QuoteDone applies the owner’s pricing to the supported job the customer described.",
+    "Off The Clock includes the operator functions around that price: answering business questions, scheduling, transfers and follow-up. QuoteDone is the addition that removes routine quote preparation from the owner—not a smaller substitute for the operator."
   ],
   "choices": [
     [
       "otc",
-      "A complete operator with QuoteDone built in",
-      "Off The Clock handles the customer’s questions, the supported quote, the appointment and follow-up. When someone needs you, the operator can transfer the call; a missing price or measurement becomes a review request with the collected details. You do not have to choose between useful automation and control of your pricing."
+      "Complete the pricing conversation",
+      "For a painting inquiry, walls, ceiling and trim are distinct scope. QuoteDone accounts for the selected supported items using your rates; uncertainty stays visible for review. The website widget gives the same kind of inquiry a second entry point."
     ],
     [
       "sameday",
-      "Connected phone and scheduling tools",
-      "Compare the tasks your office does around the call, not just the voice quality. Walk through a returning customer, an appointment change and follow-up ownership. Define exactly which jobs the AI may complete."
+      "Phone system, scheduling and campaigns",
+      "Sameday’s product range overlaps Avoca in campaigns and coaching while also presenting a phone-system offer. Its published packages supply starting prices and minute allowances; the comparison is broader than voice quality alone. [[sameday-product]] [[sameday-pricing]]"
     ],
     [
       "st",
-      "ServiceTitan’s native voice feature",
-      "ServiceTitan’s native option uses its account context. Compare the documented job types, booking rules and supervisor visibility with the specific tasks you want completed."
+      "Voice handling in ServiceTitan",
+      "ServiceTitan’s agent uses its account’s job types, fees and booking context. This is a native software capability rather than an outsourced human program. It is relevant to the platform decision, not evidence that the project quote is already automated. [[st-settings]]"
     ],
     [
       "jobber",
-      "Jobber’s native receptionist",
-      "Jobber’s receptionist is a native add-on with its own usage model. Its incremental bill is different from a full platform purchase; the pricing comparison should reflect that distinction."
+      "Receptionist as a Jobber feature",
+      "Jobber offers answering within its existing business software. Its conversation-based add-on is a different purchase from Avoca’s front-office modules. It remains a Jobber account feature, not a complete replacement for the surrounding Avoca product range. [[jobber-help]]"
     ]
   ],
-  "scenario": {
-    "title": "The test: a handoff that does not restart the conversation",
-    "text": "Ask an ordinary service question, explain a complication, then request a person. Evaluate the handoff as a complete experience. A transfer button is not the same thing as the right person receiving the right job details.",
-    "checks": [
-      "Who receives the call: your team, a contracted external team or another queue?",
-      "Which scope, customer context and unanswered questions survive the transfer?",
-      "When nobody is available, what reaches the owner and what does the customer hear?"
-    ]
-  },
-  "questions": [
-    "Who supplies the human escalation team, during which hours, and at what cost?",
-    "Which reporting and coaching modules are included rather than optional?",
-    "Can your team see and correct an incorrect outcome classification?"
-  ],
-  "decision": "Choose Off The Clock to take the incoming conversation through answering, supported job pricing, booking and follow-up. QuoteDone adds your own prices and a website quote widget to the operator’s core role. That is the reason to switch: the customer gets a useful next step, and you get fewer quotes and callbacks to prepare yourself.",
+  "decision": "Choose Off The Clock to take routine job pricing off your plate while keeping exceptions in your hands. The result to buy is a customer who has an answer and a next step—not another call record awaiting your quote.",
   "faqs": [
     [
-      "Does Avoca offer human backup?",
-      "Yes. Its Human in the Loop program uses Avoca-trained CSRs. Confirm whether that program and its coverage are included in your proposal. [[avoca-human]]"
+      "Does Avoca have human backup?",
+      "Yes. Avoca describes its own trained-CSR program. Confirm its inclusion and coverage in the plan you are considering. [[avoca-human]]"
     ],
     [
-      "Does Avoca support ServiceTitan?",
-      "Its official integration page describes direct booking and customer-context writeback while the office continues using ServiceTitan. [[avoca-servicetitan]]"
+      "Does Off The Clock include an outsourced receptionist team?",
+      "No. Human transfers are to your business team. QuoteDone’s value is applying your own pricing to supported inquiries and retaining complete details when your judgment is needed."
     ]
   ],
   "related": [
     "compare/sameday-ai-vs-avoca/index.html",
     "alternatives/servicetitan-voice-agent/index.html",
     "alternatives/jobber-receptionist/index.html"
+  ],
+  "card_description": "Separate Avoca’s call coaching and trained-human program from the task QuoteDone takes on: pricing the customer’s complete supported job.",
+  "sections": [
+    [
+      "human",
+      "Keep judgment with your business",
+      [
+        "Avoca’s trained-human program is distinct from a transfer to your own team. The program’s inclusion and coverage depend on the offer; its existence does not mean every subscription includes unlimited external staffing. [[avoca-human]]",
+        "Off The Clock transfers callers when a person is needed and keeps pricing decisions with you. A missing measurement or an unpriced item becomes a complete review request. An owner’s judgment is preserved without making the owner responsible for every routine price question."
+      ]
+    ],
+    [
+      "price",
+      "Know the subscription before the sales conversation",
+      [
+        "The reviewed Avoca product material does not establish a numerical subscription price. Its total cost is therefore proposal-specific. [[avoca-product]]",
+        "QuoteDone is $279 per month with 1,200 minutes, the operator and website quote widget. Overage is $0.35 per minute and there is no setup fee. That is a defined product offer—not a promise to replace an external human team or every coaching module."
+      ]
+    ]
   ]
 }

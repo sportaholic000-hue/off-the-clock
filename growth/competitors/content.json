@@ -93,7 +93,7 @@
     },
     "st-settings": {
       "title": "ServiceTitan — Configure Voice Agent",
-      "url": "https://help.servicetitan.com/residential-s-r/docs/configure-your-voice-agent-settings-in-servicetitan",
+      "url": "https://help.servicetitan.com/docs/configure-your-voice-agent-settings-in-servicetitan",
       "note": "Job types, follow-up questions and configurable dispatch-fee messages."
     },
     "st-pricing": {
@@ -124,7 +124,7 @@
       "short": "Answers calls. Quotes supported jobs. Books appointments.",
       "fact": "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
       "sources": [],
-      "pricing": "QuoteDone: $279/month with 1,200 minutes.",
+      "pricing": "QuoteDone: $279/month, 1,200 minutes; $0.35 per extra minute. No setup fee.",
       "boundary": "Your prices stay yours. Missing measurements or prices go to owner review. Off The Clock does not replace a full field-service platform; native connections to other platforms must be verified separately.",
       "link": "tools/growth-v2.html#challenge"
     },

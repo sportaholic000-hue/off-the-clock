@@ -3,83 +3,81 @@
   "slug": "jobber-receptionist-vs-housecall-pro-csr-ai",
   "title": "Jobber Receptionist vs Housecall Pro CSR AI",
   "seo_title": "Jobber Receptionist vs Housecall Pro CSR AI: Pricing & Business Fit",
-  "description": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
-  "intro": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
-  "verdict": "Jobber Receptionist and Housecall Pro CSR AI belong to their respective platforms. You do not have to make a platform switch the starting point. Choose Off The Clock when you want answering, owner-priced job quotes and booking while keeping your choice of business software.",
+  "description": "Jobber Receptionist vs Housecall Pro CSR AI: compare plan costs, service prices, booking and web chat, plus Off The Clock’s quoting offer.",
+  "intro": "Their receptionists belong to different business platforms. Your pricing conversation does not have to be limited to whichever receptionist came with yours.",
+  "verdict": "Keep the business software you value. Choose Off The Clock for an operator that answers, quotes and books. QuoteDone is the reason to make the receptionist decision separately: the customer’s scope and your prices belong together.",
   "rows": [
     [
-      "Required context",
-      "Jobber account and eligible plan. [[jobber-pricing]]",
-      "Housecall Pro account and CSR AI add-on. [[hcp-team]]"
+      "Account requirement",
+      "An eligible Jobber account. [[jobber-help]]",
+      "Housecall Pro with the optional CSR AI answering add-on. [[hcp-team]]"
     ],
     [
-      "Price visibility",
-      "$29/30 conversations; $0.79 extra; Plus unlimited. [[jobber-help]]",
-      "Numerical CSR AI add-on price not established in reviewed docs. [[hcp-team]]"
+      "Published add-on price",
+      "$29/month for 30 conversations; $0.79 additional; Plus unlimited. [[jobber-help]]",
+      "No numerical add-on price established in reviewed official material. [[hcp-team]]"
     ],
     [
-      "Booking",
-      "Jobs can be booked in Jobber. [[jobber-help]]",
-      "Permissions, enabled services and windows govern booking. [[hcp-practices]]"
+      "Customer information",
+      "Configured business information and Jobber request/booking actions. [[jobber-help]]",
+      "Available services, descriptions and Online Booking settings. [[hcp-practices]]"
+    ],
+    [
+      "Price communication",
+      "Business service information informs answers; a full project calculation is not established by this source. [[jobber-help]]",
+      "References the set price of the available service. [[hcp-practices]]"
     ],
     [
       "Channels",
-      "Calls and texts. [[jobber-help]]",
-      "Calls and website chat; new text answering is alpha. [[hcp-overview]] [[hcp-chat]] [[hcp-text]]"
+      "Calls, texts and website-chat settings are documented. [[jobber-help]]",
+      "Phone and website chat; text-answering availability is separately documented. [[hcp-chat]] [[hcp-text]]"
     ],
     [
-      "Main buying question",
-      "Does the native feature solve the required inquiry?",
-      "Does your configured account support the required actions?"
+      "Booking controls",
+      "Scheduling and appointment-management actions in Jobber. [[jobber-help]]",
+      "Enabled services, permissions and available booking windows. [[hcp-practices]]"
     ]
   ],
   "sections": [
     [
+      "platform",
+      "Keep the system. Change the customer outcome.",
+      [
+        "Jobber Receptionist is a Jobber feature. HCP CSR AI is an HCP add-on. Moving between them can therefore mean a larger software decision than simply choosing a different operator. [[jobber-help]] [[hcp-team]]",
+        "Off The Clock is a separate operator offer, not a replacement for jobs, invoices or technician management. Retaining Jobber or HCP and choosing who handles new inquiries are distinct decisions. Actual data connections must match available integrations; no universal native connector is implied."
+      ]
+    ],
+    [
+      "pricing",
+      "A configured service price is a starting point",
+      [
+        "HCP explicitly tells owners to set the available service price and describe what it includes. That supports useful price answers; it should not be dismissed as message taking. [[hcp-practices]]",
+        "A flooring project adds another layer: the selected product, installation area and any separate removal scope can all change the price. A fixed service amount is not automatically the calculation for that request.",
+        "QuoteDone applies the owner’s pricing to supported job inputs and complete selected scope. When a required quantity is missing, the request retains the details for owner review. It does not trade an accurate exception for an impressive-looking number."
+      ]
+    ],
+    [
       "off-the-clock",
-      "Keep your business software. Upgrade the inquiry.",
+      "Phone answering and website quoting in one offer",
       [
-        "Keeping your job-management software does not mean its receptionist has to handle every new inquiry. Off The Clock brings the AI operator and QuoteDone together for businesses that want the supported job price handled as well as the appointment.",
-        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
-        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
+        "Off The Clock answers business questions, books appointments, transfers callers and follows up. QuoteDone adds the project-pricing conversation, with a dedicated quote widget for visitors who prefer starting online.",
+        "Both Jobber and HCP document website communication. The argument for QuoteDone is not that competitors lack chat. It is that a dedicated, owner-priced quote workflow is a different customer action from a general conversation or request form. [[jobber-help]] [[hcp-chat]]"
       ]
     ],
     [
-      "existing-platform",
-      "The platform you already use changes the comparison",
+      "cost",
+      "Compare the subscription you would actually add",
       [
-        "For an existing user, compare the incremental answering purchase with the workflow it adds. For a new user, include the field-service subscription and the change to office processes. These are different budgets, even when the receptionist feature has the same name.",
-        "Write down which customer records, jobs, invoices, team permissions and existing connections must survive a move. An appealing AI demonstration does not settle those operational requirements.",
-        "Keeping the current platform can be the right decision. Buying a separate operator may also be the right decision. Neither implies that a native connection to every outside product exists; require an actual demonstration of the proposed setup."
-      ]
-    ],
-    [
-      "booking",
-      "Check the permissions, not only the headline",
-      [
-        "Housecall Pro’s detailed guidance describes matching available services and using Online Booking settings. Its overview contains both older coming-soon wording and booking controls, so account-specific verification is important. [[hcp-practices]] [[hcp-overview]]",
-        "Use the same booking test with Jobber: an enabled service, a valid customer, a real available slot and then a reschedule. Make sure the second action changes the first appointment rather than silently creating another one.",
-        "For either product, define what happens outside configured availability. A request sent to the owner is not a booked appointment, and the customer should not be told otherwise."
-      ]
-    ],
-    [
-      "channels",
-      "Do not assume phone, chat and text are identical",
-      [
-        "Jobber measures calls and text conversations differently within its conversation-based usage rules. Housecall Pro separately documents chat answering and alpha text follow-up. Compare the exact channels your customers use. [[jobber-help]] [[hcp-chat]] [[hcp-text]]",
-        "Test a customer who changes their request after the first response. Check which record is updated and whether a person can take over without the AI continuing to answer over them.",
-        "Do not generalize an alpha feature to every customer or account. Ask what is available now, what requires enablement, and what is still limited."
+        "For an existing Jobber customer, the $29 Receptionist add-on is an incremental cost on eligible plans. For a new customer, the base Jobber subscription is part of the purchase. HCP’s reviewed material does not supply a numerical CSR AI amount. [[jobber-help]] [[jobber-pricing]] [[hcp-team]]",
+        "QuoteDone’s separate offer is $279 per month for 1,200 minutes, the operator and website widget. Overage is $0.35 per minute and there is no setup fee. Its case is the additional job-pricing outcome, not a misleading comparison of a whole subscription with a small add-on."
       ]
     ]
   ],
-  "questions": [
-    "What is the full cost for a new account versus an existing customer?",
-    "Do the configured booking and rescheduling actions work in your account?",
-    "Which channel, usage limit and alpha restriction applies to the actual inquiry?"
-  ],
-  "decision": "Choose Off The Clock for answering, supported job quotes, booking and follow-up. Keep Jobber or Housecall Pro for the parts of your operation you value; the receptionist decision is separate. QuoteDone puts your prices and the customer’s job details into the inquiry, with a quote widget for your website as well.",
+  "decision": "Choose Off The Clock to change what a new customer receives: an answer, a supported job price and a next appointment. Keep your existing business software for the job it already does. QuoteDone handles the pricing conversation you want off your plate.",
   "related": [
     "alternatives/jobber-receptionist/index.html",
     "alternatives/housecall-pro-csr-ai/index.html",
     "alternatives/sameday-ai/index.html"
-  ]
+  ],
+  "card_description": "Compare the Jobber add-on with HCP’s service-price and booking controls. Keep the platform decision separate from who quotes the next inquiry."
 }

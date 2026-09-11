@@ -3,64 +3,69 @@
   "slug": "sameday-ai",
   "title": "Sameday AI Alternatives for Service Businesses",
   "seo_title": "Sameday AI Alternatives: Compare Options & Fit",
-  "description": "Compare Off The Clock AI, Avoca, ServiceTitan Voice Agent and Podium Larry as Sameday AI alternatives for calls, booking and job pricing.",
-  "intro": "Looking for a Sameday AI alternative? Compare Off The Clock AI, Avoca, ServiceTitan Voice Agent and Podium Larry. Off The Clock brings answering, booking and follow-up together with QuoteDone’s owner-priced job quotes.",
-  "verdict": "Choose Off The Clock when you want the operator to handle the price as well as the call. Answering, business questions, booking, transfers and follow-up come together with QuoteDone for supported project quotes and website quoting—not a separate quoting task left for you.",
+  "description": "Compare Sameday AI alternatives for home services. Off The Clock AI, Avoca, Jobber and ServiceTitan: monthly costs, scheduling and job quotes.",
+  "intro": "Getting a customer onto the calendar is one outcome. Giving them the job price before the conversation ends is another.",
+  "verdict": "Choose Off The Clock for an operator that handles the price conversation as well as answering and booking. QuoteDone pairs your rates with the job details and gives website visitors another way to get started.",
   "reason": [
-    "A call can be answered and an appointment arranged while the job price is still waiting on you. Off The Clock addresses that unfinished step without dropping the rest of the operator’s job: answering, booking, transfers and follow-up stay part of the offer.",
-    "A Sameday alternative should be compared with the Sameday product you would actually buy. Its current site includes phones, campaigns and coaching alongside AI answering; reducing it to a message-taking service would miss the decision. [[sameday-product]]",
-    "The published starting plans are Launch at $449 per month with 500 minutes and Scale at $789 with 1,000 minutes. Those are starting packages, not a personalized invoice or a promise that every feature is included. [[sameday-pricing]]"
+    "Sameday sells more than basic answering: its product range includes phones, connected scheduling, campaigns and coaching. The purchase combines call handling with office tools. QuoteDone’s addition is the owner-priced job itself. [[sameday-product]]",
+    "Its Launch plan starts at $449 per month with 500 minutes; Scale starts at $789 with 1,000. Off The Clock’s QuoteDone offer is $279 with 1,200 minutes. The allowances are directly stated; their location, coaching and campaign inclusions differ. [[sameday-pricing]]",
+    "For a business whose recurring task is preparing the quote after someone else answered the call, the important addition is QuoteDone. The operator handles the customer interaction; the pricing uses the owner’s rules rather than leaving a second conversation for the owner."
   ],
   "choices": [
     [
       "otc",
-      "Answer the call. Price the job. Book it.",
-      "Your rates are the starting point, not suggested industry averages. QuoteDone uses the actual details of supported jobs and accounts for selected extras before giving a price. Add the website widget and customers can begin the pricing conversation without calling at all."
+      "The operator, job pricing and website quoting",
+      "QuoteDone includes the operator and website quote widget in the same $279 offer. Customers can ask business questions, get a supported job priced, move into booking or reach your team. Missing facts go to review rather than being hidden inside a price."
     ],
     [
       "avoca",
-      "Coaching and human-escalation options",
-      "Make the coaching and escalation requirements explicit. Ask to see a correction after a poorly classified call, the owner’s view of that correction, and whether the desired reporting is included in the proposal."
+      "Call oversight and an external human program",
+      "Avoca’s Coach provides scoring and reporting, and its Human in the Loop program supplies trained CSRs. Human-program availability and cost belong in the proposal; they are not assumed to accompany every Avoca module. [[avoca-coach]] [[avoca-human]]"
+    ],
+    [
+      "jobber",
+      "Native answering inside Jobber",
+      "The Receptionist add-on is $29 for 30 conversations on eligible plans, with $0.79 per additional conversation. That is an incremental Jobber feature with a different billing unit, not an entire standalone operator-and-quoting subscription. [[jobber-help]]"
     ],
     [
       "st",
-      "ServiceTitan’s native voice feature",
-      "Treat the native option as a separate cost and workflow comparison. You are evaluating the incremental answering feature, not pretending your existing ServiceTitan subscription disappears."
-    ],
-    [
-      "podium",
-      "Larry within the Podium platform",
-      "This belongs on a different branch of the shortlist. Evaluate what you gain from a consolidated operating system and what you must migrate, rather than comparing the answering feature alone."
+      "Booking with ServiceTitan account context",
+      "Voice Agent uses ServiceTitan job types and account context. Its indexed public offer is $2.75 per call; the underlying software cost is separate. The distinction is native account access, not a directly comparable minute allowance. [[st-pricing]] [[st-settings]]"
     ]
   ],
-  "scenario": {
-    "title": "The test: change the job after the first answer",
-    "text": "Start with a normal inquiry, then add removal or another paid item before accepting the result. Finally, change the preferred appointment. This tests whether the product keeps one coherent request instead of producing a persuasive first response and stale downstream records.",
-    "checks": [
-      "Was the new scope captured and accounted for, rather than silently excluded?",
-      "Did the final customer answer reflect the latest request?",
-      "Did the owner receive one current record rather than conflicting versions?"
-    ]
-  },
-  "questions": [
-    "Which usage is included: minutes, calls, conversations, locations or users?",
-    "Which scheduling actions work with your exact field-service account?",
-    "What are the charges and behavior when the allowance is reached?"
-  ],
-  "decision": "Choose Off The Clock for the complete incoming inquiry: answer the customer, handle the business questions, quote the supported job, book the appointment and follow up. QuoteDone is the difference on top of the operator—not a substitute for it. Your phone and website can both start with your pricing, while you stay off the clock.",
+  "decision": "Choose Off The Clock when you want the incoming inquiry to reach the job price, not stop at a booking request. You get the operator and QuoteDone together, with a clear monthly offer and your own pricing in control.",
   "faqs": [
     [
-      "Is Sameday a flat unlimited subscription?",
-      "Its pricing page starts with minute allowances. Do not describe the displayed plans as unlimited calling. [[sameday-pricing]]"
+      "Is Sameday only an answering service?",
+      "No. Its current product pages include a phone system, scheduling, campaigns and coaching. QuoteDone’s case is the owner-priced job and website quoting experience, alongside the complete operator. [[sameday-product]]"
     ],
     [
-      "Can Sameday connect with Jobber or ServiceTitan?",
-      "Both appear in its official integration directory. Verify the actions available to your account rather than assuming every possible workflow. [[sameday-integrations]]"
+      "Are the quoted plan amounts a total-cost guarantee?",
+      "No. They are the displayed starting packages. Sameday’s chosen configuration and usage terms, and each product’s billing currency, taxes and applicable extras, determine the actual bill. The amounts shown have not been converted between currencies."
     ]
   ],
   "related": [
     "compare/sameday-ai-vs-avoca/index.html",
     "compare/podium-larry-vs-sameday-ai/index.html",
     "alternatives/avoca/index.html"
+  ],
+  "card_description": "Compare Sameday’s $449 and $789 starting plans with QuoteDone’s $279 offer, native scheduling options and Avoca’s front-office products.",
+  "sections": [
+    [
+      "price",
+      "What the published numbers tell you",
+      [
+        "At the listed starting amounts, QuoteDone is $170 below Sameday Launch and $510 below Scale per month, with 700 and 200 more included minutes respectively. Additional QuoteDone usage is $0.35 per minute. These are package differences, not a projection of anyone’s actual bill. [[sameday-pricing]]",
+        "Launch includes three locations and Scale lists unlimited locations and voice cloning. Those inclusions explain why comparing only subscription prices would be incomplete. Compare the capabilities you need, then count the quote preparation that still falls to you. [[sameday-pricing]]"
+      ]
+    ],
+    [
+      "outcome",
+      "One inquiry should not create two conversations",
+      [
+        "For a mulch installation, a customer’s measured bed area and depth describe a different job from an unspecified “load of mulch.” Preparation and edging can change the scope again. QuoteDone uses the supported measurements and selected items with your own pricing.",
+        "The point is not a more elaborate intake form. It is a customer who understands the supported job price without you rebuilding the request later. The same pricing approach belongs on the website, not only on the phone."
+      ]
+    ]
   ]
 }

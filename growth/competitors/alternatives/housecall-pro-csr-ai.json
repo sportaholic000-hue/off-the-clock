@@ -3,64 +3,69 @@
   "slug": "housecall-pro-csr-ai",
   "title": "Housecall Pro CSR AI Alternatives for Service Businesses",
   "seo_title": "Housecall Pro CSR AI Alternatives: Compare Options & Fit",
-  "description": "Compare Off The Clock AI, Sameday AI, Avoca and Jobber Receptionist as alternatives to Housecall Pro CSR AI for service calls, booking and quotes.",
-  "intro": "Looking for a Housecall Pro CSR AI alternative? Compare Off The Clock AI, Sameday AI, Avoca and Jobber Receptionist. Off The Clock adds QuoteDone’s owner-priced project quotes and website quoting to answering, booking and follow-up.",
-  "verdict": "Choose Off The Clock when a booked estimate is not the end result you want. The operator handles the call, business questions, booking and follow-up; QuoteDone prices supported jobs from your rates and the customer’s details, with a dedicated quote widget for your website.",
+  "description": "Compare Housecall Pro CSR AI alternatives: Off The Clock AI, Sameday, Avoca and Jobber. Service pricing, website quotes and platform choices.",
+  "intro": "A booking on the calendar is useful. A customer who already understands the job price is further along.",
+  "verdict": "Choose Off The Clock when you want the price question handled before it becomes another estimate appointment. QuoteDone brings your rates and the customer’s job details into an operator that also answers, books and follows up.",
   "reason": [
-    "An appointment on the calendar can still mean a quote waiting for you to prepare. Off The Clock is built to take the supported pricing conversation further: use your rates, account for the selected scope and move the customer toward the appointment with a price already discussed.",
-    "An alternative to Housecall Pro CSR AI should not be based on the outdated claim that CSR AI cannot book. Its settings and best-practice documentation describe booking permissions, enabled services and available appointment windows. [[hcp-overview]] [[hcp-practices]]",
-    "Also separate the channels. Housecall Pro documents website chat with booking and escalation, while its newer text-answering article is explicitly alpha and focused on qualifying new-customer calls. Do not assume every channel has identical availability. [[hcp-chat]] [[hcp-text]]"
+    "Housecall Pro’s guidance explicitly says CSR AI references the set price of an available service. It also uses service descriptions to explain inclusions. [[hcp-practices]]",
+    "A set service price and a variable project calculation are not the same task. A painting request with walls, ceilings and trim needs the selected scope and its relevant measurements—not one general painting line item.",
+    "QuoteDone is the reason to choose Off The Clock for that task. It applies your own pricing to supported job details on the phone and in the website quote widget. The surrounding operator handles questions, bookings, transfers and follow-up."
   ],
   "choices": [
     [
       "otc",
-      "From an incoming inquiry to a priced job",
-      "A stored service charge and a variable project need different pricing conversations. Off The Clock handles straightforward prices and uses QuoteDone when the supported job depends on measurements and extras. Booking, transfers and follow-up remain part of the operator; the quote widget gives website visitors their own entry point."
+      "The job price, not just the appointment",
+      "A dedicated quote widget is more specific than a general chat box: it collects the job details needed for the supported pricing path. Required facts stay unknown when the customer does not have them; a complete owner-review request replaces an unsupported price."
     ],
     [
       "sameday",
-      "Connected phone and scheduling tools",
-      "Compare the full workflow and your exact HCP requirements. Ask to see what is written into your account, which bookings can be changed, and which actions require another tool or manual step."
+      "A broader phone operation",
+      "Sameday offers phones, AI CSRs, connected scheduling and campaigns. Its published minute plans provide an entry price. Compatibility with a specific HCP setup must be established separately; the published list of product features alone does not establish an HCP connection. [[sameday-product]] [[sameday-pricing]]"
     ],
     [
       "avoca",
-      "Coaching and human-escalation options",
-      "Trace the call from AI handling to the owner or CSR. Ask which operational reports and escalation services you are buying. Confirm your specific Housecall Pro connection, rather than assuming any advertised CRM connection is interchangeable."
+      "Call coaching and contextual human escalation",
+      "Avoca adds call assessment and a documented trained-human program to its inbound offer. Those functions address supervision and handoffs rather than making website chat equivalent to a project quote. HCP compatibility remains setup-specific. [[avoca-coach]] [[avoca-human]]"
     ],
     [
       "jobber",
-      "Jobber’s native receptionist",
-      "This alternative makes sense only as part of a wider platform evaluation. Include the cost and effort of replacing the underlying software; do not compare one add-on price as though it bought the same operational setup."
+      "A deliberate move to Jobber",
+      "Jobber Receptionist operates in a Jobber account. It belongs in this comparison as a platform alternative, not as a plug-in for HCP. Its low add-on amount cannot be separated from the underlying platform decision. [[jobber-help]]"
     ]
   ],
-  "scenario": {
-    "title": "The test: a correctly priced service plus a real exception",
-    "text": "Use one enabled fixed-price service and one variable project with an unknown required measurement. Repeat the relevant parts in both phone and website-chat demonstrations. Do not assume that a result on one channel proves the other.",
-    "checks": [
-      "Does the fixed-price answer use the service’s configured amount and correct inclusions?",
-      "Does missing project information stay visible instead of being supplied by the AI?",
-      "Can the owner find the unresolved request, understand it and continue without starting over?"
-    ]
-  },
-  "questions": [
-    "What does the CSR AI add-on cost for your account, including usage and channels?",
-    "Which permissions and booking settings are required for the desired behavior?",
-    "Which text features are alpha, and are your returning-customer scenarios supported?"
-  ],
-  "decision": "Choose Off The Clock for answering, supported job quotes, booking and follow-up—not simply another way to put an estimate appointment on the calendar. QuoteDone uses the rates you control and keeps missing facts visible for your review. Your customers can start on the phone or your website; you do not have to start every quote yourself.",
+  "decision": "Choose Off The Clock to move the conversation from “someone will quote that” to a supported job price or a complete request you can verify. Your customers get a clear next step, and you keep control of both the price and the exceptions.",
   "faqs": [
     [
-      "Does Housecall Pro CSR AI have website chat?",
-      "Yes. Its Chat Answering documentation describes website conversations, booking and escalation. A dedicated quoting workflow is a separate question. [[hcp-chat]]"
+      "Can Housecall Pro CSR AI book appointments and share prices?",
+      "Its guidance describes available services, set prices and Online Booking settings. Availability and permissions govern the actual booking. [[hcp-practices]]"
     ],
     [
-      "Is CSR AI included free with every AI teammate?",
-      "Housecall Pro distinguishes the optional CSR AI answering add-on from included AI teammates. The reviewed material does not establish a numerical add-on price. [[hcp-team]]"
+      "Is a website chat widget the same as QuoteDone?",
+      "No. Chat is a communication channel. QuoteDone is the dedicated owner-priced quote workflow. HCP does offer website chat; that fact alone does not establish the same multi-input project calculation. [[hcp-chat]]"
     ]
   ],
   "related": [
     "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html",
     "alternatives/jobber-receptionist/index.html",
     "alternatives/avoca/index.html"
+  ],
+  "card_description": "HCP can share configured service prices and handle website chat. Compare that with QuoteDone’s measured job scope and dedicated quote widget.",
+  "sections": [
+    [
+      "channels",
+      "Website chat and website quoting serve different intentions",
+      [
+        "HCP documents CSR AI Chat Answering for website conversations and booking, using the business’s CSR settings. Website communication is therefore not an absent feature. [[hcp-chat]]",
+        "QuoteDone’s website entry point is specifically for the price question. A visitor can describe the supported job and its scope without making a call. The owner’s pricing rules remain the basis; the widget is not a second set of generic prices."
+      ]
+    ],
+    [
+      "offer",
+      "The cost of the change is visible",
+      [
+        "Housecall Pro describes CSR AI answering as an optional add-on; the reviewed official documentation does not establish its numerical price. It is a separate purchase from the included AI teammates. [[hcp-team]]",
+        "Off The Clock’s QuoteDone offer is $279 per month with 1,200 minutes, the operator and website quote widget. Additional usage is $0.35 per minute, with no setup fee. It is a separate operator offer, not a replacement HCP subscription or a native HCP connector."
+      ]
+    ]
   ]
 }

@@ -3,64 +3,69 @@
   "slug": "podium-larry",
   "title": "Podium Larry Alternatives for Service Businesses",
   "seo_title": "Podium Larry Alternatives: Compare Options & Fit",
-  "description": "Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI as alternatives to Podium Larry. Decide what you want to keep before switching.",
-  "intro": "Looking for a Podium Larry alternative? Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI—and see why Off The Clock combines the operator you need with the job quoting that sets QuoteDone apart.",
-  "verdict": "Choose Off The Clock for answering, owner-priced job quotes and booking without buying a replacement field-service platform. QuoteDone brings your pricing to the phone and your website, so a new inquiry does not have to become another quote for you to prepare.",
+  "description": "Compare Podium Larry alternatives for service businesses: Off The Clock AI, Sameday, Avoca and Jobber. Pricing, platform fit and job quoting.",
+  "intro": "You want the call answered and the job priced. That does not have to become a decision about replacing your entire business system.",
+  "verdict": "Choose Off The Clock when you want an AI operator that answers, quotes and books—not another platform for running technicians and invoices. QuoteDone brings your prices to the phone and your website.",
   "reason": [
-    "Your next operator should take the pricing conversation off your hands—not ask you to rebuild the rest of your business. Off The Clock brings answering, booking and follow-up together with QuoteDone while leaving the choice of field-service software with you.",
-    "Replacing Larry and replacing Podium are different projects. Podium’s published home-services package combines Larry with an FSM, while its FSM page describes dispatch, technician estimates and payments. A receptionist-only substitute is not automatically a replacement for that package. [[podium-plans]] [[podium-fsm]]",
-    "Do not base this choice on the claim that Larry cannot give prices. Podium explicitly describes pricing and service-fee handling. The useful question is whether the demonstrated workflow handles your particular measured job, selected extras and exceptions. [[podium-larry]]"
+    "Podium’s home-services package combines Larry with field-service management, dispatch, customer history and payments. That is a broader purchase than replacing the person who answers the phone. [[podium-plans]]",
+    "Larry already has price-book access and can communicate service fees. The distinction is not “can it say a price?” It is whether the customer receives the price of the job they described, including the details that change it. [[podium-larry]]",
+    "Off The Clock centers that conversation. Business questions, booking, transfers and follow-up come with the operator; QuoteDone adds calculation from the owner’s rates and the customer’s actual job details. You choose the pricing. The customer does not have to wait for you to repeat the intake."
   ],
   "choices": [
     [
       "otc",
-      "The operator plus owner-priced job quotes",
-      "Your caller describes the job; QuoteDone applies your rates to the supported scope, including the selected extras. The conversation can move from the price to the appointment, while website visitors get a dedicated quoting entry point. You control the rates and the cases that need your review."
+      "Job quotes without a replacement FSM",
+      "Your existing tools can remain the home for field operations. QuoteDone handles supported project prices during the inquiry and through its website widget. This is a separate operator subscription, not a native Podium integration."
     ],
     [
       "sameday",
-      "Connected phone and scheduling tools",
-      "Connected scheduling is the relevant distinction here. Check the actions between the phone team, calendar and existing field-service software with a returning customer and a changed appointment—not only a new lead with an empty calendar."
+      "Scheduling connected to existing software",
+      "Sameday’s directory lists ServiceTitan, Jobber, FieldRoutes and Service Fusion. That makes its integration coverage a concrete difference from the bundled Podium offer; the actions supported by each connection still matter. [[sameday-integrations]]"
     ],
     [
       "avoca",
-      "Coaching and human-escalation options",
-      "Use the demo to follow one call across AI and a human. Check the context the person receives and how the final outcome is recorded. Human escalation should solve an exception, not force the customer to repeat the job."
+      "Inbound calls plus coaching and human backup",
+      "Avoca combines inbound handling with call coaching and a documented trained-CSR backup program. Those capabilities address how a team handles and reviews conversations; they are not interchangeable with calculating the customer’s project price. [[avoca-coach]] [[avoca-human]]"
     ],
     [
-      "hcp",
-      "Housecall Pro’s native CSR feature",
-      "This is an ecosystem choice, not a drop-in Larry replacement. Evaluate the HCP account as a whole before treating its native answering add-on as the reason to migrate."
+      "jobber",
+      "An answering add-on within Jobber",
+      "Receptionist is part of the Jobber account, with an eligible-plan add-on and unlimited usage on Plus. This is a comparison for a business using or selecting Jobber—not a standalone alternative to all of Podium’s modules. [[jobber-help]]"
     ]
   ],
-  "scenario": {
-    "title": "The test: a service fee is not the entire project",
-    "text": "Give every shortlisted provider the same non-emergency project: a measured flooring installation, a separately measured removal area and a selected stair option. Supply your own rules; leave one necessary detail explicitly unknown. This is a buyer-written test, not a claim that any provider has passed it.",
-    "checks": [
-      "Record whether the output prices the requested project, books an estimate visit, or requests review.",
-      "Check that the selected stair option remains visible even when it cannot yet be priced.",
-      "Confirm where the owner sees the unresolved facts and who is responsible for the next step."
-    ]
-  },
-  "questions": [
-    "What existing Podium functions would remain, be replaced or need a second vendor?",
-    "Does the written offer include the answering product, software access, human handling and usage?",
-    "Can the complete conversation and resulting record be exported before a switch?"
-  ],
-  "decision": "Choose Off The Clock when you want the incoming call answered, the supported job priced and the appointment booked without purchasing a new field-service platform. The value is not another place to manage technicians. It is fewer customer conversations coming back to you unfinished, with the same QuoteDone pricing approach available on your website.",
+  "decision": "Choose Off The Clock to change what gets finished during the customer inquiry—not to move every part of your business into another system. Your rates, the complete requested job, and the next appointment belong in the same conversation.",
   "faqs": [
     [
-      "Does Larry already give prices?",
-      "Yes, Podium describes pricing and service fees. Test whether that covers your actual project rather than assuming all pricing workflows are equivalent. [[podium-larry]]"
+      "Can Podium Larry give customers prices?",
+      "Yes. Podium describes price-book access and service-fee communication. A measured, multi-item project calculation is a separate capability from stating a configured service fee. [[podium-larry]]"
     ],
     [
-      "Is there a public Larry-only price?",
-      "The reviewed home-services plan asks for a sales quote. It does not establish a numerical Larry-only rate. [[podium-plans]]"
+      "Does Off The Clock replace my field-service software?",
+      "No. It is the operator and QuoteDone offer, not a replacement dispatch, invoicing or technician-management platform. Any connection to your existing software must match the integration actually available for your setup."
     ]
   ],
   "related": [
     "compare/podium-larry-vs-sameday-ai/index.html",
     "compare/servicetitan-voice-agent-vs-podium-larry/index.html",
     "alternatives/sameday-ai/index.html"
+  ],
+  "card_description": "Larry’s advertised package includes an FSM. Compare that purchase with a separate operator, connected scheduling and QuoteDone’s job pricing.",
+  "sections": [
+    [
+      "pricing",
+      "A visible price for the operator and QuoteDone",
+      [
+        "QuoteDone is $279 per month with 1,200 included minutes, the AI operator and website quote widget. Additional usage is $0.35 per minute. There is no setup fee in the Off The Clock offer.",
+        "Podium’s reviewed home-services plan does not publish a numerical subscription price. Its sales-quoted bundle includes an FSM, so there is no credible dollar-for-dollar saving to calculate from that page. Off The Clock’s advantage here is a defined offer without making a new field-service platform part of the purchase. [[podium-plans]]"
+      ]
+    ],
+    [
+      "scope",
+      "The difference shows up in the scope",
+      [
+        "A customer asking about mowing with edging is not asking only for the base mowing price. The selected edging, its measured length and the business’s own charge all belong in that request.",
+        "QuoteDone’s rule is to price the supported complete scope or preserve it for owner review. An unknown length does not become an average, and an unpriced extra does not disappear. That keeps your pricing authority intact while moving routine inquiries away from your phone."
+      ]
+    ]
   ]
 }
