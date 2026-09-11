@@ -1,0 +1,84 @@
+{
+  "kind": "head",
+  "slug": "sameday-ai-vs-avoca",
+  "title": "Sameday AI vs Avoca",
+  "seo_title": "Sameday AI vs Avoca: Pricing & Business Fit",
+  "description": "Compare Sameday AI and Avoca on scheduling, coaching, human escalation, public pricing and the complete service-business inquiry.",
+  "intro": "Compare Sameday AI and Avoca on scheduling, coaching, human escalation, public pricing and the complete service-business inquiry.",
+  "verdict": "Both deserve more than a basic answering-service comparison. Shortlist by the workflows you need: connected scheduling, coaching, escalation or job pricing. Sameday publishes starting plans; Avoca’s reviewed offer needs a sales quote.",
+  "rows": [
+    [
+      "Published starting offer",
+      "Launch $449/500 minutes; Scale $789/1,000. [[sameday-pricing]]",
+      "No numerical price on reviewed product pages. [[avoca-product]]"
+    ],
+    [
+      "Operating scope",
+      "Phone system, AI agents, campaigns and coaching. [[sameday-product]]",
+      "Inbound, campaigns, web chat and Coach. [[avoca-product]]"
+    ],
+    [
+      "ServiceTitan connection",
+      "Listed in integration directory. [[sameday-integrations]]",
+      "Direct booking and customer writeback described. [[avoca-servicetitan]]"
+    ],
+    [
+      "Human handoff",
+      "Specify and demonstrate the contracted destination.",
+      "Contextual CSR escalation described. [[avoca-inbound]]"
+    ],
+    [
+      "Evaluation priority",
+      "Exact connected actions and usage package.",
+      "Included modules, human coverage and operator oversight."
+    ]
+  ],
+  "sections": [
+    [
+      "scope",
+      "Do not turn this into answering versus coaching",
+      [
+        "Sameday’s current site includes coaching as well as phone handling; Avoca’s Coach explains call scoring and outcome reclassification. The useful distinction is how each product supports your team, not whether one has a longer set of navigation labels. [[sameday-product]] [[avoca-coach]]",
+        "Give both vendors a normal call, an unfinished booking and a conversation that should be classified as requiring owner attention. Ask a supervisor to find each outcome and explain what happens next.",
+        "A dashboard score is not automatically the business outcome. Check whether the manager can understand the scoring basis, correct a mistake and find the customer information needed to act."
+      ]
+    ],
+    [
+      "handoff",
+      "Find out who actually takes the exception",
+      [
+        "Avoca documents a Human in the Loop program with Avoca-trained CSRs in North America. That supports a human-backup distinction, but it does not establish inclusion in every plan. Confirm the coverage and price in the actual offer. [[avoca-human]]",
+        "Ask Sameday the same operational questions. An AI that transfers to your mobile and a service that supplies an external person are different offers even when both say human handoff.",
+        "Then make the test less convenient: the intended person is unavailable. The outcome should make sense to the caller and leave someone clearly responsible, rather than end at a transfer animation."
+      ]
+    ],
+    [
+      "cost",
+      "Turn the quote into a comparable proposal",
+      [
+        "Sameday’s starting packages identify minute allowances. Avoca’s reviewed product pages do not establish a subscription amount. Compare a written offer for the same tasks, not one public starting price against a guessed Avoca cost. [[sameday-pricing]] [[avoca-product]]",
+        "List inbound, outbound, phone users, locations, coaching, web chat, integrations and any human service separately. Ask which are included and what additional usage costs.",
+        "Evaluate the fit at your real volume. A lower base fee can still be the wrong purchase if a required module or handoff is missing; a larger package may be unnecessary when only the pricing inquiry is unresolved."
+      ]
+    ],
+    [
+      "off-the-clock",
+      "The quote-led alternative",
+      [
+        "Off The Clock should be evaluated when the owner’s unfinished task is pricing a supported job. QuoteDone is the reason to make that comparison: complete scope, the business’s own rates, and a review request when the information cannot support a price.",
+        "It is not a claim that Sameday or Avoca cannot be configured to discuss prices. Bring a representative job and ask all three to show exactly what the customer and owner receive."
+      ]
+    ]
+  ],
+  "questions": [
+    "Who takes a requested human handoff and what happens when unavailable?",
+    "Can a manager inspect and correct a misclassified call?",
+    "Which modules and integration actions are included in the actual proposal?"
+  ],
+  "decision": "Choose the front-office platform that completes your required workflows with the right human oversight. Add Off The Clock when finishing the supported quote—not expanding the contact-center toolset—is the reason you are buying.",
+  "related": [
+    "alternatives/sameday-ai/index.html",
+    "alternatives/avoca/index.html",
+    "alternatives/servicetitan-voice-agent/index.html"
+  ]
+}
