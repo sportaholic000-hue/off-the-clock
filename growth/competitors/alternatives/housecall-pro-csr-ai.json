@@ -1,0 +1,66 @@
+{
+  "kind": "alternatives",
+  "slug": "housecall-pro-csr-ai",
+  "title": "Housecall Pro CSR AI Alternatives for Service Businesses",
+  "seo_title": "Housecall Pro CSR AI Alternatives: Compare Options & Fit",
+  "description": "Compare Off The Clock AI, Sameday AI, Avoca and Jobber Receptionist as alternatives to Housecall Pro CSR AI for service calls, booking and quotes.",
+  "intro": "Compare Off The Clock AI, Sameday AI, Avoca and Jobber Receptionist as alternatives to Housecall Pro CSR AI for service calls, booking and quotes.",
+  "verdict": "Evaluate Off The Clock for owner-priced project inquiries. Compare Sameday and Avoca for broader front-office needs. Treat Jobber Receptionist as part of a deliberate Jobber platform choice, not a direct HCP add-on.",
+  "reason": [
+    "An alternative to Housecall Pro CSR AI should not be based on the outdated claim that CSR AI cannot book. Its settings and best-practice documentation describe booking permissions, enabled services and available appointment windows. [[hcp-overview]] [[hcp-practices]]",
+    "The official material is not perfectly synchronized: some overview wording still says coming soon while detailed sections describe working permissions. Test the actual account configuration. That is more useful than converting conflicting website wording into a confident yes-or-no claim.",
+    "Also separate the channels. Housecall Pro documents website chat with booking and escalation, while its newer text-answering article is explicitly alpha and focused on qualifying new-customer calls. Do not assume every channel has identical availability. [[hcp-chat]] [[hcp-text]]"
+  ],
+  "choices": [
+    [
+      "otc",
+      "When the project quote is the reason to change",
+      "The question for QuoteDone is whether the supported job can be priced from your own rules across the requested scope. A complete lead is the right outcome when the facts are insufficient. Do not trade correct review handling for a more impressive-looking but unsupported price."
+    ],
+    [
+      "sameday",
+      "When the whole phone operation is in scope",
+      "Compare the full workflow and your exact HCP requirements. Ask to see what is written into your account, which bookings can be changed, and which actions require another tool or manual step."
+    ],
+    [
+      "avoca",
+      "When your team needs coaching and contextual handoffs",
+      "Trace the call from AI handling to the owner or CSR. Ask which operational reports and escalation services you are buying. Confirm your specific Housecall Pro connection, rather than assuming any advertised CRM connection is interchangeable."
+    ],
+    [
+      "jobber",
+      "When you are considering Jobber itself",
+      "This alternative makes sense only as part of a wider platform evaluation. Include the cost and effort of replacing the underlying software; do not compare one add-on price as though it bought the same operational setup."
+    ]
+  ],
+  "scenario": {
+    "title": "The test: a correctly priced service plus a real exception",
+    "text": "Use one enabled fixed-price service and one variable project with an unknown required measurement. Repeat the relevant parts in both phone and website-chat demonstrations. Do not assume that a result on one channel proves the other.",
+    "checks": [
+      "Does the fixed-price answer use the service’s configured amount and correct inclusions?",
+      "Does missing project information stay visible instead of being supplied by the AI?",
+      "Can the owner find the unresolved request, understand it and continue without starting over?"
+    ]
+  },
+  "questions": [
+    "What does the CSR AI add-on cost for your account, including usage and channels?",
+    "Which permissions and booking settings are required for the desired behavior?",
+    "Which text features are alpha, and are your returning-customer scenarios supported?"
+  ],
+  "decision": "Stay with the native HCP option when it solves the job you need done. Put Off The Clock on the shortlist when project pricing and a dedicated website quoting experience are the actual gap. Choose another operating platform only when that larger change is also wanted.",
+  "faqs": [
+    [
+      "Does Housecall Pro CSR AI have website chat?",
+      "Yes. Its Chat Answering documentation describes website conversations, booking and escalation. A dedicated quoting workflow is a separate question. [[hcp-chat]]"
+    ],
+    [
+      "Is CSR AI included free with every AI teammate?",
+      "Housecall Pro distinguishes the optional CSR AI answering add-on from included AI teammates. The reviewed material does not establish a numerical add-on price. [[hcp-team]]"
+    ]
+  ],
+  "related": [
+    "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html",
+    "alternatives/jobber-receptionist/index.html",
+    "alternatives/avoca/index.html"
+  ]
+}
