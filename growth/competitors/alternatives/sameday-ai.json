@@ -1,0 +1,66 @@
+{
+  "kind": "alternatives",
+  "slug": "sameday-ai",
+  "title": "Sameday AI Alternatives for Service Businesses",
+  "seo_title": "Sameday AI Alternatives: Compare Options & Fit",
+  "description": "Compare Off The Clock AI, Avoca, ServiceTitan Voice Agent and Podium Larry as Sameday AI alternatives for calls, booking and job pricing.",
+  "intro": "Compare Off The Clock AI, Avoca, ServiceTitan Voice Agent and Podium Larry as Sameday AI alternatives for calls, booking and job pricing.",
+  "verdict": "Shortlist Off The Clock for the pricing conversation, Avoca for front-office coaching and escalation, ServiceTitan Voice Agent for a native ServiceTitan option, and Podium for a broader platform purchase.",
+  "reason": [
+    "A Sameday alternative should be compared with the Sameday product you would actually buy. Its current site includes phones, campaigns and coaching alongside AI answering; reducing it to a message-taking service would miss the decision. [[sameday-product]]",
+    "The published starting plans are Launch at $449 per month with 500 minutes and Scale at $789 with 1,000 minutes. Those are starting packages, not a personalized invoice or a promise that every feature is included. [[sameday-pricing]]",
+    "Separate your must-haves into answering, scheduling, job pricing and follow-up. A lower subscription is not an improvement when your team still has to redo the most time-consuming part of the inquiry. Equally, a larger platform is unnecessary when one specific problem is the reason to switch."
+  ],
+  "choices": [
+    [
+      "otc",
+      "When the customer needs the job priced",
+      "Bring a job that cannot be described by a single fixed service charge. QuoteDone’s proposition is applying your rates to the complete supported scope, with unresolved requests kept for review. That is the reason to evaluate it—not an unsupported promise to quote every job."
+    ],
+    [
+      "avoca",
+      "When the wider front office needs attention",
+      "Make the coaching and escalation requirements explicit. Ask to see a correction after a poorly classified call, the owner’s view of that correction, and whether the desired reporting is included in the proposal."
+    ],
+    [
+      "st",
+      "When you already use ServiceTitan",
+      "Treat the native option as a separate cost and workflow comparison. You are evaluating the incremental answering feature, not pretending your existing ServiceTitan subscription disappears."
+    ],
+    [
+      "podium",
+      "When you also want to change field-service software",
+      "This belongs on a different branch of the shortlist. Evaluate what you gain from a consolidated operating system and what you must migrate, rather than comparing the answering feature alone."
+    ]
+  ],
+  "scenario": {
+    "title": "The test: change the job after the first answer",
+    "text": "Start with a normal inquiry, then add removal or another paid item before accepting the result. Finally, change the preferred appointment. This tests whether the product keeps one coherent request instead of producing a persuasive first response and stale downstream records.",
+    "checks": [
+      "Was the new scope captured and accounted for, rather than silently excluded?",
+      "Did the final customer answer reflect the latest request?",
+      "Did the owner receive one current record rather than conflicting versions?"
+    ]
+  },
+  "questions": [
+    "Which usage is included: minutes, calls, conversations, locations or users?",
+    "Which scheduling actions work with your exact field-service account?",
+    "What are the charges and behavior when the allowance is reached?"
+  ],
+  "decision": "Choose based on the portion of the inquiry you need removed from your day. Off The Clock belongs first on a quote-led shortlist. Sameday remains relevant when its broader phone and scheduling operation is what you need; compare that whole package rather than a stripped-down description.",
+  "faqs": [
+    [
+      "Is Sameday a flat unlimited subscription?",
+      "Its pricing page starts with minute allowances. Do not describe the displayed plans as unlimited calling. [[sameday-pricing]]"
+    ],
+    [
+      "Can Sameday connect with Jobber or ServiceTitan?",
+      "Both appear in its official integration directory. Verify the actions available to your account rather than assuming every possible workflow. [[sameday-integrations]]"
+    ]
+  ],
+  "related": [
+    "compare/sameday-ai-vs-avoca/index.html",
+    "compare/podium-larry-vs-sameday-ai/index.html",
+    "alternatives/avoca/index.html"
+  ]
+}
