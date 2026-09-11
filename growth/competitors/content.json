@@ -121,11 +121,11 @@
   "vendors": {
     "otc": {
       "name": "Off The Clock AI / QuoteDone",
-      "short": "Owner-priced jobs, phone and website",
-      "fact": "Off The Clock combines an AI operator with QuoteDone: pricing supported jobs from your own rates and job details, with a website quote widget as a second customer entry point.",
+      "short": "Answers calls. Quotes supported jobs. Books appointments.",
+      "fact": "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
       "sources": [],
-      "pricing": "QuoteDone: $279/month with 1,200 minutes in the project offer. Publication is pending.",
-      "boundary": "Not a replacement for a full field-service platform. Unresolved pricing or job facts require owner review; a live native connection to another vendor is not implied.",
+      "pricing": "QuoteDone: $279/month with 1,200 minutes.",
+      "boundary": "Your prices stay yours. Missing measurements or prices go to owner review. Off The Clock does not replace a full field-service platform; native connections to other platforms must be verified separately.",
       "link": "tools/growth-v2.html#challenge"
     },
     "podium": {

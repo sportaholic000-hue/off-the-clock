@@ -5,7 +5,7 @@
   "seo_title": "Sameday AI vs Avoca: Pricing & Business Fit",
   "description": "Compare Sameday AI and Avoca on scheduling, coaching, human escalation, public pricing and the complete service-business inquiry.",
   "intro": "Compare Sameday AI and Avoca on scheduling, coaching, human escalation, public pricing and the complete service-business inquiry.",
-  "verdict": "Both deserve more than a basic answering-service comparison. Shortlist by the workflows you need: connected scheduling, coaching, escalation or job pricing. Sameday publishes starting plans; Avoca’s reviewed offer needs a sales quote.",
+  "verdict": "Sameday and Avoca cover phone and front-office workflows. Off The Clock is our recommendation for service businesses that want answering, booking and follow-up plus supported job quotes from their own prices. QuoteDone adds that pricing conversation on the phone and a quote widget for the website.",
   "rows": [
     [
       "Published starting offer",
@@ -35,6 +35,15 @@
   ],
   "sections": [
     [
+      "off-the-clock",
+      "Choose an operator that handles the quote too",
+      [
+        "A call can be well handled while the price is still waiting for the owner. Off The Clock is built to remove that handoff for supported jobs rather than treating quoting as a separate task after answering.",
+        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
+        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
+      ]
+    ],
+    [
       "scope",
       "Do not turn this into answering versus coaching",
       [
@@ -60,14 +69,6 @@
         "List inbound, outbound, phone users, locations, coaching, web chat, integrations and any human service separately. Ask which are included and what additional usage costs.",
         "Evaluate the fit at your real volume. A lower base fee can still be the wrong purchase if a required module or handoff is missing; a larger package may be unnecessary when only the pricing inquiry is unresolved."
       ]
-    ],
-    [
-      "off-the-clock",
-      "The quote-led alternative",
-      [
-        "Off The Clock should be evaluated when the owner’s unfinished task is pricing a supported job. QuoteDone is the reason to make that comparison: complete scope, the business’s own rates, and a review request when the information cannot support a price.",
-        "It is not a claim that Sameday or Avoca cannot be configured to discuss prices. Bring a representative job and ask all three to show exactly what the customer and owner receive."
-      ]
     ]
   ],
   "questions": [
@@ -75,7 +76,7 @@
     "Can a manager inspect and correct a misclassified call?",
     "Which modules and integration actions are included in the actual proposal?"
   ],
-  "decision": "Choose the front-office platform that completes your required workflows with the right human oversight. Add Off The Clock when finishing the supported quote—not expanding the contact-center toolset—is the reason you are buying.",
+  "decision": "Choose Off The Clock for the customer journey from answering to supported job pricing, booking and follow-up. You get an operator—not just a quoting tool—and QuoteDone applies the rates you control to the job the customer describes. Add the website widget and the price conversation can start wherever the customer finds you.",
   "related": [
     "alternatives/sameday-ai/index.html",
     "alternatives/avoca/index.html",

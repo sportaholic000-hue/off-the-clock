@@ -4,32 +4,32 @@
   "title": "Podium Larry Alternatives for Service Businesses",
   "seo_title": "Podium Larry Alternatives: Compare Options & Fit",
   "description": "Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI as alternatives to Podium Larry. Decide what you want to keep before switching.",
-  "intro": "Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI as alternatives to Podium Larry. Decide what you want to keep before switching.",
-  "verdict": "Choose Off The Clock when the central requirement is owner-priced job quoting without a full operating-system replacement. Compare Sameday or Avoca for connected front-office workflows. Consider CSR AI when you already intend to run on Housecall Pro.",
+  "intro": "Looking for a Podium Larry alternative? Compare Off The Clock AI, Sameday AI, Avoca and Housecall Pro CSR AI—and see why Off The Clock combines the operator you need with the job quoting that sets QuoteDone apart.",
+  "verdict": "Choose Off The Clock for answering, owner-priced job quotes and booking without buying a replacement field-service platform. QuoteDone brings your pricing to the phone and your website, so a new inquiry does not have to become another quote for you to prepare.",
   "reason": [
+    "Your next operator should take the pricing conversation off your hands—not ask you to rebuild the rest of your business. Off The Clock brings answering, booking and follow-up together with QuoteDone while leaving the choice of field-service software with you.",
     "Replacing Larry and replacing Podium are different projects. Podium’s published home-services package combines Larry with an FSM, while its FSM page describes dispatch, technician estimates and payments. A receptionist-only substitute is not automatically a replacement for that package. [[podium-plans]] [[podium-fsm]]",
-    "Write down which parts of the operation you actually want to change. Keep a separate column for tools that should remain: your customer records, job schedule, invoicing and accounting. That makes the shortlist narrower and the eventual demonstration more useful.",
     "Do not base this choice on the claim that Larry cannot give prices. Podium explicitly describes pricing and service-fee handling. The useful question is whether the demonstrated workflow handles your particular measured job, selected extras and exceptions. [[podium-larry]]"
   ],
   "choices": [
     [
       "otc",
-      "When the quote is the missing step",
-      "Evaluate the customer’s complete pricing request, not a diagnostic fee alone. Bring a normal project with a separately priced extra and one fact that may need verification. The point is to see whether the business’s rules remain intact from inquiry to next step."
+      "The operator plus owner-priced job quotes",
+      "Your caller describes the job; QuoteDone applies your rates to the supported scope, including the selected extras. The conversation can move from the price to the appointment, while website visitors get a dedicated quoting entry point. You control the rates and the cases that need your review."
     ],
     [
       "sameday",
-      "When you want a connected phone operation",
-      "Keep this on the shortlist when the phone team, calendar and existing field-service software need to operate together. Demonstrate a returning customer and a changed appointment, not only a new lead with an empty calendar."
+      "Connected phone and scheduling tools",
+      "Connected scheduling is the relevant distinction here. Check the actions between the phone team, calendar and existing field-service software with a returning customer and a changed appointment—not only a new lead with an empty calendar."
     ],
     [
       "avoca",
-      "When escalation and coaching matter",
+      "Coaching and human-escalation options",
       "Use the demo to follow one call across AI and a human. Check the context the person receives and how the final outcome is recorded. Human escalation should solve an exception, not force the customer to repeat the job."
     ],
     [
       "hcp",
-      "When Housecall Pro is the system you want",
+      "Housecall Pro’s native CSR feature",
       "This is an ecosystem choice, not a drop-in Larry replacement. Evaluate the HCP account as a whole before treating its native answering add-on as the reason to migrate."
     ]
   ],
@@ -47,7 +47,7 @@
     "Does the written offer include the answering product, software access, human handling and usage?",
     "Can the complete conversation and resulting record be exported before a switch?"
   ],
-  "decision": "Start with Off The Clock when job pricing is the reason you are looking beyond Larry. Keep Podium on the shortlist when the broader FSM is itself the desired purchase. A better call outcome should not require an accidental rebuild of the business.",
+  "decision": "Choose Off The Clock when you want the incoming call answered, the supported job priced and the appointment booked without purchasing a new field-service platform. The value is not another place to manage technicians. It is fewer customer conversations coming back to you unfinished, with the same QuoteDone pricing approach available on your website.",
   "faqs": [
     [
       "Does Larry already give prices?",

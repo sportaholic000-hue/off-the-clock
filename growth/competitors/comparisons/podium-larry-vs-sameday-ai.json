@@ -5,7 +5,7 @@
   "seo_title": "Podium Larry vs Sameday AI: Pricing & Business Fit",
   "description": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
   "intro": "Compare Podium Larry and Sameday AI on platform scope, pricing, scheduling and what happens when a customer asks for a project price.",
-  "verdict": "Start with the system you want to keep. Podium’s home-services offer pairs Larry with its FSM; Sameday emphasizes connected phone and scheduling workflows. Add Off The Clock to the evaluation when owner-priced project quoting is the deciding requirement.",
+  "verdict": "Podium Larry pairs its operator with Podium’s home-services platform; Sameday brings connected phone and scheduling tools. For a service business that wants answering, owner-priced job quotes and booking without a new field-service platform, choose Off The Clock.",
   "rows": [
     [
       "Product scope",
@@ -35,6 +35,15 @@
   ],
   "sections": [
     [
+      "off-the-clock",
+      "Why choose Off The Clock instead?",
+      [
+        "The choice is not limited to moving your operation into another platform or improving how calls reach the calendar. Off The Clock combines an AI operator with QuoteDone to handle the supported job price as part of the inquiry.",
+        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
+        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
+      ]
+    ],
+    [
       "platform",
       "Choose the operating model before the voice",
       [
@@ -60,14 +69,6 @@
         "Our proposed buying test is a customer who asks for an installation, adds removal and then admits one important measurement is uncertain. Record whether the product calculates a complete price, books an estimate or hands the request to the owner.",
         "A correct review request can be the right answer. The failure to watch for is an attractive price that quietly excludes the hard part of the customer’s request. Apply the same test to Off The Clock, not just its competitors."
       ]
-    ],
-    [
-      "off-the-clock",
-      "When Off The Clock belongs on this shortlist",
-      [
-        "Off The Clock is built around the operator plus QuoteDone: the business’s pricing applied to supported job details, with the website quote widget as a separate customer entry point. It is not being proposed as a full technician-management replacement.",
-        "That makes it relevant when the owner still has to finish the price conversation after an otherwise successful call. The evaluation should use the owner’s real pricing rules—not a sample total adjusted to make the demonstration look right."
-      ]
     ]
   ],
   "questions": [
@@ -75,7 +76,7 @@
     "Does a scope change update the result and owner record consistently?",
     "What is included in the signed offer, rather than demonstrated as an optional extra?"
   ],
-  "decision": "Choose Podium for an intentional platform-and-operator purchase, or Sameday for the connected phone operation that meets your requirements. Choose to evaluate Off The Clock when the differentiating task is the project quote itself.",
+  "decision": "Choose Off The Clock to answer the call, price the supported job and book the appointment without buying a replacement field-service platform. QuoteDone puts your rates into the conversation and adds website quoting, while the operator handles business questions, transfers and follow-up. The point is to take the customer’s next step off your hands—not give you another system to run.",
   "related": [
     "alternatives/podium-larry/index.html",
     "alternatives/sameday-ai/index.html",

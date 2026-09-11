@@ -4,33 +4,33 @@
   "title": "Avoca Alternatives for Service Businesses",
   "seo_title": "Avoca Alternatives: Compare Options & Fit",
   "description": "Compare Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist as alternatives to Avoca for service businesses.",
-  "intro": "Compare Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist as alternatives to Avoca for service businesses.",
-  "verdict": "Evaluate Off The Clock when pricing the actual job is the priority. Compare Sameday for a broader phone operation, or a native Jobber/ServiceTitan option when keeping your current platform is the main requirement.",
+  "intro": "Comparing Avoca alternatives? See Off The Clock AI, Sameday AI, ServiceTitan Voice Agent and Jobber Receptionist side by side. Off The Clock combines the AI operator with QuoteDone to handle the price conversation as well as the call.",
+  "verdict": "Choose Off The Clock when the result you want is an answered call, an owner-priced job quote and a booked appointment. The operator handles questions, transfers and follow-up; QuoteDone carries your pricing into supported project inquiries and the website widget.",
   "reason": [
+    "Your business needs more than a call that has been answered, scored or passed on. It needs the customer’s next step handled. Off The Clock combines the operator’s day-to-day role with QuoteDone so supported jobs can be priced before the conversation returns to you.",
     "Avoca is more than an AI voice on the phone. Its material describes call scoring and a Human in the Loop program staffed by Avoca-trained CSRs. A useful alternative must be judged against the modules and coverage you actually need. [[avoca-coach]] [[avoca-human]]",
-    "First decide what is failing in your present process. Is it unanswered inquiries, appointment handling, calls that need a person, or owners still having to price every project? These problems can require different products even when their feature lists overlap.",
     "The reviewed Avoca pages are demo-led and do not establish a numerical subscription price. Obtain a written offer instead of filling that gap with a third-party estimate. Ask whether coaching, campaigns, human handling and integrations are part of the same purchase. [[avoca-product]]"
   ],
   "choices": [
     [
       "otc",
-      "When the pricing conversation keeps returning to you",
-      "Off The Clock’s reason to be on the shortlist is QuoteDone. Use the evaluation to distinguish a complete owner-priced job from a booked estimate or a lead that still needs pricing. The correct review path is also an outcome worth testing."
+      "A complete operator with QuoteDone built in",
+      "Off The Clock handles the customer’s questions, the supported quote, the appointment and follow-up. When someone needs you, the operator can transfer the call; a missing price or measurement becomes a review request with the collected details. You do not have to choose between useful automation and control of your pricing."
     ],
     [
       "sameday",
-      "When phones and follow-up are a broader requirement",
+      "Connected phone and scheduling tools",
       "Compare the tasks your office does around the call, not just the voice quality. Walk through a returning customer, an appointment change and follow-up ownership. Define exactly which jobs the AI may complete."
     ],
     [
       "st",
-      "When ServiceTitan should remain the center",
-      "Use the native option as a baseline against an added front-office vendor. Check what the agent can do with your booking rules and what a supervisor can inspect afterward."
+      "ServiceTitan’s native voice feature",
+      "ServiceTitan’s native option uses its account context. Compare the documented job types, booking rules and supervisor visibility with the specific tasks you want completed."
     ],
     [
       "jobber",
-      "When a Jobber-native answering feature is enough",
-      "For an existing Jobber business, start with the actual incremental feature and bill. Do not buy a broader contact-center package simply because the original shortlist contained one."
+      "Jobber’s native receptionist",
+      "Jobber’s receptionist is a native add-on with its own usage model. Its incremental bill is different from a full platform purchase; the pricing comparison should reflect that distinction."
     ]
   ],
   "scenario": {
@@ -47,7 +47,7 @@
     "Which reporting and coaching modules are included rather than optional?",
     "Can your team see and correct an incorrect outcome classification?"
   ],
-  "decision": "Keep Avoca in consideration when coaching, escalation and connected front-office operations are the real requirement. Choose a narrower product deliberately when those extras are not needed. For an owner whose unfinished task is the quote, evaluate Off The Clock against that task directly.",
+  "decision": "Choose Off The Clock to take the incoming conversation through answering, supported job pricing, booking and follow-up. QuoteDone adds your own prices and a website quote widget to the operator’s core role. That is the reason to switch: the customer gets a useful next step, and you get fewer quotes and callbacks to prepare yourself.",
   "faqs": [
     [
       "Does Avoca offer human backup?",

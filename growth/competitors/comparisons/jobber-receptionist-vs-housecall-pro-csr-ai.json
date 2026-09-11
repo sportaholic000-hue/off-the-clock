@@ -5,7 +5,7 @@
   "seo_title": "Jobber Receptionist vs Housecall Pro CSR AI: Pricing & Business Fit",
   "description": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
   "intro": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
-  "verdict": "Already happy with Jobber or Housecall Pro? Start with its native option. Do not migrate the entire business for an add-on without a broader reason. Evaluate Off The Clock separately when project quoting is the unmet requirement.",
+  "verdict": "Jobber Receptionist and Housecall Pro CSR AI belong to their respective platforms. You do not have to make a platform switch the starting point. Choose Off The Clock when you want answering, owner-priced job quotes and booking while keeping your choice of business software.",
   "rows": [
     [
       "Required context",
@@ -35,6 +35,15 @@
   ],
   "sections": [
     [
+      "off-the-clock",
+      "Keep your business software. Upgrade the inquiry.",
+      [
+        "Keeping your job-management software does not mean its receptionist has to handle every new inquiry. Off The Clock brings the AI operator and QuoteDone together for businesses that want the supported job price handled as well as the appointment.",
+        "Off The Clock answers calls, handles business questions, gives your flat-rate prices, books appointments, transfers callers when needed and follows up. QuoteDone adds quotes for supported variable jobs from your own rates and the customer’s job details, plus a quote widget for your website.",
+        "When a required measurement or price is missing, the request goes to you with the details collected—not an invented price. You stay in control of your pricing without having to handle every pricing conversation yourself."
+      ]
+    ],
+    [
       "existing-platform",
       "The platform you already use changes the comparison",
       [
@@ -60,14 +69,6 @@
         "Test a customer who changes their request after the first response. Check which record is updated and whether a person can take over without the AI continuing to answer over them.",
         "Do not generalize an alpha feature to every customer or account. Ask what is available now, what requires enablement, and what is still limited."
       ]
-    ],
-    [
-      "off-the-clock",
-      "When the native receptionist is not the missing piece",
-      [
-        "If your office can already answer and book but you still personally calculate supported project quotes, compare that task separately. Off The Clock’s QuoteDone proposition joins owner-controlled project pricing with a phone operator and website quote entry point.",
-        "A configured service price and a completed variable-scope quote are different outcomes. Present the same measured job, selected extras and uncertainties to every provider before deciding that a quoting checkbox means the work is done."
-      ]
     ]
   ],
   "questions": [
@@ -75,7 +76,7 @@
     "Do the configured booking and rescheduling actions work in your account?",
     "Which channel, usage limit and alpha restriction applies to the actual inquiry?"
   ],
-  "decision": "Choose the native receptionist when it completes the required task within the system you want to retain. Consider a platform switch only for platform-level reasons. Evaluate Off The Clock when owner-priced project inquiries are the specific gap.",
+  "decision": "Choose Off The Clock for answering, supported job quotes, booking and follow-up. Keep Jobber or Housecall Pro for the parts of your operation you value; the receptionist decision is separate. QuoteDone puts your prices and the customer’s job details into the inquiry, with a quote widget for your website as well.",
   "related": [
     "alternatives/jobber-receptionist/index.html",
     "alternatives/housecall-pro-csr-ai/index.html",
