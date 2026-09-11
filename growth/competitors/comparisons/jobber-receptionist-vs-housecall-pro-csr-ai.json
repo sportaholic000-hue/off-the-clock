@@ -1,0 +1,84 @@
+{
+  "kind": "head",
+  "slug": "jobber-receptionist-vs-housecall-pro-csr-ai",
+  "title": "Jobber Receptionist vs Housecall Pro CSR AI",
+  "seo_title": "Jobber Receptionist vs Housecall Pro CSR AI: Pricing & Business Fit",
+  "description": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
+  "intro": "Compare Jobber Receptionist and Housecall Pro CSR AI by existing platform, booking setup, pricing units and supported customer channels.",
+  "verdict": "Already happy with Jobber or Housecall Pro? Start with its native option. Do not migrate the entire business for an add-on without a broader reason. Evaluate Off The Clock separately when project quoting is the unmet requirement.",
+  "rows": [
+    [
+      "Required context",
+      "Jobber account and eligible plan. [[jobber-pricing]]",
+      "Housecall Pro account and CSR AI add-on. [[hcp-team]]"
+    ],
+    [
+      "Price visibility",
+      "$29/30 conversations; $0.79 extra; Plus unlimited. [[jobber-help]]",
+      "Numerical CSR AI add-on price not established in reviewed docs. [[hcp-team]]"
+    ],
+    [
+      "Booking",
+      "Jobs can be booked in Jobber. [[jobber-help]]",
+      "Permissions, enabled services and windows govern booking. [[hcp-practices]]"
+    ],
+    [
+      "Channels",
+      "Calls and texts. [[jobber-help]]",
+      "Calls and website chat; new text answering is alpha. [[hcp-overview]] [[hcp-chat]] [[hcp-text]]"
+    ],
+    [
+      "Main buying question",
+      "Does the native feature solve the required inquiry?",
+      "Does your configured account support the required actions?"
+    ]
+  ],
+  "sections": [
+    [
+      "existing-platform",
+      "The platform you already use changes the comparison",
+      [
+        "For an existing user, compare the incremental answering purchase with the workflow it adds. For a new user, include the field-service subscription and the change to office processes. These are different budgets, even when the receptionist feature has the same name.",
+        "Write down which customer records, jobs, invoices, team permissions and existing connections must survive a move. An appealing AI demonstration does not settle those operational requirements.",
+        "Keeping the current platform can be the right decision. Buying a separate operator may also be the right decision. Neither implies that a native connection to every outside product exists; require an actual demonstration of the proposed setup."
+      ]
+    ],
+    [
+      "booking",
+      "Check the permissions, not only the headline",
+      [
+        "Housecall Pro’s detailed guidance describes matching available services and using Online Booking settings. Its overview contains both older coming-soon wording and booking controls, so account-specific verification is important. [[hcp-practices]] [[hcp-overview]]",
+        "Use the same booking test with Jobber: an enabled service, a valid customer, a real available slot and then a reschedule. Make sure the second action changes the first appointment rather than silently creating another one.",
+        "For either product, define what happens outside configured availability. A request sent to the owner is not a booked appointment, and the customer should not be told otherwise."
+      ]
+    ],
+    [
+      "channels",
+      "Do not assume phone, chat and text are identical",
+      [
+        "Jobber measures calls and text conversations differently within its conversation-based usage rules. Housecall Pro separately documents chat answering and alpha text follow-up. Compare the exact channels your customers use. [[jobber-help]] [[hcp-chat]] [[hcp-text]]",
+        "Test a customer who changes their request after the first response. Check which record is updated and whether a person can take over without the AI continuing to answer over them.",
+        "Do not generalize an alpha feature to every customer or account. Ask what is available now, what requires enablement, and what is still limited."
+      ]
+    ],
+    [
+      "off-the-clock",
+      "When the native receptionist is not the missing piece",
+      [
+        "If your office can already answer and book but you still personally calculate supported project quotes, compare that task separately. Off The Clock’s QuoteDone proposition joins owner-controlled project pricing with a phone operator and website quote entry point.",
+        "A configured service price and a completed variable-scope quote are different outcomes. Present the same measured job, selected extras and uncertainties to every provider before deciding that a quoting checkbox means the work is done."
+      ]
+    ]
+  ],
+  "questions": [
+    "What is the full cost for a new account versus an existing customer?",
+    "Do the configured booking and rescheduling actions work in your account?",
+    "Which channel, usage limit and alpha restriction applies to the actual inquiry?"
+  ],
+  "decision": "Choose the native receptionist when it completes the required task within the system you want to retain. Consider a platform switch only for platform-level reasons. Evaluate Off The Clock when owner-priced project inquiries are the specific gap.",
+  "related": [
+    "alternatives/jobber-receptionist/index.html",
+    "alternatives/housecall-pro-csr-ai/index.html",
+    "alternatives/sameday-ai/index.html"
+  ]
+}
