@@ -1,0 +1,236 @@
+{
+  "reviewed": "2026-09-11",
+  "provenance": {
+    "page_map": "00-CONTENT-MAP.md, priority competitor alternatives and competitor-vs-competitor sections",
+    "positioning": "off-the-clock-seo-copy-pack-FINAL(1).md, relevant named competitor sections",
+    "adaptation": "New researched pages implementing the existing map; source files are not overwritten. Detailed branded-alternative drafts for these six targets were not present in the accessible Library listing; no claim of verbatim preservation."
+  },
+  "sources": {
+    "podium-larry": {
+      "title": "Podium — Larry for home services",
+      "url": "https://homeservices.podium.com/ai/larry",
+      "note": "Price-book access, service fees and dispatch-board booking are described; no blanket claim that Larry cannot quote."
+    },
+    "podium-fsm": {
+      "title": "Podium — Field service management",
+      "url": "https://homeservices.podium.com/features/fsm",
+      "note": "Describes HVAC, plumbing and electrical FSM; flat-rate services/parts; technician estimates; dispatch."
+    },
+    "podium-plans": {
+      "title": "Podium — Plans and packages",
+      "url": "https://homeservices.podium.com/plans",
+      "note": "Public home-services offer bundles Larry and FSM, with a sales-quote CTA; no numerical plan price shown."
+    },
+    "sameday-product": {
+      "title": "Sameday AI — Product overview",
+      "url": "https://sameday.ai/",
+      "note": "Current site covers phones, AI CSRs, campaigns, coaching and connected scheduling. Not represented as message-taking only."
+    },
+    "sameday-pricing": {
+      "title": "Sameday AI — Pricing",
+      "url": "https://sameday.ai/pricing",
+      "note": "Launch starts at $449/month with 500 minutes; Scale at $789 with 1,000; Enterprise custom. Vendor-displayed dollars; confirm currency and contract. Old gosameday.com URL redirects here."
+    },
+    "sameday-integrations": {
+      "title": "Sameday AI — Integrations",
+      "url": "https://sameday.ai/integrations",
+      "note": "Names Jobber, ServiceTitan, FieldRoutes and Service Fusion; integration scope still needs an account-specific demonstration."
+    },
+    "avoca-inbound": {
+      "title": "Avoca — Inbound AI CSR",
+      "url": "https://www.avoca.ai/inbound",
+      "note": "Booking, customer recognition and human escalation with context. Current wording does not establish an outsourced human team in every plan."
+    },
+    "avoca-coach": {
+      "title": "Avoca — Coach",
+      "url": "https://www.avoca.ai/coach",
+      "note": "Call scoring, outcome reclassification and manager reporting."
+    },
+    "avoca-product": {
+      "title": "Avoca — Product overview",
+      "url": "https://www.avoca.ai/",
+      "note": "Inbound, outbound, web chat and coaching. Reviewed offer is demo-led; no numerical subscription price found on reviewed product pages."
+    },
+    "avoca-servicetitan": {
+      "title": "Avoca — ServiceTitan integration",
+      "url": "https://www.avoca.ai/integrations/servicetitan",
+      "note": "Direct booking and customer/notes writeback while retaining ServiceTitan."
+    },
+    "jobber-help": {
+      "title": "Jobber — Receptionist availability and usage",
+      "url": "https://help.getjobber.com/en/articles/receptionistpowered-by-jobber-ai/",
+      "note": "Select-plan add-on $29/month, 30 conversations, $0.79 additional conversation; Plus unlimited. Call and text counting differ."
+    },
+    "jobber-pricing": {
+      "title": "Jobber — Plans and add-ons",
+      "url": "https://www.getjobber.com/pricing/",
+      "note": "Base Jobber subscription is separate from an add-on quote; Plus includes Receptionist. Prices vary by team/billing selection."
+    },
+    "hcp-overview": {
+      "title": "Housecall Pro — CSR AI overview",
+      "url": "https://help.housecallpro.com/en/articles/9740104-csr-ai-overview",
+      "note": "Booking and rescheduling permissions, call records and existing account context. Some overview prose still says coming soon; do not flatten this into an unavailable claim."
+    },
+    "hcp-practices": {
+      "title": "Housecall Pro — CSR AI best practices and FAQs",
+      "url": "https://help.housecallpro.com/en/articles/12001958-csr-ai-best-practices-and-faqs",
+      "note": "Set service prices, Online Booking, enabled services and available windows; no invented numerical subscription rate."
+    },
+    "hcp-team": {
+      "title": "Housecall Pro — AI Team overview",
+      "url": "https://help.housecallpro.com/en/articles/9311875-ai-team-overview",
+      "note": "CSR AI answering is an optional add-on, unlike included AI teammates. No numerical add-on price in reviewed material."
+    },
+    "hcp-chat": {
+      "title": "Housecall Pro — CSR AI Chat Answering",
+      "url": "https://help.housecallpro.com/en/articles/12453258-csr-ai-chat-answering",
+      "note": "Website chat with settings, booking and human escalation; not described as lacking website communication."
+    },
+    "hcp-text": {
+      "title": "Housecall Pro — CSR AI Text Answering (In Alpha)",
+      "url": "https://help.housecallpro.com/en/articles/16673934-csr-ai-text-answering-in-alpha",
+      "note": "Alpha, qualifying new-customer calls and permission-dependent actions. Not generalized to all customers or GA."
+    },
+    "st-settings": {
+      "title": "ServiceTitan — Configure Voice Agent",
+      "url": "https://help.servicetitan.com/residential-s-r/docs/configure-your-voice-agent-settings-in-servicetitan",
+      "note": "Job types, follow-up questions and configurable dispatch-fee messages."
+    },
+    "st-pricing": {
+      "title": "ServiceTitan — AI Voice Agent public offer",
+      "url": "https://plg.servicetitan.com/va",
+      "note": "Official indexed page lists $2.75/call, monthly usage billing and 12-month rate lock, no minimum calls. Direct parsed page body is JS-only; verify account eligibility/currency/base subscription separately. Not an all-in ServiceTitan price.",
+      "retrieval": "Official search-indexed page; direct parsed body incomplete"
+    },
+    "st-escalation": {
+      "title": "ServiceTitan — Emergency escalation and after-hours dispatch fees",
+      "url": "https://help.servicetitan.com/release-hub/docs/handle-emergency-calls-configure-escalation-triggers-charge-after-hours",
+      "note": "Applies to basic Phones, Phones Pro and Contact Center Pro; not an enterprise-contact-center-only feature."
+    },
+    "st-multi": {
+      "title": "ServiceTitan — Multiple Voice Agents",
+      "url": "https://help.servicetitan.com/release-hub/docs/run-multiple-voice-agents-from-a-single-account-with-voice-agent-multi-agent-sup",
+      "note": "Independent agents for brands, service lines or locations within an account."
+    },
+    "avoca-human": {
+      "title": "Avoca — Human in the Loop program",
+      "url": "https://www.avoca.ai/blog/why-avoca-has-a-human-in-the-loop-program",
+      "note": "Avoca describes a team of Avoca-trained CSRs in North America. Program availability and price must be confirmed in the offer; not assumed included in every plan."
+    }
+  },
+  "vendors": {
+    "otc": {
+      "name": "Off The Clock AI / QuoteDone",
+      "short": "Owner-priced jobs, phone and website",
+      "fact": "Off The Clock combines an AI operator with QuoteDone: pricing supported jobs from your own rates and job details, with a website quote widget as a second customer entry point.",
+      "sources": [],
+      "pricing": "QuoteDone: $279/month with 1,200 minutes in the project offer. Publication is pending.",
+      "boundary": "Not a replacement for a full field-service platform. Unresolved pricing or job facts require owner review; a live native connection to another vendor is not implied.",
+      "link": "tools/growth-v2.html#challenge"
+    },
+    "podium": {
+      "name": "Podium Larry",
+      "short": "An AI operator within a broader operating system",
+      "fact": "Larry uses price-book and dispatch context. Podium’s home-services offer also includes an FSM.",
+      "sources": [
+        "podium-larry",
+        "podium-plans"
+      ],
+      "pricing": "Sales quote; no numerical price in the reviewed home-services plans.",
+      "boundary": "Establish whether you are buying Larry alone, integrated access, or the full advertised platform.",
+      "link": "alternatives/podium-larry/index.html",
+      "pricing_sources": [
+        "podium-plans"
+      ]
+    },
+    "sameday": {
+      "name": "Sameday AI",
+      "short": "Connected scheduling and a broader phone operation",
+      "fact": "Sameday combines AI call handling with phones, scheduling, campaigns and coaching. Its integration directory includes Jobber and ServiceTitan.",
+      "sources": [
+        "sameday-product",
+        "sameday-integrations"
+      ],
+      "pricing": "Launch from $449/month, 500 minutes; Scale from $789, 1,000 minutes.",
+      "pricing_sources": [
+        "sameday-pricing"
+      ],
+      "boundary": "Confirm the exact integration actions, included features and extra-usage terms in your proposal.",
+      "link": "alternatives/sameday-ai/index.html"
+    },
+    "avoca": {
+      "name": "Avoca",
+      "short": "AI front office, coaching and escalation",
+      "fact": "Avoca combines inbound handling, outbound campaigns and coaching; it also documents a trained-human backup program.",
+      "sources": [
+        "avoca-product",
+        "avoca-human"
+      ],
+      "pricing": "Sales-led; no numerical price found in the reviewed product material.",
+      "pricing_sources": [
+        "avoca-product"
+      ],
+      "boundary": "Ask who handles escalations and whether that human coverage and each module are included.",
+      "link": "alternatives/avoca/index.html"
+    },
+    "jobber": {
+      "name": "Jobber Receptionist",
+      "short": "Native answering for an existing Jobber operation",
+      "fact": "Receptionist answers calls and texts and can book into Jobber. Plus includes unlimited usage.",
+      "sources": [
+        "jobber-help",
+        "jobber-pricing"
+      ],
+      "pricing": "Select-plan add-on: $29/month for 30 conversations; $0.79 each beyond that. Base plan separate.",
+      "pricing_sources": [
+        "jobber-help"
+      ],
+      "boundary": "Compare the add-on with your existing Jobber bill, not with an entire standalone subscription.",
+      "link": "alternatives/jobber-receptionist/index.html"
+    },
+    "hcp": {
+      "name": "Housecall Pro CSR AI",
+      "short": "Customer communications inside Housecall Pro",
+      "fact": "CSR AI uses HCP service and scheduling settings. Its documentation covers booking permissions, service prices and website chat.",
+      "sources": [
+        "hcp-practices",
+        "hcp-chat"
+      ],
+      "pricing": "Optional add-on; numerical price not established by the reviewed official documentation.",
+      "pricing_sources": [
+        "hcp-team"
+      ],
+      "boundary": "Verify permissions, available services and booking windows in the actual account.",
+      "link": "alternatives/housecall-pro-csr-ai/index.html"
+    },
+    "st": {
+      "name": "ServiceTitan Voice Agent",
+      "short": "Voice automation inside ServiceTitan",
+      "fact": "Voice Agent supports configured job types, dispatch-fee messaging and escalation within ServiceTitan.",
+      "sources": [
+        "st-settings",
+        "st-escalation"
+      ],
+      "pricing": "Official public offer: $2.75 per call; underlying ServiceTitan costs and eligibility are separate.",
+      "pricing_sources": [
+        "st-pricing"
+      ],
+      "boundary": "A usage rate is not the total software cost. Verify the account, phone setup and billable-call definition.",
+      "link": "alternatives/servicetitan-voice-agent/index.html"
+    }
+  },
+  "alternatives": [
+    "alternatives/podium-larry.json",
+    "alternatives/sameday-ai.json",
+    "alternatives/avoca.json",
+    "alternatives/jobber-receptionist.json",
+    "alternatives/housecall-pro-csr-ai.json",
+    "alternatives/servicetitan-voice-agent.json"
+  ],
+  "comparisons": [
+    "comparisons/podium-larry-vs-sameday-ai.json",
+    "comparisons/sameday-ai-vs-avoca.json",
+    "comparisons/jobber-receptionist-vs-housecall-pro-csr-ai.json",
+    "comparisons/servicetitan-voice-agent-vs-podium-larry.json"
+  ]
+}
