@@ -13,7 +13,7 @@ const outputPath=path.resolve(output);
 if(outputPath===root||outputPath.startsWith(root+path.sep))throw new TypeError('Evidence output must be outside the repository.');
 fs.mkdirSync(outputPath,{recursive:true});
 const cache=new Map(),captures=[],tests=[];let activeTest='',depth=0,objects=0,leaves=0,publicReady=0,publicReview=0;
-const selected=/^(?:handoff [ABC]:|repair (139|14[0-9]|150):|precision follow-up: (?:composite|all-service catalog))/;
+const selected=/^(?:customer amount precision:|handoff [ABC]:|repair (139|14[0-9]|150):|precision follow-up: (?:composite|all-service catalog))/;
 globalThis.__vnextAuditCapture=(entry,fn,args)=>{
  const outer=depth++===0;
  try{const result=fn(...args);if((outer||entry==='generateQuoteVNext')&&selected.test(activeTest))captures.push({test:activeTest,entry,args:structuredClone(args),result:structuredClone(result)});return result;}
@@ -57,4 +57,4 @@ const encode=(_,v)=>typeof v==='number'&&!Number.isFinite(v)?{nonJsonNumber:Stri
 fs.writeFileSync(path.join(outputPath,'replay-captures.json'),JSON.stringify({report,captures},encode,2));
 fs.writeFileSync(path.join(outputPath,'replay-summary.json'),JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
-assert.equal(tests.length,26);assert.equal(tests.filter(t=>!t.pass).length,0);
+assert.equal(tests.length,35);assert.equal(tests.filter(t=>!t.pass).length,0);

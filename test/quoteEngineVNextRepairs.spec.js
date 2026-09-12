@@ -7820,3 +7820,333 @@ test('handoff B: candidate metadata identifies missing selected prices without c
     assert.match(value.help,/Required when/);assert.match(value.help,/Missing pricing returns review/);assert.match(value.help,/explicit zero/i);
   }
 });
+
+
+// September 12 owner precision handoff: these expected decimal cents are written
+// independently of the candidate formatter and its rational arithmetic helpers.
+const precisionAmountFields = ['lowEstimate', 'midEstimate', 'highEstimate'];
+function precisionWireCents(token) {
+  const match = /^(-?)(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/.exec(token);
+  assert.ok(match, 'Expected a JSON numeric token: ' + token);
+  const [, sign, whole, fraction = '', exponent = '0'] = match;
+  let numerator = BigInt(whole + fraction) * 100n;
+  const scale = fraction.length - Number(exponent);
+  const denominator = scale > 0 ? 10n ** BigInt(scale) : 1n;
+  if (scale < 0) numerator *= 10n ** BigInt(-scale);
+  if (sign) numerator = -numerator;
+  assert.equal(numerator % denominator, 0n, 'Wire amount contains a fractional cent: ' + token);
+  return numerator / denominator;
+}
+function precisionCustomerReview(quoteId) {
+  return { resultType: auditReview,
+    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.', quoteId };
+}
+function precisionPublic(result, expectedOptions) {
+  const text = JSON.stringify(result);
+  assert.deepEqual(JSON.parse(text), result);
+  if (!expectedOptions) {
+    assert.deepEqual(result, precisionCustomerReview(result.quoteId));
+    return;
+  }
+  const rootFields = ['resultType', 'quoteId', 'lowEstimate', 'midEstimate', 'highEstimate',
+    'priceDrivers', 'disclaimer', 'rangeBufferUsed', 'options'];
+  if (Object.hasOwn(result, 'optionAvailabilityNotice')) rootFields.push('optionAvailabilityNotice');
+  assert.deepEqual(Object.keys(result).sort(), rootFields.sort());
+  assert.equal(result.resultType, auditReady);
+  assert.equal(result.options.length, expectedOptions.length);
+  for (const option of result.options) {
+    assert.deepEqual(Object.keys(option).sort(), ['tierName', 'lowEstimate', 'midEstimate', 'highEstimate',
+      'priceDrivers', 'skippedAddons', 'disclaimer', 'rangeBufferUsed'].sort());
+  }
+  // Inspect decimal tokens from the complete serialized public object, including
+  // every root and option amount. No binary multiply-back or toFixed oracle.
+  const tokens = [...text.matchAll(/"(lowEstimate|midEstimate|highEstimate)":(-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?)(?=[,}])/g)];
+  assert.equal(tokens.length, 3 * (1 + expectedOptions.length));
+  const expected = [expectedOptions[0], ...expectedOptions].flat();
+  for (let index = 0; index < tokens.length; index++) {
+    assert.equal(tokens[index][1], precisionAmountFields[index % 3]);
+    assert.equal(precisionWireCents(tokens[index][2]), BigInt(expected[index]), text);
+  }
+}
+function precisionInspect(result, request, expectedOptions) {
+  auditInspect(result); // Walk every value, reproduce internal line evidence, and test clone sanitization.
+  assert.equal(result.engineVersion, currentEngineVersion);
+  assert.equal(result.serviceType, request.serviceType);
+  assert.equal(result.serviceId, request.ownerPricing.id);
+  assert.deepEqual(result.submittedCustomerInputs, request.customerInputs);
+  assert.deepEqual(structuredClone(result), result);
+  const customer = sanitizeForCustomerVNext(result);
+  precisionPublic(customer, expectedOptions);
+  if (expectedOptions) {
+    assert.equal(result.resultType, auditReady, JSON.stringify(result));
+    assert.deepEqual(result.calculationRecord.options, result.options.map(option => option.calculationRecord));
+    assert.deepEqual(result.calculationRecord.financialInputs.businessDefaults, request.businessDefaults);
+    assert.deepEqual(result.calculationRecord.ownerConfiguration.pricing, request.ownerPricing.pricing);
+    for (const option of result.options) {
+      for (const field of precisionAmountFields) {
+        assert.equal(option[field], option.calculationRecord.customerProjection[field]);
+      }
+    }
+  } else {
+    assert.equal(result.resultType, auditReview, JSON.stringify(result));
+    for (const field of [...precisionAmountFields, 'options', 'lineItems', 'calculationRecord']) {
+      assert.equal(Object.hasOwn(result, field), false, field);
+    }
+  }
+  return result;
+}
+function precisionRepresentationReason(result) {
+  assert.match(result.reviewReason, /represent|serializ/i);
+  for (const field of ['missingOwnerFields', 'invalidOwnerFields', 'missingCustomerFields',
+    'invalidCustomerFields', 'unsupportedOwnerFields', 'unconfirmedOwnerFields', 'ownerDecisionRequired']) {
+    assert.deepEqual(result[field] || [], [], field);
+  }
+  assert.ok(result.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation' &&
+    /^customerProjection\.(low|mid|high)Estimate$/.test(item.path)), JSON.stringify(result));
+  assert.ok(result.normalizedScope);
+  assert.ok(result.validatedMeasurements.length);
+}
+function precisionRequest(type, source, cents, buffer = 0) {
+  const painting = type === 'INTERIOR_PAINTING';
+  const p = painting ? interiorService() : handoffMowing({ mowingBaseRatePerSqft: 100 });
+  const c = painting ? interiorInputs({ wallAreaSqft: 1 }) : handoffLawn();
+  const b = { rangeBufferPercent: buffer };
+  if (source === 'business') b.minimumJobPrice = cents;
+  if (source === 'service') p.pricing[painting ? 'minimumJob' : 'minimumServiceCharge'] = cents;
+  // Painting is one wall sq ft, one coat, unit factors: entered labor + 50 cents material.
+  if (source === 'rate') p.pricing[painting ? 'laborPerWallSqftPerCoat' : 'mowingBaseRatePerSqft'] = painting ? cents - 50 : cents;
+  return handoffRequest(p, c, b);
+}
+function precisionExact(request, expectedCents) {
+  const result = generateQuoteVNext(request);
+  precisionInspect(result, request, [[expectedCents, expectedCents, expectedCents]]);
+  for (const option of result.options) {
+    assert.equal(BigInt(option.calculationRecord.scenarios.mid.finalTotalCents), BigInt(expectedCents));
+    const range = option.calculationRecord.range;
+    assert.deepEqual([range.lowCents, range.midCents, range.highCents].map(BigInt),
+      [BigInt(expectedCents), BigInt(expectedCents), BigInt(expectedCents)]);
+  }
+  return result;
+}
+
+test('customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct', () => {
+  for (const buffer of [0, 1e-16]) {
+    // Adjustment at the tiny buffer is 0.009007199254740991 cents, below half a cent.
+    // The intended low/mid/high therefore remain exactly 9007199254740991 cents.
+    precisionExact(precisionRequest('LANDSCAPING_MOWING', 'business', 9007199254740990, buffer), '9007199254740990');
+    const request = precisionRequest('LANDSCAPING_MOWING', 'business', 9007199254740991, buffer);
+    const blocked = precisionInspect(generateQuoteVNext(request), request);
+    precisionRepresentationReason(blocked);
+    assert.equal(blocked.normalizedScope.yardSqft, 1);
+    const unsafe = precisionRequest('LANDSCAPING_MOWING', 'business', 9007199254740992, buffer);
+    const invalid = precisionInspect(generateQuoteVNext(unsafe), unsafe);
+    assert.ok(invalid.invalidOwnerFields.includes('businessDefaults.minimumJobPrice'));
+    assert.equal(invalid.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation'), false);
+  }
+  // This second representable neighbor defeats a blanket large-value rejection.
+  precisionExact(precisionRequest('LANDSCAPING_MOWING', 'business', 9007199254740989), '9007199254740989');
+});
+
+test('customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact', () => {
+  for (const buffer of [0, 1e-16]) {
+    for (const cents of [7036874417766400, 7036874417766402]) {
+      precisionExact(precisionRequest('INTERIOR_PAINTING', 'business', cents, buffer), String(cents));
+    }
+    const request = precisionRequest('INTERIOR_PAINTING', 'business', 7036874417766401, buffer);
+    const result = precisionInspect(generateQuoteVNext(request), request);
+    precisionRepresentationReason(result);
+    assert.equal(result.normalizedScope.wallAreaSqft, 1);
+  }
+});
+
+test('customer amount precision: service minima and entered-rate totals use the same guard in two services', () => {
+  for (const [type, bad, good] of [
+    ['LANDSCAPING_MOWING', 9007199254740991, 9007199254740990],
+    ['INTERIOR_PAINTING', 7036874417766401, 7036874417766402]
+  ]) for (const source of ['service', 'rate']) {
+    precisionExact(precisionRequest(type, source, good), String(good));
+    const request = precisionRequest(type, source, bad);
+    const result = precisionInspect(generateQuoteVNext(request), request);
+    precisionRepresentationReason(result);
+    assert.equal(request.businessDefaults.minimumJobPrice, 0);
+    if (source === 'rate') assert.equal(request.ownerPricing.pricing[type === 'INTERIOR_PAINTING' ? 'minimumJob' : 'minimumServiceCharge'], 0);
+  }
+  const overflowing = precisionRequest('LANDSCAPING_MOWING', 'business', 9007199254740990, 25);
+  const overflow = precisionInspect(generateQuoteVNext(overflowing), overflowing);
+  assert.ok(overflow.invalidOwnerFields.includes('rangeBufferPercent'));
+  const missing = precisionRequest('LANDSCAPING_MOWING', 'rate', 10000);
+  delete missing.ownerPricing.pricing.mowingBaseRatePerSqft;
+  const incomplete = precisionInspect(generateQuoteVNext(missing), missing);
+  assert.ok(incomplete.missingOwnerFields.includes('mowingBaseRatePerSqft'));
+  assert.equal(incomplete.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation'), false);
+});
+
+test('customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome', () => {
+  for (const [cents, ready] of [[9007199254740990, true], [9007199254740991, false],
+    [7036874417766401, false], [7036874417766402, true]]) {
+    const request = precisionRequest('LANDSCAPING_MOWING', 'business', cents);
+    const frozen = structuredClone(request);
+    const book = { pricebook: { defaults: request.businessDefaults, services: [request.ownerPricing] },
+      serviceType: request.serviceType, customerInputs: request.customerInputs, currentMonth: 1, callerType: 'owner' };
+    const internal = [generateQuoteVNext(request), liveQuoteVNext(request), previewQuoteVNext(request),
+      quoteFromVNextPricebook(book), previewFromVNextPricebook(book)];
+    const expected = ready ? [[String(cents), String(cents), String(cents)]] : undefined;
+    const publicResults = internal.map(result => {
+      precisionInspect(result, request, expected);
+      if (!ready) precisionRepresentationReason(result);
+      return sanitizeForCustomerVNext(result);
+    });
+    publicResults.push(generateQuoteVNext({ ...request, callerType: 'customer' }),
+      liveQuoteVNext({ ...request, callerType: 'customer' }), quoteFromVNextPricebook({ ...book, callerType: 'customer' }));
+    const withoutId = result => { const copy = structuredClone(result); delete copy.quoteId; return copy; };
+    for (const result of publicResults) {
+      precisionPublic(result, expected);
+      assert.deepEqual(withoutId(result), withoutId(publicResults[0]));
+    }
+    assert.deepEqual(request, frozen);
+  }
+});
+
+test('customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices', () => {
+  const p = handoffMowing({ mowingBaseRatePerSqft: 100 });
+  p.tiers = [
+    { name: 'Changed decimal', overrides: { minimumServiceCharge: 9007199254740991 } },
+    { name: 'Exact adjacent decimal', overrides: { minimumServiceCharge: 9007199254740990 } },
+    { name: 'Ordinary', overrides: { minimumServiceCharge: 10000 } }
+  ];
+  const request = handoffRequest(p, handoffLawn());
+  const result = precisionInspect(generateQuoteVNext(request), request,
+    [['9007199254740990', '9007199254740990', '9007199254740990'], ['10000', '10000', '10000']]);
+  assert.deepEqual(result.options.map(option => option.tierName), ['Exact adjacent decimal', 'Ordinary']);
+  assert.equal(result.failedTierDiagnostics.length, 1);
+  const failed = result.failedTierDiagnostics[0];
+  assert.equal(failed.tierName, 'Changed decimal');
+  precisionRepresentationReason(failed);
+  const notice = 'Fewer options are available because one or more configured options need owner review.';
+  assert.equal(result.optionAvailabilityNotice, notice);
+  assert.equal(sanitizeForCustomerVNext(result).optionAvailabilityNotice, notice);
+  assert.equal(JSON.stringify(sanitizeForCustomerVNext(result)).includes('Changed decimal'), false);
+  // Only the previously unrepresentable tier price changes.
+  const corrected = structuredClone(request);
+  corrected.ownerPricing.tiers[0].overrides.minimumServiceCharge = 9007199254740989;
+  const all = precisionInspect(generateQuoteVNext(corrected), corrected,
+    [['9007199254740989', '9007199254740989', '9007199254740989'],
+      ['9007199254740990', '9007199254740990', '9007199254740990'], ['10000', '10000', '10000']]);
+  assert.deepEqual(all.options.map(option => option.tierName), p.tiers.map(tier => tier.name));
+  assert.deepEqual(all.failedTierDiagnostics, []);
+  assert.equal(all.optionAvailabilityNotice, undefined);
+  assert.equal(sanitizeForCustomerVNext(all).optionAvailabilityNotice, undefined);
+});
+
+test('customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead', () => {
+  const p = handoffMowing({ mowingBaseRatePerSqft: 100 });
+  p.tiers = [
+    { name: 'Downward', overrides: { minimumServiceCharge: 9007199254740991 } },
+    { name: 'Upward', overrides: { minimumServiceCharge: 7036874417766401 } }
+  ];
+  const request = handoffRequest(p, handoffLawn());
+  const result = precisionInspect(generateQuoteVNext(request), request);
+  precisionRepresentationReason(result);
+  assert.deepEqual(result.failedTierDiagnostics.map(item => item.tierName), ['Downward', 'Upward']);
+  for (const failed of result.failedTierDiagnostics) {
+    precisionRepresentationReason(failed);
+    assert.equal(failed.normalizedScope.yardSqft, 1);
+  }
+  const lead = buildInternalLeadVNext({ request, internalResult: result });
+  assert.equal(lead.quoteId, result.quoteId);
+  assert.deepEqual(lead.originalRequest.customerInputs, request.customerInputs);
+  assert.deepEqual(lead.internalReviewResult, result);
+  precisionPublic(sanitizeForCustomerVNext(result));
+});
+
+test('customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents', () => {
+  const cases = [
+    [handoffRequest(handoffMowing(), handoffLawn(), { minimumJobPrice: 20001, rangeBufferPercent: 10 }), ['20001', '20001', '22001'], 20001],
+    [handoffRequest(handoffMowing(), handoffLawn({ yardSqft: 4 }), { minimumJobPrice: 20001, rangeBufferPercent: 10 }), ['36000', '40000', '44000'], 40000],
+    [handoffRequest(handoffMowing({ mowingBaseRatePerSqft: 110 }), handoffLawn(), { rangeBufferPercent: 10 }), ['99', '110', '121'], 110],
+    [handoffRequest(handoffMowing({ mowingBaseRatePerSqft: 111 }), handoffLawn(), { rangeBufferPercent: 10 }), ['100', '100', '200'], 111],
+    [handoffRequest(handoffMowing(), handoffLawn(), { markupPercent: 1200 }), ['130000', '130000', '130000'], 130000]
+  ];
+  const sold = handoffMowing(); sold.priceBasisByCategory.labor = 'sell_price';
+  cases.push([handoffRequest(sold, handoffLawn(), { markupPercent: 1200 }), ['10000', '10000', '10000'], 10000]);
+  cases.push([handoffRequest(handoffMowing(), handoffLawn(), {
+    markupPercent: 1200, markupApplies: { ...markupApplies, labor: false }
+  }), ['10000', '10000', '10000'], 10000]);
+  const free = freeFixture(handoffMowing({ mowingBaseRatePerSqft: 0 }));
+  cases.push([handoffRequest(free, handoffLawn(), { minimumJobPrice: 20001, markupPercent: 1200, rangeBufferPercent: 10 }),
+    ['0', '0', '0'], 0]);
+  for (const [request, amounts, cents] of cases) {
+    const result = precisionInspect(generateQuoteVNext(request), request, [amounts]);
+    assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents, cents);
+  }
+  const unclassified = handoffRequest(handoffMowing({ mowingBaseRatePerSqft: 0 }), handoffLawn());
+  const result = precisionInspect(generateQuoteVNext(unclassified), unclassified);
+  assert.equal(result.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation'), false);
+});
+
+test('customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration', () => {
+  for (const [cents, changed] of [[9007199254740990, 90071992547409.89], [7036874417766402, 70368744177664]]) {
+    const request = precisionRequest('LANDSCAPING_MOWING', 'business', cents);
+    const original = precisionExact(request, String(cents));
+    const forged = structuredClone(original);
+    for (const field of precisionAmountFields) {
+      forged[field] = changed;
+      forged.options[0][field] = changed;
+      forged.options[0].calculationRecord.customerProjection[field] = changed;
+      forged.calculationRecord.options[0].customerProjection[field] = changed;
+    }
+    assert.deepEqual(forged.calculationRecord.options, forged.options.map(option => option.calculationRecord));
+    assert.deepEqual(forged.calculationRecord.ownerConfiguration, original.calculationRecord.ownerConfiguration);
+    assert.deepEqual(forged.calculationRecord.financialInputs, original.calculationRecord.financialInputs);
+    assert.deepEqual(forged.options[0].calculationRecord.range, original.options[0].calculationRecord.range);
+    assert.notEqual(precisionWireCents(JSON.stringify(changed)), BigInt(cents));
+    precisionPublic(sanitizeForCustomerVNext(forged));
+    precisionPublic(sanitizeForCustomerVNext(original), [[String(cents), String(cents), String(cents)]]);
+  }
+});
+
+
+test('customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries', () => {
+  const scale = 1000000000000000000n; // 1e-16 percent = 1 / 1e18.
+  const fixtures = [
+    [9007199254740899, ['9007199254740800', '9007199254740900', '9007199254740900']],
+    [9007199254740900, ['9007199254740900', '9007199254740900', '9007199254740900']],
+    [9007199254740901, undefined]
+  ];
+  for (const [cents, expected] of fixtures) {
+    const total = BigInt(cents);
+    // Both independently rounded buffer endpoints remain equal to the entered
+    // total: the exact adjustment is less than 0.01 cent, below half a cent.
+    assert.equal((total * (scale - 1n) + scale / 2n) / scale, total);
+    assert.equal((total * (scale + 1n) + scale / 2n) / scale, total);
+    const display = [total / 100n * 100n, (total + 50n) / 100n * 100n, (total + 99n) / 100n * 100n];
+    if (expected) assert.deepEqual(display.map(String), expected);
+    else {
+      assert.equal(display[2], 9007199254741000n);
+      assert.ok(display[2] > 9007199254740991n);
+    }
+    // Only the rate changes between the three fixtures; no minimum applies.
+    const request = precisionRequest('LANDSCAPING_MOWING', 'rate', cents, 1e-16);
+    const result = precisionInspect(generateQuoteVNext(request), request, expected ? [expected] : undefined);
+    if (expected) {
+      const range = result.options[0].calculationRecord.range;
+      assert.deepEqual([range.lowCents, range.midCents, range.highCents].map(BigInt), [total, total, total]);
+    } else {
+      precisionRepresentationReason(result);
+      assert.ok(result.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation' &&
+        item.path === 'customerProjection.highEstimate'));
+    }
+  }
+  // 1e-14 percent = 1 / 1e16. The exact adjustment is
+  // 0.900719925474099 cents, which rounds to one cent. The minimum fixes low/mid
+  // at M-1; the high is M. Only high has an inaccurate decimal representation.
+  const minimum = 9007199254740990n;
+  const highScale = 10000000000000000n;
+  assert.equal((minimum * (highScale + 1n) + highScale / 2n) / highScale, 9007199254740991n);
+  precisionExact(precisionRequest('LANDSCAPING_MOWING', 'business', Number(minimum), 0), String(minimum));
+  const request = precisionRequest('LANDSCAPING_MOWING', 'business', Number(minimum), 1e-14);
+  const result = precisionInspect(generateQuoteVNext(request), request);
+  precisionRepresentationReason(result);
+  assert.ok(result.ownerDiagnostics.some(item => item.kind === 'customer_amount_representation' &&
+    item.path === 'customerProjection.highEstimate'));
+});

@@ -37,7 +37,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-handoff-abc-20260910-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-customer-amount-20260912-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -966,8 +966,27 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   return { lines, finalTotalCents, minimumCents, record };
 }
 
-function toDollars(cents) {
-  return cents / 100;
+function customerAmountRepresentationError(field, intendedCents, serializedDollars) {
+  const message = 'The customer amount cannot be represented accurately within the numeric JSON monetary contract.';
+  return new QuoteReviewError(message, {
+    ownerDiagnostics: [{
+      type: 'invalid', kind: 'customer_amount_representation',
+      path: 'customerProjection.' + field, message,
+      intendedCents: String(intendedCents), serializedDollars
+    }]
+  });
+}
+
+function toDollars(cents, field) {
+  const dollars = cents / 100;
+  // exactMultiply parses the Number's shortest decimal string, the same value
+  // JSON.stringify emits for a finite nonnegative Number. Compare that decimal
+  // with the intended cents using fractions, never a floating-point round trip.
+  if (!Number.isSafeInteger(cents) || cents < 0 ||
+      exactCompare(exactMultiply(dollars, 100), cents) !== 0) {
+    throw customerAmountRepresentationError(field, cents, JSON.stringify(dollars));
+  }
+  return dollars;
 }
 
 function minimumCustomerFloor(minimumCents, defaults) {
@@ -1596,7 +1615,7 @@ function calculationEvidenceMatchesOption(option, record, range) {
 function displayedEstimates(range) {
   const exactSingle = range.source === 'business_range_buffer' && range.bufferPercent === 0 &&
     range.lowCents === range.midCents && range.midCents === range.highCents;
-  if (exactSingle) return { lowEstimate: toDollars(range.lowCents), midEstimate: toDollars(range.midCents), highEstimate: toDollars(range.highCents) };
+  if (exactSingle) return { lowEstimate: toDollars(range.lowCents, 'lowEstimate'), midEstimate: toDollars(range.midCents, 'midEstimate'), highEstimate: toDollars(range.highCents, 'highEstimate') };
   const low = BigInt(range.lowCents) / 100n;
   const high = (BigInt(range.highCents) + 99n) / 100n;
   const mid = (BigInt(range.midCents) + 50n) / 100n;
@@ -1604,10 +1623,16 @@ function displayedEstimates(range) {
   // tax-mode customer minimum. Raising the low instead would narrow the range.
   const belowMinimum = low * 100n < BigInt(range.minimumCustomerFloorCents);
   if (belowMinimum || (range.lowCents > 0 && low === 0n) || (range.midCents > 0 && mid === 0n) || (range.highCents > 0 && high === 0n)) {
-    return { lowEstimate: toDollars(range.lowCents), midEstimate: toDollars(range.midCents), highEstimate: toDollars(range.highCents) };
+    return { lowEstimate: toDollars(range.lowCents, 'lowEstimate'), midEstimate: toDollars(range.midCents, 'midEstimate'), highEstimate: toDollars(range.highCents, 'highEstimate') };
   }
-  if (high * 100n > BigInt(Number.MAX_SAFE_INTEGER)) throw new RangeError('Displayed range exceeds the safe monetary domain.');
-  return { lowEstimate: Number(low), midEstimate: Number(mid), highEstimate: Number(high) };
+  if (high * 100n > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw customerAmountRepresentationError('highEstimate', high * 100n, JSON.stringify(Number(high)));
+  }
+  return {
+    lowEstimate: toDollars(Number(low * 100n), 'lowEstimate'),
+    midEstimate: toDollars(Number(mid * 100n), 'midEstimate'),
+    highEstimate: toDollars(Number(high * 100n), 'highEstimate')
+  };
 }
 
 function validCustomerOption(option, expectedServiceType) {
