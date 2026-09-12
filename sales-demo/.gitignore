@@ -1,0 +1,8 @@
+.runtime/
+.env
+.env.*
+!.env.example
+__pycache__/
+evidence/*.png
+evidence/*-results.json
+evidence/*.log
