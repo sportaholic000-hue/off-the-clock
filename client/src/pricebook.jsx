@@ -1,7 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
 import { humanPricingKey } from './pricebookFormatting.js';
+import { ExactNumericInput } from './pricebookInputs.jsx';
+import { servicePricing, editServiceField, editServiceTiers, editorServiceKey, editorServices } from './pricebookEditing.js';
+import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
+const PricingContext = createContext({});
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, Textarea, TextInput, Toggle
@@ -35,16 +39,11 @@ function JsonEditor({ value, onChange }) {
   );
 }
 
-function MoneyInput({ value, onChange, money }) {
+function MoneyInput({ value, onChange, money, kind }) {
   return (
     <div className={money ? 'money-input' : ''}>
       {money && <span>$</span>}
-      <TextInput
-        type="number"
-        step="0.01"
-        value={value ?? ''}
-        onChange={event => onChange(event.target.value === '' ? undefined : Number(event.target.value))}
-      />
+      <ExactNumericInput value={value} onChange={onChange} kind={kind} />
     </div>
   );
 }
@@ -52,6 +51,8 @@ function MoneyInput({ value, onChange, money }) {
 
 function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] }) {
   const domain = definition.shapedKeys;
+  const service = useContext(PricingContext);
+  const kind = moneyKindForField(service.serviceType, definition.field, servicePricing(service));
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   const fixed = Array.isArray(domain.keys);
   const selectable = domain.ownerSelectable === true;
@@ -60,8 +61,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
 
   function write(next) { onChange(Object.keys(next).length ? next : undefined); }
 
-  function setLeaf(key, nestedKey, raw) {
-    const number = raw === '' ? undefined : Number(raw);
+  function setLeaf(key, nestedKey, number) {
     const next = { ...map };
     if (domain.nested) {
       const row = { ...(next[key] && typeof next[key] === 'object' ? next[key] : {}) };
@@ -129,10 +129,10 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
                       {offered ? (
                         <div className="matrix-input">
                           <span className="matrix-prefix mono">$</span>
-                          <input type="number" step="0.01" min="0" inputMode="decimal"
+                          <ExactNumericInput kind={kind}
                             aria-label={`${humanPricingKey(key)} price`}
-                            value={typeof map[key] === 'number' && map[key] !== 0 ? map[key] : ''}
-                            onChange={event => setLeaf(key, null, event.target.value)} />
+                            value={map[key]}
+                            onChange={number => setLeaf(key, null, number)} />
                         </div>
                       ) : <span className="matrix-off mono">NOT OFFERED</span>}
                     </td>
@@ -183,10 +183,10 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
                         <span className="matrix-prefix mono">
                           {domain.nestedCopy?.[nestedKey]?.unit === 'hours' ? 'h' : '$'}
                         </span>
-                        <input type="number" step="0.01" min="0" inputMode="decimal"
+                        <ExactNumericInput kind={definition.field === 'debrisPricing' && nestedKey === 'disposalFlat' ? 'fixed_amount' : kind}
                           aria-label={`${humanPricingKey(key)} ${domain.nestedCopy?.[nestedKey]?.label || nestedKey}`}
                           value={map[key]?.[nestedKey] ?? ''}
-                          onChange={event => setLeaf(key, nestedKey, event.target.value)} />
+                          onChange={number => setLeaf(key, nestedKey, number)} />
                       </div>
                     </td>
                   ))}
@@ -231,10 +231,10 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
                 <td>
                   <div className="matrix-input">
                     <span className="matrix-prefix mono">$</span>
-                    <input type="number" step="0.01" min="0" inputMode="decimal"
+                    <ExactNumericInput kind={kind}
                       aria-label={`${humanPricingKey(key)} price`}
-                      value={typeof map[key] === 'number' ? map[key] : ''}
-                      onChange={event => setLeaf(key, null, event.target.value)} />
+                      value={map[key]}
+                      onChange={number => setLeaf(key, null, number)} />
                   </div>
                 </td>
                 {!fixed && (
@@ -282,19 +282,15 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
   }
   return (
     <div className="factor-value">
-      <TextInput
-        type="number"
-        min="0"
-        step="0.01"
-        value={value ?? defaultValue}
-        onChange={event => onChange(event.target.value === '' ? defaultValue : Number(event.target.value))}
-      />
+      <ExactNumericInput value={value === undefined ? defaultValue : value} onChange={onChange} />
       <small>{unit}</small>
     </div>
   );
 }
 
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [] }) {
+  const service = useContext(PricingContext);
+  const kind = moneyKindForField(service.serviceType, definition.field, servicePricing(service));
   let control;
   if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;
@@ -310,7 +306,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} />
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
-    control = <MoneyInput value={value} onChange={onChange} money={definition.money} />;
+    control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} />;
   }
   if (compact) return control;
   // Approved label ruling: concise trade-specific title is the primary label;
@@ -343,6 +339,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
 }
 
 function TierBuilder({ tiers, definitions, onChange }) {
+  const service = useContext(PricingContext);
   function addTier() {
     if (tiers.length >= 3) return;
     onChange([...tiers, { name:['Good','Better','Best'][tiers.length], overrides:{} }]);
@@ -387,7 +384,8 @@ function TierBuilder({ tiers, definitions, onChange }) {
       {!tiers.length && <Notice>One default option will use the base service prices.</Notice>}
       <div className="tier-list">
         {tiers.map((tier, index) => (
-          <article className="tier-row" key={index}>
+          <PricingContext.Provider key={index} value={{ ...service, pricing:{ ...servicePricing(service), ...tier.overrides } }}>
+          <article className="tier-row">
             <div className="tier-heading">
               <TextInput value={tier.name} onChange={event => patchTier(index, { name:event.target.value })} aria-label={`Tier ${index + 1} name`} />
               <Button icon={Trash2} variant="icon" aria-label="Remove tier" title="Remove tier" onClick={() => removeTier(index)} />
@@ -408,6 +406,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
             </div>
             <Button icon={Plus} variant="quiet" onClick={() => addOverride(index)}>Override a field</Button>
           </article>
+          </PricingContext.Provider>
         ))}
       </div>
     </section>
@@ -536,7 +535,7 @@ function Preview({ preview, loading, status }) {
                 <span>
                   {status.status === 'QUOTING LIVE'
                     ? 'This service can issue quotes on a live call.'
-                    : 'This service still needs pricing before it can quote.'}
+                    : status.status === 'DISABLED' ? 'Quoting is disabled for this service. This preview does not enable it.' : 'This service still needs pricing before it can quote.'}
                 </span>
               </div>
             )}
@@ -579,15 +578,7 @@ export default function PriceBook() {
     const loadedBook = canQuote ? await api(`/api/pricebook/${dash.ownerId}`) : { services:[], defaults:{} };
     setLocked(!canQuote);
     const activeTypes = state.profile.businessTypes || [];
-    const existing = new Map((loadedBook.services || []).map(service => [service.serviceType, service]));
-    const services = meta.services
-      .filter(service => activeTypes.includes(service.serviceType) || existing.has(service.serviceType))
-      .map(service => existing.get(service.serviceType) || {
-        serviceType:service.serviceType,
-        service:service.name,
-        tiers:[],
-        validationInputs:clone(service.sampleInputs)
-      });
+    const services = editorServices(loadedBook.services, meta.services, activeTypes);
     const draft = JSON.parse(sessionStorage.getItem('otc_pricebook_draft') || 'null');
     if (draft?.services) {
       for (const incoming of draft.services) {
@@ -613,13 +604,13 @@ export default function PriceBook() {
     }});
     setStatuses(null);
     setDraftValidationErrors([]);
-    setSelectedType(services[0]?.serviceType || null);
+    setSelectedType(services.length ? editorServiceKey(services[0], 0) : null);
   }
 
   useEffect(() => { load().catch(setError); }, []);
 
-  const selected = book?.services.find(service => service.serviceType === selectedType);
-  const selectedMeta = metadata.find(service => service.serviceType === selectedType);
+  const selected = book?.services.find((service, index) => editorServiceKey(service, index) === selectedType);
+  const selectedMeta = metadata.find(service => service.serviceType === selected?.serviceType);
 
   useEffect(() => {
     if (!book || locked) return;
@@ -654,6 +645,12 @@ export default function PriceBook() {
 
   useEffect(() => {
     if (!selected || !selectedMeta || !book) return;
+    try { validatePricebookNumericDraft(book); }
+    catch (problem) {
+      setPreviewLoading(false);
+      setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:problem.message });
+      return;
+    }
     setPreviewLoading(true);
     const timer = setTimeout(() => {
       api('/api/pricebook/preview', {
@@ -665,17 +662,13 @@ export default function PriceBook() {
   }, [selected, selectedMeta, book?.defaults]);
 
   function replaceSelected(next) {
-    setBook({ ...book, services:book.services.map(service => service.serviceType === selectedType ? next : service) });
+    setBook({ ...book, services:book.services.map((service, index) => editorServiceKey(service, index) === selectedType ? next : service) });
   }
 
   const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
 
   function updateField(field, value) {
-    const next = { ...selected, [field]:value };
-    if (aiSourced && selected.confirmedFields?.[field]) {
-      next.confirmedFields = { ...selected.confirmedFields, [field]:false };
-    }
-    replaceSelected(next);
+    replaceSelected(editServiceField(selected, field, value));
   }
 
   function confirmField(field, value) {
@@ -693,10 +686,13 @@ export default function PriceBook() {
   async function save() {
     setSaving(true); setError(null);
     try {
+      validatePricebookNumericDraft(book);
       const result = await api('/api/pricebook/save', { method:'POST', body:book });
       setStatuses(result.statuses || []);
       const loaded = await api(`/api/pricebook/${dashboard.ownerId}`);
+      const selectedIndex = book.services.findIndex((service, index) => editorServiceKey(service, index) === selectedType);
       setBook({ ...book, ...loaded });
+      if (loaded.services?.[selectedIndex]) setSelectedType(editorServiceKey(loaded.services[selectedIndex], selectedIndex));
     } catch (nextError) { setError(nextError); }
     finally { setSaving(false); }
   }
@@ -724,7 +720,7 @@ export default function PriceBook() {
           : service)
       : [...book.services, next];
     setBook({ ...book, services });
-    setSelectedType(item.serviceType);
+    setSelectedType(editorServiceKey(services[existingIndex >= 0 ? existingIndex : services.length - 1], existingIndex >= 0 ? existingIndex : services.length - 1));
   }
 
   if (error && !book) return <div className="center-state"><ErrorMessage error={error} /></div>;
@@ -743,7 +739,7 @@ export default function PriceBook() {
       </AppShell>
     );
   }
-  const statusMap = new Map((statuses || []).map(status => [status.serviceType, status]));
+  // Validation returns one status per service in the submitted array order.
   // Before the first validation completes nothing is known yet. That is a
   // genuinely unknown state, not a failing one, so it must not read as
   // NEEDS PRICING.
@@ -754,7 +750,8 @@ export default function PriceBook() {
   };
   function displayStatus(service) {
     if (!service) return unknownStatus;
-    return statusMap.get(service.serviceType) || unknownStatus;
+    const index = book.services.indexOf(service);
+    return statuses?.[index]?.serviceType === service.serviceType ? statuses[index] : unknownStatus;
   }
   const selectedStatus = displayStatus(selected);
   // Split required from optional so required pricing stays open and dominant
@@ -766,9 +763,9 @@ export default function PriceBook() {
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
   const requiredMissing = requiredFields.filter(field => missingSet.has(field.field));
   const optionalMissing = optionalFields.filter(field => missingSet.has(field.field));
-  const optionalSet = optionalFields.filter(field => selected?.[field.field] !== undefined).length;
+  const optionalSet = optionalFields.filter(field => servicePricing(selected)?.[field.field] !== undefined).length;
   const class2Overridden = (selectedMeta?.class2Fields || []).filter(field =>
-    JSON.stringify(selected?.[field.field]) !== JSON.stringify(field.defaultValue)).length;
+    JSON.stringify(servicePricing(selected)?.[field.field] === undefined ? field.defaultValue : servicePricing(selected)[field.field]) !== JSON.stringify(field.defaultValue)).length;
 
   const markup = Number(book.defaults.markupPercent || 0);
   const equivalence = book.defaults.markupMode === 'markup'
@@ -801,12 +798,12 @@ export default function PriceBook() {
         <div className="pricebook-layout">
           <aside className="service-list">
             <p className="eyebrow">SERVICES</p>
-            {book.services.map(service => {
+            {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
               const status = displayStatus(service);
               const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label) || []);
               return (
-                <button key={service.serviceType} className={selectedType === service.serviceType ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(service.serviceType)}>
+                <button key={editorServiceKey(service, index)} className={selectedType === editorServiceKey(service, index) ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(editorServiceKey(service, index))}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
                   <StatusChip status={status.status} pending={validating} />
                   <small className="mono service-compact-status">
@@ -814,13 +811,14 @@ export default function PriceBook() {
                       ? 'Checking'
                       : missing.length > 0
                         ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
-                        : 'Ready to quote'}
+                        : status.status === 'DISABLED' ? 'Disabled by you' : 'Ready to quote'}
                   </small>
                 </button>
               );
             })}
           </aside>
           {selected && selectedMeta ? (
+            <PricingContext.Provider value={selected}>
             <div className="editor-grid">
               <div className="editor-column">
                 {/* REQUIRED PRICING — open and visually dominant.
@@ -830,12 +828,14 @@ export default function PriceBook() {
                     <div>
                       <p className="eyebrow">Your prices · required</p>
                       <h2>{selected.service || selectedMeta.name}</h2>
-                      <span>Off The Clock never guesses these. Fill them in and this service goes live.</span>
+                      <span>Off The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.</span>
                     </div>
                     <span className="mono set-count">
                       {requiredFields.length - requiredMissing.length} / {requiredFields.length} SET
                     </span>
                   </div>
+
+                  <Toggle checked={selected.active !== false} onChange={active => replaceSelected({ ...selected, active })} label="Enable quoting for this service" />
 
                   {requiredMissing.length > 0 && (
                     <div className="blocker-drawer">
@@ -860,14 +860,14 @@ export default function PriceBook() {
                   )}
 
                   {aiSourced && (
-                    <Notice tone="warning">AI-captured values are DRAFT. Confirm each price individually below — this service cannot go live until every required field is confirmed as yours.</Notice>
+                    <Notice tone="warning">AI-captured values are DRAFT. Confirm each price and its tier overrides below — this service cannot go live until every required field is confirmed as yours.</Notice>
                   )}
 
                   <div className="field-stack">
                     {requiredFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={servicePricing(selected)[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -891,7 +891,7 @@ export default function PriceBook() {
                     {optionalFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={selected[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={servicePricing(selected)[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -916,14 +916,14 @@ export default function PriceBook() {
                         These change how much material or labor a job is assumed to need. They are not prices.
                       </span>
                       <Button icon={RotateCcw} variant="secondary" onClick={() => {
-                        const next = { ...selected };
-                        for (const [field, value] of Object.entries(selectedMeta.class2Defaults || {})) next[field] = clone(value);
+                        let next = selected;
+                        for (const [field, value] of Object.entries(selectedMeta.class2Defaults || {})) next = editServiceField(next, field, clone(value));
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
                     {(selectedMeta.class2Fields || []).map(definition => {
-                      const current = selected[definition.field];
-                      const isStructured = current && typeof current === 'object';
+                      const current = servicePricing(selected)[definition.field] === undefined ? definition.defaultValue : servicePricing(selected)[definition.field];
+                      const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       if (isStructured) {
                         return (
                           <div className="assumption-row" key={definition.field}>
@@ -951,7 +951,7 @@ export default function PriceBook() {
                           value={current}
                           defaultValue={JSON.stringify(definition.defaultValue).replace(/"/g, '')}
                           overridden={JSON.stringify(current) !== JSON.stringify(definition.defaultValue)}
-                          onChange={value => updateField(definition.field, value === '' ? undefined : Number(value))}
+                          inputControl={<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
                           onReset={() => resetClass2(definition.field)}
                         />
                       );
@@ -967,7 +967,7 @@ export default function PriceBook() {
                   defaultOpen={(selected.tiers || []).length > 0}
                 >
                   <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields}
-                    onChange={tiers => replaceSelected({ ...selected, tiers })} />
+                    onChange={tiers => replaceSelected(editServiceTiers(selected, tiers))} />
                 </Disclosure>
 
                 {/* BUSINESS-WIDE — must not compete with service pricing. */}
@@ -983,7 +983,7 @@ export default function PriceBook() {
                       <button type="button" className={book.defaults.markupMode === 'margin' ? 'selected' : ''} onClick={() => updateDefault('markupMode','margin')}>MARGIN</button>
                     </div>
                     <Field label={book.defaults.markupMode === 'markup' ? 'Markup (%)' : 'Margin (%)'}>
-                      <TextInput type="number" min="0" max={book.defaults.markupMode === 'margin' ? 99.99 : undefined} step="0.1" value={book.defaults.markupPercent} onChange={event => updateDefault('markupPercent', Number(event.target.value))} />
+                      <ExactNumericInput value={book.defaults.markupPercent} onChange={value => updateDefault('markupPercent', value)} />
                     </Field>
                     <div className="equivalence mono">{equivalence}</div>
                   </Disclosure>
@@ -1004,7 +1004,7 @@ export default function PriceBook() {
                     </Field>
                     {book.defaults.taxMode !== 'TAX_NONE' && (
                       <Field label="Tax rate (%)">
-                        <TextInput type="number" min="0" max="100" step="0.01" value={book.defaults.taxPercent} onChange={event => updateDefault('taxPercent',Number(event.target.value))} />
+                        <ExactNumericInput value={book.defaults.taxPercent} onChange={value => updateDefault('taxPercent', value)} />
                       </Field>
                     )}
                     <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
@@ -1013,6 +1013,7 @@ export default function PriceBook() {
               </div>
               <Preview preview={preview} loading={previewLoading} status={selectedStatus} />
             </div>
+            </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>
         <ErrorMessage error={error} />

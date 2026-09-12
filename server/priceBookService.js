@@ -1,9 +1,10 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
-import { getActivationOwnerFields, MONEY_FIELD_NAMES, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
+import { getActivationOwnerFields, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -52,25 +53,9 @@ export function hasPricing(ownerId) {
   return loadPricebook(ownerId).services.filter(service => service.active).length > 0;
 }
 
-function convertObject(value, direction, key = '', inheritedMoney = false) {
-  const money = inheritedMoney || MONEY_FIELD_NAMES.has(key);
-  if (Array.isArray(value)) return value.map(item => convertObject(item, direction, key, money));
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value).map(([childKey, childValue]) => [
-        childKey,
-        convertObject(childValue, direction, childKey, money)
-      ])
-    );
-  }
-  if (typeof value === 'number' && money) {
-    return direction === 'toCents' ? Math.round(value * 100) : value / 100;
-  }
-  return value;
-}
-
-export const dollarsToCents = data => convertObject(data, 'toCents');
-export const centsToDollars = data => convertObject(data, 'toDollars');
+// Unit-aware conversion occurs only at the application's dollar/cent boundary.
+export const dollarsToCents = data => convertPricebookMoney(data, 'toCents');
+export const centsToDollars = data => convertPricebookMoney(data, 'toDollars');
 
 function pricingFor(service) {
   return service?.pricing && typeof service.pricing === 'object' ? service.pricing : service || {};
@@ -209,7 +194,9 @@ export function pricebookServiceStatus(service) {
     // must never reach a live quote.
     const gated = [...new Set([
       ...requiredFields,
-      ...(ALL_OWNER_FIELDS[service.serviceType] || []).filter(field => pricingFor(service)[field] !== undefined)
+      ...(ALL_OWNER_FIELDS[service.serviceType] || []).filter(field => pricingFor(service)[field] !== undefined),
+      ...(service.tiers || []).flatMap(tier => Object.keys(tier.overrides || {}))
+        .filter(field => (ALL_OWNER_FIELDS[service.serviceType] || []).includes(field))
     ])];
     const unconfirmed = gated.filter(field => confirmed[field] !== true);
     missingOwnerFields = [...new Set([...missingOwnerFields, ...unconfirmed])];
@@ -218,7 +205,7 @@ export function pricebookServiceStatus(service) {
   return {
     serviceType: service.serviceType,
     service: service.service || SERVICE_NAMES[service.serviceType] || 'Service',
-    status: active ? 'QUOTING LIVE' : 'NEEDS PRICING',
+    status: !active ? 'NEEDS PRICING' : service.active === false ? 'DISABLED' : 'QUOTING LIVE',
     missingOwnerFields,
     missingOwnerLabels: missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field)),
     // Product types the owner enabled but did not price across every required
@@ -313,6 +300,7 @@ export function pricebookDraftValidation(pricebook) {
   const defaultValidationErrors = [];
   try {
     validatePricebookDefaults(pricebook.defaults || {});
+    dollarsToCents({ defaults:pricebook.defaults || {} });
   } catch (error) {
     const message = contractorValidationMessage(error.message, pricebook);
     validationErrors.push(message);
@@ -324,6 +312,7 @@ export function pricebookDraftValidation(pricebook) {
     try {
       status = pricebookServiceStatus(service);
       validateServiceShape(service, index);
+      dollarsToCents({ service });
     } catch (error) {
       const message = contractorValidationMessage(error.message, pricebook);
       validationErrors.push(message);
@@ -453,6 +442,7 @@ const SERVICE_QUOTE_FIELDS = new Set(['peakMonths','peakSurchargePercent','discl
 
 function validateServiceShape(service, index) {
   if (!service || typeof service !== 'object') throw new Error(`services[${index}] must be an object`);
+  if (service.active !== undefined && typeof service.active !== 'boolean') throw new Error(`services[${index}].active must be true or false`);
   if (!SERVICE_TYPES.includes(service.serviceType)) throw new Error(`services[${index}].serviceType is invalid`);
   if (service.service && String(service.service).length > 40) throw new Error(`services[${index}].service must be at most 40 characters`);
   if (service.serviceType === 'CUSTOM' && service.low !== undefined && service.high !== undefined && Number(service.high) <= Number(service.low)) {
@@ -576,16 +566,23 @@ export function saveValidatedPricebook(ownerId, dollarPricebook) {
   cents.services = (cents.services || []).map(service => {
     const defaults = CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {};
     const withDefaults = { ...service };
+    const nested = service.pricing && typeof service.pricing === 'object' && !Array.isArray(service.pricing);
+    if (nested) withDefaults.pricing = { ...service.pricing };
+    const target = nested ? withDefaults.pricing : withDefaults;
     for (const [field, value] of Object.entries(defaults)) {
-      if (withDefaults[field] === undefined) withDefaults[field] = structuredClone(value);
+      // Keep defaults in the existing pricing container. Preserve legacy
+      // service-root factors without copying or reinterpreting their values.
+      if (target[field] === undefined && (!nested || withDefaults[field] === undefined)) {
+        target[field] = structuredClone(value);
+      }
     }
     return withDefaults;
   });
-  const statuses = pricebookStatuses(cents);
-  const statusByType = new Map(statuses.map(status => [status.serviceType, status]));
   cents.services = cents.services.map(service => ({
     ...service,
-    active: statusByType.get(service.serviceType)?.status === 'QUOTING LIVE'
+    // Validate each record independently. Completeness cannot override a
+    // disabled choice or borrow readiness from another service of the same type.
+    active: service.active !== false && pricebookServiceStatus(service).status === 'QUOTING LIVE'
   }));
   savePricebook(ownerId, cents);
   const saved = loadPricebook(ownerId);

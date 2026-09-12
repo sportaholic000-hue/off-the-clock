@@ -104,7 +104,7 @@ export function BlockerChecklist({ items = [], onNavigate, emptyLabel = 'Everyth
 // Quantity assumptions are visually secondary to direct owner pricing and are
 // never presented as bare multipliers.
 export function AssumptionRow({
-  label, explanation, unit, value, defaultValue, overridden, onChange, onReset
+  label, explanation, unit, value, defaultValue, overridden, onChange, onReset, inputControl
 }) {
   return (
     <div className={`assumption-row${overridden ? ' overridden' : ''}`}>
@@ -125,14 +125,14 @@ export function AssumptionRow({
       </div>
       {explanation && <p className="assumption-explanation">{explanation}</p>}
       <div className="assumption-control">
-        <input
+        {inputControl || <input
           type="number"
           step="0.01"
           inputMode="decimal"
           aria-label={label}
           value={value ?? ''}
           onChange={event => onChange && onChange(event.target.value)}
-        />
+        />}
         <span className="assumption-unit mono">{unit}</span>
         <span className="assumption-default mono">Default {defaultValue}</span>
       </div>
