@@ -644,22 +644,31 @@ export default function PriceBook() {
   }, [book, locked]);
 
   useEffect(() => {
-    if (!selected || !selectedMeta || !book) return;
+    // Every response, rejection and completion belongs to this exact draft.
+    // Cleanup invalidates already-running requests as well as the debounce.
+    let current = true;
+    setPreview(null);
+    if (!selected || !selectedMeta || !book || locked) {
+      setPreviewLoading(false);
+      return () => { current = false; };
+    }
     try { validatePricebookNumericDraft(book); }
     catch (problem) {
       setPreviewLoading(false);
       setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:problem.message });
-      return;
+      return () => { current = false; };
     }
     setPreviewLoading(true);
     const timer = setTimeout(() => {
       api('/api/pricebook/preview', {
         method:'POST',
         body:{ service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs }
-      }).then(setPreview).catch(nextError => setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message })).finally(() => setPreviewLoading(false));
+      }).then(result => { if (current) setPreview(result); })
+        .catch(nextError => { if (current) setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); })
+        .finally(() => { if (current) setPreviewLoading(false); });
     }, 350);
-    return () => clearTimeout(timer);
-  }, [selected, selectedMeta, book?.defaults]);
+    return () => { current = false; clearTimeout(timer); };
+  }, [selected, selectedMeta, book?.defaults, book?.revision, locked]);
 
   function replaceSelected(next) {
     setBook({ ...book, services:book.services.map((service, index) => editorServiceKey(service, index) === selectedType ? next : service) });

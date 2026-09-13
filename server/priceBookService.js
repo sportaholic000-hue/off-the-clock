@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync } from 'node:fs';
 import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -45,7 +45,22 @@ export function savePricebook(ownerId, data) {
       ...service
     }))
   };
-  writeFileSync(resolve(dir, `${ownerId}.json`), JSON.stringify(next, null, 2));
+  // Prepare and flush a complete sibling file before replacing the saved book.
+  // A failed write or rename must never truncate the last accepted owner data.
+  const target = resolve(dir, `${ownerId}.json`);
+  const temporary = resolve(dir, `${ownerId}.${crypto.randomUUID()}.tmp`);
+  const serialized = JSON.stringify(next, null, 2);
+  try {
+    writeFileSync(temporary, serialized, { flag: 'wx', flush: true });
+    renameSync(temporary, target);
+  } catch (error) {
+    if (error.code !== 'EEXIST') {
+      try { unlinkSync(temporary); } catch (cleanupError) {
+        if (cleanupError.code !== 'ENOENT') error.cleanupError = cleanupError.code;
+      }
+    }
+    throw error;
+  }
   return { success: true, pricebook: next };
 }
 

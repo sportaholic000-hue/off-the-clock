@@ -1,0 +1,2 @@
+# Preserve the original independent fixture bytes checked by MANIFEST.json.
+/verification/quotedone/independent/precision-regressions.mjs -text
