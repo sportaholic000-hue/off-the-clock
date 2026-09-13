@@ -1,0 +1,8 @@
+{
+  "purpose": "Exact original independent precision tests; compressed case bytes are restored without changes.",
+  "sha256": {
+    "precision-regressions.mjs": "379dae9ef699fc16080bc1ae4f02e3c4368dcd02a6ff69995710c5a43a6b10d4",
+    "precision-cases.json": "1f9b5df82e52e980c49c908f7050872b613b18c0c8bfaa4f907bbaa1d7aca5b5"
+  },
+  "case_count": 22
+}

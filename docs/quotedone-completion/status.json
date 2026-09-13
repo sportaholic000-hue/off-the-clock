@@ -1,0 +1,87 @@
+{
+  "assignment": "Owner-authorized complete non-production QuoteDone workflow",
+  "authorized_date": "2026-09-13",
+  "application_base": "eb79953faad059314071ae5f364770e41838a05a",
+  "engine_tree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
+  "candidate_branch": "codex/quotedone-application-completion",
+  "note": "Authorization and regression assets only. Actual application completion is not yet claimed.",
+  "workflows": [
+    {
+      "id": "ENV",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "BOOK",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "EDIT",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "READY",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "QUOTE",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "LEAD",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "RETRY",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "ACCESS",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "FRESH",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "RESTART",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    },
+    {
+      "id": "RELEASE",
+      "status": "pending",
+      "tested_sha": null,
+      "observed_outcome": null,
+      "evidence": []
+    }
+  ]
+}
