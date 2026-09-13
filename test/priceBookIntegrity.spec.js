@@ -1,5 +1,5 @@
 import { parseOwnerNumericInput, validatePricebookNumericDraft } from '../server/priceBookMoney.js';
-import { servicePricing, editServiceField, editServiceTiers, editorServiceKey, editorServices } from '../client/src/pricebookEditing.js';
+import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices } from '../client/src/pricebookEditing.js';
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, existsSync, rmSync } from 'node:fs';
@@ -687,4 +687,63 @@ test('pricebook integrity: two saved CUSTOM services retain separate identities 
   assert.deepEqual(editorServices(result.dollars.services, metadata, ['CUSTOM']), result.dollars.services);
   const repeated = saveAndRead('two-custom-services', result.dollars);
   assert.deepEqual(withoutTimestamp(repeated.persisted), withoutTimestamp(result.persisted));
+});
+
+
+test('pricebook editor: location-preserving factor reads and edits never migrate root-only nested-only flat or equal copies', () => {
+  const base={ id:'079129d0-35de-4ba0-8d2a-48d5c2ef5231',serviceType:'SIDING_REPLACEMENT',service:'Synthetic factor',
+    active:false,source:'AI_SUGGESTED',confirmedFields:{minimumJob:true},pricing:{laborPerSqft:{vinyl:2},materialPerSqft:{vinyl:3},minimumJob:14} };
+  for(const placement of ['root','nested','flat','equal']) {
+    const original=structuredClone(base);
+    if(placement==='flat'){Object.assign(original,original.pricing);delete original.pricing;}
+    if(placement==='root'||placement==='flat'||placement==='equal')original.trimRatio=0.23;
+    if(placement==='nested'||placement==='equal')original.pricing.trimRatio=0.23;
+    const frozen=structuredClone(original);
+    assert.equal(serviceFieldValue(original,'trimRatio'),0.23);
+    assert.equal(editServiceField(original,'trimRatio',0.23),original,'unchanged data must retain the same record');
+    const changed=editServiceField(original,'trimRatio',0.24),expected=structuredClone(original);
+    if(Object.hasOwn(expected,'trimRatio'))expected.trimRatio=0.24;
+    if(expected.pricing&&Object.hasOwn(expected.pricing,'trimRatio'))expected.pricing.trimRatio=0.24;
+    assert.deepEqual(changed,expected);assert.deepEqual(original,frozen);
+    assert.deepEqual(changed.confirmedFields,original.confirmedFields);
+  }
+});
+
+test('pricebook editor: explicit duplicate resolution compares all copies before retaining an AI approval', () => {
+  const initial={serviceType:'SIDING_REPLACEMENT',active:false,source:'AI_INTERVIEW',minimumJob:14.01,
+    pricing:{minimumJob:14},confirmedFields:{minimumJob:true,laborPerSqft:true}};
+  for(const amount of [14,14.01,14.02]) {
+    const original=structuredClone(initial),expected={...original,minimumJob:amount,pricing:{minimumJob:amount},
+      confirmedFields:{minimumJob:false,laborPerSqft:true}};
+    assert.deepEqual(editServiceField(original,'minimumJob',amount),expected);
+    assert.deepEqual(original,initial);
+  }
+  const equal={...initial,minimumJob:14};
+  assert.equal(editServiceField(equal,'minimumJob',14),equal);
+  assert.deepEqual(editServiceField({...initial,source:'MANUAL'},'minimumJob',14).confirmedFields,initial.confirmedFields);
+});
+
+test('pricebook editor: map equality missing null and explicit zero retain exact value and container presence', () => {
+  const source={serviceType:'SIDING_REPLACEMENT',source:'AI_SUGGESTED',active:false,
+    laborPerSqft:{vinyl:2,wood:3},pricing:{minimumJob:0},confirmedFields:{laborPerSqft:true,minimumJob:true}};
+  assert.deepEqual(serviceFieldValue(source,'laborPerSqft'),source.laborPerSqft);
+  assert.equal(editServiceField(source,'laborPerSqft',{wood:3,vinyl:2}),source);
+  const edited=editServiceField(source,'laborPerSqft',{vinyl:2.01,wood:3});
+  assert.deepEqual(edited,{...source,laborPerSqft:{vinyl:2.01,wood:3},confirmedFields:{laborPerSqft:false,minimumJob:true}});
+  assert.equal(Object.hasOwn(edited.pricing,'laborPerSqft'),false);
+  for(const value of [undefined,null,'',0]) {
+    const original={...source,trimRatio:value};
+    assert.equal(serviceFieldValue(original,'trimRatio'),value);
+    assert.equal(editServiceField(original,'trimRatio',value),original);
+    assert.equal(Object.hasOwn(original.pricing,'trimRatio'),false);
+  }
+  assert.equal(serviceFieldValue(source,'trimRatio'),undefined);
+  assert.equal(editServiceField(source,'trimRatio',undefined),source);
+  const configured=editServiceField(source,'trimRatio',0);
+  assert.deepEqual(configured,{...source,pricing:{minimumJob:0,trimRatio:0}});
+  const conflict={...source,minimumJob:0.01};
+  const frozen=structuredClone(conflict);
+  assert.throws(()=>validatePricebookNumericDraft({services:[conflict]}),/conflict/i);
+  serviceFieldValue(conflict,'minimumJob');
+  assert.deepEqual(conflict,frozen,'reading a conflicting field cannot resolve it');
 });

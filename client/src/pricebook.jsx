@@ -3,7 +3,7 @@ import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-re
 import { api, go } from './api.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 import { ExactNumericInput } from './pricebookInputs.jsx';
-import { servicePricing, editServiceField, editServiceTiers, editorServiceKey, editorServices } from './pricebookEditing.js';
+import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 const PricingContext = createContext({});
 import {
@@ -763,9 +763,9 @@ export default function PriceBook() {
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
   const requiredMissing = requiredFields.filter(field => missingSet.has(field.field));
   const optionalMissing = optionalFields.filter(field => missingSet.has(field.field));
-  const optionalSet = optionalFields.filter(field => servicePricing(selected)?.[field.field] !== undefined).length;
+  const optionalSet = optionalFields.filter(field => serviceFieldValue(selected, field.field) !== undefined).length;
   const class2Overridden = (selectedMeta?.class2Fields || []).filter(field =>
-    JSON.stringify(servicePricing(selected)?.[field.field] === undefined ? field.defaultValue : servicePricing(selected)[field.field]) !== JSON.stringify(field.defaultValue)).length;
+    JSON.stringify(serviceFieldValue(selected, field.field) === undefined ? field.defaultValue : serviceFieldValue(selected, field.field)) !== JSON.stringify(field.defaultValue)).length;
 
   const markup = Number(book.defaults.markupPercent || 0);
   const equivalence = book.defaults.markupMode === 'markup'
@@ -867,7 +867,7 @@ export default function PriceBook() {
                     {requiredFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={servicePricing(selected)[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -891,7 +891,7 @@ export default function PriceBook() {
                     {optionalFields.map(definition => (
                       <div key={definition.field} id={`field-${definition.field}`}
                         className={aiSourced ? 'field-confirm-row' : undefined}>
-                        <OwnerField definition={definition} value={servicePricing(selected)[definition.field]} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
+                        <OwnerField definition={definition} value={serviceFieldValue(selected, definition.field)} onChange={value => updateField(definition.field, value)} incompleteOfferings={selectedStatus.incompleteOfferings || []} />
                         {aiSourced && (
                           <Toggle
                             checked={selected.confirmedFields?.[definition.field] === true}
@@ -922,7 +922,7 @@ export default function PriceBook() {
                       }}>Reset all to default</Button>
                     </div>
                     {(selectedMeta.class2Fields || []).map(definition => {
-                      const current = servicePricing(selected)[definition.field] === undefined ? definition.defaultValue : servicePricing(selected)[definition.field];
+                      const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       if (isStructured) {
                         return (

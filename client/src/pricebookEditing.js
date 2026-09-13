@@ -12,12 +12,30 @@ export function servicePricing(service) {
     ? service.pricing : service;
 }
 
+// Resolve an unambiguous root-only field for display without moving it. If both
+// copies exist, the displayed nested candidate does not resolve their conflict:
+// draft/save validation still checks both, and only an explicit edit can agree them.
+export function serviceFieldValue(service, field) {
+  const pricing = servicePricing(service);
+  return pricing && Object.hasOwn(pricing, field) ? pricing[field] : service?.[field];
+}
+
 export function editServiceField(service, field, value) {
   const pricing = servicePricing(service);
-  const next = pricing === service ? { ...service, [field]: value }
-    : { ...service, ...(Object.hasOwn(service, field) ? { [field]:value } : {}), pricing: { ...pricing, [field]: value } };
-  if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source) && service.confirmedFields?.[field] === true
-      && !sameValue(pricing?.[field], value)) {
+  const nested = pricing !== service;
+  const hasRoot = Object.hasOwn(service, field);
+  const hasNested = nested && Object.hasOwn(pricing, field);
+  const changed = (hasRoot && !sameValue(service[field], value))
+    || (hasNested && !sameValue(pricing[field], value))
+    || (!hasRoot && !hasNested && value !== undefined);
+  if (!changed) return service;
+
+  // Keep existing placement. An explicit resolving edit updates both copies;
+  // a new field uses the service's existing pricing container.
+  const next = { ...service };
+  if (!nested || hasRoot) next[field] = value;
+  if (nested && (hasNested || !hasRoot)) next.pricing = { ...pricing, [field]: value };
+  if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source) && service.confirmedFields?.[field] === true) {
     next.confirmedFields = { ...service.confirmedFields, [field]: false };
   }
   return next;
