@@ -4,84 +4,133 @@
   "application_base": "eb79953faad059314071ae5f364770e41838a05a",
   "engine_tree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
   "candidate_branch": "codex/quotedone-application-completion",
-  "note": "Authorization and regression assets only. Actual application completion is not yet claimed.",
+  "note": "Incomplete prerequisite checkpoint. Two application defects are repaired; no authenticated application workflow has passed. The real server is blocked by native dependencies outside the bounded restoration permission. This is not completion, production readiness, or integration approval.",
   "workflows": [
     {
       "id": "ENV",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "blocked",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Real server exits 1 at server/src/db.js:14: no loadable locked SQLite binary. The original binary is Linux ELF; the exact Windows/Node ABI 137 prebuild returns 404; node-gyp cannot find Visual Studio/C++ tools. bcrypt 5.1.1 is independently an incompatible ELF binary. No new compiler/runtime/package version is authorized. Independent component work completed below.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/command.json",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/server.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/sqlite-restore.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/sqlite-rebuild.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/bcrypt-original-probe.json"
+      ]
     },
     {
       "id": "BOOK",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "in_progress",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Atomic JSON price-book replacement preserves complete prior data on injected write/rename/serialization failure. Exact saved values reload. Authenticated owner entry, approval and HTTP save acceptance remain unverified.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay-objects/full-store-results.json",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log"
+      ]
     },
     {
       "id": "EDIT",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "in_progress",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Existing React/Chrome editor regression passed 15 tests across 19 synthetic scenarios with intercepted transport and real JSON store functions. It is not a real authenticated UI/server pass. Unchanged source bytes are bound to this checkpoint.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-regressions.json",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-regressions.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-objects",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/source-binding.json",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/disposable-source-binding.json"
+      ]
     },
     {
       "id": "READY",
       "status": "pending",
       "tested_sha": null,
-      "observed_outcome": null,
+      "observed_outcome": "VNext owner configuration/approval/activation through the real application has not been implemented or accepted.",
       "evidence": []
     },
     {
       "id": "QUOTE",
       "status": "pending",
       "tested_sha": null,
-      "observed_outcome": null,
+      "observed_outcome": "Trusted saved-service-ID VNext application bridge has not been implemented. Current application quote routes remain legacy; engine unit controls do not establish customer integration.",
       "evidence": []
     },
     {
       "id": "LEAD",
       "status": "pending",
       "tested_sha": null,
-      "observed_outcome": null,
+      "observed_outcome": "Complete durable VNext review-lead submission and owner-facing retrieval/action workflow has not been implemented or accepted.",
       "evidence": []
     },
     {
       "id": "RETRY",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "in_progress",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Existing price-book file survives injected partial write and replacement failures. Customer submission idempotency, lost-response retries, changed-content conflicts, concurrent duplicates and tenant-scoped retry persistence remain unfinished.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay-objects/full-store-results.json"
+      ]
     },
     {
       "id": "ACCESS",
       "status": "pending",
       "tested_sha": null,
-      "observed_outcome": null,
+      "observed_outcome": "Actual authenticated owner/staff/customer/unauthenticated/cross-tenant permissions matrix and trusted response selection remain unfinished.",
       "evidence": []
     },
     {
       "id": "FRESH",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "in_progress",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Actual React/Chrome component rejects old success/error/loading completions and clears invalid current previews; unchanged focus/blur is a negative control. All four pre-fix ordering cases reproduced. Transport is explicitly controlled, so authenticated preview acceptance remains open.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/preview-contract-before.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/preview-contract-before-objects",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused-objects"
+      ]
     },
     {
       "id": "RESTART",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "blocked",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Actual server cannot start: see ENV command and native prerequisite. No authenticated stop/restart/reopen proof exists. Same-process JSON reload checks are not application restart proof.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/command.json",
+        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/server.log"
+      ]
     },
     {
       "id": "RELEASE",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": null,
-      "evidence": []
+      "status": "blocked",
+      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+      "observed_outcome": "Required authenticated workflow rows are incomplete. Original precision, component/engine regressions and client build are narrower passing controls. Frozen engine is unchanged. No bridge was introduced, so the separate controlled integration boundary is still required with that implementation.",
+      "evidence": [
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/original-precision.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/ordinary.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/client-build.log",
+        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/source-binding.json"
+      ]
     }
-  ]
+  ],
+  "checkpoint_source_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
+  "evidence_package": "evidence/59fad823-prerequisite-checkpoint.zip",
+  "blocking_prerequisite": {
+    "decision": "Provide an already-approved compatible verification environment for Node 24.13.1 and the locked better-sqlite3 11.10.0 and bcrypt 5.1.1 native dependencies, or explicitly extend the bounded runtime-artifact authorization. No pricing ruling is requested.",
+    "authorization_limit": "START_HERE.md section 1 permits only the locked SQLite restore/rebuild with already-installed approved tooling in a disposable copy. Installing a C++ compiler, changing runtime/package versions or repairing other native packages is not covered.",
+    "known_broken_commands": [
+      "node ../prebuild-install/bin.js --verbose",
+      "node <existing npm node-gyp>/bin/node-gyp.js rebuild --release --python=<existing Python> --devdir=<disposable copy>/.node-gyp",
+      "node server/src/server.js"
+    ],
+    "independent_work_completed": [
+      "Atomic saved-book replacement and failure controls",
+      "Stale-preview request ordering and negative controls",
+      "Exact original fixture checkout and tamper control",
+      "Original numerical regressions and unchanged client build"
+    ]
+  }
 }
