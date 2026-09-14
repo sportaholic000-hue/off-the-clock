@@ -1,136 +1,895 @@
 {
   "assignment": "Owner-authorized complete non-production QuoteDone workflow",
   "authorized_date": "2026-09-13",
+  "runtime_exception_date": "2026-09-14",
   "application_base": "eb79953faad059314071ae5f364770e41838a05a",
+  "starting_sha": "c9404b586b1b43170514d931902ce6dc656645f6",
   "engine_tree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
   "candidate_branch": "codex/quotedone-application-completion",
-  "note": "Incomplete prerequisite checkpoint. Two application defects are repaired; no authenticated application workflow has passed. The real server is blocked by native dependencies outside the bounded restoration permission. This is not completion, production readiness, or integration approval.",
+  "tested_implementation_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+  "note": "All agreed non-production workflow rows passed at the tested implementation SHA. Delivery-only documentation/evidence does not change executed implementation bytes. Independent audit and production release remain separate; this is not universal correctness or deployment approval.",
   "workflows": [
     {
       "id": "ENV",
-      "status": "blocked",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Real server exits 1 at server/src/db.js:14: no loadable locked SQLite binary. The original binary is Linux ELF; the exact Windows/Node ABI 137 prebuild returns 404; node-gyp cannot find Visual Studio/C++ tools. bcrypt 5.1.1 is independently an incompatible ELF binary. No new compiler/runtime/package version is authorized. Independent component work completed below.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/runtime-preflight.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\runtime-preflight"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Actual official portable Node x64 ABI127; real SQLite transaction/rollback/reopen; bcrypt correct/incorrect password and authenticated server.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/command.json",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/server.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/sqlite-restore.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/sqlite-rebuild.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/bcrypt-original-probe.json"
+        "evidence/quotedone-e936370-application-evidence.zip#runtime-preflight/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#runtime-provenance/download-manifest.json",
+        "evidence/quotedone-e936370-application-evidence.zip#runtime-provenance/extracted-artifacts.json"
       ]
     },
     {
       "id": "BOOK",
-      "status": "in_progress",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Atomic JSON price-book replacement preserves complete prior data on injected write/rename/serialization failure. Exact saved values reload. Authenticated owner entry, approval and HTTP save acceptance remain unverified.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/browser-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\browser-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/configuration-privacy-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\configuration-privacy-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/editor-integrity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\editor-integrity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/structured-measurements-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\structured-measurements-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Genuine browser exact rate entry/save/approval; .0049/.005/.0051 produce $49/$50/$51; invalid saves preserve the prior book.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay-objects/full-store-results.json",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log"
+        "evidence/quotedone-e936370-application-evidence.zip#browser-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#money-workflow/results.json",
+        "evidence/quotedone-e936370-application-evidence.zip#configuration-privacy-workflow/result.json"
       ]
     },
     {
       "id": "EDIT",
-      "status": "in_progress",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Existing React/Chrome editor regression passed 15 tests across 19 synthetic scenarios with intercepted transport and real JSON store functions. It is not a real authenticated UI/server pass. Unchanged source bytes are bound to this checkpoint.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/browser-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\browser-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/configuration-privacy-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\configuration-privacy-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/editor-integrity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\editor-integrity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/structured-measurements-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\structured-measurements-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Genuine UI exact edits, same-type switches, root .23, maps/tiers, disable, conflict resolution and individual AI confirmation; supplemental original editor tests pass.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-regressions.json",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-regressions.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/existing-editor-objects",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/source-binding.json",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/disposable-source-binding.json"
+        "evidence/quotedone-e936370-application-evidence.zip#editor-integrity-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#configuration-privacy-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#focused.log"
       ]
     },
     {
       "id": "READY",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": "VNext owner configuration/approval/activation through the real application has not been implemented or accepted.",
-      "evidence": []
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Actual owner approval/enable; disabled, missing and edited approvals review; preview is read-only; ambiguous saved identity rejects.",
+      "evidence": [
+        "evidence/quotedone-e936370-application-evidence.zip#money-workflow/results.json",
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#identity-ambiguity-workflow/result.json"
+      ]
     },
     {
       "id": "QUOTE",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": "Trusted saved-service-ID VNext application bridge has not been implemented. Current application quote routes remain legacy; engine unit controls do not establish customer integration.",
-      "evidence": []
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "All 20 saved-service adapters tested: 16 independently calculated ready examples, four wholly review-only types, with missing-measurement controls and complete internal evidence.",
+      "evidence": [
+        "evidence/quotedone-e936370-application-evidence.zip#all-adapters/results.json",
+        "evidence/quotedone-e936370-application-evidence.zip#all-adapters/independent-expectations.json",
+        "evidence/quotedone-e936370-application-evidence.zip#all-adapters/quotes.json",
+        "evidence/quotedone-e936370-application-evidence.zip#money-workflow/results.json",
+        "evidence/quotedone-e936370-application-evidence.zip#structured-measurements-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#structured-measurements-workflow/layer-boundaries.json"
+      ]
     },
     {
       "id": "LEAD",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": "Complete durable VNext review-lead submission and owner-facing retrieval/action workflow has not been implemented or accepted.",
-      "evidence": []
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Complete durable leads retain original scope, measurements, unknowns, contact, location, urgency, book revision/snapshot and available internal evidence before sanitized acknowledgement.",
+      "evidence": [
+        "evidence/quotedone-e936370-application-evidence.zip#all-adapters/leads.json",
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/persisted-submissions.json",
+        "evidence/quotedone-e936370-application-evidence.zip#browser-workflow/result.json"
+      ]
     },
     {
       "id": "RETRY",
-      "status": "in_progress",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Existing price-book file survives injected partial write and replacement failures. Customer submission idempotency, lost-response retries, changed-content conflicts, concurrent duplicates and tenant-scoped retry persistence remain unfinished.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Actual SQLite abort rolls back every row; lost body and eight concurrent retries produce one record; changed content conflicts; cross-tenant IDs stay isolated.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/complete-store-replay-objects/full-store-results.json"
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/http.json",
+        "evidence/quotedone-e936370-application-evidence.zip#focused.log"
       ]
     },
     {
       "id": "ACCESS",
-      "status": "pending",
-      "tested_sha": null,
-      "observed_outcome": "Actual authenticated owner/staff/customer/unauthenticated/cross-tenant permissions matrix and trusted response selection remain unfinished.",
-      "evidence": []
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Real owner/staff/customer/anonymous/cross-tenant matrix; forged caller and tenant ignored; owner-only evidence; public catalog filters invalid private configuration.",
+      "evidence": [
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#configuration-privacy-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#browser-workflow/staff-leads.png"
+      ]
     },
     {
       "id": "FRESH",
-      "status": "in_progress",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Actual React/Chrome component rejects old success/error/loading completions and clears invalid current previews; unchanged focus/blur is a negative control. All four pre-fix ordering cases reproduced. Transport is explicitly controlled, so authenticated preview acceptance remains open.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/browser-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\browser-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/configuration-privacy-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\configuration-privacy-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/editor-integrity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\editor-integrity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/structured-measurements-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\structured-measurements-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Genuine server responses reordered through an unchanged-byte relay; old successes/errors/loading cannot replace current state; invalid input clears old preview.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/preview-contract-before.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/preview-contract-before-objects",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/focused-objects"
+        "evidence/quotedone-e936370-application-evidence.zip#editor-integrity-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#editor-integrity-workflow/real-http-timing.json"
       ]
     },
     {
       "id": "RESTART",
-      "status": "blocked",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Actual server cannot start: see ENV command and native prerequisite. No authenticated stop/restart/reopen proof exists. Same-process JSON reload checks are not application restart proof.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/browser-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\browser-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/configuration-privacy-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\configuration-privacy-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/editor-integrity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\editor-integrity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/structured-measurements-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\structured-measurements-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Actual process stop/start against the same stores, fresh owner/staff sign-in, UI reopen, exact persisted submissions and retry replay; schema upgrade preserves original rows.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/command.json",
-        "evidence/59fad823-prerequisite-checkpoint.zip#prior-worktree/application-startup-corrected/server.log"
+        "evidence/quotedone-e936370-application-evidence.zip#browser-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#access-retry-workflow/result.json",
+        "evidence/quotedone-e936370-application-evidence.zip#schema-upgrade-workflow/result.json"
       ]
     },
     {
       "id": "RELEASE",
-      "status": "blocked",
-      "tested_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-      "observed_outcome": "Required authenticated workflow rows are incomplete. Original precision, component/engine regressions and client build are narrower passing controls. Frozen engine is unchanged. No bridge was introduced, so the separate controlled integration boundary is still required with that implementation.",
+      "status": "passed",
+      "tested_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+      "command": [
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "test:vnext"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "phase1:test"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/run-precision.mjs",
+            "."
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "--test",
+            "test/priceBookEditor.browser.spec.mjs",
+            "test/pricebookPreviewFreshness.browser.spec.mjs",
+            "test/pricebookPersistence.spec.mjs",
+            "test/precisionFixtureIntegrity.spec.mjs"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "--experimental-vm-modules",
+            "test/quoteEngineVNextReplay.mjs",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\final-e936370165cb23bbb0087d245ecd64bc82178fe0\\instrumented-replay"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "gate:quote-vnext"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "verification/quotedone/integration-boundary.mjs",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-completion"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-completion",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        },
+        {
+          "executable": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\.portable-runtime\\node-v22.23.2-win-x64\\node.exe",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\node_modules\\vite\\bin\\vite.js",
+            "build"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-verification\\client",
+          "node": "v22.23.2",
+          "platform": "win32",
+          "arch": "x64",
+          "abi": "127"
+        }
+      ],
+      "observed_outcome": "Required non-production workflows, original/focused regressions and client build pass; frozen engine/source bindings verified; intentional old no-import failure recorded separately from passing integration boundary.",
       "evidence": [
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/original-precision.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/ordinary.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/client-build.log",
-        "evidence/59fad823-prerequisite-checkpoint.zip#checkpoint/source-binding.json"
+        "evidence/quotedone-e936370-application-evidence.zip#EVIDENCE_INSPECTION.json",
+        "evidence/quotedone-e936370-application-evidence.zip#SOURCE_MANIFEST.json",
+        "evidence/quotedone-e936370-application-evidence.zip#regression-commands.json",
+        "evidence/quotedone-e936370-application-evidence.zip#integration-boundary.log",
+        "evidence/quotedone-e936370-application-evidence.zip#historical-isolation.log",
+        "evidence/quotedone-e936370-application-evidence.zip#client-build.log"
       ]
     }
   ],
-  "checkpoint_source_sha": "59fad82357d95f1bef8dd96dd0176160c3d3ba61",
-  "evidence_package": "evidence/59fad823-prerequisite-checkpoint.zip",
-  "blocking_prerequisite": {
-    "decision": "Provide an already-approved compatible verification environment for Node 24.13.1 and the locked better-sqlite3 11.10.0 and bcrypt 5.1.1 native dependencies, or explicitly extend the bounded runtime-artifact authorization. No pricing ruling is requested.",
-    "authorization_limit": "START_HERE.md section 1 permits only the locked SQLite restore/rebuild with already-installed approved tooling in a disposable copy. Installing a C++ compiler, changing runtime/package versions or repairing other native packages is not covered.",
-    "known_broken_commands": [
-      "node ../prebuild-install/bin.js --verbose",
-      "node <existing npm node-gyp>/bin/node-gyp.js rebuild --release --python=<existing Python> --devdir=<disposable copy>/.node-gyp",
-      "node server/src/server.js"
-    ],
-    "independent_work_completed": [
-      "Atomic saved-book replacement and failure controls",
-      "Stale-preview request ordering and negative controls",
-      "Exact original fixture checkout and tamper control",
-      "Original numerical regressions and unchanged client build"
-    ]
-  }
+  "evidence_package": "evidence/quotedone-e936370-application-evidence.zip",
+  "blocking_prerequisite": null,
+  "remaining_owner_decisions": "OWNER_DECISIONS.md"
 }

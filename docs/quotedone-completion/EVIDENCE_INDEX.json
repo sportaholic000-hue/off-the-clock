@@ -1,0 +1,10 @@
+{
+  "tested_implementation_sha": "e936370165cb23bbb0087d245ecd64bc82178fe0",
+  "archive": "docs/quotedone-completion/evidence/quotedone-e936370-application-evidence.zip",
+  "bytes": 18452419,
+  "sha256": "d9c3f2aaa7c119c1ac43896d738ba083027127225511ae6f4c3525de805143ad",
+  "files": 246,
+  "members_verified_byte_for_byte": true,
+  "source_binding": "SOURCE_MANIFEST.json",
+  "result_index": "EVIDENCE_INSPECTION.json"
+}
