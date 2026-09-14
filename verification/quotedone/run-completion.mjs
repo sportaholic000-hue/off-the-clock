@@ -6,11 +6,11 @@ async function command(name,args,{cwd=root,expectedExit=0}={}){const log=path.jo
 const workflow=name=>command(name,['verification/quotedone/'+name+'.mjs','.',path.join(evidence,name)]);
 if(group==='runtime')await workflow('runtime-preflight');
 else if(group==='application'){for(const name of ['all-adapters','money-workflow','access-retry-workflow','legacy-approval-workflow','identity-ambiguity-workflow'])await workflow(name);assert.ok(oldDatabase,'Supply the preserved synthetic pre-upgrade database');await command('schema-upgrade-workflow',['verification/quotedone/schema-upgrade-workflow.mjs','.',path.join(evidence,'schema-upgrade-workflow'),path.resolve(oldDatabase)]);}
-else if(group==='browser'){for(const name of ['browser-workflow','configuration-privacy-workflow','editor-integrity-workflow'])await workflow(name);}
+else if(group==='browser'){for(const name of ['browser-workflow','configuration-privacy-workflow','editor-integrity-workflow','structured-measurements-workflow'])await workflow(name);}
 else if(group==='regression'){
  await command('ordinary',[npm,'test']);await command('vnext',[npm,'run','test:vnext']);await command('quote-engine',[npm,'run','phase1:test']);await command('original-precision',['verification/quotedone/run-precision.mjs','.']);
  await command('focused',['--test','test/priceBookEditor.browser.spec.mjs','test/pricebookPreviewFreshness.browser.spec.mjs','test/pricebookPersistence.spec.mjs','test/precisionFixtureIntegrity.spec.mjs']);
  await command('instrumented-replay',['--experimental-vm-modules','test/quoteEngineVNextReplay.mjs',path.join(evidence,'instrumented-replay')]);
- await command('historical-isolation',[npm,'run','gate:quote-vnext'],{expectedExit:1});assert.ok(gitRootArg);await command('integration-boundary',['verification/quotedone/integration-boundary.mjs',path.resolve(gitRootArg)],{cwd:path.resolve(gitRootArg)});await command('client-build',[npm,'run','build','--workspace','client']);
+ await command('historical-isolation',[npm,'run','gate:quote-vnext'],{expectedExit:1});assert.ok(gitRootArg);await command('integration-boundary',['verification/quotedone/integration-boundary.mjs',path.resolve(gitRootArg)],{cwd:path.resolve(gitRootArg)});await command('client-build',[path.join(root,'node_modules/vite/bin/vite.js'),'build'],{cwd:path.join(root,'client')});
 }else throw Error('Choose runtime, application, browser or regression');
 console.log(JSON.stringify({group,passed:true,commands:results.length},null,2));

@@ -1,6 +1,7 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
+import {parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import {api} from './api.js';
 const human=value=>String(value).replaceAll('_',' ');
 const own=(value,key)=>Object.hasOwn(value||{},key);
@@ -20,18 +21,46 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  </div>)}{!(level===depth&&tree.leafKeys)&&<div className="field-stack"><TextInput aria-label={label+' offering key'} value={newKey} onChange={e=>setNewKey(e.target.value)}/><Button variant="secondary" onClick={()=>{if(/^[a-z][a-z0-9_]*$/.test(newKey)&&!own(map,newKey)){update(newKey,level<depth?{}:null);setNewKey('');}}}>Add offering</Button><small>Use the exact offering key consistently across the related price maps.</small></div>}</div>;
 }
 
+// Coordinates may be negative. Reuse the exact decimal parser for the magnitude;
+// never turn an incomplete or unrepresentable entry into a previous valid point.
+function parseCoordinate(raw) {
+ const text=String(raw??'').trim();
+ if(!text)return undefined;
+ const negative=text.startsWith('-'),magnitude=negative?text.slice(1):text;
+ if(negative&&(!magnitude||/^[+\s-]/.test(magnitude)))throw Error('Enter a finite decimal coordinate.');
+ const number=parseOwnerNumericInput(magnitude);
+ if(number===undefined)throw Error('Enter a finite decimal coordinate.');
+ return negative?-number:number;
+}
+function CoordinateInput({value,onChange,...props}) {
+ const [raw,setRaw]=useState(value===undefined?'':String(value)),[error,setError]=useState(''),emitted=useRef(value);
+ useEffect(()=>{const text=value===undefined?'':String(value);if(!Object.is(value,emitted.current)){emitted.current=value;setRaw(text);}try{parseCoordinate(text);setError('');}catch(e){setError(e.message);}},[value]);
+ function change(text){setRaw(text);try{const next=parseCoordinate(text);setError('');emitted.current=next;onChange(next);}catch(e){setError(e.message);emitted.current=text;onChange(text);}}
+ return <><TextInput {...props} type="text" inputMode="decimal" value={raw} aria-invalid={Boolean(error)} onChange={e=>change(e.target.value)}/>{error&&<span className="field-error" role="alert">{error}</span>}</>;
+}
+function MeasuredOutline({field,value,onChange}) {
+ const points=Array.isArray(value)?value:[];
+ function edit(index,axis,next){onChange(points.map((point,i)=>{if(i!==index)return point;const updated={...point};if(next===undefined)delete updated[axis];else updated[axis]=next;return updated;}));}
+ return <div className="field-stack"><small>Enter every measured corner in order, in feet, then repeat the first point to close the outline. Use straight horizontal or vertical edges only. Negative coordinates are allowed. Missing or conflicting measurements require review.</small>
+ {points.map((point,i)=><div key={i} className="field-stack">{['x','y'].map(axis=><Field key={axis} label={'Point '+(i+1)+' '+axis.toUpperCase()+' (ft)'}><CoordinateInput aria-label={field.label+' point '+(i+1)+' '+axis.toUpperCase()+' (ft)'} value={point[axis]} onChange={next=>edit(i,axis,next)}/></Field>)}<Button variant="quiet" onClick={()=>onChange(points.filter((_,index)=>index!==i))}>Remove point {i+1}</Button></div>)}
+ <Button variant="secondary" onClick={()=>onChange([...points,{}])}>Add measured point</Button></div>;
+}
+
 export function CustomerMeasurements({fields=[],value={},onChange,knownOfferings={}}) {
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
   onChange(updated);
  };
- return <div className="field-stack">{fields.filter(f=>f.type!=='confirmed_facts').map(f=><Field key={f.name} label={f.label} help={f.unit||undefined}>
+ return <div className="field-stack">{fields.filter(f=>f.type!=='confirmed_facts').map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
    f.type==='enum'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
-   f.type==='plant_counts'?<>{['small','medium','large'].map(size=><Field key={size} label={human(size)}><ExactNumericInput value={value[f.name]?.[size]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[size];else next[size]=v;update(f.name,next);}}/></Field>)}</>:
-   f.type==='slug'?<><TextInput list={'offerings-'+f.name} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/><datalist id={'offerings-'+f.name}>{Object.keys(knownOfferings[f.name]||{}).map(key=><option key={key} value={key}/>)}</datalist>{knownOfferings[f.name]?.[value[f.name]]&&<label><input type="checkbox" checked={value.confirmedFacts?.[f.name]?.value===value[f.name]} onChange={e=>{const confirmedFacts={...(value.confirmedFacts||{})};if(e.target.checked)confirmedFacts[f.name]={field:f.name,value:value[f.name],status:'identified',offeringId:knownOfferings[f.name][value[f.name]]};else delete confirmedFacts[f.name];onChange({...value,confirmedFacts});}}/> I have identified this exact offering.</label>}</>:
-   <ExactNumericInput value={value[f.name]} onChange={v=>update(f.name,v)}/>}
- </Field>)}</div>;
+   f.type==='integer_or_unknown'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='unknown'?'unknown':Number(e.target.value))}><option value="">Not supplied</option><option value="unknown">Unknown — requires review</option>{Array.from({length:f.max-f.min+1},(_,i)=>f.min+i).map(n=><option key={n} value={n}>{n}</option>)}</Select>:
+   f.type==='orthogonal_outline'?<MeasuredOutline field={f} value={value[f.name]} onChange={v=>update(f.name,v)}/>:
+   f.type==='string'?<TextInput aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/>:
+   f.type==='plant_counts'?<>{['small','medium','large'].map(size=><Field key={size} label={human(size)}><ExactNumericInput aria-label={f.label+' '+human(size)} value={value[f.name]?.[size]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[size];else next[size]=v;update(f.name,next);}}/></Field>)}</>:
+   f.type==='slug'?<><TextInput aria-label={f.label} list={'offerings-'+f.name} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/><datalist id={'offerings-'+f.name}>{Object.keys(knownOfferings[f.name]||{}).map(key=><option key={key} value={key}/>)}</datalist>{knownOfferings[f.name]?.[value[f.name]]&&<label><input type="checkbox" checked={value.confirmedFacts?.[f.name]?.value===value[f.name]} onChange={e=>{const confirmedFacts={...(value.confirmedFacts||{})};if(e.target.checked)confirmedFacts[f.name]={field:f.name,value:value[f.name],status:'identified',offeringId:knownOfferings[f.name][value[f.name]]};else delete confirmedFacts[f.name];onChange({...value,confirmedFacts});}}/> I have identified this exact offering.</label>}</>:
+   f.type==='number'?<ExactNumericInput aria-label={f.label} value={value[f.name]} onChange={v=>update(f.name,v)}/>:<Notice>This measurement requires owner review.</Notice>}
+ </div>)}</div>;
 }
 
 export function ServiceRules({service,meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {
