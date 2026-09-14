@@ -5,7 +5,7 @@ import { loadPricebook } from '../priceBookService.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
-  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext
+  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches
 } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -32,7 +32,7 @@ function publicContext(req,res,next) {
 }
 function serviceFor(book,body) {
   if(typeof body.serviceId!=='string')return null;
-  return book.services.find(service=>service.id?.toLowerCase()===body.serviceId.toLowerCase())||null;
+  const matches=applicationServiceMatches(book,body.serviceId);return matches.length===1?matches[0]:null;
 }
 function customerCatalogService(service,metadata) {
   const definition=metadata.services.find(item=>item.serviceType===service.serviceType);
@@ -58,7 +58,7 @@ export function submitQuote(ownerId,body) {
     }
     const book=loadPricebook(ownerId),service=serviceFor(book,body);
     let calculated;
-    if(!service)calculated=unresolvedResult('The requested saved service could not be resolved. Verify the complete supplied service request.');
+    if(!service)calculated=unresolvedResult('The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.');
     else {
       try { calculated=calculateApplicationQuote(book,service,body); }
       catch(error) { calculated=unresolvedResult(error.message); }

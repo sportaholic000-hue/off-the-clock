@@ -113,7 +113,17 @@ function seasonalDecision(raw,book) {
   const months=raw.peakMonths??book.defaults.peakMonths,percent=raw.peakSurchargePercent??book.defaults.peakSurchargePercent;
   return Array.isArray(months)&&months.length>0&&typeof percent==='number'&&percent>0;
 }
+export function applicationServiceMatches(book,serviceId) {
+  if(typeof serviceId!=='string')return [];
+  return book.services.filter(service=>typeof service.id==='string'&&service.id.toLowerCase()===serviceId.toLowerCase());
+}
+function uniqueApplicationService(book,serviceId) {
+  const matches=applicationServiceMatches(book,serviceId);
+  if(matches.length>1)throw problem('Duplicate saved service IDs require owner correction before approval or preview.',409);
+  return matches[0]||null;
+}
 export function applicationStatus(raw,book) {
+  if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],approvalCurrent:false};
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
   const status=vNextServiceStatus(service,defaultsProjection(book));
   const issues=[];
@@ -183,7 +193,7 @@ export function saveApplicationBook(ownerId,input) {
 export function approveApplicationService(ownerId,serviceId,input) {
   if(!record(input))throw problem('Explicit saved-configuration approval is required.');
   const book=loadPricebook(ownerId);requireRevision(book,input.revision);
-  const index=book.services.findIndex(s=>s.id?.toLowerCase()===serviceId.toLowerCase());if(index<0)throw problem('Service not found.',404);
+  const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
   const raw=clone(book.services[index]);
   if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
   if(legacySettings(raw,book).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
@@ -211,7 +221,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
 export function previewApplicationQuote(ownerId,input) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
-  const raw=saved.services.find(s=>s.id?.toLowerCase()===input.serviceId?.toLowerCase());if(!raw)throw problem('Save this service before previewing it.',409);
+  const raw=uniqueApplicationService(saved,input.serviceId);if(!raw)throw problem('Save this service before previewing it.',409);
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
