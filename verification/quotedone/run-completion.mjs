@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {spawn} from 'node:child_process';
+// Run with the authorized portable executable and documented process-local
+// browser/esbuild variables. Every child uses this exact same Node executable.
+const [rootArg,evidenceArg,group,gitRootArg,oldDatabase]=process.argv.slice(2);const root=path.resolve(rootArg),evidence=path.resolve(evidenceArg);assert.equal(process.version,'v22.23.2');fs.mkdirSync(evidence,{recursive:true});const npm=path.join(path.dirname(process.execPath),'node_modules/npm/bin/npm-cli.js');const results=[];
+async function command(name,args,{cwd=root,expectedExit=0}={}){const log=path.join(evidence,name+'.log');const child=spawn(process.execPath,[path.join(root,'verification/quotedone/run-command.mjs'),cwd,log,...args],{stdio:'inherit',env:process.env});const exit=await new Promise((resolve,reject)=>{child.on('error',reject);child.on('close',resolve);});results.push({name,args,cwd,exit,expectedExit,passed:exit===expectedExit});fs.writeFileSync(path.join(evidence,group+'-commands.json'),JSON.stringify(results,null,2));assert.equal(exit,expectedExit,name+' exit');if(name==='historical-isolation'){const text=fs.readFileSync(log,'utf8');assert.ok(text.includes('quoteDoneBridge.js'));assert.equal(text.split(/\r?\n/).filter(l=>l.startsWith('- ')).length,1);}}
+const workflow=name=>command(name,['verification/quotedone/'+name+'.mjs','.',path.join(evidence,name)]);
+if(group==='runtime')await workflow('runtime-preflight');
+else if(group==='application'){for(const name of ['all-adapters','money-workflow','access-retry-workflow','legacy-approval-workflow'])await workflow(name);assert.ok(oldDatabase,'Supply the preserved synthetic pre-upgrade database');await command('schema-upgrade-workflow',['verification/quotedone/schema-upgrade-workflow.mjs','.',path.join(evidence,'schema-upgrade-workflow'),path.resolve(oldDatabase)]);}
+else if(group==='browser'){for(const name of ['browser-workflow','configuration-privacy-workflow','editor-integrity-workflow'])await workflow(name);}
+else if(group==='regression'){
+ await command('ordinary',[npm,'test']);await command('vnext',[npm,'run','test:vnext']);await command('quote-engine',[npm,'run','phase1:test']);await command('original-precision',['verification/quotedone/run-precision.mjs','.']);
+ await command('focused',['--test','test/priceBookEditor.browser.spec.mjs','test/pricebookPreviewFreshness.browser.spec.mjs','test/pricebookPersistence.spec.mjs','test/precisionFixtureIntegrity.spec.mjs']);
+ await command('instrumented-replay',['--experimental-vm-modules','test/quoteEngineVNextReplay.mjs',path.join(evidence,'instrumented-replay')]);
+ await command('historical-isolation',[npm,'run','gate:quote-vnext'],{expectedExit:1});assert.ok(gitRootArg);await command('integration-boundary',['verification/quotedone/integration-boundary.mjs',path.resolve(gitRootArg)],{cwd:path.resolve(gitRootArg)});await command('client-build',[npm,'run','build','--workspace','client']);
+}else throw Error('Choose runtime, application, browser or regression');
+console.log(JSON.stringify({group,passed:true,commands:results.length},null,2));

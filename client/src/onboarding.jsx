@@ -114,6 +114,10 @@ function AuthStep({ onAuthenticated }) {
         ? await api('/api/auth/register', { method:'POST', auth:false, body:form })
         : await api('/api/auth/login', { method:'POST', auth:false, body:{ email:form.email, password:form.password } });
       setToken(payload.token);
+      if (mode === 'login') {
+        const session = await api('/api/dashboard');
+        if (session.role === 'staff') { go('/leads'); return; }
+      }
       onAuthenticated();
     } catch (nextError) {
       setError(nextError);

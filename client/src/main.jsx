@@ -1,3 +1,4 @@
+import {CustomerQuote,QuoteRecords} from './quotedone.jsx';
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Shield } from 'lucide-react';
@@ -18,16 +19,18 @@ function AdminShell() {
 }
 
 function App() {
-  const [location, setLocation] = useState(window.location.pathname + window.location.search);
+  const [location, setLocation] = useState({url:window.location.pathname + window.location.search});
   useEffect(() => {
-    const update = () => setLocation(window.location.pathname + window.location.search);
+    const update = () => setLocation({url:window.location.pathname + window.location.search});
     window.addEventListener('popstate', update);
     return () => window.removeEventListener('popstate', update);
   }, []);
 
-  const path = location.split('?')[0];
+  const path = location.url.split('?')[0];
+  if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)}/>;
   if (path === '/admin') return <AdminShell />;
-  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding />;
+  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={getToken()||'signed-out'} />;
+  if(['/leads','/quotes'].includes(path))return <QuoteRecords key={path+getToken()} kind={path.slice(1)}/>;
   if (path === '/pricebook') return <PriceBook />;
   if (path === '/dashboard') return <Dashboard />;
   go('/dashboard');

@@ -172,7 +172,7 @@ test('owner-facing Phase 2 source has no gradients or forwarding mechanics', () 
 });
 
 test('server exposes the complete Phase 2 route surface', () => {
-  const source = readFileSync('server/src/server.js', 'utf8');
+  const source = readFileSync('server/src/server.js', 'utf8') + readFileSync('server/src/quoteDoneRoutes.js', 'utf8');
   for (const route of [
     '/api/onboarding/state','/api/onboarding/account','/api/onboarding/business-types',
     '/api/business/jurisdiction','/api/onboarding/phone/provision',
@@ -1047,26 +1047,19 @@ test('owner results retain full diagnostics', async () => {
 });
 
 test('customer eligibility is enforced before quote generation', () => {
-  const server = readFileSync('server/src/server.js', 'utf8');
-  const handler = server.slice(
-    server.indexOf("app.post('/api/quote/calculate'"),
-    server.indexOf("app.post('/api/quote/test'")
-  );
-
-  // BEFORE THIS REPAIR: generateQuote ran unconditionally, so a NEEDS PRICING
-  // service -- including an unconfirmed AI-suggested draft -- could return a
-  // customer estimate.
-  const gateAt = handler.indexOf("callerType === 'customer'");
-  const generateAt = handler.indexOf('generateQuote({');
-  assert.ok(gateAt >= 0, 'a customer eligibility gate must exist');
-  assert.ok(gateAt < generateAt,
-    'eligibility must be established BEFORE quote generation, not after');
-
-  // The gate must use the same authority the owner UI shows.
-  assert.match(handler, /pricebookStatuses\(pricebook\)/);
-  assert.match(handler, /status !== 'QUOTING LIVE'/);
-  // The blocked path returns a sanitized deferral, never a generated estimate.
-  assert.match(handler, /return res\.json\(sanitizeForCustomer\(deferred\)\)/);
+  // Completion authorization intentionally replaces the old inline legacy
+  // handler. Actual HTTP positive/disabled/unapproved/forged-caller controls
+  // live in verification/quotedone/{first,money,access-retry}-workflow.mjs.
+  const bridge=readFileSync('server/src/quoteDoneBridge.js','utf8');
+  const calculate=bridge.slice(bridge.indexOf('export function calculateApplicationQuote'),bridge.indexOf('export function applicationMetadata'));
+  assert.ok(calculate.indexOf('service.active=raw.active===true&&current')<calculate.indexOf('generateQuoteVNext(request)'));
+  assert.match(calculate,/approvalCurrent\(raw,book\)/);
+  assert.match(calculate,/sanitizeForCustomerVNext\(internalResult\)/);
+  assert.doesNotMatch(calculate,/submission\.callerType|generateQuote\(/);
+  const routes=readFileSync('server/src/quoteDoneRoutes.js','utf8');
+  assert.match(routes,/submitQuote\(req\.tenantOwnerId,req\.body\)/);
+  assert.match(routes,/serviceFor\(book,body\)/);
+  assert.match(routes,/requireAuth\(\['owner','staff'\]\)/);
 });
 
 test('a service that is not QUOTING LIVE cannot produce a customer estimate', async () => {

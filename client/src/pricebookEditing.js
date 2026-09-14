@@ -62,7 +62,7 @@ export function editorServices(saved, metadata, businessTypes) {
   const services = [...(saved || [])];
   for (const service of metadata) {
     if (businessTypes.includes(service.serviceType) && !services.some(existing => existing.serviceType === service.serviceType)) {
-      services.push({ serviceType:service.serviceType, service:service.name, tiers:[], validationInputs:structuredClone(service.sampleInputs) });
+      services.push({ serviceType:service.serviceType, service:service.name, source:'MANUAL', active:false, tiers:[], validationInputs:structuredClone(service.sampleInputs) });
     }
   }
   return services;

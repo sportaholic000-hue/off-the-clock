@@ -142,6 +142,27 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS quoteAccessKeys (
+    ownerId TEXT PRIMARY KEY,
+    publicKey TEXT NOT NULL UNIQUE,
+    allowedOriginsJson TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS quoteSubmissions (
+    ownerId TEXT NOT NULL,
+    requestId TEXT NOT NULL,
+    contentDigest TEXT NOT NULL,
+    recordId TEXT NOT NULL,
+    resultType TEXT NOT NULL,
+    bookRevision TEXT NOT NULL,
+    originalSubmissionJson TEXT NOT NULL,
+    internalOutcomeJson TEXT NOT NULL,
+    customerResponseJson TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    PRIMARY KEY (ownerId, requestId),
+    FOREIGN KEY (ownerId) REFERENCES users(id)
   )`
 ];
 

@@ -1,0 +1,146 @@
+import crypto from 'node:crypto';
+import { db, ownerQuery } from './db.js';
+import { requireAuth } from './auth.js';
+import { loadPricebook } from '../priceBookService.js';
+import {
+  ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
+  saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
+  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext
+} from './quoteDoneBridge.js';
+
+const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+const limitedText = value => typeof value === 'string' ? value : null;
+const budgets = new Map();
+function publicLimit(req,res,next) {
+  const key=req.tenantOwnerId+':'+req.ip,now=Date.now();
+  const prior=budgets.get(key);const budget=prior&&now-prior.startedAt<60000?prior:{startedAt:now,count:0};
+  budget.count++;budgets.set(key,budget);
+  if(budgets.size>10000)for(const [id,value] of budgets)if(now-value.startedAt>60000)budgets.delete(id);
+  if(budget.count>60)return res.status(429).json({error:'Please wait before trying again.'});
+  next();
+}
+function publicContext(req,res,next) {
+  // Public-key lookup establishes tenant authentication context, analogous to
+  // the existing user/JWT identity lookup. All subsequent tenant queries filter
+  // by this resolved ownerId; no caller ownerId is used.
+  const access=db.prepare('SELECT ownerId, allowedOriginsJson FROM quoteAccessKeys WHERE publicKey = ?').get(req.params.publicKey);
+  if(!access)return res.status(404).json({error:'Quote link not found.'});
+  const origin=req.get('Origin');
+  if(!origin||!JSON.parse(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
+  req.tenantOwnerId=access.ownerId;next();
+}
+function serviceFor(book,body) {
+  if(typeof body.serviceId!=='string')return null;
+  return book.services.find(service=>service.id?.toLowerCase()===body.serviceId.toLowerCase())||null;
+}
+function customerCatalogService(service,metadata) {
+  const definition=metadata.services.find(item=>item.serviceType===service.serviceType);
+  const knownOfferings={};
+  for(const field of definition?.customerFields||[])if(field.type==='slug') {
+    const values=service.knownOfferings?.[field.name];
+    if(object(values))knownOfferings[field.name]=Object.fromEntries(Object.entries(values).filter(([key,id])=>/^[a-z][a-z0-9_]*$/.test(key)&&uuid(id)));
+  }
+  return {id:service.id,serviceType:service.serviceType,name:typeof service.service==='string'&&service.service.trim()?service.service:definition?.name||'Service',customerFields:definition?.customerFields||[],knownOfferings,customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected')};
+}
+function unresolvedResult(reason) {
+  const quoteId=crypto.randomUUID();
+  return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason,quoteId},request:null,internalResult:null,leadEnvelope:null};
+}
+export function submitQuote(ownerId,body) {
+  if(!object(body)||!uuid(body.requestId))throw problem('A stable request UUID is required.');
+  const contentDigest=digest(body);
+  return db.transaction(()=>{
+    const existing=ownerQuery('SELECT contentDigest, customerResponseJson FROM quoteSubmissions WHERE ownerId = ? AND requestId = ?').get(ownerId,body.requestId);
+    if(existing) {
+      if(existing.contentDigest!==contentDigest)throw problem('This request ID already belongs to different submitted details.',409);
+      return {status:200,response:JSON.parse(existing.customerResponseJson)};
+    }
+    const book=loadPricebook(ownerId),service=serviceFor(book,body);
+    let calculated;
+    if(!service)calculated=unresolvedResult('The requested saved service could not be resolved. Verify the complete supplied service request.');
+    else {
+      try { calculated=calculateApplicationQuote(book,service,body); }
+      catch(error) { calculated=unresolvedResult(error.message); }
+    }
+    const response=calculated.customerResult;
+    const recordId=crypto.randomUUID(),createdAt=new Date().toISOString();
+    const internal={ownerId,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
+    const contact=object(body.contact)?body.contact:{};
+    const describedService=limitedText(body.serviceRequest)||service?.service||'Customer service request';
+    if(response.resultType==='INSTANT_ESTIMATE_READY') {
+      ownerQuery(`INSERT INTO quotes (id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(body.customerInputs??null),JSON.stringify(internal),'INSTANT','customer',createdAt);
+    } else {
+      ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify(internal),'quote_review','NEEDS REVIEW',createdAt);
+    }
+    ownerQuery('INSERT INTO quoteRequests (id,ownerId,describedService,estimatedValue,createdAt) VALUES (?,?,?,?,?)').run(recordId,ownerId,describedService,null,createdAt);
+    ownerQuery(`INSERT INTO quoteSubmissions (ownerId,requestId,contentDigest,recordId,resultType,bookRevision,originalSubmissionJson,internalOutcomeJson,customerResponseJson,createdAt)
+      VALUES (?,?,?,?,?,?,?,?,?,?)`).run(ownerId,body.requestId,contentDigest,recordId,response.resultType,bookRevision(book),JSON.stringify(body),JSON.stringify(internal),JSON.stringify(response),createdAt);
+    // Returning from this transaction commits every row before the route sends
+    // an acknowledgement. A constraint/write/commit failure returns no success.
+    return {status:201,response};
+  }).immediate();
+}
+function leadView(row,role) {
+  const detail=JSON.parse(row.collectedInputsJson||'{}');
+  const submitted=detail.originalSubmission||{};
+  const common={id:row.id,customerName:row.customerName,callerNumber:row.callerNumber,describedService:row.describedService,status:row.status,createdAt:row.createdAt,contact:submitted.contact??null,location:submitted.location??null,customerInputs:submitted.customerInputs??null,explicitUnknowns:submitted.explicitUnknowns??null,urgency:submitted.urgency??null,context:submitted.context??null};
+  return role==='owner'?{...common,internal:detail}:common;
+}
+export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) {
+  const owner=[requireAuth(['owner']),requireQuoteDonePlan];
+  const team=[requireAuth(['owner','staff']),requireQuoteDonePlan];
+  app.get('/api/pricebook/meta',requireAuth(['owner']),(_req,res)=>res.json(applicationMetadata()));
+  app.get('/api/pricebook/:ownerId',...owner,(req,res)=>{
+    if(req.params.ownerId!==req.tenantOwnerId)return res.status(403).json({error:'Forbidden'});
+    res.json(readApplicationBook(req.tenantOwnerId));
+  });
+  app.post('/api/pricebook/save',...owner,asyncHandler(async(req,res)=>res.json(saveApplicationBook(req.tenantOwnerId,req.body))));
+  app.post('/api/pricebook/validate',...owner,asyncHandler(async(req,res)=>res.json(validateApplicationDraft(req.tenantOwnerId,req.body))));
+  app.post('/api/pricebook/preview',...owner,asyncHandler(async(req,res)=>res.json(previewApplicationQuote(req.tenantOwnerId,req.body))));
+  app.post('/api/pricebook/services/:serviceId/approve',...owner,asyncHandler(async(req,res)=>res.json(approveApplicationService(req.tenantOwnerId,req.params.serviceId,req.body))));
+  app.post('/api/quotedone/access',...owner,asyncHandler(async(req,res)=>{
+    const origins=req.body?.allowedOrigins;
+    if(!Array.isArray(origins)||!origins.length||origins.length>20)throw problem('Choose the website origins allowed to use this quote link.');
+    for(const origin of origins) {
+      let url;try{url=new URL(origin);}catch{throw problem('Each allowed website must be a valid origin.');}
+      const loopback=['localhost','127.0.0.1','[::1]'].includes(url.hostname);
+      if(url.origin!==origin||url.username||url.password||!(url.protocol==='https:'||(process.env.NODE_ENV!=='production'&&loopback&&url.protocol==='http:')))throw problem('Use an HTTPS origin; local HTTP is allowed only for non-production verification.');
+    }
+    let access=ownerQuery('SELECT publicKey FROM quoteAccessKeys WHERE ownerId = ?').get(req.tenantOwnerId);
+    if(!access) {
+      access={publicKey:crypto.randomBytes(24).toString('base64url')};
+      ownerQuery('INSERT INTO quoteAccessKeys (ownerId,publicKey,allowedOriginsJson,createdAt) VALUES (?,?,?,?)').run(req.tenantOwnerId,access.publicKey,JSON.stringify([...new Set(origins)]),new Date().toISOString());
+    }else ownerQuery('UPDATE quoteAccessKeys SET allowedOriginsJson = ? WHERE ownerId = ?').run(JSON.stringify([...new Set(origins)]),req.tenantOwnerId);
+    res.json({...access,allowedOrigins:origins});
+  }));
+  app.get('/api/quotedone/access',...owner,(req,res)=>{
+    const row=ownerQuery('SELECT publicKey,allowedOriginsJson FROM quoteAccessKeys WHERE ownerId = ?').get(req.tenantOwnerId);
+    res.json(row?{publicKey:row.publicKey,allowedOrigins:JSON.parse(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
+  });
+  app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
+    const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
+    res.json({services:book.services.filter(service=>uuid(service.id)&&meta.services.some(m=>m.serviceType===service.serviceType)).map(service=>customerCatalogService(service,meta))});
+  });
+  app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
+    const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
+  }));
+  app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
+    const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
+  }));
+  app.get('/api/leads',...team,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));
+  app.get('/api/leads/:id',...team,(req,res)=>{
+    const row=ownerQuery('SELECT * FROM leads WHERE ownerId = ? AND id = ?').get(req.tenantOwnerId,req.params.id);
+    if(!row)return res.status(404).json({error:'Lead not found.'});res.json(leadView(row,req.role));
+  });
+  app.patch('/api/leads/:id',...team,(req,res)=>{
+    if(!['NEEDS REVIEW','DISMISSED'].includes(req.body?.status))throw problem('Choose a supported lead status.');
+    const result=ownerQuery('UPDATE leads SET status = ? WHERE ownerId = ? AND id = ?').run(req.body.status,req.tenantOwnerId,req.params.id);
+    if(!result.changes)return res.status(404).json({error:'Lead not found.'});res.json({success:true});
+  });
+  app.get('/api/quotes',...team,(req,res)=>{
+    const quotes=ownerQuery('SELECT id,serviceType,status,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>{const internal=JSON.parse(row.resultJson||'{}');return {id:row.id,serviceType:row.serviceType,status:row.status,createdAt:row.createdAt,result:internal.customerResult,...(req.role==='owner'?{internal}:{})};});res.json({quotes});
+  });
+}

@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken';
 import { migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
 import { CREATE_TABLE_STATEMENTS } from './schema.js';
-import { generateQuote, sanitizeForCustomer } from '../quoteEngine.js';
+import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
+import { bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
 import {
   centsToDollars,
   dollarsToCents,
@@ -301,9 +302,7 @@ app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requ
   return res.json(draftReviewPayload(req.tenantOwnerId, req.params.draftId));
 }));
 
-app.get('/api/pricebook/meta', requireAuth(['owner']), (_req, res) => {
-  res.json({ services: getServiceMetadata() });
-});
+installQuoteDoneRoutes(app, { asyncHandler, requireQuoteDonePlan });
 
 app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
@@ -313,99 +312,9 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan,
   });
 }));
 
-app.post('/api/pricebook/validate', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
-  return res.json(pricebookDraftValidation(req.body || {}));
-});
-
-app.post('/api/pricebook/preview', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
-  const converted = dollarsToCents({
-    service: req.body?.service || {},
-    defaults: req.body?.defaults || {}
-  });
-  const service = converted.service;
-  const result = generateQuote({
-    serviceType: service.serviceType,
-    customerInputs: req.body?.customerInputs || {},
-    ownerPricing: service,
-    businessDefaults: converted.defaults,
-    callerType: 'owner'
-  });
-  if (Array.isArray(result.missingOwnerFields)) {
-    result.missingOwnerLabels = result.missingOwnerFields.map(field => ownerFieldLabel(service.serviceType, field));
-  }
-  return res.json(result);
-}));
-
-app.post('/api/pricebook/save', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
-  try {
-    const { statuses } = saveValidatedPricebook(req.tenantOwnerId, req.body || {});
-    return res.json({ success: true, statuses });
-  } catch (error) {
-    const validationError = new Error(contractorValidationMessage(error.message, req.body || {}));
-    validationError.statusCode = 400;
-    throw validationError;
-  }
-}));
-
-app.get('/api/pricebook/:ownerId', requireAuth(['owner']), requireQuoteDonePlan, (req, res) => {
-  if (req.params.ownerId !== req.tenantOwnerId) return res.status(403).json({ error: 'Forbidden' });
-  return res.json(centsToDollars(loadPricebook(req.tenantOwnerId)));
-});
-
-app.post('/api/quote/calculate', requireAuth(['owner', 'staff']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
-  const tenantOwnerId = req.tenantOwnerId;
-  const { serviceType, customerInputs = {}, callerType = 'owner' } = req.body || {};
-  const pricebook = loadPricebook(tenantOwnerId);
-  const service = (pricebook.services || []).find(entry => entry.serviceType === serviceType || entry.service === serviceType);
-  if (!service) return res.status(404).json({ error: 'Service not found in price book' });
-
-  // CUSTOMER ELIGIBILITY -- established BEFORE quote generation.
-  // A customer may only be quoted from a service that is currently
-  // QUOTING LIVE. That is the same status the owner interface shows, so a
-  // service reading NEEDS PRICING -- incomplete pricing, an unconfirmed
-  // AI-suggested or interview draft, or an offering the owner disabled --
-  // can never produce a customer estimate. No other service, product or rate
-  // is substituted; the customer is told a person will follow up.
-  // Owner and staff callers are unaffected and keep full diagnostics.
-  if (callerType === 'customer') {
-    const status = pricebookStatuses(pricebook)
-      .find(entry => entry.serviceType === service.serviceType);
-    if (!status || status.status !== 'QUOTING LIVE') {
-      const deferred = {
-        resultType: 'ESTIMATE_REQUIRES_REVIEW',
-        reviewReason: 'Service is not currently active for instant quoting'
-      };
-      insertQuoteLog(
-        tenantOwnerId, null, service.serviceType, customerInputs,
-        { ...deferred, missingOwnerFields: status?.missingOwnerFields || [] },
-        callerType, 'SERVICE_NOT_LIVE'
-      );
-      return res.json(sanitizeForCustomer(deferred));
-    }
-  }
-
-  const result = generateQuote({
-    serviceType: service.serviceType,
-    customerInputs,
-    ownerPricing: service,
-    businessDefaults: pricebook.defaults || {},
-    callerType
-  });
-  insertQuoteLog(
-    tenantOwnerId,
-    result.quoteId,
-    service.serviceType,
-    customerInputs,
-    result,
-    callerType,
-    result.urgencyFlags?.join('; ') || null
-  );
-  return res.json(callerType === 'customer' ? sanitizeForCustomer(result) : result);
-}));
-
-app.post('/api/quote/test', asyncHandler(async (req, res) => {
+app.post('/api/quote/test', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   if (process.env.NODE_ENV === 'production') return res.status(404).json({ error: 'Not found' });
-  const result = generateQuote(req.body || {});
+  const result = previewApplicationQuote(req.tenantOwnerId, req.body || {});
   console.log('[quote-test-breakdown]', JSON.stringify(result, null, 2));
   return res.json(result);
 }));
@@ -420,7 +329,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     operator: profileState.operator,
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
-    pricebookStatuses: pricebookStatuses(book),
+    pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.
     previewActivity: previewDashboardActivity(),
     sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']

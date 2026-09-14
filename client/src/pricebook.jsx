@@ -1,3 +1,5 @@
+import {PricingTree,CustomerMeasurements,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
+import {QuoteAccess} from './quotedone.jsx';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
@@ -16,27 +18,13 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function JsonEditor({ value, onChange }) {
-  const [raw, setRaw] = useState(value !== undefined && value !== null ? JSON.stringify(value, null, 2) : '');
-  const [invalid, setInvalid] = useState(false);
-  useEffect(() => {
-    setRaw(value !== undefined && value !== null ? JSON.stringify(value, null, 2) : '');
-  }, [value]);
-  function commit() {
-    if (!raw.trim()) { setInvalid(false); onChange(undefined); return; }
-    try {
-      onChange(JSON.parse(raw));
-      setInvalid(false);
-    } catch {
-      setInvalid(true);
-    }
-  }
-  return (
-    <>
-      <Textarea className={invalid ? 'invalid' : ''} rows="6" value={raw} onChange={event => setRaw(event.target.value)} onBlur={commit} />
-      {invalid && <span className="field-error">Enter valid JSON before saving.</span>}
-    </>
-  );
+function JsonEditor({value,onChange}) {
+  const text=v=>v===undefined||v===null?'':typeof v==='string'?v:JSON.stringify(v,null,2);
+  const [raw,setRaw]=useState(text(value)),[invalid,setInvalid]=useState(false);
+  const emitted=useRef(value);
+  useEffect(()=>{if(value!==emitted.current){emitted.current=value;setRaw(text(value));}},[value]);
+  function change(raw){setRaw(raw);if(!raw.trim()){setInvalid(false);emitted.current=undefined;onChange(undefined);return;}try{const parsed=JSON.parse(raw);setInvalid(false);emitted.current=parsed;onChange(parsed);}catch{setInvalid(true);emitted.current=raw;onChange(raw);}}
+  return <><Textarea aria-invalid={invalid} rows="6" value={raw} onChange={e=>change(e.target.value)}/>{invalid&&<span className="field-error">Enter valid JSON before saving.</span>}</>;
 }
 
 function MoneyInput({ value, onChange, money, kind }) {
@@ -52,7 +40,7 @@ function MoneyInput({ value, onChange, money, kind }) {
 function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] }) {
   const domain = definition.shapedKeys;
   const service = useContext(PricingContext);
-  const kind = moneyKindForField(service.serviceType, definition.field, servicePricing(service));
+  const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
   const map = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   const fixed = Array.isArray(domain.keys);
   const selectable = domain.ownerSelectable === true;
@@ -290,7 +278,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
 
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [] }) {
   const service = useContext(PricingContext);
-  const kind = moneyKindForField(service.serviceType, definition.field, servicePricing(service));
+  const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
   let control;
   if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;
@@ -302,7 +290,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       </Select>
     );
   } else if (definition.type === 'json') {
-    control = definition.shapedKeys
+    control = definition.tree ? <PricingTree value={value} onChange={onChange} definition={definition}/> : definition.shapedKeys
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} />
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
@@ -567,6 +555,8 @@ export default function PriceBook() {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [contract,setContract] = useState({});
+  const [newServiceType,setNewServiceType] = useState('');
 
   async function load() {
     const [dash, state, meta] = await Promise.all([
@@ -585,8 +575,7 @@ export default function PriceBook() {
         const index = services.findIndex(service => service.serviceType === incoming.serviceType);
         // Interview values are DRAFT: on-screen field-by-field confirmation
         // starts from zero here regardless of the verbal confirmation.
-        if (index >= 0) services[index] = { ...services[index], ...incoming, source:'AI_INTERVIEW', confirmedFields:{} };
-        else services.push({ ...incoming, source:'AI_INTERVIEW', confirmedFields:{} });
+        services.push({serviceType:incoming.serviceType,service:incoming.service,pricing:incoming.pricing||incoming.fields||{},source:'AI_INTERVIEW',active:false,tiers:incoming.tiers||[],confirmedFields:{}});
       }
       sessionStorage.removeItem('otc_pricebook_draft');
     }
@@ -598,6 +587,7 @@ export default function PriceBook() {
     setDashboard(dash);
     setOnboarding(state);
     setMetadata(meta.services || []);
+    setContract(meta);
     setBook({ ...loadedBook, services, defaults:{
       markupPercent:30, markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0,
       rangeBufferPercent:10, ...(loadedBook.defaults || {})
@@ -652,7 +642,7 @@ export default function PriceBook() {
       setPreviewLoading(false);
       return () => { current = false; };
     }
-    try { validatePricebookNumericDraft(book); }
+    try { if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.'); }
     catch (problem) {
       setPreviewLoading(false);
       setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:problem.message });
@@ -662,7 +652,7 @@ export default function PriceBook() {
     const timer = setTimeout(() => {
       api('/api/pricebook/preview', {
         method:'POST',
-        body:{ service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs }
+        body:{ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs }
       }).then(result => { if (current) setPreview(result); })
         .catch(nextError => { if (current) setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); })
         .finally(() => { if (current) setPreviewLoading(false); });
@@ -695,7 +685,7 @@ export default function PriceBook() {
   async function save() {
     setSaving(true); setError(null);
     try {
-      validatePricebookNumericDraft(book);
+      if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.');
       const result = await api('/api/pricebook/save', { method:'POST', body:book });
       setStatuses(result.statuses || []);
       const loaded = await api(`/api/pricebook/${dashboard.ownerId}`);
@@ -723,13 +713,9 @@ export default function PriceBook() {
       tiers:[], source:'AI_SUGGESTED', confirmedFields:{},
       validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {})
     };
-    const services = existingIndex >= 0
-      ? book.services.map((service,index) => index === existingIndex
-          ? { ...service, ...draftFields, starterSuggestion:item, source:'AI_SUGGESTED', confirmedFields:{} }
-          : service)
-      : [...book.services, next];
-    setBook({ ...book, services });
-    setSelectedType(editorServiceKey(services[existingIndex >= 0 ? existingIndex : services.length - 1], existingIndex >= 0 ? existingIndex : services.length - 1));
+    const services=[...book.services,{...next,active:false}];
+    setBook({...book,services});
+    setSelectedType(editorServiceKey(services[services.length-1],services.length-1));
   }
 
   if (error && !book) return <div className="center-state"><ErrorMessage error={error} /></div>;
@@ -805,7 +791,7 @@ export default function PriceBook() {
           </section>
         )}
         <div className="pricebook-layout">
-          <aside className="service-list">
+          <aside className="service-list"><Select aria-label="New service type" value={newServiceType} onChange={e=>setNewServiceType(e.target.value)}><option value="">Choose service type</option>{metadata.map(m=><option key={m.serviceType} value={m.serviceType}>{m.name}</option>)}</Select><Button variant="secondary" disabled={!newServiceType} onClick={()=>{const m=metadata.find(m=>m.serviceType===newServiceType);const service={serviceType:m.serviceType,service:m.name,source:'MANUAL',active:false,pricing:{},tiers:[],validationInputs:{}};const index=book.services.length;setBook({...book,services:[...book.services,service]});setSelectedType(editorServiceKey(service,index));}}>Add service</Button>
             <p className="eyebrow">SERVICES</p>
             {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
@@ -830,6 +816,7 @@ export default function PriceBook() {
             <PricingContext.Provider value={selected}>
             <div className="editor-grid">
               <div className="editor-column">
+                {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
                 {/* REQUIRED PRICING — open and visually dominant.
                     Reference: pricebook-editor "ESSENTIALS" card. */}
                 <section className="editor-section essentials">
@@ -844,7 +831,7 @@ export default function PriceBook() {
                     </span>
                   </div>
 
-                  <Toggle checked={selected.active !== false} onChange={active => replaceSelected({ ...selected, active })} label="Enable quoting for this service" />
+                  <Toggle checked={selected.active === true} onChange={active => replaceSelected({ ...selected, active })} label="Enable quoting for this service" />
 
                   {requiredMissing.length > 0 && (
                     <div className="blocker-drawer">
@@ -893,7 +880,7 @@ export default function PriceBook() {
                 {optionalFields.length > 0 && (
                   <Disclosure
                     title="Optional prices and add-on charges"
-                    subtitle="Only charged when the job includes them. Leave blank to skip."
+                    subtitle="Selected scope needs its configured price; missing pricing returns review."
                     summaryChip={`${optionalSet} OF ${optionalFields.length} SET`}
                     blockerCount={optionalMissing.length && aiSourced ? optionalMissing.length : 0}
                   >
@@ -968,6 +955,7 @@ export default function PriceBook() {
                   </Disclosure>
                 )}
 
+                {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by the measured contract.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
                 {/* GOOD / BETTER / BEST — collapsed until the owner opts in. */}
                 <Disclosure
                   title="Good / Better / Best tiers"
@@ -1016,16 +1004,16 @@ export default function PriceBook() {
                         <ExactNumericInput value={book.defaults.taxPercent} onChange={value => updateDefault('taxPercent', value)} />
                       </Field>
                     )}
-                    <Notice>Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
+                    <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
                   </Disclosure>
                 </div>
               </div>
-              <Preview preview={preview} loading={previewLoading} status={selectedStatus} />
+              <div><section className="editor-section"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p><CustomerMeasurements fields={selectedMeta.customerFields} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>
-        <ErrorMessage error={error} />
+        {contract.engineVersion&&<QuoteAccess/>}<ErrorMessage error={error} />
         {draftValidationErrors.length > 0 && (
           <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
         )}

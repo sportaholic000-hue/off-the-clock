@@ -7,6 +7,8 @@ import { go, setToken } from './api.js';
 
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { label: 'Leads', path: '/leads', icon: BookOpen },
+  { label: 'Quotes', path: '/quotes', icon: BookOpen },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/onboarding?step=8', icon: CalendarDays },
