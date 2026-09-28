@@ -2,10 +2,11 @@ import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { requireAuth } from './auth.js';
 import { loadPricebook } from '../priceBookService.js';
+import { hasCallbackContact } from './quoteContact.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
-  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches
+  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName
 } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -26,7 +27,14 @@ function publicContext(req,res,next) {
   // by this resolved ownerId; no caller ownerId is used.
   const access=db.prepare('SELECT ownerId, allowedOriginsJson FROM quoteAccessKeys WHERE publicKey = ?').get(req.params.publicKey);
   if(!access)return res.status(404).json({error:'Quote link not found.'});
-  const origin=req.get('Origin');
+  let origin=req.get('Origin');
+  // Same-origin browser GETs omit Origin. Only that read path may use the
+  // browser's same-origin Fetch Metadata plus Referer, still checked against
+  // the owner's exact allowlist. Never infer authorization from Host or proxy
+  // headers. A supplied Origin always wins, including a denied/null origin.
+  if(!origin&&req.method==='GET'&&req.get('Sec-Fetch-Site')==='same-origin') {
+    try { origin=new URL(req.get('Referer')).origin; } catch { /* deny below */ }
+  }
   if(!origin||!JSON.parse(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
   req.tenantOwnerId=access.ownerId;next();
 }
@@ -41,7 +49,7 @@ function customerCatalogService(service,metadata) {
     const values=service.knownOfferings?.[field.name];
     if(object(values))knownOfferings[field.name]=Object.fromEntries(Object.entries(values).filter(([key,id])=>/^[a-z][a-z0-9_]*$/.test(key)&&uuid(id)));
   }
-  return {id:service.id,serviceType:service.serviceType,name:typeof service.service==='string'&&service.service.trim()?service.service:definition?.name||'Service',customerFields:definition?.customerFields||[],knownOfferings,customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected')};
+  return {id:service.id,serviceType:service.serviceType,name:applicationServiceName(service),customerFields:definition?.customerFields||[],knownOfferings,customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected')};
 }
 function unresolvedResult(reason) {
   const quoteId=crypto.randomUUID();
@@ -56,6 +64,9 @@ export function submitQuote(ownerId,body) {
       if(existing.contentDigest!==contentDigest)throw problem('This request ID already belongs to different submitted details.',409);
       return {status:200,response:JSON.parse(existing.customerResponseJson)};
     }
+    // Owner ruling 2026-09-27: every estimate request needs contact, including
+    // instant estimates. Exact retries above are immutable historical receipts.
+    if(!hasCallbackContact(body.contact))throw problem('Enter a valid email address or phone number before submitting an estimate request.',422);
     const book=loadPricebook(ownerId),service=serviceFor(book,body);
     let calculated;
     if(!service)calculated=unresolvedResult('The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.');
@@ -92,6 +103,7 @@ function leadView(row,role) {
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) {
   const owner=[requireAuth(['owner']),requireQuoteDonePlan];
   const team=[requireAuth(['owner','staff']),requireQuoteDonePlan];
+  const leadTeam=[requireAuth(['owner','staff'])]; // CRM is included on Operator.
   app.get('/api/pricebook/meta',requireAuth(['owner']),(_req,res)=>res.json(applicationMetadata()));
   app.get('/api/pricebook/:ownerId',...owner,(req,res)=>{
     if(req.params.ownerId!==req.tenantOwnerId)return res.status(403).json({error:'Forbidden'});
@@ -130,12 +142,12 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) 
   app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
   }));
-  app.get('/api/leads',...team,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));
-  app.get('/api/leads/:id',...team,(req,res)=>{
+  app.get('/api/leads',...leadTeam,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));
+  app.get('/api/leads/:id',...leadTeam,(req,res)=>{
     const row=ownerQuery('SELECT * FROM leads WHERE ownerId = ? AND id = ?').get(req.tenantOwnerId,req.params.id);
     if(!row)return res.status(404).json({error:'Lead not found.'});res.json(leadView(row,req.role));
   });
-  app.patch('/api/leads/:id',...team,(req,res)=>{
+  app.patch('/api/leads/:id',...leadTeam,(req,res)=>{
     if(!['NEEDS REVIEW','DISMISSED'].includes(req.body?.status))throw problem('Choose a supported lead status.');
     const result=ownerQuery('UPDATE leads SET status = ? WHERE ownerId = ? AND id = ?').run(req.body.status,req.tenantOwnerId,req.params.id);
     if(!result.changes)return res.status(404).json({error:'Lead not found.'});res.json({success:true});

@@ -58,3 +58,12 @@ priced option includes; shared exclusions disclosed at top
 level; single unnamed option uses unprefixed wording; no
 "null tier" in output; customer sanitization preserves
 per-option disclaimers and hides line items.
+
+
+## QuoteDone audit repair candidate — September 27, 2026
+
+Current repair work starts at completion `9670fdb` on `codex/quotedone-audit-repairs-20260927`. The accepted 19-file engine is unchanged. Reproduced application defects are repaired; the new targeted HTTP/browser controls have passed development runs. Full committed-candidate verification is in progress; see the final repair report when available. This is not a pass for the whole unfinished Phase 2–6 scope.
+
+The owner now requires a callback contact for every estimate request. Supported measured inputs may quote; untriaged additional scope/unknowns and unsupported contracts require review. Both fencing services, exterior painting and CUSTOM remain wholly review-only. Operator CRM access is separate from QuoteDone pricing permission.
+
+The running production build, live data, provider integrations, published public pages/demo, backup restoration and multi-instance operation have not been accepted by these local tests. See `../docs/quotedone-completion/REPAIR_CONTRACT_20260927.md` and `OWNER_DECISIONS.md` for governing rules and capability limits.

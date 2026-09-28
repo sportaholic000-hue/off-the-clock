@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { wholeRequestIssues } from './quoteRequestScope.js';
 import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
@@ -222,6 +223,8 @@ export function previewApplicationQuote(ownerId,input) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
   const raw=uniqueApplicationService(saved,input.serviceId);if(!raw)throw problem('Save this service before previewing it.',409);
+  const scopeReview=applicationScopeReview(raw,input,{preview:true});
+  if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
@@ -230,6 +233,8 @@ export function previewApplicationQuote(ownerId,input) {
   return {...result,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission) {
+  const scopeReview=applicationScopeReview(raw,submission);
+  if(scopeReview)return scopeReview;
   const service=projection(raw);
   const current=approvalCurrent(raw,book)&&!seasonalDecision(raw,book);
   // Active-for-customers is a trusted application eligibility decision. Preserve
@@ -241,6 +246,16 @@ export function calculateApplicationQuote(book,raw,submission) {
   let leadEnvelope=null;
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
   return {request,internalResult,customerResult,leadEnvelope,applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
+}
+export function applicationServiceName(raw) {
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  return typeof raw.service==='string'&&raw.service.trim()?raw.service:definition?.service||'Service';
+}
+function applicationScopeReview(raw,submission,options) {
+  const issues=wholeRequestIssues(submission,applicationServiceName(raw),options);
+  if(!issues.length)return null;
+  const quoteId=crypto.randomUUID();
+  return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason:issues.join(' '),issues,quoteId,stage:'whole_request_scope'},request:null,internalResult:null,leadEnvelope:null};
 }
 export function applicationMetadata() {
   const legacy=getServiceMetadata();

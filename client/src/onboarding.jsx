@@ -239,7 +239,8 @@ function JurisdictionStep({ state, refresh, back, next }) {
     if (deferred) return next();
     setError(null);
     try {
-      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:Number(form.taxPercent || 0) } });
+      // Preserve the entered decimal spelling until the server validates it.
+      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent } });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }

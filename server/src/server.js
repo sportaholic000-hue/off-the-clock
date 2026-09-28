@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import { verifyExactJson } from './exactJson.js';
+import { parseOwnerNumericInput } from '../priceBookMoney.js';
 import jwt from 'jsonwebtoken';
 import { migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
@@ -83,7 +85,7 @@ function requireQuoteDonePlan(req, res, next) {
 migrate();
 
 app.use(cors());
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
@@ -133,7 +135,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
 
   if (resolved.needsOwnerConfirmation) {
     const taxMode = req.body?.taxMode;
-    const taxPercent = Number(req.body?.taxPercent);
+    const taxPercent = parseOwnerNumericInput(req.body?.taxPercent,{path:'taxPercent'});
     if (!taxModes.has(taxMode)) {
       const error = new Error('Choose how you handle sales tax on customer invoices');
       error.statusCode = 400;
