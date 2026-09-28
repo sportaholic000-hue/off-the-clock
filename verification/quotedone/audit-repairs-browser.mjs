@@ -56,7 +56,7 @@ try {
   await seed(q,body);await send(q,'Retry saved request',status);
   await q.getByLabel('Service',{exact:true}).waitFor();assert.equal(await q.getByLabel('Project location',{exact:true}).inputValue(),body.location);assert.equal(await q.getByLabel('Urgency',{exact:true}).inputValue(),body.urgency);
   assert.equal(await q.getByLabel('Additional project details',{exact:true}).inputValue(),body.context||'');
-  await q.reload();await q.getByLabel('Service',{exact:true}).waitFor();assert.equal(await q.getByLabel('Project location',{exact:true}).inputValue(),body.location);assert.equal(await q.getByLabel('Service',{exact:true}).inputValue(),id);
+  await q.reload();await q.getByLabel('Service',{exact:true}).waitFor();assert.equal(await q.getByLabel('Project location',{exact:true}).inputValue(),body.location);await q.getByLabel('Service',{exact:true}).locator('option[value="'+id+'"]').waitFor({state:'attached'});assert.equal(await q.getByLabel('Service',{exact:true}).inputValue(),id);
   await q.getByLabel('Additional project details',{exact:true}).fill('');const corrected=await send(q);assert.notEqual(corrected.body.requestId,body.requestId);assert.equal(corrected.result.midEstimate,status===409?55:50);assert.equal(rows(corrected.body).length,1);
   if(status===409){assert.equal(rows(body).length,1);assert.equal(JSON.parse(rows(body)[0].customerResponseJson).midEstimate,50);}else assert.equal(rows(body).length,0);
   await q.screenshot({path:path.join(evidence,'corrected-'+status+'.png'),fullPage:true});await q.close();
