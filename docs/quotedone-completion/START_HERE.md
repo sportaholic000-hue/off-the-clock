@@ -1,3 +1,9 @@
+# Current repair review — September 27, 2026
+
+Start with [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md), [REPAIR_STATUS_20260927.json](REPAIR_STATUS_20260927.json) and [REPAIR_CONTRACT_20260927.md](REPAIR_CONTRACT_20260927.md). The current candidate is `codex/quotedone-audit-repairs-20260927`, based on preserved completion `9670fdb`. All accepted local repair groups passed; broader release gates remain open. The assignment below is the preserved earlier workflow authorization. Its original branch and checkpoint references are historical for this repair.
+
+---
+
 # Authorized assignment: finish the QuoteDone application workflow
 
 **Owner authorization granted September 13, 2026.** This is an implementation assignment, not a proposal awaiting another approval. The owner approved the complete, isolated, non-production quote-or-lead workflow and the bounded environment work below.

@@ -1,3 +1,9 @@
+# Current acceptance evidence
+
+The workflow criteria below still apply. Current September 27 repair results are recorded in [REPAIR_STATUS_20260927.json](REPAIR_STATUS_20260927.json) and [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md). `status.json` preserves the earlier e936370 checkpoint. No local acceptance record certifies production launch.
+
+---
+
 # QuoteDone non-production application acceptance
 
 These are exit criteria for the owner-authorized workflow, not an assertion that they have passed. Use the real running application, authenticated HTTP and browser transport with synthetic tenants and isolated persistent stores. Keep them in `status.json`; do not substitute unit-test counts for these rows.

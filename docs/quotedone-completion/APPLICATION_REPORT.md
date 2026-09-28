@@ -1,3 +1,9 @@
+# Historical application checkpoint
+
+This report records implementation `e936370`. For the current September 27 repair candidate, verified fixes, remaining limits and evidence, read [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md). The earlier report remains unchanged below as historical evidence.
+
+---
+
 # QuoteDone application completion evidence
 
 **The authorized non-production owner → approved book → customer quote OR durable review lead → owner/staff view workflow passed its committed-candidate verification.** See status.json for every required acceptance row.

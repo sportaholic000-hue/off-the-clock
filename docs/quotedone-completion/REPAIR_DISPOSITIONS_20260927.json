@@ -1,0 +1,298 @@
+{
+  "testedApplicationCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+  "reviewCommit": "d218c85c491a33cb301816d52e593b4f913a363c",
+  "rows": {
+    "A01": [
+      "Verified candidate",
+      "Repair branch codex/quotedone-audit-repairs-20260927; review commit d218c85c491a33cb301816d52e593b4f913a363c. Application/runtime/regression commit f96c14a049f68c1d32d54420d514d2e088fe722e; application bytes are identical. The accepted completion/main branches are preserved."
+    ],
+    "A02": [
+      "Verified unchanged",
+      "All 19 accepted engine files retain tree dcd481193b10c3cfc667cb23d22fb41b16322cff."
+    ],
+    "A03": [
+      "Verified execution",
+      "Fresh committed-source runtime, application, browser, full regression and build completed; exact logs/exits and source bindings are packaged."
+    ],
+    "A04": [
+      "Coverage improved; not exhaustive",
+      "Positive fixtures no longer declare unresolved notes/unknowns. Whole-request negatives, all 20 adapters and prior suites pass; arbitrary combinations are not proved."
+    ],
+    "A05": [
+      "Unverified",
+      "No running production build identity or deployment topology established."
+    ],
+    "A06": [
+      "Partly verified",
+      "Inspected all four registered local worktrees and preserved them; cannot attest to other machines or agents."
+    ],
+    "A07": [
+      "Fixed documentation",
+      "Added floor-overlay decision, corrected original >=300 provenance, reconciled main master-toggle rule, and made current no-assumption voice rules explicit."
+    ],
+    "B01": [
+      "Verified controls",
+      "Existing exact arithmetic controls pass; wire-token fidelity now prevents loss before route validation."
+    ],
+    "B02": [
+      "Verified fixed",
+      "Lossy raw HTTP decimals reject before any write, including BOM-prefixed JSON, nested maps/tiers/factors and customer measurements. Valid 200.01 and 90071992547409.90 persist and quote unchanged."
+    ],
+    "B03": [
+      "Verified controls",
+      ".0049/.0050/.0051 dollar rates produce $49/$50/$51, through real HTTP and persistence."
+    ],
+    "B04": [
+      "Verified controls",
+      "Invalid fractional-cent fixed amounts reject; unit rates retain their separate precision contract."
+    ],
+    "B05": [
+      "Unverified breadth",
+      "No exhaustive field-by-consumer monetary classification proof; repair only demonstrated mismatches."
+    ],
+    "B06": [
+      "Verified controls",
+      "1200% markup on $100 yields $1300; no arbitrary commercial cap warranted."
+    ],
+    "B07": [
+      "Verified controls",
+      "Markup and true margin remain distinct; invalid margin reviews."
+    ],
+    "B08": [
+      "Business meaning unresolved",
+      "Eligible-cost margin is not automatically whole-job/net-profit margin."
+    ],
+    "B09": [
+      "Verified controls",
+      "Final selling-price categories are not marked up again in tested cases."
+    ],
+    "B10": [
+      "Confirmed intended limits",
+      "Other bounds exist; this is not itself evidence of a defect or authority to remove them."
+    ],
+    "B11": [
+      "Verified controls",
+      "TAX_MATERIALS follows the explicit taxability map, including taxable labor."
+    ],
+    "B12": [
+      "Unverified external facts",
+      "Arithmetic tests do not validate a contractor's jurisdictional tax choices."
+    ],
+    "B13": [
+      "Verified controls",
+      "Mode-specific minimum/tax/range ordering survives the financial and application controls."
+    ],
+    "B14": [
+      "Verified fixed boundary",
+      "Structured missing facts and explicit external unknowns review; all original details are retained."
+    ],
+    "B15": [
+      "Verified controls",
+      "Selected unpriced bagging reviews; zero, missing and fee applicability remain distinct."
+    ],
+    "B16": [
+      "Confirmed omission fixed; breadth remains bounded",
+      "Unknown/additional scope cannot release the selected-service subtotal. Existing selected-fee/add-on controls pass; no universal combination claim."
+    ],
+    "C01": [
+      "Verified fixed",
+      "Array, text and object unknowns block instant estimates on public, authenticated and preview paths."
+    ],
+    "C02": [
+      "Verified fixed",
+      "Untriaged context, differing serviceRequest and unsupported envelope fields require complete-request review."
+    ],
+    "C03": [
+      "Verified fixed",
+      "Text asking for bagging/removal cannot be ignored when structured inputs say No; it triggers review."
+    ],
+    "C04": [
+      "Safely restricted",
+      "No unproven scope/logistics classifier was added. Nonempty notes, including benign access notes, currently require review."
+    ],
+    "C05": [
+      "Unverified external facts",
+      "Exact/customer-measured labels are customer declarations, not independent measurements."
+    ],
+    "C06": [
+      "Unverified external facts",
+      "Offering identity matching does not establish the customer's actual material or repair condition."
+    ],
+    "C07": [
+      "Business contract incomplete",
+      "Several price-affecting category labels lack observable owner-approved thresholds."
+    ],
+    "C08": [
+      "Verified intended behavior",
+      "Class 2 defaults exist; they do not invent Class 1 owner rates. Preserve visible approved effective values."
+    ],
+    "C09": [
+      "Unverified external facts",
+      "Default/owner factors define a pricing rule, not independently proven consumption or effort."
+    ],
+    "C10": [
+      "Business contract incomplete",
+      "Repair allowances/hours need a bounded offering; no empirical completeness proof supplied."
+    ],
+    "C11": [
+      "Verified supported boundary",
+      "Real browser measured outline succeeds; invalid closure reviews. Other shapes remain unsupported."
+    ],
+    "C12": [
+      "Verified controls",
+      "Declared units and measured-scope contracts retained; no floor-to-wall or total-to-partial substitution justified."
+    ],
+    "D01": [
+      "Intended review-only scope",
+      "Purchase-cost roofing underlayment needs a coverage/package contract; retain guard."
+    ],
+    "D02": [
+      "Intended review-only scope",
+      "Cost-priced paint needs coverage, yield, coats and purchasable packaging; retain guard."
+    ],
+    "D03": [
+      "Intended review-only scope",
+      "Hardwood/laminate/carpet underlayment cannot inherit the vinyl scalar."
+    ],
+    "D04": [
+      "Intended review-only scope",
+      "Selected stairs require a complete priced package, not just a step rate."
+    ],
+    "D05": [
+      "Verified guard; ledger fixed",
+      "Floor overlay remains review-only; its preparation/compatibility/pricing decision is now recorded."
+    ],
+    "D06": [
+      "Intentional accepted restriction",
+      "Exact configured room thresholds still review. No wrong numeric quote was demonstrated; no custom equality policy invented."
+    ],
+    "D07": [
+      "Fixed provenance",
+      "Original default >=300 ->1.00 is explicitly acknowledged. Later accepted all-threshold equality guard remains; historical engine documents are identified as checkpoint records."
+    ],
+    "D08": [
+      "Intended review-only scope",
+      "Both fencing types review in real HTTP controls; approved post geometry is absent."
+    ],
+    "D09": [
+      "Intended review-only scope",
+      "Mixed footing labor/material allocation remains undefined."
+    ],
+    "D10": [
+      "Intended review-only scope",
+      "Gate prices require an approved width and included-scope contract."
+    ],
+    "D11": [
+      "Intended review-only scope",
+      "Siding trim requires explicit category/allocation; base siding has a passing positive control."
+    ],
+    "D12": [
+      "Intended review-only scope",
+      "Old-siding removal cannot be inferred from replacement material/area."
+    ],
+    "D13": [
+      "Intended review-only scope",
+      "Concrete demolition needs old-slab facts and priced removal/disposal scope."
+    ],
+    "D14": [
+      "Intended review-only scope",
+      "Exposed aggregate needs material inclusion or an explicit all-inclusive offering."
+    ],
+    "D15": [
+      "Intended review-only scope",
+      "Commercial flat-roof insulation/coverboard requires an identified system and measured scope."
+    ],
+    "D16": [
+      "Intended review-only scope",
+      "Every exterior-painting request remains review-only in the current contract and HTTP control."
+    ],
+    "D17": [
+      "Intended review-only scope",
+      "CUSTOM remains review-only; browser preserves custom description in the stored lead."
+    ],
+    "D18": [
+      "Intended review-only scope",
+      "Interior fair/poor preparation and independent primer need approved measured offerings."
+    ],
+    "D19": [
+      "Contract limitation",
+      "Uniform per-coat offering is supported; mixed zones/different coat pricing need explicit contracts."
+    ],
+    "D20": [
+      "Intended application guard",
+      "Configured seasonal surcharge is blocked pending trusted work-date versus quote-date policy."
+    ],
+    "D21": [
+      "Business meaning unresolved",
+      "Installed selling quantity, ordered quantity and actual consumption are not interchangeable."
+    ],
+    "E01": [
+      "Verified controls",
+      "Real approval, stale revision, invalidation, identity and disabled-service checks pass."
+    ],
+    "E02": [
+      "Additional defect reproduced and fixed",
+      "Jurisdiction text 1.0000000000000001 previously saved as 1. Exact validation and raw UI text now prevent that. Jurisdiction edits invalidate approval/revision; interview routes remain draft-only."
+    ],
+    "E03": [
+      "Verified controls",
+      "Real SQLite abort/rollback and successful retry prove commit-before-ack behavior for tested paths."
+    ],
+    "E04": [
+      "Unverified operational concern",
+      "Multi-process file races, power-loss durability and backup restoration not established."
+    ],
+    "E05": [
+      "Verified and extended",
+      "Actual 400/409/413/422 browser recovery, real 500 rollback and lost-response retries; concurrency, tenant isolation and restart also pass."
+    ],
+    "E06": [
+      "Historical receipt rule preserved; expiry policy unresolved",
+      "Exact retry is immutable, including after tax/rate edits. Expiry and offer-validity policy remain a separate business decision."
+    ],
+    "E07": [
+      "Verified fixed per owner ruling",
+      "Every new estimate submission requires email or phone syntax, including instant quotes. Missing/blank/malformed contact rejects before writes; editable correction survives reload. Reachability is not asserted."
+    ],
+    "E08": [
+      "Verified fixed",
+      "Customer renders optionAvailabilityNotice; mixed tiers show it, all valid tiers omit it, all-review tiers release no price."
+    ],
+    "E09": [
+      "Verified fixed",
+      "Definitive 400/409/413/422 rejections restore details and allow correction with a new UUID. Uncertain failures keep the immutable retry payload. Restored textarea labels remain stable."
+    ],
+    "E10": [
+      "Verified fixed",
+      "Operator owners and existing authorized staff can list/read/update their tenant leads; price/calculation access stays gated. No additional seats are provisioned."
+    ],
+    "E11": [
+      "Verified fixed in tested topologies",
+      "Real cross-origin and same-origin browser catalog/submission work, preserving exact allowlist denial cases. Deployed topology remains unverified."
+    ],
+    "E12": [
+      "Verified subset; broader concern unverified",
+      "Existing owner/staff/customer/tenant/privacy controls pass; not a proof for every future/legacy projection or owner-authored text."
+    ],
+    "E13": [
+      "Unverified operational concern",
+      "No production-rate/proxy/multi-instance/storage-growth guarantee follows from the per-process limiter."
+    ],
+    "E14": [
+      "Verified synthetic subset only",
+      "Old synthetic database upgrade passes with original rows intact; real legacy-data migration remains unverified."
+    ],
+    "F01": [
+      "Fixed current specification",
+      "Current voice document forbids paced/guessed/substituted measurements and retains unknowns; old scripts are archived as history. Live voice execution is still a separate gate."
+    ],
+    "F02": [
+      "Unverified full alignment",
+      "Growth remains a 15-page review library; demo explicitly lacks real-provider acceptance. Full launch-copy/rendered-site alignment not established."
+    ],
+    "F03": [
+      "Confirmed defects closed; launch acceptance outstanding",
+      "This repair candidate is ready for independent review. Unsupported pricing contracts and unverified deployment/provider/live-data gates still prevent a universal public-launch certification."
+    ]
+  }
+}

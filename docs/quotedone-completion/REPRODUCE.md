@@ -1,3 +1,15 @@
+# Reproduce the September 27 repair candidate
+
+Current source: application/runtime/regression `f96c14a049f68c1d32d54420d514d2e088fe722e`; complete browser rerun `d218c85c491a33cb301816d52e593b4f913a363c`. The only difference is the new browser harness's Country locator; application/engine/ordinary-test bytes match. Delivery commits contain only documentation/evidence.
+
+Use the same four run-completion.mjs groups and compatible runtime described below, with fresh stores. They now run 1 runtime, 8 application, 5 browser and 9 regression commands. Set QUOTEDONE_TESTED_SHA to the source commit used for your disposable copy. Retain source hashes and failed attempts.
+
+Extract [the current repair archive](evidence/quotedone-20260927-repair-evidence.zip) and run `node inspect-repair-evidence.cjs <extracted-directory> <repository>` with QUOTEDONE_GIT set when needed. Its 504 payload hashes, both source manifests, executed bindings and accepted command groups are checked. Use final/runtime-01, final/application-01, final/regression-01 and accepted/browser-01. final/browser-01 is the preserved failed locator attempt. [REPAIR_EVIDENCE_INDEX_20260927.json](REPAIR_EVIDENCE_INDEX_20260927.json) records the archive hash and [REPAIR_EVIDENCE_INSPECTION_20260927.json](REPAIR_EVIDENCE_INSPECTION_20260927.json) records the completed read-only inspection.
+
+The remaining instructions describe the original runtime and reproduction procedure; e936370 and its inspect-evidence.mjs/EVIDENCE_INDEX.json are historical.
+
+---
+
 # Reproduce the non-production application evidence
 
 Tested implementation commit: e936370165cb23bbb0087d245ecd64bc82178fe0. Delivery documentation/evidence commits do not change these application or regression source files.

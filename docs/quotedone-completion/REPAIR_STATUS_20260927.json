@@ -1,0 +1,341 @@
+{
+  "assignment": "Repair the confirmed September 27 audit defects without inventing pricing contracts",
+  "status": "passed_for_scoped_local_repair_acceptance",
+  "candidateBranch": "codex/quotedone-audit-repairs-20260927",
+  "baseCommit": "9670fdb5c55f35a0ccddcd397f2d188b5c811844",
+  "testedApplicationCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+  "reviewAndBrowserCommit": "d218c85c491a33cb301816d52e593b4f913a363c",
+  "sourceEquivalence": {
+    "from": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+    "to": "d218c85c491a33cb301816d52e593b4f913a363c",
+    "changedFiles": [
+      "verification/quotedone/audit-repairs-browser.mjs"
+    ],
+    "applicationAndOrdinaryTestsIdentical": true
+  },
+  "engineTree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
+  "engineFiles": 19,
+  "report": "REPAIR_REPORT_20260927.md",
+  "auditDispositions": "REPAIR_DISPOSITIONS_20260927.json",
+  "evidenceIndex": "REPAIR_EVIDENCE_INDEX_20260927.json",
+  "groups": {
+    "runtime": {
+      "status": "passed",
+      "testedCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "archiveDirectory": "final/runtime-01",
+      "commands": [
+        {
+          "name": "runtime-preflight",
+          "args": [
+            "verification/quotedone/runtime-preflight.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\runtime-01\\runtime-preflight"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        }
+      ]
+    },
+    "application": {
+      "status": "passed",
+      "testedCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "archiveDirectory": "final/application-01",
+      "commands": [
+        {
+          "name": "all-adapters",
+          "args": [
+            "verification/quotedone/all-adapters.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\all-adapters"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "money-workflow",
+          "args": [
+            "verification/quotedone/money-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\money-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "access-retry-workflow",
+          "args": [
+            "verification/quotedone/access-retry-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\access-retry-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "legacy-approval-workflow",
+          "args": [
+            "verification/quotedone/legacy-approval-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\legacy-approval-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "identity-ambiguity-workflow",
+          "args": [
+            "verification/quotedone/identity-ambiguity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\identity-ambiguity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "audit-repairs-http",
+          "args": [
+            "verification/quotedone/audit-repairs-http.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\audit-repairs-http"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "contact-workflow",
+          "args": [
+            "verification/quotedone/contact-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\contact-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "schema-upgrade-workflow",
+          "args": [
+            "verification/quotedone/schema-upgrade-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\application-01\\schema-upgrade-workflow",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-evidence\\runtime-node22-c9404b5-startup-logs\\application.sqlite"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        }
+      ]
+    },
+    "browser": {
+      "status": "passed",
+      "testedCommit": "d218c85c491a33cb301816d52e593b4f913a363c",
+      "archiveDirectory": "accepted/browser-01",
+      "commands": [
+        {
+          "name": "browser-workflow",
+          "args": [
+            "verification/quotedone/browser-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-accepted\\browser-01\\browser-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-accepted",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "configuration-privacy-workflow",
+          "args": [
+            "verification/quotedone/configuration-privacy-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-accepted\\browser-01\\configuration-privacy-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-accepted",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "editor-integrity-workflow",
+          "args": [
+            "verification/quotedone/editor-integrity-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-accepted\\browser-01\\editor-integrity-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-accepted",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "structured-measurements-workflow",
+          "args": [
+            "verification/quotedone/structured-measurements-workflow.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-accepted\\browser-01\\structured-measurements-workflow"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-accepted",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "audit-repairs-browser",
+          "args": [
+            "verification/quotedone/audit-repairs-browser.mjs",
+            ".",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-accepted\\browser-01\\audit-repairs-browser"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-accepted",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        }
+      ]
+    },
+    "regression": {
+      "status": "passed",
+      "testedCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "archiveDirectory": "final/regression-01",
+      "commands": [
+        {
+          "name": "ordinary",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "vnext",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "test:vnext"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "quote-engine",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "phase1:test"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "original-precision",
+          "args": [
+            "verification/quotedone/run-precision.mjs",
+            "."
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "focused",
+          "args": [
+            "--test",
+            "test/priceBookEditor.browser.spec.mjs",
+            "test/pricebookPreviewFreshness.browser.spec.mjs",
+            "test/pricebookPersistence.spec.mjs",
+            "test/precisionFixtureIntegrity.spec.mjs",
+            "test/quoteApplicationBoundary.spec.mjs"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "instrumented-replay",
+          "args": [
+            "--experimental-vm-modules",
+            "test/quoteEngineVNextReplay.mjs",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\repair-evidence-final\\regression-01\\instrumented-replay"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "historical-isolation",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\.portable-runtime\\node-v22.23.2-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+            "run",
+            "gate:quote-vnext"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final",
+          "exit": 1,
+          "expectedExit": 1,
+          "passed": true
+        },
+        {
+          "name": "integration-boundary",
+          "args": [
+            "verification/quotedone/integration-boundary.mjs",
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-completion"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-09\\continue-the-existing-off-the-clock-2\\work\\quotedone-completion",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        },
+        {
+          "name": "client-build",
+          "args": [
+            "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\node_modules\\vite\\bin\\vite.js",
+            "build"
+          ],
+          "cwd": "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-verification-repairs-final\\client",
+          "exit": 0,
+          "expectedExit": 0,
+          "passed": true
+        }
+      ]
+    }
+  },
+  "numericalChecks": {
+    "ordinary": 430,
+    "vnext": 311,
+    "phase1": 46,
+    "independentPrecision": 22,
+    "focused": 30,
+    "instrumentedReplay": 35,
+    "countsOverlap": true
+  },
+  "preservedFailedAttempt": "final/browser-01 failed on the Country locator; accepted/browser-01 reruns all five workflows successfully after the harness-only fix.",
+  "historicalIsolationGate": "Expected exit 1 for the sole authorized quoteDoneBridge.js; this is not a passing isolation gate. Current integration-boundary passes.",
+  "ownerRuling": "Every new estimate requires email or phone contact, including instant estimates.",
+  "releaseStatus": "Not deployed or certified for public launch. Four service types remain wholly review-only; conditional pricing contracts and production/provider/live-data/operational gates remain open.",
+  "deliveryScope": "Subsequent delivery commits change only documentation/evidence, leaving all application, engine and test files identical to the reviewed source commit."
+}

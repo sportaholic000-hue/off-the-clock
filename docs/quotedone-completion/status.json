@@ -1,4 +1,5 @@
 {
+  "historical_checkpoint_notice": "Preserved e936370 evidence. Current repair candidate: REPAIR_STATUS_20260927.json and REPAIR_REPORT_20260927.md.",
   "assignment": "Owner-authorized complete non-production QuoteDone workflow",
   "authorized_date": "2026-09-13",
   "runtime_exception_date": "2026-09-14",
