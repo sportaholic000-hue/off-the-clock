@@ -51,17 +51,17 @@ try {
  for(const status of [400,409,413]) {
   const q=await page(),body=submission({location:'[SYNTHETIC] retained location',urgency:'[SYNTHETIC] retained urgency'});
   if(status===400)body.requestId='invalid-request-id';
-  if(status===409){await call('POST',url,body,201,null,f.headers);body.customerInputs.yardSqft=11000;}
+  if(status===409){const prior={...body,location:'',urgency:''};const receipt=await call('POST',url,prior,201,null,f.headers);assert.equal(receipt.midEstimate,50);body.customerInputs.yardSqft=11000;}
   if(status===413)body.context='[SYNTHETIC] oversized details. '.repeat(40000);
   await seed(q,body);await send(q,'Retry saved request',status);
   await q.getByLabel('Service',{exact:true}).waitFor();assert.equal(await q.getByLabel('Project location',{exact:true}).inputValue(),body.location);assert.equal(await q.getByLabel('Urgency',{exact:true}).inputValue(),body.urgency);
   assert.equal(await q.getByLabel('Additional project details',{exact:true}).inputValue(),body.context||'');
   await q.reload();await q.getByLabel('Service',{exact:true}).waitFor();assert.equal(await q.getByLabel('Project location',{exact:true}).inputValue(),body.location);await q.getByLabel('Service',{exact:true}).locator('option[value="'+id+'"]').waitFor({state:'attached'});assert.equal(await q.getByLabel('Service',{exact:true}).inputValue(),id);
-  await q.getByLabel('Additional project details',{exact:true}).fill('');const corrected=await send(q);assert.notEqual(corrected.body.requestId,body.requestId);assert.equal(corrected.result.midEstimate,status===409?55:50);assert.equal(rows(corrected.body).length,1);
+  await q.getByLabel('Additional project details',{exact:true}).fill('');const corrected=await send(q);assert.notEqual(corrected.body.requestId,body.requestId);assert.equal(corrected.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(corrected.result.midEstimate,undefined);assert.equal(corrected.body.location,body.location);assert.equal(corrected.body.urgency,body.urgency);assert.equal(rows(corrected.body).length,1);assert.deepEqual(JSON.parse(rows(corrected.body)[0].originalSubmissionJson),corrected.body);await q.getByText('Request saved for review',{exact:true}).waitFor();
   if(status===409){assert.equal(rows(body).length,1);assert.equal(JSON.parse(rows(body)[0].customerResponseJson).midEstimate,50);}else assert.equal(rows(body).length,0);
   await q.screenshot({path:path.join(evidence,'corrected-'+status+'.png'),fullPage:true});await q.close();
  }
- checks.push('Actual 400/409/413 restore all original form fields and survive reload; corrections use fresh UUIDs; conflicting old receipt is immutable');
+ checks.push('Actual 400/409/413 restore all original form fields and survive reload; corrections use fresh UUIDs and retain untriaged text for review; conflicting old $50 receipt is immutable');
  const large=await page();await form(large);await large.getByLabel('Additional project details',{exact:true}).fill('x'.repeat(1048576));let posts=0;large.on('request',r=>{if(r.url().endsWith(url)&&r.method()==='POST')posts++;});await large.getByRole('button',{name:'Submit estimate request',exact:true}).click();await large.getByText('Your request is too large. Shorten the additional project details before submitting.',{exact:true}).waitFor();assert.equal(posts,0);assert.equal(await large.getByLabel('Service',{exact:true}).count(),1);await large.close();
  checks.push('New oversized request stays editable and is rejected locally before submission');
  const failed=await page();await form(failed);database.exec("CREATE TRIGGER repair_synthetic_failure BEFORE INSERT ON quoteSubmissions BEGIN SELECT RAISE(ABORT,'synthetic disk failure'); END");

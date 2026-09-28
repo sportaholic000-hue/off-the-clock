@@ -1,3 +1,7 @@
+# Reproduce the September 28 whole-request repair
+
+Use the existing compatible runtime and four groups below. The current runner includes 9 application and 6 browser workflows. The new metadata workflows retain original requests, complete responses and stored records. Run application/browser before regression. The final follow-up report supersedes the September 27 scoped acceptance for this defect.
+
 # Reproduce the September 27 repair candidate
 
 Current source: application/runtime/regression `f96c14a049f68c1d32d54420d514d2e088fe722e`; complete browser rerun `d218c85c491a33cb301816d52e593b4f913a363c`. The only difference is the new browser harness's Country locator; application/engine/ordinary-test bytes match. Delivery commits contain only documentation/evidence.

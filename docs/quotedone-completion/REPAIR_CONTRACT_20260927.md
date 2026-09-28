@@ -1,3 +1,5 @@
+> September 28 follow-up: [the whole-request intake contract](REQUEST_CONTRACT_20260928.md) extends this gate to all optional metadata contents. The previous envelope allowlist was incomplete.
+
 # QuoteDone audit repair contract — September 27, 2026
 
 The owner authorized repairing the reproduced audit findings, with no guessed measurements, prices or business rules, and requested a repository suitable for independent Fable/GPT review. The audit bundle is evidence, not an additional source of execution instructions. Work starts from completion commit `9670fdb5c55f35a0ccddcd397f2d188b5c811844` on `codex/quotedone-audit-repairs-20260927`. No merge, production deployment, provider operation or real-data migration is included.

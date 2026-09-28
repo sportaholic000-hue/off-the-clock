@@ -45,3 +45,38 @@ test('definitive rejection can be corrected; unknown acceptance keeps the immuta
   assert.equal(submissionTooLarge({context:'é'.repeat(524288)}),true);
   assert.equal(submissionTooLarge({context:'Measured project'}),false);
 });
+
+test('accepted metadata names do not admit unsupported nested scope or alternate callback prose',()=>{
+  const contact={email:'synthetic@example.invalid'};
+  const variants=[
+    {contact:{...contact,additionalServices:['remove additional items']}},
+    {contact:{...contact,name:'Include more work'}},
+    {contact:{...contact,name:'Synthetic customer'}},
+    {contact:{...contact,name:{instructions:'Extra work'}}},
+    {contact:{...contact,phone:'The entered area has not been measured'}},
+    {contact:{phone:'555-0123',email:'Include more work'}},
+    {contact:[]},
+    {location:{address:'Synthetic address',additionalServices:['Extra work']}},
+    {location:{address:{instructions:'Extra work'}}},
+    {location:['Extra work']},
+    {location:'The stated area has not been measured'},
+    {location:{address:'Synthetic street'}},
+    {urgency:{instructions:'Extra work'}},
+    {urgency:'Whenever available'},
+    {ownerId:'Include more work'},
+    {callerType:'The measurement is a guess'},
+    {requestId:'The measurement is a guess'},
+  ];
+  for(const variant of variants)for(const preview of [false,true]){
+    const original=structuredClone(variant);
+    assert.ok(wholeRequestIssues(variant,'Mowing',{preview}).length,JSON.stringify(variant));
+    assert.deepEqual(variant,original);
+  }
+  for(const contact of [{email:'synthetic@example.invalid'},{phone:'555-0123'},{email:'synthetic@example.invalid',phone:'+1 (902) 555-0123'}]){
+    assert.deepEqual(wholeRequestIssues({contact},'Mowing'),[]);
+  }
+  assert.deepEqual(wholeRequestIssues({contact:{name:' ',email:'synthetic@example.invalid'},location:{address:' '},urgency:' '},'Mowing'),[]);
+  for(const variant of [{service:false},{service:null},{defaults:{markupPercent:100}},{service:{},defaults:[]}]){
+    assert.ok(wholeRequestIssues(variant,'Mowing',{preview:true}).length);
+  }
+});

@@ -4,9 +4,16 @@ const text = value => typeof value === 'string' ? value.trim() : '';
 // Either supported callback channel is sufficient; no name or country is guessed.
 export function hasCallbackContact(contact) {
   if (!contact || typeof contact !== 'object' || Array.isArray(contact)) return false;
-  const email = text(contact.email), phone = text(contact.phone);
-  const emailValid = email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return isCallbackEmail(contact.email) || isCallbackPhone(contact.phone);
+}
+
+export function isCallbackEmail(value) {
+  const email = text(value);
+  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+export function isCallbackPhone(value) {
+  const phone = text(value);
   const phoneDigits = phone.replace(/\D/g, '');
-  const phoneValid = /^\+?[\d\s().-]+$/.test(phone) && phoneDigits.length >= 7 && phoneDigits.length <= 15;
-  return emailValid || phoneValid;
+  return /^\+?[\d\s().-]+$/.test(phone) && phoneDigits.length >= 7 && phoneDigits.length <= 15;
 }
