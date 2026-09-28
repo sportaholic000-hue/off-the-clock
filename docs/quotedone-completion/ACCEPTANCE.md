@@ -1,3 +1,5 @@
+> Current follow-up: [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md), [status](R1_REPAIR_STATUS_20260928.json) and [updated dispositions](REPAIR_DISPOSITIONS_20260928.json). The September 27 whole-request claim was incomplete; the earlier material below is retained as history.
+
 # Current acceptance evidence
 
 The workflow criteria below still apply. Current September 27 repair results are recorded in [REPAIR_STATUS_20260927.json](REPAIR_STATUS_20260927.json) and [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md). `status.json` preserves the earlier e936370 checkpoint. No local acceptance record certifies production launch.

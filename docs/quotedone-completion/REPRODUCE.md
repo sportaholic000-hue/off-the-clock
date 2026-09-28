@@ -1,6 +1,6 @@
 # Reproduce the September 28 whole-request repair
 
-Use the existing compatible runtime and four groups below. The current runner includes 9 application and 6 browser workflows. The new metadata workflows retain original requests, complete responses and stored records. Run application/browser before regression. The final follow-up report supersedes the September 27 scoped acceptance for this defect.
+Use the existing compatible runtime and four groups below. The current runner includes 9 application and 6 browser workflows. The new metadata workflows retain original requests, complete responses and stored records. Run application/browser before regression. [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md) and [R1_REPAIR_STATUS_20260928.json](R1_REPAIR_STATUS_20260928.json) supersede the September 27 scoped acceptance for this defect. Runtime/application ran at e0b4c1b6575d349f695efcaa2944648cf07bad1b; browser/final regression ran at 925e5d48b8472f054e7797465a372ca911446cfa. The only difference is the corrected structured-measurements browser fixture. Published source a681a2efd4c527ac70ab0555c755b324bcd9e194 has the exact complete Git tree of the latter. The consolidated evidence ZIP and its tested-commit bundle are delivered with the September 28 review handoff.
 
 # Reproduce the September 27 repair candidate
 

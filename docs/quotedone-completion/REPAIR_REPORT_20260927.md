@@ -1,3 +1,5 @@
+> Current follow-up: [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md), [status](R1_REPAIR_STATUS_20260928.json) and [updated dispositions](REPAIR_DISPOSITIONS_20260928.json). The September 27 whole-request claim was incomplete; the earlier material below is retained as history.
+
 # Off The Clock AI — verified repairs and project state
 
 **The confirmed audit defects are repaired and verified in the local application. The candidate is ready for independent repository review; this is not a certification of 100% real-world quote accuracy or public-launch readiness.**

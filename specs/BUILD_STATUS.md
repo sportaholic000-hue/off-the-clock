@@ -1,4 +1,4 @@
-> September 28: the independent PR #3 review reopened complete-request scope (C02/B16). The follow-up application repair is undergoing final source-bound verification; the September 27 pass below is a historical checkpoint, not proof that the later-discovered bypass was absent. See [the current intake contract](../docs/quotedone-completion/REQUEST_CONTRACT_20260928.md).
+> September 28: the independent PR #3 review reopened complete-request scope (C02/B16). Scoped R1 follow-up gate passed locally: 9 application workflows, 6 browser workflows and the final regressions/integration boundary. The September 27 pass below is a historical checkpoint, not proof that the later-discovered bypass was absent. See the [final follow-up report](../docs/quotedone-completion/R1_REPAIR_REPORT_20260928.md) for exact source bindings and remaining launch gates. See [the current intake contract](../docs/quotedone-completion/REQUEST_CONTRACT_20260928.md).
 
 # Build Status — Off The Clock AI
 
