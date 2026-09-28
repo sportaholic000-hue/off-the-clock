@@ -1,3 +1,5 @@
+> **Superseded implementation report; not an approved product specification.** The owner rejected the blanket refusal of ordinary customer metadata and the broad voice-guide rewrite. Any text below calling those restrictions a current or governing requirement is withdrawn. It describes an earlier tested implementation, including its mistakes. Do not use it to change the intended quoting experience or request another approval for repairs already authorized. Current incomplete status is at the top of `START_HERE.md`. The original voice and engine-specification documents are restored. Historical requests, responses and failures remain preserved.
+
 > September 28 follow-up: [the whole-request intake contract](REQUEST_CONTRACT_20260928.md) extends this gate to all optional metadata contents. The previous envelope allowlist was incomplete.
 
 # QuoteDone audit repair contract — September 27, 2026

@@ -1,5 +1,3 @@
-> Current application contract (September 27, 2026): the owner explicitly requires no assumed measurements or silently omitted scope. The accepted measured VNext engine and the application boundary are documented in `../docs/quotedone-completion/REPAIR_CONTRACT_20260927.md`. Earlier assumption-size examples in this legacy v2 specification are not permission to release guessed quotes in that candidate. The current voice collection contract is `voice_quote_flows.md`; the prior flow text is archived under `history/`. Unknown or unsupported facts require review. This clarification does not alter accepted arithmetic or enable unresolved offerings.
-
 # OFF THE CLOCK AI — QUOTE ENGINE v2
 # Give this to the build agent as a single message.
 # Build ONLY what is described here. Backend only.

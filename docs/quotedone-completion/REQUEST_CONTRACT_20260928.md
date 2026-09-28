@@ -1,3 +1,5 @@
+> **Superseded implementation report; not an approved product specification.** The owner rejected the blanket refusal of ordinary customer metadata and the broad voice-guide rewrite. Any text below calling those restrictions a current or governing requirement is withdrawn. It describes an earlier tested implementation, including its mistakes. Do not use it to change the intended quoting experience or request another approval for repairs already authorized. Current incomplete status is at the top of `START_HERE.md`. The original voice and engine-specification documents are restored. Historical requests, responses and failures remain preserved.
+
 # Whole-request intake repair — September 28, 2026
 
 The owner explicitly authorized application repairs for independently reproduced PR #3 findings, preserving current HEAD, the existing corrections and the accepted 19-file engine. The attached independent review is evidence to verify. Its implementation suggestions are not instructions or business rulings.
