@@ -1,0 +1,374 @@
+{
+  "head": "3560815d1475a650d5062a9aab31ab7bae62fe69",
+  "includes": "client and committed server imports; raw Git blobs; existing dependencies",
+  "files": {
+    "client/COMBINED_ACCEPTANCE.md": {
+      "gitBlob": "575fdb1e225defe9e21c6f1fdb86aa803826425f",
+      "sha256": "081bb7ae1f0270d6e0586a92bf3724eb8962d3674a3d460767a760c2c1ff3ae3"
+    },
+    "client/WIDGET_BACKEND_HANDOFF.md": {
+      "gitBlob": "efa13032889fe479dc81680afb4b340a614b64ff",
+      "sha256": "0a924b2bee74941f3bfa1a5d8e50c0c96d7bd4e6fdb2d23975c55fe8ee7bd960"
+    },
+    "client/index.html": {
+      "gitBlob": "11a80921c0890eeceb5fc6c5a7ee3a6834d0b78f",
+      "sha256": "8dd60c21f049affb2da0dbc60e90b521e40d57eae936bb031bcea52ddcedfe7c"
+    },
+    "client/package.json": {
+      "gitBlob": "3165f3badcd70d456c898a4d45838b49b4aefcbb",
+      "sha256": "d1cfcf8dd414182bcb33769afc3aa38f1ae167023ec2be05a17b42e24aed9470"
+    },
+    "client/public/widget.js": {
+      "gitBlob": "df3f9d2a40b8b23b24331bd7356c117948ce71e5",
+      "sha256": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+    },
+    "client/src/api.js": {
+      "gitBlob": "dde3a3fc211699abe9a9e21f67a9f702c6418175",
+      "sha256": "a16f677c126938868f2d63f8c12925297fb71d811e6deb8f688f5baba1042eee"
+    },
+    "client/src/billing.jsx": {
+      "gitBlob": "8885ae677231af496bea07e657f7484c72c02479",
+      "sha256": "5dd035efb320032ebfd85a5513d9892d943a7f6b8fb1a1e7657b528977670aa5"
+    },
+    "client/src/billingTransport.js": {
+      "gitBlob": "aaee222d1a6cc6ca6f5e9ed4202e36c167d2288d",
+      "sha256": "701c09b4f42709dd378c728b5fcac99fdf79187328c86e3ff5433de6d4939242"
+    },
+    "client/src/dashboard.jsx": {
+      "gitBlob": "f5d626f30be90d386d1a942fb492b699ebe1e16a",
+      "sha256": "525508cba71415ff8d4b29fbc8d7bd9886df2dcb363d2ab0855d486c84f9d5bb"
+    },
+    "client/src/interviewStructured.jsx": {
+      "gitBlob": "1550812b81ede34cd8fe22da73c75adfacb86070",
+      "sha256": "7cc3b6152d9805c4b1e6801bbe9ffda43295467aefb8f9076bbbc5b74f6d0fbb"
+    },
+    "client/src/interviewStructuredValue.js": {
+      "gitBlob": "37d14f497b5b9bd965436fb0744d0eae2f49c197",
+      "sha256": "316c6a8cee940b6f53eb07cd4a217bc356d7f03ede664867746a1330077f923e"
+    },
+    "client/src/main.jsx": {
+      "gitBlob": "5513a6e8ac16ebcabb5e6f6c194ebda4f8f43ec1",
+      "sha256": "c3f6c9d4e6513b9aca479f87147c0601c9b26a230c8c00c4e6682ce77ee74663"
+    },
+    "client/src/onboarding.jsx": {
+      "gitBlob": "5bdb29870113c16734361e683633da45f6ad3da6",
+      "sha256": "e770056eb6442d519bc93f3243efd4497536b328b2dfb144a0b8a288f6383476"
+    },
+    "client/src/pricebook.jsx": {
+      "gitBlob": "14d3ec2aed04a6257778a27e7b2b5bd2df1c4822",
+      "sha256": "7306a023495c62b950c2e1532c97c313ec3879cfda6e6efff0a9424a02d1e7c9"
+    },
+    "client/src/pricebookEditing.js": {
+      "gitBlob": "20463d8ee200316220d22e8b1076177b2ef9daf5",
+      "sha256": "22802eea2ee6de937a85da015d25a01b297d83ad4d318329866c5fb82044cdac"
+    },
+    "client/src/pricebookFormatting.js": {
+      "gitBlob": "b361b6230fae8985531e7b1268f2b0633ac629ba",
+      "sha256": "662b80eef1d3c71d103f7927ceb160291f228bcf66ebffbb699fc9c0a9836270"
+    },
+    "client/src/pricebookInputs.jsx": {
+      "gitBlob": "60f6ff633ea4a1dac4a4ef828f6049f4f5311fe0",
+      "sha256": "c8d1dae15c8311d64ad4a116d45d7d9c9a67d882964baef2f314e22b6209fbd0"
+    },
+    "client/src/quoteDoneControls.jsx": {
+      "gitBlob": "a23e804958c1c4bbeaef999046696dee32a5af8f",
+      "sha256": "70d42733c9c6da09fa705630456eb20147877b7edc8500c5e037e5ae8d1961db"
+    },
+    "client/src/quoteSubmission.js": {
+      "gitBlob": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0",
+      "sha256": "dabcdfa08babdd5ef986821d10e77bc2f24a5761963a221d79f3dd28628028d9"
+    },
+    "client/src/quoteWizard.jsx": {
+      "gitBlob": "b7775c42f296d10fe6083aa9b2801b4fb273d703",
+      "sha256": "7f9dace9c6a19aa5a0c58515b3f0c750b69d8eb0a11578d4cb0b5efde9d29b5a"
+    },
+    "client/src/quotedone.jsx": {
+      "gitBlob": "fa5447989c28f9d83f18cb6c805683e990bc2128",
+      "sha256": "9d732e54841c27e0e3dd516ec921d0f23d2673bc76960ca824283722e420f3a2"
+    },
+    "client/src/reference.jsx": {
+      "gitBlob": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd",
+      "sha256": "87e9a9240b06613f5f79fafad42ed04e3cb49c500ae23807e3a000af38255f77"
+    },
+    "client/src/styles.css": {
+      "gitBlob": "6c64b648cec9904b8af444e4c0608b9aa56d84e1",
+      "sha256": "374b118c867f0018bb9f950c4b06378904ec30079f3e52af7560a409b938193a"
+    },
+    "client/src/ui.jsx": {
+      "gitBlob": "1a258505e03072be29cafd4ec850d31558f74e3b",
+      "sha256": "4fcfc8a2b013b4d0b35d185a1b4841d314d1fb2acde44cda91f480eb26bd5385"
+    },
+    "client/src/widget-entry.jsx": {
+      "gitBlob": "7d59afdd4335adcfe564f619795e807749f7a351",
+      "sha256": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab"
+    },
+    "client/src/widget.css": {
+      "gitBlob": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186",
+      "sha256": "3f10c3ed7bdad0941059fcbf15fea58d7114b7035f243f58e7cb64a932a2d46a"
+    },
+    "client/src/widgetBooking.jsx": {
+      "gitBlob": "08a088699117eb51256437beaf83da462b7bc093",
+      "sha256": "fe9e9fe0194d6c2e5d63e72b7f61ce5957dc6ae57d0fa5ff1225889526ef7b4b"
+    },
+    "client/src/widgetInstall.jsx": {
+      "gitBlob": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a",
+      "sha256": "c899a954cbfde491e35f2d1df75be73a4377ee3330be57813ab2eb8995decb9d"
+    },
+    "client/src/widgetTransport.js": {
+      "gitBlob": "a443504d6fc01d1c40f7a4e892b5dc40255bb236",
+      "sha256": "e2d08380c334bdb4d5155f3dfd702e7422eb31c943df59d7b3c1faddc5b28cfb"
+    },
+    "client/test/billing-browser.mjs": {
+      "gitBlob": "aa2f7efc2b4dc6c38b1565aefe41d973c4577c0a",
+      "sha256": "117ec817911a04798f59480e83b6d00e1ca96f9f7ceba8fee9cbdf93ca1e6f73"
+    },
+    "client/test/billing-transport.test.mjs": {
+      "gitBlob": "1b00b98498443ac6138b4eb41fba30c5f65a3a72",
+      "sha256": "a087c274024738c6748404d78879d2dae10f418ae52aac0d7cfa2189440a58f8"
+    },
+    "client/test/widget-application-harness.mjs": {
+      "gitBlob": "794a84946213033d5e4b635294ff5e3835b0140f",
+      "sha256": "b43b5670cf9a5b72b696d5bfd72cc79dbadae320930ce806b5c8068123f6f6cc"
+    },
+    "client/test/widget-booking-browser.mjs": {
+      "gitBlob": "0fc9acf80eb285a5a6a5d61a03123cf91b9f6c4b",
+      "sha256": "f7869e2b8c7aa80a3d83a3e406077cf21810287f6498f870daa163ee629c45b7"
+    },
+    "client/test/widget-browser.mjs": {
+      "gitBlob": "882409ba4516194b7191ed58c79a18c240938ea0",
+      "sha256": "f280c3db1bb6cc617d5778c641fa8a97f2557be48f04d398966fe5ba3f877828"
+    },
+    "client/test/widget-full-page-browser.mjs": {
+      "gitBlob": "eea919435898257d967aca1b3c648d3fd73b1df2",
+      "sha256": "1e2449d1ae6059268b5870ce8f2860851adc587ca089450af6bbe20247dbdf07"
+    },
+    "client/test/widget-integration-boundary.mjs": {
+      "gitBlob": "6f2e023c407c8834f8e73a6ac84bfbba6b6d117a",
+      "sha256": "0cd22cc154dc66f059d9ed03989ca3b83039ca3992a919222bd25ae41b6bdc0f"
+    },
+    "client/test/widget-transport.test.mjs": {
+      "gitBlob": "7f252495489ba2c3980f9a5ea072c27abbe5589c",
+      "sha256": "6b6324c31b6cfe9aaab44c1ffe2a6076fa62048f104bca8251223112bbf66a85"
+    },
+    "client/vite.widget.config.js": {
+      "gitBlob": "39ae7d0a0a13750d3daf2b4c2b2550e2ee9dd88d",
+      "sha256": "eb9a28190fd562b3a8dfb46d97d38fb09ae2734a814f9712262966373ba3090b"
+    },
+    "package-lock.json": {
+      "gitBlob": "e9ed5b30fd55f7559a7a3765c4705ed12e1dc30e",
+      "sha256": "0001f85c3870e57ca3ff0a065b9be21fb28d6e6f0114643f825548efd3678c87"
+    },
+    "package.json": {
+      "gitBlob": "e9d534a7c6b29ff3c496a274f84edaf18f485b80",
+      "sha256": "04ab3b619c86b6545c12f08e3309245b982547a34f0c89f47003da5496ea94b3"
+    },
+    "server/package.json": {
+      "gitBlob": "3fdaf135008050dcee6674f05c4092d33825440e",
+      "sha256": "80009fd8450bc63d5d762cfc892a3a8156e6149ae8d743e18b6ab01a4b22879e"
+    },
+    "server/priceBookCopy.js": {
+      "gitBlob": "ad91bbcab15094595db0312e30ab5f9988007a83",
+      "sha256": "adf14c8dec8ab7276824d7f23c6b20ebe84cfad0d21151899bccdbf494d28f03"
+    },
+    "server/priceBookMetadata.js": {
+      "gitBlob": "99598b5a91ba42b8e7501cdbbaec83b982ae4608",
+      "sha256": "1932cbb5ed6d2397ef43391aaeaf490940a5c991685b16caee7625f704d8980f"
+    },
+    "server/priceBookMoney.js": {
+      "gitBlob": "37af0b0a858a117da04b94e14ef3abe643a66396",
+      "sha256": "74abefa6dfb673fe1088ea2f6c7e76f9994788fb74b74dbaf50a07ee71c7f30c"
+    },
+    "server/priceBookService.js": {
+      "gitBlob": "04e74baefd81258f5db7c1b3ef6b9b15b70365b4",
+      "sha256": "db38b4c861ba0f5ebf61c3cc78857794a6809c423b17a93e5571495d23e1e1ad"
+    },
+    "server/quote-engine-vnext/AUDIT.md": {
+      "gitBlob": "a2dcd91ae799eb5894261ec525d747f081d45e42",
+      "sha256": "5b99635e1cb61f9059334da22f7d36a9e07fccc6b4cb46b012954e47512c04f3"
+    },
+    "server/quote-engine-vnext/AUDIT_PRECISION_20260910.md": {
+      "gitBlob": "93db5ede40ecc37b28721f365c555e7521a766f5",
+      "sha256": "e34498952693e1582e9d69135a08fbd0a476186a0b89bc37bd57f4bea1b07b9a"
+    },
+    "server/quote-engine-vnext/AUDIT_REPAIRS_104_127.md": {
+      "gitBlob": "10948df13b06b9cb6bf2f2dafb59d5ecb45ecf3c",
+      "sha256": "dee918210af1235fe021e1b32ad3bac5ff98dec0c730ee985311f031a183904c"
+    },
+    "server/quote-engine-vnext/AUDIT_REPAIRS_128_138.md": {
+      "gitBlob": "dffe404367ab09806254628cb07bf76268592b5d",
+      "sha256": "4e303bcdacb0e8f07b11672b86fb15442a0504f1cffc84e5bac7a593c1618177"
+    },
+    "server/quote-engine-vnext/AUDIT_REPAIRS_139_146.md": {
+      "gitBlob": "1a8e88aef13c82fc7b94142d24f167618f77075d",
+      "sha256": "9c56a4ef175a9401d877244183b59d9beaff870abdd03138c541dce2a4c6e5a5"
+    },
+    "server/quote-engine-vnext/AUDIT_REPAIRS_147_150.md": {
+      "gitBlob": "00df50cd44089140e8e99943e5872392739f6bc1",
+      "sha256": "1d766a57636231f385f24cd50009a87917fd525b30e64b9f010ed5318bc91f97"
+    },
+    "server/quote-engine-vnext/COMPLETION.md": {
+      "gitBlob": "9a4b7d010e4afe1689d40f806d6ccb930b13e43e",
+      "sha256": "7780fac88dabc6028e6f810320ca19be1e23ac98dcd9ff53582673a057735742"
+    },
+    "server/quote-engine-vnext/CUSTOMER_AMOUNT_PRECISION.md": {
+      "gitBlob": "0848762900d85d5e02bfe1dc5c0b6301797ac1ff",
+      "sha256": "3dbcda26f17343a48f3e02fe5b689ba3621e2ac2eed512caa073a0a55193543d"
+    },
+    "server/quote-engine-vnext/HANDOFF_ABC.md": {
+      "gitBlob": "02ae250b3d209e5e6505b8cd050bcdab115bce74",
+      "sha256": "f69878e5a31548aa5e97e4a3d93b6da46501a09e567a4c8082d75d830dd46481"
+    },
+    "server/quote-engine-vnext/OWNER_HANDOFF_20260910.md": {
+      "gitBlob": "f2d6e89fa207dea5fad676fb3667725639558345",
+      "sha256": "f6af6519c13728f9aac41acdd6456aa7b658c0c8c24534be9bdeaeb74696b583"
+    },
+    "server/quote-engine-vnext/README.md": {
+      "gitBlob": "9cac1a182b1af6b7a3cdf337aee4bf15050011ad",
+      "sha256": "f7ff081604956844fcba6730335e5b3360855fe95e35384a17f5bbf74fd90733"
+    },
+    "server/quote-engine-vnext/contracts.js": {
+      "gitBlob": "d361d20599733f576e350a28ed104088a4478680",
+      "sha256": "8da72cf80b574d575aa9fc86270ce47686b7951f8d899924bd3b22b7494c537f"
+    },
+    "server/quote-engine-vnext/engine.js": {
+      "gitBlob": "3ce3362c6477f620a2aeb8396c7e3d6cd670f462",
+      "sha256": "989399e61634efba2d4e1255c93f2f0dc36eccefa4eacf338dcdd12c75762fdb"
+    },
+    "server/quote-engine-vnext/exactMath.js": {
+      "gitBlob": "56d78ed30fd10294db35a6e44f01d2e2008f531b",
+      "sha256": "6dd34c9b97f2f2c8e126b3729310a2b180f503102c429dd28b72a75b7f6c3e2f"
+    },
+    "server/quote-engine-vnext/geometry.js": {
+      "gitBlob": "925ed38777dc914a8965a0b85278ac0dc883f0c5",
+      "sha256": "a371e81d294cfc9d60403863e502cb52a9cfd04e0c1172a3ddab31e786ea7cf1"
+    },
+    "server/quote-engine-vnext/index.js": {
+      "gitBlob": "69938ba4a2da6b01aa87f37a80299ba5331714a3",
+      "sha256": "cc4885245d3f91d89d8c7b19eadfffff2149ab209cb1288369c167fa683b1f4e"
+    },
+    "server/quote-engine-vnext/priceBook.js": {
+      "gitBlob": "d79abcd40316257899b324fd7fd8c8e280953ab7",
+      "sha256": "d68fa8cca1027828d38746047c1c9cb8b17312a75b3fdd45218f092f46d5f442"
+    },
+    "server/quote-engine-vnext/safeData.js": {
+      "gitBlob": "cf183be9c29368f3bd9b6dfa1f87020b74705050",
+      "sha256": "1c86be4d957015ec04224d54d2cf1564ade21b63f30cfde89e695d6d6d88828f"
+    },
+    "server/quote-engine-vnext/templates.js": {
+      "gitBlob": "fdde89cf14080df8ae95f60d6280e58832899eda",
+      "sha256": "44f4085fa0d7da79320208bcd469746d312f97024065452d49577b3285152bf5"
+    },
+    "server/quoteEngine.js": {
+      "gitBlob": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18",
+      "sha256": "827c21f84141b6a78eec2232071181662e1f67a5ee58dabd14feff2281be714e"
+    },
+    "server/quoteLog.js": {
+      "gitBlob": "56e2ac691408160ac532ede99fd258179e710475",
+      "sha256": "0f1dd2050902c1ad34e9ee7fccf5e09cca4f336d24850f020cc42ac665f8f599"
+    },
+    "server/quoteTemplates.js": {
+      "gitBlob": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c",
+      "sha256": "a72710cc0151bbc01238c2f0d6bc40ffe7a13bc4c3e7e2c11617c6a521ef4d89"
+    },
+    "server/scripts/dev.js": {
+      "gitBlob": "01b420264ffb45e4d8e779ccc9274b640b531c0c",
+      "sha256": "f6666cb3867594b569e0347b1c4214dff59c45524d9227aa5c0c9481b7786b87"
+    },
+    "server/scripts/phase0-gate.js": {
+      "gitBlob": "14c65e637c5c162bb841f136da795d284594ce48",
+      "sha256": "5ab16d3df0141c1d83c2e489e881866d75fb42b8ab253d302c2309ab7517a8d0"
+    },
+    "server/scripts/phase1-gate.js": {
+      "gitBlob": "f4b9ae35283a505a9e50da45d4d272376713262a",
+      "sha256": "b6070fa0c9444d1794b56aac6041e1e4eb84440ab5329034479a3307c48db6c6"
+    },
+    "server/scripts/phase2-gate.js": {
+      "gitBlob": "3a262912d997ae44f1c3902e031199fc8e2e3189",
+      "sha256": "6d1353aecc30f30264dd68ef9bd30f90578b6d25dec5fecdd9736f6e78a996e6"
+    },
+    "server/scripts/quote-vnext-gate.js": {
+      "gitBlob": "d42020d32e77473722539176765367466774be58",
+      "sha256": "e17f56df3205316b443ae1af57c7e1bdd6fbfe9e266b861cb59df81c7b9746b4"
+    },
+    "server/src/auth.js": {
+      "gitBlob": "67f86b4da972efd4cc26974580f20362eb1a4a42",
+      "sha256": "668d1ee54b24227ce3aa00b661dc0708c161412ed5df80064905546511faaee8"
+    },
+    "server/src/authMiddleware.js": {
+      "gitBlob": "e8e7d7681a259cf4c62e2166fc6cd1b6e7706c24",
+      "sha256": "89a753af6f903a401fb333d9303f80ce43c14a261baa1f61ab272589b499ac78"
+    },
+    "server/src/db.js": {
+      "gitBlob": "16264aa4efa12eab4a6ea227348f1bcf981557a3",
+      "sha256": "6be06d3b300d94fe89dd9b92a4b3381bcfba353e2a9c4d6ddf80cf11e882ed82"
+    },
+    "server/src/email.js": {
+      "gitBlob": "5fa39ad2dcfa4f32f79c3298e7b5e3dcffc7793e",
+      "sha256": "2f585eec6a5f2a924e77a7dbb01157f7f4e733e54d28e431a3582ed90bb70189"
+    },
+    "server/src/exactJson.js": {
+      "gitBlob": "260c1500b3943998e17df19e174b2ec64be7cb26",
+      "sha256": "78fd10e321d3046bfd189c1132b7bd192be68325fe88f94865c304729e0b803e"
+    },
+    "server/src/migrations.js": {
+      "gitBlob": "7c76fa03faa73c2c060b0a040acb24c31ceb7004",
+      "sha256": "30c99b9cdc37b27993547ca318c549a9e8d1e31b4c4360ece73d4a23f0863262"
+    },
+    "server/src/onboardingService.js": {
+      "gitBlob": "b34a3685ed342f7e35f8c6f65bcd535695415de2",
+      "sha256": "11b7e4373ef7752c44455f00e664315d5c68330fb230a7e3342369f319ee49c7"
+    },
+    "server/src/planAccess.js": {
+      "gitBlob": "c5c5cf9ebbfc4342eb10e8322df17af293b7ca93",
+      "sha256": "4f998d414f5a8dbd9cd2fe30167a5c8b3a31ba8e96e5a9f70807a98afd9b6409"
+    },
+    "server/src/platformIntegrations.js": {
+      "gitBlob": "6076706f76f7834ac3fb66fc7770f5e0c3228dc7",
+      "sha256": "c9f78e08c121f4a01553251e29f5f562e4e3b81303d3f4db4eac4200659a9c51"
+    },
+    "server/src/previewMode.js": {
+      "gitBlob": "4282015139d69aa1e62737a8389c3122bed0f90e",
+      "sha256": "348b269e347c6ec1c3503176394a86c500fa5f31b6b31629c871676974184918"
+    },
+    "server/src/quoteContact.js": {
+      "gitBlob": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57",
+      "sha256": "f51823a4da2ed7a1f86c5058c59e1eb8597e95e89eb0883b3dce5f830cebe3e6"
+    },
+    "server/src/quoteDoneBridge.js": {
+      "gitBlob": "5b92698be63b20344be2879876c44e778843c579",
+      "sha256": "aee908b2834fa337cc63c0a577877b5cd3f8c447f8061893716ccdc48cb44bba"
+    },
+    "server/src/quoteDoneRoutes.js": {
+      "gitBlob": "6723d5d8c45f25df7f2e9d13cb16f0758a379ec8",
+      "sha256": "29ab1aded2764418503f4097a934924247814c365d1ebfd6acdceae64a01b651"
+    },
+    "server/src/quoteIntake.js": {
+      "gitBlob": "5f385b2d942ffc94cb408d603997eaba1c806385",
+      "sha256": "2cb959eb7f159f184df1aa43f902d04f24e3f97a0fdafaab351bdeb053d52509"
+    },
+    "server/src/quoteRequestScope.js": {
+      "gitBlob": "48be2a68b69e5cb0d951cfb0f8778ca1933802d3",
+      "sha256": "56f2ab849ad0d69ac16fec43ade1b99a8f07d2c868fcd139ca3a53f95fe969da"
+    },
+    "server/src/quoteScopeDisclosure.js": {
+      "gitBlob": "afd6f3810e38c9ee88734aa400c20f0b511655b9",
+      "sha256": "986c73532f2ea5db73c3dd3f2c1cebd475e240b7f0894074279cc6c7ac32e721"
+    },
+    "server/src/schema.js": {
+      "gitBlob": "c4205e4085da41725d14ae64bb62fa92d8433cad",
+      "sha256": "5e5651838169aa68ee4e11b3f9fea9ea9af6ce342b5236d43eaad2bf4d70353a"
+    },
+    "server/src/server.js": {
+      "gitBlob": "82373b8d73a84ab4f27923268fd7b73102aa2930",
+      "sha256": "e7a66a55713f20ea58703dfb0c8ab31a6815c4f35a6eea3d21fac0f884d2c6e4"
+    },
+    "server/src/tenant.js": {
+      "gitBlob": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5",
+      "sha256": "81e7f7142ff8ee783a5ecb86fce4a8f93fb2ea79fe27483325106a125f396129"
+    },
+    "server/taxJurisdiction.js": {
+      "gitBlob": "35045438b73ee3565124961e1d805fe598404ddb",
+      "sha256": "ebe250dce049082e726c25d1e36a85519f71b475f4d23fb4742b409adbac9651"
+    }
+  }
+}

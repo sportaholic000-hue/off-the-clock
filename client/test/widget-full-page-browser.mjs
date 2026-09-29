@@ -8,6 +8,7 @@ import {spawn} from 'node:child_process';
 import {setTimeout as delay} from 'node:timers/promises';
 import {startApplication} from './widget-application-harness.mjs';
 import {mowingFixture} from '../../verification/quotedone/repair-fixture.mjs';
+import {catalogMode} from '../src/widgetTransport.js';
 const [root,evidence]=process.argv.slice(2).map(value=>path.resolve(value)),app=await startApplication(root,evidence,{port:4535});
 fs.copyFileSync(fileURLToPath(import.meta.url),path.join(evidence,'executed-full-page-browser.mjs'));
 const require=createRequire(path.join(root,'package.json')),{chromium}=require(process.env.PRICEBOOK_BROWSER_MODULE),Database=require('better-sqlite3');
@@ -15,6 +16,7 @@ const ui='http://127.0.0.1:4536',rows=[],wire=[],logs=[];let browser,vite,db;
 try{
  const f=await mowingFixture(app,'partial-browser',[ui]);db=new Database(path.join(evidence,'application.sqlite'));
  const book=await f.read();book.services[0].pricing.edgingPerLinearFoot=2;await f.call('POST','/api/pricebook/save',book);await f.approve();
+ const publicCatalog=await app.request('GET',f.url,undefined,undefined,f.headers);assert.equal(publicCatalog.status,200);const liveMode=catalogMode(publicCatalog.result);
  vite=spawn(process.execPath,[path.join(root,'node_modules/vite/bin/vite.js'),'--host','127.0.0.1','--port','4536','--strictPort'],{cwd:path.join(root,'client'),env:{...app.env,VITE_API_URL:app.base},windowsHide:true,stdio:['ignore','pipe','pipe']});
  vite.stdout.on('data',data=>logs.push(String(data)));vite.stderr.on('data',data=>logs.push(String(data)));
  let live=false;for(let i=0;i<1200;i++){if(vite.exitCode!==null)throw Error(logs.join(''));try{if((await fetch(ui)).ok){live=true;break;}}catch{}await delay(100);}assert.ok(live);
@@ -24,7 +26,8 @@ try{
  async function fill(p,changes={},inputChanges={}){
   await p.goto(ui+'/quote/'+f.access.publicKey);await p.getByLabel('Service',{exact:true}).selectOption(f.id);
   for(const [key,value]of Object.entries({...f.inputs,...inputChanges})){const field=meta.customerFields.find(item=>item.name===key);if(field.type==='number')await p.getByLabel(field.label,{exact:true}).fill(String(value));else await p.getByLabel(field.label,{exact:true}).selectOption(String(value));}
-  for(const [label,value]of Object.entries({Name:'[SYNTHETIC] Alex Smith',Email:'synthetic@example.invalid','Project location':'[SYNTHETIC] 123 Example Street',...changes}))await p.getByLabel(label,{exact:true}).fill(value);
+  const contactFields=liveMode==='legacy'?{Name:'[SYNTHETIC] Alex Smith',Email:'synthetic@example.invalid','Project location':'[SYNTHETIC] 123 Example Street'}:{Email:'synthetic@example.invalid'};
+  for(const [label,value]of Object.entries({...contactFields,...changes}))await p.getByLabel(label,{exact:true}).fill(value);
   await p.getByLabel('Urgency',{exact:true}).selectOption('flexible');
  }
  async function prepare(p,button='Submit estimate request'){

@@ -18,7 +18,7 @@ Supported measured work still quotes with a callback and no name. Separate work 
 
 ## Work in progress after that checkpoint
 
-`client/test/billing-browser.mjs` is a new test scaffold for the missing owner billing entry. Billing production UI is not implemented in this checkpoint. The first two browser attempts timed out and are retained under `billing-wip/`; neither is claimed as a reproduction or successful test. The helper is being aligned with the backend's authenticated `GET /api/billing/status` response.
+The initial billing scaffold preceded the implementation checkpoint below. Its first two browser attempts timed out and remain under `billing-wip/`; neither is claimed as a reproduction or successful test. Later billing evidence is listed below.
 
 The next combined acceptance work covers the versioned pricing-only form, legacy location-shape rejection, selected-work measurements, separate-work exclusion, structured service area, real booking holds/release/pending polling, exact retry/reload, and new/canceled-owner billing access. These are outstanding checks, not passed gates.
 
@@ -28,3 +28,11 @@ No arithmetic engine, voice guide, server implementation, live provider state, p
 The Settings billing screen is now implemented in client source. It consumes the agreed owner-only `/api/billing/status`, `/api/billing/checkout`, and `/api/billing/portal` interfaces. Pending/canceled accounts retain an entry point; only server account state describes activation. Checkout/portal retries retain the exact request key and body across reload, and no price IDs or client prices are submitted. The account profile form preserves the unchanged current plan for compatibility instead of offering a direct plan-change control.
 
 Fifteen transport tests passed (five billing and ten existing widget cases). Browser acceptance is not yet passed. An initial build from the development checkout failed because its tracked vendor tree lacks the Windows Rollup optional binary; no dependency install or lockfile change was attempted. Verification will use the existing Windows-compatible dependency set in an isolated source snapshot, as in the earlier accepted frontend run. This section is a backup checkpoint, not a launch or billing-provider acceptance claim.
+
+## Verified billing interface checks
+
+On source `3560815d1475a650d5062a9aab31ab7bae62fe69` (matching client files in GitHub `9ce33192c8576c2709987410832ce2c801875d01`), both production builds, all 15 transport tests, and all 11 billing browser fixture cases passed. [Complete browser responses](billing-ui-20260929/browser-result.json), [source hashes](billing-ui-20260929/source-binding.json), [transport output](billing-ui-20260929/transport-tests.log), and build logs are retained with the mobile screenshot and browser runtime.
+
+The browser cases cover pending/canceled owner access, mobile checkout, exact checkout/portal retry across reload, explicit rejection and correction, invalid destination rejection, provider-unavailable controls, staff denial, recovery from a blocked dashboard, sign-in recovery, and server-controlled activation. These are synthetic HTTP/provider interface fixtures. They do not establish real Stripe delivery, webhook behavior, backend recovery correctness, or public-launch readiness.
+
+The original full-page helper now also follows the advertised form mode. Its expected quote amounts and persistence assertions are unchanged. Running that adapted helper against the recovered combined backend remains outstanding. No arithmetic-engine, original voice-guide, or server-source change is included in this frontend checkpoint.

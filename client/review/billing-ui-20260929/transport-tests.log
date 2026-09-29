@@ -1,0 +1,23 @@
+✔ pending and canceled state remains server data, never implied by a chosen plan (69.4888ms)
+✔ request recovery uses an account-session namespace without retaining the authentication token (334.8367ms)
+✔ saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs (13.6542ms)
+✔ only explicit pre-mutation rejection clears an uncertain billing request (1.5718ms)
+✔ billing navigation rejects scripts, credentials and insecure destinations (1.9636ms)
+✔ versioned catalogs cannot silently mix quote formats (46.7594ms)
+✔ the new envelope omits only blank fields, never supplied work or unexpected shapes (13.5799ms)
+✔ public transport preserves decimals and sends no owner authentication (965.8592ms)
+✔ booking requests preserve their explicit idempotency key (3.2684ms)
+✔ public paths cannot escape into authenticated routes or insecure production origins (22.982ms)
+✔ definite booking failures preserve their server code (6.7007ms)
+✔ invalid successful acknowledgements remain errors (4.8669ms)
+✔ branding permits flat colors and normalized call numbers, not script destinations (54.1117ms)
+✔ calendar data must contain valid explicit UTC instants and a valid timezone (1056.9873ms)
+✔ only a confirmed calendar appointment for the selected server slot may display booked (18.1324ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4490.8986
