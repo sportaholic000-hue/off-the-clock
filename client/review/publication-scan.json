@@ -1,0 +1,42 @@
+{
+  "unexpectedEnvironmentFiles": [],
+  "credentialPatternFiles": [],
+  "databaseUserChecks": [
+    {
+      "path": "evidence/dev2/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/dev3/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/final1/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/final3/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/final3/full-page/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/final4/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    },
+    {
+      "path": "evidence/final5/browser/application.sqlite",
+      "users": 1,
+      "nonSyntheticEmails": 0
+    }
+  ],
+  "passed": true
+}

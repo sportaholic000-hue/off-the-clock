@@ -1,0 +1,21 @@
+{
+  "fixtureOnly": true,
+  "realBillingVerified": false,
+  "mode": "before",
+  "rows": [
+    {
+      "scenario": "before",
+      "passed": false,
+      "error": "page.goto: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4596/settings/billing\", waiting until \"load\"\u001b[22m\n\n    at C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-widget\\client\\test\\billing-browser.mjs:38:10"
+    }
+  ],
+  "wire": [],
+  "errors": [],
+  "buildFiles": {
+    "assets/index-BcAk85oS.js": "fd03a839eb265fb4ff7e8a13d855f2f0ffad65875130e8da3f8f32f8e5211306",
+    "assets/index-DUV2ho-u.css": "a810262cf6bf02e535a20c1e5e7ada382e072b0ad089bc96c10bcd1c40c48c7a",
+    "index.html": "4b4d4506cda5641f6084371241b8a6f46bf1b3a5750e767f2918135e385e546b",
+    "widget-app.js": "f7bebdb190329dc849659e3cff54ec43f6b8e23874861eea96a327797f1f0723",
+    "widget.js": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+  }
+}
