@@ -8,6 +8,32 @@ const empty = value => value === undefined || value === null ||
   (typeof value === 'string' && value.trim() === '') ||
   (Array.isArray(value) && value.length === 0) ||
   (record(value) && Object.keys(value).length === 0);
+const blankText = value => value === undefined || value === null || typeof value === 'string' && value.trim() === '';
+const LEGACY_LOCATION_FIELDS = new Set([...LOCATION_FIELDS,'address']);
+
+function emptyLegacyLocation(value) {
+  if(blankText(value))return true;
+  if(!record(value))return false;
+  const keys=Object.keys(value);
+  return keys.every(key=>LEGACY_LOCATION_FIELDS.has(key)&&blankText(value[key]));
+}
+
+// Customer identity and site address belong to post-quote follow-up/booking.
+// This gate is intentionally structural: it never tries to classify prose.
+// Empty legacy containers remain harmless during the coordinated client move.
+export function pricingEnvelopeViolations(submission) {
+  if(!record(submission))return [];
+  const fields=[];
+  if(record(submission.contact)&&!blankText(submission.contact.name))fields.push('contact.name');
+  if(Object.hasOwn(submission,'location')&&!emptyLegacyLocation(submission.location)) {
+    if(record(submission.location)) {
+      const keys=Object.keys(submission.location);
+      if(keys.some(key=>!LEGACY_LOCATION_FIELDS.has(key)))fields.push('location');
+      else for(const key of keys)if(!blankText(submission.location[key]))fields.push('location.'+key);
+    } else fields.push('location');
+  }
+  return [...new Set(fields)];
+}
 
 // Legacy mixed-purpose text remains untriaged. The guided form separates
 // identity/site/timing from work and uses a server-checked job summary.
@@ -45,15 +71,16 @@ export function wholeRequestIssues(submission, selectedServiceName, {preview=fal
         ['name','email','phone'].some(key => !optionalText(contact[key]))) {
       issues.push('Unsupported contact fields or values require review of the original request.');
     } else {
-      if (!guided&&!empty(contact.name)) issues.push('Untriaged contact-name text requires review of the complete request.');
+      if (!empty(contact.name)) issues.push(guided
+        ? 'Customer name is collected after the pricing outcome and cannot be part of the priced scope.'
+        : 'Untriaged contact-name text requires review of the complete request.');
       if (!empty(contact.email) && !isCallbackEmail(contact.email)) issues.push('Unresolved email-field text requires review.');
       if (!empty(contact.phone) && !isCallbackPhone(contact.phone)) issues.push('Unresolved phone-field text requires review.');
     }
   }
   const location = submission.location;
   if(guided) {
-    if(!(location===undefined||location===null||typeof location==='string'&&!location.trim())&&(!record(location)||Object.keys(location).some(key=>!LOCATION_FIELDS.includes(key))||
-      LOCATION_FIELDS.some(key=>!optionalText(location[key]))))issues.push('Use the address fields for the site and put work instructions in Additional project details.');
+    if(!emptyLegacyLocation(location))issues.push('Project address is collected after the pricing outcome and cannot be part of the priced scope.');
     if(!empty(submission.urgency)&&(typeof submission.urgency!=='string'||!Object.hasOwn(TIMING_CHOICES,submission.urgency)))issues.push('Choose a timing preference; keep other scheduling or work instructions in Additional project details.');
   } else if (!optionalText(location) && (!record(location) || Object.keys(location).some(key => key !== 'address') || !optionalText(location.address))) {
     issues.push('Unsupported location fields or values require review of the original request.');

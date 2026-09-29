@@ -163,7 +163,44 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     PRIMARY KEY (ownerId, requestId),
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceToolIdempotencyReceipts (
+    scopeHash TEXT NOT NULL,
+    idempotencyKey TEXT NOT NULL,
+    requestDigest TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('RUNNING', 'COMPLETED')),
+    responseJson TEXT,
+    leaseExpiresAtUtc TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL,
+    PRIMARY KEY (scopeHash, idempotencyKey),
+    CHECK (
+      (status = 'RUNNING' AND responseJson IS NULL) OR
+      (status = 'COMPLETED' AND responseJson IS NOT NULL)
+    )
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceOpaqueHandles (
+    handleHash TEXT PRIMARY KEY,
+    resourceKeyDigest TEXT NOT NULL,
+    ownerId TEXT NOT NULL,
+    callSid TEXT NOT NULL,
+    accountSid TEXT NOT NULL,
+    callerNumber TEXT NOT NULL,
+    destinationNumber TEXT NOT NULL,
+    handleType TEXT NOT NULL,
+    referenceJson TEXT NOT NULL,
+    expiresAtUtc TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL,
+    FOREIGN KEY (ownerId) REFERENCES users(id)
   )`
+];
+
+export const CREATE_INDEX_STATEMENTS = [
+  `CREATE INDEX IF NOT EXISTS voice_tool_receipts_status
+    ON voiceToolIdempotencyReceipts(status, leaseExpiresAtUtc)`,
+  `CREATE INDEX IF NOT EXISTS voice_opaque_handles_binding
+    ON voiceOpaqueHandles(ownerId, callSid, handleType, expiresAtUtc)`
 ];
 
 export const CREATE_TRIGGER_STATEMENTS = [

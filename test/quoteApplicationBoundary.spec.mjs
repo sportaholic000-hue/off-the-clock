@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { verifyExactJson } from '../server/src/exactJson.js';
-import { wholeRequestIssues } from '../server/src/quoteRequestScope.js';
+import { wholeRequestIssues, pricingEnvelopeViolations } from '../server/src/quoteRequestScope.js';
 import { submissionCanBeEdited, submissionTooLarge } from '../client/src/quoteSubmission.js';
 import { hasCallbackContact, invalidCallbackFields } from '../server/src/quoteContact.js';
-import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation } from '../server/src/quoteIntake.js';
+import { JOB_DETAILS_FLOW, LOCATION_FIELDS, createIntakeConfirmation, validIntakeConfirmation } from '../server/src/quoteIntake.js';
 
 const verify = source => verifyExactJson(null,null,Buffer.from(source),'utf8');
 test('every estimate requires a syntactically usable email or telephone',()=>{
@@ -89,15 +89,30 @@ test('accepted metadata names do not admit unsupported nested scope or alternate
   }
 });
 
-test('guided job details accept identity and typed site data without clearing actual scope issues',()=>{
-  const body={intakeFlow:JOB_DETAILS_FLOW,contact:{name:'Alex Smith',email:'synthetic@example.invalid'},location:{addressLine1:'123 Example Street',city:'Example City'},urgency:'flexible'};
+test('the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers',()=>{
+  const body={intakeFlow:JOB_DETAILS_FLOW,contact:{email:'synthetic@example.invalid'},urgency:'flexible'};
+  assert.deepEqual(pricingEnvelopeViolations(body),[]);
+  for(const patch of [
+    {contact:{name:'',email:'synthetic@example.invalid'}},
+    {contact:{name:'   ',email:'synthetic@example.invalid'}},
+    {location:null},{location:''},{location:'   '},{location:{}},
+    {location:{address:''}},
+    {location:{addressLine1:'',addressLine2:null,city:' ',region:'',postalCode:'',country:''}}
+  ])assert.deepEqual(pricingEnvelopeViolations({...body,...patch}),[],JSON.stringify(patch));
+  for(const [patch,fields] of [
+    [{contact:{name:'The selected mowing area has not been measured',email:'synthetic@example.invalid'}},['contact.name']],
+    [{location:'The selected mowing area has not been measured'},['location']],
+    [{location:['123 Example Street']},['location']],
+    [{location:{instructions:''}},['location']],
+    [{location:{address:'Include the back yard too'}},['location.address']],
+    ...LOCATION_FIELDS.map(field=>[{location:{[field]:'Use 12,000 square feet instead'}},[`location.${field}`]])
+  ])assert.deepEqual(pricingEnvelopeViolations({...body,...patch}),fields,JSON.stringify(patch));
   assert.deepEqual(wholeRequestIssues(body,'Mowing',{guidedIntake:true}),[]);
   assert.ok(wholeRequestIssues(body,'Mowing').length,'A version marker alone cannot enable the guided path');
   for(const patch of [
     {context:'Include removal of the additional material'},
     {explicitUnknowns:'The area is a guess'},
-    {location:{...body.location,additionalWork:'Include removal'}},
-    {location:[]},{urgency:'Include removal'},{urgency:'constructor'},
+    {urgency:'Include removal'},{urgency:'constructor'},
     {contact:{...body.contact,instructions:'Include removal'}},
     {contact:{...body.contact,phone:'The area is a guess'}},
     {scopeConfirmed:true},{reviewRequested:true}

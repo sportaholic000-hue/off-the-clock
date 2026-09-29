@@ -1,1 +1,23 @@
-{"name":"off-the-clock-server","version":"0.0.0","type":"module","private":true,"main":"src/server.js","scripts":{"dev":"node --watch src/server.js","start":"node src/server.js"},"dependencies":{"bcrypt":"^5.1.1","better-sqlite3":"^11.8.1","cors":"^2.8.5","dotenv":"^16.4.7","express":"^4.21.2","jsonwebtoken":"^9.0.2"}}
+{
+  "name": "off-the-clock-server",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.24.0",
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^22.6.2",
+    "twilio": "^6.0.2",
+    "ws": "^8.22.0"
+  }
+}
