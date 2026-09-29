@@ -23,3 +23,8 @@ Supported measured work still quotes with a callback and no name. Separate work 
 The next combined acceptance work covers the versioned pricing-only form, legacy location-shape rejection, selected-work measurements, separate-work exclusion, structured service area, real booking holds/release/pending polling, exact retry/reload, and new/canceled-owner billing access. These are outstanding checks, not passed gates.
 
 No arithmetic engine, voice guide, server implementation, live provider state, production data, dependency installation, environment permissions, PR head, merge, or deployment was changed by this backup.
+## Billing implementation checkpoint (in progress)
+
+The Settings billing screen is now implemented in client source. It consumes the agreed owner-only `/api/billing/status`, `/api/billing/checkout`, and `/api/billing/portal` interfaces. Pending/canceled accounts retain an entry point; only server account state describes activation. Checkout/portal retries retain the exact request key and body across reload, and no price IDs or client prices are submitted. The account profile form preserves the unchanged current plan for compatibility instead of offering a direct plan-change control.
+
+Fifteen transport tests passed (five billing and ten existing widget cases). Browser acceptance is not yet passed. An initial build from the development checkout failed because its tracked vendor tree lacks the Windows Rollup optional binary; no dependency install or lockfile change was attempted. Verification will use the existing Windows-compatible dependency set in an isolated source snapshot, as in the earlier accepted frontend run. This section is a backup checkpoint, not a launch or billing-provider acceptance claim.

@@ -97,7 +97,7 @@ export default function Dashboard() {
   const hiddenFieldCount = hiddenGroups.reduce((sum, group) => sum + group.total, 0);
   const totalMissing = blockerGroups.reduce((sum, group) => sum + group.total, 0);
 
-  if (error && !dashboard) return <div className="center-state"><ErrorMessage error={error} /></div>;
+  if (error && !dashboard) return <AppShell activePath="/dashboard"><main className="billing-page"><ErrorMessage error={error}/><Button onClick={()=>go('/settings/billing')}>Billing</Button></main></AppShell>;
   if (!dashboard || !state) return <Loading label="LOADING DASHBOARD" />;
 
   const view = operatorView(dashboard.operator);

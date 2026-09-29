@@ -12,7 +12,7 @@ const NAV = [
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/onboarding?step=8', icon: CalendarDays },
-  { label: 'Settings', path: '/onboarding?step=9', icon: Settings }
+  { label: 'Settings', path: '/settings', icon: Settings }
 ];
 
 export function Brand() {
@@ -78,6 +78,7 @@ export function AppShell({ activePath, children, operator }) {
       <div className="workspace">
         <header className="mobile-header">
           <Brand />
+          <Button variant="secondary" onClick={() => go('/settings')}>Settings</Button>
           {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
         </header>
         {children}

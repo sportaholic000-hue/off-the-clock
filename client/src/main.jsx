@@ -7,6 +7,7 @@ import { getToken, go } from './api.js';
 import Dashboard from './dashboard.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
+import Billing from './billing.jsx';
 import { Brand } from './ui.jsx';
 
 function AdminShell() {
@@ -29,6 +30,7 @@ function App() {
   const path = location.url.split('?')[0];
   if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
+  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={getToken()} />;
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={getToken()||'signed-out'} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={path+getToken()} kind={path.slice(1)}/>;
   if (path === '/pricebook') return <PriceBook />;
