@@ -101,7 +101,7 @@ try{
  const fields=f.meta.services.find(item=>item.serviceType==='LANDSCAPING_MOWING').customerFields.filter(field=>field.type!=='confirmed_facts');
  async function page(viewport={width:1280,height:900}){const p=await browser.newPage({viewport});p.setDefaultTimeout(60000);p.setDefaultNavigationTimeout(120000);p.on('pageerror',error=>errors.push(String(error.stack)));return p;}
  async function open(p,url=site){await p.goto(url);assert.equal(await p.locator('[data-otc-widget]').count(),1);await p.getByRole('button',{name:'Get an estimate',exact:true}).click();const loaded=await Promise.race([p.getByLabel('Service',{exact:true}).waitFor().then(()=>true),p.getByRole('button',{name:'Retry loading form',exact:true}).waitFor().then(()=>false)]);if(!loaded){const failure=await p.evaluate(url=>import(url).then(()=>'Module imported').catch(error=>String(error.stack)),assets+'/widget-app.js');throw Error('Production widget module failed: '+failure);}}
- async function fill(p,{inputs={},additional='',details='',email='synthetic@example.invalid',pricingOnly=false}={}){
+ async function fill(p,{inputs={},additional='',details='',email='synthetic@example.invalid',pricingOnly=liveMode==='pricing-only-v2'}={}){
   await p.getByLabel('Service',{exact:true}).selectOption(f.id);await p.getByRole('button',{name:'Continue',exact:true}).click();
   for(const field of fields){
    const value=Object.hasOwn(inputs,field.name)?inputs[field.name]:f.inputs[field.name];
@@ -160,7 +160,7 @@ try{
    await p.getByText('$'+scenario.price,{exact:true}).waitFor();
    if(scenario.partial){assert.equal(saved.result.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(saved.result.fullJobTotal,null);assert.equal(saved.result.midEstimate,undefined);await p.getByText('Total for all requested work: not yet available.',{exact:true}).waitFor();}
   }
-  assert.equal(await p.getByRole('button',{name:'Book it',exact:true}).count(),0);
+  assert.equal(await p.getByRole('button',{name:'Book it',exact:true}).count(),saved.result.bookingToken?1:0);
   await p.screenshot({path:path.join(evidence,scenario.name.toLowerCase().replaceAll(' ','-')+'.png'),fullPage:true});
   rows.push({name:scenario.name,passed:true,prepared,saved});await p.close();
  }
