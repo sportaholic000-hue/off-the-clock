@@ -27,6 +27,10 @@ try {
   async function newPage(){const p=await browser.newPage({viewport:{width:1440,height:1100}});p.setDefaultTimeout(60000);p.setDefaultNavigationTimeout(120000);p.on('pageerror',e=>logs.push('PAGE ERROR '+e.stack));return p;}
   async function form(p,fields={}) {
     await p.goto(ui+'/quote/'+f.access.publicKey);
+    // Preserve the original mixed-prose browser cases through actual recovery
+    // of an earlier editable request; do not relabel its text as new metadata.
+    await p.evaluate(({key,submission})=>sessionStorage.setItem(key,JSON.stringify({kind:'editable',submission})),{key:'quotedone-pending-'+f.access.publicKey,submission:f.submission({customerInputs:{},contact:{},location:'',urgency:''})});
+    await p.reload();
     await p.getByLabel('Service',{exact:true}).selectOption(f.id);
     for(const [key,value]of Object.entries(f.inputs)){
       const field=f.meta.services.find(s=>s.serviceType==='LANDSCAPING_MOWING').customerFields.find(field=>field.name===key);
@@ -50,13 +54,14 @@ try {
     {name:'measurement uncertainty in urgency',fields:{Urgency:uncertain},expected:review},
     {name:'additional scope in location',fields:{'Project location':'123 Synthetic Street. '+extra},expected:review},
     {name:'additional scope in contact name',fields:{Name:extra},expected:review},
-    {name:'uncertainty in alternate phone',fields:{Phone:uncertain},expected:review},
-    {name:'scope in alternate email',fields:{Email:extra,Phone:'555-0123'},expected:review},
+    {name:'uncertainty in alternate phone',fields:{Phone:uncertain},status:422},
+    {name:'scope in alternate email',fields:{Email:extra,Phone:'555-0123'},status:422},
   ];
   for(const [index,c]of cases.entries()){
     const p=await newPage();await form(p,c.fields);
     await p.screenshot({path:path.join(evidence,index+'-input.png'),fullPage:true});
-    const {body,result}=await send(p),row={name:c.name,expected:c.expected,body,result};rows.push(row);
+    const {body,result}=await send(p,c.status||201),row={name:c.name,expected:c.expected,expectedStatus:c.status,body,result};rows.push(row);
+    if(c.status){assert.equal(stored(body),undefined);await p.getByLabel('Service',{exact:true}).waitFor();await p.reload();await p.getByLabel('Service',{exact:true}).waitFor();for(const [label,value]of Object.entries(c.fields))assert.equal(await p.getByLabel(label,{exact:true}).inputValue(),value);assert.equal(await p.getByRole('heading',{name:'Estimate',exact:true}).count(),0);row.passed=true;row.visibleText=await p.locator('body').innerText();await p.screenshot({path:path.join(evidence,index+'-editable-contact.png'),fullPage:true});await p.close();continue;}
     assert.deepEqual(body.customerInputs,f.inputs);assert.equal(result.resultType,c.expected,c.name);
     if(c.expected===ready){assert.equal(result.midEstimate,50);await p.getByRole('heading',{name:'Estimate',exact:true}).waitFor();assert.equal(await p.getByText('$50',{exact:true}).count(),1);}
     else {for(const key of ['lowEstimate','midEstimate','highEstimate','options'])assert.equal(Object.hasOwn(result,key),false);await p.getByText('Request saved for review',{exact:true}).waitFor();assert.equal(await p.getByRole('heading',{name:'Estimate',exact:true}).count(),0);}

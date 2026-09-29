@@ -2,11 +2,12 @@ import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { requireAuth } from './auth.js';
 import { loadPricebook } from '../priceBookService.js';
-import { hasCallbackContact } from './quoteContact.js';
+import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
+import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
-  calculateApplicationQuote, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName
+  calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName
 } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -67,11 +68,16 @@ export function submitQuote(ownerId,body) {
     // Owner ruling 2026-09-27: every estimate request needs contact, including
     // instant estimates. Exact retries above are immutable historical receipts.
     if(!hasCallbackContact(body.contact))throw problem('Enter a valid email address or phone number before submitting an estimate request.',422);
+    const contactFields=invalidCallbackFields(body.contact);
+    if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
     const book=loadPricebook(ownerId),service=serviceFor(book,body);
+    if(body.intakeFlow===JOB_DETAILS_FLOW&&body.reviewRequested!==true&&!validIntakeConfirmation(ownerId,bookRevision(book),body)) {
+      throw problem('The job details or business pricing changed. Check the current details before submitting.',409);
+    }
     let calculated;
     if(!service)calculated=unresolvedResult('The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.');
     else {
-      try { calculated=calculateApplicationQuote(book,service,body); }
+      try { calculated=calculateApplicationQuote(book,service,body,{ownerId}); }
       catch(error) { calculated=unresolvedResult(error.message); }
     }
     const response=calculated.customerResult;
@@ -98,6 +104,7 @@ function leadView(row,role) {
   const detail=JSON.parse(row.collectedInputsJson||'{}');
   const submitted=detail.originalSubmission||{};
   const common={id:row.id,customerName:row.customerName,callerNumber:row.callerNumber,describedService:row.describedService,status:row.status,createdAt:row.createdAt,contact:submitted.contact??null,location:submitted.location??null,customerInputs:submitted.customerInputs??null,explicitUnknowns:submitted.explicitUnknowns??null,urgency:submitted.urgency??null,context:submitted.context??null};
+  common.clarifications=detail.customerClarifications||[];
   return role==='owner'?{...common,internal:detail}:common;
 }
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) {
@@ -138,6 +145,12 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) 
   });
   app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
+  }));
+  app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
+    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
+  }));
+  app.post('/api/quote/prepare',...team,asyncHandler(async(req,res)=>{
+    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
   }));
   app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);

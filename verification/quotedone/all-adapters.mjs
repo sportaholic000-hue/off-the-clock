@@ -31,6 +31,14 @@ try{
    const negative=structuredClone(body);negative.requestId=crypto.randomUUID();delete negative.customerInputs[entry.requiredMeasurement];const control=await call('POST',url,negative,201,false,headers);assert.equal(control.resultType,'ESTIMATE_REQUIRES_REVIEW');outcome.negative=control;outcome.passed=true;
   }catch(error){outcome.error=error.message;}
  }
+ const normalCustomers=[];
+ for(const entry of adapterCases){
+  const draft={requestId:crypto.randomUUID(),intakeFlow:'job-details-v1',serviceId:entry.serviceId,serviceRequest:'Synthetic '+entry.serviceType,customerInputs:entry.customerInputs,contact:{name:'[SYNTHETIC] Alex Smith',email:'customer@example.invalid'},location:{addressLine1:'[SYNTHETIC] 123 Example Street',city:'Example City',region:'NS',country:'CA'},urgency:'flexible'};
+  const prepared=await call('POST','/api/quote/prepare',draft),body={...draft,...(prepared.status==='ready'?{intakeConfirmation:prepared.confirmation}:{reviewRequested:true})},response=await call('POST','/api/quote/calculate',body,201);
+  assert.equal(response.resultType,entry.expectedCents===null?'ESTIMATE_REQUIRES_REVIEW':'INSTANT_ESTIMATE_READY');if(entry.expectedCents!==null)for(const field of ['lowEstimate','midEstimate','highEstimate'])assert.equal(response[field],entry.expectedCents/100);
+  normalCustomers.push({serviceType:entry.serviceType,expectedCents:entry.expectedCents,draft,prepared,body,response,passed:true});
+ }
+ fs.writeFileSync(path.join(evidence,'normal-customer-controls.json'),JSON.stringify(normalCustomers,null,2));
  const quotes=await call('GET','/api/quotes'),leads=await call('GET','/api/leads');fs.writeFileSync(path.join(evidence,'quotes.json'),JSON.stringify(quotes,null,2));fs.writeFileSync(path.join(evidence,'leads.json'),JSON.stringify(leads,null,2));
  for(const outcome of outcomes)if(!outcome.passed){const row=leads.leads.find(l=>l.internal.customerResult.quoteId===outcome.response.quoteId);outcome.internalFailure=row?.internal;}
  fs.writeFileSync(path.join(evidence,'results.json'),JSON.stringify(outcomes,null,2));console.log(JSON.stringify(outcomes.map(({serviceType,expectedCents,response,passed,error})=>({serviceType,expectedCents,resultType:response.resultType,amount:response.midEstimate,passed,error})),null,2));assert.ok(outcomes.every(o=>o.passed),'Every adapter must meet its independent expectation and negative control');

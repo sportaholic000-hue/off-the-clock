@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { verifyExactJson } from '../server/src/exactJson.js';
 import { wholeRequestIssues } from '../server/src/quoteRequestScope.js';
 import { submissionCanBeEdited, submissionTooLarge } from '../client/src/quoteSubmission.js';
-import { hasCallbackContact } from '../server/src/quoteContact.js';
+import { hasCallbackContact, invalidCallbackFields } from '../server/src/quoteContact.js';
+import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation } from '../server/src/quoteIntake.js';
 
 const verify = source => verifyExactJson(null,null,Buffer.from(source),'utf8');
 test('every estimate requires a syntactically usable email or telephone',()=>{
@@ -33,10 +34,17 @@ test('the whole-request gate never classifies untriaged prose as harmless',()=>{
   for(const explicitUnknowns of [['yardSqft'],'10000 is a guess',{yardSqft:true},false,0]) assert.ok(wholeRequestIssues({explicitUnknowns},'Mowing').length);
   for(const context of ['Bag and remove clippings','Side gate opens at noon',{note:'hedge removal'}]) assert.ok(wholeRequestIssues({context},'Mowing').length);
   assert.deepEqual(wholeRequestIssues({serviceRequest:'Mowing'},'Mowing'),[]);
+  assert.deepEqual(wholeRequestIssues({serviceRequest:'  mowing  '},'Mowing'),[]);
   assert.ok(wholeRequestIssues({serviceRequest:'Mowing and hedges'},'Mowing').length);
   assert.ok(wholeRequestIssues({additionalServices:['hedge removal']},'Mowing').length);
   assert.ok(wholeRequestIssues({service:{}},'Mowing').length);
   assert.deepEqual(wholeRequestIssues({service:{},defaults:{},revision:'saved'},'Mowing',{preview:true}),[]);
+});
+
+test('an optional malformed callback channel identifies the editable field',()=>{
+  assert.deepEqual(invalidCallbackFields({email:'synthetic@example.invalid',phone:'555-x123'}),['phone']);
+  assert.deepEqual(invalidCallbackFields({email:'customer.example.invalid',phone:'555-0123'}),['email']);
+  for(const contact of [{email:'synthetic@example.invalid'},{phone:'555-0123'},{email:'',phone:'555-0123'}])assert.deepEqual(invalidCallbackFields(contact),[]);
 });
 test('definitive rejection can be corrected; unknown acceptance keeps the immutable request',()=>{
   for(const status of [400,401,403,404,409,413,415,422]) assert.equal(submissionCanBeEdited(status),true);
@@ -79,4 +87,36 @@ test('accepted metadata names do not admit unsupported nested scope or alternate
   for(const variant of [{service:false},{service:null},{defaults:{markupPercent:100}},{service:{},defaults:[]}]){
     assert.ok(wholeRequestIssues(variant,'Mowing',{preview:true}).length);
   }
+});
+
+test('guided job details accept identity and typed site data without clearing actual scope issues',()=>{
+  const body={intakeFlow:JOB_DETAILS_FLOW,contact:{name:'Alex Smith',email:'synthetic@example.invalid'},location:{addressLine1:'123 Example Street',city:'Example City'},urgency:'flexible'};
+  assert.deepEqual(wholeRequestIssues(body,'Mowing',{guidedIntake:true}),[]);
+  assert.ok(wholeRequestIssues(body,'Mowing').length,'A version marker alone cannot enable the guided path');
+  for(const patch of [
+    {context:'Include removal of the additional material'},
+    {explicitUnknowns:'The area is a guess'},
+    {location:{...body.location,additionalWork:'Include removal'}},
+    {location:[]},{urgency:'Include removal'},{urgency:'constructor'},
+    {contact:{...body.contact,instructions:'Include removal'}},
+    {contact:{...body.contact,phone:'The area is a guess'}},
+    {scopeConfirmed:true},{reviewRequested:true}
+  ])assert.ok(wholeRequestIssues({...body,...patch},'Mowing',{guidedIntake:true}).length,JSON.stringify(patch));
+});
+
+test('server confirmation binds the complete request, tenant and approved book revision',()=>{
+  const prior=process.env.JWT_SECRET;process.env.JWT_SECRET='synthetic-unit-only-intake-signing-secret';
+  try{
+    const body={intakeFlow:JOB_DETAILS_FLOW,requestId:'b5e4cf95-bec1-463f-88ee-901cebd9e211',contact:{name:'Alex Smith',email:'synthetic@example.invalid'},customerInputs:{yardSqft:10000},location:{addressLine1:'123 Example Street'},urgency:'flexible'};
+    const signed={...body,intakeConfirmation:createIntakeConfirmation('owner-a','revision-a',body)};
+    assert.equal(validIntakeConfirmation('owner-a','revision-a',signed),true);
+    assert.equal(validIntakeConfirmation('owner-b','revision-a',signed),false);
+    assert.equal(validIntakeConfirmation('owner-a','revision-b',signed),false);
+    for(const patch of [{requestId:'changed'},{context:'Additional work'},{explicitUnknowns:['area']},{contact:{...body.contact,name:'Changed name'}},{customerInputs:{yardSqft:20000}},{location:{addressLine1:'Changed site'}},{urgency:'contact_requested'},{reviewRequested:true}]){
+      assert.equal(validIntakeConfirmation('owner-a','revision-a',{...signed,...patch}),false);
+    }
+    assert.equal(validIntakeConfirmation('owner-a','revision-a',{...signed,intakeConfirmation:{...signed.intakeConfirmation,extraScope:'More work'}}),false);
+    assert.equal(validIntakeConfirmation('owner-a','revision-a',{...signed,intakeConfirmation:{...signed.intakeConfirmation,signature:'0'.repeat(64)}}),false);
+    assert.equal(validIntakeConfirmation('owner-a','revision-a',{...signed,revision:'revision-a'},{preview:true}),true);
+  }finally{if(prior===undefined)delete process.env.JWT_SECRET;else process.env.JWT_SECRET=prior;}
 });

@@ -7,6 +7,13 @@ export function hasCallbackContact(contact) {
   return isCallbackEmail(contact.email) || isCallbackPhone(contact.phone);
 }
 
+export function invalidCallbackFields(contact) {
+  if (!contact || typeof contact !== 'object' || Array.isArray(contact)) return [];
+  return [['email',isCallbackEmail],['phone',isCallbackPhone]]
+    .filter(([key,valid])=>typeof contact[key]==='string'&&contact[key].trim()&&!valid(contact[key]))
+    .map(([key])=>key);
+}
+
 export function isCallbackEmail(value) {
   const email = text(value);
   return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

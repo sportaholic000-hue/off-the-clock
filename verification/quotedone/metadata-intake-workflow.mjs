@@ -35,8 +35,8 @@ try {
     {name:'ordinary address still requires text review',patch:{location:'123 Synthetic Street'},expected:review},
     {name:'ordinary urgency still requires text review',patch:{urgency:'Whenever available'},expected:review},
     {name:'former browser positive retains ordinary name and address for review',patch:{contact:{name:'[SYNTHETIC] R1 browser customer',email:'r1-browser@example.invalid'},location:'123 Synthetic Street',urgency:''},expected:review},
-    {name:'uncertainty in alternate phone',patch:{contact:{email:'synthetic@example.invalid',phone:uncertain}},expected:review},
-    {name:'scope in alternate email',patch:{contact:{phone:'555-0123',email:extra}},expected:review},
+    {name:'uncertainty in alternate phone',patch:{contact:{email:'synthetic@example.invalid',phone:uncertain}},status:422},
+    {name:'scope in alternate email',patch:{contact:{phone:'555-0123',email:extra}},status:422},
     {name:'nested contact name',patch:{contact:{email:'synthetic@example.invalid',name:{instructions:extra}}},expected:review},
     {name:'nested address value',patch:{location:{address:{instructions:extra}}},expected:review},
     {name:'location array',patch:{location:[extra]},expected:review},
@@ -54,6 +54,7 @@ try {
     const response=channel==='preview'
       ?await app.request('POST','/api/pricebook/preview',{...body,revision:saved.revision},f.owner.token)
       :await app.request('POST',channel==='public'?f.url:'/api/quote/calculate',body,channel==='public'?null:f.owner.token,channel==='public'?f.headers:{});
+    if(c.status){assert.equal(response.status,c.status);assert.deepEqual(counts(),before);for(const key of ['lowEstimate','midEstimate','highEstimate','options'])assert.equal(Object.hasOwn(response.result,key),false);rows.push({name:c.name,channel,request:body,response,expectedStatus:c.status,passed:true});continue;}
     assert.equal(response.status,channel==='preview'?200:201,c.name+' '+channel);
     const outcome={name:c.name,channel,request:body,response,expected:c.expected};
     rows.push(outcome);
