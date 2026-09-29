@@ -187,7 +187,6 @@
       "bytes": 18181
     }
   ],
-  "stagedEqualsWorkingTree": true,
   "changesAppliedToBackendCheckout": false,
   "excluded": [
     "work/sqlite-smoke/off-the-clock.sqlite (database; not uploaded)",
@@ -199,5 +198,193 @@
     "Recovery completeness and application correctness have not been independently verified.",
     "Any source not yet reconstructed from original logs is not represented by this working-tree snapshot.",
     "No merge, deployment, provider action or PR #3 change is authorized by this snapshot."
-  ]
+  ],
+  "stagedGitBytesPreservedExactly": true,
+  "workingCopyMatchesAfterGitLineEndingNormalization": true,
+  "workingCopyLineEndingChecks": [
+    {
+      "path": "server/src/auth.js",
+      "rawSha256": "58b1b07989a6500c12637dcb40cad2f6b65cdd1e4ed76226b217cde1c39553a4",
+      "stagedSha256": "58b1b07989a6500c12637dcb40cad2f6b65cdd1e4ed76226b217cde1c39553a4",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "rawSha256": "d35d46897af969eed07aa1611db23092fab78c932413ff7ab6e920ebea1be2c5",
+      "stagedSha256": "d35d46897af969eed07aa1611db23092fab78c932413ff7ab6e920ebea1be2c5",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "rawSha256": "3da09b73bc0918077b47c9da87d47183da4e5ae4df7a46ed6fc5a10b21b22a1f",
+      "stagedSha256": "3da09b73bc0918077b47c9da87d47183da4e5ae4df7a46ed6fc5a10b21b22a1f",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "rawSha256": "b6f96397b16c45bafea0a508d1212bb9fa5360d5b3800615f5ce940ad12dd975",
+      "stagedSha256": "b6f96397b16c45bafea0a508d1212bb9fa5360d5b3800615f5ce940ad12dd975",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "rawSha256": "0f2d9dbdec06af608d3f5c34c3dc4afb26cce5e92d7c69c33bdf5fa23b301d97",
+      "stagedSha256": "0f2d9dbdec06af608d3f5c34c3dc4afb26cce5e92d7c69c33bdf5fa23b301d97",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "rawSha256": "a0a813b9bcbdbfde9e77d3e56fcf4ab19bd51902ce27c7c84d6d775fe454183e",
+      "stagedSha256": "a0a813b9bcbdbfde9e77d3e56fcf4ab19bd51902ce27c7c84d6d775fe454183e",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "rawSha256": "59f5bec5b98bb98ec79f5849055e11024bc855b25a689e221ec9b46a2f9eedfc",
+      "stagedSha256": "59f5bec5b98bb98ec79f5849055e11024bc855b25a689e221ec9b46a2f9eedfc",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "rawSha256": "44f8691ec7b7df18731f88be556caf723f4fc0e2810712c977b5e7b36e845881",
+      "stagedSha256": "44f8691ec7b7df18731f88be556caf723f4fc0e2810712c977b5e7b36e845881",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "rawSha256": "c0553d6710b4c985500650f8ba3dd44abc2a346a26319815866998de62826235",
+      "stagedSha256": "c0553d6710b4c985500650f8ba3dd44abc2a346a26319815866998de62826235",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "rawSha256": "2d044fb4306de19517633014948da3013d74161f5970e847b5717a4b6b34719b",
+      "stagedSha256": "2d044fb4306de19517633014948da3013d74161f5970e847b5717a4b6b34719b",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "rawSha256": "273a9cc8824cdb97124cb9445f93602f0fb3ed13f99ed3fad2ef44bafd400897",
+      "stagedSha256": "273a9cc8824cdb97124cb9445f93602f0fb3ed13f99ed3fad2ef44bafd400897",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "rawSha256": "de207bb20766618bd28dba2da98ffd2a1d22bd153fcc26fd049cbd976d43d647",
+      "stagedSha256": "de207bb20766618bd28dba2da98ffd2a1d22bd153fcc26fd049cbd976d43d647",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "rawSha256": "e1f4d79414ace987dab406dd8c2aafaf4d65031b73a940ce4f712c9618f8e052",
+      "stagedSha256": "e1f4d79414ace987dab406dd8c2aafaf4d65031b73a940ce4f712c9618f8e052",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "rawSha256": "c14a9d2272c61d92b6fac001c0604af982ff51ef619393c09bab15771ab9c949",
+      "stagedSha256": "8f8aa6ba859dc562c4f1b6117986701e5aadd435ba60175080f802c7cdcadb04",
+      "rawMatchesStaged": false,
+      "lineEndingsOnly": true
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "rawSha256": "224b65479c3432dee40f70b245fcf91b2ba448b0cba334e2d4ac62d218ef6951",
+      "stagedSha256": "224b65479c3432dee40f70b245fcf91b2ba448b0cba334e2d4ac62d218ef6951",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "rawSha256": "60257a46d2ccb8bc6a19492d86298eb7469e3dacc1fdb809fc61152af6955541",
+      "stagedSha256": "f6fa4f3f02ed46023eec9b534e61ba10c78b77e477113bb14b3c98257f0e6a06",
+      "rawMatchesStaged": false,
+      "lineEndingsOnly": true
+    },
+    {
+      "path": "server/src/server.js",
+      "rawSha256": "6c3a3a71cd5e252d2c029f0dbb6baae89049d818b78655e5149c1d9c2fdaec69",
+      "stagedSha256": "c54d8de5cde61f490ce34b4d4fcfe76f9185147bdc9cbd436ef8029acd5b7643",
+      "rawMatchesStaged": false,
+      "lineEndingsOnly": true
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "rawSha256": "af0e34c9c8a4e2eb4ec546cf640a439f05abb08ef20b139e3969e93c0b2aec65",
+      "stagedSha256": "af0e34c9c8a4e2eb4ec546cf640a439f05abb08ef20b139e3969e93c0b2aec65",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/audioCodec.js",
+      "rawSha256": "0763d5e78621369192fb31c12a2a80fd96bf376eb78eeeed1f36150076045dbd",
+      "stagedSha256": "0763d5e78621369192fb31c12a2a80fd96bf376eb78eeeed1f36150076045dbd",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/geminiMediaBridge.js",
+      "rawSha256": "76ecd22343e26ce0cd775ceb79d99bebca20a348fa6fcdf79cebdc9f73d56da3",
+      "stagedSha256": "76ecd22343e26ce0cd775ceb79d99bebca20a348fa6fcdf79cebdc9f73d56da3",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/sessionNonceService.js",
+      "rawSha256": "9105c7458056f54670c09aa49e0497a53abc1732f14fce519a550bd273e271a9",
+      "stagedSha256": "9105c7458056f54670c09aa49e0497a53abc1732f14fce519a550bd273e271a9",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/tenantResolver.js",
+      "rawSha256": "a0a91ab45fd70d0ab658001719ec5acdade753e35a9763e19911431c8ec209bc",
+      "stagedSha256": "a0a91ab45fd70d0ab658001719ec5acdade753e35a9763e19911431c8ec209bc",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/toolDispatcher.js",
+      "rawSha256": "1cd26e36bcf9667eedd3ebc6260bd5d3f40512009038a85c823c21ec305fbaf8",
+      "stagedSha256": "1cd26e36bcf9667eedd3ebc6260bd5d3f40512009038a85c823c21ec305fbaf8",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "rawSha256": "ae3c74516f2b3d7e1a3d57196a5e7252ff25bec6aa2f7ab91cabdf9ad2aa0c38",
+      "stagedSha256": "ae3c74516f2b3d7e1a3d57196a5e7252ff25bec6aa2f7ab91cabdf9ad2aa0c38",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voice/twilioValidation.js",
+      "rawSha256": "493361313f54032f8fc96bce96e965909fe52f58ff01ce692e687b5dc7f05c27",
+      "stagedSha256": "493361313f54032f8fc96bce96e965909fe52f58ff01ce692e687b5dc7f05c27",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    },
+    {
+      "path": "server/src/voiceRuntimeRoutes.js",
+      "rawSha256": "0c5083297e409535a68c0bf55bafaa76134ee922c67e432eaf02fa1e1e5b45ac",
+      "stagedSha256": "0c5083297e409535a68c0bf55bafaa76134ee922c67e432eaf02fa1e1e5b45ac",
+      "rawMatchesStaged": true,
+      "lineEndingsOnly": false
+    }
+  ],
+  "laterObservedBackendCommit": "3d2eedb74f31494eb2086abcfa1f0702b094d7b7",
+  "laterObservedBackendCommitNote": "The backend branch subsequently published its handoff snapshot. All 26 captured staged source blob IDs still match. This preservation branch does not replace that history."
 }
