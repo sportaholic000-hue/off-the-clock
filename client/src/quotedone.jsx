@@ -11,11 +11,13 @@ export function CustomerQuote({publicKey}){
  const [services,setServices]=useState([]),[serviceId,setServiceId]=useState(''),[inputs,setInputs]=useState({}),[contact,setContact]=useState({}),[location,setLocation]=useState({}),[context,setContext]=useState(''),[unknowns,setUnknowns]=useState(''),[urgency,setUrgency]=useState(''),[fees,setFees]=useState({}),[result,setResult]=useState(null),[pending,setPending]=useState(null),[prepared,setPrepared]=useState(null),[restored,setRestored]=useState(null),[legacy,setLegacy]=useState(false),[sending,setSending]=useState(false),[error,setError]=useState(null);
  const cacheKey='quotedone-pending-'+publicKey,inFlight=useRef(false);
  const [requestedService,setRequestedService]=useState(undefined);
+ const [additionalWork,setAdditionalWork]=useState([]);
  const cache=value=>{try{if(value)sessionStorage.setItem(cacheKey,JSON.stringify(value));else sessionStorage.removeItem(cacheKey);}catch{/* In-memory recovery remains available. */}};
  const text=value=>typeof value==='string'?value:'';
  const shown=value=>value===null||value===undefined?'':typeof value==='object'?JSON.stringify(value):String(value);
  function restore(submission){
   setRequestedService(submission.serviceRequest);
+  setAdditionalWork(submission.additionalWork??[]);
   setRestored(submission);setLegacy(submission.intakeFlow!==FLOW);setServiceId(submission.serviceId||'');setInputs(submission.customerInputs||{});setContact(submission.contact||{});setLocation(submission.location??{});setContext(submission.context??'');setUnknowns(submission.explicitUnknowns??'');setUrgency(submission.urgency??'');setFees(submission.customerFeeSelections||{});
  }
  useEffect(()=>{
@@ -24,7 +26,7 @@ export function CustomerQuote({publicKey}){
  },[publicKey]);
  const service=services.find(s=>s.id===serviceId);
  function newSubmission(){
-  const submission={...restored,requestId:crypto.randomUUID(),serviceId,serviceRequest:requestedService===undefined?service?.name:requestedService,customerInputs:inputs,contact,location,context,explicitUnknowns:unknowns,urgency,customerFeeSelections:fees};
+  const submission={...restored,requestId:crypto.randomUUID(),serviceId,serviceRequest:requestedService===undefined?service?.name:requestedService,customerInputs:inputs,contact,location,context,explicitUnknowns:unknowns,urgency,customerFeeSelections:fees,additionalWork};
   delete submission.intakeConfirmation;delete submission.reviewRequested;
   delete submission.intakeClarification;
   if(!legacy)submission.intakeFlow=FLOW;
@@ -34,7 +36,7 @@ export function CustomerQuote({publicKey}){
   setPending(submission);setPrepared(null);cache(submission);
   try{
    const response=await api('/api/public/quote/'+publicKey,{method:'POST',body:submission,auth:false});
-   if(!['INSTANT_ESTIMATE_READY','ESTIMATE_REQUIRES_REVIEW'].includes(response.resultType)||typeof response.quoteId!=='string')throw new Error('The saved request could not be confirmed. Retry the same request.');
+   if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY','ESTIMATE_REQUIRES_REVIEW'].includes(response.resultType)||typeof response.quoteId!=='string')throw new Error('The saved request could not be confirmed. Retry the same request.');
    setResult(response);setPending(null);cache(null);
   }catch(e){
    if(submissionCanBeEdited(e.status)){restore(submission);setPending(null);cache({kind:'editable',submission});}
@@ -82,6 +84,7 @@ export function CustomerQuote({publicKey}){
  }
  function another(){
   setRequestedService(undefined);
+  setAdditionalWork([]);
   setResult(null);setInputs({});setServiceId('');setFees({});setContext('');setUnknowns('');setRestored(null);setPrepared(null);
   if(legacy){setContact({email:contact.email,phone:contact.phone});setLocation({});setUrgency('');}
   setLegacy(false);
@@ -92,7 +95,7 @@ export function CustomerQuote({publicKey}){
   {result?<><QuoteResult result={result}/><Button variant="secondary" onClick={another}>Start another request</Button></>
    :prepared?<section className="editor-section">
     <h2>Check your job details</h2>
-    <p>This estimate covers the work listed below. Add any other requested work or uncertain measurements before continuing.</p>
+    <p>This estimate covers the selected service and its job details below. The business owner will estimate separate additional work on site. Correct any uncertain measurements for the selected service before continuing.</p>
     <h3>{summary.service}</h3>
     {summary.requestedWork!==undefined&&summary.requestedWork!==summary.service&&<p>{shown(summary.requestedWork)}</p>}
     <dl>{summary.facts.map((fact,i)=><React.Fragment key={i}><dt>{fact.label}</dt><dd>{fact.value}</dd></React.Fragment>)}</dl>
@@ -104,6 +107,7 @@ export function CustomerQuote({publicKey}){
     {!!shown(summary.additionalDetails)&&<><h3>Additional project details</h3><p>{shown(summary.additionalDetails)}</p></>}
     {!!shown(summary.unknowns)&&<><h3>Measurements or facts you do not know</h3><p>{shown(summary.unknowns)}</p></>}
     {!!summary.clarifications?.length&&<><h3>Your updated answers</h3><dl>{summary.clarifications.map(item=><React.Fragment key={item.field}><dt>{item.question}</dt><dd>{item.answer}</dd></React.Fragment>)}</dl></>}
+    {!!summary.separateAdditionalWork?.length&&<Notice title="Additional work for on-site estimate"><ul>{summary.separateAdditionalWork.map((item,i)=><li key={i}>{item.description}</li>)}</ul><p>This additional work is not included in the estimate for the selected service.</p></Notice>}
     {prepared.status==='needs_details'&&<Notice title="Some details need checking"><ul>{prepared.followUps.map((question,i)=><li key={i}>{question}</li>)}</ul><p>You can update your answers or send the full request to the business for review.</p></Notice>}
     {prepared.status==='needs_details'&&prepared.clarification&&<section aria-label="Clarify job details">
      {prepared.clarification.questions.map(question=><Field key={question.field} label={question.text}><Select aria-label={question.text} value={prepared.answers?.[question.field]||''} onChange={e=>answer(question.field,e.target.value)} disabled={sending}>
@@ -127,6 +131,8 @@ export function CustomerQuote({publicKey}){
       <Field label="Urgency">{legacy?<TextInput value={text(urgency)} onChange={e=>setUrgency(e.target.value)}/>
        :<Select aria-label="Urgency" value={text(urgency)} onChange={e=>setUrgency(e.target.value)}><option value="">No timing preference</option><option value="flexible">Flexible timing</option><option value="contact_requested">Please contact me about timing</option></Select>}</Field>
       <Field label="Additional project details" help="Include other requested work or details that affect this job. These details can be checked before you send the request to the business."><Textarea aria-label="Additional project details" value={text(context)} onChange={e=>setContext(e.target.value)}/></Field>
+      {(Array.isArray(additionalWork)&&additionalWork.length?additionalWork:['']).map((item,index)=><Field key={index} label={index?'More work for on-site estimate':'Additional work for on-site estimate'} help="Describe separate work that needs an on-site price. Keep measurements and changes to the selected service in its job details above."><Textarea aria-label={index?'More work for on-site estimate '+(index+1):'Additional work for on-site estimate'} value={shown(item)} onChange={e=>{const next=Array.isArray(additionalWork)?[...additionalWork]:[];next[index]=e.target.value;setAdditionalWork(next.length===1&&!e.target.value?[]:next);}}/></Field>)}
+      {!Array.isArray(additionalWork)&&<Notice>Your earlier additional-work value is preserved. Enter a text description above to correct it.</Notice>}
       {service?.customerFees?.map(fee=><Field key={fee} label={'Select '+fee+' charge'}><Select aria-label={'Select '+fee+' charge'} value={fees[fee]===undefined?'':String(fees[fee])} onChange={e=>setFees({...fees,[fee]:e.target.value===''?undefined:e.target.value==='true'})}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select></Field>)}
       {legacy&&<Notice>Your earlier request is preserved for business review. Correct any fields that need changing before submitting.</Notice>}
      </section>
@@ -137,11 +143,33 @@ export function CustomerQuote({publicKey}){
  </main>;
 }
 
-export function QuoteResult({result}){if(!result)return null;if(result.resultType==='ESTIMATE_REQUIRES_REVIEW')return <Notice title="Request saved for review">{result.customerMessage}</Notice>;return <section className="editor-section"><h2>Estimate</h2>{result.optionAvailabilityNotice&&<Notice>{result.optionAvailabilityNotice}</Notice>}{(result.options?.length?result.options:[result]).map((o,index)=><article key={index}>{o.tierName&&<h3>{o.tierName}</h3>}<strong>{o.lowEstimate===o.highEstimate?'$'+o.lowEstimate:'$'+o.lowEstimate+' – $'+o.highEstimate}</strong><ul>{(o.priceDrivers||[]).map((driver,i)=><li key={i}>{driver}</li>)}</ul><p>{o.disclaimer||result.disclaimer}</p></article>)}</section>;}
+export function QuoteResult({result}){
+ if(!result)return null;
+ if(result.resultType==='ESTIMATE_REQUIRES_REVIEW')return <Notice title="Request saved for review">{result.customerMessage}</Notice>;
+ const partial=result.resultType==='PARTIAL_ESTIMATE_READY',estimate=partial?result.pricedEstimate:result,scope=result.pricedScope,details=result.submittedDetails;
+ const locationLabels={addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
+ const show=value=>value===null||value===undefined?'':typeof value==='object'?JSON.stringify(value):String(value);
+ return <section className="editor-section">
+  <h2>{partial?'Estimate for selected work':'Estimate'}</h2>
+  {scope&&<><h3>{scope.service}</h3><dl>{scope.facts.map((fact,index)=><React.Fragment key={index}><dt>{fact.label}</dt><dd>{fact.value}</dd></React.Fragment>)}</dl></>}
+  {estimate.optionAvailabilityNotice&&<Notice>{estimate.optionAvailabilityNotice}</Notice>}
+  {(estimate.options?.length?estimate.options:[estimate]).map((option,index)=><article key={index}>{option.tierName&&<h3>{option.tierName}</h3>}<strong>{option.lowEstimate===option.highEstimate?'$'+option.lowEstimate:'$'+option.lowEstimate+' – $'+option.highEstimate}</strong><ul>{(option.priceDrivers||[]).map((driver,i)=><li key={i}>{driver}</li>)}</ul><p>{option.disclaimer||estimate.disclaimer}</p></article>)}
+  {partial&&<Notice title="Additional work for on-site estimate"><ul>{result.additionalWork.map((item,index)=><li key={index}>{item.description}</li>)}</ul><p>{result.customerMessage}</p><p>Total for all requested work: not yet available.</p></Notice>}
+  {result.scopeNotice&&<p>{result.scopeNotice}</p>}
+  {details&&<section aria-label="Original submitted details"><h3>Details shared with the business</h3><dl>
+   <dt>Requested work</dt><dd>{show(details.requestedWork)}</dd>
+   {Object.entries(details.contact||{}).filter(([,value])=>show(value)).map(([key,value])=><React.Fragment key={'contact-'+key}><dt>{key[0].toUpperCase()+key.slice(1)}</dt><dd>{show(value)}</dd></React.Fragment>)}
+   {Object.entries(details.location||{}).filter(([,value])=>show(value)).map(([key,value])=><React.Fragment key={'site-'+key}><dt>{locationLabels[key]||key}</dt><dd>{show(value)}</dd></React.Fragment>)}
+   {show(details.timing)&&<><dt>Urgency</dt><dd>{show(details.timing)}</dd></>}
+   {show(details.additionalDetails)&&<><dt>Additional project details</dt><dd>{show(details.additionalDetails)}</dd></>}
+   {show(details.unknowns)&&<><dt>Measurements or facts you do not know</dt><dd>{show(details.unknowns)}</dd></>}
+  </dl>{!!details.clarifications?.length&&<><h3>Your updated answers</h3><dl>{details.clarifications.map(item=><React.Fragment key={item.field}><dt>{item.question}</dt><dd>{item.answer}</dd></React.Fragment>)}</dl></>}</section>}
+ </section>;
+}
 export function QuoteRecords({kind}) {
  const [rows,setRows]=useState([]),[error,setError]=useState(null);
  const load=()=>api('/api/'+kind).then(v=>{setRows(v[kind]);setError(null);}).catch(setError);
  useEffect(()=>{load();},[kind]);
  async function status(id,next){try{await api('/api/leads/'+id,{method:'PATCH',body:{status:next}});await load();}catch(e){setError(e);}}
- return <AppShell activePath={'/'+kind}><main className="pricebook-page"><PageHeader eyebrow="QUOTEDONE" title={kind==='leads'?'Leads':'Quotes'}/><Button variant="secondary" onClick={load}>Refresh</Button>{!rows.length&&<Notice>No saved {kind} yet.</Notice>}{rows.map(row=><section className="editor-section" key={row.id}><h2>{row.describedService||row.serviceType}</h2><p>{row.status} · {row.createdAt}</p>{kind==='leads'?<><dl><dt>Customer</dt><dd>{row.customerName||'Not supplied'}</dd><dt>Phone</dt><dd>{row.callerNumber||'Not supplied'}</dd></dl><pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify({contact:row.contact,location:row.location,measurementsAndScope:row.customerInputs,unknowns:row.explicitUnknowns,urgency:row.urgency,context:row.context,clarifications:row.clarifications},null,2)}</pre><Button onClick={()=>status(row.id,row.status==='DISMISSED'?'NEEDS REVIEW':'DISMISSED')}>{row.status==='DISMISSED'?'Reopen for review':'Dismiss'}</Button></>:<QuoteResult result={row.result}/>} {row.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(row.internal,null,2)}</pre></details>}</section>)}<ErrorMessage error={error}/></main></AppShell>;
+ return <AppShell activePath={'/'+kind}><main className="pricebook-page"><PageHeader eyebrow="QUOTEDONE" title={kind==='leads'?'Leads':'Quotes'}/><Button variant="secondary" onClick={load}>Refresh</Button>{!rows.length&&<Notice>No saved {kind} yet.</Notice>}{rows.map(row=><section className="editor-section" key={row.id}><h2>{row.describedService||row.serviceType}</h2><p>{row.status} · {row.createdAt}</p>{kind==='leads'?<>{!!row.additionalWork?.length&&<Notice title="Additional work for on-site estimate"><ul>{row.additionalWork.map((item,index)=><li key={index}>{item.description}</li>)}</ul><p>{row.linkedQuoteId?<>The estimate for {row.pricedScope?.service} is saved in Quotes. This additional work needs its own on-site price.</>:<>The selected job still needs review. This additional work needs its own on-site price.</>}</p></Notice>}<dl><dt>Customer</dt><dd>{row.customerName||'Not supplied'}</dd><dt>Phone</dt><dd>{row.callerNumber||'Not supplied'}</dd></dl><pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify({contact:row.contact,location:row.location,measurementsAndScope:row.customerInputs,unknowns:row.explicitUnknowns,urgency:row.urgency,context:row.context,clarifications:row.clarifications,submittedAdditionalWork:row.submittedAdditionalWork},null,2)}</pre><Button onClick={()=>status(row.id,row.status==='DISMISSED'?'NEEDS REVIEW':'DISMISSED')}>{row.status==='DISMISSED'?'Reopen for review':'Dismiss'}</Button></>:<QuoteResult result={row.result}/>} {row.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(row.internal,null,2)}</pre></details>}</section>)}<ErrorMessage error={error}/></main></AppShell>;
 }

@@ -22,7 +22,7 @@ try{
  for(const service of book.services){const response=await call('POST','/api/pricebook/services/'+service.id+'/approve',{revision:book.revision,confirmConfiguration:true});book.revision=response.revision;}
  const access=await call('POST','/api/quotedone/access',{allowedOrigins:['http://127.0.0.1:5173']});const url='/api/public/quote/'+access.publicKey,headers={Origin:'http://127.0.0.1:5173'};
  const catalog=await call('GET',url,undefined,200,false,headers);for(const service of book.services){const exposed=catalog.services.find(s=>s.id===service.id);assert.ok(exposed);assert.deepEqual(exposed.knownOfferings,service.knownOfferings);}
- const safeKeys=['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','customerMessage'];
+ const safeKeys=['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','customerMessage','pricedScope','submittedDetails','scopeNotice','fullJobTotal'];
  for(const entry of adapterCases){
   const body={requestId:crypto.randomUUID(),serviceId:entry.serviceId,customerInputs:entry.customerInputs,contact:{email:'customer@example.invalid'},location:'',serviceRequest:'Synthetic '+entry.serviceType,context:'',explicitUnknowns:[],urgency:''};
   const response=await call('POST',url,body,201,false,headers);

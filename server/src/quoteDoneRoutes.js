@@ -4,6 +4,7 @@ import { requireAuth } from './auth.js';
 import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
+import { declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
@@ -85,9 +86,12 @@ export function submitQuote(ownerId,body) {
     const internal={ownerId,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
     const contact=object(body.contact)?body.contact:{};
     const describedService=limitedText(body.serviceRequest)||service?.service||'Customer service request';
-    if(response.resultType==='INSTANT_ESTIMATE_READY') {
+    const partial=response.resultType==='PARTIAL_ESTIMATE_READY';
+    if(response.resultType==='INSTANT_ESTIMATE_READY'||partial) {
       ownerQuery(`INSERT INTO quotes (id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
-        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(body.customerInputs??null),JSON.stringify(internal),'INSTANT','customer',createdAt);
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,response.quoteId,service?.serviceType??null,JSON.stringify(body.customerInputs??null),JSON.stringify(internal),partial?'PARTIAL':'INSTANT','customer',createdAt);
+      if(partial)ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
+        VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify({...internal,linkedQuoteId:recordId}),'additional_work','NEEDS REVIEW',createdAt);
     } else {
       ownerQuery(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify(internal),'quote_review','NEEDS REVIEW',createdAt);
@@ -105,6 +109,9 @@ function leadView(row,role) {
   const submitted=detail.originalSubmission||{};
   const common={id:row.id,customerName:row.customerName,callerNumber:row.callerNumber,describedService:row.describedService,status:row.status,createdAt:row.createdAt,contact:submitted.contact??null,location:submitted.location??null,customerInputs:submitted.customerInputs??null,explicitUnknowns:submitted.explicitUnknowns??null,urgency:submitted.urgency??null,context:submitted.context??null};
   common.clarifications=detail.customerClarifications||[];
+  common.additionalWork=declaredAdditionalWork(submitted,common.clarifications.map(item=>item.field));
+  common.submittedAdditionalWork=submitted.additionalWork??null;
+  if(detail.customerResult?.resultType==='PARTIAL_ESTIMATE_READY')Object.assign(common,{linkedQuoteId:detail.linkedQuoteId,additionalWork:detail.customerResult.additionalWork,additionalWorkStatus:detail.customerResult.additionalWorkStatus,pricedScope:detail.customerResult.pricedScope});
   return role==='owner'?{...common,internal:detail}:common;
 }
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) {

@@ -1,5 +1,9 @@
 # Remaining owner decisions — application completion
 
+## Latest owner ruling — September 28, 2026
+
+The owner approved quoting supported price-book work while separate additional work receives an on-site estimate from the business. The priced portion must be labeled explicitly, the original additional request must be retained, and no combined-job total may imply the additional work is included. The owner agrees the additional price with the customer before performing it. This supersedes the previous all-or-nothing application rule for separate work only; it does not remove missing measurements, approval, callback, scope or pricing checks for the job actually being priced. See [the implementation and verification scope](R6_SEPARATE_WORK_20260928.md).
+
 The accepted 19-file engine tree is unchanged. This ledger carries forward its business decisions; it does not reopen accepted arithmetic or claim that review-only scopes quote. All rows apply to the customer route, authenticated calculation and owner preview when that scope is selected. Customer submissions requiring review are durably saved; owner preview remains read-only.
 
 ## Decisions still required to extend the accepted pricing contracts

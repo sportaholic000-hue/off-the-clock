@@ -405,10 +405,12 @@ function Preview({ preview, loading, status }) {
   // Reference: design-reference/pricebook-editor/index.html "THE SIGNATURE
   // MOMENT" — the customer-facing estimate is the hero of the right rail.
   // Owner-only markup, margin and internal rates are never rendered here.
-  const ready = !loading && preview?.resultType === 'INSTANT_ESTIMATE_READY';
+  const partial = preview?.resultType === 'PARTIAL_ESTIMATE_READY';
+  const estimate = partial ? preview.pricedEstimate : preview;
+  const ready = !loading && ['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(preview?.resultType);
   const review = !loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW';
   const [tierIndex, setTierIndex] = useState(0);
-  const options = ready ? (preview.options || []) : [];
+  const options = ready ? (estimate.options || []) : [];
   const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
 
   // The quote engine's canonical customer view is sanitizeForCustomer(), which
@@ -435,6 +437,7 @@ function Preview({ preview, loading, status }) {
         </p>
 
         {loading && <div className="preview-empty mono">CALCULATING</div>}
+        {!loading && partial && <Notice title="Additional work for on-site estimate"><p>This estimate is for {preview.pricedScope.service} only.</p><ul>{preview.additionalWork.map((item,index)=><li key={index}>{item.description}</li>)}</ul><p>{preview.customerMessage}</p><p>Total for all requested work: not yet available.</p></Notice>}
 
         {!loading && !preview && (
           <div className="preview-empty">Enter the required prices to see the customer estimate.</div>

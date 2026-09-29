@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { wholeRequestIssues } from './quoteRequestScope.js';
+import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import {
@@ -228,7 +229,7 @@ export function previewApplicationQuote(ownerId,input) {
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
   const raw=uniqueApplicationService(saved,input.serviceId);if(!raw)throw problem('Save this service before previewing it.',409);
   const guidedIntake=validIntakeConfirmation(ownerId,bookRevision(saved),input,{preview:true});
-  const clarification=intakeClarification(ownerId,bookRevision(saved),input);
+  const clarification=intakeClarification(ownerId,bookRevision(saved),input,applicationServiceName(raw));
   if(!clarification.valid||!validIntakeHistory(ownerId,input))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
   const scopeReview=applicationScopeReview(raw,input,{preview:true,guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
@@ -237,14 +238,15 @@ export function previewApplicationQuote(ownerId,input) {
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=raw.active===true&&draftRaw.active===true&&approvalCurrent(raw,saved)&&!seasonalDecision(raw,saved)&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,customerInputs:input.customerInputs||{},feeSelections:{owner:raw.ownerFeeSelections||{},customer:input.customerFeeSelections||{}}});
-  return {...result,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false}={}) {
   const guidedIntake=preparingIntake||!!ownerId&&validIntakeConfirmation(ownerId,bookRevision(book),submission);
-  const clarification=intakeClarification(ownerId,bookRevision(book),submission);
+  const clarification=intakeClarification(ownerId,bookRevision(book),submission,applicationServiceName(raw));
   if(!clarification.valid||!validIntakeHistory(ownerId,submission))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
-  if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission)};
+  if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
   const current=approvalCurrent(raw,book)&&!seasonalDecision(raw,book);
   // Active-for-customers is a trusted application eligibility decision. Preserve
@@ -252,10 +254,11 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   service.active=raw.active===true&&current;
   const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
-  const customerResult=sanitizeForCustomerVNext(internalResult);
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
   let leadEnvelope=null;
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
-  return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
+  return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
 }
 export function prepareApplicationIntake(ownerId,submission) {
   if(!record(submission)||submission.intakeFlow!==JOB_DETAILS_FLOW)throw problem('Use the job-details form to check this request.',422);
@@ -268,7 +271,7 @@ export function prepareApplicationIntake(ownerId,submission) {
   if(!raw)throw problem('Choose a current saved service before checking the job details.',409);
   const revision=bookRevision(book),definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const outcome=calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake:true});
-  const ready=outcome.customerResult.resultType==='INSTANT_ESTIMATE_READY';
+  const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
   const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,field.label]));
   const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[])];
   const followUps=[...new Set(missing.map(key=>fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>'Check '+label+'.');
@@ -276,10 +279,10 @@ export function prepareApplicationIntake(ownerId,submission) {
   if(!ready&&!followUps.length)followUps.push('The business needs to check the selected work or pricing before an estimate can be provided.');
   return {
     status:ready?'ready':'needs_details',
-    summary:customerJobSummary(raw,definition,submission,revision),
+    summary:{...customerJobSummary(raw,definition,submission,revision),separateAdditionalWork:declaredAdditionalWork(submission,intakeClarification(ownerId,revision,submission,applicationServiceName(raw)).fields)},
     followUps,
     historyReceipt:createHistoryReceipt(ownerId,revision,submission),
-    ...(intakeQuestions(submission).length?{clarification:{questions:intakeQuestions(submission),receipt:createClarificationReceipt(ownerId,revision,submission)}}:{}),
+    ...(intakeQuestions(submission,applicationServiceName(raw)).length?{clarification:{questions:intakeQuestions(submission,applicationServiceName(raw)),receipt:createClarificationReceipt(ownerId,revision,submission)}}:{}),
     ...(ready?{confirmation:createIntakeConfirmation(ownerId,revision,submission)}:{})
   };
 }

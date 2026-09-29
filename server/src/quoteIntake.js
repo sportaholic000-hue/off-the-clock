@@ -9,14 +9,15 @@ const canonical = value => Array.isArray(value) ? value.map(canonical) : record(
 
 // These are answers to displayed questions, not classifications of the text.
 // Keep the original text, question and answer together in the saved request.
-export function intakeQuestions(submission) {
+export function intakeQuestions(submission,selectedServiceName) {
   const questions=[];
-  if(typeof submission.context==='string'&&submission.context.trim())questions.push({field:'context',text:'Do these additional details change the work or measurements to be priced?',options:{message_only:'No, this is only a message for the business',work_changes:'Yes, the job details still need updating'}});
+  if(typeof submission.context==='string'&&submission.context.trim())questions.push({field:'context',text:'Do these additional details change the work or measurements to be priced?',options:{message_only:'No, this is only a message for the business',additional_work:'This is separate additional work for an on-site estimate',work_changes:'Yes, the job details still need updating'}});
   if(typeof submission.explicitUnknowns==='string'&&submission.explicitUnknowns.trim())questions.push({field:'explicitUnknowns',text:'Are any of the measurements or job details above still unknown?',options:{resolved:'No, the answers above are now complete',still_unknown:'Yes, something still needs checking'}});
+  if(selectedServiceName&&typeof submission.serviceRequest==='string'&&submission.serviceRequest.trim()&&submission.serviceRequest.trim().toLowerCase()!==selectedServiceName.trim().toLowerCase())questions.push({field:'serviceRequest',text:'Does this description add separate work or change the selected service?',options:{additional_work:'Price the selected service; the owner will estimate the additional work on site',work_changes:'The selected service or its measurements need changing'}});
   return questions;
 }
-export function clarificationSummary(submission) {
-  return intakeQuestions(submission).filter(question=>Object.hasOwn(question.options,submission.intakeClarification?.answers?.[question.field])).map(question=>({field:question.field,question:question.text,answer:question.options[submission.intakeClarification.answers[question.field]]}));
+export function clarificationSummary(submission,selectedServiceName) {
+  return intakeQuestions(submission,selectedServiceName).filter(question=>Object.hasOwn(question.options,submission.intakeClarification?.answers?.[question.field])).map(question=>({field:question.field,question:question.text,answer:question.options[submission.intakeClarification.answers[question.field]]}));
 }
 function detailsSignature(purpose,ownerId,revision,submission) {
   const secret=process.env.JWT_SECRET;
@@ -42,16 +43,16 @@ function clarificationDetails(submission) {
 export function createClarificationReceipt(ownerId,revision,submission) {
   return {bookRevision:revision,signature:detailsSignature('intake-questions-v1',ownerId,revision,clarificationDetails(submission))};
 }
-export function intakeClarification(ownerId,revision,submission) {
+export function intakeClarification(ownerId,revision,submission,selectedServiceName) {
   const value=submission.intakeClarification;
   if(value===undefined)return {valid:true,fields:[]};
-  const questions=intakeQuestions(submission);
+  const questions=intakeQuestions(submission,selectedServiceName);
   if(!record(value)||Object.keys(value).length!==2||!record(value.answers)||
     !receiptValid(value.receipt,'intake-questions-v1',ownerId,clarificationDetails(submission),revision)||
     Object.keys(value.answers).length!==questions.length||
     questions.some(question=>!Object.hasOwn(question.options,value.answers[question.field])))return {valid:false,fields:[]};
   return {valid:true,fields:questions.filter(question=>
-    value.answers[question.field]===(question.field==='context'?'message_only':'resolved')).map(question=>question.field)};
+    ['message_only','resolved','additional_work'].includes(value.answers[question.field])).map(question=>question.field)};
 }
 
 function signedDetails(ownerId,revision,submission,{preview=false}={}) {
@@ -100,6 +101,7 @@ export function customerJobSummary(service,definition,submission,revision) {
       ?TIMING_CHOICES[submission.urgency]:display(submission.urgency)||'No timing preference supplied',
     additionalDetails:structuredClone(submission.context??''),
     unknowns:structuredClone(submission.explicitUnknowns??''),
-    clarifications:clarificationSummary(submission)
+    additionalWork:structuredClone(submission.additionalWork??[]),
+    clarifications:clarificationSummary(submission,service?.service||definition?.service)
   };
 }

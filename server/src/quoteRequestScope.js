@@ -16,13 +16,14 @@ const empty = value => value === undefined || value === null ||
 export function wholeRequestIssues(submission, selectedServiceName, {preview=false,guidedIntake=false,clarifiedFields=[]}={}) {
   if (!record(submission)) return ['The submitted request must be an object.'];
   const issues = [];
-  const accepted=new Set(['requestId','serviceId','serviceRequest','customerInputs','contact','location','context','explicitUnknowns','urgency','customerFeeSelections','ownerId','callerType','intakeFlow','intakeConfirmation','reviewRequested','intakeClarification','previousIntake',...(preview?['revision','service','defaults']:[])]);
+  const accepted=new Set(['requestId','serviceId','serviceRequest','customerInputs','contact','location','context','explicitUnknowns','urgency','customerFeeSelections','ownerId','callerType','intakeFlow','intakeConfirmation','reviewRequested','intakeClarification','previousIntake','additionalWork',...(preview?['revision','service','defaults']:[])]);
   if(Object.keys(submission).some(key=>!accepted.has(key))) issues.push('Unsupported request fields require review; no supplied scope may be silently omitted.');
   const guided=guidedIntake&&submission.intakeFlow===JOB_DETAILS_FLOW;
   if((submission.intakeFlow!==undefined||submission.intakeConfirmation!==undefined)&&!guided)issues.push('Review the current job details before requesting an estimate.');
   if(submission.reviewRequested!==undefined&&typeof submission.reviewRequested!=='boolean')issues.push('The review choice must be true or false.');
   if(submission.reviewRequested===true)issues.push('The customer requested business review of the original details.');
   if (submission.requestId !== undefined && !uuid(submission.requestId)) issues.push('A supplied request identity must be a UUID.');
+  if(submission.additionalWork!==undefined&&(!Array.isArray(submission.additionalWork)||submission.additionalWork.some(item=>typeof item!=='string'||!item.trim())))issues.push('Describe additional work as a list of nonempty text descriptions.');
   if (preview) {
     if (Object.hasOwn(submission,'service') && !record(submission.service)) issues.push('A supplied preview service must be an object.');
     if (Object.hasOwn(submission,'defaults') && (!record(submission.defaults) || !record(submission.service))) {
@@ -33,7 +34,7 @@ export function wholeRequestIssues(submission, selectedServiceName, {preview=fal
   if (!empty(submission.context)&&!(guided&&typeof submission.context==='string'&&clarifiedFields.includes('context'))) issues.push('Check whether the additional details change the work to be priced.');
   if(!guided&&(submission.intakeClarification!==undefined||submission.previousIntake!==undefined))issues.push('Check the current job details and earlier answers before requesting an estimate.');
   if (!optionalText(submission.serviceRequest) || (!empty(submission.serviceRequest) &&
-      submission.serviceRequest.trim().toLowerCase() !== selectedServiceName.trim().toLowerCase())) {
+      submission.serviceRequest.trim().toLowerCase() !== selectedServiceName.trim().toLowerCase()&&!(guided&&clarifiedFields.includes('serviceRequest')))) {
     issues.push('The service description differs from the selected saved offering and requires review.');
   }
   // Known envelope names do not authorize arbitrary nested fields. Preserve
