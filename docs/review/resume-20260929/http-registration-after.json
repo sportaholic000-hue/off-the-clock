@@ -1,0 +1,24 @@
+{
+  "health": {
+    "status": 200,
+    "result": {
+      "ok": true
+    }
+  },
+  "registered": {
+    "status": 201,
+    "result": {
+      "token": "[SYNTHETIC SESSION TOKEN OMITTED]",
+      "account": {
+        "id": "2bce49f0-d41a-4521-90c6-69ada47a6a58",
+        "email": "synthetic-resume@example.invalid",
+        "firstName": "Synthetic",
+        "businessName": "[SYNTHETIC] Resume check",
+        "plan": "Operator",
+        "requestedPlan": "QuoteDone",
+        "planStatus": "pending_payment",
+        "role": "owner"
+      }
+    }
+  }
+}

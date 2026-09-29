@@ -287,11 +287,13 @@ test('missing-field statuses carry exact human-facing labels', () => {
   assert.equal(status.missingOwnerLabels[index], 'Concrete + digging cost per post at your local frost/set depth.');
 });
 
-test('QuoteDone access is decided by plan, never widened by trial status', async () => {
+test('QuoteDone access requires both an eligible plan and a current lifecycle entitlement', async () => {
   const { hasQuoteDoneAccess } = await import('../server/src/planAccess.js');
-  assert.equal(hasQuoteDoneAccess({ plan:'Operator', planStatus:'trialing' }), false);
+  const futureTrialEnd = new Date(Date.now() + 60_000).toISOString();
+  assert.equal(hasQuoteDoneAccess({ plan:'Operator', planStatus:'trialing', trialEndsAt:futureTrialEnd }), false);
   assert.equal(hasQuoteDoneAccess({ plan:'Operator', planStatus:'active' }), false);
-  assert.equal(hasQuoteDoneAccess({ plan:'QuoteDone', planStatus:'trialing' }), true);
+  assert.equal(hasQuoteDoneAccess({ plan:'QuoteDone', planStatus:'trialing', trialEndsAt:futureTrialEnd }), true);
+  assert.equal(hasQuoteDoneAccess({ plan:'QuoteDone', planStatus:'trialing' }), false);
   assert.equal(hasQuoteDoneAccess({ plan:'Scale', planStatus:'active' }), true);
   assert.equal(hasQuoteDoneAccess(null), false);
   const source = readFileSync('server/src/server.js', 'utf8');
@@ -1057,7 +1059,7 @@ test('customer eligibility is enforced before quote generation', () => {
   assert.match(calculate,/sanitizeForCustomerVNext\(internalResult\)/);
   assert.doesNotMatch(calculate,/submission\.callerType|generateQuote\(/);
   const routes=readFileSync('server/src/quoteDoneRoutes.js','utf8');
-  assert.match(routes,/submitQuote\(req\.tenantOwnerId,req\.body\)/);
+  assert.match(routes,/submitQuote\(req\.tenantOwnerId,req\.body,/);
   assert.match(routes,/serviceFor\(book,body\)/);
   assert.match(routes,/requireAuth\(\['owner','staff'\]\)/);
 });

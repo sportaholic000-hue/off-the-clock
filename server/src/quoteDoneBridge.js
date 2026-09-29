@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { wholeRequestIssues } from './quoteRequestScope.js';
+import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
@@ -26,6 +26,10 @@ const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
 export function problem(message,statusCode=400,details) { const e=new Error(message);e.statusCode=statusCode;if(details)e.details=details;return e; }
+export function requireApplicationPricingEnvelope(submission) {
+  const fields=pricingEnvelopeViolations(submission);
+  if(fields.length)throw problem('Customer name and project address are collected after the quote or review outcome. Remove them from this pricing request.',400,{code:'INVALID_REQUEST',fields});
+}
 export function canonical(value) { if(Array.isArray(value))return value.map(canonical);if(record(value))return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));return value; }
 export const digest = value => crypto.createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
 export const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
@@ -224,6 +228,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
 }
 export function previewApplicationQuote(ownerId,input) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');
+  requireApplicationPricingEnvelope(input);
   const contactFields=invalidCallbackFields(input.contact);
   if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
@@ -242,6 +247,7 @@ export function previewApplicationQuote(ownerId,input) {
   return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false}={}) {
+  requireApplicationPricingEnvelope(submission);
   const guidedIntake=preparingIntake||!!ownerId&&validIntakeConfirmation(ownerId,bookRevision(book),submission);
   const clarification=intakeClarification(ownerId,bookRevision(book),submission,applicationServiceName(raw));
   if(!clarification.valid||!validIntakeHistory(ownerId,submission))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
@@ -261,7 +267,9 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
 }
 export function prepareApplicationIntake(ownerId,submission) {
-  if(!record(submission)||submission.intakeFlow!==JOB_DETAILS_FLOW)throw problem('Use the job-details form to check this request.',422);
+  if(!record(submission))throw problem('Use the job-details form to check this request.',422);
+  requireApplicationPricingEnvelope(submission);
+  if(submission.intakeFlow!==JOB_DETAILS_FLOW)throw problem('Use the job-details form to check this request.',422);
   if(!validServiceIdVNext(submission.requestId))throw problem('A stable request UUID is required.');
   if(submission.intakeConfirmation!==undefined||submission.reviewRequested!==undefined)throw problem('Check the editable job details again before submitting.',409);
   if(!hasCallbackContact(submission.contact))throw problem('Enter a valid email address or phone number before submitting an estimate request.',422);

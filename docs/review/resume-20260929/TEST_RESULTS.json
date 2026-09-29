@@ -1,0 +1,252 @@
+{
+  "overlappingCounts": true,
+  "results": [
+    {
+      "label": "final-application-engine-regression",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=2",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 487134,
+      "log": "final-application-engine-regression.log"
+    },
+    {
+      "label": "final-pricebook-browser-regression",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 275513,
+      "log": "final-pricebook-browser-regression.log"
+    },
+    {
+      "label": "final-client-transport",
+      "args": [
+        "--test",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1367,
+      "log": "final-client-transport.log"
+    },
+    {
+      "label": "whole-request-application",
+      "args": [
+        "verification/quotedone/pricing-envelope-workflow.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/whole-request-application"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 45489,
+      "log": "whole-request-application.log"
+    },
+    {
+      "label": "real-widget-production-build",
+      "args": [
+        "client/test/widget-browser.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/real-widget-production-build"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 139914,
+      "log": "real-widget-production-build.log"
+    },
+    {
+      "label": "real-widget-booking-browser-retry",
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/real-widget-booking-browser-retry"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 111367,
+      "log": "real-widget-booking-browser-retry.log"
+    },
+    {
+      "label": "real-full-page-owner-complete-config",
+      "args": [
+        "client/test/widget-full-page-browser.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/real-full-page-owner-complete-config"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 168918,
+      "log": "real-full-page-owner-complete-config.log"
+    },
+    {
+      "label": "calendar-oauth-after",
+      "args": [
+        "verification/quotedone/calendar-oauth-application.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/calendar-oauth-after",
+        "after"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 29071,
+      "log": "calendar-oauth-after.log"
+    },
+    {
+      "label": "real-booking-application",
+      "args": [
+        "verification/quotedone/booking-application.mjs",
+        ".",
+        "../recovery-evidence-candidate-20260929/real-booking-application"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 67149,
+      "log": "real-booking-application.log"
+    },
+    {
+      "label": "final-original-precision",
+      "args": [
+        "../../outputs/run-original-precision-preserved.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 3531,
+      "log": "final-original-precision.log"
+    },
+    {
+      "label": "final-engine-replay",
+      "args": [
+        "--experimental-vm-modules",
+        "test/quoteEngineVNextReplay.mjs",
+        "../recovery-evidence-candidate-20260929/final-engine-replay"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 90108,
+      "log": "final-engine-replay.log"
+    },
+    {
+      "label": "final-integration-boundary",
+      "args": [
+        "verification/quotedone/resume-integration-boundary.mjs",
+        "."
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 5396,
+      "log": "final-integration-boundary.log"
+    },
+    {
+      "label": "production-client-build-retry",
+      "args": [
+        "../../outputs/build-resumed-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 52215,
+      "log": "production-client-build-retry.log"
+    },
+    {
+      "label": "onboarding-persistence-repaired",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/calendarCredentials.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 2919,
+      "log": "onboarding-persistence-repaired.log"
+    },
+    {
+      "label": "provider-credential-repairs",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/providerCredentials.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 914,
+      "log": "provider-credential-repairs.log"
+    },
+    {
+      "label": "voice-status-excluded-scope",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=2",
+        "test/geminiMediaBridge.spec.mjs",
+        "test/googleGenAiLiveAdapter.spec.mjs",
+        "test/voiceAudioCodec.spec.mjs",
+        "test/voicePersistence.spec.mjs",
+        "test/voicePromptCompiler.spec.mjs",
+        "test/voiceRuntimeRoutes.spec.mjs",
+        "test/voiceSecurity.spec.mjs",
+        "test/voiceWebSocketServer.spec.mjs"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 6801,
+      "log": "voice-status-excluded-scope.log"
+    },
+    {
+      "label": "reproduction-runner-check",
+      "args": [
+        "--test",
+        "test/applicationPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1110,
+      "log": "reproduction-runner-check.log"
+    }
+  ]
+}

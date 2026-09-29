@@ -1,0 +1,14 @@
+{
+  "label": "onboarding-persistence-module-mocks",
+  "args": [
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "test/onboardingServiceArea.spec.mjs",
+    "test/onboardingCalendar.spec.mjs"
+  ],
+  "status": 1,
+  "signal": null,
+  "elapsedMs": 4944,
+  "log": "onboarding-persistence-module-mocks.log"
+}

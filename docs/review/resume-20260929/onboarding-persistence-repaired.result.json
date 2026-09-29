@@ -1,0 +1,15 @@
+{
+  "label": "onboarding-persistence-repaired",
+  "args": [
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "test/onboardingServiceArea.spec.mjs",
+    "test/onboardingCalendar.spec.mjs",
+    "test/calendarCredentials.spec.mjs"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 2919,
+  "log": "onboarding-persistence-repaired.log"
+}

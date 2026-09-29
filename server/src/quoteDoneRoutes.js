@@ -5,16 +5,39 @@ import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import { declaredAdditionalWork } from './quoteScopeDisclosure.js';
+import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
+import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
-  calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName
+  calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName,
+  requireApplicationPricingEnvelope
 } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const limitedText = value => typeof value === 'string' ? value : null;
+const PUBLIC_CONTRACT_VERSION = '2026-09-29.1';
+const BOOKING_CONTEXT_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const budgets = new Map();
+export function parseStoredQuoteOrigins(value) {
+  try {
+    const parsed=JSON.parse(value);
+    if(!Array.isArray(parsed)||parsed.length<1||parsed.length>20)return [];
+    const seen=new Set();
+    for(const origin of parsed) {
+      if(typeof origin!=='string'||seen.has(origin))return [];
+      let url;try{url=new URL(origin);}catch{return [];}
+      const loopback=['localhost','127.0.0.1','[::1]'].includes(url.hostname);
+      if(url.origin!==origin||url.username||url.password||
+          !(url.protocol==='https:'||(process.env.NODE_ENV!=='production'&&loopback&&url.protocol==='http:')))return [];
+      seen.add(origin);
+    }
+    return [...seen];
+  } catch {
+    return [];
+  }
+}
 function publicLimit(req,res,next) {
   const key=req.tenantOwnerId+':'+req.ip,now=Date.now();
   const prior=budgets.get(key);const budget=prior&&now-prior.startedAt<60000?prior:{startedAt:now,count:0};
@@ -37,35 +60,61 @@ function publicContext(req,res,next) {
   if(!origin&&req.method==='GET'&&req.get('Sec-Fetch-Site')==='same-origin') {
     try { origin=new URL(req.get('Referer')).origin; } catch { /* deny below */ }
   }
-  if(!origin||!JSON.parse(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
+  if(!origin||!parseStoredQuoteOrigins(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
   req.tenantOwnerId=access.ownerId;next();
 }
 function serviceFor(book,body) {
   if(typeof body.serviceId!=='string')return null;
   const matches=applicationServiceMatches(book,body.serviceId);return matches.length===1?matches[0]:null;
 }
-function customerCatalogService(service,metadata) {
+function customerCatalogService(service,metadata,bookingCapability) {
   const definition=metadata.services.find(item=>item.serviceType===service.serviceType);
   const knownOfferings={};
   for(const field of definition?.customerFields||[])if(field.type==='slug') {
     const values=service.knownOfferings?.[field.name];
     if(object(values))knownOfferings[field.name]=Object.fromEntries(Object.entries(values).filter(([key,id])=>/^[a-z][a-z0-9_]*$/.test(key)&&uuid(id)));
   }
-  return {id:service.id,serviceType:service.serviceType,name:applicationServiceName(service),customerFields:definition?.customerFields||[],knownOfferings,customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected')};
+  return {
+    id:service.id,
+    serviceType:service.serviceType,
+    name:applicationServiceName(service),
+    customerFields:definition?.customerFields||[],
+    knownOfferings,
+    customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected'),
+    quoteCapability:'LIVE_OR_REVIEW',
+    bookingCapability
+  };
 }
 function unresolvedResult(reason) {
   const quoteId=crypto.randomUUID();
   return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason,quoteId},request:null,internalResult:null,leadEnvelope:null};
 }
-export function submitQuote(ownerId,body) {
+function allowedTierNames(response) {
+  const estimate=response?.resultType==='PARTIAL_ESTIMATE_READY'?response.pricedEstimate:response;
+  return [...new Set((Array.isArray(estimate?.options)?estimate.options:[])
+    .map(option=>typeof option?.tierName==='string'?option.tierName.trim():'')
+    .filter(Boolean))];
+}
+export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=process.env.BOOKING_SLOT_TOKEN_SECRET}={}) {
   if(!object(body)||!uuid(body.requestId))throw problem('A stable request UUID is required.');
   const contentDigest=digest(body);
   return db.transaction(()=>{
-    const existing=ownerQuery('SELECT contentDigest, customerResponseJson FROM quoteSubmissions WHERE ownerId = ? AND requestId = ?').get(ownerId,body.requestId);
+    const existing=ownerQuery(`SELECT contentDigest, customerResponseJson,
+      bookingIntentId, bookingTokenReceipt
+      FROM quoteSubmissions WHERE ownerId = ? AND requestId = ?`).get(ownerId,body.requestId);
     if(existing) {
       if(existing.contentDigest!==contentDigest)throw problem('This request ID already belongs to different submitted details.',409);
-      return {status:200,response:JSON.parse(existing.customerResponseJson)};
+      const response=JSON.parse(existing.customerResponseJson);
+      if(existing.bookingTokenReceipt) {
+        const receipt=openBookingTokenReceipt(existing.bookingTokenReceipt,bookingTokenSecret);
+        if(receipt.ownerId!==ownerId||receipt.intentId!==existing.bookingIntentId) {
+          throw problem('The stored booking receipt does not match this request.',500);
+        }
+        response.bookingToken=receipt.bookingToken;
+      }
+      return {status:200,response};
     }
+    requireApplicationPricingEnvelope(body);
     // Owner ruling 2026-09-27: every estimate request needs contact, including
     // instant estimates. Exact retries above are immutable historical receipts.
     if(!hasCallbackContact(body.contact))throw problem('Enter a valid email address or phone number before submitting an estimate request.',422);
@@ -97,11 +146,53 @@ export function submitQuote(ownerId,body) {
         VALUES (?,?,?,?,?,?,?,?,?)`).run(recordId,ownerId,limitedText(contact.name),limitedText(contact.phone),describedService,JSON.stringify(internal),'quote_review','NEEDS REVIEW',createdAt);
     }
     ownerQuery('INSERT INTO quoteRequests (id,ownerId,describedService,estimatedValue,createdAt) VALUES (?,?,?,?,?)').run(recordId,ownerId,describedService,null,createdAt);
-    ownerQuery(`INSERT INTO quoteSubmissions (ownerId,requestId,contentDigest,recordId,resultType,bookRevision,originalSubmissionJson,internalOutcomeJson,customerResponseJson,createdAt)
-      VALUES (?,?,?,?,?,?,?,?,?,?)`).run(ownerId,body.requestId,contentDigest,recordId,response.resultType,bookRevision(book),JSON.stringify(body),JSON.stringify(internal),JSON.stringify(response),createdAt);
+    const bookingCapability=service?loadBookingCapability(db,ownerId,service.id):'NONE';
+    let customerResponse={...response,bookingCapability};
+    let storedResponse=customerResponse;
+    let bookingIntentId=null;
+    let bookingTokenReceipt=null;
+    if(bookingCapability!=='NONE') {
+      if(!bookingService)throw problem('Booking is temporarily unavailable.',503);
+      const expiresAtUtc=new Date(Date.now()+BOOKING_CONTEXT_DURATION_MS).toISOString();
+      const booking=bookingService.createIntent({
+        ownerId,
+        sourceType:['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(response.resultType)?'quote':'lead',
+        sourceId:recordId,
+        serviceId:service.id,
+        resultType:response.resultType,
+        allowedTierNames:allowedTierNames(response),
+        expiresAtUtc
+      });
+      bookingIntentId=booking.intentId;
+      bookingTokenReceipt=sealBookingTokenReceipt({
+        kind:'booking-token-receipt',
+        ownerId,
+        intentId:booking.intentId,
+        bookingToken:booking.bookingToken,
+        expiresAtUtc:booking.expiresAtUtc
+      },bookingTokenSecret);
+      customerResponse={
+        ...customerResponse,
+        bookingToken:booking.bookingToken,
+        bookingTokenExpiresAt:booking.expiresAtUtc
+      };
+      storedResponse={
+        ...storedResponse,
+        bookingTokenExpiresAt:booking.expiresAtUtc
+      };
+    }
+    ownerQuery(`INSERT INTO quoteSubmissions (
+      ownerId,requestId,contentDigest,recordId,resultType,bookRevision,
+      originalSubmissionJson,internalOutcomeJson,customerResponseJson,
+      bookingIntentId,bookingTokenReceipt,createdAt
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`).run(
+      ownerId,body.requestId,contentDigest,recordId,response.resultType,bookRevision(book),
+      JSON.stringify(body),JSON.stringify(internal),JSON.stringify(storedResponse),
+      bookingIntentId,bookingTokenReceipt,createdAt
+    );
     // Returning from this transaction commits every row before the route sends
     // an acknowledgement. A constraint/write/commit failure returns no success.
-    return {status:201,response};
+    return {status:201,response:customerResponse};
   }).immediate();
 }
 function leadView(row,role) {
@@ -114,7 +205,7 @@ function leadView(row,role) {
   if(detail.customerResult?.resultType==='PARTIAL_ESTIMATE_READY')Object.assign(common,{linkedQuoteId:detail.linkedQuoteId,additionalWork:detail.customerResult.additionalWork,additionalWorkStatus:detail.customerResult.additionalWorkStatus,pricedScope:detail.customerResult.pricedScope});
   return role==='owner'?{...common,internal:detail}:common;
 }
-export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) {
+export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bookingService,bookingTokenSecret}) {
   const owner=[requireAuth(['owner']),requireQuoteDonePlan];
   const team=[requireAuth(['owner','staff']),requireQuoteDonePlan];
   const leadTeam=[requireAuth(['owner','staff'])]; // CRM is included on Operator.
@@ -144,14 +235,32 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) 
   }));
   app.get('/api/quotedone/access',...owner,(req,res)=>{
     const row=ownerQuery('SELECT publicKey,allowedOriginsJson FROM quoteAccessKeys WHERE ownerId = ?').get(req.tenantOwnerId);
-    res.json(row?{publicKey:row.publicKey,allowedOrigins:JSON.parse(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
+    res.json(row?{publicKey:row.publicKey,allowedOrigins:parseStoredQuoteOrigins(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
   });
   app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
     const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
-    res.json({services:book.services.filter(service=>uuid(service.id)&&meta.services.some(m=>m.serviceType===service.serviceType)).map(service=>customerCatalogService(service,meta))});
+    const statuses=new Map(bookStatuses(book).map(status=>[status.serviceId,status]));
+    const services=book.services
+      .filter(service=>uuid(service.id)&&meta.services.some(m=>m.serviceType===service.serviceType)&&statuses.get(service.id)?.status==='QUOTING LIVE')
+      .map(service=>customerCatalogService(
+        service,
+        meta,
+        loadBookingCapability(db,req.tenantOwnerId,service.id)
+      ));
+    res.json({
+      contractVersion:PUBLIC_CONTRACT_VERSION,
+      capabilities:{
+        quoteEnvelope:'pricing-only-v2',
+        booking:'booking-v1',
+        postQuoteIdentity:true,
+        serverPricingOnly:true
+      },
+      branding:loadPublicBranding(db,req.tenantOwnerId),
+      services
+    });
   });
   app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
-    const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
+    const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
   app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
     res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
@@ -160,7 +269,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan}) 
     res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
   }));
   app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
-    const result=submitQuote(req.tenantOwnerId,req.body);res.status(result.status).json(result.response);
+    const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
   app.get('/api/leads',...leadTeam,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));
   app.get('/api/leads/:id',...leadTeam,(req,res)=>{

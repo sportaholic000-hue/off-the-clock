@@ -115,8 +115,13 @@ function AuthStep({ onAuthenticated }) {
         : await api('/api/auth/login', { method:'POST', auth:false, body:{ email:form.email, password:form.password } });
       setToken(payload.token);
       if (mode === 'login') {
-        const session = await api('/api/dashboard');
-        if (session.role === 'staff') { go('/leads'); return; }
+        try {
+          const session = await api('/api/dashboard');
+          if (session.role === 'staff') { go('/leads'); return; }
+        } catch (sessionError) {
+          if (sessionError.status !== 403) throw sessionError;
+          go('/settings/billing'); return;
+        }
       }
       onAuthenticated();
     } catch (nextError) {
@@ -161,15 +166,14 @@ function AuthStep({ onAuthenticated }) {
 function AccountStep({ state, refresh, next }) {
   const [form, setForm] = useState({
     firstName: state.account.firstName || '',
-    businessName: state.account.businessName || '',
-    plan: state.account.plan || 'QuoteDone'
+    businessName: state.account.businessName || ''
   });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   async function save() {
     setBusy(true); setError(null);
     try {
-      await api('/api/onboarding/account', { method:'POST', body:form });
+      await api('/api/onboarding/account', { method:'POST', body:{...form,plan:state.account.plan} });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
@@ -182,11 +186,7 @@ function AccountStep({ state, refresh, next }) {
         <Field label="Owner first name"><TextInput value={form.firstName} onChange={event => setForm({ ...form, firstName:event.target.value })} /></Field>
         <Field label="Business name"><TextInput value={form.businessName} onChange={event => setForm({ ...form, businessName:event.target.value })} /></Field>
       </div>
-      <Field label="Plan">
-        <div className="choice-grid three">
-          {PLANS.map(plan => <button key={plan} type="button" className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}</button>)}
-        </div>
-      </Field>
+      <div><p>Plan: {state.account.plan}</p><Button variant="secondary" onClick={()=>go('/settings/billing')}>Billing</Button></div>
       <ErrorMessage error={error} />
       <StepActions onNext={save} nextDisabled={busy || !form.firstName || !form.businessName} />
     </section>
@@ -821,8 +821,8 @@ export default function Onboarding() {
     window.scrollTo({ top:0, behavior:'smooth' });
   }
 
-  if (!getToken()) return <AuthStep onAuthenticated={() => refresh().then(() => move(2)).catch(setError)} />;
-  if (error) return <div className="center-state"><ErrorMessage error={error} /></div>;
+  if (!getToken()) return <AuthStep onAuthenticated={() => window.location.pathname.startsWith('/settings') ? go('/settings/billing') : refresh().then(() => move(2)).catch(setError)} />;
+  if (error) return <AppShell activePath="/onboarding"><main className="billing-page"><ErrorMessage error={error}/><Button onClick={()=>go('/settings/billing')}>Billing</Button></main></AppShell>;
   if (!state) return <Loading label="LOADING ONBOARDING" />;
 
   const props = { state, refresh, back:() => move(step - 1), next:() => move(step + 1) };

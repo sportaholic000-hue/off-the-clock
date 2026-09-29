@@ -18,12 +18,13 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
 
 async function twilioRequest(path, { method = 'GET', params } = {}) {
   const accountSid = required('TWILIO_ACCOUNT_SID');
-  const authToken = required('TWILIO_AUTH_TOKEN');
+  const apiKeySid = required('TWILIO_API_KEY_SID');
+  const apiKeySecret = required('TWILIO_API_KEY_SECRET');
   const url = new URL(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/${path}`);
   const options = {
     method,
     headers: {
-      authorization: `Basic ${Buffer.from(`${accountSid}:${authToken}`).toString('base64')}`
+      authorization: `Basic ${Buffer.from(`${apiKeySid}:${apiKeySecret}`).toString('base64')}`
     }
   };
   if (method === 'GET' && params) {
@@ -35,7 +36,9 @@ async function twilioRequest(path, { method = 'GET', params } = {}) {
   const response = await fetchWithTimeout(url, options);
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const error = new Error(payload.message || 'Twilio request failed');
+    const error = new Error('Twilio request failed');
+    error.code = 'TWILIO_REQUEST_FAILED';
+    if (Number.isSafeInteger(payload.code)) error.providerCode = payload.code;
     error.statusCode = 502;
     throw error;
   }

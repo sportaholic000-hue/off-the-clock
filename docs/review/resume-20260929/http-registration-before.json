@@ -1,0 +1,15 @@
+{
+  "health": {
+    "status": 200,
+    "result": {
+      "ok": true
+    }
+  },
+  "registered": {
+    "status": 500,
+    "result": {
+      "error": "Internal server error",
+      "code": "AUTH_TOKEN_STORE_UNAVAILABLE"
+    }
+  }
+}

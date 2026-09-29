@@ -1,0 +1,12 @@
+{
+  "label": "real-widget-production-build",
+  "args": [
+    "client/test/widget-browser.mjs",
+    ".",
+    "../recovery-evidence-candidate-20260929/real-widget-production-build"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 139914,
+  "log": "real-widget-production-build.log"
+}

@@ -1,0 +1,13 @@
+{
+  "server/src/schema.js": "aed021b444e55e8f9d5ef24cb4a209463c9b6f746c2d4e7ffa395d528f71f026",
+  "server/src/server.js": "41173c844f4d9d90b21092492eddf1864446ba59ad05bbaef9318067df539fef",
+  "server/src/onboardingService.js": "851e0905c9d52a86ee6d8d62dfa0800d264b7be7c2df70fcc3ab38ba1343e0a8",
+  "server/src/platformIntegrations.js": "4476a7e77f91191ba9f8b575461da5c417e8f8d19cb0ae5c587570559f050fea",
+  "client/test/widget-application-harness.mjs": "3e9feaaf1aa7ed2047a1e560ce6bf90d3020ba04798c3a3b483534ca5f800b4a",
+  "client/test/widget-browser.mjs": "091fe478fd294ecbd52fe2401b8b6571f3644ea5cd903fc0a28868be05c15c92",
+  "client/test/widget-full-page-browser.mjs": "88c9eb85345d774ec9f2c8dfd45c27f6586efc0e952c66a17b4bca077fc94194",
+  "verification/quotedone/calendar-provider-fixture.mjs": "44e8a6ef094952a0813e86086961c2876d087a8be3c124f7a59c91955d2adb9a",
+  "verification/quotedone/calendar-oauth-application.mjs": "bc70a5890ef31eed87d049248cccaeed47358afdaa596e9d0bec947907686447",
+  "verification/quotedone/pricing-envelope-workflow.mjs": "2f2436ff07c1d57f0c8c117a820e6addd7ae582e5583c3946cbdeb2feee69a95",
+  "verification/quotedone/booking-application.mjs": "2bbbb7313cf3865ed6b1ebb9e091adc4ae201759a77e3d5277d6362488c63c62"
+}
