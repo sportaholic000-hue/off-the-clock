@@ -4,7 +4,7 @@ import cors from 'cors';
 import Stripe from 'stripe';
 import { verifyExactJson } from './exactJson.js';
 import { parseOwnerNumericInput } from '../priceBookMoney.js';
-import jwt from 'jsonwebtoken';
+import { createCalendarOAuthStateService } from './calendarOAuthState.js';
 import { db, migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
 import { CREATE_TABLE_STATEMENTS } from './schema.js';
@@ -121,6 +121,7 @@ function requireOperatorAccess(req, res, next) {
 
 migrate();
 migrateLegacyGoogleCalendarCredentials();
+const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
 const bookingRuntimeAvailable = Buffer.byteLength(bookingTokenSecret) >= 32;
@@ -345,26 +346,23 @@ app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async 
 }));
 
 app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), (req, res) => {
-  const state = jwt.sign(
-    { sub: req.tenantOwnerId, purpose: 'google-calendar' },
-    process.env.JWT_SECRET,
-    { expiresIn: '10m' }
-  );
+  const { state } = calendarOAuthState.issue(req.tenantOwnerId);
   res.json({ authorizationUrl: googleCalendarAuthorizationUrl(state) });
 });
 
 app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, asyncHandler(async (req, res) => {
-  const state = jwt.verify(String(req.query.state || ''), process.env.JWT_SECRET);
-  if (!state || typeof state === 'string' || state.purpose !== 'google-calendar') {
-    return res.status(401).json({ error: 'Invalid calendar state' });
+  if (typeof req.query.code !== 'string' || !req.query.code.trim()) {
+    return res.status(400).json({ error: 'Calendar authorization was not completed. Start the connection again.' });
   }
-  if (!hasProviderWriteAccess(accessAccount(state.sub))) {
+  // Consume the persisted owner-bound state before any provider or account mutation.
+  const { ownerId } = calendarOAuthState.consume(req.query.state);
+  if (!hasProviderWriteAccess(accessAccount(ownerId))) {
     return res.status(403).json({ error: 'This account is not eligible for provider operations.' });
   }
-  const tokens = await exchangeGoogleCalendarCode(String(req.query.code || ''));
-  saveGoogleCalendarTokens(state.sub, tokens);
+  const tokens = await exchangeGoogleCalendarCode(req.query.code);
+  saveGoogleCalendarTokens(ownerId, tokens);
   const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
-  return res.redirect(`${clientUrl}/onboarding?step=8&calendar=connected`);
+  return res.redirect(clientUrl + '/onboarding?step=8&calendar=connected');
 }));
 
 app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (req, res) => {

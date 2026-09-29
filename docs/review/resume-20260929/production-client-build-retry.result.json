@@ -1,0 +1,10 @@
+{
+  "label": "production-client-build-retry",
+  "args": [
+    "../../outputs/build-resumed-client.mjs"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 52215,
+  "log": "production-client-build-retry.log"
+}

@@ -289,6 +289,18 @@ export const CREATE_TABLE_STATEMENTS = [
     PRIMARY KEY (ownerId, requestId),
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,
+  `CREATE TABLE IF NOT EXISTS calendarOAuthStates (
+    stateHash TEXT PRIMARY KEY NOT NULL,
+    ownerId TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    createdAt INTEGER NOT NULL,
+    expiresAt INTEGER NOT NULL,
+    consumedAt INTEGER,
+    CHECK (length(stateHash) = 64),
+    CHECK (stateHash NOT GLOB '*[^0-9a-f]*'),
+    CHECK (createdAt >= 0),
+    CHECK (expiresAt > createdAt),
+    CHECK (consumedAt IS NULL OR consumedAt >= createdAt)
+  ) WITHOUT ROWID`,
   `CREATE TABLE IF NOT EXISTS calendarConnections (
     ownerId TEXT PRIMARY KEY,
     provider TEXT NOT NULL,
@@ -483,6 +495,8 @@ export const CREATE_TABLE_STATEMENTS = [
 ];
 
 export const CREATE_INDEX_STATEMENTS = [
+  `CREATE INDEX IF NOT EXISTS calendarOAuthStates_unconsumedExpiry ON calendarOAuthStates(expiresAt) WHERE consumedAt IS NULL`,
+  `CREATE INDEX IF NOT EXISTS calendarOAuthStates_ownerCreated ON calendarOAuthStates(ownerId, createdAt DESC)`,
   `CREATE INDEX IF NOT EXISTS billing_event_receipts_owner
     ON billingEventReceipts(ownerId, eventCreatedAt)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS billing_subscription_history_current_owner

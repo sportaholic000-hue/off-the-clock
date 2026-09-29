@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: calendar credentials encrypt with authenticated encryption and round trip
+ok 1 - calendar credentials encrypt with authenticated encryption and round trip
+  ---
+  duration_ms: 205.4993
+  type: 'test'
+  ...
+# Subtest: calendar credential tampering and invalid keys fail closed
+ok 2 - calendar credential tampering and invalid keys fail closed
+  ---
+  duration_ms: 21.9225
+  type: 'test'
+  ...
+# Subtest: legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+ok 3 - legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+  ---
+  duration_ms: 1.6421
+  type: 'test'
+  ...
+# Subtest: non-secret calendar metadata does not trigger a credential migration
+ok 4 - non-secret calendar metadata does not trigger a credential migration
+  ---
+  duration_ms: 0.6777
+  type: 'test'
+  ...
+# (node:30712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30712) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# Subtest: Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+ok 5 - Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+  ---
+  duration_ms: 601.1366
+  type: 'test'
+  ...
+# Subtest: calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+ok 6 - calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+  ---
+  duration_ms: 9.6822
+  type: 'test'
+  ...
+# Subtest: Google selection initializes fail-closed booking metadata while OAuth is pending
+ok 7 - Google selection initializes fail-closed booking metadata while OAuth is pending
+  ---
+  duration_ms: 7.2232
+  type: 'test'
+  ...
+# Subtest: skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+ok 8 - skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+  ---
+  duration_ms: 5.489
+  type: 'test'
+  ...
+# Subtest: invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+ok 9 - invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+  ---
+  duration_ms: 17.0635
+  type: 'test'
+  ...
+# Subtest: Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+ok 10 - Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+  ---
+  duration_ms: 16.9378
+  type: 'test'
+  ...
+# Subtest: Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+ok 11 - Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+  ---
+  duration_ms: 8.7419
+  type: 'test'
+  ...
+# Subtest: reselecting an already usable Google connection is non-destructive and revision-stable
+ok 12 - reselecting an already usable Google connection is non-destructive and revision-stable
+  ---
+  duration_ms: 8.3944
+  type: 'test'
+  ...
+# (node:22296) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: legacy knowledge-base saves preserve an existing structured service area
+ok 13 - legacy knowledge-base saves preserve an existing structured service area
+  ---
+  duration_ms: 15.3341
+  type: 'test'
+  ...
+# Subtest: supplied service areas are canonicalized and invalid shapes do not overwrite saved coverage
+ok 14 - supplied service areas are canonicalized and invalid shapes do not overwrite saved coverage
+  ---
+  duration_ms: 6.3254
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2659.2946

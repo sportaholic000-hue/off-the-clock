@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
-import {startApplication} from './application-harness.mjs';
+import {startApplication} from '../../client/test/widget-application-harness.mjs';
 import {mowingFixture} from './repair-fixture.mjs';
 
 const [root,evidence]=process.argv.slice(2).map(value=>path.resolve(value));
@@ -53,6 +53,25 @@ try{
     assert.deepEqual(calculated.result.details?.fields,entry.fields);
     assert.deepEqual(counts(),before);
     rows.push({name:entry.name,channel:channel.name,prepared,calculated,passed:true});
+  }
+
+  const unresolved=[
+    {name:'additional work in urgency',extra:{urgency:'flexible, also remove the hedge'}},
+    {name:'measurement uncertainty in urgency',extra:{urgency:'The back yard has not been measured'}},
+    {name:'nested unexpected contact scope',extra:{contact:{email:'synthetic@example.invalid',extra:{work:'Remove the wall',measurement:'unknown'}}}},
+    {name:'nested unexpected location scope',extra:{location:{extra:{work:'Remove the wall',measurement:'unknown'}}}}
+  ];
+  for(const channel of channels)for(const entry of unresolved){
+    const body=base(entry.extra),before=counts(),prepared=await app.request('POST',channel.prepare,body,channel.token,channel.headers);
+    assert.ok([200,400,422].includes(prepared.status),JSON.stringify(prepared));
+    if(prepared.status===200)assert.notEqual(prepared.result.status,'ready',JSON.stringify(prepared));
+    const request={...body,...(prepared.status===200?{reviewRequested:true}:{}),...(channel.preview?{revision:saved.revision}:{})};
+    const calculated=await app.request('POST',channel.calculate,request,channel.token,channel.headers);
+    if([200,201].includes(calculated.status)){
+      assert.equal(calculated.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(calculated.result.midEstimate,undefined);assert.equal(calculated.result.pricedEstimate,undefined);
+      if(!channel.preview){const receipt=db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(f.owner.id,request.requestId);assert.deepEqual(JSON.parse(receipt.originalSubmissionJson),request);}
+    }else{assert.ok([400,422].includes(calculated.status),JSON.stringify(calculated));assert.deepEqual(counts(),before);}
+    rows.push({name:entry.name,channel:channel.name,request,prepared,calculated,passed:true});
   }
 
   const emptyLegacy=[
