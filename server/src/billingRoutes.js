@@ -143,18 +143,21 @@ function immediate(database, work) {
   }
 }
 
-function configuredUrl(value, label) {
+function configuredUrl(value, label, { allowInsecureLoopback = false } = {}) {
   if (typeof value !== 'string' || !value || value.trim() !== value) {
-    throw new TypeError(`${label} must be an exact HTTPS URL.`);
+    throw new TypeError(`${label} must be an exact trusted URL.`);
   }
   let parsed;
   try {
     parsed = new URL(value);
   } catch {
-    throw new TypeError(`${label} must be an exact HTTPS URL.`);
+    throw new TypeError(`${label} must be an exact trusted URL.`);
   }
-  if (parsed.protocol !== 'https:' || parsed.username || parsed.password || !parsed.hostname) {
-    throw new TypeError(`${label} must be an exact HTTPS URL.`);
+  const loopback = ['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname);
+  const trustedTransport = parsed.protocol === 'https:' ||
+    (allowInsecureLoopback === true && loopback && parsed.protocol === 'http:');
+  if (!trustedTransport || parsed.username || parsed.password || !parsed.hostname || parsed.hash) {
+    throw new TypeError(`${label} must be an exact trusted URL.`);
   }
   return { value, origin: parsed.origin };
 }
@@ -330,11 +333,14 @@ export function installBillingRoutes(app, {
   portalReturnUrl,
   integrationIdentifier,
   checkoutReceiptEncryptionKey = process.env.CREDENTIAL_ENCRYPTION_KEY,
+  allowInsecureLoopback = process.env.NODE_ENV !== 'production',
+  providerOperationsEnabled = true,
   clock = () => new Date(),
   randomUUID = crypto.randomUUID,
   checkoutLeaseMs = DEFAULT_CHECKOUT_LEASE_MS
 }) {
-  if (!app || typeof app.post !== 'function' || !database || typeof database.prepare !== 'function' ||
+  if (!app || typeof app.post !== 'function' || typeof app.get !== 'function' ||
+      !database || typeof database.prepare !== 'function' ||
       typeof requireAuth !== 'function' || typeof requireProviderWrites !== 'function' ||
       typeof asyncHandler !== 'function' ||
       !billingStateService || typeof billingStateService.registerBillingCustomer !== 'function' ||
@@ -345,9 +351,16 @@ export function installBillingRoutes(app, {
   }
 
   const prices = normalizePriceAllowlist(priceIds);
-  const success = configuredUrl(successUrl, 'Checkout success URL');
-  const cancel = configuredUrl(cancelUrl, 'Checkout cancel URL');
-  const portalReturn = configuredUrl(portalReturnUrl, 'Billing portal return URL');
+  if (typeof allowInsecureLoopback !== 'boolean') {
+    throw new TypeError('Billing loopback URL policy must be boolean.');
+  }
+  if (typeof providerOperationsEnabled !== 'boolean') {
+    throw new TypeError('Billing provider-operations state must be boolean.');
+  }
+  const urlOptions = { allowInsecureLoopback };
+  const success = configuredUrl(successUrl, 'Checkout success URL', urlOptions);
+  const cancel = configuredUrl(cancelUrl, 'Checkout cancel URL', urlOptions);
+  const portalReturn = configuredUrl(portalReturnUrl, 'Billing portal return URL', urlOptions);
   if (success.origin !== cancel.origin || success.origin !== portalReturn.origin) {
     throw new TypeError('Billing redirect URLs must use the same trusted application origin.');
   }
@@ -368,6 +381,16 @@ export function installBillingRoutes(app, {
   const ownerById = database.prepare(`
     SELECT id, email, firstName, businessName
     FROM users WHERE id = ? AND role = 'owner'
+  `);
+  const billingStatusByOwner = database.prepare(`
+    SELECT users.plan, users.planStatus, users.trialEndsAt,
+      users.paymentFailedAt AS userPaymentFailedAt,
+      billing.stripeCustomerId, billing.stripeSubscriptionId, billing.stripePriceId,
+      billing.graceEndsAt, billing.currentPeriodEndAt, billing.cancelAtPeriodEnd,
+      billing.canceledAt
+    FROM users
+    LEFT JOIN billingAccounts AS billing ON billing.ownerId = users.id
+    WHERE users.id = ? AND users.role = 'owner'
   `);
   const terminalDeletionReceipt = database.prepare(`
     SELECT stripeEventId, eventCreatedAt
@@ -641,6 +664,48 @@ export function installBillingRoutes(app, {
   }
 
   const ownerOnly = requireAuth(['owner']);
+
+  app.get('/api/billing/status', ownerOnly, (req, res) => {
+    const ownerId = requireOwnerContext(req);
+    const account = billingStatusByOwner.get(ownerId);
+    if (!account) throw routeError('OWNER_NOT_FOUND', 404, 'Owner account not found.');
+    const active = activeCheckout.get(ownerId);
+    const at = now();
+    const checkoutState = !active
+      ? 'NONE'
+      : active.status === 'OPEN' && active.expiresAt && Date.parse(active.expiresAt) <= at.getTime()
+        ? 'EXPIRED'
+        : active.status;
+    const terminalDeletion = account.stripeSubscriptionId &&
+      account.planStatus === 'canceled' && account.canceledAt
+      ? terminalDeletionReceipt.get(ownerId, account.stripeSubscriptionId)
+      : null;
+    const structurallyEligibleForCheckout = !account.stripeSubscriptionId || Boolean(terminalDeletion);
+    let billingInterval = null;
+    if (account.stripePriceId) {
+      for (const [selection, priceId] of prices) {
+        if (priceId === account.stripePriceId) {
+          billingInterval = selection.slice(selection.indexOf(':') + 1);
+          break;
+        }
+      }
+    }
+    return res.json({
+      billingEnabled: true,
+      providerAvailable: providerOperationsEnabled,
+      plan: account.plan,
+      planStatus: account.planStatus,
+      billingInterval,
+      trialEndsAt: account.trialEndsAt ?? null,
+      paymentFailedAt: account.userPaymentFailedAt ?? null,
+      graceEndsAt: account.graceEndsAt ?? null,
+      currentPeriodEndAt: account.currentPeriodEndAt ?? null,
+      cancelAtPeriodEnd: account.cancelAtPeriodEnd === 1,
+      checkoutState,
+      canCheckout: providerOperationsEnabled && structurallyEligibleForCheckout,
+      canManageBilling: providerOperationsEnabled && Boolean(account.stripeCustomerId)
+    });
+  });
 
   app.post('/api/billing/checkout', ownerOnly, requireProviderWrites, asyncHandler(async (req, res) => {
     const ownerId = requireOwnerContext(req);

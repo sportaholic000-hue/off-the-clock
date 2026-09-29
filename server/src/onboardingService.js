@@ -59,17 +59,18 @@ function ownerAccount(ownerId) {
 }
 
 export function updateOnboardingAccount(ownerId, values) {
-  const allowedPlans = new Set(['Operator', 'QuoteDone', 'Scale']);
-  const firstName = String(values.firstName || '').trim();
-  const businessName = String(values.businessName || '').trim();
-  const plan = String(values.plan || '');
-  if (!firstName || !businessName || !allowedPlans.has(plan)) {
-    const error = new Error('First name, business name, and a valid plan are required');
+  const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
+  const firstName = String(input.firstName || '').trim();
+  const businessName = String(input.businessName || '').trim();
+  if (!firstName || !businessName) {
+    const error = new Error('First name and business name are required');
     error.statusCode = 400;
     throw error;
   }
-  ownerQuery(`UPDATE users SET firstName = ?, businessName = ?, plan = ?
-    WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, plan, ownerId, ownerId, ownerId);
+  // users.plan is authoritative billing state. Onboarding may update profile
+  // identity only; requested tiers are selected later through server-created Checkout.
+  ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
+    WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
   updateBusinessProfile(ownerId, { onboardingStep: Math.max(2, getBusinessProfile(ownerId).onboardingStep) });
   return ownerAccount(ownerId);
 }

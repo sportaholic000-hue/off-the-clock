@@ -30,10 +30,10 @@ import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
 import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
+import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
-import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
 import {
