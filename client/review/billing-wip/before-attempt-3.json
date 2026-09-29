@@ -1,0 +1,21 @@
+{
+  "passed": false,
+  "fixtureOnly": true,
+  "realBillingVerified": false,
+  "mode": "before",
+  "rows": [
+    {
+      "scenario": "before",
+      "passed": false,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('[SYNTHETIC] Account access is unavailable.', { exact: true }) to be visible\u001b[22m\n\n    at C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quotedone-widget\\client\\test\\billing-browser.mjs:61:80"
+    }
+  ],
+  "wire": [],
+  "errors": [],
+  "buildFiles": {
+    "assets/index-C17RBiO4.js": "20f27594436ebb967a7844d46492bd4106089cdbfb4ddfaf8b420125c9b9bc07",
+    "assets/index-DUV2ho-u.css": "a810262cf6bf02e535a20c1e5e7ada382e072b0ad089bc96c10bcd1c40c48c7a",
+    "index.html": "80a65ec4f9583c739e5fad0ea2ab62e3cdcc21b2af725ebae154f077ec3f70c5",
+    "widget.js": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+  }
+}

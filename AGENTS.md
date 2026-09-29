@@ -52,3 +52,10 @@ response. No self-ratings. No realistic-looking fake data —
 marked [PLACEHOLDER] blocks only (dev/internal scaffolding;
 the public site carries no placeholder proof blocks — see
 Phase 5).
+
+
+## Owner workflow — September 29, 2026
+
+- Do not spawn or delegate to sub-agents for coding, implementation, application repairs, or source changes. The active agent performs and verifies that work directly.
+- Research-only sub-agents may be used only when the owner explicitly asks for them.
+- Save source checkpoints on GitHub and verify the uploaded version. Clearly distinguish files saved on this computer from files confirmed on GitHub. An unfinished backup is not a verified or release-ready build.
