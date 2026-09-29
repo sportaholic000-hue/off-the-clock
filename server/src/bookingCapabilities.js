@@ -1,4 +1,5 @@
 import { isValidIanaTimeZone } from './calendarTime.js';
+import { isServiceAreaConfigured, serviceAreaFromKnowledgeBase } from './serviceArea.js';
 
 const HEX_COLOR = /^#[0-9A-F]{6}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
@@ -25,7 +26,7 @@ function jsonArray(value) {
   }
 }
 
-export function resolveBookingCapability({ settings, policy } = {}) {
+export function resolveBookingCapability({ settings, policy, serviceArea } = {}) {
   if (policy && Number(policy.enabled) === 0) return 'NONE';
   if (settings?.provider === 'calendly') {
     return typeof settings.externalUrl === 'string' && /^https:\/\//i.test(settings.externalUrl)
@@ -35,7 +36,8 @@ export function resolveBookingCapability({ settings, policy } = {}) {
   const duration = policy?.bookingMode === 'site_visit_first' && !integer(policy.durationMinutes, 1, 10080)
     ? 45
     : policy?.durationMinutes;
-  const direct = Number(settings?.directBookingEnabled) === 1 &&
+  const direct = isServiceAreaConfigured(serviceArea) &&
+    Number(settings?.directBookingEnabled) === 1 &&
     Number(policy?.enabled) === 1 &&
     settings.provider === 'google' &&
     typeof settings.calendarId === 'string' && Boolean(settings.calendarId.trim()) &&
@@ -61,7 +63,12 @@ export function loadBookingCapability(database, ownerId, serviceId) {
   const policy = database.prepare(
     'SELECT * FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?'
   ).get(ownerId, serviceId);
-  return resolveBookingCapability({ settings, policy });
+  const profile = database.prepare(
+    'SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?'
+  ).get(ownerId);
+  return resolveBookingCapability({
+    settings, policy, serviceArea: serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson)
+  });
 }
 
 export function sanitizePublicBranding(value = {}) {

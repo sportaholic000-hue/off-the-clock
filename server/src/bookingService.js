@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
 import {
   createBookingToken,
   hashBookingToken,
@@ -264,10 +265,11 @@ export function createBookingService({
       s.bookingHorizonDays, s.minimumNoticeMinutes, s.slotIncrementMinutes,
       s.bufferBeforeMinutes, s.bufferAfterMinutes, s.directBookingEnabled,
       p.revision AS policyRevision, p.bookingMode, p.durationMinutes,
-      p.enabled AS policyEnabled
+      p.enabled AS policyEnabled, profile.knowledgeBaseJson
     FROM bookingIntents AS i
     LEFT JOIN bookingSettings AS s ON s.ownerId = i.ownerId
     LEFT JOIN bookingPolicies AS p ON p.ownerId = i.ownerId AND p.serviceId = i.serviceId
+    LEFT JOIN businessProfiles AS profile ON profile.ownerId = i.ownerId
     WHERE i.id = ? AND i.ownerId = ?
   `);
   const tokenIntentStatement = db.prepare(`
@@ -392,6 +394,13 @@ export function createBookingService({
     }
     if (policy.capability === 'unavailable') {
       return { statusCode: 200, body: { status: 'UNAVAILABLE', reason: policy.reason } };
+    }
+    const coverage = serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), filters.location);
+    if (!coverage.eligible) {
+      return {
+        statusCode: 200,
+        body: { status: 'PREFERRED_TIME_ONLY', reason: coverage.reason, timezone: policy.timezone }
+      };
     }
     let candidates;
     try {
@@ -746,6 +755,14 @@ export function createBookingService({
           throw bookingError('HOLD_EXPIRED', 410, 'The held time has expired. Request fresh availability.');
         }
         const validated = validateConfirmation(row, holdRow, body.confirmedSlotId, body, now);
+        const coverage = serviceAreaDecision(
+          serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), validated.location
+        );
+        if (!coverage.eligible) {
+          throw bookingError('SERVICE_AREA_MISMATCH', 409,
+            'The project address needs owner follow-up before booking.',
+            { details: { reason: coverage.reason, recoveryAction: 'REQUEST_PREFERRED_TIME' } });
+        }
         const conflictingAppointment = db.prepare(`SELECT id FROM appointments
           WHERE ownerId = ? AND providerCalendarId = ?
             AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')

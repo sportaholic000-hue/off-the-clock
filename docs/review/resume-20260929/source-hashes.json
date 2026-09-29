@@ -1,0 +1,8 @@
+{
+  "server/src/schema.js": "601644e535fe61665d4a290c4ab171c809ba89c81a2a684346d46174edfd4f49",
+  "server/src/migrations.js": "40c6af3eacf1baf9f2ac4e76a4a15e27c76004a51aa585ad4ba3a4e416f4cc84",
+  "server/src/bookingAdminService.js": "2aa9931a0908c9b0a68c0ee5ad4ce726d977db11a8f1eec735d65c31ebf4ce0b",
+  "server/src/bookingCapabilities.js": "58e5f4fe37b642afd68162c2e25180ae0b37cbb7d1cecac4b8585ed196aaa3a7",
+  "server/src/bookingService.js": "90b524ab2147087b20062e55681cf4353166c041572bb5d43ddb5b0dee834f48",
+  "test/applicationPersistence.spec.mjs": "6574c30cc1ebdabf4e82d32af1622174e3f2c6ebc1b5bd6e4fe69fddc1f7e926"
+}
