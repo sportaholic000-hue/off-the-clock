@@ -27,7 +27,7 @@ function App() {
   }, []);
 
   const path = location.url.split('?')[0];
-  if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)}/>;
+  if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={getToken()||'signed-out'} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={path+getToken()} kind={path.slice(1)}/>;

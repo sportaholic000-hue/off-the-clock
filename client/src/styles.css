@@ -1147,3 +1147,10 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .structured-sizes { flex-direction: column; }
   .structured-cell { width: 100%; }
 }
+
+/* Shared post-quote scheduling form; prices continue to come from the server. */
+.pricebook-page .widget-next { margin: 24px 0; padding-top: 24px; border-top: 1px solid var(--edge); }
+.pricebook-page .wizard-fields { border: 0; padding: 0; margin: 16px 0; min-width: 0; }
+.pricebook-page .widget-slots { border: 0; padding: 0; display: grid; gap: 10px; }
+.pricebook-page .widget-slots label, .pricebook-page .widget-confirmation { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.pricebook-page .widget-next > .button { margin: 8px 12px 8px 0; }
