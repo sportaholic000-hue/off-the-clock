@@ -20,6 +20,24 @@ const limitedText = value => typeof value === 'string' ? value : null;
 const PUBLIC_CONTRACT_VERSION = '2026-09-29.1';
 const BOOKING_CONTEXT_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const budgets = new Map();
+export function parseStoredQuoteOrigins(value) {
+  try {
+    const parsed=JSON.parse(value);
+    if(!Array.isArray(parsed)||parsed.length<1||parsed.length>20)return [];
+    const seen=new Set();
+    for(const origin of parsed) {
+      if(typeof origin!=='string'||seen.has(origin))return [];
+      let url;try{url=new URL(origin);}catch{return [];}
+      const loopback=['localhost','127.0.0.1','[::1]'].includes(url.hostname);
+      if(url.origin!==origin||url.username||url.password||
+          !(url.protocol==='https:'||(process.env.NODE_ENV!=='production'&&loopback&&url.protocol==='http:')))return [];
+      seen.add(origin);
+    }
+    return [...seen];
+  } catch {
+    return [];
+  }
+}
 function publicLimit(req,res,next) {
   const key=req.tenantOwnerId+':'+req.ip,now=Date.now();
   const prior=budgets.get(key);const budget=prior&&now-prior.startedAt<60000?prior:{startedAt:now,count:0};
@@ -42,7 +60,7 @@ function publicContext(req,res,next) {
   if(!origin&&req.method==='GET'&&req.get('Sec-Fetch-Site')==='same-origin') {
     try { origin=new URL(req.get('Referer')).origin; } catch { /* deny below */ }
   }
-  if(!origin||!JSON.parse(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
+  if(!origin||!parseStoredQuoteOrigins(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
   req.tenantOwnerId=access.ownerId;next();
 }
 function serviceFor(book,body) {
@@ -217,7 +235,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   }));
   app.get('/api/quotedone/access',...owner,(req,res)=>{
     const row=ownerQuery('SELECT publicKey,allowedOriginsJson FROM quoteAccessKeys WHERE ownerId = ?').get(req.tenantOwnerId);
-    res.json(row?{publicKey:row.publicKey,allowedOrigins:JSON.parse(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
+    res.json(row?{publicKey:row.publicKey,allowedOrigins:parseStoredQuoteOrigins(row.allowedOriginsJson)}:{publicKey:null,allowedOrigins:[]});
   });
   app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
     const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
