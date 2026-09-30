@@ -1,0 +1,138 @@
+RUN audit-auth
+ok 1 - email origins are trusted, absolute and production HTTPS only
+ok 2 - unsafe production link configuration rejects before account creation
+ok 3 - failed signup delivery leaves a recoverable account and preserves payment gating
+ok 4 - account status and authenticated resend derive identity from authenticated user
+ok 5 - successful resend uses cooldown and hashed idempotency key without returning a raw token
+ok 6 - failed resend revokes only its link and preserves an earlier delivered link
+ok 7 - an older delivery failure cannot revoke a newer concurrent send
+ok 8 - verification is single use, purpose scoped and invalidates other verification links
+ok 9 - verification accepts legacy GET while rejecting expired or malformed links
+ok 10 - reset changes the password, consumes all reset links and does not grant paid access
+ok 11 - invalid reset input cannot consume a valid token or change a password
+ok 12 - expired reset links cannot change passwords
+ok 13 - forgotPassword keeps unknown, known and delivery failures indistinguishable
+ok 14 - resendVerificationPublic keeps unknown, known and delivery failures indistinguishable
+ok 15 - public recovery is bounded per IP without requiring a known account
+ok 16 - production refuses console or missing configuration without making network requests or logging secrets
+ok 17 - development console logs metadata only and identifies simulation
+ok 18 - provider retry preserves body and idempotency key for ambiguous outcomes
+ok 19 - permanent provider rejection does not retry or expose its response
+ok 20 - persistent transport failure has exactly three attempts and a safe error
+ok 21 - an HTTP success without a provider receipt is not reported accepted
+ok 22 - invalid recipients, header injection and invalid keys are rejected before transport
+ok 23 - configured bcrypt costs below the required twelve rounds fail before account creation
+ok 24 - invalid bcrypt configuration cannot consume a reset link or replace a password
+ok 25 - parallel requests share one refresh and retain exact mutation bodies/idempotency keys
+ok 26 - one protected 401 retries after refresh; a provider 403 never triggers refresh
+ok 27 - an in-flight refresh cannot replace a newly signed-in account or clear it after failure
+ok 28 - invalid session clears browser access, but a temporary refresh outage preserves it
+ok 29 - a cross-tab rotation conflict retries with the current cookie without clearing the winning session
+ok 30 - logout clears local access only after server acknowledgement, and preserves it on failure
+ok 31 - an old logout response cannot clear the new account credentials
+ok 32 - session/billing storage identity remains stable through access rotation and isolated between accounts and sign-ins
+ok 33 - public quote requests omit cookies and never refresh the owner session
+ok 34 - login waits for the tab refresh to finish before issuing a new cookie
+ok 35 - production login issues a Secure host cookie; no refresh secret appears in JSON
+ok 36 - refresh rotates its cookie once, binds to the signed access session, and leaves a conflict cookie untouched
+ok 37 - hostile origins cannot log in, create accounts, refresh, reset passwords or log out
+ok 38 - expired access can refresh within eight hours; logout revokes expired signed access too
+ok 39 - an old tab logout preserves the newer account cookie and session
+ok 40 - password reset atomically revokes every session for that account while another tenant remains valid
+ok 41 - reset revocation failure rolls back password and link consumption
+ok 42 - password reset cannot be bypassed by a login whose password comparison was already in flight
+ok 43 - durable login reservations stop a parallel password-guess burst before hashing and survive handler recreation
+ok 44 - successful logins release their durable reservation; a broken session store fails closed
+ok 45 - logout store failure does not claim success or clear the cookie; stateless tokens cannot authorize
+ok 46 - two actual workers contending for the same refresh receipt produce one success and one conflict
+ok 47 - session creates short access token, eight-hour absolute expiry and hashed refresh storage
+ok 48 - access and refresh expire at exact boundaries; refresh never extends absolute lifetime
+ok 49 - refresh rotates one-use secret; replay conflict does not revoke a successful concurrent refresh
+ok 50 - logout revokes only the selected session; password reset revokes all user sessions
+ok 51 - credential changes invalidate all old access/refresh tokens and reject stale login snapshots
+ok 52 - password mutation and session revocation roll back together on transaction failure
+ok 53 - delete change cannot retain an owner session
+ok 54 - role change cannot retain an owner session
+ok 55 - email change cannot retain an owner session
+ok 56 - staff reparenting or missing owner cannot carry a session to another tenant
+ok 57 - admin sessions bind to current environment credentials and explicit admin provenance
+ok 58 - stateless, malformed or transplanted JWT claims never authorize a session
+ok 59 - session and refresh receipts survive service restart and share a single winner across SQLite connections
+ok 60 - signing failure rolls back both the session and refresh receipt
+ok 61 - limiter persists reservations across services; successful login release does not consume failure allowance
+ok 62 - old-window completion cannot release a new-window reservation
+ok 63 - limiter capacity is bounded and expired records are reclaimed
+ok 64 - limiter shares counters across actual database connections
+ok 65 - issues 256-bit tokens, persists only a SHA-256 hash, and enforces TTL policy
+ok 66 - purpose binding fails generically without burning a valid token and consumption is one-use
+ok 67 - unknown, malformed, polluted-prototype, accessor, and unsupported-purpose inputs have one public failure
+ok 68 - a token is expired at the exact expiry boundary and remains unusable
+ok 69 - tokens survive process-style service restart without raw-token persistence
+ok 70 - explicit invalidation and default replacement revoke all earlier outstanding tokens
+ok 71 - hash collisions retry, and exhausted retries roll back replacement invalidation
+ok 72 - database failures and consume callbacks roll back atomically without leaking internals
+ok 73 - competing consumers on separate SQLite connections cannot both consume one token
+ok 74 - schema triggers make identity immutable and consumption irreversible
+ok 75 - authenticated application CORS permits only configured exact origins
+ok 76 - public quote and booking paths defer exact website authorization to tenant context
+ok 77 - add-on missing-price guard executes every priced and unpriced path without a helper ReferenceError
+ok 78 - unpriced ponding water addon is skipped and disclosed
+ok 79 - unpriced mowing bagging addon is skipped and disclosed
+ok 80 - unpriced mowing edging addon is skipped and disclosed
+ok 81 - both unpriced mowing addons are skipped and disclosed together
+ok 82 - tier addon divergence keeps option disclaimers separate and top-level base-only
+ok 83 - tiers sharing the same addon exclusion may disclose it at top level
+ok 84 - deleted staff token returns 401 through requireAuth
+ok 85 - deleted owner token returns 401 through requireAuth
+ok 86 - role-changed token returns 401 through requireAuth
+ok 87 - staff protected route reads only the current database owner tenant
+ok 88 - environment admin path works without tenant context
+ok 89 - users table rejects staff without ownerId at the DB level
+ok 90 - triggers reject staff and admin rows as staff parents
+ok 91 - owner demotion is blocked while staff reference the owner
+ok 92 - constraint detection requires the full role and nullability CHECK
+ok 93 - migration aborts for legacy staff linked to a non-owner parent
+# tests 93
+# pass 93
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+RUN audit-build
+
+
+RUN audit-account-browser
+PASS Signup survives failed provider delivery, exposes retry and preserves pending_payment
+PASS Resend gives an absolute link; opening it hides the fragment and requires explicit verification
+PASS Signed-in account screen shows verified state
+PASS Reused verification link is rejected and recovery request stays private for verified accounts
+PASS Sign-in exposes password recovery; known and unknown requests show the same response
+PASS Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session
+PASS Old password fails, new password signs in and existing signup/billing flow preserves pending_payment
+PASS Reused reset fails and preserves entered form values
+PASS Malformed links offer recovery on mobile without horizontal overflow
+PASS No browser runtime errors or account link tokens in application logs
+
+RUN audit-session-browser
+PASS Real browser login sets an HttpOnly cookie and authorizes the owner
+PASS Expired access renews through the real route without remounting or losing an unsaved owner form
+PASS Two tabs renew concurrently and remain authorized without discarding the owner draft
+PASS Refresh receipts remain valid across an actual application restart
+PASS Mobile sign-out retries a failure, then revokes only that server session and clears its cookie
+PASS Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible
+PASS The real application rejects an untrusted origin without logging the owner out
+PASS The eight-hour absolute session limit requires sign-in again instead of extending indefinitely
+PASS No browser runtime errors, access tokens or refresh secrets appear in application logs
+
+RUN audit-race-browser
+PASS Ordinary same-account access renewal succeeds
+PASS Ordinary sign-out, different-account sign-in and renewal succeed
+REPRODUCED DEFECT Delayed old refresh response replaces the new account cookie and forces sign-in on renewal
+REPRODUCED DEFECT Delayed old logout response clears the newly signed-in account cookie
+
+RUN audit-race-browser-r2
+PASS Ordinary same-account access renewal succeeds
+PASS Ordinary sign-out, different-account sign-in and renewal succeed
+REPRODUCED DEFECT Delayed old refresh response replaces the new account cookie and forces sign-in on renewal
+REPRODUCED DEFECT Delayed old logout response clears the newly signed-in account cookie

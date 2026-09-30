@@ -1,0 +1,233 @@
+{
+  "sourceCommit": "8a778d5346f10d69e586d0ae46006238e4fd169c",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "independentLocalResults": [
+    {
+      "label": "audit-auth",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/authTokenService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/corsPolicy.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 48148,
+      "log": "audit-auth.log",
+      "counters": {
+        "tests": 93,
+        "pass": 93,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "dac4e089b003820d2f251d68dfd7d3559676c41f324aa47f24e2b0947d4986b0"
+    },
+    {
+      "label": "audit-build",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 84062,
+      "log": "audit-build.log",
+      "counters": {},
+      "logSha256": "0cb80d10b5069151453470b7f8a9f38643bcfdd7e2df64cd97bd21b8a74b3bd8"
+    },
+    {
+      "label": "audit-account-browser",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "..\\peer-audit-evidence-20260930\\account-browser"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 138606,
+      "log": "audit-account-browser.log",
+      "counters": {},
+      "logSha256": "46e81c36ffabc126b203390992f6f3172cb1beb4ca410026a691c1e82cec23eb"
+    },
+    {
+      "label": "audit-session-browser",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "..\\peer-audit-evidence-20260930\\session-browser"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 109299,
+      "log": "audit-session-browser.log",
+      "counters": {},
+      "logSha256": "d705a7f549886088458be694235c2c7e6dd85dc9cdaf98b9388e07196f294bc4"
+    },
+    {
+      "label": "audit-race-browser",
+      "args": [
+        "verification/peer-audit/browser-races.mjs",
+        ".",
+        "..\\peer-audit-evidence-20260930\\race-browser"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 115082,
+      "log": "audit-race-browser.log",
+      "counters": {},
+      "logSha256": "ab21d63025f74e1929adb6a1e32eb416be8f5809a61546157cc2dc0753beeb23"
+    },
+    {
+      "label": "audit-race-browser-r2",
+      "args": [
+        "verification/peer-audit/browser-races.mjs",
+        ".",
+        "..\\peer-audit-evidence-20260930\\race-browser-r2"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 117305,
+      "log": "audit-race-browser-r2.log",
+      "counters": {},
+      "logSha256": "faaafa8e4eb9e8722c4135363f6833b28c0c77f216febd6e2dab120696feab49"
+    }
+  ],
+  "browserResults": {
+    "account-browser": {
+      "syntheticOnly": true,
+      "liveProviderTraffic": false,
+      "rows": [
+        {
+          "name": "Signup survives failed provider delivery, exposes retry and preserves pending_payment",
+          "passed": true
+        },
+        {
+          "name": "Resend gives an absolute link; opening it hides the fragment and requires explicit verification",
+          "passed": true
+        },
+        {
+          "name": "Signed-in account screen shows verified state",
+          "passed": true
+        },
+        {
+          "name": "Reused verification link is rejected and recovery request stays private for verified accounts",
+          "passed": true
+        },
+        {
+          "name": "Sign-in exposes password recovery; known and unknown requests show the same response",
+          "passed": true
+        },
+        {
+          "name": "Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session",
+          "passed": true
+        },
+        {
+          "name": "Old password fails, new password signs in and existing signup/billing flow preserves pending_payment",
+          "passed": true
+        },
+        {
+          "name": "Reused reset fails and preserves entered form values",
+          "passed": true
+        },
+        {
+          "name": "Malformed links offer recovery on mobile without horizontal overflow",
+          "passed": true
+        },
+        {
+          "name": "No browser runtime errors or account link tokens in application logs",
+          "passed": true
+        }
+      ],
+      "errors": []
+    },
+    "session-browser": {
+      "syntheticOnly": true,
+      "liveProviderTraffic": false,
+      "rows": [
+        {
+          "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+          "passed": true
+        },
+        {
+          "name": "Expired access renews through the real route without remounting or losing an unsaved owner form",
+          "passed": true
+        },
+        {
+          "name": "Two tabs renew concurrently and remain authorized without discarding the owner draft",
+          "passed": true
+        },
+        {
+          "name": "Refresh receipts remain valid across an actual application restart",
+          "passed": true
+        },
+        {
+          "name": "Mobile sign-out retries a failure, then revokes only that server session and clears its cookie",
+          "passed": true
+        },
+        {
+          "name": "Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible",
+          "passed": true
+        },
+        {
+          "name": "The real application rejects an untrusted origin without logging the owner out",
+          "passed": true
+        },
+        {
+          "name": "The eight-hour absolute session limit requires sign-in again instead of extending indefinitely",
+          "passed": true
+        },
+        {
+          "name": "No browser runtime errors, access tokens or refresh secrets appear in application logs",
+          "passed": true
+        }
+      ],
+      "errors": []
+    }
+  },
+  "raceSummary": [
+    {
+      "name": "Ordinary same-account access renewal succeeds",
+      "passed": true
+    },
+    {
+      "name": "Ordinary sign-out, different-account sign-in and renewal succeed",
+      "passed": true
+    },
+    {
+      "name": "Delayed old refresh response replaces the new account cookie and forces sign-in on renewal",
+      "passed": false,
+      "before": {
+        "accessBelongsToNewAccount": true,
+        "refreshCookieBelongsToNewAccount": true,
+        "oldSessionRevoked": true
+      },
+      "after": {
+        "accessBelongsToNewAccount": true,
+        "refreshCookieBelongsToOldRevokedSession": true
+      },
+      "renewalStatus": 401,
+      "newAccountAccessCleared": true
+    },
+    {
+      "name": "Delayed old logout response clears the newly signed-in account cookie",
+      "passed": false,
+      "newAccountAccessInitiallyPreserved": true,
+      "newAccountCookieCleared": true,
+      "renewalStatus": 401,
+      "newAccountAccessCleared": true
+    }
+  ],
+  "notes": [
+    "Initial race run reproduced both defects, then failed only on the test proxy missing favicon.ico. The repeat fixes that fixture and reproduces both failures with no fixture/browser errors.",
+    "The final reproduction exits 0 when the defect is observed. Its two rows marked passed:false are failed product acceptance cases.",
+    "Full 382 application/357 engine/25 transport counts were inspected from peer hosted evidence, not rerun independently in this audit."
+  ]
+}

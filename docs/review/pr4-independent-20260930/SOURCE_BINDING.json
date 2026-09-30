@@ -1,0 +1,1807 @@
+{
+  "sourceCommit": "8a778d5346f10d69e586d0ae46006238e4fd169c",
+  "generatedBundlesExcluded": true,
+  "verified": 257,
+  "mismatches": [],
+  "entries": [
+    {
+      "path": ".env.example",
+      "expectedGitBlob": "87fa2bfe4be86c6f18adb640277ffb23f41103ae",
+      "actualGitBlob": "87fa2bfe4be86c6f18adb640277ffb23f41103ae",
+      "sha256": "3c05ec02db32be62279d247d8b0f098f6e68d89303d7b7dcfb2491f512e31f96",
+      "matches": true
+    },
+    {
+      "path": ".gitignore",
+      "expectedGitBlob": "654bf5e34c1119fd2bc07d72c256c5c960877758",
+      "actualGitBlob": "654bf5e34c1119fd2bc07d72c256c5c960877758",
+      "sha256": "1870650f09c12eac1280aa3f1b5545c8af49d3d4070f57f112cfdca7ce6f1a44",
+      "matches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "expectedGitBlob": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12",
+      "actualGitBlob": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12",
+      "sha256": "602f72fbe1168164f7e649c607091521cc728493bd2d92c9cd4fca0b7ba936a4",
+      "matches": true
+    },
+    {
+      "path": "client/COMBINED_ACCEPTANCE.md",
+      "expectedGitBlob": "575fdb1e225defe9e21c6f1fdb86aa803826425f",
+      "actualGitBlob": "575fdb1e225defe9e21c6f1fdb86aa803826425f",
+      "sha256": "081bb7ae1f0270d6e0586a92bf3724eb8962d3674a3d460767a760c2c1ff3ae3",
+      "matches": true
+    },
+    {
+      "path": "client/WIDGET_BACKEND_HANDOFF.md",
+      "expectedGitBlob": "efa13032889fe479dc81680afb4b340a614b64ff",
+      "actualGitBlob": "efa13032889fe479dc81680afb4b340a614b64ff",
+      "sha256": "0a924b2bee74941f3bfa1a5d8e50c0c96d7bd4e6fdb2d23975c55fe8ee7bd960",
+      "matches": true
+    },
+    {
+      "path": "client/index.html",
+      "expectedGitBlob": "11a80921c0890eeceb5fc6c5a7ee3a6834d0b78f",
+      "actualGitBlob": "11a80921c0890eeceb5fc6c5a7ee3a6834d0b78f",
+      "sha256": "8dd60c21f049affb2da0dbc60e90b521e40d57eae936bb031bcea52ddcedfe7c",
+      "matches": true
+    },
+    {
+      "path": "client/package.json",
+      "expectedGitBlob": "3165f3badcd70d456c898a4d45838b49b4aefcbb",
+      "actualGitBlob": "3165f3badcd70d456c898a4d45838b49b4aefcbb",
+      "sha256": "d1cfcf8dd414182bcb33769afc3aa38f1ae167023ec2be05a17b42e24aed9470",
+      "matches": true
+    },
+    {
+      "path": "client/public/widget.js",
+      "expectedGitBlob": "df3f9d2a40b8b23b24331bd7356c117948ce71e5",
+      "actualGitBlob": "df3f9d2a40b8b23b24331bd7356c117948ce71e5",
+      "sha256": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d",
+      "matches": true
+    },
+    {
+      "path": "client/src/accountRecovery.css",
+      "expectedGitBlob": "cf15876bee07a662db73297cebf2c392fb9ae8de",
+      "actualGitBlob": "cf15876bee07a662db73297cebf2c392fb9ae8de",
+      "sha256": "2397c38183912b17a93fac61ad761f9c1967925f993fd8ac58c217c9a023d4a3",
+      "matches": true
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "expectedGitBlob": "58ef15b9bc6d50409ae16671fe94d9779bf2c445",
+      "actualGitBlob": "58ef15b9bc6d50409ae16671fe94d9779bf2c445",
+      "sha256": "a346effbbf642cd41d2e4e314554f9473af0644c0d0405f344cbf5a4a6dcc351",
+      "matches": true
+    },
+    {
+      "path": "client/src/api.js",
+      "expectedGitBlob": "ec2f7fbb02b8e8c9c587e4a5914e60e37b14c4e5",
+      "actualGitBlob": "ec2f7fbb02b8e8c9c587e4a5914e60e37b14c4e5",
+      "sha256": "9cd8cea93c25aabf7dca8fec9e9b01fc60b68513b3bbc202725535f066ba88a8",
+      "matches": true
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "expectedGitBlob": "65333305979b161285bd96fe65e7f29a1842a104",
+      "actualGitBlob": "65333305979b161285bd96fe65e7f29a1842a104",
+      "sha256": "7e2b303237820c91126b34d454b1ef037ba9d6fec4ce043650f72c3a5a651954",
+      "matches": true
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "expectedGitBlob": "0039aa095abcf0844b811c351df331d4b7900835",
+      "actualGitBlob": "0039aa095abcf0844b811c351df331d4b7900835",
+      "sha256": "c4dd212d9abc86f27e00265003679e091f8749836d144ccd1afe0600003be156",
+      "matches": true
+    },
+    {
+      "path": "client/src/calendar.css",
+      "expectedGitBlob": "c29a0d7e8d4c0385d4cba48465f3197623d40b47",
+      "actualGitBlob": "c29a0d7e8d4c0385d4cba48465f3197623d40b47",
+      "sha256": "d1fbd3df058027b924f1d3dedb63fb8dda427f254fce42bde31c6a041d2a02f4",
+      "matches": true
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "expectedGitBlob": "d28d7e533e812750a42c050dcfd84019bb6f4280",
+      "actualGitBlob": "d28d7e533e812750a42c050dcfd84019bb6f4280",
+      "sha256": "8199ba2ecea976666da9282b14c6e83add516fdad12550b24ec4358f8e3384cc",
+      "matches": true
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "expectedGitBlob": "4bf229e9d0d04158632335aac8193e3732b460a5",
+      "actualGitBlob": "4bf229e9d0d04158632335aac8193e3732b460a5",
+      "sha256": "c51371c84ad24da257d4e52a60ea0d311f95b25d1c731e0a13baf8be406f0f46",
+      "matches": true
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "expectedGitBlob": "f5d626f30be90d386d1a942fb492b699ebe1e16a",
+      "actualGitBlob": "f5d626f30be90d386d1a942fb492b699ebe1e16a",
+      "sha256": "525508cba71415ff8d4b29fbc8d7bd9886df2dcb363d2ab0855d486c84f9d5bb",
+      "matches": true
+    },
+    {
+      "path": "client/src/interviewStructured.jsx",
+      "expectedGitBlob": "1550812b81ede34cd8fe22da73c75adfacb86070",
+      "actualGitBlob": "1550812b81ede34cd8fe22da73c75adfacb86070",
+      "sha256": "7cc3b6152d9805c4b1e6801bbe9ffda43295467aefb8f9076bbbc5b74f6d0fbb",
+      "matches": true
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "expectedGitBlob": "37d14f497b5b9bd965436fb0744d0eae2f49c197",
+      "actualGitBlob": "37d14f497b5b9bd965436fb0744d0eae2f49c197",
+      "sha256": "316c6a8cee940b6f53eb07cd4a217bc356d7f03ede664867746a1330077f923e",
+      "matches": true
+    },
+    {
+      "path": "client/src/main.jsx",
+      "expectedGitBlob": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f",
+      "actualGitBlob": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f",
+      "sha256": "996b5729b81632c1269a4fec2ced48b7396217624581bbb30ceb08284abc2149",
+      "matches": true
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "expectedGitBlob": "afd4e862a240303d14cceb5c7f91969d89e3aa3b",
+      "actualGitBlob": "afd4e862a240303d14cceb5c7f91969d89e3aa3b",
+      "sha256": "15f8a17e251feec1200ba14b2a54ef04ba6f082902d73c8816f0d003bed79aae",
+      "matches": true
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "expectedGitBlob": "20ae5b2c499d93cd1debcd2f38d8cdc706d22fb1",
+      "actualGitBlob": "20ae5b2c499d93cd1debcd2f38d8cdc706d22fb1",
+      "sha256": "b8945fa54365aa9043e51575011799aae6727f35981bfd7889f986b116d49649",
+      "matches": true
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "expectedGitBlob": "a78a7f4e2441faaad5f4d1958a050ac73113b342",
+      "actualGitBlob": "a78a7f4e2441faaad5f4d1958a050ac73113b342",
+      "sha256": "77ea11deac2e473c3b6438475539d9a07c132ab50c5326fc31255c6c6361722e",
+      "matches": true
+    },
+    {
+      "path": "client/src/pricebookEditing.js",
+      "expectedGitBlob": "20463d8ee200316220d22e8b1076177b2ef9daf5",
+      "actualGitBlob": "20463d8ee200316220d22e8b1076177b2ef9daf5",
+      "sha256": "22802eea2ee6de937a85da015d25a01b297d83ad4d318329866c5fb82044cdac",
+      "matches": true
+    },
+    {
+      "path": "client/src/pricebookFormatting.js",
+      "expectedGitBlob": "b361b6230fae8985531e7b1268f2b0633ac629ba",
+      "actualGitBlob": "b361b6230fae8985531e7b1268f2b0633ac629ba",
+      "sha256": "662b80eef1d3c71d103f7927ceb160291f228bcf66ebffbb699fc9c0a9836270",
+      "matches": true
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "expectedGitBlob": "60f6ff633ea4a1dac4a4ef828f6049f4f5311fe0",
+      "actualGitBlob": "60f6ff633ea4a1dac4a4ef828f6049f4f5311fe0",
+      "sha256": "c8d1dae15c8311d64ad4a116d45d7d9c9a67d882964baef2f314e22b6209fbd0",
+      "matches": true
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "expectedGitBlob": "201290ad042131e8a86c782248788c4b00552b8f",
+      "actualGitBlob": "201290ad042131e8a86c782248788c4b00552b8f",
+      "sha256": "5732a6e6e597b4301047d06d703e6d78387a2632cc45fe0a312d46a8b6f25206",
+      "matches": true
+    },
+    {
+      "path": "client/src/quoteSubmission.js",
+      "expectedGitBlob": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0",
+      "actualGitBlob": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0",
+      "sha256": "dabcdfa08babdd5ef986821d10e77bc2f24a5761963a221d79f3dd28628028d9",
+      "matches": true
+    },
+    {
+      "path": "client/src/quoteWizard.jsx",
+      "expectedGitBlob": "4a0eefa0e4565e0c9358d7f377e497d3a23bb6af",
+      "actualGitBlob": "4a0eefa0e4565e0c9358d7f377e497d3a23bb6af",
+      "sha256": "09fb9cd8bff8a3beafcda56cf3fdaaa8f470796114df6a7e4f02e18023e92d03",
+      "matches": true
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "expectedGitBlob": "42b969ad546b58fc63346d89e5812a2a8b78fa62",
+      "actualGitBlob": "42b969ad546b58fc63346d89e5812a2a8b78fa62",
+      "sha256": "22768d9afb3e63d922692746e9143263c39cf562df75b63ef3c4b06a989ad6b0",
+      "matches": true
+    },
+    {
+      "path": "client/src/reference.jsx",
+      "expectedGitBlob": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd",
+      "actualGitBlob": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd",
+      "sha256": "87e9a9240b06613f5f79fafad42ed04e3cb49c500ae23807e3a000af38255f77",
+      "matches": true
+    },
+    {
+      "path": "client/src/sessionIdentity.js",
+      "expectedGitBlob": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369",
+      "actualGitBlob": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369",
+      "sha256": "27170a3487de77c325952d072da134c932328340cf334eb39723f846a8ec9dfa",
+      "matches": true
+    },
+    {
+      "path": "client/src/styles.css",
+      "expectedGitBlob": "6c64b648cec9904b8af444e4c0608b9aa56d84e1",
+      "actualGitBlob": "6c64b648cec9904b8af444e4c0608b9aa56d84e1",
+      "sha256": "374b118c867f0018bb9f950c4b06378904ec30079f3e52af7560a409b938193a",
+      "matches": true
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "expectedGitBlob": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7",
+      "actualGitBlob": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7",
+      "sha256": "6172b9e122d0b984877f7b1eb6af14018f1c81b580ea9ab2f0217958e589d45d",
+      "matches": true
+    },
+    {
+      "path": "client/src/widget-entry.jsx",
+      "expectedGitBlob": "7d59afdd4335adcfe564f619795e807749f7a351",
+      "actualGitBlob": "7d59afdd4335adcfe564f619795e807749f7a351",
+      "sha256": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+      "matches": true
+    },
+    {
+      "path": "client/src/widget.css",
+      "expectedGitBlob": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186",
+      "actualGitBlob": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186",
+      "sha256": "3f10c3ed7bdad0941059fcbf15fea58d7114b7035f243f58e7cb64a932a2d46a",
+      "matches": true
+    },
+    {
+      "path": "client/src/widgetBooking.jsx",
+      "expectedGitBlob": "08a088699117eb51256437beaf83da462b7bc093",
+      "actualGitBlob": "08a088699117eb51256437beaf83da462b7bc093",
+      "sha256": "fe9e9fe0194d6c2e5d63e72b7f61ce5957dc6ae57d0fa5ff1225889526ef7b4b",
+      "matches": true
+    },
+    {
+      "path": "client/src/widgetInstall.jsx",
+      "expectedGitBlob": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a",
+      "actualGitBlob": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a",
+      "sha256": "c899a954cbfde491e35f2d1df75be73a4377ee3330be57813ab2eb8995decb9d",
+      "matches": true
+    },
+    {
+      "path": "client/src/widgetTransport.js",
+      "expectedGitBlob": "a443504d6fc01d1c40f7a4e892b5dc40255bb236",
+      "actualGitBlob": "a443504d6fc01d1c40f7a4e892b5dc40255bb236",
+      "sha256": "e2d08380c334bdb4d5155f3dfd702e7422eb31c943df59d7b3c1faddc5b28cfb",
+      "matches": true
+    },
+    {
+      "path": "client/test/billing-browser.mjs",
+      "expectedGitBlob": "aa2f7efc2b4dc6c38b1565aefe41d973c4577c0a",
+      "actualGitBlob": "aa2f7efc2b4dc6c38b1565aefe41d973c4577c0a",
+      "sha256": "117ec817911a04798f59480e83b6d00e1ca96f9f7ceba8fee9cbdf93ca1e6f73",
+      "matches": true
+    },
+    {
+      "path": "client/test/billing-transport.test.mjs",
+      "expectedGitBlob": "1b00b98498443ac6138b4eb41fba30c5f65a3a72",
+      "actualGitBlob": "1b00b98498443ac6138b4eb41fba30c5f65a3a72",
+      "sha256": "a087c274024738c6748404d78879d2dae10f418ae52aac0d7cfa2189440a58f8",
+      "matches": true
+    },
+    {
+      "path": "client/test/configured-offerings-browser.mjs",
+      "expectedGitBlob": "edb91864c90d0e0faeede20cb1c551afbd72b0b7",
+      "actualGitBlob": "edb91864c90d0e0faeede20cb1c551afbd72b0b7",
+      "sha256": "2a9386223736400c73a66eecffc74f29049d9b992b7cb64cf8bad42f2dc8c294",
+      "matches": true
+    },
+    {
+      "path": "client/test/owner-calendar-browser.mjs",
+      "expectedGitBlob": "0d0f1cb167a01ee0526a48fded1a059bebb873eb",
+      "actualGitBlob": "0d0f1cb167a01ee0526a48fded1a059bebb873eb",
+      "sha256": "a1027ca7ba57a68efbc69452cee8b1cf8788ad93eb6e1c7750d4850927df6c05",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-application-harness.mjs",
+      "expectedGitBlob": "3e7e2423b73498c0e2a7bd3831d9ef0c613fdd42",
+      "actualGitBlob": "3e7e2423b73498c0e2a7bd3831d9ef0c613fdd42",
+      "sha256": "f77313239b83f5b6466cb3be71d0f6b97ca8ad97aa4ac280d3266e040c3754c1",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-booking-browser.mjs",
+      "expectedGitBlob": "0fc9acf80eb285a5a6a5d61a03123cf91b9f6c4b",
+      "actualGitBlob": "0fc9acf80eb285a5a6a5d61a03123cf91b9f6c4b",
+      "sha256": "f7869e2b8c7aa80a3d83a3e406077cf21810287f6498f870daa163ee629c45b7",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-browser.mjs",
+      "expectedGitBlob": "55664d9e8c4a58456bf52b82a3c491f73a161648",
+      "actualGitBlob": "55664d9e8c4a58456bf52b82a3c491f73a161648",
+      "sha256": "091fe478fd294ecbd52fe2401b8b6571f3644ea5cd903fc0a28868be05c15c92",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-full-page-browser.mjs",
+      "expectedGitBlob": "c192ed805515a23a62bf97cbc29c1d45f8284ce6",
+      "actualGitBlob": "c192ed805515a23a62bf97cbc29c1d45f8284ce6",
+      "sha256": "1e3cca9efa1bda4ef0afbdac90e0a38930c57331f91832dfb76cd2ebc37d1a7d",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-integration-boundary.mjs",
+      "expectedGitBlob": "6f2e023c407c8834f8e73a6ac84bfbba6b6d117a",
+      "actualGitBlob": "6f2e023c407c8834f8e73a6ac84bfbba6b6d117a",
+      "sha256": "0cd22cc154dc66f059d9ed03989ca3b83039ca3992a919222bd25ae41b6bdc0f",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-real-booking-browser.mjs",
+      "expectedGitBlob": "2fa95a67942292c0856b71096397239f4d3baca5",
+      "actualGitBlob": "2fa95a67942292c0856b71096397239f4d3baca5",
+      "sha256": "0b60c404ccb4ba41def9fa6d6ed4cd8faf6545734ffe7eec8694337847b9e064",
+      "matches": true
+    },
+    {
+      "path": "client/test/widget-transport.test.mjs",
+      "expectedGitBlob": "7f252495489ba2c3980f9a5ea072c27abbe5589c",
+      "actualGitBlob": "7f252495489ba2c3980f9a5ea072c27abbe5589c",
+      "sha256": "6b6324c31b6cfe9aaab44c1ffe2a6076fa62048f104bca8251223112bbf66a85",
+      "matches": true
+    },
+    {
+      "path": "client/vite.widget.config.js",
+      "expectedGitBlob": "39ae7d0a0a13750d3daf2b4c2b2550e2ee9dd88d",
+      "actualGitBlob": "39ae7d0a0a13750d3daf2b4c2b2550e2ee9dd88d",
+      "sha256": "eb9a28190fd562b3a8dfb46d97d38fb09ae2734a814f9712262966373ba3090b",
+      "matches": true
+    },
+    {
+      "path": "package-lock.json",
+      "expectedGitBlob": "428fe999b664827a9001a9c7877c14eb54b3ad6f",
+      "actualGitBlob": "428fe999b664827a9001a9c7877c14eb54b3ad6f",
+      "sha256": "d8ccce5e963c6521b939ca6e9eab1d14bda02577245cc2c0bfad0a90ac48aeb7",
+      "matches": true
+    },
+    {
+      "path": "package.json",
+      "expectedGitBlob": "e9d534a7c6b29ff3c496a274f84edaf18f485b80",
+      "actualGitBlob": "e9d534a7c6b29ff3c496a274f84edaf18f485b80",
+      "sha256": "04ab3b619c86b6545c12f08e3309245b982547a34f0c89f47003da5496ea94b3",
+      "matches": true
+    },
+    {
+      "path": "server/package.json",
+      "expectedGitBlob": "a64f27369ecf185159972e21df2538f0361d6c16",
+      "actualGitBlob": "a64f27369ecf185159972e21df2538f0361d6c16",
+      "sha256": "110aa83e3aad7b6b0334e9be219244d5d6f1fbfb9463f4bf430e58e26611a509",
+      "matches": true
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "expectedGitBlob": "ad91bbcab15094595db0312e30ab5f9988007a83",
+      "actualGitBlob": "ad91bbcab15094595db0312e30ab5f9988007a83",
+      "sha256": "adf14c8dec8ab7276824d7f23c6b20ebe84cfad0d21151899bccdbf494d28f03",
+      "matches": true
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "expectedGitBlob": "99598b5a91ba42b8e7501cdbbaec83b982ae4608",
+      "actualGitBlob": "99598b5a91ba42b8e7501cdbbaec83b982ae4608",
+      "sha256": "1932cbb5ed6d2397ef43391aaeaf490940a5c991685b16caee7625f704d8980f",
+      "matches": true
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "expectedGitBlob": "37af0b0a858a117da04b94e14ef3abe643a66396",
+      "actualGitBlob": "37af0b0a858a117da04b94e14ef3abe643a66396",
+      "sha256": "74abefa6dfb673fe1088ea2f6c7e76f9994788fb74b74dbaf50a07ee71c7f30c",
+      "matches": true
+    },
+    {
+      "path": "server/priceBookService.js",
+      "expectedGitBlob": "04e74baefd81258f5db7c1b3ef6b9b15b70365b4",
+      "actualGitBlob": "04e74baefd81258f5db7c1b3ef6b9b15b70365b4",
+      "sha256": "db38b4c861ba0f5ebf61c3cc78857794a6809c423b17a93e5571495d23e1e1ad",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT.md",
+      "expectedGitBlob": "a2dcd91ae799eb5894261ec525d747f081d45e42",
+      "actualGitBlob": "a2dcd91ae799eb5894261ec525d747f081d45e42",
+      "sha256": "5b99635e1cb61f9059334da22f7d36a9e07fccc6b4cb46b012954e47512c04f3",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_PRECISION_20260910.md",
+      "expectedGitBlob": "93db5ede40ecc37b28721f365c555e7521a766f5",
+      "actualGitBlob": "93db5ede40ecc37b28721f365c555e7521a766f5",
+      "sha256": "e34498952693e1582e9d69135a08fbd0a476186a0b89bc37bd57f4bea1b07b9a",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_104_127.md",
+      "expectedGitBlob": "10948df13b06b9cb6bf2f2dafb59d5ecb45ecf3c",
+      "actualGitBlob": "10948df13b06b9cb6bf2f2dafb59d5ecb45ecf3c",
+      "sha256": "dee918210af1235fe021e1b32ad3bac5ff98dec0c730ee985311f031a183904c",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_128_138.md",
+      "expectedGitBlob": "dffe404367ab09806254628cb07bf76268592b5d",
+      "actualGitBlob": "dffe404367ab09806254628cb07bf76268592b5d",
+      "sha256": "4e303bcdacb0e8f07b11672b86fb15442a0504f1cffc84e5bac7a593c1618177",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_139_146.md",
+      "expectedGitBlob": "1a8e88aef13c82fc7b94142d24f167618f77075d",
+      "actualGitBlob": "1a8e88aef13c82fc7b94142d24f167618f77075d",
+      "sha256": "9c56a4ef175a9401d877244183b59d9beaff870abdd03138c541dce2a4c6e5a5",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_147_150.md",
+      "expectedGitBlob": "00df50cd44089140e8e99943e5872392739f6bc1",
+      "actualGitBlob": "00df50cd44089140e8e99943e5872392739f6bc1",
+      "sha256": "1d766a57636231f385f24cd50009a87917fd525b30e64b9f010ed5318bc91f97",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/COMPLETION.md",
+      "expectedGitBlob": "9a4b7d010e4afe1689d40f806d6ccb930b13e43e",
+      "actualGitBlob": "9a4b7d010e4afe1689d40f806d6ccb930b13e43e",
+      "sha256": "7780fac88dabc6028e6f810320ca19be1e23ac98dcd9ff53582673a057735742",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/CUSTOMER_AMOUNT_PRECISION.md",
+      "expectedGitBlob": "0848762900d85d5e02bfe1dc5c0b6301797ac1ff",
+      "actualGitBlob": "0848762900d85d5e02bfe1dc5c0b6301797ac1ff",
+      "sha256": "3dbcda26f17343a48f3e02fe5b689ba3621e2ac2eed512caa073a0a55193543d",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/HANDOFF_ABC.md",
+      "expectedGitBlob": "02ae250b3d209e5e6505b8cd050bcdab115bce74",
+      "actualGitBlob": "02ae250b3d209e5e6505b8cd050bcdab115bce74",
+      "sha256": "f69878e5a31548aa5e97e4a3d93b6da46501a09e567a4c8082d75d830dd46481",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/OWNER_HANDOFF_20260910.md",
+      "expectedGitBlob": "f2d6e89fa207dea5fad676fb3667725639558345",
+      "actualGitBlob": "f2d6e89fa207dea5fad676fb3667725639558345",
+      "sha256": "f6af6519c13728f9aac41acdd6456aa7b658c0c8c24534be9bdeaeb74696b583",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/README.md",
+      "expectedGitBlob": "9cac1a182b1af6b7a3cdf337aee4bf15050011ad",
+      "actualGitBlob": "9cac1a182b1af6b7a3cdf337aee4bf15050011ad",
+      "sha256": "f7ff081604956844fcba6730335e5b3360855fe95e35384a17f5bbf74fd90733",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "expectedGitBlob": "d47c6715834e29c72c5a0bd59ccc0248799adc3b",
+      "actualGitBlob": "d47c6715834e29c72c5a0bd59ccc0248799adc3b",
+      "sha256": "3f3f6313dc7254e37c69db39a799735038c23dc1495d850b7479c4ff05565fa6",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "expectedGitBlob": "1449ef8b6779d5e8f74cddeb3eee7cd28fbd3583",
+      "actualGitBlob": "1449ef8b6779d5e8f74cddeb3eee7cd28fbd3583",
+      "sha256": "0f4530e7009e579069e256e7d9e396344a4a696bcb03ef5433d7fa40c390ec0d",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "expectedGitBlob": "44a3cea94103d17c87fb584e572a938b87344ab5",
+      "actualGitBlob": "44a3cea94103d17c87fb584e572a938b87344ab5",
+      "sha256": "ddaacd911894d559a1d595a8b0f0453467a294c96a09d3ebd9c8f98ff7b215b9",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "expectedGitBlob": "56d78ed30fd10294db35a6e44f01d2e2008f531b",
+      "actualGitBlob": "56d78ed30fd10294db35a6e44f01d2e2008f531b",
+      "sha256": "6dd34c9b97f2f2c8e126b3729310a2b180f503102c429dd28b72a75b7f6c3e2f",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/geometry.js",
+      "expectedGitBlob": "925ed38777dc914a8965a0b85278ac0dc883f0c5",
+      "actualGitBlob": "925ed38777dc914a8965a0b85278ac0dc883f0c5",
+      "sha256": "a371e81d294cfc9d60403863e502cb52a9cfd04e0c1172a3ddab31e786ea7cf1",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "expectedGitBlob": "a535094d75fea5d1912b3ef88054de997fff1ffe",
+      "actualGitBlob": "a535094d75fea5d1912b3ef88054de997fff1ffe",
+      "sha256": "4b3f401b5d428f6904bfcadf4b59f85d8a82936f176f9c29b5bc5e10cc985179",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "expectedGitBlob": "727f07eee985689d1149927a45b52206e17bb7ae",
+      "actualGitBlob": "727f07eee985689d1149927a45b52206e17bb7ae",
+      "sha256": "e20d08b0c6d2586961c730d71443d15c6ae36be35abbef5899adcb057d9662d8",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/safeData.js",
+      "expectedGitBlob": "cf183be9c29368f3bd9b6dfa1f87020b74705050",
+      "actualGitBlob": "cf183be9c29368f3bd9b6dfa1f87020b74705050",
+      "sha256": "1c86be4d957015ec04224d54d2cf1564ade21b63f30cfde89e695d6d6d88828f",
+      "matches": true
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "expectedGitBlob": "8fe8f5dd744f447ab48fd65995472596fce16636",
+      "actualGitBlob": "8fe8f5dd744f447ab48fd65995472596fce16636",
+      "sha256": "b404d0ec342cad5cdbcb1719af7e96a41d797d3a504f6624015f25ee98eea351",
+      "matches": true
+    },
+    {
+      "path": "server/quoteEngine.js",
+      "expectedGitBlob": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18",
+      "actualGitBlob": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18",
+      "sha256": "827c21f84141b6a78eec2232071181662e1f67a5ee58dabd14feff2281be714e",
+      "matches": true
+    },
+    {
+      "path": "server/quoteLog.js",
+      "expectedGitBlob": "56e2ac691408160ac532ede99fd258179e710475",
+      "actualGitBlob": "56e2ac691408160ac532ede99fd258179e710475",
+      "sha256": "0f1dd2050902c1ad34e9ee7fccf5e09cca4f336d24850f020cc42ac665f8f599",
+      "matches": true
+    },
+    {
+      "path": "server/quoteTemplates.js",
+      "expectedGitBlob": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c",
+      "actualGitBlob": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c",
+      "sha256": "a72710cc0151bbc01238c2f0d6bc40ffe7a13bc4c3e7e2c11617c6a521ef4d89",
+      "matches": true
+    },
+    {
+      "path": "server/scripts/dev.js",
+      "expectedGitBlob": "01b420264ffb45e4d8e779ccc9274b640b531c0c",
+      "actualGitBlob": "01b420264ffb45e4d8e779ccc9274b640b531c0c",
+      "sha256": "f6666cb3867594b569e0347b1c4214dff59c45524d9227aa5c0c9481b7786b87",
+      "matches": true
+    },
+    {
+      "path": "server/scripts/phase0-gate.js",
+      "expectedGitBlob": "14c65e637c5c162bb841f136da795d284594ce48",
+      "actualGitBlob": "14c65e637c5c162bb841f136da795d284594ce48",
+      "sha256": "5ab16d3df0141c1d83c2e489e881866d75fb42b8ab253d302c2309ab7517a8d0",
+      "matches": true
+    },
+    {
+      "path": "server/scripts/phase1-gate.js",
+      "expectedGitBlob": "f4b9ae35283a505a9e50da45d4d272376713262a",
+      "actualGitBlob": "f4b9ae35283a505a9e50da45d4d272376713262a",
+      "sha256": "b6070fa0c9444d1794b56aac6041e1e4eb84440ab5329034479a3307c48db6c6",
+      "matches": true
+    },
+    {
+      "path": "server/scripts/phase2-gate.js",
+      "expectedGitBlob": "3a262912d997ae44f1c3902e031199fc8e2e3189",
+      "actualGitBlob": "3a262912d997ae44f1c3902e031199fc8e2e3189",
+      "sha256": "6d1353aecc30f30264dd68ef9bd30f90578b6d25dec5fecdd9736f6e78a996e6",
+      "matches": true
+    },
+    {
+      "path": "server/scripts/quote-vnext-gate.js",
+      "expectedGitBlob": "d42020d32e77473722539176765367466774be58",
+      "actualGitBlob": "d42020d32e77473722539176765367466774be58",
+      "sha256": "e17f56df3205316b443ae1af57c7e1bdd6fbfe9e266b861cb59df81c7b9746b4",
+      "matches": true
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "expectedGitBlob": "681135fd8396e506883bf854ba50da81161cfe18",
+      "actualGitBlob": "681135fd8396e506883bf854ba50da81161cfe18",
+      "sha256": "d64a9900b5b03fe7bc3de8dfc26357dcb796f5a22ef71bdfbbe99752dc45e597",
+      "matches": true
+    },
+    {
+      "path": "server/src/auth.js",
+      "expectedGitBlob": "f81c8f090a9a81734c402b37f83cfa42e213eae2",
+      "actualGitBlob": "f81c8f090a9a81734c402b37f83cfa42e213eae2",
+      "sha256": "4d54e14fd9f30d640c613aabe4c09d96a5ca2b64cd889aee3fe303e535fa5d2c",
+      "matches": true
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "expectedGitBlob": "2db2c74bce1245110c38e5af5166d2e34945d620",
+      "actualGitBlob": "2db2c74bce1245110c38e5af5166d2e34945d620",
+      "sha256": "c39a4d04fb54dac77fc6814caa44b56127bafb9ef5bb0c61d7d29112507d8386",
+      "matches": true
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "expectedGitBlob": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5",
+      "actualGitBlob": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5",
+      "sha256": "3e36f462091fc6334e3ce5db016c54dfa646f5dc8256965289cdb27ecd1b38c3",
+      "matches": true
+    },
+    {
+      "path": "server/src/authRateLimitService.js",
+      "expectedGitBlob": "4869358cec735654c77f63b371fa090257e8a37f",
+      "actualGitBlob": "4869358cec735654c77f63b371fa090257e8a37f",
+      "sha256": "71705f143dec27f9162a21103e83f516081a9f813dae58a2dcff21b80197482d",
+      "matches": true
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "expectedGitBlob": "1aab1e54fa2e237c450d88a66ec63a9f269c9df8",
+      "actualGitBlob": "1aab1e54fa2e237c450d88a66ec63a9f269c9df8",
+      "sha256": "0dd1cccad022912ba707c7e8a02b20fa3f40e5aacf5eac8c234131f154b7f52f",
+      "matches": true
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "expectedGitBlob": "1cc2a734dcbf2625d1d04038b2183494c327ca03",
+      "actualGitBlob": "1cc2a734dcbf2625d1d04038b2183494c327ca03",
+      "sha256": "41bd96695600096015c78b32176968cbd29be4ba57bf047abf4f71c4956204d8",
+      "matches": true
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "expectedGitBlob": "a42dab7abe98467cd266d338028c591cddd16ee7",
+      "actualGitBlob": "a42dab7abe98467cd266d338028c591cddd16ee7",
+      "sha256": "3399ce4bd5c441c07ff99337cac20891629e7a2869b9fcaa76e7849386dfe79b",
+      "matches": true
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "expectedGitBlob": "2b34d4b2f7328e0b75ee61c603d8c2a35ef53a55",
+      "actualGitBlob": "2b34d4b2f7328e0b75ee61c603d8c2a35ef53a55",
+      "sha256": "e890593983ad77709c738d08062ecf39e35e725ed44bfb7eec1f3a2a514910c6",
+      "matches": true
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "expectedGitBlob": "7e5d8e25340ab1a8fa9527bcf7c091f53b5937ce",
+      "actualGitBlob": "7e5d8e25340ab1a8fa9527bcf7c091f53b5937ce",
+      "sha256": "d35d46897af969eed07aa1611db23092fab78c932413ff7ab6e920ebea1be2c5",
+      "matches": true
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "expectedGitBlob": "96dac32b654d757975ba0b39883d5a76ee904742",
+      "actualGitBlob": "96dac32b654d757975ba0b39883d5a76ee904742",
+      "sha256": "d40560968613c7000d088086a647179c523487e11984ac0ac41d0ec11a0ec29e",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "expectedGitBlob": "98792bab9be179a26015b963d622361dc6349d89",
+      "actualGitBlob": "98792bab9be179a26015b963d622361dc6349d89",
+      "sha256": "3da09b73bc0918077b47c9da87d47183da4e5ae4df7a46ed6fc5a10b21b22a1f",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingAdminService.js",
+      "expectedGitBlob": "8c667bce6ea7fdaea1d578775133eda887626685",
+      "actualGitBlob": "8c667bce6ea7fdaea1d578775133eda887626685",
+      "sha256": "2aa9931a0908c9b0a68c0ee5ad4ce726d977db11a8f1eec735d65c31ebf4ce0b",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "expectedGitBlob": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621",
+      "actualGitBlob": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621",
+      "sha256": "58e5f4fe37b642afd68162c2e25180ae0b37cbb7d1cecac4b8585ed196aaa3a7",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "expectedGitBlob": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4",
+      "actualGitBlob": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4",
+      "sha256": "0f2d9dbdec06af608d3f5c34c3dc4afb26cce5e92d7c69c33bdf5fa23b301d97",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "expectedGitBlob": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b",
+      "actualGitBlob": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b",
+      "sha256": "a0a813b9bcbdbfde9e77d3e56fcf4ab19bd51902ce27c7c84d6d775fe454183e",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "expectedGitBlob": "a403eefb71d515a2632de993396d0e2c2d62b207",
+      "actualGitBlob": "a403eefb71d515a2632de993396d0e2c2d62b207",
+      "sha256": "9d8f016fbf632ef3603976c4c48ab17835bf29ff560dbcc9ca2fa6639bc978e3",
+      "matches": true
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "expectedGitBlob": "930501e5550e32342a8616dc7e4eb3e2b6a138b4",
+      "actualGitBlob": "930501e5550e32342a8616dc7e4eb3e2b6a138b4",
+      "sha256": "44f8691ec7b7df18731f88be556caf723f4fc0e2810712c977b5e7b36e845881",
+      "matches": true
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "expectedGitBlob": "2f5075e8428257b75a5c0ead20cea3065f7d904c",
+      "actualGitBlob": "2f5075e8428257b75a5c0ead20cea3065f7d904c",
+      "sha256": "c0553d6710b4c985500650f8ba3dd44abc2a346a26319815866998de62826235",
+      "matches": true
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "expectedGitBlob": "87035db4d213ddb4d6d55f16b699c1ffb23ab926",
+      "actualGitBlob": "87035db4d213ddb4d6d55f16b699c1ffb23ab926",
+      "sha256": "2d044fb4306de19517633014948da3013d74161f5970e847b5717a4b6b34719b",
+      "matches": true
+    },
+    {
+      "path": "server/src/calendarOAuthState.js",
+      "expectedGitBlob": "439ea0f4bac871421357b28a1b81f9d2bb6111e6",
+      "actualGitBlob": "439ea0f4bac871421357b28a1b81f9d2bb6111e6",
+      "sha256": "e59b6b1760356b1d8b0bb5d7cef8fdd712763d1252c821f6035c79c9e3daea7d",
+      "matches": true
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "expectedGitBlob": "de4d42efaec332115fec229af2b7fe14ad7323aa",
+      "actualGitBlob": "de4d42efaec332115fec229af2b7fe14ad7323aa",
+      "sha256": "273a9cc8824cdb97124cb9445f93602f0fb3ed13f99ed3fad2ef44bafd400897",
+      "matches": true
+    },
+    {
+      "path": "server/src/corsPolicy.js",
+      "expectedGitBlob": "10063b96d6b27140603f56d4202c0a219a648baa",
+      "actualGitBlob": "10063b96d6b27140603f56d4202c0a219a648baa",
+      "sha256": "2764222b4a72b08eb59f96927f89b9dce74bd31f920e33f0e7823b18262bb62a",
+      "matches": true
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "expectedGitBlob": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8",
+      "actualGitBlob": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8",
+      "sha256": "de207bb20766618bd28dba2da98ffd2a1d22bd153fcc26fd049cbd976d43d647",
+      "matches": true
+    },
+    {
+      "path": "server/src/db.js",
+      "expectedGitBlob": "16264aa4efa12eab4a6ea227348f1bcf981557a3",
+      "actualGitBlob": "16264aa4efa12eab4a6ea227348f1bcf981557a3",
+      "sha256": "6be06d3b300d94fe89dd9b92a4b3381bcfba353e2a9c4d6ddf80cf11e882ed82",
+      "matches": true
+    },
+    {
+      "path": "server/src/email.js",
+      "expectedGitBlob": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d",
+      "actualGitBlob": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d",
+      "sha256": "e8525fcd9727bf677e6d779817daf30b5068f9722bb7e8f3d0e269884d7cdbb2",
+      "matches": true
+    },
+    {
+      "path": "server/src/exactJson.js",
+      "expectedGitBlob": "260c1500b3943998e17df19e174b2ec64be7cb26",
+      "actualGitBlob": "260c1500b3943998e17df19e174b2ec64be7cb26",
+      "sha256": "78fd10e321d3046bfd189c1132b7bd192be68325fe88f94865c304729e0b803e",
+      "matches": true
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "expectedGitBlob": "908c8ad8305ce663ba923820ae841b991b55e5f0",
+      "actualGitBlob": "908c8ad8305ce663ba923820ae841b991b55e5f0",
+      "sha256": "e1f4d79414ace987dab406dd8c2aafaf4d65031b73a940ce4f712c9618f8e052",
+      "matches": true
+    },
+    {
+      "path": "server/src/migrations.js",
+      "expectedGitBlob": "39e50b4c2a613849017642b8d70f551f0b770ed3",
+      "actualGitBlob": "39e50b4c2a613849017642b8d70f551f0b770ed3",
+      "sha256": "19ba19ece5729a79f08a26d363c50d0936ef73a8aab6616af8f4ccb4298d7357",
+      "matches": true
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "expectedGitBlob": "337547bace52ea29d2546cbf361df22ed2b4b2bf",
+      "actualGitBlob": "337547bace52ea29d2546cbf361df22ed2b4b2bf",
+      "sha256": "851e0905c9d52a86ee6d8d62dfa0800d264b7be7c2df70fcc3ab38ba1343e0a8",
+      "matches": true
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "expectedGitBlob": "4f8f00cd827e76fe8a67be3d924042959fcf91a5",
+      "actualGitBlob": "4f8f00cd827e76fe8a67be3d924042959fcf91a5",
+      "sha256": "5b6c29ddc9fb2da94b786bf9a18c405bf9d329f02b694948c3df78ca623f6dbc",
+      "matches": true
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "expectedGitBlob": "b8b3331240cce15a14e8fdea59e538e6d906b68e",
+      "actualGitBlob": "b8b3331240cce15a14e8fdea59e538e6d906b68e",
+      "sha256": "3a81b434b45c94cbbd2363e8be88e56362f1c6a3ae084661e0c8ccec0464f183",
+      "matches": true
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "expectedGitBlob": "c0a85d8569618fbdec8899dafe12659fb2791cd7",
+      "actualGitBlob": "c0a85d8569618fbdec8899dafe12659fb2791cd7",
+      "sha256": "224b65479c3432dee40f70b245fcf91b2ba448b0cba334e2d4ac62d218ef6951",
+      "matches": true
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "expectedGitBlob": "c14822a85f935fb1cc206d827aad07cf9500b567",
+      "actualGitBlob": "c14822a85f935fb1cc206d827aad07cf9500b567",
+      "sha256": "4476a7e77f91191ba9f8b575461da5c417e8f8d19cb0ae5c587570559f050fea",
+      "matches": true
+    },
+    {
+      "path": "server/src/previewMode.js",
+      "expectedGitBlob": "4282015139d69aa1e62737a8389c3122bed0f90e",
+      "actualGitBlob": "4282015139d69aa1e62737a8389c3122bed0f90e",
+      "sha256": "348b269e347c6ec1c3503176394a86c500fa5f31b6b31629c871676974184918",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteContact.js",
+      "expectedGitBlob": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57",
+      "actualGitBlob": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57",
+      "sha256": "f51823a4da2ed7a1f86c5058c59e1eb8597e95e89eb0883b3dce5f830cebe3e6",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "expectedGitBlob": "f5deb3eef28674cf6515551260eb4acb55cd0b6b",
+      "actualGitBlob": "f5deb3eef28674cf6515551260eb4acb55cd0b6b",
+      "sha256": "65f16d0acd552a641371ef8fa071b2d67e79586181d684ba5e8e5cfda0e1c245",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "expectedGitBlob": "f83b0a0eac476dd4aea32391480898a3480ef5c7",
+      "actualGitBlob": "f83b0a0eac476dd4aea32391480898a3480ef5c7",
+      "sha256": "281cb8ab41680b5ef632f04fb3c9f91f274a9efa70529420ea16c73fa29af3c4",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "expectedGitBlob": "bfef7ca97f9e52167ecd4c5f61a91983f416623a",
+      "actualGitBlob": "bfef7ca97f9e52167ecd4c5f61a91983f416623a",
+      "sha256": "3b6d7c301cd6483c392dc79bec4a810789196f8d7efcc795d17f101a4051a1e2",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteRequestScope.js",
+      "expectedGitBlob": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec",
+      "actualGitBlob": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec",
+      "sha256": "789ea4987e3155f69fae3b1391b2a3be71aee683efb6b16ca866f84f8390f1ba",
+      "matches": true
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "expectedGitBlob": "afd6f3810e38c9ee88734aa400c20f0b511655b9",
+      "actualGitBlob": "afd6f3810e38c9ee88734aa400c20f0b511655b9",
+      "sha256": "986c73532f2ea5db73c3dd3f2c1cebd475e240b7f0894074279cc6c7ac32e721",
+      "matches": true
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "expectedGitBlob": "8b85216517fd711d2050d65c88ee23d91dd4e353",
+      "actualGitBlob": "8b85216517fd711d2050d65c88ee23d91dd4e353",
+      "sha256": "01c427c71062a311da524877e1d4127de9b95ad0c2d856cb2d8bc74c7386cb59",
+      "matches": true
+    },
+    {
+      "path": "server/src/schema.js",
+      "expectedGitBlob": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e",
+      "actualGitBlob": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e",
+      "sha256": "aed021b444e55e8f9d5ef24cb4a209463c9b6f746c2d4e7ffa395d528f71f026",
+      "matches": true
+    },
+    {
+      "path": "server/src/server.js",
+      "expectedGitBlob": "b455d0b5df6923ca5899d0a93f006520a0eb75ae",
+      "actualGitBlob": "b455d0b5df6923ca5899d0a93f006520a0eb75ae",
+      "sha256": "22c4f787683b8144fffeea7cbcfa8fb05a8e80052aca9ffddba50aab028abd20",
+      "matches": true
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "expectedGitBlob": "4dd6b93e46fc62d825767e07f679ee1545d23cb5",
+      "actualGitBlob": "4dd6b93e46fc62d825767e07f679ee1545d23cb5",
+      "sha256": "af0e34c9c8a4e2eb4ec546cf640a439f05abb08ef20b139e3969e93c0b2aec65",
+      "matches": true
+    },
+    {
+      "path": "server/src/tenant.js",
+      "expectedGitBlob": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5",
+      "actualGitBlob": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5",
+      "sha256": "81e7f7142ff8ee783a5ecb86fce4a8f93fb2ea79fe27483325106a125f396129",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/audioCodec.js",
+      "expectedGitBlob": "db715b52e6efc6bb1ff5e59e3754e002025e8099",
+      "actualGitBlob": "db715b52e6efc6bb1ff5e59e3754e002025e8099",
+      "sha256": "0763d5e78621369192fb31c12a2a80fd96bf376eb78eeeed1f36150076045dbd",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/geminiMediaBridge.js",
+      "expectedGitBlob": "79b7da7beb957155b597efb5ac2bc2541565658e",
+      "actualGitBlob": "79b7da7beb957155b597efb5ac2bc2541565658e",
+      "sha256": "76ecd22343e26ce0cd775ceb79d99bebca20a348fa6fcdf79cebdc9f73d56da3",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/sessionNonceService.js",
+      "expectedGitBlob": "69529472280fd305dee751465187caf5f2c69199",
+      "actualGitBlob": "69529472280fd305dee751465187caf5f2c69199",
+      "sha256": "9105c7458056f54670c09aa49e0497a53abc1732f14fce519a550bd273e271a9",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/tenantResolver.js",
+      "expectedGitBlob": "8314a25c3b8a3c16d78096a5fa803ed267b0e935",
+      "actualGitBlob": "8314a25c3b8a3c16d78096a5fa803ed267b0e935",
+      "sha256": "a0a91ab45fd70d0ab658001719ec5acdade753e35a9763e19911431c8ec209bc",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/toolDispatcher.js",
+      "expectedGitBlob": "5b9f128f3b028c89c1589bde1b2edd5ea4dd4316",
+      "actualGitBlob": "5b9f128f3b028c89c1589bde1b2edd5ea4dd4316",
+      "sha256": "1cd26e36bcf9667eedd3ebc6260bd5d3f40512009038a85c823c21ec305fbaf8",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "expectedGitBlob": "e121f84ed705799c973374b69d9e84def5b5c1d1",
+      "actualGitBlob": "e121f84ed705799c973374b69d9e84def5b5c1d1",
+      "sha256": "ae3c74516f2b3d7e1a3d57196a5e7252ff25bec6aa2f7ab91cabdf9ad2aa0c38",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/twilioValidation.js",
+      "expectedGitBlob": "db4a0e7781cf1d13671799fdc8f82f2524ce345a",
+      "actualGitBlob": "db4a0e7781cf1d13671799fdc8f82f2524ce345a",
+      "sha256": "493361313f54032f8fc96bce96e965909fe52f58ff01ce692e687b5dc7f05c27",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "expectedGitBlob": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f",
+      "actualGitBlob": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f",
+      "sha256": "80b9ffb88e9ee09aeaccba523ff133d9928a73552171c2cfa2c92cef1bc84199",
+      "matches": true
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "expectedGitBlob": "384ad107ab1754f9006485833b2fa676cb75c1aa",
+      "actualGitBlob": "384ad107ab1754f9006485833b2fa676cb75c1aa",
+      "sha256": "9fbb11f746554ea655b8e064d8e924d4e5451a00a5303a6cca2cb120f94e5098",
+      "matches": true
+    },
+    {
+      "path": "server/src/voiceRuntimeRoutes.js",
+      "expectedGitBlob": "c4e2034bc6276d535d444834724ad60141308987",
+      "actualGitBlob": "c4e2034bc6276d535d444834724ad60141308987",
+      "sha256": "0c5083297e409535a68c0bf55bafaa76134ee922c67e432eaf02fa1e1e5b45ac",
+      "matches": true
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "expectedGitBlob": "35045438b73ee3565124961e1d805fe598404ddb",
+      "actualGitBlob": "35045438b73ee3565124961e1d805fe598404ddb",
+      "sha256": "ebe250dce049082e726c25d1e36a85519f71b475f4d23fb4742b409adbac9651",
+      "matches": true
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "expectedGitBlob": "ee6c6a2dce04a8295e7cfb55b23975e9056f4d5e",
+      "actualGitBlob": "ee6c6a2dce04a8295e7cfb55b23975e9056f4d5e",
+      "sha256": "2fa7df1185731d4d39ed77c31d0eac57c040a98219ebf2b5ed40c3833053316f",
+      "matches": true
+    },
+    {
+      "path": "specs/build_guide.md",
+      "expectedGitBlob": "6db02a2c9517f92ffb9985c9e0abaf2104299d7c",
+      "actualGitBlob": "6db02a2c9517f92ffb9985c9e0abaf2104299d7c",
+      "sha256": "1feb887b38717b0cbc0818788158c001cc6cfdf6f25f1db553a94323f446eb3d",
+      "matches": true
+    },
+    {
+      "path": "specs/history/voice_quote_flows_legacy_v2.md",
+      "expectedGitBlob": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "actualGitBlob": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "sha256": "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6",
+      "matches": true
+    },
+    {
+      "path": "specs/platform_spec_v2.md",
+      "expectedGitBlob": "17e60c63c4338f7735bcf92f1892fa3cb3b02b36",
+      "actualGitBlob": "17e60c63c4338f7735bcf92f1892fa3cb3b02b36",
+      "sha256": "63d85e2fde7d4e0d930ca07d9551d1244587d4d11998ee6c0a3d9b07e7509c80",
+      "matches": true
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "expectedGitBlob": "1da8f76e44e0ca3ba8ce353af997b3074c8c0325",
+      "actualGitBlob": "1da8f76e44e0ca3ba8ce353af997b3074c8c0325",
+      "sha256": "e98efa46a62a0435b3ee99dff69744551ef9cd584e40b932e2f08f25bda598fb",
+      "matches": true
+    },
+    {
+      "path": "specs/voice_quote_flows.md",
+      "expectedGitBlob": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "actualGitBlob": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "sha256": "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6",
+      "matches": true
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "expectedGitBlob": "f0bd3c54c36602443e506fbdca64d89ab9b5efac",
+      "actualGitBlob": "f0bd3c54c36602443e506fbdca64d89ab9b5efac",
+      "sha256": "8eab652e4f17360cef315f304e4b1c5a0c0507069f504b8d8e1e1363f0ecbdd7",
+      "matches": true
+    },
+    {
+      "path": "test/applicationPersistence.spec.mjs",
+      "expectedGitBlob": "56d87ace29544a24197efdb1c5ab49ef03a374c1",
+      "actualGitBlob": "56d87ace29544a24197efdb1c5ab49ef03a374c1",
+      "sha256": "6574c30cc1ebdabf4e82d32af1622174e3f2c6ebc1b5bd6e4fe69fddc1f7e926",
+      "matches": true
+    },
+    {
+      "path": "test/authSessionClient.spec.mjs",
+      "expectedGitBlob": "78fc946e58766f2ac1828c870dc642f1dd09ee71",
+      "actualGitBlob": "78fc946e58766f2ac1828c870dc642f1dd09ee71",
+      "sha256": "93196f9402252436bcfd9c3d4e8a6c2e356e86460d35d7170e932e4851a51cec",
+      "matches": true
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "expectedGitBlob": "e09349eea1a9e35e42bd43d2bf51f081b991e515",
+      "actualGitBlob": "e09349eea1a9e35e42bd43d2bf51f081b991e515",
+      "sha256": "7ffd7190e693662852090725c87e060b0dd28a803a1217417bbe01cd6af3264f",
+      "matches": true
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "expectedGitBlob": "03f0545de79bb772a0fe89e067ec6301edd64f1b",
+      "actualGitBlob": "03f0545de79bb772a0fe89e067ec6301edd64f1b",
+      "sha256": "2e94c322a589039f5d3d70b540ca1d6e3b7ee3dcf41664a7dc150681b01e1898",
+      "matches": true
+    },
+    {
+      "path": "test/authTokenService.spec.mjs",
+      "expectedGitBlob": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577",
+      "actualGitBlob": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577",
+      "sha256": "34cdf6591e12fc6c14277a946c8a9134aefbc71b194b9f95c4f25ea03aef6a92",
+      "matches": true
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "expectedGitBlob": "6017737567f56b640d310346a70ccf93c6b27cbf",
+      "actualGitBlob": "6017737567f56b640d310346a70ccf93c6b27cbf",
+      "sha256": "01eafffc92378e1a534281e3ccedb72e9ad8fcc954617674edba5f4d56cf46b2",
+      "matches": true
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "expectedGitBlob": "f67d92d7250576cbf1c7d9b447684ae5299d26e0",
+      "actualGitBlob": "f67d92d7250576cbf1c7d9b447684ae5299d26e0",
+      "sha256": "f2634786d4e370202f620ba2b4a05b9ee592c3b7951bcffd9fdda5b9d915e8cd",
+      "matches": true
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "expectedGitBlob": "d21a8308f8cf6c962b8e0bc918b8735193f66da3",
+      "actualGitBlob": "d21a8308f8cf6c962b8e0bc918b8735193f66da3",
+      "sha256": "7498110a8bb674789919ef7235a468e35f9ed3bb29cf18ef22415e3e2e9a80c6",
+      "matches": true
+    },
+    {
+      "path": "test/bookingAdminRoutes.spec.mjs",
+      "expectedGitBlob": "4e766e19ff9b9123710a356612ef557265726b05",
+      "actualGitBlob": "4e766e19ff9b9123710a356612ef557265726b05",
+      "sha256": "c0dc1bf6d9efc05368730248c34601f991b1146b150607139d82f7af1fa4a15c",
+      "matches": true
+    },
+    {
+      "path": "test/bookingAdminService.spec.mjs",
+      "expectedGitBlob": "fcaf840932948dac12970aeacef919dc6942d4f7",
+      "actualGitBlob": "fcaf840932948dac12970aeacef919dc6942d4f7",
+      "sha256": "62203569688e71d5ad40f7a1c2d6b15b73c0fb700cec2784d1554c816fc96a10",
+      "matches": true
+    },
+    {
+      "path": "test/bookingCapabilities.spec.mjs",
+      "expectedGitBlob": "6f8538474437d84235633cd9ff65e3b2cfc097a7",
+      "actualGitBlob": "6f8538474437d84235633cd9ff65e3b2cfc097a7",
+      "sha256": "fc158a3a7d3e8988928d4636203a3c1bec63ad94d4b3437688aec7a44df9dc32",
+      "matches": true
+    },
+    {
+      "path": "test/bookingPreferenceService.spec.mjs",
+      "expectedGitBlob": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd",
+      "actualGitBlob": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd",
+      "sha256": "66271ae462c26a7566b35444918d77dec7e689e3f66fd64404d09297bc479df5",
+      "matches": true
+    },
+    {
+      "path": "test/bookingRoutes.spec.mjs",
+      "expectedGitBlob": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214",
+      "actualGitBlob": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214",
+      "sha256": "b1c0dba75254d44ef7e85b3be4d37fcf9398097bc47f917d172b2835d93ab64d",
+      "matches": true
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "expectedGitBlob": "5676b41ab84abce6416ca1821451c478c5a514c7",
+      "actualGitBlob": "5676b41ab84abce6416ca1821451c478c5a514c7",
+      "sha256": "5f50d4d644751fba6f8490c65460e12ed90a51cce1212caaeca42e038c8690bd",
+      "matches": true
+    },
+    {
+      "path": "test/bookingTokenReceipt.spec.mjs",
+      "expectedGitBlob": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c",
+      "actualGitBlob": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c",
+      "sha256": "2ab83615727f6041c3441bc11182eeb1d392827f1028eb3c842ca42042f8f7cb",
+      "matches": true
+    },
+    {
+      "path": "test/calendarCredentials.spec.mjs",
+      "expectedGitBlob": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f",
+      "actualGitBlob": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f",
+      "sha256": "70cb719de2c2a7d3e2a73ccf57fedd354d5f2fa7cb40301f78198f4e019304bf",
+      "matches": true
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "expectedGitBlob": "2a409e0feeb63ce2aa536c314243dad4009459f1",
+      "actualGitBlob": "2a409e0feeb63ce2aa536c314243dad4009459f1",
+      "sha256": "e531efb9c6d1ee045718d1013ff19fc7ab89fc2178c0bd98c03ca78a0db0800f",
+      "matches": true
+    },
+    {
+      "path": "test/calendarOAuthState.spec.mjs",
+      "expectedGitBlob": "36e24ad9928e623805ed2ffec8b2e52bea932ba4",
+      "actualGitBlob": "36e24ad9928e623805ed2ffec8b2e52bea932ba4",
+      "sha256": "48ba1ba191dfacbbd44ba393fa02607019b8fbe7e87b04fc920b9fa4db3a6bd1",
+      "matches": true
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "expectedGitBlob": "d4cd01dfb375e0254d9c2c7d6bff901272e997f0",
+      "actualGitBlob": "d4cd01dfb375e0254d9c2c7d6bff901272e997f0",
+      "sha256": "917b72ee45dd2cdabbd7a2b9c7b0353867270845a75e57ce3ecdaa6361ccadaa",
+      "matches": true
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "expectedGitBlob": "ccbfa03d06f9736dc72fd3f699410110a452a1f0",
+      "actualGitBlob": "ccbfa03d06f9736dc72fd3f699410110a452a1f0",
+      "sha256": "0ae75bdd0f0b28a707254428a79314242b4a81d19c6434671e887d9019ebe479",
+      "matches": true
+    },
+    {
+      "path": "test/corsPolicy.spec.mjs",
+      "expectedGitBlob": "8111d13baab45950a31f79f4b5b0c951b491e7b3",
+      "actualGitBlob": "8111d13baab45950a31f79f4b5b0c951b491e7b3",
+      "sha256": "a0d322d6f8bd4c9d3101b9389396e0e9f92fe5d2a31979abce23af2609d39512",
+      "matches": true
+    },
+    {
+      "path": "test/geminiMediaBridge.spec.mjs",
+      "expectedGitBlob": "a03f9ee6c1386af467135f250c2663887a751f46",
+      "actualGitBlob": "a03f9ee6c1386af467135f250c2663887a751f46",
+      "sha256": "fa9010e32c9cba3531c81032158416a491a5ba4b113c7514384b90f53d0af9fb",
+      "matches": true
+    },
+    {
+      "path": "test/googleCalendarAdapter.spec.mjs",
+      "expectedGitBlob": "c7fe7ea3256f7367c4b5a301ce582f0d86d4f7f5",
+      "actualGitBlob": "c7fe7ea3256f7367c4b5a301ce582f0d86d4f7f5",
+      "sha256": "06abf11937a2fbd615ae6232848ac1895a5fd23344fd62bb1b66e1443957e0c3",
+      "matches": true
+    },
+    {
+      "path": "test/googleGenAiLiveAdapter.spec.mjs",
+      "expectedGitBlob": "8d7cdf021c62193b308aeb3012df506ef687f875",
+      "actualGitBlob": "8d7cdf021c62193b308aeb3012df506ef687f875",
+      "sha256": "23dc2b3cca96657227fa8f9938b04fda06610cd48724225ba86258199e1fcf6e",
+      "matches": true
+    },
+    {
+      "path": "test/onboardingCalendar.spec.mjs",
+      "expectedGitBlob": "ec24c70f94b0c52bced8b08ef39025ebddb9a38f",
+      "actualGitBlob": "ec24c70f94b0c52bced8b08ef39025ebddb9a38f",
+      "sha256": "ac2f54e7fbdf48fa78cb87008cf4dd1a6dfe6d120dfa3b33a14e2d3278426d61",
+      "matches": true
+    },
+    {
+      "path": "test/onboardingServiceArea.spec.mjs",
+      "expectedGitBlob": "bdc6b7dba9d69655079cf0655d087f69ca6afab9",
+      "actualGitBlob": "bdc6b7dba9d69655079cf0655d087f69ca6afab9",
+      "sha256": "807c65dd7b404981bf4152cbbd1707c31f45ed988c9e5496867541eeca123dcf",
+      "matches": true
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "expectedGitBlob": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058",
+      "actualGitBlob": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058",
+      "sha256": "ec5bb3e8db169062ce378a5b86ddb699467affa47ae10bec0343a28be9e1d577",
+      "matches": true
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "expectedGitBlob": "51e48432cf2fbfa5adf8652e8da8de9109109e33",
+      "actualGitBlob": "51e48432cf2fbfa5adf8652e8da8de9109109e33",
+      "sha256": "fccb625fb7ef7a1d2bb649dd9fb61174e743fde62b94986e26ca4c7f6c778d4b",
+      "matches": true
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "expectedGitBlob": "e9ac0cb653458888ede0b2257fb558acc15bca00",
+      "actualGitBlob": "e9ac0cb653458888ede0b2257fb558acc15bca00",
+      "sha256": "f5f565ecfa18e140d6dbebd8ad365ddb0cb01d82cdb3db160371b50ca3887c98",
+      "matches": true
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "expectedGitBlob": "574a4727e94e30d70690fd35add7f14e43613b03",
+      "actualGitBlob": "574a4727e94e30d70690fd35add7f14e43613b03",
+      "sha256": "cbae3acfd133e32d676e6795b6ed4b026758baa7c0c6899b5d7f3d245370b670",
+      "matches": true
+    },
+    {
+      "path": "test/platformSchema.spec.mjs",
+      "expectedGitBlob": "e624614185172858e93b70b4deb40aebe9e216c5",
+      "actualGitBlob": "e624614185172858e93b70b4deb40aebe9e216c5",
+      "sha256": "8840510c59f703e9eb02654df650db4e707aadd121a050e34868443ea862c8db",
+      "matches": true
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "expectedGitBlob": "9996b9982c538a8ff0272901bcd709fe720ae0d8",
+      "actualGitBlob": "9996b9982c538a8ff0272901bcd709fe720ae0d8",
+      "sha256": "649c0124e67916c40a3caf01c85f07ef38cc366fafe7f95dca284d53c8e78472",
+      "matches": true
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "expectedGitBlob": "e6da51c38c05077b0da14c5f9aab8babb13a4d78",
+      "actualGitBlob": "e6da51c38c05077b0da14c5f9aab8babb13a4d78",
+      "sha256": "c640b5e44c454e75b88be986c79f929dae4181cdf00b4c3bc06ab70820c38ce4",
+      "matches": true
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "expectedGitBlob": "c6bba0ab4ba1d8a97a3e68b4a0c962d88ed38459",
+      "actualGitBlob": "c6bba0ab4ba1d8a97a3e68b4a0c962d88ed38459",
+      "sha256": "cf45de9c919df01692d94399a529d2e32959f97523aa325fe908d0be5a3c0709",
+      "matches": true
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "expectedGitBlob": "60bf6e373ce83069714a4796b9f4cca4ffb0cdb8",
+      "actualGitBlob": "60bf6e373ce83069714a4796b9f4cca4ffb0cdb8",
+      "sha256": "e8419d844df85bc5ebc2b3cb2d587c5e662f90a2c79108b3c50989df7c33cbe0",
+      "matches": true
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "expectedGitBlob": "fe7ab8c238e3c13fd112edfab633dfd97c60f6c7",
+      "actualGitBlob": "fe7ab8c238e3c13fd112edfab633dfd97c60f6c7",
+      "sha256": "fe80d8508d760caf5da539d698df740bd8067ab4894cb3b9fc1d3b9d1af2d80a",
+      "matches": true
+    },
+    {
+      "path": "test/providerCredentials.spec.mjs",
+      "expectedGitBlob": "e37ff538447d28a6fb3ddffc195db8f22f5478ee",
+      "actualGitBlob": "e37ff538447d28a6fb3ddffc195db8f22f5478ee",
+      "sha256": "f58b99ca8fd687888df2f2658266fc773654cb5e75b58037b9009223c780b903",
+      "matches": true
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "expectedGitBlob": "aaab006f57e27318bb7eae66b4fd1670b5042a1d",
+      "actualGitBlob": "aaab006f57e27318bb7eae66b4fd1670b5042a1d",
+      "sha256": "bbba32d129ffa763ca20c8a3feb9f0420af14a7a4f19e7be2642d2751776a845",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "expectedGitBlob": "218175b4cd313797daa588a75d1cb6cb369cd103",
+      "actualGitBlob": "218175b4cd313797daa588a75d1cb6cb369cd103",
+      "sha256": "5dc1296bd25b46abbc62c94ff4d066b0d50913fa5ffb4b33eaeac5fce35a8e2e",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "expectedGitBlob": "21ee667956f97c274c52c10098040b3787d63e00",
+      "actualGitBlob": "21ee667956f97c274c52c10098040b3787d63e00",
+      "sha256": "94e360cf0d3bf4f240d3d25e18ed534fed5b96a0ffe6ad52f1061aca5618c038",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "expectedGitBlob": "0b8d782c5d24979859e7692b9486095f08389c70",
+      "actualGitBlob": "0b8d782c5d24979859e7692b9486095f08389c70",
+      "sha256": "ab6299e829c20aaed9508643c694a49784fde4767288ac629e849179a87786b1",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "expectedGitBlob": "043ac6fe93d2dbf033b9d6f61bfe3ed4f11b798f",
+      "actualGitBlob": "043ac6fe93d2dbf033b9d6f61bfe3ed4f11b798f",
+      "sha256": "7b1c44fa922a8c3588fb7b4ea0c97a0c465bf8db7ae3189ccba219ec94cb12d3",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "expectedGitBlob": "fa6cd221b7063405925a3f9f0372971fd16f10b4",
+      "actualGitBlob": "fa6cd221b7063405925a3f9f0372971fd16f10b4",
+      "sha256": "4f25a226919dc8637edc15b4a305d6d27be678bd1da9a3d896b8027492d4d069",
+      "matches": true
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "expectedGitBlob": "4d9d131138101ed74f874fa6d2eedcd863df1ded",
+      "actualGitBlob": "4d9d131138101ed74f874fa6d2eedcd863df1ded",
+      "sha256": "89372f0aa8def974fee87ccfd75038b7d84ab1041c0d8584c9d9372e9125a531",
+      "matches": true
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "expectedGitBlob": "18df625130f68a26b01c801e1e8cacdfdf2d532a",
+      "actualGitBlob": "18df625130f68a26b01c801e1e8cacdfdf2d532a",
+      "sha256": "0968abc954dd94ef12370c5516fbb6274bd881322f0073ea81547f5a953213ec",
+      "matches": true
+    },
+    {
+      "path": "test/runtimeConfig.spec.mjs",
+      "expectedGitBlob": "cc1cb461004b36a445f88f708bec4507e01ebfa2",
+      "actualGitBlob": "cc1cb461004b36a445f88f708bec4507e01ebfa2",
+      "sha256": "27c54c13700736ae0ecb937d6802e0cd5a0f98efddec38697790ab3436f5dd23",
+      "matches": true
+    },
+    {
+      "path": "test/serviceArea.spec.mjs",
+      "expectedGitBlob": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f",
+      "actualGitBlob": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f",
+      "sha256": "c52376a8e3d836be2875d4d75f97324f94635ff7157a334aa4dec4aa7289b907",
+      "matches": true
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "expectedGitBlob": "655502741636841661190e7519fc8e02810282b7",
+      "actualGitBlob": "655502741636841661190e7519fc8e02810282b7",
+      "sha256": "c70c6bdf9d8e13b3a40999a722cdc0da735993778605a538ba40e800f81bcfdb",
+      "matches": true
+    },
+    {
+      "path": "test/voiceAudioCodec.spec.mjs",
+      "expectedGitBlob": "ef6f7824829caf58129edb9bb597fce1db55a243",
+      "actualGitBlob": "ef6f7824829caf58129edb9bb597fce1db55a243",
+      "sha256": "deed968ed8063c35a760193b32fd34f08e0d0665f63fe5647e117f9192e4c8a0",
+      "matches": true
+    },
+    {
+      "path": "test/voicePersistence.spec.mjs",
+      "expectedGitBlob": "3bbf285b98bfd5de2d177883fe4e37fffb6d188c",
+      "actualGitBlob": "3bbf285b98bfd5de2d177883fe4e37fffb6d188c",
+      "sha256": "222909fb061c822cb7079c1b13eb0408c063eb46812b28e913353882617b985c",
+      "matches": true
+    },
+    {
+      "path": "test/voicePromptCompiler.spec.mjs",
+      "expectedGitBlob": "abf5f3e9b21bd2c7039736e6c2bffdc21f46f4bf",
+      "actualGitBlob": "abf5f3e9b21bd2c7039736e6c2bffdc21f46f4bf",
+      "sha256": "f911ed6efd5d043059eb1a4c61e046003d85fb82085b06b134eccd5f7e465dba",
+      "matches": true
+    },
+    {
+      "path": "test/voiceRuntimeRoutes.spec.mjs",
+      "expectedGitBlob": "1131301fb01885062063ebfdf60a02b3e4a5caf7",
+      "actualGitBlob": "1131301fb01885062063ebfdf60a02b3e4a5caf7",
+      "sha256": "85730caed48d542371ef4d48edcbeecb8182a0807b9514b68ec4eff6e4535a0b",
+      "matches": true
+    },
+    {
+      "path": "test/voiceSecurity.spec.mjs",
+      "expectedGitBlob": "5d6a78e15284836b91d0df83e98c1f87fd3378c7",
+      "actualGitBlob": "5d6a78e15284836b91d0df83e98c1f87fd3378c7",
+      "sha256": "c95b80c894c7ac52f36bb0f784d42146fcc2df04e3b3c8c7710e154e73f69039",
+      "matches": true
+    },
+    {
+      "path": "test/voiceWebSocketServer.spec.mjs",
+      "expectedGitBlob": "055c8543ddfc30484956830fc608a06711940aea",
+      "actualGitBlob": "055c8543ddfc30484956830fc608a06711940aea",
+      "sha256": "10b138bf90684453f9d95523782dfb78d431a6103f40de414a451fb0eb6b3a93",
+      "matches": true
+    },
+    {
+      "path": "verification/auth-email/browser-workflow.mjs",
+      "expectedGitBlob": "f748ba5c3b42ef84219d2bcb32302f39c2b13065",
+      "actualGitBlob": "f748ba5c3b42ef84219d2bcb32302f39c2b13065",
+      "sha256": "e565c6edbcd103eca99d67a43101f8b423fea08355650e65c0282a381a9cba2f",
+      "matches": true
+    },
+    {
+      "path": "verification/auth-email/email-provider-fixture.mjs",
+      "expectedGitBlob": "65d48cd4c8ddadfa021605d3acc305e57b2e6a54",
+      "actualGitBlob": "65d48cd4c8ddadfa021605d3acc305e57b2e6a54",
+      "sha256": "10b469b6f5271b47e7c25741fb8ec70bfdf094e6c7e58fc0607e94bbce576441",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/access-retry-workflow.mjs",
+      "expectedGitBlob": "4d7f753b37a495180133e79149c96fa9357f0c2b",
+      "actualGitBlob": "4d7f753b37a495180133e79149c96fa9357f0c2b",
+      "sha256": "b0cee2ccc39a316f9b3fd820ea3acb005c6f6ed7b382cd0d8ebc3189b4217f7d",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/adapter-cases.mjs",
+      "expectedGitBlob": "0de17f65ddf9bfcd0b402bde7be4f12c1520fbed",
+      "actualGitBlob": "0de17f65ddf9bfcd0b402bde7be4f12c1520fbed",
+      "sha256": "11d75d21ea125386713adc782f5ed0b7aae93a8e852ee3fe99fb0e950c1e9213",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/all-adapters.mjs",
+      "expectedGitBlob": "2fb090c9c1249c787eea34e9a674ec5b03d16ca8",
+      "actualGitBlob": "2fb090c9c1249c787eea34e9a674ec5b03d16ca8",
+      "sha256": "e906222de06232faedd55ae8f05629f6c33cc2723f62a6fc6046356d37029bc8",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/application-harness.mjs",
+      "expectedGitBlob": "84afffc53184e66559c2db8d65e6fba033f3354b",
+      "actualGitBlob": "84afffc53184e66559c2db8d65e6fba033f3354b",
+      "sha256": "5b74d18de4f3e7e2676b3ea3b51192a1733d2461d6bac00d671dea0661dab924",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/audit-repairs-browser.mjs",
+      "expectedGitBlob": "5ac95cc209a40dc25410913b051f79ca65ac5980",
+      "actualGitBlob": "5ac95cc209a40dc25410913b051f79ca65ac5980",
+      "sha256": "6f517c1ae4b18b2aa72416b3b3735118b9441f0d5fe3b43496c04e1f8669e603",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/audit-repairs-http.mjs",
+      "expectedGitBlob": "8618ef985e8317cc6c355430c1f1a87ced166bf6",
+      "actualGitBlob": "8618ef985e8317cc6c355430c1f1a87ced166bf6",
+      "sha256": "2fe90ebb892c7f731ba30574020d00efe5432d6ddbff8a5b6f3fdd1fd03c14f3",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/booking-application.mjs",
+      "expectedGitBlob": "ac3e826da2872013829d8ed2a4fc59c0e2c70c30",
+      "actualGitBlob": "ac3e826da2872013829d8ed2a4fc59c0e2c70c30",
+      "sha256": "2bbbb7313cf3865ed6b1ebb9e091adc4ae201759a77e3d5277d6362488c63c62",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/booking-confirmation-integrity.mjs",
+      "expectedGitBlob": "0f6c59e828cc03a4dba310386c35592c1be4ab04",
+      "actualGitBlob": "0f6c59e828cc03a4dba310386c35592c1be4ab04",
+      "sha256": "ef938000823a555248482ee5e1dd4103dff870c6a939b989a972bcf3c433efd5",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/browser-workflow.mjs",
+      "expectedGitBlob": "82f375c2af07ea06767e122569c647e7e79bd4f0",
+      "actualGitBlob": "82f375c2af07ea06767e122569c647e7e79bd4f0",
+      "sha256": "8432fbc65006781cb9bc1a40b2dc20e15ffbc35c553722a3ad77d235bd078b73",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/build-resume-client.mjs",
+      "expectedGitBlob": "2ce28b64d5109d873d385ff8e9eb72182b7836d1",
+      "actualGitBlob": "2ce28b64d5109d873d385ff8e9eb72182b7836d1",
+      "sha256": "e3dcd3a9478dca33bdfaf680107c7522e52ad3cd31bd00fefd2b643f04bb857b",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/calendar-oauth-application.mjs",
+      "expectedGitBlob": "1abecb150853347056d2ad946ac65ef749d53ed6",
+      "actualGitBlob": "1abecb150853347056d2ad946ac65ef749d53ed6",
+      "sha256": "bc70a5890ef31eed87d049248cccaeed47358afdaa596e9d0bec947907686447",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/calendar-provider-fixture.mjs",
+      "expectedGitBlob": "73ef1d8e62202e1bf963124295fc8ecf8f3ccc2c",
+      "actualGitBlob": "73ef1d8e62202e1bf963124295fc8ecf8f3ccc2c",
+      "sha256": "6d0147d9fbb5ef568b84d269d8e7dda8912cbdb7fb6eb01aaa412bdf7b64a82a",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/clarification-browser.mjs",
+      "expectedGitBlob": "60d776e56c35555481342e8a8d4bc8530818d7e1",
+      "actualGitBlob": "60d776e56c35555481342e8a8d4bc8530818d7e1",
+      "sha256": "c09fb02816edeb7cd22d276b7a03be23813c8788838fd5d18c2bb76684d3f7be",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/clarification-workflow.mjs",
+      "expectedGitBlob": "8336a3fab2232d5a308f95ea3d105cb47557b3e6",
+      "actualGitBlob": "8336a3fab2232d5a308f95ea3d105cb47557b3e6",
+      "sha256": "2ebb3753269d7e794af0fe408db67064a960ae89afc764e1ec89af58b344bd0e",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/configuration-privacy-workflow.mjs",
+      "expectedGitBlob": "5d7ec8a36cba098708347f13de8de6ff9b732df6",
+      "actualGitBlob": "5d7ec8a36cba098708347f13de8de6ff9b732df6",
+      "sha256": "50abcd1b75cf9917565cdf11d778f62c0686d61f186bbb91e3eebfa57b246e15",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/configured-offerings-application.mjs",
+      "expectedGitBlob": "15013aa60ab2dc79d15c0382107bccd34c752268",
+      "actualGitBlob": "15013aa60ab2dc79d15c0382107bccd34c752268",
+      "sha256": "5b5ef70f25a309b71f65f5ef4dbdf9647b3552be07c579fa0486acc72b73455c",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/contact-workflow.mjs",
+      "expectedGitBlob": "c4114cc3d484d112c1ad1eb9aa25f583f9643d03",
+      "actualGitBlob": "c4114cc3d484d112c1ad1eb9aa25f583f9643d03",
+      "sha256": "7a189bfb500f7b2be9ea98384d41448e5bfbb5bbe5c139809031cef8f9907425",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/customer-intake-browser-helpers.mjs",
+      "expectedGitBlob": "8ac353fb546eac9857bfadacffda941d6016640e",
+      "actualGitBlob": "8ac353fb546eac9857bfadacffda941d6016640e",
+      "sha256": "6bf1f73739766e7c768a563a8fb3960b6db27f11bf3d0cb170056b9771649f5a",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/editor-integrity-workflow.mjs",
+      "expectedGitBlob": "1d9a20c08c55b200a8662fbf48e30635029e7efd",
+      "actualGitBlob": "1d9a20c08c55b200a8662fbf48e30635029e7efd",
+      "sha256": "603cd099ae0356b81d934ca265a426be71a77f7cbc4737491dd667b81a65fe29",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/fencing-painting-baseline.mjs",
+      "expectedGitBlob": "942a06d926b6ef7c52dcfbbfc7a8611f3b7ce0f6",
+      "actualGitBlob": "942a06d926b6ef7c52dcfbbfc7a8611f3b7ce0f6",
+      "sha256": "a0dd6ed7c90d48af3d4d4dd25bebe2cca8c80281dc0f1831315b1ccdf1938141",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/first-workflow.mjs",
+      "expectedGitBlob": "643345dfe03e7446145b19155f7f855efffea2ed",
+      "actualGitBlob": "643345dfe03e7446145b19155f7f855efffea2ed",
+      "sha256": "e17c837b90bed3e889e9576bd8cfa8ef3a82dc2cfd8753e863c2e91b5414a17c",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/identity-ambiguity-workflow.mjs",
+      "expectedGitBlob": "379d4abc0382ad1161e9671d1bf32d31d181b595",
+      "actualGitBlob": "379d4abc0382ad1161e9671d1bf32d31d181b595",
+      "sha256": "870443bd7d0b730b87eefc3d624e12602dc057df57d09d7cbdd43ab47045e52b",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/independent/MANIFEST.json",
+      "expectedGitBlob": "219814a1cf67fa1dc177a23dc12a8bfe881f1bf0",
+      "actualGitBlob": "219814a1cf67fa1dc177a23dc12a8bfe881f1bf0",
+      "sha256": "4d8839a9158516b51b7b0728b2fac8375dfb3bd940953714234f828f3fca7b06",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/independent/precision-cases.json.gz",
+      "expectedGitBlob": "502843f4629fac8110c1dbd76a6d8892f446abce",
+      "actualGitBlob": "502843f4629fac8110c1dbd76a6d8892f446abce",
+      "sha256": "c9298db9e09165863c5f72cafffa737029c0f8673ab88695b31c2c88002575a4",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/independent/precision-regressions.mjs",
+      "expectedGitBlob": "16ef9761796796b962a545156731b826899b6bb3",
+      "actualGitBlob": "16ef9761796796b962a545156731b826899b6bb3",
+      "sha256": "379dae9ef699fc16080bc1ae4f02e3c4368dcd02a6ff69995710c5a43a6b10d4",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/integration-boundary.mjs",
+      "expectedGitBlob": "924c75516d1cd5ebd387fbd4705905e5f9722ad4",
+      "actualGitBlob": "924c75516d1cd5ebd387fbd4705905e5f9722ad4",
+      "sha256": "84689c867190df07ef70f7da1297186de84bb76e083f50860bb9edc7681944a7",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/legacy-approval-workflow.mjs",
+      "expectedGitBlob": "c9de14acefe09fef6da93cd32f72cc926f36872b",
+      "actualGitBlob": "c9de14acefe09fef6da93cd32f72cc926f36872b",
+      "sha256": "b6eac52e648b9170a3ed92dae5e36cec64ab9b44043e4e09cd2f4e6242f78242",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/metadata-intake-browser.mjs",
+      "expectedGitBlob": "d42939bdb340fe072cfca3cda01a3f09b21c8f17",
+      "actualGitBlob": "d42939bdb340fe072cfca3cda01a3f09b21c8f17",
+      "sha256": "407c61a7672e6bdca6c3bda787b8592779d6b3847f1da774be8e6f25579418e0",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/metadata-intake-workflow.mjs",
+      "expectedGitBlob": "cd8af5d9c229ad942a2c9eba0692acb0fa2a783f",
+      "actualGitBlob": "cd8af5d9c229ad942a2c9eba0692acb0fa2a783f",
+      "sha256": "02b98caebd7c32f823cc95fc7b5389153323d3db0432a1eebcf1423068b5e151",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/money-workflow.mjs",
+      "expectedGitBlob": "32f693999b68864ac8921ddf0dc3d436214be40b",
+      "actualGitBlob": "32f693999b68864ac8921ddf0dc3d436214be40b",
+      "sha256": "424e6a82293579d43eba13de5d3b578d82e1532801fb1970eb0fa24cec9483a1",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/normal-intake-browser.mjs",
+      "expectedGitBlob": "d82b37fc0ef4ce8a5022272e9bd0e312218cb059",
+      "actualGitBlob": "d82b37fc0ef4ce8a5022272e9bd0e312218cb059",
+      "sha256": "003e1b65851c7e1e09a26197a3f224b2298f80f6775438045f8098f127af00eb",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/normal-intake-workflow.mjs",
+      "expectedGitBlob": "c3e3eac1b1c165f218cd57078b4ffcd503d9003d",
+      "actualGitBlob": "c3e3eac1b1c165f218cd57078b4ffcd503d9003d",
+      "sha256": "1c0214c395b31021e49c380505bf52a8669d0e4dd13a6c187040388adfb49a91",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/offering-application-fixture.mjs",
+      "expectedGitBlob": "dbb4b6d1d800ac1f43dbd3dba5d59f9a4fd2e904",
+      "actualGitBlob": "dbb4b6d1d800ac1f43dbd3dba5d59f9a4fd2e904",
+      "sha256": "a49f78f14054443e7830e8d47361771e7e49f4bc17d5b6288d4a12d476182c2f",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/offerings-engine-boundary.json",
+      "expectedGitBlob": "be3819676e4e733c5083bf96bd6df220e9c8fd2d",
+      "actualGitBlob": "be3819676e4e733c5083bf96bd6df220e9c8fd2d",
+      "sha256": "31aaff3f190be3078c2fec0ec8493fb059b9fa4d50dbd24e1b7dbb8a2248b56a",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/offerings-integration-boundary.mjs",
+      "expectedGitBlob": "38ce9c697d314c435b257104787027b06ed480d6",
+      "actualGitBlob": "38ce9c697d314c435b257104787027b06ed480d6",
+      "sha256": "8d19388aff3c09d5ee5b7e4f9bcc2e8feadf068179ca3ec247d2caf28b328f1b",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/partial-work-browser.mjs",
+      "expectedGitBlob": "5e2b318c194e927bed1c46e546ca623b02895f48",
+      "actualGitBlob": "5e2b318c194e927bed1c46e546ca623b02895f48",
+      "sha256": "b95fe968e6e2258a2ba98bc29ab133e3f679c00a48c8833e3b225903c10568cd",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/partial-work-workflow.mjs",
+      "expectedGitBlob": "0ec92ee6e5a358c95b1dd8f274a4ce54b0ffae74",
+      "actualGitBlob": "0ec92ee6e5a358c95b1dd8f274a4ce54b0ffae74",
+      "sha256": "3ed84e350ee4a8d70eb72d818dcad519a79006d6aa3c948ed3624a4dbfa0dec5",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/pricing-envelope-workflow.mjs",
+      "expectedGitBlob": "c0b3cbb96ba086a7952afbdf60a7e24b68830739",
+      "actualGitBlob": "c0b3cbb96ba086a7952afbdf60a7e24b68830739",
+      "sha256": "2f2436ff07c1d57f0c8c117a820e6addd7ae582e5583c3946cbdeb2feee69a95",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/repair-fixture.mjs",
+      "expectedGitBlob": "54cad54a12e5ece45e6e52df31920fb6bce8fa7f",
+      "actualGitBlob": "54cad54a12e5ece45e6e52df31920fb6bce8fa7f",
+      "sha256": "b94e176db614e5236900d4f29a8ffdc24dc45691adb4ad8dd91534f6879e953c",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/request-recovery-browser.mjs",
+      "expectedGitBlob": "9a4b2992a9045dd2aa5f4677f7f8d7ac92e14bfa",
+      "actualGitBlob": "9a4b2992a9045dd2aa5f4677f7f8d7ac92e14bfa",
+      "sha256": "507b20145ebf6408927f2100d0ef2dc6d9989a09434eb840418dd0f2b87a1e44",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/resume-dependency-baseline.json",
+      "expectedGitBlob": "1befd41e5c86309bef607fb8c1a6de551c42151a",
+      "actualGitBlob": "1befd41e5c86309bef607fb8c1a6de551c42151a",
+      "sha256": "b40b8e992242d4b17c141c21495df0edd5ffab4bc823b0f37bb65ff7a865c42b",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/resume-integration-boundary.mjs",
+      "expectedGitBlob": "bf96bc071e8fc870f7187409660f6cc236b7fd03",
+      "actualGitBlob": "bf96bc071e8fc870f7187409660f6cc236b7fd03",
+      "sha256": "369e64dd04f3dd0b67221ac7db7f41e5813cd671568f547389eac36a638f0744",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/run-command.mjs",
+      "expectedGitBlob": "5d4011141dd9942ebd03bdc31bfd5f6a0cd340b4",
+      "actualGitBlob": "5d4011141dd9942ebd03bdc31bfd5f6a0cd340b4",
+      "sha256": "771ee60f57ca058bfbfdedc5a36eadc86c9da9e3d31ef28426dca90a88f85286",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/run-completion.mjs",
+      "expectedGitBlob": "9dfb9234d9f31aa6dfa0d91ef9abadeb70dad52e",
+      "actualGitBlob": "9dfb9234d9f31aa6dfa0d91ef9abadeb70dad52e",
+      "sha256": "8882bb6af1b2cb291e97bad36aad75d647c4cfeebbbea5f132c29abc19ba3bbc",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/run-precision.mjs",
+      "expectedGitBlob": "b60e6aaa9e7a52ea5db75be262b31175ee2d1e20",
+      "actualGitBlob": "b60e6aaa9e7a52ea5db75be262b31175ee2d1e20",
+      "sha256": "6257a9110de0815036155d1ea3471d9c351f25584684fa9856b86c1d3f8e194e",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/run-resume-check.cjs",
+      "expectedGitBlob": "04bf9b3f86e8f9094a6125abf9c6abf34302f943",
+      "actualGitBlob": "04bf9b3f86e8f9094a6125abf9c6abf34302f943",
+      "sha256": "0f7b7dd4b526e6fcb0b6e82ddd770ff9f76417384d42426f2995953434fc66d4",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/runtime-preflight.mjs",
+      "expectedGitBlob": "ad47d932cfc54853e61a5550002a5cbb5c81a3cb",
+      "actualGitBlob": "ad47d932cfc54853e61a5550002a5cbb5c81a3cb",
+      "sha256": "c74b16aa40580ca8ad4cd30e07a5a0e087df96cb4f16ac93b387d01e5444b4c3",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/schema-upgrade-workflow.mjs",
+      "expectedGitBlob": "909a4a16b625a6f313b726ceae2820db003027cc",
+      "actualGitBlob": "909a4a16b625a6f313b726ceae2820db003027cc",
+      "sha256": "b8e87be1cefa007ddcf217292b4b880a0e1efed17ab57c3958d12608b83fad22",
+      "matches": true
+    },
+    {
+      "path": "verification/quotedone/structured-measurements-workflow.mjs",
+      "expectedGitBlob": "a3c6ef16ebbbd53a4e155fc2ad50a3532fe4c5dc",
+      "actualGitBlob": "a3c6ef16ebbbd53a4e155fc2ad50a3532fe4c5dc",
+      "sha256": "055d05092ba467bd1c740636ea062a8b692918fb5f37696f0e436d3062da15ae",
+      "matches": true
+    },
+    {
+      "path": "verification/session-security/browser-workflow.mjs",
+      "expectedGitBlob": "d1f13b2ce8c4807a4b6878a198ce855d03514785",
+      "actualGitBlob": "d1f13b2ce8c4807a4b6878a198ce855d03514785",
+      "sha256": "dbe2fca23d3c7d4b2a41e05184dfa9a60e482cd8ea13318a40380232d214d9ce",
+      "matches": true
+    },
+    {
+      "path": "verification/session-security/run-ci.mjs",
+      "expectedGitBlob": "23e1a8056f7dbe3d4429ad4f271e770fd7f2591d",
+      "actualGitBlob": "23e1a8056f7dbe3d4429ad4f271e770fd7f2591d",
+      "sha256": "b26450ac3f674ddddc59c3b510a2fdb01f3533d4f2634927adaa335f2bb86ebc",
+      "matches": true
+    }
+  ]
+}

@@ -1,0 +1,390 @@
+{
+  "syntheticOnly": true,
+  "redactions": "Session ids, credential fingerprints and token hashes are replaced with labels. Raw credentials/cookies are excluded.",
+  "runs": {
+    "race-browser": {
+      "users": [
+        {
+          "id": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "email": "synthetic-independent-race-a@example.invalid",
+          "role": "owner",
+          "plan": "QuoteDone",
+          "planStatus": "active",
+          "emailVerifiedAt": null
+        },
+        {
+          "id": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "email": "synthetic-independent-race-b@example.invalid",
+          "role": "owner",
+          "plan": "QuoteDone",
+          "planStatus": "active",
+          "emailVerifiedAt": null
+        }
+      ],
+      "sessions": [
+        {
+          "id": "session-1",
+          "userId": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781847942,
+          "expiresAt": 1790810647942,
+          "revokedAt": null
+        },
+        {
+          "id": "session-2",
+          "userId": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781849127,
+          "expiresAt": 1790810649127,
+          "revokedAt": null
+        },
+        {
+          "id": "session-3",
+          "userId": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781850160,
+          "expiresAt": 1790810650160,
+          "revokedAt": null
+        },
+        {
+          "id": "session-4",
+          "userId": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781851051,
+          "expiresAt": 1790810651051,
+          "revokedAt": null
+        },
+        {
+          "id": "session-5",
+          "userId": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781876092,
+          "expiresAt": 1790810676092,
+          "revokedAt": 1790781881131
+        },
+        {
+          "id": "session-6",
+          "userId": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781884528,
+          "expiresAt": 1790810684528,
+          "revokedAt": 1790781893878
+        },
+        {
+          "id": "session-7",
+          "userId": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781900342,
+          "expiresAt": 1790810700342,
+          "revokedAt": 1790781907697
+        },
+        {
+          "id": "session-8",
+          "userId": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781909253,
+          "expiresAt": 1790810709253,
+          "revokedAt": null
+        },
+        {
+          "id": "session-9",
+          "userId": "e9c7eb22-85d7-4274-b44b-2a520a631610",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781930940,
+          "expiresAt": 1790810730940,
+          "revokedAt": 1790781934266
+        },
+        {
+          "id": "session-10",
+          "userId": "ecd1a594-60ea-443d-ada8-99e0e8a6e272",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790781936152,
+          "expiresAt": 1790810736152,
+          "revokedAt": null
+        }
+      ],
+      "refreshReceipts": [
+        {
+          "tokenHash": "receipt-1",
+          "sessionId": "session-1",
+          "createdAt": 1790781847942,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-2",
+          "sessionId": "session-2",
+          "createdAt": 1790781849127,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-3",
+          "sessionId": "session-3",
+          "createdAt": 1790781850160,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-4",
+          "sessionId": "session-4",
+          "createdAt": 1790781851051,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-5",
+          "sessionId": "session-5",
+          "createdAt": 1790781876092,
+          "consumedAt": 1790781877933
+        },
+        {
+          "tokenHash": "receipt-6",
+          "sessionId": "session-5",
+          "createdAt": 1790781877933,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-7",
+          "sessionId": "session-6",
+          "createdAt": 1790781884528,
+          "consumedAt": 1790781885849
+        },
+        {
+          "tokenHash": "receipt-8",
+          "sessionId": "session-6",
+          "createdAt": 1790781885849,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-9",
+          "sessionId": "session-7",
+          "createdAt": 1790781900342,
+          "consumedAt": 1790781907350
+        },
+        {
+          "tokenHash": "receipt-10",
+          "sessionId": "session-7",
+          "createdAt": 1790781907350,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-11",
+          "sessionId": "session-8",
+          "createdAt": 1790781909253,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-12",
+          "sessionId": "session-9",
+          "createdAt": 1790781930940,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-13",
+          "sessionId": "session-10",
+          "createdAt": 1790781936152,
+          "consumedAt": null
+        }
+      ]
+    },
+    "race-browser-r2": {
+      "users": [
+        {
+          "id": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "email": "synthetic-independent-race-a@example.invalid",
+          "role": "owner",
+          "plan": "QuoteDone",
+          "planStatus": "active",
+          "emailVerifiedAt": null
+        },
+        {
+          "id": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "email": "synthetic-independent-race-b@example.invalid",
+          "role": "owner",
+          "plan": "QuoteDone",
+          "planStatus": "active",
+          "emailVerifiedAt": null
+        }
+      ],
+      "sessions": [
+        {
+          "id": "session-1",
+          "userId": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782037357,
+          "expiresAt": 1790810837357,
+          "revokedAt": null
+        },
+        {
+          "id": "session-2",
+          "userId": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782038411,
+          "expiresAt": 1790810838411,
+          "revokedAt": null
+        },
+        {
+          "id": "session-3",
+          "userId": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782039585,
+          "expiresAt": 1790810839585,
+          "revokedAt": null
+        },
+        {
+          "id": "session-4",
+          "userId": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782040602,
+          "expiresAt": 1790810840602,
+          "revokedAt": null
+        },
+        {
+          "id": "session-5",
+          "userId": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782066232,
+          "expiresAt": 1790810866232,
+          "revokedAt": 1790782072103
+        },
+        {
+          "id": "session-6",
+          "userId": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782077014,
+          "expiresAt": 1790810877014,
+          "revokedAt": 1790782093885
+        },
+        {
+          "id": "session-7",
+          "userId": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782097985,
+          "expiresAt": 1790810897985,
+          "revokedAt": 1790782104102
+        },
+        {
+          "id": "session-8",
+          "userId": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782105749,
+          "expiresAt": 1790810905749,
+          "revokedAt": null
+        },
+        {
+          "id": "session-9",
+          "userId": "91ed1a32-6c81-4b5f-a328-866315c42557",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782124702,
+          "expiresAt": 1790810924702,
+          "revokedAt": 1790782127687
+        },
+        {
+          "id": "session-10",
+          "userId": "772d526c-e09e-4c2e-940d-a48b912d895b",
+          "role": "owner",
+          "credentialFingerprint": "[SECRET OMITTED]",
+          "createdAt": 1790782129340,
+          "expiresAt": 1790810929340,
+          "revokedAt": null
+        }
+      ],
+      "refreshReceipts": [
+        {
+          "tokenHash": "receipt-1",
+          "sessionId": "session-1",
+          "createdAt": 1790782037357,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-2",
+          "sessionId": "session-2",
+          "createdAt": 1790782038411,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-3",
+          "sessionId": "session-3",
+          "createdAt": 1790782039585,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-4",
+          "sessionId": "session-4",
+          "createdAt": 1790782040602,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-5",
+          "sessionId": "session-5",
+          "createdAt": 1790782066232,
+          "consumedAt": 1790782068545
+        },
+        {
+          "tokenHash": "receipt-6",
+          "sessionId": "session-5",
+          "createdAt": 1790782068545,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-7",
+          "sessionId": "session-6",
+          "createdAt": 1790782077014,
+          "consumedAt": 1790782089671
+        },
+        {
+          "tokenHash": "receipt-8",
+          "sessionId": "session-6",
+          "createdAt": 1790782089671,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-9",
+          "sessionId": "session-7",
+          "createdAt": 1790782097985,
+          "consumedAt": 1790782103754
+        },
+        {
+          "tokenHash": "receipt-10",
+          "sessionId": "session-7",
+          "createdAt": 1790782103754,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-11",
+          "sessionId": "session-8",
+          "createdAt": 1790782105749,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-12",
+          "sessionId": "session-9",
+          "createdAt": 1790782124702,
+          "consumedAt": null
+        },
+        {
+          "tokenHash": "receipt-13",
+          "sessionId": "session-10",
+          "createdAt": 1790782129340,
+          "consumedAt": null
+        }
+      ]
+    }
+  }
+}
