@@ -1,8 +1,8 @@
 # Account session security delivery — September 30, 2026
 
-The account/security candidate now has server-side session revocation, short-lived access tokens with browser refresh, confirmed logout, and persistent authentication rate limits. Password reset invalidates every existing session for that account; unrelated owners remain authorized. This implements the session-security follow-up to the separately delivered account email/recovery work. Final repeat verification is still pending; the local execution runtime stopped responding.
+The account/security candidate now has server-side session revocation, short-lived access tokens with browser refresh, confirmed logout, and persistent authentication rate limits. Password reset invalidates every existing session for that account; unrelated owners remain authorized. This closes the session-security follow-up to the separately delivered account email/recovery work.
 
-Tested runtime source: `08ee7d529112c8db8098bc002dfd9be732a19d3e`, draft [PR #4](https://github.com/sportaholic000-hue/off-the-clock/pull/4). Later report commits retain this runtime. The peer's engine/booking checkpoint `1979792d766d6c2b2fe0dfb856d1651de03eee3f` is a preserved integration parent; all 41 peer files match their published Git blob identities. The original voice guide remains blob `7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5`.
+Tested runtime source: `08ee7d529112c8db8098bc002dfd9be732a19d3e`, draft [PR #4](https://github.com/sportaholic000-hue/off-the-clock/pull/4). Hosted verification ran on `67000e668a0da81fa1a85152256705c843429ca8`, whose server/client/test bytes are identical to this runtime. Later report commits retain those bytes and append this lane's progress to BUILD_STATUS.md. The peer's engine/booking checkpoint `1979792d766d6c2b2fe0dfb856d1651de03eee3f` is a preserved integration parent; all 41 peer files match their published Git blob identities at the tested runtime. Later report commits add only a separate progress paragraph to the peer's BUILD_STATUS.md; its prior text is preserved. The original voice guide remains blob `7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5`.
 
 ## Resulting behavior
 
@@ -18,7 +18,7 @@ Tested runtime source: `08ee7d529112c8db8098bc002dfd9be732a19d3e`, draft [PR #4]
 
 ## Verification
 
-Saved source checks and results are in `SOURCE_BINDING.json`, `TEST_RESULTS.json`, `WORKFLOWS.json`, `BUILD_ARTIFACTS.json` and the sanitized run transcripts. Counts overlap and must not be summed as unique tests.
+Final source checks and results are in `SOURCE_BINDING.json`, `TEST_RESULTS.json`, `WORKFLOWS.json`, `BUILD_ARTIFACTS.json` and the sanitized run transcripts. Counts overlap and must not be summed as unique tests.
 
 - Final combined application regression: **382 passed, zero failed** across 37 test files.
 - Quote engine regression: **357 passed, zero failed**. Its source is unchanged by this lane.
@@ -26,17 +26,17 @@ Saved source checks and results are in `SOURCE_BINDING.json`, `TEST_RESULTS.json
 - Real production-bundle session workflow: **9 checks passed**.
 - Existing real signup/email/recovery workflow: **10 checks passed**.
 - Both production bundles build successfully through the repository's production runner.
-- The source manifest verified 184 tracked runtime/test/support files at checkpoint `31e4564bede09da58c376c50fa1a8086d6878bbe`. The final bcrypt guard changed two files; both final authored files were saved and fetched back exactly from GitHub.
+- The final hosted source manifest verifies 184 tracked runtime/test/support files against their GitHub blob identities; the earlier Windows manifest remains in SOURCE_BINDING.json.
 
-The 382-test application run passed on final runtime `08ee7d529112c8db8098bc002dfd9be732a19d3e`. The two complete browser workflows (9 + 10 checks), production bundles and transport tests passed on `31e4564bede09da58c376c50fa1a8086d6878bbe`, before the final bcrypt guard; its changes affect only server auth and its tests. Engine regression passed before that on unchanged engine source. Final browser repeats were launched on the guard's source but their outcomes could not be retrieved when local execution stopped returning file reads. They remain unknown.
+The final hosted run passed all six groups on saved source `67000e6`: application 382, engine 357, transport 25, session browser 9, account browser 10, and production builds. [Actions run 36681673043](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36681673043) completed successfully. Named outcomes and result metadata are committed under `hosted/`; the corresponding artifact digest is recorded in HOSTED_ARTIFACT.json. A separate read-only hosted job fetched all seven sanitized evidence files and verified all 184 source entries by Git blob hash and SHA-256. See HOSTED_SOURCE_BINDING.json.
 
-The first hosted run (36680944823) returned status 0 for all six verification groups, then failed artifact upload because the action rejected a relative '..' path. A corrected hosted run is pending; final named counts and downloadable evidence will be confirmed from that run.
+Final local browser repeats were launched but their outcomes could not be retrieved when local execution stopped returning file reads. The fresh hosted browser runs above complete that verification independently. Historical Windows build artifact hashes remain explicitly bound to their prior checkpoint. Tests use isolated synthetic stores, accounts, mail interception and browser sessions. No live email, phone, calendar or billing traffic was performed.
 
 ## Retained failures and fixes
 
 The first primitive run failed two Windows cleanup hooks while SQLite connections were still open; the corrected run passes all 18 cases. An initial build command used the wrong module path. Later ad hoc builds retained NODE_ENV=test and selected a development API address; the repository production runner supplies NODE_ENV=production and an empty VITE_API_URL.
 
-Browser r1 stopped on a mismatched synthetic email-fixture label, r2 made no API requests due to the build configuration, and r3 stopped because its email-recipient lookup compared an array to a string. Browser r4 then exposed a real candidate defect: reset completion disappeared when session clearing observed the consumed URL fragment's removal. The recovery component key now preserves that state; subsequent complete browser runs pass. These attempts remain listed separately from final accepted runs.
+Browser r1 stopped on a mismatched synthetic email-fixture label, r2 made no API requests due to the build configuration, and r3 stopped because its email-recipient lookup compared an array to a string. Browser r4 then exposed a real candidate defect: reset completion disappeared when session clearing observed the consumed URL fragment's removal. The recovery component key now preserves that state; subsequent complete browser runs pass. These attempts remain listed separately from final accepted runs. The first hosted run returned success for all six verification groups but failed artifact upload because the action rejected a relative parent path. The corrected run passed verification and artifact upload; the evidence was then copied into Git history.
 
 Automatic review initially rejected a booking-code payload as overlapping the other agent's lane. Read-only checks established that the peer's original file exactly matched its published GitHub blob; an exact hash-checked copy into this isolated test workspace was then accepted. The peer's branch and working copy were unchanged.
 
@@ -46,6 +46,6 @@ Existing stateless JWTs without a session ID require sign-in again after rollout
 
 Session/limiter durability depends on preserving the application SQLite database. Connections/processes sharing that database share revocations/counters; independent replica databases do not form a distributed limiter. Use the existing durable-store deployment boundary rather than claiming multi-instance readiness.
 
-This draft account/security slice has the completed local checks above, with final repeat verification pending. It does not establish the full public-launch gate. Production email acceptance, deployment/storage restoration and the incomplete voice runtime/live phone-to-calendar path remain separate work. No merge, deployment, original-guide edit, pricing edit or booking behavior edit was performed. The owner authorized voice work after this slice and coordination confirmed the other lane is idle.
+This is a verified draft account/security slice. The full public-launch gate remains open. Production email acceptance, deployment/storage restoration and the incomplete voice runtime/live phone-to-calendar path remain separate work. No merge, deployment, original-guide edit, pricing edit or booking behavior edit was performed. The owner authorized voice work after this slice and coordination confirmed the other lane is idle.
 
 New visible copy proposed by this draft includes “Signing out…” and a retry message when a completed password reset cannot finish browser sign-out. Review it with the draft before public release.

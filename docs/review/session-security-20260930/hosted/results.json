@@ -1,0 +1,248 @@
+{
+  "sourceCommit": "67000e668a0da81fa1a85152256705c843429ca8",
+  "platform": "linux",
+  "version": "v22.23.2",
+  "playwrightVersion": "1.63.0",
+  "liveProviderTraffic": false,
+  "results": [
+    {
+      "label": "account-browser",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "/home/runner/work/_temp/otc-ci-evidence/account-browser"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 7728,
+      "log": "account-browser.log",
+      "counters": {},
+      "logSha256": "46e81c36ffabc126b203390992f6f3172cb1beb4ca410026a691c1e82cec23eb"
+    },
+    {
+      "label": "application",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 5279,
+      "log": "application.log",
+      "counters": {
+        "tests": 382,
+        "pass": 382,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "e983d3dfaf8d7cbaf89d20d62f60b9208987fe996683cd4acaf1f626352e70d5"
+    },
+    {
+      "label": "build",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 6476,
+      "log": "build.log",
+      "counters": {},
+      "logSha256": "8481f6203bdd145dcd60c92417893a98efd734bf6d0f18dc80e5e4a4dc34e2b3"
+    },
+    {
+      "label": "engine",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 47005,
+      "log": "engine.log",
+      "counters": {
+        "tests": 357,
+        "pass": 357,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "cb4a5bcfa8848b1ea108340f481bf2bd4cacf12a2d30a7c6068f9466ee70e4a7"
+    },
+    {
+      "label": "session-browser",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "/home/runner/work/_temp/otc-ci-evidence/session-browser"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 13854,
+      "log": "session-browser.log",
+      "counters": {},
+      "logSha256": "d705a7f549886088458be694235c2c7e6dd85dc9cdaf98b9388e07196f294bc4"
+    },
+    {
+      "label": "transport",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionClient.spec.mjs",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 459,
+      "log": "transport.log",
+      "counters": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "dd6be89443cf1850f19803c496a60c7b31c2cd4413cfc6398f5ad407f6bf66ea"
+    }
+  ],
+  "browserResults": {
+    "session-browser": {
+      "syntheticOnly": true,
+      "liveProviderTraffic": false,
+      "rows": [
+        {
+          "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+          "passed": true
+        },
+        {
+          "name": "Expired access renews through the real route without remounting or losing an unsaved owner form",
+          "passed": true
+        },
+        {
+          "name": "Two tabs renew concurrently and remain authorized without discarding the owner draft",
+          "passed": true
+        },
+        {
+          "name": "Refresh receipts remain valid across an actual application restart",
+          "passed": true
+        },
+        {
+          "name": "Mobile sign-out retries a failure, then revokes only that server session and clears its cookie",
+          "passed": true
+        },
+        {
+          "name": "Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible",
+          "passed": true
+        },
+        {
+          "name": "The real application rejects an untrusted origin without logging the owner out",
+          "passed": true
+        },
+        {
+          "name": "The eight-hour absolute session limit requires sign-in again instead of extending indefinitely",
+          "passed": true
+        },
+        {
+          "name": "No browser runtime errors, access tokens or refresh secrets appear in application logs",
+          "passed": true
+        }
+      ],
+      "errors": []
+    },
+    "account-browser": {
+      "syntheticOnly": true,
+      "liveProviderTraffic": false,
+      "rows": [
+        {
+          "name": "Signup survives failed provider delivery, exposes retry and preserves pending_payment",
+          "passed": true
+        },
+        {
+          "name": "Resend gives an absolute link; opening it hides the fragment and requires explicit verification",
+          "passed": true
+        },
+        {
+          "name": "Signed-in account screen shows verified state",
+          "passed": true
+        },
+        {
+          "name": "Reused verification link is rejected and recovery request stays private for verified accounts",
+          "passed": true
+        },
+        {
+          "name": "Sign-in exposes password recovery; known and unknown requests show the same response",
+          "passed": true
+        },
+        {
+          "name": "Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session",
+          "passed": true
+        },
+        {
+          "name": "Old password fails, new password signs in and existing signup/billing flow preserves pending_payment",
+          "passed": true
+        },
+        {
+          "name": "Reused reset fails and preserves entered form values",
+          "passed": true
+        },
+        {
+          "name": "Malformed links offer recovery on mobile without horizontal overflow",
+          "passed": true
+        },
+        {
+          "name": "No browser runtime errors or account link tokens in application logs",
+          "passed": true
+        }
+      ],
+      "errors": []
+    }
+  }
+}

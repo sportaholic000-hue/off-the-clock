@@ -68,11 +68,13 @@
     "reason": "Launched, but local runtime/file reads stopped responding before results were retrieved."
   },
   "hostedVerification": {
-    "firstCommit": "3d536be8c923892e76a0aeee753734ce8542b546",
-    "firstRun": 36680944823,
-    "testGroupsAllStatusZero": true,
-    "artifactUpload": "failed; relative path rejected",
-    "correctedRun": "pending"
+    "status": "success",
+    "sourceCommit": "67000e668a0da81fa1a85152256705c843429ca8",
+    "runId": 36681673043,
+    "jobId": 109778264099,
+    "summary": "hosted/results.json",
+    "sourceManifest": "HOSTED_SOURCE_BINDING.json",
+    "liveProviderTraffic": false
   },
   "earlierRuns": [
     {
@@ -455,5 +457,6 @@
       "counters": {},
       "logSha256": "a25898c1790bacd8f11c905fa1d107bc01c8c424de1a9a223a8b94ee79496087"
     }
-  ]
+  ],
+  "verificationResolution": "Fresh hosted application/engine/transport/build/browser checks complete final verification; interrupted final local browser repeats remain historically unknown."
 }

@@ -1,8 +1,9 @@
 {
-  "sourceCommit": "31e4564bede09da58c376c50fa1a8086d6878bbe",
-  "laterRuntime": "08ee7d529112c8db8098bc002dfd9be732a19d3e",
-  "laterBrowserRepeatStatus": "unknown",
-  "session": {
+  "sourceCommit": "67000e668a0da81fa1a85152256705c843429ca8",
+  "runId": 36681673043,
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "session-browser": {
     "syntheticOnly": true,
     "liveProviderTraffic": false,
     "rows": [
@@ -43,216 +44,11 @@
         "passed": true
       }
     ],
-    "wire": [
-      {
-        "method": "POST",
-        "path": "/api/auth/login",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/dashboard",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/onboarding/state",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/pricebook/meta",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/onboarding/state",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/pricebook/meta",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 409
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/login",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/dashboard",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/onboarding/state",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/pricebook/meta",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/logout",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/login",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/dashboard",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/onboarding/state",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/pricebook/meta",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/login",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/dashboard",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/onboarding/state",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/pricebook/meta",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/forgot-password",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/reset-password",
-        "status": 200
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/logout",
-        "status": 200
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 401
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 401
-      },
-      {
-        "method": "GET",
-        "path": "/api/auth/account",
-        "status": 401
-      },
-      {
-        "method": "POST",
-        "path": "/api/auth/refresh",
-        "status": 401
-      }
-    ],
     "errors": []
   },
-  "account": {
+  "account-browser": {
+    "syntheticOnly": true,
+    "liveProviderTraffic": false,
     "rows": [
       {
         "name": "Signup survives failed provider delivery, exposes retry and preserves pending_payment",
@@ -295,8 +91,6 @@
         "passed": true
       }
     ],
-    "errors": [],
-    "syntheticOnly": true,
-    "liveProviderTraffic": false
+    "errors": []
   }
 }
