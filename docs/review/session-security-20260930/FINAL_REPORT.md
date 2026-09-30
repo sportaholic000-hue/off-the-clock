@@ -1,3 +1,5 @@
+> **Review update — September 30:** Independent real-browser audit found delayed refresh/logout response races that invalidate a newer login's cookie. This slice's acceptance is reopened. See [the repair plan](../session-response-fix-20260930/PLAN.md). The report below describes the earlier tested source and does not establish that the newly reproduced defect is fixed.
+
 # Account session security delivery — September 30, 2026
 
 The account/security candidate now has server-side session revocation, short-lived access tokens with browser refresh, confirmed logout, and persistent authentication rate limits. Password reset invalidates every existing session for that account; unrelated owners remain authorized. This closes the session-security follow-up to the separately delivered account email/recovery work.
