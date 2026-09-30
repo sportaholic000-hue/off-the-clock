@@ -30,7 +30,7 @@ try {
    if(url.pathname.startsWith('/api/')){
     const chunks=[];for await(const chunk of req)chunks.push(chunk);
     const body=Buffer.concat(chunks), headers={};
-    for(const key of ['origin','content-type','authorization','referer','sec-fetch-site'])if(req.headers[key])headers[key]=req.headers[key];
+    for(const key of ['origin','content-type','authorization','referer','sec-fetch-site','cookie'])if(req.headers[key])headers[key]=req.headers[key];
     const response=await fetch(app.base+req.url,{method:req.method,headers,redirect:'manual',...(!['GET','HEAD'].includes(req.method)&&body.length?{body}:{})});
     const text=await response.text();let payload;try{payload=JSON.parse(text);}catch{payload={nonJson:true};}
     wire.push({method:req.method,path:req.url,status:response.status,body:safe(body.length?JSON.parse(body):null),response:safe(payload)});

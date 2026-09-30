@@ -38,6 +38,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
       {step.id === 'service' && <Field label="Service"><Select aria-label="Service" value={values.serviceId} onChange={event => onServiceChange(event.target.value)}>
         <option value="">Choose a service</option>{services.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
       </Select></Field>}
+      {step.id === 'service' && !!service?.offeringSummary?.length && <Notice title="What this offering covers"><ul>{service.offeringSummary.map((detail,i)=><li key={i}>{detail}</li>)}</ul></Notice>}
       {step.id === 'requested' && <Field label="Requested work" help="Your earlier description is preserved. Correct it if the work has changed."><Textarea aria-label="Requested work" value={show(values.requestedService)} onChange={event => change('requestedService',event.target.value)}/></Field>}
       {step.field && <><CustomerMeasurements fields={[step.field]} value={values.inputs} onChange={value => change('inputs',value)} knownOfferings={service.knownOfferings}/><p className="field-help">Use the measurements you know. Leave an unknown answer blank so the business can check it.</p></>}
       {step.fee && <Field label={step.title}><Select aria-label={step.title} value={values.fees[step.fee] === undefined ? '' : String(values.fees[step.fee])} onChange={event => change('fees',{...values.fees,[step.fee]:event.target.value === '' ? undefined : event.target.value === 'true'})}>

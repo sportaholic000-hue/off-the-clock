@@ -234,6 +234,16 @@ try{
  const retryWaiting=bookingPage.waitForResponse(r=>r.url()===bookingBase+'/confirm');await bookingPage.getByRole('button',{name:'Retry booking request',exact:true}).click();const retryResponse=await retryWaiting,bookingRetry=await retryResponse.json();assert.equal(retryResponse.status(),202);assert.deepEqual(retryResponse.request().postDataJSON(),lost.body);assert.equal(retryResponse.request().headers()['idempotency-key'],lost.key);assert.deepEqual(bookingRetry,lost.result);
  await bookingPage.getByText('Confirmation pending',{exact:true}).waitFor();assert.equal(await bookingPage.getByText('Site visit booked',{exact:true}).count(),0);
  const storedPending=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(f.owner.id,lost.result.appointmentId);assert.equal(storedPending.status,'PENDING_CONFIRMATION');
+ const originalEvents=structuredClone(provider().events);
+ for(const variant of ['wrong-day','wrong-duration']){
+  const altered=provider();altered.mode='normal';altered.events=structuredClone(originalEvents);
+  for(const event of Object.values(altered.events)){if(variant==='wrong-day')event.start.dateTime=new Date(Date.parse(event.start.dateTime)+86400000).toISOString();event.end.dateTime=new Date(Date.parse(event.end.dateTime)+(variant==='wrong-day'?86400000:1800000)).toISOString();}
+  const checked=bookingPage.waitForResponse(r=>r.url().includes(bookingBase+'/confirmations/')&&r.request().method()==='GET');fs.writeFileSync(providerFile,JSON.stringify(altered,null,2));
+  const result=await(await checked).json();assert.equal(result.status,'PENDING_CONFIRMATION');await bookingPage.getByText('Confirmation pending',{exact:true}).waitFor();assert.equal(await bookingPage.getByText('Site visit booked',{exact:true}).count(),0);
+  const appointment=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(f.owner.id,lost.result.appointmentId);assert.equal(appointment.status,'PENDING_CONFIRMATION');assert.equal(db.prepare("SELECT count(*) n FROM outboxEvents WHERE ownerId=? AND aggregateId=? AND eventType='appointment.booked'").get(f.owner.id,appointment.id).n,0);
+  rows.push({name:'Widget preserves pending confirmation for '+variant,passed:true,result,appointment,providerEvents:altered.events});
+ }
+ const restored=provider();restored.events=originalEvents;fs.writeFileSync(providerFile,JSON.stringify(restored,null,2));
  providerMode('normal');await bookingPage.getByText('Site visit booked',{exact:true}).waitFor();const storedConfirmed=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(f.owner.id,lost.result.appointmentId);assert.equal(storedConfirmed.status,'CONFIRMED');
  assert.equal(provider().calls.filter(c=>c.method==='POST'&&new URL(c.url).pathname.endsWith('/events')).length,1);
  await bookingPage.screenshot({path:path.join(evidence,'real-widget-confirmed-synthetic-calendar.png'),fullPage:true});

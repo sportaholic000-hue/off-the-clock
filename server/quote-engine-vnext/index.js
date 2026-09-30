@@ -41,3 +41,4 @@ export {
 } from './priceBook.js';
 
 export { approveVNextValues, editVNextService } from './contracts.js';
+export {configuredOffering, offeringContract, offeringRateDefinitions} from './configuredOfferings.js';

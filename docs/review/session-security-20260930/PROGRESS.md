@@ -26,3 +26,12 @@ No real provider traffic or deployment.
 The handlers now issue server-backed sessions and HttpOnly refresh cookies, reserve persistent login/recovery limits, expose bound refresh/logout endpoints, and revoke all user sessions during password reset. Middleware requires a valid current session; pre-upgrade stateless JWTs require sign-in again. The browser candidate renews access tokens within the original eight-hour absolute limit, waits for confirmed sign-out, and keeps UI/billing identity stable across token rotation.
 
 Connected backend run `session-integration-first`: **42 tests passed**, comprising 22 account/recovery, 18 session/limiter and 2 CORS tests. No claim yet for new HTTP endpoint tests, browser refresh/sign-out, combined engine checkpoint or complete regression. This is still a draft implementation checkpoint, not a launch gate.
+
+
+## Integrated test candidate
+
+22 HTTP/browser-transport tests pass, including two concurrent workers sharing one SQLite refresh receipt. Seventeen existing tenant/migration tests pass after their valid-token fixtures were upgraded to session tokens; negative controls remain. The owner application compiles. The first build command failed due to its module path, then the corrected command succeeded; final builds are being repeated after the complete peer-source integration and browser state correction.
+
+The isolated security candidate now restores the engine/booking agent's exact published `1979792d766d6c2b2fe0dfb856d1651de03eee3f` source. Automatic review initially rejected a booking-code payload as overlapping work; read-only verification proved the peer's original file matched GitHub blob `a403eefb71d515a2632de993396d0e2c2d62b207`, and an exact hash-checked copy into this separate test workspace was accepted. The peer's branch and working copy were unchanged. No booking behavior edits were introduced by this lane.
+
+Real browser workflows and combined regression are still pending. No voice implementation or live provider operations have occurred.

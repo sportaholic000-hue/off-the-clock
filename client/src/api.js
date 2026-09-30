@@ -3,7 +3,7 @@ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://loc
 const refreshFlights=new Map();
 export function getToken(){return localStorage.getItem('otc_token');}
 export function getSessionKey(token=getToken()){return sessionIdentity(token);}
-export function setToken(token,{notify=false}={}) {
+export function setToken(token,{notify=true}={}) {
   if(token)localStorage.setItem('otc_token',token);else localStorage.removeItem('otc_token');
   if(notify)window.dispatchEvent(new Event('otc:session'));
 }

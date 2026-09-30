@@ -82,6 +82,8 @@ export function AppShell({ activePath, children, operator }) {
           <Select aria-label="Go to page" value={activePath || '/dashboard'} onChange={event => go(event.target.value)}>
             {NAV.map(item => <option value={item.path} key={item.path}>{item.label}</option>)}
           </Select>
+          <Button variant="secondary" disabled={signingOut} onClick={signOut}>{signingOut?'Signing out…':'Sign out'}</Button>
+          {signoutError&&<p role="alert">{signoutError}</p>}
           {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
         </header>
         {children}

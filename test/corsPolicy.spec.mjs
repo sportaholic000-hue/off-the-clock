@@ -14,7 +14,9 @@ function decide(delegate, { path, origin }) {
 test('authenticated application CORS permits only configured exact origins', async () => {
   const delegate = createCorsOptionsDelegate({ configuredOrigins: ['https://app.example.com'] });
   assert.equal((await decide(delegate, { path: '/api/dashboard', origin: 'https://app.example.com' })).origin, true);
+  assert.equal((await decide(delegate, { path: '/api/dashboard', origin: 'https://app.example.com' })).credentials, true);
   assert.equal((await decide(delegate, { path: '/api/dashboard', origin: 'https://evil.example.com' })).origin, false);
+  assert.equal((await decide(delegate, { path: '/api/dashboard', origin: 'https://evil.example.com' })).credentials, false);
   assert.equal((await decide(delegate, { path: '/api/dashboard' })).origin, false);
 });
 

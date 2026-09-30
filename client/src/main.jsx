@@ -1,5 +1,5 @@
 import {CustomerQuote,QuoteRecords} from './quotedone.jsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Shield } from 'lucide-react';
 import './styles.css';
@@ -32,8 +32,14 @@ function initialLocation() {
 
 function App() {
   const [location, setLocation] = useState(initialLocation);
+  const session=useRef(getSessionKey()),[sessionEpoch,setSessionEpoch]=useState(0);
   useEffect(() => {
-    const update = () => setLocation({url:window.location.pathname + window.location.search + window.location.hash});
+    const update = () => {
+      const next=getSessionKey();
+      if(next!==session.current&&session.current!=='signed-out')setSessionEpoch(value=>value+1);
+      session.current=next;
+      setLocation({url:window.location.pathname + window.location.search + window.location.hash});
+    };
     window.addEventListener('popstate', update);
     window.addEventListener('hashchange', update);
     window.addEventListener('otc:session', update);
@@ -43,15 +49,15 @@ function App() {
   }, []);
 
   const path = location.url.split(/[?#]/)[0];
-  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.url} path={path}/>;
+  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.url+(path==='/account/email'?sessionEpoch:'')} path={path}/>;
   if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
-  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={getSessionKey()} />;
-  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={getSessionKey()} />;
-  if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+getSessionKey()} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
-  if (path === '/calendar') return <Calendar key={getSessionKey()} />;
-  if (path === '/pricebook') return <PriceBook />;
-  if (path === '/dashboard') return <Dashboard />;
+  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={sessionEpoch} />;
+  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
+  if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
+  if (path === '/calendar') return <Calendar key={sessionEpoch} />;
+  if (path === '/pricebook') return <PriceBook key={sessionEpoch} />;
+  if (path === '/dashboard') return <Dashboard key={sessionEpoch} />;
   go('/dashboard');
   return null;
 }

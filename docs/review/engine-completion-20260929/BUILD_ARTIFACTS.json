@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "note": "Production bundles used in final offering and widget browser checks; no deployment.",
+  "files": {
+    "client/dist/assets/index-0FPSYqi7.js": {
+      "bytes": 458598,
+      "sha256": "4d9a4f127265776f04ee48b6048b107f880626a46ea9dfc1aa1994332c771367"
+    },
+    "client/dist/assets/index-D85_rXpq.css": {
+      "bytes": 51492,
+      "sha256": "6fade7fc133268d7b1e97caeb4bb64ebe54f73e7c7f86133c5828fae07358391"
+    },
+    "client/dist/index.html": {
+      "bytes": 401,
+      "sha256": "9505e46b768a6d16312d5b8ba41185857e066d6ddc1c8a034156a918073a627a"
+    },
+    "client/dist/widget-app.js": {
+      "bytes": 448945,
+      "sha256": "d92dc6b8f8dfd712ebd30d4a9b1d4e087f9d9ddc873ae558d9a50cc0f73701d4"
+    },
+    "client/dist/widget.js": {
+      "bytes": 5236,
+      "sha256": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+    }
+  }
+}

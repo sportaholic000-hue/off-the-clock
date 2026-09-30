@@ -1,4 +1,5 @@
 import { measuredOutlineVNext } from './geometry.js';
+import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath} from './configuredOfferings.js';
 import {
   SERVICE_TYPES,
   inspectionOwnerDecisionsVNext,
@@ -115,7 +116,7 @@ function makeLine({
     throw new QuoteReviewError(`${name} did not receive a finite measured quantity.`);
   }
   if (!(allowZeroQuantity && numericQuantity === 0)) measured(numericQuantity, `${name} quantity`);
-  if(ratePath==='mowingBaseRatePerSqft') { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent mowing rate.',{invalidOwnerFields:[ratePath]}); }
+  if(ratePath==='mowingBaseRatePerSqft'||offeringRatePath(ratePath)) { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent unit rate.',{invalidOwnerFields:[ratePath]}); }
   else money(rateCents, ratePath, { allowZero: allowZeroRate });
   const checkedMultipliers = multipliers.map(multiplier => {
     let exactValue;
@@ -1167,7 +1168,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (!customerValidation.ok) {
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
-      ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs)
+      ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs, pricing)
     });
   }
   customerInputs = customerValidation.normalized;
@@ -1211,6 +1212,19 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         }
       };
   const finalize = result => recordNoChargeClassification(result, serviceRules);
+  if(configuredOffering(serviceType,pricing)) {
+    const out=baseOutput(serviceType);
+    for(const item of offeringLines(serviceType,customerInputs,pricing)) {
+      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:item.priceBasis}));
+      if(item.derivation)recordQuantityDerivation(out,{name:item.key+'Quantity',...item.derivation,result:item.quantity,unit:item.unit,usedBy:[item.label]});
+      else recordMeasurement(out,item.key,exactToNumber(exactDecimal(item.quantity)),item.unit,'confirmed_offering_scope');
+    }
+    out.disclosures.push(...offeringDisclosures(serviceType,pricing,customerInputs));
+    out.priceDrivers.push(pricing.offeringMode==='installed'?'Owner-defined installed offering':'Owner-defined itemized offering');
+    out.feeScope.disposal=customerInputs.oldFenceRemoval===true;
+    if(customerInputs.oldFenceRemoval&&pricing.offeringDetails.removalIncludesDisposal)out.replacedCommonFees.push('disposal');
+    return finalize(out);
+  }
   if (serviceType === 'ROOFING_REPLACEMENT') return finalize(calculateRoofReplacement(customerInputs, pricing, ctx));
   if (serviceType === 'ROOFING_REPAIR') return finalize(calculateRoofRepair(customerInputs, pricing, ctx));
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') return finalize(calculateFlatRoofReplacement(customerInputs, pricing, ctx));

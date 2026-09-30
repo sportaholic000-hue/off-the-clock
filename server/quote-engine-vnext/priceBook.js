@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions} from './configuredOfferings.js';
 import {
   CLASS2_DEFINITIONS,
   SERVICE_TYPES,
@@ -71,6 +72,9 @@ const SERVICE_NAMES = {
 };
 
 const NEW_FIELD_COPY = {
+  offeringMode:{label:'Offering pricing',help:'Choose complete installed pricing or itemized measured components for this owner offering.'},
+  offeringDetails:{label:'What this offering includes',help:'Define the covered fence or painting scope, with explicit inclusions and separately offered extras.'},
+  offeringRates:{label:'Prices for this offering',help:'Owner-entered unit prices. Installed packages and gates are final selling prices. Itemized paint materials use measured-area selling prices.'},
   baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Required when clipping bagging and disposal is selected. Missing pricing returns review. An explicit zero percentage means this optional scope is free; a positive percentage applies to mowing labor once and replaces common disposal.'},
   edgingPerLinearFoot: {label:'Landscape edging labor price per measured linear foot',help:'Required when edging is selected. Missing pricing returns review. An explicit zero rate means this optional scope is free; a positive rate uses the confirmed edging length.'},
   pondingWaterSurcharge: {label:'Selected ponding-water treatment fixed price',help:'Required when ponding-water treatment is selected. Missing pricing returns review. An explicit zero price means this optional scope is free; a positive fixed price is charged once.'},
@@ -172,6 +176,7 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
 function activationScenarios(service) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
+  if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p);
   if (serviceType === 'ROOFING_REPLACEMENT') {
     const replacements = keysOf(p.laborPerSquare, 'asphalt_shingle');
     const existingTypes = keysOf(p.tearOffPerSquare, 'asphalt_shingle');
@@ -780,6 +785,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(['offeringMode','offeringDetails','offeringRates'].includes(field))return NEW_FIELD_COPY[field];
   const scopes = reviewOnlyScopesVNext(serviceType).filter(scope => scope.always || scope.fields.includes(field));
   if (scopes.length) return {
     label: (NEW_FIELD_COPY[field]?.label || ownerFieldCopy(serviceType, field).title || ownerFieldCopy(serviceType, field).label || field) + ' — review only',
@@ -803,6 +809,10 @@ function fieldCopy(serviceType, field) {
 export function getVNextPriceBookMetadata() {
   return contractMetadata().map(contract => ({
     ...contract,
+    ...(OFFERING_TYPES.includes(contract.serviceType)?{
+      offeringCustomerFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,Object.entries(offeringContract(contract.serviceType,{offeringMode:mode}).fields).map(([name,field])=>({name,...field}))])),
+      offeringRateFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,offeringRateDefinitions(contract.serviceType,{offeringMode:mode,offeringDetails:{primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}})]))
+    }:{}),
     service: SERVICE_NAMES[contract.serviceType],
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),

@@ -1,0 +1,35 @@
+{
+  "startingHead": "aa81eaa29503a7c3e2ddf464c7462f556839562c",
+  "originalTree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
+  "authorizedModifiedFiles": [
+    "contracts.js",
+    "engine.js",
+    "index.js",
+    "priceBook.js",
+    "templates.js"
+  ],
+  "authorizedAddedFiles": [
+    "configuredOfferings.js"
+  ],
+  "originalBlobs": {
+    "AUDIT.md": "a2dcd91ae799eb5894261ec525d747f081d45e42",
+    "AUDIT_PRECISION_20260910.md": "93db5ede40ecc37b28721f365c555e7521a766f5",
+    "AUDIT_REPAIRS_104_127.md": "10948df13b06b9cb6bf2f2dafb59d5ecb45ecf3c",
+    "AUDIT_REPAIRS_128_138.md": "dffe404367ab09806254628cb07bf76268592b5d",
+    "AUDIT_REPAIRS_139_146.md": "1a8e88aef13c82fc7b94142d24f167618f77075d",
+    "AUDIT_REPAIRS_147_150.md": "00df50cd44089140e8e99943e5872392739f6bc1",
+    "COMPLETION.md": "9a4b7d010e4afe1689d40f806d6ccb930b13e43e",
+    "CUSTOMER_AMOUNT_PRECISION.md": "0848762900d85d5e02bfe1dc5c0b6301797ac1ff",
+    "HANDOFF_ABC.md": "02ae250b3d209e5e6505b8cd050bcdab115bce74",
+    "OWNER_HANDOFF_20260910.md": "f2d6e89fa207dea5fad676fb3667725639558345",
+    "README.md": "9cac1a182b1af6b7a3cdf337aee4bf15050011ad",
+    "contracts.js": "d361d20599733f576e350a28ed104088a4478680",
+    "engine.js": "3ce3362c6477f620a2aeb8396c7e3d6cd670f462",
+    "exactMath.js": "56d78ed30fd10294db35a6e44f01d2e2008f531b",
+    "geometry.js": "925ed38777dc914a8965a0b85278ac0dc883f0c5",
+    "index.js": "69938ba4a2da6b01aa87f37a80299ba5331714a3",
+    "priceBook.js": "d79abcd40316257899b324fd7fd8c8e280953ab7",
+    "safeData.js": "cf183be9c29368f3bd9b6dfa1f87020b74705050",
+    "templates.js": "fdde89cf14080df8ae95f60d6280e58832899eda"
+  }
+}

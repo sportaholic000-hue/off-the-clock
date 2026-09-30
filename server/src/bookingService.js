@@ -29,6 +29,19 @@ function record(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+// A lookup/create acknowledgement proves a booking only for this deterministic
+// event and both instants the customer confirmed. Never substitute the provider's
+// identity or silently accept an event moved to another day or duration.
+function confirmationStatus(result, expected) {
+  if (!record(result) || result.eventId !== expected.eventId || typeof result.status !== 'string') return 'PENDING_CONFIRMATION';
+  const status = result.status.toUpperCase();
+  if (['FAILED', 'CANCELLED', 'CANCELED'].includes(status)) return status;
+  if (status !== 'CONFIRMED') return 'PENDING_CONFIRMATION';
+  const timed = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
+  if (!timed(result.startAtUtc) || !timed(result.endAtUtc) || Date.parse(result.endAtUtc) <= Date.parse(result.startAtUtc)) return 'PENDING_CONFIRMATION';
+  return Date.parse(result.startAtUtc) === Date.parse(expected.startAtUtc) && Date.parse(result.endAtUtc) === Date.parse(expected.endAtUtc) ? 'CONFIRMED' : 'PENDING_CONFIRMATION';
+}
+
 function parseJson(value, fallback) {
   try { return value === null || value === undefined || value === '' ? fallback : JSON.parse(value); }
   catch { return fallback; }
@@ -876,17 +889,17 @@ export function createBookingService({
               eventId: phase.providerEventId
             })
           : null;
-        providerResult = recovered ? { status: 'CONFIRMED', eventId: recovered.eventId || phase.providerEventId } : { status: 'PENDING_CONFIRMATION' };
+        providerResult = recovered || { status: 'PENDING_CONFIRMATION' };
       } catch {
         providerResult = { status: 'PENDING_CONFIRMATION' };
       }
     }
-    const status = String(providerResult?.status || 'PENDING_CONFIRMATION').toUpperCase();
-    if (status === 'FAILED') {
+    const status = confirmationStatus(providerResult, providerRequest);
+    if (['FAILED', 'CANCELLED', 'CANCELED'].includes(status)) {
       return finalizeError({
         ownerId, intentId, idempotencyKey,
         appointmentId: phase.appointmentId, holdId: phase.holdRow.id,
-        error: providerError(), releaseHold: false
+        error: providerError(), releaseHold: status !== 'FAILED'
       });
     }
     const result = {
@@ -901,13 +914,13 @@ export function createBookingService({
         ownerId, intentId, idempotencyKey,
         appointmentId: phase.appointmentId, confirmationId: phase.confirmationId,
         holdId: phase.holdRow.id,
-        providerEventId: providerResult?.eventId || phase.providerEventId
+        providerEventId: phase.providerEventId
       });
     }
     return finalizeConfirmed({
       ownerId, intentId, idempotencyKey,
       appointmentId: phase.appointmentId, holdId: phase.holdRow.id,
-      providerEventId: providerResult?.eventId || phase.providerEventId,
+      providerEventId: phase.providerEventId,
       result
     });
   }
@@ -945,9 +958,11 @@ export function createBookingService({
       return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
     }
 
-    const providerStatus = typeof providerResult.status === 'string'
-      ? providerResult.status.toUpperCase()
-      : 'CONFIRMED';
+    const providerStatus = confirmationStatus(providerResult, {
+      eventId: appointment.providerEventId,
+      startAtUtc: appointment.startAtUtc,
+      endAtUtc: appointment.endAtUtc
+    });
     if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
       const nowIso = nowFrom(clock).toISOString();
       immediate(() => {
@@ -982,7 +997,7 @@ export function createBookingService({
         providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
           AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
-        providerResult.eventId || appointment.providerEventId,
+        appointment.providerEventId,
         nowIso,
         nowIso,
         appointment.id,
