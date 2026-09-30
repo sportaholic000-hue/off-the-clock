@@ -1,0 +1,13 @@
+{
+  "files": {
+    "EXPECTATIONS.md": {
+      "sha256": "9abbe272dc96b2e986c0fd669d36f3553431be31e5dac4ad6f13ade4bd235b76"
+    },
+    "provider-boundary.mjs": {
+      "sha256": "04b1b4af545364805b9dec6ccba14c913e0d9d5ec624412be1c6ba2a5592befa"
+    },
+    "quote-booking-review.mjs": {
+      "sha256": "b1cdf2cf20500ebc9271ecf8ab8d2a62591d27b17c2f5ebde476f8d38ea4a494"
+    }
+  }
+}

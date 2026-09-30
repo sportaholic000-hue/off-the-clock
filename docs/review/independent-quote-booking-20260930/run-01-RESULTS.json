@@ -1,0 +1,52 @@
+{
+  "sourceCommit": "1013190bd8e62e5df3aa70750399873bc050e447",
+  "passed": 0,
+  "failed": 5,
+  "results": [
+    {
+      "name": "parity-FENCING_INSTALL",
+      "expected": "Three application paths match 519000 independently calculated cents; persisted request/revision and no public pricing internals",
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Public field priceDrivers\n\ntrue !== false\n"
+      }
+    },
+    {
+      "name": "parity-FENCING_REPLACEMENT",
+      "expected": "Three application paths match 532800 independently calculated cents; persisted request/revision and no public pricing internals",
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Public field priceDrivers\n\ntrue !== false\n"
+      }
+    },
+    {
+      "name": "parity-INTERIOR_PAINTING",
+      "expected": "Three application paths match 134050 independently calculated cents; persisted request/revision and no public pricing internals",
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Public field priceDrivers\n\ntrue !== false\n"
+      }
+    },
+    {
+      "name": "parity-EXTERIOR_PAINTING",
+      "expected": "Three application paths match 186750 independently calculated cents; persisted request/revision and no public pricing internals",
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Public field priceDrivers\n\ntrue !== false\n"
+      }
+    },
+    {
+      "name": "review-harness",
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Fence positive control is required for booking checks"
+      }
+    }
+  ],
+  "boundary": "Real isolated application/HTTP/SQLite, intercepted synthetic Google provider only; no voice/live provider/deployment acceptance"
+}

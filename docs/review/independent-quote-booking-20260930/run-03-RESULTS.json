@@ -1,0 +1,249 @@
+{
+  "sourceCommit": "1013190bd8e62e5df3aa70750399873bc050e447",
+  "passed": 15,
+  "failed": 2,
+  "results": [
+    {
+      "name": "parity-FENCING_INSTALL",
+      "expected": "Three application paths match 519000 independently calculated cents; persisted request/revision and no public pricing internals",
+      "observed": {
+        "cents": 519000,
+        "preview": 5190,
+        "authenticated": 5190,
+        "public": 5190,
+        "persisted": true,
+        "retry": 200
+      },
+      "passed": true
+    },
+    {
+      "name": "parity-FENCING_REPLACEMENT",
+      "expected": "Three application paths match 532800 independently calculated cents; persisted request/revision and no public pricing internals",
+      "observed": {
+        "cents": 532800,
+        "preview": 5328,
+        "authenticated": 5328,
+        "public": 5328,
+        "persisted": true,
+        "retry": 200
+      },
+      "passed": true
+    },
+    {
+      "name": "parity-INTERIOR_PAINTING",
+      "expected": "Three application paths match 134050 independently calculated cents; persisted request/revision and no public pricing internals",
+      "observed": {
+        "cents": 134050,
+        "preview": 1340.5,
+        "authenticated": 1340.5,
+        "public": 1340.5,
+        "persisted": true,
+        "retry": 200
+      },
+      "passed": true
+    },
+    {
+      "name": "parity-EXTERIOR_PAINTING",
+      "expected": "Three application paths match 186750 independently calculated cents; persisted request/revision and no public pricing internals",
+      "observed": {
+        "cents": 186750,
+        "preview": 1867.5,
+        "authenticated": 1867.5,
+        "public": 1867.5,
+        "persisted": true,
+        "retry": 200
+      },
+      "passed": true
+    },
+    {
+      "name": "signed-input-tamper",
+      "expected": "Changed selected-job measurements under a prior confirmation reject without persistence",
+      "observed": {
+        "httpStatus": 409
+      },
+      "passed": true
+    },
+    {
+      "name": "approval-revision-change",
+      "expected": "Book change after prepare rejects the prior signed confirmation, then owner explicitly reapproves restored configuration",
+      "observed": {
+        "httpStatus": 409
+      },
+      "passed": true
+    },
+    {
+      "name": "concurrent-holds",
+      "expected": "Two booking intents offered the same interval produce exactly one held slot",
+      "observed": [
+        {
+          "httpStatus": 201,
+          "status": "HELD"
+        },
+        {
+          "httpStatus": 409,
+          "code": "SLOT_UNAVAILABLE"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "confirmation-required",
+      "expected": "False explicit confirmation rejects before any provider event write",
+      "observed": {
+        "httpStatus": 400,
+        "code": "INVALID_REQUEST"
+      },
+      "passed": true
+    },
+    {
+      "name": "scope-change",
+      "expected": "Changed work rejects before availability or provider writes",
+      "observed": {
+        "httpStatus": 409,
+        "code": "REQUOTE_REQUIRED"
+      },
+      "passed": true
+    },
+    {
+      "name": "foreign-owner-and-origin",
+      "expected": "Foreign owner and unapproved website cannot use the booking intent",
+      "observed": {
+        "foreign": {
+          "httpStatus": 404,
+          "code": "BOOKING_CONTEXT_NOT_FOUND"
+        },
+        "origin": {
+          "httpStatus": 403,
+          "code": "ORIGIN_NOT_ALLOWED"
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "confirm-and-retry",
+      "expected": "Confirmed job uses exact held instants, persists one event/outbox and exact retry creates nothing more",
+      "observed": {
+        "confirmed": {
+          "httpStatus": 201,
+          "status": "CONFIRMED"
+        },
+        "retry": {
+          "httpStatus": 201,
+          "status": "CONFIRMED"
+        },
+        "changedRetry": {
+          "httpStatus": 409,
+          "code": "IDEMPOTENCY_CONFLICT"
+        },
+        "providerWrites": 1
+      },
+      "passed": true
+    },
+    {
+      "name": "same-intent-second-appointment",
+      "expected": "A reopened booking link must preserve one appointment for the original job",
+      "observed": {
+        "secondConfirmation": {
+          "httpStatus": 201,
+          "status": "CONFIRMED"
+        },
+        "before": 1,
+        "after": 2,
+        "distinctTimes": true
+      },
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Same quote/booking intent confirmed 2 separate appointments\n\n2 !== 1\n"
+      }
+    },
+    {
+      "name": "review-is-site-visit-only",
+      "expected": "Unquoted fence scope cannot directly book a job, but can obtain site-visit slots",
+      "observed": {
+        "job": {
+          "httpStatus": 200,
+          "status": "UNAVAILABLE",
+          "reason": "REVIEW_REQUIRES_SITE_VISIT"
+        },
+        "visit": {
+          "httpStatus": 200,
+          "status": "AVAILABLE"
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "policy-change-invalidates-hold",
+      "expected": "Changed owner booking policy rejects the old hold before provider event creation",
+      "observed": {
+        "httpStatus": 409,
+        "code": "SCHEDULE_CHANGED"
+      },
+      "passed": true
+    },
+    {
+      "name": "busy-after-hold",
+      "expected": "An interval becoming busy after hold rejects without creating a provider event",
+      "observed": {
+        "httpStatus": 409,
+        "code": "SLOT_UNAVAILABLE"
+      },
+      "passed": true
+    },
+    {
+      "name": "wrong-provider-event-pending",
+      "expected": "Wrong-day event stays pending and emits no booked outbox; corrected matching event confirms once",
+      "observed": {
+        "wrong": {
+          "httpStatus": 202,
+          "status": "PENDING_CONFIRMATION"
+        },
+        "poll": {
+          "httpStatus": 200,
+          "status": "PENDING_CONFIRMATION"
+        },
+        "corrected": {
+          "httpStatus": 200,
+          "status": "CONFIRMED"
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "crash-before-calendar-write",
+      "expected": "Durable pending confirmation with no provider event must recover or fail terminally and release its time",
+      "observed": {
+        "crashPhase": "after durable pending receipt, before provider write",
+        "retry": {
+          "httpStatus": 202,
+          "status": "PENDING_CONFIRMATION"
+        },
+        "polls": [
+          {
+            "httpStatus": 200,
+            "status": "PENDING_CONFIRMATION"
+          },
+          {
+            "httpStatus": 200,
+            "status": "PENDING_CONFIRMATION"
+          },
+          {
+            "httpStatus": 200,
+            "status": "PENDING_CONFIRMATION"
+          }
+        ],
+        "appointmentStatus": "PENDING_PROVIDER",
+        "providerEventsForAppointment": 0,
+        "providerWritesSinceCrash": 0,
+        "originalTimeBlocked": true
+      },
+      "passed": false,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Crash leaves a PENDING_PROVIDER appointment with no event or recoverable retry"
+      }
+    }
+  ],
+  "boundary": "Real isolated application/HTTP/SQLite, intercepted synthetic Google provider only; no voice/live provider/deployment acceptance"
+}
