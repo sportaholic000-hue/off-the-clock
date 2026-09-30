@@ -1,6 +1,6 @@
 # Account email readiness — September 30, 2026
 
-Status: independent preparation complete; real environment and inbox acceptance remain unverified.
+Status: independent preparation complete; real environment and inbox acceptance remain unverified. The owner has deferred business-email setup and live email testing until confident in accurate quoting and telephony. See [OWNER_PRIORITY.md](OWNER_PRIORITY.md).
 
 Inspected source: `ad925d0fa368f295fd2f22b53ef115c55b5f4bdb`, draft PR #4. Production auth implementation is unchanged by this readiness work. The latest [exact-source hosted verification](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36746295639) passed; its emails were intercepted synthetic traffic and do not prove inbox delivery. The inspection binding accompanies this packet.
 

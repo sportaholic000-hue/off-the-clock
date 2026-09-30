@@ -10,12 +10,6 @@
   "realInboxTestRun": false,
   "repoHomepage": null,
   "connectedVercelAccessibleTeams": 0,
-  "requiredInputs": [
-    "frontend URL",
-    "API URL/hosting location",
-    "sending domain and From mailbox",
-    "designated test inbox"
-  ],
   "priorHostedVerification": {
     "runId": 36746295639,
     "sourceCommit": "ad925d0fa368f295fd2f22b53ef115c55b5f4bdb",
@@ -26,5 +20,13 @@
     "currentChat": "auth/session/CI",
     "voiceAndOnOff": "Claude",
     "engineCalendar": "owner-designated peer"
-  }
+  },
+  "liveEmailTestingDeferredByOwner": true,
+  "requiredInputsWhenResuming": [
+    "frontend URL",
+    "API URL/hosting location",
+    "sending domain and From mailbox",
+    "designated test inbox"
+  ],
+  "resumeCondition": "Owner is confident accurate quoting and telephony work as envisioned; full product acceptance remains required."
 }
