@@ -1,0 +1,807 @@
+{
+  "checkpoint": "Restart; verification incomplete",
+  "createdAt": "2026-09-30T22:53:25.137Z",
+  "applicationSource": "4aaded3c8855f1821c1668d7c26f474dd7ead526",
+  "sourceCaveat": "Original per-run source hashes remain authoritative; final consolidated binding pending.",
+  "rawEvidenceLocation": "work/engine-finish-evidence-20260930 (local only)",
+  "applicationBrowserSummary": {
+    "httpChecks": 54,
+    "browserChecks": 14,
+    "errors": []
+  },
+  "results": [
+    {
+      "label": "finish-application-browser",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 272357,
+      "args": [
+        "verification/engine-independent/application-audit.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-application-browser"
+      ],
+      "resultFile": "finish-application-browser.result.json",
+      "resultSha256": "a6c66fbcba9f78eca9a97fa26339091d3a5794520a95574fef6b08aeff123299",
+      "logSha256": "798535b2f0e20652d698cd4e9b01585292bc9b74b2e8098f38966530f3407140"
+    },
+    {
+      "label": "finish-application-regression-2",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 47700,
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "resultFile": "finish-application-regression-2.result.json",
+      "resultSha256": "825ee77e0e2d22c5037b349b66a7fd633e0dadb6a09cfb7c79e1aa99a89446db",
+      "logSha256": "65318ba6b67da743a6a07d0d782011f3750c9b60e3ced841a0b4bc340157399a"
+    },
+    {
+      "label": "finish-application-regression",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 70228,
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "resultFile": "finish-application-regression.result.json",
+      "resultSha256": "0d42c8786b91e228fe3b23558d2650ccd95fba2838e587c42cde1313c14bf8d5",
+      "logSha256": "a2e263e275237254f8c02524cea59218615cd1e95b541f80aeb7d481565cd805"
+    },
+    {
+      "label": "finish-arithmetic-matrix",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 15521,
+      "args": [
+        "verification/engine-independent/arithmetic-matrix.mjs",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-arithmetic-matrix"
+      ],
+      "resultFile": "finish-arithmetic-matrix.result.json",
+      "resultSha256": "c0a4f08594797709d39483ee3d9aa3c028e28f1d3d313c450a13709400caf4db",
+      "logSha256": "7d8220108ac9a9ad7e5bb3b7d4ff094f30998ec66de699dc94e58da12f70470a"
+    },
+    {
+      "label": "finish-booking-before",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 95635,
+      "args": [
+        "verification/inspection/quote-booking-review.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-booking-before"
+      ],
+      "resultFile": "finish-booking-before.result.json",
+      "resultSha256": "2f3a5567b18000d6f4d240c3e37d9930d5be8b5bb98d405af5ab3012a13340e5",
+      "logSha256": "f9825beeaa56218de2af33ac728b6907a599458102c4da8029258bf9f8881aa8"
+    },
+    {
+      "label": "finish-booking-focused",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 7121,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/bookingService.spec.mjs"
+      ],
+      "resultFile": "finish-booking-focused.result.json",
+      "resultSha256": "ae01de21a7eba7556ae758ac9b74290397821f2824e9f0e9e3c745386e7a137e",
+      "logSha256": "0a9084f6d9db8b25c83e1abba867329d284cfbdf759735999e942cd7574061db"
+    },
+    {
+      "label": "finish-booking-review",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 128765,
+      "args": [
+        "verification/inspection/quote-booking-review.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-booking-review"
+      ],
+      "resultFile": "finish-booking-review.result.json",
+      "resultSha256": "cc902d35a54c96ae346ec45e3b96f5d12a2537a478873bf8909ecc696cd2f782",
+      "logSha256": "714d91eef84831144c031af215086bc0b6b11db6a7d7ee5bbca7db162d902db2"
+    },
+    {
+      "label": "finish-browser-paint-2",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 191760,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-browser-paint-2",
+        "paint"
+      ],
+      "resultFile": "finish-browser-paint-2.result.json",
+      "resultSha256": "96d0fc2afc7f6fc07bc0b226fdd36a71c977d3854bed86c5965803a6aa660986",
+      "logSha256": "9bdd0f59c823f577002dd30807efff1b6c58f39c3811504b2f639772be14e372"
+    },
+    {
+      "label": "finish-browser-paint",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 54729,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-browser-paint",
+        "paint"
+      ],
+      "resultFile": "finish-browser-paint.result.json",
+      "resultSha256": "276fee2f749a3796c68842fc820ea19cae35578e1c9381e624c4751b23673d16",
+      "logSha256": "25d1d5c2994c3a1944483facad038ef6da987df8aa9ea9b39f6e02d1ca9ba6d5"
+    },
+    {
+      "label": "finish-engine-metadata",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1422,
+      "args": [
+        "--test",
+        "--test-name-pattern",
+        "repair 37:",
+        "test/quoteEngineVNextRepairs.spec.js"
+      ],
+      "resultFile": "finish-engine-metadata.result.json",
+      "resultSha256": "5fd2706b1419446d6886de0d84198903617fce9331edb623970f724fcaadf5ed",
+      "logSha256": "9455e27efb78cb6d7ac839e5e440fc240b3ff6d2fb2c9b39263cc8cd6b2060be"
+    },
+    {
+      "label": "finish-engine-regression-2",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 507419,
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs",
+        "test/quoteFlowRepairs.spec.mjs",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "finish-engine-regression-2.result.json",
+      "resultSha256": "f48b2068d92037bd8db6b75f7da5183792734106e27af6761208f6da1987551c",
+      "logSha256": "0f48d15fd1f90b2bfe29a70e16ff25915aa8e72a6a6773999da9207c60b7dd69"
+    },
+    {
+      "label": "finish-engine-regression",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 553849,
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs",
+        "test/quoteFlowRepairs.spec.mjs",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "finish-engine-regression.result.json",
+      "resultSha256": "ed4d4ec7156709a08f6dd6654bebfe15adc2c45469cc0550d9918ce13616f3a9",
+      "logSha256": "672e8d9664503c055f1b6040e23d0793a42396c16985c4740754101b8c51adde"
+    },
+    {
+      "label": "finish-focused-2",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 11832,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "finish-focused-2.result.json",
+      "resultSha256": "be33ac6f21701e515f5483f246edc498f39410b17ca3b77076549d17d007dbc2",
+      "logSha256": "caa78020a53d7f1535c9261694d8bfb187d42057caf552bfa98ad9c1b6e7168e"
+    },
+    {
+      "label": "finish-focused",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 11362,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "finish-focused.result.json",
+      "resultSha256": "37bcd3ad92b458b3e5e8d27ed57494ca12c205a3eba069cc87cfebad3b788654",
+      "logSha256": "7e0091052e816ee4b796a3b3838275ee9e629b2f74a9e638f9462294d3d7742e"
+    },
+    {
+      "label": "finish-pricebook-browser-2",
+      "status": null,
+      "signal": "SIGTERM",
+      "elapsedMs": 600081,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "resultFile": "finish-pricebook-browser-2.result.json",
+      "resultSha256": "c6c3eb9350543e514a8840eb72f5a68cc285c40123598cac235aa45a871f8f7d",
+      "logSha256": "2f1bfa3e1251c0dd8a965a1051d6043dc3e82f0f8565a8afb31118a7e66840ca"
+    },
+    {
+      "label": "finish-pricebook-browser-3",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 914563,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "resultFile": "finish-pricebook-browser-3.result.json",
+      "resultSha256": "a0f21718d2099c52e6877f35c06533d553f3005a07a0f8defd542ca3f15ffcc8",
+      "logSha256": "0382415181cde89da305a9a85bd602a37bc223c3c32d6f32f51c02b8668031b2"
+    },
+    {
+      "label": "finish-pricebook-browser",
+      "status": null,
+      "signal": "SIGTERM",
+      "elapsedMs": 600081,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "resultFile": "finish-pricebook-browser.result.json",
+      "resultSha256": "4ba9eab62d0bd5e9a4385d201abfe700b233c6ebe72ecb9c9d3634720868317c",
+      "logSha256": "16c4980c3d3012b1990ba853fcd9bb82df82081846f19ed6b9baaf5e90375b1c"
+    },
+    {
+      "label": "finish-production-build",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 156421,
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "resultFile": "finish-production-build.result.json",
+      "resultSha256": "a56b2548e0bd33a59f89f0ca52322934d20b087eefdac18413432b0c9963711b",
+      "logSha256": "080ba46eefc5fde926eb0de9e416494e02f72c52d071256275ced4854b2eb316"
+    },
+    {
+      "label": "finish-scope-tiers",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 171369,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-scope-tiers",
+        "tiers"
+      ],
+      "resultFile": "finish-scope-tiers.result.json",
+      "resultSha256": "15a32b145a4fe4c586547f9f5efcd9476be31db81e8969f726b708c3f6b1d55a",
+      "logSha256": "a08d0f65bb72786790103f6c73a71608cb3f6c74429b04ce4712bce98cead04b"
+    },
+    {
+      "label": "finish-scopes-application",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 447594,
+      "args": [
+        "verification/engine-independent/measured-scopes-application.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-scopes-application"
+      ],
+      "resultFile": "finish-scopes-application.result.json",
+      "resultSha256": "0cd212bf10700321881edd12172f9c35738323c9c62618eae06505fa433bc923",
+      "logSha256": "f0da3bd885b9f6f7b4bd8c6e0f6a7c5ae98465db220c6a3868202d897c710c6a"
+    },
+    {
+      "label": "finish-scopes-matrix",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 20080,
+      "args": [
+        "verification/engine-independent/measured-scopes-arithmetic.mjs",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-scopes-matrix"
+      ],
+      "resultFile": "finish-scopes-matrix.result.json",
+      "resultSha256": "305fef1af5b80fbb5d59f9985b928fb2cbfe7dab71ff8ca58e2324e865f5d4af",
+      "logSha256": "7d8220108ac9a9ad7e5bb3b7d4ff094f30998ec66de699dc94e58da12f70470a"
+    },
+    {
+      "label": "finish-tax-before-browser",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 329097,
+      "args": [
+        "verification/engine-independent/owner-tax-settings.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-tax-before-browser",
+        "browser"
+      ],
+      "resultFile": "finish-tax-before-browser.result.json",
+      "resultSha256": "7067d21801a9e75b99b45518025536da3bad14fd8dc7cbbbcdfc609f85b779b8",
+      "logSha256": "0ea232a004d7dd694b5a330c1b1d9397f756f2b5dbcdbc3bb94c4a8ebcc1f903"
+    },
+    {
+      "label": "finish-tax-before",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 385838,
+      "args": [
+        "verification/engine-independent/owner-tax-settings.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-tax-before"
+      ],
+      "resultFile": "finish-tax-before.result.json",
+      "resultSha256": "0e372fa79830aedcdc23f9be6e864c724eaba6ec8e9c7b524ef19b762ae0403a",
+      "logSha256": "e28c8843dd2c1c2c8626be852cc937afab828e0b9970efc6756b2ff92a1cd598"
+    },
+    {
+      "label": "finish-tax-settings",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 297187,
+      "args": [
+        "verification/engine-independent/owner-tax-settings.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-tax-settings"
+      ],
+      "resultFile": "finish-tax-settings.result.json",
+      "resultSha256": "c3e192e7fc1e3d344fded39b2b333ce37b80bc2ca9dd18d7af7d051c4161e27c",
+      "logSha256": "fc9f58d9fbdd726f29142cb9f55172c06475e34c4c3cdbdb69442cf090537f13"
+    },
+    {
+      "label": "finish-tiers-before-2",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 54839,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-tiers-before-2",
+        "tiers"
+      ],
+      "resultFile": "finish-tiers-before-2.result.json",
+      "resultSha256": "00cfe74d2ad90228ae45ad4278c8d74df5ae76c84b990b512a9703eda97d6c28",
+      "logSha256": "4269210d1353a52641aa009c638db3ae5a543304624b725d3b7f87ba111664ed"
+    },
+    {
+      "label": "finish-tiers-before",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 88564,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-tiers-before",
+        "tiers"
+      ],
+      "resultFile": "finish-tiers-before.result.json",
+      "resultSha256": "60afdc14a0b0f98633f6a0ca0ab2b700415eed7ea432307c01bf0e3531c33cee",
+      "logSha256": "7bef04e5a32642c88525323c4b61b2dbc8f2c9a98f1668552b81554865c049bc"
+    },
+    {
+      "label": "finish-whole-request",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 46136,
+      "args": [
+        "verification/quotedone/pricing-envelope-workflow.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-whole-request"
+      ],
+      "resultFile": "finish-whole-request.result.json",
+      "resultSha256": "4ca07d7ed294462753342fd32640026b70031cffc91e8e6d3a0458cf41d24f88",
+      "logSha256": "723a93cd2c02662f7d17b827bf860771816161d3793078c8284e8ca5adfe35ad"
+    },
+    {
+      "label": "finish-widget-booking",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 223397,
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\finish-widget-booking"
+      ],
+      "resultFile": "finish-widget-booking.result.json",
+      "resultSha256": "9dfeee8b9c836b4ac399d903301e58a7bbf2d35f96e117083f3fe41a313c7052",
+      "logSha256": "2b6383e927bf3b08bea87c6a4256b60729d4a460e475258871ebe3376b85077f"
+    },
+    {
+      "label": "finish-widget-transport",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1808,
+      "args": [
+        "--test",
+        "client/test/widget-transport.test.mjs"
+      ],
+      "resultFile": "finish-widget-transport.result.json",
+      "resultSha256": "e8d58b1a8156e15dde13cbdba2cce58c4873067b3668d898375e31a81741b911",
+      "logSha256": "2d9252c5e882f66f61638921d82cde24d4e2a1a66d0132b2fcf945f6c51530b2"
+    },
+    {
+      "label": "partial-before-02",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 24050,
+      "args": [
+        "verification/engine-independent/partial-measurement-before.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/partial-before-application-02"
+      ],
+      "resultFile": "partial-before-02.result.json",
+      "resultSha256": "0d3053bef9a4b095dda5d3a96d76c200e0948be7066cbd507166c509f2629787",
+      "logSha256": "c647268a240b82b5aa85d4d925b3d8c47e55d745549264c9e63405f8c5349b42"
+    },
+    {
+      "label": "partial-before",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 18609,
+      "args": [
+        "verification/engine-independent/partial-measurement-before.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/partial-before-application"
+      ],
+      "resultFile": "partial-before.result.json",
+      "resultSha256": "c48f82dd29f910159f1f6e7d652c56fed6f0c7c71ab08fc5e0748d7694d0902d",
+      "logSha256": "9673e77ab923d2945c6e3599aa3905ca3b3598aebfec48f0ff50354b5e7c2363"
+    },
+    {
+      "label": "remaining-before",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 78137,
+      "args": [
+        "verification/engine-independent/remaining-before.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/before-application"
+      ],
+      "resultFile": "remaining-before.result.json",
+      "resultSha256": "d9c2eca0afa38b148b8d3c2bc4b691515039cfb6250b1bf3a8c66d65b3932fec",
+      "logSha256": "40ede2cd119f3e75b9f4cb9e47b8ddba382ed519cd8533d9eff8ebd98f50863c"
+    },
+    {
+      "label": "scopes-application-01",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 290118,
+      "args": [
+        "verification/engine-independent/measured-scopes-application.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/scopes-application-01"
+      ],
+      "resultFile": "scopes-application-01.result.json",
+      "resultSha256": "96861562c0c647ac2698eaab8d02f471dc631faed2bd67462394ac8cc813ca75",
+      "logSha256": "459d25e5a0749763864e3c477ec0e547f1a61e597105fa4bd1a6cc8feba21698"
+    },
+    {
+      "label": "scopes-browser-concrete-final",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 236754,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-concrete-final",
+        "concrete"
+      ],
+      "resultFile": "scopes-browser-concrete-final.result.json",
+      "resultSha256": "2e5b9380ba8a175e4d7cc442391033e55cd141316ddbf67f0e40cfef5c2675de",
+      "logSha256": "0a269ad31e8027e2de774cad620d375c5b565e2d462e6513db9ff3d3bb507e82"
+    },
+    {
+      "label": "scopes-browser-floor-a-final-2",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 153207,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-floor-a-final-2",
+        "floor_a"
+      ],
+      "resultFile": "scopes-browser-floor-a-final-2.result.json",
+      "resultSha256": "9939d52c370e52a30f616898e21cfb2d567648897a1d2d1bf90b717a195b7b14",
+      "logSha256": "980126465641991f55ed55c2e29a11b4cb176abdc90b1ec9281dee88e5944135"
+    },
+    {
+      "label": "scopes-browser-floor-a-final",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 101196,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-floor-a-final",
+        "floor_a"
+      ],
+      "resultFile": "scopes-browser-floor-a-final.result.json",
+      "resultSha256": "19494f1405bfedd1a9523e67a74b0f32591b09bd0b44d1241ee134af37dd0659",
+      "logSha256": "95778b35aaae38bdf3e32fa41ae401c2cc06aea20ca3fb1b1f801c5a5d61d5f4"
+    },
+    {
+      "label": "scopes-browser-floor-b-final",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 124770,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-floor-b-final",
+        "floor_b"
+      ],
+      "resultFile": "scopes-browser-floor-b-final.result.json",
+      "resultSha256": "4ed9c5e17530ff518af3b8f9382da91d6e18c601511164cef512ff686574a758",
+      "logSha256": "3563694880744124239a3286f3fe31d534e1ac9776a12b91cc69bb5624f732a8"
+    },
+    {
+      "label": "scopes-browser-paint-final",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 61712,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-paint-final",
+        "paint"
+      ],
+      "resultFile": "scopes-browser-paint-final.result.json",
+      "resultSha256": "ec40c98df022dd78b4b5df218d7cc9e63b8e11650c5aee8f61da89d20806efb4",
+      "logSha256": "455d94a15c957347821bee31cdd1658814142d9caae0dd94aa285cfcd5cc12d4"
+    },
+    {
+      "label": "scopes-browser-roof-01",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 77691,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/browser-roof-01",
+        "roof"
+      ],
+      "resultFile": "scopes-browser-roof-01.result.json",
+      "resultSha256": "9e2fe9fb8b28a6de1460da5067cc7ee09883fdd5b540f51834a6352011a2adeb",
+      "logSha256": "0b9a3ee1f3e0bcc66060c7e96101f489e768c13fa3f75db3d97adcf432c2edea"
+    },
+    {
+      "label": "scopes-browser-roof-02",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 172863,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/browser-roof-02",
+        "roof"
+      ],
+      "resultFile": "scopes-browser-roof-02.result.json",
+      "resultSha256": "0b2e4f2c6566dd4a219940ac2d61176fc1b7b3c415fe00ec46a71f613a944a80",
+      "logSha256": "bdcb2b3a361b23642df9e42117e17ef144d41a91ec98aeb748f584f0d03bc655"
+    },
+    {
+      "label": "scopes-browser-roof-03",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 233244,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "../engine-finish-evidence-20260930/browser-roof-03",
+        "roof"
+      ],
+      "resultFile": "scopes-browser-roof-03.result.json",
+      "resultSha256": "2f6345981dbe700aa66fac08a3451c3de84a1d6464f1296a66e2bae9930271c1",
+      "logSha256": "2a749f1d0a708ef5a0ee9a2a710d5a61623485962947df8fd3b57a309e38bad2"
+    },
+    {
+      "label": "scopes-browser-siding-final",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 150102,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-siding-final",
+        "siding"
+      ],
+      "resultFile": "scopes-browser-siding-final.result.json",
+      "resultSha256": "5ec32ecf00d130f9ca35a7db1e3c123ecd0bd12d2c7babe840911ff8fff3dba7",
+      "logSha256": "b7d4bd7573d20df35836febe56140ae63fe2da71eda9bbfe0b236454f3804170"
+    },
+    {
+      "label": "scopes-browser-stairs-final",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 170697,
+      "args": [
+        "client/test/measured-scopes-browser.mjs",
+        ".",
+        "$WORKSPACE\\work\\engine-finish-evidence-20260930\\scopes-browser-stairs-final",
+        "stairs"
+      ],
+      "resultFile": "scopes-browser-stairs-final.result.json",
+      "resultSha256": "bb7bdf32d74eee3ee2f7715b786a6963f951d4763054e965e28d77bff590b696",
+      "logSha256": "b38c80d0b3c3a014df117710928bb514fccbf2ae4a13bbd6dc0f00aa24f025d9"
+    },
+    {
+      "label": "scopes-build-01",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 47851,
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "resultFile": "scopes-build-01.result.json",
+      "resultSha256": "1d5cfbcf1b544c70302464b10124d31930abbfcc3f6f40234a60d770aa922fe0",
+      "logSha256": "7a5920ef3c930d7551d4d7bd122baaa968d92d8191f5c6a03dcc41db0e13f272"
+    },
+    {
+      "label": "scopes-build-02",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 48614,
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "resultFile": "scopes-build-02.result.json",
+      "resultSha256": "6c56ba421f29714c8c19a536d803a04bbee0d4e345f43fb13a299596d5426e47",
+      "logSha256": "0b755828d3aee5e78d7c2d6b6e2c0acfb3f05487af863ed61802a61137ddad2e"
+    },
+    {
+      "label": "scopes-focused-01",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 854,
+      "args": [
+        "--test",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "scopes-focused-01.result.json",
+      "resultSha256": "aed03376cd6ee61f6b65a651b67d85718012bccb8c847493b6c9cc1a7ba5f844",
+      "logSha256": "60b6a73b9a5ca0fd87c342f6c270a3ec976501796fcdcb988bb9a83e2999395b"
+    },
+    {
+      "label": "scopes-focused-02",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 7815,
+      "args": [
+        "--test",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "scopes-focused-02.result.json",
+      "resultSha256": "146c69955efcf77145fa57e849aa0b676bc3b0efa387d6610a814cc3f6d4bc57",
+      "logSha256": "9eb3ca15234a22fbc2f5fb3189652b2d6ba21bdef73e6add45c662da7bae49dd"
+    },
+    {
+      "label": "scopes-focused-03",
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 7551,
+      "args": [
+        "--test",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "scopes-focused-03.result.json",
+      "resultSha256": "e0f8ae07d6157f2d6e9af56cce2a03d2c8aeb8da5f12cc9aeb28ff066e515789",
+      "logSha256": "96badad7f660a7f53b53398f0fea9e5f37475a779857080f49b254a9a0ee3fb6"
+    },
+    {
+      "label": "scopes-focused-04",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 7731,
+      "args": [
+        "--test",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "scopes-focused-04.result.json",
+      "resultSha256": "8d9f8628aed0ee540d2d465a3313602919234f86cc571117a96f4a3609f5cfa1",
+      "logSha256": "36e180c8c75ac885cebe019bf91cbe4963c77fa6136c96bf1e68c009b50e1445"
+    },
+    {
+      "label": "scopes-focused-05",
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 8172,
+      "args": [
+        "--test",
+        "test/measuredScopes.spec.mjs"
+      ],
+      "resultFile": "scopes-focused-05.result.json",
+      "resultSha256": "a728bad6b743e7d7bc40ac2e6041b3c534cd783ce92aac270f96eb0e44cd6fd2",
+      "logSha256": "5cdac4b9b549f5c195d8bdf13dc7e86b80bc8fa27abb1ea29ed74a65494ca667"
+    }
+  ],
+  "interrupted": [
+    {
+      "log": "finish-owner-widget.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outcome": "No completion record; not a passing check"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import {offeringApplicationFixture} from '../quotedone/offering-application-fixt
 import {mowingFixture} from '../quotedone/repair-fixture.mjs';
 
 const [root, evidence] = process.argv.slice(2);
+const afterWriteClaim = process.argv.includes('--after-write-claim');
 process.env.NODE_OPTIONS = '--import=' + pathToFileURL(path.join(root, 'verification/inspection/provider-boundary.mjs')).href;
 const app = await startApplication(root, evidence, {port:4872, calendarFixture:true});
 const db = new Database(path.join(evidence, 'application.sqlite'));
@@ -162,22 +163,23 @@ try {
     const correct=await bookCall(f,q,'GET','/confirmations/'+r.result.confirmationId);assert.equal(correct.result.status,'CONFIRMED');
     await bookCall(f,q,'GET','/confirmations/'+r.result.confirmationId);assert.equal(db.prepare('SELECT count(*) n FROM outboxEvents WHERE aggregateId=?').get(r.result.appointmentId).n,1);return {wrong:summary(r),poll:summary(pending),corrected:summary(correct)};
   });
-  await check('crash-before-calendar-write','Durable pending confirmation with no provider event must recover or fail terminally and release its time',async()=>{
+  await check(afterWriteClaim?'crash-after-write-marker-before-request':'crash-before-calendar-write','Durable pending confirmation with no provider event must recover or fail terminally and release its time',async()=>{
     const g=await mowingFixture(app,'crash-recovery',['http://127.0.0.1:4873']);await connect(g,g.id,'book_job',60);
     const sr=await submit(g,g.submission({intakeFlow:'job-details-v1'}));assert.equal(sr.reply.status,201);const q=sr.reply.result;
     const a=await bookCall(g,q,'POST','/availability',filters),s=a.result.slots[0],h=await bookCall(g,q,'POST','/holds',{slotId:s.slotId},key());assert.equal(h.status,201);
-    const b=confirmation(h,s),k=key(),before=writes();setProvider({inspectionPauseBeforeWrite:true,inspectionReachedPause:false});
+    const b=confirmation(h,s),k=key(),before=writes();setProvider({inspectionPauseBeforeWrite:!afterWriteClaim,inspectionPauseAfterWriteClaim:afterWriteClaim,inspectionReachedPause:false});
     const interrupted=bookCall(g,q,'POST','/confirm',b,k).catch(error=>({connectionInterrupted:true,code:error.cause?.code||error.name}));
     const deadline=Date.now()+10000;while(!provider().inspectionReachedPause&&Date.now()<deadline)await delay(50);
     assert.equal(provider().inspectionReachedPause,true,'Crash barrier must be reached');assert.equal(writes(),before);
     const row=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND bookingIntentId=?').get(g.owner.id,intent(q).id);assert.equal(row.status,'PENDING_PROVIDER');
-    setProvider({inspectionPauseBeforeWrite:false});await app.restart();await interrupted;
+    assert.equal(row.providerEventStatus,afterWriteClaim?'PENDING_PROVIDER':'PREPARING');
+    setProvider({inspectionPauseBeforeWrite:false,inspectionPauseAfterWriteClaim:false});await app.restart();await interrupted;
     const retry=await bookCall(g,q,'POST','/confirm',b,k),polls=[];
     for(let n=0;n<3;n++){polls.push(await bookCall(g,q,'GET','/confirmations/'+retry.result.confirmationId));await delay(100);}
     const last=db.prepare('SELECT * FROM appointments WHERE id=?').get(row.id);
     const other=await submit(g,g.submission({intakeFlow:'job-details-v1'})),fresh=await bookCall(g,other.reply.result,'POST','/availability',filters);
     const stillBlocked=!fresh.result.slots?.some(x=>x.startUtc===s.startUtc);
-    const observed={crashPhase:'after durable pending receipt, before provider write',retry:summary(retry),polls:polls.map(summary),appointmentStatus:last.status,providerEventsForAppointment:Object.values(provider().events).filter(e=>e.id===row.providerEventId).length,providerWritesSinceCrash:writes()-before,originalTimeBlocked:stillBlocked};
+    const observed={crashPhase:afterWriteClaim?'after provider-write marker, before sending provider request':'after durable pending receipt, before provider-write marker',retry:summary(retry),polls:polls.map(summary),appointmentStatus:last.status,providerEventsForAppointment:Object.values(provider().events).filter(e=>e.id===row.providerEventId).length,providerWritesSinceCrash:writes()-before,originalTimeBlocked:stillBlocked};
     results.at(-1).observed=observed;assert.notEqual(last.status,'PENDING_PROVIDER','Crash leaves a PENDING_PROVIDER appointment with no event or recoverable retry');return observed;
   });
   assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check,'ok');assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);

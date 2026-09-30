@@ -80,7 +80,6 @@ before(async () => {
   bundle=built.outputFiles[0].text;
 });
 after(async () => {
-  if(browser) await browser.close();
   const files=['client/src/pricebook.jsx','client/src/pricebookEditing.js','client/src/pricebookInputs.jsx',
     'client/src/ui.jsx','client/src/reference.jsx','client/src/api.js','server/priceBookMoney.js','server/priceBookService.js',
     'test/priceBookEditor.browser.spec.mjs'];
@@ -88,6 +87,9 @@ after(async () => {
     method:'Actual React full PriceBook + intercepted fetch + actual temporary JSON persistence; no authenticated application server',
     sources:Object.fromEntries(files.map(name=>[name,createHash('sha256').update(readFileSync(join(repo,name))).digest('hex')])),results},null,2));
   console.log('Editor browser evidence: '+evidence);
+  console.log('Closing editor browser after all scenarios');
+  if(browser) await browser.close();
+  console.log('Editor browser closed');
 });
 async function scenario(name, services, run) {
   const dir=join(evidence,name); mkdirSync(dir,{recursive:true});

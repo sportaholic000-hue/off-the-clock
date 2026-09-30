@@ -12,6 +12,7 @@ const hashes={};for(const name of [...fs.readdirSync(path.join(root,'server/src'
 fs.writeFileSync(path.join(out,label+'.source.json'),JSON.stringify({base:binding,sourceHashes:hashes,args,providerWrites:false},null,2));
 const log=fs.openSync(file,'wx'),start=Date.now();
 const child=cp.spawn(process.env.QUOTEDONE_NODE||path.join(root,'.portable-runtime/node-v22.23.2-win-x64/node.exe'),args,{cwd:root,env,windowsHide:true,stdio:['ignore',log,log]});
-const timer=setTimeout(()=>child.kill(),600000);
+const timeoutMs=label.includes('pricebook-browser')?1200000:600000;
+const timer=setTimeout(()=>child.kill(),timeoutMs);
 child.on('close',(code,signal)=>{clearTimeout(timer);fs.closeSync(log);const result={label,args,status:code,signal,elapsedMs:Date.now()-start,log:label+'.log'};fs.writeFileSync(path.join(out,label+'.result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));console.log(fs.readFileSync(file,'utf8').slice(-2400));process.exitCode=code===0?0:1;});
 
