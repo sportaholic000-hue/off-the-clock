@@ -1,0 +1,101 @@
+{
+  "sourceCommit": "ad925d0fa368f295fd2f22b53ef115c55b5f4bdb",
+  "files": [
+    {
+      "path": ".env.example",
+      "sha": "87fa2bfe4be86c6f18adb640277ffb23f41103ae",
+      "gitBlobVerified": true,
+      "sha256": "3c05ec02db32be62279d247d8b0f098f6e68d89303d7b7dcfb2491f512e31f96"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12",
+      "gitBlobVerified": true,
+      "sha256": "602f72fbe1168164f7e649c607091521cc728493bd2d92c9cd4fca0b7ba936a4"
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "sha": "58ef15b9bc6d50409ae16671fe94d9779bf2c445",
+      "gitBlobVerified": true,
+      "sha256": "a346effbbf642cd41d2e4e314554f9473af0644c0d0405f344cbf5a4a6dcc351"
+    },
+    {
+      "path": "client/src/api.js",
+      "sha": "ec2f7fbb02b8e8c9c587e4a5914e60e37b14c4e5",
+      "gitBlobVerified": true,
+      "sha256": "9cd8cea93c25aabf7dca8fec9e9b01fc60b68513b3bbc202725535f066ba88a8"
+    },
+    {
+      "path": "client/src/main.jsx",
+      "sha": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f",
+      "gitBlobVerified": true,
+      "sha256": "996b5729b81632c1269a4fec2ced48b7396217624581bbb30ceb08284abc2149"
+    },
+    {
+      "path": "docs/LAUNCH_AUTHORITY_20260929.md",
+      "sha": "0539e2f1f9e92933093429eea8b9cffc615eeb3e",
+      "gitBlobVerified": true,
+      "sha256": "0f2653c83c6e890bcdc8c2fa48fc7173369133d148bb28fb87f0aedc842df5b1"
+    },
+    {
+      "path": "server/src/auth.js",
+      "sha": "b5ca672531fd7cf097f3d9a5c00b62c432b2e867",
+      "gitBlobVerified": true,
+      "sha256": "20ed45fcb7de56b381062d170c3752c38e8db32c79a17d7378a1b0cc378303a8"
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "sha": "2db2c74bce1245110c38e5af5166d2e34945d620",
+      "gitBlobVerified": true,
+      "sha256": "c39a4d04fb54dac77fc6814caa44b56127bafb9ef5bb0c61d7d29112507d8386"
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "sha": "b79d90a514a93465a3dc6f76fca027fcfb8b9b53",
+      "gitBlobVerified": true,
+      "sha256": "24ccbbfdd5f4d4238704e867c77111b43c9d1dfb31abf99891f7608e59d53616"
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "sha": "06176e808b145f4d5f1c3523122b564d62fa9729",
+      "gitBlobVerified": true,
+      "sha256": "eb22ec33b83c78cd3d6dafd592da1ff80cd297482e8e3860fb1c34173ce706bb"
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "sha": "a42dab7abe98467cd266d338028c591cddd16ee7",
+      "gitBlobVerified": true,
+      "sha256": "3399ce4bd5c441c07ff99337cac20891629e7a2869b9fcaa76e7849386dfe79b"
+    },
+    {
+      "path": "server/src/email.js",
+      "sha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d",
+      "gitBlobVerified": true,
+      "sha256": "e8525fcd9727bf677e6d779817daf30b5068f9722bb7e8f3d0e269884d7cdbb2"
+    },
+    {
+      "path": "specs/platform_spec_v2.md",
+      "sha": "17e60c63c4338f7735bcf92f1892fa3cb3b02b36",
+      "gitBlobVerified": true,
+      "sha256": "63d85e2fde7d4e0d930ca07d9551d1244587d4d11998ee6c0a3d9b07e7509c80"
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "sha": "f0bd3c54c36602443e506fbdca64d89ab9b5efac",
+      "gitBlobVerified": true,
+      "sha256": "8eab652e4f17360cef315f304e4b1c5a0c0507069f504b8d8e1e1363f0ecbdd7"
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "sha": "66b72d5d09bf9fb2f6187f953dceec5e9c12c4a5",
+      "gitBlobVerified": true,
+      "sha256": "1a23feb86c6bd715509bfe88cfa8ee7c828e89401b56201b92e0c4f25610ac3b"
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "sha": "03f0545de79bb772a0fe89e067ec6301edd64f1b",
+      "gitBlobVerified": true,
+      "sha256": "2e94c322a589039f5d3d70b540ca1d6e3b7ee3dcf41664a7dc150681b01e1898"
+    }
+  ]
+}
