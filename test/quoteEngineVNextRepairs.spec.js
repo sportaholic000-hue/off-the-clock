@@ -1683,7 +1683,11 @@ test('repair 37: metadata and customer results describe only behavior the candid
   const exterior = metadata.find(item => item.serviceType === 'EXTERIOR_PAINTING');
   const exteriorLabor = exterior.pricingFields.find(item => item.field === 'exteriorLaborPerSqftPerCoat');
   assert.equal(/owner-configured primer coats/i.test(exteriorLabor.help), false);
-  assert.match(exteriorLabor.help, /Every exterior painting request: review only/);
+  assert.equal(exteriorLabor.reviewOnly, true);
+  assert.match(exteriorLabor.help, /this legacy scalar alone is incomplete/);
+  assert.match(exteriorLabor.help, /Fence and painting offering/);
+  assert.ok(exterior.offeringRateFields.installed);
+  assert.ok(exterior.offeringRateFields.itemized);
 
   for (const serviceMetadata of metadata) {
     for (const factor of serviceMetadata.class2Fields) {
