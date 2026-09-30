@@ -1,0 +1,82 @@
+{
+  "source": "e2ccbda447425c4a46426f218332ef64e8c93d8a",
+  "providerWrites": false,
+  "results": [
+    {
+      "id": "AK-owner-tax-is-discarded",
+      "request": {
+        "country": "US",
+        "region": "AK",
+        "taxMode": "TAX_ALL",
+        "taxPercent": "5"
+      },
+      "expected": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 5
+      },
+      "status": 200,
+      "actual": {
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0
+      },
+      "passed": false
+    },
+    {
+      "id": "NS-owner-rate-is-discarded",
+      "request": {
+        "country": "CA",
+        "region": "NS",
+        "taxMode": "TAX_ALL",
+        "taxPercent": "13"
+      },
+      "expected": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 13
+      },
+      "status": 200,
+      "actual": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 14
+      },
+      "passed": false
+    },
+    {
+      "id": "NS-owner-no-tax-is-discarded",
+      "request": {
+        "country": "CA",
+        "region": "NS",
+        "taxMode": "TAX_NONE",
+        "taxPercent": "0"
+      },
+      "expected": {
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0
+      },
+      "status": 200,
+      "actual": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 14
+      },
+      "passed": false
+    },
+    {
+      "id": "NY-owner-tax-control",
+      "request": {
+        "country": "US",
+        "region": "NY",
+        "taxMode": "TAX_ALL",
+        "taxPercent": "8.875"
+      },
+      "expected": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 8.875
+      },
+      "status": 200,
+      "actual": {
+        "taxMode": "TAX_ALL",
+        "taxPercent": 8.875
+      },
+      "passed": true
+    }
+  ]
+}

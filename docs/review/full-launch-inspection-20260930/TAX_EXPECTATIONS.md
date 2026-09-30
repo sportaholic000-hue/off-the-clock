@@ -1,0 +1,1 @@
+The owner-selected tax mode and decimal rate must be applied or visibly rejected, never silently replaced. AK ALL5, NS ALL13, NS NONE0 are adversarial owner-authority probes; NY ALL8.875 is the positive control. These are synthetic inputs, not tax advice or a recommended jurisdiction rate. Expected values were written before execution.

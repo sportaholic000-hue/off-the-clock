@@ -1,0 +1,274 @@
+TAP version 13
+# Subtest: every offered service has distinct fields and no price or eligibility result
+ok 1 - every offered service has distinct fields and no price or eligibility result
+  ---
+  duration_ms: 17.2671
+  type: 'test'
+  ...
+# Subtest: roof and paint prompts never substitute floor area
+ok 2 - roof and paint prompts never substitute floor area
+  ---
+  duration_ms: 70.4348
+  type: 'test'
+  ...
+# Subtest: mulch area depth and volume are distinct, with no invented conversion
+ok 3 - mulch area depth and volume are distinct, with no invented conversion
+  ---
+  duration_ms: 4.7351
+  type: 'test'
+  ...
+# Subtest: other services collect named measurements instead of forcing square feet
+ok 4 - other services collect named measurements instead of forcing square feet
+  ---
+  duration_ms: 1.2084
+  type: 'test'
+  ...
+# Subtest: unanswered, unsure and declined scope remain different
+ok 5 - unanswered, unsure and declined scope remain different
+  ---
+  duration_ms: 1.4353
+  type: 'test'
+  ...
+# Subtest: selected scope adds its own measurement once
+ok 6 - selected scope adds its own measurement once
+  ---
+  duration_ms: 1.0576
+  type: 'test'
+  ...
+# Subtest: unknown discards a stale numeric value from the outgoing summary
+ok 7 - unknown discards a stale numeric value from the outgoing summary
+  ---
+  duration_ms: 0.9569
+  type: 'test'
+  ...
+# Subtest: source labels do not affect field selection or values
+ok 8 - source labels do not affect field selection or values
+  ---
+  duration_ms: 1.6892
+  type: 'test'
+  ...
+# Subtest: missing method and missing numeric facts are counted, not claimed complete
+ok 9 - missing method and missing numeric facts are counted, not claimed complete
+  ---
+  duration_ms: 2.5537
+  type: 'test'
+  ...
+# Subtest: demolition details are not taken from new slab measurements
+ok 10 - demolition details are not taken from new slab measurements
+  ---
+  duration_ms: 3.2739
+  type: 'test'
+  ...
+# Subtest: target 60% on $1250 gives exactly $2000, not a target gross-margin price
+ok 11 - target 60% on $1250 gives exactly $2000, not a target gross-margin price
+  ---
+  duration_ms: 9.4735
+  type: 'test'
+  ...
+# Subtest: owner markups below at and above former commercial thresholds
+ok 12 - owner markups below at and above former commercial thresholds
+  ---
+  duration_ms: 6.2625
+  type: 'test'
+  ...
+# Subtest: positive sub-cent target adjustment cannot undershoot markup
+ok 13 - positive sub-cent target adjustment cannot undershoot markup
+  ---
+  duration_ms: 0.8961
+  type: 'test'
+  ...
+# Subtest: adjacent decimal target values across a one-cent price boundary
+ok 14 - adjacent decimal target values across a one-cent price boundary
+  ---
+  duration_ms: 1.5776
+  type: 'test'
+  ...
+# Subtest: fractional-cent cost rate is preserved before targeting markup
+ok 15 - fractional-cent cost rate is preserved before targeting markup
+  ---
+  duration_ms: 1.5673
+  type: 'test'
+  ...
+# Subtest: target prices and exports retain cents above Number safe integer
+ok 16 - target prices and exports retain cents above Number safe integer
+  ---
+  duration_ms: 57.6424
+  type: 'test'
+  ...
+# Subtest: zero cost is not a fabricated achieved markup
+ok 17 - zero cost is not a fabricated achieved markup
+  ---
+  duration_ms: 1.0655
+  type: 'test'
+  ...
+# Subtest: missing target and missing or invalid costs never silently default
+ok 18 - missing target and missing or invalid costs never silently default
+  ---
+  duration_ms: 3.1433
+  type: 'test'
+  ...
+# Subtest: technical input budget is rejection, never truncation or a percentage clamp
+ok 19 - technical input budget is rejection, never truncation or a percentage clamp
+  ---
+  duration_ms: 23.9689
+  type: 'test'
+  ...
+# Subtest: line-first rounding is consistent with the existing check-price mode
+ok 20 - line-first rounding is consistent with the existing check-price mode
+  ---
+  duration_ms: 2.7644
+  type: 'test'
+  ...
+# Subtest: target operation does not mutate costs or raw percentage
+ok 21 - target operation does not mutate costs or raw percentage
+  ---
+  duration_ms: 4.9322
+  type: 'test'
+  ...
+# Subtest: independent exact rational grid proves markup reached and price minimal
+ok 22 - independent exact rational grid proves markup reached and price minimal
+  ---
+  duration_ms: 84.6241
+  type: 'test'
+  ...
+# Subtest: ordinary price: 2000 - (12.5*40 + 600 + 100 + 50) = 750
+ok 23 - ordinary price: 2000 - (12.5*40 + 600 + 100 + 50) = 750
+  ---
+  duration_ms: 18.9963
+  type: 'test'
+  ...
+# Subtest: fractional-cent rate: 10000 * .005 dollars = 50 dollars
+ok 24 - fractional-cent rate: 10000 * .005 dollars = 50 dollars
+  ---
+  duration_ms: 2.6082
+  type: 'test'
+  ...
+# Subtest: markup above prior limits is displayed: 1300 price, 100 cost = 1200%
+ok 25 - markup above prior limits is displayed: 1300 price, 100 cost = 1200%
+  ---
+  duration_ms: 1.2407
+  type: 'test'
+  ...
+# Subtest: high markup is not clamped: .01 cost, 1000000 price
+ok 26 - high markup is not clamped: .01 cost, 1000000 price
+  ---
+  duration_ms: 1.071
+  type: 'test'
+  ...
+# Subtest: half-cent boundaries do not change stored rate precision
+ok 27 - half-cent boundaries do not change stored rate precision
+  ---
+  duration_ms: 2.0169
+  type: 'test'
+  ...
+# Subtest: round each cost line once, then sum (two half cents = two cents)
+ok 28 - round each cost line once, then sum (two half cents = two cents)
+  ---
+  duration_ms: 1.6688
+  type: 'test'
+  ...
+# Subtest: decimal quantity-times-rate: .1 * .2 dollars = 2 cents
+ok 29 - decimal quantity-times-rate: .1 * .2 dollars = 2 cents
+  ---
+  duration_ms: 12.6099
+  type: 'test'
+  ...
+# Subtest: zero price with positive cost: negative amount; margin undefined
+ok 30 - zero price with positive cost: negative amount; margin undefined
+  ---
+  duration_ms: 2.0821
+  type: 'test'
+  ...
+# Subtest: zero cost: markup undefined, not infinite or artificially capped
+ok 31 - zero cost: markup undefined, not infinite or artificially capped
+  ---
+  duration_ms: 2.5408
+  type: 'test'
+  ...
+# Subtest: zero price and zero costs: both percentages undefined
+ok 32 - zero price and zero costs: both percentages undefined
+  ---
+  duration_ms: 4.0652
+  type: 'test'
+  ...
+# Subtest: loss is not clamped to zero
+ok 33 - loss is not clamped to zero
+  ---
+  duration_ms: 2.1846
+  type: 'test'
+  ...
+# Subtest: whole-cent selling amount is not rounded silently
+ok 34 - whole-cent selling amount is not rounded silently
+  ---
+  duration_ms: 2.5333
+  type: 'test'
+  ...
+# Subtest: blank price is missing rather than zero
+ok 35 - blank price is missing rather than zero
+  ---
+  duration_ms: 1.0367
+  type: 'test'
+  ...
+# Subtest: blank cost blocks the result rather than dropping the selected row
+ok 36 - blank cost blocks the result rather than dropping the selected row
+  ---
+  duration_ms: 1.1622
+  type: 'test'
+  ...
+# Subtest: invalid inputs are rejected without coercion
+ok 37 - invalid inputs are rejected without coercion
+  ---
+  duration_ms: 1.9434
+  type: 'test'
+  ...
+# Subtest: display formats signed values and whole cents exactly
+ok 38 - display formats signed values and whole cents exactly
+  ---
+  duration_ms: 1.4128
+  type: 'test'
+  ...
+# Subtest: large amounts beyond Number safe integer preserve all cents
+ok 39 - large amounts beyond Number safe integer preserve all cents
+  ---
+  duration_ms: 0.9285
+  type: 'test'
+  ...
+# Subtest: resource budget rejects rather than truncating long input
+ok 40 - resource budget rejects rather than truncating long input
+  ---
+  duration_ms: 0.8107
+  type: 'test'
+  ...
+# Subtest: no cost rows requires an explicit cost basis
+ok 41 - no cost rows requires an explicit cost basis
+  ---
+  duration_ms: 0.79
+  type: 'test'
+  ...
+# Subtest: mutation-free calculation preserves input strings
+ok 42 - mutation-free calculation preserves input strings
+  ---
+  duration_ms: 1.1944
+  type: 'test'
+  ...
+# Subtest: adding a one-cent expense reduces leftover by one cent
+ok 43 - adding a one-cent expense reduces leftover by one cent
+  ---
+  duration_ms: 11.4528
+  type: 'test'
+  ...
+# Subtest: independent integer-cent grid: price minus costs, across losses and profits
+ok 44 - independent integer-cent grid: price minus costs, across losses and profits
+  ---
+  duration_ms: 208.2553
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1526.7268

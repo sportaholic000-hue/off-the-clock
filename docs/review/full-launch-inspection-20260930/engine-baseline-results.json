@@ -1,0 +1,15 @@
+{
+  "done": true,
+  "startedAt": "2026-09-30T21:15:58.038Z",
+  "args": [
+    "test/configuredOfferings.spec.mjs",
+    "test/measuredScopes.spec.mjs",
+    "test/quoteEngineVNext.spec.js",
+    "test/quoteEngineVNextAdversarial.spec.js",
+    "test/quoteEngineVNextRepairs.spec.js",
+    "test/quoteFlowRepairs.spec.mjs"
+  ],
+  "code": 1,
+  "signal": null,
+  "finishedAt": "2026-09-30T21:22:55.892Z"
+}

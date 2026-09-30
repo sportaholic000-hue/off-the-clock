@@ -1,0 +1,1 @@
+Current core production builds both pass with the reused existing Vite6.4.3/Node22.23.2 Windows tooling. Initial isolated attempt timed out at45s with no completed output; final executable run used correct workspace dependency junctions and completed app53.33s/widget23.50s. No installation or application source change.

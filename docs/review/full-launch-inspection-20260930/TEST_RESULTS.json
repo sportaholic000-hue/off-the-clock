@@ -1,0 +1,124 @@
+{
+  "sourceWindow": {
+    "initialCore": "e2ccbda447425c4a46426f218332ef64e8c93d8a",
+    "currentApplicationChecks": "6c670a48c881f8fa628cd70800b290371b730362",
+    "lastReviewedCore": "4aaded3c8855f1821c1668d7c26f474dd7ead526"
+  },
+  "independentChecks": [
+    {
+      "name": "engine baseline",
+      "passed": 390,
+      "failed": 3,
+      "total": 393,
+      "source": "e2ccbda",
+      "classification": "Legacy diagnostics/messages; later source addressed; no wrong amount demonstrated by these failures"
+    },
+    {
+      "name": "measured-scope hand arithmetic",
+      "passed": 480,
+      "failed": 0,
+      "total": 480,
+      "source": "6c670a4"
+    },
+    {
+      "name": "booking unit tests",
+      "passed": 47,
+      "failed": 0,
+      "total": 47,
+      "source": "6c670a4"
+    },
+    {
+      "name": "quote-to-booking HTTP scenario groups",
+      "passed": 16,
+      "failed": 1,
+      "total": 17,
+      "source": "6c670a4",
+      "openDefect": "After durable provider marker and before request, crash leaves no event and permanently pending slot"
+    },
+    {
+      "name": "owner tax baseline API cases",
+      "passed": 1,
+      "failed": 3,
+      "total": 4,
+      "source": "e2ccbda"
+    },
+    {
+      "name": "owner tax corrected API cases",
+      "passed": 4,
+      "failed": 0,
+      "total": 4,
+      "source": "4aaded3 server entry with unchanged dependencies"
+    },
+    {
+      "name": "voice module import test files",
+      "passed": 0,
+      "failed": 3,
+      "total": 3,
+      "source": "e2ccbda; missing modules unchanged"
+    },
+    {
+      "name": "production app build",
+      "passed": true,
+      "source": "e2ccbda"
+    },
+    {
+      "name": "production widget build",
+      "passed": true,
+      "source": "e2ccbda"
+    },
+    {
+      "name": "growth pages built",
+      "total": 15,
+      "passed": true,
+      "source": "2a6dfd3"
+    },
+    {
+      "name": "growth tools",
+      "passed": 44,
+      "failed": 0,
+      "total": 44,
+      "source": "2a6dfd3"
+    },
+    {
+      "name": "growth editorial",
+      "passed": 60,
+      "failed": 0,
+      "total": 60,
+      "source": "2a6dfd3"
+    }
+  ],
+  "peerReportedNotIndependentHere": [
+    {
+      "name": "latest engine",
+      "passed": 424,
+      "total": 424
+    },
+    {
+      "name": "latest application",
+      "passed": 322,
+      "total": 322
+    },
+    {
+      "name": "tax settings",
+      "passed": 43,
+      "total": 43
+    }
+  ],
+  "limitations": [
+    "No live providers/calls/charges/messages",
+    "Current browser unavailable; no new visual/deployed/mobile acceptance",
+    "Dependency security audit endpoint failed",
+    "SQLite source blobs and compressed/image artifacts excluded from text review",
+    "Counts from different suites overlap; do not sum"
+  ],
+  "setupAttemptsNotProductFailures": [
+    "Short initial build and server deadlines",
+    "Missing portable-runtime or client/node_modules junctions",
+    "Arithmetic command initially omitted output-directory argument",
+    "Windows default editorial encoding",
+    "Synthetic entitlement fixture setup",
+    "First corrected-tax startup before readiness",
+    "Oversized NodeREPL tool input and snapshot line-ending mismatch corrected before executing latest tests"
+  ],
+  "sourceChangePolicy": "Application source untouched; only isolated exact source copies, synthetic fixtures/output and a separate documentation/evidence branch"
+}

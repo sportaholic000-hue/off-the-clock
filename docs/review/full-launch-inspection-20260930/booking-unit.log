@@ -1,0 +1,294 @@
+TAP version 13
+# (node:331644) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 1 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 5660.4221
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 2 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 8.0208
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 3 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 13433.9776
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 4 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 497.6208
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 5 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 159.0757
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 6 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 480.1154
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 7 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 243.0941
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 8 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 236.7573
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 9 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 298.2585
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 10 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 270.6853
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 11 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 229.788
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 12 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 188.1166
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 13 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 253.8324
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 14 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 235.9801
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 15 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 137.2288
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 16 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 119.1396
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 17 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 204.4721
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 18 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 19.2833
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-status never books or emits booked notification
+ok 19 - Provider confirmation create: missing-status never books or emits booked notification
+  ---
+  duration_ms: 100.9929
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: tentative never books or emits booked notification
+ok 20 - Provider confirmation create: tentative never books or emits booked notification
+  ---
+  duration_ms: 108.2446
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: cancelled never books or emits booked notification
+ok 21 - Provider confirmation create: cancelled never books or emits booked notification
+  ---
+  duration_ms: 102.1909
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-id never books or emits booked notification
+ok 22 - Provider confirmation create: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 100.7888
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-day never books or emits booked notification
+ok 23 - Provider confirmation create: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 94.1085
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-duration never books or emits booked notification
+ok 24 - Provider confirmation create: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 89.761
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-start never books or emits booked notification
+ok 25 - Provider confirmation create: missing-start never books or emits booked notification
+  ---
+  duration_ms: 91.2664
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: numeric-start never books or emits booked notification
+ok 26 - Provider confirmation create: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 100.42
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-status never books or emits booked notification
+ok 27 - Provider confirmation recovery: missing-status never books or emits booked notification
+  ---
+  duration_ms: 99.6907
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: tentative never books or emits booked notification
+ok 28 - Provider confirmation recovery: tentative never books or emits booked notification
+  ---
+  duration_ms: 103.5222
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: cancelled never books or emits booked notification
+ok 29 - Provider confirmation recovery: cancelled never books or emits booked notification
+  ---
+  duration_ms: 121.8788
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 30 - Provider confirmation recovery: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 231.8679
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 31 - Provider confirmation recovery: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 327.3069
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 32 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 452.8016
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-start never books or emits booked notification
+ok 33 - Provider confirmation recovery: missing-start never books or emits booked notification
+  ---
+  duration_ms: 312.8107
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 34 - Provider confirmation recovery: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 206.4977
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-status never books or emits booked notification
+ok 35 - Provider confirmation poll: missing-status never books or emits booked notification
+  ---
+  duration_ms: 246.7331
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: tentative never books or emits booked notification
+ok 36 - Provider confirmation poll: tentative never books or emits booked notification
+  ---
+  duration_ms: 188.1872
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: cancelled never books or emits booked notification
+ok 37 - Provider confirmation poll: cancelled never books or emits booked notification
+  ---
+  duration_ms: 180.7255
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-id never books or emits booked notification
+ok 38 - Provider confirmation poll: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 178.1063
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-day never books or emits booked notification
+ok 39 - Provider confirmation poll: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 173.2014
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 40 - Provider confirmation poll: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 187.4008
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-start never books or emits booked notification
+ok 41 - Provider confirmation poll: missing-start never books or emits booked notification
+  ---
+  duration_ms: 120.4634
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: numeric-start never books or emits booked notification
+ok 42 - Provider confirmation poll: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 133.9694
+  type: 'test'
+  ...
+# Subtest: Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 43 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+  ---
+  duration_ms: 140.1063
+  type: 'test'
+  ...
+# Subtest: One intent cannot create another appointment through a different hold or idempotency key
+ok 44 - One intent cannot create another appointment through a different hold or idempotency key
+  ---
+  duration_ms: 151.4447
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler
+ok 45 - Interrupted pre-write preparation releases its slot and fences a late handler
+  ---
+  duration_ms: 140.9652
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+ok 46 - Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+  ---
+  duration_ms: 148.0359
+  type: 'test'
+  ...
+# Subtest: A provider write already started remains pending after restart until its exact event is confirmed
+ok 47 - A provider write already started remains pending after restart until its exact event is confirmed
+  ---
+  duration_ms: 128.6591
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31599.4399

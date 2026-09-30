@@ -1,0 +1,28 @@
+{
+  "reviewDate": "2026-09-30",
+  "initialCoreCommit": "e2ccbda447425c4a46426f218332ef64e8c93d8a",
+  "applicationRecheckCommit": "6c670a48c881f8fa628cd70800b290371b730362",
+  "laterReviewedCommits": [
+    "3dd3b1a084df2c6739ba65547876d034bbfa004f",
+    "4aaded3c8855f1821c1668d7c26f474dd7ead526"
+  ],
+  "bookingBlob": "3416373ef458c2c6e234a11fa46b482590a9e13d",
+  "taxFixedServerBlob": "f8051e785c72063ec458524494f5622dae4ba43a",
+  "initialBoundTextFiles": 418,
+  "latestCoreBoundTextFiles": 365,
+  "runtime": {
+    "node": "22.23.2",
+    "abi": 127,
+    "platform": "win32",
+    "dependencies": "Reused existing validated local dependencies; no install/upgrade"
+  },
+  "quoteBookingRawHistoricLabel": "Raw runner inherited reviewBaselineCommit=1013190b; actual source is applicationRecheckCommit above, verified by blob binding. No claim to have tested the old checkpoint in this new run.",
+  "fixedTaxExecution": "Exact 4aaded3 server entry bytes in an inspection-only alternate filename beside the frozen 6c670a4 server, with unchanged runtime dependencies/import paths. Original application files were not edited.",
+  "boundaries": [
+    "Real isolated application/HTTP/SQLite",
+    "Synthetic intercepted Google provider",
+    "No live-provider or deployed-browser acceptance",
+    "No subagents",
+    "No canonical source changes"
+  ]
+}
