@@ -1,0 +1,191 @@
+{
+  "sourceCommit": "aa90b65dd7d88801c5f5dcf720b0e0dfd8ade49f",
+  "countsOverlap": true,
+  "results": [
+    {
+      "label": "calendar-before",
+      "args": [
+        "client/test/owner-calendar-browser.mjs",
+        "../recovery-candidate-20260929",
+        "../owner-calendar-evidence-20260929/before",
+        "before"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 171586,
+      "log": "calendar-before.log"
+    },
+    {
+      "label": "calendar-unit-1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 3107,
+      "log": "calendar-unit-1.log"
+    },
+    {
+      "label": "calendar-build-5",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 53936,
+      "log": "calendar-build-5.log"
+    },
+    {
+      "label": "calendar-browser-6",
+      "args": [
+        "client/test/owner-calendar-browser.mjs",
+        ".",
+        "../owner-calendar-evidence-20260929/after-6",
+        "after"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 177997,
+      "log": "calendar-browser-6.log"
+    },
+    {
+      "label": "final-application-regression",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 50619,
+      "log": "final-application-regression.log"
+    },
+    {
+      "label": "final-engine-regression",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 443186,
+      "log": "final-engine-regression.log"
+    },
+    {
+      "label": "final-integration-boundary",
+      "args": [
+        "verification/quotedone/resume-integration-boundary.mjs",
+        "."
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 880,
+      "log": "final-integration-boundary.log"
+    },
+    {
+      "label": "final-whole-request",
+      "args": [
+        "verification/quotedone/pricing-envelope-workflow.mjs",
+        ".",
+        "../owner-calendar-evidence-20260929/final-whole-request"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 36650,
+      "log": "final-whole-request.log"
+    },
+    {
+      "label": "final-widget-booking",
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "../owner-calendar-evidence-20260929/final-widget-booking"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 119523,
+      "log": "final-widget-booking.log"
+    },
+    {
+      "label": "final-full-page-owner",
+      "args": [
+        "client/test/widget-full-page-browser.mjs",
+        ".",
+        "../owner-calendar-evidence-20260929/final-full-page-owner"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 261267,
+      "log": "final-full-page-owner.log"
+    },
+    {
+      "label": "final-pricebook-browser",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 342209,
+      "log": "final-pricebook-browser.log"
+    },
+    {
+      "label": "final-client-transport",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 2954,
+      "log": "final-client-transport.log"
+    }
+  ]
+}

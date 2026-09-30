@@ -1,0 +1,81 @@
+{
+  "sourceCommit": "aa90b65dd7d88801c5f5dcf720b0e0dfd8ade49f",
+  "baseCommit": "7df3fcee45dc3fce19904c67f0cf5575449fdf15",
+  "comparison": {
+    "aheadBy": 1,
+    "behindBy": 0,
+    "exactChangedPathSet": true
+  },
+  "files": [
+    {
+      "path": "client/src/calendar.css",
+      "sha": "c29a0d7e8d4c0385d4cba48465f3197623d40b47",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "sha": "d28d7e533e812750a42c050dcfd84019bb6f4280",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "sha": "4bf229e9d0d04158632335aac8193e3732b460a5",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/main.jsx",
+      "sha": "8d773773a486786b7ccc3c915d8ee912a0a2256c",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha": "859bc288ca105058c9b04f0172af7f0de8746d60",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "sha": "41068d444523aeceddfaff1e0f5008e7f5edb54d",
+      "contentMatches": true
+    },
+    {
+      "path": "client/test/owner-calendar-browser.mjs",
+      "sha": "0d0f1cb167a01ee0526a48fded1a059bebb873eb",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/owner-calendar-20260929/CHECKPOINT.md",
+      "sha": "907132d60606f668aa51a2bdb6a6494a3ebad241",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "sha": "4f8f00cd827e76fe8a67be3d924042959fcf91a5",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "sha": "b8b3331240cce15a14e8fdea59e538e6d906b68e",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/server.js",
+      "sha": "dbdce4cfb125e42008f21c9f690b55843f51fb87",
+      "contentMatches": true
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "sha": "2a409e0feeb63ce2aa536c314243dad4009459f1",
+      "contentMatches": true
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "sha": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058",
+      "contentMatches": true
+    },
+    {
+      "path": "verification/quotedone/calendar-provider-fixture.mjs",
+      "sha": "56219557863cd5d41ef853b86bd5c16ed87ffb07",
+      "contentMatches": true
+    }
+  ]
+}
