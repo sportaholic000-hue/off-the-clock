@@ -19,7 +19,11 @@ globalThis.fetch=async function syntheticCalendarFetch(raw,options={}){
  assert.equal(url.origin,'https://www.googleapis.com');
  assert.equal(new Headers(options.headers).get('authorization'),'Bearer SYNTHETIC-NO-LIVE-ACCESS');
  if(url.pathname==='/calendar/v3/freeBusy'&&method==='POST'){
-  const body=JSON.parse(options.body);assert.deepEqual(body.items,[{id:'primary'}]);return json({calendars:{primary:{busy:[]}}});
+  const body=JSON.parse(options.body);assert.deepEqual(body.items,[{id:'primary'}]);
+  if(state.mode==='busy-unavailable')return json({error:'SYNTHETIC calendar unavailable'},503);
+  const busy=(state.busy||[]).filter(row=>row.start<body.timeMax&&row.end>body.timeMin)
+    .map(row=>({start:row.start<body.timeMin?body.timeMin:row.start,end:row.end>body.timeMax?body.timeMax:row.end}));
+  return json({calendars:{primary:{busy}}});
  }
  if(url.pathname==='/calendar/v3/calendars/primary/events'&&method==='POST'){
   const body=JSON.parse(options.body);state.events[body.id]={...body,status:'confirmed'};save(state);

@@ -15,6 +15,8 @@ import { installBookingRoutes } from './bookingRoutes.js';
 import { createGoogleCalendarAdapter } from './googleCalendarAdapter.js';
 import { createBookingAdminService } from './bookingAdminService.js';
 import { installBookingAdminRoutes } from './bookingAdminRoutes.js';
+import { createOwnerCalendarService } from './ownerCalendarService.js';
+import { installOwnerCalendarRoutes } from './ownerCalendarRoutes.js';
 import { bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
 import {
   centsToDollars,
@@ -133,6 +135,7 @@ const bookingPreferenceService = bookingRuntimeAvailable
   ? createBookingPreferenceService({ db })
   : null;
 const bookingAdminService = createBookingAdminService({ db });
+const ownerCalendarService = createOwnerCalendarService({ ownerQuery, calendar: bookingCalendar });
 const billingConfig = runtimeConfig.stripeBilling ? loadBillingConfig() : null;
 const stripeClient = billingConfig
   ? new Stripe(billingConfig.secretKey, {
@@ -409,6 +412,10 @@ if (bookingService) {
     database: db
   });
 }
+installOwnerCalendarRoutes(app, {
+  service: ownerCalendarService, requireAuth, requireOperatorAccess,
+  requireProviderOperationsEnabled, asyncHandler
+});
 installBookingAdminRoutes(app, {
   adminService: bookingAdminService,
   requireAuth,

@@ -8,6 +8,7 @@ import Dashboard from './dashboard.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
 import Billing from './billing.jsx';
+import Calendar from './calendar.jsx';
 import { Brand } from './ui.jsx';
 
 function AdminShell() {
@@ -19,8 +20,17 @@ function AdminShell() {
   );
 }
 
+function initialLocation() {
+    if (window.location.pathname === '/onboarding' && new URLSearchParams(window.location.search).get('calendar') === 'connected' &&
+        sessionStorage.getItem('otc_calendar_return') === 'calendar') {
+      sessionStorage.removeItem('otc_calendar_return');
+      window.history.replaceState({}, '', '/calendar');
+    }
+    return {url:window.location.pathname + window.location.search};
+}
+
 function App() {
-  const [location, setLocation] = useState({url:window.location.pathname + window.location.search});
+  const [location, setLocation] = useState(initialLocation);
   useEffect(() => {
     const update = () => setLocation({url:window.location.pathname + window.location.search});
     window.addEventListener('popstate', update);
@@ -32,7 +42,8 @@ function App() {
   if (path === '/admin') return <AdminShell />;
   if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={getToken()} />;
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={getToken()||'signed-out'} />;
-  if(['/leads','/quotes'].includes(path))return <QuoteRecords key={path+getToken()} kind={path.slice(1)}/>;
+  if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+getToken()} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
+  if (path === '/calendar') return <Calendar key={getToken()} />;
   if (path === '/pricebook') return <PriceBook />;
   if (path === '/dashboard') return <Dashboard />;
   go('/dashboard');
