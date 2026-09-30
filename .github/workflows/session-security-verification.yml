@@ -1,0 +1,55 @@
+name: Account and session verification
+
+on:
+  pull_request:
+    branches:
+      - codex/quotedone-audit-repairs-20260927
+    paths:
+      - '.github/workflows/session-security-verification.yml'
+      - 'server/**'
+      - 'client/**'
+      - 'test/**'
+      - 'verification/**'
+      - 'package*.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: session-security-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.head_ref == 'codex/auth-email-recovery-20260929'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.2'
+          package-manager-cache: false
+      - name: Install locked application dependencies
+        run: npm ci
+      - name: Install isolated browser runtime
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/otc-browser"
+          npm --prefix "$RUNNER_TEMP/otc-browser" install --no-save --package-lock=false playwright
+          "$RUNNER_TEMP/otc-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Verify synthetic account, sessions, engine and browsers
+        env:
+          OTC_CI_BROWSER_MODULE: ${{ runner.temp }}/otc-browser/node_modules/playwright
+        run: node verification/session-security/run-ci.mjs
+      - name: Upload sanitized result summaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-security-${{ github.event.pull_request.head.sha }}
+          path: ../otc-ci-evidence/sanitized/
+          if-no-files-found: warn
+          retention-days: 14
