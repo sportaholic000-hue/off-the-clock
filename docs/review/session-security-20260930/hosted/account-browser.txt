@@ -1,0 +1,10 @@
+PASS Signup survives failed provider delivery, exposes retry and preserves pending_payment
+PASS Resend gives an absolute link; opening it hides the fragment and requires explicit verification
+PASS Signed-in account screen shows verified state
+PASS Reused verification link is rejected and recovery request stays private for verified accounts
+PASS Sign-in exposes password recovery; known and unknown requests show the same response
+PASS Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session
+PASS Old password fails, new password signs in and existing signup/billing flow preserves pending_payment
+PASS Reused reset fails and preserves entered form values
+PASS Malformed links offer recovery on mobile without horizontal overflow
+PASS No browser runtime errors or account link tokens in application logs

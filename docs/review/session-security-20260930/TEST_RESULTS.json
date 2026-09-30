@@ -1,0 +1,462 @@
+{
+  "runtimeSource": "08ee7d529112c8db8098bc002dfd9be732a19d3e",
+  "liveProviderTraffic": false,
+  "countsOverlap": true,
+  "finalLocalApplication": {
+    "label": "session-final-application",
+    "sourceCommit": "08ee7d529112c8db8098bc002dfd9be732a19d3e",
+    "args": [
+      "--experimental-test-module-mocks",
+      "--test",
+      "--test-concurrency=1",
+      "test/applicationPersistence.spec.mjs",
+      "test/authTokenService.spec.mjs",
+      "test/billingConfig.spec.mjs",
+      "test/billingRoutes.spec.mjs",
+      "test/billingStateService.spec.mjs",
+      "test/bookingAdminRoutes.spec.mjs",
+      "test/bookingAdminService.spec.mjs",
+      "test/bookingCapabilities.spec.mjs",
+      "test/bookingPreferenceService.spec.mjs",
+      "test/bookingRoutes.spec.mjs",
+      "test/bookingService.spec.mjs",
+      "test/bookingTokenReceipt.spec.mjs",
+      "test/calendarCredentials.spec.mjs",
+      "test/calendarOAuthState.spec.mjs",
+      "test/corsPolicy.spec.mjs",
+      "test/googleCalendarAdapter.spec.mjs",
+      "test/onboardingCalendar.spec.mjs",
+      "test/onboardingServiceArea.spec.mjs",
+      "test/phase2.spec.js",
+      "test/phase2Terminology.spec.js",
+      "test/planAccess.spec.mjs",
+      "test/platformSchema.spec.mjs",
+      "test/precisionFixtureIntegrity.spec.mjs",
+      "test/priceBookIntegrity.spec.js",
+      "test/pricebookPersistence.spec.mjs",
+      "test/providerCredentials.spec.mjs",
+      "test/quoteApplicationBoundary.spec.mjs",
+      "test/quoteOriginStorage.spec.mjs",
+      "test/runtimeConfig.spec.mjs",
+      "test/serviceArea.spec.mjs",
+      "test/tenantAddon.spec.js",
+      "test/calendarForm.spec.mjs",
+      "test/ownerCalendarService.spec.mjs",
+      "test/accountEmail.spec.mjs",
+      "test/authSessionService.spec.mjs",
+      "test/authSessionHttp.spec.mjs",
+      "test/authSessionClient.spec.mjs"
+    ],
+    "status": 0,
+    "elapsedMs": 66004,
+    "counters": {
+      "tests": 382,
+      "pass": 382,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "evidence": "Observed completed test process output in this chat. Final raw log hash was not recovered before local execution stopped responding; do not substitute the earlier 380-test log."
+  },
+  "finalBrowserRepeats": {
+    "labels": [
+      "session-real-browser-final",
+      "session-account-browser-final-v2"
+    ],
+    "status": "unknown",
+    "reason": "Launched, but local runtime/file reads stopped responding before results were retrieved."
+  },
+  "hostedVerification": {
+    "status": "success",
+    "sourceCommit": "67000e668a0da81fa1a85152256705c843429ca8",
+    "runId": 36681673043,
+    "jobId": 109778264099,
+    "summary": "hosted/results.json",
+    "sourceManifest": "HOSTED_SOURCE_BINDING.json",
+    "liveProviderTraffic": false
+  },
+  "earlierRuns": [
+    {
+      "label": "session-account-browser-final",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-account-browser-final'];await import('./verification/auth-email/browser-workflow.mjs');"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 93050,
+      "log": "session-account-browser-final.log",
+      "counters": {},
+      "logSha256": "46e81c36ffabc126b203390992f6f3172cb1beb4ca410026a691c1e82cec23eb"
+    },
+    {
+      "label": "session-browser-transport-final",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionClient.spec.mjs",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 5535,
+      "log": "session-browser-transport-final.log",
+      "counters": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "210dedd54d8e251315d8563a4a44a31126f67c295a04a9e373cc02923f84f036"
+    },
+    {
+      "label": "session-build-client-r2",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.argv=['node','vite','build'];process.chdir('client');await import('./node_modules/vite/dist/node/cli.js');"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 309281,
+      "log": "session-build-client-r2.log",
+      "counters": {},
+      "logSha256": "69b9c6812793ecf76d0aaa17b726798c62bb4624076135444512d4aa1faf5c2f"
+    },
+    {
+      "label": "session-build-client",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.chdir('client');await import('../node_modules/vite/dist/node/cli.js')",
+        "build"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 1227,
+      "log": "session-build-client.log",
+      "counters": {},
+      "logSha256": "9a6abdefa195b2ce237150491b6220aee71fa60f684bbc024a0a22aa1f8eabed"
+    },
+    {
+      "label": "session-combined-application",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 69668,
+      "log": "session-combined-application.log",
+      "counters": {
+        "tests": 380,
+        "pass": 380,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "f020cb4c005e1b9001a753f699ba346ea076cf914bb497633230071c47857bc3"
+    },
+    {
+      "label": "session-engine-regression",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 295390,
+      "log": "session-engine-regression.log",
+      "counters": {
+        "tests": 357,
+        "pass": 357,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "0c4aa0ab31ce6f2ad8ba56ed6557e8ed83f938b4f1d976945400b5037739f26b"
+    },
+    {
+      "label": "session-final-client-build",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.argv=['node','vite','build'];process.chdir('client');await import('./node_modules/vite/dist/node/cli.js');"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 25337,
+      "log": "session-final-client-build.log",
+      "counters": {},
+      "logSha256": "eaefeb8a911a77bcda1c89a134e96ee9f13a1fc1b1cca48becc21d9f4511ac4a"
+    },
+    {
+      "label": "session-http-client-r1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 159024,
+      "log": "session-http-client-r1.log",
+      "counters": {
+        "tests": 22,
+        "pass": 22,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "0258d3f9aa1111bdf324a7013369e6281ac48fd0a41bedc4fbbcb4d98ebb7aa3"
+    },
+    {
+      "label": "session-integration-first",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/corsPolicy.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 27010,
+      "log": "session-integration-first.log",
+      "counters": {
+        "tests": 42,
+        "pass": 42,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "bdb863af38af72bbb3668158d45d3b443fa5ba04c84b27c1be3a0e102593aa0c"
+    },
+    {
+      "label": "session-primitives-r1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionService.spec.mjs"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 10789,
+      "log": "session-primitives-r1.log",
+      "counters": {
+        "tests": 18,
+        "pass": 16,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "aad64535a94efb18384b4840f1760675e416e91229782a407ad327500290e45e"
+    },
+    {
+      "label": "session-primitives-r2",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 4498,
+      "log": "session-primitives-r2.log",
+      "counters": {
+        "tests": 18,
+        "pass": 18,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "48d4fe85eb8af07e86ff93212035299246a258634e7105691b9594018e7ea994"
+    },
+    {
+      "label": "session-production-build-after-reset-fix",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 51735,
+      "log": "session-production-build-after-reset-fix.log",
+      "counters": {},
+      "logSha256": "1b65a129cc6f24705b39017ebfa5c89b2d7749393600a5e86c00ab0f4701fb80"
+    },
+    {
+      "label": "session-production-build",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 35301,
+      "log": "session-production-build.log",
+      "counters": {},
+      "logSha256": "f62c97c3395a8efc5ac1aac5e0eb20f79c2719e0633b79f5210ea13a8cb23f7e"
+    },
+    {
+      "label": "session-real-browser-r1",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-browser-r1'];await import('./verification/session-security/browser-workflow.mjs');"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 22079,
+      "log": "session-real-browser-r1.log",
+      "counters": {},
+      "logSha256": "de48a3a3d7e3b032c4507773330c01b59c1c1311d8dcba3fead0c42f2f8bbff4"
+    },
+    {
+      "label": "session-real-browser-r2",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-browser-r2'];await import('./verification/session-security/browser-workflow.mjs');"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 127090,
+      "log": "session-real-browser-r2.log",
+      "counters": {},
+      "logSha256": "c7d976932cb0be326d92462cd1ad86d224c40058e3c684da54dea1b960a14d4d"
+    },
+    {
+      "label": "session-real-browser-r3",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-browser-r3'];await import('./verification/session-security/browser-workflow.mjs');"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 94473,
+      "log": "session-real-browser-r3.log",
+      "counters": {},
+      "logSha256": "36476b64500f327d01f122dcd82c93c26ed469f850f905c423b58f930b86ecd5"
+    },
+    {
+      "label": "session-real-browser-r4",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-browser-r4'];await import('./verification/session-security/browser-workflow.mjs');"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 194829,
+      "log": "session-real-browser-r4.log",
+      "counters": {},
+      "logSha256": "141eece4e106354a47a2f2c7ae72044178016f9ffba8cd904d5711f0141b95cb"
+    },
+    {
+      "label": "session-real-browser-r5",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.env.PRICEBOOK_BROWSER_MODULE='C:/Users/money/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright';process.env.PRICEBOOK_BROWSER_EXECUTABLE='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';process.argv=['node','workflow','.', '../session-browser-r5'];await import('./verification/session-security/browser-workflow.mjs');"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 108737,
+      "log": "session-real-browser-r5.log",
+      "counters": {},
+      "logSha256": "d705a7f549886088458be694235c2c7e6dd85dc9cdaf98b9388e07196f294bc4"
+    },
+    {
+      "label": "session-tenant-regression",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/tenantAddon.spec.js"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 8112,
+      "log": "session-tenant-regression.log",
+      "counters": {
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "2982b85e688c61029241203343d469f536bcb20316b6ba8d93c10214d492a6e8"
+    },
+    {
+      "label": "session-widget-build",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "process.argv=['node','vite','build','--config','vite.widget.config.js'];process.chdir('client');await import('./node_modules/vite/dist/node/cli.js');"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 20035,
+      "log": "session-widget-build.log",
+      "counters": {},
+      "logSha256": "a25898c1790bacd8f11c905fa1d107bc01c8c424de1a9a223a8b94ee79496087"
+    }
+  ],
+  "verificationResolution": "Fresh hosted application/engine/transport/build/browser checks complete final verification; interrupted final local browser repeats remain historically unknown."
+}

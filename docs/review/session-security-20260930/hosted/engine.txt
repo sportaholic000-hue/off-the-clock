@@ -1,0 +1,363 @@
+ok 1 - FENCING_INSTALL installed: independent complete quote
+ok 2 - FENCING_INSTALL itemized: independent complete quote
+ok 3 - FENCING_REPLACEMENT installed: independent complete quote
+ok 4 - FENCING_REPLACEMENT itemized: independent complete quote
+ok 5 - INTERIOR_PAINTING installed: independent complete quote
+ok 6 - INTERIOR_PAINTING itemized: independent complete quote
+ok 7 - EXTERIOR_PAINTING installed: independent complete quote
+ok 8 - EXTERIOR_PAINTING itemized: independent complete quote
+ok 9 - Configured offerings: missing selected prices and mismatched defined scope do not quote
+ok 10 - Configured offerings: nested gate input, unexpected scope and contradictory fields cannot disappear
+ok 11 - Configured offerings: fractional-cent unit rates and installed selling-price markup behavior
+ok 12 - Itemized fence: owner cost markup and sales tax apply once; installed gates stay selling prices
+ok 13 - Fence removal disposal is charged exactly once and only when selected
+ok 14 - Offering definitions do not convert zero required prices into a free job
+ok 15 - All painting surface conditions quote only their explicitly defined finish, primer and preparation
+ok 16 - Inactive owner choices retain saved values without adding charges, and unknown shapes remain invalid
+ok 17 - Tier rate overrides retain inherited scope and disclose unusable options
+ok 18 - build guide Test 1 roofing replacement
+ok 19 - roofing repair
+ok 20 - flat roof replacement
+ok 21 - flat roof repair
+ok 22 - interior painting
+ok 23 - exterior painting
+ok 24 - flooring install
+ok 25 - flooring replacement
+ok 26 - fencing install
+ok 27 - fencing replacement
+ok 28 - build guide Test 2 concrete driveway
+ok 29 - concrete patio slab
+ok 30 - landscaping cleanup
+ok 31 - landscaping mulch
+ok 32 - landscaping sod
+ok 33 - landscaping planting
+ok 34 - landscaping mowing
+ok 35 - siding replacement
+ok 36 - siding repair
+ok 37 - custom flat service
+ok 38 - minimum fields must be present, but zero means no minimum
+ok 39 - cleanup disposal flat is not multiplied by 100
+ok 40 - per-service minimums are enforced
+ok 41 - interior painting sqft path with trim has no NaN line items
+ok 42 - TAX_ALL applies minimum pre-tax
+ok 43 - TAX_MATERIALS taxes the marked-up material base
+ok 44 - TAX_NONE produces no tax line
+ok 45 - every formula price field appears in its required owner field list
+ok 46 - tier overrides change only overridden fields
+ok 47 - vNext hand calculation: roof replacement uses measured itemized accessory lengths
+ok 48 - vNext hand calculation: roof repair maps the canonical medium size exactly
+ok 49 - vNext hand calculation: flat roof replacement uses measured area and layer count
+ok 50 - vNext hand calculation: flat roof repair consumes the selected nested size price
+ok 51 - vNext hand calculation: interior painting uses measured trim length
+ok 52 - vNext fail-closed contract: exterior painting records measured fair-condition preparation
+ok 53 - vNext hand calculation: flooring installation uses measured area and explicit vinyl rule
+ok 54 - vNext hand calculation: flooring replacement prices measured removal and subfloor scope
+ok 55 - vNext fail-closed contract: fencing installation defers the mixed concrete-and-digging allocation
+ok 56 - vNext fail-closed contract: fencing replacement defers the mixed concrete-and-digging allocation
+ok 57 - vNext hand calculation: concrete driveway uses measured dimensions and correct waste addition
+ok 58 - vNext hand calculation: concrete patio uses measured rectangular perimeter
+ok 59 - vNext hand calculation: cleanup disposal remains integer cents with explicit debris pricing
+ok 60 - vNext hand calculation: mulch bed preparation uses direct condition pricing without hidden multiplier
+ok 61 - vNext hand calculation: sod installation uses measured area
+ok 62 - vNext hand calculation: planting prices each measured plant-size count
+ok 63 - vNext hand calculation: mowing uses measured lawn and edging lengths
+ok 64 - vNext fail-closed contract: siding replacement uses measured wall and trim lengths
+ok 65 - vNext hand calculation: siding repair consumes material-type and damage-specific rates
+ok 66 - vNext fail-closed contract: custom fixed hourly service honors exact configured unit
+ok 67 - vNext negative control: ROOFING_REPLACEMENT rejects malformed roofSizeInput
+ok 68 - vNext negative control: ROOFING_REPAIR rejects malformed affectedArea
+ok 69 - vNext negative control: FLAT_ROOF_REPLACEMENT rejects malformed existingLayers
+ok 70 - vNext negative control: FLAT_ROOF_REPAIR rejects malformed membraneType
+ok 71 - vNext negative control: INTERIOR_PAINTING rejects malformed coats
+ok 72 - vNext negative control: EXTERIOR_PAINTING rejects malformed exteriorAreaSqft
+ok 73 - vNext negative control: FLOORING_INSTALL rejects malformed sqft
+ok 74 - vNext negative control: FLOORING_REPLACEMENT rejects malformed subfloorRepairAreaSqft
+ok 75 - vNext negative control: FENCING_INSTALL rejects malformed gateWidthTotalLF
+ok 76 - vNext negative control: FENCING_REPLACEMENT rejects malformed cornerCount
+ok 77 - vNext negative control: CONCRETE_DRIVEWAY rejects malformed thickness
+ok 78 - vNext negative control: CONCRETE_PATIO_SLAB rejects malformed reinforcement
+ok 79 - vNext negative control: LANDSCAPING_CLEANUP rejects malformed debrisLevel
+ok 80 - vNext negative control: LANDSCAPING_MULCH rejects malformed mulchDepth
+ok 81 - vNext negative control: LANDSCAPING_SOD rejects malformed sodSqft
+ok 82 - vNext negative control: LANDSCAPING_PLANTING rejects malformed plantsBySize
+ok 83 - vNext negative control: LANDSCAPING_MOWING rejects malformed serviceFrequency
+ok 84 - vNext negative control: SIDING_REPLACEMENT rejects malformed stories
+ok 85 - vNext negative control: SIDING_REPAIR rejects malformed affectedArea
+ok 86 - vNext negative control: CUSTOM rejects malformed hours
+ok 87 - vNext sufficiency contract: ROOFING_REPLACEMENT requires starterLengthLF
+ok 88 - vNext sufficiency contract: ROOFING_REPAIR requires affectedArea
+ok 89 - vNext sufficiency contract: FLAT_ROOF_REPLACEMENT requires roofSqft
+ok 90 - vNext sufficiency contract: FLAT_ROOF_REPAIR requires affectedArea
+ok 91 - vNext sufficiency contract: INTERIOR_PAINTING requires trimLengthLF
+ok 92 - vNext sufficiency contract: EXTERIOR_PAINTING requires exteriorAreaSqft
+ok 93 - vNext sufficiency contract: FLOORING_INSTALL requires sqft
+ok 94 - vNext sufficiency contract: FLOORING_REPLACEMENT requires subfloorRepairAreaSqft
+ok 95 - vNext sufficiency contract: FENCING_INSTALL requires gateWidthTotalLF
+ok 96 - vNext sufficiency contract: FENCING_REPLACEMENT requires linearFeet
+ok 97 - vNext sufficiency contract: CONCRETE_DRIVEWAY requires width
+ok 98 - vNext sufficiency contract: CONCRETE_PATIO_SLAB requires length
+ok 99 - vNext sufficiency contract: LANDSCAPING_CLEANUP requires yardSqft
+ok 100 - vNext sufficiency contract: LANDSCAPING_MULCH requires edgeLF
+ok 101 - vNext sufficiency contract: LANDSCAPING_SOD requires sodSqft
+ok 102 - vNext sufficiency contract: LANDSCAPING_PLANTING requires plantsBySize
+ok 103 - vNext sufficiency contract: LANDSCAPING_MOWING requires edgingLengthLF
+ok 104 - vNext sufficiency contract: SIDING_REPLACEMENT requires trimLengthLF
+ok 105 - vNext sufficiency contract: SIDING_REPAIR requires affectedArea
+ok 106 - vNext sufficiency contract: CUSTOM requires hours
+ok 107 - every built-in service has a documented measurement-sufficiency contract
+ok 108 - area and perimeter shortcuts are inspection-first, never customer-ready
+ok 109 - itemized roofing has no square-root geometry and uses each measured length independently
+ok 110 - selected mandatory scope distinguishes missing prices from intentionally free prices
+ok 111 - caller-selected repair sizes are rejected instead of overriding measured affected area
+ok 112 - partial flat-roof calculations require valid measured partial scope
+ok 113 - custom units are validated, but public quoting waits for an approved charge classification
+ok 114 - mulch prep has no hidden half-rate branch
+ok 115 - vinyl-plank underlayment follows every explicit owner rule
+ok 116 - per-service taxability changes taxable subtotal and is preserved in the record
+ok 117 - sell-price categories are never marked up twice
+ok 118 - minimum is pre-tax and every displayed range stays above the customer minimum floor
+ok 119 - common fees obey service rules and per-quantity disposal cannot be charged twice
+ok 120 - preview and live price-book paths use identical validation and calculation
+ok 121 - inactive and AI-unconfirmed services cannot produce customer-ready quotes
+ok 122 - customer payload remains strictly allowlisted while owner record remains complete
+ok 123 - selected scope with missing prices reviews without omitting the request
+ok 124 - every tier validates effective pricing and only its explicit override changes
+ok 125 - no valid service calculation emits NaN, Infinity, undefined money, or omitted mandatory lines
+ok 126 - price-book metadata exposes readable controls for every candidate factor and rule
+ok 127 - candidate price-book validation rejects incomplete rules and invalid defaults
+ok 128 - business-wide defaults fail closed across markup, tax, fees, minimums, ranges, and seasonal settings
+ok 129 - the isolated candidate is not imported by the production server
+ok 130 - precision follow-up: all-service catalog covers every registered ready or review path and public entry point
+ok 131 - precision follow-up: ROOFING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 132 - precision follow-up: ROOFING_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 133 - precision follow-up: FLAT_ROOF_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 134 - precision follow-up: FLAT_ROOF_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 135 - precision follow-up: INTERIOR_PAINTING independent finance matrix fees tiers minima and range boundaries
+ok 136 - precision follow-up: FLOORING_INSTALL independent finance matrix fees tiers minima and range boundaries
+ok 137 - precision follow-up: FLOORING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 138 - precision follow-up: CONCRETE_DRIVEWAY independent finance matrix fees tiers minima and range boundaries
+ok 139 - precision follow-up: CONCRETE_PATIO_SLAB independent finance matrix fees tiers minima and range boundaries
+ok 140 - precision follow-up: LANDSCAPING_CLEANUP independent finance matrix fees tiers minima and range boundaries
+ok 141 - precision follow-up: LANDSCAPING_MULCH independent finance matrix fees tiers minima and range boundaries
+ok 142 - precision follow-up: LANDSCAPING_SOD independent finance matrix fees tiers minima and range boundaries
+ok 143 - precision follow-up: LANDSCAPING_PLANTING independent finance matrix fees tiers minima and range boundaries
+ok 144 - precision follow-up: LANDSCAPING_MOWING independent finance matrix fees tiers minima and range boundaries
+ok 145 - precision follow-up: SIDING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 146 - precision follow-up: SIDING_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 147 - activation validates every configured offering, not only the first map key
+ok 148 - quote-time requests for an unconfigured offering require review
+ok 149 - flat-roof activation requires both an actual offering and the mandated average fallback
+ok 150 - a medium repair cannot quote from a nested map containing only small
+ok 151 - misspelled Class 2 map keys fail closed
+ok 152 - reversed flooring room-size thresholds fail shared validation
+ok 153 - itemized roofing cannot activate or quote with an accessory price missing
+ok 154 - an explicitly confirmed zero accessory length is recorded as no physical scope
+ok 155 - fractional cents and unsupported pricing controls are rejected
+ok 156 - unexpected customer fields never influence a quote
+ok 157 - AI-suggested pricing and optional disposal overrides cannot quote before confirmation
+ok 158 - customer review responses are sanitized at early and late gates
+ok 159 - partial flat-roof area and percentage must agree
+ok 160 - interior floor-area and room-count shortcuts are inspection-first
+ok 161 - painting labor and material respond exactly to measured wall area and coat count
+ok 162 - fencing rejects caller post counts and exposes the missing geometry and mixed-charge decisions
+ok 163 - common disposal follows physical scope and cannot substitute for missing selected bagging pricing
+ok 164 - mulch disposal scope follows measured bed preparation scope
+ok 165 - TAX_ALL taxes the full pre-tax subtotal regardless of category taxability flags
+ok 166 - service status and the real price-book path preserve valid tiers when another tier fails
+ok 167 - complete tier overrides can activate and quote even when the base pricing is incomplete
+ok 168 - duplicate tier names fail before calculation
+ok 169 - custom ranges reject negative values and exact service-name mismatches
+ok 170 - every custom quantity unit validates its matching input but all calculation paths fail closed
+ok 171 - unknown flat-roof facts require inspection and obsolete assumption controls are rejected
+ok 172 - customer sanitizer never exposes calculation records, rates, or owner rules
+ok 173 - candidate formulas contain none of the removed geometry and hidden-factor shortcuts
+ok 174 - candidate price-book metadata has specific labels instead of generic raw-key fallbacks
+ok 175 - owner-selected common fees require an explicit owner decision
+ok 176 - installation services reject replacement-only scope instead of silently deleting it
+ok 177 - underlayment and gate measurements reject contradictory selected scope
+ok 178 - supported concrete finishes round the base and finish-extra components independently
+ok 179 - buffered ranges cannot use remitted tax to satisfy a pre-tax minimum
+ok 180 - price-book statuses fail closed when business-wide defaults are invalid
+ok 181 - duplicate built-in services are invalid and cannot be quoted ambiguously
+ok 182 - case-insensitive duplicate custom service names cannot activate or quote ambiguously
+ok 183 - custom ranges remain fail-closed at public and raw boundaries pending charge classification
+ok 184 - repair 1: tax modes use independently calculated bases
+ok 185 - repairs 2 and 4: tax mode controls minimum ordering and adjustment tax
+ok 186 - repair 3: minimum floor uses tax attributable to the minimum scenario
+ok 187 - repair 5: positive cent totals remain exact and free complete offerings require classification
+ok 188 - repair 6: roof replacement enforces only its supported service minimum
+ok 189 - repair 7: inherited interior prep factors cannot price measured wall area
+ok 190 - repair 8: exterior primer scope fails closed without an approved primer price contract
+ok 191 - repair 9: wall height does not alter ceiling labor
+ok 192 - repair 10: flooring underlayment has a field-specific installed-area sell basis
+ok 193 - repair 10: roofing underlayment has a field-specific installed-area sell basis
+ok 194 - repair 11: unknown flat-roof membrane or layer count always requires review
+ok 195 - repair 12: measured affected area derives repair categories at every boundary
+ok 196 - repair 13: active leak urgency survives every review path
+ok 197 - repair 14: selected gate widths fail closed without an approved width-pricing contract
+ok 198 - repair 15: corner count is not required and cannot be silently ignored
+ok 199 - repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar
+ok 200 - repair 17: mixed concrete and digging charge fails closed without an allocation rule
+ok 201 - repair 18: exposed aggregate fails closed without approved material pricing
+ok 202 - repair 19: zero and missing remain distinct for conditional prices
+ok 203 - repair 20: owner preview evaluates a valid inactive draft without enabling customer quote
+ok 204 - repair 21: owner pricing diagnostics identify exact fields and failure kinds
+ok 205 - repair 22: every failed tier retains separate field diagnostics
+ok 206 - repair 23: customer sees unavailable option notice without owner diagnostics
+ok 207 - repair 24: every customer review uses the same truthful request message
+ok 208 - repair 25: customer-safe price drivers rank by financial significance
+ok 209 - repair 26: every calculation line declares a reproducible evidence variant
+ok 210 - repair 27: measured quotes expose the exact effective range buffer
+ok 211 - repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+ok 212 - repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+ok 213 - repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+ok 214 - repair 31: flooring underlayment requirements are product-specific and vinyl-only controls do not block tile
+ok 215 - repair 32: unresolved cost purchase contracts and exact flooring thresholds fail closed
+ok 216 - repair 33: conditional customer fields are rejected whenever their selected scope cannot consume them
+ok 217 - repair 34: missing and duplicate service previews report the lookup defect instead of inactive status
+ok 218 - repair 35: decking distinguishes missing scope from confirmed zero and always preserves the approved unit-price driver
+ok 219 - repair 36: internal review retains lead evidence and customer sanitization removes it
+ok 220 - repair 37: metadata and customer results describe only behavior the candidate actually implements
+ok 221 - repair 38: intrinsic range scenarios rewrite amount and evidence together, including an intentional free low bound
+ok 222 - repair 39: inspection-first reviews retain submitted scope and validated measurements through the real price-book path
+ok 223 - repair 40: invalid provenance and disclaimer values fail every status, preview, and live path closed
+ok 224 - repair 41: only an explicit owner caller can receive internal quote or review data
+ok 225 - repair 42: every open shaped-map family rejects noncanonical keys at the exact dotted path
+ok 226 - repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation
+ok 227 - repair 44: money-driving derived quantities are hand-recomputed across every affected trade
+ok 228 - repair 45: every scenario line records its effective basis, markup eligibility, and exact scenario cents
+ok 229 - repair 46: blocked scopes expose only executable Class 2 controls and the actual owner decision
+ok 230 - repair 47: intrinsic range multiplication and midpoint arithmetic stay within safe integer cents
+ok 231 - repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+ok 232 - repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge
+ok 233 - repair 50: misplaced quote-affecting service controls fail closed instead of being ignored
+ok 234 - repair 51: malformed top-level quote containers return review diagnostics instead of throwing
+ok 235 - repair 52: activation executes formulas and cannot mark an overflowing service live
+ok 236 - repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows
+ok 237 - repair 54: exported validators and tier boundaries fail closed on malformed structured data
+ok 238 - repair 55: an independent arithmetic oracle matches the shared pipeline across 1,152 policy combinations
+ok 239 - repair 56: direct calculator boundaries fail closed with exact defensive diagnostics
+ok 240 - repair 57: every selected common fee follows its exact owner or customer boolean without cross-fee leakage
+ok 241 - repair 58: cross-field and shaped-structure validators reject every adversarial relationship at its exact path
+ok 242 - repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior
+ok 243 - repair 60: exported raw boundaries reject unresolved custom classification and malformed intrinsic range evidence
+ok 244 - repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline
+ok 245 - repair 62: inherited properties and prototype-shaped tier overrides cannot supply hidden quote rates or approvals
+ok 246 - repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent
+ok 247 - repair 64: AI-sourced service rules cannot change a customer quote before explicit own-field confirmation
+ok 248 - repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade
+ok 249 - repair 66: customer and lead boundaries reject malformed, inherited, or aliased records
+ok 250 - repair 67: public registries and malformed request boundaries cannot poison or crash the engine
+ok 251 - repair 68: nested pricing is the one canonical service shape across status, preview, and live quotes
+ok 252 - repair 69: unresolved dual partial measurements and flooring overlays fail closed without changing valid controls
+ok 253 - repair 70: malformed business-default containers keep one exact root path across public APIs
+ok 254 - repair 71: accessor-backed public requests fail closed without leaking customer diagnostics
+ok 255 - repair 72: sparse tiers and seasonal arrays are rejected at exact paths
+ok 256 - repair 74: snapshot trust is non-observable and cannot be forged through an exported value
+ok 257 - repair 75: every exported evidence helper rejects accessors, sparse arrays, and named array data
+ok 258 - repair 76: price-book service arrays cannot hide sparse or named definitions
+ok 259 - repair 77: function and symbol values fail at their exact quote-data paths
+ok 260 - repair 78: landscaping fields explicitly sold as labor use labor financial treatment
+ok 261 - repair 79: customer estimates require cent precision and a consistent first-option projection
+ok 262 - repair 80: customer projections are independent and bound to safe calculation evidence
+ok 263 - repair 81: malformed pricing primitives retain exact paths through direct and price-book execution
+ok 264 - repair 82: prototype-backed approvals and fee selections are rejected across public APIs
+ok 265 - repair 83: an exported service status cannot report LIVE without complete business defaults
+ok 266 - repair 84: fee selections and tier definitions enforce exact supported request shapes
+ok 267 - repair 85: mutation after snapshot cannot bypass any later public boundary inspection
+ok 268 - repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record
+ok 269 - repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary
+ok 270 - repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary
+ok 271 - repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary
+ok 272 - repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence
+ok 273 - repair 91: the direct calculator never rereads validated proxies or accessor-backed context
+ok 274 - repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data
+ok 275 - repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities
+ok 276 - repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding
+ok 277 - repair 94: customer sanitization independently rejects forged exact line evidence
+ok 278 - repair 95: preview-only results cannot be laundered into customer-ready estimates
+ok 279 - repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries
+ok 280 - repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence
+ok 281 - repair 98: fee selections are accepted only for the matching configured selection mode
+ok 282 - repair 99: the exported scenario materializer never returns an unvalidated regular line
+ok 283 - repair 100: exact concrete dimensions obey the same practical area bound as direct area input
+ok 284 - repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values
+ok 285 - repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries
+ok 286 - repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections
+ok 287 - repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values
+ok 288 - repair 105: decking costs stay internal under markup and margin while sell units may be disclosed
+ok 289 - repair 106: included and explicitly exclusive itemized accessories charge each component once
+ok 290 - repair 107: flat roof existing membrane selects removal and explicit replacement selects installation
+ok 291 - repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris
+ok 292 - repair 109: replaced owner and customer common disposal need no selection but active fees do
+ok 293 - repair 110: exact derived areas enforce direct minimum maximum and strict partial scope bounds
+ok 294 - repair 111: decimal flooring equality gate uses exact division and adjacent cases remain distinct
+ok 295 - repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates
+ok 296 - repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back
+ok 297 - repair 114: unsupported legacy or misspelled service roots are rejected at the exact path
+ok 298 - repair 115: leads require actionable reasons and matching request identity and submitted scope
+ok 299 - repair 116: fractional mowing cents represent fifty dollars per ten thousand square feet exactly
+ok 300 - repair 117: permit fees follow confirmed job scope with explicit always and included controls
+ok 301 - repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation
+ok 302 - repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries
+ok 303 - repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists
+ok 304 - repair 121: flooring removal and disposal use only independently measured removal area
+ok 305 - repair 122: siding removal cannot reuse replacement type and installation area
+ok 306 - repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline
+ok 307 - repair 124: concrete demolition is review-only without existing-slab pricing facts
+ok 308 - repair 125: commercial building type does not establish insulation or coverboard scope
+ok 309 - repair 126: wall uniformity is explicit and ceiling coats are independently measured
+ok 310 - repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract
+ok 311 - repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+ok 312 - repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity
+ok 313 - repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying
+ok 314 - repair 131: price-map aliases require affirmative registered offering facts across materials and repairs
+ok 315 - repair 132: sod separate disposal uses one shared quote activation metadata and customer contract
+ok 316 - repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+ok 317 - repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice
+ok 318 - repair 135: lead urgency must equal the independently derived roof-leak facts
+ok 319 - repair 136: ready review and lead records require the current immutable behavior build identifier
+ok 320 - repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals
+ok 321 - repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure
+ok 322 - owner ruling: customer ranges expand to whole dollars while exact single prices retain cents
+ok 323 - owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap
+ok 324 - repair 139: offering UUIDs are unique per selector and facts bind the exact field value and UUID
+ok 325 - repair 140: colliding persisted service IDs diagnose both records while unique IDs retain quote approval and lead identity
+ok 326 - repair 141: missing registries inconsistent registries unsupported offerings and missing facts have distinct responsibility
+ok 327 - repair 142: configured leads require the exact selected service and only explicit lookup reviews accept null identity
+ok 328 - repair 143: included zero prices retain category and basis with independently calculated tax and markup controls
+ok 329 - repair 144: review-only metadata names exact supported fields and the actual outstanding scope decisions
+ok 330 - repair 145: fully rebuilt rate multiplier fee tax and markup forgeries cannot detach calculations from retained configuration
+ok 331 - repair 146: free included zero physical scope and sub-cent rounding have distinct private evidence reasons
+ok 332 - precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion
+ok 333 - repair 147: requested stored and receipt service types agree for every source and ordinary edits cannot convert identity
+ok 334 - repair 147: equivalent UUID spellings canonicalize consistently across identity approvals zero policy offerings facts and duplicate detection
+ok 335 - repair 148: explicit free offerings bypass only their own minima with private evidence and paid sibling controls
+ok 336 - repair 149: positive cent ranges never display free and retain exact cents only when whole-dollar display would contain zero
+ok 337 - repair 150: every inclusion path belongs to the exact configured service price contract
+ok 338 - repair 150: dormant tier inclusion is validated using effective tier prices and preserves valid sibling options
+ok 339 - handoff A: unrestricted markup has exact positive boundary and gross-margin controls
+ok 340 - handoff A: quote preview price-book activation and evidence agree above the former cap
+ok 341 - handoff A: high markup preserves category tax fee and tier arithmetic
+ok 342 - handoff B: each missing selected price reviews and retains complete actionable scope
+ok 343 - handoff B: priced and explicitly zero selections charge once with signed price boundaries
+ok 344 - handoff B: only complete selected tiers survive and changed prices invalidate AI approval
+ok 345 - handoff C: customer minima retain exact cents across all tax modes service floors and buffers
+ok 346 - handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges
+ok 347 - handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior
+ok 348 - handoff B: candidate metadata identifies missing selected prices without changing production copy
+ok 349 - customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct
+ok 350 - customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact
+ok 351 - customer amount precision: service minima and entered-rate totals use the same guard in two services
+ok 352 - customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome
+ok 353 - customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices
+ok 354 - customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead
+ok 355 - customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents
+ok 356 - customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration
+ok 357 - customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries
+# tests 357
+# pass 357
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

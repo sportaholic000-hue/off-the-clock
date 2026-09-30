@@ -13,7 +13,7 @@ export function createCorsOptionsDelegate({
     const allowed = !origin || publicBrowserRequest || trusted.has(origin);
     callback(null, {
       origin: allowed ? Boolean(origin) : false,
-      credentials: false,
+      credentials: Boolean(origin) && trusted.has(origin) && !publicBrowserRequest,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Authorization', 'Content-Type', 'Idempotency-Key'],
       maxAge: 600

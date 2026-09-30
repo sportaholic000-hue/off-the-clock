@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
+import {VerificationNotice} from './accountRecovery.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   PhonePreviewButton, Select, StatusChip, StepActions, Textarea, TextInput, Toggle
@@ -100,7 +101,7 @@ function StepRail({ step, state, onJump }) {
 }
 
 function AuthStep({ onAuthenticated }) {
-  const [mode, setMode] = useState('register');
+  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' ? 'login' : 'register');
   const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -123,7 +124,7 @@ function AuthStep({ onAuthenticated }) {
           go('/settings/billing'); return;
         }
       }
-      onAuthenticated();
+      onAuthenticated(payload);
     } catch (nextError) {
       setError(nextError);
     } finally {
@@ -158,6 +159,7 @@ function AuthStep({ onAuthenticated }) {
         )}
         <ErrorMessage error={error} />
         <Button className="full" type="submit" disabled={busy}>{busy ? 'Working' : mode === 'register' ? 'Start setup' : 'Sign in'}</Button>
+        <Button variant="secondary" onClick={() => go('/forgot-password')}>Forgot password?</Button>
       </form>
     </div>
   );
@@ -791,6 +793,7 @@ function VoiceStep({ state, refresh, back }) {
 
 export default function Onboarding() {
   const [state, setState] = useState(null);
+  const [verificationDelivery, setVerificationDelivery] = useState(null);
   const [metadata, setMetadata] = useState([]);
   const [step, setStep] = useState(currentStepFromUrl(1));
   const [error, setError] = useState(null);
@@ -821,7 +824,7 @@ export default function Onboarding() {
     window.scrollTo({ top:0, behavior:'smooth' });
   }
 
-  if (!getToken()) return <AuthStep onAuthenticated={() => window.location.pathname.startsWith('/settings') ? go('/settings/billing') : refresh().then(() => move(2)).catch(setError)} />;
+  if (!getToken()) return <AuthStep onAuthenticated={payload => {setVerificationDelivery(payload.verificationDelivery || null);return window.location.pathname.startsWith('/settings') ? go('/settings/billing') : refresh().then(() => move(2)).catch(setError);}} />;
   if (error) return <AppShell activePath="/onboarding"><main className="billing-page"><ErrorMessage error={error}/><Button onClick={()=>go('/settings/billing')}>Billing</Button></main></AppShell>;
   if (!state) return <Loading label="LOADING ONBOARDING" />;
 
@@ -845,6 +848,7 @@ export default function Onboarding() {
           {/* Each step renders its own PageHeader with "Step N of 9", a
               meaningful title and a description. A second generic heading here
               duplicated the step counter and title on all nine steps. */}
+          <VerificationNotice initialDelivery={verificationDelivery}/>
           {content}
         </div>
       </main>

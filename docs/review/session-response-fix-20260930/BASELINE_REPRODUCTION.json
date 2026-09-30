@@ -1,0 +1,382 @@
+{
+  "sourceCommit": "8a778d5346f10d69e586d0ae46006238e4fd169c",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "rows": [
+    {
+      "name": "Ordinary same-account access renewal succeeds",
+      "passed": true
+    },
+    {
+      "name": "Ordinary sign-out, different-account sign-in and renewal succeed",
+      "passed": true
+    },
+    {
+      "name": "Delayed old refresh response replaces the new account cookie and forces sign-in on renewal",
+      "passed": false,
+      "before": {
+        "accessBelongsToNewAccount": true,
+        "refreshCookieBelongsToNewAccount": true,
+        "oldSessionRevoked": true
+      },
+      "after": {
+        "accessBelongsToNewAccount": true,
+        "refreshCookieBelongsToOldRevokedSession": true
+      },
+      "renewalStatus": 401,
+      "newAccountAccessCleared": true
+    },
+    {
+      "name": "Delayed old logout response clears the newly signed-in account cookie",
+      "passed": false,
+      "newAccountAccessInitiallyPreserved": true,
+      "newAccountCookieCleared": true,
+      "renewalStatus": 401,
+      "newAccountAccessCleared": true
+    }
+  ],
+  "errors": [],
+  "wire": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200,
+      "setsCookie": true,
+      "responseHeld": true,
+      "responseReleased": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "setsCookie": true,
+      "responseHeld": true,
+      "responseReleased": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "setsCookie": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200,
+      "setsCookie": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401,
+      "setsCookie": false
+    }
+  ],
+  "reproducerSha256": "ac6d028af189583f2a624b530c03878d3a60ffd481aeb267c6d0865f3daf26bb"
+}

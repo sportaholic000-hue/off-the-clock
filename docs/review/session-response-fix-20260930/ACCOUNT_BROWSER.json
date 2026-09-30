@@ -1,0 +1,170 @@
+{
+  "sourceCommit": "3e406d2107522319038c6cdd982cfcf08c91e657",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "rows": [
+    {
+      "name": "Signup survives failed provider delivery, exposes retry and preserves pending_payment",
+      "passed": true
+    },
+    {
+      "name": "Resend gives an absolute link; opening it hides the fragment and requires explicit verification",
+      "passed": true
+    },
+    {
+      "name": "Signed-in account screen shows verified state",
+      "passed": true
+    },
+    {
+      "name": "Reused verification link is rejected and recovery request stays private for verified accounts",
+      "passed": true
+    },
+    {
+      "name": "Sign-in exposes password recovery; known and unknown requests show the same response",
+      "passed": true
+    },
+    {
+      "name": "Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session",
+      "passed": true
+    },
+    {
+      "name": "Old password fails, new password signs in and existing signup/billing flow preserves pending_payment",
+      "passed": true
+    },
+    {
+      "name": "Reused reset fails and preserves entered form values",
+      "passed": true
+    },
+    {
+      "name": "Malformed links offer recovery on mobile without horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "No browser runtime errors or account link tokens in application logs",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "wire": [
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/account/resend-verification",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/verify-email",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/verify-email",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/resend-verification",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/billing/status",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "status": 400
+    }
+  ]
+}
