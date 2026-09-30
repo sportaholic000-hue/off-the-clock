@@ -35,3 +35,12 @@ Connected backend run `session-integration-first`: **42 tests passed**, comprisi
 The isolated security candidate now restores the engine/booking agent's exact published `1979792d766d6c2b2fe0dfb856d1651de03eee3f` source. Automatic review initially rejected a booking-code payload as overlapping work; read-only verification proved the peer's original file matched GitHub blob `a403eefb71d515a2632de993396d0e2c2d62b207`, and an exact hash-checked copy into this separate test workspace was accepted. The peer's branch and working copy were unchanged. No booking behavior edits were introduced by this lane.
 
 Real browser workflows and combined regression are still pending. No voice implementation or live provider operations have occurred.
+
+
+## Regression and backup checkpoint
+
+Combined application regression: **380 passed, zero failed** (37 test files; includes account/recovery and session tests). Both bundles pass through the repository's production build runner. GitHub comparison against peer commit `1979792d766d6c2b2fe0dfb856d1651de03eee3f` confirms all 41 peer files, including engine, booking and report history, retain their exact Git blob identities.
+
+Browser attempt r1 failed during synthetic email fixture setup because its expected synthetic credential label did not match. Browser attempt r2 made no application API requests: the ad hoc build had retained `NODE_ENV=test`, selecting the development API URL. The source was rebuilt using `build-resume-client.mjs` with `NODE_ENV=production` and `VITE_API_URL=''`. These are verification setup failures, not accepted launch results. The real browser workflow remains pending.
+
+The five original user-facing chat deliverables are also preserved under `docs/review/thread-deliverables-20260930/`, with dated scope explained in its README. They contain historical assessments; newer source-bound reports supersede repaired findings.

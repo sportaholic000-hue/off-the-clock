@@ -14,7 +14,7 @@ const app=await startApplication(root,evidence,{port:4702,browserOrigins:[site]}
 const fixtureFile=path.join(evidence,'synthetic-email-private.json');
 fs.writeFileSync(fixtureFile,JSON.stringify({syntheticOnly:true,mode:'normal',messages:[],calls:[]}));
 Object.assign(app.env,{CLIENT_URL:site,EMAIL_PROVIDER:'resend',EMAIL_DELIVERY_ENABLED:'true',
- RESEND_API_KEY:'re_SYNTHETIC_SESSION_BROWSER',EMAIL_FROM:'account@example.invalid',AUTH_EMAIL_FIXTURE:fixtureFile,
+ RESEND_API_KEY:'re_SYNTHETIC_AUTH_BROWSER',EMAIL_FROM:'account@example.invalid',AUTH_EMAIL_FIXTURE:fixtureFile,
  NODE_OPTIONS:'--import='+pathToFileURL(path.join(root,'verification/auth-email/email-provider-fixture.mjs')).href});
 await app.restart();
 const require=createRequire(path.join(root,'package.json')),{chromium}=require(process.env.PRICEBOOK_BROWSER_MODULE);
