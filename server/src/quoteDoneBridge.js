@@ -331,6 +331,18 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
+      const priceMaps={
+        ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
+        FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
+        FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft'],
+        FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft'],
+        FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
+        FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
+        SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
+        LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft'],
+        LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
+      };
+      if(priceMaps[meta.serviceType]?.includes(field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});

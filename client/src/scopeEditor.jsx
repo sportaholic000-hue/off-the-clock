@@ -13,7 +13,7 @@ export function ScopeEditor({service,onChange}) {
   <Notice>Complete installed prices include the described work and receive no additional markup. Itemized labor and materials use your category settings. Package costs use the stated coverage and waste allowance, rounded up to whole purchases. Use the same purchase group only for the exact same product and variant.</Notice>
   {Object.entries(catalog).map(([key,def])=>{
    const d=details[key];
-   const activePrices=Object.entries(priceFields).filter(([name])=>name===key||name.startsWith(key+'_')||key==='insulation'&&name.startsWith('coverboard_'));
+   const activePrices=Object.entries(priceFields).filter(([,field])=>field.scopeKey===key);
    return <div className="editor-section" key={key}><h3>{def.label}</h3>{!d?<Button variant="secondary" onClick={()=>set('scopeDetails',{...details,[key]:{}})}>Configure {def.label}</Button>:<>
     {Object.entries(def.fields).filter(([name])=>!(name==='category'&&d.mode!=='installed')&&!(['coverage','wastePercent','productKey'].includes(name)&&d.mode!=='package_cost')).map(([name,f])=><Field key={name} label={f.label+(f.unit?' ('+f.unit+')':'')}>
      {f.type==='boolean'||f.type==='enum'?<Select aria-label={def.label+' — '+f.label} value={d[name]===undefined?'':String(d[name])} onChange={e=>detail(key,name,e.target.value===''?undefined:(f.type==='boolean'?[true,false]:f.values).find(v=>String(v)===e.target.value))}><option value="">Choose</option>{(f.type==='boolean'?[true,false]:f.values).map(v=><option key={String(v)} value={String(v)}>{typeof v==='boolean'?(v?'Yes':'No'):String(v).replaceAll('_',' ')}</option>)}</Select>:

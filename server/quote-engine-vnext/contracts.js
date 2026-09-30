@@ -1,5 +1,5 @@
 import { measuredOutlineVNext } from './geometry.js';
-import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeOwnerDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest} from './scopePricing.js';
+import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
@@ -1649,7 +1649,6 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded && !pricing.scopeDetails?.siding_trim) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
   if (serviceType === 'CUSTOM' && pricing.customChargeClassification === undefined) requireDecision('customChargeClassification', 'custom_charge_classification', 'Choose the custom service charge category in the owner price book. The category selects the existing owner-configured price basis, taxability and markup settings; no labor/material split is inferred.');
 
-  ownerDecisionRequired.push(...scopeOwnerDiagnostics(serviceType,customerInputs,pricing,serviceRules));
   ownerDiagnostics.push(...ownerDecisionRequired.map(decision => ownerDiagnostic('owner_decision', decision.kind, decision.path, decision.message)));
   for (const path of unsupportedOwnerFields) ownerDiagnostics.push(ownerDiagnostic('unsupported', 'field', path, 'This pricing field is not supported for the selected service.'));
 

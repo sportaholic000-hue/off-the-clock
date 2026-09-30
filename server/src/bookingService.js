@@ -313,6 +313,40 @@ export function createBookingService({
     return safeIntent(policyStatement.get(intentId, ownerId), now);
   }
 
+  const preparationsInFlight = new Set();
+
+  function requireUnbookedIntent(ownerId, intentId) {
+    const appointment = db.prepare(`SELECT id, status FROM appointments
+      WHERE ownerId = ? AND bookingIntentId = ?
+        AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')
+      LIMIT 1`).get(ownerId, intentId);
+    if (appointment) throw bookingError('BOOKING_ALREADY_EXISTS', 409,
+      appointment.status === 'CONFIRMED'
+        ? 'This quote already has a confirmed appointment. Contact the business to change it.'
+        : 'An appointment confirmation is already in progress for this quote. Check that confirmation before choosing another time.');
+  }
+
+  function releaseInterruptedPreparation(appointment) {
+    // PREPARING is durable proof that createEvent has not started. An old
+    // handler must atomically leave this phase before writing to the provider.
+    // A new service instance can therefore release an interrupted preparation
+    // without guessing whether an ambiguous provider write succeeded.
+    if (appointment.providerEventStatus !== 'PREPARING' || preparationsInFlight.has(appointment.id)) return;
+    immediate(() => {
+      const nowIso = nowFrom(clock).toISOString();
+      const revoked = db.prepare(`UPDATE appointments SET status = 'PROVIDER_FAILED',
+        providerEventStatus = 'CONFIRMATION_INTERRUPTED', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+          AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
+        nowIso, appointment.id, appointment.ownerId, appointment.bookingIntentId
+      );
+      if (revoked.changes === 1) db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND intentId = ? AND status = 'CONFIRMING'`).run(
+        nowIso, appointment.holdId, appointment.ownerId, appointment.bookingIntentId
+      );
+    });
+  }
+
   function currentReceipt(ownerId, operation, idempotencyKey, intentId, digest) {
     const row = receiptStatement.get(ownerId, operation, idempotencyKey);
     if (!row) return null;
@@ -391,6 +425,7 @@ export function createBookingService({
     if (!record(filters)) throw invalid('Availability filters must be an object.');
     const now = nowFrom(clock);
     const row = context(ownerId, intentId, now);
+    requireUnbookedIntent(ownerId, intentId);
     const policy = policyConfiguration(row);
     if (policy.capability === 'external') {
       return { statusCode: 200, body: { status: 'EXTERNAL_HANDOFF', externalUrl: policy.externalUrl } };
@@ -546,6 +581,7 @@ export function createBookingService({
       const nowIso = now.toISOString();
       try {
         const row = context(ownerId, intentId, now);
+        requireUnbookedIntent(ownerId, intentId);
         const { payload } = validateSlot(slotId, ownerId, intentId, row, now);
         db.prepare(`UPDATE bookingHolds SET status = 'EXPIRED', updatedAt = ?
           WHERE ownerId = ? AND status = 'HELD' AND expiresAtUtc <= ?`).run(nowIso, ownerId, nowIso);
@@ -697,7 +733,9 @@ export function createBookingService({
     const now = nowFrom(clock);
     const nowIso = now.toISOString();
     const body = errorBody(error);
-    immediate(() => {
+    const interrupted = immediate(() => {
+      const current = db.prepare('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+      if (current?.providerEventStatus === 'CONFIRMATION_INTERRUPTED') return true;
       db.prepare(`UPDATE appointments SET status = ?, providerEventStatus = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(
         error.code === 'SLOT_UNAVAILABLE' ? 'CONFLICTED' : 'PROVIDER_FAILED',
@@ -709,6 +747,7 @@ export function createBookingService({
         .run(holdStatus, nowIso, holdId, ownerId);
       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, error.statusCode, body, nowIso);
     });
+    if (interrupted) return responseFromReceipt(receiptStatement.get(ownerId, 'confirm', idempotencyKey));
     throwStored(error, body);
   }
 
@@ -755,6 +794,7 @@ export function createBookingService({
       const nowIso = now.toISOString();
       try {
         const row = context(ownerId, intentId, now);
+        requireUnbookedIntent(ownerId, intentId);
         if (!record(body) || !uuid(body.holdId) || typeof body.confirmedSlotId !== 'string') {
           throw invalid('A valid hold and confirmed slot are required.');
         }
@@ -801,13 +841,17 @@ export function createBookingService({
           timezone, policyRevision, tierChosen, customerJson, locationJson,
           confirmedAt, updatedAt
         ) VALUES (?, ?, NULL, ?, NULL, ?, ?, ?, 'PENDING_PROVIDER', 0, 0, ?,
-          ?, ?, ?, ?, ?, 'PENDING_PROVIDER', ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`).run(
+          ?, ?, ?, ?, ?, 'PREPARING', ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`).run(
           appointmentId, ownerId, row.sourceType === 'quote' ? row.sourceId : null,
           validated.policy.bookingMode, holdRow.startAtUtc, validated.policy.durationMinutes,
           nowIso, intentId, holdRow.id, validated.policy.provider, validated.policy.calendarId,
           eventId, holdRow.startAtUtc, holdRow.endAtUtc, holdRow.lockStartAtUtc,
           holdRow.lockEndAtUtc, validated.policy.timezone, validated.policy.policyRevision,
           validated.tierName, JSON.stringify(validated.customer), JSON.stringify(validated.location), nowIso
+        );
+        db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+          WHERE ownerId = ? AND intentId = ? AND id <> ? AND status = 'HELD'`).run(
+          nowIso, ownerId, intentId, holdRow.id
         );
         const pendingBody = pendingConfirmationBody(confirmationId, appointmentId);
         insertReceipt(ownerId, 'confirm', idempotencyKey, intentId, digest, 202, pendingBody, nowIso);
@@ -826,6 +870,8 @@ export function createBookingService({
     if (phase.existing) return phase.existing;
     if (phase.error) throwStored(phase.error, phase.body);
 
+    preparationsInFlight.add(phase.appointmentId);
+    try {
     let busy;
     try {
       busy = normalizeBusy(await calendar.listBusy({
@@ -871,6 +917,12 @@ export function createBookingService({
       sourceId: phase.row.sourceId,
       tierName: phase.tierName
     };
+    const claimed = db.prepare(`UPDATE appointments SET providerEventStatus = 'PENDING_PROVIDER', updatedAt = ?
+      WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+        AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
+      nowFrom(clock).toISOString(), phase.appointmentId, ownerId, intentId
+    );
+    if (claimed.changes !== 1) return currentReceipt(ownerId, 'confirm', idempotencyKey, intentId, digest);
     let providerResult;
     try {
       providerResult = await calendar.createEvent(providerRequest);
@@ -923,6 +975,9 @@ export function createBookingService({
       providerEventId: phase.providerEventId,
       result
     });
+    } finally {
+      preparationsInFlight.delete(phase.appointmentId);
+    }
   }
 
   async function getConfirmationStatus({ bookingToken, confirmationId }) {
@@ -933,6 +988,8 @@ export function createBookingService({
       WHERE id = ? AND ownerId = ? AND bookingIntentId = ?`);
     let appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
     if (!appointment) throw confirmationNotFound();
+    releaseInterruptedPreparation(appointment);
+    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
     if (appointment.status === 'CONFIRMED') {
       return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
     }

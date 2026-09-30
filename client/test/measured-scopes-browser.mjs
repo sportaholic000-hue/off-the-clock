@@ -37,7 +37,7 @@ try {
     if(field.type==='offering_counts'){for(const [key,count] of Object.entries(value))await container.getByLabel('Gate count '+key,{exact:true}).fill(String(count));if(!Object.keys(value).length)await container.getByRole('button',{name:'No gates',exact:true}).click();return;}
     const input=container.getByLabel(field.label,{exact:true});
     if(['enum','boolean','integer_or_unknown'].includes(field.type))await input.selectOption(String(value));else await input.fill(String(value));
-    if(field.type==='slug')await container.getByRole('checkbox',{name:'I have identified this exact offering.',exact:true}).check();
+    if(field.type==='slug'&&!(field.name==='existingFloorType'&&value==='none'))await input.locator('..').getByRole('checkbox',{name:'I have identified this exact offering.',exact:true}).check();
   }
   for(const entry of f.cases){
     await page.locator('.service-pick').filter({hasText:entry.name}).click();
@@ -47,21 +47,40 @@ try {
       for(const [name,value]of Object.entries(d)){const field=def.fields[name],input=page.getByLabel(def.label+' — '+field.label,{exact:true});if(['enum','boolean'].includes(field.type))await input.selectOption(String(value));else await input.fill(String(value));}
     }
     for(const [key,value]of Object.entries(entry.service.pricing.scopeRates))await page.getByLabel('Scope price '+key,{exact:true}).fill(String(value));
+    if(entry.tier){
+      const disclosure=page.locator('button.disclose-summary').filter({hasText:'Good / Better / Best tiers'});
+      if(await disclosure.getAttribute('aria-expanded')!=='true')await disclosure.click();
+      await page.getByRole('button',{name:'Add tier',exact:true}).click();
+      await page.getByRole('button',{name:'Add tier',exact:true}).click();
+      const tier=page.locator('.tier-row').nth(1);
+      await tier.getByRole('button',{name:'Override a field',exact:true}).click();
+      const selector=tier.locator('.override-row select').first();
+      assert.ok((await selector.locator('option').evaluateAll(nodes=>nodes.map(n=>n.value))).includes('scopeRates'),'Owner cannot select the additional scope prices for a tier');
+      await selector.selectOption('scopeRates');
+      const rate=tier.getByLabel('Additional scope prices '+entry.tier.rate.replaceAll('_',' '),{exact:true});
+      if(entry.tier.rate==='floor_underlayment_hardwood'){
+        await rate.fill('100.001');assert.equal(await rate.getAttribute('aria-invalid'),'true','A package purchase price must reject a fractional cent');
+      }
+      await rate.fill(String(entry.tier.price));assert.equal(await rate.getAttribute('aria-invalid'),'false');
+    }
     const save=async()=>{const saved=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save')&&r.request().method()==='POST');await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await saved).status(),200);};
     await save();
     await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByRole('checkbox',{name:'I confirm these exact saved prices, units, factors and rules.',exact:true}).check();
     const approve=async()=>{const approved=page.waitForResponse(r=>r.url().endsWith('/services/'+entry.id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);};
     await approve();
     const previewSection=page.getByRole('heading',{name:'Project measurements for preview',exact:true}).locator('..');
-    const previewWaiting=page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200||r.request().postDataJSON().serviceId!==entry.id)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;});
+    const previewWaiting=page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200||r.request().postDataJSON().serviceId!==entry.id)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;}).catch(error=>({testError:error}));
     const m=meta.services.find(s=>s.serviceType===entry.type),p=entry.service.pricing;const fields=[...(p.offeringMode?m.offeringCustomerFields[p.offeringMode]:m.customerFields),...Object.entries(scopeCustomerFields(entry.type,p,entry.service)).map(([name,field])=>({name,...field}))];for(const field of fields)await answer(previewSection,field,entry.inputs[field.name]);
-    const previewResponse=await previewWaiting;
-    rows.push({name:'Owner configured, saved, approved and previewed '+entry.name,response:await previewResponse.json()});
+    const previewResponse=await previewWaiting;if(previewResponse.testError)throw previewResponse.testError;
+    const previewResult=await previewResponse.json();
+    if(entry.tier)assert.deepEqual(previewResult.options.map(o=>[o.tierName,o.midEstimate]),[['Good',entry.expected],['Better',entry.tier.expected]]);
+    rows.push({name:'Owner configured, saved, approved and previewed '+entry.name,response:previewResult});
     console.log(JSON.stringify({completed:rows.at(-1).name}));
   }
   // Save measured preview drafts once, then prove definitions survive reload.
   const finalSave=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save'));await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await finalSave).status(),200);await page.reload();await page.getByRole('heading',{name:'Additional priced scope',exact:true}).waitFor();
   const reloaded=await f.call('GET','/api/pricebook/'+f.owner.id);for(const entry of f.cases){const stored=reloaded.services.find(s=>s.id===entry.id);assert.deepEqual(stored.pricing.scopeDetails,entry.service.pricing.scopeDetails);assert.deepEqual(stored.pricing.scopeRates,entry.service.pricing.scopeRates);}
+  for(const entry of f.cases)if(entry.tier)assert.deepEqual(reloaded.services.find(s=>s.id===entry.id).tiers,[{name:'Good',overrides:{}},{name:'Better',overrides:{scopeRates:{[entry.tier.rate]:entry.tier.price}}}]);
   fs.writeFileSync(path.join(evidence,'saved-book.json'),JSON.stringify(reloaded,null,2));await page.screenshot({path:path.join(evidence,'owner-scopes.png'),fullPage:true});await page.close();
   const catalog=await app.request('GET',f.url,undefined,undefined,f.headers);assert.equal(catalog.result.services.length,f.cases.length,JSON.stringify(catalog));
   for(const kind of ['full-page','widget'])for(const entry of f.cases){
@@ -74,10 +93,11 @@ try {
     await page.getByLabel('Email',{exact:true}).fill('synthetic-browser@example.invalid');if(kind==='widget')await page.getByRole('button',{name:'Continue',exact:true}).click();await page.getByLabel('Urgency',{exact:true}).selectOption('flexible');
     const prepared=page.waitForResponse(r=>r.url().endsWith(f.url+'/prepare'));await page.getByRole('button',{name:'Submit estimate request',exact:true}).click();assert.equal((await prepared).status(),200);await page.getByRole('heading',{name:'Check your job details',exact:true}).waitFor();
     const completed=page.waitForResponse(r=>r.url().endsWith(f.url)&&r.request().method()==='POST');await page.getByRole('button',{name:'Get estimate',exact:true}).click();const response=await completed,result=await response.json(),body=response.request().postDataJSON();assert.equal(response.status(),201,JSON.stringify(result));assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,entry.expected);assert.equal(result.lineItems,undefined);
+    if(entry.tier)assert.deepEqual(result.options.map(o=>[o.tierName,o.midEstimate]),[['Good',entry.expected],['Better',entry.tier.expected]]);
     const receipt=db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(f.owner.id,body.requestId);assert.deepEqual(JSON.parse(receipt.originalSubmissionJson),body);assert.deepEqual(quoteReceiptResponse(app,receipt),result);
     assert.equal(result.pricedScope.facts.some(fact=>fact.label==='Affirmatively identified owner offerings'),false);
     if(entry.type.startsWith('FENCING_')){assert.ok(body.customerInputs.confirmedFacts.fenceType.offeringId);assert.ok(result.pricedScope.facts.find(fact=>fact.label==='Gates by measured opening width').value.includes('2 × walk'))}
-    rows.push({name:kind+' quotes '+entry.name,body,result,receipt});if(entry===f.cases[0])await page.screenshot({path:path.join(evidence,kind+'-fence.png'),fullPage:true});if(entry.type==='EXTERIOR_PAINTING'&&entry.mode==='itemized')await page.screenshot({path:path.join(evidence,kind+'-paint.png'),fullPage:true});await page.close();
+    rows.push({name:kind+' quotes '+entry.name,body,result,receipt});console.log(JSON.stringify({completed:kind+' '+entry.name}));if(entry===f.cases[0])await page.screenshot({path:path.join(evidence,kind+'-fence.png'),fullPage:true});if(entry.type==='EXTERIOR_PAINTING'&&entry.mode==='itemized')await page.screenshot({path:path.join(evidence,kind+'-paint.png'),fullPage:true});await page.close();
   }
   assert.deepEqual(errors,[]);assert.equal(db.prepare('SELECT COUNT(*) n FROM quotes WHERE ownerId=?').get(f.owner.id).n,f.cases.length*2);console.log(JSON.stringify({passed:true,checks:rows.length}));
 }catch(error){fs.writeFileSync(path.join(evidence,'failure.json'),JSON.stringify({rows,error:String(error.stack),errors},null,2));if(page&&!page.isClosed()){await page.screenshot({path:path.join(evidence,'failure.png'),fullPage:true}).catch(()=>{});fs.writeFileSync(path.join(evidence,'failure.html'),await page.content().catch(()=>''));}throw error;}

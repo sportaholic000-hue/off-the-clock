@@ -28,12 +28,12 @@ export function scopeDefinitions(type,p={}){
   for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',product,'underlaymentScopeConfirmed');
   out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
    stairWidthLF:cnumber('Measured stair tread width','feet'),stairRemovalNeeded:confirm('Existing stair covering removal requested'),stairDisposalNeeded:confirm('Stair debris disposal requested'),floorAreaExcludesStairs:confirm('The measured flooring area excludes the separately priced stairs')});
-  out.floor_overlay=rule('Installation over existing flooring',{...common,mode:modes,category,existingFloorType:string('Existing flooring type covered'),newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile'])},'overlayScopeConfirmed');
+  out.floor_overlay=rule('Additional preparation for flooring over an existing floor',{...common,mode:modes,category,existingFloorType:string('Existing flooring type covered'),newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile']),basePriceExcludesPreparation:bool('Base flooring prices exclude this additional preparation')},'overlayScopeConfirmed');
  }
  if(type==='ROOFING_REPLACEMENT')for(const key of new Set([...Object.keys(p.underlaymentPriceBasis||{}),...Object.keys(p.materialCostPerSquare||{})]))if(slug(key))out['roof_underlayment_'+key]=rule(key.replaceAll('_',' ')+' roof underlayment',purchase,'roofUnderlaymentScopeConfirmed');
  if(type==='SIDING_REPLACEMENT'){
   out.siding_removal=rule('Existing siding removal',{...common,mode:modes,category,existingSidingType:string('Existing siding type covered'),stories:choice('Stories covered by the removal price',[1,2,3]),disposalIncluded:bool('Siding disposal included')},'sidingRemovalScopeConfirmed',{existingSidingType:cslug('Existing siding type to remove'),sidingRemovalAreaSqft:area('Measured existing siding removal area'),sidingRemovalStories:cchoice('Stories of the existing siding removal',[1,2,3])});
-  out.siding_trim=rule('Siding trim installation',{...common,mode:modes,category},'sidingTrimScopeConfirmed');
+  out.siding_trim=rule('Siding trim installation',{...common,mode:modes,category,basePriceExcludesTrim:bool('Base siding prices exclude this separately priced trim')},'sidingTrimScopeConfirmed');
  }
  if(type.startsWith('CONCRETE_')){
   out.demolition=rule('Existing slab demolition',{...common,mode:modes,category,maximumThickness:number('Maximum existing slab thickness included','inches',Number.MIN_VALUE),reinforcement:choice('Existing reinforcement covered',['none','wire_mesh','rebar']),accessDifficulty:choice('Demolition access covered',['easy','moderate','difficult']),disposalIncluded:bool('Demolition debris disposal included')},'demolitionScopeConfirmed',{demolitionThickness:cnumber('Measured existing slab thickness','inches'),demolitionReinforcement:cchoice('Existing slab reinforcement',['none','wire_mesh','rebar']),demolitionAccessDifficulty:cchoice('Existing slab demolition access',['easy','moderate','difficult'])});
@@ -68,9 +68,9 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
 
 export function scopeRateDefinitions(type,p={},allModes=false){
  const out={},catalog=scopeDefinitions(type,p);
- const add=(key,label,category,unit,priceBasis,kind='unit_rate')=>out[key]={label,category,unit,...(priceBasis?{priceBasis}:{}),moneyKind:kind};
  for(const [key,d]of Object.entries(record(p.scopeDetails)?p.scopeDetails:{})){
-  if(!catalog[key]||!record(d))continue;
+  if(!own(catalog,key)||!record(d))continue;
+  const add=(rateKey,label,category,unit,priceBasis,kind='unit_rate')=>out[rateKey]={scopeKey:key,label,category,unit,...(priceBasis?{priceBasis}:{}),moneyKind:kind};
   const label=catalog[key].label;
   if(key.includes('underlayment')||key.startsWith('paint_')){add(key,label,'material',d.mode==='package_cost'?'purchased packages':key==='paint_trim'?'linear feet':'installed square feet',d.mode==='package_cost'?'cost':'sell_price',d.mode==='package_cost'?'fixed_amount':'unit_rate');continue;}
   const installed=d.mode==='installed',basis=installed?'sell_price':undefined;
@@ -117,7 +117,7 @@ export function customerFieldVisible(field,values={}){
 }
 export function scopeCustomerFields(type,p={},rules={}){
  const out={},defs=scopeDefinitions(type,p);
- for(const [key,d]of Object.entries(record(p.scopeDetails)?p.scopeDetails:{}))if(defs[key]&&record(d)){
+ for(const [key,d]of Object.entries(record(p.scopeDetails)?p.scopeDetails:{}))if(own(defs,key)&&record(d)){
   const visibleWhen=scopeConditions(type,key,p,rules);
   for(const [name,field]of Object.entries(defs[key].customerFields))out[name]={...field,visibleWhen};
   if(key==='siding_removal')out.existingSidingType={...cchoice('Existing siding type to remove',[d.existingSidingType].filter(text)),visibleWhen};

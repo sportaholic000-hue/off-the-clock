@@ -925,3 +925,54 @@ test('Provider confirmation accepts the same exact instants expressed with anoth
   assert.equal(result.body.status,'CONFIRMED');assert.equal(result.body.startUtc,slot.startUtc);
 });
 
+test('One intent cannot create another appointment through a different hold or idempotency key',async()=>{
+ const s=harness(),available=await slots(s);
+ const held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:available[0].slotId});
+ const alternate=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:available[4].slotId});
+ const request={ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)};
+ const pair=await Promise.allSettled([s.booking.confirm(request),s.booking.confirm({...request,idempotencyKey:keys.confirm2,body:confirmation(alternate)})]);
+ assert.equal(pair[0].status,'fulfilled');assert.equal(pair[0].value.body.status,'CONFIRMED');
+ assert.equal(pair[1].status,'rejected');assert.ok(hasCode('BOOKING_ALREADY_EXISTS')(pair[1].reason));
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds WHERE id=?').get(alternate.body.holdId).status,'RELEASED');
+ await assert.rejects(s.booking.availability({ownerId:OWNER,intentId:s.intent.intentId}),hasCode('BOOKING_ALREADY_EXISTS'));
+ assert.throws(()=>s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold3,slotId:available[4].slotId}),hasCode('BOOKING_ALREADY_EXISTS'));
+ assert.deepEqual(await s.restart().confirm(request),pair[0].value);
+ assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM appointments').get().n,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+});
+
+for(const lateFailure of [false,true])test('Interrupted pre-write preparation releases its slot and fences a late handler'+(lateFailure?' with a late read failure':''),async()=>{
+ const s=harness(),available=await slots(s),slot=available[0];
+ const held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:slot.slotId});
+ let resume;const barrier=new Promise((resolve,reject)=>{resume=()=>lateFailure?reject(new Error('late busy failure')):resolve([]);});
+ const listBusy=s.calendar.listBusy.bind(s.calendar);s.calendar.listBusy=()=>barrier;
+ const request={ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)},original=s.booking.confirm(request);
+ const receipt=JSON.parse(s.db.prepare("SELECT responseJson FROM bookingIdempotency WHERE operation='confirm'").get().responseJson);
+ const poll={bookingToken:s.intent.bookingToken,confirmationId:receipt.confirmationId};
+ assert.equal((await s.booking.getConfirmationStatus(poll)).body.status,'PENDING_CONFIRMATION','Active preflight must not be cancelled by ordinary polling');
+ const restarted=s.restart();
+ const results=await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]);
+ for(const r of results){assert.equal(r.body.status,'FAILED');assert.equal(r.body.recoveryAction,'REQUEST_NEW_SLOT');}
+ assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PROVIDER_FAILED');
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
+ resume();assert.deepEqual((await original).body,receipt);
+ assert.equal(s.calendar.createCalls.length,0);assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
+ assert.deepEqual((await restarted.confirm(request)).body,receipt,'Exact receipt replay stays unchanged; status polling supplies recovery');
+ s.calendar.listBusy=listBusy;
+ const newHold=restarted.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:slot.slotId});
+ const repaired=await restarted.confirm({...request,idempotencyKey:keys.confirm2,body:confirmation(newHold)});
+ assert.equal(repaired.body.status,'CONFIRMED');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+});
+
+test('A provider write already started remains pending after restart until its exact event is confirmed',async()=>{
+ const s=harness(),available=await slots(s),held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:available[0].slotId});
+ let resume,started;const barrier=new Promise(r=>resume=r),reached=new Promise(r=>started=r);
+ s.calendar.createEvent=async request=>{s.calendar.createCalls.push(request);started();await barrier;return {status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc};};
+ const original=s.booking.confirm({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)});await reached;
+ const receipt=JSON.parse(s.db.prepare("SELECT responseJson FROM bookingIdempotency WHERE operation='confirm'").get().responseJson),poll={bookingToken:s.intent.bookingToken,confirmationId:receipt.confirmationId},restarted=s.restart();
+ assert.equal((await restarted.getConfirmationStatus(poll)).body.status,'PENDING_CONFIRMATION');
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'CONFIRMING');
+ s.calendar.recoveredEvent=request=>({status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc});
+ assert.equal((await restarted.getConfirmationStatus(poll)).body.status,'CONFIRMED');resume();assert.equal((await original).body.status,'CONFIRMED');
+ assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+});
+

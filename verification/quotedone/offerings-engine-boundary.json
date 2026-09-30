@@ -9,7 +9,8 @@
     "templates.js"
   ],
   "authorizedAddedFiles": [
-    "configuredOfferings.js"
+    "configuredOfferings.js",
+    "scopePricing.js"
   ],
   "originalBlobs": {
     "AUDIT.md": "a2dcd91ae799eb5894261ec525d747f081d45e42",
@@ -31,5 +32,6 @@
     "priceBook.js": "d79abcd40316257899b324fd7fd8c8e280953ab7",
     "safeData.js": "cf183be9c29368f3bd9b6dfa1f87020b74705050",
     "templates.js": "fdde89cf14080df8ae95f60d6280e58832899eda"
-  }
+  },
+  "scopeCompletionBase": "1013190bd8e62e5df3aa70750399873bc050e447"
 }

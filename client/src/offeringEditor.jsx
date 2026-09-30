@@ -1,4 +1,4 @@
-import {scopeCustomerFields} from '../../server/scopeConfiguration.js';
+import {scopeCustomerFields,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -13,8 +13,11 @@ export function offeringPreviewFields(meta,service) {
 
 export function offeringTierFields(meta,service) {
   const p=servicePricing(service),mode=p.offeringMode;
-  if(!mode)return meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type));
-  return [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices',type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{})}}].filter(Boolean);
+  const scopeRates=scopeRateDefinitions(service.serviceType,p);
+  const scopeFields=Object.keys(scopeRates).length?[{field:'scopeRates',label:'Additional scope prices',type:'json',tree:{depth:1,leafKeys:Object.keys(scopeRates),leafMoneyKinds:Object.fromEntries(Object.entries(scopeRates).map(([key,f])=>[key,f.moneyKind]))}}]:[];
+  const fields=!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)):
+    [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices',type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{})}}].filter(Boolean);
+  return [...fields,...scopeFields];
 }
 
 export function OfferingEditor({service,meta,onChange}) {

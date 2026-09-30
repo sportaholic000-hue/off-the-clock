@@ -22,7 +22,7 @@ export function scopeStructureDiagnostics(type,p={}){
  for(const name of SCOPE_FIELDS)if(own(p,name)&&!record(p[name]))add(name,'Use a plain map of owner-defined scope settings.');
  const catalog=scopeDefinitions(type,p),details=record(p.scopeDetails)?p.scopeDetails:{};
  for(const [key,d]of Object.entries(details)){
-  const def=catalog[key],at='scopeDetails.'+key;
+  const def=own(catalog,key)?catalog[key]:null,at='scopeDetails.'+key;
   if(!def){add(at,'This scope is not supported by the selected service.','unsupported');continue;}
   if(!record(d)){add(at,'Define this scope with the displayed settings.');continue;}
   for(const name of Object.keys(d))if(!own(def.fields,name))add(at+'.'+name,'Unsupported scope setting.','unsupported');
@@ -33,10 +33,12 @@ export function scopeStructureDiagnostics(type,p={}){
   if(key==='stairs'&&d.disposalIncluded&&!d.removalIncluded)add(at+'.disposalIncluded','Stair removal debris disposal requires the selected stair removal scope.');
   if(key==='exposed_aggregate'&&d.basePriceExcludesFinish!==true)add(at+'.basePriceExcludesFinish','Separate finishing charges require base prices that exclude those same charges.');
   if(key==='insulation'&&d.baseRoofLaborExcludesInstallation!==true)add(at+'.baseRoofLaborExcludesInstallation','Separate installation charges require roof labor that excludes those same installation charges.');
+  if(key==='floor_overlay'&&d.basePriceExcludesPreparation!==true)add(at+'.basePriceExcludesPreparation','Separate overlay preparation charges require base flooring prices that exclude that preparation.');
+  if(key==='siding_trim'&&d.basePriceExcludesTrim!==true)add(at+'.basePriceExcludesTrim','Separate trim charges require base siding prices that exclude the same trim.');
  }
  const defs=scopeRateDefinitions(type,p,true);
  if(record(p.scopeRates))for(const [key,value]of Object.entries(p.scopeRates)){
-  if(!defs[key])add('scopeRates.'+key,'This price has no matching supported scope definition.','unsupported');
+  if(!own(defs,key))add('scopeRates.'+key,'This price has no matching supported scope definition.','unsupported');
   else if(!finite(value)||defs[key].moneyKind==='fixed_amount'&&!Number.isSafeInteger(value))add('scopeRates.'+key,'Enter a non-negative price with the displayed unit and precision.');
  }
  for(const [key,f]of Object.entries(scopeRateDefinitions(type,p)))if(!own(p.scopeRates,key))add('scopeRates.'+key,f.label+' needs an explicit owner price.','missing');
@@ -82,7 +84,7 @@ export function scopeOwnerDiagnostics(type,c,p={},rules={}){
 }
 export function scopeRequirements(type,c,p={},rules={}){
  const wanted=new Set(scopeKeysForRequest(type,c,p,rules)),definitions=scopeRateDefinitions(type,p);
- return Object.entries(definitions).filter(([key])=>[...wanted].some(w=>key===w||key.startsWith(w+'_')||w==='insulation'&&key.startsWith('coverboard_'))).map(([key,f])=>({path:'scopeRates.'+key,label:f.label,kind:f.moneyKind==='fixed_amount'?'non_negative_money':'non_negative_number'}));
+ return Object.entries(definitions).filter(([,f])=>wanted.has(f.scopeKey)).map(([key,f])=>({path:'scopeRates.'+key,label:f.label,kind:f.moneyKind==='fixed_amount'?'non_negative_money':'non_negative_number'}));
 }
 
 export function scopesSuppressPrice(type,c,p,rules,path){
@@ -124,7 +126,7 @@ export function scopeLines(type,c,p={},rules={}){
    continue;
   }
   const multiplier=key==='siding_removal'?[{name:'existing siding stories',value:p.storyMultiplier[c.sidingRemovalStories],path:'storyMultiplier.'+c.sidingRemovalStories}]:[];
-  for(const rateKey of Object.keys(defs).filter(k=>k.startsWith(key+'_')))add(rateKey,quantity,d.mode==='itemized'&&rateKey.endsWith('_removal')?multiplier:[]);
+  for(const rateKey of Object.keys(defs).filter(k=>defs[k].scopeKey===key))add(rateKey,quantity,d.mode==='itemized'&&rateKey.endsWith('_removal')?multiplier:[]);
   if((key==='demolition'||key==='siding_removal'||key==='stairs'&&!c.removalNeeded)&&d.disposalIncluded)out.replacedCommonFees.push('disposal');
   if(key==='demolition'||key==='siding_removal')out.feeScope.disposal=true;
  }

@@ -76,3 +76,19 @@ test('Identical partial measurements quote; any numerical contradiction remains 
   const r=generateQuoteVNext(changed);assert.equal(r.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(r.invalidCustomerFields.includes('partialAreaSqft'));
  }
 });
+test('Additional work must be excluded from the base price and unsupported scope settings reject',()=>{
+ for(const [id,scope,field]of [['overlay-installed','floor_overlay','basePriceExcludesPreparation'],['siding-trim-itemized','siding_trim','basePriceExcludesTrim']]){
+  const f=get(id);f.ownerPricing.pricing.scopeDetails[scope][field]=false;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ }
+ for(const name of ['scopeDetails','scopeRates']){const f=get('stairs-installed');f.ownerPricing.pricing[name].constructor=name==='scopeDetails'?{}:100;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}
+});
+test('Scope tier prices preserve exact units, inherit other prices and exclude only an invalid option',()=>{
+ const f=get('floor-hardwood-packages');
+ f.ownerPricing.tiers=[{name:'Good',overrides:{}},{name:'Better',overrides:{scopeRates:{floor_underlayment_hardwood:10001}}},{name:'Incomplete',overrides:{scopeRates:{floor_underlayment_hardwood:null}}}];
+ const result=generateQuoteVNext(f);
+ assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
+ assert.deepEqual(result.options.map(o=>[o.tierName,o.midEstimate]),[['Good',2060],['Better',2060.03]]);
+ assert.equal(sanitizeForCustomerVNext(result).optionAvailabilityNotice,'Fewer options are available because one or more configured options need owner review.');
+ assert.ok(result.failedTierDiagnostics.some(tier=>tier.tierName==='Incomplete'));
+ const book={services:[f.ownerPricing],defaults:f.businessDefaults};assert.deepEqual(convertApplicationBook(convertApplicationBook(book,'toDollars'),'toCents'),book);
+});
