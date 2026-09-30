@@ -1,0 +1,1777 @@
+{
+  "sourceCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "localEvidenceDirectory": "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929",
+  "retention": "Original synthetic HTTP, stores, screenshots and failed attempts retained locally. Hashes do not imply raw files uploaded. No database archives or private session logs published.",
+  "artifacts": [
+    {
+      "path": "before-application/application.sqlite",
+      "bytes": 409600,
+      "sha256": "57eb46493322e3e19447236c47fa19bded5809f2e06bd8a943f3b376689c350e"
+    },
+    {
+      "path": "before-application/http.json",
+      "bytes": 310540,
+      "sha256": "334f2c8dd131bd2bda938b04b56af6436100f6dac07832a2fbe519ad367df30b"
+    },
+    {
+      "path": "before-application/results.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "before-application/server-process.json",
+      "bytes": 504,
+      "sha256": "259aa3b3871ecdb8cef8819d83af384c25457bc859e5574e56aa9380713de171"
+    },
+    {
+      "path": "before-application/server.log",
+      "bytes": 274,
+      "sha256": "be6021faddf9d0748ff9b71ccd12a72ff9ead5db50a4c095eaa546ae619dbf2d"
+    },
+    {
+      "path": "before-application/source-binding.json",
+      "bytes": 17391,
+      "sha256": "cf9321fd260a9f6ebf702aa841e98368dc793d695aa7ca69a918d6c887dc019b"
+    },
+    {
+      "path": "before-application-final/application.sqlite",
+      "bytes": 1339392,
+      "sha256": "f55cfdf6167713024f8f098fbbcd8c72730ba08e76aa02f6a2153eccaa8e4bc7"
+    },
+    {
+      "path": "before-application-final/http.json",
+      "bytes": 1425346,
+      "sha256": "518a97a6f1416beb0365c7fc3ee5bc49655961af4c3236564880dabe9a4266d4"
+    },
+    {
+      "path": "before-application-final/pricebooks/fe4e7a90-5205-41f0-b9e2-eb584b8a707b.json",
+      "bytes": 9892,
+      "sha256": "52f32d93f9e405dcd859e0c587847075901ac6e55a21d1f183394b469979b0ad"
+    },
+    {
+      "path": "before-application-final/results.json",
+      "bytes": 122343,
+      "sha256": "37e39800ff8b4cf4e301639fc8384c30d5a8a5d84ac8758d2393711c1dd98bbd"
+    },
+    {
+      "path": "before-application-final/saved-book.json",
+      "bytes": 10023,
+      "sha256": "af57145dc973961e48f95db1a43575449bb43c7e45d884277fd12151b5b682a4"
+    },
+    {
+      "path": "before-application-final/server-process.json",
+      "bytes": 510,
+      "sha256": "80155037e2f50138a2cbc3b2ef2db8e3c64c4bd1c703f6db655136dabe554b55"
+    },
+    {
+      "path": "before-application-final/server.log",
+      "bytes": 247,
+      "sha256": "419b48ee550d5a5256b380ab37b79b9393eb5d821eaec21e67dc304625726802"
+    },
+    {
+      "path": "before-application-final/source-binding.json",
+      "bytes": 13196,
+      "sha256": "0505de16451bdde8c28921f42e680f7015854f68ad9056a9fd963a9907d72ed1"
+    },
+    {
+      "path": "before-application-final/stored-leads.json",
+      "bytes": 615887,
+      "sha256": "3afed5ae199343c7f3aecb1a04df7c343aac1ae0998a6ca6b7f7bd18f26c2ad2"
+    },
+    {
+      "path": "before-application-final/stored-quotes.json",
+      "bytes": 169170,
+      "sha256": "31aec79914b134f6d587cffa592299466ebdba083d3ebf0e86b1fe7674a4fc65"
+    },
+    {
+      "path": "before-application-final/synthetic-account-setup.ndjson",
+      "bytes": 188,
+      "sha256": "ac19e00438dd0015626042f232cd2d6eca4eef940b325ae40b9fbc17ab97456c"
+    },
+    {
+      "path": "before-application-v2/application.sqlite",
+      "bytes": 1339392,
+      "sha256": "9c62ca03acb50378dc122796f5b69f4741b56a6686b32a87d1a594f0c9d4f20a"
+    },
+    {
+      "path": "before-application-v2/http.json",
+      "bytes": 1425346,
+      "sha256": "367968f0d0f630df93a87ff75d0da49bd09ea0713db4e71d7aff049495d3cb94"
+    },
+    {
+      "path": "before-application-v2/pricebooks/a4c9582d-33ca-48c4-bd9b-d444f303a3d5.json",
+      "bytes": 9892,
+      "sha256": "53802c04aa6bcdc74e3f067022abf0c69952809dd82d60383cfd10fcd176da37"
+    },
+    {
+      "path": "before-application-v2/results.json",
+      "bytes": 122343,
+      "sha256": "0748b3050e4cff67a0bcb2c8b49445d82376b781d79321a03f9817cfb1ab2bee"
+    },
+    {
+      "path": "before-application-v2/saved-book.json",
+      "bytes": 10023,
+      "sha256": "0a923877d485ee16cc540cd1de33204f612b4b8c2dcc3200874851fe825d91c9"
+    },
+    {
+      "path": "before-application-v2/server-process.json",
+      "bytes": 507,
+      "sha256": "5cdb5b45e375090001b27f46db94abc158c054379bb05570ec361b03ae650a07"
+    },
+    {
+      "path": "before-application-v2/server.log",
+      "bytes": 247,
+      "sha256": "419b48ee550d5a5256b380ab37b79b9393eb5d821eaec21e67dc304625726802"
+    },
+    {
+      "path": "before-application-v2/source-binding.json",
+      "bytes": 13196,
+      "sha256": "0505de16451bdde8c28921f42e680f7015854f68ad9056a9fd963a9907d72ed1"
+    },
+    {
+      "path": "before-application-v2/stored-leads.json",
+      "bytes": 615887,
+      "sha256": "785f498040047091d026ff7bd77d47c70e77c09e424551ef357ab919f694d1a2"
+    },
+    {
+      "path": "before-application-v2/stored-quotes.json",
+      "bytes": 169170,
+      "sha256": "9f6432b7667526ffa2377541776566ce8bdf1a12551743206b007e7808501e16"
+    },
+    {
+      "path": "before-application-v2/synthetic-account-setup.ndjson",
+      "bytes": 188,
+      "sha256": "535b6e604e584e3b9ddaee5c68c0c3336043a3d6f6375df73b34d1095210e2bb"
+    },
+    {
+      "path": "booking-integrity-after-v1/application.sqlite",
+      "bytes": 1654784,
+      "sha256": "d1d0382bdf8fed541e80e32b1db202d7ca72683a539c41d55bd8c0d23713c844"
+    },
+    {
+      "path": "booking-integrity-after-v1/http.json",
+      "bytes": 2088733,
+      "sha256": "784ade890d4237bb97147314ee28a6b8603f2b89c39307cf427a322aef826201"
+    },
+    {
+      "path": "booking-integrity-after-v1/pricebooks/8ccf18ee-421a-4e0a-b506-abbfff45279e.json",
+      "bytes": 2964,
+      "sha256": "f0e968ce0d0fa6fc0491fe2b5b072c8d2f8f42091a18aae234689e1c88a5e643"
+    },
+    {
+      "path": "booking-integrity-after-v1/results.json",
+      "bytes": 244470,
+      "sha256": "e6078917ddef9404e794974ab259f1337ccc2d0c13bc9eb2fc1c33189b23bd87"
+    },
+    {
+      "path": "booking-integrity-after-v1/server-process.json",
+      "bytes": 513,
+      "sha256": "4381fce22b1f3096a8ca9c9d28533255d38de6f4c9c943244edfa9103cf0aedd"
+    },
+    {
+      "path": "booking-integrity-after-v1/server.log",
+      "bytes": 650,
+      "sha256": "bed03a6bf73a9e722c0bb5b5f1cf69325a3f79ad51d5d42be54e7fd853790f02"
+    },
+    {
+      "path": "booking-integrity-after-v1/source-binding.json",
+      "bytes": 13545,
+      "sha256": "f57d2adb48c657133554b74b6c817ec903407500a53553b16a7aeb3223f0929a"
+    },
+    {
+      "path": "booking-integrity-after-v1/synthetic-account-setup.ndjson",
+      "bytes": 185,
+      "sha256": "23dc5ce3c478c92727d9e65003f0c7f712e024848a2bf04da34d59469d8b7fb5"
+    },
+    {
+      "path": "booking-integrity-after-v1/synthetic-calendar-provider.json",
+      "bytes": 63847,
+      "sha256": "994a8d9d87713a74760d5c8ca5b0cdea8c8aaca8f29caca6adc72b32031ee63c"
+    },
+    {
+      "path": "booking-integrity-after-v1.log",
+      "bytes": 44,
+      "sha256": "ef177b06bf5ffd39fe5b3f24689066eb83a5894c2db6981ec866a8fec7b65c89"
+    },
+    {
+      "path": "booking-integrity-after-v1.result.json",
+      "bytes": 395,
+      "sha256": "91160ea494e566a183c774a1d4e35d10ddf0efbc18c0f51e07b80d436421c5ba"
+    },
+    {
+      "path": "booking-integrity-after-v1.source.json",
+      "bytes": 5817,
+      "sha256": "f7ccf0714d28a1458d1173776fae69934b40138b91e98eb1be52e5d90f7fc2e1"
+    },
+    {
+      "path": "booking-integrity-before/application.sqlite",
+      "bytes": 409600,
+      "sha256": "0ea83e7d41a48cddade4513a0bb1cd6dc62b07e92ca0654c93d143b48bcb1f49"
+    },
+    {
+      "path": "booking-integrity-before/http.json",
+      "bytes": 367727,
+      "sha256": "e48a643bdc716c49f0478701412a41a421477f6b342b4bc9ce38f1d1e19b610f"
+    },
+    {
+      "path": "booking-integrity-before/pricebooks/300e611b-31ad-462d-82dc-12419d73376f.json",
+      "bytes": 2964,
+      "sha256": "eb1f82d2ac8462038d7c1d0015ca7e932f9ae293b0950c95ab01f0eb17b680f3"
+    },
+    {
+      "path": "booking-integrity-before/results.json",
+      "bytes": 502,
+      "sha256": "9d549105fcbab72ad76cfabf31d2455a8c0175159fbc552dd9bec247c99e8227"
+    },
+    {
+      "path": "booking-integrity-before/server-process.json",
+      "bytes": 510,
+      "sha256": "b515ce95677a3e1bb3afe486136dae6ff0f0b425f607cd47573facea646e5512"
+    },
+    {
+      "path": "booking-integrity-before/server.log",
+      "bytes": 342,
+      "sha256": "ff3d3c6a4e0b9795b7e074d9c9a23f6f3f4417df84fb856c7fd926f364acedc1"
+    },
+    {
+      "path": "booking-integrity-before/source-binding.json",
+      "bytes": 13425,
+      "sha256": "abd60baad09b4077661702364860c65a6b538de2f647ff3f79a245a660cfbc86"
+    },
+    {
+      "path": "booking-integrity-before/synthetic-account-setup.ndjson",
+      "bytes": 185,
+      "sha256": "5304d641c3e7b7595db318d48ae142f8c6fd414db85fa0508d7b2003c7ba921a"
+    },
+    {
+      "path": "booking-integrity-before/synthetic-calendar-provider.json",
+      "bytes": 425,
+      "sha256": "c2045056d581de4728feb28b34b7bfa328719a7fcda9a6b4f58a119108af78de"
+    },
+    {
+      "path": "booking-integrity-before-v2/application.sqlite",
+      "bytes": 1245184,
+      "sha256": "a4f2c84b080abba3c04d3b6989610b38e88a1e51be0dd988a23e85171e4fb80c"
+    },
+    {
+      "path": "booking-integrity-before-v2/http.json",
+      "bytes": 1483094,
+      "sha256": "7822aa6f0406a8d64a70d2c4c4af3c91d0f02396319912cc84eb9e3ecad3b532"
+    },
+    {
+      "path": "booking-integrity-before-v2/pricebooks/3f07126b-d679-4862-8026-6c318eb51e2b.json",
+      "bytes": 2964,
+      "sha256": "14afafd19fa7eb64c39393aecc84dd318e89af0d0ba32dca8da49cdb23fc259b"
+    },
+    {
+      "path": "booking-integrity-before-v2/results.json",
+      "bytes": 158325,
+      "sha256": "2852f9a1adf71fed522f3b1959f461e8e50b6c6767cb6ee096636da380a08845"
+    },
+    {
+      "path": "booking-integrity-before-v2/server-process.json",
+      "bytes": 514,
+      "sha256": "601f15a3292c5d9fdb7d8b95c71c45ffe7bcf8cadb58205ee1b43690ec57e6eb"
+    },
+    {
+      "path": "booking-integrity-before-v2/server.log",
+      "bytes": 244,
+      "sha256": "0bc80985eb09b2deacf12174ce2c6f6b531e53cff33a57a237525feb665bd20a"
+    },
+    {
+      "path": "booking-integrity-before-v2/source-binding.json",
+      "bytes": 13425,
+      "sha256": "beec7bb9fd9a4af13101b94b92ae6511f8ba33de34b1dc5f301ea8691b91c76f"
+    },
+    {
+      "path": "booking-integrity-before-v2/synthetic-account-setup.ndjson",
+      "bytes": 185,
+      "sha256": "0ca410fbeccdce725ba0abe52aaa9cc5687d037503416f5dc673d59007e9b920"
+    },
+    {
+      "path": "booking-integrity-before-v2/synthetic-calendar-provider.json",
+      "bytes": 39177,
+      "sha256": "018b2fd23cebcdc9da041d4487b2b62128752438b3371994583c38caaa0a0cd6"
+    },
+    {
+      "path": "booking-integrity-before-v2.log",
+      "bytes": 697,
+      "sha256": "98d403ed7ed6068ffa45d037433cc6d71d9abf19148d49472cb3168fbffb5b85"
+    },
+    {
+      "path": "booking-integrity-before-v2.result.json",
+      "bytes": 398,
+      "sha256": "1231ee4cf024c9d31c75353cb1fece7de9c6be113f174609de82e575716126a0"
+    },
+    {
+      "path": "booking-integrity-before-v2.source.json",
+      "bytes": 5819,
+      "sha256": "a1db88a3d8110738482e3c0a0a3d9e4d25d039fc4a7267badbd7c5db3aec4210"
+    },
+    {
+      "path": "booking-integrity-before-v3/application.sqlite",
+      "bytes": 1662976,
+      "sha256": "98617ac6422b8288279e21d493d4d83718e295a11f5f96f50617c1e0d86a7185"
+    },
+    {
+      "path": "booking-integrity-before-v3/http.json",
+      "bytes": 2055336,
+      "sha256": "51609c77c0b521ae63b3f9cc67d12a997fa0d34c7615dee2a7c36f7a88187f24"
+    },
+    {
+      "path": "booking-integrity-before-v3/pricebooks/5efb63b1-b281-447f-936e-1d14e3f17c7c.json",
+      "bytes": 2964,
+      "sha256": "a457641418dc3fa748fae1164665e13a2e38c00b9e49b1807385fa52a6ab9a1d"
+    },
+    {
+      "path": "booking-integrity-before-v3/results.json",
+      "bytes": 252752,
+      "sha256": "19794a74bef8331caf90fba4c99970efea58ce08859ef648f82399ebd7e69564"
+    },
+    {
+      "path": "booking-integrity-before-v3/server-process.json",
+      "bytes": 514,
+      "sha256": "1b46a35a4b8cef038fa6a3f275d67fb2239bc7fd4a9e91267f578e125eef1e60"
+    },
+    {
+      "path": "booking-integrity-before-v3/server.log",
+      "bytes": 454,
+      "sha256": "0900d987bc52232f93c4bda9d20bf05dafda9fc42c0f0893e7d1478e673ffa22"
+    },
+    {
+      "path": "booking-integrity-before-v3/source-binding.json",
+      "bytes": 13425,
+      "sha256": "7ffa2984adb552a8ac67241535b031ab224b3b1a222c0a237a8ce0d261b58e2b"
+    },
+    {
+      "path": "booking-integrity-before-v3/synthetic-account-setup.ndjson",
+      "bytes": 185,
+      "sha256": "5509a750b9fb868556c4aa4f73a8a81bb7b58ec9b59e32489ce9c2ad41532507"
+    },
+    {
+      "path": "booking-integrity-before-v3/synthetic-calendar-provider.json",
+      "bytes": 63847,
+      "sha256": "72ee148ad4a08f6d62ffa5419c4f3bb4a42ad35d34b80bc3446693c02ab80169"
+    },
+    {
+      "path": "booking-integrity-before-v3.log",
+      "bytes": 432,
+      "sha256": "31f964821b70bb22e8b45d46d8a77eacfb9dfc3223b987842486a603deeda7f9"
+    },
+    {
+      "path": "booking-integrity-before-v3.result.json",
+      "bytes": 399,
+      "sha256": "76ed88d0887d0d296e4b5ac60837b387fd3af88f4c6fc90d103b0ae1bd86251e"
+    },
+    {
+      "path": "booking-integrity-before-v3.source.json",
+      "bytes": 5819,
+      "sha256": "cb83907ac6c381193779de1e7ea976c3e5c979a6b3929d8771249146bc5fd32a"
+    },
+    {
+      "path": "booking-integrity-before.log",
+      "bytes": 594,
+      "sha256": "b7203dd444878cb4980cf2641573aa5bef1847de9c0d05105b0a3e7823c87b17"
+    },
+    {
+      "path": "booking-integrity-before.result.json",
+      "bytes": 389,
+      "sha256": "b987c046634a35cca37f80b1ee1b40d47ca5a9a76adfa0811bbe06eae7a379d7"
+    },
+    {
+      "path": "booking-integrity-before.source.json",
+      "bytes": 5816,
+      "sha256": "0d699839bd8d80bd2dac7f1d1b752c73ccf2762296e8a4e15cdc2b1be9d77810"
+    },
+    {
+      "path": "candidate-application.sqlite",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checkpoint-github-verification.json",
+      "bytes": 4316,
+      "sha256": "de8125abab0bfc71ea1cafc74fe90defd6dba2d4ae09cdaea943005f1d7a3b74"
+    },
+    {
+      "path": "fencing-painting-baseline-final.log",
+      "bytes": 773,
+      "sha256": "48d4d70079ac774a5a9f3561e1d11f699b1a7e56ab8d9fc8b67212703b14bb15"
+    },
+    {
+      "path": "fencing-painting-baseline-final.result.json",
+      "bytes": 384,
+      "sha256": "0265994d9f8f167ad316818605ff2a8abc8e317a780ad0c6db39d1da152fe349"
+    },
+    {
+      "path": "fencing-painting-baseline-final.source.json",
+      "bytes": 5797,
+      "sha256": "9c3a710cba0361e54160c90920d2d31152b494fa2f5572ec8ee7a9ba38ef8a3c"
+    },
+    {
+      "path": "fencing-painting-baseline-v2.log",
+      "bytes": 773,
+      "sha256": "48d4d70079ac774a5a9f3561e1d11f699b1a7e56ab8d9fc8b67212703b14bb15"
+    },
+    {
+      "path": "fencing-painting-baseline-v2.result.json",
+      "bytes": 375,
+      "sha256": "6324c28597d8249ea10a8bcfb225167a94d215a4ae6315b7cdfcf711194dbda7"
+    },
+    {
+      "path": "fencing-painting-baseline-v2.source.json",
+      "bytes": 5794,
+      "sha256": "5c6cfca1e6a2c4a6af9baf89d4a3968dcfb77d972b53e5489dc501cc11616de8"
+    },
+    {
+      "path": "fencing-painting-baseline.log",
+      "bytes": 813,
+      "sha256": "db222937c94ccf27adadd463a82db8de92451063f73f9c43cd17b62db2b3601b"
+    },
+    {
+      "path": "fencing-painting-baseline.result.json",
+      "bytes": 366,
+      "sha256": "9005a9394e23546f5322d349a0a87a37bcf0375315f1abda5017d8439a79a7aa"
+    },
+    {
+      "path": "fencing-painting-baseline.source.json",
+      "bytes": 5791,
+      "sha256": "14aa132f44caf70722b0968fbf88cdcdee1928ff80a1c32178c640daad701882"
+    },
+    {
+      "path": "final-source-github-verification.json",
+      "bytes": 3417,
+      "sha256": "50ed9a24cbbb0642d05ab5de03cc72fa64ed29d230f3d3602d9ae1bd8187e62a"
+    },
+    {
+      "path": "focused-offerings-booking-v1.log",
+      "bytes": 18241,
+      "sha256": "6957d98b3678466edecfb8d5711eb4c0fe1d5e5e0ec1af722f41291511ecb6d2"
+    },
+    {
+      "path": "focused-offerings-booking-v1.result.json",
+      "bytes": 323,
+      "sha256": "e9acf61af93ed2fdabb944818067c93e1a7001cddd484179c02eeb182c85703b"
+    },
+    {
+      "path": "focused-offerings-booking-v1.source.json",
+      "bytes": 5742,
+      "sha256": "965a7c6876c6abedc66a01d85293201826087e566589a991dd80edffa66473bc"
+    },
+    {
+      "path": "focused-offerings-booking-v2.log",
+      "bytes": 17201,
+      "sha256": "1c3986f73d1e8eaead1bcd032daa9a739d9e2ac39de8b6c72fa25bfb59bba499"
+    },
+    {
+      "path": "focused-offerings-booking-v2.result.json",
+      "bytes": 322,
+      "sha256": "94d40ea8787d886567f63cc209b5aff8d5f7f7ee97a5d50b6c62a52fd8dcabc5"
+    },
+    {
+      "path": "focused-offerings-booking-v2.source.json",
+      "bytes": 5742,
+      "sha256": "965a7c6876c6abedc66a01d85293201826087e566589a991dd80edffa66473bc"
+    },
+    {
+      "path": "offering-engine-first.log",
+      "bytes": 11941,
+      "sha256": "27e9d315776c77a5b7fb5e3411e847e29de8c0e3e3bf5ee02f03321d0b259490"
+    },
+    {
+      "path": "offering-engine-first.result.json",
+      "bytes": 229,
+      "sha256": "9fbf4d418342ab6b2266963bd10917d3134ccc78ec12691979ed66e6d15832aa"
+    },
+    {
+      "path": "offering-engine-first.source.json",
+      "bytes": 5663,
+      "sha256": "029bd9574bdf94017c19989d42d30b53fad2639b493f15f5df2c6dc50a6d56aa"
+    },
+    {
+      "path": "offering-engine-v2.log",
+      "bytes": 2325,
+      "sha256": "4c4b91e9066fd4bd0dcd4d76f7b35f354eea0041a5950e51751910692a45b76f"
+    },
+    {
+      "path": "offering-engine-v2.result.json",
+      "bytes": 223,
+      "sha256": "6fd62bb3e616387c883f1dfbc6a0e7a706c1c8b39a075258d5524e69d96df037"
+    },
+    {
+      "path": "offering-engine-v2.source.json",
+      "bytes": 5663,
+      "sha256": "029bd9574bdf94017c19989d42d30b53fad2639b493f15f5df2c6dc50a6d56aa"
+    },
+    {
+      "path": "offerings-application-final/application.sqlite",
+      "bytes": 2834432,
+      "sha256": "62aecb75cc0c68f6995802e67c73bf7968525ce77495782ecea2d994f833bed7"
+    },
+    {
+      "path": "offerings-application-final/http.json",
+      "bytes": 980205,
+      "sha256": "fa40d990b7e5132a7532bac8de0481e23d337c998b82a07be2f274feb2b78a5c"
+    },
+    {
+      "path": "offerings-application-final/pricebooks/47ac5c1a-e3cd-404a-a436-503a6bfa127c.json",
+      "bytes": 23828,
+      "sha256": "4498f4b014dfa8b1226a9e624cd55d1fd6b6a887a027e5ef5b48d5cf715e24e1"
+    },
+    {
+      "path": "offerings-application-final/results.json",
+      "bytes": 620088,
+      "sha256": "2511d52c546d12f79c03dc8af960be8200902041a2525804e447f6349e99d6c0"
+    },
+    {
+      "path": "offerings-application-final/saved-book.json",
+      "bytes": 23942,
+      "sha256": "8abfed1e5376dcf4e3215970199686fda93b3e9523ca3132df6f2a4addfde140"
+    },
+    {
+      "path": "offerings-application-final/server-process.json",
+      "bytes": 514,
+      "sha256": "975675c05bc5b7ccfcf14e8aad0f3bb3eebc334246449c751bf99b009c25299f"
+    },
+    {
+      "path": "offerings-application-final/server.log",
+      "bytes": 242,
+      "sha256": "599ae0aa88d174ec8b2d634173ced505c99d6cf9654e04a926f09cfced3dbbe7"
+    },
+    {
+      "path": "offerings-application-final/source-binding.json",
+      "bytes": 13545,
+      "sha256": "91b969d59c54fb24e1d957677375e0be11cbc6dc25fd1908e195945e25da3b6d"
+    },
+    {
+      "path": "offerings-application-final/stored-records.json",
+      "bytes": 2627324,
+      "sha256": "26de100852f53085d931943868b8737e5509df839e21d07de5ba821e3cb424c3"
+    },
+    {
+      "path": "offerings-application-final/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "08479a3dcd3073d1b60a33e9f189617457ea38d20fb50e6ec33f9d3fea423cb6"
+    },
+    {
+      "path": "offerings-application-final.log",
+      "bytes": 71,
+      "sha256": "e2d4a24310a695145f5af440b982a2b1ae59f937221f9f987fcbece00a22a1b5"
+    },
+    {
+      "path": "offerings-application-final.result.json",
+      "bytes": 386,
+      "sha256": "cf384abf71c78f4cc621ca86129339058c79e93bd2baa79af4dbcf4903345c77"
+    },
+    {
+      "path": "offerings-application-final.source.json",
+      "bytes": 5807,
+      "sha256": "9cbf08941bfbffe0dca1ddf8cdb75b8cc63d5a348e388fc66bb7fd60b9df6d4a"
+    },
+    {
+      "path": "offerings-application-v1/application.sqlite",
+      "bytes": 409600,
+      "sha256": "bca26708b70cedf270c87235e373d7f1b422c4ebb43b5254c97e475fb0e93b92"
+    },
+    {
+      "path": "offerings-application-v1/http.json",
+      "bytes": 290210,
+      "sha256": "22fb4a7548448f27faa11cedeae29ceda22329e7f0f3d6f0c3ff66b710dcbf17"
+    },
+    {
+      "path": "offerings-application-v1/pricebooks/2310ca42-5b67-48e8-8af6-da725cab1873.json",
+      "bytes": 23828,
+      "sha256": "79336b8d51e3418f38154af47e7800b21b9ff20c64c6d5ac3ffc06c01972f705"
+    },
+    {
+      "path": "offerings-application-v1/results.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "offerings-application-v1/server-process.json",
+      "bytes": 511,
+      "sha256": "31a819d93e9450f4d0c70e028db08b164aeab155349df5b521ee89a8106a0684"
+    },
+    {
+      "path": "offerings-application-v1/server.log",
+      "bytes": 340,
+      "sha256": "21bdbb24fdbcbd00ff2129aca16bf9b767c7c72422189153be8c07b6fa122986"
+    },
+    {
+      "path": "offerings-application-v1/source-binding.json",
+      "bytes": 13425,
+      "sha256": "abd60baad09b4077661702364860c65a6b538de2f647ff3f79a245a660cfbc86"
+    },
+    {
+      "path": "offerings-application-v1/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "cf50792ddf9fcaf0be74d7137d2770532b4e40b4a0ccea8fbe6aa2ec4b2257a0"
+    },
+    {
+      "path": "offerings-application-v1.log",
+      "bytes": 889,
+      "sha256": "ce28427dc7f892911ea9d33b7b5726736fcc792fd43be9d7b6d425670d80f13b"
+    },
+    {
+      "path": "offerings-application-v1.result.json",
+      "bytes": 377,
+      "sha256": "5f149065aff8686157efddcd77ec47184c685272531848002f46da78f58e48bf"
+    },
+    {
+      "path": "offerings-application-v1.source.json",
+      "bytes": 5804,
+      "sha256": "cb867ca434bba68c3ffab2229ed5d5bcbce4b5353af5be79faa3fb9831dbf4ff"
+    },
+    {
+      "path": "offerings-application-v2/application.sqlite",
+      "bytes": 598016,
+      "sha256": "36221aee66bc94f2f1a97a8bf0d233a22162845381ec34c5ce6f6ac08d2edd7c"
+    },
+    {
+      "path": "offerings-application-v2/http.json",
+      "bytes": 302122,
+      "sha256": "fc63802375fdf304338eff3fd85e7aeb673c1a6499a512da67a8b6c8175ae2b1"
+    },
+    {
+      "path": "offerings-application-v2/pricebooks/2dc8682c-2ab4-401f-b02e-cf46e8bfcbb3.json",
+      "bytes": 23828,
+      "sha256": "dcf5c188e1bd6b0fda37259318d83215be6bea6d4cc828a011d564849d062240"
+    },
+    {
+      "path": "offerings-application-v2/results.json",
+      "bytes": 49781,
+      "sha256": "c4d220b22321e77e553745ca54d0ecaf4ce92713706e5b5b5f1069285701df54"
+    },
+    {
+      "path": "offerings-application-v2/server-process.json",
+      "bytes": 511,
+      "sha256": "bb8c471e375c7df6c2d4f28b3f1e13b9b7da9487321d6fbea62bcb0261f06dcf"
+    },
+    {
+      "path": "offerings-application-v2/server.log",
+      "bytes": 242,
+      "sha256": "599ae0aa88d174ec8b2d634173ced505c99d6cf9654e04a926f09cfced3dbbe7"
+    },
+    {
+      "path": "offerings-application-v2/source-binding.json",
+      "bytes": 13425,
+      "sha256": "c59810fdc9ed5e1b5285a4e8f9dbbee3c2d56c0a030873d8428acd1a518e2b3c"
+    },
+    {
+      "path": "offerings-application-v2/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "9741e2b4fb5d8c3b52b6bae74172816c127db9649fbdada042d151a82f58dfde"
+    },
+    {
+      "path": "offerings-application-v2.log",
+      "bytes": 3882,
+      "sha256": "96c2026838193847ae7afda24b8038e9a604e3451f0eedd1469031548b303bcc"
+    },
+    {
+      "path": "offerings-application-v2.result.json",
+      "bytes": 377,
+      "sha256": "dfa8acf7d0314fffaadd7aee19d5faad370770af71d78120e3094eedd2370871"
+    },
+    {
+      "path": "offerings-application-v2.source.json",
+      "bytes": 5804,
+      "sha256": "721a2744a9d47f722f76cc1fcfecfea6a046082acd62d5dfdbf2687cbab7ab05"
+    },
+    {
+      "path": "offerings-application-v3/application.sqlite",
+      "bytes": 598016,
+      "sha256": "4eda8958edfd7934d3c78d0f03249fafa60a465d5ae9c6593eacf4ea755dd313"
+    },
+    {
+      "path": "offerings-application-v3/http.json",
+      "bytes": 307185,
+      "sha256": "fb22c15ee48480e1b459abc009239ed75ce2d62db98a3e7d503a05c8cb4aa3b2"
+    },
+    {
+      "path": "offerings-application-v3/pricebooks/b3156b0f-2303-4b0e-8112-d3aeac396a2b.json",
+      "bytes": 23828,
+      "sha256": "e944ebcbb303a5a8fcbd0ec474add86ff126f7e07aee478ad3429fb7d05dc3e3"
+    },
+    {
+      "path": "offerings-application-v3/results.json",
+      "bytes": 49781,
+      "sha256": "34847cc35768f071f329d611569f7554012ddb148c63554017a36aa06a478379"
+    },
+    {
+      "path": "offerings-application-v3/server-process.json",
+      "bytes": 511,
+      "sha256": "40f130646cd3e5d4eb2deb73af669772a41049a94eb9f3068c9d8505fe93ff87"
+    },
+    {
+      "path": "offerings-application-v3/server.log",
+      "bytes": 242,
+      "sha256": "599ae0aa88d174ec8b2d634173ced505c99d6cf9654e04a926f09cfced3dbbe7"
+    },
+    {
+      "path": "offerings-application-v3/source-binding.json",
+      "bytes": 13425,
+      "sha256": "c59810fdc9ed5e1b5285a4e8f9dbbee3c2d56c0a030873d8428acd1a518e2b3c"
+    },
+    {
+      "path": "offerings-application-v3/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "79d97b032e4c1ed7a06b07c145e5407f5072da055270772adf3beea024e48ef6"
+    },
+    {
+      "path": "offerings-application-v3.log",
+      "bytes": 8029,
+      "sha256": "a73983dae3d48f91f07b56a2520ec8425b9ba7d29272c9f6fddf12d28a9063ac"
+    },
+    {
+      "path": "offerings-application-v3.result.json",
+      "bytes": 377,
+      "sha256": "16ca13d8dc9d63ca3878cc6f5c506c52dc16a413f31fde211859f49d624fa654"
+    },
+    {
+      "path": "offerings-application-v3.source.json",
+      "bytes": 5804,
+      "sha256": "5332eaffa2b4d364ae8ca59fec1288c120ca7b6cec0b4fae7da18aca0a0a5c15"
+    },
+    {
+      "path": "offerings-application-v4/application.sqlite",
+      "bytes": 598016,
+      "sha256": "b43636961c691a022e126c9e933ee60b13181e668f4f00a0d423d93642877025"
+    },
+    {
+      "path": "offerings-application-v4/http.json",
+      "bytes": 311106,
+      "sha256": "77c6a6c101923410543cc0bab031d6b46883bc5a211c7e1184b5e88fa2645cdd"
+    },
+    {
+      "path": "offerings-application-v4/pricebooks/c5654bab-6666-4b53-a965-da717c51870d.json",
+      "bytes": 23828,
+      "sha256": "e1ba9dd8c5236858dcff69cece0353395336f9a824c09877b6c5bc67ab9580d0"
+    },
+    {
+      "path": "offerings-application-v4/results.json",
+      "bytes": 49781,
+      "sha256": "ab7595d7e231636a4a84322ae4c92c521397695cd8a650a63bd144bae590ddbf"
+    },
+    {
+      "path": "offerings-application-v4/server-process.json",
+      "bytes": 510,
+      "sha256": "65980d6a08466381ad1455b2221bef44feb3e9910318cb171e7baf5eaabdbf53"
+    },
+    {
+      "path": "offerings-application-v4/server.log",
+      "bytes": 340,
+      "sha256": "21bdbb24fdbcbd00ff2129aca16bf9b767c7c72422189153be8c07b6fa122986"
+    },
+    {
+      "path": "offerings-application-v4/source-binding.json",
+      "bytes": 13425,
+      "sha256": "c59810fdc9ed5e1b5285a4e8f9dbbee3c2d56c0a030873d8428acd1a518e2b3c"
+    },
+    {
+      "path": "offerings-application-v4/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "fb125c51240c5a2e042ae04f3144bd30458388a6490294412eeedc04ae52345d"
+    },
+    {
+      "path": "offerings-application-v4.log",
+      "bytes": 684,
+      "sha256": "fb669029d8361a9bba73c5522b92951b2a7054eb5ec63bac94979ccfaf1ad18c"
+    },
+    {
+      "path": "offerings-application-v4.result.json",
+      "bytes": 377,
+      "sha256": "932618515edcaa133c19d8c77a78bb3216223b94585bd18e1b239ca5493ad507"
+    },
+    {
+      "path": "offerings-application-v4.source.json",
+      "bytes": 5804,
+      "sha256": "9e38e15984c79434a18010be7fea667a3f2648bbbae22b2abb4bc85f6aa98c87"
+    },
+    {
+      "path": "offerings-application-v5/application.sqlite",
+      "bytes": 2818048,
+      "sha256": "a85fe77a121f44165b7bb6d51f3f374eafd0b8af1703cff35e32b92962590498"
+    },
+    {
+      "path": "offerings-application-v5/http.json",
+      "bytes": 976193,
+      "sha256": "af7e563ea7b9309f4b24479bb29983d65cbf4a8009f855b0ef32d0035f3d5bdb"
+    },
+    {
+      "path": "offerings-application-v5/pricebooks/a9d8b245-238d-4c9a-bf6a-65963634901c.json",
+      "bytes": 23828,
+      "sha256": "97903ea0253b56f14fd50f16f601a3de8b8ef19f2a7ef25d20c75be33b3ad70c"
+    },
+    {
+      "path": "offerings-application-v5/results.json",
+      "bytes": 613422,
+      "sha256": "6e33677cd0e314c017c6ae5849fd9f8cc12ba38bc47024a03322f7968ed52b39"
+    },
+    {
+      "path": "offerings-application-v5/server-process.json",
+      "bytes": 511,
+      "sha256": "46182d7715e7b5a9b219217d4ee9934b20bd084a10492acfc018a988cad8af3f"
+    },
+    {
+      "path": "offerings-application-v5/server.log",
+      "bytes": 242,
+      "sha256": "599ae0aa88d174ec8b2d634173ced505c99d6cf9654e04a926f09cfced3dbbe7"
+    },
+    {
+      "path": "offerings-application-v5/source-binding.json",
+      "bytes": 13545,
+      "sha256": "7c3cf55badad05149ac2722339a05e8695c0bcc980577367f65cf1c75afeaed4"
+    },
+    {
+      "path": "offerings-application-v5/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "d2726e740fd55eb0f6827e4db5238411efbd90a5a2a3d5f682626c1e6b5779a4"
+    },
+    {
+      "path": "offerings-application-v5.log",
+      "bytes": 589,
+      "sha256": "0d280c3146ebd8d44c1ab3c7c8e0d3a860320370cf6bf6f0b7d2d66d47871c70"
+    },
+    {
+      "path": "offerings-application-v5.result.json",
+      "bytes": 377,
+      "sha256": "8fa759250bcb49c75bb0487aec1ac097697e0cff9aba4d5e71b2406b9fc2a4a8"
+    },
+    {
+      "path": "offerings-application-v5.source.json",
+      "bytes": 5804,
+      "sha256": "c7c9d5beab362663f69fbd83e152985d8181a52fb56cdd0d4a14c251d098f257"
+    },
+    {
+      "path": "offerings-application-v6/application.sqlite",
+      "bytes": 2834432,
+      "sha256": "957e98b739e2123749b7a0bfb7349f98dd7113c3d73c050fbff136d591d299eb"
+    },
+    {
+      "path": "offerings-application-v6/http.json",
+      "bytes": 986161,
+      "sha256": "9504fba671926f373ae109cd29c8af9ba79930522f7f4ee725ed6db25144e723"
+    },
+    {
+      "path": "offerings-application-v6/pricebooks/5c5f29cc-2073-454d-abb6-9dd5f17c2d58.json",
+      "bytes": 23828,
+      "sha256": "d92eb76937077d754ad03d5ff7ad41409d04ab838693e55e8c0aca0f6d39ce75"
+    },
+    {
+      "path": "offerings-application-v6/results.json",
+      "bytes": 623390,
+      "sha256": "f594f885c84ec27e0709a14ab2290132cc13ac89af17102ff693155c2b0cb699"
+    },
+    {
+      "path": "offerings-application-v6/saved-book.json",
+      "bytes": 23942,
+      "sha256": "3ae84c3ca79d2af550e4771da06f064a28280204437783f2c6acab58371dfd4a"
+    },
+    {
+      "path": "offerings-application-v6/server-process.json",
+      "bytes": 511,
+      "sha256": "aa36a8929006a74fac04ab8d68854a8fbf8856b361894c6608f4b29a51ad997a"
+    },
+    {
+      "path": "offerings-application-v6/server.log",
+      "bytes": 242,
+      "sha256": "599ae0aa88d174ec8b2d634173ced505c99d6cf9654e04a926f09cfced3dbbe7"
+    },
+    {
+      "path": "offerings-application-v6/source-binding.json",
+      "bytes": 13545,
+      "sha256": "f57d2adb48c657133554b74b6c817ec903407500a53553b16a7aeb3223f0929a"
+    },
+    {
+      "path": "offerings-application-v6/stored-records.json",
+      "bytes": 2632588,
+      "sha256": "5d522d309055632b711b0dbd085328b3e80117fa06a13a469dbf19ef43d355d9"
+    },
+    {
+      "path": "offerings-application-v6/synthetic-account-setup.ndjson",
+      "bytes": 183,
+      "sha256": "4412c6322d6ccf7ed9518bdbed11d6b2e010933d9392b6c724b630a422e19e14"
+    },
+    {
+      "path": "offerings-application-v6.log",
+      "bytes": 71,
+      "sha256": "e2d4a24310a695145f5af440b982a2b1ae59f937221f9f987fcbece00a22a1b5"
+    },
+    {
+      "path": "offerings-application-v6.result.json",
+      "bytes": 377,
+      "sha256": "b5ac2e7311ada4e47761bd7647b12e3aa02077bba814c64b99fe133079336b95"
+    },
+    {
+      "path": "offerings-application-v6.source.json",
+      "bytes": 5804,
+      "sha256": "8df125abe8dbe18fee0dc8cb0a1e8d0638eff218c44a2e805d39ccb30cd999fe"
+    },
+    {
+      "path": "offerings-browser-final/application.sqlite",
+      "bytes": 409600,
+      "sha256": "d2da0aca3f2e696bdedc6a0bb12aa3bcbd4eba0abf221c79143858652f90e5d4"
+    },
+    {
+      "path": "offerings-browser-final/browser-http.json",
+      "bytes": 1163024,
+      "sha256": "ffa41562394a3a54be1a2df3892c91c62834abf1a903aa5a854b826818b7c22e"
+    },
+    {
+      "path": "offerings-browser-final/failure.html",
+      "bytes": 39224,
+      "sha256": "3168ebcc16ef0a050283cbf7011b117cb35f4f01892aced0d4168aeb9f0b9968"
+    },
+    {
+      "path": "offerings-browser-final/failure.json",
+      "bytes": 307,
+      "sha256": "5d589d4949fb703089ddd2a8e27a2dd4c57a50c417cb17478f032c8b69d78d16"
+    },
+    {
+      "path": "offerings-browser-final/failure.png",
+      "bytes": 439198,
+      "sha256": "47c6695723257d7ae183d50ba2bdf72de2c04a457bb7d98b983fdf71729cb0cd"
+    },
+    {
+      "path": "offerings-browser-final/http.json",
+      "bytes": 660187,
+      "sha256": "2027b9a41b79413aeb8e9289f622682bc5c869d5fe03da0c337a3e919b13b10c"
+    },
+    {
+      "path": "offerings-browser-final/pricebooks/ba6bc307-f628-4a51-837f-5a9cf214c98b.json",
+      "bytes": 17757,
+      "sha256": "c92f8f2cc83e4c6591f54a248c1d29103a4ffdd736f6d5c14d65600155a8f4f3"
+    },
+    {
+      "path": "offerings-browser-final/results.json",
+      "bytes": 32,
+      "sha256": "148609c014eafaecf3719b899f55e693ed907ea8501fa7221778a76fb7288280"
+    },
+    {
+      "path": "offerings-browser-final/server-process.json",
+      "bytes": 510,
+      "sha256": "5cf789aea5da4eafe7979862057ea6e61a1ad5a35fe6abb9199b5a208a83b272"
+    },
+    {
+      "path": "offerings-browser-final/server.log",
+      "bytes": 380,
+      "sha256": "c8692bf51865c5ca3ec4def8131f4a685604a759b78c190d432a75706a42c559"
+    },
+    {
+      "path": "offerings-browser-final/source-binding.json",
+      "bytes": 13545,
+      "sha256": "91b969d59c54fb24e1d957677375e0be11cbc6dc25fd1908e195945e25da3b6d"
+    },
+    {
+      "path": "offerings-browser-final/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "9d3bd6a51655efaa8ffe4e95a10e18de02eda7ff55dddbcc0b71532f72cd8b7e"
+    },
+    {
+      "path": "offerings-browser-final-v2/application.sqlite",
+      "bytes": 409600,
+      "sha256": "7498fc10e14ec15413d8de161ad6ab2bff2cf06c170b6453406ec2053c874e19"
+    },
+    {
+      "path": "offerings-browser-final-v2/browser-http.json",
+      "bytes": 1157156,
+      "sha256": "f84d942689340900e81867ee288eece9be779930fd1bd297c6d1f4aa0ae74770"
+    },
+    {
+      "path": "offerings-browser-final-v2/failure.html",
+      "bytes": 36213,
+      "sha256": "da916ec6617c88ee4b2a3d7dfb475d9dd23f2233e814c8a314eeebf585503cfb"
+    },
+    {
+      "path": "offerings-browser-final-v2/failure.json",
+      "bytes": 307,
+      "sha256": "b7649be16d73893aa43bef1f75f29bae6c80ac58faa3c02e6b5181f2c65e8e2b"
+    },
+    {
+      "path": "offerings-browser-final-v2/failure.png",
+      "bytes": 369293,
+      "sha256": "2936bed56105e331e66d32de6688cad4be6ea18019a2ea0a88a0747756c41b6d"
+    },
+    {
+      "path": "offerings-browser-final-v2/http.json",
+      "bytes": 660187,
+      "sha256": "f20fe25b6f0064d434dc4f8b639e2486067354eb5231da6db52edcdf4067e242"
+    },
+    {
+      "path": "offerings-browser-final-v2/pricebooks/a2ab3b3e-bd36-43b7-8070-3fef5c8bac06.json",
+      "bytes": 17757,
+      "sha256": "7f4afac232afca7dc75d175f810208ee837eeace40eceb3e5919a9b2d121a6a6"
+    },
+    {
+      "path": "offerings-browser-final-v2/results.json",
+      "bytes": 32,
+      "sha256": "148609c014eafaecf3719b899f55e693ed907ea8501fa7221778a76fb7288280"
+    },
+    {
+      "path": "offerings-browser-final-v2/server-process.json",
+      "bytes": 513,
+      "sha256": "aa2331189dabe49a2d83341279a71dae40e822e89c82e0892d19cad005598a99"
+    },
+    {
+      "path": "offerings-browser-final-v2/server.log",
+      "bytes": 664,
+      "sha256": "447a39442b87acd3c3b4f1147c8bfc1f8682a74a0acf2fb1e95c449c8d165a1a"
+    },
+    {
+      "path": "offerings-browser-final-v2/source-binding.json",
+      "bytes": 13545,
+      "sha256": "92faae0119cd509654fd9e6af8367821f785d4e16d481b7c0ad3b56699ef5cce"
+    },
+    {
+      "path": "offerings-browser-final-v2/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "6202b323f1e8ae222fd541300a3f3fdb8183da5841da4f1e0cf7cfdb2208b51a"
+    },
+    {
+      "path": "offerings-browser-final-v2.log",
+      "bytes": 386,
+      "sha256": "aeb5619f73dc45e12b8e6a4c3f8f3c237d2d1d8332e535ec624317aeadc8045a"
+    },
+    {
+      "path": "offerings-browser-final-v2.result.json",
+      "bytes": 369,
+      "sha256": "6e9f9aeed3efffd9c7d0786b7e71de6b8324e72c3349fe79ce8a050a2e208a65"
+    },
+    {
+      "path": "offerings-browser-final-v2.source.json",
+      "bytes": 5791,
+      "sha256": "49fe30173b6bb989a63450caa2477ee8c293a85a2d63cc021c4705a8f2dbee52"
+    },
+    {
+      "path": "offerings-browser-final-v3/application.sqlite",
+      "bytes": 409600,
+      "sha256": "ea33d99bb29397aa500c66a3c8b661f2e1a80afc772cc29b6a3de80e32cc5708"
+    },
+    {
+      "path": "offerings-browser-final-v3/pricebooks/77995480-59a2-4fc0-b03f-1c3b7f16fa63.json",
+      "bytes": 17757,
+      "sha256": "2c3fa63cd0e95dbe3402d73f837ab966ba20e4c71fdc6d4fc5d371543aad81c2"
+    },
+    {
+      "path": "offerings-browser-final-v3/server-process.json",
+      "bytes": 513,
+      "sha256": "1f3e0ee5fa7d66d412511f9480a48eb8f08235cd283a55b7c4eec85fec7786c7"
+    },
+    {
+      "path": "offerings-browser-final-v3/source-binding.json",
+      "bytes": 13545,
+      "sha256": "5a0ef7cf4788fac6e546009307ca4ec40e1b0ce344baf4700b5184ec7cb95ef1"
+    },
+    {
+      "path": "offerings-browser-final-v3/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "f01f5696266286a32122f7b6a0cee1e17fd955e5483c91bb44b9ee698e99675c"
+    },
+    {
+      "path": "offerings-browser-final-v3.log",
+      "bytes": 368,
+      "sha256": "624877cc36544db7c062a52deb24a6a05a2930d097d0936f435c89ead3defdd3"
+    },
+    {
+      "path": "offerings-browser-final-v3.result.json",
+      "bytes": 368,
+      "sha256": "4b4269fc7fb7acaa322c3a844e9782039b7b5452d5dbcb5b4c8634b1df7e55f3"
+    },
+    {
+      "path": "offerings-browser-final-v3.source.json",
+      "bytes": 5791,
+      "sha256": "901358787171d64f5c83d2bc6fda1908d8351414884351109089d4d17ff9e792"
+    },
+    {
+      "path": "offerings-browser-final-v4/application.sqlite",
+      "bytes": 2396160,
+      "sha256": "d9d76cd95f40fbfff33fe96f5080af3f98453716bf33bb2118e052e2e14be55e"
+    },
+    {
+      "path": "offerings-browser-final-v4/browser-http.json",
+      "bytes": 5894793,
+      "sha256": "14f047298ad87fad0c6f7b9747e06779f449ee9f2de72e0229bf5913292dfb78"
+    },
+    {
+      "path": "offerings-browser-final-v4/full-page-fence.png",
+      "bytes": 102430,
+      "sha256": "d9f4bac2d68a63804868e0427981634b9bfaac37b9b3351baec820b9ca33049f"
+    },
+    {
+      "path": "offerings-browser-final-v4/full-page-paint.png",
+      "bytes": 99757,
+      "sha256": "f7e57e6aaa5fd5e3465ec67390ccbf92080dc6ca7699ab217d90ef12d714beb1"
+    },
+    {
+      "path": "offerings-browser-final-v4/http.json",
+      "bytes": 715875,
+      "sha256": "0b2f7426691dfd961948e9e0e9e03ea56ed58565edf05fa7f78c90cc898c6e43"
+    },
+    {
+      "path": "offerings-browser-final-v4/owner-offerings.png",
+      "bytes": 351673,
+      "sha256": "c50511e97eab9fbe1cd41f8f7094e76c22cf78e490b2042921ee2c5d841e35c0"
+    },
+    {
+      "path": "offerings-browser-final-v4/pricebooks/af1441ed-c309-4600-99c3-0997df3d2510.json",
+      "bytes": 27022,
+      "sha256": "07ad2adbadfec5c58f4b2f3df6e41c300980055c5bc90f001551c256fc65c7dc"
+    },
+    {
+      "path": "offerings-browser-final-v4/results.json",
+      "bytes": 1744993,
+      "sha256": "a2fb280d88b47502c62aaf3044c19c1d2020b83c3fabb7a216dc24101e432c1e"
+    },
+    {
+      "path": "offerings-browser-final-v4/saved-book.json",
+      "bytes": 27136,
+      "sha256": "e493505df5ee8dca015592e35ad7aa51f3c6d08cc56426e9be42bc942d83661d"
+    },
+    {
+      "path": "offerings-browser-final-v4/server-process.json",
+      "bytes": 513,
+      "sha256": "7f92ce52b777511499dd3da8b4ca315879fe402982fb2e6db838a7c07a5a2866"
+    },
+    {
+      "path": "offerings-browser-final-v4/server.log",
+      "bytes": 1303,
+      "sha256": "3bd7fab36255e04d03252fde0296e404a31f06df31803522ef936b0ac4a27191"
+    },
+    {
+      "path": "offerings-browser-final-v4/source-binding.json",
+      "bytes": 13545,
+      "sha256": "41d7e65ca71af50150b02d180bae3406c580d7faa63c04f3d1d3c8cce7c6f898"
+    },
+    {
+      "path": "offerings-browser-final-v4/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "a6a33a7fbd9deb067adb14280f4d6ef79a542e6abd4026ee299176dc66362cc3"
+    },
+    {
+      "path": "offerings-browser-final-v4/widget-fence.png",
+      "bytes": 57834,
+      "sha256": "42cafe27fd130733a8f90d4acf751904c6418ce59a0d8236f44f43b23db85b3b"
+    },
+    {
+      "path": "offerings-browser-final-v4/widget-paint.png",
+      "bytes": 57843,
+      "sha256": "c4d6defc4b3d559630f11f9252435ee249e3920d1aae35ff32c26d27f283ba3e"
+    },
+    {
+      "path": "offerings-browser-final-v4.log",
+      "bytes": 856,
+      "sha256": "7defb15913aadf70efaa03843f956e9f73c4bbd1ab44b01587dd113fbaeebda7"
+    },
+    {
+      "path": "offerings-browser-final-v4.result.json",
+      "bytes": 369,
+      "sha256": "d19e7c7b9b55abb3f9c534fdb15abfe76d7fa118489c6daea6a3e68d54b7d1be"
+    },
+    {
+      "path": "offerings-browser-final-v4.source.json",
+      "bytes": 5791,
+      "sha256": "7f693990ef3039252a5397e8431aa74049acc753fc568ddc00115e6979580fd2"
+    },
+    {
+      "path": "offerings-browser-final.log",
+      "bytes": 386,
+      "sha256": "057e0533c5efe05b4c6f48acd23ded79c2ec12b90fb87044862235a216ba364c"
+    },
+    {
+      "path": "offerings-browser-final.result.json",
+      "bytes": 360,
+      "sha256": "a1ec95d34c8c023c7a63b78938d84f83232b30075a581a1debd03ca67c4999de"
+    },
+    {
+      "path": "offerings-browser-final.source.json",
+      "bytes": 5788,
+      "sha256": "e090a6113fa0d83ce750cd3228ad6fe47c904adaca7acbed80b89aea2357b6fc"
+    },
+    {
+      "path": "offerings-browser-v1/application.sqlite",
+      "bytes": 2404352,
+      "sha256": "eb6b8db04ef7b0c6d3a517e160844fe6177ea31ab1d0e04bc3a3f361f798bc3f"
+    },
+    {
+      "path": "offerings-browser-v1/browser-http.json",
+      "bytes": 8699029,
+      "sha256": "7db035bb204ae30b73380af81ecbe328724136b72f1b5c7ea0158da2d8c1d661"
+    },
+    {
+      "path": "offerings-browser-v1/full-page-fence.png",
+      "bytes": 107080,
+      "sha256": "0379e5291ca54f2bda03cbbf731f46c02a6114b53b0d500e04bb0d77116533e3"
+    },
+    {
+      "path": "offerings-browser-v1/full-page-paint.png",
+      "bytes": 99757,
+      "sha256": "f7e57e6aaa5fd5e3465ec67390ccbf92080dc6ca7699ab217d90ef12d714beb1"
+    },
+    {
+      "path": "offerings-browser-v1/http.json",
+      "bytes": 715875,
+      "sha256": "5e5442a3f7637849f0a48f371732be1ab1542a984421bba7189204aee4e034ba"
+    },
+    {
+      "path": "offerings-browser-v1/owner-offerings.png",
+      "bytes": 390503,
+      "sha256": "ce1dfaa9cbda4204454154405989994658af28176d32a0955b98ef44aa4b4afd"
+    },
+    {
+      "path": "offerings-browser-v1/pricebooks/1a2336ed-fc58-4d4e-8c7b-52acb4524d75.json",
+      "bytes": 27022,
+      "sha256": "21a2b26250bfe6dd0ab8526d3b4d98b40064c99ea34c154c5945c4e9fa819f8e"
+    },
+    {
+      "path": "offerings-browser-v1/results.json",
+      "bytes": 1750166,
+      "sha256": "23f5a7d2035e0ab0277bf9680e0c37f4c05541ed3ef0ed22c1867674ce0c59b7"
+    },
+    {
+      "path": "offerings-browser-v1/saved-book.json",
+      "bytes": 27136,
+      "sha256": "bab662df8b61ce439feaf5aad91ed83b8d6bef039daf574c4017c4af04edc634"
+    },
+    {
+      "path": "offerings-browser-v1/server-process.json",
+      "bytes": 507,
+      "sha256": "cd15b07073f7e0149633e0bef43a8e4e482fd381f976ccbe7a8412aa611ea08b"
+    },
+    {
+      "path": "offerings-browser-v1/server.log",
+      "bytes": 948,
+      "sha256": "6280b4b82cbefb12da062ce21023dd1950ecc83a9e25465c391cb977f9edb2bf"
+    },
+    {
+      "path": "offerings-browser-v1/source-binding.json",
+      "bytes": 13545,
+      "sha256": "f57d2adb48c657133554b74b6c817ec903407500a53553b16a7aeb3223f0929a"
+    },
+    {
+      "path": "offerings-browser-v1/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "c73feb1c8377b8c3aee2445cd5beecc079f01b15ce706e1c601a813755dc12ab"
+    },
+    {
+      "path": "offerings-browser-v1/widget-fence.png",
+      "bytes": 61877,
+      "sha256": "c8a5e34a473cbf04dc19fea92f84e1cc3bddc7472cccec0a555cb67df47051c9"
+    },
+    {
+      "path": "offerings-browser-v1/widget-paint.png",
+      "bytes": 57843,
+      "sha256": "c4d6defc4b3d559630f11f9252435ee249e3920d1aae35ff32c26d27f283ba3e"
+    },
+    {
+      "path": "offerings-browser-v1.log",
+      "bytes": 28,
+      "sha256": "2b6383e927bf3b08bea87c6a4256b60729d4a460e475258871ebe3376b85077f"
+    },
+    {
+      "path": "offerings-browser-v1.result.json",
+      "bytes": 351,
+      "sha256": "e7ae58edc236c1f2bd0e53b9dd12060b20b068e9dc7fede4c7fe683913926d52"
+    },
+    {
+      "path": "offerings-browser-v1.source.json",
+      "bytes": 5785,
+      "sha256": "3946d6202742d24b0caddaed4953f0694ba5661f175ac68fa5d929ef91d9fb9d"
+    },
+    {
+      "path": "offerings-build-final.log",
+      "bytes": 812,
+      "sha256": "315f26973feafc8d6de615e77d3ccf06d6ecdc5c1e09c13529e4362d554b87b5"
+    },
+    {
+      "path": "offerings-build-final.result.json",
+      "bytes": 201,
+      "sha256": "65f4874e1fed9b9b7146c8fa2fd9b2dd545d8a6ee040b6d2568442b6e6e8dc83"
+    },
+    {
+      "path": "offerings-build-final.source.json",
+      "bytes": 5634,
+      "sha256": "7d41e39b41b7a8b7f63de7d671046cb2daeb8d8775c3918f73bb48d7d84cdb70"
+    },
+    {
+      "path": "offerings-build-v1.log",
+      "bytes": 812,
+      "sha256": "2e2cdc3379b97f3e4882fd0e91f91da4ae87b339df7858bf26b8e13d434f37a9"
+    },
+    {
+      "path": "offerings-build-v1.result.json",
+      "bytes": 195,
+      "sha256": "e3ae528c7412ac2625ae656ff2edd7a10938472b7704f88358109ecd39e732b0"
+    },
+    {
+      "path": "offerings-build-v1.source.json",
+      "bytes": 5634,
+      "sha256": "424507e72e6be0b250823a0ffb0138c1dd5ace60b331ec1811f741acbb4661d1"
+    },
+    {
+      "path": "offerings-final-application-regression-v1.log",
+      "bytes": 76736,
+      "sha256": "3fee52bdbcee6379253fce552c15fb7231b9aa9ca070b028b300da7b032cb90c"
+    },
+    {
+      "path": "offerings-final-application-regression-v1.result.json",
+      "bytes": 1545,
+      "sha256": "bbe434e662912a085642dd09c1d578e61c750ddd9ed0283baaa0d5eeace9ad6b"
+    },
+    {
+      "path": "offerings-final-application-regression-v1.source.json",
+      "bytes": 6938,
+      "sha256": "0fe12a51c8138d39b8e589e455ba7f8dbda1a32d7faf8fd84a9e7f0ad7f7756a"
+    },
+    {
+      "path": "offerings-final-application-regression-v2.log",
+      "bytes": 76744,
+      "sha256": "c80cedbf41bbb0eeee2429b74f01524d431e647acf6234299a27e4c25080ddb5"
+    },
+    {
+      "path": "offerings-final-application-regression-v2.result.json",
+      "bytes": 1545,
+      "sha256": "9cd1889db27ae69694ffe28a44d49c9298140adf68333fb16253aeee61a263f4"
+    },
+    {
+      "path": "offerings-final-application-regression-v2.source.json",
+      "bytes": 6938,
+      "sha256": "420dae365ab3a41f03e06057541daf00db4d19a13687ece5a0bc2c5c9906ba0a"
+    },
+    {
+      "path": "offerings-final-client-transport-v1.log",
+      "bytes": 3363,
+      "sha256": "df4aa1526c2825895eb77a3d8bc930545b5a2c3b5b90e69f68986f40a9733214"
+    },
+    {
+      "path": "offerings-final-client-transport-v1.result.json",
+      "bytes": 307,
+      "sha256": "fa8a2747170d9929c687c65ef0965acc209efa9d28a9279bae5766e32a0e3f7e"
+    },
+    {
+      "path": "offerings-final-client-transport-v1.source.json",
+      "bytes": 5713,
+      "sha256": "ec67b0bcfa822e877ac374223007b8b0dd27d97092c241c03af2af1a25c857d7"
+    },
+    {
+      "path": "offerings-final-engine-regression-v1.log",
+      "bytes": 88122,
+      "sha256": "7215f55af6a02efe12e74621d1acd85cca291871c7cadc05c940a9bf6faeba18"
+    },
+    {
+      "path": "offerings-final-engine-regression-v1.result.json",
+      "bytes": 462,
+      "sha256": "538d85914a450ff1478e95171c938ca2b5ec81887fe7e32cde3c56ce53971c72"
+    },
+    {
+      "path": "offerings-final-engine-regression-v1.source.json",
+      "bytes": 5864,
+      "sha256": "3e224853ce994549a221dd8fe1feb65c154f6eca0b855b4066600556b8302a5d"
+    },
+    {
+      "path": "offerings-full-page-owner-final/application.sqlite",
+      "bytes": 409600,
+      "sha256": "ae54775023ac234dcaafcaba54d5f29ae52d8753f7ed6929cd3f46980c3c48ac"
+    },
+    {
+      "path": "offerings-full-page-owner-final/browser.log",
+      "bytes": 298,
+      "sha256": "e3684dafbce5659e84b19c477a8fef0e7958c48b2f59ae9cb380fd87623bc01f"
+    },
+    {
+      "path": "offerings-full-page-owner-final/executed-full-page-browser.mjs",
+      "bytes": 12107,
+      "sha256": "1e3cca9efa1bda4ef0afbdac90e0a38930c57331f91832dfb76cd2ebc37d1a7d"
+    },
+    {
+      "path": "offerings-full-page-owner-final/failed-results.json",
+      "bytes": 594,
+      "sha256": "73896f9cf8c18c5a2c247211c54a8c09ae8540246123504bcee269c660709118"
+    },
+    {
+      "path": "offerings-full-page-owner-final/failure-0.png",
+      "bytes": 9385,
+      "sha256": "751d9bfbaa45cf8179ef6a4af62dced5887cf61d5a53cd028b2db95ee6f44154"
+    },
+    {
+      "path": "offerings-full-page-owner-final/failure-0.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "offerings-full-page-owner-final/http.json",
+      "bytes": 374347,
+      "sha256": "bcc1c322988e6e824d1791fecc569f8e3119acd67a7f665c21df32341364848c"
+    },
+    {
+      "path": "offerings-full-page-owner-final/pricebooks/fb38ed8c-4f47-4aae-81c4-a3b5e2ee4bd9.json",
+      "bytes": 3000,
+      "sha256": "52102a06e99cd3d0bb3bf4ef12a33c51bd6fffcc3452829391c694c0151f8c30"
+    },
+    {
+      "path": "offerings-full-page-owner-final/server-process.json",
+      "bytes": 518,
+      "sha256": "9d290e3f9ba19053a1bb53e1cc10970eef0686b67e144c72dae7349b3583ec65"
+    },
+    {
+      "path": "offerings-full-page-owner-final/server.log",
+      "bytes": 237,
+      "sha256": "d5359e32512c65c9cb3f70b4251adead0ac5332e5fbb9ca2744d4ec29faaafc6"
+    },
+    {
+      "path": "offerings-full-page-owner-final/source-binding.json",
+      "bytes": 13545,
+      "sha256": "41d7e65ca71af50150b02d180bae3406c580d7faa63c04f3d1d3c8cce7c6f898"
+    },
+    {
+      "path": "offerings-full-page-owner-final/synthetic-account-setup.ndjson",
+      "bytes": 178,
+      "sha256": "d1470cb0102f53e9e4bf0060064e360313b0447480a929505da3a2fd0b965618"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/application.sqlite",
+      "bytes": 786432,
+      "sha256": "5d2c13331ecf4607f5a45c1733f483b4c08334cdee394ae3136ff3c5df00cb10"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/browser.log",
+      "bytes": 162,
+      "sha256": "f4d228924d3cf4b1e18fc5a0a489624b236462c9e2a05beb820524270481ee72"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/configured-lawn-edging-plus-separate-work.png",
+      "bytes": 107369,
+      "sha256": "a111d1dad0a8f8796ad0456cb02ded566e8cef6ad7976a996b4733a1b42aaf2d"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/context-explicitly-identifies-separate-work.png",
+      "bytes": 115034,
+      "sha256": "a0c1d0a9f94d5191d457068fca5c0e321731634181978aebbfaf91516d60adc6"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/executed-full-page-browser.mjs",
+      "bytes": 12107,
+      "sha256": "1e3cca9efa1bda4ef0afbdac90e0a38930c57331f91832dfb76cd2ebc37d1a7d"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/http.json",
+      "bytes": 374347,
+      "sha256": "7077e2ac458dd90cf3a76d3c5d8483821e0f7f0fa7fa670c1cc3ec1b68dfd49f"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/normal-complete-request.png",
+      "bytes": 91191,
+      "sha256": "e4097607d14223808fae5160bea31295af4645c1afa8643d874f1df4193a3673"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/owner-additional-work-leads.png",
+      "bytes": 223455,
+      "sha256": "97856e908c9815f61e5731fca4227da715d7f61371866d092faec9b256b6a166"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/owner-partial-quotes.png",
+      "bytes": 345537,
+      "sha256": "05dc0e8a896d9c0b5749754881b11850ddac8e0f1ed65eddde087c75929fa4ef"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/partial-retry.png",
+      "bytes": 104151,
+      "sha256": "41feb1a9e18a6d8cd452b7f8e314df69f41541f8ef0b8d3c5e0b6dd481f0382f"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/pricebooks/0661403d-0876-4a28-a391-2772c750c377.json",
+      "bytes": 3000,
+      "sha256": "cfe78437579bbbbd904ebc0967fb2dc522c7419ec065a79e21edd2449318330f"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/result.json",
+      "bytes": 402048,
+      "sha256": "1abc5f25fed5102a245a086d17eba7d6278de6a73102f5961ec91fd145b94d88"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/separate-hedge-work.png",
+      "bytes": 104665,
+      "sha256": "b4831c3e9aa00cd1c94c23ee7daf12159a43922944a1abd4b2a2796443c0d5f5"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/server-process.json",
+      "bytes": 521,
+      "sha256": "60fcd3103dcc356fc02b127ccd9631683d29aad5ba7178421cd3daf29dedca6d"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/server.log",
+      "bytes": 237,
+      "sha256": "d5359e32512c65c9cb3f70b4251adead0ac5332e5fbb9ca2744d4ec29faaafc6"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/source-binding.json",
+      "bytes": 13545,
+      "sha256": "41d7e65ca71af50150b02d180bae3406c580d7faa63c04f3d1d3c8cce7c6f898"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/synthetic-account-setup.ndjson",
+      "bytes": 178,
+      "sha256": "7182bdcb7910a6a3686abf6ccabb821e8b67952269f19b0fddc1ab79ff97c112"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2/unknown-main-area-with-separate-work.png",
+      "bytes": 53094,
+      "sha256": "523fe657957ed51700c1c88af628f6e968a864045b824eb74e50dc8bf6c5e254"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2.log",
+      "bytes": 27,
+      "sha256": "131e4bf7c41cb5462f507e99a433c6851c9cc2e754d7c26847eb06e5860b7981"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2.result.json",
+      "bytes": 389,
+      "sha256": "b05aa4d40f4a03ef056150002dd16bfabc2c1aac55352abf752b66d306f796f8"
+    },
+    {
+      "path": "offerings-full-page-owner-final-v2.source.json",
+      "bytes": 5795,
+      "sha256": "6646fda8e8ca7adf592b0c80f1b957cb14f300731b349263c49886c833239be1"
+    },
+    {
+      "path": "offerings-full-page-owner-final.log",
+      "bytes": 747,
+      "sha256": "ec75713aacbcfb6154076c8ad5f6a042246e093f5f539a1099c2f7d0a09e4a48"
+    },
+    {
+      "path": "offerings-full-page-owner-final.result.json",
+      "bytes": 389,
+      "sha256": "8c9fb1c5c7c4f7451b1a2661a9f1bd5d2940a95a5b4b24bd1294f36738d3efc0"
+    },
+    {
+      "path": "offerings-full-page-owner-final.source.json",
+      "bytes": 5801,
+      "sha256": "93230a3b0b150ea0e95e1a52ced308c33cfecd9742287680560d4341ad37a02a"
+    },
+    {
+      "path": "offerings-integration-boundary-final.log",
+      "bytes": 46189,
+      "sha256": "3be88dda2a685cda7956c6d9ee3c5b50218386e4bce4adec165c64c528c672d5"
+    },
+    {
+      "path": "offerings-integration-boundary-final.result.json",
+      "bytes": 250,
+      "sha256": "f34165fd9d395886203daafc7d5b1b2bc629496cb0ebc3e884b05bc8be2c6cec"
+    },
+    {
+      "path": "offerings-integration-boundary-final.source.json",
+      "bytes": 5654,
+      "sha256": "ff6d4de698f6f71ba463577f979f7dc6134f4cd5f030e38bd12f18801be8ba50"
+    },
+    {
+      "path": "offerings-pricebook-browser-final.log",
+      "bytes": 5428,
+      "sha256": "105a136ddca450cbc6b6bbe6933052fe5c0f25639d819787f44a3ea5eb114740"
+    },
+    {
+      "path": "offerings-pricebook-browser-final.result.json",
+      "bytes": 314,
+      "sha256": "736ede546069fc83ee4e5ea89c0d914f641012163710f197141b957aa327698d"
+    },
+    {
+      "path": "offerings-pricebook-browser-final.source.json",
+      "bytes": 5722,
+      "sha256": "5e253c1a0758966573aad3a5e5cef0f519ed7000a4145344fd874b42d2e16c55"
+    },
+    {
+      "path": "offerings-whole-request-final/application.sqlite",
+      "bytes": 909312,
+      "sha256": "a4352600df8d076dcb097d543c35de8fe02568cc7d39767939c6def2ff97ba9f"
+    },
+    {
+      "path": "offerings-whole-request-final/http.json",
+      "bytes": 563863,
+      "sha256": "7a25705fb22677dcc080222e6a3b29eb7319d3644e7e1297c1667c553e9d0c85"
+    },
+    {
+      "path": "offerings-whole-request-final/pricebooks/5b29012e-b150-4386-9588-6252e373221a.json",
+      "bytes": 2964,
+      "sha256": "2d71f996ec3128973773809db28a2a7fb4ccbdbff67ef0734f69a5539a29f8fe"
+    },
+    {
+      "path": "offerings-whole-request-final/result.json",
+      "bytes": 147761,
+      "sha256": "5d728c07fece8e2613832fa332d4efdb32404ec0f366285640f1b29d21037efd"
+    },
+    {
+      "path": "offerings-whole-request-final/server-process.json",
+      "bytes": 516,
+      "sha256": "75237ca3c32ea1bc5593fbb49513646a1d86f2d23441b5af0ba73fd995034a99"
+    },
+    {
+      "path": "offerings-whole-request-final/server.log",
+      "bytes": 8890,
+      "sha256": "0a920c14aae6139b9c604dba1986ea528b0d88c3af4dba2add649ccc0016202a"
+    },
+    {
+      "path": "offerings-whole-request-final/source-binding.json",
+      "bytes": 13545,
+      "sha256": "41d7e65ca71af50150b02d180bae3406c580d7faa63c04f3d1d3c8cce7c6f898"
+    },
+    {
+      "path": "offerings-whole-request-final/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "071f2a4e356190dc501f34300e4e0f5a791fcf66cf4b82b57f5167218713362b"
+    },
+    {
+      "path": "offerings-whole-request-final.log",
+      "bytes": 107,
+      "sha256": "723a93cd2c02662f7d17b827bf860771816161d3793078c8284e8ca5adfe35ad"
+    },
+    {
+      "path": "offerings-whole-request-final.result.json",
+      "bytes": 394,
+      "sha256": "b4f3d6a373bf72323ec933def795e38964ed169b95d667642f507fde28fcdc30"
+    },
+    {
+      "path": "offerings-whole-request-final.source.json",
+      "bytes": 5811,
+      "sha256": "c5cae337e74fc9af0409551dd44e8f32b81c7230332d33d02ec954dcd0c0940d"
+    },
+    {
+      "path": "offerings-widget-booking-final/api-controls.json",
+      "bytes": 207490,
+      "sha256": "5d6a2afb314d917651f7d953cb6a4bd2cee64ba873ab4321d3cda6cd63dac212"
+    },
+    {
+      "path": "offerings-widget-booking-final/application.sqlite",
+      "bytes": 1179648,
+      "sha256": "920e2d690b934a49676502a03c9f6a5d85306af29c7b838dc653334232b960c2"
+    },
+    {
+      "path": "offerings-widget-booking-final/browser-runtime-requested.json",
+      "bytes": 189,
+      "sha256": "48c6708af745f86e1f0cd002d77deef55ffd61d771635ddd1bd0e4ac6d2e25b2"
+    },
+    {
+      "path": "offerings-widget-booking-final/browser-runtime.json",
+      "bytes": 103,
+      "sha256": "dd1b8ecda25106dc78918c683fd66a346e6ce41a5f88cbe46e8ae92f678699f1"
+    },
+    {
+      "path": "offerings-widget-booking-final/complete-measured-work-without-a-name.png",
+      "bytes": 59534,
+      "sha256": "72c61cb89670690e23335af91f6c0bedcd910ed6ea0b6392867b073bc876e3ec"
+    },
+    {
+      "path": "offerings-widget-booking-final/configured-edging-and-separate-work.png",
+      "bytes": 36379,
+      "sha256": "070f11dc2719fcc9159c1a0b8eb3361eaadd88d4db3739b5743b46e9034ac554"
+    },
+    {
+      "path": "offerings-widget-booking-final/decimal-measurements-remain-exact.png",
+      "bytes": 59508,
+      "sha256": "2542aa5462325f9748d9e24665d2097c5360a6fee49afa31aadca2521244a5f8"
+    },
+    {
+      "path": "offerings-widget-booking-final/executed-widget-browser.mjs",
+      "bytes": 31977,
+      "sha256": "0b60c404ccb4ba41def9fa6d6ed4cd8faf6545734ffe7eec8694337847b9e064"
+    },
+    {
+      "path": "offerings-widget-booking-final/http.json",
+      "bytes": 428425,
+      "sha256": "c9d7c238934c8c2c3f59d3b1d619cd97130488e063afb89ca0d4acbdcb550259"
+    },
+    {
+      "path": "offerings-widget-booking-final/mobile-launcher-open.png",
+      "bytes": 27465,
+      "sha256": "de59d0bba509b5b351762181c84f461725fee39fd54c0aaa96bd1a960cf9c329"
+    },
+    {
+      "path": "offerings-widget-booking-final/owner-installation-check.png",
+      "bytes": 282636,
+      "sha256": "cecca0fbc6b7c2b17c743c737e2830d1c4744e84d902244e769f3a51c319b580"
+    },
+    {
+      "path": "offerings-widget-booking-final/pricebooks/0c9a9183-221b-4a09-8f76-6ea8462e8201.json",
+      "bytes": 3000,
+      "sha256": "8fa2b25650756ce5882aeb33b365c252ed450895618f7e62e672b890e0afafd3"
+    },
+    {
+      "path": "offerings-widget-booking-final/real-widget-confirmed-synthetic-calendar.png",
+      "bytes": 61487,
+      "sha256": "14336ac3f07294f9c5a913e4acc3b45f32fdbd3eafc3925258967647191b7468"
+    },
+    {
+      "path": "offerings-widget-booking-final/result.json",
+      "bytes": 1411226,
+      "sha256": "bd90a5f77217e5aae681e8b4286d3479a38805643b7f5f6ab080ff20dff6f43b"
+    },
+    {
+      "path": "offerings-widget-booking-final/separate-work-keeps-the-selected-price.png",
+      "bytes": 36136,
+      "sha256": "1523addebe1df42cbbaf8b91b456e139f1c7b4a7921a4f76243164d81f21bcd4"
+    },
+    {
+      "path": "offerings-widget-booking-final/server-process.json",
+      "bytes": 517,
+      "sha256": "2c95c7bcfe9256155579e8bdf49b79fe86cdaf76f8aee69079d01760a72c1316"
+    },
+    {
+      "path": "offerings-widget-booking-final/server.log",
+      "bytes": 460,
+      "sha256": "11ee06cc7a0a922dd3086cf700a89e644426e496f177e4c3439e554f044ee070"
+    },
+    {
+      "path": "offerings-widget-booking-final/source-binding.json",
+      "bytes": 13545,
+      "sha256": "41d7e65ca71af50150b02d180bae3406c580d7faa63c04f3d1d3c8cce7c6f898"
+    },
+    {
+      "path": "offerings-widget-booking-final/synthetic-account-setup.ndjson",
+      "bytes": 177,
+      "sha256": "057d11fe012af6092ea9e11124da6ec5c248d43b09e406bf1089d6c3f70e3480"
+    },
+    {
+      "path": "offerings-widget-booking-final/synthetic-calendar-provider.json",
+      "bytes": 3767,
+      "sha256": "bc26baa586fb271a255e8c3d17c5e35028fcd7097b6b35c722d2ca06e8a5c068"
+    },
+    {
+      "path": "offerings-widget-booking-final/unknown-main-measurement-requires-review.png",
+      "bytes": 66654,
+      "sha256": "ae9acf3d5181f583320d3b2c64e835c6cb2be226148363f2fa9054597503fc1f"
+    },
+    {
+      "path": "offerings-widget-booking-final.log",
+      "bytes": 28,
+      "sha256": "2b6383e927bf3b08bea87c6a4256b60729d4a460e475258871ebe3376b85077f"
+    },
+    {
+      "path": "offerings-widget-booking-final.result.json",
+      "bytes": 389,
+      "sha256": "5b8a03da5f9ef301e2608677970651eec3ee7258fcebc8114318d1335c3ec4a2"
+    },
+    {
+      "path": "offerings-widget-booking-final.source.json",
+      "bytes": 5803,
+      "sha256": "2c76bea597f78c30cefd7f132c7c9eb97db55695cfcfdb7c018fedbba86626d4"
+    },
+    {
+      "path": "STARTING_SOURCE.json",
+      "bytes": 35025,
+      "sha256": "fcb4bf543ba3da7cbc7c7602a38c4fa794437ec51d0b4b15d2d3afab22bcacbc"
+    },
+    {
+      "path": "unchanged-boundary.log",
+      "bytes": 34547,
+      "sha256": "364cee2c1eeb3d7e79a33fddf9a68deefc7c73bdcc70b80dad597ce9da7bc9f0"
+    },
+    {
+      "path": "unchanged-boundary.result.json",
+      "bytes": 211,
+      "sha256": "365428d4270e3f91c7b60d45aaeafe46c71b50adc6999a22edac29f86b4a957f"
+    },
+    {
+      "path": "unchanged-boundary.source.json",
+      "bytes": 5651,
+      "sha256": "6e9e10e8d8c240416c574849041c4c5b86f9649d3c264431d9ce5bb9b3974d48"
+    }
+  ]
+}

@@ -1,0 +1,585 @@
+{
+  "sourceCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "countsOverlap": true,
+  "results": [
+    {
+      "label": "booking-integrity-after-v1",
+      "args": [
+        "verification/quotedone/booking-confirmation-integrity.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/booking-integrity-after-v1",
+        "after"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 119306,
+      "log": "booking-integrity-after-v1.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "booking-integrity-before-v2",
+      "args": [
+        "verification/quotedone/booking-confirmation-integrity.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/booking-integrity-before-v2",
+        "before"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 56832,
+      "log": "booking-integrity-before-v2.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "booking-integrity-before-v3",
+      "args": [
+        "verification/quotedone/booking-confirmation-integrity.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/booking-integrity-before-v3",
+        "before"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 135224,
+      "log": "booking-integrity-before-v3.log",
+      "finalAcceptance": false,
+      "classification": "Original defect reproduction: 9 incorrect outcomes of 24; exit zero means reproduction succeeded."
+    },
+    {
+      "label": "booking-integrity-before",
+      "args": [
+        "verification/quotedone/booking-confirmation-integrity.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/booking-integrity-before",
+        "before"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 23858,
+      "log": "booking-integrity-before.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "fencing-painting-baseline-final",
+      "args": [
+        "verification/quotedone/fencing-painting-baseline.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/before-application-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 28704,
+      "log": "fencing-painting-baseline-final.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "fencing-painting-baseline-v2",
+      "args": [
+        "verification/quotedone/fencing-painting-baseline.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/before-application-v2"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 30281,
+      "log": "fencing-painting-baseline-v2.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "fencing-painting-baseline",
+      "args": [
+        "verification/quotedone/fencing-painting-baseline.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/before-application"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 29711,
+      "log": "fencing-painting-baseline.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "focused-offerings-booking-v1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/configuredOfferings.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 16679,
+      "log": "focused-offerings-booking-v1.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "focused-offerings-booking-v2",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/configuredOfferings.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 9547,
+      "log": "focused-offerings-booking-v2.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offering-engine-first",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 2141,
+      "log": "offering-engine-first.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offering-engine-v2",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1880,
+      "log": "offering-engine-v2.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-application-final",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 46013,
+      "log": "offerings-application-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-application-v1",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v1"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 23172,
+      "log": "offerings-application-v1.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offerings-application-v2",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v2"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 28207,
+      "log": "offerings-application-v2.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offerings-application-v3",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v3"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 42356,
+      "log": "offerings-application-v3.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offerings-application-v4",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v4"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 32559,
+      "log": "offerings-application-v4.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offerings-application-v5",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v5"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 44925,
+      "log": "offerings-application-v5.log",
+      "finalAcceptance": false,
+      "classification": "Retained test setup/assertion failure; inspect original output. No acceptance claimed."
+    },
+    {
+      "label": "offerings-application-v6",
+      "args": [
+        "verification/quotedone/configured-offerings-application.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-application-v6"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 50010,
+      "log": "offerings-application-v6.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-browser-final-v2",
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-browser-final-v2"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 103496,
+      "log": "offerings-browser-final-v2.log",
+      "finalAcceptance": false,
+      "classification": "Reproduced application defect: approval reload overwrote the first preview measurement."
+    },
+    {
+      "label": "offerings-browser-final-v3",
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-browser-final-v3"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 66424,
+      "log": "offerings-browser-final-v3.log",
+      "finalAcceptance": false,
+      "classification": "Test interceptor cleanup failed: Route is already handled. Corrected in v4; application guard unchanged."
+    },
+    {
+      "label": "offerings-browser-final-v4",
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-browser-final-v4"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 285074,
+      "log": "offerings-browser-final-v4.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-browser-final",
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-browser-final"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 107427,
+      "log": "offerings-browser-final.log",
+      "finalAcceptance": false,
+      "classification": "Reproduced application defect: approval reload overwrote the first preview measurement."
+    },
+    {
+      "label": "offerings-browser-v1",
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-browser-v1"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 366006,
+      "log": "offerings-browser-v1.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-build-final",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 44101,
+      "log": "offerings-build-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-build-v1",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 55126,
+      "log": "offerings-build-v1.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-final-application-regression-v1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 63418,
+      "log": "offerings-final-application-regression-v1.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-final-application-regression-v2",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 41281,
+      "log": "offerings-final-application-regression-v2.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-final-client-transport-v1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1510,
+      "log": "offerings-final-client-transport-v1.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-final-engine-regression-v1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 389881,
+      "log": "offerings-final-engine-regression-v1.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-full-page-owner-final-v2",
+      "args": [
+        "client/test/widget-full-page-browser.mjs",
+        ".",
+        "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-evidence-20260929/offerings-full-page-owner-final-v2"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 393173,
+      "log": "offerings-full-page-owner-final-v2.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-full-page-owner-final",
+      "args": [
+        "client/test/widget-full-page-browser.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\engine-completion-evidence-20260929\\offerings-full-page-owner-final"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 265894,
+      "log": "offerings-full-page-owner-final.log",
+      "finalAcceptance": false,
+      "classification": "Local page-load timeout before the first form or quote request; unchanged script rerun with fresh browser."
+    },
+    {
+      "label": "offerings-integration-boundary-final",
+      "args": [
+        "verification/quotedone/offerings-integration-boundary.mjs",
+        "."
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 7995,
+      "log": "offerings-integration-boundary-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-pricebook-browser-final",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 340105,
+      "log": "offerings-pricebook-browser-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-whole-request-final",
+      "args": [
+        "verification/quotedone/pricing-envelope-workflow.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\engine-completion-evidence-20260929\\offerings-whole-request-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 40564,
+      "log": "offerings-whole-request-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "offerings-widget-booking-final",
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\engine-completion-evidence-20260929\\offerings-widget-booking-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 144269,
+      "log": "offerings-widget-booking-final.log",
+      "finalAcceptance": true,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    },
+    {
+      "label": "unchanged-boundary",
+      "args": [
+        "verification/quotedone/resume-integration-boundary.mjs",
+        "."
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 1050,
+      "log": "unchanged-boundary.log",
+      "finalAcceptance": false,
+      "classification": "Passed its stated assertions. Historical runs do not replace final acceptance."
+    }
+  ]
+}
