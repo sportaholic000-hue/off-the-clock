@@ -558,6 +558,7 @@ export default function PriceBook() {
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [approvalPending, setApprovalPending] = useState(false);
   const [locked, setLocked] = useState(false);
   const [contract,setContract] = useState({});
   const [newServiceType,setNewServiceType] = useState('');
@@ -779,8 +780,9 @@ export default function PriceBook() {
           eyebrow="QUOTEDONE"
           title="Price book"
           description="Your prices drive every quote."
-          actions={<><Button icon={Sparkles} variant="secondary" onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" onClick={suggest}>Suggest a starter book</Button></>}
+          actions={<><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={suggest}>Suggest a starter book</Button></>}
         />
+        <fieldset disabled={saving||approvalPending} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
         {suggestions && (
           <section className="starter-panel">
             <div className="section-title"><Notice tone="warning">{suggestions.warning}</Notice><Button icon={X} variant="icon" onClick={() => setSuggestions(null)} aria-label="Close suggestions" /></div>
@@ -822,7 +824,7 @@ export default function PriceBook() {
             <div className="editor-grid">
               <div className="editor-column">
                 {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
-                {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
+                {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
                 {/* REQUIRED PRICING — open and visually dominant.
                     Reference: pricebook-editor "ESSENTIALS" card. */}
                 <section className="editor-section essentials">
@@ -1032,8 +1034,10 @@ export default function PriceBook() {
             </span>
           )}
           <Button icon={Check} onClick={save} disabled={saving}>{saving ? 'Saving' : 'Save & validate'}</Button>
+          {approvalPending&&<span role="status">Updating saved approval…</span>}
           <span className="mono">SAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS</span>
         </div>
+        </fieldset>
       </main>
     </AppShell>
   );

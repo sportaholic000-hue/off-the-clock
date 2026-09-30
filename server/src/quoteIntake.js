@@ -84,9 +84,15 @@ const display = value => typeof value==='boolean' ? (value?'Yes':'No')
   : value===null||value===undefined ? 'Not supplied' : typeof value==='object' ? JSON.stringify(value) : String(value);
 export function customerJobSummary(service,definition,submission,revision) {
   const labels=new Map((definition?.customerFields||[]).map(field=>[field.name,field]));
-  const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).map(([key,value])=>{
+  // Identified-offering receipts are internal evidence. The corresponding
+  // customer-visible selection is already present (for example, fence type).
+  // This presentation view never changes the saved input or signed submission.
+  const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts').map(([key,value])=>{
     const field=labels.get(key);
-    const formatted=typeof value==='string'&&field?.optionLabels?.[value]||display(value);
+    let formatted=typeof value==='string'&&field?.optionLabels?.[value]||display(value);
+    if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {
+      formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name.replaceAll('_',' '))).join('; ')||'No gates';
+    }
     return {label:field?.label||key,value:formatted};
   });
   return {

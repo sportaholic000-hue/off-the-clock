@@ -41,6 +41,12 @@ try {
     if(field.type==='slug')await container.getByRole('checkbox',{name:'I have identified this exact offering.',exact:true}).check();
   }
   const labels={description:'Included job description',fenceType:'Offered fence type',fenceHeight:'Offered fence height',terrainSlope:'Offered terrain',postFootingDescription:'Standard posts, footings and digging included',removalOffered:'Offer fence removal',removalDescription:'Removal work included',removalIncludesDisposal:'Removal price includes disposal',substrate:'Paintable surface covered',coating:'Coating and product system',finishCoats:'Wall finish coats',surfaceCondition:'Surface condition covered',preparation:'Preparation work included or measured separately',primerCoats:'Wall primer coats included',wallHeight:'Wall height covered',ceilingsOffered:'Offer ceiling painting',trimOffered:'Offer trim painting',ceilingCoats:'Ceiling finish coats',ceilingPrimerCoats:'Ceiling primer coats',trimDescription:'Trim coats, preparation and primer included',stories:'Building stories covered'};
+  async function checkPendingReload(name,action){
+    let release,arrive,finish,routeError;const pending=new Promise(resolve=>{release=resolve}),arrived=new Promise(resolve=>{arrive=resolve}),handled=new Promise(resolve=>{finish=resolve}),url=site+'/api/pricebook/'+f.owner.id;
+    await page.route(url,async route=>{try{const response=await route.fetch();arrive();await pending;await route.fulfill({response});}catch(error){routeError=error;arrive();}finally{finish();}});
+    try {await action();await arrived;assert.equal(await page.getByLabel('Offering price installedFencePerLF',{exact:true}).isDisabled(),true);assert.equal(await page.getByLabel('Measured fence length excluding gate openings',{exact:true}).isDisabled(),true);rows.push({name,passed:true});}
+    finally {release();await handled;await page.unroute(url);if(routeError)throw routeError;}
+  }
   for(const entry of f.cases){
     await page.locator('.service-pick').filter({hasText:entry.name}).click();await page.getByLabel('Offering pricing',{exact:true}).selectOption(entry.mode);
     for(const [key,value] of Object.entries(entry.service.pricing.offeringDetails)){
@@ -50,13 +56,17 @@ try {
       const input=page.getByLabel(labels[key],{exact:true}),tag=await input.evaluate(el=>el.tagName);if(tag==='SELECT')await input.selectOption(String(value));else await input.fill(String(value));
     }
     for(const [key,value] of Object.entries(entry.service.pricing.offeringRates))await page.getByLabel('Offering price '+key,{exact:true}).fill(String(value));
-    const saved=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save')&&r.request().method()==='POST');await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await saved).status(),200);
+    const save=async()=>{const saved=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save')&&r.request().method()==='POST');await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await saved).status(),200);};
+    if(entry===f.cases[0])await checkPendingReload('Save refresh prevents edits until saved prices reload',save);else await save();
     await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByRole('checkbox',{name:'I confirm these exact saved prices, units, factors and rules.',exact:true}).check();
-    const approved=page.waitForResponse(r=>r.url().endsWith('/services/'+entry.id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);
+    const approve=async()=>{const approved=page.waitForResponse(r=>r.url().endsWith('/services/'+entry.id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);};
+    if(entry===f.cases[0])await checkPendingReload('Approval refresh prevents lost measurements and prices',approve);else await approve();
     const previewSection=page.getByRole('heading',{name:'Project measurements for preview',exact:true}).locator('..');
+    const previewWaiting=page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200||r.request().postDataJSON().serviceId!==entry.id)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;});
     const fields=meta.services.find(s=>s.serviceType===entry.type).offeringCustomerFields[entry.mode];for(const field of fields)await answer(previewSection,field,entry.inputs[field.name]);
-    const previewResponse=await page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;});
+    const previewResponse=await previewWaiting;
     rows.push({name:'Owner configured, saved, approved and previewed '+entry.name,response:await previewResponse.json()});
+    console.log(JSON.stringify({completed:rows.at(-1).name}));
   }
   // Save measured preview drafts once, then prove definitions survive reload.
   const finalSave=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save'));await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await finalSave).status(),200);await page.reload();await page.getByLabel('Offering pricing',{exact:true}).waitFor();
@@ -74,6 +84,8 @@ try {
     const prepared=page.waitForResponse(r=>r.url().endsWith(f.url+'/prepare'));await page.getByRole('button',{name:'Submit estimate request',exact:true}).click();assert.equal((await prepared).status(),200);await page.getByRole('heading',{name:'Check your job details',exact:true}).waitFor();
     const completed=page.waitForResponse(r=>r.url().endsWith(f.url)&&r.request().method()==='POST');await page.getByRole('button',{name:'Get estimate',exact:true}).click();const response=await completed,result=await response.json(),body=response.request().postDataJSON();assert.equal(response.status(),201,JSON.stringify(result));assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,entry.expected);assert.equal(result.lineItems,undefined);
     const receipt=db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(f.owner.id,body.requestId);assert.deepEqual(JSON.parse(receipt.originalSubmissionJson),body);assert.deepEqual(quoteReceiptResponse(app,receipt),result);
+    assert.equal(result.pricedScope.facts.some(fact=>fact.label==='Affirmatively identified owner offerings'),false);
+    if(entry.type.startsWith('FENCING_')){assert.ok(body.customerInputs.confirmedFacts.fenceType.offeringId);assert.ok(result.pricedScope.facts.find(fact=>fact.label==='Gates by measured opening width').value.includes('2 × walk'))}
     rows.push({name:kind+' quotes '+entry.name,body,result,receipt});if(entry.type==='FENCING_INSTALL'&&entry.mode==='installed')await page.screenshot({path:path.join(evidence,kind+'-fence.png'),fullPage:true});if(entry.type==='EXTERIOR_PAINTING'&&entry.mode==='itemized')await page.screenshot({path:path.join(evidence,kind+'-paint.png'),fullPage:true});await page.close();
   }
   assert.deepEqual(errors,[]);assert.equal(db.prepare('SELECT COUNT(*) n FROM quotes WHERE ownerId=?').get(f.owner.id).n,16);console.log(JSON.stringify({passed:true,checks:rows.length}));
