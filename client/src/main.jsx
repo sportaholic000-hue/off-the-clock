@@ -27,7 +27,8 @@ function initialLocation() {
       sessionStorage.removeItem('otc_calendar_return');
       window.history.replaceState({}, '', '/calendar');
     }
-    return {url:window.location.pathname + window.location.search + window.location.hash};
+    const url=window.location.pathname + window.location.search + window.location.hash;
+    return {url,recoveryKey:url};
 }
 
 function App() {
@@ -38,7 +39,8 @@ function App() {
       const next=getSessionKey();
       if(next!==session.current&&session.current!=='signed-out')setSessionEpoch(value=>value+1);
       session.current=next;
-      setLocation({url:window.location.pathname + window.location.search + window.location.hash});
+      const url=window.location.pathname + window.location.search + window.location.hash;
+      setLocation(previous=>({url,recoveryKey:!window.location.hash&&url===previous.url.split('#')[0]?previous.recoveryKey:url}));
     };
     window.addEventListener('popstate', update);
     window.addEventListener('hashchange', update);
@@ -49,7 +51,7 @@ function App() {
   }, []);
 
   const path = location.url.split(/[?#]/)[0];
-  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.url+(path==='/account/email'?sessionEpoch:'')} path={path}/>;
+  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.recoveryKey+(path==='/account/email'?sessionEpoch:'')} path={path}/>;
   if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
   if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={sessionEpoch} />;

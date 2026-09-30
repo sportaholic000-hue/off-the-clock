@@ -108,7 +108,7 @@ try {
  await page.goto(site+'/forgot-password');await page.getByLabel('Email',{exact:true}).fill(owner.email);
  await page.getByRole('button',{name:'Request email',exact:true}).click();
  await page.getByText('Request received. If this account needs an email, we will attempt to send a new link. Check your inbox and spam folder.',{exact:true}).waitFor();
- const message=JSON.parse(fs.readFileSync(fixtureFile,'utf8')).messages.filter(m=>m.subject==='Reset your password'&&m.to===owner.email).at(-1);
+ const message=JSON.parse(fs.readFileSync(fixtureFile,'utf8')).messages.filter(m=>m.subject==='Reset your password'&&Array.isArray(m.to)&&m.to.includes(owner.email)).at(-1);
  assert.ok(message);const link=message.text.match(/https?:\/\/\S+/)[0];
  await page.goto(link);await page.getByLabel('New password',{exact:true}).fill('Synthetic-new-session-password-2026');
  await page.getByLabel('Confirm new password',{exact:true}).fill('Synthetic-new-session-password-2026');
