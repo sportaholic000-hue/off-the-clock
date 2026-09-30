@@ -9,6 +9,7 @@ import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
 import Billing from './billing.jsx';
 import Calendar from './calendar.jsx';
+import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
 
 function AdminShell() {
@@ -26,18 +27,20 @@ function initialLocation() {
       sessionStorage.removeItem('otc_calendar_return');
       window.history.replaceState({}, '', '/calendar');
     }
-    return {url:window.location.pathname + window.location.search};
+    return {url:window.location.pathname + window.location.search + window.location.hash};
 }
 
 function App() {
   const [location, setLocation] = useState(initialLocation);
   useEffect(() => {
-    const update = () => setLocation({url:window.location.pathname + window.location.search});
+    const update = () => setLocation({url:window.location.pathname + window.location.search + window.location.hash});
     window.addEventListener('popstate', update);
-    return () => window.removeEventListener('popstate', update);
+    window.addEventListener('hashchange', update);
+    return () => {window.removeEventListener('popstate', update);window.removeEventListener('hashchange', update);};
   }, []);
 
-  const path = location.url.split('?')[0];
+  const path = location.url.split(/[?#]/)[0];
+  if (['/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email'].includes(path)) return <AccountRecovery key={location.url} path={path}/>;
   if(path.startsWith('/quote/'))return <CustomerQuote key={path} publicKey={path.slice(7)} persistResult/>;
   if (path === '/admin') return <AdminShell />;
   if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={getToken()} />;
