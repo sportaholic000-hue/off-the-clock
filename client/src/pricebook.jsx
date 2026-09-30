@@ -1,3 +1,4 @@
+import {ScopeEditor} from './scopeEditor.jsx';
 import {PricingTree,CustomerMeasurements,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
 import {OfferingEditor,offeringPreviewFields,offeringTierFields} from './offeringEditor.jsx';
 import {QuoteAccess} from './quotedone.jsx';
@@ -760,7 +761,7 @@ export default function PriceBook() {
   // while optional charges collapse. requiredAtBase comes from the server's
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
-  const allFields = (selectedMeta?.fields || []).filter(field=>field.type!=='offering_configuration'&&(!configuredMode||field.field==='minimumJob')).map(field=>configuredMode&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)&&(!configuredMode||field.field==='minimumJob')).map(field=>configuredMode&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -826,6 +827,7 @@ export default function PriceBook() {
             <div className="editor-grid">
               <div className="editor-column">
                 {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
+                {selectedMeta.supportsScopeConfiguration&&<ScopeEditor service={selected} onChange={replaceSelected}/>}
                 {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
                 {/* REQUIRED PRICING — open and visually dominant.
                     Reference: pricebook-editor "ESSENTIALS" card. */}

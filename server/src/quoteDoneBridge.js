@@ -8,7 +8,7 @@ import {
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
-  configuredOffering, offeringContract
+  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook } from '../priceBookService.js';
@@ -21,7 +21,7 @@ export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export const DEFAULT_FIELDS = ['markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
-const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates']);
+const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
 const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -37,6 +37,7 @@ export const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(can
 const pick = (v,keys) => Object.fromEntries(keys.filter(k=>has(v,k)).map(k=>[k,clone(v[k])]));
 
 export function quoteDoneMoneyKind(type,field,pricing={}) {
+  if(field==='scopeDetails')return null;
   if(NEW_RATES.has(field))return 'unit_rate';
   if(type==='CUSTOM'&&field==='price')return pricing.unit==='flat'?'fixed_amount':pricing.unit?'unit_rate':'unresolved_unit';
   if(NOT_MONEY.has(field)||has(CLASS2_DEFINITIONS[type]||{},field))return null;
@@ -53,6 +54,11 @@ function convertedPricing(source,type,direction,location,effective=source) {
   const fields=new Set([...(ALL_OWNER_FIELDS[type]||[]),...allowedPricingFields(type)]);
   for(const field of fields) {
     if(!has(source,field))continue;
+    if(field==='scopeRates'&&record(source[field])){
+      const definitions=scopeRateDefinitions(type,effective,true);
+      result[field]=Object.fromEntries(Object.entries(source[field]).map(([key,value])=>[key,convert(value,{kind:definitions[key]?.moneyKind||'unit_rate',path:location+'.'+field+'.'+key})]));
+      continue;
+    }
     const kind=quoteDoneMoneyKind(type,field,effective);
     if(kind)result[field]=moneyTree(source[field],kind,convert,location+'.'+field);
     else if(field==='debrisPricing'&&record(source[field]))for(const [level,row] of Object.entries(source[field])) {
@@ -152,7 +158,7 @@ function validateApplicationNumericDraft(book) {
  const numericTree=(value,path)=>{if(value===undefined||value===null||value==='')return;if(record(value)){for(const [key,child] of Object.entries(value))numericTree(child,path+'.'+key);}else if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw problem('Invalid numeric value at '+path+'. Enter the intended value before saving.');};
  const numericFields=new Set(['markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY]);
  for(const [field,value] of Object.entries(book.defaults||{}))if(numericFields.has(field))numericTree(value,'defaults.'+field);
- const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails']);
+ const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails','scopeDetails']);
  for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
 }
 export function validateApplicationDraft(ownerId,input) {
@@ -302,12 +308,13 @@ export function applicationServiceName(raw) {
 export function applicationServiceDefinition(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
-  if(!configuredOffering(raw.serviceType,p))return definition;
+  const customerFields=Object.entries(customerContractForVNext(raw.serviceType,p,raw).fields).map(([name,field])=>({name,...field}));
+  if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   const d=p.offeringDetails||{};
   const summary=[d.description];
   if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');
   else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),String(d.finishCoats??'Unconfigured')+' finish coat(s); '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
-  return {...definition,customerFields:Object.entries(offeringContract(raw.serviceType,p).fields).map(([name,field])=>({name,...field})),offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
+  return {...definition,customerFields,offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
 }
 function applicationScopeReview(raw,submission,options) {
   const issues=wholeRequestIssues(submission,applicationServiceName(raw),options);
@@ -323,6 +330,7 @@ export function applicationMetadata() {
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
+      if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});

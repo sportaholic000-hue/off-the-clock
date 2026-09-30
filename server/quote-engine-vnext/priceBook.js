@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {scopeActivationInputs,scopeDefinitions} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions} from './configuredOfferings.js';
 import {
   CLASS2_DEFINITIONS,
@@ -174,7 +175,7 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
   return out;
 }
 
-function activationScenarios(service) {
+function baseActivationScenarios(service) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
   if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p);
@@ -310,6 +311,25 @@ function activationScenarios(service) {
   return [];
 }
 
+function activationScenarios(service) {
+ const scenarios=baseActivationScenarios(service),p=pricingOf(service),type=service.serviceType,extra=[];
+ const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
+ if(type.startsWith('FLOORING_')){
+  if(p.scopeDetails?.stairs){const seed=scenarios.find(c=>c.newFlooringType===p.scopeDetails.stairs.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5});}
+  if(p.scopeDetails?.floor_overlay){const d=p.scopeDetails.floor_overlay,seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+ }
+ if(type==='SIDING_REPLACEMENT'){
+  if(p.scopeDetails?.siding_trim)add({trimIncluded:true,trimLengthLF:200});
+  if(p.scopeDetails?.siding_removal)add({oldSidingRemoval:true});
+ }
+ if(type.startsWith('CONCRETE_')){
+  if(p.scopeDetails?.demolition)add({demolitionNeeded:true,demolitionAreaSqft:200});
+  if(p.scopeDetails?.exposed_aggregate)add({finishType:'exposed_aggregate'});
+ }
+ if(type==='FLAT_ROOF_REPLACEMENT'&&p.scopeDetails?.insulation)add({buildingType:'commercial'});
+ return [...scenarios,...extra];
+}
+
 function uniqueStatusDiagnostics(items) {
   const seen = new Set();
   return items.filter(item => {
@@ -384,7 +404,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
   );
   for (const scenarioInputs of scenarios) {
-    const customerInputs = { ...scenarioInputs, ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
+    const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service), ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
     // Synthetic activation probes test only explicitly registered offerings. They
     // establish no facts about a real customer project.
     const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', field, value: customerInputs[field], offeringId: values[customerInputs[field]] }]));
@@ -785,11 +805,12 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};
   if(['offeringMode','offeringDetails','offeringRates'].includes(field))return NEW_FIELD_COPY[field];
   const scopes = reviewOnlyScopesVNext(serviceType).filter(scope => scope.always || scope.fields.includes(field));
   if (scopes.length) return {
     label: (NEW_FIELD_COPY[field]?.label || ownerFieldCopy(serviceType, field).title || ownerFieldCopy(serviceType, field).label || field) + ' — review only',
-    help: scopes.map(scope => scope.when + ': review only. ' + scope.ownerDecisions.map(d => d.message).join(' ')).join(' '),
+    help: scopes.map(scope => scope.when + ': this legacy scalar alone is incomplete. Configure the work under Additional priced scope (or Fence and painting offering). ' + scope.ownerDecisions.map(d => d.message).join(' ')).join(' '),
     reviewOnly: true,
     ownerDecisions: scopes.flatMap(scope => scope.ownerDecisions)
   };
@@ -814,12 +835,13 @@ export function getVNextPriceBookMetadata() {
       offeringRateFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,offeringRateDefinitions(contract.serviceType,{offeringMode:mode,offeringDetails:{primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}})]))
     }:{}),
     service: SERVICE_NAMES[contract.serviceType],
+    supportsScopeConfiguration:Object.keys(scopeDefinitions(contract.serviceType,{materialCostPerSquare:{configured_roof_type:1}})).length>0,
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.map(definition => ({
       ...definition,
-      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' remains review only.').join(' ')}`
+      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
     }))
   }));
 }

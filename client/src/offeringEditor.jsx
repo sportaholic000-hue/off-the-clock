@@ -1,3 +1,4 @@
+import {scopeCustomerFields} from '../../server/scopeConfiguration.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -5,13 +6,14 @@ import {servicePricing,editServiceField} from './pricebookEditing.js';
 
 export function offeringPreviewFields(meta,service) {
   const p=servicePricing(service),source=meta.offeringCustomerFields?.[p.offeringMode];
-  if(!source)return meta.customerFields;
-  return source.map(field=>field.name!=='gates'?field:{...field,values:Object.keys(p.offeringDetails?.gates||{}),options:Object.fromEntries(Object.entries(p.offeringDetails?.gates||{}).map(([key,gate])=>[key,`${key.replaceAll('_',' ')} — ${gate.widthLF??'?'} ft opening; ${gate.description||''}`]))});
+  const extra=Object.entries(scopeCustomerFields(service.serviceType,p,service)).map(([name,field])=>({name,...field}));
+  if(!source)return [...meta.customerFields,...extra];
+  return [...extra,...source.map(field=>field.name!=='gates'?field:{...field,values:Object.keys(p.offeringDetails?.gates||{}),options:Object.fromEntries(Object.entries(p.offeringDetails?.gates||{}).map(([key,gate])=>[key,`${key.replaceAll('_',' ')} — ${gate.widthLF??'?'} ft opening; ${gate.description||''}`]))})];
 }
 
 export function offeringTierFields(meta,service) {
   const p=servicePricing(service),mode=p.offeringMode;
-  if(!mode)return meta.fields.filter(field=>field.type!=='offering_configuration');
+  if(!mode)return meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type));
   return [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices',type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{})}}].filter(Boolean);
 }
 
@@ -30,6 +32,7 @@ export function OfferingEditor({service,meta,onChange}) {
     if(key==='removalPerLF'&&!d.removalOffered)delete definitions[key];
   }
   for(const [key,gate] of Object.entries(d.gates||{}))definitions['gate_'+key]={label:'Installed gate: '+key.replaceAll('_',' '),unit:'gates',priceBasis:'sell_price'};
+  if(!fence&&mode==='itemized'&&service.priceBasisByCategory?.material==='cost')for(const key of Object.keys(definitions))if(definitions[key].category==='material')delete definitions[key];
   const unused=Object.keys(rates).filter(key=>!definitions[key]);
   function removeRate(key){const next={...rates};delete next[key];set('offeringRates',next);}
   return <section className="editor-section"><h2>Fence and painting offering</h2>
@@ -58,7 +61,7 @@ export function OfferingEditor({service,meta,onChange}) {
       </>:<>
         {input('substrate','Paintable surface covered')}{input('coating','Coating and product system')}{input('finishCoats','Wall finish coats','select',[1,2,3])}
         {input('surfaceCondition','Surface condition covered','select',['good','fair','poor'])}{input('preparation','Preparation work included or measured separately')}{input('primerCoats','Wall primer coats included','select',[0,1,2,3])}
-        <Notice>{mode==='installed'?'The installed wall price includes the defined finish coats, preparation and primer over the quoted area.':'Finish and primer quantities use measured painted area and the defined coat counts. Preparation uses its separately measured affected area. Paint material rates are selling prices per measured area, not assumed package purchases.'}</Notice>
+        <Notice>{mode==='installed'?'The installed wall price includes the defined finish coats, preparation and primer over the quoted area.':'Finish and primer quantities use measured painted area and the defined coat counts. Preparation uses its separately measured affected area. Material selling prices use measured area. For owner material costs, configure products, package coverage and purchase prices under Additional priced scope.'}</Notice>
         {interior?<>{input('wallHeight','Wall height covered','select',['standard','high','vaulted'])}{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&input('trimDescription','Trim coats, preparation and primer included')}</>:input('stories','Building stories covered','select',[1,2,3])}
       </>}
       <h3>Owner prices for this offering</h3>

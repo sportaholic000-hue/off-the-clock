@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {scopeRatePath} from './scopePricing.js';
 import {offeringRatePath} from './configuredOfferings.js';
 import {
   PRICE_BASIS_CATEGORIES,
@@ -38,7 +39,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-owner-offerings-20260929-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-measured-scopes-20260930-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -800,7 +801,7 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
 }
 
 function validQuantityRateEvidence(calculation, expectedAmountCents, allowZeroQuantity = false) {
-  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='price'||calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
+  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='price'||calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)||scopeRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
   const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: !allowZeroQuantity });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;

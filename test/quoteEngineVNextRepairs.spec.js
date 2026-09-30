@@ -4656,15 +4656,14 @@ test('repair 68: nested pricing is the one canonical service shape across status
   }
 });
 
-test('repair 69: unresolved dual partial measurements and flooring overlays fail closed without changing valid controls', () => {
+test('repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup', () => {
   const roofOwner = roofService();
   const roofBoth = run('ROOFING_REPLACEMENT', roofInputs({
     serviceScope: 'partial',
     partialAreaSqft: 500,
     partialPercent: 50
   }), roofOwner);
-  assert.equal(roofBoth.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(roofBoth.ownerDecisionRequired.map(item => item.kind), ['partial_measurement_reconciliation']);
+  assert.equal(roofBoth.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(run('ROOFING_REPLACEMENT', roofInputs({
     serviceScope: 'partial', partialAreaSqft: 500
   }), roofOwner).resultType, 'INSTANT_ESTIMATE_READY');
@@ -4686,8 +4685,7 @@ test('repair 69: unresolved dual partial measurements and flooring overlays fail
   const flatBoth = run('FLAT_ROOF_REPLACEMENT', {
     ...flatBase, partialAreaSqft: 500, partialPercent: 25
   }, flatOwner);
-  assert.equal(flatBoth.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(flatBoth.ownerDecisionRequired.map(item => item.kind), ['partial_measurement_reconciliation']);
+  assert.equal(flatBoth.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(run('FLAT_ROOF_REPLACEMENT', {
     ...flatBase, partialAreaSqft: 500
   }, flatOwner).resultType, 'INSTANT_ESTIMATE_READY');

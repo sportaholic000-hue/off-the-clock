@@ -20,6 +20,7 @@ export {
   SERVICE_TYPES,
   TAXABILITY_CATEGORIES,
   contractMetadata,
+  customerContractForVNext,
   validateBusinessDefaults,
   validateClass2FactorsDetailed,
   validateCustomerInputs,
@@ -42,3 +43,4 @@ export {
 
 export { approveVNextValues, editVNextService } from './contracts.js';
 export {configuredOffering, offeringContract, offeringRateDefinitions} from './configuredOfferings.js';
+export {scopeDefinitions,scopeRateDefinitions,scopeCustomerFields} from './scopePricing.js';

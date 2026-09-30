@@ -1,3 +1,4 @@
+import {customerFieldVisible} from '../../server/scopeConfiguration.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Field, Notice, Select, Textarea, TextInput} from './ui.jsx';
 import {CustomerMeasurements} from './quoteDoneControls.jsx';
@@ -11,7 +12,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
   const steps = [
     {id:'service', title:'What can we help with?'},
     ...(values.requestedService === undefined ? [] : [{id:'requested',title:'Requested work'}]),
-    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts').map(field => ({id:'field:'+field.name,title:field.label,field})),
+    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerFieldVisible(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
     ...(service?.customerFees || []).map(fee => ({id:'fee:'+fee,title:'Select '+fee+' charge',fee})),
     {id:'details',title:'Anything we should know about this job?'},
     {id:'additional',title:'Additional work for on-site estimate'},
