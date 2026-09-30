@@ -1,0 +1,172 @@
+{
+  "sourceCommit": "3e406d2107522319038c6cdd982cfcf08c91e657",
+  "sourceBinding": "SOURCE_BINDING.json",
+  "note": "Build was made before the server-only repair; client source bytes match the repaired commit. Focused 72 and transport 25 counts overlap with the 388 application tests; counts must not be added.",
+  "platform": "win32",
+  "version": "v22.23.2",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "results": [
+    {
+      "label": "race-baseline-build",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 84001,
+      "log": "race-baseline-build.log",
+      "counters": {},
+      "logSha256": "1abc52033a22a74e7c71acb2edf6b1ab1fae32d7042bd1b4e009a3bc7eccec83"
+    },
+    {
+      "label": "race-focused-auth-r1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/corsPolicy.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 16399,
+      "log": "race-focused-auth-r1.log",
+      "counters": {
+        "tests": 72,
+        "pass": 72,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "2fa9b64f828ba6e7fd7a0005d1d08d80b61845cb35ed6dcb952d115dc0dd9766"
+    },
+    {
+      "label": "race-application-r1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 86478,
+      "log": "race-application-r1.log",
+      "counters": {
+        "tests": 388,
+        "pass": 388,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "3dfd28c1beaefae45dc671e43a78755fd9985ca0cd2041afd16ab4764ae43167"
+    },
+    {
+      "label": "race-transport-r1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionClient.spec.mjs",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 2954,
+      "log": "race-transport-r1.log",
+      "counters": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "20d28a4bb7f0090ccd8edd9ff2004b0bd08117919da6ece473f55332cfdbcfad"
+    },
+    {
+      "label": "race-response-browser-green-r1",
+      "args": [
+        "verification/session-security/response-order-browser.mjs",
+        ".",
+        "../session-response-green-browser-20260930",
+        "local repaired candidate"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 211225,
+      "log": "race-response-browser-green-r1.log",
+      "counters": {},
+      "logSha256": "056896eb7718e3b757af32ef1cb9be154f31aa110922fcb9b074382bcd23c395"
+    },
+    {
+      "label": "race-existing-session-browser-r1",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "../session-response-existing-session-browser-20260930"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 102984,
+      "log": "race-existing-session-browser-r1.log",
+      "counters": {},
+      "logSha256": "d705a7f549886088458be694235c2c7e6dd85dc9cdaf98b9388e07196f294bc4"
+    },
+    {
+      "label": "race-existing-account-browser-r1",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "../session-response-existing-account-browser-20260930"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 105385,
+      "log": "race-existing-account-browser-r1.log",
+      "counters": {},
+      "logSha256": "46e81c36ffabc126b203390992f6f3172cb1beb4ca410026a691c1e82cec23eb"
+    }
+  ]
+}

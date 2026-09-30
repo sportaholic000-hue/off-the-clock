@@ -1,3 +1,5 @@
+> **Current account/session checkpoint — September 30:** A subsequent independent audit reopened this slice for delayed refresh/logout response headers. The auth-only repair is saved at `3e406d2107522319038c6cdd982cfcf08c91e657` and passed exact-commit hosted builds, 388 application / 357 engine / 25 transport tests and 9 + 10 + 7 browser checks. [Permanent repair proof](review/session-response-fix-20260930/FINAL_REPORT.md). Earlier shared-cookie sessions require fresh sign-in after rollout. Independent peer recheck is pending alongside its active engine audit; voice has not begun. Earlier source/count checkpoints below are historical and remain preserved.
+
 # Owner direction and lane checkpoint — September 30, 2026
 
 The product is an AI receptionist/operator that accurately quotes service jobs from each business owner's approved price book and books jobs or estimate visits into that owner's calendar, over the phone and through a website widget. Primary markets are Canada and the United States.

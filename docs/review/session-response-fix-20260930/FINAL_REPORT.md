@@ -1,0 +1,21 @@
+# Session response-order repair — September 30, 2026
+
+The independent audit found two real browser failures on saved source `8a778d5346f10d69e586d0ae46006238e4fd169c`: an old refresh response could replace a newer login's refresh cookie, and an old logout response could delete it. The access token initially survived, but the next renewal failed and required sign-in. Earlier passing tests did not exercise browser-applied response headers in this order.
+
+Repaired and tested runtime: `3e406d2107522319038c6cdd982cfcf08c91e657`, draft [PR #4](https://github.com/sportaholic000-hue/off-the-clock/pull/4). This repair changes three auth server files, the HTTP regression tests, session browser cookie assertions, a new real-response browser fixture, CI orchestration, and setup/progress documentation. It preserves engine, booking, calendar, voice and client API implementation bytes.
+
+Each signed session now has a distinct HttpOnly refresh-cookie name. The signed session ID selects its own cookie. Signed logout revokes that session and expires only its cookie name, even when the cookie is missing; unsigned logout sends no cookie-expiry header and cannot infer a target from ambient cookies. A delayed old response can change only its old session cookie. It cannot replace the newer session's cookie. Refresh secrets remain outside JavaScript and JSON responses; production cookies retain Secure, HttpOnly, SameSite=Lax and the __Host- prefix.
+
+Verification:
+- The final independent reproducer, unchanged and hash-bound, reproduced both defects locally on the original runtime. Both normal login/renewal controls passed and browser/fixture errors were zero. See [baseline proof](BASELINE_REPRODUCTION.json).
+- The new acceptance fixture fails on that original runtime at the real delayed Set-Cookie assertion, with both normal controls passing. This failure is expected proof that the test detects the bug. See [red result](ACCEPTANCE_RED.json).
+- The repaired fixture passes seven checks: two normal controls, delayed refresh and logout for different-account and same-account fresh logins, and delayed anonymous logout. Every race checks the new access token, the matching refresh receipt and a successful subsequent renewal. See [green result](ACCEPTANCE_GREEN.json).
+- Local Windows/Edge: 388 application tests, 25 transport tests, 9 session browser checks, 10 account browser checks and 7 response-order checks passed. A focused 72-test auth/account/CORS run passed. Both production bundles built; client bytes were unchanged by the server repair. Counts overlap and must not be added.
+- [Hosted run 36741590591](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36741590591) passed on the exact repair commit using Node 22.23.2 and Chromium: both builds, 388 application, 357 engine and 25 transport tests, and 9 + 10 + 7 browser checks. All browser errors were zero. See [permanent hosted summary](CI_RESULTS.json).
+- [211-file source binding](SOURCE_BINDING.json) verifies local runtime, test and configuration bytes against Git blob hashes at the repair commit. Named local outcomes are retained in [LOCAL_NAMED_OUTCOMES.txt](LOCAL_NAMED_OUTCOMES.txt). No private cookie values, credentials, mail payloads or SQLite stores are committed.
+
+Rollout requires a fresh sign-in for earlier draft-era shared-cookie sessions; there is deliberately no shared-cookie compatibility fallback. The existing eight-hour absolute session lifetime and persistent SQLite requirements remain. See [setup](../session-security-20260930/SETUP.md).
+
+The other owner-designated chat has the repair commit for an independent recheck, pending alongside its active engine audit. These results establish the repaired synthetic auth behavior; they do not establish live email delivery, deployment restoration, universal carrier switching, voice readiness or phone-to-calendar launch acceptance. No merge, deployment, provider traffic, calendar write or billing action occurred.
+
+The original failed save notification was a CI artifact-upload failure, not lost source: [run 36680944823](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36680944823) rejected the relative upload path `../otc-ci-evidence/sanitized/`. Its verification step succeeded. The absolute runner-temp path was corrected, and the subsequent saved-head runs passed.

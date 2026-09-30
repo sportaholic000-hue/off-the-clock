@@ -1,0 +1,251 @@
+{
+  "sourceCommit": "3e406d2107522319038c6cdd982cfcf08c91e657",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "rows": [
+    {
+      "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+      "passed": true
+    },
+    {
+      "name": "Expired access renews through the real route without remounting or losing an unsaved owner form",
+      "passed": true
+    },
+    {
+      "name": "Two tabs renew concurrently and remain authorized without discarding the owner draft",
+      "passed": true
+    },
+    {
+      "name": "Refresh receipts remain valid across an actual application restart",
+      "passed": true
+    },
+    {
+      "name": "Mobile sign-out retries a failure, then revokes only that server session and clears its cookie",
+      "passed": true
+    },
+    {
+      "name": "Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible",
+      "passed": true
+    },
+    {
+      "name": "The real application rejects an untrusted origin without logging the owner out",
+      "passed": true
+    },
+    {
+      "name": "The eight-hour absolute session limit requires sign-in again instead of extending indefinitely",
+      "passed": true
+    },
+    {
+      "name": "No browser runtime errors, access tokens or refresh secrets appear in application logs",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "wire": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "status": 401
+    }
+  ]
+}

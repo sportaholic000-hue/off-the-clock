@@ -1,0 +1,543 @@
+--- race-baseline-build ---
+
+
+--- race-focused-auth-r1 ---
+ok 1 - email origins are trusted, absolute and production HTTPS only
+ok 2 - unsafe production link configuration rejects before account creation
+ok 3 - failed signup delivery leaves a recoverable account and preserves payment gating
+ok 4 - account status and authenticated resend derive identity from authenticated user
+ok 5 - successful resend uses cooldown and hashed idempotency key without returning a raw token
+ok 6 - failed resend revokes only its link and preserves an earlier delivered link
+ok 7 - an older delivery failure cannot revoke a newer concurrent send
+ok 8 - verification is single use, purpose scoped and invalidates other verification links
+ok 9 - verification accepts legacy GET while rejecting expired or malformed links
+ok 10 - reset changes the password, consumes all reset links and does not grant paid access
+ok 11 - invalid reset input cannot consume a valid token or change a password
+ok 12 - expired reset links cannot change passwords
+ok 13 - forgotPassword keeps unknown, known and delivery failures indistinguishable
+ok 14 - resendVerificationPublic keeps unknown, known and delivery failures indistinguishable
+ok 15 - public recovery is bounded per IP without requiring a known account
+ok 16 - production refuses console or missing configuration without making network requests or logging secrets
+ok 17 - development console logs metadata only and identifies simulation
+ok 18 - provider retry preserves body and idempotency key for ambiguous outcomes
+ok 19 - permanent provider rejection does not retry or expose its response
+ok 20 - persistent transport failure has exactly three attempts and a safe error
+ok 21 - an HTTP success without a provider receipt is not reported accepted
+ok 22 - invalid recipients, header injection and invalid keys are rejected before transport
+ok 23 - configured bcrypt costs below the required twelve rounds fail before account creation
+ok 24 - invalid bcrypt configuration cannot consume a reset link or replace a password
+ok 25 - parallel requests share one refresh and retain exact mutation bodies/idempotency keys
+ok 26 - one protected 401 retries after refresh; a provider 403 never triggers refresh
+ok 27 - an in-flight refresh cannot replace a newly signed-in account or clear it after failure
+ok 28 - invalid session clears browser access, but a temporary refresh outage preserves it
+ok 29 - a cross-tab rotation conflict retries with the current cookie without clearing the winning session
+ok 30 - logout clears local access only after server acknowledgement, and preserves it on failure
+ok 31 - an old logout response cannot clear the new account credentials
+ok 32 - session/billing storage identity remains stable through access rotation and isolated between accounts and sign-ins
+ok 33 - public quote requests omit cookies and never refresh the owner session
+ok 34 - login waits for the tab refresh to finish before issuing a new cookie
+ok 35 - production login issues a Secure host cookie; no refresh secret appears in JSON
+ok 36 - refresh rotates its cookie once, binds to the signed access session, and leaves a conflict cookie untouched
+ok 37 - hostile origins cannot log in, create accounts, refresh, reset passwords or log out
+ok 38 - expired access can refresh within eight hours; logout revokes expired signed access too
+ok 39 - an old tab logout preserves the newer account cookie and session
+ok 40 - password reset atomically revokes every session for that account while another tenant remains valid
+ok 41 - reset revocation failure rolls back password and link consumption
+ok 42 - password reset cannot be bypassed by a login whose password comparison was already in flight
+ok 43 - durable login reservations stop a parallel password-guess burst before hashing and survive handler recreation
+ok 44 - successful logins release their durable reservation; a broken session store fails closed
+ok 45 - logout store failure does not claim success or clear the cookie; stateless tokens cannot authorize
+ok 46 - two actual workers contending for the same refresh receipt produce one success and one conflict
+ok 47 - refresh chooses the signed session cookie when multiple session cookies arrive
+ok 48 - a foreign receipt under the selected cookie name cannot refresh or revoke the foreign session
+ok 49 - anonymous logout does not select, revoke or expire another signed-in session
+ok 50 - legacy shared cookie names and duplicate selected cookies fail closed without changing other cookies
+ok 51 - logout revokes signed intent and expires only its own cookie even when that cookie is missing
+ok 52 - fresh sign-ins to the same account have isolated cookie names and logout boundaries
+ok 53 - session creates short access token, eight-hour absolute expiry and hashed refresh storage
+ok 54 - access and refresh expire at exact boundaries; refresh never extends absolute lifetime
+ok 55 - refresh rotates one-use secret; replay conflict does not revoke a successful concurrent refresh
+ok 56 - logout revokes only the selected session; password reset revokes all user sessions
+ok 57 - credential changes invalidate all old access/refresh tokens and reject stale login snapshots
+ok 58 - password mutation and session revocation roll back together on transaction failure
+ok 59 - delete change cannot retain an owner session
+ok 60 - role change cannot retain an owner session
+ok 61 - email change cannot retain an owner session
+ok 62 - staff reparenting or missing owner cannot carry a session to another tenant
+ok 63 - admin sessions bind to current environment credentials and explicit admin provenance
+ok 64 - stateless, malformed or transplanted JWT claims never authorize a session
+ok 65 - session and refresh receipts survive service restart and share a single winner across SQLite connections
+ok 66 - signing failure rolls back both the session and refresh receipt
+ok 67 - limiter persists reservations across services; successful login release does not consume failure allowance
+ok 68 - old-window completion cannot release a new-window reservation
+ok 69 - limiter capacity is bounded and expired records are reclaimed
+ok 70 - limiter shares counters across actual database connections
+ok 71 - authenticated application CORS permits only configured exact origins
+ok 72 - public quote and booking paths defer exact website authorization to tenant context
+# tests 72
+# pass 72
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+--- race-application-r1 ---
+ok 1 - email origins are trusted, absolute and production HTTPS only
+ok 2 - unsafe production link configuration rejects before account creation
+ok 3 - failed signup delivery leaves a recoverable account and preserves payment gating
+ok 4 - account status and authenticated resend derive identity from authenticated user
+ok 5 - successful resend uses cooldown and hashed idempotency key without returning a raw token
+ok 6 - failed resend revokes only its link and preserves an earlier delivered link
+ok 7 - an older delivery failure cannot revoke a newer concurrent send
+ok 8 - verification is single use, purpose scoped and invalidates other verification links
+ok 9 - verification accepts legacy GET while rejecting expired or malformed links
+ok 10 - reset changes the password, consumes all reset links and does not grant paid access
+ok 11 - invalid reset input cannot consume a valid token or change a password
+ok 12 - expired reset links cannot change passwords
+ok 13 - forgotPassword keeps unknown, known and delivery failures indistinguishable
+ok 14 - resendVerificationPublic keeps unknown, known and delivery failures indistinguishable
+ok 15 - public recovery is bounded per IP without requiring a known account
+ok 16 - production refuses console or missing configuration without making network requests or logging secrets
+ok 17 - development console logs metadata only and identifies simulation
+ok 18 - provider retry preserves body and idempotency key for ambiguous outcomes
+ok 19 - permanent provider rejection does not retry or expose its response
+ok 20 - persistent transport failure has exactly three attempts and a safe error
+ok 21 - an HTTP success without a provider receipt is not reported accepted
+ok 22 - invalid recipients, header injection and invalid keys are rejected before transport
+ok 23 - configured bcrypt costs below the required twelve rounds fail before account creation
+ok 24 - invalid bcrypt configuration cannot consume a reset link or replace a password
+ok 25 - real application migration supports verification tokens and preserves consumption on restart
+ok 26 - parallel requests share one refresh and retain exact mutation bodies/idempotency keys
+ok 27 - one protected 401 retries after refresh; a provider 403 never triggers refresh
+ok 28 - an in-flight refresh cannot replace a newly signed-in account or clear it after failure
+ok 29 - invalid session clears browser access, but a temporary refresh outage preserves it
+ok 30 - a cross-tab rotation conflict retries with the current cookie without clearing the winning session
+ok 31 - logout clears local access only after server acknowledgement, and preserves it on failure
+ok 32 - an old logout response cannot clear the new account credentials
+ok 33 - session/billing storage identity remains stable through access rotation and isolated between accounts and sign-ins
+ok 34 - public quote requests omit cookies and never refresh the owner session
+ok 35 - login waits for the tab refresh to finish before issuing a new cookie
+ok 36 - production login issues a Secure host cookie; no refresh secret appears in JSON
+ok 37 - refresh rotates its cookie once, binds to the signed access session, and leaves a conflict cookie untouched
+ok 38 - hostile origins cannot log in, create accounts, refresh, reset passwords or log out
+ok 39 - expired access can refresh within eight hours; logout revokes expired signed access too
+ok 40 - an old tab logout preserves the newer account cookie and session
+ok 41 - password reset atomically revokes every session for that account while another tenant remains valid
+ok 42 - reset revocation failure rolls back password and link consumption
+ok 43 - password reset cannot be bypassed by a login whose password comparison was already in flight
+ok 44 - durable login reservations stop a parallel password-guess burst before hashing and survive handler recreation
+ok 45 - successful logins release their durable reservation; a broken session store fails closed
+ok 46 - logout store failure does not claim success or clear the cookie; stateless tokens cannot authorize
+ok 47 - two actual workers contending for the same refresh receipt produce one success and one conflict
+ok 48 - refresh chooses the signed session cookie when multiple session cookies arrive
+ok 49 - a foreign receipt under the selected cookie name cannot refresh or revoke the foreign session
+ok 50 - anonymous logout does not select, revoke or expire another signed-in session
+ok 51 - legacy shared cookie names and duplicate selected cookies fail closed without changing other cookies
+ok 52 - logout revokes signed intent and expires only its own cookie even when that cookie is missing
+ok 53 - fresh sign-ins to the same account have isolated cookie names and logout boundaries
+ok 54 - session creates short access token, eight-hour absolute expiry and hashed refresh storage
+ok 55 - access and refresh expire at exact boundaries; refresh never extends absolute lifetime
+ok 56 - refresh rotates one-use secret; replay conflict does not revoke a successful concurrent refresh
+ok 57 - logout revokes only the selected session; password reset revokes all user sessions
+ok 58 - credential changes invalidate all old access/refresh tokens and reject stale login snapshots
+ok 59 - password mutation and session revocation roll back together on transaction failure
+ok 60 - delete change cannot retain an owner session
+ok 61 - role change cannot retain an owner session
+ok 62 - email change cannot retain an owner session
+ok 63 - staff reparenting or missing owner cannot carry a session to another tenant
+ok 64 - admin sessions bind to current environment credentials and explicit admin provenance
+ok 65 - stateless, malformed or transplanted JWT claims never authorize a session
+ok 66 - session and refresh receipts survive service restart and share a single winner across SQLite connections
+ok 67 - signing failure rolls back both the session and refresh receipt
+ok 68 - limiter persists reservations across services; successful login release does not consume failure allowance
+ok 69 - old-window completion cannot release a new-window reservation
+ok 70 - limiter capacity is bounded and expired records are reclaimed
+ok 71 - limiter shares counters across actual database connections
+ok 72 - issues 256-bit tokens, persists only a SHA-256 hash, and enforces TTL policy
+ok 73 - purpose binding fails generically without burning a valid token and consumption is one-use
+ok 74 - unknown, malformed, polluted-prototype, accessor, and unsupported-purpose inputs have one public failure
+ok 75 - a token is expired at the exact expiry boundary and remains unusable
+ok 76 - tokens survive process-style service restart without raw-token persistence
+ok 77 - explicit invalidation and default replacement revoke all earlier outstanding tokens
+ok 78 - hash collisions retry, and exhausted retries roll back replacement invalidation
+ok 79 - database failures and consume callbacks roll back atomically without leaking internals
+ok 80 - competing consumers on separate SQLite connections cannot both consume one token
+ok 81 - schema triggers make identity immutable and consumption irreversible
+ok 82 - billing stays fully disabled unless explicitly enabled
+ok 83 - one validated configuration drives Checkout and webhook price authority
+ok 84 - billing rejects test credentials in production and malformed signing secrets
+ok 85 - billing rejects missing, duplicate, or unsafe price and redirect configuration
+ok 86 - loopback HTTP billing URLs are development-only
+ok 87 - webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+ok 88 - verified webhook bytes are passed unchanged and supported events are acknowledged generically
+ok 89 - webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+ok 90 - unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+ok 91 - Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+ok 92 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+ok 93 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+ok 94 - an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+ok 95 - an unresolved claim cannot create a subscription after the owner becomes active
+ok 96 - an unrecovered claim older than Stripe idempotency retention fails closed for every key
+ok 97 - Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+ok 98 - billing portal uses only the stored customer mapping and rejects body-supplied ownership
+ok 99 - Checkout blocks a second subscription and portal never creates an unmapped customer
+ok 100 - verified terminal deletion permits resubscription while the original request remains replayable after activation
+ok 101 - billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+ok 102 - billing schema stores first-class evidence and sanitized idempotent event receipts
+ok 103 - fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+ok 104 - verified event application is idempotent and never stores raw customer metadata
+ok 105 - same event ID with changed authoritative fields is rejected
+ok 106 - customer and subscription IDs mapped to different owners are rejected atomically
+ok 107 - unrecognized prices and ambiguous base plans are rejected without changing access
+ok 108 - an older out-of-order failure is receipted but cannot regress newer active state
+ok 109 - payment failure preserves seven days of service and paid recovery restores immediately
+ok 110 - expired grace is suspended idempotently and queues one transition
+ok 111 - subscription deletion cancels immediately and a later stale active update cannot reopen it
+ok 112 - verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+ok 113 - Checkout completion without paid or setup evidence cannot start a trial
+ok 114 - a state-write failure rolls back identifier binding, logs, outbox, and receipt
+ok 115 - booking owner routes expose the complete configuration surface
+ok 116 - route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+ok 117 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 118 - tenant isolation prevents reading or writing another owner service policy
+ok 119 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 120 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 121 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 122 - widget settings and access-key creation roll back together on key collision
+ok 123 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 124 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 125 - booking capability fails closed through explicit, direct, handoff, and preference states
+ok 126 - public branding validates every owner-configurable value
+ok 127 - preference request atomically stores a callback request without claiming a booking
+ok 128 - tenant isolation and expired or inactive intent checks happen before writes
+ok 129 - request validation is closed and rejects malformed nested data
+ok 130 - future dates use settings timezone, then a valid owner timezone fallback
+ok 131 - exact retry survives restart and expiry while changed payload conflicts
+ok 132 - outbox failure rolls back preference and idempotency receipt atomically
+ok 133 - public booking context binds token tenant and exact allowed website origin
+ok 134 - availability requires unchanged scope and a strict post-quote identity envelope
+ok 135 - hold, release, confirm, and polling forward only server-bound context
+ok 136 - booking tokens resolve tenant context without accepting a body ownerId
+ok 137 - tenant-scoped availability does not reveal another owner intent
+ok 138 - unconfigured and out-of-area requests fall back before any calendar read
+ok 139 - confirmation rechecks current service-area policy before provider work
+ok 140 - slot IDs are opaque and tampering is rejected without creating a hold
+ok 141 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 142 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 143 - idempotency key reuse with a changed hold payload is rejected
+ok 144 - a policy revision change invalidates a held slot before provider work
+ok 145 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 146 - confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 147 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 148 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 149 - confirmation polling returns an exact customer-safe failure shape
+ok 150 - a provider conflict discovered after the hold releases it without creating an event
+ok 151 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 152 - ambiguous provider timeout reconciles by deterministic event lookup
+ok 153 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 154 - Provider confirmation create: missing-status never books or emits booked notification
+ok 155 - Provider confirmation create: tentative never books or emits booked notification
+ok 156 - Provider confirmation create: cancelled never books or emits booked notification
+ok 157 - Provider confirmation create: wrong-id never books or emits booked notification
+ok 158 - Provider confirmation create: wrong-day never books or emits booked notification
+ok 159 - Provider confirmation create: wrong-duration never books or emits booked notification
+ok 160 - Provider confirmation create: missing-start never books or emits booked notification
+ok 161 - Provider confirmation create: numeric-start never books or emits booked notification
+ok 162 - Provider confirmation recovery: missing-status never books or emits booked notification
+ok 163 - Provider confirmation recovery: tentative never books or emits booked notification
+ok 164 - Provider confirmation recovery: cancelled never books or emits booked notification
+ok 165 - Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 166 - Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 167 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 168 - Provider confirmation recovery: missing-start never books or emits booked notification
+ok 169 - Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 170 - Provider confirmation poll: missing-status never books or emits booked notification
+ok 171 - Provider confirmation poll: tentative never books or emits booked notification
+ok 172 - Provider confirmation poll: cancelled never books or emits booked notification
+ok 173 - Provider confirmation poll: wrong-id never books or emits booked notification
+ok 174 - Provider confirmation poll: wrong-day never books or emits booked notification
+ok 175 - Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 176 - Provider confirmation poll: missing-start never books or emits booked notification
+ok 177 - Provider confirmation poll: numeric-start never books or emits booked notification
+ok 178 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 179 - booking token receipts round trip without exposing the public token
+ok 180 - booking token receipts reject tampering, wrong keys, and incomplete payloads
+ok 181 - calendar credentials encrypt with authenticated encryption and round trip
+ok 182 - calendar credential tampering and invalid keys fail closed
+ok 183 - legacy plaintext Google credentials are encrypted before profile metadata is scrubbed
+ok 184 - non-secret calendar metadata does not trigger a credential migration
+ok 185 - New owner fields remain blank instead of becoming invented availability
+ok 186 - Saved settings round trip with zero notice and independent working-hour edits
+ok 187 - Unchanged blackout keeps exact seconds and absolute instant through timezone changes
+ok 188 - Edited blackout uses the business timezone rather than the browser timezone
+ok 189 - Clock-change gaps and repeated local times require an editable correction
+ok 190 - issue returns 32-byte base64url entropy and stores only its SHA-256 hash
+ok 191 - consume atomically marks a live state and returns its persisted owner binding
+ok 192 - a consumed state is rejected on replay with the generic public message
+ok 193 - an expired state fails closed and is not marked consumed
+ok 194 - malformed and unknown state values fail closed without reflecting input
+ok 195 - a digest collision is retried without overwriting the existing owner
+ok 196 - collision exhaustion fails safely after a bounded number of attempts
+ok 197 - database failures are replaced by stable secret-safe errors
+ok 198 - a reentrant competing consumer can win, but exactly one consumer succeeds
+ok 199 - state survives a service and database restart until its one successful consume
+ok 200 - owner, TTL, clock, and random-source validation fails before unsafe state use
+ok 201 - authenticated application CORS permits only configured exact origins
+ok 202 - public quote and booking paths defer exact website authorization to tenant context
+ok 203 - listBusy is owner scoped and maps the Google freebusy request and response
+ok 204 - UTC request bounds and freebusy response bounds fail closed before use
+ok 205 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 206 - getEvent preserves cancelled provider status for BookingService reconciliation
+ok 207 - an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 208 - concurrent expired-token requests coalesce one owner-scoped refresh
+ok 209 - a 401 refreshes and retries the Calendar request once
+ok 210 - a staggered concurrent 401 reloads a token another request already rotated
+ok 211 - a repeated 401 is not retried or refreshed more than once
+ok 212 - create network and timeout failures are ambiguous without exposing underlying errors
+ok 213 - the request deadline covers a stalled create response body
+ok 214 - a known Google 4xx write failure is non-ambiguous and sanitized
+ok 215 - tenant and credential failures fail closed before a provider call
+ok 216 - refresh rejection and persistence failures expose no OAuth or credential material
+ok 217 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 218 - Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+ok 219 - calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+ok 220 - Google selection initializes fail-closed booking metadata while OAuth is pending
+ok 221 - skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+ok 222 - invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+ok 223 - Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+ok 224 - Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+ok 225 - reselecting an already usable Google connection is non-destructive and revision-stable
+ok 226 - legacy knowledge-base saves preserve an existing structured service area
+ok 227 - supplied service areas are canonicalized and invalid shapes do not overwrite saved coverage
+ok 228 - Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 229 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 230 - Calendar rejects unsupported filters, impossible dates and missing owner
+ok 231 - Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 232 - Provider failure is an error, never a successful empty calendar
+ok 233 - Phase 2 metadata covers every engine service and formula owner field
+ok 234 - mandated owner labels are preserved verbatim
+ok 235 - dollar conversion handles nested owner rates and leaves factors alone
+ok 236 - minimum fields accept zero while rates still require a nonzero value
+ok 237 - AI-sourced services require individual confirmation of every field
+ok 238 - Class 2 fencing override changes labor without changing materials
+ok 239 - Phase 2 tables enforce DRAFT-only interview persistence
+ok 240 - price book shape rejects more than three tiers
+ok 241 - owner-facing Phase 2 source has no gradients or forwarding mechanics
+ok 242 - server exposes the complete Phase 2 route surface
+ok 243 - every owner field is classified as money or explicitly non-money
+ok 244 - previously skipped monetary fields now convert dollars to cents
+ok 245 - house wrap remains included in the all-in siding rate with no separate charge
+ok 246 - malformed leaves and business defaults are rejected at save
+ok 247 - negative pricing is rejected at save and treated as unconfigured by the engine
+ok 248 - missing-field statuses carry exact human-facing labels
+ok 249 - QuoteDone access requires both an eligible plan and a current lifecycle entitlement
+ok 250 - Class 2 defaults are stored per service on save, and money fields round-trip
+ok 251 - upgraded starter book: per-field Class 1 drafts for formula services, ranges only for CUSTOM
+ok 252 - shaped fields enforce spec key domains and never silently drop the customer key
+ok 253 - every AI-populated field, optional included, must be confirmed before activation
+ok 254 - CUSTOM exposes and enforces minimumJob; starter drafts cover closed-domain shaped fields
+ok 255 - exact nested shaped prices are required for the selected quote
+ok 256 - activation requires complete mandated shaped keys and nested rows
+ok 257 - Class 2 maps require the exact supported shape and the editor has no raw JSON factor control
+ok 258 - current draft status follows dynamic server requirements and never trusts saved LIVE state
+ok 259 - CUSTOM starter suggestions drop negative and non-finite ranges and minimums
+ok 260 - flooring uses keyed type rates and human pricing keys split snake_case and camelCase
+ok 261 - starter warning ruling is exact across spec, API, and model prompt
+ok 262 - service-specific quote fields reject unsupported hidden values
+ok 263 - ruled disposal overrides are exposed, validated, converted, and confirmed
+ok 264 - disposal override falls back, prices removal, and reviews malformed values
+ok 265 - current draft validates every quote-affecting business default before save
+ok 266 - owner-selectable product offerings activate on a supported subset
+ok 267 - every ENABLED product offering must be completely priced
+ok 268 - at least one product offering must be enabled and priced
+ok 269 - a disabled product requested at quote time returns review, never a substituted rate
+ok 270 - closed non-selectable domains still require complete coverage
+ok 271 - disjoint product offering maps must not activate
+ok 272 - a product in labor but absent from material blocks activation
+ok 273 - a product in material but absent from labor blocks activation
+ok 274 - a consistently priced subset still activates after the consistency check
+ok 275 - offering consistency does not affect services without selectable products
+ok 276 - customer payloads are built from an allowlist, not by removing known keys
+ok 277 - customer review outcomes never expose owner configuration
+ok 278 - owner results retain full diagnostics
+ok 279 - customer eligibility is enforced before quote generation
+ok 280 - a service that is not QUOTING LIVE cannot produce a customer estimate
+ok 281 - every owner field has contractor-facing label, explanation, units, and option names
+ok 282 - locked roofing labels and explanations identify the priced work
+ok 283 - contractor validation messages translate engine paths and unsupported values
+ok 284 - contractor UI has no raw identifier fallback paths
+ok 285 - local telephony preview is explicit, inert, and impossible in production
+ok 286 - preview endpoints are registered only inside the development guard
+ok 287 - the customer-facing quote preview never renders owner-only line items
+ok 288 - owner-only line items are flagged customerVisible false by the engine
+ok 289 - the quote preview renders customer-safe priceDrivers, not raw line items
+ok 290 - sanitizeForCustomer strips lineItems and exposes only safe fields
+ok 291 - skipped add-ons are distinguished explicitly in the preview
+ok 292 - --edge is a border token and is never used as a text colour
+ok 293 - a titled field renders exactly one supporting line, not two
+ok 294 - the price-book sidebar does not share a class with the dashboard rows
+ok 295 - button labels are never repainted by container descendant selectors
+ok 296 - draft validation never clears known statuses or reports failure while typing
+ok 297 - each onboarding step renders exactly one heading composition
+ok 298 - the dashboard blocker section is bounded and grouped by service
+ok 299 - the dashboard has a page-level vertical rhythm, not per-card margins
+ok 300 - the AI interview never asks for or speaks raw JSON
+ok 301 - structured interview answers keep the exact shape validation expects
+ok 302 - the interview states a truthful question count, not a fixed time
+ok 303 - resuming an interview restores a partially completed structured answer
+ok 304 - the onboarding grid columns can shrink below their content width
+ok 305 - supporting-text selectors match the markup their components actually render
+ok 306 - active lifecycle grants Operator/provider writes while plan controls QuoteDone
+ok 307 - unknown or missing plan/status fails closed
+ok 308 - trial expiry uses an exclusive exact UTC boundary
+ok 309 - missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+ok 310 - payment failure keeps full service until, but not at, the seven-day UTC boundary
+ok 311 - payment failure without a trustworthy failure timestamp fails closed
+ok 312 - suspended and cancellation lifecycle states deny all normal/provider access
+ok 313 - trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+ok 314 - a trial call already in progress finishes after the cap, but the next call cannot start
+ok 315 - unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+ok 316 - the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+ok 317 - launch persistence tables and indexes migrate idempotently
+ok 318 - legacy calls and appointments receive additive launch columns without data loss
+ok 319 - billing migration backfills immutable terminal subscription history without inventing deletion evidence
+ok 320 - independent script and decompressed cases retain their original exact bytes
+ok 321 - original runner still rejects a one-byte fixture change
+ok 322 - pricebook integrity: fractional unit rates remain distinct through real persistence and frozen candidate base calculation
+ok 323 - pricebook integrity: ordinary rates and an existing whole-cent book survive repeated saves without drift or reinterpretation
+ok 324 - pricebook integrity: nested product-rate maps and tier overrides preserve their units keys and source identity
+ok 325 - pricebook integrity: monetary-looking keys inside factors quantities and retained suggestion metadata never become money
+ok 326 - pricebook integrity: unsupported monetary representations are rejected before existing or new files change
+ok 327 - pricebook integrity: absent missing null empty zero and invalid owner values retain their existing distinct meanings
+ok 328 - pricebook integrity: explicit disable survives actual saves reloads unrelated edits and owner preview calculation
+ok 329 - pricebook integrity: explicit enable succeeds only with complete approved pricing and never changes siblings
+ok 330 - pricebook integrity: AI price edits remain unconfirmed through save and preview until explicit owner reconfirmation
+ok 331 - pricebook integrity: owner edits target the original pricing container and retain the rest of the service exactly
+ok 332 - pricebook integrity: unchanged AI scalar or map prices retain approval while actual edits invalidate only the affected field
+ok 333 - pricebook integrity: tier price edits clear only their own AI field confirmations and preserve base prices and source identity
+ok 334 - pricebook integrity: CUSTOM tier unit changes validate inherited amounts without silently reclassifying or rounding them
+ok 335 - pricebook integrity: owner numeric text is validated before lossy Number conversion or save submission
+ok 336 - pricebook integrity: a changed AI optional price configured only in a tier needs its own renewed confirmation
+ok 337 - pricebook integrity: equal duplicate containers survive and contradictory prices or factors require an explicit resolving edit
+ok 338 - pricebook integrity: nested nondefault Class 2 factors survive two saves without creating conflicting root defaults
+ok 339 - pricebook integrity: two saved CUSTOM services retain separate identities controls approvals and prices when one is edited
+ok 340 - pricebook editor: location-preserving factor reads and edits never migrate root-only nested-only flat or equal copies
+ok 341 - pricebook editor: explicit duplicate resolution compares all copies before retaining an AI approval
+ok 342 - pricebook editor: map equality missing null and explicit zero retain exact value and container presence
+ok 343 - a partial operating-system write failure leaves the previous price book intact
+ok 344 - a corrected save reloads complete exact values and disabled intent
+ok 345 - a failed replacement preserves the accepted file and removes only its own temporary file
+ok 346 - serialization failure cannot disturb existing owner data
+ok 347 - Twilio REST authenticates with API key credentials, never the Auth Token
+ok 348 - Auth Token alone cannot authorize a Twilio REST request
+ok 349 - Twilio provider failures neither reflect nor log credential-bearing details
+ok 350 - .env.example lists runtime/provider keys without sample secrets
+ok 351 - every estimate requires a syntactically usable email or telephone
+ok 352 - wire decimals: reject replacement before save, without imposing binary exactness or price caps
+ok 353 - JSON strings, escaped keys, objects and arrays are tokenized without interpreting numbers inside text
+ok 354 - the whole-request gate never classifies untriaged prose as harmless
+ok 355 - an optional malformed callback channel identifies the editable field
+ok 356 - definitive rejection can be corrected; unknown acceptance keeps the immutable request
+ok 357 - accepted metadata names do not admit unsupported nested scope or alternate callback prose
+ok 358 - the pricing envelope excludes name and location while tolerating unambiguously empty legacy containers
+ok 359 - server confirmation binds the complete request, tenant and approved book revision
+ok 360 - stored widget origin allowlists fail closed when corrupt or ambiguous
+ok 361 - loopback HTTP origins are accepted only outside production
+ok 362 - production runtime accepts only complete secure base configuration
+ok 363 - enabled Stripe billing must have one complete validated configuration
+ok 364 - configured URLs are exact origins and local HTTP is development-only
+ok 365 - provider REST writes require well-formed Twilio API-key credentials
+ok 366 - voice runtime has a separate inbound-signature credential gate
+ok 367 - city policies require an exact city, region, and country match
+ok 368 - an explicit all-areas policy is eligible without silently inferring coverage
+ok 369 - missing or malformed configuration and address data fail closed
+ok 370 - duplicate and ambiguous locality entries are rejected
+ok 371 - knowledge-base extraction accepts only a valid structured policy
+ok 372 - add-on missing-price guard executes every priced and unpriced path without a helper ReferenceError
+ok 373 - unpriced ponding water addon is skipped and disclosed
+ok 374 - unpriced mowing bagging addon is skipped and disclosed
+ok 375 - unpriced mowing edging addon is skipped and disclosed
+ok 376 - both unpriced mowing addons are skipped and disclosed together
+ok 377 - tier addon divergence keeps option disclaimers separate and top-level base-only
+ok 378 - tiers sharing the same addon exclusion may disclose it at top level
+ok 379 - deleted staff token returns 401 through requireAuth
+ok 380 - deleted owner token returns 401 through requireAuth
+ok 381 - role-changed token returns 401 through requireAuth
+ok 382 - staff protected route reads only the current database owner tenant
+ok 383 - environment admin path works without tenant context
+ok 384 - users table rejects staff without ownerId at the DB level
+ok 385 - triggers reject staff and admin rows as staff parents
+ok 386 - owner demotion is blocked while staff reference the owner
+ok 387 - constraint detection requires the full role and nullability CHECK
+ok 388 - migration aborts for legacy staff linked to a non-owner parent
+# tests 388
+# pass 388
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+--- race-transport-r1 ---
+ok 1 - pending and canceled state remains server data, never implied by a chosen plan
+ok 2 - request recovery uses an account-session namespace without retaining the authentication token
+ok 3 - saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+ok 4 - only explicit pre-mutation rejection clears an uncertain billing request
+ok 5 - billing navigation rejects scripts, credentials and insecure destinations
+ok 6 - versioned catalogs cannot silently mix quote formats
+ok 7 - the new envelope omits only blank fields, never supplied work or unexpected shapes
+ok 8 - public transport preserves decimals and sends no owner authentication
+ok 9 - booking requests preserve their explicit idempotency key
+ok 10 - public paths cannot escape into authenticated routes or insecure production origins
+ok 11 - definite booking failures preserve their server code
+ok 12 - invalid successful acknowledgements remain errors
+ok 13 - branding permits flat colors and normalized call numbers, not script destinations
+ok 14 - calendar data must contain valid explicit UTC instants and a valid timezone
+ok 15 - only a confirmed calendar appointment for the selected server slot may display booked
+ok 16 - parallel requests share one refresh and retain exact mutation bodies/idempotency keys
+ok 17 - one protected 401 retries after refresh; a provider 403 never triggers refresh
+ok 18 - an in-flight refresh cannot replace a newly signed-in account or clear it after failure
+ok 19 - invalid session clears browser access, but a temporary refresh outage preserves it
+ok 20 - a cross-tab rotation conflict retries with the current cookie without clearing the winning session
+ok 21 - logout clears local access only after server acknowledgement, and preserves it on failure
+ok 22 - an old logout response cannot clear the new account credentials
+ok 23 - session/billing storage identity remains stable through access rotation and isolated between accounts and sign-ins
+ok 24 - public quote requests omit cookies and never refresh the owner session
+ok 25 - login waits for the tab refresh to finish before issuing a new cookie
+# tests 25
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+--- race-response-browser-green-r1 ---
+PASS Ordinary same-account access renewal succeeds
+PASS Ordinary sign-out, different-account sign-in and renewal succeed
+PASS Delayed old refresh response preserves different-account login and renewal
+PASS Delayed old refresh response preserves same-account fresh login and renewal
+PASS Delayed old logout response preserves different-account login and renewal
+PASS Delayed old logout response preserves same-account fresh login and renewal
+PASS Delayed anonymous logout preserves a later sign-in and renewal
+
+--- race-existing-session-browser-r1 ---
+PASS Real browser login sets an HttpOnly cookie and authorizes the owner
+PASS Expired access renews through the real route without remounting or losing an unsaved owner form
+PASS Two tabs renew concurrently and remain authorized without discarding the owner draft
+PASS Refresh receipts remain valid across an actual application restart
+PASS Mobile sign-out retries a failure, then revokes only that server session and clears its cookie
+PASS Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible
+PASS The real application rejects an untrusted origin without logging the owner out
+PASS The eight-hour absolute session limit requires sign-in again instead of extending indefinitely
+PASS No browser runtime errors, access tokens or refresh secrets appear in application logs
+
+--- race-existing-account-browser-r1 ---
+PASS Signup survives failed provider delivery, exposes retry and preserves pending_payment
+PASS Resend gives an absolute link; opening it hides the fragment and requires explicit verification
+PASS Signed-in account screen shows verified state
+PASS Reused verification link is rejected and recovery request stays private for verified accounts
+PASS Sign-in exposes password recovery; known and unknown requests show the same response
+PASS Durable reset works after server restart; confirmation mismatch stays on the form; successful reset clears the browser session
+PASS Old password fails, new password signs in and existing signup/billing flow preserves pending_payment
+PASS Reused reset fails and preserves entered form values
+PASS Malformed links offer recovery on mobile without horizontal overflow
+PASS No browser runtime errors or account link tokens in application logs

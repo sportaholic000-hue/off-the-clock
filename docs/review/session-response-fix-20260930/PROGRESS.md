@@ -1,9 +1,7 @@
 # Session response-order repair checkpoint
 
-Base runtime: `8a778d5346f10d69e586d0ae46006238e4fd169c`. Independent audit evidence: `57880a48e6b1fea4830e359cd8a940c99929b6ef`.
+Repaired/tested runtime: `3e406d2107522319038c6cdd982cfcf08c91e657`. The original delayed refresh/logout defects are reproduced on the saved baseline and repaired with session-specific cookie names. See [FINAL_REPORT.md](FINAL_REPORT.md) for permanent source-bound results, setup consequences and remaining limits.
 
-The original delayed-header reproducer confirmed both defects on unchanged source. Local repair gives each signed session its own refresh-cookie name and makes anonymous logout an idempotent no-op without cookie expiry. Browser requests select only the cookie named by their signed session. No quote, booking, calendar, voice or client API implementation changes.
+Hosted exact-commit CI passed: both builds, 388 application, 357 engine and 25 transport tests; 9 session, 10 account and 7 response-order browser checks. Local production-UI checks also passed; the same acceptance test fails against the original code at the delayed-header cookie assertion. Counts overlap.
 
-Focused auth/account/CORS suite: 72 passed. The new production-UI response-order fixture has reported all seven assertions passing, including same-account fresh login, different-account login, and subsequent renewal; process completion and evidence collection are still pending at this checkpoint. Full application, existing browser workflows, acceptance red run against the original source, and hosted exact-commit CI remain pending. This is a source backup, not final acceptance.
-
-The old fixed-name-cookie sessions require fresh sign-in after rollout; SETUP.md records this explicitly. No merge, deployment, live provider traffic or production configuration changes have occurred.
+All runtime, test and evidence checkpoints are saved on GitHub and read back for verification. Independent peer recheck is pending; the peer is also active on the owner's separate engine audit. Voice implementation has not begun. No quote/booking/calendar/voice changes, merge, deployment or live provider writes occurred.

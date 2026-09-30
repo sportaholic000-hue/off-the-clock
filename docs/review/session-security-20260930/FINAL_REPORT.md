@@ -1,4 +1,4 @@
-> **Review update — September 30:** Independent real-browser audit found delayed refresh/logout response races that invalidate a newer login's cookie. This slice's acceptance is reopened. See [the repair plan](../session-response-fix-20260930/PLAN.md). The report below describes the earlier tested source and does not establish that the newly reproduced defect is fixed.
+> **Repair update — September 30:** The later independent delayed-header finding is now repaired and verified at `3e406d2107522319038c6cdd982cfcf08c91e657`. Read [the response-order repair report](../session-response-fix-20260930/FINAL_REPORT.md) for the newer exact-commit proof and rollout requirements. The report below is retained as historical evidence for its stated earlier source; its test counts did not cover the defect.
 
 # Account session security delivery — September 30, 2026
 
