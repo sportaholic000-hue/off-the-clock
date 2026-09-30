@@ -4,7 +4,7 @@ import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import crypto from 'node:crypto';
 
-const root=path.resolve('.'),out=path.resolve('..','otc-ci-evidence'),portable=path.join(root,'.portable-runtime','node-v22.23.2-win-x64','node.exe');
+const root=path.resolve('.'),out=path.resolve(process.env.RUNNER_TEMP||'..','otc-ci-evidence'),portable=path.join(root,'.portable-runtime','node-v22.23.2-win-x64','node.exe');
 if(process.version!=='v22.23.2'||process.versions.modules!=='127')throw Error('Use Node 22.23.2 ABI 127.');
 if(fs.existsSync(out))throw Error('Use fresh CI evidence.');
 fs.mkdirSync(path.dirname(portable),{recursive:true});
@@ -38,11 +38,20 @@ try {
   if(!filename.endsWith('.result.json'))continue;
   const result=JSON.parse(fs.readFileSync(path.join(out,filename),'utf8')),logFile=path.join(out,result.label+'.log');
   const log=fs.existsSync(logFile)?fs.readFileSync(logFile,'utf8'):'';
+  const counters=Object.fromEntries([...log.matchAll(/^# (tests|pass|fail|cancelled|skipped|todo) (\d+)$/gm)].map(m=>[m[1],Number(m[2])]));
   const named=log.split(/\r?\n/).filter(line=>/^(ok \d|not ok \d|# (tests|pass|fail|cancelled|skipped|todo) |PASS )/.test(line)).join('\n');
   fs.writeFileSync(path.join(safe,result.label+'.txt'),named);
-  results.push({...result,logSha256:crypto.createHash('sha256').update(log).digest('hex')});
+  results.push({...result,counters,logSha256:crypto.createHash('sha256').update(log).digest('hex')});
  }
- fs.writeFileSync(path.join(safe,'results.json'),JSON.stringify({sourceCommit:process.env.GITHUB_SHA,platform:process.platform,version:process.version,liveProviderTraffic:false,results},null,2));
+ const browserResults={};
+ for(const label of ['session-browser','account-browser']){
+  const file=path.join(out,label,'browser-results.json');if(!fs.existsSync(file))continue;
+  const data=JSON.parse(fs.readFileSync(file,'utf8'));
+  browserResults[label]={syntheticOnly:data.syntheticOnly,liveProviderTraffic:data.liveProviderTraffic,rows:data.rows,errors:data.errors};
+ }
+ const summary={sourceCommit:process.env.OTC_CI_SOURCE_SHA,platform:process.platform,version:process.version,playwrightVersion:require(path.join(browserModule,'package.json')).version,liveProviderTraffic:false,results,browserResults};
+ fs.writeFileSync(path.join(safe,'results.json'),JSON.stringify(summary,null,2));
+ console.log('OTC_SAFE_RESULT '+JSON.stringify(summary));
  // Private cookies, mail payloads and SQLite stores are intentionally excluded.
 }
 process.exitCode=failed?1:0;

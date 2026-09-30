@@ -43,6 +43,7 @@ jobs:
           "$RUNNER_TEMP/otc-browser/node_modules/.bin/playwright" install --with-deps chromium
       - name: Verify synthetic account, sessions, engine and browsers
         env:
+          OTC_CI_SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
           OTC_CI_BROWSER_MODULE: ${{ runner.temp }}/otc-browser/node_modules/playwright
         run: node verification/session-security/run-ci.mjs
       - name: Upload sanitized result summaries
@@ -50,6 +51,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: session-security-${{ github.event.pull_request.head.sha }}
-          path: ../otc-ci-evidence/sanitized/
+          path: ${{ runner.temp }}/otc-ci-evidence/sanitized/
           if-no-files-found: warn
           retention-days: 14

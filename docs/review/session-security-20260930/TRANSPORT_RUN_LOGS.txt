@@ -1,0 +1,32 @@
+session-browser-transport-final
+ok 1 - pending and canceled state remains server data, never implied by a chosen plan
+ok 2 - request recovery uses an account-session namespace without retaining the authentication token
+ok 3 - saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+ok 4 - only explicit pre-mutation rejection clears an uncertain billing request
+ok 5 - billing navigation rejects scripts, credentials and insecure destinations
+ok 6 - versioned catalogs cannot silently mix quote formats
+ok 7 - the new envelope omits only blank fields, never supplied work or unexpected shapes
+ok 8 - public transport preserves decimals and sends no owner authentication
+ok 9 - booking requests preserve their explicit idempotency key
+ok 10 - public paths cannot escape into authenticated routes or insecure production origins
+ok 11 - definite booking failures preserve their server code
+ok 12 - invalid successful acknowledgements remain errors
+ok 13 - branding permits flat colors and normalized call numbers, not script destinations
+ok 14 - calendar data must contain valid explicit UTC instants and a valid timezone
+ok 15 - only a confirmed calendar appointment for the selected server slot may display booked
+ok 16 - parallel requests share one refresh and retain exact mutation bodies/idempotency keys
+ok 17 - one protected 401 retries after refresh; a provider 403 never triggers refresh
+ok 18 - an in-flight refresh cannot replace a newly signed-in account or clear it after failure
+ok 19 - invalid session clears browser access, but a temporary refresh outage preserves it
+ok 20 - a cross-tab rotation conflict retries with the current cookie without clearing the winning session
+ok 21 - logout clears local access only after server acknowledgement, and preserves it on failure
+ok 22 - an old logout response cannot clear the new account credentials
+ok 23 - session/billing storage identity remains stable through access rotation and isolated between accounts and sign-ins
+ok 24 - public quote requests omit cookies and never refresh the owner session
+ok 25 - login waits for the tab refresh to finish before issuing a new cookie
+# tests 25
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
