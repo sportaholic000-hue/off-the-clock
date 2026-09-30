@@ -226,7 +226,10 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
   const region = String(req.body?.region || '').toUpperCase();
   let resolved = resolveJurisdiction(country, region);
 
-  if (resolved.needsOwnerConfirmation) {
+  // Jurisdiction lookup supplies a prefill. Explicit owner settings must be
+  // validated and saved even when that location already has a preset.
+  const explicitTaxSettings = Object.hasOwn(req.body || {}, 'taxMode') || Object.hasOwn(req.body || {}, 'taxPercent');
+  if (explicitTaxSettings || resolved.needsOwnerConfirmation) {
     const taxMode = req.body?.taxMode;
     const taxPercent = parseOwnerNumericInput(req.body?.taxPercent,{path:'taxPercent'});
     if (!taxModes.has(taxMode)) {

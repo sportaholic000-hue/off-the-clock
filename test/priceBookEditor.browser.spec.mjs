@@ -9,6 +9,7 @@ import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
 import { CLASS2_DEFAULTS_BY_SERVICE, SAMPLE_INPUTS, getServiceMetadata } from '../server/priceBookMetadata.js';
 import { generateQuote } from '../server/quoteEngine.js';
+import { getVNextPriceBookMetadata } from '../server/quote-engine-vnext/index.js';
 
 // Full, unchanged application JSX + React/ReactDOM in a real headless browser.
 // Only transport is substituted: actual fetch requests are captured and passed
@@ -28,7 +29,11 @@ finally {
   if (previousStore === undefined) delete process.env.PRICEBOOK_PATH;
   else process.env.PRICEBOOK_PATH = previousStore;
 }
-const metadata = getServiceMetadata();
+// Retain the legacy price representation fixtures, with the customer fields
+// supplied by the current application API. Missing metadata is not a quote.
+const customerMetadata = getVNextPriceBookMetadata();
+const metadata = getServiceMetadata().map(meta=>({...meta,
+  customerFields:customerMetadata.find(current=>current.serviceType===meta.serviceType).customerFields}));
 const defaults = { markupPercent:0, markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0,
   rangeBufferPercent:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   overheadFixed:0, peakMonths:[], peakSurchargePercent:0 };

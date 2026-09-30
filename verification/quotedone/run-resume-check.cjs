@@ -4,6 +4,7 @@ if(!process.argv[3]||out===root||out.startsWith(root+path.sep))throw Error('Supp
 const env={};for(const[k,v]of Object.entries(process.env))if(['path','systemroot','windir','temp','tmp','comspec','pathext','userprofile','localappdata','appdata'].includes(k.toLowerCase()))env[k]=v;
 Object.assign(env,{NODE_ENV:'test',JWT_SECRET:crypto.randomBytes(32).toString('hex'),DATABASE_PATH:path.join(out,'candidate-application.sqlite'),PRICEBOOK_PATH:path.join(out,'pricebooks'),DOTENV_CONFIG_PATH:path.join(out,'absent.env'),ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',EMAIL_PROVIDER:'console',LOCAL_PREVIEW:'false',PRICEBOOK_BROWSER_MODULE:process.env.PRICEBOOK_BROWSER_MODULE||'playwright',PRICEBOOK_BROWSER_EXECUTABLE:process.env.PRICEBOOK_BROWSER_EXECUTABLE||'',PORT:'4594'});
 const label=process.argv[2];if(!/^[a-z0-9-]+$/.test(label))throw Error('Label required');
+if(label.includes('pricebook-browser'))Object.assign(env,{PRICEBOOK_EDITOR_EVIDENCE_DIR:path.join(out,label+'-editor'),QUOTEDONE_EVIDENCE_DIR:path.join(out,label+'-preview-order')});
 const file=path.join(out,label+'.log');if(fs.existsSync(file))throw Error('Preserve existing evidence '+label);
 if(process.env.ESBUILD_BINARY_PATH)env.ESBUILD_BINARY_PATH=process.env.ESBUILD_BINARY_PATH;
 const args=process.argv.slice(4),binding={backend:'3d2eedb74f31494eb2086abcfa1f0702b094d7b7',frontend:'5adc1ecf0aaa5ee41129e5115576182135194f3d'};

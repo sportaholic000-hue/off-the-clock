@@ -8,12 +8,15 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {getServiceMetadata} from '../server/priceBookMetadata.js';
+import {getVNextPriceBookMetadata} from '../server/quote-engine-vnext/index.js';
 // Controlled transport is used ONLY to reproduce response ordering. This is
 // a real React/browser regression, not authenticated application acceptance.
 const root=fileURLToPath(new URL('..',import.meta.url));
 const evidence=process.env.QUOTEDONE_EVIDENCE_DIR || mkdtempSync(join(tmpdir(),'otc-preview-order-'));
 mkdirSync(evidence,{recursive:true});
-const metadata=getServiceMetadata();
+const customerMetadata=getVNextPriceBookMetadata();
+const metadata=getServiceMetadata().map(meta=>({...meta,
+ customerFields:customerMetadata.find(current=>current.serviceType===meta.serviceType).customerFields}));
 const ids={A:'46666e01-d67d-4c8d-939c-0062782e880b',B:'c98563b8-f22b-4edb-8c4a-d84456488a7b'};
 const service=(id,rate)=>({id:ids[id],serviceType:'LANDSCAPING_MOWING',service:'Synthetic mowing '+id,
   active:false,source:'MANUAL',pricing:{mowingBaseRatePerSqft:rate,minimumServiceCharge:0,
