@@ -51,3 +51,6 @@ The five original user-facing chat deliverables are also preserved under `docs/r
 Browser r3 passes five workflows, then stops because the fixture email's `to` field is an array and the test compared it to a string. Browser r4 corrects that test lookup and reproduces a genuine issue in this candidate: a successful password reset's message disappears when sign-out observes the consumed fragment's removal. The route now keeps the recovery component key stable when a consumed fragment is removed; a new link or route still receives its own key. The corrected production browser run remains pending. These attempts and their partial successes are retained separately from a final pass.
 
 The full engine regression now passes **357/357**. No voice runtime changes have been made.
+
+
+The final security review also enforces the platform's minimum bcrypt cost of twelve rounds: unsafe/invalid cost configuration now fails before creating an account or consuming a reset link. Two negative tests cover this requirement. The default remains twelve; the complete application regression and browser workflows are being verified against this final source.

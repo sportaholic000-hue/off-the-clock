@@ -196,3 +196,20 @@ test('invalid recipients, header injection and invalid keys are rejected before 
     await assert.rejects(send({...message,...overrides}),e=>e.code==='EMAIL_REQUEST_INVALID');
   assert.equal(calls,0);
 });
+
+
+test('configured bcrypt costs below the required twelve rounds fail before account creation',async t=>{
+  for(const BCRYPT_COST of [4,11,'not-a-number',32]){
+    const f=fixture(t,{environment:{BCRYPT_COST}});
+    assert.equal((await call(f.handlers.register,signup)).status,503);
+    assert.equal(f.database.prepare('SELECT COUNT(*) n FROM users').get().n,0);
+  }
+});
+
+test('invalid bcrypt configuration cannot consume a reset link or replace a password',async t=>{
+  const f=fixture(t,{environment:{BCRYPT_COST:11}}),id=f.user();
+  const issued=f.tokenService.issue({userId:id,purpose:P.RESET_PASSWORD});
+  assert.equal((await call(f.handlers.resetPassword,{token:issued.token,password:'replacement-pass'})).status,503);
+  assert.equal(f.database.prepare('SELECT passwordHash FROM users WHERE id=?').get(id).passwordHash,'hash:original-pass');
+  assert.equal(f.database.prepare('SELECT consumedAt FROM authTokens WHERE tokenHash=?').get(hashAuthToken(issued.token)).consumedAt,null);
+});

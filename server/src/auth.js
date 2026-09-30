@@ -130,6 +130,12 @@ export function createAuthHandlers({
     };
   }
 
+  function hashingReady(res) {
+    const cost=Number(environment.BCRYPT_COST || 12);
+    if(Number.isInteger(cost)&&cost>=12&&cost<=31)return true;
+    res.status(503).json({error:'Authentication service is temporarily unavailable.'});return false;
+  }
+
   function emailReady(res) {
     try {accountEmailOrigin(environment);return true;}
     catch {res.status(503).json({error: 'Account email is temporarily unavailable.'});return false;}
@@ -194,7 +200,7 @@ export function createAuthHandlers({
   }
 
   async function registerHandler(req, res) {
-    if (recoveryLimited(req, res, 'register', 20) || !emailReady(res)) return;
+    if (recoveryLimited(req, res, 'register', 20) || !emailReady(res) || !hashingReady(res)) return;
     const body = req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : {};
     const email = normalizedEmail(body.email);
     const password = body.password;
@@ -306,7 +312,7 @@ export function createAuthHandlers({
   }
 
   async function resetPasswordHandler(req, res) {
-    if (recoveryLimited(req, res, 'reset')) return;
+    if (recoveryLimited(req, res, 'reset') || !hashingReady(res)) return;
     if (!isAuthToken(req.body?.token)) return res.status(400).json({error: SAFE_TOKEN_ERROR});
     if (!validPassword(req.body?.password)) {
       return res.status(400).json({ error: 'A password of at least 8 characters is required.' });
