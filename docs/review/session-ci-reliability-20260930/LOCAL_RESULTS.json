@@ -1,0 +1,105 @@
+{
+  "sourceCommit": "ad925d0fa368f295fd2f22b53ef115c55b5f4bdb",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "results": [
+    {
+      "label": "ci-same-second-red-r1",
+      "args": [
+        "verification/session-security/repro-same-second-browser.mjs",
+        ".",
+        "../ci-same-second-red-browser-20260930"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 52425,
+      "log": "ci-same-second-red-r1.log"
+    },
+    {
+      "label": "ci-same-second-green-r1",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "../ci-same-second-green-browser-20260930",
+        "same-second"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 49808,
+      "log": "ci-same-second-green-r1.log"
+    },
+    {
+      "label": "ci-normal-session-browser-r1",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "../ci-normal-session-browser-20260930"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 114320,
+      "log": "ci-normal-session-browser-r1.log"
+    }
+  ],
+  "expectedRedFailure": {
+    "originalAccessEqualsRenewedAccess": true,
+    "refreshResponseStatus": 200,
+    "receiptTotal": 2,
+    "consumedReceipts": 1,
+    "assertion": "notStrictEqual"
+  },
+  "green": {
+    "rows": [
+      {
+        "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+        "passed": true
+      },
+      {
+        "name": "Expired access renews through the real route without remounting or losing an unsaved owner form",
+        "passed": true
+      }
+    ],
+    "errors": []
+  },
+  "normal": {
+    "rows": [
+      {
+        "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+        "passed": true
+      },
+      {
+        "name": "Expired access renews through the real route without remounting or losing an unsaved owner form",
+        "passed": true
+      },
+      {
+        "name": "Two tabs renew concurrently and remain authorized without discarding the owner draft",
+        "passed": true
+      },
+      {
+        "name": "Refresh receipts remain valid across an actual application restart",
+        "passed": true
+      },
+      {
+        "name": "Mobile sign-out retries a failure, then revokes only that server session and clears its cookie",
+        "passed": true
+      },
+      {
+        "name": "Password reset revokes every owner device, preserves another tenant, and keeps the reset success message visible",
+        "passed": true
+      },
+      {
+        "name": "The real application rejects an untrusted origin without logging the owner out",
+        "passed": true
+      },
+      {
+        "name": "The eight-hour absolute session limit requires sign-in again instead of extending indefinitely",
+        "passed": true
+      },
+      {
+        "name": "No browser runtime errors, access tokens or refresh secrets appear in application logs",
+        "passed": true
+      }
+    ],
+    "errors": []
+  }
+}

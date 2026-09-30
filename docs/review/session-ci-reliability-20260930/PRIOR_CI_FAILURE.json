@@ -1,0 +1,157 @@
+{
+  "runId": 36743299771,
+  "runUrl": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36743299771",
+  "sourceCommit": "1d618cd77cf127943bddded681892dafc95ecec2",
+  "platform": "linux",
+  "version": "v22.23.2",
+  "playwrightVersion": "1.63.0",
+  "liveProviderTraffic": false,
+  "results": [
+    {
+      "label": "application",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/accountEmail.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionClient.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 6269,
+      "log": "application.log",
+      "counters": {
+        "tests": 388,
+        "pass": 388,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "475e27c055925446d0aa2178d579d2cc4d124c2eca1762d6f148a1bc7217ac6c"
+    },
+    {
+      "label": "build",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 7117,
+      "log": "build.log",
+      "counters": {},
+      "logSha256": "bdb65c7435f1195b2080a4f6eaef7c8826210defeab3207522ee1aed04b1948c"
+    },
+    {
+      "label": "engine",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 44228,
+      "log": "engine.log",
+      "counters": {
+        "tests": 357,
+        "pass": 357,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "e0c9df4a4b8d3df794cbb83136390dbc483227a540773db65be14cfc8a243f4f"
+    },
+    {
+      "label": "session-browser",
+      "args": [
+        "verification/session-security/browser-workflow.mjs",
+        ".",
+        "/home/runner/work/_temp/otc-ci-evidence/session-browser"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 4794,
+      "log": "session-browser.log",
+      "counters": {},
+      "logSha256": "13bd43a274efbf7fac3a544c157f9d802c8d78b725699cbc90ed46472139a3a1"
+    },
+    {
+      "label": "transport",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/authSessionClient.spec.mjs",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 449,
+      "log": "transport.log",
+      "counters": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "ea8a0dba7c95b59044b42590f47781226cc4d4bf61e377b19048d554a6b13ea4"
+    }
+  ],
+  "browserResults": {
+    "session-browser": {
+      "syntheticOnly": true,
+      "liveProviderTraffic": false,
+      "rows": [
+        {
+          "name": "Real browser login sets an HttpOnly cookie and authorizes the owner",
+          "passed": true
+        }
+      ],
+      "errors": []
+    }
+  }
+}
