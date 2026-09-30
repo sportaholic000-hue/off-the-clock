@@ -668,7 +668,8 @@ test('pricebook integrity: two saved CUSTOM services retain separate identities 
   assert.equal(withNewType.length, 3);
   assert.deepEqual(withNewType.slice(0, 2), frozen);
   assert.deepEqual(withNewType[2], { serviceType:'LANDSCAPING_MOWING', service:'Mowing',
-    tiers:[], validationInputs:structuredClone(SAMPLE_INPUTS.LANDSCAPING_MOWING) });
+    source:'MANUAL', active:false, tiers:[],
+    validationInputs:structuredClone(SAMPLE_INPUTS.LANDSCAPING_MOWING) });
   assert.deepEqual(saved, frozen);
   const initial = saveAndRead('two-custom-services', book(editor));
   assert.deepEqual(initial.persisted.services.map(service => service.active), [false, true]);

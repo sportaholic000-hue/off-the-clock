@@ -1,13 +1,56 @@
-import { CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
+import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
+import { installAuthTokenSchema } from './authTokenService.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
 const USERS_COLUMNS = [
   'id', 'ownerId', 'email', 'passwordHash', 'firstName', 'businessName',
-  'plan', 'planStatus', 'trialEndsAt', 'timezone', 'role', 'createdAt'
+  'plan', 'planStatus', 'trialEndsAt', 'paymentFailedAt', 'emailVerifiedAt', 'timezone', 'role', 'createdAt'
 ];
 const USERS_ROLE_NULLABILITY_CHECK = /CHECK\s*\(\s*\(\s*role\s*=\s*'staff'\s+AND\s+ownerId\s+IS\s+NOT\s+NULL\s*\)\s+OR\s+\(\s*role\s+IN\s*\(\s*'owner'\s*,\s*'admin'\s*\)\s+AND\s+ownerId\s+IS\s+NULL\s*\)\s*\)/i;
+
+const ADDITIVE_COLUMNS = {
+  users: {
+    paymentFailedAt: 'TEXT',
+    emailVerifiedAt: 'TEXT'
+  },
+  quoteSubmissions: {
+    bookingIntentId: 'TEXT',
+    bookingTokenReceipt: 'TEXT'
+  },
+  calls: {
+    accountSid: 'TEXT',
+    streamSid: 'TEXT',
+    destinationNumber: 'TEXT',
+    status: 'TEXT',
+    aiInputTokens: 'INTEGER NOT NULL DEFAULT 0',
+    aiOutputTokens: 'INTEGER NOT NULL DEFAULT 0',
+    aiEstimatedCostMicros: 'INTEGER NOT NULL DEFAULT 0',
+    failureCode: 'TEXT',
+    completedAt: 'TEXT',
+    updatedAt: 'TEXT'
+  },
+  appointments: {
+    bookingIntentId: 'TEXT',
+    holdId: 'TEXT',
+    provider: 'TEXT',
+    providerCalendarId: 'TEXT',
+    providerEventId: 'TEXT',
+    providerEventStatus: 'TEXT',
+    startAtUtc: 'TEXT',
+    endAtUtc: 'TEXT',
+    lockStartAtUtc: 'TEXT',
+    lockEndAtUtc: 'TEXT',
+    timezone: 'TEXT',
+    policyRevision: 'TEXT',
+    tierChosen: 'TEXT',
+    customerJson: 'TEXT',
+    locationJson: 'TEXT',
+    confirmedAt: 'TEXT',
+    updatedAt: 'TEXT'
+  }
+};
 
 function tableSql(database, table) {
   return database.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?").get(table)?.sql || '';
@@ -15,6 +58,63 @@ function tableSql(database, table) {
 
 function tableColumns(database, table) {
   return database.prepare(`PRAGMA table_info(${table})`).all().map(row => row.name);
+}
+
+function addMissingColumns(database) {
+  for (const [table, definitions] of Object.entries(ADDITIVE_COLUMNS)) {
+    const existing = new Set(tableColumns(database, table));
+    for (const [column, definition] of Object.entries(definitions)) {
+      if (!existing.has(column)) database.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    }
+  }
+}
+
+function enforceFailClosedTrialEvidence(database) {
+  database.prepare(`
+    UPDATE users
+    SET planStatus = 'pending_payment', trialEndsAt = NULL, paymentFailedAt = NULL
+    WHERE role = 'owner'
+      AND planStatus IN ('trialing', 'active', 'payment_failed', 'past_due')
+      AND NOT EXISTS (
+        SELECT 1 FROM billingAccounts AS billing
+        WHERE billing.ownerId = users.id
+          AND billing.paymentMethodVerifiedAt IS NOT NULL
+      )
+  `).run();
+}
+
+function backfillBillingSubscriptionHistory(database) {
+  database.prepare(`
+    INSERT OR IGNORE INTO billingSubscriptionHistory (
+      stripeSubscriptionId, ownerId, stripeCustomerId, status,
+      firstEventId, firstEventCreatedAt, terminalEventId,
+      terminalEventCreatedAt, createdAt, updatedAt
+    )
+    SELECT
+      billing.stripeSubscriptionId,
+      billing.ownerId,
+      billing.stripeCustomerId,
+      CASE WHEN deleted.stripeEventId IS NULL THEN 'CURRENT' ELSE 'TERMINAL' END,
+      COALESCE(billing.lastStripeEventId, deleted.stripeEventId, 'legacy:' || billing.stripeSubscriptionId),
+      COALESCE(billing.lastStripeEventCreatedAt, deleted.eventCreatedAt, 0),
+      deleted.stripeEventId,
+      deleted.eventCreatedAt,
+      billing.createdAt,
+      billing.updatedAt
+    FROM billingAccounts AS billing
+    LEFT JOIN billingEventReceipts AS deleted
+      ON deleted.stripeEventId = (
+        SELECT receipt.stripeEventId
+        FROM billingEventReceipts AS receipt
+        WHERE receipt.ownerId = billing.ownerId
+          AND receipt.eventType = 'customer.subscription.deleted'
+          AND receipt.objectId = billing.stripeSubscriptionId
+          AND receipt.outcome = 'APPLIED'
+        ORDER BY receipt.eventCreatedAt DESC, receipt.stripeEventId DESC
+        LIMIT 1
+      )
+    WHERE billing.stripeSubscriptionId IS NOT NULL
+  `).run();
 }
 
 function pragmaRows(database, statement) {
@@ -116,10 +216,17 @@ export function migrateDatabase(database) {
   for (const statement of CREATE_TABLE_STATEMENTS) {
     database.exec(statement);
   }
+  addMissingColumns(database);
   const rebuilt = rebuildUsersTableForOwnerConstraint(database);
   if (!rebuilt) assertMigrationIntegrity(database);
+  enforceFailClosedTrialEvidence(database);
+  backfillBillingSubscriptionHistory(database);
   for (const statement of CREATE_TRIGGER_STATEMENTS) {
     database.exec(statement);
   }
+  for (const statement of CREATE_INDEX_STATEMENTS) {
+    database.exec(statement);
+  }
+  installAuthTokenSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

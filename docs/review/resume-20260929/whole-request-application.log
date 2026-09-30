@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "checks": 53,
+  "channels": [
+    "public",
+    "authenticated",
+    "preview"
+  ]
+}

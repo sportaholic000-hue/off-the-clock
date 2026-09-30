@@ -1,0 +1,27 @@
+{
+  "archive": "docs/quotedone-completion/evidence/quotedone-20260927-repair-evidence.zip",
+  "bytes": 17848432,
+  "sha256": "65d67c9c160a61715bf24a98b5cc9ad5885c96b26403ad5b0558f573703efca4",
+  "payloadFiles": 504,
+  "allMemberHashesVerified": true,
+  "testedApplicationCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+  "reviewCommit": "d218c85c491a33cb301816d52e593b4f913a363c",
+  "sourceEquivalence": {
+    "from": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+    "to": "d218c85c491a33cb301816d52e593b4f913a363c",
+    "changedFiles": [
+      "verification/quotedone/audit-repairs-browser.mjs"
+    ],
+    "applicationAndOrdinaryTestsIdentical": true
+  },
+  "report": "docs/quotedone-completion/REPAIR_REPORT_20260927.md",
+  "reportSha256": "657f2ec5633d0b2e7795b0273a517331cb7dd0448a25061a96d728c60d66285b",
+  "testCounts": {
+    "ordinary": 430,
+    "vnext": 311,
+    "quote-engine": 46,
+    "focused": 30
+  },
+  "instrumentedReplay": "35/35",
+  "inspection": "docs/quotedone-completion/REPAIR_EVIDENCE_INSPECTION_20260927.json"
+}

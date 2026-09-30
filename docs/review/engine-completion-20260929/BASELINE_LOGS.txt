@@ -1,0 +1,29 @@
+fencing-painting-baseline.log
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"status":403,"result":{"error":"QuoteDone or Scale is required"}}
+
+403 !== 200
+
+    at call (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-20260929/verification/quotedone/fencing-painting-baseline.mjs:18:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/engine-completion-20260929/verification/quotedone/fencing-painting-baseline.mjs:22:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 403,
+  expected: 200,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2
+
+
+fencing-painting-baseline-v2.log
+{"characterized":true,"quoteCount":2,"reviewCount":18,"results":[{"name":"INTERIOR_PAINTING good","result":"INSTANT_ESTIMATE_READY"},{"name":"INTERIOR_PAINTING fair","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"INTERIOR_PAINTING poor","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING good","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING fair","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING poor","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_INSTALL 0 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_INSTALL 1 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_REPLACEMENT 0 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_REPLACEMENT 1 gate","result":"ESTIMATE_REQUIRES_REVIEW"}]}
+
+
+fencing-painting-baseline-final.log
+{"characterized":true,"quoteCount":2,"reviewCount":18,"results":[{"name":"INTERIOR_PAINTING good","result":"INSTANT_ESTIMATE_READY"},{"name":"INTERIOR_PAINTING fair","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"INTERIOR_PAINTING poor","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING good","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING fair","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"EXTERIOR_PAINTING poor","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_INSTALL 0 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_INSTALL 1 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_REPLACEMENT 0 gate","result":"ESTIMATE_REQUIRES_REVIEW"},{"name":"FENCING_REPLACEMENT 1 gate","result":"ESTIMATE_REQUIRES_REVIEW"}]}

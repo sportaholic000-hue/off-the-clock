@@ -1,4 +1,5 @@
 {
+  "historical_checkpoint_notice": "Historical e936370 evidence only. Current quote-flow repair is incomplete; see the correction at the top of START_HERE.md. Earlier audit reports do not authorize blanket metadata refusals or replacement of the original voice guide.",
   "assignment": "Owner-authorized complete non-production QuoteDone workflow",
   "authorized_date": "2026-09-13",
   "runtime_exception_date": "2026-09-14",

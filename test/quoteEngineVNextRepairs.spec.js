@@ -863,8 +863,8 @@ test('repair 19: zero and missing remain distinct for conditional prices', () =>
   delete missing.pricing.baggingSurchargePercent;
   delete missing.pricing.edgingPerLinearFoot;
   const omitted = run('LANDSCAPING_MOWING', mowingInputs, missing);
-  assert.equal(omitted.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(omitted.missingOwnerFields.sort(), ['baggingSurchargePercent', 'edgingPerLinearFoot']);
+  assert.equal(omitted.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(omitted.options[0].skippedAddons, ['Clipping bagging and disposal', 'Lawn edging']);
   assert.deepEqual(omitted.submittedCustomerInputs, mowingInputs);
 });
 
@@ -1388,7 +1388,7 @@ test('repair 31: flooring underlayment requirements are product-specific and vin
   assert.equal(vinyl.missingOwnerFields.includes('vinylPlankUnderlaymentRule'), true);
 });
 
-test('repair 32: unresolved cost purchase contracts and exact flooring thresholds fail closed', () => {
+test('repair 32: unresolved material cost inputs review while exact flooring thresholds quote', () => {
   const roofCost = run('ROOFING_REPLACEMENT', roofInputs(), roofService({
     underlaymentPriceBasis: { asphalt_shingle: 'cost' }
   }));
@@ -1408,8 +1408,8 @@ test('repair 32: unresolved cost purchase contracts and exact flooring threshold
   const thresholdOwner = flooringService({ vinylPlankUnderlaymentRule: 'never_included' });
   for (const exactAverage of [149, 299]) {
     const result = run('FLOORING_INSTALL', flooringInputs({ sqft: exactAverage, roomCount: 1 }), thresholdOwner);
-    assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', String(exactAverage));
-    assert.equal(result.ownerDecisionRequired.some(item => item.kind === 'inclusive_boundary_contract'), true);
+    assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', String(exactAverage));
+    assert.equal(result.options[0].calculationRecord.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, exactAverage === 149 ? 'medium' : 'large');
   }
   for (const nonBoundary of [148, 150, 298, 300]) {
     assert.equal(run('FLOORING_INSTALL', flooringInputs({ sqft: nonBoundary, roomCount: 1 }), thresholdOwner).resultType, 'INSTANT_ESTIMATE_READY', String(nonBoundary));
@@ -1683,7 +1683,11 @@ test('repair 37: metadata and customer results describe only behavior the candid
   const exterior = metadata.find(item => item.serviceType === 'EXTERIOR_PAINTING');
   const exteriorLabor = exterior.pricingFields.find(item => item.field === 'exteriorLaborPerSqftPerCoat');
   assert.equal(/owner-configured primer coats/i.test(exteriorLabor.help), false);
-  assert.match(exteriorLabor.help, /Every exterior painting request: review only/);
+  assert.equal(exteriorLabor.reviewOnly, true);
+  assert.match(exteriorLabor.help, /this legacy scalar alone is incomplete/);
+  assert.match(exteriorLabor.help, /Fence and painting offering/);
+  assert.ok(exterior.offeringRateFields.installed);
+  assert.ok(exterior.offeringRateFields.itemized);
 
   for (const serviceMetadata of metadata) {
     for (const factor of serviceMetadata.class2Fields) {
@@ -3624,7 +3628,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     flatRepair.ownerPricing.pricing,
     {ownerPricing:flatRepair.ownerPricing}
   ));
-  assert.deepEqual(undisclosedAddon.missingOwnerFields, ['pondingWaterSurcharge']);
+  assert.deepEqual(undisclosedAddon.invalidOwnerFields, ['addonDisclosureContext']);
 
   const mowingPricing = service('LANDSCAPING_MOWING', {
     mowingBaseRatePerSqft: 10,
@@ -3641,7 +3645,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     bagClippings: true,
     edgingIncluded: false
   }, mowingPricing));
-  assert.deepEqual(undisclosedMowingAddon.missingOwnerFields, ['baggingSurchargePercent']);
+  assert.deepEqual(undisclosedMowingAddon.invalidOwnerFields, ['addonDisclosureContext']);
 
   const gatelessFence = captureReview(() => calculateServiceVNext('FENCING_INSTALL', fenceInputs(), fenceService().pricing, {ownerPricing:fenceService()}));
   assert.deepEqual(gatelessFence.ownerDecisionRequired.map(item => item.kind), [
@@ -3704,13 +3708,13 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
   assert.deepEqual(hardwoodUnderlayment.ownerDecisionRequired.map(item => item.kind), ['product_specific_underlayment_contract']);
 
   const thresholdOwner = flooringService({ roomSizeThresholds: { smallMaxSqft: 150, mediumMaxSqft: 300 } });
-  const threshold = captureReview(() => calculateServiceVNext(
+  const threshold = calculateServiceVNext(
     'FLOORING_INSTALL',
     flooringInputs({ sqft: 300, roomCount: 2 }),
     thresholdOwner.pricing,
     { ownerPricing: thresholdOwner }
-  ));
-  assert.deepEqual(threshold.ownerDecisionRequired.map(item => item.kind), ['inclusive_boundary_contract']);
+  );
+  assert.equal(threshold.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, 'medium');
 
   const itemizedRoofOwner = roofService({
     accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories',
@@ -4656,15 +4660,14 @@ test('repair 68: nested pricing is the one canonical service shape across status
   }
 });
 
-test('repair 69: unresolved dual partial measurements and flooring overlays fail closed without changing valid controls', () => {
+test('repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup', () => {
   const roofOwner = roofService();
   const roofBoth = run('ROOFING_REPLACEMENT', roofInputs({
     serviceScope: 'partial',
     partialAreaSqft: 500,
     partialPercent: 50
   }), roofOwner);
-  assert.equal(roofBoth.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(roofBoth.ownerDecisionRequired.map(item => item.kind), ['partial_measurement_reconciliation']);
+  assert.equal(roofBoth.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(run('ROOFING_REPLACEMENT', roofInputs({
     serviceScope: 'partial', partialAreaSqft: 500
   }), roofOwner).resultType, 'INSTANT_ESTIMATE_READY');
@@ -4686,8 +4689,7 @@ test('repair 69: unresolved dual partial measurements and flooring overlays fail
   const flatBoth = run('FLAT_ROOF_REPLACEMENT', {
     ...flatBase, partialAreaSqft: 500, partialPercent: 25
   }, flatOwner);
-  assert.equal(flatBoth.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(flatBoth.ownerDecisionRequired.map(item => item.kind), ['partial_measurement_reconciliation']);
+  assert.equal(flatBoth.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(run('FLAT_ROOF_REPLACEMENT', {
     ...flatBase, partialAreaSqft: 500
   }, flatOwner).resultType, 'INSTANT_ESTIMATE_READY');
@@ -5869,7 +5871,7 @@ test('repair 91: the direct calculator never rereads validated proxies or access
     ),
     error => {
       assert.equal(error.name, 'QuoteReviewError');
-      assert.deepEqual(error.missingOwnerFields, ['pondingWaterSurcharge']);
+      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
       return true;
     }
   );
@@ -5885,11 +5887,11 @@ test('repair 91: the direct calculator never rereads validated proxies or access
     ),
     error => {
       assert.equal(error.name, 'QuoteReviewError');
-      assert.deepEqual(error.missingOwnerFields, ['pondingWaterSurcharge']);
+      assert.deepEqual(error.invalidOwnerFields, ['addonDisclosureContext']);
       return true;
     }
   );
-  assert.equal(skippedCalls, 0);
+  assert.equal(skippedCalls, 1);
 });
 test('repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data', () => {
   const owner = interiorService();
@@ -6666,9 +6668,9 @@ test('repair 110: exact derived areas enforce direct minimum maximum and strict 
   }
   for(const [area,ready] of [[0.999,false],[1,true],[1.001,true],[9999999.99,true],[10000000,true],[10000000.01,false]]){const width=area>100?100000:1,length=area>100?area/width:area;const r=auditRun(concreteInputs({length,width}),concreteService());assert.equal(r.resultType,ready?auditReady:auditReview,JSON.stringify({area,r}));}
 });
-test('repair 111: decimal flooring equality gate uses exact division and adjacent cases remain distinct',()=>{
+test('repair 111: decimal flooring bands use exact division at and around the threshold',()=>{
  const p=flooringService({roomSizeThresholds:{smallMaxSqft:100.1,mediumMaxSqft:200}});
- for(const [sqft,ready] of [[300.29999999999995,true],[300.3,false],[300.30000000000007,true]]){const r=auditRun(flooringInputs({sqft,roomCount:3}),p);assert.equal(r.resultType,ready?auditReady:auditReview);if(!ready)assert.ok(r.ownerDecisionRequired.some(x=>x.path==='roomSizeThresholds'));}
+ for(const [sqft,band] of [[300.29999999999995,'small'],[300.3,'medium'],[300.30000000000007,'medium']]){const r=auditRun(flooringInputs({sqft,roomCount:3}),p);assert.equal(r.resultType,auditReady);assert.equal(r.options[0].calculationRecord.ruleApplications.find(x=>x.name==='averageRoomComplexityBand').result,band);}
 });
 test('repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates',()=>{
  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR'])for(const slug of ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average','named_patch']){
@@ -7002,7 +7004,7 @@ test('repair 134: candidate metadata describes actual review-only scopes and rem
     const copy=flat.pricingFields.find(f=>f.field===field);
     assert.equal(/average/i.test(copy.help),false);
   }
-  const expected={FLOORING_INSTALL:'Stairs',SIDING_REPLACEMENT:'removal',CONCRETE_DRIVEWAY:'Demolition',FLAT_ROOF_REPLACEMENT:'Commercial',FENCING_INSTALL:'Every fence',CUSTOM:'Every custom',EXTERIOR_PAINTING:'Every exterior'};
+  const expected={FLOORING_INSTALL:'Stairs',SIDING_REPLACEMENT:'removal',CONCRETE_DRIVEWAY:'Demolition',FLAT_ROOF_REPLACEMENT:'Commercial',FENCING_INSTALL:'Every fence',EXTERIOR_PAINTING:'Every exterior'};
   for(const [type,word] of Object.entries(expected)){
     const m=metadata.find(m=>m.serviceType===type);
     const scope=m.reviewOnlyScopes.find(s=>s.when.toLowerCase().includes(word.toLowerCase()));
@@ -7595,7 +7597,8 @@ function handoffTotal(result, expected) {
   assert.equal(result.resultType, auditReady, JSON.stringify(result));
   for (const option of result.options) {
     assert.equal(option.calculationRecord.scenarios.mid.finalTotalCents, expected);
-    assert.deepEqual(option.skippedAddons, []);
+    assert.equal(option.disclaimer.includes('This estimate does not include:'),option.skippedAddons.length>0);
+    for(const name of option.skippedAddons)assert.ok(option.disclaimer.includes(name));
   }
 }
 
@@ -7679,23 +7682,28 @@ function handoffSelections() {
   ];
 }
 
-test('handoff B: each missing selected price reviews and retains complete actionable scope', () => {
+test('optional extras: absent prices disclose exclusions; malformed values and disclosure failures still review', () => {
   for(const f of handoffSelections()) {
-    for(const missing of [undefined,null,'']) {
-      const p=structuredClone(f.p);if(missing===undefined)delete p.pricing[f.field];else p.pricing[f.field]=missing;
-      const c={...f.c,...f.select}, request=handoffRequest(p,c);
-      for(const result of handoffPaths(request)) {
-        assert.equal(result.resultType,auditReview,JSON.stringify(result));
-        assert.deepEqual(result.missingOwnerFields,[f.field]);
-        assert.deepEqual(result.submittedCustomerInputs,c);assert.deepEqual(result.normalizedScope,c);
-      }
-      const internal=generateQuoteVNext(request),lead=buildInternalLeadVNext({request,internalResult:internal});
-      assert.deepEqual(lead.originalRequest,request);assert.deepEqual(lead.submittedCustomerInputs,c);
-      assert.throws(()=>calculateServiceVNext(p.serviceType,c,p.pricing,{ownerPricing:p,skipAddon(){throw Error('must not omit');}}),e=>e.missingOwnerFields?.includes(f.field));
-      if (missing === undefined) {
-        const baseRequest=handoffRequest(p,f.c);
-        for(const result of handoffPaths(baseRequest))handoffTotal(result,f.base);
-        assert.equal(vNextServiceStatus(p,baseRequest.businessDefaults).status,'QUOTING LIVE');
+    const p=structuredClone(f.p);delete p.pricing[f.field];
+    const c={...f.c,...f.select}, request=handoffRequest(p,c);
+    for(const result of handoffPaths(request)) {
+      handoffTotal(result,f.base);
+      assert.deepEqual(result.submittedCustomerInputs,c);
+      assert.deepEqual(result.options[0].skippedAddons,[f.name]);
+      assert.ok(result.options[0].disclaimer.includes('This estimate does not include: '+f.name+'.'));
+    }
+    assert.deepEqual(generateQuoteVNext(request).submittedCustomerInputs,c);
+    assert.throws(()=>calculateServiceVNext(p.serviceType,c,p.pricing,{ownerPricing:p,skipAddon(){throw Error('disclosure failure');}}),e=>e.invalidOwnerFields?.includes('addonDisclosureContext'));
+    assert.equal(vNextServiceStatus(p,request.businessDefaults).status,'QUOTING LIVE');
+    for(const malformed of [null,'']) {
+      const bad=structuredClone(p);bad.pricing[f.field]=malformed;
+      const badRequest=handoffRequest(bad,c);
+      const lead=buildInternalLeadVNext({request:badRequest,internalResult:generateQuoteVNext(badRequest)});
+      assert.deepEqual(lead.originalRequest,badRequest);assert.deepEqual(lead.submittedCustomerInputs,c);
+      for(const result of handoffPaths(badRequest)) {
+        assert.equal(result.resultType,auditReview);
+        assert.ok(result.invalidOwnerFields.includes(f.field));
+        assert.deepEqual(result.submittedCustomerInputs,c);
       }
     }
   }
@@ -7728,14 +7736,15 @@ test('handoff B: priced and explicitly zero selections charge once with signed p
   assert.equal(blocked.resultType,auditReview);assert.ok(blocked.invalidOwnerFields.includes('baggingSurchargePercent'));
 });
 
-test('handoff B: only complete selected tiers survive and changed prices invalidate AI approval', () => {
+test('optional extras: tiers disclose their own exclusions and price edits invalidate AI approval', () => {
   for(const f of handoffSelections()) {
     const p=structuredClone(f.p);delete p.pricing[f.field];
     p.tiers=[{name:'Incomplete',overrides:{}},{name:'Complete',overrides:{[f.field]:f.rate}}];
     for(const result of handoffPaths(handoffRequest(p,{...f.c,...f.select}))) {
-      handoffTotal(result,f.base+1000);assert.deepEqual(result.options.map(o=>o.tierName),['Complete']);
-      assert.deepEqual(result.failedTierDiagnostics[0].missingOwnerFields,[f.field]);
-      assert.ok(result.optionAvailabilityNotice);
+      assert.equal(result.resultType,auditReady);assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents,f.base);assert.deepEqual(result.options.map(o=>o.tierName),['Incomplete','Complete']);
+      assert.deepEqual(result.options.map(o=>o.skippedAddons),[[f.name],[]]);
+      assert.equal(result.options[1].calculationRecord.scenarios.mid.finalTotalCents,f.base+1000);
+      assert.equal(result.optionAvailabilityNotice,undefined);
     }
     const unselected=currentInspect(generateQuoteVNext(handoffRequest(p,f.c)));
     assert.deepEqual(unselected.options.map(o=>o.tierName),['Incomplete','Complete']);handoffTotal(unselected,f.base);
@@ -7817,7 +7826,7 @@ test('handoff B: candidate metadata identifies missing selected prices without c
   const metadata=getVNextPriceBookMetadata();
   for(const [type,field] of [['LANDSCAPING_MOWING','baggingSurchargePercent'],['LANDSCAPING_MOWING','edgingPerLinearFoot'],['FLAT_ROOF_REPAIR','pondingWaterSurcharge']]) {
     const value=metadata.find(s=>s.serviceType===type).pricingFields.find(f=>f.field===field);
-    assert.match(value.help,/Required when/);assert.match(value.help,/Missing pricing returns review/);assert.match(value.help,/explicit zero/i);
+    assert.match(value.help,/optional extra/i);assert.match(value.help,/explicitly excludes/);assert.match(value.help,/explicit zero/i);
   }
 });
 

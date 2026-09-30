@@ -1,0 +1,29 @@
+> **Superseded implementation report; not an approved product specification.** The owner rejected the blanket refusal of ordinary customer metadata and the broad voice-guide rewrite. Any text below calling those restrictions a current or governing requirement is withdrawn. It describes an earlier tested implementation, including its mistakes. Do not use it to change the intended quoting experience or request another approval for repairs already authorized. Current incomplete status is at the top of `START_HERE.md`. The original voice and engine-specification documents are restored. Historical requests, responses and failures remain preserved.
+
+# Whole-request intake repair — September 28, 2026
+
+The owner explicitly authorized application repairs for independently reproduced PR #3 findings, preserving current HEAD, the existing corrections and the accepted 19-file engine. The attached independent review is evidence to verify. Its implementation suggestions are not instructions or business rulings.
+
+The September 27 complete-scope claim was incomplete: urgency, location and nested contact/location contents could bypass it. The retained before-repair HTTP and browser submissions demonstrate the resulting $50 selected-service subtotal despite additional work or uncertain measurements. This follow-up reopens C02/B16 and closes the missing application boundary; it does not change arithmetic.
+
+## Supported input contract
+
+Every new submission needs a syntactically usable email or telephone number. Only `name`, `email` and `phone` are recognized contact members; supplied values must be text or empty. An invalid alternate channel is unresolved text even when another callback channel is usable. Callback syntax does not verify ownership or reachability.
+
+There is no approved way to prove that arbitrary name, location or urgency prose is unrelated to scope or measurements. Consequently every nonempty free-text value in those fields requires review, just as existing untriaged context and explicit unknowns do. This includes an ordinary name, address or scheduling note. No word list or prose classifier is involved. The customer form explains this consequence and retains its existing labels. Original values are stored and shown to the business; the application does not remove them to obtain a quote.
+
+Location may be empty text, null/omitted, or a legacy object containing only an empty `address`. Nonempty legacy address text requires review. Arrays, unknown nested contact/location keys, nested values and non-text urgency also require review with their original JSON intact. No subtotal or price options are returned. Supplied identity metadata is constrained to UUIDs and the existing owner/customer/staff vocabulary; tenant and response audience still come from server authorization, never those caller assertions.
+
+Instant estimates remain available for supported measured requests with email, phone or both, empty optional prose, exact saved service identity, current owner approval and complete supported pricing. Unknown structured measurement fields and fee selections were already rejected by the frozen engine; they were independently rechecked rather than duplicated in this gate.
+
+The owner-preview route uses the same complete-scope check, without creating quote, lead or receipt rows. A supplied request ID must be a UUID; a supplied draft service must be an object. Supplied defaults require an accompanying draft service object, matching the actual owner UI contract. Previously orphaned defaults could be silently ignored, even a changed markup or additional instructions. Such incomplete envelopes now require review. Saved revision and approval rules remain unchanged. New public/authenticated requests retain the entire original submission, internal disposition, price-book snapshot/revision and customer response in the existing atomic transaction. Exact historical retries remain immutable; this change does not rewrite prior receipts or live data.
+
+The earlier question about a future structured metadata format is not a prerequisite for withholding an unsafe subtotal. Both preserving untriaged text for review and withholding instant-quote use until a structured contract exists obey the owner's current instruction. No new business ruling is attributed to the owner. Enabling automatic interpretation of name/address/urgency text remains outside this repair.
+
+## Verification and fixture provenance
+
+`metadata-intake-workflow.mjs` exercises public, authenticated and preview paths, independent $50 controls, original stored requests, owner lead views, zero-write preview, tenant privacy, exact retries, conflicts and restart. `metadata-intake-browser.mjs` exercises actual form fields, callback-only estimates, additional scope/uncertainty, editable 422 recovery and the owner CRM. No transport response is substituted.
+
+Some earlier positive fixtures supplied ordinary name/address/urgency or a deliberately invalid alternate telephone. Under this explicit input contract those bodies must now require review. Positive controls now supply complete measured inputs and genuine syntactic callback channels. The earlier bodies remain in the original evidence and the new negative controls; tests do not discard real submitted details. The 400/409/413 recovery workflow now asserts retained optional text leads to review, while preserving the old $50 receipt in its conflict control.
+
+Run the affected application and browser workflows before the final full regression and integration-boundary group. The final follow-up report records the tested commit, exact commands, results, source bindings, failed attempts and release limitations. No merge, deployment, provider call, voice implementation, live-data operation, dependency installation or environment-permission expansion is included.

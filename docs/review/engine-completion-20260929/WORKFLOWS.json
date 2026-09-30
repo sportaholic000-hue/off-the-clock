@@ -1,0 +1,1562 @@
+{
+  "sourceCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "syntheticOnly": true,
+  "application": {
+    "cases": [
+      {
+        "name": "[SYNTHETIC] FENCING_INSTALL installed",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_INSTALL installed mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_INSTALL itemized",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_INSTALL itemized mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_REPLACEMENT installed",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_REPLACEMENT installed mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_REPLACEMENT itemized",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] FENCING_REPLACEMENT itemized mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] INTERIOR_PAINTING installed",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] INTERIOR_PAINTING installed mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] INTERIOR_PAINTING itemized",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] INTERIOR_PAINTING itemized mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] EXTERIOR_PAINTING installed",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] EXTERIOR_PAINTING installed mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] EXTERIOR_PAINTING itemized",
+        "preview": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        },
+        "authenticated": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        },
+        "public": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "[SYNTHETIC] EXTERIOR_PAINTING itemized mismatched scope",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "Supported fence plus separate on-site work",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "PARTIAL_ESTIMATE_READY",
+          "midEstimate": null,
+          "fullJobTotal": null,
+          "pricedEstimate": {
+            "resultType": "INSTANT_ESTIMATE_READY",
+            "midEstimate": 4500
+          }
+        },
+        "httpStatus": 201
+      },
+      {
+        "name": "Nested gate data stays unquoted",
+        "preview": null,
+        "authenticated": null,
+        "public": {
+          "resultType": "ESTIMATE_REQUIRES_REVIEW",
+          "midEstimate": null,
+          "fullJobTotal": null
+        },
+        "httpStatus": 201
+      }
+    ],
+    "storedCounts": {
+      "quotes": 17,
+      "leads": 10,
+      "quoteSubmissions": 26
+    },
+    "positiveControls": 24,
+    "scopeChecks": 10,
+    "retryChecks": 8
+  },
+  "bookingBefore": {
+    "phase": "before",
+    "incorrect": 9,
+    "cases": [
+      {
+        "route": "create",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T11:00:00.000Z",
+        "requestedEnd": "2026-10-02T11:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T11:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T11:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "cancelled",
+        "correct": false,
+        "requestedStart": "2026-10-02T11:30:00.000Z",
+        "requestedEnd": "2026-10-02T12:00:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T11:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T12:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "tentative",
+        "correct": true,
+        "requestedStart": "2026-10-02T12:00:00.000Z",
+        "requestedEnd": "2026-10-02T12:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T12:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T12:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-day",
+        "correct": false,
+        "requestedStart": "2026-10-02T12:30:00.000Z",
+        "requestedEnd": "2026-10-02T13:00:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T12:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T13:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-duration",
+        "correct": false,
+        "requestedStart": "2026-10-02T13:00:00.000Z",
+        "requestedEnd": "2026-10-02T13:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T13:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T14:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T13:30:00.000Z",
+        "requestedEnd": "2026-10-02T14:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T13:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T14:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T14:00:00.000Z",
+        "requestedEnd": "2026-10-02T14:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T14:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T14:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T14:30:00.000Z",
+        "requestedEnd": "2026-10-02T15:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T15:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T15:00:00.000Z",
+        "requestedEnd": "2026-10-02T15:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T15:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T15:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "cancelled",
+        "correct": false,
+        "requestedStart": "2026-10-02T15:30:00.000Z",
+        "requestedEnd": "2026-10-02T16:00:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T15:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T16:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "tentative",
+        "correct": false,
+        "requestedStart": "2026-10-02T16:00:00.000Z",
+        "requestedEnd": "2026-10-02T16:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T16:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T16:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-day",
+        "correct": false,
+        "requestedStart": "2026-10-02T16:30:00.000Z",
+        "requestedEnd": "2026-10-02T17:00:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T16:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T17:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-duration",
+        "correct": false,
+        "requestedStart": "2026-10-02T17:00:00.000Z",
+        "requestedEnd": "2026-10-02T17:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T17:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T18:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T17:30:00.000Z",
+        "requestedEnd": "2026-10-02T18:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T17:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T18:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T18:00:00.000Z",
+        "requestedEnd": "2026-10-02T18:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T18:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T18:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T18:30:00.000Z",
+        "requestedEnd": "2026-10-02T19:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T19:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T19:00:00.000Z",
+        "requestedEnd": "2026-10-02T19:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T19:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T19:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "cancelled",
+        "correct": true,
+        "requestedStart": "2026-10-02T19:30:00.000Z",
+        "requestedEnd": "2026-10-02T20:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "FAILED",
+        "storedStatus": "PROVIDER_FAILED",
+        "outboxCount": 0,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T19:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T20:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "tentative",
+        "correct": true,
+        "requestedStart": "2026-10-02T19:30:00.000Z",
+        "requestedEnd": "2026-10-02T20:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T19:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T20:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-day",
+        "correct": false,
+        "requestedStart": "2026-10-02T20:00:00.000Z",
+        "requestedEnd": "2026-10-02T20:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T20:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T20:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-duration",
+        "correct": false,
+        "requestedStart": "2026-10-02T20:30:00.000Z",
+        "requestedEnd": "2026-10-02T21:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T20:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T21:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T21:00:00.000Z",
+        "requestedEnd": "2026-10-02T21:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T21:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T21:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T21:30:00.000Z",
+        "requestedEnd": "2026-10-02T22:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T21:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T22:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T22:00:00.000Z",
+        "requestedEnd": "2026-10-02T22:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T22:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      }
+    ]
+  },
+  "bookingAfter": {
+    "phase": "after",
+    "incorrect": 0,
+    "cases": [
+      {
+        "route": "create",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T11:00:00.000Z",
+        "requestedEnd": "2026-10-02T11:30:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T11:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T11:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "cancelled",
+        "correct": true,
+        "requestedStart": "2026-10-02T11:30:00.000Z",
+        "requestedEnd": "2026-10-02T12:00:00.000Z",
+        "httpStatus": 503,
+        "storedStatus": "PROVIDER_FAILED",
+        "outboxCount": 0,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T11:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T12:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "tentative",
+        "correct": true,
+        "requestedStart": "2026-10-02T11:30:00.000Z",
+        "requestedEnd": "2026-10-02T12:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T11:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T12:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-day",
+        "correct": true,
+        "requestedStart": "2026-10-02T12:00:00.000Z",
+        "requestedEnd": "2026-10-02T12:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T12:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T12:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-duration",
+        "correct": true,
+        "requestedStart": "2026-10-02T12:30:00.000Z",
+        "requestedEnd": "2026-10-02T13:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T12:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T13:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T13:00:00.000Z",
+        "requestedEnd": "2026-10-02T13:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T13:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T13:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T13:30:00.000Z",
+        "requestedEnd": "2026-10-02T14:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T13:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T14:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "create",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T14:00:00.000Z",
+        "requestedEnd": "2026-10-02T14:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T14:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T14:30:00.000Z",
+        "requestedEnd": "2026-10-02T15:00:00.000Z",
+        "httpStatus": 201,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T14:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T15:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "cancelled",
+        "correct": true,
+        "requestedStart": "2026-10-02T15:00:00.000Z",
+        "requestedEnd": "2026-10-02T15:30:00.000Z",
+        "httpStatus": 503,
+        "storedStatus": "PROVIDER_FAILED",
+        "outboxCount": 0,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T15:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T15:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "tentative",
+        "correct": true,
+        "requestedStart": "2026-10-02T15:00:00.000Z",
+        "requestedEnd": "2026-10-02T15:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T15:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T15:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-day",
+        "correct": true,
+        "requestedStart": "2026-10-02T15:30:00.000Z",
+        "requestedEnd": "2026-10-02T16:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T15:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T16:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-duration",
+        "correct": true,
+        "requestedStart": "2026-10-02T16:00:00.000Z",
+        "requestedEnd": "2026-10-02T16:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T16:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T17:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T16:30:00.000Z",
+        "requestedEnd": "2026-10-02T17:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T16:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T17:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T17:00:00.000Z",
+        "requestedEnd": "2026-10-02T17:30:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T17:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T17:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "recovery",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T17:30:00.000Z",
+        "requestedEnd": "2026-10-02T18:00:00.000Z",
+        "httpStatus": 202,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T18:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "normal",
+        "correct": true,
+        "requestedStart": "2026-10-02T18:00:00.000Z",
+        "requestedEnd": "2026-10-02T18:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "CONFIRMED",
+        "storedStatus": "CONFIRMED",
+        "outboxCount": 1,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T18:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T18:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "cancelled",
+        "correct": true,
+        "requestedStart": "2026-10-02T18:30:00.000Z",
+        "requestedEnd": "2026-10-02T19:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "FAILED",
+        "storedStatus": "PROVIDER_FAILED",
+        "outboxCount": 0,
+        "providerStatus": "cancelled",
+        "providerStart": {
+          "dateTime": "2026-10-02T18:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T19:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "tentative",
+        "correct": true,
+        "requestedStart": "2026-10-02T18:30:00.000Z",
+        "requestedEnd": "2026-10-02T19:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "tentative",
+        "providerStart": {
+          "dateTime": "2026-10-02T18:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T19:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-day",
+        "correct": true,
+        "requestedStart": "2026-10-02T19:00:00.000Z",
+        "requestedEnd": "2026-10-02T19:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-03T19:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-03T19:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-duration",
+        "correct": true,
+        "requestedStart": "2026-10-02T19:30:00.000Z",
+        "requestedEnd": "2026-10-02T20:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T19:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T20:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "wrong-id",
+        "correct": true,
+        "requestedStart": "2026-10-02T20:00:00.000Z",
+        "requestedEnd": "2026-10-02T20:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerStart": {
+          "dateTime": "2026-10-02T20:00:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T20:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "missing-status",
+        "correct": true,
+        "requestedStart": "2026-10-02T20:30:00.000Z",
+        "requestedEnd": "2026-10-02T21:00:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStart": {
+          "dateTime": "2026-10-02T20:30:00.000Z",
+          "timeZone": "UTC"
+        },
+        "providerEnd": {
+          "dateTime": "2026-10-02T21:00:00.000Z",
+          "timeZone": "UTC"
+        }
+      },
+      {
+        "route": "poll",
+        "variant": "missing-time",
+        "correct": true,
+        "requestedStart": "2026-10-02T21:00:00.000Z",
+        "requestedEnd": "2026-10-02T21:30:00.000Z",
+        "httpStatus": 200,
+        "responseStatus": "PENDING_CONFIRMATION",
+        "storedStatus": "PENDING_CONFIRMATION",
+        "outboxCount": 0,
+        "providerStatus": "confirmed",
+        "providerEnd": {
+          "dateTime": "2026-10-02T21:30:00.000Z",
+          "timeZone": "UTC"
+        }
+      }
+    ]
+  },
+  "offeringBrowser": {
+    "checks": 26,
+    "errors": [],
+    "cases": [
+      {
+        "name": "Save refresh prevents edits until saved prices reload",
+        "passed": true,
+        "result": null
+      },
+      {
+        "name": "Approval refresh prevents lost measurements and prices",
+        "passed": true,
+        "result": null
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] FENCING_INSTALL installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] FENCING_INSTALL itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] FENCING_REPLACEMENT installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] FENCING_REPLACEMENT itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] INTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] INTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] EXTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "Owner configured, saved, approved and previewed [SYNTHETIC] EXTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] FENCING_INSTALL installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] FENCING_INSTALL itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] FENCING_REPLACEMENT installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] FENCING_REPLACEMENT itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] INTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] INTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] EXTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "full-page quotes [SYNTHETIC] EXTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] FENCING_INSTALL installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4500,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] FENCING_INSTALL itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3920,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] FENCING_REPLACEMENT installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4900,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] FENCING_REPLACEMENT itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 4320,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] INTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3800,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] INTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 2524,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] EXTERIOR_PAINTING installed",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 3000,
+          "fullJobTotal": null
+        }
+      },
+      {
+        "name": "widget quotes [SYNTHETIC] EXTERIOR_PAINTING itemized",
+        "passed": true,
+        "result": {
+          "resultType": "INSTANT_ESTIMATE_READY",
+          "midEstimate": 1794,
+          "fullJobTotal": null
+        }
+      }
+    ]
+  },
+  "widgetBrowser": {
+    "checks": 24,
+    "errors": [],
+    "cases": [
+      {
+        "name": "API control: Complete job without a name",
+        "passed": true
+      },
+      {
+        "name": "API control: Selected work with separately declared additional work",
+        "passed": true
+      },
+      {
+        "name": "API control: Configured edging and separate work",
+        "passed": true
+      },
+      {
+        "name": "API control: Exact decimal measurement",
+        "passed": true
+      },
+      {
+        "name": "API control: Unmeasured selected work remains unpriced",
+        "passed": true
+      },
+      {
+        "name": "API control: Missing callback is rejected without storing a quote",
+        "passed": true
+      },
+      {
+        "name": "API control: A complete callback correction quotes",
+        "passed": true
+      },
+      {
+        "name": "API control: exact retry reuses the saved response and record",
+        "passed": true
+      },
+      {
+        "name": "Production embed loads from a different origin, once, in the head; mobile sizing, style isolation and Escape focus pass",
+        "passed": true
+      },
+      {
+        "name": "Complete measured work without a name",
+        "passed": true
+      },
+      {
+        "name": "Separate work keeps the selected price",
+        "passed": true
+      },
+      {
+        "name": "Configured edging and separate work",
+        "passed": true
+      },
+      {
+        "name": "Decimal measurements remain exact",
+        "passed": true
+      },
+      {
+        "name": "Unknown main measurement requires review",
+        "passed": true
+      },
+      {
+        "name": "Real committed response loss survives reload and exact retry, then the saved result survives reload",
+        "passed": true
+      },
+      {
+        "name": "Callback rejection remains editable and the corrected request quotes",
+        "passed": true
+      },
+      {
+        "name": "Unapproved website is denied by the real backend",
+        "passed": true
+      },
+      {
+        "name": "Owner copies the actual tenant snippet and the installation check receives a real allowed-origin handshake",
+        "passed": true
+      },
+      {
+        "name": "Widget preserves pending confirmation for wrong-day",
+        "passed": true
+      },
+      {
+        "name": "Widget preserves pending confirmation for wrong-duration",
+        "passed": true
+      },
+      {
+        "name": "Real widget service area, hold release, lost confirmation, application restart, exact retry and provider reconciliation",
+        "passed": true
+      },
+      {
+        "name": "Versioned pricing-only form sends real quote facts and preserves the stored response",
+        "passed": true
+      },
+      {
+        "name": "Change job details returns to retained measurements for re-quoting",
+        "passed": true
+      },
+      {
+        "name": "Unknown advertised form version is rejected explicitly",
+        "passed": true
+      }
+    ],
+    "liveProviderVerified": false
+  },
+  "originalEditorFailures": [
+    "offerings-browser-final/failure.json",
+    "offerings-browser-final-v2/failure.json"
+  ],
+  "rawEvidence": "Original synthetic responses and records retained locally, hashed in EVIDENCE_INDEX.json; these summaries omit reusable tokens."
+}

@@ -1,0 +1,40 @@
+{
+  "testedRuntimeCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "passed": true,
+  "documentationOnlyDifferences": [
+    "specs/BUILD_STATUS.md"
+  ],
+  "unchangedRuntimeAndTestFiles": 230,
+  "checks": [
+    {
+      "run": "offerings-browser-final-v4",
+      "comparedFiles": 121,
+      "allMatch": true
+    },
+    {
+      "run": "offerings-widget-booking-final",
+      "comparedFiles": 121,
+      "allMatch": true
+    },
+    {
+      "run": "offerings-full-page-owner-final-v2",
+      "comparedFiles": 121,
+      "allMatch": true
+    },
+    {
+      "run": "offerings-final-application-regression-v2",
+      "comparedFiles": 51,
+      "allMatch": true
+    },
+    {
+      "run": "offerings-application-final",
+      "comparedFiles": 85,
+      "allMatch": true
+    },
+    {
+      "run": "booking-integrity-after-v1",
+      "comparedFiles": 32,
+      "allMatch": true
+    }
+  ]
+}

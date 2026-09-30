@@ -1,3 +1,13 @@
+> **September 28 correction: customer quoting is still unfinished.** The owner did not authorize replacing the detailed voice guide or making ordinary names, addresses and timing information prevent a quote. The original 459-line voice guide and original engine-specification text are restored exactly. The earlier blanket refusals and the test changes that accepted them are not product requirements. The application code in the published PR is still the 808d723 implementation; its ordinary-customer regression is open. An unpublished local candidate at `6da69f6c2b4cd50d600fc937e201b8870228cf95` restores normal customer controls but still fails additional-work/uncertainty cases inside name/address text. A checked summary alone does not resolve that gap. No whole-flow acceptance or launch gate has passed. The 19-file arithmetic engine and verified precision, callback, retry, privacy, approval and persistence repairs remain unchanged. Restoring the original documents does not implement voice, booking, messaging or change the engine. The reports below are historical evidence for their stated commits, not new owner decisions.
+
+> Current follow-up: [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md), [status](R1_REPAIR_STATUS_20260928.json) and [updated dispositions](REPAIR_DISPOSITIONS_20260928.json). The September 27 whole-request claim was incomplete; the earlier material below is retained as history.
+
+# Current acceptance evidence
+
+The workflow criteria below still apply. Current September 27 repair results are recorded in [REPAIR_STATUS_20260927.json](REPAIR_STATUS_20260927.json) and [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md). `status.json` preserves the earlier e936370 checkpoint. No local acceptance record certifies production launch.
+
+---
+
 # QuoteDone non-production application acceptance
 
 These are exit criteria for the owner-authorized workflow, not an assertion that they have passed. Use the real running application, authenticated HTTP and browser transport with synthetic tenants and isolated persistent stores. Keep them in `status.json`; do not substitute unit-test counts for these rows.

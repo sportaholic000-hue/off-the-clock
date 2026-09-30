@@ -1,0 +1,64 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import Database from 'better-sqlite3';
+import {startApplication} from '../../client/test/widget-application-harness.mjs';
+import {mowingFixture} from './repair-fixture.mjs';
+const [root,evidence]=process.argv.slice(2),app=await startApplication(root,evidence,{port:4596,calendarFixture:true});
+const db=new Database(path.join(evidence,'application.sqlite')),rows=[];
+const fixtureFile=path.join(evidence,'synthetic-calendar-provider.json');
+const provider=()=>JSON.parse(fs.readFileSync(fixtureFile,'utf8'));
+const changeProvider=mode=>{const s=provider();s.mode=mode;fs.writeFileSync(fixtureFile,JSON.stringify(s,null,2));};
+const key=()=>crypto.randomUUID();
+const customer={name:'[SYNTHETIC] Booking Customer',email:'synthetic-booking@example.invalid',phone:''};
+const location={addressLine1:'[SYNTHETIC] 123 Example Street',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'};
+const fromDate=new Date(Date.now()+2*86400000).toISOString().slice(0,10);
+try{
+ const f=await mowingFixture(app,'booking-boundary',['http://127.0.0.1:4597']);
+ async function quote(){const body=f.submission({intakeFlow:'job-details-v1',urgency:'flexible'}),p=await app.request('POST',f.url+'/prepare',body,undefined,f.headers);assert.equal(p.status,200);const r=await app.request('POST',f.url,{...body,intakeConfirmation:p.result.confirmation},undefined,f.headers);assert.equal(r.status,201);assert.equal(r.result.midEstimate,50);assert.ok(r.result.bookingToken);return r.result;}
+ const filters={fromDate,days:2,timeOfDay:'any',scopeConfirmation:'UNCHANGED',customer,location};
+ async function call(q,method,suffix,body,id){return app.request(method,'/api/public/bookings/'+q.bookingToken+suffix,body,undefined,{...f.headers,...(id?{'Idempotency-Key':id}:{})});}
+ const fallback=await quote(),availability=await call(fallback,'POST','/availability',filters);assert.equal(availability.status,200);assert.equal(availability.result.status,'PREFERRED_TIME_ONLY');
+ const prefBody={scopeConfirmation:'UNCHANGED',preferredWindows:[{date:fromDate,timeOfDay:'morning'}],customer,location,note:'[SYNTHETIC] Call to agree on a time.'},prefKey=key();
+ const pref=await call(fallback,'POST','/preference',prefBody,prefKey);assert.equal(pref.status,201);assert.equal(pref.result.status,'REQUESTED');assert.equal(db.prepare('SELECT count(*) n FROM appointments WHERE ownerId=?').get(f.owner.id).n,0);
+ const prefRetry=await call(fallback,'POST','/preference',prefBody,prefKey);assert.deepEqual(prefRetry.result,pref.result);
+ rows.push({name:'No connected calendar yields a persisted preferred-time request, never a booked claim',passed:true,availability,pref,prefRetry});
+ const oauth=await app.request('GET','/api/onboarding/calendar/google/start',undefined,f.owner.token);assert.equal(oauth.status,200);const state=new URL(oauth.result.authorizationUrl).searchParams.get('state');
+ const callback=await fetch(app.base+'/api/onboarding/calendar/google/callback?state='+encodeURIComponent(state)+'&code=SYNTHETIC-CODE',{redirect:'manual'});assert.equal(callback.status,302);
+ const kb=await f.call('POST','/api/onboarding/knowledge-base',{sections:[],serviceArea:{mode:'cities',cities:[{city:'Halifax',region:'NS',country:'CA'}]}});
+ const settings={timezone:'America/Halifax',weeklyAvailability:Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(day=>[day,[{start:'09:00',end:'17:00'}]])),blackouts:[],bookingHorizonDays:14,minimumNoticeMinutes:0,slotIncrementMinutes:30,bufferBeforeMinutes:0,bufferAfterMinutes:0,directBookingEnabled:true};
+ await f.call('PUT','/api/booking/settings',settings);await f.call('PUT','/api/booking/policies/'+f.id,{bookingMode:'site_visit_first',durationMinutes:60,enabled:true});
+ const first=await quote(),second=await quote(),third=await quote();
+ const providerBefore=provider().calls.length,outside=await call(first,'POST','/availability',{...filters,location:{...location,city:'Toronto',region:'ON'}});
+ assert.equal(outside.result.status,'PREFERRED_TIME_ONLY');assert.equal(outside.result.reason,'OUT_OF_AREA');assert.equal(provider().calls.length,providerBefore);
+ const changed=await call(first,'POST','/availability',{...filters,scopeConfirmation:'CHANGED'});assert.equal(changed.status,409);assert.equal(changed.result.code,'REQUOTE_REQUIRED');
+ const other=await app.owner('booking-foreign'),intent=db.prepare('SELECT id FROM bookingIntents WHERE ownerId=? AND tokenHash=?').get(f.owner.id,crypto.createHash('sha256').update(first.bookingToken).digest('hex'));
+ const foreign=await app.request('POST','/api/bookings/'+intent.id+'/availability',filters,other.token);assert.ok([403,404].includes(foreign.status));
+ rows.push({name:'Service area, changed work and tenant boundaries precede availability/provider reads',passed:true,outside,changed,foreign,kb});
+ const a=await call(first,'POST','/availability',filters),b=await call(second,'POST','/availability',filters);assert.equal(a.result.status,'AVAILABLE',JSON.stringify(a));assert.equal(b.result.status,'AVAILABLE');
+ const slot=a.result.slots[0],competing=b.result.slots.find(x=>x.startUtc===slot.startUtc);assert.ok(competing);
+ const held=await call(first,'POST','/holds',{slotId:slot.slotId},key());assert.equal(held.status,201);assert.equal(held.result.status,'HELD');
+ assert.equal(db.prepare('SELECT status FROM bookingHolds WHERE ownerId=? AND id=?').get(f.owner.id,held.result.holdId).status,'HELD');
+ const conflict=await call(second,'POST','/holds',{slotId:competing.slotId},key());assert.equal(conflict.status,409);
+ const arbitrary=await call(third,'POST','/holds',{slotId:'2030-10-01T12:00:00Z',ownerId:f.owner.id,price:1},key());assert.equal(arbitrary.status,400);
+ const releaseKey=key(),released=await call(first,'DELETE','/holds/'+held.result.holdId,{},releaseKey),releaseRetry=await call(first,'DELETE','/holds/'+held.result.holdId,{},releaseKey);assert.equal(released.result.status,'RELEASED');assert.deepEqual(releaseRetry.result,released.result);
+ rows.push({name:'Real hold, conflict, arbitrary-input rejection, release and exact release retry',passed:true,a,b,held,conflict,arbitrary,released,releaseRetry});
+ const fresh=await call(first,'POST','/availability',filters),freshSlot=fresh.result.slots.find(x=>x.startUtc===slot.startUtc);assert.ok(freshSlot);
+ const newHold=await call(first,'POST','/holds',{slotId:freshSlot.slotId},key());assert.equal(newHold.status,201);
+ const body={holdId:newHold.result.holdId,confirmedSlotId:freshSlot.slotId,explicitConfirmation:true,addressConfirmation:true,customer,location};
+ const writeCount=provider().calls.length;
+ const outConfirm=await call(first,'POST','/confirm',{...body,location:{...location,city:'Toronto',region:'ON'}},key());assert.equal(outConfirm.status,409);assert.equal(outConfirm.result.code,'SERVICE_AREA_MISMATCH');assert.equal(provider().calls.length,writeCount);
+ changeProvider('ambiguous');const confirmKey=key(),pending=await call(first,'POST','/confirm',body,confirmKey);assert.equal(pending.status,202,JSON.stringify(pending));assert.equal(pending.result.status,'PENDING_CONFIRMATION');
+ const storedPending=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(f.owner.id,pending.result.appointmentId);assert.equal(storedPending.status,'PENDING_CONFIRMATION');
+ await app.restart();const replay=await call(first,'POST','/confirm',body,confirmKey);assert.deepEqual(replay.result,pending.result);
+ const pendingPoll=await call(first,'GET','/confirmations/'+pending.result.confirmationId);assert.equal(pendingPoll.result.status,'PENDING_CONFIRMATION');
+ changeProvider('normal');const confirmed=await call(first,'GET','/confirmations/'+pending.result.confirmationId);assert.equal(confirmed.status,200);assert.equal(confirmed.result.status,'CONFIRMED');
+ assert.equal(Object.keys(provider().events).length,1);assert.equal(provider().calls.filter(x=>x.method==='POST'&&new URL(x.url).pathname.endsWith('/events')).length,1);
+ const storedConfirmed=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(f.owner.id,pending.result.appointmentId);assert.equal(storedConfirmed.status,'CONFIRMED');
+ rows.push({name:'Recheck area before confirm; ambiguous provider stays pending across restart/exact retry, then confirms matching event once',passed:true,outConfirm,pending,storedPending,replay,pendingPoll,confirmed,storedConfirmed});
+ const records=Object.fromEntries(['bookingSettings','bookingPolicies','bookingIntents','bookingHolds','bookingIdempotency','bookingPreferences','appointments','outboxEvents'].map(table=>[table,db.prepare('SELECT * FROM '+table+' WHERE ownerId=?').all(f.owner.id)]));
+ assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check,'ok');
+ fs.writeFileSync(path.join(evidence,'result.json'),JSON.stringify({passed:true,checks:rows.length,rows,records,provider:provider(),boundary:'Real application HTTP and SQLite with synthetic intercepted provider fetches; no live calendar accepted.'},null,2));console.log(JSON.stringify({passed:true,checks:rows.length}));
+}catch(error){fs.writeFileSync(path.join(evidence,'failed-results.json'),JSON.stringify({passed:false,rows,error:String(error.stack),provider:provider()},null,2));throw error;}
+finally{db.close();await app.stop();}

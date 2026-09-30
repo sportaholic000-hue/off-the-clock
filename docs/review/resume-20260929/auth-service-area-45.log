@@ -1,0 +1,294 @@
+TAP version 13
+# (node:26652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real application migration supports verification tokens and preserves consumption on restart
+ok 1 - real application migration supports verification tokens and preserves consumption on restart
+  ---
+  duration_ms: 119.3101
+  type: 'test'
+  ...
+# Subtest: issues 256-bit tokens, persists only a SHA-256 hash, and enforces TTL policy
+ok 2 - issues 256-bit tokens, persists only a SHA-256 hash, and enforces TTL policy
+  ---
+  duration_ms: 87.0111
+  type: 'test'
+  ...
+# Subtest: purpose binding fails generically without burning a valid token and consumption is one-use
+ok 3 - purpose binding fails generically without burning a valid token and consumption is one-use
+  ---
+  duration_ms: 15.848
+  type: 'test'
+  ...
+# Subtest: unknown, malformed, polluted-prototype, accessor, and unsupported-purpose inputs have one public failure
+ok 4 - unknown, malformed, polluted-prototype, accessor, and unsupported-purpose inputs have one public failure
+  ---
+  duration_ms: 16.0235
+  type: 'test'
+  ...
+# Subtest: a token is expired at the exact expiry boundary and remains unusable
+ok 5 - a token is expired at the exact expiry boundary and remains unusable
+  ---
+  duration_ms: 18.3966
+  type: 'test'
+  ...
+# Subtest: tokens survive process-style service restart without raw-token persistence
+ok 6 - tokens survive process-style service restart without raw-token persistence
+  ---
+  duration_ms: 2424.9502
+  type: 'test'
+  ...
+# Subtest: explicit invalidation and default replacement revoke all earlier outstanding tokens
+ok 7 - explicit invalidation and default replacement revoke all earlier outstanding tokens
+  ---
+  duration_ms: 10.3443
+  type: 'test'
+  ...
+# Subtest: hash collisions retry, and exhausted retries roll back replacement invalidation
+ok 8 - hash collisions retry, and exhausted retries roll back replacement invalidation
+  ---
+  duration_ms: 19.5148
+  type: 'test'
+  ...
+# Subtest: database failures and consume callbacks roll back atomically without leaking internals
+ok 9 - database failures and consume callbacks roll back atomically without leaking internals
+  ---
+  duration_ms: 10.6415
+  type: 'test'
+  ...
+# Subtest: competing consumers on separate SQLite connections cannot both consume one token
+ok 10 - competing consumers on separate SQLite connections cannot both consume one token
+  ---
+  duration_ms: 2481.6372
+  type: 'test'
+  ...
+# Subtest: schema triggers make identity immutable and consumption irreversible
+ok 11 - schema triggers make identity immutable and consumption irreversible
+  ---
+  duration_ms: 15.1694
+  type: 'test'
+  ...
+# (node:26032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 12 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 167.2907
+  type: 'test'
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 13 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 15.9756
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 14 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 97.5992
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 15 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 34.3872
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 16 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 50.1683
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 17 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 8.3604
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 18 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 39.7386
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 19 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 25.8847
+  type: 'test'
+  ...
+# Subtest: booking capability fails closed through explicit, direct, handoff, and preference states
+ok 20 - booking capability fails closed through explicit, direct, handoff, and preference states
+  ---
+  duration_ms: 106.7941
+  type: 'test'
+  ...
+# Subtest: public branding validates every owner-configurable value
+ok 21 - public branding validates every owner-configurable value
+  ---
+  duration_ms: 6.2084
+  type: 'test'
+  ...
+# Subtest: public booking context binds token tenant and exact allowed website origin
+ok 22 - public booking context binds token tenant and exact allowed website origin
+  ---
+  duration_ms: 10.3089
+  type: 'test'
+  ...
+# Subtest: availability requires unchanged scope and a strict post-quote identity envelope
+ok 23 - availability requires unchanged scope and a strict post-quote identity envelope
+  ---
+  duration_ms: 6.3062
+  type: 'test'
+  ...
+# Subtest: hold, release, confirm, and polling forward only server-bound context
+ok 24 - hold, release, confirm, and polling forward only server-bound context
+  ---
+  duration_ms: 5.2229
+  type: 'test'
+  ...
+# (node:22984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 25 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 38.4917
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 26 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 14.5128
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 27 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 114.0504
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 28 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 172.2249
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 29 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 128.52
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 30 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 250.9784
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 31 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 143.9535
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 32 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 113.7325
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 33 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 130.0925
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 34 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 91.5738
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 35 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 144.5307
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 36 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 141.5658
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 37 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 132.1312
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 38 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 136.8616
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 39 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 136.7161
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 40 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 175.8923
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 41 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 116.724
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 42 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 11.5612
+  type: 'test'
+  ...
+# Subtest: knowledge-base service-area persistence (requires Node module mocks)
+ok 43 - knowledge-base service-area persistence (requires Node module mocks) # SKIP
+  ---
+  duration_ms: 3.5138
+  type: 'test'
+  ...
+# (node:25712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: launch persistence tables and indexes migrate idempotently
+ok 44 - launch persistence tables and indexes migrate idempotently
+  ---
+  duration_ms: 51.2089
+  type: 'test'
+  ...
+# Subtest: legacy calls and appointments receive additive launch columns without data loss
+ok 45 - legacy calls and appointments receive additive launch columns without data loss
+  ---
+  duration_ms: 97.3874
+  type: 'test'
+  ...
+# Subtest: billing migration backfills immutable terminal subscription history without inventing deletion evidence
+ok 46 - billing migration backfills immutable terminal subscription history without inventing deletion evidence
+  ---
+  duration_ms: 48.4433
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 14340.2966

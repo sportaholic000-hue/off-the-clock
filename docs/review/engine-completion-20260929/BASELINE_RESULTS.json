@@ -1,0 +1,365 @@
+{
+  "startingHead": "e7f216804516f5bad4c28a2f78d0ee72cc50d11a",
+  "characterizationPassed": true,
+  "repairsCompleted": false,
+  "engineChanged": false,
+  "cases": [
+    {
+      "name": "INTERIOR_PAINTING good",
+      "expected": "INSTANT_ESTIMATE_READY",
+      "preview": "INSTANT_ESTIMATE_READY",
+      "authenticated": "INSTANT_ESTIMATE_READY",
+      "public": "INSTANT_ESTIMATE_READY",
+      "midEstimate": 1650,
+      "reason": null,
+      "ownerDecisions": []
+    },
+    {
+      "name": "INTERIOR_PAINTING fair",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Wall preparation requires a confirmed measured preparation scope before pricing.",
+      "ownerDecisions": [
+        {
+          "path": "interiorPrepPricing",
+          "kind": "measured_prep_pricing_contract",
+          "message": "Approve a measured interior preparation scope and pricing contract."
+        }
+      ]
+    },
+    {
+      "name": "INTERIOR_PAINTING poor",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Wall preparation requires a confirmed measured preparation scope before pricing.",
+      "ownerDecisions": [
+        {
+          "path": "interiorPrepPricing",
+          "kind": "measured_prep_pricing_contract",
+          "message": "Approve a measured interior preparation scope and pricing contract."
+        }
+      ]
+    },
+    {
+      "name": "EXTERIOR_PAINTING good",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Exterior substrate and coating system need a supported owner contract; fair preparation also needs measured affected scope or an explicitly bounded package.",
+      "ownerDecisions": [
+        {
+          "path": "exteriorCoatingScope",
+          "kind": "exterior_coating_scope_contract",
+          "message": "Define supported substrate/coating systems and measured preparation scope or a bounded all-area package."
+        }
+      ]
+    },
+    {
+      "name": "EXTERIOR_PAINTING fair",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Exterior substrate and coating system need a supported owner contract; fair preparation also needs measured affected scope or an explicitly bounded package.",
+      "ownerDecisions": [
+        {
+          "path": "exteriorCoatingScope",
+          "kind": "exterior_coating_scope_contract",
+          "message": "Define supported substrate/coating systems and measured preparation scope or a bounded all-area package."
+        }
+      ]
+    },
+    {
+      "name": "EXTERIOR_PAINTING poor",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Poor exterior surfaces require an explicitly confirmed primer pricing rule before pricing.",
+      "ownerDecisions": [
+        {
+          "path": "exteriorPrimerPricing",
+          "kind": "primer_pricing_contract",
+          "message": "Approve separate primer pricing or an explicit all-inclusive exterior rate rule."
+        },
+        {
+          "path": "exteriorCoatingScope",
+          "kind": "exterior_coating_scope_contract",
+          "message": "Define supported substrate/coating systems and measured preparation scope or a bounded all-area package."
+        }
+      ]
+    },
+    {
+      "name": "FENCING_INSTALL 0 gate",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Pricing not fully configured for the measured scope.",
+      "ownerDecisions": [
+        {
+          "path": "postDerivationRule",
+          "kind": "post_geometry_contract",
+          "message": "Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted."
+        },
+        {
+          "path": "concretePerPost",
+          "kind": "mixed_charge_allocation",
+          "message": "Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule."
+        }
+      ]
+    },
+    {
+      "name": "FENCING_INSTALL 1 gate",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Pricing not fully configured for the measured scope.",
+      "ownerDecisions": [
+        {
+          "path": "postDerivationRule",
+          "kind": "post_geometry_contract",
+          "message": "Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted."
+        },
+        {
+          "path": "concretePerPost",
+          "kind": "mixed_charge_allocation",
+          "message": "Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule."
+        },
+        {
+          "path": "gatePrice.wood",
+          "kind": "gate_width_pricing_contract",
+          "message": "Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths."
+        }
+      ]
+    },
+    {
+      "name": "FENCING_REPLACEMENT 0 gate",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Pricing not fully configured for the measured scope.",
+      "ownerDecisions": [
+        {
+          "path": "postDerivationRule",
+          "kind": "post_geometry_contract",
+          "message": "Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted."
+        },
+        {
+          "path": "concretePerPost",
+          "kind": "mixed_charge_allocation",
+          "message": "Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule."
+        }
+      ]
+    },
+    {
+      "name": "FENCING_REPLACEMENT 1 gate",
+      "expected": "ESTIMATE_REQUIRES_REVIEW",
+      "preview": "ESTIMATE_REQUIRES_REVIEW",
+      "authenticated": "ESTIMATE_REQUIRES_REVIEW",
+      "public": "ESTIMATE_REQUIRES_REVIEW",
+      "midEstimate": null,
+      "reason": "Pricing not fully configured for the measured scope.",
+      "ownerDecisions": [
+        {
+          "path": "postDerivationRule",
+          "kind": "post_geometry_contract",
+          "message": "Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted."
+        },
+        {
+          "path": "concretePerPost",
+          "kind": "mixed_charge_allocation",
+          "message": "Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule."
+        },
+        {
+          "path": "gatePrice.wood",
+          "kind": "gate_width_pricing_contract",
+          "message": "Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths."
+        }
+      ]
+    }
+  ],
+  "storedQuotes": 2,
+  "storedReviewLeads": 18,
+  "retainedEvidence": {
+    "before-application/application.sqlite": {
+      "bytes": 409600,
+      "sha256": "57eb46493322e3e19447236c47fa19bded5809f2e06bd8a943f3b376689c350e"
+    },
+    "before-application/http.json": {
+      "bytes": 310540,
+      "sha256": "334f2c8dd131bd2bda938b04b56af6436100f6dac07832a2fbe519ad367df30b"
+    },
+    "before-application/results.json": {
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "before-application/server-process.json": {
+      "bytes": 504,
+      "sha256": "259aa3b3871ecdb8cef8819d83af384c25457bc859e5574e56aa9380713de171"
+    },
+    "before-application/server.log": {
+      "bytes": 274,
+      "sha256": "be6021faddf9d0748ff9b71ccd12a72ff9ead5db50a4c095eaa546ae619dbf2d"
+    },
+    "before-application/source-binding.json": {
+      "bytes": 17391,
+      "sha256": "cf9321fd260a9f6ebf702aa841e98368dc793d695aa7ca69a918d6c887dc019b"
+    },
+    "before-application-final/application.sqlite": {
+      "bytes": 1339392,
+      "sha256": "f55cfdf6167713024f8f098fbbcd8c72730ba08e76aa02f6a2153eccaa8e4bc7"
+    },
+    "before-application-final/http.json": {
+      "bytes": 1425346,
+      "sha256": "518a97a6f1416beb0365c7fc3ee5bc49655961af4c3236564880dabe9a4266d4"
+    },
+    "before-application-final/pricebooks/fe4e7a90-5205-41f0-b9e2-eb584b8a707b.json": {
+      "bytes": 9892,
+      "sha256": "52f32d93f9e405dcd859e0c587847075901ac6e55a21d1f183394b469979b0ad"
+    },
+    "before-application-final/results.json": {
+      "bytes": 122343,
+      "sha256": "37e39800ff8b4cf4e301639fc8384c30d5a8a5d84ac8758d2393711c1dd98bbd"
+    },
+    "before-application-final/saved-book.json": {
+      "bytes": 10023,
+      "sha256": "af57145dc973961e48f95db1a43575449bb43c7e45d884277fd12151b5b682a4"
+    },
+    "before-application-final/server-process.json": {
+      "bytes": 510,
+      "sha256": "80155037e2f50138a2cbc3b2ef2db8e3c64c4bd1c703f6db655136dabe554b55"
+    },
+    "before-application-final/server.log": {
+      "bytes": 247,
+      "sha256": "419b48ee550d5a5256b380ab37b79b9393eb5d821eaec21e67dc304625726802"
+    },
+    "before-application-final/source-binding.json": {
+      "bytes": 13196,
+      "sha256": "0505de16451bdde8c28921f42e680f7015854f68ad9056a9fd963a9907d72ed1"
+    },
+    "before-application-final/stored-leads.json": {
+      "bytes": 615887,
+      "sha256": "3afed5ae199343c7f3aecb1a04df7c343aac1ae0998a6ca6b7f7bd18f26c2ad2"
+    },
+    "before-application-final/stored-quotes.json": {
+      "bytes": 169170,
+      "sha256": "31aec79914b134f6d587cffa592299466ebdba083d3ebf0e86b1fe7674a4fc65"
+    },
+    "before-application-final/synthetic-account-setup.ndjson": {
+      "bytes": 188,
+      "sha256": "ac19e00438dd0015626042f232cd2d6eca4eef940b325ae40b9fbc17ab97456c"
+    },
+    "before-application-v2/application.sqlite": {
+      "bytes": 1339392,
+      "sha256": "9c62ca03acb50378dc122796f5b69f4741b56a6686b32a87d1a594f0c9d4f20a"
+    },
+    "before-application-v2/http.json": {
+      "bytes": 1425346,
+      "sha256": "367968f0d0f630df93a87ff75d0da49bd09ea0713db4e71d7aff049495d3cb94"
+    },
+    "before-application-v2/pricebooks/a4c9582d-33ca-48c4-bd9b-d444f303a3d5.json": {
+      "bytes": 9892,
+      "sha256": "53802c04aa6bcdc74e3f067022abf0c69952809dd82d60383cfd10fcd176da37"
+    },
+    "before-application-v2/results.json": {
+      "bytes": 122343,
+      "sha256": "0748b3050e4cff67a0bcb2c8b49445d82376b781d79321a03f9817cfb1ab2bee"
+    },
+    "before-application-v2/saved-book.json": {
+      "bytes": 10023,
+      "sha256": "0a923877d485ee16cc540cd1de33204f612b4b8c2dcc3200874851fe825d91c9"
+    },
+    "before-application-v2/server-process.json": {
+      "bytes": 507,
+      "sha256": "5cdb5b45e375090001b27f46db94abc158c054379bb05570ec361b03ae650a07"
+    },
+    "before-application-v2/server.log": {
+      "bytes": 247,
+      "sha256": "419b48ee550d5a5256b380ab37b79b9393eb5d821eaec21e67dc304625726802"
+    },
+    "before-application-v2/source-binding.json": {
+      "bytes": 13196,
+      "sha256": "0505de16451bdde8c28921f42e680f7015854f68ad9056a9fd963a9907d72ed1"
+    },
+    "before-application-v2/stored-leads.json": {
+      "bytes": 615887,
+      "sha256": "785f498040047091d026ff7bd77d47c70e77c09e424551ef357ab919f694d1a2"
+    },
+    "before-application-v2/stored-quotes.json": {
+      "bytes": 169170,
+      "sha256": "9f6432b7667526ffa2377541776566ce8bdf1a12551743206b007e7808501e16"
+    },
+    "before-application-v2/synthetic-account-setup.ndjson": {
+      "bytes": 188,
+      "sha256": "535b6e604e584e3b9ddaee5c68c0c3336043a3d6f6375df73b34d1095210e2bb"
+    },
+    "fencing-painting-baseline-final.log": {
+      "bytes": 773,
+      "sha256": "48d4d70079ac774a5a9f3561e1d11f699b1a7e56ab8d9fc8b67212703b14bb15"
+    },
+    "fencing-painting-baseline-final.result.json": {
+      "bytes": 384,
+      "sha256": "0265994d9f8f167ad316818605ff2a8abc8e317a780ad0c6db39d1da152fe349"
+    },
+    "fencing-painting-baseline-final.source.json": {
+      "bytes": 5797,
+      "sha256": "9c3a710cba0361e54160c90920d2d31152b494fa2f5572ec8ee7a9ba38ef8a3c"
+    },
+    "fencing-painting-baseline-v2.log": {
+      "bytes": 773,
+      "sha256": "48d4d70079ac774a5a9f3561e1d11f699b1a7e56ab8d9fc8b67212703b14bb15"
+    },
+    "fencing-painting-baseline-v2.result.json": {
+      "bytes": 375,
+      "sha256": "6324c28597d8249ea10a8bcfb225167a94d215a4ae6315b7cdfcf711194dbda7"
+    },
+    "fencing-painting-baseline-v2.source.json": {
+      "bytes": 5794,
+      "sha256": "5c6cfca1e6a2c4a6af9baf89d4a3968dcfb77d972b53e5489dc501cc11616de8"
+    },
+    "fencing-painting-baseline.log": {
+      "bytes": 813,
+      "sha256": "db222937c94ccf27adadd463a82db8de92451063f73f9c43cd17b62db2b3601b"
+    },
+    "fencing-painting-baseline.result.json": {
+      "bytes": 366,
+      "sha256": "9005a9394e23546f5322d349a0a87a37bcf0375315f1abda5017d8439a79a7aa"
+    },
+    "fencing-painting-baseline.source.json": {
+      "bytes": 5791,
+      "sha256": "14aa132f44caf70722b0968fbf88cdcdee1928ff80a1c32178c640daad701882"
+    },
+    "STARTING_SOURCE.json": {
+      "bytes": 35025,
+      "sha256": "fcb4bf543ba3da7cbc7c7602a38c4fa794437ec51d0b4b15d2d3afab22bcacbc"
+    },
+    "unchanged-boundary.log": {
+      "bytes": 34547,
+      "sha256": "364cee2c1eeb3d7e79a33fddf9a68deefc7c73bdcc70b80dad597ce9da7bc9f0"
+    },
+    "unchanged-boundary.result.json": {
+      "bytes": 211,
+      "sha256": "365428d4270e3f91c7b60d45aaeafe46c71b50adc6999a22edac29f86b4a957f"
+    },
+    "unchanged-boundary.source.json": {
+      "bytes": 5651,
+      "sha256": "6e9e10e8d8c240416c574849041c4c5b86f9649d3c264431d9ce5bb9b3974d48"
+    }
+  }
+}

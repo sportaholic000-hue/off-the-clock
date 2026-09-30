@@ -1,0 +1,249 @@
+{
+  "sourceCommit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+  "checkpoints": [
+    {
+      "commit": "8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+      "tree": "b14efe3fac690027263ee12d71eaf0926ea479ab",
+      "parent": "aa81eaa29503a7c3e2ddf464c7462f556839562c",
+      "files": [
+        {
+          "path": "server/quote-engine-vnext/configuredOfferings.js",
+          "blob": "d47c6715834e29c72c5a0bd59ccc0248799adc3b",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/quote-engine-vnext/contracts.js",
+          "blob": "1449ef8b6779d5e8f74cddeb3eee7cd28fbd3583",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/quote-engine-vnext/engine.js",
+          "blob": "44a3cea94103d17c87fb584e572a938b87344ab5",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/quote-engine-vnext/index.js",
+          "blob": "a535094d75fea5d1912b3ef88054de997fff1ffe",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/quote-engine-vnext/priceBook.js",
+          "blob": "727f07eee985689d1149927a45b52206e17bb7ae",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/quote-engine-vnext/templates.js",
+          "blob": "8fe8f5dd744f447ab48fd65995472596fce16636",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/src/bookingService.js",
+          "blob": "a403eefb71d515a2632de993396d0e2c2d62b207",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/src/quoteDoneBridge.js",
+          "blob": "f5deb3eef28674cf6515551260eb4acb55cd0b6b",
+          "readBackExactly": true
+        },
+        {
+          "path": "server/src/quoteDoneRoutes.js",
+          "blob": "f83b0a0eac476dd4aea32391480898a3480ef5c7",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/src/offeringEditor.jsx",
+          "blob": "afd4e862a240303d14cceb5c7f91969d89e3aa3b",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/src/pricebook.jsx",
+          "blob": "099a0c7902f0d76c5c0ebba013d79d68605eaf40",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/src/quoteDoneControls.jsx",
+          "blob": "d5fa2c2b5312a4b9cba6c53b07d31508b7a92440",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/src/quotedone.jsx",
+          "blob": "42b969ad546b58fc63346d89e5812a2a8b78fa62",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/src/quoteWizard.jsx",
+          "blob": "4a0eefa0e4565e0c9358d7f377e497d3a23bb6af",
+          "readBackExactly": true
+        },
+        {
+          "path": "client/test/configured-offerings-browser.mjs",
+          "blob": "e0779b9a28a3f94220051d0ec555ff7399217441",
+          "readBackExactly": true
+        },
+        {
+          "path": "test/configuredOfferingsFixtures.mjs",
+          "blob": "ccbfa03d06f9736dc72fd3f699410110a452a1f0",
+          "readBackExactly": true
+        },
+        {
+          "path": "test/configuredOfferings.spec.mjs",
+          "blob": "d4cd01dfb375e0254d9c2c7d6bff901272e997f0",
+          "readBackExactly": true
+        },
+        {
+          "path": "test/bookingService.spec.mjs",
+          "blob": "5676b41ab84abce6416ca1821451c478c5a514c7",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/offering-application-fixture.mjs",
+          "blob": "dbb4b6d1d800ac1f43dbd3dba5d59f9a4fd2e904",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/configured-offerings-application.mjs",
+          "blob": "15013aa60ab2dc79d15c0382107bccd34c752268",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/calendar-provider-fixture.mjs",
+          "blob": "73ef1d8e62202e1bf963124295fc8ecf8f3ccc2c",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/booking-confirmation-integrity.mjs",
+          "blob": "0f6c59e828cc03a4dba310386c35592c1be4ab04",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/offerings-engine-boundary.json",
+          "blob": "be3819676e4e733c5083bf96bd6df220e9c8fd2d",
+          "readBackExactly": true
+        },
+        {
+          "path": "verification/quotedone/offerings-integration-boundary.mjs",
+          "blob": "39f674cf507dac9097bd11d24e974367ad87f034",
+          "readBackExactly": true
+        },
+        {
+          "path": "docs/review/engine-completion-20260929/OWNER_OFFERINGS.md",
+          "blob": "c66f50fa3b2b57335d5bb1324abb55a5d0cb594a",
+          "readBackExactly": true
+        },
+        {
+          "path": "docs/review/engine-completion-20260929/IN_PROGRESS.md",
+          "blob": "a791b03b978bded4007eb50e0ace8986fbd1d749",
+          "readBackExactly": true
+        }
+      ]
+    },
+    {
+      "commit": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+      "tree": "df1ca1669e1c1e9d26f3d59cf86aef3ababe930e",
+      "parent": "8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+      "verifiedFiles": [
+        {
+          "path": "server/src/quoteIntake.js",
+          "gitBlob": "bfef7ca97f9e52167ecd4c5f61a91983f416623a",
+          "readBackExact": true
+        },
+        {
+          "path": "client/src/pricebook.jsx",
+          "gitBlob": "a78a7f4e2441faaad5f4d1958a050ac73113b342",
+          "readBackExact": true
+        },
+        {
+          "path": "client/src/quoteDoneControls.jsx",
+          "gitBlob": "201290ad042131e8a86c782248788c4b00552b8f",
+          "readBackExact": true
+        },
+        {
+          "path": "client/test/configured-offerings-browser.mjs",
+          "gitBlob": "edb91864c90d0e0faeede20cb1c551afbd72b0b7",
+          "readBackExact": true
+        },
+        {
+          "path": "client/test/widget-real-booking-browser.mjs",
+          "gitBlob": "2fa95a67942292c0856b71096397239f4d3baca5",
+          "readBackExact": true
+        },
+        {
+          "path": "verification/quotedone/offerings-integration-boundary.mjs",
+          "gitBlob": "38ce9c697d314c435b257104787027b06ed480d6",
+          "readBackExact": true
+        }
+      ],
+      "comparison": {
+        "repository_full_name": "sportaholic000-hue/off-the-clock",
+        "base": "8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+        "head": "06c6fbeec94e3c87040964c24a7a0f45f2837e2d",
+        "status": "ahead",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "too_large": null,
+        "base_commit": {
+          "sha": "8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+          "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/commits/8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+          "html_url": "https://github.com/sportaholic000-hue/off-the-clock/commit/8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43"
+        },
+        "merge_base_commit": {
+          "sha": "8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+          "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/commits/8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43",
+          "html_url": "https://github.com/sportaholic000-hue/off-the-clock/commit/8b863f0a79f77a40ddc4de1bd0259ccfc3b13f43"
+        },
+        "files": [
+          {
+            "filename": "client/src/pricebook.jsx",
+            "status": "modified",
+            "additions": 6,
+            "deletions": 2,
+            "changes": 8,
+            "previous_filename": null
+          },
+          {
+            "filename": "client/src/quoteDoneControls.jsx",
+            "status": "modified",
+            "additions": 3,
+            "deletions": 3,
+            "changes": 6,
+            "previous_filename": null
+          },
+          {
+            "filename": "client/test/configured-offerings-browser.mjs",
+            "status": "modified",
+            "additions": 15,
+            "deletions": 3,
+            "changes": 18,
+            "previous_filename": null
+          },
+          {
+            "filename": "client/test/widget-real-booking-browser.mjs",
+            "status": "modified",
+            "additions": 10,
+            "deletions": 0,
+            "changes": 10,
+            "previous_filename": null
+          },
+          {
+            "filename": "server/src/quoteIntake.js",
+            "status": "modified",
+            "additions": 8,
+            "deletions": 2,
+            "changes": 10,
+            "previous_filename": null
+          },
+          {
+            "filename": "verification/quotedone/offerings-integration-boundary.mjs",
+            "status": "modified",
+            "additions": 1,
+            "deletions": 1,
+            "changes": 2,
+            "previous_filename": null
+          }
+        ]
+      }
+    }
+  ]
+}

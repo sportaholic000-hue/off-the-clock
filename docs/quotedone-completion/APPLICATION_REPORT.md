@@ -1,3 +1,11 @@
+> **September 28 correction: customer quoting is still unfinished.** The owner did not authorize replacing the detailed voice guide or making ordinary names, addresses and timing information prevent a quote. The original 459-line voice guide and original engine-specification text are restored exactly. The earlier blanket refusals and the test changes that accepted them are not product requirements. The application code in the published PR is still the 808d723 implementation; its ordinary-customer regression is open. An unpublished local candidate at `6da69f6c2b4cd50d600fc937e201b8870228cf95` restores normal customer controls but still fails additional-work/uncertainty cases inside name/address text. A checked summary alone does not resolve that gap. No whole-flow acceptance or launch gate has passed. The 19-file arithmetic engine and verified precision, callback, retry, privacy, approval and persistence repairs remain unchanged. Restoring the original documents does not implement voice, booking, messaging or change the engine. The reports below are historical evidence for their stated commits, not new owner decisions.
+
+# Historical application checkpoint
+
+This report records implementation `e936370`. For the current September 27 repair candidate, verified fixes, remaining limits and evidence, read [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md). The earlier report remains unchanged below as historical evidence.
+
+---
+
 # QuoteDone application completion evidence
 
 **The authorized non-production owner → approved book → customer quote OR durable review lead → owner/staff view workflow passed its committed-candidate verification.** See status.json for every required acceptance row.

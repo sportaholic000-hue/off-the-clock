@@ -23,7 +23,7 @@ try {
  const access=await call('POST','/api/quotedone/access',{allowedOrigins:['http://127.0.0.1:5173']});
  const quotePath='/api/public/quote/'+access.publicKey, headers={Origin:'http://127.0.0.1:5173'};
  const inputs={yardSqft:10000,sqftMethod:'exact',serviceFrequency:'weekly',grassCondition:'maintained',bagClippings:false,edgingIncluded:false};
- const submission=()=>({requestId:crypto.randomUUID(),serviceId,contact:{name:'Synthetic customer',email:'customer@example.invalid',phone:'synthetic-phone'},location:{address:'Synthetic test address'},serviceRequest:'Measured mowing',explicitUnknowns:['Gate access'],context:'Synthetic acceptance only',customerInputs:inputs});
+ const submission=()=>({requestId:crypto.randomUUID(),serviceId,contact:{email:'customer@example.invalid'},location:'',serviceRequest:'Synthetic measured mowing',explicitUnknowns:[],context:'',customerInputs:inputs});
  const before=await call('POST',quotePath,submission(),201,null,headers);assert.equal(before.resultType,'ESTIMATE_REQUIRES_REVIEW');
  await call('POST','/api/pricebook/services/'+serviceId+'/approve',{revision:book.revision,confirmConfiguration:true});
  book=await call('GET','/api/pricebook/'+owner.id);

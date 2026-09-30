@@ -1,11 +1,22 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import jwt from 'jsonwebtoken';
-import { migrate, ownerQuery } from './db.js';
+import Stripe from 'stripe';
+import { verifyExactJson } from './exactJson.js';
+import { parseOwnerNumericInput } from '../priceBookMoney.js';
+import { createCalendarOAuthStateService } from './calendarOAuthState.js';
+import { db, migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
 import { CREATE_TABLE_STATEMENTS } from './schema.js';
 import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
+import { createBookingService } from './bookingService.js';
+import { createBookingPreferenceService } from './bookingPreferenceService.js';
+import { installBookingRoutes } from './bookingRoutes.js';
+import { createGoogleCalendarAdapter } from './googleCalendarAdapter.js';
+import { createBookingAdminService } from './bookingAdminService.js';
+import { installBookingAdminRoutes } from './bookingAdminRoutes.js';
+import { createOwnerCalendarService } from './ownerCalendarService.js';
+import { installOwnerCalendarRoutes } from './ownerCalendarRoutes.js';
 import { bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
 import {
   centsToDollars,
@@ -18,7 +29,13 @@ import {
   saveValidatedPricebook
 } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
-import { hasQuoteDoneAccess } from './planAccess.js';
+import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
+import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
+import { createCorsOptionsDelegate } from './corsPolicy.js';
+import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
+import { loadBillingConfig } from './billingConfig.js';
+import { createBillingStateService } from './billingStateService.js';
+import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
 import {
@@ -59,9 +76,7 @@ import {
   suggestStarterBook
 } from './platformIntegrations.js';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET is required');
-}
+const runtimeConfig = validateRuntimeConfig();
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -69,21 +84,82 @@ const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
 
+function accessAccount(ownerId) {
+  return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt FROM users
+    WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
+}
+
+function requireProviderOperationsEnabled(_req, res, next) {
+  if (!providerWritesEnabled()) {
+    return res.status(503).json({ error: 'Provider operations are not enabled for this environment.' });
+  }
+  return next();
+}
+
+function requireProviderWrites(req, res, next) {
+  if (!providerWritesEnabled()) {
+    return res.status(503).json({ error: 'Provider operations are not enabled for this environment.' });
+  }
+  if (req.tenantOwnerId && !hasProviderWriteAccess(accessAccount(req.tenantOwnerId))) {
+    return res.status(403).json({ error: 'This account is not eligible for provider operations.' });
+  }
+  return next();
+}
+
 function requireQuoteDonePlan(req, res, next) {
-  const account = ownerQuery(`SELECT plan, planStatus FROM users
-    WHERE id = ? AND (ownerId = ? OR id = ?)`).get(
-      req.tenantOwnerId, req.tenantOwnerId, req.tenantOwnerId
-    );
+  const account = accessAccount(req.tenantOwnerId);
   if (!hasQuoteDoneAccess(account)) {
     return res.status(403).json({ error:'QuoteDone or Scale is required' });
   }
   return next();
 }
 
-migrate();
+function requireOperatorAccess(req, res, next) {
+  if (!hasOperatorAccess(accessAccount(req.tenantOwnerId))) {
+    return res.status(403).json({ error: 'This account does not currently have Operator access.' });
+  }
+  return next();
+}
 
-app.use(cors());
-app.use(express.json({ limit: '1mb' }));
+migrate();
+migrateLegacyGoogleCalendarCredentials();
+const calendarOAuthState = createCalendarOAuthStateService({ database: db });
+
+const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
+const bookingRuntimeAvailable = Buffer.byteLength(bookingTokenSecret) >= 32;
+const bookingCalendar = bookingRuntimeAvailable ? createGoogleCalendarAdapter() : null;
+const bookingService = bookingRuntimeAvailable
+  ? createBookingService({ db, calendar: bookingCalendar, slotTokenSecret: bookingTokenSecret })
+  : null;
+const bookingPreferenceService = bookingRuntimeAvailable
+  ? createBookingPreferenceService({ db })
+  : null;
+const bookingAdminService = createBookingAdminService({ db });
+const ownerCalendarService = createOwnerCalendarService({ ownerQuery, calendar: bookingCalendar });
+const billingConfig = runtimeConfig.stripeBilling ? loadBillingConfig() : null;
+const stripeClient = billingConfig
+  ? new Stripe(billingConfig.secretKey, {
+      maxNetworkRetries: 2,
+      timeout: 20_000,
+      appInfo: { name: 'off-the-clock', version: '0.0.0' }
+    })
+  : null;
+const billingStateService = billingConfig
+  ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap })
+  : null;
+
+app.use(cors(createCorsOptionsDelegate({ configuredOrigins: runtimeConfig.corsOrigins })));
+if (billingConfig) {
+  installBillingWebhookRoute(app, {
+    rawBodyMiddleware: express.raw({ type: 'application/json', limit: '256kb' }),
+    constructEvent: (payload, signature, secret) =>
+      stripeClient.webhooks.constructEvent(payload, signature, secret),
+    webhookSecret: billingConfig.webhookSecret,
+    billingStateService,
+    stripeClient
+  });
+}
+app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
@@ -97,6 +173,25 @@ app.post('/api/auth/forgot-password', asyncHandler(forgotPassword));
 app.post('/api/auth/reset-password', asyncHandler(resetPassword));
 app.get('/api/auth/verify-email', verifyEmail);
 app.post('/api/admin/login', asyncHandler(adminLogin));
+
+if (billingConfig) {
+  installBillingRoutes(app, {
+    stripeClient,
+    billingStateService,
+    database: db,
+    requireAuth,
+    // Checkout is how pending/canceled owners obtain entitlement, so this gate
+    // checks deployment authority only. Subscription access still changes only
+    // after a verified Stripe webhook is applied by billingStateService.
+    requireProviderWrites: requireProviderOperationsEnabled,
+    asyncHandler,
+    priceIds: billingConfig.priceIds,
+    successUrl: billingConfig.successUrl,
+    cancelUrl: billingConfig.cancelUrl,
+    portalReturnUrl: billingConfig.portalReturnUrl,
+    integrationIdentifier: billingConfig.integrationIdentifier
+  });
+}
 
 app.get('/api/onboarding/state', requireAuth(['owner']), (req, res) => {
   res.json(clientOnboardingState(req.tenantOwnerId));
@@ -131,9 +226,12 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
   const region = String(req.body?.region || '').toUpperCase();
   let resolved = resolveJurisdiction(country, region);
 
-  if (resolved.needsOwnerConfirmation) {
+  // Jurisdiction lookup supplies a prefill. Explicit owner settings must be
+  // validated and saved even when that location already has a preset.
+  const explicitTaxSettings = Object.hasOwn(req.body || {}, 'taxMode') || Object.hasOwn(req.body || {}, 'taxPercent');
+  if (explicitTaxSettings || resolved.needsOwnerConfirmation) {
     const taxMode = req.body?.taxMode;
-    const taxPercent = Number(req.body?.taxPercent);
+    const taxPercent = parseOwnerNumericInput(req.body?.taxPercent,{path:'taxPercent'});
     if (!taxModes.has(taxMode)) {
       const error = new Error('Choose how you handle sales tax on customer invoices');
       error.statusCode = 400;
@@ -160,7 +258,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
   return res.json(resolved);
 }));
 
-app.post('/api/onboarding/phone/provision', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/onboarding/phone/provision', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const ownerId = req.tenantOwnerId;
   const profile = getBusinessProfile(ownerId);
   if (profile.twilioNumberSid && profile.phoneProvisioningStatus === 'provisioned') {
@@ -184,7 +282,7 @@ app.post('/api/onboarding/phone/provision', requireAuth(['owner']), asyncHandler
   return res.status(201).json({ profile: next, carrierReference });
 }));
 
-app.post('/api/onboarding/phone/test', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/onboarding/phone/test', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const state = onboardingState(req.tenantOwnerId);
   const profile = state.profile;
   if (!profile.twilioNumber || !profile.existingPhoneNumber) {
@@ -201,7 +299,7 @@ app.post('/api/onboarding/phone/test', requireAuth(['owner']), asyncHandler(asyn
   return res.json({ callSid: call.sid, status: call.status || 'queued' });
 }));
 
-app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const profile = getBusinessProfile(req.tenantOwnerId);
   const call = await getTwilioCallStatus(req.params.callSid);
   if (call.to !== profile.existingPhoneNumber || call.from !== profile.twilioNumber) {
@@ -210,7 +308,7 @@ app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), asyncHand
   return res.json({ status:call.status });
 }));
 
-app.post('/api/onboarding/knowledge-base/draft', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/onboarding/knowledge-base/draft', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const state = onboardingState(req.tenantOwnerId);
   const knowledgeBase = await draftKnowledgeBase({
     businessName: state.account.businessName,
@@ -226,7 +324,7 @@ app.post('/api/onboarding/knowledge-base', requireAuth(['owner']), asyncHandler(
   return res.json({ profile });
 }));
 
-app.post('/api/operator/toggle', requireAuth(['owner']), asyncHandler(async (req, res) => {
+app.post('/api/operator/toggle', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const enabled = req.body?.enabled === true;
   const current = getBusinessProfile(req.tenantOwnerId);
   const profile = setOperatorEnabled(req.tenantOwnerId, enabled);
@@ -254,23 +352,23 @@ app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async 
 }));
 
 app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), (req, res) => {
-  const state = jwt.sign(
-    { sub: req.tenantOwnerId, purpose: 'google-calendar' },
-    process.env.JWT_SECRET,
-    { expiresIn: '10m' }
-  );
+  const { state } = calendarOAuthState.issue(req.tenantOwnerId);
   res.json({ authorizationUrl: googleCalendarAuthorizationUrl(state) });
 });
 
-app.get('/api/onboarding/calendar/google/callback', asyncHandler(async (req, res) => {
-  const state = jwt.verify(String(req.query.state || ''), process.env.JWT_SECRET);
-  if (!state || typeof state === 'string' || state.purpose !== 'google-calendar') {
-    return res.status(401).json({ error: 'Invalid calendar state' });
+app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, asyncHandler(async (req, res) => {
+  if (typeof req.query.code !== 'string' || !req.query.code.trim()) {
+    return res.status(400).json({ error: 'Calendar authorization was not completed. Start the connection again.' });
   }
-  const tokens = await exchangeGoogleCalendarCode(String(req.query.code || ''));
-  saveGoogleCalendarTokens(state.sub, tokens);
+  // Consume the persisted owner-bound state before any provider or account mutation.
+  const { ownerId } = calendarOAuthState.consume(req.query.state);
+  if (!hasProviderWriteAccess(accessAccount(ownerId))) {
+    return res.status(403).json({ error: 'This account is not eligible for provider operations.' });
+  }
+  const tokens = await exchangeGoogleCalendarCode(req.query.code);
+  saveGoogleCalendarTokens(ownerId, tokens);
   const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
-  return res.redirect(`${clientUrl}/onboarding?step=8&calendar=connected`);
+  return res.redirect(clientUrl + '/onboarding?step=8&calendar=connected');
 }));
 
 app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (req, res) => {
@@ -302,9 +400,34 @@ app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requ
   return res.json(draftReviewPayload(req.tenantOwnerId, req.params.draftId));
 }));
 
-installQuoteDoneRoutes(app, { asyncHandler, requireQuoteDonePlan });
+installQuoteDoneRoutes(app, {
+  asyncHandler,
+  requireQuoteDonePlan,
+  bookingService,
+  bookingTokenSecret
+});
+if (bookingService) {
+  installBookingRoutes(app, {
+    bookingService,
+    preferenceService: bookingPreferenceService,
+    asyncHandler,
+    requireAuth,
+    database: db
+  });
+}
+installOwnerCalendarRoutes(app, {
+  service: ownerCalendarService, requireAuth, requireOperatorAccess,
+  requireProviderOperationsEnabled, asyncHandler
+});
+installBookingAdminRoutes(app, {
+  adminService: bookingAdminService,
+  requireAuth,
+  requireOperatorAccess,
+  requireQuoteDonePlan,
+  asyncHandler
+});
 
-app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
+app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, asyncHandler(async (req, res) => {
   const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
   return res.json({
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', confirmedFields: {} })),
@@ -348,8 +471,13 @@ app.use((err, _req, res, _next) => {
   console.error('[error]', err.message);
   if (res.headersSent) return;
   const status = Number(err.statusCode) || 500;
+  const code = typeof err.code === 'string' && /^[A-Z][A-Z0-9_]{2,63}$/.test(err.code)
+    ? err.code
+    : undefined;
   res.status(status).json({
     error: status >= 500 ? 'Internal server error' : err.message,
+    ...(code ? { code } : {}),
+    ...(typeof err.retryable === 'boolean' ? { retryable: err.retryable } : {}),
     ...(err.details ? { details: err.details } : {})
   });
 });

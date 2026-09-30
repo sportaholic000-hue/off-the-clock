@@ -1147,3 +1147,21 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   .structured-sizes { flex-direction: column; }
   .structured-cell { width: 100%; }
 }
+
+/* Shared post-quote scheduling form; prices continue to come from the server. */
+.pricebook-page .widget-next { margin: 24px 0; padding-top: 24px; border-top: 1px solid var(--edge); }
+.pricebook-page .wizard-fields { border: 0; padding: 0; margin: 16px 0; min-width: 0; }
+.pricebook-page .widget-slots { border: 0; padding: 0; display: grid; gap: 10px; }
+.pricebook-page .widget-slots label, .pricebook-page .widget-confirmation { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.pricebook-page .widget-next > .button { margin: 8px 12px 8px 0; }
+
+.billing-page { padding: 32px; max-width: 1020px; display: flex; flex-direction: column; gap: 24px; }
+.billing-settings-nav { display: flex; flex-wrap: wrap; gap: 12px; }
+.billing-panel { border: 1px solid var(--black-line); padding: 24px; display: grid; gap: 16px; }
+.billing-panel h2, .billing-panel p { margin: 0; }
+.billing-panel form { display: grid; gap: 16px; }
+.billing-fields { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.billing-panel dl { display: grid; grid-template-columns: minmax(90px,1fr) minmax(0,2fr); gap: 8px 16px; margin: 0; }
+.billing-panel dd { margin: 0; overflow-wrap: anywhere; }
+.billing-page > .loading { min-height: 100px; }
+@media(max-width:860px) { .billing-page { padding: 24px 16px; } .billing-panel { padding: 18px; } .billing-fields { grid-template-columns: 1fr; } }

@@ -439,8 +439,10 @@ test('common disposal follows physical scope and cannot substitute for missing s
     yardSqft: 5000, sqftMethod: 'exact', serviceFrequency: 'weekly',
     grassCondition: 'maintained', bagClippings: true, edgingIncluded: false
   }, mowing, { businessDefaults: feeDefaults });
-  assert.equal(mowingResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(mowingResult.missingOwnerFields, ['baggingSurchargePercent']);
+  assert.equal(mowingResult.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(mowingResult.options[0].skippedAddons, ['Clipping bagging and disposal']);
+  assert.equal(Object.hasOwn(lineMap(mowingResult), 'Disposal'), false);
+  assert.equal(lineMap(mowingResult)['Mowing labor'],10000);
   assert.equal(mowingResult.submittedCustomerInputs.bagClippings, true);
   const unselected = run('LANDSCAPING_MOWING', { ...mowingResult.submittedCustomerInputs, bagClippings: false }, mowing, { businessDefaults: feeDefaults });
   assert.equal(unselected.resultType, 'INSTANT_ESTIMATE_READY');

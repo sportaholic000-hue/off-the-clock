@@ -9,6 +9,7 @@ import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
 import { CLASS2_DEFAULTS_BY_SERVICE, SAMPLE_INPUTS, getServiceMetadata } from '../server/priceBookMetadata.js';
 import { generateQuote } from '../server/quoteEngine.js';
+import { getVNextPriceBookMetadata } from '../server/quote-engine-vnext/index.js';
 
 // Full, unchanged application JSX + React/ReactDOM in a real headless browser.
 // Only transport is substituted: actual fetch requests are captured and passed
@@ -28,7 +29,11 @@ finally {
   if (previousStore === undefined) delete process.env.PRICEBOOK_PATH;
   else process.env.PRICEBOOK_PATH = previousStore;
 }
-const metadata = getServiceMetadata();
+// Retain the legacy price representation fixtures, with the customer fields
+// supplied by the current application API. Missing metadata is not a quote.
+const customerMetadata = getVNextPriceBookMetadata();
+const metadata = getServiceMetadata().map(meta=>({...meta,
+  customerFields:customerMetadata.find(current=>current.serviceType===meta.serviceType).customerFields}));
 const defaults = { markupPercent:0, markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0,
   rangeBufferPercent:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   overheadFixed:0, peakMonths:[], peakSurchargePercent:0 };
@@ -75,7 +80,6 @@ before(async () => {
   bundle=built.outputFiles[0].text;
 });
 after(async () => {
-  if(browser) await browser.close();
   const files=['client/src/pricebook.jsx','client/src/pricebookEditing.js','client/src/pricebookInputs.jsx',
     'client/src/ui.jsx','client/src/reference.jsx','client/src/api.js','server/priceBookMoney.js','server/priceBookService.js',
     'test/priceBookEditor.browser.spec.mjs'];
@@ -83,6 +87,9 @@ after(async () => {
     method:'Actual React full PriceBook + intercepted fetch + actual temporary JSON persistence; no authenticated application server',
     sources:Object.fromEntries(files.map(name=>[name,createHash('sha256').update(readFileSync(join(repo,name))).digest('hex')])),results},null,2));
   console.log('Editor browser evidence: '+evidence);
+  console.log('Closing editor browser after all scenarios');
+  if(browser) await browser.close();
+  console.log('Editor browser closed');
 });
 async function scenario(name, services, run) {
   const dir=join(evidence,name); mkdirSync(dir,{recursive:true});

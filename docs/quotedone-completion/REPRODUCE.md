@@ -1,3 +1,21 @@
+> **September 28 correction: customer quoting is still unfinished.** The owner did not authorize replacing the detailed voice guide or making ordinary names, addresses and timing information prevent a quote. The original 459-line voice guide and original engine-specification text are restored exactly. The earlier blanket refusals and the test changes that accepted them are not product requirements. The application code in the published PR is still the 808d723 implementation; its ordinary-customer regression is open. An unpublished local candidate at `6da69f6c2b4cd50d600fc937e201b8870228cf95` restores normal customer controls but still fails additional-work/uncertainty cases inside name/address text. A checked summary alone does not resolve that gap. No whole-flow acceptance or launch gate has passed. The 19-file arithmetic engine and verified precision, callback, retry, privacy, approval and persistence repairs remain unchanged. Restoring the original documents does not implement voice, booking, messaging or change the engine. The reports below are historical evidence for their stated commits, not new owner decisions.
+
+# Reproduce the September 28 whole-request repair
+
+Use the existing compatible runtime and four groups below. The current runner includes 9 application and 6 browser workflows. The new metadata workflows retain original requests, complete responses and stored records. Run application/browser before regression. [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md) and [R1_REPAIR_STATUS_20260928.json](R1_REPAIR_STATUS_20260928.json) supersede the September 27 scoped acceptance for this defect. Runtime/application ran at e0b4c1b6575d349f695efcaa2944648cf07bad1b; browser/final regression ran at 925e5d48b8472f054e7797465a372ca911446cfa. The only difference is the corrected structured-measurements browser fixture. Published source a681a2efd4c527ac70ab0555c755b324bcd9e194 has the exact complete Git tree of the latter. The consolidated evidence ZIP and its tested-commit bundle are delivered with the September 28 review handoff.
+
+# Reproduce the September 27 repair candidate
+
+Current source: application/runtime/regression `f96c14a049f68c1d32d54420d514d2e088fe722e`; complete browser rerun `d218c85c491a33cb301816d52e593b4f913a363c`. The only difference is the new browser harness's Country locator; application/engine/ordinary-test bytes match. Delivery commits contain only documentation/evidence.
+
+Use the same four run-completion.mjs groups and compatible runtime described below, with fresh stores. They now run 1 runtime, 8 application, 5 browser and 9 regression commands. Set QUOTEDONE_TESTED_SHA to the source commit used for your disposable copy. Retain source hashes and failed attempts.
+
+Extract [the current repair archive](evidence/quotedone-20260927-repair-evidence.zip) and run `node inspect-repair-evidence.cjs <extracted-directory> <repository>` with QUOTEDONE_GIT set when needed. Its 504 payload hashes, both source manifests, executed bindings and accepted command groups are checked. Use final/runtime-01, final/application-01, final/regression-01 and accepted/browser-01. final/browser-01 is the preserved failed locator attempt. [REPAIR_EVIDENCE_INDEX_20260927.json](REPAIR_EVIDENCE_INDEX_20260927.json) records the archive hash and [REPAIR_EVIDENCE_INSPECTION_20260927.json](REPAIR_EVIDENCE_INSPECTION_20260927.json) records the completed read-only inspection.
+
+The remaining instructions describe the original runtime and reproduction procedure; e936370 and its inspect-evidence.mjs/EVIDENCE_INDEX.json are historical.
+
+---
+
 # Reproduce the non-production application evidence
 
 Tested implementation commit: e936370165cb23bbb0087d245ecd64bc82178fe0. Delivery documentation/evidence commits do not change these application or regression source files.

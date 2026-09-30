@@ -1,3 +1,17 @@
+> **Current owner-approved behavior:** [Price supported work and preserve separate work for an on-site estimate](R6_SEPARATE_WORK_20260928.md). The selected job still requires usable inputs and approved pricing. The arithmetic engine and original voice guide are unchanged. See the source-bound delivery for completed checks; no public-launch gate has passed. Older checkpoints below retain their original policies and tested sources.
+
+> **Historical R5 checkpoint:** [Customer clarification and recovery repairs](R5_QUOTE_FLOW_PROGRESS_20260928.md). Normal customer details, explicit corrections and original-request retention are being verified. The name/address scope finding remains open; no public-launch gate has passed. Earlier checkpoints below retain their original source scope.
+
+> **Historical restoration checkpoint, before the R5/R6 application updates:** The owner did not authorize replacing the detailed voice guide or making ordinary names, addresses and timing information prevent a quote. The original 459-line voice guide and original engine-specification text are restored exactly. The earlier blanket refusals and the test changes that accepted them are not product requirements. At that restoration checkpoint, the published application was still the 808d723 implementation and its ordinary-customer regression was open. The then-unpublished local candidate at `6da69f6c2b4cd50d600fc937e201b8870228cf95` restores normal customer controls but still fails additional-work/uncertainty cases inside name/address text. A checked summary alone does not resolve that gap. No whole-flow acceptance or launch gate has passed. The 19-file arithmetic engine and verified precision, callback, retry, privacy, approval and persistence repairs remain unchanged. Restoring the original documents does not implement voice, booking, messaging or change the engine. The reports below are historical evidence for their stated commits, not new owner decisions.
+
+> Historical R1 follow-up: [R1_REPAIR_REPORT_20260928.md](R1_REPAIR_REPORT_20260928.md), [status](R1_REPAIR_STATUS_20260928.json) and [updated dispositions](REPAIR_DISPOSITIONS_20260928.json). The September 27 whole-request claim was incomplete; the earlier material below is retained as history.
+
+# Current repair review — September 27, 2026
+
+Start with [REPAIR_REPORT_20260927.md](REPAIR_REPORT_20260927.md), [REPAIR_STATUS_20260927.json](REPAIR_STATUS_20260927.json) and [REPAIR_CONTRACT_20260927.md](REPAIR_CONTRACT_20260927.md). The current candidate is `codex/quotedone-audit-repairs-20260927`, based on preserved completion `9670fdb`. All accepted local repair groups passed; broader release gates remain open. The assignment below is the preserved earlier workflow authorization. Its original branch and checkpoint references are historical for this repair.
+
+---
+
 # Authorized assignment: finish the QuoteDone application workflow
 
 **Owner authorization granted September 13, 2026.** This is an implementation assignment, not a proposal awaiting another approval. The owner approved the complete, isolated, non-production quote-or-lead workflow and the bounded environment work below.

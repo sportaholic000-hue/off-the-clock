@@ -1,0 +1,12 @@
+{
+  "label": "whole-request-application",
+  "args": [
+    "verification/quotedone/pricing-envelope-workflow.mjs",
+    ".",
+    "../recovery-evidence-candidate-20260929/whole-request-application"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 45489,
+  "log": "whole-request-application.log"
+}

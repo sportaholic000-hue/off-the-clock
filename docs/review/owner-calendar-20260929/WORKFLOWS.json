@@ -1,0 +1,55 @@
+{
+  "sourceCommit": "aa90b65dd7d88801c5f5dcf720b0e0dfd8ade49f",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Calendar navigation shows a persisted preferred-time request, not a confirmed appointment, and opens its exact lead",
+      "passed": true
+    },
+    {
+      "name": "Owner saves working hours, timezone, notice, increments, buffers and blackout through the real form",
+      "passed": true
+    },
+    {
+      "name": "Overlapping hours are rejected without overwriting saved settings; correction can be saved",
+      "passed": true
+    },
+    {
+      "name": "Calendly validates editable URLs, gives the customer an external handoff, and disconnect preserves hours",
+      "passed": true
+    },
+    {
+      "name": "Existing Google OAuth connects from Calendar and returns to Calendar; one-use state is preserved",
+      "passed": true
+    },
+    {
+      "name": "Busy periods from existing Google calendar, blackouts, working hours and both buffers affect real public availability",
+      "passed": true
+    },
+    {
+      "name": "Changed service duration changes offered slots and invalidates old slot choices",
+      "passed": true
+    },
+    {
+      "name": "Confirmed, pending and requested states stay distinct; booking opens its exact quote including separate work",
+      "passed": true
+    },
+    {
+      "name": "Provider read failure clears stale busy times, preserves saved appointments, and recovers on refresh",
+      "passed": true
+    },
+    {
+      "name": "Real authentication, staff read-only access, tenant isolation, input validation and safe schedule projection",
+      "passed": true
+    },
+    {
+      "name": "Owner availability and staff read-only calendar work on mobile with normal navigation",
+      "passed": true
+    },
+    {
+      "name": "Settings, appointments and preferred-time requests survive a real application restart",
+      "passed": true
+    }
+  ],
+  "providerBoundary": "All Google responses are synthetic. Real application HTTP, SQLite, authentication and browser rendering are used."
+}

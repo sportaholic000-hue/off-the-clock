@@ -1,33 +1,43 @@
 import crypto from 'node:crypto';
+import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
+import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
+import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
+import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
-  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES
+  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
+  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook } from '../priceBookService.js';
 import { dollarAmountToCents, centAmountToDollars, moneyKindForField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
-// The only application bridge to the frozen engine. Transport and persistence
+// The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export const DEFAULT_FIELDS = ['markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
-const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat']);
-const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing']);
+const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
+const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
 export function problem(message,statusCode=400,details) { const e=new Error(message);e.statusCode=statusCode;if(details)e.details=details;return e; }
+export function requireApplicationPricingEnvelope(submission) {
+  const fields=pricingEnvelopeViolations(submission);
+  if(fields.length)throw problem('Customer name and project address are collected after the quote or review outcome. Remove them from this pricing request.',400,{code:'INVALID_REQUEST',fields});
+}
 export function canonical(value) { if(Array.isArray(value))return value.map(canonical);if(record(value))return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));return value; }
 export const digest = value => crypto.createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
 export const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 const pick = (v,keys) => Object.fromEntries(keys.filter(k=>has(v,k)).map(k=>[k,clone(v[k])]));
 
 export function quoteDoneMoneyKind(type,field,pricing={}) {
+  if(field==='scopeDetails')return null;
   if(NEW_RATES.has(field))return 'unit_rate';
   if(type==='CUSTOM'&&field==='price')return pricing.unit==='flat'?'fixed_amount':pricing.unit?'unit_rate':'unresolved_unit';
   if(NOT_MONEY.has(field)||has(CLASS2_DEFINITIONS[type]||{},field))return null;
@@ -44,6 +54,11 @@ function convertedPricing(source,type,direction,location,effective=source) {
   const fields=new Set([...(ALL_OWNER_FIELDS[type]||[]),...allowedPricingFields(type)]);
   for(const field of fields) {
     if(!has(source,field))continue;
+    if(field==='scopeRates'&&record(source[field])){
+      const definitions=scopeRateDefinitions(type,effective,true);
+      result[field]=Object.fromEntries(Object.entries(source[field]).map(([key,value])=>[key,convert(value,{kind:definitions[key]?.moneyKind||'unit_rate',path:location+'.'+field+'.'+key})]));
+      continue;
+    }
     const kind=quoteDoneMoneyKind(type,field,effective);
     if(kind)result[field]=moneyTree(source[field],kind,convert,location+'.'+field);
     else if(field==='debrisPricing'&&record(source[field]))for(const [level,row] of Object.entries(source[field])) {
@@ -143,7 +158,7 @@ function validateApplicationNumericDraft(book) {
  const numericTree=(value,path)=>{if(value===undefined||value===null||value==='')return;if(record(value)){for(const [key,child] of Object.entries(value))numericTree(child,path+'.'+key);}else if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw problem('Invalid numeric value at '+path+'. Enter the intended value before saving.');};
  const numericFields=new Set(['markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY]);
  for(const [field,value] of Object.entries(book.defaults||{}))if(numericFields.has(field))numericTree(value,'defaults.'+field);
- const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit']);
+ const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails','scopeDetails']);
  for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
 }
 export function validateApplicationDraft(ownerId,input) {
@@ -220,16 +235,31 @@ export function approveApplicationService(ownerId,serviceId,input) {
 }
 export function previewApplicationQuote(ownerId,input) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');
+  requireApplicationPricingEnvelope(input);
+  const contactFields=invalidCallbackFields(input.contact);
+  if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
   const raw=uniqueApplicationService(saved,input.serviceId);if(!raw)throw problem('Save this service before previewing it.',409);
+  const guidedIntake=validIntakeConfirmation(ownerId,bookRevision(saved),input,{preview:true});
+  const clarification=intakeClarification(ownerId,bookRevision(saved),input,applicationServiceName(raw));
+  if(!clarification.valid||!validIntakeHistory(ownerId,input))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
+  const scopeReview=applicationScopeReview(raw,input,{preview:true,guidedIntake,clarifiedFields:clarification.fields});
+  if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=raw.active===true&&draftRaw.active===true&&approvalCurrent(raw,saved)&&!seasonalDecision(raw,saved)&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,customerInputs:input.customerInputs||{},feeSelections:{owner:raw.ownerFeeSelections||{},customer:input.customerFeeSelections||{}}});
-  return {...result,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
+  const definition=applicationServiceDefinition(raw);
+  return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
-export function calculateApplicationQuote(book,raw,submission) {
+export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false}={}) {
+  requireApplicationPricingEnvelope(submission);
+  const guidedIntake=preparingIntake||!!ownerId&&validIntakeConfirmation(ownerId,bookRevision(book),submission);
+  const clarification=intakeClarification(ownerId,bookRevision(book),submission,applicationServiceName(raw));
+  if(!clarification.valid||!validIntakeHistory(ownerId,submission))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
+  const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
+  if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
   const current=approvalCurrent(raw,book)&&!seasonalDecision(raw,book);
   // Active-for-customers is a trusted application eligibility decision. Preserve
@@ -237,10 +267,60 @@ export function calculateApplicationQuote(book,raw,submission) {
   service.active=raw.active===true&&current;
   const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
-  const customerResult=sanitizeForCustomerVNext(internalResult);
+  const definition=applicationServiceDefinition(raw);
+  const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
   let leadEnvelope=null;
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
-  return {request,internalResult,customerResult,leadEnvelope,applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
+  return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
+}
+export function prepareApplicationIntake(ownerId,submission) {
+  if(!record(submission))throw problem('Use the job-details form to check this request.',422);
+  requireApplicationPricingEnvelope(submission);
+  if(submission.intakeFlow!==JOB_DETAILS_FLOW)throw problem('Use the job-details form to check this request.',422);
+  if(!validServiceIdVNext(submission.requestId))throw problem('A stable request UUID is required.');
+  if(submission.intakeConfirmation!==undefined||submission.reviewRequested!==undefined)throw problem('Check the editable job details again before submitting.',409);
+  if(!hasCallbackContact(submission.contact))throw problem('Enter a valid email address or phone number before submitting an estimate request.',422);
+  const contactFields=invalidCallbackFields(submission.contact);
+  if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
+  const book=loadPricebook(ownerId),raw=uniqueApplicationService(book,submission.serviceId);
+  if(!raw)throw problem('Choose a current saved service before checking the job details.',409);
+  const revision=bookRevision(book),definition=applicationServiceDefinition(raw);
+  const outcome=calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake:true});
+  const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
+  const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,field.label]));
+  const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[])];
+  const followUps=[...new Set(missing.map(key=>fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>'Check '+label+'.');
+  if(outcome.applicationReview)followUps.push(...outcome.applicationReview.issues);
+  if(!ready&&!followUps.length)followUps.push('The business needs to check the selected work or pricing before an estimate can be provided.');
+  return {
+    status:ready?'ready':'needs_details',
+    summary:{...customerJobSummary(raw,definition,submission,revision),separateAdditionalWork:declaredAdditionalWork(submission,intakeClarification(ownerId,revision,submission,applicationServiceName(raw)).fields)},
+    followUps,
+    historyReceipt:createHistoryReceipt(ownerId,revision,submission),
+    ...(intakeQuestions(submission,applicationServiceName(raw)).length?{clarification:{questions:intakeQuestions(submission,applicationServiceName(raw)),receipt:createClarificationReceipt(ownerId,revision,submission)}}:{}),
+    ...(ready?{confirmation:createIntakeConfirmation(ownerId,revision,submission)}:{})
+  };
+}
+export function applicationServiceName(raw) {
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  return typeof raw.service==='string'&&raw.service.trim()?raw.service:definition?.service||'Service';
+}
+export function applicationServiceDefinition(raw) {
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
+  const customerFields=Object.entries(customerContractForVNext(raw.serviceType,p,raw).fields).map(([name,field])=>({name,...field}));
+  if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
+  const d=p.offeringDetails||{};
+  const summary=[d.description];
+  if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');
+  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),String(d.finishCoats??'Unconfigured')+' finish coat(s); '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
+  return {...definition,customerFields,offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
+}
+function applicationScopeReview(raw,submission,options) {
+  const issues=wholeRequestIssues(submission,applicationServiceName(raw),options);
+  if(!issues.length)return null;
+  const quoteId=crypto.randomUUID();
+  return {customerResult:sanitizeForCustomerVNext({resultType:'ESTIMATE_REQUIRES_REVIEW',quoteId}),applicationReview:{reason:issues.join(' '),issues,quoteId,stage:'whole_request_scope'},request:null,internalResult:null,leadEnvelope:null};
 }
 export function applicationMetadata() {
   const legacy=getServiceMetadata();
@@ -249,8 +329,22 @@ export function applicationMetadata() {
     const fields=meta.pricingFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
+      if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
+      if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
+      const priceMaps={
+        ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
+        FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
+        FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft'],
+        FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft'],
+        FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
+        FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
+        SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
+        LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft'],
+        LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
+      };
+      if(priceMaps[meta.serviceType]?.includes(field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first']};
+      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large']}});

@@ -1,0 +1,1825 @@
+{
+  "note": "Original failures, successful responses, stored records and databases remain in the named local evidence directories. This index publishes hashes, not database contents. The previously blocked ZIP and private session logs are not uploaded or repackaged.",
+  "files": [
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "application-startup-retry.log",
+      "bytes": 1136,
+      "sha256": "a640075b59012a697bab0abad15642e114364baeb7977cee212930c7999f225d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "application-startup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "missing-module-and-schema-tests.log",
+      "bytes": 10026,
+      "sha256": "ca69ce3afb1925d89cfdfa6f31550bb581f1f69371cb394f83db4e577e1d9a43",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "native-runtime.log",
+      "bytes": 89,
+      "sha256": "6db8346bbf817fbf418d2efe4c44de1057278d99f40480af09faed1df8dcf9c8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "results.json",
+      "bytes": 886,
+      "sha256": "bab085f1f1ec7f5f75008dd4057fc79fcf0dfd62feef58fd0483b095a820ff48",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "server-syntax.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-before-20260929",
+      "path": "source-binding.json",
+      "bytes": 63031,
+      "sha256": "440918197d5f8378a9f619de35989b5cf2a5d85eb0011e7b46bc41686e178341",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/application.sqlite",
+      "bytes": 397312,
+      "sha256": "cf3855f53e3854d57153cdf4743f1d0ba0f68783aca662e9eaa9cc70735e9455",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/http.json",
+      "bytes": 939,
+      "sha256": "9156ddfea7346e6f830ce06c1245a94beb595d0dd8b6aabc093a413b290fd30d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/result.json",
+      "bytes": 778,
+      "sha256": "5f0dbeb7d87dfc9f44db5801c1f360daf38d3b2e477e488bc0161464736e9876",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/server-process.json",
+      "bytes": 523,
+      "sha256": "d42020a69cfe0d544d8eacdce42c936828efef002413cde1dcaed9cf44f3bd05",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/server.log",
+      "bytes": 255,
+      "sha256": "bd76e9446afde0cf4fe6fc26d9fce738a998247475410e6614a08c1fda178928",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-after/source-binding.json",
+      "bytes": 12887,
+      "sha256": "c50749d6d6559e04eb1bf0cbc774add11eae9cd3974b221d6674cd2518698f1c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/application.sqlite",
+      "bytes": 385024,
+      "sha256": "cd10fb8423e7ebf32f5f41bdf209362c6754a2c58a020a655024e9ba86b86b8e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/http.json",
+      "bytes": 638,
+      "sha256": "e23a8daa41ca30ec3ac38e68c3a8aa6a59c4564f608a4b6a6bcd6719f9a5c2dc",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/result.json",
+      "bytes": 228,
+      "sha256": "d616d6c1be89c5b688d22704ca8d4c44d2bc05e44bd30704740e46d173ec2b22",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/server-process.json",
+      "bytes": 524,
+      "sha256": "1967e6af747609c722457bd700e223e41abfda1aace8d4fd55029e9d4efe7e53",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/server.log",
+      "bytes": 108,
+      "sha256": "a78f9a5c3d0994d694edd99398922f6d9a2ef0c8621b7ae41bcc1c682801bb51",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "application-startup-and-auth-before/source-binding.json",
+      "bytes": 12887,
+      "sha256": "97edb60b98d29bd8add86aa091bda0830de4a2b853a6c8370101953988f6f8e4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "auth-and-service-area-repairs.log",
+      "bytes": 11558,
+      "sha256": "ae9290b4b8a7cea58af8005039398e84ff93cedf61eb89a4240bf61bb48f3c1a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "auth-and-service-area-repairs.result.json",
+      "bytes": 519,
+      "sha256": "1666d13c756041745d8f32b8aafff05f0a0d96d241f0643c55e2e1f750e4529d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "auth-and-service-area-repairs.source.json",
+      "bytes": 71380,
+      "sha256": "5f20993126ef2adf3ac7109d96bbf3d8fbd2fc3f7c371ce3daa2dd99e8318df0",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/application.sqlite",
+      "bytes": 409600,
+      "sha256": "e0101c1fbb9189839f30c90ed36eefe6051c95fcb12cd266752f9fbd258b9113",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/http.json",
+      "bytes": 3250,
+      "sha256": "dada67c0fb2b266dd4f86af8efda6a412f1d9bc9adb6aaddd38db38fbc53b804",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/result.json",
+      "bytes": 4414,
+      "sha256": "a77262231965f9c65e9a8821078c1c3498e2cfec1b29ae4a7a43745268ee0e63",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/server-process.json",
+      "bytes": 509,
+      "sha256": "eae3b500628c31fcc8f7268fb992bafc98f2accc4219bfc5f5433f40369a5c12",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/server.log",
+      "bytes": 784,
+      "sha256": "5045e22193c7bc7ce560f058d9161e167b255d6be58e4590943a8452bb7c0b81",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/source-binding.json",
+      "bytes": 12544,
+      "sha256": "3f1cffda13be949a526856da7c900ef37955775585627454cfb0c0315908d6de",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/synthetic-account-setup.ndjson",
+      "bytes": 354,
+      "sha256": "a6fb8e6772c74763bf39a6621032daf112bbc151e81241aed36dc7574cb4bb9f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after/synthetic-calendar-provider.json",
+      "bytes": 402,
+      "sha256": "148335041c4b87048d3ba5627a25122739d041c961eb9f24ebe287b6684e216b",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after.log",
+      "bytes": 42,
+      "sha256": "6c58382f96767a28e2e3cd81381f00bf0548a02d534b197c10c12fd16550494a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after.result.json",
+      "bytes": 296,
+      "sha256": "aaa2718c45112801eb6f2d32aef70d4cfb045ac683a74485aa2ae10b49768e25",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-after.source.json",
+      "bytes": 70832,
+      "sha256": "f22d0affd4bd2d56979cfdc03256cec14ef07d9bc8d076bf1973d1535cfb432b",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before/http.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before/server-process.json",
+      "bytes": 510,
+      "sha256": "28c1edb9c72b3326e6531e6eeddfddd6de515bf2efa42c4299adf3eee35a4d2a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before/server.log",
+      "bytes": 993,
+      "sha256": "ff885f774b0a76608580fd276dc4e91342a60a012b6300bc7e2ae2433afc50dd",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before/source-binding.json",
+      "bytes": 12544,
+      "sha256": "1ec713cfbed82a8c95d87ddc6768dd8fc7e9e9333da6754a439c3258456ff7f6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before/synthetic-calendar-provider.json",
+      "bytes": 61,
+      "sha256": "1ca58ec1614a0e6b4aac8459b44ff5c4b098ad7c9b83a8d74fda9995e32c2848",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/application.sqlite",
+      "bytes": 397312,
+      "sha256": "ad25ea8640c948a650d14abd05cecb4d10b2fb9dce1d2c8a97b071e3031c99be",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/http.json",
+      "bytes": 2882,
+      "sha256": "eec7ed128fd258ba2b10915a3c123651b1355649a8be563d0fb60cea71fac128",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/result.json",
+      "bytes": 3272,
+      "sha256": "c3ef0b8fdabf34416bec8b2ced505247e999ebd2c28a942daef04026a29a301b",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/server-process.json",
+      "bytes": 516,
+      "sha256": "27bdc421cee98e52c2e79dbe9f2df6df4608fb4ac60a6500ecc7481f700e5be8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/server.log",
+      "bytes": 430,
+      "sha256": "e38b41e487596966856ef91b07f5fdc608cc3cf99d2c1410c202565aadb24154",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/source-binding.json",
+      "bytes": 12544,
+      "sha256": "f25ea50433e8f777076a182512c0b00fa6edba0a8d54ab11b5725236207e14a5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/synthetic-account-setup.ndjson",
+      "bytes": 354,
+      "sha256": "45fba0087a97d23c0a7fcb81df77a7e582235972c9273d18c09ae08b8b302feb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry/synthetic-calendar-provider.json",
+      "bytes": 724,
+      "sha256": "e8cc420b4e7bf793fcf210d7a1f4c043acd2614ae09d1cad85b9b4f3fc817020",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry.log",
+      "bytes": 43,
+      "sha256": "fd68abe831e65cbafb97b05004731c5fc327db464a637e096f8cb28b3d2f3156",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry.result.json",
+      "bytes": 318,
+      "sha256": "fe9de91005bd04fcecbf6b85db84684e1a77817640630c65b74419f6acee6b6c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before-retry.source.json",
+      "bytes": 70840,
+      "sha256": "9d90bdbdcbc3de9aa96f35c72db86ce7c0ca875014b5acb7664e90467d5f5297",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before.log",
+      "bytes": 3222,
+      "sha256": "225157263ce91bba93c1066c43c439ffa9db8fc8beec55e3502e3b5df279f750",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before.result.json",
+      "bytes": 299,
+      "sha256": "7e16ecb1f5dd85259373f99183fc0413ff72b09ae08ebde746f6a388da9969f5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "calendar-oauth-before.source.json",
+      "bytes": 70834,
+      "sha256": "f01597b40ecfe2eb97cd59c899d756b0cf59ee08c5d3c073560d3d23ede6ae29",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "candidate-application.sqlite",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-client-build.log",
+      "bytes": 1151,
+      "sha256": "9a0df1782d4d3ae571f658c92f09392a26e6e40d5218ae0da858c6c79f26ad83",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-client-build.result.json",
+      "bytes": 263,
+      "sha256": "b13890a17bc5dfd7ed9cbe9072eed04149503178c36cb75302dc92f8ec6fc98a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-client-build.source.json",
+      "bytes": 70796,
+      "sha256": "8382f9df8269d10105141c38abbc58fcba172d9fe6230abbb4e4492034f0a183",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-1.log",
+      "bytes": 1237,
+      "sha256": "c75c693b6f4dc68413d3595455ad4b2cf963a1ffedd5475fa5a7079cf1fac41d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-1.result.json",
+      "bytes": 199,
+      "sha256": "5a87dd89bc2f45646119b22492c281f5d078f48366144148cae4bcd1774cf79f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-1.source.json",
+      "bytes": 71078,
+      "sha256": "c2554868fbf6e71848fc90f7ac50e0b94ee87f8381158b0a06dc7e3e452b92cb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-2.log",
+      "bytes": 218180,
+      "sha256": "dffaaf6cc18e369688bcd9218d26007863230acd60e7a48bb7ac48aba99b5ac4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-2.result.json",
+      "bytes": 1923,
+      "sha256": "4bb57fe1cbfe2027c02bef21db215ff3c330782c53bb1fb0ecc92e3084ab9de5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "combined-regression-2.source.json",
+      "bytes": 72799,
+      "sha256": "eb6dd5c31b3c0cc368d9e1fc6615b3d419d27c6ec04407aa32f47f7e3ab4da66",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-application-engine-regression.log",
+      "bytes": 152852,
+      "sha256": "a9b633b6c57775ec18c7b0b7de16cedc7da234027ecd2f42f2b6bf4baaa5b7fc",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-application-engine-regression.result.json",
+      "bytes": 1619,
+      "sha256": "6533e6966c3c0a4dade69e5badedc54461826c07ab38dbfe703860e84fdc0fd8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-application-engine-regression.source.json",
+      "bytes": 72124,
+      "sha256": "f43708bc512d88be2ef010d1012b586b2980962d9cac9a98aaa26635529db5ad",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-client-transport.log",
+      "bytes": 3359,
+      "sha256": "63738b604316e3e0c85c545eb53eaea4c796e8d86de1af9e89386a9c100b3f54",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-client-transport.result.json",
+      "bytes": 253,
+      "sha256": "d83c3a5106026de2a52e3603a4f14342120af2f7134f8bb4783fd19bb85536d2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-client-transport.source.json",
+      "bytes": 70786,
+      "sha256": "174355f009aeb007270b052265ffc79ab7a0646b17cb6ceac05bb91171e95bce",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-engine-replay/replay-captures.json",
+      "bytes": 155895499,
+      "sha256": "9cdc915b069f7890da69d7498293324e19616d4914b3df64417f7fc4b0c3f128",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-engine-replay/replay-summary.json",
+      "bytes": 7052,
+      "sha256": "099ecaab56a072af9a862cea4cd6f09dea4a988cdfb3a9cc99e5e72de9e1ffda",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-engine-replay.log",
+      "bytes": 7226,
+      "sha256": "e7fb775f0a542c7b7bbd7aa5cf2a8dc11c61d5814b0af067c16ba8bbcf44e795",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-engine-replay.result.json",
+      "bytes": 282,
+      "sha256": "fae06c84a83f04d6bf1ee5db8ed9697735579e74bb7cd28c19d5112eebf2a87b",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-engine-replay.source.json",
+      "bytes": 70820,
+      "sha256": "f73ccfeabf343b7de128d715c6b6849cdf8493e7fd22a4d8f01eac88267dbadb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-integration-boundary.log",
+      "bytes": 32780,
+      "sha256": "a494293da304e460728c624964719bd8af65f5bb921971aa1ad0d5ae01080b60",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-integration-boundary.result.json",
+      "bytes": 227,
+      "sha256": "0ef7feedc5f7cd91e0fc8239e6180036d0760123ed7eef3742313206e1a3462d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-integration-boundary.source.json",
+      "bytes": 70752,
+      "sha256": "dda4783795842ffcbeadde641d7a4e4d5a61585deda95f636d9010fa0e5b6f41",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-original-precision.log",
+      "bytes": 2683,
+      "sha256": "ba956d46fc7ffaeeb96e1ce869eb8c9ab48b55d76b2ab8596b15338c0aabf237",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-original-precision.result.json",
+      "bytes": 210,
+      "sha256": "279276671ebf962247fd18655842b9e56aacc2bd69299d227e793df069a2e7e8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-original-precision.source.json",
+      "bytes": 70739,
+      "sha256": "8669553e4bfd18a3378404cd6d3fb1151228385a799a42dfe42d34178d6c232f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-pricebook-browser-regression.log",
+      "bytes": 5422,
+      "sha256": "6289961b37c2b402ff808a296de14032c6c985c4508440741419939607cff608",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-pricebook-browser-regression.result.json",
+      "bytes": 316,
+      "sha256": "f9caf02785786f614e1e7b395074e88672c8fccccc7ac7f2a59c7a98f1e7cd86",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "final-pricebook-browser-regression.source.json",
+      "bytes": 70823,
+      "sha256": "0cdde6ab34fc13061cc812abca809adb8942c86d5ad0fc0d223fb38cd06aaae5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-module-mocks.log",
+      "bytes": 13157,
+      "sha256": "9876f347bdc239cbc31e7d6fb9fa0dce01cdae2096d4986af6fb8f06b143e0ea",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-module-mocks.result.json",
+      "bytes": 339,
+      "sha256": "fdf7f71fd43b9d5f065625020c1565378bc027a83563fc5c4d955204083f27fa",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-module-mocks.source.json",
+      "bytes": 70846,
+      "sha256": "6bb55308ed697addd29c1f42c5502afd703bf77877c0049f5da6346f37a82542",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-repaired.log",
+      "bytes": 3894,
+      "sha256": "68d3c79b88f003865ad71f9256e601a4c5e0c3cd337f361d272e9afba6025d5a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-repaired.result.json",
+      "bytes": 372,
+      "sha256": "e2f6e60b7fef8da50aa6d410fa35dc50499e64a6834d80e7c383e7067375cb5e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "onboarding-persistence-repaired.source.json",
+      "bytes": 70887,
+      "sha256": "368227de37bed758bbb62a5169e68521d0a0764e779ec18d0a886ce0e50e2ffb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "original-precision-assets/MANIFEST.json",
+      "bytes": 350,
+      "sha256": "4d8839a9158516b51b7b0728b2fac8375dfb3bd940953714234f828f3fca7b06",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "original-precision-assets/precision-cases.json",
+      "bytes": 69779,
+      "sha256": "1f9b5df82e52e980c49c908f7050872b613b18c0c8bfaa4f907bbaa1d7aca5b5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "original-precision-assets/precision-regressions.mjs",
+      "bytes": 2793,
+      "sha256": "379dae9ef699fc16080bc1ae4f02e3c4368dcd02a6ff69995710c5a43a6b10d4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build-retry.log",
+      "bytes": 812,
+      "sha256": "64e101d9236b5077ea39e62c25a0b37120a9204f9649e98665a5fb514feb3451",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build-retry.result.json",
+      "bytes": 209,
+      "sha256": "0034ddce09ecbe7e438d1bd5d0810e826791f374445ad94482848bfb41b45a55",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build-retry.source.json",
+      "bytes": 70727,
+      "sha256": "d2ff20529269251812b88dbd4bbaf65174aeefd2dbd33503e5ed099b77976b74",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build.log",
+      "bytes": 730,
+      "sha256": "79d5df013ddd556a1ba3aafcd3faa04e26c5a77d6b124943c837ee897a09562e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build.result.json",
+      "bytes": 198,
+      "sha256": "50712e66b368921c657cf94dc428f6fa1b3f41db593b6553acb46312ebe54684",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "production-client-build.source.json",
+      "bytes": 70730,
+      "sha256": "eb4649f6d292fc88c058db176b012ef6d821dfffa20d38fa4e18b8794e7bbc60",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "provider-credential-repairs.log",
+      "bytes": 925,
+      "sha256": "30c94179dde976444ce7e63d7026411154bc3833ecd7b4e283b86bb7a0fffb0a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "provider-credential-repairs.result.json",
+      "bytes": 240,
+      "sha256": "aae1020a41c9f764a4c4a6f141ad6841ed18e3435bf4501c5a8650bd6a97e8b9",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "provider-credential-repairs.source.json",
+      "bytes": 70764,
+      "sha256": "d8f0389556a499814a042bf9e43ed5f14a47b42964a898e9a01ca19bee366714",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/application.sqlite",
+      "bytes": 606208,
+      "sha256": "e25b3cec1a2e098654be3ab4218c30dd3a6517d633fbe21053d51f7830a0fd11",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/http.json",
+      "bytes": 465450,
+      "sha256": "c3196f5dd7227598cb33ec12dca0ffaf4573b62ca6fdb3a26da1f4784851d3f4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/pricebooks/b4793e26-0eee-4b89-b056-ed86aeb323da.json",
+      "bytes": 2964,
+      "sha256": "56593cb97c21415c618b6b095f6c7e685926da98e964422faa7c394a0d8fd48d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/result.json",
+      "bytes": 90109,
+      "sha256": "1dc85db0bf01c0f7272e017cdd306d777128484de9173f9b06f0456449a6d6b0",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/server-process.json",
+      "bytes": 513,
+      "sha256": "69aa383467cbaed02d6a61c595ef786c5dfb749bd33fb93fc6ae361eee49e34c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/server.log",
+      "bytes": 763,
+      "sha256": "a52a74849e593f1156a5ded5c6b1a92af5a38543159c6673fedeabe5fdfee6c4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/source-binding.json",
+      "bytes": 12544,
+      "sha256": "3f1cffda13be949a526856da7c900ef37955775585627454cfb0c0315908d6de",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/synthetic-account-setup.ndjson",
+      "bytes": 357,
+      "sha256": "c837304fd27f074645a955b35ee505f04d9ed41d282cb7517e78c674ae139b6a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application/synthetic-calendar-provider.json",
+      "bytes": 3850,
+      "sha256": "3b95192fd7c72b6edc386bd3e58f2de6c1331a13a534373a4b667afaf25c7a94",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application.log",
+      "bytes": 27,
+      "sha256": "8a7caba8f03bd92c02f2fb108614824055dd5c3ee6d3c28963ae12ac76b675d3",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application.result.json",
+      "bytes": 288,
+      "sha256": "ae0fcaf00216f66c7e957923b9f7737290a1c8153ea3b48abeb6c8a076868bbb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-booking-application.source.json",
+      "bytes": 70816,
+      "sha256": "f780f3ed5857f9fb7f2d368fdcfb4ffea152fec1ed82a8561edbcb4aa01cbc46",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/application.sqlite",
+      "bytes": 786432,
+      "sha256": "00ec3202b43e51cabdac39c1617a677522cc20bd26093ccfa4ae4c1b910a688f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/browser.log",
+      "bytes": 161,
+      "sha256": "c2ee02878c61b517a8d165b2746e6b40a221c15df52c7c91e6cd3e7cbb4d4813",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/configured-lawn-edging-plus-separate-work.png",
+      "bytes": 107369,
+      "sha256": "a111d1dad0a8f8796ad0456cb02ded566e8cef6ad7976a996b4733a1b42aaf2d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/context-explicitly-identifies-separate-work.png",
+      "bytes": 115034,
+      "sha256": "a0c1d0a9f94d5191d457068fca5c0e321731634181978aebbfaf91516d60adc6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/executed-full-page-browser.mjs",
+      "bytes": 12066,
+      "sha256": "88c9eb85345d774ec9f2c8dfd45c27f6586efc0e952c66a17b4bca077fc94194",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/failed-results.json",
+      "bytes": 402140,
+      "sha256": "515f0c7cdfde61bdb0f617bd7056e30369cd87e0276759b8b5d401b83d22a63f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/failure-0.png",
+      "bytes": 27228,
+      "sha256": "bc54265909b631d47f9c8ae481506460eb2beca2d3ba700d39d98b0b4fafd9ec",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/failure-0.txt",
+      "bytes": 109,
+      "sha256": "317089bea9a37f3dd05c4b955414a0f5363619616dbff65eb4058c941efffb32",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/http.json",
+      "bytes": 338493,
+      "sha256": "9c0ac7fb66dff251eb8818a22e296f1198a80f470dacf9a647b5c054559d992d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/normal-complete-request.png",
+      "bytes": 91191,
+      "sha256": "e4097607d14223808fae5160bea31295af4645c1afa8643d874f1df4193a3673",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/partial-retry.png",
+      "bytes": 104151,
+      "sha256": "41feb1a9e18a6d8cd452b7f8e314df69f41541f8ef0b8d3c5e0b6dd481f0382f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/pricebooks/a7aa8499-f08d-411e-8ef1-2ae763d3b7f6.json",
+      "bytes": 3000,
+      "sha256": "47096f1fa8662a249cb4570b61b06d88b7eca4e73e5effbf902f4fec63d33e90",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/separate-hedge-work.png",
+      "bytes": 104665,
+      "sha256": "b4831c3e9aa00cd1c94c23ee7daf12159a43922944a1abd4b2a2796443c0d5f5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/server-process.json",
+      "bytes": 509,
+      "sha256": "f06f890204c2b82630955adb737f39f6648216555142078cba76930a985a19e7",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/server.log",
+      "bytes": 237,
+      "sha256": "d5359e32512c65c9cb3f70b4251adead0ac5332e5fbb9ca2744d4ec29faaafc6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/source-binding.json",
+      "bytes": 12544,
+      "sha256": "3f1cffda13be949a526856da7c900ef37955775585627454cfb0c0315908d6de",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/synthetic-account-setup.ndjson",
+      "bytes": 178,
+      "sha256": "830a8cf6ba7d65ae1e14df4d1501078ce0d0a674bb123fc515b67aa40377045e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner/unknown-main-area-with-separate-work.png",
+      "bytes": 52677,
+      "sha256": "0492fbc1235b21feb7a38b89fc433ab45b179566ccf71901a8a1c37d926fac15",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/application.sqlite",
+      "bytes": 786432,
+      "sha256": "a7f443c62e9dab921e511942ae5e33c89c97f01960b989f08eb2b8f8decb8165",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/browser.log",
+      "bytes": 161,
+      "sha256": "874b85173f962a71800f97858fffd14e366f057a33ddabc12009e4402b07dab1",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/configured-lawn-edging-plus-separate-work.png",
+      "bytes": 107369,
+      "sha256": "a111d1dad0a8f8796ad0456cb02ded566e8cef6ad7976a996b4733a1b42aaf2d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/context-explicitly-identifies-separate-work.png",
+      "bytes": 115034,
+      "sha256": "a0c1d0a9f94d5191d457068fca5c0e321731634181978aebbfaf91516d60adc6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/executed-full-page-browser.mjs",
+      "bytes": 12107,
+      "sha256": "1e3cca9efa1bda4ef0afbdac90e0a38930c57331f91832dfb76cd2ebc37d1a7d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/http.json",
+      "bytes": 338493,
+      "sha256": "14a1433ec4107b90b5533bec5379c977f2d22d598d20a88acaf616ed05ef0231",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/normal-complete-request.png",
+      "bytes": 91191,
+      "sha256": "e4097607d14223808fae5160bea31295af4645c1afa8643d874f1df4193a3673",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/owner-additional-work-leads.png",
+      "bytes": 223547,
+      "sha256": "450adecabab56125193e671c649957bcfac100f5226fa3871b6324e1c571ce26",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/owner-partial-quotes.png",
+      "bytes": 346026,
+      "sha256": "41fb4b8929294bcd22018da4890366758cdac2af7935684ccf3f648dc776fa0c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/partial-retry.png",
+      "bytes": 104151,
+      "sha256": "41feb1a9e18a6d8cd452b7f8e314df69f41541f8ef0b8d3c5e0b6dd481f0382f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/pricebooks/560b4b2a-2e64-4777-99f3-c532e923cf75.json",
+      "bytes": 3000,
+      "sha256": "67f8adec63bd5d114ce4a098ee13db38c176721fdb6b22bdb3a0b02048a00714",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/result.json",
+      "bytes": 402048,
+      "sha256": "d195f2cb54c54d6740d3618cd1e6e46163fd0b26f30bed05295f0a7b88570e1a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/separate-hedge-work.png",
+      "bytes": 104665,
+      "sha256": "b4831c3e9aa00cd1c94c23ee7daf12159a43922944a1abd4b2a2796443c0d5f5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/server-process.json",
+      "bytes": 525,
+      "sha256": "c17092358ea65e25d69987a20eb2413a558a898fe0cdcf124af80d8e06c34c50",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/server.log",
+      "bytes": 237,
+      "sha256": "d5359e32512c65c9cb3f70b4251adead0ac5332e5fbb9ca2744d4ec29faaafc6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/source-binding.json",
+      "bytes": 12544,
+      "sha256": "cb66f374d4375cae99ad7ad0d553e76e7530c4cec21af94fc315891f4ac3a5a8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/synthetic-account-setup.ndjson",
+      "bytes": 178,
+      "sha256": "446c5afe477d35cd54ea92a664b7f1d63793e75511d9232a94f51a1c40df41ea",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config/unknown-main-area-with-separate-work.png",
+      "bytes": 52677,
+      "sha256": "0492fbc1235b21feb7a38b89fc433ab45b179566ccf71901a8a1c37d926fac15",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config.log",
+      "bytes": 27,
+      "sha256": "131e4bf7c41cb5462f507e99a433c6851c9cc2e754d7c26847eb06e5860b7981",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config.result.json",
+      "bytes": 319,
+      "sha256": "f82a983d514d20e72b78015da60aec5187ab9704bb0f7a5bf3e835f2f57f1bd8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner-complete-config.source.json",
+      "bytes": 70822,
+      "sha256": "a0f451b216af8b912e0514df398fc11cecb0b06ba00e1981eb5ac2432cfec7af",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner.log",
+      "bytes": 350,
+      "sha256": "f1ecdf8ff02e6e8d6e44a77467246ed47fce13aeb37ea4f4b7f6e01c941adc67",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner.result.json",
+      "bytes": 271,
+      "sha256": "c053188c4f1b7817eab7fbb079685dc2036d8f338fdfec5ab999ded82aa164ac",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-full-page-owner.source.json",
+      "bytes": 70806,
+      "sha256": "753b8bb3e0a00c7bdcca81f767527b6dfb757173795633558b4892138e21bced",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/application.sqlite",
+      "bytes": 397312,
+      "sha256": "9db78ce6792d2526476d06b7c9a579094ef5888fce912b3143a62dd3b5766b68",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/executed-widget-browser.mjs",
+      "bytes": 29320,
+      "sha256": "f280c3db1bb6cc617d5778c641fa8a97f2557be48f04d398966fe5ba3f877828",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/failed-results.json",
+      "bytes": 622,
+      "sha256": "e48b3f713538534c9d4f7d38ce0bc674f401df2b1219cebf45bbdef1a8ab140c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/http.json",
+      "bytes": 342316,
+      "sha256": "6d95b849729b60f5a31cb9069b0fe83845b193133eacceb0d148ac6d4bbef2c2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/pricebooks/354465b6-47d3-4f4c-af9c-775027c79465.json",
+      "bytes": 3000,
+      "sha256": "fe8943ebc7810cacd449483605a5c24f0aa2fd20c67073420af19098ab32ce48",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/server-process.json",
+      "bytes": 516,
+      "sha256": "13ba5820832374dcb413394013fec0344000854ffe978a884bb4103f20afaa2c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/server.log",
+      "bytes": 280,
+      "sha256": "51a85fd5eb9c4bcf5687a8ca65f5855946144007d0ace6a2ede0cd8bff985a27",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/source-binding.json",
+      "bytes": 12544,
+      "sha256": "257abbac34d3cc463ca22f45fb5cc619f9b000eda5cf6672423c8d4722145afb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser/synthetic-account-setup.ndjson",
+      "bytes": 177,
+      "sha256": "158c84a7dc9b0cac05bc71378fe69c554cbb6ba7d481c7914db3d54c231bafa8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser.log",
+      "bytes": 771,
+      "sha256": "51bc08d1bd0c9dfb4520be947ebd15ea9c9b142cd92456f910a9d00f16a87ef2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser.result.json",
+      "bytes": 281,
+      "sha256": "e9f1358a90ce03a89becac231c03513bd9e4b8642705cad3c6d2c27b3c838f10",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-api-and-browser.source.json",
+      "bytes": 70803,
+      "sha256": "be47e56ec4d744b979b9b29f72c475839ca0587587db788445527f8c7498919e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/api-controls.json",
+      "bytes": 207490,
+      "sha256": "19e41d98488c999e99d9bb491984617d522fb216aa40f4268b76996dc45ddb60",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/application.sqlite",
+      "bytes": 1179648,
+      "sha256": "2458160e20fddef8a3a764ad5169102941b4b3e12fc87e4651a99936d0a31039",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/browser-runtime-requested.json",
+      "bytes": 189,
+      "sha256": "48c6708af745f86e1f0cd002d77deef55ffd61d771635ddd1bd0e4ac6d2e25b2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/browser-runtime.json",
+      "bytes": 103,
+      "sha256": "dd1b8ecda25106dc78918c683fd66a346e6ce41a5f88cbe46e8ae92f678699f1",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/complete-measured-work-without-a-name.png",
+      "bytes": 59534,
+      "sha256": "72c61cb89670690e23335af91f6c0bedcd910ed6ea0b6392867b073bc876e3ec",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/configured-edging-and-separate-work.png",
+      "bytes": 36379,
+      "sha256": "070f11dc2719fcc9159c1a0b8eb3361eaadd88d4db3739b5743b46e9034ac554",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/decimal-measurements-remain-exact.png",
+      "bytes": 59508,
+      "sha256": "2542aa5462325f9748d9e24665d2097c5360a6fee49afa31aadca2521244a5f8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/executed-widget-browser.mjs",
+      "bytes": 30428,
+      "sha256": "1e72e45faf6b6ce341feeb1fc52ff0f5ef8e1ada93a8e251feea9abf044f3b84",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/http.json",
+      "bytes": 392571,
+      "sha256": "c2c89bf9ec379e8b516926e7878369129a356a89a8ade92d172ca69b2fb8e2f3",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/mobile-launcher-open.png",
+      "bytes": 27465,
+      "sha256": "de59d0bba509b5b351762181c84f461725fee39fd54c0aaa96bd1a960cf9c329",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/owner-installation-check.png",
+      "bytes": 282606,
+      "sha256": "bc3ee524d8413e4b137a28cbb5e9370c76018436ebfea919f9d51a09ebb32a53",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/pricebooks/519b89a9-86a1-4a6a-8595-256ed7fbf6f8.json",
+      "bytes": 3000,
+      "sha256": "3f5879245511b475961780467e59b150b557aa3789908b579234110567b48df6",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/real-widget-confirmed-synthetic-calendar.png",
+      "bytes": 61176,
+      "sha256": "316566596825d7a78c8296ceea99b25f7132944717cc8eb2faaea212f2c5018d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/result.json",
+      "bytes": 1305503,
+      "sha256": "df55d8a255ff6bc937066767470060530ea16a0546cf54cf47bf87ac611e8e15",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/separate-work-keeps-the-selected-price.png",
+      "bytes": 36136,
+      "sha256": "1523addebe1df42cbbaf8b91b456e139f1c7b4a7921a4f76243164d81f21bcd4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/server-process.json",
+      "bytes": 522,
+      "sha256": "92843903129d1e475e0855409acccf7632435b70023d1e9cbfb2124bb69fc834",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/server.log",
+      "bytes": 460,
+      "sha256": "11ee06cc7a0a922dd3086cf700a89e644426e496f177e4c3439e554f044ee070",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/source-binding.json",
+      "bytes": 12663,
+      "sha256": "116c999cc20bc4c30cf3cdfc77d80cda72cb58c5ff482fbed3d471591fb03029",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/synthetic-account-setup.ndjson",
+      "bytes": 177,
+      "sha256": "379127bf321f89df63322a46bfa5dfa28527c0970b9c59c15c7c9b58812f66b5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/synthetic-calendar-provider.json",
+      "bytes": 3431,
+      "sha256": "52a1a1f7712577fa2b19b87dac8c866256ee203d3ef9da1fb44c72353f425102",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry/unknown-main-measurement-requires-review.png",
+      "bytes": 66654,
+      "sha256": "ae9acf3d5181f583320d3b2c64e835c6cb2be226148363f2fa9054597503fc1f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry.log",
+      "bytes": 28,
+      "sha256": "4b68b6a007f76b65f281e0a27991c3958ec65743705f11ee663a93dd2a7aa389",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry.result.json",
+      "bytes": 313,
+      "sha256": "d7dde2323bdc36c63ac3c189261f41b679c55e8f5075c15c1b5c1eee55901f5c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser-retry.source.json",
+      "bytes": 70822,
+      "sha256": "3e9f89434d3c9c0187213615282ee7f3ff932d922f5b7cca461a55b33c6857d5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser.log",
+      "bytes": 1600,
+      "sha256": "5f3ef9b342de969224eaa6d6883ebd0227bf6a04b302b63ddd0f984cf11f1da4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser.result.json",
+      "bytes": 292,
+      "sha256": "7ad762575bcf77a54f73676d2799c3412867a86545fd168a55181e551afaa87f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-booking-browser.source.json",
+      "bytes": 70816,
+      "sha256": "993149e9b327e81cb20cab0a7cca8c23cabafd61dd26851a85d1672aa38fec7f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/api-controls.json",
+      "bytes": 207490,
+      "sha256": "577fc02d6fb7aeb7d8d66695a4d907ddbdf742738edbc960a47d0557cb70537d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/application.sqlite",
+      "bytes": 1110016,
+      "sha256": "1daeefdc8aecdfd56976ac522729716a1e11af1cb55eafddf688ab1d940dc25a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/browser-runtime-requested.json",
+      "bytes": 189,
+      "sha256": "48c6708af745f86e1f0cd002d77deef55ffd61d771635ddd1bd0e4ac6d2e25b2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/browser-runtime.json",
+      "bytes": 103,
+      "sha256": "dd1b8ecda25106dc78918c683fd66a346e6ce41a5f88cbe46e8ae92f678699f1",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/complete-measured-work-without-a-name.png",
+      "bytes": 59534,
+      "sha256": "72c61cb89670690e23335af91f6c0bedcd910ed6ea0b6392867b073bc876e3ec",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/configured-edging-and-separate-work.png",
+      "bytes": 36379,
+      "sha256": "070f11dc2719fcc9159c1a0b8eb3361eaadd88d4db3739b5743b46e9034ac554",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/decimal-measurements-remain-exact.png",
+      "bytes": 59508,
+      "sha256": "2542aa5462325f9748d9e24665d2097c5360a6fee49afa31aadca2521244a5f8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/executed-widget-browser.mjs",
+      "bytes": 29327,
+      "sha256": "091fe478fd294ecbd52fe2401b8b6571f3644ea5cd903fc0a28868be05c15c92",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/failed-results.json",
+      "bytes": 512649,
+      "sha256": "eff16b2f5544549a4b81c27fc1c4923efeae045a5c786513bc1a067153e9fc25",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/failure-0.png",
+      "bytes": 23198,
+      "sha256": "e9d22525578b693791af2f5a0c2f078c6f0772c90d19f3e804006b4ae5b54dcb",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/failure-0.txt",
+      "bytes": 110,
+      "sha256": "aff706cc86b0e35d5b64f021e7b939b0fab4fdfa396854f77a3a3e9e6b8a3c97",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/http.json",
+      "bytes": 382750,
+      "sha256": "66bf0508f66d2bc23ca5112888aea463cf16528195408ee2f5c5cfb88efff48d",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/mobile-launcher-open.png",
+      "bytes": 27465,
+      "sha256": "de59d0bba509b5b351762181c84f461725fee39fd54c0aaa96bd1a960cf9c329",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/pricebooks/64b501ac-f223-4892-8e31-18612562c09f.json",
+      "bytes": 3000,
+      "sha256": "5f442b85e3af354ecf82627bbb0cc62564c2be66cab86b95095ec63e73b55d00",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/separate-work-keeps-the-selected-price.png",
+      "bytes": 36136,
+      "sha256": "1523addebe1df42cbbaf8b91b456e139f1c7b4a7921a4f76243164d81f21bcd4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/server-process.json",
+      "bytes": 517,
+      "sha256": "3733c69511977d0c041fdfdcd1983b0fa44f67a7e1eeac08dfe5535f4a4030bc",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/server.log",
+      "bytes": 418,
+      "sha256": "c5393e422fcaab955aca5082e3807bd2504f01987a98184c62b358a842cd88ac",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/source-binding.json",
+      "bytes": 12544,
+      "sha256": "bdfe3976fc52763a13ee217540ba60c499340ce680916abd7ca694e17b6e6e89",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/synthetic-account-setup.ndjson",
+      "bytes": 177,
+      "sha256": "c55192f21fc2668103f934428d1b4803bf44b6ee8fc66395afaaa1125d0e0c27",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime/unknown-main-measurement-requires-review.png",
+      "bytes": 66654,
+      "sha256": "ae9acf3d5181f583320d3b2c64e835c6cb2be226148363f2fa9054597503fc1f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime.log",
+      "bytes": 341,
+      "sha256": "152d1ec0895c27a9463781666a0cef1f8b27b784593396a2b309aa91218bcbb2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime.result.json",
+      "bytes": 285,
+      "sha256": "e5c6fa22c7fea2da0c6550bcbe24fbfb37821bc553bd277c8d9ca0dfdcacc10a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-complete-runtime.source.json",
+      "bytes": 70804,
+      "sha256": "3b257f96d488ef251a3a384b051f7d18eca26d132eae80113f6ac8dafd71947c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/api-controls.json",
+      "bytes": 207490,
+      "sha256": "8acea0b23d0c30f970242ab4a040b215aa6f0e6f1fdfed272fcd6445eef663e0",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/application.sqlite",
+      "bytes": 1179648,
+      "sha256": "057f5e67bd5b2d1899a20c40327210479a3104f41e99c0a52c28ca948d459fcf",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/browser-runtime-requested.json",
+      "bytes": 189,
+      "sha256": "48c6708af745f86e1f0cd002d77deef55ffd61d771635ddd1bd0e4ac6d2e25b2",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/browser-runtime.json",
+      "bytes": 103,
+      "sha256": "dd1b8ecda25106dc78918c683fd66a346e6ce41a5f88cbe46e8ae92f678699f1",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/complete-measured-work-without-a-name.png",
+      "bytes": 59534,
+      "sha256": "72c61cb89670690e23335af91f6c0bedcd910ed6ea0b6392867b073bc876e3ec",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/configured-edging-and-separate-work.png",
+      "bytes": 36379,
+      "sha256": "070f11dc2719fcc9159c1a0b8eb3361eaadd88d4db3739b5743b46e9034ac554",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/decimal-measurements-remain-exact.png",
+      "bytes": 59508,
+      "sha256": "2542aa5462325f9748d9e24665d2097c5360a6fee49afa31aadca2521244a5f8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/executed-widget-browser.mjs",
+      "bytes": 29327,
+      "sha256": "091fe478fd294ecbd52fe2401b8b6571f3644ea5cd903fc0a28868be05c15c92",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/http.json",
+      "bytes": 382750,
+      "sha256": "a6920c216a26dd724ef1b11f55b23f433e63055bdddd94e3230c569addae54e7",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/mobile-launcher-open.png",
+      "bytes": 27465,
+      "sha256": "de59d0bba509b5b351762181c84f461725fee39fd54c0aaa96bd1a960cf9c329",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/owner-installation-check.png",
+      "bytes": 282697,
+      "sha256": "5ea13fc2e13e5ec74eb4aae454363d5bb3167b053e694a9991ce95d5d41568ca",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/pricebooks/bf38ddf4-258a-4af4-85ca-be9d17697ec3.json",
+      "bytes": 3000,
+      "sha256": "cd31f074c7e2f6ae4488795865a14b86ec3c24154fe46f6a1ef493e5a11ee4c7",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/result.json",
+      "bytes": 923392,
+      "sha256": "2dc7964872fbb68bc78b1d8d9c79e1684eebc366fb671704b9a1b481e05966bd",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/separate-work-keeps-the-selected-price.png",
+      "bytes": 36136,
+      "sha256": "1523addebe1df42cbbaf8b91b456e139f1c7b4a7921a4f76243164d81f21bcd4",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/server-process.json",
+      "bytes": 517,
+      "sha256": "d09a07301d64131c0763e2f83cef2f4fc7549a48c8c73ca0b84d02dd6c9b73a9",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/server.log",
+      "bytes": 418,
+      "sha256": "c5393e422fcaab955aca5082e3807bd2504f01987a98184c62b358a842cd88ac",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/source-binding.json",
+      "bytes": 12544,
+      "sha256": "3f1cffda13be949a526856da7c900ef37955775585627454cfb0c0315908d6de",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/synthetic-account-setup.ndjson",
+      "bytes": 177,
+      "sha256": "4411707a816853d8637a2fb4b499f826620b6237e9b918268c750217eb4b0dd9",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/SYNTHETIC-booking-interface-only.png",
+      "bytes": 60174,
+      "sha256": "fea98127167f00b0c4e1c878e473e2cd738e1c55be8dcb665e438f2e30f2d44b",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build/unknown-main-measurement-requires-review.png",
+      "bytes": 66654,
+      "sha256": "ae9acf3d5181f583320d3b2c64e835c6cb2be226148363f2fa9054597503fc1f",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build.log",
+      "bytes": 28,
+      "sha256": "f4b2aba7e288bf4f47696d3d91b69c8a63b1304875f2a85a2068cebc4671b81a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build.result.json",
+      "bytes": 285,
+      "sha256": "d9631ff7278aa7cfda42edc65a1f6b52a1eef235b8336af9f429b733bb7223e0",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "real-widget-production-build.source.json",
+      "bytes": 70804,
+      "sha256": "52b41b944db31e2db5c7622f640ce5ce25fe680b73e1ed1a8bb3fa7b4091c320",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "reproduction-runner-check.log",
+      "bytes": 1353,
+      "sha256": "42a9c1e870bfcb582987dd36aa61b574ed063ca0026872330ab2d0249403992c",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "reproduction-runner-check.result.json",
+      "bytes": 253,
+      "sha256": "64257b11877ecae3a6a265e5bca223198a4f6f05d6026fa42b314b129aa69d91",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "reproduction-runner-check.source.json",
+      "bytes": 5460,
+      "sha256": "5cea3edd3b74f60493c34a8883efc7563fce4f3ac5e900001f73199086fd4c0e",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "restored-module-tests.log",
+      "bytes": 6168,
+      "sha256": "68306b9b1a50e9a0adc048e6b17b33f10b4d792de193fa80ff701f1bf79b91ea",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "restored-persistence-modules.log",
+      "bytes": 15240,
+      "sha256": "f9ea1785535726da16e41c737631b28088ccaa9932f8f0cc686be417a2715190",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "restored-persistence-modules.result.json",
+      "bytes": 482,
+      "sha256": "5edbc7545d453d54e51c9e39bac099e85f4baf89cc113e7f88b5265ee9170533",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "restored-persistence-modules.source.json",
+      "bytes": 71346,
+      "sha256": "8a99a4084a8f28b8638a151c1f62faafd619c88aadf8b4d55cba2ee2703bff4a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "voice-status-excluded-scope.log",
+      "bytes": 25893,
+      "sha256": "84b7a26d6dfdce7bbcd3a18016babe7089b505ffd82e77bf72488874e436ff97",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "voice-status-excluded-scope.result.json",
+      "bytes": 556,
+      "sha256": "9c2a6992731ae9570b1efe982cc9ad8d86d351016a5507bde0464c07fafe095a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "voice-status-excluded-scope.source.json",
+      "bytes": 71079,
+      "sha256": "024a8e6c9523accc18b43d62fea618c7b2f84dc86efaecf259fb3007d09e325a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/application.sqlite",
+      "bytes": 909312,
+      "sha256": "5b172fe52acf51f7130550f7dd64397c8a23c9f0126253905e230df3e3e4dbd8",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/http.json",
+      "bytes": 528009,
+      "sha256": "82392ad96216800c967d5f6123ba255708f2a01eeb162b7400c6637affa2a9d0",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/pricebooks/63f02bea-4f01-4297-bbf6-35b4c044e202.json",
+      "bytes": 2964,
+      "sha256": "5ffab0ab92aa5fb9765f9898800870f9117fab64b4ee78668d1ece3cd67f8299",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/result.json",
+      "bytes": 147761,
+      "sha256": "c60eada1f94a89653e5517872e4d434c76ffbd565139ce71e3331c840d7c26d9",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/server-process.json",
+      "bytes": 514,
+      "sha256": "b6e18717e973f47aa5bda136aef24859ec6b819b8765478e44f42ac71e876c51",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/server.log",
+      "bytes": 8890,
+      "sha256": "0a920c14aae6139b9c604dba1986ea528b0d88c3af4dba2add649ccc0016202a",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/source-binding.json",
+      "bytes": 12544,
+      "sha256": "3f1cffda13be949a526856da7c900ef37955775585627454cfb0c0315908d6de",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application/synthetic-account-setup.ndjson",
+      "bytes": 179,
+      "sha256": "f0595c6fb244017f0944e7a6fdf9000dd5cc589f82d0a10c8b5258393aae9435",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application.log",
+      "bytes": 107,
+      "sha256": "723a93cd2c02662f7d17b827bf860771816161d3793078c8284e8ca5adfe35ad",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application.result.json",
+      "bytes": 297,
+      "sha256": "8d5497edd28406fd5e7dabadd4de9d40e829763187ea1a12dc1a085d6f44feef",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    },
+    {
+      "directory": "recovery-evidence-candidate-20260929",
+      "path": "whole-request-application.source.json",
+      "bytes": 70823,
+      "sha256": "2ae9c9fb163076dcc488294b1888319cf1718f78244732e56c4045a3d2b50fe5",
+      "storage": "retained locally; individual logs copied to repository where listed"
+    }
+  ]
+}

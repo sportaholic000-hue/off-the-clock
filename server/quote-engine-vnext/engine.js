@@ -1,4 +1,6 @@
 import crypto from 'node:crypto';
+import {scopeRatePath} from './scopePricing.js';
+import {offeringRatePath} from './configuredOfferings.js';
 import {
   PRICE_BASIS_CATEGORIES,
   MEASUREMENT_CONTRACTS,
@@ -37,7 +39,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-customer-amount-20260912-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-measured-scopes-20260930-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -380,7 +382,8 @@ function validateRangedEvidence(line) {
   const invalid = [];
   const computed = new Map();
   for (const entry of variants) {
-    if (!Number.isSafeInteger(entry.rate) || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
+    const supportedRate = Number.isSafeInteger(entry.rate) || fallbackPath === 'price' && typeof entry.rate === 'number' && Number.isFinite(entry.rate) && entry.rate <= Number.MAX_SAFE_INTEGER;
+    if (!supportedRate || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
       invalid.push(entry.path);
       continue;
     }
@@ -798,7 +801,7 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
 }
 
 function validQuantityRateEvidence(calculation, expectedAmountCents, allowZeroQuantity = false) {
-  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || (calculation.ratePath==='mowingBaseRatePerSqft' && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
+  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='price'||calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)||scopeRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
   const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: !allowZeroQuantity });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;
@@ -1087,7 +1090,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       : [];
     throw new QuoteReviewError(customerValidation.reviewReason, {
       ...customerValidation,
-      ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs),
+      ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs, pricing),
       normalizedScope,
       validatedMeasurements
     });

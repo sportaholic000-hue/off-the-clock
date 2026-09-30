@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "testedApplicationCommit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+  "browserAndReviewCommit": "d218c85c491a33cb301816d52e593b4f913a363c",
+  "engineTree": "dcd481193b10c3cfc667cb23d22fb41b16322cff",
+  "archiveMembers": 504,
+  "sourceFiles": 137,
+  "lineEndingConversions": [
+    {
+      "commit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "file": ".gitignore",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "file": "scripts/audit-all-trades.py",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "file": "scripts/audit.py",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "f96c14a049f68c1d32d54420d514d2e088fe722e",
+      "file": "scripts/capture.py",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "d218c85c491a33cb301816d52e593b4f913a363c",
+      "file": ".gitignore",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "d218c85c491a33cb301816d52e593b4f913a363c",
+      "file": "scripts/audit-all-trades.py",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "d218c85c491a33cb301816d52e593b4f913a363c",
+      "file": "scripts/audit.py",
+      "conversion": "Git checkout LF to CRLF"
+    },
+    {
+      "commit": "d218c85c491a33cb301816d52e593b4f913a363c",
+      "file": "scripts/capture.py",
+      "conversion": "Git checkout LF to CRLF"
+    }
+  ],
+  "bindings": 18,
+  "groups": {
+    "runtime": 1,
+    "application": 8,
+    "browser": 5,
+    "regression": 9
+  },
+  "adapterControls": 20,
+  "quoteCapableControls": 16,
+  "moneyControls": 65
+}
