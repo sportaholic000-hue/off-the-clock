@@ -1,3 +1,5 @@
+> **Current lane and CI checkpoint — September 30:** Voice and ON/OFF now belong to Claude. A later report-only repeat failed the auth browser test on a same-second token comparison; the corrected test passes a controlled reproduction without changing production auth. Normal browser and exact-head hosted checks are pending at this checkpoint; follow PR #4 and [the CI correction record](review/session-ci-reliability-20260930/PROGRESS.md). Earlier successful run records below retain their stated source commits.
+
 > **Current account/session checkpoint — September 30:** A subsequent independent audit reopened this slice for delayed refresh/logout response headers. The auth-only repair is saved at `3e406d2107522319038c6cdd982cfcf08c91e657` and passed exact-commit hosted builds, 388 application / 357 engine / 25 transport tests and 9 + 10 + 7 browser checks. [Permanent repair proof](review/session-response-fix-20260930/FINAL_REPORT.md). Earlier shared-cookie sessions require fresh sign-in after rollout. Independent peer recheck is pending alongside its active engine audit; voice has not begun. Earlier source/count checkpoints below are historical and remain preserved.
 
 # Owner direction and lane checkpoint — September 30, 2026
@@ -10,7 +12,7 @@ The owner explicitly requested no subagents. The separate user-owned chat “quo
 
 Security source: 08ee7d529112c8db8098bc002dfd9be732a19d3e. See docs/review/session-security-20260930/FINAL_REPORT.md and its evidence for the completed slice and actual launch limits. Earlier inspection reports are historical and preserved under docs/review/thread-deliverables-20260930.
 
-The owner authorized voice/runtime work after the security slice, with coordination to avoid overlap. The other chat confirmed no active source work or pending edits and supplied these contract boundaries:
+The owner assigned voice/runtime and ON/OFF work to Claude on September 30. This supersedes the earlier voice authorization for this account/security chat, which now remains in auth/session/CI. Coordinate with the owner-designated engine/calendar agent to avoid overlap. The prior shared contract boundaries remain:
 - Use quoteDoneBridge, the shared quote engine and approved owner offering definitions. Keep rates and model-generated arithmetic out of model context.
 - Preserve installed and itemized fencing/painting offerings. Never infer fence post layout or paintable wall area from floor area.
 - Require callback contact for an estimate; a name is optional.

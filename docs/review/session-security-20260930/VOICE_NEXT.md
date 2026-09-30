@@ -1,6 +1,6 @@
-# Next authorized lane: voice runtime
+# Voice/runtime and ON/OFF handoff to Claude
 
-The owner authorized moving into voice/runtime work after security and explicitly authorized coordination with “quotedone engine accuracy”. That peer is idle, final source `1979792d766d6c2b2fe0dfb856d1651de03eee3f`; its tested runtime and contract boundaries are recorded in WORKING_DIRECTION_20260930.md. No new voice source has been written in PR #4.
+The owner assigned voice/runtime and ON/OFF work to Claude on September 30, superseding the earlier authorization for this account/security chat. This chat remains in auth/session/CI and has written no new voice implementation in PR #4. Coordinate with the owner-designated engine/calendar agent; its current audit and repairs have priority in that lane. The prior shared contracts remain in WORKING_DIRECTION_20260930.md.
 
 Initial read-only inspection of the saved Git tree confirms existing tests import these absent modules:
 - `server/src/voice/googleGenAiLiveAdapter.js` — provider adapter test imports it.

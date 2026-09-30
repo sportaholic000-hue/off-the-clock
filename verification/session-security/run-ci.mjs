@@ -20,6 +20,7 @@ const groups=[
  ['engine',['--experimental-test-module-mocks','--test','--test-concurrency=1','test/quoteEngine.spec.js','test/quoteEngineVNext.spec.js','test/quoteEngineVNextAdversarial.spec.js','test/quoteEngineVNextRepairs.spec.js','test/configuredOfferings.spec.mjs']],
  ['transport',['--test','--test-concurrency=1','test/authSessionClient.spec.mjs','client/test/widget-transport.test.mjs','client/test/billing-transport.test.mjs']],
  ['session-browser',['verification/session-security/browser-workflow.mjs','.',path.join(out,'session-browser')]],
+ ['same-second-session-browser',['verification/session-security/browser-workflow.mjs','.',path.join(out,'same-second-session-browser'),'same-second']],
  ['account-browser',['verification/auth-email/browser-workflow.mjs','.',path.join(out,'account-browser')]],
  ['response-order-browser',['verification/session-security/response-order-browser.mjs','.',path.join(out,'response-order-browser'),process.env.OTC_CI_SOURCE_SHA||'CI checkout']]
 ];
@@ -45,7 +46,7 @@ try {
   results.push({...result,counters,logSha256:crypto.createHash('sha256').update(log).digest('hex')});
  }
  const browserResults={};
- for(const label of ['session-browser','account-browser','response-order-browser']){
+ for(const label of ['session-browser','same-second-session-browser','account-browser','response-order-browser']){
   const file=path.join(out,label,'browser-results.json');if(!fs.existsSync(file))continue;
   const data=JSON.parse(fs.readFileSync(file,'utf8'));
   browserResults[label]={syntheticOnly:data.syntheticOnly,liveProviderTraffic:data.liveProviderTraffic,rows:data.rows,errors:data.errors};
