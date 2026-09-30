@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {api, getToken, go, setToken} from './api.js';
+import {api, getToken, go, logout} from './api.js';
 import {Brand, Button, ErrorMessage, Field, Loading, Notice, TextInput} from './ui.jsx';
 import './accountRecovery.css';
 
@@ -53,11 +53,11 @@ export default function AccountRecovery({path}) {
       if (reset && password !== confirmation) throw Error('The passwords do not match.');
       await api(request ? '/api/auth' + path : verify ? '/api/auth/verify-email' : '/api/auth/reset-password',
         {method: 'POST', auth: false, body: request ? {email} : reset ? {token, password} : {token}});
-      if (reset) setToken(null);
       setDone(true); setPassword(''); setConfirmation('');
+      if (reset) {try{await logout();}catch{setError(new Error('Your password was reset, but this browser could not finish signing out. Use Back to sign in to retry.'));}}
     } catch (next) {setError(next);} finally {setBusy(false);}
   }
-  function signIn() {setToken(null);go('/onboarding?mode=login');}
+  async function signIn() {setBusy(true);setError(null);try{await logout();go('/onboarding?mode=login');}catch(next){setError(next);}finally{setBusy(false);}}
   return <main className="account-recovery"><Brand/><h1>{TITLES[path]}</h1>
     {path === '/account/email' ? getToken() ? <VerificationNotice showVerified/> : <Notice>Sign in to check your account email.</Notice> :
       done ? <div role="status"><Notice tone="success">
@@ -74,11 +74,12 @@ export default function AccountRecovery({path}) {
         <ErrorMessage error={error}/>
         <Button type="submit" disabled={busy || ((reset || verify) && !token)}>{busy ? 'Working…' : request ? 'Request email' : reset ? 'Reset password' : 'Verify email'}</Button>
       </form>}
+    <ErrorMessage error={done||path==='/account/email'?error:null}/>
     <div className="account-actions">
       {(reset || path === '/forgot-password') && <Button variant="secondary" onClick={() => go('/forgot-password')}>Request a new reset link</Button>}
       {verify && <Button variant="secondary" onClick={() => go('/resend-verification')}>Request a new verification link</Button>}
       {getToken() && !reset && <Button onClick={() => go('/onboarding')}>Continue setup</Button>}
-      <Button variant="secondary" onClick={signIn}>Back to sign in</Button>
+      <Button variant="secondary" disabled={busy} onClick={signIn}>Back to sign in</Button>
     </div>
   </main>;
 }

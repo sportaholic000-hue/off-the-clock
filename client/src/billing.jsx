@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {api, getToken, go} from './api.js';
+import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
 import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection} from './billingTransport.js';
 
@@ -12,7 +12,7 @@ export default function Billing() {
   const [jobs,setJobs] = useState({}),[plan,setPlan] = useState(''),[interval,setInterval] = useState('');
   const [busy,setBusy] = useState('status'),[error,setError] = useState('');
   const currentJobs = useRef({}), inFlight = useRef(false), mounted = useRef(true);
-  const sameSession = () => mounted.current && getToken() === session;
+  const sameSession = () => mounted.current && getSessionKey() === getSessionKey(session);
 
   function saveJobs(next,key=storageKey) {
     if (!key) throw new Error('Billing request storage is not ready.');

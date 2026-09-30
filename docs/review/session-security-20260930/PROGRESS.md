@@ -19,3 +19,10 @@ Still required: migration installation, auth route/middleware integration, cooki
 The other agent's final engine/booking checkpoint is 1979792d766d6c2b2fe0dfb856d1651de03eee3f. It will be incorporated without modifying its runtime or replacing the shared BUILD_STATUS history.
 
 No real provider traffic or deployment.
+
+
+## Connected source checkpoint (2026-09-30)
+
+The handlers now issue server-backed sessions and HttpOnly refresh cookies, reserve persistent login/recovery limits, expose bound refresh/logout endpoints, and revoke all user sessions during password reset. Middleware requires a valid current session; pre-upgrade stateless JWTs require sign-in again. The browser candidate renews access tokens within the original eight-hour absolute limit, waits for confirmed sign-out, and keeps UI/billing identity stable across token rotation.
+
+Connected backend run `session-integration-first`: **42 tests passed**, comprising 22 account/recovery, 18 session/limiter and 2 CORS tests. No claim yet for new HTTP endpoint tests, browser refresh/sign-out, combined engine checkpoint or complete regression. This is still a draft implementation checkpoint, not a launch gate.

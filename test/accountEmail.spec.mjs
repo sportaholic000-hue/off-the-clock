@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
+import {installAuthSessionSchema} from '../server/src/authSessionService.js';
+import {installAuthLimitSchema} from '../server/src/authRateLimitService.js';
 import {createAuthHandlers} from '../server/src/auth.js';
 import {createAuthTokenService, installAuthTokenSchema, AUTH_TOKEN_PURPOSES as P, hashAuthToken} from '../server/src/authTokenService.js';
 import {accountEmailOrigin, accountEmailLink} from '../server/src/authLinks.js';
@@ -9,18 +11,18 @@ import {createTransactionalEmailSender, EmailDeliveryError} from '../server/src/
 function fixture(t, overrides={}) {
   const database = new Database(':memory:'); database.pragma('foreign_keys=ON'); t.after(()=>database.close());
   database.exec('CREATE TABLE users(id TEXT PRIMARY KEY, ownerId TEXT, email TEXT UNIQUE, passwordHash TEXT, firstName TEXT, businessName TEXT, plan TEXT, planStatus TEXT, trialEndsAt TEXT, timezone TEXT, role TEXT, createdAt TEXT, emailVerifiedAt TEXT)');
-  installAuthTokenSchema(database);
+  installAuthTokenSchema(database);installAuthSessionSchema(database);installAuthLimitSchema(database);
   let instant = Date.parse('2026-09-29T12:00:00Z');
   const now=()=>new Date(instant), mail=[], state={fail:false};
   const tokenService=createAuthTokenService(database,{clock:now});
-  const handlers=createAuthHandlers({database, tokenService, now, environment:{NODE_ENV:'test', CLIENT_URL:'https://app.example.invalid', BCRYPT_COST:12},
+  const handlers=createAuthHandlers({database, tokenService, now, environment:{NODE_ENV:'test', CLIENT_URL:'https://app.example.invalid', JWT_SECRET:'SYNTHETIC_ACCOUNT_TEST_SECRET_ONLY', BCRYPT_COST:12, ...overrides.environment},
     hashPassword:async (p,c)=>{assert.equal(c,12);return 'hash:'+p;}, comparePassword:async(p,h)=>h==='hash:'+p, issueSessionToken:u=>'session:'+u.id,
-    sendEmail:async m=>{mail.push(m);if(state.fail)throw Error('SYNTHETIC provider failure');return {accepted:true};}, ...overrides});
+    sendEmail:async m=>{mail.push(m);if(state.fail)throw Error('SYNTHETIC provider failure');return {accepted:true};}, ...overrides, environment:{NODE_ENV:'test',CLIENT_URL:'https://app.example.invalid',JWT_SECRET:'SYNTHETIC_ACCOUNT_TEST_SECRET_ONLY',BCRYPT_COST:12,...overrides.environment}});
   return {database,handlers,tokenService,mail,state,advance:ms=>{instant+=ms;},
     user:(id='owner-a')=>{database.prepare("INSERT INTO users(id,email,passwordHash,role) VALUES(?,?,'hash:original-pass','owner')").run(id,id+'@example.invalid');return id;}};
 }
 async function call(handler, body={}, extra={}) {
-  const res={statusCode:200,status(code){this.statusCode=code;return this;},json(payload){this.body=payload;return this;}};
+  const res={statusCode:200,setHeader(){},status(code){this.statusCode=code;return this;},json(payload){this.body=payload;return this;}};
   await handler({method:'POST',ip:'synthetic-ip',body,query:{},...extra},res);
   return {status:res.statusCode,body:res.body};
 }

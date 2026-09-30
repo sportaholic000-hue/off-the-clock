@@ -1,6 +1,8 @@
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
 import { installAuthTokenSchema } from './authTokenService.js';
+import {installAuthSessionSchema} from './authSessionService.js';
+import {installAuthLimitSchema} from './authRateLimitService.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
@@ -228,5 +230,7 @@ export function migrateDatabase(database) {
     database.exec(statement);
   }
   installAuthTokenSchema(database);
+  installAuthSessionSchema(database);
+  installAuthLimitSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

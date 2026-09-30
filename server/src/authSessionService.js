@@ -84,12 +84,13 @@ export function createAuthSessionService(database,{environment=process.env,clock
       return user;
     });
   }
-  function refresh(token) {
+  function refresh(token,expectedClaims) {
     return safe(()=>authImmediate(database,()=>{
       if(!isSessionSecret(token))throw new AuthSessionError();
       const at=timestamp(),receipt=database.prepare('SELECT * FROM authRefreshTokens WHERE tokenHash=?').get(hash(token));
       if(!receipt)throw new AuthSessionError();
       const row=database.prepare('SELECT * FROM authSessions WHERE id=?').get(receipt.sessionId),user=current(row,at);
+      if(expectedClaims && (expectedClaims.sid!==row.id||expectedClaims.sub!==row.userId||expectedClaims.role!==row.role))throw new AuthSessionError();
       if(receipt.consumedAt!==null)throw new AuthSessionError('SESSION_REFRESH_CONFLICT');
       const claimed=database.prepare('UPDATE authRefreshTokens SET consumedAt=? WHERE tokenHash=? AND consumedAt IS NULL').run(at,hash(token));
       if(Number(claimed.changes)!==1)throw new AuthSessionError('SESSION_REFRESH_CONFLICT');
@@ -99,6 +100,11 @@ export function createAuthSessionService(database,{environment=process.env,clock
     }));
   }
   function revokeAll(userId) {return safe(()=>database.prepare('UPDATE authSessions SET revokedAt=? WHERE userId=? AND revokedAt IS NULL').run(timestamp(),userId).changes);}
+  function cookieMatches(token,payload) {
+    return safe(()=>{if(!isSessionSecret(token)||!payload)return false;
+      const row=database.prepare('SELECT sessionId FROM authRefreshTokens WHERE tokenHash=?').get(hash(token));
+      return row?.sessionId===payload.sid;});
+  }
   function revoke(token,payload) {
     return safe(()=>authImmediate(database,()=>{
       const ids=new Set();
@@ -110,5 +116,5 @@ export function createAuthSessionService(database,{environment=process.env,clock
       return ids.size;
     }));
   }
-  return Object.freeze({create,refresh,validateAccess,revoke,revokeAll});
+  return Object.freeze({create,refresh,validateAccess,revoke,revokeAll,cookieMatches});
 }
