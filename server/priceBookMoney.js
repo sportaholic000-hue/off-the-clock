@@ -202,11 +202,11 @@ export function assertJsonNumberPreserved(raw) {
 // A custom amount with no confirmed unit may still use ordinary whole cents.
 // Fractional cents cannot be classified as a unit rate until the unit is known.
 export function moneyKindForField(serviceType, field, pricing = {}) {
-  if (!(ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return null;
-  if (serviceType === 'CUSTOM' && (field === 'low' || field === 'high')) {
+  if (serviceType === 'CUSTOM' && ['price', 'low', 'high'].includes(field)) {
     if (CUSTOM_RATE_UNITS.has(pricing.unit)) return 'unit_rate';
     return pricing.unit === 'flat' ? 'fixed_amount' : 'unresolved_unit';
   }
+  if (!(ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return null;
   if (UNIT_RATE_FIELDS.has(field)) return 'unit_rate';
   if (FIXED_AMOUNT_FIELDS.has(field)) return 'fixed_amount';
   if (MONEY_FIELD_NAMES.has(field)) failure(field, 'This monetary field has no supported price-unit classification.');

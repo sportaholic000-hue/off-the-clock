@@ -1048,7 +1048,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance'],
-  CUSTOM: ['customPricingMode', 'price', 'low', 'high', 'unit', 'minimumJob']
+  CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
 
 export function allowedPricingFields(serviceType) {
@@ -1187,7 +1187,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
     add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
-    if (c.pondingWater) add('pondingWaterSurcharge', 'Selected ponding-water treatment price');
+    // Optional ponding treatment is disclosed as excluded when unpriced.
   } else if (serviceType === 'INTERIOR_PAINTING') {
     add('laborPerWallSqftPerCoat', 'Wall painting labor price per measured wall square foot per coat');
     add('materialPerWallSqftPerCoat', 'Wall paint material price per measured wall square foot per coat');
@@ -1268,8 +1268,7 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
-    if (c.bagClippings) add('baggingSurchargePercent', 'Selected clipping bagging and disposal percentage', { kind: 'non_negative_number' });
-    if (c.edgingIncluded) add('edgingPerLinearFoot', 'Selected lawn edging price per measured linear foot');
+    // Bagging and mowing edging are ADDONs under spec STEP 2b.
   } else if (serviceType === 'SIDING_REPLACEMENT') {
     add(`laborPerSqft.${c.sidingType}`, 'Siding labor price for the selected siding type');
     add(`materialPerSqft.${c.sidingType}`, 'Siding material price for the selected siding type');
@@ -1285,10 +1284,11 @@ export function ownerRequirements(serviceType, c = {}, p = {}) {
     out.push({ path: 'customPricingMode', label: 'Custom service pricing mode', kind: 'enum', values: ['fixed', 'range', 'inspection_first'] });
     out.push({ path: 'unit', label: 'Custom service unit', kind: 'enum', values: ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square'] });
     add('minimumJob', 'Minimum custom-service price', { kind: 'minimum' });
-    if (p.customPricingMode === 'fixed') add('price', 'Fixed price per configured unit');
+    const rateKind = p.unit === 'flat' ? 'non_negative_money' : 'non_negative_number';
+    if (p.customPricingMode === 'fixed') add('price', 'Fixed price per configured unit', {kind:rateKind});
     if (p.customPricingMode === 'range') {
-      add('low', 'Low price per configured unit');
-      add('high', 'High price per configured unit');
+      add('low', 'Low price per configured unit', {kind:rateKind});
+      add('high', 'High price per configured unit', {kind:rateKind});
     }
   }
   return out;
@@ -1431,9 +1431,14 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if(configuredOffering(serviceType,p))return offeringStructureDiagnostics(serviceType,p);
 
   for (const name of scalarMoneyFields(serviceType)) {
+    if (serviceType === 'CUSTOM' && p.unit !== 'flat' && ['price','low','high'].includes(name)) {
+      if (p[name] !== undefined && (!nonNegative(p[name]) || p[name] > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a finite non-negative unit rate in cents.`);
+      continue;
+    }
     if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
   }
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
+  if (serviceType === 'CUSTOM' && p.customChargeClassification !== undefined && !PRICE_BASIS_CATEGORIES.includes(p.customChargeClassification)) structureDiagnostic(diagnostics, 'invalid', 'customChargeClassification', 'Choose the configured line category for this custom service.');
 
   if (serviceType === 'ROOFING_REPLACEMENT') {
     if(p.materialAccessoryBasis!==undefined && (p.materialAccessoryBasis!=='excludes_itemized_accessories'||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and the exact excludes_itemized_accessories value.');
@@ -1606,7 +1611,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     }
   }
 
-  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && nonNegativeMoney(pricing.low) && nonNegativeMoney(pricing.high) && pricing.high <= pricing.low) {
+  if (serviceType === 'CUSTOM' && pricing.customPricingMode === 'range' && nonNegative(pricing.low) && nonNegative(pricing.high) && pricing.high <= pricing.low) {
     invalidOwnerFields.push('high');
     crossFieldOwnerFields.push('low', 'high');
     ownerDiagnostics.push(ownerDiagnostic('cross_field', 'range_order', 'high', 'Custom range high price must be greater than low price.'));
@@ -1633,16 +1638,11 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (serviceType.startsWith('FLOORING_')) {
     if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType)) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost') requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-    const averageRoom = typeof customerInputs.sqft === 'number' && typeof customerInputs.roomCount === 'number' && customerInputs.roomCount > 0
-      ? exactDivide(customerInputs.sqft, customerInputs.roomCount)
-      : null;
     if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none') requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
-    const thresholds = pricing.roomSizeThresholds;
-    if (averageRoom !== null && isRecord(thresholds) && Number.isFinite(thresholds.smallMaxSqft) && Number.isFinite(thresholds.mediumMaxSqft) && (exactCompare(averageRoom, thresholds.smallMaxSqft) === 0 || exactCompare(averageRoom, thresholds.mediumMaxSqft) === 0)) requireDecision('roomSizeThresholds', 'inclusive_boundary_contract', 'Approve whether flooring average-room maximum thresholds are inclusive. Quotes exactly on a threshold remain review-only.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
   if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
-  if (serviceType === 'CUSTOM') requireDecision('customChargeClassification', 'custom_charge_classification', 'Classify the custom charge as labor, material, removal, disposal, equipment, permit, or an explicit mixed allocation before quoting.');
+  if (serviceType === 'CUSTOM' && pricing.customChargeClassification === undefined) requireDecision('customChargeClassification', 'custom_charge_classification', 'Choose the custom service charge category in the owner price book. The category selects the existing owner-configured price basis, taxability and markup settings; no labor/material split is inferred.');
 
   ownerDiagnostics.push(...ownerDecisionRequired.map(decision => ownerDiagnostic('owner_decision', decision.kind, decision.path, decision.message)));
   for (const path of unsupportedOwnerFields) ownerDiagnostics.push(ownerDiagnostic('unsupported', 'field', path, 'This pricing field is not supported for the selected service.'));

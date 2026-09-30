@@ -381,7 +381,8 @@ function validateRangedEvidence(line) {
   const invalid = [];
   const computed = new Map();
   for (const entry of variants) {
-    if (!Number.isSafeInteger(entry.rate) || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
+    const supportedRate = Number.isSafeInteger(entry.rate) || fallbackPath === 'price' && typeof entry.rate === 'number' && Number.isFinite(entry.rate) && entry.rate <= Number.MAX_SAFE_INTEGER;
+    if (!supportedRate || entry.rate < 0 || !Number.isSafeInteger(entry.amount) || entry.amount < 0) {
       invalid.push(entry.path);
       continue;
     }
@@ -799,7 +800,7 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
 }
 
 function validQuantityRateEvidence(calculation, expectedAmountCents, allowZeroQuantity = false) {
-  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
+  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='price'||calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
   const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: !allowZeroQuantity });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;

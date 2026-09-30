@@ -22,7 +22,7 @@ export const DEFAULT_FIELDS = ['markupPercent','markupMode','overheadFixed','min
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
 const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates']);
-const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
+const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -152,7 +152,7 @@ function validateApplicationNumericDraft(book) {
  const numericTree=(value,path)=>{if(value===undefined||value===null||value==='')return;if(record(value)){for(const [key,child] of Object.entries(value))numericTree(child,path+'.'+key);}else if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw problem('Invalid numeric value at '+path+'. Enter the intended value before saving.');};
  const numericFields=new Set(['markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY]);
  for(const [field,value] of Object.entries(book.defaults||{}))if(numericFields.has(field))numericTree(value,'defaults.'+field);
- const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','offeringMode','offeringDetails']);
+ const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails']);
  for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
 }
 export function validateApplicationDraft(ownerId,input) {
@@ -324,7 +324,7 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
-      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first']};
+      const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large']}});

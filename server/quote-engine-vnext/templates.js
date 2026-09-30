@@ -116,7 +116,7 @@ function makeLine({
     throw new QuoteReviewError(`${name} did not receive a finite measured quantity.`);
   }
   if (!(allowZeroQuantity && numericQuantity === 0)) measured(numericQuantity, `${name} quantity`);
-  if(ratePath==='mowingBaseRatePerSqft'||offeringRatePath(ratePath)) { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent unit rate.',{invalidOwnerFields:[ratePath]}); }
+  if(ratePath==='price'||ratePath==='mowingBaseRatePerSqft'||offeringRatePath(ratePath)) { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent unit rate.',{invalidOwnerFields:[ratePath]}); }
   else money(rateCents, ratePath, { allowZero: allowZeroRate });
   const checkedMultipliers = multipliers.map(multiplier => {
     let exactValue;
@@ -174,8 +174,9 @@ function makeLine({
   };
   if (customerDriver) result.customerDriver = customerDriver;
   if (lowRateCents !== undefined || highRateCents !== undefined) {
-    const low = money(lowRateCents, 'low');
-    const high = money(highRateCents, 'high');
+    const customRate = (value, path) => {if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid custom unit-price range.',{invalidOwnerFields:[path]});return value;};
+    const low = ratePath === 'price' ? customRate(lowRateCents, 'low') : money(lowRateCents, 'low');
+    const high = ratePath === 'price' ? customRate(highRateCents, 'high') : money(highRateCents, 'high');
     let lowAmountCents;
     let highAmountCents;
     try {
@@ -587,7 +588,7 @@ function calculateFlatRoofRepair(c, p, ctx) {
   add(out, fixedLine('Flat roof repair materials', 'material', valueAtPath(p, materialPath), materialPath));
   if (c.pondingWater) {
     const rate = addonMoney(p.pondingWaterSurcharge, 'pondingWaterSurcharge');
-    if (rate === undefined) throw new QuoteReviewError('Selected ponding-water treatment requires a price.', { missingOwnerFields: ['pondingWaterSurcharge'] });
+    if (rate === undefined) ctx.skipAddon('Ponding water surcharge');
     else add(out, fixedLine('Ponding water surcharge', 'addon', rate, 'pondingWaterSurcharge', undefined, { allowZero: true }));
   }
   out.measurements.push({ name: 'affectedAreaSqft', value: c.affectedArea, unit: 'square feet', source: 'customer_measured', derivedCategory: repairSize });
@@ -716,7 +717,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
   });
   recordRuleApplication(out, {
     name: 'averageRoomComplexityBand',
-    rule: 'averageRoomSqft < smallMaxSqft => small; averageRoomSqft < mediumMaxSqft => medium; otherwise large; exact thresholds require owner review',
+    rule: 'averageRoomSqft < smallMaxSqft => small; averageRoomSqft < mediumMaxSqft => medium; otherwise large',
     inputs: { averageRoomSqft: averageRoom, smallMaxSqft: thresholds.smallMaxSqft, mediumMaxSqft: thresholds.mediumMaxSqft },
     result: roomBand,
     usedBy: ['Flooring labor']
@@ -997,7 +998,7 @@ function calculateMowing(c, p, ctx) {
   let baggingPriced = false;
   if (c.bagClippings) {
     const percent = addonPercent(p.baggingSurchargePercent, 'baggingSurchargePercent');
-    if (percent === undefined) throw new QuoteReviewError('Selected clipping bagging and disposal requires a price.', { missingOwnerFields: ['baggingSurchargePercent'] });
+    if (percent === undefined) ctx.skipAddon('Clipping bagging and disposal');
     else {
       const exactAmount = exactDivide(exactMultiply(labor.amountCents, percent), 100);
       const amount = exactRound(exactAmount);
@@ -1031,7 +1032,7 @@ function calculateMowing(c, p, ctx) {
   }
   if (c.edgingIncluded) {
     const rate = addonMoney(p.edgingPerLinearFoot, 'edgingPerLinearFoot');
-    if (rate === undefined) throw new QuoteReviewError('Selected lawn edging requires a price.', { missingOwnerFields: ['edgingPerLinearFoot'] });
+    if (rate === undefined) ctx.skipAddon('Lawn edging');
     else add(out, makeLine({ name: 'Lawn edging', category: 'addon', quantity: c.edgingLengthLF, unit: 'measured linear feet', rateCents: rate, ratePath: 'edgingPerLinearFoot', customerDriver: `${c.edgingLengthLF} measured linear feet of edging`, allowZeroRate: true }));
   }
   out.feeScope.disposal = baggingPriced;
@@ -1241,16 +1242,21 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (serviceType === 'LANDSCAPING_MOWING') return finalize(calculateMowing(customerInputs, pricing, addonContext));
   if (serviceType === 'SIDING_REPLACEMENT') return finalize(calculateSidingReplacement(customerInputs, pricing));
   if (serviceType === 'SIDING_REPAIR') return finalize(calculateSidingRepair(customerInputs, pricing));
-  const decision = {
-    path: 'customChargeClassification',
-    kind: 'custom_charge_classification',
-    message: 'Classify the custom charge as labor, material, removal, disposal, equipment, permit, or an explicit mixed allocation before quoting.'
-  };
-  throw new QuoteReviewError('Custom service charge classification is not configured.', {
-    ownerDecisionRequired: [decision],
-    ownerDiagnostics: [{ type: 'owner_decision', ...decision }],
-    validationMessages: [decision.message]
-  });
+  const out = baseOutput('CUSTOM');
+  const quantities = {flat: 1, per_hour: customerInputs.hours, per_unit: customerInputs.itemCount, per_sqft: customerInputs.areaSqft, per_LF: customerInputs.linearFeet, per_square: customerInputs.roofSquares};
+  const category = pricing.customChargeClassification;
+  if (!['cost', 'sell_price'].includes(serviceRules.priceBasisByCategory?.[category])) throw new QuoteReviewError('Choose the price basis for this custom service charge category.', {missingOwnerFields: ['priceBasisByCategory.' + category]});
+  let rateCents = pricing.price;
+  if (pricing.customPricingMode === 'range') {
+    const mid = exactDivide(exactAdd(pricing.low, pricing.high), 2);
+    rateCents = exactToNumber(mid);
+    if (exactCompare(rateCents, mid) !== 0) throw new QuoteReviewError('The custom range midpoint cannot be represented exactly.', {invalidOwnerFields:['low','high']});
+  }
+  add(out, makeLine({name: 'Custom service', category, quantity: quantities[pricing.unit], unit: pricing.unit, rateCents, ratePath: 'price',
+    ...(pricing.customPricingMode === 'range' ? {lowRateCents:pricing.low, highRateCents:pricing.high} : {})}));
+  recordMeasurement(out, 'customQuantity', quantities[pricing.unit], pricing.unit, pricing.unit === 'flat' ? 'one_confirmed_service' : 'customer_measured');
+  out.priceDrivers.push(pricing.unit === 'flat' ? 'Confirmed fixed service' : 'Confirmed service quantity: ' + quantities[pricing.unit]);
+  return finalize(out);
 }
 
 

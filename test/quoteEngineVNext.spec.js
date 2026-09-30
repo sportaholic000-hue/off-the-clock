@@ -630,22 +630,22 @@ test('customer payload remains strictly allowlisted while owner record remains c
   assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 241000);
 });
 
-test('selected scope with missing prices reviews without omitting the request', () => {
+test('unpriced optional extras disclose exclusions without omitting the original request', () => {
   const flat = happyCases.find(candidate => candidate.serviceType === 'FLAT_ROOF_REPAIR');
   const flatInputs = { ...flat.customerInputs, pondingWater: true };
   const flatResult = quote({ ...flat, customerInputs: flatInputs });
-  assert.equal(flatResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(flatResult.missingOwnerFields, ['pondingWaterSurcharge']);
+  assert.equal(flatResult.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(flatResult.options[0].skippedAddons, ['Ponding water surcharge']);
   assert.deepEqual(flatResult.submittedCustomerInputs, flatInputs);
-  assert.deepEqual(Object.keys(sanitizeForCustomerVNext(flatResult)).sort(), ['customerMessage', 'quoteId', 'resultType']);
+  assert.ok(sanitizeForCustomerVNext(flatResult).options[0].disclaimer.includes('Ponding water surcharge'));
 
   const mowing = happyCases.find(candidate => candidate.serviceType === 'LANDSCAPING_MOWING');
   const ownerPricing = structuredClone(mowing.ownerPricing);
   delete ownerPricing.pricing.baggingSurchargePercent;
   delete ownerPricing.pricing.edgingPerLinearFoot;
   const mowingResult = quote({ ...mowing, ownerPricing });
-  assert.equal(mowingResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(mowingResult.missingOwnerFields.sort(), ['baggingSurchargePercent', 'edgingPerLinearFoot']);
+  assert.equal(mowingResult.resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(mowingResult.options[0].skippedAddons, ['Clipping bagging and disposal', 'Lawn edging']);
   assert.deepEqual(mowingResult.submittedCustomerInputs, mowing.customerInputs);
 });
 

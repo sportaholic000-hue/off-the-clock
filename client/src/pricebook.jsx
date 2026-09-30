@@ -279,7 +279,9 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
 
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [] }) {
   const service = useContext(PricingContext);
-  const kind = definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
+  const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
+    ? moneyKindForField(service.serviceType, definition.field, servicePricing(service))
+    : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, servicePricing(service));
   let control;
   if (definition.type === 'boolean') {
     control = <Toggle checked={Boolean(value)} onChange={onChange} label={value ? 'YES' : 'NO'} />;

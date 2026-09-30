@@ -75,9 +75,9 @@ const NEW_FIELD_COPY = {
   offeringMode:{label:'Offering pricing',help:'Choose complete installed pricing or itemized measured components for this owner offering.'},
   offeringDetails:{label:'What this offering includes',help:'Define the covered fence or painting scope, with explicit inclusions and separately offered extras.'},
   offeringRates:{label:'Prices for this offering',help:'Owner-entered unit prices. Installed packages and gates are final selling prices. Itemized paint materials use measured-area selling prices.'},
-  baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Required when clipping bagging and disposal is selected. Missing pricing returns review. An explicit zero percentage means this optional scope is free; a positive percentage applies to mowing labor once and replaces common disposal.'},
-  edgingPerLinearFoot: {label:'Landscape edging labor price per measured linear foot',help:'Required when edging is selected. Missing pricing returns review. An explicit zero rate means this optional scope is free; a positive rate uses the confirmed edging length.'},
-  pondingWaterSurcharge: {label:'Selected ponding-water treatment fixed price',help:'Required when ponding-water treatment is selected. Missing pricing returns review. An explicit zero price means this optional scope is free; a positive fixed price is charged once.'},
+  baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes clipping bagging and disposal from that option. An explicit zero percentage means this optional scope is free; a positive percentage applies to mowing labor once and replaces common disposal.'},
+  edgingPerLinearFoot: {label:'Landscape edging labor price per measured linear foot',help:'Mowing edging is an optional extra: missing pricing keeps the main quote and explicitly excludes lawn edging from that option. Mulch edging remains required scope. An explicit zero rate means the extra is free; a positive rate uses the confirmed edging length.'},
+  pondingWaterSurcharge: {label:'Selected ponding-water treatment fixed price',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes ponding-water treatment from that option. An explicit zero price means this optional scope is free; a positive fixed price is charged once.'},
 
   disposalScope: {label:'Separate sod-project debris disposal',help:'Only separate_project_debris is supported. Customer separateDisposalSelected must be explicitly true or false. Old-lawn disposal stays included in ground preparation.'},
   knownOfferings: {label:'Explicitly known price-selecting offerings',help:'Register stable offering UUIDs separately from pricing. Matching price-map keys do not establish customer facts.'},
@@ -103,10 +103,11 @@ const NEW_FIELD_COPY = {
   trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Held for owner review until labor and material are separately priced or an explicit category and allocation rule is approved.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
-  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Defines small and medium average-room area boundaries used by the room-complexity labor factor. Quotes exactly on a boundary remain review-only until inclusive-boundary behavior is approved.' },
+  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area below the small threshold uses the small-room labor factor; at or above it uses medium, until the medium threshold. At or above the medium threshold uses large. Defaults: below 150, 150 to under 300, and 300 or more square feet.' },
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
+  customChargeClassification: { label: 'Custom service charge category', help: 'Choose the line category for this complete service charge. Its saved price basis, taxability, markup and seasonal settings apply. A final selling price is not marked up again. No labor/material split is inferred.' },
   price: { label: 'Fixed customer price per configured unit', help: 'Final configured amount before any explicitly selected cost-basis markup.' },
   priceBasisByCategory: { label: 'Rate meaning by line category', help: 'State whether each category contains owner cost or final sell price so the engine cannot mark up a sell price twice.' },
   taxabilityByCategory: { label: 'Taxability by line category', help: 'Set the tax treatment for every line category used by this service.' },
@@ -776,7 +777,6 @@ export function reviewOnlyScopesVNext(serviceType) {
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') add('Commercial insulation scope', {buildingType:'commercial'}, ['insulationPerSqft']);
   if (serviceType.startsWith('FENCING_')) add('Every fence request', {}, [], true);
-  if (serviceType === 'CUSTOM') add('Every custom service request', {}, [], true);
   if (serviceType === 'EXTERIOR_PAINTING') add('Every exterior painting request', {}, [], true);
   return definitions.map(({inputs, ...entry}) => ({...entry, ownerDecisions: uniqueStatusDiagnostics([
     ...inspectionOwnerDecisionsVNext(serviceType, inputs),
