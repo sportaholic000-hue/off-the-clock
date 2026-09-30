@@ -284,16 +284,21 @@ export function createAuthHandlers({
 
   function refreshHandler(req,res) {
     if(recoveryLimited(req,res,'refresh',120))return;
-    try {return http.sessionReply(res,sessions.refresh(http.cookie(req),http.accessClaims(req,{required:true})));}
+    try {
+      const claims=http.accessClaims(req,{required:true});
+      return http.sessionReply(res,sessions.refresh(http.cookie(req,claims),claims));
+    }
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);throw error;}
   }
   function logoutHandler(req,res) {
     try {
-      const claims=http.accessClaims(req),token=http.cookie(req);
-      const clear=!claims||sessions.cookieMatches(token,claims);
-      // A stale tab must not revoke or clear a newer account's cookie.
-      sessions.revoke(clear?token:null,claims);
-      if(clear)http.writeCookie(res,null);
+      const claims=http.accessClaims(req);
+      // Without signed session intent, do not select among browser cookies.
+      if(!claims)return res.json({ok:true});
+      const token=http.cookie(req,claims);
+      sessions.revoke(sessions.cookieMatches(token,claims)?token:null,claims);
+      // Expire only this session, even if another tab has signed in since.
+      http.writeCookie(res,null,undefined,claims.sid);
       return res.json({ok:true});
     }catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);throw error;}
   }

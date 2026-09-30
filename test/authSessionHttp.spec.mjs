@@ -49,8 +49,9 @@ async function authorize(f,token) {
 
 test('production login issues a Secure host cookie; no refresh secret appears in JSON',async t=>{
   const f=fixture(t,{env:{...environment,NODE_ENV:'production'}}),r=await login(f);
-  assert.equal(r.statusCode,200);assert.equal(r.body.refreshToken,undefined);
-  assert.match(r.headers['set-cookie'],/^__Host-otc_refresh=[A-Za-z0-9_-]{43}; Path=\/; HttpOnly; SameSite=Lax; Secure; Expires=/);
+  assert.equal(r.statusCode,200);assert.equal(r.body.refreshToken,undefined);assert.equal(r.body.sessionId,undefined);
+  assert.equal(cookie(r).split('=')[0],'__Host-otc_refresh_'+jwt.decode(r.body.token).sid);
+  assert.match(r.headers['set-cookie'],/^__Host-otc_refresh_[A-Za-z0-9_-]{43}=[A-Za-z0-9_-]{43}; Path=\/; HttpOnly; SameSite=Lax; Secure; Expires=/);
   assert.doesNotMatch(r.headers['set-cookie'],/Domain=/);
   assert.equal(r.headers['cache-control'],'no-store');
   assert.equal((await authorize(f,r.body.token)).allowed,true);
@@ -97,7 +98,8 @@ test('expired access can refresh within eight hours; logout revokes expired sign
 test('an old tab logout preserves the newer account cookie and session',async t=>{
   const f=fixture(t),a=await login(f),b=await login(f,'b');
   const out=await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:cookie(b)});
-  assert.equal(out.statusCode,200);assert.equal(out.headers['set-cookie'],undefined);
+  assert.equal(out.statusCode,200);assert.equal(cookie(out).split('=')[0],cookie(a).split('=')[0]);
+  assert.notEqual(cookie(out).split('=')[0],cookie(b).split('=')[0]);
   assert.equal((await authorize(f,a.body.token)).allowed,false);
   assert.equal((await authorize(f,b.body.token)).allowed,true);
 });
@@ -184,4 +186,65 @@ test('two actual workers contending for the same refresh receipt produce one suc
   Atomics.store(new Int32Array(gate),0,1);Atomics.notify(new Int32Array(gate),0,2);
   assert.deepEqual((await Promise.all(outcomes)).sort(),['SESSION_REFRESH_CONFLICT','success']);
   await Promise.all(workers.map(worker=>worker.terminate()));
+});
+
+test('refresh chooses the signed session cookie when multiple session cookies arrive',async t=>{
+  const f=fixture(t),a=await login(f),b=await login(f,'b');
+  const renewed=await call(f.handlers.refresh,{}, {...bearer(a.body.token),cookie:cookie(b)+'; '+cookie(a)});
+  assert.equal(renewed.statusCode,200);
+  assert.equal(cookie(renewed).split('=')[0],cookie(a).split('=')[0]);
+  assert.notEqual(cookie(renewed).split('=')[0],cookie(b).split('=')[0]);
+  assert.equal((await call(f.handlers.refresh,{}, {...bearer(b.body.token),cookie:cookie(renewed)+'; '+cookie(b)})).statusCode,200);
+});
+
+test('a foreign receipt under the selected cookie name cannot refresh or revoke the foreign session',async t=>{
+  const f=fixture(t),a=await login(f),b=await login(f,'b');
+  const forged=cookie(a).split('=')[0]+'='+secret(b);
+  const renew=await call(f.handlers.refresh,{}, {...bearer(a.body.token),cookie:forged});
+  assert.equal(renew.statusCode,401);assert.equal(renew.headers['set-cookie'],undefined);
+  const out=await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:forged});
+  assert.equal(out.statusCode,200);
+  assert.equal((await authorize(f,a.body.token)).allowed,false);
+  assert.equal((await authorize(f,b.body.token)).allowed,true);
+  assert.equal((await call(f.handlers.refresh,{}, {...bearer(b.body.token),cookie:cookie(b)})).statusCode,200);
+});
+
+test('anonymous logout does not select, revoke or expire another signed-in session',async t=>{
+  const f=fixture(t),a=await login(f),b=await login(f,'b');
+  for(const header of [cookie(a),cookie(a)+'; '+cookie(b)]){
+    const out=await call(f.handlers.logout,{}, {cookie:header});
+    assert.equal(out.statusCode,200);assert.equal(out.headers['set-cookie'],undefined);
+  }
+  assert.equal((await authorize(f,a.body.token)).allowed,true);
+  assert.equal((await authorize(f,b.body.token)).allowed,true);
+});
+
+test('legacy shared cookie names and duplicate selected cookies fail closed without changing other cookies',async t=>{
+  const f=fixture(t),a=await login(f),b=await login(f,'b');
+  for(const header of ['otc_refresh='+secret(a),cookie(a)+'; '+cookie(a)+'; '+cookie(b)]){
+    const out=await call(f.handlers.refresh,{}, {...bearer(a.body.token),cookie:header});
+    assert.equal(out.statusCode,401);assert.equal(out.headers['set-cookie'],undefined);
+  }
+  assert.equal((await call(f.handlers.refresh,{}, {...bearer(b.body.token),cookie:cookie(b)})).statusCode,200);
+});
+
+test('logout revokes signed intent and expires only its own cookie even when that cookie is missing',async t=>{
+  const f=fixture(t),a=await login(f),b=await login(f,'b');
+  const out=await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:cookie(b)});
+  assert.equal(out.statusCode,200);
+  assert.equal(cookie(out).split('=')[0],cookie(a).split('=')[0]);
+  assert.match(out.headers['set-cookie'],/Max-Age=0/);
+  assert.equal((await authorize(f,a.body.token)).allowed,false);
+  assert.equal((await call(f.handlers.refresh,{}, {...bearer(b.body.token),cookie:cookie(b)})).statusCode,200);
+});
+
+test('fresh sign-ins to the same account have isolated cookie names and logout boundaries',async t=>{
+  const f=fixture(t),a=await login(f),a2=await login(f);
+  assert.notEqual(jwt.decode(a.body.token).sid,jwt.decode(a2.body.token).sid);
+  assert.notEqual(cookie(a).split('=')[0],cookie(a2).split('=')[0]);
+  const out=await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:cookie(a2)+'; '+cookie(a)});
+  assert.equal(out.statusCode,200);
+  assert.notEqual(cookie(out).split('=')[0],cookie(a2).split('=')[0]);
+  assert.equal((await authorize(f,a.body.token)).allowed,false);
+  assert.equal((await call(f.handlers.refresh,{}, {...bearer(a2.body.token),cookie:cookie(a2)})).statusCode,200);
 });

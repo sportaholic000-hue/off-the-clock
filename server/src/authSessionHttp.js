@@ -5,7 +5,11 @@ import {AuthSessionError, isSessionSecret} from './authSessionService.js';
 
 export function createSessionHttp(environment=process.env) {
   const secure=environment.NODE_ENV==='production';
-  const cookieName=secure?'__Host-otc_refresh':'otc_refresh';
+  const cookiePrefix=secure?'__Host-otc_refresh':'otc_refresh';
+  function cookieName(sessionId) {
+    if(!isSessionSecret(sessionId))throw new AuthSessionError();
+    return cookiePrefix+'_'+sessionId;
+  }
   function originAllowed(req) {
     const origin=req.headers?.origin ?? req.get?.('Origin');
     if(origin===undefined) return req.headers?.['sec-fetch-site']!=='cross-site';
@@ -13,17 +17,20 @@ export function createSessionHttp(environment=process.env) {
     // Configuration errors fail closed, including malformed exact origins.
     try{return new Set([accountEmailOrigin(environment),...allowedCorsOrigins(environment)]).has(origin);}catch{return false;}
   }
-  function cookie(req) {
+  function cookie(req,claims) {
+    if(!isSessionSecret(claims?.sid))return null;
+    const name=cookieName(claims.sid);
     const raw=req.headers?.cookie;
     if(typeof raw!=='string'||raw.length>16384)return null;
-    const values=raw.split(';').map(part=>part.trim()).filter(part=>part.startsWith(cookieName+'='));
+    const values=raw.split(';').map(part=>part.trim()).filter(part=>part.startsWith(name+'='));
     if(values.length!==1)return null;
-    const value=values[0].slice(cookieName.length+1);
+    const value=values[0].slice(name.length+1);
     return isSessionSecret(value)?value:null;
   }
-  function writeCookie(res,token,expiresAt) {
+  function writeCookie(res,token,expiresAt,sessionId) {
+    const name=cookieName(sessionId);
     // Expires is authoritative even when a test uses an injected clock.
-    res.setHeader('Set-Cookie',cookieName+'='+(token||'')+'; Path=/; HttpOnly; SameSite=Lax'+
+    res.setHeader('Set-Cookie',name+'='+(token||'')+'; Path=/; HttpOnly; SameSite=Lax'+
       (secure?'; Secure':'')+'; Expires='+(token?new Date(expiresAt).toUTCString():'Thu, 01 Jan 1970 00:00:00 GMT')+
       (token?'':'; Max-Age=0'));
   }
@@ -38,8 +45,9 @@ export function createSessionHttp(environment=process.env) {
   }
   function sessionReply(res,result) {
     res.setHeader('Cache-Control','no-store');
-    writeCookie(res,result.refreshToken,result.sessionExpiresAt);
-    const {refreshToken,...body}=result;
+    // Distinct session names isolate late browser-applied response headers.
+    writeCookie(res,result.refreshToken,result.sessionExpiresAt,result.sessionId);
+    const {refreshToken,sessionId,...body}=result;
     return res.json(body);
   }
   function failure(res,error) {

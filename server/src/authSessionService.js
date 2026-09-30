@@ -51,7 +51,7 @@ export function createAuthSessionService(database,{environment=process.env,clock
       ...(user.role==='admin'?{authSource:'environment-admin'}:{})};
     const token=signAccess?signAccess(payload,user):jwt.sign(payload,environment.JWT_SECRET,{algorithm:'HS256'});
     if(typeof token!=='string'||!token)throw new AuthSessionError('SESSION_STORE_UNAVAILABLE');
-    return {token,accessExpiresAt:new Date(payload.exp*1000).toISOString(),sessionExpiresAt:new Date(row.expiresAt).toISOString()};
+    return {sessionId:row.id,token,accessExpiresAt:new Date(payload.exp*1000).toISOString(),sessionExpiresAt:new Date(row.expiresAt).toISOString()};
   }
   function current(row,at) {
     if(!row || row.revokedAt!==null || row.expiresAt<=at)throw new AuthSessionError();

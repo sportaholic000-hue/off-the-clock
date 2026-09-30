@@ -54,7 +54,8 @@ try {
  const context=await browser.newContext({viewport:{width:1360,height:950}}),page=await context.newPage();
  page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));
  const original=await signin(page,owner);
- const cookies=await context.cookies(site),refresh=cookies.find(c=>c.name==='otc_refresh');
+ const cookieName='otc_refresh_'+jwt.decode(original).sid;
+ const cookies=await context.cookies(site),refresh=cookies.find(c=>c.name===cookieName);
  assert.ok(refresh?.httpOnly);assert.equal(refresh.sameSite,'Lax');assert.equal(await page.evaluate(()=>document.cookie.includes('otc_refresh')),false);
  assert.equal((await app.request('GET','/api/auth/account',undefined,original)).status,200);
  check('Real browser login sets an HttpOnly cookie and authorizes the owner');
@@ -67,7 +68,7 @@ try {
  assert.notEqual(fresh,original);assert.equal(jwt.decode(fresh).sid,jwt.decode(original).sid);
  assert.equal(await page.getByLabel('Business name',{exact:true}).inputValue(),'SYNTHETIC unsaved form remains');
  assert.equal(await page.getByLabel('Business name',{exact:true}).getAttribute('data-session-preservation'),'yes');
- assert.notEqual((await context.cookies(site)).find(c=>c.name==='otc_refresh').value,refresh.value);
+ assert.notEqual((await context.cookies(site)).find(c=>c.name===cookieName).value,refresh.value);
  check('Expired access renews through the real route without remounting or losing an unsaved owner form');
 
  const tab=await context.newPage();tab.setDefaultTimeout(60000);tab.on('pageerror',e=>errors.push(e.message));
@@ -97,7 +98,7 @@ try {
  assert.equal(await page.evaluate(()=>localStorage.getItem('otc_token')),null);
  assert.equal((await app.request('GET','/api/auth/account',undefined,beforeLogout)).status,401);
  assert.equal((await app.request('GET','/api/auth/account',undefined,secondToken)).status,200);
- assert.equal((await context.cookies(site)).some(c=>c.name==='otc_refresh'),false);
+ assert.equal((await context.cookies(site)).some(c=>c.name==='otc_refresh_'+jwt.decode(beforeLogout).sid),false);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  check('Mobile sign-out retries a failure, then revokes only that server session and clears its cookie');
 
