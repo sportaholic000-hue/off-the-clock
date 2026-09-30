@@ -1,0 +1,245 @@
+{
+  "sourceCommit": "bf6db336f6bf05c641bf6d02a02acf509b4edacb",
+  "results": [
+    {
+      "label": "production-build-final",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 36796,
+      "log": "production-build-final.log",
+      "counters": {},
+      "logSha256": "20409f64b99d1ae4767a03bfbc459fe587a547da04fa1417699105a70305b324"
+    },
+    {
+      "label": "fractional-editor-final2",
+      "args": [
+        "verification/engine-independent/owner-widget.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\fractional-editor-final2",
+        "fractional"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 55180,
+      "log": "fractional-editor-final2.log",
+      "counters": {},
+      "logSha256": "6de88469656c668aebc4667d385439cb2c95076f91c492f2ab7bf5b7e264920c"
+    },
+    {
+      "label": "owner-widget-final",
+      "args": [
+        "verification/engine-independent/owner-widget.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\owner-widget-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 61564,
+      "log": "owner-widget-final.log",
+      "counters": {},
+      "logSha256": "8a7caba8f03bd92c02f2fb108614824055dd5c3ee6d3c28963ae12ac76b675d3"
+    },
+    {
+      "label": "application-browser-final",
+      "args": [
+        "verification/engine-independent/application-audit.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\application-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 204255,
+      "log": "application-browser-final.log",
+      "counters": {},
+      "logSha256": "798535b2f0e20652d698cd4e9b01585292bc9b74b2e8098f38966530f3407140"
+    },
+    {
+      "label": "engine-regression-final",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs",
+        "test/quoteFlowRepairs.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 474750,
+      "log": "engine-regression-final.log",
+      "counters": {
+        "tests": 369,
+        "pass": 369,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "logSha256": "9a20176fb5d300bd29946f89b11ea65a8beb6b1e8646d844640a91b2d6b2eff6"
+    },
+    {
+      "label": "application-regression-final2",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 44398,
+      "log": "application-regression-final2.log",
+      "counters": {
+        "tests": 318,
+        "pass": 318,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "logSha256": "78a0271f87e0eb6c765b622da8c965dbecb60dbf5ba1f75171c1a31c6806cd8f"
+    },
+    {
+      "label": "pricebook-browser-final",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 308911,
+      "log": "pricebook-browser-final.log",
+      "counters": {
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "logSha256": "16030eadb74d2e675eac9ddfbbd0331017483c6328f28b41694c7cef69e6bb71"
+    },
+    {
+      "label": "arithmetic-matrix-final",
+      "args": [
+        "verification/engine-independent/arithmetic-matrix.mjs",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\matrix-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 16941,
+      "log": "arithmetic-matrix-final.log",
+      "counters": {},
+      "logSha256": "7d8220108ac9a9ad7e5bb3b7d4ff094f30998ec66de699dc94e58da12f70470a"
+    },
+    {
+      "label": "whole-request-final",
+      "args": [
+        "verification/quotedone/pricing-envelope-workflow.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\whole-request-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 38983,
+      "log": "whole-request-final.log",
+      "counters": {},
+      "logSha256": "723a93cd2c02662f7d17b827bf860771816161d3793078c8284e8ca5adfe35ad"
+    },
+    {
+      "label": "widget-booking-final",
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-flow-repairs-evidence-20260930\\widget-booking-final"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 154544,
+      "log": "widget-booking-final.log",
+      "counters": {},
+      "logSha256": "2b6383e927bf3b08bea87c6a4256b60729d4a460e475258871ebe3376b85077f"
+    },
+    {
+      "label": "widget-transport-final",
+      "args": [
+        "--test",
+        "client/test/widget-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 953,
+      "log": "widget-transport-final.log",
+      "counters": {
+        "tests": 10,
+        "pass": 10,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "logSha256": "da9488486d99319261e3e0341ef9598ba5f5a0080be41a0fd410b8e5083828ef"
+    },
+    {
+      "label": "integration-boundary-final",
+      "args": [
+        "verification/quotedone/offerings-integration-boundary.mjs",
+        "."
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 3096,
+      "log": "integration-boundary-final.log",
+      "counters": {},
+      "logSha256": "12930492f0e0e9f3463aa0799416dcbf6d0cb5f9731c7953d167155ca2806357"
+    }
+  ],
+  "application": {
+    "httpChecks": 54,
+    "browserChecks": 14,
+    "errors": []
+  },
+  "checks": {
+    "ownerWidget": 4,
+    "fractionalEditor": 2,
+    "arithmetic": 480,
+    "wholeRequest": 53,
+    "widgetBooking": 24
+  }
+}
