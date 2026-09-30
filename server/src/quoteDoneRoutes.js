@@ -11,7 +11,7 @@ import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
   calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName,
-  requireApplicationPricingEnvelope
+  requireApplicationPricingEnvelope, applicationServiceDefinition
 } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -68,7 +68,7 @@ function serviceFor(book,body) {
   const matches=applicationServiceMatches(book,body.serviceId);return matches.length===1?matches[0]:null;
 }
 function customerCatalogService(service,metadata,bookingCapability) {
-  const definition=metadata.services.find(item=>item.serviceType===service.serviceType);
+  const definition=applicationServiceDefinition(service);
   const knownOfferings={};
   for(const field of definition?.customerFields||[])if(field.type==='slug') {
     const values=service.knownOfferings?.[field.name];
@@ -79,6 +79,7 @@ function customerCatalogService(service,metadata,bookingCapability) {
     serviceType:service.serviceType,
     name:applicationServiceName(service),
     customerFields:definition?.customerFields||[],
+    ...(definition?.offeringSummary?{offeringSummary:definition.offeringSummary}:{}),
     knownOfferings,
     customerFees:metadata.feeNames.filter(name=>service.feeRules?.[name]==='customer_selected'),
     quoteCapability:'LIVE_OR_REVIEW',

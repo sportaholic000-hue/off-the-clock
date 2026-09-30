@@ -7,21 +7,22 @@ import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
-  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES
+  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
+  configuredOffering, offeringContract
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook } from '../priceBookService.js';
 import { dollarAmountToCents, centAmountToDollars, moneyKindForField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
-// The only application bridge to the frozen engine. Transport and persistence
+// The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export const DEFAULT_FIELDS = ['markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
-const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat']);
-const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing']);
+const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates']);
+const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -151,7 +152,7 @@ function validateApplicationNumericDraft(book) {
  const numericTree=(value,path)=>{if(value===undefined||value===null||value==='')return;if(record(value)){for(const [key,child] of Object.entries(value))numericTree(child,path+'.'+key);}else if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw problem('Invalid numeric value at '+path+'. Enter the intended value before saving.');};
  const numericFields=new Set(['markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY]);
  for(const [field,value] of Object.entries(book.defaults||{}))if(numericFields.has(field))numericTree(value,'defaults.'+field);
- const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit']);
+ const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','unit','offeringMode','offeringDetails']);
  for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
 }
 export function validateApplicationDraft(ownerId,input) {
@@ -243,7 +244,7 @@ export function previewApplicationQuote(ownerId,input) {
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=raw.active===true&&draftRaw.active===true&&approvalCurrent(raw,saved)&&!seasonalDecision(raw,saved)&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,customerInputs:input.customerInputs||{},feeSelections:{owner:raw.ownerFeeSelections||{},customer:input.customerFeeSelections||{}}});
-  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const definition=applicationServiceDefinition(raw);
   return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false}={}) {
@@ -260,7 +261,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   service.active=raw.active===true&&current;
   const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
-  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const definition=applicationServiceDefinition(raw);
   const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
   let leadEnvelope=null;
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
@@ -277,7 +278,7 @@ export function prepareApplicationIntake(ownerId,submission) {
   if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
   const book=loadPricebook(ownerId),raw=uniqueApplicationService(book,submission.serviceId);
   if(!raw)throw problem('Choose a current saved service before checking the job details.',409);
-  const revision=bookRevision(book),definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const revision=bookRevision(book),definition=applicationServiceDefinition(raw);
   const outcome=calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake:true});
   const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
   const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,field.label]));
@@ -298,6 +299,16 @@ export function applicationServiceName(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   return typeof raw.service==='string'&&raw.service.trim()?raw.service:definition?.service||'Service';
 }
+export function applicationServiceDefinition(raw) {
+  const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
+  const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
+  if(!configuredOffering(raw.serviceType,p))return definition;
+  const d=p.offeringDetails||{};
+  const summary=[d.description];
+  if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');
+  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),String(d.finishCoats??'Unconfigured')+' finish coat(s); '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
+  return {...definition,customerFields:Object.entries(offeringContract(raw.serviceType,p).fields).map(([name,field])=>({name,...field})),offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
+}
 function applicationScopeReview(raw,submission,options) {
   const issues=wholeRequestIssues(submission,applicationServiceName(raw),options);
   if(!issues.length)return null;
@@ -311,6 +322,7 @@ export function applicationMetadata() {
     const fields=meta.pricingFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
+      if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});

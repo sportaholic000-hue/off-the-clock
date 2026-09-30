@@ -1,4 +1,5 @@
 import { measuredOutlineVNext } from './geometry.js';
+import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
@@ -761,6 +762,11 @@ function missing(value) {
 }
 
 function validateFieldValue(definition, value) {
+  if(definition.type==='offering_counts') {
+    if(!isRecord(value)||Object.keys(value).some(key=>!definition.values.includes(key)))return 'must contain only offered gate selections';
+    if(Object.values(value).some(count=>!Number.isInteger(count)||count<0||count>10_000))return 'must contain whole gate counts from zero to 10,000';
+    return null;
+  }
   if (definition.type === 'orthogonal_outline') { try { measuredOutlineVNext(value); return null; } catch(error) { return error.message; } }
   if (definition.type === 'number') {
     if (typeof value !== 'number' || !Number.isFinite(value)) return 'must be a finite number';
@@ -795,7 +801,7 @@ function validateFieldValue(definition, value) {
 }
 
 export function validateCustomerInputs(serviceType, customerInputs = {}, pricing = {}, serviceRules = {}) {
-  const contract = MEASUREMENT_CONTRACTS[serviceType];
+  let contract = MEASUREMENT_CONTRACTS[serviceType];
   if (!contract) return { ok: false, missingCustomerFields: [], invalidCustomerFields: ['serviceType'], reviewReason: 'Unsupported service type.' };
   const customerSnapshot = snapshotPlainData(customerInputs, 'customerInputs');
   if (!customerSnapshot.ok) {
@@ -830,6 +836,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Pricing context must contain only plain data objects; ${pricingNonPlainPath} is not plain data.`
   };
   pricing = pricingSnapshot.value;
+  if(configuredOffering(serviceType,pricing))contract=offeringContract(serviceType,pricing);
   const rules = snapshotPlainData(serviceRules, 'serviceRules');
   if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
   serviceRules = rules.value;
@@ -1045,7 +1052,7 @@ const ALLOWED_PRICING_FIELDS = {
 };
 
 export function allowedPricingFields(serviceType) {
-  return [...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {})];
+  return [...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1143,6 +1150,7 @@ export function vinylUnderlaymentApplies(customerInputs, pricing) {
 }
 
 export function ownerRequirements(serviceType, c = {}, p = {}) {
+  if(configuredOffering(serviceType,p))return offeringRequirements(serviceType,c,p);
   const out = [];
   const add = (path, label, options) => out.push(requirement(path, label, options));
   if (serviceType === 'ROOFING_REPLACEMENT') {
@@ -1420,6 +1428,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   )];
   p = snapshot.value;
 
+  if(configuredOffering(serviceType,p))return offeringStructureDiagnostics(serviceType,p);
+
   for (const name of scalarMoneyFields(serviceType)) {
     if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
   }
@@ -1604,7 +1614,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
 
   const ownerDecisionRequired = [];
   const requireDecision = (path, kind, message) => ownerDecisionRequired.push({ path, kind, message });
-  if (serviceType.startsWith('FENCING_')) {
+  if (serviceType.startsWith('FENCING_') && !configuredOffering(serviceType,pricing)) {
     requireDecision('postDerivationRule', 'post_geometry_contract', 'Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted.');
     requireDecision('concretePerPost', 'mixed_charge_allocation', 'Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule.');
     if (customerInputs.gateCount > 0) requireDecision(`gatePrice.${customerInputs.fenceType}`, 'gate_width_pricing_contract', 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.');
@@ -1630,7 +1640,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     const thresholds = pricing.roomSizeThresholds;
     if (averageRoom !== null && isRecord(thresholds) && Number.isFinite(thresholds.smallMaxSqft) && Number.isFinite(thresholds.mediumMaxSqft) && (exactCompare(averageRoom, thresholds.smallMaxSqft) === 0 || exactCompare(averageRoom, thresholds.mediumMaxSqft) === 0)) requireDecision('roomSizeThresholds', 'inclusive_boundary_contract', 'Approve whether flooring average-room maximum thresholds are inclusive. Quotes exactly on a threshold remain review-only.');
   }
-  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost') requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
+  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
   if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
   if (serviceType === 'CUSTOM') requireDecision('customChargeClassification', 'custom_charge_classification', 'Classify the custom charge as labor, material, removal, disposal, equipment, permit, or an explicit mixed allocation before quoting.');
 
@@ -1872,7 +1882,8 @@ export function approveVNextValues(input,operation) {
   return service;
 }
 
-export function inspectionOwnerDecisionsVNext(type,c={}) {
+export function inspectionOwnerDecisionsVNext(type,c={},p={}) {
+ if(configuredOffering(type,p))return [];
  const decisions=previousInspectionOwnerDecisionsVNext(type,c);
  const add=(path,kind,message)=>decisions.push({path,kind,message});
  if(type.startsWith('FLOORING_')&&c.stairSteps>0)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');

@@ -27,7 +27,14 @@ globalThis.fetch=async function syntheticCalendarFetch(raw,options={}){
  }
  if(url.pathname==='/calendar/v3/calendars/primary/events'&&method==='POST'){
   const body=JSON.parse(options.body);state.events[body.id]={...body,status:'confirmed'};save(state);
-  if(state.mode==='ambiguous')throw Error('SYNTHETIC lost provider acknowledgement');
+  if(state.variant==='cancelled'||state.variant==='tentative')state.events[body.id].status=state.variant;
+  if(state.variant==='wrong-day')for(const field of ['start','end'])state.events[body.id][field].dateTime=new Date(Date.parse(body[field].dateTime)+86400000).toISOString();
+  if(state.variant==='wrong-duration')state.events[body.id].end.dateTime=new Date(Date.parse(body.end.dateTime)+1800000).toISOString();
+  if(state.variant==='wrong-id')state.events[body.id].id='syntheticwrongevent';
+  if(state.variant==='missing-status')delete state.events[body.id].status;
+  if(state.variant==='missing-time')delete state.events[body.id].start;
+  save(state);
+  if(state.mode==='ambiguous'||state.mode==='recover-immediately')throw Error('SYNTHETIC lost provider acknowledgement');
   return json(state.events[body.id]);
  }
  if(url.pathname.startsWith('/calendar/v3/calendars/primary/events/')&&method==='GET'){

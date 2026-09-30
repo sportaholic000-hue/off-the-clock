@@ -1,4 +1,5 @@
 import {PricingTree,CustomerMeasurements,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
+import {OfferingEditor,offeringPreviewFields,offeringTierFields} from './offeringEditor.jsx';
 import {QuoteAccess} from './quotedone.jsx';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
@@ -755,7 +756,8 @@ export default function PriceBook() {
   // Split required from optional so required pricing stays open and dominant
   // while optional charges collapse. requiredAtBase comes from the server's
   // activation field list, so this mirrors real activation requirements.
-  const allFields = selectedMeta?.fields || [];
+  const configuredMode=servicePricing(selected||{}).offeringMode;
+  const allFields = (selectedMeta?.fields || []).filter(field=>field.type!=='offering_configuration'&&(!configuredMode||field.field==='minimumJob')).map(field=>configuredMode&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -819,6 +821,7 @@ export default function PriceBook() {
             <PricingContext.Provider value={selected}>
             <div className="editor-grid">
               <div className="editor-column">
+                {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                 {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
                 {/* REQUIRED PRICING — open and visually dominant.
                     Reference: pricebook-editor "ESSENTIALS" card. */}
@@ -904,7 +907,7 @@ export default function PriceBook() {
                 )}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
-                {(selectedMeta.class2Fields || []).length > 0 && (
+                {!configuredMode&&(selectedMeta.class2Fields || []).length > 0 && (
                   <Disclosure
                     title="Quantity assumptions"
                     subtitle="Defaults are already being applied. Adjust only if your jobs differ."
@@ -966,7 +969,7 @@ export default function PriceBook() {
                   summaryChip={(selected.tiers || []).length ? `${(selected.tiers || []).length} SET` : 'NOT USED'}
                   defaultOpen={(selected.tiers || []).length > 0}
                 >
-                  <TierBuilder tiers={selected.tiers || []} definitions={selectedMeta.fields}
+                  <TierBuilder tiers={selected.tiers || []} definitions={offeringTierFields(selectedMeta,selected)}
                     onChange={tiers => replaceSelected(editServiceTiers(selected, tiers))} />
                 </Disclosure>
 
@@ -1011,7 +1014,7 @@ export default function PriceBook() {
                   </Disclosure>
                 </div>
               </div>
-              <div><section className="editor-section"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p><CustomerMeasurements fields={selectedMeta.customerFields} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
+              <div><section className="editor-section"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}

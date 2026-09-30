@@ -204,12 +204,12 @@ class FakeCalendar {
       error.ambiguous = true;
       throw error;
     }
-    return { status: this.mode, eventId: request.eventId };
+    return { status: this.mode, eventId: request.eventId, startAtUtc: request.startAtUtc, endAtUtc: request.endAtUtc, ...(this.responseOverride || {}) };
   }
 
   async getEvent(request) {
     this.getCalls.push(structuredClone(request));
-    return this.recoveredEvent;
+    return typeof this.recoveredEvent === 'function' ? this.recoveredEvent(this.createCalls.at(-1)) : this.recoveredEvent;
   }
 }
 
@@ -742,7 +742,7 @@ test('confirmation polling reconciles pending to the full confirmed public shape
     body: confirmation(held)
   };
   const pending = await state.booking.confirm(request);
-  state.calendar.recoveredEvent = { status: 'CONFIRMED', eventId: 'provider-event-found' };
+  state.calendar.recoveredEvent = request => ({status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc});
   const reconciled = await state.booking.getConfirmationStatus({
     bookingToken: state.intent.bookingToken,
     confirmationId: pending.body.confirmationId
@@ -763,7 +763,7 @@ test('confirmation polling reconciles pending to the full confirmed public shape
     }
   });
   assert.equal(state.db.prepare('SELECT status FROM appointments').get().status, 'CONFIRMED');
-  assert.equal(state.db.prepare('SELECT providerEventId FROM appointments').get().providerEventId, 'provider-event-found');
+  assert.equal(state.db.prepare('SELECT providerEventId FROM appointments').get().providerEventId, state.calendar.createCalls[0].eventId);
   assert.equal(state.db.prepare('SELECT status FROM bookingHolds').get().status, 'CONFIRMED');
   assert.equal(state.db.prepare('SELECT COUNT(*) AS count FROM outboxEvents').get().count, 1);
   assert.deepEqual(await state.restart().confirm(request), pending);
@@ -790,6 +790,7 @@ test('confirmation polling returns an exact customer-safe failure shape', async 
     body: confirmation(held)
   });
   state.calendar.recoveredEvent = {
+    eventId: state.calendar.createCalls[0].eventId,
     status: 'FAILED',
     providerError: 'raw-provider-detail-that-must-not-leak'
   };
@@ -861,7 +862,7 @@ test('known provider failure returns 503, preserves the unexpired hold, and retr
 
 test('ambiguous provider timeout reconciles by deterministic event lookup', async () => {
   const state = harness({ calendarMode: 'AMBIGUOUS' });
-  state.calendar.recoveredEvent = { eventId: 'provider-event-found' };
+  state.calendar.recoveredEvent = request => ({status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc});
   const [slot] = await slots(state);
   const held = state.booking.hold({
     ownerId: OWNER,
@@ -877,7 +878,7 @@ test('ambiguous provider timeout reconciles by deterministic event lookup', asyn
   });
   assert.equal(result.statusCode, 201);
   assert.equal(result.body.status, 'CONFIRMED');
-  assert.equal(state.db.prepare('SELECT providerEventId FROM appointments').get().providerEventId, 'provider-event-found');
+  assert.equal(state.db.prepare('SELECT providerEventId FROM appointments').get().providerEventId, state.calendar.createCalls[0].eventId);
 });
 
 test('calendar conversion rejects a spring-forward wall time and preserves both fall-back instants', () => {
@@ -885,5 +886,42 @@ test('calendar conversion rejects a spring-forward wall time and preserves both 
   const repeated = localDateTimeCandidates('2026-11-01', '01:30', 'America/Halifax');
   assert.equal(repeated.length, 2);
   assert.equal(new Date(repeated[1]) - new Date(repeated[0]), 60 * 60 * 1000);
+});
+
+for(const route of ['create','recovery','poll'])for(const variant of ['missing-status','tentative','cancelled','wrong-id','wrong-day','wrong-duration','missing-start','numeric-start'])test(`Provider confirmation ${route}: ${variant} never books or emits booked notification`,async()=>{
+  const state=harness({calendarMode:route==='create'?'CONFIRMED':route==='recovery'?'AMBIGUOUS':'PENDING_CONFIRMATION'});
+  const [slot]=await slots(state),held=state.booking.hold({ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.hold1,slotId:slot.slotId});
+  const change=result=>{
+    if(variant==='missing-status')result.status=undefined;
+    if(variant==='tentative')result.status='TENTATIVE';
+    if(variant==='cancelled')result.status='CANCELLED';
+    if(variant==='wrong-id')result.eventId='another-event';
+    if(variant==='wrong-day'){result.startAtUtc=new Date(Date.parse(result.startAtUtc)+86400000).toISOString();result.endAtUtc=new Date(Date.parse(result.endAtUtc)+86400000).toISOString();}
+    if(variant==='wrong-duration')result.endAtUtc=new Date(Date.parse(result.endAtUtc)+60000).toISOString();
+    if(variant==='missing-start')result.startAtUtc=undefined;
+    if(variant==='numeric-start')result.startAtUtc=Date.parse(result.startAtUtc);
+    return result;
+  };
+  if(route==='create')state.calendar.responseOverride=change({status:'CONFIRMED',startAtUtc:slot.startUtc,endAtUtc:slot.endUtc});
+  state.calendar.recoveredEvent=request=>change({status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc});
+  const request={ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)};
+  if(variant==='cancelled'&&route!=='poll')await assert.rejects(state.booking.confirm(request),hasCode('PROVIDER_UNAVAILABLE'));
+  else {
+    const pending=await state.booking.confirm(request);assert.equal(pending.body.status,'PENDING_CONFIRMATION');
+    if(route==='poll'){const result=await state.booking.getConfirmationStatus({bookingToken:state.intent.bookingToken,confirmationId:pending.body.confirmationId});assert.notEqual(result.body.status,'CONFIRMED');}
+    assert.deepEqual(await state.restart().confirm(request),pending);
+  }
+  assert.notEqual(state.db.prepare('SELECT status FROM appointments').get().status,'CONFIRMED');
+  assert.equal(state.db.prepare('SELECT COUNT(*) AS count FROM outboxEvents').get().count,0);
+  assert.equal(state.db.prepare('SELECT providerEventId FROM appointments').get().providerEventId,state.calendar.createCalls[0].eventId);
+});
+
+test('Provider confirmation accepts the same exact instants expressed with another timezone offset',async()=>{
+  const state=harness({calendarMode:'AMBIGUOUS'}),[slot]=await slots(state);
+  const held=state.booking.hold({ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.hold1,slotId:slot.slotId});
+  const offset=value=>new Date(Date.parse(value)+3600000).toISOString().replace('Z','+01:00');
+  state.calendar.recoveredEvent=request=>({status:'CONFIRMED',eventId:request.eventId,startAtUtc:offset(request.startAtUtc),endAtUtc:offset(request.endAtUtc)});
+  const result=await state.booking.confirm({ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)});
+  assert.equal(result.body.status,'CONFIRMED');assert.equal(result.body.startUtc,slot.startUtc);
 });
 
