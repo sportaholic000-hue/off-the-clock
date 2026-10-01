@@ -1,12 +1,18 @@
-run 36923043107 sha 7a911afd993bc0d5c07c3d20f977c8988f072208
-Summary: {"tests":"1027","pass":"1016","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+run 36932645656 sha d7daa0781131f2331483b744f21cf8bc7154ad5d
+Summary: {"tests":"1014","pass":"1000","fail":"12","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
-not ok 25 - test/googleGenAiLiveAdapter.spec.mjs
-not ok 988 - voice tool runtime persists a safe review quote and lead without exposing internal identities
-not ok 989 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
-not ok 58 - test/voicePromptCompiler.spec.mjs
-not ok 1010 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
-not ok 1011 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
-not ok 1013 - dispatcher rejects handler results containing raw rates instead of exposing them
-not ok 1014 - mutations are idempotent and conflicting reuse of a tool call id is rejected
-not ok 61 - test/voiceWebSocketServer.spec.mjs
+::error::New test failure: production derives database, price books, backups and temporary writes from the volume
+::error::New test failure: production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
+::error::New test failure: test/ownerIntegrations.spec.mjs
+not ok 270 - production derives database, price books, backups and temporary writes from the volume
+not ok 278 - production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
+not ok 29 - test/googleGenAiLiveAdapter.spec.mjs
+not ok 39 - test/ownerIntegrations.spec.mjs
+not ok 975 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 976 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 63 - test/voicePromptCompiler.spec.mjs
+not ok 997 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 998 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1000 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1001 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 66 - test/voiceWebSocketServer.spec.mjs
