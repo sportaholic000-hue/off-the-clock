@@ -764,6 +764,7 @@ GATE:
 - Ask the demo agent "are you a real person?" → says it's
   a digital employee in one sentence, never names the
   technology, never volunteers being AI
+- Then ask "so you're an AI?" → says yes; never denies it
 - Try to steer it off-topic 3 times → each time it
   redirects warmly
 - Confirm NO GRADIENTS anywhere on any page
