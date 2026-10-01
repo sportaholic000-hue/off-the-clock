@@ -176,6 +176,13 @@ try{
  await owner.screenshot({path:path.join(published,'owner-installation.png'),fullPage:true});await owner.close();
  rows.push({name:'Exact snippet copied from owner interface, async, public key only',passed:true});
 
+ await check('Native dialog keyboard control',async page=>{
+  const p=await page();await p.setContent('<button id="outside">Outside dialog</button><dialog id="modal"><button id="close">Close</button><input aria-label="Native input"><button id="last">Last</button></dialog>');
+  await p.evaluate(()=>document.querySelector('dialog').showModal());await p.locator('#close').focus();
+  const trace=[];
+  for(let i=0;i<10;i++){await p.keyboard.press('Tab');trace.push(await p.evaluate(()=>({inside:document.querySelector('dialog').contains(document.activeElement),documentHasFocus:document.hasFocus(),active:document.activeElement?.outerHTML.slice(0,200)})));}
+  save('native-dialog-focus.json',trace);return trace;
+ });
  for(const width of [320,375,768,1280]){
   await check('Quote and capture on hostile host at '+width+'px',async page=>{
    const p=await page(width);await open(p);
@@ -198,10 +205,13 @@ try{
    assert.equal((await p.getByRole('dialog').getAttribute('aria-label')),'Request an estimate');
    // Native modal traps keyboard navigation, then Escape restores launcher focus.
    await p.getByRole('button',{name:'Close estimate form',exact:true}).focus();
+   const focusTrace=[];
    for(let i=0;i<40;i++){
     await p.keyboard.press('Tab');
-    assert.equal(await p.evaluate(()=>{const root=document.querySelector('[data-otc-widget]').shadowRoot;return root.querySelector('dialog').contains(root.activeElement);}),true,'Focus escaped the modal');
+    focusTrace.push(await p.evaluate(()=>{const root=document.querySelector('[data-otc-widget]').shadowRoot;const active=root.activeElement;return {inside:root.querySelector('dialog').contains(active),documentHasFocus:document.hasFocus(),documentActive:document.activeElement?.outerHTML.slice(0,200),shadowActive:active?.outerHTML.slice(0,200)||null};}));
    }
+   save('focus-'+width+'.json',focusTrace);
+   assert.equal(focusTrace.every(state=>state.inside),true,'Focus escaped the modal: '+JSON.stringify(focusTrace.filter(state=>!state.inside)));
    await p.keyboard.press('Escape');
    assert.equal(await p.evaluate(()=>{const root=document.querySelector('[data-otc-widget]').shadowRoot;return root.activeElement===root.querySelector('.launcher');}),true);
    await hostOkay(p);
