@@ -1,0 +1,56 @@
+{
+  "testedSource": "5080af284e391c0189fb20170e4b6345d752a2d3",
+  "base": "7a911afd993bc0d5c07c3d20f977c8988f072208",
+  "baselineTestSource": "694ea50895203422a7d2758c8b254f4baf328828",
+  "pr": 10,
+  "draft": true,
+  "unchangedServerTree": "318a1435e2c45e1ce817ef5352d327f80394d24f",
+  "changedFiles": [
+    ".github/workflows/widget-embed-verification.yml",
+    "client/public/widget.js",
+    "client/src/quotedone.jsx",
+    "client/src/widgetTransport.js",
+    "test/widgetEmbed.spec.mjs",
+    "verification/widget-embed/browser.mjs"
+  ],
+  "hashes": {
+    "client/public/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+    "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+    "client/src/widget.css": "3f10c3ed7bdad0941059fcbf15fea58d7114b7035f243f58e7cb64a932a2d46a",
+    "client/src/widgetTransport.js": "7fa1542fc79faa36eed45de8029c8e21507d0453ef5c4dea57a231adbbe31b14",
+    "client/src/quotedone.jsx": "e7af16461b8f1f7bc32226c0f8037af1c2649a538cc18673e4978fd89bb9d1b4",
+    "verification/widget-embed/browser.mjs": "25407c9f8b23b0519307db21daad77f7ce8de86b600c54171941c9aba61d4a34",
+    ".github/workflows/widget-embed-verification.yml": "cf81de9fcf6cb50d413b2d3783037856dff6db69e940c2f5eb24d9ba0c03773d",
+    "package-lock.json": "40aaeca4cd10689cbef9fe27077cb5c214147346e70518f15748cc22e42388c2"
+  },
+  "finalBrowserRun": 36926875617,
+  "finalColdSuiteRun": 36926875643,
+  "prColdSuiteRun": 36926883740,
+  "baselineBrowserRun": 36922553259,
+  "baselineColdSuiteRun": 36922552920,
+  "keyboardDiagnosticRun": 36925062814,
+  "finalArtifact": {
+    "id": 11194108210,
+    "name": "widget-embed-5080af284e391c0189fb20170e4b6345d752a2d3",
+    "size_in_bytes": 977413,
+    "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/artifacts/11194108210",
+    "archive_download_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/artifacts/11194108210/zip",
+    "expired": false,
+    "created_at": "2026-10-01T21:12:14Z",
+    "expires_at": "2026-10-31T21:12:13Z",
+    "updated_at": "2026-10-01T21:12:14Z",
+    "digest": "sha256:781e59e3e4be3d0521da69007a7fb0b58899f57524457ba6969f69882b0aa6a4",
+    "workflow_run": {
+      "id": 36926875617,
+      "repository_id": 1305318820,
+      "head_repository_id": 1305318820,
+      "head_branch": "codex/widget-embed-20261001",
+      "head_sha": "5080af284e391c0189fb20170e4b6345d752a2d3"
+    }
+  },
+  "baselineArtifact": {
+    "id": 11192912329,
+    "digest": "sha256:dc91bff1a5be243f6f464d35714beea233ce99394d147ca147d5e66318e44c64"
+  },
+  "evidenceStorage": "Git evidence branch based on tested source. Gzip is lossless. Original owner screenshot is four base64 chunks; restore-evidence.mjs reassembles it."
+}

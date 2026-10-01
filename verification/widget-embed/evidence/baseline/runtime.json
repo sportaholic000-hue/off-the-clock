@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "694ea50895203422a7d2758c8b254f4baf328828",
+  "node": "v22.23.2",
+  "abi": "127",
+  "browser": "141.0.7390.37",
+  "playwright": "1.56.0",
+  "origins": {
+    "assets": "http://127.0.0.1:4790",
+    "site": "http://127.0.0.1:4791",
+    "api": "http://127.0.0.1:4792"
+  },
+  "syntheticOnly": true,
+  "liveProviderTraffic": false
+}

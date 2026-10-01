@@ -1,0 +1,3 @@
+2026-10-01T20:37:02.6373336Z Summary: {"tests":"1030","pass":"1018","fail":"10","cancelled":"0","skipped":"2","todo":"0"}
+2026-10-01T20:37:02.6375372Z Known failures still failing: 9/9
+2026-10-01T20:37:02.6409941Z ##[error]New test failure: widget network failures explain how to retry without exposing browser errors

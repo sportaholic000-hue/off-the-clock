@@ -1,0 +1,297 @@
+{
+  "sourceCommit": "5080af284e391c0189fb20170e4b6345d752a2d3",
+  "syntheticOnly": true,
+  "liveProviderTraffic": false,
+  "expectedBeforeExecution": {
+    "mowing10000Sqft": 50,
+    "mowing125_125Sqft": 0.63,
+    "rate": 0.005,
+    "markup": 0,
+    "tax": "TAX_NONE",
+    "separateWorkDoesNotChangeSelectedSubtotal": true
+  },
+  "passed": true,
+  "tests": 21,
+  "pass": 21,
+  "fail": 0,
+  "rows": [
+    {
+      "name": "Exact snippet copied from owner interface, async, public key only",
+      "passed": true
+    },
+    {
+      "name": "Native dialog keyboard control",
+      "passed": true,
+      "durationMs": 110,
+      "detail": [
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<input aria-label=\"Native input\">"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<button id=\"last\">Last</button>"
+        },
+        {
+          "inside": false,
+          "documentHasFocus": false,
+          "active": "<body><button id=\"outside\">Outside dialog</button><dialog id=\"modal\" open=\"\"><button id=\"close\">Close</button><input aria-label=\"Native input\"><button id=\"last\">Last</button></dialog></body>"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<button id=\"close\">Close</button>"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<input aria-label=\"Native input\">"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<button id=\"last\">Last</button>"
+        },
+        {
+          "inside": false,
+          "documentHasFocus": false,
+          "active": "<body><button id=\"outside\">Outside dialog</button><dialog id=\"modal\" open=\"\"><button id=\"close\">Close</button><input aria-label=\"Native input\"><button id=\"last\">Last</button></dialog></body>"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<button id=\"close\">Close</button>"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<input aria-label=\"Native input\">"
+        },
+        {
+          "inside": true,
+          "documentHasFocus": true,
+          "active": "<button id=\"last\">Last</button>"
+        }
+      ]
+    },
+    {
+      "name": "Quote and capture on hostile host at 320px",
+      "passed": true,
+      "durationMs": 2979,
+      "detail": {
+        "midEstimate": 50,
+        "ownerParity": true,
+        "requestId": "caab6334-0e8a-4d01-98ba-61b3d17cd459",
+        "quoteId": "904c9db1-9206-4665-a8ad-9d8465d760ee",
+        "stored": true
+      }
+    },
+    {
+      "name": "Quote and capture on hostile host at 375px",
+      "passed": true,
+      "durationMs": 2841,
+      "detail": {
+        "midEstimate": 50,
+        "ownerParity": true,
+        "requestId": "ed1ab53f-babb-452f-9c44-761fdbdf3978",
+        "quoteId": "ae15294a-3d5f-4409-9ff8-5eeabbc515f9",
+        "stored": true
+      }
+    },
+    {
+      "name": "Quote and capture on hostile host at 768px",
+      "passed": true,
+      "durationMs": 2878,
+      "detail": {
+        "midEstimate": 50,
+        "ownerParity": true,
+        "requestId": "a40158d9-c390-4409-adaa-b8eb6194cc02",
+        "quoteId": "66062ebd-8d4f-483f-a27f-041641038127",
+        "stored": true
+      }
+    },
+    {
+      "name": "Quote and capture on hostile host at 1280px",
+      "passed": true,
+      "durationMs": 2780,
+      "detail": {
+        "midEstimate": 50,
+        "ownerParity": true,
+        "requestId": "6adec634-df9e-46e9-85d8-a36a3c507e2f",
+        "quoteId": "2338a262-7996-4d69-9306-b5cfce475b32",
+        "stored": true
+      }
+    },
+    {
+      "name": "Decimal, partial scope and unknown measurement controls",
+      "passed": true,
+      "durationMs": 5989,
+      "detail": [
+        {
+          "name": "decimal",
+          "type": "INSTANT_ESTIMATE_READY"
+        },
+        {
+          "name": "additional work",
+          "type": "PARTIAL_ESTIMATE_READY"
+        },
+        {
+          "name": "unknown area",
+          "type": "ESTIMATE_REQUIRES_REVIEW"
+        }
+      ]
+    },
+    {
+      "name": "Preferred-time request persists from actual embedded flow",
+      "passed": true,
+      "durationMs": 3224,
+      "detail": {
+        "status": "REQUESTED",
+        "stored": true
+      }
+    },
+    {
+      "name": "Lost quote response retries the same stored request once",
+      "passed": true,
+      "durationMs": 2141,
+      "detail": {
+        "responseLostAfterStored": true,
+        "recordsCreated": 1,
+        "retryStatus": 200
+      }
+    },
+    {
+      "name": "Rejected contact remains editable and correction quotes",
+      "passed": true,
+      "durationMs": 3254,
+      "detail": {
+        "rejectionStatus": 422,
+        "editable": true,
+        "correctedEstimate": 50
+      }
+    },
+    {
+      "name": "Unreachable API offers retry and announces the error",
+      "passed": true,
+      "durationMs": 727,
+      "detail": {
+        "message": "Off The Clock AI\nClose\n\nQUOTEDONE\n\nRequest an estimate\n\nTell us about the work and its measurements. Check the job details before receiving your estimate.\n\nThe estimate service could not be reached. Please retry the same request.\nRetry loading services\n\nSTEP 1 OF 5\n\nWhat can we help with?\nService\nChoose a service\nContinue\nPowered by Off The Clock AI",
+        "recovered": true
+      }
+    },
+    {
+      "name": "Slow API times out, announces error, then retries",
+      "passed": true,
+      "durationMs": 377,
+      "detail": {
+        "timeoutMs": 20000,
+        "recovered": true
+      }
+    },
+    {
+      "name": "Unavailable module offers retry without reload",
+      "passed": true,
+      "durationMs": 496,
+      "detail": {
+        "recovered": true
+      }
+    },
+    {
+      "name": "Slow module has a deadline and stale completion never mounts twice",
+      "passed": true,
+      "durationMs": 413,
+      "detail": {
+        "timeoutMs": 20000,
+        "mounts": 1
+      }
+    },
+    {
+      "name": "Delayed async snippet does not block host parsing or interaction",
+      "passed": true,
+      "durationMs": 190,
+      "detail": {
+        "hostInteractiveBeforeWidgetDownloaded": true,
+        "duplicateSnippets": 2,
+        "mounts": 1
+      }
+    },
+    {
+      "name": "Maximum valid branding fits at 320px",
+      "passed": true,
+      "durationMs": 2164,
+      "detail": {
+        "width": 320,
+        "height": 900,
+        "pageWidth": 320,
+        "panel": {
+          "x": 12,
+          "y": 12,
+          "width": 296,
+          "height": 876,
+          "right": 308,
+          "bottom": 888
+        },
+        "close": {
+          "x": 216.40625,
+          "y": 85,
+          "width": 74.59375,
+          "height": 48,
+          "right": 291,
+          "bottom": 133
+        },
+        "launcher": {
+          "x": 20,
+          "y": 780.828125,
+          "width": 280,
+          "height": 99.171875,
+          "right": 300,
+          "bottom": 880
+        },
+        "scroll": {
+          "width": 294,
+          "content": 294
+        }
+      }
+    },
+    {
+      "name": "Owner not live shows explicit unavailability; host stays functional",
+      "passed": true,
+      "durationMs": 269,
+      "detail": {
+        "text": "Off The Clock AI\nClose\n\nQUOTEDONE\n\nRequest an estimate\n\nTell us about the work and its measurements. Check the job details before receiving your estimate.\n\nOnline estimates are unavailable from this page. Please contact the business.\nRetry loading services\n\nSTEP 1 OF 5\n\nWhat can we help with?\nService\nChoose a service\nContinue\nPowered by Off The Clock AI"
+      }
+    },
+    {
+      "name": "Service not offered gives clear no-services state",
+      "passed": true,
+      "durationMs": 332
+    },
+    {
+      "name": "Service removed after loading cannot save an obsolete quote",
+      "passed": true,
+      "durationMs": 2030
+    },
+    {
+      "name": "Unapproved host origin is rejected",
+      "passed": true,
+      "durationMs": 274
+    },
+    {
+      "name": "No widget exceptions escape to the host page",
+      "passed": true,
+      "durationMs": 0
+    }
+  ],
+  "hashes": {
+    "client/public/widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376",
+    "client/src/widget-entry.jsx": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+    "client/src/widget.css": "3f10c3ed7bdad0941059fcbf15fea58d7114b7035f243f58e7cb64a932a2d46a",
+    "client/src/widgetTransport.js": "7fa1542fc79faa36eed45de8029c8e21507d0453ef5c4dea57a231adbbe31b14",
+    "client/src/quotedone.jsx": "e7af16461b8f1f7bc32226c0f8037af1c2649a538cc18673e4978fd89bb9d1b4",
+    "verification/widget-embed/browser.mjs": "25407c9f8b23b0519307db21daad77f7ce8de86b600c54171941c9aba61d4a34",
+    ".github/workflows/widget-embed-verification.yml": "cf81de9fcf6cb50d413b2d3783037856dff6db69e940c2f5eb24d9ba0c03773d",
+    "package-lock.json": "40aaeca4cd10689cbef9fe27077cb5c214147346e70518f15748cc22e42388c2"
+  }
+}
