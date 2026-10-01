@@ -31,6 +31,10 @@ jobs:
           import wave
           r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
           w = wave.open('e2e/speech-roofing.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 7 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
+          import subprocess
+          subprocess.run(['espeak-ng', '-v', 'en-us', '-s', '150', '-w', '/tmp/o.wav', 'Hi, I run a plumbing company, can you help me'], check=True)
+          r = wave.open('/tmp/o.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
+          w = wave.open('e2e/speech-overlap.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * int(p.framerate * 1.5) + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
           PY
       - name: Start app servers and site
         env:

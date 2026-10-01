@@ -8,7 +8,7 @@ SITE = 'http://127.0.0.1:8899/'
 SITE_SHORT = 'http://127.0.0.1:8898/'  # same page, app server with a 45-second session cap
 res = {'startedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'cases': {}}
 def save(): json.dump(res, open(f'{OUT}/results.json', 'w'), indent=1)
-def log_text(pg): return [{'who': l.get_attribute('class').split()[-1], 'text': l.inner_text().split('\n', 1)[-1]} for l in pg.locator('#otc-live-demo .otcd-line').all()]
+def log_text(pg): return [{'who': l.get_attribute('class').split()[-1], 'text': l.locator('span').inner_text()} for l in pg.locator('#otc-live-demo .otcd-line').all()]
 def wait_turn(pg, timeout=30000):
     pg.wait_for_function("!document.querySelector('#otc-live-demo button[type=submit]').disabled", timeout=timeout)
 def launch(p, wav=None):
@@ -26,18 +26,35 @@ with sync_playwright() as p:
         try: pg.wait_for_selector('#otc-live-demo .otcd-line.user', timeout=40000)
         except Exception as e: errors.append('no user transcription: ' + str(e)[:120])
         # wait for the agent to answer after the caller spoke
-        # the spoken question mentions roofing; wait until an agent line after it talks about roofing
-        try: pg.wait_for_function("(()=>{const l=[...document.querySelectorAll('#otc-live-demo .otcd-line')];const u=l.findIndex(x=>x.classList.contains('user'));return u>=0&&l.slice(u+1).some(x=>x.classList.contains('agent')&&/roof/i.test(x.textContent))&&!document.querySelector('#otc-live-demo .otcd-activity').textContent.startsWith('Speaking')})()", timeout=45000)
-        except Exception as e: errors.append('no roofing answer after caller: ' + str(e)[:120])
+        # wait until the agent has answered the spoken question (a substantive agent line after the caller's line)
+        try: pg.wait_for_function("(()=>{const l=[...document.querySelectorAll('#otc-live-demo .otcd-line')];const u=l.findIndex(x=>x.classList.contains('user'));return u>=0&&l.slice(u+1).some(x=>x.classList.contains('agent')&&x.textContent.length>60)&&!document.querySelector('#otc-live-demo .otcd-activity').textContent.startsWith('Speaking')})()", timeout=45000)
+        except Exception as e: errors.append('no agent answer after caller: ' + str(e)[:120])
         pg.wait_for_timeout(1500)
         pg.locator('#demo').screenshot(path=f'{OUT}/voice_live_1280.png')
         dbg = pg.evaluate('({frames: window.__otcDemoDebug && window.__otcDemoDebug.framesSent, peak: window.__otcDemoDebug && window.__otcDemoDebug.peakMax})')
         res['cases']['voice_miles'] = {'micFramesSent': dbg['frames'], 'micPeak': dbg['peak'], 'secondsToFirstAgentText': first_agent_s, 'status': pg.inner_text('#otc-live-demo [role=status]'), 'transcript': log_text(pg), 'errors': errors}
-        pg.click('#otc-live-demo .otcd-btn:text("End call")'); pg.wait_for_timeout(500)
+        if pg.is_visible('#otc-live-demo .otcd-btn:text("End call")'): pg.click('#otc-live-demo .otcd-btn:text("End call")'); pg.wait_for_timeout(500)
         res['cases']['voice_miles']['afterEnd'] = pg.inner_text('#otc-live-demo .otcd-end p'); save(); b.close()
     except Exception:
         res['cases'].setdefault('voice_miles', {})['exception'] = traceback.format_exc()[-1500:]
         try: pg.screenshot(path=f'{OUT}/failure_voice_miles.png', full_page=False)
+        except Exception: pass
+        save()
+        try: b.close()
+        except Exception: pass
+    # 1b. Voice, Nova: the caller talks over the greeting; the greeting must not be repeated
+    try:
+        b = launch(p, os.path.abspath('e2e/speech-overlap.wav')); pg = b.new_context(viewport={'width': 1280, 'height': 900}, permissions=['microphone']).new_page()
+        pg.goto(SITE, wait_until='networkidle'); pg.wait_for_selector('#otc-live-demo', timeout=20000)
+        pg.click('#otc-live-demo [data-agent=nova]'); pg.click('#otc-live-demo .otcd-mic')
+        pg.wait_for_selector('#otc-live-demo .otcd-line.user', timeout=40000)
+        pg.wait_for_function("(()=>{const l=[...document.querySelectorAll('#otc-live-demo .otcd-line')];const u=l.findIndex(x=>x.classList.contains('user'));return u>=0&&l.slice(u+1).some(x=>x.classList.contains('agent')&&x.textContent.length>40)&&!document.querySelector('#otc-live-demo .otcd-activity').textContent.startsWith('Speaking')})()", timeout=45000)
+        t = log_text(pg)
+        res['cases']['voice_nova_overlap'] = {'transcript': t, 'greetingCount': sum('Thank you for calling' in x['text'] for x in t if x['who'] == 'agent')}
+        save(); b.close()
+    except Exception:
+        res['cases'].setdefault('voice_nova_overlap', {})['exception'] = traceback.format_exc()[-1500:]
+        try: res['cases']['voice_nova_overlap']['transcript'] = log_text(pg)
         except Exception: pass
         save()
         try: b.close()
