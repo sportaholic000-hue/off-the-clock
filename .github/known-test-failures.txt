@@ -1,0 +1,9 @@
+dispatcher rejects handler results containing raw rates instead of exposing them
+mutations are idempotent and conflicting reuse of a tool call id is rejected
+quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+test/googleGenAiLiveAdapter.spec.mjs
+test/voicePromptCompiler.spec.mjs
+test/voiceWebSocketServer.spec.mjs
+tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+voice tool runtime persists a safe review quote and lead without exposing internal identities
