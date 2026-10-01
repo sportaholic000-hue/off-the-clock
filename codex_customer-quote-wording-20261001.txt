@@ -1,0 +1,52 @@
+run 36838839980 sha 92e940269d600460fe25834652d09fa42bbe73d8
+Summary: {"tests":"976","pass":"945","fail":"29","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 9/9
+::error::New test failure: editor D1: root factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: nested factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: flat factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: equal factor survives no-edit blur save reopen and same-type switches
+::error::New test failure: editor D1: a genuine absent default is displayed without being written by focus or blur
+::error::New test failure: editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+::error::New test failure: editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+::error::New test failure: editor locked rate: 0.0049 types blurs saves and reopens exactly
+::error::New test failure: editor locked rate: 0.0050 types blurs saves and reopens exactly
+::error::New test failure: editor locked rate: 0.0051 types blurs saves and reopens exactly
+::error::New test failure: editor locked invalid text: lossless rejection survives blur same-type switch and save
+::error::New test failure: editor locked maps tiers and explicit enablement stay separate for two same-type records
+::error::New test failure: editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+::error::New test failure: editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+::error::New test failure: editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+::error::New test failure: late 200 response cannot replace a new service preview
+::error::New test failure: late 400 response cannot replace a new service preview
+::error::New test failure: old completion cannot clear current loading and invalid input cannot retain old ready
+::error::New test failure: invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+::error::New test failure: repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+not ok 25 - test/googleGenAiLiveAdapter.spec.mjs
+not ok 481 - editor D1: root factor survives no-edit blur save reopen and same-type switches
+not ok 482 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
+not ok 483 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
+not ok 484 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
+not ok 485 - editor D1: a genuine absent default is displayed without being written by focus or blur
+not ok 486 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+not ok 487 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+not ok 488 - editor locked rate: 0.0049 types blurs saves and reopens exactly
+not ok 489 - editor locked rate: 0.0050 types blurs saves and reopens exactly
+not ok 490 - editor locked rate: 0.0051 types blurs saves and reopens exactly
+not ok 491 - editor locked invalid text: lossless rejection survives blur same-type switch and save
+not ok 492 - editor locked maps tiers and explicit enablement stay separate for two same-type records
+not ok 493 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+not ok 494 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+not ok 495 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+not ok 521 - late 200 response cannot replace a new service preview
+not ok 522 - late 400 response cannot replace a new service preview
+not ok 523 - old completion cannot clear current loading and invalid input cannot retain old ready
+not ok 524 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+not ok 836 - repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+not ok 937 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 938 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 55 - test/voicePromptCompiler.spec.mjs
+not ok 959 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 960 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 962 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 963 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 58 - test/voiceWebSocketServer.spec.mjs
