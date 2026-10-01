@@ -1,18 +1,16 @@
-run 36932898812 sha c392d614211fc01b5ed409919e0dd3cd03baa4dc
-Summary: {"tests":"1014","pass":"1000","fail":"12","cancelled":"0","skipped":"2","todo":"0"}
+run 36933515684 sha 75ab5450d905156bff6335cfc455a4e83ba2cb36
+Summary: {"tests":"1052","pass":"1039","fail":"11","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
 ::error::New test failure: production derives database, price books, backups and temporary writes from the volume
 ::error::New test failure: production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
-::error::New test failure: test/ownerIntegrations.spec.mjs
 not ok 270 - production derives database, price books, backups and temporary writes from the volume
 not ok 278 - production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
 not ok 29 - test/googleGenAiLiveAdapter.spec.mjs
-not ok 39 - test/ownerIntegrations.spec.mjs
-not ok 975 - voice tool runtime persists a safe review quote and lead without exposing internal identities
-not ok 976 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 1013 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 1014 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
 not ok 63 - test/voicePromptCompiler.spec.mjs
-not ok 997 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
-not ok 998 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
-not ok 1000 - dispatcher rejects handler results containing raw rates instead of exposing them
-not ok 1001 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 1035 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 1036 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1038 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1039 - mutations are idempotent and conflicting reuse of a tool call id is rejected
 not ok 66 - test/voiceWebSocketServer.spec.mjs
