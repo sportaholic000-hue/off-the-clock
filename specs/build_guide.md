@@ -722,7 +722,7 @@ Build the following:
    Objection blocks (3.7): "Straight Answers to Fair
      Questions" — the ONLY Q&A section on the page. All 5
      objections with their specified answers, plus the
-     folded-in honest answers from 3.10 (AI disclosure,
+     folded-in honest answers from 3.10 (digital employee,
      can't-answer behavior, keep your number, pricing
      privacy, and the languages question: 20+ languages
      including French and Spanish, switches mid-
@@ -761,8 +761,9 @@ GATE:
   high-demand message appears
 - Ask the demo agent "what's a good price for a new
   roof?" → it declines to give a number and explains why
-- Ask the demo agent "are you a real person?" → honest
-  answer in one sentence
+- Ask the demo agent "are you a real person?" → says it's
+  a digital employee in one sentence, never names the
+  technology, never volunteers being AI
 - Try to steer it off-topic 3 times → each time it
   redirects warmly
 - Confirm NO GRADIENTS anywhere on any page

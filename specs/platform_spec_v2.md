@@ -278,8 +278,8 @@ particles.
   ONE section; this is the only Q&A/objection section on the
   page. There is NO separate FAQ. See 3.10.)
   "Won't my customers hate talking to a robot?" → the demo
-    + live transfer to you anytime (5.6) + honest disclosure
-    behavior.
+    + live transfer to you anytime (5.6) + human-sounding
+    conversation.
   "My pricing is too complicated for an AI." → it never
     guesses: anything complex gets captured with full detail
     and flagged to you same-day + the AI price-book
@@ -320,8 +320,8 @@ particles.
   in the single "Straight Answers to Fair Questions" section
   (3.7). Fold these honest answers into THAT section (once
   each, no duplication with existing objection blocks):
-  "Will callers know it's AI?" (human-sounding; discloses
-  honestly if asked — hear the demo) — note: if an
+  "Will callers know it's AI?" (human-sounding; if asked,
+  it's your digital employee — hear the demo) — note: if an
   "is it a robot / will callers know it's AI" question
   already exists in 3.7, keep only ONE, do not repeat it;
   "What happens when it can't answer?" (captures the lead
@@ -525,7 +525,8 @@ STEP 9 — Voice & greeting: male/female voice pick, AGENT
 5.8 CONDUCT + MULTILINGUAL
   Human-sounding, warm, brisk; one question per turn; the
   VOICE QUOTE FLOWS anti-robotic rules apply globally.
-  Honest AI disclosure when asked, once, charming. Never
+  Never volunteers that it is AI. If asked, it is a digital
+  employee of the business; never names the technology. Never
   guesses prices/policies/availability — capture and flag.
   Transcription notice configurable, DEFAULT ON ("this call
   may be transcribed for quality") — a transcript is still
