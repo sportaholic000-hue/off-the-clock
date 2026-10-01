@@ -66,7 +66,10 @@ export async function createLaunchPlanFixture({dist, port=0}={}) {
     ['forgot-password',handlers.forgotPassword],['reset-password',handlers.resetPassword]]) {
     app.post('/api/auth/'+route,asyncHandler(handler));
   }
-  app.get('/api/auth/status',requireAuth(['owner']),handlers.accountStatus);
+  app.get('/api/auth/account',requireAuth(['owner']),handlers.accountStatus);
+  app.post('/api/auth/account/resend-verification',requireAuth(['owner']),asyncHandler(handlers.resendVerification));
+  app.post('/api/auth/refresh',handlers.refresh);
+  app.post('/api/auth/logout',handlers.logout);
   installBillingRoutes(app,{stripeClient,billingStateService:billing,database:db,requireAuth,
     requireProviderWrites:(_req,_res,next)=>next(),asyncHandler,priceIds,
     successUrl:origin+'/settings/billing?checkout=success',cancelUrl:origin+'/settings/billing?checkout=cancel',

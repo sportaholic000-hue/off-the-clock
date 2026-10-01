@@ -830,8 +830,7 @@ export default function Onboarding() {
 
   const props = { state, refresh, back:() => move(step - 1), next:() => move(step + 1) };
   let content;
-  if ([3,7].includes(step) && state.account.plan === 'QuoteDone' && state.quoteDoneAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="QuoteDone setup" title="Activate your QuoteDone plan" description="Complete checkout and confirm your trial or payment before setting up QuoteDone." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
-  else if (step === 1) content = <AccountStep {...props} />;
+  if (step === 1) content = <AccountStep {...props} />;
   if (step === 2) content = <BusinessTypeStep {...props} />;
   if (step === 3) content = <JurisdictionStep {...props} />;
   if (step === 4) content = <PhoneStep {...props} />;
@@ -840,6 +839,7 @@ export default function Onboarding() {
   if (step === 7) content = <PriceBookStep {...props} metadata={metadata} />;
   if (step === 8) content = <CalendarStep {...props} />;
   if (step === 9) content = <VoiceStep {...props} />;
+  if ([3,7].includes(step) && state.account.plan === 'QuoteDone' && state.quoteDoneAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="QuoteDone setup" title="Activate your QuoteDone plan" description="Complete checkout and confirm your trial or payment before setting up QuoteDone." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
     <AppShell activePath="/onboarding" operator={state.operator}>

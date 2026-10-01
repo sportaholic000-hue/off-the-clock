@@ -44,6 +44,8 @@ try {
    await page.goto(fixture.origin+'/onboarding?step=3');
    await page.getByRole('heading',{name:'Activate your QuoteDone plan',exact:true}).waitFor();
    assert.equal(await page.getByLabel('Country',{exact:true}).count(),0);
+   await page.goto(fixture.origin+'/onboarding?step=7');
+   await page.getByRole('heading',{name:'Activate your QuoteDone plan',exact:true}).waitFor();
    await page.getByRole('button',{name:'Continue to billing',exact:true}).click();
    await page.getByText('Payment pending',{exact:true}).waitFor();
   }
@@ -57,8 +59,8 @@ try {
   await page.goto(fixture.origin+'/settings/billing?checkout=success&plan=Scale');
   await page.getByText('Payment pending',{exact:true}).waitFor();
   assert.equal(await page.getByRole('button',{name:'Continue setup',exact:true}).count(),0);
-  const evidence=await fixture.completeCheckout(account.id);
-  assert.equal(evidence.first.status,200);assert.equal(evidence.second.status,200);
+  const activationEvidence=await fixture.completeCheckout(account.id);
+  assert.equal(activationEvidence.first.status,200);assert.equal(activationEvidence.second.status,200);
   await page.getByRole('button',{name:'Refresh billing status',exact:true}).click();
   await page.getByText('Trial',{exact:true}).waitFor();
   assert.equal(await page.getByRole('button',{name:'Resume checkout',exact:true}).count(),0);
