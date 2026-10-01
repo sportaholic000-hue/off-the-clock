@@ -214,13 +214,22 @@ export function createOutboundWebhookService({
       });
     }
   }
+  let lastOwnerId = '';
   async function dispatchOnce() {
     if (!enabled()) return {processed:0};
     // Platform worker discovery is the sole cross-tenant query. It selects IDs
     // only. Every claim, payload, endpoint, key and write is then tenant-bound.
+    // Rotate across owners, so a sustained backlog from an earlier owner
+    // cannot starve later tenants. The cursor contains no customer data.
+    const due = `((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))`;
     const owners = database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
-      WHERE (status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?)
-      ORDER BY ownerId LIMIT 16`).all(now(),now());
+      WHERE ownerId > ? AND ${due} ORDER BY ownerId LIMIT 16`).all(lastOwnerId,now(),now());
+    if (owners.length < 16 && lastOwnerId) {
+      owners.push(...database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
+        WHERE ownerId <= ? AND ${due} ORDER BY ownerId LIMIT ?`)
+        .all(lastOwnerId,now(),now(),16-owners.length));
+    }
+    if (owners.length) lastOwnerId = owners.at(-1).ownerId;
     for (let index = 0; index < owners.length; index += 4) {
       const outcomes = await Promise.allSettled(owners.slice(index,index+4).map(({ownerId}) => deliverOne(ownerId)));
       if (outcomes.some(result=>result.status==='rejected')) throw new Error('Webhook worker store unavailable');

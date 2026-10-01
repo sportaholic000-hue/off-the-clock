@@ -357,3 +357,26 @@ test('migration remains idempotent and does not replay records created before we
   await f.save();assert.equal(f.rows('a').length,0);f.lead();assert.equal(f.rows('a').length,1);
   assert.deepEqual(f.database.prepare('PRAGMA foreign_key_check').all(),[]);
 });
+
+test('a sustained backlog from the first worker batch cannot starve later owners',async t=>{
+  const f=fixture(t),timestamp=new Date(AT).toISOString();
+  const owners=[...Array.from({length:16},(_,i)=>'busy-'+String(i).padStart(2,'0')),'z-later'];
+  for(const ownerId of owners) {
+    f.database.prepare(`INSERT INTO users
+      (id,email,passwordHash,firstName,businessName,plan,planStatus,role,createdAt)
+      VALUES (?,?,'SYNTHETIC_HASH','Owner','Synthetic business','Operator','pending_payment','owner',?)`)
+      .run(ownerId,ownerId+'@example.invalid',timestamp);
+    f.database.prepare(`INSERT INTO billingAccounts
+      (ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES (?,?,?,?,?)`)
+      .run(ownerId,'cus_SYNTHETIC_'+ownerId,timestamp,timestamp,timestamp);
+    f.database.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(ownerId);
+    await f.save(ownerId);f.lead(ownerId);f.lead(ownerId);
+  }
+  assert.equal((await f.service.dispatchOnce()).processed,16);
+  assert.equal(f.rows('z-later').every(row=>row.status==='PENDING'),true);
+  assert.equal(f.rows('busy-00').some(row=>row.status==='PENDING'),true);
+  await f.service.dispatchOnce();
+  assert.equal(f.rows('z-later').filter(row=>row.status==='DELIVERED').length,1);
+  assert.equal(f.calls.some(call=>call.destination.hostname==='z-later.example.invalid'),true);
+  assert.equal(f.rows('busy-00').filter(row=>row.status==='DELIVERED').length,2);
+});
