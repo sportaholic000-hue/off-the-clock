@@ -1,3 +1,4 @@
+import {sessionIdentity} from './sessionIdentity.js';
 const PLANS = ['Operator', 'QuoteDone', 'Scale'];
 const INTERVALS = ['monthly', 'annual'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -14,7 +15,7 @@ export function billingState(value) {
 }
 
 export async function billingStorageKey(token) {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(sessionIdentity(token)));
   return 'otc-billing-v1:' + Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2,'0')).join('');
 }
 

@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "31e4564bede09da58c376c50fa1a8086d6878bbe",
+  "frontendAndEngineUnchangedAtFinalRuntime": true,
+  "artifacts": [
+    {
+      "path": "client/dist/index.html",
+      "bytes": 401,
+      "sha256": "75fd9bcfc05342036dc3754c22df65e098387c0eed799f315485fdb614e8b182"
+    },
+    {
+      "path": "client/dist/widget-app.js",
+      "bytes": 451572,
+      "sha256": "9824ef2c5faf011778d477da281a681929f38210ef3234333ab0f436209839cf"
+    },
+    {
+      "path": "client/dist/widget.js",
+      "bytes": 5236,
+      "sha256": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+    },
+    {
+      "path": "client/dist/assets/index-2qxNzUFJ.css",
+      "bytes": 51944,
+      "sha256": "f51b4ecd208fb6cbda0bd19ae09792a3226e7fbe9845b8aff9f6d55870b63e75"
+    },
+    {
+      "path": "client/dist/assets/index-D5ge65tV.js",
+      "bytes": 467211,
+      "sha256": "148776dc81345cad66db446f33ab5453c7be02465b490490679f35798f1a304e"
+    }
+  ]
+}

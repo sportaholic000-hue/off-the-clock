@@ -4,6 +4,7 @@ import { once } from 'node:events';
 import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 import jwt from 'jsonwebtoken';
+import {createAuthSessionService} from '../server/src/authSessionService.js';
 import { generateQuote, sanitizeForCustomer } from '../server/quoteEngine.js';
 import { requireAuth } from '../server/src/authMiddleware.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
@@ -16,16 +17,8 @@ process.env.ADMIN_PASSWORD_HASH = 'configured-for-test';
 const defaults = { markupPercent: 30, markupMode: 'markup', taxMode: 'TAX_NONE', minimumJobPrice: 0, rangeBufferPercent: 10 };
 const mapLines = result => Object.fromEntries(result.lineItems.map(item => [item.name, item.amountCents]));
 const now = '2026-07-19T00:00:00.000Z';
-const signUserToken = user => jwt.sign(
-  { sub:user.id, role:user.role, email:user.email },
-  process.env.JWT_SECRET,
-  { expiresIn:'8h' }
-);
-const signAdminToken = () => jwt.sign(
-  { sub:'admin', role:'admin', email:process.env.ADMIN_EMAIL, authSource:'environment-admin' },
-  process.env.JWT_SECRET,
-  { expiresIn:'8h' }
-);
+const signUserToken=(user,database)=>createAuthSessionService(database).create({...user,passwordHash:'hash'}).token;
+const signAdminToken=database=>createAuthSessionService(database).create({id:'admin',role:'admin',email:process.env.ADMIN_EMAIL,passwordHash:process.env.ADMIN_PASSWORD_HASH}).token;
 
 function freshDatabase() {
   const database = new DatabaseSync(':memory:');
@@ -237,7 +230,7 @@ test('deleted staff token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   insertUser(database, { id:'owner-1' });
   const staff = insertUser(database, { id:'staff-1', ownerId:'owner-1', role:'staff' });
-  const token = signUserToken(staff);
+  const token = signUserToken(staff, database);
   database.prepare('DELETE FROM users WHERE id = ?').run(staff.id);
   const server = await createAuthServer(database);
   try {
@@ -252,7 +245,7 @@ test('deleted staff token returns 401 through requireAuth', async () => {
 test('deleted owner token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   const owner = insertUser(database, { id:'owner-1' });
-  const token = signUserToken(owner);
+  const token = signUserToken(owner, database);
   database.prepare('DELETE FROM users WHERE id = ?').run(owner.id);
   const server = await createAuthServer(database);
   try {
@@ -267,7 +260,7 @@ test('deleted owner token returns 401 through requireAuth', async () => {
 test('role-changed token returns 401 through requireAuth', async () => {
   const database = freshDatabase();
   const owner = insertUser(database, { id:'owner-1' });
-  const token = signUserToken(owner);
+  const token = signUserToken(owner, database);
   database.prepare("UPDATE users SET role = 'admin' WHERE id = ?").run(owner.id);
   const server = await createAuthServer(database);
   try {
@@ -292,7 +285,7 @@ test('staff protected route reads only the current database owner tenant', async
   )`);
   database.prepare('INSERT INTO tenant_records (id, ownerId, value) VALUES (?, ?, ?)').run('record-1', 'owner-1', 'owner one');
   database.prepare('INSERT INTO tenant_records (id, ownerId, value) VALUES (?, ?, ?)').run('record-2', 'owner-2', 'owner two');
-  const token = signUserToken(staff);
+  const token = signUserToken(staff, database);
   const server = await createAuthServer(database);
   try {
     const { response, body } = await getWithToken(server.baseUrl, '/tenant-data', token);
@@ -309,7 +302,7 @@ test('environment admin path works without tenant context', async () => {
   const database = freshDatabase();
   const server = await createAuthServer(database);
   try {
-    const { response, body } = await getWithToken(server.baseUrl, '/admin', signAdminToken());
+    const { response, body } = await getWithToken(server.baseUrl, '/admin', signAdminToken(database));
     assert.equal(response.status, 200);
     assert.deepEqual(body, { role:'admin', hasTenantOwnerId:false, hasOwnerId:false });
   } finally {

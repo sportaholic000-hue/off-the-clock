@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
   LogOut, PhoneCall, Settings, Sparkles
 } from 'lucide-react';
-import { go, setToken } from './api.js';
+import { go, logout } from './api.js';
 
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -47,6 +47,8 @@ export function StatusChip({ status, pending = false }) {
 }
 
 export function AppShell({ activePath, children, operator }) {
+  const [signingOut,setSigningOut]=useState(false),[signoutError,setSignoutError]=useState('');
+  async function signOut(){if(signingOut)return;setSigningOut(true);setSignoutError('');try{await logout();go('/');}catch(error){setSignoutError(error.message);setSigningOut(false);}}
   return (
     <div className="app-shell">
       <aside className="side-rail">
@@ -66,14 +68,13 @@ export function AppShell({ activePath, children, operator }) {
         <button
           className="nav-item signout"
           type="button"
-          onClick={() => {
-            setToken(null);
-            go('/');
-          }}
+          disabled={signingOut}
+          onClick={signOut}
         >
           <LogOut size={16} aria-hidden="true" />
-          <span>Sign out</span>
+          <span>{signingOut?'Signing out…':'Sign out'}</span>
         </button>
+        {signoutError&&<p role="alert">{signoutError}</p>}
       </aside>
       <div className="workspace">
         <header className="mobile-header">
@@ -81,6 +82,8 @@ export function AppShell({ activePath, children, operator }) {
           <Select aria-label="Go to page" value={activePath || '/dashboard'} onChange={event => go(event.target.value)}>
             {NAV.map(item => <option value={item.path} key={item.path}>{item.label}</option>)}
           </Select>
+          <Button variant="secondary" disabled={signingOut} onClick={signOut}>{signingOut?'Signing out…':'Sign out'}</Button>
+          {signoutError&&<p role="alert">{signoutError}</p>}
           {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF'} />}
         </header>
         {children}

@@ -8,6 +8,7 @@ import { createCalendarOAuthStateService } from './calendarOAuthState.js';
 import { db, migrate, ownerQuery } from './db.js';
 import { adminLogin, forgotPassword, login, register, resetPassword, verifyEmail, requireAuth } from './auth.js';
 import { CREATE_TABLE_STATEMENTS } from './schema.js';
+import {installAccountRoutes} from './accountRoutes.js';
 import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
 import { createBookingService } from './bookingService.js';
 import { createBookingPreferenceService } from './bookingPreferenceService.js';
@@ -172,6 +173,7 @@ app.post('/api/auth/login', asyncHandler(login));
 app.post('/api/auth/forgot-password', asyncHandler(forgotPassword));
 app.post('/api/auth/reset-password', asyncHandler(resetPassword));
 app.get('/api/auth/verify-email', verifyEmail);
+installAccountRoutes(app, {requireAuth, asyncHandler});
 app.post('/api/admin/login', asyncHandler(adminLogin));
 
 if (billingConfig) {

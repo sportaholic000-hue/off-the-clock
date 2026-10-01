@@ -1,0 +1,226 @@
+{
+  "baseCommit": "aa81eaa29503a7c3e2ddf464c7462f556839562c",
+  "completedDate": "2026-09-30",
+  "countsOverlap": true,
+  "liveProviderTraffic": false,
+  "results": [
+    {
+      "label": "account-email-unit-r1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/accountEmail.spec.mjs",
+        "test/authTokenService.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 5243,
+      "log": "account-email-unit-r1.log",
+      "passed": 32,
+      "failed": 0,
+      "complete": true
+    },
+    {
+      "label": "account-email-application-r1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/applicationPersistence.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/calendarForm.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/accountEmail.spec.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 49661,
+      "log": "account-email-application-r1.log",
+      "passed": 315,
+      "failed": 0,
+      "complete": true
+    },
+    {
+      "label": "account-email-transport-r1",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "client/test/widget-transport.test.mjs",
+        "client/test/billing-transport.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 5257,
+      "log": "account-email-transport-r1.log",
+      "passed": 15,
+      "failed": 0,
+      "complete": true
+    },
+    {
+      "label": "account-email-client-build-r1",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 73351,
+      "log": "account-email-client-build-r1.log",
+      "complete": true
+    },
+    {
+      "label": "account-email-client-build-r2",
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 64343,
+      "log": "account-email-client-build-r2.log",
+      "complete": true
+    },
+    {
+      "label": "account-email-browser-r1",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "../auth-email-browser-r1"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 127711,
+      "log": "account-email-browser-r1.log",
+      "complete": true
+    },
+    {
+      "label": "account-email-browser-r2",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "../auth-email-browser-r2"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 102503,
+      "log": "account-email-browser-r2.log",
+      "complete": true
+    },
+    {
+      "label": "account-email-browser-r3",
+      "args": [
+        "verification/auth-email/browser-workflow.mjs",
+        ".",
+        "../auth-email-browser-r3"
+      ],
+      "status": 0,
+      "signal": null,
+      "elapsedMs": 89721,
+      "log": "account-email-browser-r3.log",
+      "complete": true
+    },
+    {
+      "label": "account-email-regression-r1",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test\\googleGenAiLiveAdapter.spec.mjs",
+        "test\\providerCredentials.spec.mjs",
+        "test\\googleCalendarAdapter.spec.mjs",
+        "test\\pricebookPersistence.spec.mjs",
+        "test\\billingStateService.spec.mjs",
+        "test\\geminiMediaBridge.spec.mjs",
+        "test\\priceBookIntegrity.spec.js",
+        "test\\corsPolicy.spec.mjs",
+        "test\\billingRoutes.spec.mjs",
+        "test\\calendarOAuthState.spec.mjs",
+        "test\\precisionFixtureIntegrity.spec.mjs",
+        "test\\billingConfig.spec.mjs",
+        "test\\calendarForm.spec.mjs",
+        "test\\platformSchema.spec.mjs",
+        "test\\authTokenService.spec.mjs",
+        "test\\calendarCredentials.spec.mjs",
+        "test\\planAccess.spec.mjs",
+        "test\\applicationPersistence.spec.mjs",
+        "test\\bookingTokenReceipt.spec.mjs",
+        "test\\phase2Terminology.spec.js",
+        "test\\bookingService.spec.mjs",
+        "test\\accountEmail.spec.mjs",
+        "test\\phase2.spec.js",
+        "test\\bookingRoutes.spec.mjs",
+        "test\\ownerCalendarService.spec.mjs",
+        "test\\bookingPreferenceService.spec.mjs",
+        "test\\onboardingServiceArea.spec.mjs",
+        "test\\bookingCapabilities.spec.mjs",
+        "test\\bookingAdminService.spec.mjs",
+        "test\\bookingAdminRoutes.spec.mjs",
+        "test\\quoteEngineVNext.spec.js",
+        "test\\quoteEngine.spec.js",
+        "test\\onboardingCalendar.spec.mjs",
+        "test\\quoteApplicationBoundary.spec.mjs",
+        "test\\quoteEngineVNextAdversarial.spec.js",
+        "test\\quoteEngineVNextRepairs.spec.js",
+        "test\\runtimeConfig.spec.mjs",
+        "test\\quoteOriginStorage.spec.mjs",
+        "test\\tenantAddon.spec.js",
+        "test\\serviceArea.spec.mjs",
+        "test\\voiceAudioCodec.spec.mjs",
+        "test\\voiceWebSocketServer.spec.mjs",
+        "test\\voiceSecurity.spec.mjs",
+        "test\\voiceRuntimeRoutes.spec.mjs",
+        "test\\voicePromptCompiler.spec.mjs",
+        "test\\voicePersistence.spec.mjs"
+      ],
+      "status": null,
+      "signal": "SIGTERM",
+      "elapsedMs": 600076,
+      "log": "account-email-regression-r1.log",
+      "complete": false
+    },
+    {
+      "label": "account-email-voice-baseline",
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/googleGenAiLiveAdapter.spec.mjs"
+      ],
+      "status": 1,
+      "signal": null,
+      "elapsedMs": 676,
+      "log": "account-email-voice-baseline.log",
+      "passed": 0,
+      "failed": 1,
+      "complete": true
+    }
+  ]
+}

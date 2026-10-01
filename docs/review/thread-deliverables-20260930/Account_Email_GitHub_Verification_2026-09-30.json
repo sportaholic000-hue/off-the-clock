@@ -1,0 +1,134 @@
+{
+  "head": "71b667d89467aed3a1c31c94ca97b49fe9b12d89",
+  "branch": "codex/auth-email-recovery-20260929",
+  "base": "aa81eaa29503a7c3e2ddf464c7462f556839562c",
+  "rows": [
+    {
+      "path": "server/src/authLinks.js",
+      "blobSha": "2db2c74bce1245110c38e5af5166d2e34945d620",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/email.js",
+      "blobSha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "blobSha": "8e42b78a453e95a67dbca2fa1d137a09ceb6958d",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/accountRecovery.css",
+      "blobSha": "cf15876bee07a662db73297cebf2c392fb9ae8de",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "blobSha": "2b1d6eb05f6e5b78e07f8baf78c8c463e42488ec",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/auth.js",
+      "blobSha": "9090c20aa958a3097e55ba5dd68b30d2730c425b",
+      "contentMatches": true
+    },
+    {
+      "path": "server/src/server.js",
+      "blobSha": "b455d0b5df6923ca5899d0a93f006520a0eb75ae",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/main.jsx",
+      "blobSha": "2c42db7eedb79ceb4481cddfa8e1684470f36506",
+      "contentMatches": true
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "blobSha": "20ae5b2c499d93cd1debcd2f38d8cdc706d22fb1",
+      "contentMatches": true
+    },
+    {
+      "path": ".env.example",
+      "blobSha": "87fa2bfe4be86c6f18adb640277ffb23f41103ae",
+      "contentMatches": true
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "blobSha": "78c701909e3330d3fd4df79dab5f8298b29388b5",
+      "contentMatches": true
+    },
+    {
+      "path": "verification/auth-email/email-provider-fixture.mjs",
+      "blobSha": "65d48cd4c8ddadfa021605d3acc305e57b2e6a54",
+      "contentMatches": true
+    },
+    {
+      "path": "verification/auth-email/browser-workflow.mjs",
+      "blobSha": "a00996464a018f06fdb43e74712de01ab34b9816",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/FINAL_REPORT.md",
+      "blobSha": "8a652fc4b1bc377a1ea21f90c39262bae13bd9a6",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/SETUP.md",
+      "blobSha": "67091fee65ddd2102c7ec0ded9b3deda85517e4e",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/REPRODUCE.md",
+      "blobSha": "e6d90a4cb2af57b7f0a74031b64e4203ebfdb023",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/SOURCE_BINDING.json",
+      "blobSha": "65c9cde32fc8fc990fa8888a7934e6ad92d00fad",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/TEST_RESULTS.json",
+      "blobSha": "9dbdd225f2055f5378996b7d933955393edecb07",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/WORKFLOWS.json",
+      "blobSha": "93c68742103e47be33e2e7f1c5c4e75590ddfe07",
+      "contentMatches": true
+    },
+    {
+      "path": "docs/review/auth-email-20260929/RUN_LOGS.txt",
+      "blobSha": "187c3e9441bc6c0d7b83f7baa4c3ebaad98c70d2",
+      "contentMatches": true
+    }
+  ],
+  "changedPaths": [
+    ".env.example",
+    "client/src/accountRecovery.css",
+    "client/src/accountRecovery.jsx",
+    "client/src/main.jsx",
+    "client/src/onboarding.jsx",
+    "docs/review/auth-email-20260929/FINAL_REPORT.md",
+    "docs/review/auth-email-20260929/REPRODUCE.md",
+    "docs/review/auth-email-20260929/RUN_LOGS.txt",
+    "docs/review/auth-email-20260929/SETUP.md",
+    "docs/review/auth-email-20260929/SOURCE_BINDING.json",
+    "docs/review/auth-email-20260929/TEST_RESULTS.json",
+    "docs/review/auth-email-20260929/WORKFLOWS.json",
+    "server/src/accountRoutes.js",
+    "server/src/auth.js",
+    "server/src/authLinks.js",
+    "server/src/email.js",
+    "server/src/server.js",
+    "test/accountEmail.spec.mjs",
+    "verification/auth-email/browser-workflow.mjs",
+    "verification/auth-email/email-provider-fixture.mjs"
+  ],
+  "protectedSourcesUnchanged": true,
+  "pullRequest": "https://github.com/sportaholic000-hue/off-the-clock/pull/4",
+  "draft": true,
+  "merged": false,
+  "verificationDate": "2026-09-30"
+}
