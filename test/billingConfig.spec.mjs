@@ -42,9 +42,9 @@ test('billing rejects test credentials in production and malformed signing secre
 });
 
 test('billing rejects missing, duplicate, or unsafe price and redirect configuration', () => {
-  assert.throws(() => loadBillingConfig(completeEnv({ STRIPE_SCALE_ANNUAL_PRICE_ID: '' })), /required/);
+  assert.throws(() => loadBillingConfig(completeEnv({ STRIPE_QUOTEDONE_ANNUAL_PRICE_ID: '' })), /required/);
   assert.throws(() => loadBillingConfig(completeEnv({
-    STRIPE_SCALE_ANNUAL_PRICE_ID: 'price_scale_month'
+    STRIPE_QUOTEDONE_ANNUAL_PRICE_ID: 'price_quote_month'
   })), /distinct/);
   assert.throws(() => loadBillingConfig(completeEnv({
     STRIPE_PORTAL_RETURN_URL: 'https://evil.example/settings/billing'
@@ -63,3 +63,12 @@ test('loopback HTTP billing URLs are development-only', () => {
   assert.throws(() => loadBillingConfig({ ...dev, NODE_ENV: 'production' }), /live-mode|HTTPS/);
 });
 
+
+test('launch configuration requires only the two offered plans; legacy Scale prices are not offered', () => {
+  const config = loadBillingConfig(completeEnv({STRIPE_SCALE_MONTHLY_PRICE_ID: '', STRIPE_SCALE_ANNUAL_PRICE_ID: ''}));
+  assert.deepEqual(Object.keys(config.priceIds), ['Operator', 'QuoteDone']);
+  assert.equal(config.pricePlanMap.size, 4);
+  const legacy = loadBillingConfig(completeEnv());
+  assert.equal(legacy.priceIds.Scale, undefined);
+  assert.deepEqual(legacy.pricePlanMap.get('price_scale_month'), {plan:'Scale',kind:'base'});
+});

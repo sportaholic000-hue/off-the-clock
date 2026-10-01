@@ -1,0 +1,1090 @@
+{
+  "passed": true,
+  "fixtureOnly": true,
+  "realBillingVerified": false,
+  "mode": "final",
+  "rows": [
+    {
+      "name": "pending-owner-can-start-checkout-on-mobile",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "pending-owner-can-start-checkout-on-mobile",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "pending-owner-can-start-checkout-on-mobile",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "bd052e36-2aad-40c8-81b2-e16316d8bfe1",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "monthly"
+          },
+          "status": 201,
+          "response": {
+            "url": "https://checkout.example.invalid/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "canceled-owner-can-manage-billing",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "canceled-owner-can-manage-billing",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "canceled",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": true
+          },
+          "status": 200
+        },
+        {
+          "scenario": "canceled-owner-can-manage-billing",
+          "method": "POST",
+          "path": "/api/billing/portal",
+          "key": "36cf4875-ccb2-43ca-843d-b41853f645de",
+          "authenticated": true,
+          "body": {},
+          "status": 201,
+          "response": {
+            "url": "https://checkout.example.invalid/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "return-query-does-not-activate-a-subscription",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "return-query-does-not-activate-a-subscription",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "return-query-does-not-activate-a-subscription",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "active",
+            "billingInterval": "monthly",
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": false,
+            "canManageBilling": true
+          },
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "annual"
+          },
+          "status": 502,
+          "response": {
+            "code": "BILLING_PROVIDER_ERROR",
+            "error": "[SYNTHETIC] private provider diagnostic"
+          }
+        },
+        {
+          "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "annual"
+          },
+          "status": 409,
+          "response": {
+            "code": "CHECKOUT_IN_PROGRESS",
+            "error": "[SYNTHETIC] pending"
+          }
+        },
+        {
+          "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "annual"
+          },
+          "status": 201,
+          "response": {
+            "url": "https://checkout.example.invalid/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "uncertain-portal-keeps-exact-key-after-reload",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "active",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": false,
+            "canManageBilling": true
+          },
+          "status": 200
+        },
+        {
+          "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+          "method": "POST",
+          "path": "/api/billing/portal",
+          "key": "bbcce3e7-f864-4e4b-88fa-76795c352a44",
+          "authenticated": true,
+          "body": {},
+          "status": 502,
+          "response": {
+            "error": "[SYNTHETIC] provider timeout"
+          }
+        },
+        {
+          "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "active",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": false,
+            "canManageBilling": true
+          },
+          "status": 200
+        },
+        {
+          "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+          "method": "POST",
+          "path": "/api/billing/portal",
+          "key": "bbcce3e7-f864-4e4b-88fa-76795c352a44",
+          "authenticated": true,
+          "body": {},
+          "status": 201,
+          "response": {
+            "url": "https://checkout.example.invalid/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "definite-rejection-allows-correction-with-new-key",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "definite-rejection-allows-correction-with-new-key",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "definite-rejection-allows-correction-with-new-key",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "50a23ae8-c5d2-4649-9102-ef4db4a5b40a",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "monthly"
+          },
+          "status": 400,
+          "response": {
+            "code": "INVALID_REQUEST",
+            "error": "[SYNTHETIC] rejected before creating checkout"
+          }
+        },
+        {
+          "scenario": "definite-rejection-allows-correction-with-new-key",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "c4d48cca-b433-4e01-a842-c2c2a79c3b4f",
+          "authenticated": true,
+          "body": {
+            "plan": "Operator",
+            "billingInterval": "annual"
+          },
+          "status": 201,
+          "response": {
+            "url": "https://checkout.example.invalid/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed-success-cannot-navigate-or-activate",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "malformed-success-cannot-navigate-or-activate",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        },
+        {
+          "scenario": "malformed-success-cannot-navigate-or-activate",
+          "method": "POST",
+          "path": "/api/billing/checkout",
+          "key": "f2f39d1d-c979-4cbf-bb4e-8f297ca1979c",
+          "authenticated": true,
+          "body": {
+            "plan": "QuoteDone",
+            "billingInterval": "monthly"
+          },
+          "status": 201,
+          "response": {
+            "url": "javascript:alert(1)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "unavailable-provider-disables-all-provider-actions",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "unavailable-provider-disables-all-provider-actions",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": false,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": true
+          },
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "non-owner-cannot-see-billing-mutation-controls",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "non-owner-cannot-see-billing-mutation-controls",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "error": "[SYNTHETIC] owner required"
+          },
+          "status": 403
+        }
+      ]
+    },
+    {
+      "name": "blocked-dashboard-retains-mobile-settings-entry",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+          "method": "GET",
+          "path": "/api/dashboard",
+          "key": null,
+          "authenticated": true,
+          "body": null
+        },
+        {
+          "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+          "method": "GET",
+          "path": "/api/onboarding/state",
+          "key": null,
+          "authenticated": true,
+          "body": null
+        },
+        {
+          "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "sign-in-can-reach-billing-without-paid-dashboard-access",
+      "passed": true,
+      "requests": [
+        {
+          "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+          "method": "POST",
+          "path": "/api/auth/login",
+          "key": null,
+          "authenticated": false,
+          "body": {
+            "email": "synthetic@example.invalid",
+            "password": "synthetic-password"
+          }
+        },
+        {
+          "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+          "method": "GET",
+          "path": "/api/dashboard",
+          "key": null,
+          "authenticated": true,
+          "body": null
+        },
+        {
+          "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+          "method": "GET",
+          "path": "/api/billing/status",
+          "key": null,
+          "authenticated": true,
+          "body": null,
+          "response": {
+            "billingEnabled": true,
+            "providerAvailable": true,
+            "plan": "QuoteDone",
+            "planStatus": "pending_subscription",
+            "billingInterval": null,
+            "trialEndsAt": null,
+            "paymentFailedAt": null,
+            "graceEndsAt": null,
+            "currentPeriodEndAt": null,
+            "cancelAtPeriodEnd": false,
+            "checkoutState": "NONE",
+            "canCheckout": true,
+            "canManageBilling": false
+          },
+          "status": 200
+        }
+      ]
+    }
+  ],
+  "wire": [
+    {
+      "scenario": "pending-owner-can-start-checkout-on-mobile",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "pending-owner-can-start-checkout-on-mobile",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "bd052e36-2aad-40c8-81b2-e16316d8bfe1",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "monthly"
+      },
+      "status": 201,
+      "response": {
+        "url": "https://checkout.example.invalid/session"
+      }
+    },
+    {
+      "scenario": "canceled-owner-can-manage-billing",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "canceled",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": true
+      },
+      "status": 200
+    },
+    {
+      "scenario": "canceled-owner-can-manage-billing",
+      "method": "POST",
+      "path": "/api/billing/portal",
+      "key": "36cf4875-ccb2-43ca-843d-b41853f645de",
+      "authenticated": true,
+      "body": {},
+      "status": 201,
+      "response": {
+        "url": "https://checkout.example.invalid/session"
+      }
+    },
+    {
+      "scenario": "return-query-does-not-activate-a-subscription",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "return-query-does-not-activate-a-subscription",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "active",
+        "billingInterval": "monthly",
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": false,
+        "canManageBilling": true
+      },
+      "status": 200
+    },
+    {
+      "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "annual"
+      },
+      "status": 502,
+      "response": {
+        "code": "BILLING_PROVIDER_ERROR",
+        "error": "[SYNTHETIC] private provider diagnostic"
+      }
+    },
+    {
+      "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "annual"
+      },
+      "status": 409,
+      "response": {
+        "code": "CHECKOUT_IN_PROGRESS",
+        "error": "[SYNTHETIC] pending"
+      }
+    },
+    {
+      "scenario": "uncertain-checkout-keeps-exact-body-and-key-after-reload",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "f40ce068-4d34-4602-9799-b8c69b7da748",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "annual"
+      },
+      "status": 201,
+      "response": {
+        "url": "https://checkout.example.invalid/session"
+      }
+    },
+    {
+      "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "active",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": false,
+        "canManageBilling": true
+      },
+      "status": 200
+    },
+    {
+      "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+      "method": "POST",
+      "path": "/api/billing/portal",
+      "key": "bbcce3e7-f864-4e4b-88fa-76795c352a44",
+      "authenticated": true,
+      "body": {},
+      "status": 502,
+      "response": {
+        "error": "[SYNTHETIC] provider timeout"
+      }
+    },
+    {
+      "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "active",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": false,
+        "canManageBilling": true
+      },
+      "status": 200
+    },
+    {
+      "scenario": "uncertain-portal-keeps-exact-key-after-reload",
+      "method": "POST",
+      "path": "/api/billing/portal",
+      "key": "bbcce3e7-f864-4e4b-88fa-76795c352a44",
+      "authenticated": true,
+      "body": {},
+      "status": 201,
+      "response": {
+        "url": "https://checkout.example.invalid/session"
+      }
+    },
+    {
+      "scenario": "definite-rejection-allows-correction-with-new-key",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "definite-rejection-allows-correction-with-new-key",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "50a23ae8-c5d2-4649-9102-ef4db4a5b40a",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "monthly"
+      },
+      "status": 400,
+      "response": {
+        "code": "INVALID_REQUEST",
+        "error": "[SYNTHETIC] rejected before creating checkout"
+      }
+    },
+    {
+      "scenario": "definite-rejection-allows-correction-with-new-key",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "c4d48cca-b433-4e01-a842-c2c2a79c3b4f",
+      "authenticated": true,
+      "body": {
+        "plan": "Operator",
+        "billingInterval": "annual"
+      },
+      "status": 201,
+      "response": {
+        "url": "https://checkout.example.invalid/session"
+      }
+    },
+    {
+      "scenario": "malformed-success-cannot-navigate-or-activate",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "malformed-success-cannot-navigate-or-activate",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "key": "f2f39d1d-c979-4cbf-bb4e-8f297ca1979c",
+      "authenticated": true,
+      "body": {
+        "plan": "QuoteDone",
+        "billingInterval": "monthly"
+      },
+      "status": 201,
+      "response": {
+        "url": "javascript:alert(1)"
+      }
+    },
+    {
+      "scenario": "unavailable-provider-disables-all-provider-actions",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": false,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": true
+      },
+      "status": 200
+    },
+    {
+      "scenario": "non-owner-cannot-see-billing-mutation-controls",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "error": "[SYNTHETIC] owner required"
+      },
+      "status": 403
+    },
+    {
+      "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+      "method": "GET",
+      "path": "/api/dashboard",
+      "key": null,
+      "authenticated": true,
+      "body": null
+    },
+    {
+      "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+      "method": "GET",
+      "path": "/api/onboarding/state",
+      "key": null,
+      "authenticated": true,
+      "body": null
+    },
+    {
+      "scenario": "blocked-dashboard-retains-mobile-settings-entry",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    },
+    {
+      "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "key": null,
+      "authenticated": false,
+      "body": {
+        "email": "synthetic@example.invalid",
+        "password": "synthetic-password"
+      }
+    },
+    {
+      "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+      "method": "GET",
+      "path": "/api/dashboard",
+      "key": null,
+      "authenticated": true,
+      "body": null
+    },
+    {
+      "scenario": "sign-in-can-reach-billing-without-paid-dashboard-access",
+      "method": "GET",
+      "path": "/api/billing/status",
+      "key": null,
+      "authenticated": true,
+      "body": null,
+      "response": {
+        "billingEnabled": true,
+        "providerAvailable": true,
+        "plan": "QuoteDone",
+        "planStatus": "pending_subscription",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": true,
+        "canManageBilling": false
+      },
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "buildFiles": {
+    "assets/index-2qxNzUFJ.css": "f51b4ecd208fb6cbda0bd19ae09792a3226e7fbe9845b8aff9f6d55870b63e75",
+    "assets/index-BwE8BqCr.js": "109b6f7b83d553be712a960d83f7e5f5d9936761a3ad241b5059fd5bcf4171b2",
+    "index.html": "9367bc4183c1c619306fa1ddf14a18ae9b15b17ffbaee08218a859dae654173b",
+    "widget-app.js": "3846e1a38417e1e1356800240ccb9d0941df0a57932869d94adeb0483e7ab7fa",
+    "widget.js": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+  }
+}

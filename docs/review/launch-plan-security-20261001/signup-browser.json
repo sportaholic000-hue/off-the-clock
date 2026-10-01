@@ -1,0 +1,46 @@
+{
+  "syntheticStripe": true,
+  "realApplicationHandlers": true,
+  "version": "154.0.4258.37",
+  "rows": [
+    {
+      "plan": "Operator",
+      "passed": true,
+      "registration": {
+        "id": "a66ab47b-70ce-4db4-aa5e-db6677be6735",
+        "plan": "Operator",
+        "planStatus": "pending_payment",
+        "trialEndsAt": null
+      },
+      "checkoutPrice": "price_operator_month",
+      "activated": {
+        "plan": "Operator",
+        "planStatus": "trialing",
+        "trialEndsAt": "2026-10-15T05:35:20.000Z"
+      },
+      "jurisdictionUnlocked": false,
+      "priceBookSetupUnlocked": false,
+      "queryDidNotActivate": true
+    },
+    {
+      "plan": "QuoteDone",
+      "passed": true,
+      "registration": {
+        "id": "f22cc899-d6d9-4ca8-aebe-97c2d061a999",
+        "plan": "QuoteDone",
+        "planStatus": "pending_payment",
+        "trialEndsAt": null
+      },
+      "checkoutPrice": "price_quote_month",
+      "activated": {
+        "plan": "QuoteDone",
+        "planStatus": "trialing",
+        "trialEndsAt": "2026-10-15T05:35:46.000Z"
+      },
+      "jurisdictionUnlocked": true,
+      "priceBookSetupUnlocked": true,
+      "queryDidNotActivate": true
+    }
+  ],
+  "errors": []
+}

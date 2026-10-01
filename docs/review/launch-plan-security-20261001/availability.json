@@ -1,0 +1,52 @@
+{
+  "actualServer": true,
+  "providerWritesEnabled": false,
+  "liveProviderCalls": false,
+  "passed": true,
+  "rows": [
+    {
+      "plan": "Operator",
+      "registrationStatus": 201,
+      "billing": {
+        "billingEnabled": true,
+        "providerAvailable": false,
+        "plan": "Operator",
+        "planStatus": "pending_payment",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": false,
+        "canManageBilling": false
+      },
+      "onboardingPlan": "Operator",
+      "quoteDoneAccess": false,
+      "checkoutStatus": 503
+    },
+    {
+      "plan": "QuoteDone",
+      "registrationStatus": 201,
+      "billing": {
+        "billingEnabled": true,
+        "providerAvailable": false,
+        "plan": "QuoteDone",
+        "planStatus": "pending_payment",
+        "billingInterval": null,
+        "trialEndsAt": null,
+        "paymentFailedAt": null,
+        "graceEndsAt": null,
+        "currentPeriodEndAt": null,
+        "cancelAtPeriodEnd": false,
+        "checkoutState": "NONE",
+        "canCheckout": false,
+        "canManageBilling": false
+      },
+      "onboardingPlan": "QuoteDone",
+      "quoteDoneAccess": false,
+      "checkoutStatus": 503
+    }
+  ]
+}

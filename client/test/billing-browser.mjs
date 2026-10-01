@@ -64,7 +64,7 @@ try{
   await p.screenshot({path:path.join(evidence,'missing-billing-entry.png'),fullPage:true});await p.close();
  }else{
   await check('pending-owner-can-start-checkout-on-mobile',async p=>{
-   await ready(p);assert.equal(await p.getByRole('button',{name:'Continue to checkout',exact:true}).isEnabled(),false);
+   await ready(p);assert.equal(await p.getByRole('button',{name:'Continue to checkout',exact:true}).isEnabled(),true);assert.equal(await p.getByLabel('Plan',{exact:true}).inputValue(),'QuoteDone');assert.equal(await p.getByRole('option',{name:'Scale',exact:true}).count(),0);
    await choose(p);await p.screenshot({path:path.join(evidence,'mobile-billing.png'),fullPage:true});
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
    await p.getByRole('button',{name:'Continue to checkout',exact:true}).click();await destination(p);
@@ -84,7 +84,7 @@ try{
   },{url:'/settings/billing?checkout=success&plan=Scale'});
   await check('uncertain-checkout-keeps-exact-body-and-key-after-reload',async p=>{
    await ready(p);let attempts=0;mutation=async()=>++attempts===1?{status:502,body:{code:'BILLING_PROVIDER_ERROR',error:'[SYNTHETIC] private provider diagnostic'}}:attempts===2?{status:409,body:{code:'CHECKOUT_IN_PROGRESS',error:'[SYNTHETIC] pending'}}:{body:{url:provider}};
-   await choose(p,'Scale','annual');await p.getByRole('button',{name:'Continue to checkout',exact:true}).click();await p.getByRole('button',{name:'Resume checkout',exact:true}).waitFor();
+   await choose(p,'QuoteDone','annual');await p.getByRole('button',{name:'Continue to checkout',exact:true}).click();await p.getByRole('button',{name:'Resume checkout',exact:true}).waitFor();
    assert.ok(!(await p.locator('body').innerText()).includes('private provider diagnostic'));assert.equal(await p.getByLabel('Plan',{exact:true}).isEnabled(),false);
    await p.reload({waitUntil:'domcontentloaded'});await p.getByRole('button',{name:'Resume checkout',exact:true}).click();await p.getByText('Checkout is still being prepared. Retry the same request shortly.',{exact:true}).waitFor();
    await p.getByRole('button',{name:'Resume checkout',exact:true}).click();await destination(p);
@@ -115,7 +115,7 @@ try{
    assert.equal(await p.getByRole('button',{name:'Continue to checkout',exact:true}).count(),0);assert.equal(await p.getByRole('button',{name:'Manage billing',exact:true}).count(),0);
   });
   await check('blocked-dashboard-retains-mobile-settings-entry',async p=>{
-   await p.getByRole('button',{name:'Settings',exact:true}).click();await ready(p);assert.equal(await p.getByRole('heading',{name:'Billing',exact:true}).count(),1);
+   await p.getByLabel('Go to page',{exact:true}).selectOption('/settings');await ready(p);assert.equal(await p.getByRole('heading',{name:'Billing',exact:true}).count(),1);
   },{url:'/dashboard'});
   await check('sign-in-can-reach-billing-without-paid-dashboard-access',async p=>{
    await p.getByRole('button',{name:'Sign in',exact:true}).first().click();await p.getByLabel('Email',{exact:true}).fill('synthetic@example.invalid');await p.getByLabel('Password',{exact:true}).fill('synthetic-password');await p.locator('button[type=submit]').click();await ready(p);

@@ -16,7 +16,7 @@ import {
   isAuthToken
 } from './authTokenService.js';
 
-const ALLOWED_REQUESTED_PLANS = new Set(['Operator', 'QuoteDone', 'Scale']);
+const ALLOWED_REQUESTED_PLANS = new Set(['Operator', 'QuoteDone']);
 const SAFE_TOKEN_ERROR = 'This link is invalid or has expired.';
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_FAILED_ATTEMPTS = 5;
@@ -229,8 +229,8 @@ export function createAuthHandlers({
         database.prepare(`INSERT INTO users (
           id, ownerId, email, passwordHash, firstName, businessName,
           plan, planStatus, trialEndsAt, timezone, role, createdAt
-        ) VALUES (?, NULL, ?, ?, ?, ?, 'Operator', 'pending_payment', NULL, 'UTC', 'owner', ?)`).run(
-          id, email, passwordHash, firstName, businessName, createdAt
+        ) VALUES (?, NULL, ?, ?, ?, ?, ?, 'pending_payment', NULL, 'UTC', 'owner', ?)`).run(
+          id, email, passwordHash, firstName, businessName, requestedPlan, createdAt
         );
         return durableTokens.issue({ userId: id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL });
       });
@@ -254,7 +254,7 @@ export function createAuthHandlers({
         email,
         firstName,
         businessName,
-        plan: 'Operator',
+        plan: requestedPlan,
         requestedPlan,
         planStatus: 'pending_payment',
         role: 'owner'

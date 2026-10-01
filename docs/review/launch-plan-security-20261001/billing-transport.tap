@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: pending and canceled state remains server data, never implied by a chosen plan
+ok 1 - pending and canceled state remains server data, never implied by a chosen plan
+  ---
+  duration_ms: 17.6547
+  type: 'test'
+  ...
+# Subtest: request recovery uses an account-session namespace without retaining the authentication token
+ok 2 - request recovery uses an account-session namespace without retaining the authentication token
+  ---
+  duration_ms: 177.0603
+  type: 'test'
+  ...
+# Subtest: saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+ok 3 - saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+  ---
+  duration_ms: 12.7964
+  type: 'test'
+  ...
+# Subtest: only explicit pre-mutation rejection clears an uncertain billing request
+ok 4 - only explicit pre-mutation rejection clears an uncertain billing request
+  ---
+  duration_ms: 1.1968
+  type: 'test'
+  ...
+# Subtest: billing navigation rejects scripts, credentials and insecure destinations
+ok 5 - billing navigation rejects scripts, credentials and insecure destinations
+  ---
+  duration_ms: 1.3646
+  type: 'test'
+  ...
+# Subtest: setup continuation requires confirmed active or unexpired trial status
+ok 6 - setup continuation requires confirmed active or unexpired trial status
+  ---
+  duration_ms: 3.4717
+  type: 'test'
+  ...
+# Subtest: saved Scale Checkout cannot be resumed as a launch offer
+ok 7 - saved Scale Checkout cannot be resumed as a launch offer
+  ---
+  duration_ms: 4.0916
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1646.2912
