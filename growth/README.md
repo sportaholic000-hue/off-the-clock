@@ -52,3 +52,14 @@ The download package includes generated pages, current screenshots, logs and exa
 The pages describe the owner's product offer; they are not proof that live runtime features have passed acceptance. Competitor facts are linked and source limitations remain visible. No native connection, outsourced-human staffing, guaranteed saving or universal job support is fabricated.
 
 Challenge links prepare a local brief; they do not issue a quote or submit an application. The calculator is standalone and does not read a price book. Publication, live CTA destinations and any production integration remain separate authorized actions.
+
+
+## October 1: buying questions and conversation conversion
+
+All 12 guides now have vendor-specific answers about approved pricing, calendar booking, website inquiries, phone arrangements and total costs. The main action is “Talk to Off The Clock about your business”; the local job brief is optional. Current-source notes and retrieval limits are in research/BUYING_QUESTIONS_20261001.md.
+
+The voice demo is not connected yet. See DEMO_HANDOFF.md for Opus's direct-link configuration and optional page context. This preview remains noindex and unpublished; all changes remain under growth/. The preserved V2 sources are unchanged.
+
+Build: python -X utf8 growth/build_competitor_library.py
+
+Checks: python -X utf8 growth/tests/check_editorial.py; python -X utf8 growth/tests/test_demo_handoff.py; node --test growth/v2/tests/*.test.cjs. The existing static checker supports GROWTH_STATIC_ONLY=1 without Python Playwright. Browser verification is growth/tests/check_conversion.cjs using an existing Playwright library (GROWTH_PLAYWRIGHT_MODULE optional), a browser executable (GROWTH_BROWSER_EXECUTABLE optional) and an evidence directory (GROWTH_EVIDENCE_DIR optional). No dependency installation or production call is required.

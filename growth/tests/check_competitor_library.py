@@ -9,7 +9,8 @@ import json
 import re
 import os
 from datetime import datetime, timezone
-from playwright.sync_api import sync_playwright, expect
+if not os.environ.get('GROWTH_STATIC_ONLY'):
+    from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
@@ -84,6 +85,8 @@ def verify():
     check('V2 generated HTML unchanged', hashlib.sha256((OUT/'tools/growth-v2.html').read_bytes()).hexdigest()=='82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79')
     check('No gradients in new renderer', 'gradient(' not in (ROOT/'build_competitor_library.py').read_text())
     check('No application or engine import in renderer', not any(s in (ROOT/'build_competitor_library.py').read_text() for s in ['server/','quote-engine-vnext','server.src','requests.get','urllib.request']))
+    if os.environ.get('GROWTH_STATIC_ONLY'):
+        return {'verified': False, 'reason': 'Static mode; browser coverage is recorded separately'}
     runner=(ROOT/'Off_The_Clock_Public_Pages_Review.html').read_text()
     with sync_playwright() as pw:
         browser=pw.chromium.launch(executable_path=os.environ.get('GROWTH_BROWSER_EXECUTABLE', '/usr/bin/chromium'),args=['--no-sandbox'])
@@ -182,6 +185,6 @@ except Exception as error:
     RESULTS.append({'name':'Execution completed without an uncaught assertion/error','pass':False,'error':str(error)})
     raise
 finally:
-    summary={'time_utc':datetime.now(timezone.utc).isoformat(),'checks':len(RESULTS),'passed':sum(r['pass'] for r in RESULTS),'failed':sum(not r['pass'] for r in RESULTS),'results':RESULTS,'method':'Exact generated HTML and portable srcdoc runner exercised in Chromium with set_content; internal navigation, downloads and responsive layouts verified. Direct-file probe is recorded separately. No hosted deployment is tested.','limitations':['Other browser engines','Full screen-reader audit','Real-contractor usability or SEO conversion','Production publishing and live product destinations']}
+    summary={'time_utc':datetime.now(timezone.utc).isoformat(),'checks':len(RESULTS),'passed':sum(r['pass'] for r in RESULTS),'failed':sum(not r['pass'] for r in RESULTS),'results':RESULTS,'method': 'Static generated-HTML checks; see conversion-browser.json for browser coverage.' if os.environ.get('GROWTH_STATIC_ONLY') else 'Exact generated HTML and portable srcdoc runner exercised in Chromium with set_content; internal navigation, downloads and responsive layouts verified. Direct-file probe is recorded separately. No hosted deployment is tested.','limitations':['Other browser engines','Full screen-reader audit','Real-contractor usability or SEO conversion','Production publishing and live product destinations']}
     (EVIDENCE/'checks.json').write_text(json.dumps(summary,indent=2))
     print(json.dumps({k:summary[k] for k in ['checks','passed','failed','method']},indent=2))

@@ -1,0 +1,56 @@
+[
+  {
+    "path": "growth/v2/app.js",
+    "expected": "3b424c314c0d3914c62dd0ce7ca9409869a4dc02",
+    "actual": "3b424c314c0d3914c62dd0ce7ca9409869a4dc02",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/build.py",
+    "expected": "cbc128bd0d5da5d80c2ab08b6af61b78e096b1f5",
+    "actual": "cbc128bd0d5da5d80c2ab08b6af61b78e096b1f5",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/index.template.html",
+    "expected": "4378f2f3e4122cad303b2c0cc41eddeb4e6ae83c",
+    "actual": "4378f2f3e4122cad303b2c0cc41eddeb4e6ae83c",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/intake-model.js",
+    "expected": "a88376c020ec9c969207ba852e3fb790e0db4a89",
+    "actual": "a88376c020ec9c969207ba852e3fb790e0db4a89",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/profit-math.js",
+    "expected": "fe3baff702f5b0d1afcc6ecfb98f587649174821",
+    "actual": "fe3baff702f5b0d1afcc6ecfb98f587649174821",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/styles.css",
+    "expected": "976e8c41f36217c8fc032f4b0d51855c4c9ef198",
+    "actual": "976e8c41f36217c8fc032f4b0d51855c4c9ef198",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/tests/intake-model.test.cjs",
+    "expected": "9b362b0c1234a8e2e3f5f4a87dfd104cd06080d8",
+    "actual": "9b362b0c1234a8e2e3f5f4a87dfd104cd06080d8",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/tests/markup-target.test.cjs",
+    "expected": "85c1ad41462d6d39a9a2a7ad4fca80046d4733dc",
+    "actual": "85c1ad41462d6d39a9a2a7ad4fca80046d4733dc",
+    "pass": true
+  },
+  {
+    "path": "growth/v2/tests/profit-math.test.cjs",
+    "expected": "f4c7b48b45a673ed7c07cd4c6a1157f9ddf5fdf3",
+    "actual": "f4c7b48b45a673ed7c07cd4c6a1157f9ddf5fdf3",
+    "pass": true
+  }
+]

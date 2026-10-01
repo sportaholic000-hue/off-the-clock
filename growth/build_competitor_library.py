@@ -107,7 +107,7 @@ def render_article(article):
     contents = ''.join(f'<section id="{ident}"><h2>{escape(label)}</h2>{body}</section>' for ident, label, body in sections) + source_footer()
     hub, label = ('alternatives/index.html', 'Alternatives') if article['kind'] == 'alternatives' else ('compare/index.html', 'Comparisons')
     body = f'''<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{base.url(path,hub)}">{label}</a><span aria-hidden="true">/</span><span>{escape(article['title'])}</span></nav>
-<div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{escape(article['title'])}</h1><p class="intro">{text(article['intro'])}</p><div class="article-meta"><span class="meta">REVIEWED OCTOBER 1, 2026</span><a href="#sources">Official sources &amp; methodology</a></div>{base.buyer.invitation(path,base.url)}</div>
+<div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{escape(article['title'])}</h1><p class="intro">{text(article['intro'])}</p>{base.buyer.invitation(path,base.url)}<div class="article-meta"><span class="meta">REVIEWED OCTOBER 1, 2026</span><a href="#sources">Official sources &amp; methodology</a></div></div>
 <div class="verdict"><strong>Our recommendation</strong><p>{text(article['verdict'])}</p></div><div class="article-layout"><nav class="toc" aria-label="On this page"><p class="eyebrow">ON THIS PAGE</p>{toc}</nav><article class="article">{contents}</article></div>{base.bridge(path)}'''
     # All factual statements in verdicts must use sources already gathered above.
     return path, decorate(base.frame(path, article['seo_title'], article['description'], body, 'Alternatives' if article['kind'] == 'alternatives' else 'Compare'))

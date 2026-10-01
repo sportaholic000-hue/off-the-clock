@@ -1,0 +1,12 @@
+test_connected_destination_is_direct_and_preserves_existing_query (__main__.HandoffTests.test_connected_destination_is_direct_and_preserves_existing_query) ... ok
+test_connected_href_is_escaped_for_html (__main__.HandoffTests.test_connected_href_is_escaped_for_html) ... ok
+test_live_url_accepts_only_explicit_secure_destination (__main__.HandoffTests.test_live_url_accepts_only_explicit_secure_destination) ... ok
+test_missing_comparison_does_not_get_generic_answers (__main__.HandoffTests.test_missing_comparison_does_not_get_generic_answers) ... ok
+test_relative_url_keeps_query_and_fragment (__main__.HandoffTests.test_relative_url_keeps_query_and_fragment) ... ok
+test_source_registry_is_complete_for_buying_answers (__main__.HandoffTests.test_source_registry_is_complete_for_buying_answers) ... ok
+test_unconfigured_route_preserves_comparison (__main__.HandoffTests.test_unconfigured_route_preserves_comparison) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.718s
+
+OK

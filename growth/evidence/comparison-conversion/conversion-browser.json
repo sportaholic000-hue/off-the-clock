@@ -1,0 +1,1252 @@
+{
+  "time": "2026-10-01T06:32:02.759Z",
+  "checks": 309,
+  "passed": 309,
+  "failed": 0,
+  "results": [
+    {
+      "name": "All 12 guides available in portable runner",
+      "pass": true
+    },
+    {
+      "name": "Company and type filters intersect",
+      "pass": true
+    },
+    {
+      "name": "Alternatives filter switches accurately",
+      "pass": true
+    },
+    {
+      "name": "Empty search is visible",
+      "pass": true
+    },
+    {
+      "name": "Reset restores all guides and focus",
+      "pass": true
+    },
+    {
+      "name": "Search does not inject markup",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Avoca alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Housecall Pro CSR AI alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Podium Larry vs Sameday AI: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Sameday AI vs Avoca: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Jobber Receptionist vs Housecall Pro CSR AI: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "ServiceTitan Voice Agent vs Podium Larry: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Smith.ai vs Ruby: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: opens from hub",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: primary conversation CTA is near the opening",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: all five buying questions and vendor answers exist",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: booking answer opens by keyboard",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: booking answer cites official evidence",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: handoff preserves the exact comparison route",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: conversation opens without intake or account",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: context survives portable navigation",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: unconnected demo does not pretend to be live",
+      "pass": true
+    },
+    {
+      "name": "Ruby alternatives: return restores the original guide",
+      "pass": true
+    },
+    {
+      "name": "Unknown context is rejected without markup injection",
+      "pass": true
+    },
+    {
+      "name": "Unknown context cannot alter the return destination",
+      "pass": true
+    },
+    {
+      "name": "Obsolete source-limited prices removed",
+      "pass": true
+    },
+    {
+      "name": "Checklist download preserved",
+      "pass": true
+    },
+    {
+      "name": "Original calculator result preserved",
+      "pass": true
+    },
+    {
+      "name": "Original target-markup mode preserved",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 320px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 320px",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 375px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 375px",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 390px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 390px",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 768px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 768px",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 1024px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 1024px",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: visible hero CTA at 1440px",
+      "pass": true
+    },
+    {
+      "name": "demo/index.html: fits 1440px",
+      "pass": true
+    },
+    {
+      "name": "Wide table scrolls by keyboard without page overflow",
+      "pass": true
+    },
+    {
+      "name": "All 12 guide links work without JavaScript",
+      "pass": true
+    },
+    {
+      "name": "Search controls hidden without JavaScript",
+      "pass": true
+    },
+    {
+      "name": "Buying answers expand without JavaScript",
+      "pass": true
+    },
+    {
+      "name": "Demo CTA exists without JavaScript",
+      "pass": true
+    },
+    {
+      "name": "Direct-file handoff retains context",
+      "pass": true
+    },
+    {
+      "name": "Direct-file return opens Ruby guide",
+      "pass": true
+    },
+    {
+      "name": "No JavaScript errors",
+      "pass": true
+    },
+    {
+      "name": "No automatic HTTP requests or provider calls",
+      "pass": true
+    }
+  ],
+  "method": "Generated HTML, portable runner and direct-file navigation in local Edge (Chromium).",
+  "limits": [
+    "Other browser engines",
+    "Full screen-reader audit",
+    "Conversion uplift and search ranking",
+    "Live voice/provider acceptance",
+    "Production deployment"
+  ]
+}

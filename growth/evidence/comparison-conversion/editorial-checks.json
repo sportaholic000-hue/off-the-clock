@@ -1,0 +1,248 @@
+{
+  "checks": 60,
+  "passed": 60,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Existing scope: exactly 15 pages and 12 guides",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: no rejected recommendation or misleading action",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: challenge actions say brief",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: Off The Clock named in opening recommendation",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: complete QuoteDone price and allowance visible",
+      "pass": true
+    },
+    {
+      "name": "All ten structured articles have distinct developed sections",
+      "pass": true
+    },
+    {
+      "name": "All ten structured articles have unique card descriptions",
+      "pass": true
+    },
+    {
+      "name": "No article body is replaced by a vendor-test checklist",
+      "pass": true
+    },
+    {
+      "name": "Sameday package differences calculated independently",
+      "pass": true
+    },
+    {
+      "name": "QuoteDone markup and intake implementation are not edited by editorial builder",
+      "pass": true
+    }
+  ],
+  "limits": "Checks specific copy, destinations and numbers. Not a conversion, ranking or universal product-accuracy claim."
+}

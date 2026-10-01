@@ -84,7 +84,7 @@ def article_shell(p,title,intro,verdict,sections,keys,area):
     sections = [('buying-questions','Five questions before you choose',buyer.buying_questions(p,url))] + sections
     toc=''.join(f'<a href="#{i}">{label}</a>' for i,label,_ in sections)+ '<a href="#sources">Sources &amp; approach</a>'
     content=''.join(f'<section id="{i}"><h2>{label}</h2>{text}</section>' for i,label,text in sections)+sources(keys)
-    body=f'<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{url(p,"compare/index.html")}">Comparisons</a><span aria-hidden="true">/</span>{title}</nav><div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{title}</h1><p class="intro">{intro}</p><div class="article-meta"><span class="meta">REVIEWED {DATE.upper()}</span><span class="tag">OFFICIAL SOURCES</span><a href="#sources">How we compare</a></div>{buyer.invitation(p,url)}</div><div class="verdict"><strong>The decision</strong><p>{verdict}</p></div><div class="article-layout"><nav class="toc" aria-label="On this page"><p class="eyebrow">ON THIS PAGE</p>{toc}</nav><article class="article">{content}</article></div>{bridge(p)}'
+    body=f'<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{url(p,"compare/index.html")}">Comparisons</a><span aria-hidden="true">/</span>{title}</nav><div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{title}</h1><p class="intro">{intro}</p>{buyer.invitation(p,url)}<div class="article-meta"><span class="meta">REVIEWED {DATE.upper()}</span><span class="tag">OFFICIAL SOURCES</span><a href="#sources">How we compare</a></div></div><div class="verdict"><strong>The decision</strong><p>{verdict}</p></div><div class="article-layout"><nav class="toc" aria-label="On this page"><p class="eyebrow">ON THIS PAGE</p>{toc}</nav><article class="article">{content}</article></div>{bridge(p)}'
     return p,frame(p,title,escape(intro.replace('<strong>','').replace('</strong>','')),body,area)
 
 CALLS='''<ol class="checklist"><li><strong>A straightforward service</strong>Ask for the approved service price and the next available appointment. Record what actually happens.</li><li><strong>A job with several moving parts</strong>Include measurements, removal and an extra. Check what remains for the owner to resolve.</li><li><strong>Something urgent</strong>Test the agreed escalation path without inventing an emergency or contacting real emergency services.</li><li><strong>A reschedule</strong>Check whether the existing booking changes, rather than accepting a new appointment as proof.</li><li><strong>“I need to speak to a person.”</strong>Observe the destination, the handoff and what happens when no one answers.</li></ol>'''
@@ -176,14 +176,14 @@ def main():
     OUT.mkdir(exist_ok=True)
     for make in [compare,alternatives,smith_ruby,ruby_alternatives,resources]:
         name,html=make();target=OUT/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(html,encoding='utf-8')
-    (OUT/'resources/five-call-checklist.txt').write_text(CHECKLIST,encoding='utf-8')
+    (OUT/'resources/five-call-checklist.txt').write_bytes(CHECKLIST.encode('utf-8'))
     # Reconstruct the unchanged, single-file V2 from preserved original sources.
     v2=ROOT/'v2';html=(v2/'index.template.html').read_text(encoding='utf-8')
     for token,name in [('/*__STYLES__*/','styles.css'),('/*__MATH__*/','profit-math.js'),('/*__INTAKE__*/','intake-model.js'),('/*__APP__*/','app.js')]:
         html=html.replace(token,(v2/name).read_text(encoding='utf-8'))
     expected='82c65a675d896339f47da2082a9d11dbaf79056c37dd917e296622c2c5dd3b79'
     if hashlib.sha256(html.encode()).hexdigest()!=expected:raise RuntimeError('Preserved V2 does not match its approved artifact. No substitute will be written.')
-    (OUT/'tools').mkdir(exist_ok=True);(OUT/'tools/growth-v2.html').write_text(html,encoding='utf-8')
+    (OUT/'tools').mkdir(exist_ok=True);(OUT/'tools/growth-v2.html').write_bytes(html.encode('utf-8'))
     (OUT/'START_HERE.html').write_text(frame('START_HERE.html','Public page review','Open the separate comparison, alternatives and resources review pages.','<section class="section"><p class="eyebrow">PRIVATE REVIEW BUILD</p><h1>Off The Clock AI<br><span class="green">Public pages.</span></h1><p class="editorial-note">Five new pages and the unchanged V2 tools. Nothing is published or connected to production.</p><div class="hero-actions">'+button('START_HERE.html','compare/index.html','Open the comparison hub',True)+button('START_HERE.html','resources/index.html','Open resources')+'</div></section>',''),encoding='utf-8')
     demo = OUT/'demo/index.html'
     demo.parent.mkdir(parents=True,exist_ok=True)

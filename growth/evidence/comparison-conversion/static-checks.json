@@ -1,0 +1,523 @@
+{
+  "time_utc": "2026-10-01T06:30:45.871431+00:00",
+  "checks": 127,
+  "passed": 127,
+  "failed": 0,
+  "results": [
+    {
+      "name": "15 pages and 12 named guides",
+      "pass": true
+    },
+    {
+      "name": "7 alternatives and 5 head-to-head guides",
+      "pass": true
+    },
+    {
+      "name": "Unique descriptive page titles",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "resources/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/smith-ai-vs-ruby/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/ruby/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: one visible-topic H1",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: review stays noindex",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: description and social metadata",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: unique IDs and resolved source markers",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: every local link and anchor resolves",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/podium-larry/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/sameday-ai/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/avoca/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/jobber-receptionist/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/housecall-pro-csr-ai/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "alternatives/servicetitan-voice-agent/index.html: four named alternatives",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "compare/podium-larry-vs-sameday-ai/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "compare/sameday-ai-vs-avoca/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: company names in H1/title",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: semantic comparison table",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: inline references and source list",
+      "pass": true
+    },
+    {
+      "name": "compare/servicetitan-voice-agent-vs-podium-larry/index.html: no fake live application",
+      "pass": true
+    },
+    {
+      "name": "V2 generated HTML unchanged",
+      "pass": true
+    },
+    {
+      "name": "No gradients in new renderer",
+      "pass": true
+    },
+    {
+      "name": "No application or engine import in renderer",
+      "pass": true
+    }
+  ],
+  "method": "Static generated-HTML checks; see conversion-browser.json for browser coverage.",
+  "limitations": [
+    "Other browser engines",
+    "Full screen-reader audit",
+    "Real-contractor usability or SEO conversion",
+    "Production publishing and live product destinations"
+  ]
+}
