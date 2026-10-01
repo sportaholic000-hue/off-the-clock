@@ -22,7 +22,10 @@ const env={
  DEMO_ALLOWED_ORIGINS:'https://www.offtheclockai.com',BACKUP_INTERVAL_SECONDS:'21600',BACKUP_RETENTION_DAYS:'30'
 };
 fs.writeFileSync(envFile,Object.entries(env).map(([k,v])=>k+'='+v).join('\n'),{mode:0o600});
-const docker=(...args)=>execFileSync('docker',args,{encoding:'utf8',timeout:180000,stdio:['ignore','pipe','pipe']}).trim();
+const docker=(...args)=>{
+ if(args[0]==='logs'){const r=spawnSync('docker',args,{encoding:'utf8',timeout:180000});if(r.status!==0)throw new Error('Could not read container logs');return (r.stdout+r.stderr).trim();}
+ return execFileSync('docker',args,{encoding:'utf8',timeout:180000,stdio:['ignore','pipe','pipe']}).trim();
+};
 const runNode=(name,code)=>docker('exec',name,'node','--input-type=module','-e',code);
 async function ready(name) {
  const port=docker('port',name,'3000/tcp').split(':').at(-1),url='http://127.0.0.1:'+port;
@@ -89,5 +92,8 @@ finally {
  for(const name of containers){try{docker('rm','-f',name);}catch{}}
  fs.mkdirSync('verification/railway/results',{recursive:true});
  fs.writeFileSync('verification/railway/results/docker-proof.json',JSON.stringify(outcome,null,2));
+ // The app deliberately creates private root-owned storage. Clean only this
+ // proof's bind-mounted synthetic directories from a temporary root container.
+ try{docker('run','--rm','--entrypoint','node','--mount','type=bind,source='+volume+',target=/cleanup',image,'-e',"const fs=require('fs');for(const p of ['/cleanup/app','/cleanup/restores'])fs.rmSync(p,{recursive:true,force:true});");}catch{}
  fs.rmSync(work,{recursive:true,force:true});
 }
