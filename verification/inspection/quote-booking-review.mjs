@@ -187,6 +187,6 @@ try {
   results.push({name:'review-harness',passed:false,error:{code:error.code||null,message:error.message.slice(0,1000)}});
 } finally {
   const passed=results.filter(x=>x.passed).length,failed=results.filter(x=>!x.passed).length;
-  fs.writeFileSync(path.join(evidence,'REVIEW_RESULTS.json'),JSON.stringify({reviewBaselineCommit:'1013190bd8e62e5df3aa70750399873bc050e447',testedSourceBinding:'source-binding.json',passed,failed,results,boundary:'Real isolated application/HTTP/SQLite, intercepted synthetic Google provider only; no voice/live provider/deployment acceptance'},null,2));
+  fs.writeFileSync(path.join(evidence,'REVIEW_RESULTS.json'),JSON.stringify({testedSourceCommit:process.env.QUOTEDONE_TESTED_SOURCE_SHA||null,testedSourceBinding:'source-binding.json',passed,failed,results,boundary:'Real isolated application/HTTP/SQLite, intercepted synthetic Google provider only; no voice/live provider/deployment acceptance'},null,2));
   db.close();await app.stop();console.log(JSON.stringify({passed,failed,total:results.length}));process.exitCode=failed?1:0;
 }
