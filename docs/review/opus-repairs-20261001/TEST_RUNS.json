@@ -1,0 +1,790 @@
+{
+  "testedSourceCommit": "6ea52eb10683536206ef91dde35ac88e4cdfa2bc",
+  "baselineCommit": "4df8b23dab66beba557a018d6e351a4b13febd5c",
+  "note": "Intermediate failures and retries are retained. Counts overlap. Only final/source-equivalent runs establish final acceptance.",
+  "runs": [
+    {
+      "label": "application-after",
+      "status": 0,
+      "elapsedMs": 327214,
+      "counters": {},
+      "args": [
+        "verification/opus-review/application.mjs",
+        ".",
+        "../opus-evidence-20261001/application-after"
+      ],
+      "logSha256": "475bad17bdea724d9de7f1f21e3586e9918ffbb7e6cde0ede44101d7ac86195f"
+    },
+    {
+      "label": "application-before",
+      "status": 1,
+      "elapsedMs": 251041,
+      "counters": {},
+      "args": [
+        "../opus-repairs-20261001/verification/opus-review/application.mjs",
+        ".",
+        "../opus-evidence-20261001/application-before"
+      ],
+      "logSha256": "ac12eabcc4c26102a9d1e9b648870e543b9a3b20ef07e7d4613adeb39ad52116"
+    },
+    {
+      "label": "baseline-browser-regressions",
+      "status": 0,
+      "elapsedMs": 500410,
+      "counters": {
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs"
+      ],
+      "logSha256": "973e92d1a6a70e0e0f49dbd525345bbf240eda77b0f3ec67c42f13c992ab3e7e"
+    },
+    {
+      "label": "baseline-build",
+      "status": 0,
+      "elapsedMs": 119989,
+      "counters": {},
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "logSha256": "f2be2faa16975331ceec51fbd5044e7cb60d7cf4dc8bdb2dafcd04b167584b35"
+    },
+    {
+      "label": "baseline-cold-full",
+      "status": 1,
+      "elapsedMs": 721643,
+      "counters": {
+        "tests": 901,
+        "pass": 873,
+        "fail": 28,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/accountEmail.spec.mjs",
+        "test/applicationPersistence.spec.mjs",
+        "test/authSessionClient.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarForm.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/configuredOfferings.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/geminiMediaBridge.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/googleGenAiLiveAdapter.spec.mjs",
+        "test/measuredScopes.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/quoteFlowRepairs.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/voiceAudioCodec.spec.mjs",
+        "test/voicePersistence.spec.mjs",
+        "test/voicePromptCompiler.spec.mjs",
+        "test/voiceRuntimeRoutes.spec.mjs",
+        "test/voiceSecurity.spec.mjs",
+        "test/voiceWebSocketServer.spec.mjs"
+      ],
+      "logSha256": "edb85da0594997009c93ca433e262eaf26c675706915df2cf3f6f318dd009386"
+    },
+    {
+      "label": "booking-marker-after",
+      "status": 0,
+      "elapsedMs": 100986,
+      "counters": {},
+      "args": [
+        "verification/inspection/quote-booking-review.mjs",
+        ".",
+        "../opus-evidence-20261001/booking-marker-after",
+        "--after-write-claim"
+      ],
+      "logSha256": "12c35cd27a3a8592e76811a1f00cf0f8d3eec917666f7749ecbaa513cb78a1cb"
+    },
+    {
+      "label": "booking-marker-before",
+      "status": 1,
+      "elapsedMs": 121099,
+      "counters": {},
+      "args": [
+        "verification/inspection/quote-booking-review.mjs",
+        ".",
+        "../opus-evidence-20261001/booking-marker-before",
+        "--after-write-claim"
+      ],
+      "logSha256": "0a6c9e3bfb354e5291e5d463d18b83cb5f239bb3e9d0aeee394fadd6267c3b6a"
+    },
+    {
+      "label": "booking-unit-after",
+      "status": 0,
+      "elapsedMs": 21362,
+      "counters": {
+        "tests": 71,
+        "pass": 71,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "test/bookingService.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs"
+      ],
+      "logSha256": "6f044735108b14ddb1eaed92f108ee2d6c36a2922885d81157878b36325960e8"
+    },
+    {
+      "label": "booking-unit-before",
+      "status": 1,
+      "elapsedMs": 7739,
+      "counters": {
+        "tests": 9,
+        "pass": 7,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-name-pattern=Opus booking",
+        "../opus-booking-before.spec.mjs"
+      ],
+      "logSha256": "5592b9771d2a795786d06d8db6322a7ab1d90ff44a27b26aaf013def5ee85e3b"
+    },
+    {
+      "label": "candidate-build-1",
+      "status": 1,
+      "elapsedMs": 1218,
+      "counters": {},
+      "args": [
+        "client/node_modules/vite/bin/vite.js",
+        "build"
+      ],
+      "logSha256": "b6c485e9f0355bb17c68507f1e0a07a01481238e38ae8b08211f62ec2deb36c4"
+    },
+    {
+      "label": "candidate-build-2",
+      "status": 1,
+      "elapsedMs": 17251,
+      "counters": {},
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "logSha256": "0e0184e4c502e37c58034dae792eecdfc2dbf693c5244180c0ffee09be62e24d"
+    },
+    {
+      "label": "candidate-build-3",
+      "status": 0,
+      "elapsedMs": 61566,
+      "counters": {},
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "logSha256": "263de9c68b02cc113d8e7b079d1bbda7602936b6e047a5e5213d698a012c8de8"
+    },
+    {
+      "label": "customer-projection-integrity",
+      "status": 0,
+      "elapsedMs": 29093,
+      "counters": {
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "test/priceBookIntegrity.spec.js"
+      ],
+      "logSha256": "ccb7aa98600996b4c96ff522348ab90fcbfd0761c3b2c7e71540c79237514e60"
+    },
+    {
+      "label": "engine-regression-1",
+      "status": 1,
+      "elapsedMs": 542127,
+      "counters": {
+        "tests": 381,
+        "pass": 348,
+        "fail": 33,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/configuredOfferings.spec.mjs",
+        "test/measuredScopes.spec.mjs",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "0a36173a75c224ccd15ad045275f7ff4ff51a4e95a0d1348e4e97ea9853ec0b6"
+    },
+    {
+      "label": "engine-targeted-followup",
+      "status": 0,
+      "elapsedMs": 69296,
+      "counters": {
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-name-pattern=repair 35:|repair 55:|repair 72:|repair 105:|repair 133:|optional extras: tiers|customer amount precision|handoff C:|repairs 2 and 4:",
+        "test/quoteEngineVNextRepairs.spec.js"
+      ],
+      "logSha256": "cbd4cb356ff09fdd079ab00bad22fc641ed308f85e5b7e70adff317277dfd939"
+    },
+    {
+      "label": "final-booking-marker",
+      "status": 0,
+      "elapsedMs": 101842,
+      "counters": {},
+      "args": [
+        "verification/inspection/quote-booking-review.mjs",
+        ".",
+        "../opus-evidence-20261001/final-booking-marker",
+        "--after-write-claim"
+      ],
+      "logSha256": "12c35cd27a3a8592e76811a1f00cf0f8d3eec917666f7749ecbaa513cb78a1cb"
+    },
+    {
+      "label": "final-build",
+      "status": 0,
+      "elapsedMs": 87321,
+      "counters": {},
+      "args": [
+        "verification/quotedone/build-resume-client.mjs"
+      ],
+      "logSha256": "6dd4318ab69af0e5f414bf7a1f3ad54bd1efc041eb7be9bc7669bf776743d0d5"
+    },
+    {
+      "label": "final-cold-full-2",
+      "status": 1,
+      "elapsedMs": 912588,
+      "counters": {
+        "tests": 946,
+        "pass": 937,
+        "fail": 9,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/accountEmail.spec.mjs",
+        "test/applicationPersistence.spec.mjs",
+        "test/authSessionClient.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarForm.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/configuredOfferings.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/geminiMediaBridge.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/googleGenAiLiveAdapter.spec.mjs",
+        "test/measuredScopes.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/opusQuoteRepairs.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/quoteFlowRepairs.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/voiceAudioCodec.spec.mjs",
+        "test/voicePersistence.spec.mjs",
+        "test/voicePromptCompiler.spec.mjs",
+        "test/voiceRuntimeRoutes.spec.mjs",
+        "test/voiceSecurity.spec.mjs",
+        "test/voiceWebSocketServer.spec.mjs"
+      ],
+      "logSha256": "f778cecd106f2cfc623e4c086b80765ba14c4d791772ded18f03b55f30461a70"
+    },
+    {
+      "label": "final-cold-full",
+      "status": 1,
+      "elapsedMs": 914118,
+      "counters": {
+        "tests": 946,
+        "pass": 936,
+        "fail": 10,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-concurrency=1",
+        "test/accountEmail.spec.mjs",
+        "test/applicationPersistence.spec.mjs",
+        "test/authSessionClient.spec.mjs",
+        "test/authSessionHttp.spec.mjs",
+        "test/authSessionService.spec.mjs",
+        "test/authTokenService.spec.mjs",
+        "test/billingConfig.spec.mjs",
+        "test/billingRoutes.spec.mjs",
+        "test/billingStateService.spec.mjs",
+        "test/bookingAdminRoutes.spec.mjs",
+        "test/bookingAdminService.spec.mjs",
+        "test/bookingCapabilities.spec.mjs",
+        "test/bookingPreferenceService.spec.mjs",
+        "test/bookingRoutes.spec.mjs",
+        "test/bookingService.spec.mjs",
+        "test/bookingTokenReceipt.spec.mjs",
+        "test/calendarCredentials.spec.mjs",
+        "test/calendarForm.spec.mjs",
+        "test/calendarOAuthState.spec.mjs",
+        "test/configuredOfferings.spec.mjs",
+        "test/corsPolicy.spec.mjs",
+        "test/geminiMediaBridge.spec.mjs",
+        "test/googleCalendarAdapter.spec.mjs",
+        "test/googleGenAiLiveAdapter.spec.mjs",
+        "test/measuredScopes.spec.mjs",
+        "test/onboardingCalendar.spec.mjs",
+        "test/onboardingServiceArea.spec.mjs",
+        "test/opusQuoteRepairs.spec.mjs",
+        "test/ownerCalendarService.spec.mjs",
+        "test/phase2.spec.js",
+        "test/phase2Terminology.spec.js",
+        "test/planAccess.spec.mjs",
+        "test/platformSchema.spec.mjs",
+        "test/precisionFixtureIntegrity.spec.mjs",
+        "test/priceBookEditor.browser.spec.mjs",
+        "test/priceBookIntegrity.spec.js",
+        "test/pricebookPersistence.spec.mjs",
+        "test/pricebookPreviewFreshness.browser.spec.mjs",
+        "test/providerCredentials.spec.mjs",
+        "test/quoteApplicationBoundary.spec.mjs",
+        "test/quoteEngine.spec.js",
+        "test/quoteEngineVNext.spec.js",
+        "test/quoteEngineVNextAdversarial.spec.js",
+        "test/quoteEngineVNextRepairs.spec.js",
+        "test/quoteFlowRepairs.spec.mjs",
+        "test/quoteOriginStorage.spec.mjs",
+        "test/runtimeConfig.spec.mjs",
+        "test/serviceArea.spec.mjs",
+        "test/tenantAddon.spec.js",
+        "test/voiceAudioCodec.spec.mjs",
+        "test/voicePersistence.spec.mjs",
+        "test/voicePromptCompiler.spec.mjs",
+        "test/voiceRuntimeRoutes.spec.mjs",
+        "test/voiceSecurity.spec.mjs",
+        "test/voiceWebSocketServer.spec.mjs"
+      ],
+      "logSha256": "5ddb4dea96465e845586e8791637e615cc54cf6df4a164b896a6f6b80a3d3461"
+    },
+    {
+      "label": "final-instrumented-replay-2",
+      "status": 0,
+      "elapsedMs": 105961,
+      "counters": {},
+      "args": [
+        "--experimental-vm-modules",
+        "test/quoteEngineVNextReplay.mjs",
+        "../opus-evidence-20261001/final-instrumented-replay-2"
+      ],
+      "logSha256": "4fdd1187912f48b3ebfe1929f3cd8551f8256d75a031df3c76276159478d5405"
+    },
+    {
+      "label": "final-instrumented-replay",
+      "status": 1,
+      "elapsedMs": 121231,
+      "counters": {},
+      "args": [
+        "--experimental-vm-modules",
+        "test/quoteEngineVNextReplay.mjs",
+        "../opus-evidence-20261001/final-instrumented-replay"
+      ],
+      "logSha256": "d0f4399d467759f5d62a583198faf9c445b741e6039e12568b8a3c688f46c6f9"
+    },
+    {
+      "label": "final-integration-boundary-2",
+      "status": 0,
+      "elapsedMs": 3348,
+      "counters": {},
+      "args": [
+        "verification/quotedone/offerings-integration-boundary.mjs",
+        "."
+      ],
+      "logSha256": "62ceedeb2f4516a156a4209a3a03a8eb3db40d12fd34ca86496fb4e6ff38eac3"
+    },
+    {
+      "label": "final-integration-boundary",
+      "status": 0,
+      "elapsedMs": 2157,
+      "counters": {},
+      "args": [
+        "verification/quotedone/offerings-integration-boundary.mjs",
+        "."
+      ],
+      "logSha256": "3edeaed73f7041ba2bd1bde5e0f657779b91537096c82ece851b13ca9141a4ea"
+    },
+    {
+      "label": "final-layout-after",
+      "status": 0,
+      "elapsedMs": 86290,
+      "counters": {},
+      "args": [
+        "verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/final-layout-after"
+      ],
+      "logSha256": "aee0971290945cb2ed435653422b0c1620921175e7b3d5187f6e5de2b2a01e38"
+    },
+    {
+      "label": "final-layout-before-2",
+      "status": 1,
+      "elapsedMs": 36262,
+      "counters": {},
+      "args": [
+        "../opus-repairs-20261001/verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/final-layout-before-2"
+      ],
+      "logSha256": "166d6cad8410ea8083efa59b2376674d3e590c4af02bfd955a9e7c114ce0e1af"
+    },
+    {
+      "label": "final-layout-before-3",
+      "status": 1,
+      "elapsedMs": 134170,
+      "counters": {},
+      "args": [
+        "../opus-repairs-20261001/verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/final-layout-before-3"
+      ],
+      "logSha256": "d2e99874811cb539728888d761d7a38b250c96f0a4da01b5e43e9991bf15fcd5"
+    },
+    {
+      "label": "final-widget-booking-2",
+      "status": 0,
+      "elapsedMs": 183232,
+      "counters": {},
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "../opus-evidence-20261001/final-widget-booking-2"
+      ],
+      "logSha256": "2b6383e927bf3b08bea87c6a4256b60729d4a460e475258871ebe3376b85077f"
+    },
+    {
+      "label": "final-widget-booking",
+      "status": 1,
+      "elapsedMs": 256018,
+      "counters": {},
+      "args": [
+        "client/test/widget-real-booking-browser.mjs",
+        ".",
+        "../opus-evidence-20261001/final-widget-booking"
+      ],
+      "logSha256": "ac7d64dca8e489a0592967e106cf9dce5bcf0dac0abe7c09c199c05582690eaa"
+    },
+    {
+      "label": "independent-arithmetic",
+      "status": 0,
+      "elapsedMs": 26129,
+      "counters": {},
+      "args": [
+        "verification/engine-independent/arithmetic-matrix.mjs",
+        "../opus-evidence-20261001/independent-arithmetic.json"
+      ],
+      "logSha256": "7d8220108ac9a9ad7e5bb3b7d4ff094f30998ec66de699dc94e58da12f70470a"
+    },
+    {
+      "label": "independent-scope-arithmetic",
+      "status": 0,
+      "elapsedMs": 34676,
+      "counters": {},
+      "args": [
+        "verification/engine-independent/measured-scopes-arithmetic.mjs",
+        "../opus-evidence-20261001/independent-scope-arithmetic"
+      ],
+      "logSha256": "7d8220108ac9a9ad7e5bb3b7d4ff094f30998ec66de699dc94e58da12f70470a"
+    },
+    {
+      "label": "layout-after-1",
+      "status": 1,
+      "elapsedMs": 99780,
+      "counters": {},
+      "args": [
+        "verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/layout-after-1"
+      ],
+      "logSha256": "b070f560ba9a753fbed0718c9f20e53db5e5360306a806568a016f59cf6e272d"
+    },
+    {
+      "label": "layout-after-2",
+      "status": 0,
+      "elapsedMs": 86287,
+      "counters": {},
+      "args": [
+        "verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/layout-after-2"
+      ],
+      "logSha256": "c2ffbfcb24a1b04d89bcfa0045c0f3714ec1bf82bdaba0b67acdd5208786c403"
+    },
+    {
+      "label": "layout-before",
+      "status": 1,
+      "elapsedMs": 185273,
+      "counters": {},
+      "args": [
+        "../opus-repairs-20261001/verification/opus-review/browser-layout.mjs",
+        ".",
+        "../opus-evidence-20261001/layout-before"
+      ],
+      "logSha256": "e00e88cdf56e1a53d65599354f62e4b1032d925ad9066eeab6c2c920e5eea200"
+    },
+    {
+      "label": "offerings-browser-5-5",
+      "status": 0,
+      "elapsedMs": 357235,
+      "counters": {},
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "../opus-evidence-20261001/offerings-browser-5-5",
+        "--fence-height=5.5"
+      ],
+      "logSha256": "7defb15913aadf70efaa03843f956e9f73c4bbd1ab44b01587dd113fbaeebda7"
+    },
+    {
+      "label": "opus-arithmetic-after",
+      "status": 0,
+      "elapsedMs": 3015,
+      "counters": {
+        "tests": 20,
+        "pass": 20,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "Opus [1237]:",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "cc163563d55a83cf7d5ca57c4fb0df7840d40a640cc6a213431fda2ab7936663"
+    },
+    {
+      "label": "opus-before",
+      "status": 1,
+      "elapsedMs": 16646,
+      "counters": {
+        "tests": 35,
+        "pass": 4,
+        "fail": 31,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "../opus-repairs-20261001/test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "76fa2503e98369c233500788c8d15f4f2125a6faa492700ce4f775265552f9e0"
+    },
+    {
+      "label": "opus-labels-after",
+      "status": 0,
+      "elapsedMs": 3507,
+      "counters": {
+        "tests": 27,
+        "pass": 27,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "Opus [123457]:",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "c57ae26a150c034d47d5fc7e961b7d9bc50a8ee5e5b64024f48da3d7a220c739"
+    },
+    {
+      "label": "opus-scope-status-after-2",
+      "status": 0,
+      "elapsedMs": 5007,
+      "counters": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "Opus 6",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "3fbfc6bcd6e9cf40e84cc205a72f23898a1d0fd835cb499154f9d090350a2fda"
+    },
+    {
+      "label": "opus-scope-status-after",
+      "status": 1,
+      "elapsedMs": 4121,
+      "counters": {
+        "tests": 8,
+        "pass": 0,
+        "fail": 8,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "Opus 6",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "7c4f2d962648fe1069a47d03b77200af06c60d315ec2159ae382bc71e57f985f"
+    },
+    {
+      "label": "scope-malformed-after-fix",
+      "status": 0,
+      "elapsedMs": 8865,
+      "counters": {
+        "tests": 36,
+        "pass": 36,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "95d6bbb5fb3dbff4f62e8ba119eef2703d2aed4ee7f9fab2a2cc9d6d5845dd19"
+    },
+    {
+      "label": "scope-malformed-before-fix",
+      "status": 1,
+      "elapsedMs": 2711,
+      "counters": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "args": [
+        "--test",
+        "--test-name-pattern=malformed owner tiers",
+        "test/opusQuoteRepairs.spec.mjs"
+      ],
+      "logSha256": "fdf284e2cd6855845dec43c6b5ee715e49c9514efacfdf194d8a20ea0ce9a9f4"
+    },
+    {
+      "label": "final-offerings-browser",
+      "status": 0,
+      "elapsedMs": 325060,
+      "counters": {},
+      "args": [
+        "client/test/configured-offerings-browser.mjs",
+        ".",
+        "../opus-evidence-20261001/final-offerings-browser",
+        "--fence-height=5.5"
+      ],
+      "logSha256": "7defb15913aadf70efaa03843f956e9f73c4bbd1ab44b01587dd113fbaeebda7"
+    }
+  ]
+}

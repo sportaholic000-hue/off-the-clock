@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "verifyOnly": true,
+  "verified": [
+    {
+      "path": "arithmetic-480.complete.json.gz",
+      "packedBytes": 3226220,
+      "rawBytes": 41181796
+    },
+    {
+      "path": "arithmetic-480.expectations.json.gz",
+      "packedBytes": 42326,
+      "rawBytes": 2077122
+    },
+    {
+      "path": "scopes-480.complete.json.gz",
+      "packedBytes": 3853399,
+      "rawBytes": 47767328
+    },
+    {
+      "path": "scopes-480.expectations.json.gz",
+      "packedBytes": 49728,
+      "rawBytes": 2590242
+    },
+    {
+      "path": "replay.complete.json.gz",
+      "packedBytes": 8301462,
+      "rawBytes": 145487705
+    },
+    {
+      "path": "run-evidence.json.gz",
+      "packedBytes": 814429,
+      "rawBytes": 2817804
+    },
+    {
+      "path": "application-before.json.gz",
+      "packedBytes": 248758,
+      "rawBytes": 3480440
+    },
+    {
+      "path": "application-after.json.gz",
+      "packedBytes": 286483,
+      "rawBytes": 4026173
+    },
+    {
+      "path": "booking-marker-before.json.gz",
+      "packedBytes": 244265,
+      "rawBytes": 1050973
+    },
+    {
+      "path": "final-booking-marker.json.gz",
+      "packedBytes": 245188,
+      "rawBytes": 1057338
+    },
+    {
+      "path": "final-widget-booking.json.gz",
+      "packedBytes": 54833,
+      "rawBytes": 735331
+    },
+    {
+      "path": "final-widget-booking-2.json.gz",
+      "packedBytes": 318959,
+      "rawBytes": 1619086
+    },
+    {
+      "path": "final-offerings-browser.json.gz",
+      "packedBytes": 335877,
+      "rawBytes": 5411932
+    },
+    {
+      "path": "offerings-browser-5-5.json.gz",
+      "packedBytes": 367139,
+      "rawBytes": 6020298
+    },
+    {
+      "path": "final-layout-before-3.json.gz",
+      "packedBytes": 7317,
+      "rawBytes": 17338
+    },
+    {
+      "path": "final-layout-after.json.gz",
+      "packedBytes": 7525,
+      "rawBytes": 18569
+    }
+  ]
+}

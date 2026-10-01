@@ -1,0 +1,168 @@
+[
+  {
+    "path": "run-evidence.json.gz",
+    "bytes": 814429,
+    "sha256": "eec0b4670f5c648a94e868795bb5c5cd8f00cb5203b1fbc909dbe7afe22e2abc",
+    "uncompressedSha256": "dbaa1977a5ef43ab28dc65f2c55155f6c34792b474558de1002ff0fcc300fe94",
+    "redacted": false,
+    "parts": [
+      {
+        "file": "run-evidence.json.gz.parts/part-001",
+        "bytes": 524288,
+        "gitBlob": "96dbae73a9427ed099dd74838d341cab3979ff02"
+      },
+      {
+        "file": "run-evidence.json.gz.parts/part-002",
+        "bytes": 290141,
+        "gitBlob": "40489449eda60d143d7b6aac50aeb25e3dd232e9"
+      }
+    ]
+  },
+  {
+    "path": "application-before.json.gz",
+    "bytes": 248758,
+    "sha256": "e981d7579eee12ecd6302c58ff055439b96379f2942199b087db71d5dfdacdaa",
+    "uncompressedSha256": "92e66983e8d2da2d298defcf5457a4c6a672eb0f4e94ee0b37e22d3e3f142051",
+    "originalHashes": {
+      "application-results.json": "2616f3bc302b63c37d04cd8654e4a29ce4190e11e16dcffdab6a65057a57f203",
+      "http.json": "e35980bd89bf1f70142c6050244a676969ffbda9fd565d9eb73c6288a819e885",
+      "reassessment.json": "8093b929b3d069217d2f973e6fe768c437e0de53c81b4cfb615f5ea81c90c1c7",
+      "source-binding.json": "82f844218d946de7a7029921d976f8682ca1a0b8b5e827c72bf1a3fab3fe1bed"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 514,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "application-after.json.gz",
+    "bytes": 286483,
+    "sha256": "0b0486819e4752aef8023e58af7f206bfe209399bf3e0d11fd9081b3704ff356",
+    "uncompressedSha256": "5187d3f34342f9f0ad013e20319a5e96d690b834b56bf43ea03dc1cf874a5854",
+    "originalHashes": {
+      "application-results.json": "b520fd795b9bfaea9034fd90f798111b6836b985f28cd8e3bb9b2740b04ade69",
+      "http.json": "46e5bbe6fec3c1e5ae3ae6dc08fb65d271d6f0e850a9185b1bd4eb9ee96120cb",
+      "source-binding.json": "8d3d7a52df8e0d2958493de8e9f71cbd7879e329cb73c192805edcf41ba470e2"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 625,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "booking-marker-before.json.gz",
+    "bytes": 244265,
+    "sha256": "d64f15f68c90469c85424b4b283c2533e698122e624a8db0a3da7d327144d262",
+    "uncompressedSha256": "4a79ecaf1892d26bf80bd99317021c33f95b68b4a0a266cee5a81a74d9a467fa",
+    "originalHashes": {
+      "REVIEW_RESULTS.json": "5f11000f4dd06cd6137dd522e23247474607d56e233ba2ca56f08574499e79b9",
+      "http.json": "44cb52f640f439eaed6cdc6aa42124e920fec13bcd52ea007d1e1382f91221f3",
+      "synthetic-calendar-provider.json": "0f225be3a990741827b755b40c66c33350710b009aa0dd0b80eb553de7dc58c9",
+      "source-binding.json": "304aa117f84bf001250cae4edd5d66378bfa4c0bbb7e2bad5d3e94b5d6d3d00a"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 110,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-booking-marker.json.gz",
+    "bytes": 245188,
+    "sha256": "42b63a68407fbbc103cad09c4ee7713376d098bccc2e47c07b02b2fa64a8525d",
+    "uncompressedSha256": "edbee6149539a11502238282aab2fb615e271fc0b068457f80a2e6e5f76c7fce",
+    "originalHashes": {
+      "REVIEW_RESULTS.json": "2ddc4b8b1a2cd26ef51f565112ed77616cc22feabdcd7eeaa3f18703ee4bc815",
+      "http.json": "b7d706930ef8197e93edd4bdef89d8535c2246b7f19f16815c2c80d1dd995489",
+      "synthetic-calendar-provider.json": "398fa11d8b0e6e279f4199805204072c88fd28096e32d995cc727628d18021e8",
+      "source-binding.json": "f6dd7cb7d18265ce51560e43d3ab6ba50766559a03d1a0fede4f8607855a2776"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 110,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-widget-booking.json.gz",
+    "bytes": 54833,
+    "sha256": "06dcfa96a3477ac8cbc4d4c9d82b82056d85ed2ecbe55844c2c934cb1b545bf5",
+    "uncompressedSha256": "3f4f855f7afe3292278ec6791fe402f00eece97223fc61079125829a72fc8d2e",
+    "originalHashes": {
+      "failed-results.json": "6e71ded83359f34688862e86530d1ce89617afed83e2ebf35ac6a793b83230a7",
+      "http.json": "77894c119c5ee1c91e4fe3ff69dae6818e18eb97cbe121eec147175793d5b3de",
+      "source-binding.json": "dfd66fa196f70dd15d4a5c49467e511d8694e668870680c9f395fdac218df16f"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 175,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-widget-booking-2.json.gz",
+    "bytes": 318959,
+    "sha256": "43f13ead100141fcb23a47df079d473d67942b69a034e39fd55e2029c6e52c7f",
+    "uncompressedSha256": "0d7bc79a417d0c1666fcfdeed4139e96c9751e848fde316969d4be5d602fcdad",
+    "originalHashes": {
+      "result.json": "991718645da50dd138cceb3b4c731f07e37a64784e572ef7ed944c3d8a68e0bc",
+      "api-controls.json": "7e2250ca02ce2cec6ae3f50fcb9f55d6db9c8a65dcba9920770ab6b68fe70f3b",
+      "http.json": "8bbea9cacff46698093f0a0c8cd0d25844e4ab5042fb87472e58fd24abc08198",
+      "synthetic-calendar-provider.json": "b34a7bcb653e1f45e216e8fb58ff7fc2aba31728f0c7b9b39a8092dbb9acbf9d",
+      "source-binding.json": "f6dd7cb7d18265ce51560e43d3ab6ba50766559a03d1a0fede4f8607855a2776"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 242,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-offerings-browser.json.gz",
+    "bytes": 335877,
+    "sha256": "4e17c9340e6ead18ca336f04b93e7532af181eadfced682a8bebe1d1d2163a5b",
+    "uncompressedSha256": "58bcb0fb4d36c7831a80e227c447d09213bd1d4010f9a8ad7561722f1f0330e3",
+    "originalHashes": {
+      "results.json": "cb157b25aee8082237b70663ebc686d892ae4e3e5143f1b19de76a18898b3e41",
+      "saved-book.json": "ba459b5fb34ae5f2b20e6869c6f2a3b0c0f647ffeef19e23b8364a174bb079c5",
+      "browser-http.json": "a0369057b645e14dc5841588cf03a1d9f52fc6ade6f2542f7c2b500ebde02bff",
+      "http.json": "219f9443643b86c4f60c4c8d0361b2eb449d18d378aaec69ca85b46dc7982fe1",
+      "source-binding.json": "f6dd7cb7d18265ce51560e43d3ab6ba50766559a03d1a0fede4f8607855a2776"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 196,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "offerings-browser-5-5.json.gz",
+    "bytes": 367139,
+    "sha256": "5290af0f431ddf82cc7a7df9f693e6b017262be3fe7875c86501cd5ac2f17b2b",
+    "uncompressedSha256": "c2aa35f0b2c9b46c58154966e90fd82bdbc17141e0f163142f55fe9c0ec1d9e9",
+    "originalHashes": {
+      "results.json": "8bbd5a6b974cb4b081df207de4a0bf62a2b8aa1842d1f2719a5f46b558e0a0eb",
+      "saved-book.json": "a13c0e402bcba53e02c043b0a07f6423b7d395d5ee58e54566c252fa841b3197",
+      "browser-http.json": "61d9d05584cc97efa06601009ecd4c513c92cf179fb7fdd8010ec028faab8007",
+      "http.json": "c8a1f198171af0212bc2d7087292c5268b6f955f5204647187db7a0a7d09ed4e",
+      "source-binding.json": "52cdb7ca9fd254ebe641847299077d3d1abf0a1c365fc8cd92b248910957afd0"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 196,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-layout-before-3.json.gz",
+    "bytes": 7317,
+    "sha256": "91125868afdef5670fc1c4940e949806e5c5cac4594cf4aa60355498400dfa7b",
+    "uncompressedSha256": "ab884afc9f94548a32e25fa1ca2ece3d59ef014e53ca3c3b0a2c9d3ae281284a",
+    "originalHashes": {
+      "layout-results.json": "9c833096177d2aec32937dd649773c4b2234aa0f8470cd4ecdbac93110ed9c4d",
+      "source-binding.json": "72349662da6e8e8c52efb807b32f4d61d8da59049901363f7081d7cb105608c1"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 0,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  },
+  {
+    "path": "final-layout-after.json.gz",
+    "bytes": 7525,
+    "sha256": "5c63e2f5d5f2442ac00ffd9f0c84d89886c671960a2aa2f3045952c050c8dd3d",
+    "uncompressedSha256": "dfe49ab178704ccda1f5105689d180c527900a02a9716024b1963d742f4d17d7",
+    "originalHashes": {
+      "layout-results.json": "2ebdbc510bda1ead281f9da87ad7c2be24e6bbf1ffb7a9873a8be1a1c931c986",
+      "source-binding.json": "f6dd7cb7d18265ce51560e43d3ab6ba50766559a03d1a0fede4f8607855a2776"
+    },
+    "redacted": true,
+    "syntheticCredentialFieldsOmitted": 0,
+    "note": "Only ephemeral synthetic credential fields are replaced; quote inputs, pricing responses and calculation records are retained. Original unredacted files remain in the isolated evidence directory."
+  }
+]

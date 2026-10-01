@@ -1,0 +1,215 @@
+{
+  "base": "4df8b23dab66beba557a018d6e351a4b13febd5c",
+  "sourceCommit": "6ea52eb10683536206ef91dde35ac88e4cdfa2bc",
+  "sourceTree": "7dcc19721f06b158647687070f67a7c9805ebe16",
+  "changes": [
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha": "a92006b4a4a1827248b5f9592ae7310c94ed3188",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha": "d98d192039e84e7e50be2f7a92779c5093e69863",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha": "f997830e311a6e805519c15073cf375b66667539",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/styles.css",
+      "sha": "789db161c483eb505764c6627dc7ce76377ca3c4",
+      "status": "modified"
+    },
+    {
+      "path": "client/test/configured-offerings-browser.mjs",
+      "sha": "b66e4adfa8c8432a1366cf6cface461dbdfb2aa7",
+      "status": "modified"
+    },
+    {
+      "path": "client/test/measured-scopes-browser.mjs",
+      "sha": "85f579dea667c530f3876758ffb49ae4b1c58927",
+      "status": "modified"
+    },
+    {
+      "path": "client/test/widget-browser.mjs",
+      "sha": "fb3b35bc9241ea7ff65fc070460f45df1fd4a1ee",
+      "status": "modified"
+    },
+    {
+      "path": "client/test/widget-full-page-browser.mjs",
+      "sha": "d27d7fb06a89492323122ae091e44fd699f420d9",
+      "status": "modified"
+    },
+    {
+      "path": "client/test/widget-real-booking-browser.mjs",
+      "sha": "5d83b211fa14d72cca70fe6b5bc0363a4e90e484",
+      "status": "modified"
+    },
+    {
+      "path": "docs/review/opus-repairs-20261001/HAND_CALCULATIONS.md",
+      "sha": "44df350407828edda3709892cb0ef3f3e21f0491",
+      "status": "added"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha": "b90582a1ae12b67fecc919639d801c0419bd9014",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha": "9729a830938aa273633ec27e0dd3e3f95030965e",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha": "8c5dced038b617fa1f01fed2c0fd04c0b36a7b48",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "sha": "1850f0f548597a12bf07de1a8710f7dd5ae86590",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "sha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58",
+      "status": "modified"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "sha": "a178e0cb60bc4a4e12e68d4cc6b659926a01f6ac",
+      "status": "modified"
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "sha": "17f5ea03ac2d6d95e785949ef72dd4a7cfbc7f5e",
+      "status": "modified"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "sha": "e99443ad3bfe858291d999901d9f2c230d261ea4",
+      "status": "added"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "sha": "3cefbe5e02ac78a6916471dd580b98d0d3c03ff8",
+      "status": "added"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "sha": "67525782264a2672b567a8c659181cfe019c0f32",
+      "status": "modified"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "sha": "a5e0a74490d15d0e03dfb664cac01dbc223dcc0a",
+      "status": "modified"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "sha": "29bcd95708ad194724c70f1fa58f9a388e63f78d",
+      "status": "modified"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "sha": "b05ea60a835e6b77e53bd2aac71fa69bf97a44c6",
+      "status": "modified"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "sha": "c672f18cf9770b48d3818317f92ec454de2607d0",
+      "status": "modified"
+    },
+    {
+      "path": "verification/engine-independent/arithmetic-matrix.mjs",
+      "sha": "dd6e7ecb2c94f412e86d92c9a00d3f1af7c13203",
+      "status": "modified"
+    },
+    {
+      "path": "verification/engine-independent/measured-scopes-arithmetic.mjs",
+      "sha": "539d8f2787e2bdfed12fbe44ef62f127efa5eccb",
+      "status": "modified"
+    },
+    {
+      "path": "verification/inspection/quote-booking-review.mjs",
+      "sha": "96493dc827fb90118a19ef4022fd4ebe4cdec5dc",
+      "status": "modified"
+    },
+    {
+      "path": "verification/opus-review/application.mjs",
+      "sha": "344b412176a15185090f0ba827de033d65d16666",
+      "status": "added"
+    },
+    {
+      "path": "verification/opus-review/browser-layout.mjs",
+      "sha": "87c2b2148fe29762196ed1c7642f778748e7760f",
+      "status": "added"
+    },
+    {
+      "path": "verification/opus-review/run-check.cjs",
+      "sha": "cea0df65f3296e10ea352b435995a79261de3b92",
+      "status": "added"
+    }
+  ],
+  "productionFiles": [
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha": "a92006b4a4a1827248b5f9592ae7310c94ed3188",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha": "d98d192039e84e7e50be2f7a92779c5093e69863",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha": "f997830e311a6e805519c15073cf375b66667539",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/styles.css",
+      "sha": "789db161c483eb505764c6627dc7ce76377ca3c4",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha": "b90582a1ae12b67fecc919639d801c0419bd9014",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha": "9729a830938aa273633ec27e0dd3e3f95030965e",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha": "8c5dced038b617fa1f01fed2c0fd04c0b36a7b48",
+      "status": "modified"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "sha": "1850f0f548597a12bf07de1a8710f7dd5ae86590",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "sha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58",
+      "status": "modified"
+    }
+  ],
+  "outOfScopeChanges": []
+}
