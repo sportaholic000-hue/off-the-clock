@@ -115,7 +115,7 @@ try{
    assert.equal(await p.getByRole('button',{name:'Continue to checkout',exact:true}).count(),0);assert.equal(await p.getByRole('button',{name:'Manage billing',exact:true}).count(),0);
   });
   await check('blocked-dashboard-retains-mobile-settings-entry',async p=>{
-   await p.getByRole('button',{name:'Settings',exact:true}).click();await ready(p);assert.equal(await p.getByRole('heading',{name:'Billing',exact:true}).count(),1);
+   await p.getByLabel('Go to page',{exact:true}).selectOption('/settings');await ready(p);assert.equal(await p.getByRole('heading',{name:'Billing',exact:true}).count(),1);
   },{url:'/dashboard'});
   await check('sign-in-can-reach-billing-without-paid-dashboard-access',async p=>{
    await p.getByRole('button',{name:'Sign in',exact:true}).first().click();await p.getByLabel('Email',{exact:true}).fill('synthetic@example.invalid');await p.getByLabel('Password',{exact:true}).fill('synthetic-password');await p.locator('button[type=submit]').click();await ready(p);

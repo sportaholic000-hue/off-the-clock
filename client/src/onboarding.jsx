@@ -152,7 +152,7 @@ function AuthStep({ onAuthenticated }) {
           <Field label="Plan">
             <div className="choice-grid two">
               {PLANS.map(plan => (
-                <button type="button" key={plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}</button>
+                <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}</button>
               ))}
             </div>
           </Field>
