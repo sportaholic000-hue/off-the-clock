@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {billingState,billingStorageKey,readBillingJobs,billingDestination,definiteBillingRejection} from '../src/billingTransport.js';
+import {billingState,billingStorageKey,readBillingJobs,billingDestination,definiteBillingRejection,canContinueSetup} from '../src/billingTransport.js';
 const state={billingEnabled:true,providerAvailable:true,plan:'QuoteDone',planStatus:'pending_subscription',billingInterval:null,cancelAtPeriodEnd:false,checkoutState:'NONE',canCheckout:true,canManageBilling:false};
 test('pending and canceled state remains server data, never implied by a chosen plan',()=>{
  assert.equal(billingState(state).planStatus,'pending_subscription');
@@ -27,4 +27,19 @@ test('only explicit pre-mutation rejection clears an uncertain billing request',
 test('billing navigation rejects scripts, credentials and insecure destinations',()=>{
  for(const url of ['javascript:alert(1)','http://checkout.example.invalid','https://user:secret@checkout.example.invalid','/relative',null])assert.equal(billingDestination(url),null);
  assert.equal(billingDestination('https://checkout.example.invalid/session'),'https://checkout.example.invalid/session');
+});
+test('setup continuation requires confirmed active or unexpired trial status',()=>{
+ const now=Date.parse('2026-10-01T00:00:00Z');
+ for(const plan of ['Operator','QuoteDone']) {
+  assert.equal(canContinueSetup({...state,plan,planStatus:'pending_payment'},now),false);
+  assert.equal(canContinueSetup({...state,plan,planStatus:'pending_subscription'},now),false);
+  assert.equal(canContinueSetup({...state,plan,planStatus:'active'},now),true);
+  assert.equal(canContinueSetup({...state,plan,planStatus:'trialing',trialEndsAt:'2026-10-15T00:00:00Z'},now),true);
+  assert.equal(canContinueSetup({...state,plan,planStatus:'trialing',trialEndsAt:'2026-10-01T00:00:00Z'},now),false);
+ }
+});
+test('saved Scale Checkout cannot be resumed as a launch offer',()=>{
+ const saved={version:1,checkout:{kind:'checkout',key:'8f6aa9e1-7114-414d-a7a0-48e942ceade6',state:'opened',body:{plan:'Scale',billingInterval:'monthly'}}};
+ assert.deepEqual(readBillingJobs({getItem:()=>JSON.stringify(saved)},'key'),{});
+ assert.equal(billingState({...state,plan:'Scale'}).plan,'Scale');
 });

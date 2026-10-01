@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-const PLANS = Object.freeze(['Operator', 'QuoteDone', 'Scale']);
+const PLANS = Object.freeze(['Operator', 'QuoteDone']);
 const BILLING_INTERVALS = Object.freeze(['monthly', 'annual']);
 const CHECKOUT_EVENT_TYPES = new Set([
   'checkout.session.completed',
@@ -174,7 +174,7 @@ function normalizePriceAllowlist(value) {
   if (!isRecord(value)) {
     throw new TypeError('Stripe checkout prices must be configured by plan and billing interval.');
   }
-  const extraPlans = Object.keys(value).filter(plan => !PLANS.includes(plan));
+  const extraPlans = Object.keys(value).filter(plan => ![...PLANS, 'Scale'].includes(plan));
   if (extraPlans.length) throw new TypeError('Stripe checkout prices contain an unsupported plan.');
 
   const result = new Map();
@@ -616,8 +616,8 @@ export function installBillingRoutes(app, {
     let storedCancel;
     let storedIntegration;
     try {
-      storedSuccess = configuredUrl(row.successUrl, 'Stored Checkout success URL');
-      storedCancel = configuredUrl(row.cancelUrl, 'Stored Checkout cancel URL');
+      storedSuccess = configuredUrl(row.successUrl, 'Stored Checkout success URL', urlOptions);
+      storedCancel = configuredUrl(row.cancelUrl, 'Stored Checkout cancel URL', urlOptions);
       storedIntegration = integrationLabel(row.integrationIdentifier);
     } catch {
       throw routeError('CHECKOUT_LEDGER_CONFLICT', 500, 'Stored Checkout configuration is inconsistent.');

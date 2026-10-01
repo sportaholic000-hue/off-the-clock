@@ -1,12 +1,13 @@
 import {sessionIdentity} from './sessionIdentity.js';
-const PLANS = ['Operator', 'QuoteDone', 'Scale'];
+const PLANS = ['Operator', 'QuoteDone'];
+const ACCOUNT_PLANS = [...PLANS, 'Scale'];
 const INTERVALS = ['monthly', 'annual'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export function billingState(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)
       || ['billingEnabled','providerAvailable','canCheckout','canManageBilling','cancelAtPeriodEnd'].some(key => typeof value[key] !== 'boolean')
-      || !PLANS.includes(value.plan) || typeof value.planStatus !== 'string'
+      || !ACCOUNT_PLANS.includes(value.plan) || typeof value.planStatus !== 'string'
       || !['NONE','CREATING','OPEN','EXPIRED'].includes(value.checkoutState)
       || !(value.billingInterval === null || INTERVALS.includes(value.billingInterval))) {
     throw new Error('Billing status could not be confirmed. Please refresh it.');
@@ -55,4 +56,9 @@ export function billingFailure(error, {pending=false}={}) {
 export function definiteBillingRejection(error) {
   return (error.status === 400 && ['INVALID_REQUEST','IDEMPOTENCY_KEY_REQUIRED','INVALID_IDEMPOTENCY_KEY'].includes(error.code))
     || ['SUBSCRIPTION_ALREADY_EXISTS','BILLING_CUSTOMER_REQUIRED'].includes(error.code);
+}
+export function canContinueSetup(state, now = Date.now()) {
+  return state.planStatus === 'active' || (state.planStatus === 'trialing'
+    && typeof state.trialEndsAt === 'string' && Number.isFinite(Date.parse(state.trialEndsAt))
+    && Date.parse(state.trialEndsAt) > now);
 }

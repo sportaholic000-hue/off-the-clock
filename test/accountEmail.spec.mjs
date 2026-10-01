@@ -47,7 +47,7 @@ test('unsafe production link configuration rejects before account creation',asyn
 test('failed signup delivery leaves a recoverable account and preserves payment gating',async t=>{
   const f=fixture(t);f.state.fail=true;
   const r=await call(f.handlers.register,signup);assert.equal(r.status,201);assert.equal(r.body.verificationDelivery.status,'retry_needed');
-  assert.equal(r.body.account.plan,'Operator');assert.equal(r.body.account.planStatus,'pending_payment');assert.equal(r.body.account.requestedPlan,'QuoteDone');
+  assert.equal(r.body.account.plan,'QuoteDone');assert.equal(r.body.account.planStatus,'pending_payment');assert.equal(r.body.account.requestedPlan,'QuoteDone');
   assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
   assert.equal((await call(f.handlers.register,signup)).status,409);
   const failed=mailToken(f.mail[0]);assert.equal((await call(f.handlers.verifyEmail,{token:failed})).status,400);

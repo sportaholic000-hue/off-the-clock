@@ -6,10 +6,6 @@ const PLAN_PRICE_ENV = Object.freeze({
   QuoteDone: Object.freeze({
     monthly: 'STRIPE_QUOTEDONE_MONTHLY_PRICE_ID',
     annual: 'STRIPE_QUOTEDONE_ANNUAL_PRICE_ID'
-  }),
-  Scale: Object.freeze({
-    monthly: 'STRIPE_SCALE_MONTHLY_PRICE_ID',
-    annual: 'STRIPE_SCALE_ANNUAL_PRICE_ID'
   })
 });
 
@@ -82,6 +78,16 @@ export function loadBillingConfig(env = process.env) {
       pricePlanMap.set(priceId, Object.freeze({ plan, kind: 'base' }));
     }
     Object.freeze(priceIds[plan]);
+  }
+
+  // Legacy Scale prices reconcile existing subscriptions only; never offer Checkout.
+  for (const name of ['STRIPE_SCALE_MONTHLY_PRICE_ID', 'STRIPE_SCALE_ANNUAL_PRICE_ID']) {
+    const priceId = env[name];
+    if (!priceId) continue;
+    if (typeof priceId !== 'string' || !validPrice(priceId)) throw new Error(`${name} must be a Stripe Price ID`);
+    if (seen.has(priceId)) throw new Error('Every Stripe plan interval must have a distinct Price ID');
+    seen.add(priceId);
+    pricePlanMap.set(priceId, Object.freeze({ plan: 'Scale', kind: 'base' }));
   }
 
   const success = httpsUrl(requiredExact(env, 'STRIPE_CHECKOUT_SUCCESS_URL'), 'STRIPE_CHECKOUT_SUCCESS_URL', { production });

@@ -21,7 +21,7 @@ const STEPS = [
   { name:'Calendar', optional:true },
   { name:'Voice & greeting' }
 ];
-const PLANS = ['Operator','QuoteDone','Scale'];
+const PLANS = ['Operator','QuoteDone'];
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
   { label: 'Painting', types: ['INTERIOR_PAINTING','EXTERIOR_PAINTING'] },
@@ -150,7 +150,7 @@ function AuthStep({ onAuthenticated }) {
         <Field label="Password"><TextInput type="password" minLength="8" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
         {mode === 'register' && (
           <Field label="Plan">
-            <div className="choice-grid three">
+            <div className="choice-grid two">
               {PLANS.map(plan => (
                 <button type="button" key={plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}</button>
               ))}
@@ -824,13 +824,14 @@ export default function Onboarding() {
     window.scrollTo({ top:0, behavior:'smooth' });
   }
 
-  if (!getToken()) return <AuthStep onAuthenticated={payload => {setVerificationDelivery(payload.verificationDelivery || null);return window.location.pathname.startsWith('/settings') ? go('/settings/billing') : refresh().then(() => move(2)).catch(setError);}} />;
+  if (!getToken()) return <AuthStep onAuthenticated={payload => {setVerificationDelivery(payload.verificationDelivery || null);return payload.account?.planStatus === 'pending_payment' || window.location.pathname.startsWith('/settings') ? go('/settings/billing') : refresh().then(() => move(2)).catch(setError);}} />;
   if (error) return <AppShell activePath="/onboarding"><main className="billing-page"><ErrorMessage error={error}/><Button onClick={()=>go('/settings/billing')}>Billing</Button></main></AppShell>;
   if (!state) return <Loading label="LOADING ONBOARDING" />;
 
   const props = { state, refresh, back:() => move(step - 1), next:() => move(step + 1) };
   let content;
-  if (step === 1) content = <AccountStep {...props} />;
+  if ([3,7].includes(step) && state.account.plan === 'QuoteDone' && state.quoteDoneAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="QuoteDone setup" title="Activate your QuoteDone plan" description="Complete checkout and confirm your trial or payment before setting up QuoteDone." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
+  else if (step === 1) content = <AccountStep {...props} />;
   if (step === 2) content = <BusinessTypeStep {...props} />;
   if (step === 3) content = <JurisdictionStep {...props} />;
   if (step === 4) content = <PhoneStep {...props} />;

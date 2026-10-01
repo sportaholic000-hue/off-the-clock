@@ -458,7 +458,7 @@ test('authenticated Checkout creates and persists one provider customer, uses co
     assert.equal(calls.checkout.length, 1);
     await assert.rejects(
       () => invokeOwnerRoute(checkoutRoute, {
-        body: { plan: 'Scale', billingInterval: 'annual' }
+        body: { plan: 'Operator', billingInterval: 'annual' }
       }),
       error => error instanceof BillingRouteError && error.code === 'IDEMPOTENCY_KEY_CONFLICT'
     );
@@ -485,7 +485,7 @@ test('an expired open Checkout releases the owner slot while the original key st
     });
     time.value = new Date('2026-09-29T14:00:00.000Z');
     const second = await invokeOwnerRoute(route, {
-      body: { plan: 'Scale', billingInterval: 'monthly' },
+      body: { plan: 'QuoteDone', billingInterval: 'monthly' },
       idempotencyKey: 'second-checkout-key'
     });
     assert.equal(calls.checkout.length, 2);
@@ -684,7 +684,7 @@ test('Checkout blocks a second subscription and portal never creates an unmapped
     insertBillingAccount(first.db, { customerId: 'cus_existing', subscriptionId: 'sub_existing' });
     await assert.rejects(
       () => invokeOwnerRoute(routeByPath(first.app, '/api/billing/checkout'), {
-        body: { plan: 'Scale', billingInterval: 'monthly' }
+        body: { plan: 'QuoteDone', billingInterval: 'monthly' }
       }),
       error => error instanceof BillingRouteError && error.code === 'SUBSCRIPTION_ALREADY_EXISTS' && error.statusCode === 409
     );
@@ -726,7 +726,7 @@ test('verified terminal deletion permits resubscription while the original reque
 
     const route = routeByPath(app, '/api/billing/checkout');
     const first = await invokeOwnerRoute(route, {
-      body: { plan: 'Scale', billingInterval: 'annual' },
+      body: { plan: 'QuoteDone', billingInterval: 'annual' },
       idempotencyKey: 'resubscribe-request-key'
     });
     assert.equal(calls.checkout.length, 1);
@@ -739,14 +739,14 @@ test('verified terminal deletion permits resubscription while the original reque
     db.prepare("UPDATE users SET plan='Scale', planStatus='active' WHERE id='owner-a'").run();
 
     const replay = await invokeOwnerRoute(route, {
-      body: { plan: 'Scale', billingInterval: 'annual' },
+      body: { plan: 'QuoteDone', billingInterval: 'annual' },
       idempotencyKey: 'resubscribe-request-key'
     });
     assert.deepEqual(replay.body, first.body);
     assert.equal(calls.checkout.length, 1);
     await assert.rejects(
       () => invokeOwnerRoute(route, {
-        body: { plan: 'Scale', billingInterval: 'annual' },
+        body: { plan: 'QuoteDone', billingInterval: 'annual' },
         idempotencyKey: 'second-resubscribe-key'
       }),
       error => error instanceof BillingRouteError && error.code === 'SUBSCRIPTION_ALREADY_EXISTS'
@@ -779,7 +779,7 @@ test('billing route configuration fails closed on incomplete prices, unsafe redi
   };
   try {
     const incomplete = structuredClone(base.priceIds);
-    delete incomplete.Scale.annual;
+    delete incomplete.QuoteDone.annual;
     assert.throws(() => installBillingRoutes(routeApp(), { ...base, priceIds: incomplete }), /incomplete|required/i);
     assert.throws(() => installBillingRoutes(routeApp(), {
       ...base, cancelUrl: 'https://attacker.invalid/cancel'
@@ -811,4 +811,13 @@ test('billing route configuration fails closed on incomplete prices, unsafe redi
   } finally {
     db.close();
   }
+});
+
+test('Scale Checkout is rejected before creating a customer or session', async () => {
+  const {app,db,calls}=billingHarness();
+  try {
+    await assert.rejects(() => invokeOwnerRoute(routeByPath(app,'/api/billing/checkout'),{body:{plan:'Scale',billingInterval:'monthly'}}), error => error.code==='INVALID_REQUEST' && error.statusCode===400);
+    assert.equal(calls.customer.length,0);assert.equal(calls.checkout.length,0);
+    assert.equal(db.prepare('SELECT COUNT(*) AS n FROM billingCheckoutRequests').get().n,0);
+  } finally {db.close();}
 });

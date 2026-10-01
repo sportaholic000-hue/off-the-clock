@@ -4,6 +4,7 @@ import { ALL_OWNER_FIELDS, SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
+import { hasQuoteDoneAccess } from './planAccess.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', neverSay: [], draft: false };
 const EMPTY_CALENDAR = { provider: null, status: 'not_connected', calendlyUrl: null };
@@ -233,7 +234,7 @@ export function updateBusinessProfile(ownerId, patch) {
 }
 
 function ownerAccount(ownerId) {
-  return ownerQuery(`SELECT id, email, firstName, businessName, plan, planStatus, timezone
+  return ownerQuery(`SELECT id, email, firstName, businessName, plan, planStatus, trialEndsAt, paymentFailedAt, timezone
     FROM users WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 
@@ -543,8 +544,10 @@ export function saveVoice(ownerId, input) {
 
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
+  const account = ownerAccount(ownerId);
   return {
-    account: ownerAccount(ownerId),
+    account,
+    quoteDoneAccess: hasQuoteDoneAccess(account),
     profile,
     operator: {
       enabled: profile.operatorEnabled,
