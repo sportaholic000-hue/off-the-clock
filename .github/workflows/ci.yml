@@ -4,13 +4,14 @@ on:
     branches: ['main', 'claude/**', 'codex/**']
   pull_request:
 permissions:
-  contents: read
+  contents: write
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - name: Install from lockfile (ignores committed node_modules)
@@ -18,7 +19,18 @@ jobs:
       - name: Full test suite
         run: node --test test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true
       - name: No failures beyond the known list
-        run: node .github/scripts/check-test-results.mjs test-results.tap
+        run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
+        shell: bash
+      - name: Publish test summary to claude/ci-results (push events only)
+        if: always() && github.event_name == 'push'
+        shell: bash
+        run: |
+          mkdir -p /tmp/ci && cd /tmp/ci
+          git clone -q --depth 1 --branch claude/ci-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" . 2>/dev/null || { git init -q && git checkout -q -b claude/ci-results; }
+          name="$(echo "${GITHUB_REF_NAME}" | tr '/' '_').txt"
+          { echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat "$GITHUB_WORKSPACE/test-check.txt" 2>/dev/null; grep -E '^not ok ' "$GITHUB_WORKSPACE/test-results.tap" 2>/dev/null; } > "$name"
+          git config user.name ci-bot && git config user.email ci-bot@users.noreply.github.com
+          git add "$name" && git commit -q -m "CI ${GITHUB_REF_NAME} ${GITHUB_SHA::7}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/ci-results || true
       - name: Build owner app and widget
         run: npm --prefix client run build
       - name: Production dependency audit
