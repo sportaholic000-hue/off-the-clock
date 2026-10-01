@@ -6992,7 +6992,8 @@ test('repair 133: decking disclosures distinguish measured inclusion unmeasured 
     const customer=sanitizeForCustomerVNext(r),copy=JSON.stringify(customer);
     if(basis==='cost'){
       assert.equal(copy.includes('$50.00/sheet'),false);
-      assert.equal(copy.includes('requires a confirmed sheet count'),sheets===undefined);
+      assert.equal(copy.includes('requires a confirmed sheet count'),false);
+      assert.ok(copy.includes('Any additional decking is priced per sheet and confirmed on site.'));
     }else {assert.equal(copy.includes('$50.00/sheet'),false);assert.ok(copy.includes('priced per sheet'));}
     assert.equal(lineAmount(r,'Decking replacement')??0,(sheets??0)*5000);
   }

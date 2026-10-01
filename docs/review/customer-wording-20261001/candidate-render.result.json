@@ -1,0 +1,15 @@
+{
+  "label": "candidate-render",
+  "kind": "candidate",
+  "args": [
+    "verification/customer-wording/render.mjs",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/candidate-complete.json",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/candidate-render.json"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 3966,
+  "counters": {},
+  "logSha256": "06f87034b17667b82e8a600e8e36bf7828c4ec7724bc3b601b8e8337402da657"
+}

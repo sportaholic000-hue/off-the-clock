@@ -1148,7 +1148,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       .map(line => line.customerDriver.trim())
   ).slice(0, 4);
   const mandatoryDrivers = unique(template.priceDrivers.filter(customerSafeDriverCopy).map(value => value.trim()));
-  const priceDrivers = unique([...rankedFinancialDrivers, ...mandatoryDrivers, ...(priceLabels.priceUnit ? ['Price is ' + priceLabels.priceUnit + '.'] : [])]);
+  const priceDrivers = unique([...rankedFinancialDrivers, ...mandatoryDrivers]);
   const calculationRecord = {
     engineVersion: ENGINE_VERSION,
     serviceId: ownerPricing.id ?? null,

@@ -1,0 +1,41 @@
+{
+  "finalSource": "b7b329f59303159618588c24d01747daf22be533",
+  "checks": [
+    {
+      "execution": "candidate-wording.source.json",
+      "checkedFiles": 128,
+      "changedFiles": [
+        "client/src/pricebook.jsx",
+        "client/src/quotedone.jsx"
+      ],
+      "relevantChangedFiles": []
+    },
+    {
+      "execution": "candidate-scan.source.json",
+      "checkedFiles": 128,
+      "changedFiles": [
+        "client/src/pricebook.jsx",
+        "client/src/quotedone.jsx"
+      ],
+      "relevantChangedFiles": []
+    },
+    {
+      "execution": "candidate-render.source.json",
+      "checkedFiles": 131,
+      "changedFiles": [],
+      "relevantChangedFiles": []
+    },
+    {
+      "execution": "final-builds.source.json",
+      "checkedFiles": 131,
+      "changedFiles": [],
+      "relevantChangedFiles": []
+    },
+    {
+      "execution": "presentation-tests.source.json",
+      "checkedFiles": 131,
+      "changedFiles": [],
+      "relevantChangedFiles": []
+    }
+  ]
+}

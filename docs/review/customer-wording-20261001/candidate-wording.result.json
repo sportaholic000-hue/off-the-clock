@@ -1,0 +1,20 @@
+{
+  "label": "candidate-wording",
+  "kind": "candidate",
+  "args": [
+    "--test",
+    "test/customerExplanation.spec.mjs"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 17091,
+  "counters": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "logSha256": "454eae6bee2bb0cab2d43fde20a5a64e11173e8e8fe3a53cecca1cd2b7e672b7"
+}

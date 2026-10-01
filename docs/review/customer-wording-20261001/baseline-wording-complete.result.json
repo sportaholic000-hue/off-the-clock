@@ -1,0 +1,20 @@
+{
+  "label": "baseline-wording-complete",
+  "kind": "baseline",
+  "args": [
+    "--test",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs"
+  ],
+  "status": 1,
+  "signal": null,
+  "elapsedMs": 10121,
+  "counters": {
+    "tests": 24,
+    "pass": 11,
+    "fail": 13,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "logSha256": "e2de173d311fe57b0911cf9e963f4178a07896e279f214b24c9b338b2aa185c7"
+}

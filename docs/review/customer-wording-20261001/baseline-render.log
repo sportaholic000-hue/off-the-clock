@@ -1,0 +1,20 @@
+{"sourceRoot":"C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-baseline-20261001","cases":174,"options":180,"findings":204}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+204 !== 0
+
+    at file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/verification/customer-wording/render.mjs:17:105
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 204,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

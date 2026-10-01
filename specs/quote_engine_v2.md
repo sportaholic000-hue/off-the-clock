@@ -9,6 +9,8 @@ These rulings govern the active QuoteDone implementation and supersede conflicti
 - Mowing amounts are per visit. Customer options and the overall result expose priceUnit and taxTreatment; each disclaimer also states the unit when applicable and whether tax is included or no tax is added. TAX_MATERIALS taxability can be configured by category, so customer copy must not imply only materials were taxed.
 - Owners see which additional requests will arrive as leads until their scope and prices are configured, before activation and in the editor. Missing or uncertain pricing remains review-only; supported configured work remains quotable.
 
+- Customer explanations state each generated fact once. Decking without a confirmed sheet count uses only the per-sheet/on-site disclosure; generated copy never mentions internal charge review or offering setup. Mowing keeps its per-visit unit and tax treatment in the API; displays show those labels beside the price and omit their exact repeated sentences from the displayed disclaimer. All amounts, scope validation and exclusions remain unchanged.
+
 # OFF THE CLOCK AI — QUOTE ENGINE v2
 # Give this to the build agent as a single message.
 # Build ONLY what is described here. Backend only.
