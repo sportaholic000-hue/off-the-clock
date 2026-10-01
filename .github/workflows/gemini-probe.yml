@@ -1,0 +1,31 @@
+name: Gemini live probe
+on:
+  push:
+    branches: [claude/gemini-live-probe]
+    paths: ['probe/**', '.github/workflows/gemini-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: gemini-probe, cancel-in-progress: false }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Run probe (results contain no key or token)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_LIVE_MODEL: gemini-3.8-live
+        run: node --version && node probe/gemini-probe.mjs
+      - name: Publish results to claude/probe-results
+        if: always()
+        run: |
+          test -f probe-results.json || echo '{"note":"no results file"}' > probe-results.json
+          mkdir /tmp/r && cp probe-results.json /tmp/r/ && cd /tmp/r
+          git init -q && git checkout -q -b claude/probe-results
+          git config user.name "probe-bot" && git config user.email "probe-bot@users.noreply.github.com"
+          git add probe-results.json && git commit -q -m "Probe results ${GITHUB_SHA::7} run ${GITHUB_RUN_ID}"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" claude/probe-results
