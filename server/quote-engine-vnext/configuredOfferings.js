@@ -209,8 +209,8 @@ export function offeringDisclosures(type,p,c) {
   const d=p.offeringDetails||{}, out=[d.description];
   if(fence(type)) {
     out.push('Standard posts and footings: '+d.postFootingDescription,'Fence length excludes gate openings.');
-    for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}. Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'priced in the confirmed separate post quantity'}.`);}
-    if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal follows the configured fee selection.'));
+    for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the measured post total'}.`);}
+    if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {
     out.push('Surface and coating: '+d.substrate+'; '+d.coating,`${d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
     if(c.ceilingsIncluded)out.push(`${d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);

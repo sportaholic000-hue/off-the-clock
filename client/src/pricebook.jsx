@@ -1,3 +1,4 @@
+import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import {ScopeEditor} from './scopeEditor.jsx';
 import {PricingTree,CustomerMeasurements,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
 import {OfferingEditor,offeringPreviewFields,offeringTierFields} from './offeringEditor.jsx';
@@ -523,7 +524,7 @@ function Preview({ preview, loading, status }) {
               </div>
             )}
             {active.disclaimer && (
-              <p className="quote-disclaimer">{active.disclaimer}</p>
+              <p className="quote-disclaimer">{quoteDisplayDisclaimer(active.disclaimer,active)}</p>
             )}
 
             {status && (
