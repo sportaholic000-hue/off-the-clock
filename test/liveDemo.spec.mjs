@@ -47,6 +47,7 @@ test('success mints a single-use token locked to the agent, voice, model and ins
   const s = c.body.bidiGenerateContentSetup; assert.equal(s.model, 'models/gemini-3.8-live');
   assert.equal(s.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, 'Kore');
   assert.match(s.systemInstruction.parts[0].text, /I'm Nova! What kind of business do you have\?/);
+  assert.deepEqual(s.realtimeInputConfig, { automaticActivityDetection: { endOfSpeechSensitivity: 'END_SENSITIVITY_LOW', silenceDurationMs: 700 } });
   assert.match(s.systemInstruction.parts[0].text, /digital employee/); assert.match(s.systemInstruction.parts[0].text, /Never deny being an AI/);
   assert.equal(Date.parse(c.body.expireTime) - Date.parse('2026-10-01T12:00:00Z'), 210000);
   assert.equal(Date.parse(c.body.newSessionExpireTime) - Date.parse('2026-10-01T12:00:00Z'), 60000);

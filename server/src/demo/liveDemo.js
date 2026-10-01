@@ -46,6 +46,8 @@ export function lockedSetup(config, agentKey) {
     generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: a.voice } } } },
     systemInstruction: { parts: [{ text: demoInstructions(a.name) }] },
     inputAudioTranscription: {}, outputAudioTranscription: {},
+    // Wait for a clearer end of speech before answering, so a caller isn't cut off after the first word.
+    realtimeInputConfig: { automaticActivityDetection: { endOfSpeechSensitivity: 'END_SENSITIVITY_LOW', silenceDurationMs: 700 } },
   };
 }
 
