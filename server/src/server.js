@@ -187,6 +187,7 @@ if (billingConfig) {
     // after a verified Stripe webhook is applied by billingStateService.
     requireProviderWrites: requireProviderOperationsEnabled,
     asyncHandler,
+    providerOperationsEnabled: providerWritesEnabled(),
     priceIds: billingConfig.priceIds,
     successUrl: billingConfig.successUrl,
     cancelUrl: billingConfig.cancelUrl,
