@@ -26,7 +26,7 @@ jobs:
           sudo apt-get install -y -q espeak-ng > /dev/null
       - name: Synthetic spoken microphone input
         run: |
-          espeak-ng -v en-us -s 150 -w /tmp/s.wav "Hi there. I run a small roofing company. What can you do for my business?"
+          espeak-ng -v en-us -s 150 -w /tmp/s.wav "I run a small roofing company, what can you do for my business"
           python - <<'PY'
           import wave
           r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()

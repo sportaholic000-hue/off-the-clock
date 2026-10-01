@@ -16,7 +16,8 @@
     time: "That's our demo time. Start your free trial to put Off The Clock to work for your business.",
     silence: "Looks like you've stepped away. I'll be here when you're ready to talk about your business.",
   };
-  const SILENCE_MS = 10000, CLOSE_GRACE_MS = 8000;
+  const SILENCE_MS = 10000, CLOSE_GRACE_MS = 15000, STALL_MS = 20000;
+  const CLOSING_MARKERS = { time: 'free trial', silence: 'stepped away' };
   const AGENTS = [{ key: 'miles', name: 'Miles', tag: 'VOICE 01 · MALE' }, { key: 'nova', name: 'Nova', tag: 'VOICE 02 · FEMALE' }];
 
   // 16 kHz mono PCM capture. Integrates source samples over each output interval so
@@ -83,7 +84,7 @@ return true;}}registerProcessor('otc-capture',P);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
-  let framesSent = 0, peakMax = 0;
+  let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
   function h(tag, attrs, kids) {
@@ -175,19 +176,20 @@ return true;}}registerProcessor('otc-capture',P);`;
   function beginClosing(reason) {
     if (phase !== 'live') return;
     phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
+    closingSentAt = Date.now(); closingText = ''; agentLine = null;
     sendTurn(`[SYSTEM] The demo is ending. Say exactly: "${CLOSINGS[reason]}" Then stop.`);
     closeTimer = setTimeout(() => finish(endMessage(reason)), CLOSE_GRACE_MS);
   }
-  function endMessage(reason) { return reason === 'time' ? 'That’s the three-minute demo. Your microphone is off.' : 'The demo ended after a pause. Your microphone is off.'; }
+  function endMessage(reason) { return reason === 'time' ? 'Demo time is up. Your microphone is off.' : 'The demo ended after a pause. Your microphone is off.'; }
   function sendText() {
     const text = els.input.value.trim(); if (!text || phase !== 'live' || mode !== 'text') return;
-    els.input.value = ''; userLine = null; line('user', text); userLine = null; lastActivity = Date.now(); sendTurn(text); els.send.disabled = true; els.activity.textContent = 'Responding…';
+    els.input.value = ''; userLine = null; line('user', text); userLine = null; lastActivity = Date.now(); awaitingAgent = true; lastServerMsg = Date.now(); sendTurn(text); els.send.disabled = true; els.activity.textContent = 'Responding…';
   }
   async function readJson(r) { try { return await r.json(); } catch { return null; } }
 
   async function start(which) {
     if (phase !== 'idle' && phase !== 'ended') return;
-    const g = ++gen; mode = which; phase = 'starting'; note(''); lockCards(true); closingReason = null; greeted = false;
+    const g = ++gen; mode = which; phase = 'starting'; note(''); lockCards(true); closingReason = null; greeted = false; awaitingAgent = false; closingText = '';
     els.idle.hidden = true; els.ended.hidden = true; els.convo.hidden = false; els.log.replaceChildren(); agentLine = userLine = null;
     els.form.hidden = which !== 'text'; els.meterBox.hidden = which !== 'voice'; els.send.disabled = true;
     setStatus(which === 'voice' ? 'Allow microphone' : 'Connecting'); els.activity.textContent = which === 'voice' ? 'Allow your microphone to begin.' : 'Connecting…';
@@ -229,12 +231,15 @@ return true;}}registerProcessor('otc-capture',P);`;
         if (m.setupComplete) { clearTimeout(handshake); live(g); resolve(); return; }
         if (m.goAway) return finish('The connection ended. Your microphone is off.');
         const s = m.serverContent; if (!s) return;
+        lastServerMsg = Date.now(); lastActivity = Math.max(lastActivity, Date.now());
         if (s.interrupted) { stopPlayback(); agentLine = null; }
-        if (s.inputTranscription && s.inputTranscription.text) { agentLine = null; line('user', s.inputTranscription.text); lastActivity = Date.now(); els.activity.textContent = 'Listening…'; }
-        if (s.outputTranscription && s.outputTranscription.text) { userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
+        if (s.inputTranscription && s.inputTranscription.text) { agentLine = null; line('user', s.inputTranscription.text); awaitingAgent = true; els.activity.textContent = 'Listening…'; }
+        if (s.outputTranscription && s.outputTranscription.text) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
         if (s.turnComplete) {
-          agentLine = null; userLine = null; greeted = true; lastActivity = Math.max(Date.now(), agentBusyUntil());
+          agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
+          // While closing, only the turn that actually spoke the closing line ends the session.
+          if (phase === 'closing' && !closingText.includes(CLOSING_MARKERS[closingReason])) return;
           if (phase === 'closing') { clearTimeout(closeTimer); closeTimer = setTimeout(() => finish(endMessage(closingReason)), Math.max(0, agentBusyUntil() - Date.now()) + 600); return; }
           els.activity.textContent = mode === 'voice' ? 'Your turn. Just talk.' : 'Your turn.'; els.send.disabled = false; if (mode === 'text') els.input.focus();
         }
@@ -242,7 +247,7 @@ return true;}}registerProcessor('otc-capture',P);`;
     });
   }
   function live(g) {
-    phase = 'live'; startedAt = Date.now(); lastActivity = Date.now();
+    phase = 'live'; startedAt = Date.now(); lastActivity = Date.now(); awaitingAgent = true; lastServerMsg = Date.now();
     setStatus(mode === 'voice' ? 'Live call' : 'Live text chat', true);
     sendTurn(START_TURN);
     if (mode === 'voice' && ctx && stream) {
@@ -262,7 +267,8 @@ return true;}}registerProcessor('otc-capture',P);`;
       const used = Date.now() - startedAt; els.timer.textContent = `${fmt(Math.min(used, sessionMs))} / ${fmt(sessionMs)}`;
       if (phase !== 'live') return;
       if (used >= sessionMs - 6000) return beginClosing('time');
-      if (greeted && Date.now() - Math.max(lastActivity, agentBusyUntil()) >= SILENCE_MS) beginClosing('silence');
+      if (awaitingAgent && Date.now() - lastServerMsg >= STALL_MS) return finish('The demo stopped responding. Your microphone is off.');
+      if (greeted && !awaitingAgent && Date.now() - Math.max(lastActivity, agentBusyUntil()) >= SILENCE_MS) beginClosing('silence');
     }, 250);
   }
 

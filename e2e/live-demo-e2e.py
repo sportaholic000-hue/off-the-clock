@@ -26,8 +26,9 @@ with sync_playwright() as p:
         try: pg.wait_for_selector('#otc-live-demo .otcd-line.user', timeout=40000)
         except Exception as e: errors.append('no user transcription: ' + str(e)[:120])
         # wait for the agent to answer after the caller spoke
-        try: pg.wait_for_function("(()=>{const l=[...document.querySelectorAll('#otc-live-demo .otcd-line')];const u=l.map(x=>x.classList.contains('user')).lastIndexOf(true);return u>=0&&l.slice(u+1).some(x=>x.classList.contains('agent'))&&!document.querySelector('#otc-live-demo .otcd-activity').textContent.startsWith('Speaking')})()", timeout=40000)
-        except Exception as e: errors.append('no agent answer after caller: ' + str(e)[:120])
+        # the spoken question mentions roofing; wait until an agent line after it talks about roofing
+        try: pg.wait_for_function("(()=>{const l=[...document.querySelectorAll('#otc-live-demo .otcd-line')];const u=l.findIndex(x=>x.classList.contains('user'));return u>=0&&l.slice(u+1).some(x=>x.classList.contains('agent')&&/roof/i.test(x.textContent))&&!document.querySelector('#otc-live-demo .otcd-activity').textContent.startsWith('Speaking')})()", timeout=45000)
+        except Exception as e: errors.append('no roofing answer after caller: ' + str(e)[:120])
         pg.wait_for_timeout(1500)
         pg.locator('#demo').screenshot(path=f'{OUT}/voice_live_1280.png')
         dbg = pg.evaluate('({frames: window.__otcDemoDebug && window.__otcDemoDebug.framesSent, peak: window.__otcDemoDebug && window.__otcDemoDebug.peakMax})')
