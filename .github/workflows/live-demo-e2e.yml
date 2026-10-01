@@ -1,0 +1,68 @@
+name: Live demo end-to-end
+on:
+  workflow_dispatch:
+    inputs:
+      key: { description: 'Gemini key for this run only (used when the repository secret is not set)', required: false }
+  push:
+    branches: [claude/live-demo]
+    paths: ['e2e/**', 'server/public/otc-live-demo.js', 'server/src/demo/**', '.github/workflows/live-demo-e2e.yml']
+permissions:
+  contents: write
+concurrency: { group: live-demo-e2e, cancel-in-progress: false }
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mask key
+        env: { K: '${{ secrets.GEMINI_API_KEY || inputs.key }}' }
+        run: echo "::add-mask::$K"
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+          pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
+          sudo apt-get install -y -q espeak-ng > /dev/null
+      - name: Synthetic spoken microphone input
+        run: |
+          espeak-ng -v en-us -s 150 -w /tmp/s.wav "Hi there. I run a small roofing company. What can you do for my business?"
+          python - <<'PY'
+          import wave
+          r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
+          w = wave.open('e2e/speech-roofing.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 2 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
+          PY
+      - name: Start app servers and site
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || inputs.key }}
+        run: |
+          common="NODE_ENV=development JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -base64 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=http://localhost:3999 CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console DEMO_ENABLED=true DEMO_IP_SALT=e2e DEMO_SESSIONS_PER_IP_PER_HOUR=20 DEMO_ALLOWED_ORIGINS=http://127.0.0.1:8899,http://127.0.0.1:8898"
+          mkdir -p /tmp/pb1 /tmp/pb2
+          env $common PORT=3999 DATABASE_PATH=/tmp/a1.sqlite PRICEBOOK_PATH=/tmp/pb1 nohup node server/src/server.js > /tmp/app1.log 2>&1 &
+          env $common PORT=4000 DATABASE_PATH=/tmp/a2.sqlite PRICEBOOK_PATH=/tmp/pb2 DEMO_SESSION_SECONDS=45 nohup node server/src/server.js > /tmp/app2.log 2>&1 &
+          SITE_PORT=8899 APP_ORIGIN=http://127.0.0.1:3999 nohup node e2e/serve-site.mjs > /tmp/site1.log 2>&1 &
+          SITE_PORT=8898 APP_ORIGIN=http://127.0.0.1:4000 nohup node e2e/serve-site.mjs > /tmp/site2.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && curl -sf localhost:4000/api/health > /dev/null && curl -sf localhost:8899/ > /dev/null && curl -sf localhost:8898/ > /dev/null && break; sleep 1; done
+          curl -s localhost:3999/api/health
+      - name: Token expiry is enforced by Google
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || inputs.key }}
+        run: mkdir -p e2e-results && node e2e/token-expiry.mjs | tee e2e-results/token-expiry.json
+      - name: Browser end-to-end
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || inputs.key }}
+        run: python e2e/live-demo-e2e.py
+      - name: Publish results to claude/probe-results (e2e/)
+        if: always()
+        env:
+          K: ${{ secrets.GEMINI_API_KEY || inputs.key }}
+        run: |
+          mkdir -p e2e-results && for f in /tmp/app1.log /tmp/app2.log; do tail -n 40 "$f" | sed "s/$K/<key>/g" > "e2e-results/$(basename $f)"; done
+          if grep -rl -- "$K" e2e-results >/dev/null 2>&1; then echo "key found in results; refusing to publish"; exit 1; fi
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r || { mkdir /tmp/r && cd /tmp/r && git init -q && git checkout -q -b claude/probe-results && cd -; }
+          rm -rf /tmp/r/e2e && mkdir -p /tmp/r/e2e && cp -r e2e-results/* /tmp/r/e2e/
+          cd /tmp/r && git config user.name e2e-bot && git config user.email e2e-bot@users.noreply.github.com
+          git add -A && git commit -q -m "E2E ${GITHUB_SHA::7} run ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results

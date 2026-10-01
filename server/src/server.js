@@ -33,6 +33,7 @@ import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
 import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
+import { installLiveDemoRoutes } from './demo/liveDemo.js';
 import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
@@ -149,6 +150,8 @@ const billingStateService = billingConfig
   ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap })
   : null;
 
+// Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
+installLiveDemoRoutes(app, { db });
 app.use(cors(createCorsOptionsDelegate({ configuredOrigins: runtimeConfig.corsOrigins })));
 if (billingConfig) {
   installBillingWebhookRoute(app, {
