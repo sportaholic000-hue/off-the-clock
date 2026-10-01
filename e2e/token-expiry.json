@@ -1,0 +1,1 @@
+{"mintStatus":200,"tokenExpireSeconds":40,"socketClosedAtSeconds":40,"events":[[0,"setupComplete"],[5,"sent"],[8,"turnComplete"],[20,"sent"],[23,"turnComplete"],[35,"sent"],[39,"turnComplete"],[40,"close 1011 auth token has expired"]],"enforced":true}

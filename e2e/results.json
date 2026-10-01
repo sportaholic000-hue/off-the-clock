@@ -1,0 +1,25 @@
+{
+ "startedAt": "2026-10-01T14:44:22Z",
+ "cases": {
+  "voice_miles": {
+   "secondsToFirstAgentText": 1.89,
+   "status": "WRAPPING UP",
+   "transcript": [
+    {
+     "who": "agent",
+     "text": "Thank you for calling Off The Clock AI. I'm Miles! What kind of business"
+    },
+    {
+     "who": "user",
+     "text": "Hi"
+    },
+    {
+     "who": "agent",
+     "text": "Thank you for calling Off The Clock AI. I'm Miles! What kind of business do you have?"
+    }
+   ],
+   "errors": [],
+   "afterEnd": "Your session has ended and your microphone is off."
+  }
+ }
+}
