@@ -3,9 +3,6 @@ on:
   workflow_dispatch:
     inputs:
       key: { description: 'Gemini key for this run only (used when the repository secret is not set)', required: false }
-  push:
-    branches: [claude/live-demo]
-    paths: ['e2e/**', 'server/public/otc-live-demo.js', 'server/src/demo/**', '.github/workflows/live-demo-e2e.yml']
 permissions:
   contents: write
 concurrency: { group: live-demo-e2e, cancel-in-progress: false }
@@ -33,7 +30,7 @@ jobs:
           python - <<'PY'
           import wave
           r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
-          w = wave.open('e2e/speech-roofing.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 2 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
+          w = wave.open('e2e/speech-roofing.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 7 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
           PY
       - name: Start app servers and site
         env:

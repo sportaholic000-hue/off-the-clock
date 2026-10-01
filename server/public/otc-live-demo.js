@@ -83,6 +83,7 @@ return true;}}registerProcessor('otc-capture',P);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
+  let framesSent = 0, peakMax = 0;
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
   function h(tag, attrs, kids) {
@@ -173,7 +174,7 @@ return true;}}registerProcessor('otc-capture',P);`;
   function sendTurn(text) { send({ clientContent: { turns: [{ role: 'user', parts: [{ text }] }], turnComplete: true } }); }
   function beginClosing(reason) {
     if (phase !== 'live') return;
-    phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true);
+    phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
     sendTurn(`[SYSTEM] The demo is ending. Say exactly: "${CLOSINGS[reason]}" Then stop.`);
     closeTimer = setTimeout(() => finish(endMessage(reason)), CLOSE_GRACE_MS);
   }
@@ -251,9 +252,9 @@ return true;}}registerProcessor('otc-capture',P);`;
         const bytes = new Uint8Array(e.data); let peak = 0; const dv = new DataView(e.data);
         for (let i = 0; i < bytes.length; i += 2) peak = Math.max(peak, Math.abs(dv.getInt16(i, true)) / 32768);
         els.meter.style.width = Math.min(100, peak * 220) + '%';
-        if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
+        peakMax = Math.max(peakMax, peak); if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-        send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } });
+        send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
       };
     }
     tick = setInterval(() => {
@@ -303,7 +304,7 @@ return true;}}registerProcessor('otc-capture',P);`;
     window.addEventListener('pagehide', () => teardown());
     return true;
   }
-  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, els };
+  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, get framesSent() { return framesSent; }, get peakMax() { return peakMax; }, els };
   function waitAndMount(tries) { if (mount() || tries <= 0) return; setTimeout(() => waitAndMount(tries - 1), 250); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => waitAndMount(80)); else waitAndMount(80);
 })();
