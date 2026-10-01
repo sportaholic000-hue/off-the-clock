@@ -721,9 +721,12 @@ test('supported concrete finishes round the base and finish-extra components ind
     baseNeeded: false
   }, ownerPricing);
   assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(lineMap(result)['Concrete labor'], 117);
+  // Owner-approved access applies to both independently rounded labor components:
+  // base = 1.01 * 101 * 1.1 = 112.211 -> 112 cents;
+  // smooth extra = 1.01 * 101 * 0.05 * 1.1 = 5.61055 -> 6 cents.
+  assert.equal(lineMap(result)['Concrete labor'], 118);
   const labor = result.lineItems.find(line => line.name === 'Concrete labor');
-  assert.deepEqual(labor.calculation.components.map(component => component.amountCents), [112, 5]);
+  assert.deepEqual(labor.calculation.components.map(component => component.amountCents), [112, 6]);
 });
 
 test('buffered ranges cannot use remitted tax to satisfy a pre-tax minimum', () => {

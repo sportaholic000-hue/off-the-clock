@@ -13,3 +13,7 @@ The October 1 owner rulings supersede prior minimum ordering, fixed fence-height
 8. Browser acceptance: core prices precede optional setup; service navigation and section choice remain usable at 375px; optional settings do not create a default 16000px wall of inputs. Also check 1280px, retain before/after screenshots, and test expanding/editing/saving sections.
 
 These are expected values, not claimed execution results.
+
+## Existing moderate-access rounding control
+
+The first final cold run exposed a legacy test expecting the finish-extra component to omit access. Before its rerun: area 1.01 sqft, labor 101 cents/sqft, moderate access 1.1, smooth extra 0.05. Base: 1.01 × 101 × 1.1 = 112.211 cents → 112. Finish extra: 1.01 × 101 × 0.05 × 1.1 = 5.61055 cents → 6. Independent component rounding therefore yields 118 cents, replacing the superseded 117-cent expectation. No engine change is required.
