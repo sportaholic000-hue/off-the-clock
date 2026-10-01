@@ -481,8 +481,8 @@ function calculateRoofReplacement(c, p, ctx) {
   }
   const deckingUnitPrice = optionalMoney(p.deckingPerSheet, 'deckingPerSheet');
   if (deckingUnitPrice !== undefined) {
-    if (ctx.ownerPricing?.priceBasisByCategory?.material === 'sell_price') out.priceDrivers.push(`Decking replacement, if needed, billed at $${(deckingUnitPrice / 100).toFixed(2)}/sheet`);
-    else if (c.deckingSheets === undefined) out.priceDrivers.push('Additional decking requires a confirmed sheet count and a reviewed customer charge.');
+    out.priceDrivers.push('Any additional decking is priced per sheet and confirmed on site.');
+    if (c.deckingSheets === undefined) out.priceDrivers.push('Additional decking requires a confirmed sheet count and a reviewed customer charge.');
     else out.priceDrivers.push(c.deckingSheets > 0 ? 'Confirmed decking replacement is included in this estimate.' : 'No decking replacement is included in the confirmed scope.');
   }
   if (c.deckingSheets !== undefined) {
@@ -850,8 +850,8 @@ function calculateConcrete(serviceType, c, p) {
   });
   recordRuleApplication(out, {
     name: 'concreteFinishLabor',
-    rule: 'base labor is charged once; configured finishMultiplier above 1 adds a separately rounded extra labor component of finishMultiplier - 1',
-    inputs: { finishType: c.finishType, configuredFinishMultiplier: finish },
+    rule: 'access applies to base and extra finish labor; base labor is charged once and finishMultiplier - 1 adds a separately rounded extra labor component',
+    inputs: { finishType: c.finishType, configuredFinishMultiplier: finish, accessDifficulty: c.accessDifficulty, accessMultiplier: access },
     result: { baseMultiplier: 1, extraMultiplier: exactToNumber(exactFinishExtra) },
     usedBy: ['Concrete labor']
   });
@@ -859,7 +859,7 @@ function calculateConcrete(serviceType, c, p) {
     name: 'Concrete labor', category: 'labor', customerDriver: `${dimensions.areaSqft} measured square feet at ${thickness} inches thick`,
     components: [
       { quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.laborPerSqft, ratePath: 'laborPerSqft', multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] },
-      ...(finish > 1 ? [{ quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.laborPerSqft, ratePath: 'laborPerSqft', multipliers: [{ name: 'finish extra', value: exactFinishExtra, sourceValue: finish, transform: 'configured multiplier - 1', path: `finishMultiplier.${c.finishType}` }] }] : [])
+      ...(finish > 1 ? [{ quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.laborPerSqft, ratePath: 'laborPerSqft', multipliers: [{ name: 'finish extra', value: exactFinishExtra, sourceValue: finish, transform: 'configured multiplier - 1', path: `finishMultiplier.${c.finishType}` }, { name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }] : [])
     ]
   }));
   add(out, makeLine({ name: 'Ready-mix concrete', category: 'material', quantity: exactYards, unit: 'waste-adjusted cubic yards', rateCents: p.concreteCostPerCubicYard, ratePath: 'concreteCostPerCubicYard' }));

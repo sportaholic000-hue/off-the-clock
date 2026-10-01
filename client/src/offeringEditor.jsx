@@ -44,7 +44,7 @@ export function OfferingEditor({service,meta,onChange}) {
       <p>Define one offered job and the prices that cover it. Add another offering for a different height, surface, coating or preparation scope. These descriptions are shown to customers.</p>
       {input('description','Included job description')}
       {fence?<>
-        {input('fenceType','Offered fence type')}{input('fenceHeight','Offered fence height','select',[4,6,8])}{input('terrainSlope','Offered terrain','select',['flat','moderate','steep'])}
+        {input('fenceType','Offered fence type')}{input('fenceHeight','Offered fence height (ft)','number')}{input('terrainSlope','Offered terrain','select',['flat','moderate','steep'])}
         {input('postFootingDescription','Standard posts, footings and digging included')}
         <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings use the confirmed planned quantity, excluding any posts already included in gate prices.'} Fence length excludes gate openings.</Notice>
         <h3>Offered gates</h3>
