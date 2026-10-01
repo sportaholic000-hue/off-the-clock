@@ -1,7 +1,6 @@
-run 36922552920 sha 694ea50895203422a7d2758c8b254f4baf328828
-Summary: {"tests":"1030","pass":"1018","fail":"10","cancelled":"0","skipped":"2","todo":"0"}
+run 36924272842 sha aec080b4b52f82a1fa48d0732cb178cc724bdf92
+Summary: {"tests":"1031","pass":"1020","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
-::error::New test failure: widget network failures explain how to retry without exposing browser errors
 not ok 25 - test/googleGenAiLiveAdapter.spec.mjs
 not ok 988 - voice tool runtime persists a safe review quote and lead without exposing internal identities
 not ok 989 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
@@ -11,4 +10,3 @@ not ok 1011 - quote release requires an affirmative recap confirmation and avail
 not ok 1013 - dispatcher rejects handler results containing raw rates instead of exposing them
 not ok 1014 - mutations are idempotent and conflicting reuse of a tool call id is rejected
 not ok 61 - test/voiceWebSocketServer.spec.mjs
-not ok 1017 - widget network failures explain how to retry without exposing browser errors
