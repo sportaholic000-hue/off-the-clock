@@ -65,7 +65,7 @@ export function offeringStructureDiagnostics(type,p) {
   check('description',text,'Describe the complete offered job.');
   if(fence(type)) {
     check('fenceType',slug,'Identify the offered fence material/style.');
-    check('fenceHeight',v=>[4,6,8].includes(v),'Choose the height covered by these prices.');
+    check('fenceHeight',v=>typeof v==='number'&&Number.isFinite(v)&&v>0,'Enter the positive height in feet covered by these prices.');
     check('terrainSlope',v=>['flat','moderate','steep'].includes(v),'Choose the terrain covered by these prices.');
     check('postFootingDescription',text,'Define the standard posts, footings and digging covered by these prices.');
     check('gates',record,'Define offered gates, or an empty map when none are offered.');
@@ -119,7 +119,7 @@ export function offeringContract(type,p) {
   if(fence(type))Object.assign(fields,{
     linearFeet:number('Measured fence length excluding gate openings','linear feet',1),
     lfMethod:choice('Fence measurement method',['exact','assumption']),
-    fenceType:{label:'Fence type',type:'slug',unit:null},fenceHeight:choice('Fence height',[4,6,8]),
+    fenceType:{label:'Fence type',type:'slug',unit:null},fenceHeight:number('Fence height','feet',Number.MIN_VALUE,Number.MAX_VALUE),
     terrainSlope:choice('Terrain slope',['flat','moderate','steep']),
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${k.replaceAll('_',' ')} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},

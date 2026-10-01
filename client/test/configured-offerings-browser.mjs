@@ -12,6 +12,8 @@ const require=createRequire(path.join(root,'package.json')),{chromium}=require(p
 const rows=[],wire=[],errors=[];let browser,server,db,page;
 try {
   const f=await offeringApplicationFixture(app,'offering-browser',site),meta=await f.call('GET','/api/pricebook/meta');
+  const heightArg=process.argv.find(arg=>arg.startsWith('--fence-height='));
+  if(heightArg){const height=Number(heightArg.split('=')[1]);assert.ok(Number.isFinite(height)&&height>0);for(const entry of f.cases)if(entry.type.startsWith('FENCING_')){entry.service.pricing.offeringDetails.fenceHeight=height;entry.inputs.fenceHeight=height;}}
   // Owner configures each offering through the UI from a saved blank price entry.
   const blank=await f.call('GET','/api/pricebook/'+f.owner.id);for(const service of blank.services)service.pricing={minimumJob:0};await f.call('POST','/api/pricebook/save',blank);
   const dist=path.join(root,'client/dist');
@@ -40,13 +42,14 @@ try {
     if(['enum','boolean','integer_or_unknown'].includes(field.type))await input.selectOption(String(value));else await input.fill(String(value));
     if(field.type==='slug')await container.getByRole('checkbox',{name:'I have identified this exact offering.',exact:true}).check();
   }
-  const labels={description:'Included job description',fenceType:'Offered fence type',fenceHeight:'Offered fence height',terrainSlope:'Offered terrain',postFootingDescription:'Standard posts, footings and digging included',removalOffered:'Offer fence removal',removalDescription:'Removal work included',removalIncludesDisposal:'Removal price includes disposal',substrate:'Paintable surface covered',coating:'Coating and product system',finishCoats:'Wall finish coats',surfaceCondition:'Surface condition covered',preparation:'Preparation work included or measured separately',primerCoats:'Wall primer coats included',wallHeight:'Wall height covered',ceilingsOffered:'Offer ceiling painting',trimOffered:'Offer trim painting',ceilingCoats:'Ceiling finish coats',ceilingPrimerCoats:'Ceiling primer coats',trimDescription:'Trim coats, preparation and primer included',stories:'Building stories covered'};
+  const labels={description:'Included job description',fenceType:'Offered fence type',fenceHeight:'Offered fence height (ft)',terrainSlope:'Offered terrain',postFootingDescription:'Standard posts, footings and digging included',removalOffered:'Offer fence removal',removalDescription:'Removal work included',removalIncludesDisposal:'Removal price includes disposal',substrate:'Paintable surface covered',coating:'Coating and product system',finishCoats:'Wall finish coats',surfaceCondition:'Surface condition covered',preparation:'Preparation work included or measured separately',primerCoats:'Wall primer coats included',wallHeight:'Wall height covered',ceilingsOffered:'Offer ceiling painting',trimOffered:'Offer trim painting',ceilingCoats:'Ceiling finish coats',ceilingPrimerCoats:'Ceiling primer coats',trimDescription:'Trim coats, preparation and primer included',stories:'Building stories covered'};
   async function checkPendingReload(name,action){
     let release,arrive,finish,routeError;const pending=new Promise(resolve=>{release=resolve}),arrived=new Promise(resolve=>{arrive=resolve}),handled=new Promise(resolve=>{finish=resolve}),url=site+'/api/pricebook/'+f.owner.id;
     await page.route(url,async route=>{try{const response=await route.fetch();arrive();await pending;await route.fulfill({response});}catch(error){routeError=error;arrive();}finally{finish();}});
     try {await action();await arrived;assert.equal(await page.getByLabel('Offering price installedFencePerLF',{exact:true}).isDisabled(),true);assert.equal(await page.getByLabel('Measured fence length excluding gate openings',{exact:true}).isDisabled(),true);rows.push({name,passed:true});}
     finally {release();await handled;await page.unroute(url);if(routeError)throw routeError;}
   }
+  async function openSection(title){const button=page.locator('button.disclose-summary').filter({hasText:title});if(await button.getAttribute('aria-expanded')!=='true')await button.click();}
   for(const entry of f.cases){
     await page.locator('.service-pick').filter({hasText:entry.name}).click();await page.getByLabel('Offering pricing',{exact:true}).selectOption(entry.mode);
     for(const [key,value] of Object.entries(entry.service.pricing.offeringDetails)){
@@ -56,11 +59,13 @@ try {
       const input=page.getByLabel(labels[key],{exact:true}),tag=await input.evaluate(el=>el.tagName);if(tag==='SELECT')await input.selectOption(String(value));else await input.fill(String(value));
     }
     for(const [key,value] of Object.entries(entry.service.pricing.offeringRates))await page.getByLabel('Offering price '+key,{exact:true}).fill(String(value));
+    await openSection('Project measurements for preview');
     const save=async()=>{const saved=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save')&&r.request().method()==='POST');await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await saved).status(),200);};
     if(entry===f.cases[0])await checkPendingReload('Save refresh prevents edits until saved prices reload',save);else await save();
     await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByRole('checkbox',{name:'I confirm these exact saved prices, units, factors and rules.',exact:true}).check();
     const approve=async()=>{const approved=page.waitForResponse(r=>r.url().endsWith('/services/'+entry.id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);};
     if(entry===f.cases[0])await checkPendingReload('Approval refresh prevents lost measurements and prices',approve);else await approve();
+    await openSection('Project measurements for preview');
     const previewSection=page.getByRole('heading',{name:'Project measurements for preview',exact:true}).locator('..');
     const previewWaiting=page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200||r.request().postDataJSON().serviceId!==entry.id)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;});
     const fields=meta.services.find(s=>s.serviceType===entry.type).offeringCustomerFields[entry.mode];for(const field of fields)await answer(previewSection,field,entry.inputs[field.name]);

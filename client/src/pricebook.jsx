@@ -486,13 +486,15 @@ function Preview({ preview, loading, status }) {
                 <span className="quote-low">${active.lowEstimate.toLocaleString()}</span>
                 <span className="mono quote-dash">–</span>
                 <span className="quote-high">${active.highEstimate.toLocaleString()}</span>
+                {active.priceUnit&&<span className="quote-price-unit">{active.priceUnit}</span>}
               </div>
+              {active.taxTreatment&&<p className="quote-tax-treatment">{active.taxTreatment}</p>}
               {active.tierName && <span className="mono quote-tier-name">{active.tierName}</span>}
             </div>
 
             {/* Customer-facing price drivers from the engine's sanitized output.
                 These are the same strings a customer would hear. No owner-only
-                amounts, rates, markup, margin or tax are shown. */}
+                amounts, rates, markup or margin are shown. Tax treatment is stated. */}
             <div className="quote-drivers">
               <span className="mono quote-drivers-label">WHAT GOES INTO THIS ESTIMATE</span>
               {priceDrivers.length > 0 ? (
@@ -506,7 +508,7 @@ function Preview({ preview, loading, status }) {
               )}
               <div className="quote-midpoint-row">
                 <span>Midpoint estimate</span>
-                <span className="mono quote-midpoint-value">${active.midEstimate.toLocaleString()}</span>
+                <span className="mono quote-midpoint-value">${active.midEstimate.toLocaleString()}{active.priceUnit ? ` ${active.priceUnit}` : ''}</span>
               </div>
             </div>
 
@@ -816,7 +818,7 @@ export default function PriceBook() {
                       ? 'Checking'
                       : missing.length > 0
                         ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
-                        : status.status === 'DISABLED' ? 'Disabled by you' : 'Ready to quote'}
+                        : status.status === 'DISABLED' ? 'Disabled by you' : status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'}
                   </small>
                 </button>
               );
@@ -826,9 +828,7 @@ export default function PriceBook() {
             <PricingContext.Provider value={selected}>
             <div className="editor-grid">
               <div className="editor-column">
-                {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
-                {selectedMeta.supportsScopeConfiguration&&<ScopeEditor service={selected} onChange={replaceSelected}/>}
-                {contract.engineVersion&&<><ServiceRules key={selectedType} service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></>}
+
                 {/* REQUIRED PRICING — open and visually dominant.
                     Reference: pricebook-editor "ESSENTIALS" card. */}
                 <section className="editor-section essentials">
@@ -842,6 +842,14 @@ export default function PriceBook() {
                       {requiredFields.length - requiredMissing.length} / {requiredFields.length} SET
                     </span>
                   </div>
+
+                  {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
+                  {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
+                    <h3>Which requests can be quoted?</h3>
+                    <p>Your core prices cover the standard job. These additional requests also need a defined scope and its prices.</p>
+                    <ul>{selectedStatus.scopeCoverage.map(scope => <li key={scope.key}><strong>{scope.label}</strong><span>{scope.message}</span></li>)}</ul>
+                    {selectedStatus.scopeCoverage.some(scope => !scope.configurationComplete || scope.variants.some(variant => !variant.configurationComplete)) && <p>Open <strong>Additional priced scope</strong> below to finish setup. Unconfigured requests arrive as leads for your estimate.</p>}
+                  </section>}
 
                   <Toggle checked={selected.active === true} onChange={active => replaceSelected({ ...selected, active })} label="Enable quoting for this service" />
 
@@ -887,6 +895,12 @@ export default function PriceBook() {
                     ))}
                   </div>
                 </section>
+
+                {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
+                {contract.engineVersion&&<>
+                  <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
+                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></div>
+                </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
                 {optionalFields.length > 0 && (
@@ -1020,7 +1034,7 @@ export default function PriceBook() {
                   </Disclosure>
                 </div>
               </div>
-              <div><section className="editor-section"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
+              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}

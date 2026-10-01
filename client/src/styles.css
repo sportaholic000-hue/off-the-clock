@@ -550,11 +550,13 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
     border-bottom: 1px solid var(--black-line);
     background: var(--black);
     padding: 14px 16px;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
     align-items: center;
-    justify-content: space-between;
     gap: 10px;
   }
+  .mobile-header > .select { grid-column: 1 / -1; grid-row: 2; width: 100%; min-width: 0; }
+  .mobile-header > .operator-state { grid-column: 1 / -1; }
   .dashboard-page, .onboarding-page, .pricebook-page { padding: 18px 16px 92px; }
   .dashboard-page { --rhythm: 16px; }
   .save-bar { left: 0; padding: 11px 16px; }
@@ -1055,8 +1057,9 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
     min-width: 0; max-width: 100%; box-sizing: border-box;
   }
   .editor-section.essentials { order: 1; min-width: 0; max-width: 100%; }
-  .preview-column { order: 2; position: static; }
-  .editor-column > .disclose { order: 3; }
+  .preview-tools { order: 2; width: 100%; }
+  .preview-column { position: static; }
+  .editor-column > .disclose, .editor-column > .editor-optional { order: 3; width: 100%; }
   .business-wide { order: 4; }
 }
 
@@ -1165,3 +1168,14 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .billing-panel dd { margin: 0; overflow-wrap: anywhere; }
 .billing-page > .loading { min-height: 100px; }
 @media(max-width:860px) { .billing-page { padding: 24px 16px; } .billing-panel { padding: 18px; } .billing-fields { grid-template-columns: 1fr; } }
+/* Keep required prices and scope readiness visible without expanding every setup form. */
+.preview-tools { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.preview-measurements { min-width: 0; }
+.scope-coverage { border-top: 1px solid var(--black-line); padding-top: 14px; }
+.scope-coverage h3 { margin: 0 0 8px; }
+.scope-coverage p { font-size: 13px; line-height: 1.5; }
+.scope-coverage ul { padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+.scope-coverage li span { display: block; font-size: 13px; line-height: 1.5; margin-top: 3px; }
+.quote-price-unit { font-size: 14px; color: var(--white); align-self: end; padding-bottom: 4px; }
+.quote-tax-treatment { margin: 8px 0 0; color: var(--gray); font-size: 13px; }
+.quote-range-values { flex-wrap: wrap; }

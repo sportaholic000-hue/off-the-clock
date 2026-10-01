@@ -1,3 +1,14 @@
+# Owner rulings - October 1, 2026
+
+These rulings govern the active QuoteDone implementation and supersede conflicting earlier wording below.
+
+- The minimum is the pre-tax floor in every tax mode, including the customer range's lower bound. Minimum adjustments are not taxable under TAX_MATERIALS; existing category tax settings and markup allocation remain unchanged.
+- Configured fence offerings accept any finite positive height in feet. Each offering has its own exact height and prices. An unoffered height requires review; never interpolate or scale another offering's price.
+- Concrete access applies to all labor, including the separately rounded finish-extra component. It does not change material/formwork charges.
+- Customer output never contains owner unit rates, costs, financial line items, markup or margin. Decking copy may explain the per-sheet/on-site scope without a rate.
+- Mowing amounts are per visit. Customer options and the overall result expose priceUnit and taxTreatment; each disclaimer also states the unit when applicable and whether tax is included or no tax is added. TAX_MATERIALS taxability can be configured by category, so customer copy must not imply only materials were taxed.
+- Owners see which additional requests will arrive as leads until their scope and prices are configured, before activation and in the editor. Missing or uncertain pricing remains review-only; supported configured work remains quotable.
+
 # OFF THE CLOCK AI — QUOTE ENGINE v2
 # Give this to the build agent as a single message.
 # Build ONLY what is described here. Backend only.
@@ -364,8 +375,10 @@ STEP 7 — TAX (mode-dependent; order differs by mode)
           − taxableMarkupBase
     taxCents = round((taxableBase + taxableMarkup)
       × taxPercent/100)
-    push tax line; subtotal += taxCents
-    THEN apply STEP 8 minimum to the after-tax subtotal.
+    Apply STEP 8 minimum to the PRE-tax subtotal first. The
+    minimum adjustment is non-taxable under TAX_MATERIALS and
+    never changes the taxable category base or markup allocation.
+    Then push the tax line; subtotal += taxCents.
 
   if taxMode === "TAX_ALL":
     // Minimum must be applied PRE-tax so tax is computed on the
@@ -469,8 +482,10 @@ GLOBAL FORMULA RULES (quoteTemplates.js)
   disposal, permit, overhead, or surcharge lines, nor to the
   non-taxable share of markup. Under TAX_ALL, tax applies to the
   entire pre-tax total by definition.
-- Minimum: per STEP 7/8 ordering (pre-tax under TAX_ALL,
-  post-tax otherwise).
+- Minimum: the contractor's pre-tax floor in EVERY tax mode.
+  Apply after markup and before tax. Customer range floors must
+  preserve that amount plus applicable tax; tax never satisfies
+  the owner's minimum.
 - Travel, disposal, permit, overhead: flat amounts, NO multiplier
   ever. (Per-quantity disposal overrides below replace the flat
   fee; they are still never multiplied by job multipliers.)
@@ -592,8 +607,8 @@ calculate():
 
   // ---- DECKING DISCLOSURE (ADDON) ----
   if deckingPerSheet set:
-    push priceDriver: "Decking replacement, if needed, billed at
-    $[deckingPerSheet]/sheet" — no line item unless owner quoting
+    push priceDriver: "Any additional decking is priced per sheet
+    and confirmed on site." Never put deckingPerSheet in customer copy — no line item unless owner quoting
     with a known sheet count. Rotten decking is the #1 roofing
     change order; disclosing the unit price up front prevents the
     fight later.
@@ -924,7 +939,7 @@ calculate():
     × (1 + concreteWasteFactor)
 
   finishExtraCents = round(areaSqft × laborPerSqft
-    × (finishMultiplier − 1.00))
+    × (finishMultiplier − 1.00) × accessMultiplier)
   laborCents = round(areaSqft × laborPerSqft × accessMultiplier)
     + finishExtraCents
   concreteCents = round(cubicYards × concreteCostPerCubicYard)
@@ -1289,7 +1304,7 @@ calculate by unit type:
   per_square: mid = squares × (low+high)/2
   SIZE ASSUMPTION RULE applies to per_sqft and per_LF category
   inputs — same gate as template services, estimationUsed=true.
-  Then: markup → tax (mode-aware) → minimum → range, identical
+  Then: markup → pre-tax minimum → tax (mode-aware) → range, identical
   pipeline order to template services.
 
 =======================================================
@@ -1430,7 +1445,9 @@ CRITICAL RULES FOR THE BUILD AGENT
    named, dashboard-visible, owner-overridable defaults only.
 5. Tax follows STEP 7 modes exactly; the mode+rate come from
    businessDefaults; jurisdiction logic never leaks into math.
-6. Minimum ordering: pre-tax under TAX_ALL, post-tax otherwise.
+6. Minimum ordering: pre-tax in every tax mode. Tax never
+   satisfies the owner's minimum. Under TAX_MATERIALS, the
+   minimum adjustment remains non-taxable.
 7. Job multipliers never touch travel, disposal, permit,
    overhead, tax, or markup lines.
 8. Customer responses never include lineItems, rates, costs,

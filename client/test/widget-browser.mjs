@@ -157,7 +157,7 @@ try{
   if(scenario.review){assert.equal(saved.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(saved.result.midEstimate,undefined);await p.getByText('Request saved for review',{exact:true}).waitFor();}
   else{
    const estimate=scenario.partial?saved.result.pricedEstimate:saved.result;assert.equal(estimate.midEstimate,scenario.price);
-   await p.getByText('$'+scenario.price,{exact:true}).waitFor();
+   await p.getByText('.waitFor();
    if(scenario.partial){assert.equal(saved.result.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(saved.result.fullJobTotal,null);assert.equal(saved.result.midEstimate,undefined);await p.getByText('Total for all requested work: not yet available.',{exact:true}).waitFor();}
   }
   assert.equal(await p.getByRole('button',{name:'Book it',exact:true}).count(),saved.result.bookingToken?1:0);
@@ -174,7 +174,140 @@ try{
  await retry.getByRole('button',{name:'Retry saved request',exact:true}).click();const retried=await waiting;
  assert.equal(retried.status(),200);assert.deepEqual(retried.request().postDataJSON(),committed.body);assert.deepEqual(await retried.json(),committed.result);
  assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before+1);
- await retry.getByText('$50',{exact:true}).waitFor();await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();await retry.getByText('$50',{exact:true}).waitFor();
+ await retry.getByText('$50 per visit',{exact:true}).waitFor();await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();await retry.getByText('$50 per visit',{exact:true}).waitFor();
+ rows.push({name:'Real committed response loss survives reload and exact retry, then the saved result survives reload',passed:true,committed});await retry.close();
+
+ const rejected=await page();await open(rejected);await fill(rejected,{email:''});
+ const rejectionBefore=db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n;
+ const deniedPrepare=rejected.waitForResponse(response=>response.url()===assets+f.url+'/prepare'&&response.request().method()==='POST');
+ await rejected.getByRole('button',{name:'Submit estimate request',exact:true}).click();
+ const deniedResponse=await deniedPrepare,rejection={status:deniedResponse.status(),body:deniedResponse.request().postDataJSON(),result:await deniedResponse.json()};
+ assert.equal(rejection.status,422);assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,rejectionBefore);
+ await rejected.getByText(rejection.result.error,{exact:true}).waitFor();
+ await rejected.getByRole('button',{name:'Back',exact:true}).click();await rejected.getByLabel('Email',{exact:true}).fill('synthetic@example.invalid');
+ await rejected.getByRole('button',{name:'Continue',exact:true}).click();
+ const corrected=await prepare(rejected),correctedSave=await finish(rejected,corrected);
+ assert.equal(correctedSave.result.resultType,'INSTANT_ESTIMATE_READY');assert.deepEqual(correctedSave.body.customerInputs,rejection.body.customerInputs);assert.deepEqual(correctedSave.body.location,rejection.body.location);
+ rows.push({name:'Callback rejection remains editable and the corrected request quotes',passed:true,rejection,saved:correctedSave});await rejected.close();
+
+ const blocked=await page();await blocked.goto(denied);await blocked.getByRole('button',{name:'Get an estimate',exact:true}).click();
+ await blocked.getByText('This website is not authorized for this quote link.',{exact:true}).waitFor();await blocked.getByRole('button',{name:'Retry loading services',exact:true}).waitFor();
+ assert.equal(await blocked.getByRole('option',{name:'[SYNTHETIC] Mowing'}).count(),0);rows.push({name:'Unapproved website is denied by the real backend',passed:true});await blocked.close();
+
+ const owner=await page();await owner.goto(assets+'/login');await owner.getByRole('button',{name:'Sign in',exact:true}).first().click();
+ await owner.getByLabel('Email',{exact:true}).fill(f.owner.email);await owner.getByLabel('Password',{exact:true}).fill(f.owner.password);await owner.locator('button[type=submit]').click();await owner.waitForFunction(()=>!!localStorage.getItem('otc_token'));
+ await owner.goto(assets+'/pricebook');await owner.getByRole('heading',{name:'Install your website widget',exact:true}).waitFor();
+ assert.ok((await owner.getByRole('textbox',{name:/^Widget code/}).inputValue()).includes('data-key="'+f.access.publicKey+'"'));
+ await owner.getByLabel('Website to check',{exact:true}).selectOption(site);
+ const popupPromise=owner.waitForEvent('popup');await owner.getByRole('button',{name:'Check installation',exact:true}).click();const popup=await popupPromise;
+ await owner.getByText('Installation detected ✓ — the launcher and service connection were verified. Open the form and complete an estimate to check the full flow.',{exact:true}).waitFor();
+ await owner.screenshot({path:path.join(evidence,'owner-installation-check.png'),fullPage:true});rows.push({name:'Owner copies the actual tenant snippet and the installation check receives a real allowed-origin handshake',passed:true});await popup.close();await owner.close();
+
+
+ // This section tests the agreed booking UI with explicitly marked API fixtures.
+ // It is not proof of a real calendar write or backend booking implementation.
+ const bookingPage=await page(),holdRequests=[],confirmRequests=[],pollReplies=[];
+ const prior=rows.find(row=>row.name==='Complete measured work without a name').saved;
+ const token='1'.repeat(64),bookingBase=assets+'/api/public/bookings/'+token;
+ const cached={...prior.result,bookingToken:token};
+ const savedKey='otc-widget:'+assets+':'+f.access.publicKey+':pending-'+f.access.publicKey;
+ await bookingPage.addInitScript(({key,result,submission})=>sessionStorage.setItem(key,JSON.stringify({kind:'completed',result,submission})),{key:savedKey,result:cached,submission:prior.body});
+ const version={contractVersion:'2026-09-29.1',capabilities:{quoteEnvelope:'pricing-only-v2',booking:'booking-v1',postQuoteIdentity:true,serverPricingOnly:true},branding:{businessName:'[SYNTHETIC] Booking interface fixture',clickToCallNumber:'+15550101234',accentColor:'#E8B04B',launcherLabel:'Get an estimate'}};
+ await bookingPage.route(assets+f.url,async route=>{
+  assert.equal(route.request().method(),'GET');const received=await route.fetch(),value=await received.json();await route.fulfill({response:received,json:{...value,...version}});
+ });
+ let availabilityCount=0,allowConfirmation=false;
+ const slotA={slotId:'[SYNTHETIC] slot-a',label:'[SYNTHETIC] First test time',startUtc:'2030-10-02T13:00:00.000Z',endUtc:'2030-10-02T14:00:00.000Z',startLocal:'2030-10-02T10:00:00-03:00',endLocal:'2030-10-02T11:00:00-03:00'};
+ const slotB={slotId:'[SYNTHETIC] slot-b',label:'[SYNTHETIC] Second test time',startUtc:'2030-10-02T15:00:00.000Z',endUtc:'2030-10-02T16:00:00.000Z',startLocal:'2030-10-02T12:00:00-03:00',endLocal:'2030-10-02T13:00:00-03:00'};
+ const holdId=crypto.randomUUID(),confirmationId=crypto.randomUUID(),appointmentId=crypto.randomUUID();
+ await bookingPage.route(bookingBase+'/availability',async route=>{
+  availabilityCount++;assert.equal(route.request().postDataJSON().scopeConfirmation,'UNCHANGED');
+  await route.fulfill({json:{status:'AVAILABLE',timezone:'America/Halifax',bookingMode:'site_visit_first',durationMinutes:60,slots:[availabilityCount===1?slotA:slotB]}});
+ });
+ await bookingPage.route(bookingBase+'/holds',async route=>{
+  holdRequests.push({body:route.request().postDataJSON(),key:route.request().headers()['idempotency-key']});
+  if(holdRequests.length===1){await route.fulfill({status:409,json:{code:'SLOT_UNAVAILABLE',error:'[SYNTHETIC] That time was taken. Choose another time.'}});return;}
+  await route.fulfill({status:201,json:{status:'HELD',holdId,expiresAtUtc:'2030-10-02T14:55:00.000Z',slot:slotB}});
+ });
+ const confirmation={status:'CONFIRMED',appointmentId,calendarEventStatus:'CONFIRMED',startUtc:slotB.startUtc,endUtc:slotB.endUtc,startLocal:slotB.startLocal,endLocal:slotB.endLocal,timezone:'America/Halifax',bookingMode:'site_visit_first',provider:'[SYNTHETIC] UI fixture'};
+ await bookingPage.route(bookingBase+'/confirm',async route=>{
+  confirmRequests.push({body:route.request().postDataJSON(),key:route.request().headers()['idempotency-key']});
+  if(confirmRequests.length===1){await route.abort('failed');return;}
+  await route.fulfill({status:202,json:{status:'PENDING_CONFIRMATION',confirmationId,appointmentId,retryAfterSeconds:3}});
+ });
+ await bookingPage.route(bookingBase+'/confirmations/'+confirmationId,async route=>{
+  const reply=allowConfirmation?confirmation:{status:'PENDING_CONFIRMATION',confirmationId,appointmentId,retryAfterSeconds:3};pollReplies.push(reply);await route.fulfill({json:reply});
+ });
+ await bookingPage.goto(site);await bookingPage.getByRole('button',{name:'Get an estimate',exact:true}).click();
+ await bookingPage.getByLabel('Have the work or measurements changed since this estimate?',{exact:true}).selectOption('UNCHANGED');
+ await bookingPage.getByRole('button',{name:'Book it',exact:true}).click();
+ await bookingPage.getByRole('radio').check();await bookingPage.getByRole('button',{name:'Review appointment',exact:true}).click();
+ await bookingPage.getByText('[SYNTHETIC] That time was taken. Choose another time.',{exact:true}).waitFor();
+ await bookingPage.getByRole('radio').check();await bookingPage.getByRole('button',{name:'Review appointment',exact:true}).click();
+ await bookingPage.getByLabel('I confirm this appointment, contact information and job site.',{exact:true}).check();
+ await bookingPage.getByRole('button',{name:'Confirm appointment',exact:true}).click();
+ await bookingPage.getByRole('button',{name:'Retry booking request',exact:true}).waitFor();
+ await bookingPage.reload();await bookingPage.getByRole('button',{name:'Get an estimate',exact:true}).click();
+ await bookingPage.getByRole('button',{name:'Retry booking request',exact:true}).click();
+ await bookingPage.getByText('Confirmation pending',{exact:true}).waitFor();assert.equal(await bookingPage.getByText('Site visit booked',{exact:true}).count(),0);
+ assert.deepEqual(confirmRequests[0],confirmRequests[1]);assert.notEqual(holdRequests[0].key,holdRequests[1].key);
+ allowConfirmation=true;await bookingPage.getByText('Site visit booked',{exact:true}).waitFor();
+ assert.equal(await bookingPage.getByRole('link',{name:'Talk to us',exact:true}).getAttribute('href'),'tel:+15550101234');
+ await bookingPage.screenshot({path:path.join(evidence,'SYNTHETIC-booking-interface-only.png'),fullPage:true});
+ const bookingInterface={passed:true,fixtureOnly:true,realBookingVerified:false,checks:['versioned branding','explicit unchanged-scope choice','server slot conflict refresh','server hold read-back','lost confirm acknowledgement exact retry after reload','202 remains pending until status endpoint confirms','click-to-call destination'],holdRequests,confirmRequests,pollReplies,confirmation};
+ await bookingPage.close();
+
+ const v2=await page();
+ await v2.route(assets+f.url,async route=>{
+  if(route.request().method()!=='GET'){await route.continue();return;}
+  const received=await route.fetch();await route.fulfill({response:received,json:{...await received.json(),...version}});
+ });
+ await open(v2);await fill(v2,{pricingOnly:true});const v2Prepared=await prepare(v2),v2Saved=await finish(v2,v2Prepared);
+ assert.equal(v2Saved.result.midEstimate,50);assert.equal(Object.hasOwn(v2Saved.body,'location'),false);assert.equal(Object.hasOwn(v2Saved.body.contact,'name'),false);
+ rows.push({name:'Versioned pricing-only form sends real quote facts and preserves the stored response',passed:true,catalogCapabilityFixture:true,saved:v2Saved});
+ await v2.getByRole('button',{name:'Change job details',exact:true}).click();await v2.getByLabel('Service',{exact:true}).waitFor();
+ assert.equal(await v2.getByLabel('Service',{exact:true}).inputValue(),f.id);
+ await v2.getByRole('button',{name:'Continue',exact:true}).click();
+ if(await v2.getByLabel('Requested work',{exact:true}).count())await v2.getByRole('button',{name:'Continue',exact:true}).click();
+ const areaLabel=fields.find(field=>field.name==='yardSqft').label;
+ assert.equal(await v2.getByLabel(areaLabel,{exact:true}).inputValue(),'10000');
+ rows.push({name:'Change job details returns to retained measurements for re-quoting',passed:true});await v2.close();
+
+ const unknown=await page();await unknown.route(assets+f.url,async route=>{const received=await route.fetch();await route.fulfill({response:received,json:{...await received.json(),contractVersion:'unknown-future-version'}});});
+ await unknown.goto(site);await unknown.getByRole('button',{name:'Get an estimate',exact:true}).click();
+ await unknown.getByText('This form needs an update to match the business. Reload the page before continuing.',{exact:true}).waitFor();
+ assert.equal(await unknown.getByRole('option',{name:'[SYNTHETIC] Mowing'}).count(),0);rows.push({name:'Unknown advertised form version is rejected explicitly',passed:true,metadataFixture:true});await unknown.close();
+
+ assert.equal(errors.length,0,JSON.stringify(errors));
+ fs.writeFileSync(path.join(evidence,'result.json'),JSON.stringify({passed:true,checks:rows.length,rows,wire,errors,bookingInterface,bookingBackendImplemented:false,hostingBoundary:'Local test static server proxies unchanged real API, preserving request origins. No production hosting configured.'},null,2));
+ console.log(JSON.stringify({passed:true,checks:rows.length}));
+}catch(error){
+ if(browser)for(const [index,p]of browser.contexts().flatMap(context=>context.pages()).entries()){
+  await p.screenshot({path:path.join(evidence,'failure-'+index+'.png'),fullPage:true}).catch(()=>{});
+  fs.writeFileSync(path.join(evidence,'failure-'+index+'.txt'),(await p.locator('body').innerText().catch(()=>''))+'\n'+(await p.getByRole('dialog').innerText().catch(()=>'')));
+ }
+ fs.writeFileSync(path.join(evidence,'failed-results.json'),JSON.stringify({passed:false,error:String(error.stack),rows,wire,errors},null,2));throw error;
+}finally{
+ if(browser)await browser.close();if(db)db.close();for(const server of servers)await new Promise(resolve=>server.close(resolve));await app.stop();
+}
++scenario.price+' per visit',{exact:true}).waitFor();
+   if(scenario.partial){assert.equal(saved.result.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(saved.result.fullJobTotal,null);assert.equal(saved.result.midEstimate,undefined);await p.getByText('Total for all requested work: not yet available.',{exact:true}).waitFor();}
+  }
+  assert.equal(await p.getByRole('button',{name:'Book it',exact:true}).count(),saved.result.bookingToken?1:0);
+  await p.screenshot({path:path.join(evidence,scenario.name.toLowerCase().replaceAll(' ','-')+'.png'),fullPage:true});
+  rows.push({name:scenario.name,passed:true,prepared,saved});await p.close();
+ }
+
+ const retry=await page();await open(retry);await fill(retry,{additional:'[SYNTHETIC] Inspect the wall.'});await prepare(retry);
+ let committed;const before=db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n;
+ await retry.route(assets+f.url,async route=>{const response=await route.fetch();committed={body:route.request().postDataJSON(),result:await response.json(),status:response.status()};await route.abort('failed');});
+ await retry.getByRole('button',{name:'Get estimate',exact:true}).click();await retry.getByRole('button',{name:'Retry saved request',exact:true}).waitFor();
+ assert.equal(committed.status,201);await retry.unroute(assets+f.url);await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();
+ const waiting=retry.waitForResponse(response=>response.url()===assets+f.url&&response.request().method()==='POST');
+ await retry.getByRole('button',{name:'Retry saved request',exact:true}).click();const retried=await waiting;
+ assert.equal(retried.status(),200);assert.deepEqual(retried.request().postDataJSON(),committed.body);assert.deepEqual(await retried.json(),committed.result);
+ assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before+1);
+ await retry.getByText('$50 per visit',{exact:true}).waitFor();await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();await retry.getByText('$50 per visit',{exact:true}).waitFor();
  rows.push({name:'Real committed response loss survives reload and exact retry, then the saved result survives reload',passed:true,committed});await retry.close();
 
  const rejected=await page();await open(rejected);await fill(rejected,{email:''});

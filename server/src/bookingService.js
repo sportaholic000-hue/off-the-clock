@@ -980,6 +980,44 @@ export function createBookingService({
     }
   }
 
+  const recoveryInFlight = new Set();
+
+  async function recoverMissingEvent(appointment) {
+    // Retry only a provider that explicitly supports the same caller-supplied
+    // event ID. Never choose a new ID or release an ambiguously written slot.
+    if (appointment.status !== 'PENDING_PROVIDER' || calendar.idempotentCreateByEventId !== true || preparationsInFlight.has(appointment.id) ||
+        recoveryInFlight.has(appointment.id) || appointment.providerEventStatus === 'PREPARING') return null;
+    recoveryInFlight.add(appointment.id);
+    try {
+      const now = nowFrom(clock), row = context(appointment.ownerId, appointment.bookingIntentId, now);
+      const policy = policyConfiguration(row);
+      const customer = safeCustomer(parseJson(appointment.customerJson, null));
+      const location = safeLocation(parseJson(appointment.locationJson, null));
+      if (policy.capability !== 'direct' || policy.provider !== appointment.provider ||
+          policy.calendarId !== appointment.providerCalendarId || policy.policyRevision !== appointment.policyRevision ||
+          Date.parse(appointment.startAtUtc) <= now.getTime() + policy.minimumNoticeMinutes * 60000 ||
+          !serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), location).eligible) return null;
+      const busy = normalizeBusy(await calendar.listBusy({ownerId:appointment.ownerId,provider:appointment.provider,
+        calendarId:appointment.providerCalendarId,timeMinUtc:appointment.lockStartAtUtc,timeMaxUtc:appointment.lockEndAtUtc}));
+      if (busy.some(interval=>intervalsOverlap(appointment.lockStartAtUtc,appointment.lockEndAtUtc,interval.startAtUtc,interval.endAtUtc))) return null;
+      // Recheck after the asynchronous read; another poll may already have
+      // reconciled this appointment. Only the persisted confirmed request is retried.
+      const current = db.prepare('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
+        .get(appointment.id,appointment.ownerId,appointment.bookingIntentId);
+      if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return null;
+      return await calendar.createEvent({ownerId:appointment.ownerId,provider:appointment.provider,
+        calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,appointmentId:appointment.id,
+        startAtUtc:appointment.startAtUtc,endAtUtc:appointment.endAtUtc,timezone:appointment.timezone,
+        bookingMode:appointment.bookingMode,customer,location,sourceType:row.sourceType,sourceId:row.sourceId,tierName:appointment.tierChosen});
+    } catch {
+      // A retry can conflict with an earlier successful write. The next lookup
+      // reconciles it; a transport or authorization failure is never "not found".
+      return null;
+    } finally {
+      recoveryInFlight.delete(appointment.id);
+    }
+  }
+
   async function getConfirmationStatus({ bookingToken, confirmationId }) {
     const resolved = resolveBookingToken(bookingToken);
     const now = nowFrom(clock);
@@ -998,7 +1036,7 @@ export function createBookingService({
       return { statusCode: 200, body: failedConfirmationBody(code) };
     }
 
-    let providerResult = null;
+    let providerResult = null, eventAbsent = false;
     if (typeof calendar.getEvent === 'function') {
       try {
         providerResult = await calendar.getEvent({
@@ -1007,10 +1045,12 @@ export function createBookingService({
           calendarId: appointment.providerCalendarId,
           eventId: appointment.providerEventId
         });
+        eventAbsent = providerResult === null;
       } catch {
         providerResult = null;
       }
     }
+    if (eventAbsent) providerResult = await recoverMissingEvent(appointment);
     if (!providerResult) {
       return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
     }

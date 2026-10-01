@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import {scopeActivationInputs,scopeDefinitions} from './scopePricing.js';
+import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions} from './configuredOfferings.js';
 import {
   CLASS2_DEFINITIONS,
@@ -340,6 +340,41 @@ function uniqueStatusDiagnostics(items) {
   });
 }
 
+function scopeCoverageForService(service) {
+  if (!service || !SERVICE_TYPES.includes(service.serviceType) || validateTierDefinitionsDetailedVNext(service, service.serviceType).length) return [];
+  const type = service.serviceType, base = pricingOf(service);
+  const variants = service.tiers?.length ? service.tiers.map(t => ({ name: t.name, pricing: mergePricingForValidationVNext(base, t.overrides || {}) })) : [{ name: null, pricing: base }];
+  const rows = new Map();
+  for (const variant of variants) {
+    const p = variant.pricing, definitions = scopeDefinitions(type, p);
+    for (const [key, definition] of Object.entries(definitions)) {
+      const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
+      const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
+      const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment' } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
+      if (key === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType: p.scopeDetails?.stairs?.flooringType });
+      if (key === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: p.scopeDetails?.floor_overlay?.existingFloorType || 'existing_floor' });
+      if (key === 'siding_removal') probe.oldSidingRemoval = true;
+      if (key === 'siding_trim') probe.trimIncluded = true;
+      if (key === 'demolition') probe.demolitionNeeded = true;
+      if (key === 'exposed_aggregate') probe.finishType = 'exposed_aggregate';
+      if (key === 'insulation') probe.buildingType = 'commercial';
+      if (key === 'paint_prep') probe.prepAreaSqft = 1;
+      if (key.includes('ceiling')) { if (type !== 'INTERIOR_PAINTING' || p.offeringMode && p.offeringDetails?.ceilingsOffered !== true) continue; probe.ceilingsIncluded = true; }
+      if (key === 'paint_trim') { if (type !== 'INTERIOR_PAINTING') continue; probe.trimIncluded = true; }
+      if (!scopeKeysForRequest(type, probe, p, service).includes(key)) continue;
+      const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === key).map(([name]) => 'scopeRates.' + name);
+      const related = d => d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + key || d.path?.startsWith('scopeDetails.' + key + '.') || rates.includes(d.path);
+      const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related);
+      const complete = isPlainRecord(p.scopeDetails?.[key]) && rates.length > 0 && errors.length === 0;
+      if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
+      const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
+    }
+  }
+  return [...rows.values()].map(row => ({ ...row, message: row.configurationComplete
+    ? 'Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.' + (row.variants.some(v => !v.configurationComplete) ? ' Some price options still need scope setup.' : '')
+    : row.label + ' requests arrive as leads until you configure this scope and its prices.' }));
+}
+
 function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
   const blocking = uniqueStatusDiagnostics(diagnostics);
   const live = service?.active === true && blocking.length === 0 && validTierNames.length > 0;
@@ -347,6 +382,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
+    scopeCoverage: scopeCoverageForService(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
     missingOwnerFields: [...new Set(blocking.filter(item => item.type === 'missing').map(item => item.path))],
     invalidOwnerFields: [...new Set(blocking.filter(item => invalidTypes.has(item.type)).map(item => item.path))],

@@ -1,0 +1,9 @@
+{
+  "sourceCommit": "6ea52eb10683536206ef91dde35ac88e4cdfa2bc",
+  "sourceTree": "7dcc19721f06b158647687070f67a7c9805ebe16",
+  "run": "final-cold-full-2",
+  "capturedFiles": 266,
+  "matchedFiles": 266,
+  "mismatches": [],
+  "note": "The orchestration helper retained an earlier commit-label value in its closure. The original source record is retained unchanged. Every captured file hash independently matches the final source shown here; the final GitHub source manifest additionally verifies CSS and public assets."
+}

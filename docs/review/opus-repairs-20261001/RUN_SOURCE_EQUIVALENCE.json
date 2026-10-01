@@ -1,0 +1,77 @@
+{
+  "finalSourceCommit": "6ea52eb10683536206ef91dde35ac88e4cdfa2bc",
+  "runs": [
+    {
+      "label": "application-after",
+      "sourceCommit": null,
+      "productionFilesCompared": 124,
+      "productionDifferences": []
+    },
+    {
+      "label": "independent-arithmetic",
+      "sourceCommit": null,
+      "productionFilesCompared": 124,
+      "productionDifferences": []
+    },
+    {
+      "label": "independent-scope-arithmetic",
+      "sourceCommit": null,
+      "productionFilesCompared": 124,
+      "productionDifferences": []
+    },
+    {
+      "label": "offerings-browser-5-5",
+      "sourceCommit": null,
+      "productionFilesCompared": 124,
+      "productionDifferences": [
+        "server/quote-engine-vnext/engine.js",
+        "server/quote-engine-vnext/priceBook.js",
+        "server/src/bookingService.js"
+      ],
+      "supersededBy": "final-offerings-browser"
+    },
+    {
+      "label": "final-widget-booking-2",
+      "sourceCommit": "cbad38ff5356d4e2cd73f310a00800239846c293",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-booking-marker",
+      "sourceCommit": "41f32ef4dae817b4da28c5021743122ba3bd7cbb",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-layout-after",
+      "sourceCommit": "41f32ef4dae817b4da28c5021743122ba3bd7cbb",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-build",
+      "sourceCommit": "cbad38ff5356d4e2cd73f310a00800239846c293",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-instrumented-replay-2",
+      "sourceCommit": "cbad38ff5356d4e2cd73f310a00800239846c293",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-cold-full-2",
+      "sourceCommit": "41f32ef4dae817b4da28c5021743122ba3bd7cbb",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    },
+    {
+      "label": "final-offerings-browser",
+      "sourceCommit": "6ea52eb10683536206ef91dde35ac88e4cdfa2bc",
+      "productionFilesCompared": 120,
+      "productionDifferences": []
+    }
+  ],
+  "note": "Earlier source-equivalent runs retain their original source identities. CSS is separately bound by the built-asset manifest and final GitHub tree verification."
+}

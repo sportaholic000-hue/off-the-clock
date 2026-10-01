@@ -13,7 +13,7 @@ const outputPath=path.resolve(output);
 if(outputPath===root||outputPath.startsWith(root+path.sep))throw new TypeError('Evidence output must be outside the repository.');
 fs.mkdirSync(outputPath,{recursive:true});
 const cache=new Map(),captures=[],tests=[];let activeTest='',depth=0,objects=0,leaves=0,publicReady=0,publicReview=0;
-const selected=/^(?:customer amount precision:|handoff [ABC]:|repair (139|14[0-9]|150):|precision follow-up: (?:composite|all-service catalog))/;
+const selected=/^(?:customer amount precision:|handoff [ABC]:|repair (35|105|139|14[0-9]|150):|precision follow-up: (?:composite|all-service catalog))/;
 globalThis.__vnextAuditCapture=(entry,fn,args)=>{
  const outer=depth++===0;
  try{const result=fn(...args);if((outer||entry==='generateQuoteVNext')&&selected.test(activeTest))captures.push({test:activeTest,entry,args:structuredClone(args),result:structuredClone(result)});return result;}
@@ -35,8 +35,8 @@ async function moduleFor(specifier,ref){
 for(const testFile of ['test/quoteEngineVNextRepairs.spec.js','test/quoteEngineVNext.spec.js']){const module=await moduleFor(path.resolve(testFile));await module.link(moduleFor);await module.evaluate();}
 delete globalThis.__vnextAuditCapture;
 function visit(v){if(v===null||typeof v!=='object'){leaves++;if(typeof v==='number')assert.ok(Number.isFinite(v));assert.ok(!['function','symbol','bigint'].includes(typeof v));return;}objects++;for(const d of Object.values(Object.getOwnPropertyDescriptors(v))){assert.ok(Object.hasOwn(d,'value'));visit(d.value);}}
-const readyKeys=new Set(['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','optionAvailabilityNotice']);
-const optionKeys=new Set(['tierName','lowEstimate','midEstimate','highEstimate','priceDrivers','skippedAddons','disclaimer','rangeBufferUsed']);
+const readyKeys=new Set(['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','optionAvailabilityNotice','priceUnit','taxTreatment']);
+const optionKeys=new Set(['tierName','lowEstimate','midEstimate','highEstimate','priceDrivers','skippedAddons','disclaimer','rangeBufferUsed','priceUnit','taxTreatment']);
 for(const capture of captures){
  if(capture.error){visit(capture.error);continue;}const r=capture.result;visit(r);
  if(capture.entry==='sanitizeForCustomerVNext'){

@@ -444,7 +444,7 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
   const inputs = interiorInputs();
   const expected = {
     TAX_NONE: { tax: 0, adjustment: 5000, final: 20000, basis: 'post_markup', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum'] },
-    TAX_MATERIALS: { tax: 500, adjustment: 4500, final: 20000, basis: 'post_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'tax', 'minimum'] },
+    TAX_MATERIALS: { tax: 500, adjustment: 5000, final: 20500, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] },
     TAX_ALL: { tax: 2000, adjustment: 5000, final: 22000, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] }
   };
   const ownerPricing = interiorService({ minimumJob: 20000 }, { taxabilityByCategory: { ...noTaxability, material: true } });
@@ -1604,9 +1604,9 @@ test('repair 34: missing and duplicate service previews report the lookup defect
   assert.deepEqual(Object.keys(customer).sort(), ['customerMessage', 'quoteId', 'resultType']);
 });
 
-test('repair 35: decking distinguishes missing scope from confirmed zero and always preserves the approved unit-price driver', () => {
+test('repair 35: decking distinguishes missing scope from confirmed zero and preserves the per-sheet explanation without its owner rate', () => {
   const ownerPricing = roofService({ deckingPerSheet: 12345 }, {priceBasisByCategory: sellBasis});
-  const approvedDriver = 'Decking replacement, if needed, billed at $123.45/sheet';
+  const approvedDriver = 'Any additional decking is priced per sheet and confirmed on site.';
 
   const missingScope = run('ROOFING_REPLACEMENT', roofInputs(), ownerPricing);
   assert.equal(missingScope.resultType, 'INSTANT_ESTIMATE_READY');
@@ -3275,10 +3275,10 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
     }
     return Math.round(baseCents * config.markupPercent / 100);
   };
-  const roundedRange = (totalCents, minimumCents, config) => {
+  const roundedRange = (totalCents, minimumCents, config, taxCents) => {
     const minimumFloorCents = config.taxMode === 'TAX_ALL'
       ? minimumCents + Math.round(minimumCents * config.taxPercent / 100)
-      : minimumCents;
+      : minimumCents + (config.taxMode === 'TAX_MATERIALS' && minimumCents > 0 ? taxCents : 0);
     if (totalCents === 0) {
       return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents };
     }
@@ -3330,6 +3330,8 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
     let order;
 
     if (config.taxMode === 'TAX_MATERIALS') {
+      minimumAdjustmentCents = Math.max(0, minimumCents - lines.reduce((sum, item) => sum + item.amountCents, 0));
+      if (minimumAdjustmentCents > 0) lines.push({ category: 'minimum_adjustment', amountCents: minimumAdjustmentCents });
       taxPreTaxSubtotalCents = lines.reduce((sum, item) => sum + item.amountCents, 0);
       const taxableNonMarkupCents = lines
         .filter(item => item.category !== 'markup' && ownerPricing.taxabilityByCategory[item.category] === true)
@@ -3341,10 +3343,8 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
       taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents;
       taxCents = Math.round(taxableSubtotalCents * config.taxPercent / 100);
       if (taxCents > 0) lines.push({ category: 'tax', amountCents: taxCents });
-      minimumAdjustmentCents = Math.max(0, minimumCents - lines.reduce((sum, item) => sum + item.amountCents, 0));
-      if (minimumAdjustmentCents > 0) lines.push({ category: 'minimum_adjustment', amountCents: minimumAdjustmentCents });
-      minimumBasis = 'post_tax';
-      order = ['fees', 'seasonal', 'taxability', 'markup', 'tax', 'minimum'];
+      minimumBasis = 'pre_tax';
+      order = ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'];
     } else {
       minimumAdjustmentCents = Math.max(0, minimumCents - lines.reduce((sum, item) => sum + item.amountCents, 0));
       if (minimumAdjustmentCents > 0) lines.push({ category: 'minimum_adjustment', amountCents: minimumAdjustmentCents });
@@ -3378,7 +3378,7 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
       taxCents,
       finalTotalCents,
       order,
-      range: roundedRange(finalTotalCents, minimumCents, config)
+      range: roundedRange(finalTotalCents, minimumCents, config, taxCents)
     };
   };
 
@@ -6636,9 +6636,9 @@ test('repair 104: AI approval binds scalar map leaves added leaves rule maps and
   const legacy=structuredClone(approved);delete legacy.approvedValues;assert.equal(auditRun(roofInputs(),legacy).resultType,auditReview);
   assert.throws(()=>approveVNextValues(initial,{fields:['minimumJob']}));assert.equal(vNextServiceStatus(approved,defaults).status,'QUOTING LIVE');
 });
-test('repair 105: decking costs stay internal under markup and margin while sell units may be disclosed',()=>{
+test('repair 105: decking rates stay internal under markup, margin and sell-price basis',()=>{
   for(const [mode,total] of [['markup',252500],['margin',268333]]){const r=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000}),{businessDefaults:{...defaults,markupMode:mode,markupPercent:25}});assert.equal(r.resultType,auditReady);assert.equal(scenario(r).tax.finalTotalCents,total);assert.equal(JSON.stringify(sanitizeForCustomerVNext(r)).includes('$50.00/sheet'),false);}
-  const sell=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000},{priceBasisByCategory:sellBasis}));assert.ok(sell.priceDrivers.some(x=>x.includes('$50.00/sheet')));assert.equal(lineAmount(sell,'Decking replacement'),10000);
+  const sell=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000},{priceBasisByCategory:sellBasis}));assert.ok(sell.priceDrivers.some(x=>x.includes('priced per sheet')));assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(sell)),/\$50\.00\/sheet/);assert.equal(lineAmount(sell,'Decking replacement'),10000);
 });
 test('repair 106: included and explicitly exclusive itemized accessories charge each component once',()=>{
   const included=auditRun(roofInputs(),roofService());assert.equal(scenario(included).tax.finalTotalCents,195000);assert.equal(line(included,'Starter strip'),undefined);
@@ -6993,7 +6993,7 @@ test('repair 133: decking disclosures distinguish measured inclusion unmeasured 
     if(basis==='cost'){
       assert.equal(copy.includes('$50.00/sheet'),false);
       assert.equal(copy.includes('requires a confirmed sheet count'),sheets===undefined);
-    }else assert.ok(copy.includes('$50.00/sheet'));
+    }else {assert.equal(copy.includes('$50.00/sheet'),false);assert.ok(copy.includes('priced per sheet'));}
     assert.equal(lineAmount(r,'Decking replacement')??0,(sheets??0)*5000);
   }
 });
@@ -7785,7 +7785,7 @@ test('handoff C: minimum display agrees across entrypoints and does not change n
     handoffTotal(result,20001);assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[200.01,200.01,220.01]);
   }
   const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
-  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',20001,1000,9001],['TAX_ALL',22001,2000,10001]]) {
+  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',21001,1000,10001],['TAX_ALL',22001,2000,10001]]) {
     const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
     handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);
     assert.equal(result.lowEstimate,total/100);assert.equal(result.midEstimate,total/100);
@@ -7858,14 +7858,14 @@ function precisionPublic(result, expectedOptions) {
     return;
   }
   const rootFields = ['resultType', 'quoteId', 'lowEstimate', 'midEstimate', 'highEstimate',
-    'priceDrivers', 'disclaimer', 'rangeBufferUsed', 'options'];
+    'priceDrivers', 'disclaimer', 'rangeBufferUsed', 'options', 'priceUnit', 'taxTreatment'];
   if (Object.hasOwn(result, 'optionAvailabilityNotice')) rootFields.push('optionAvailabilityNotice');
   assert.deepEqual(Object.keys(result).sort(), rootFields.sort());
   assert.equal(result.resultType, auditReady);
   assert.equal(result.options.length, expectedOptions.length);
   for (const option of result.options) {
     assert.deepEqual(Object.keys(option).sort(), ['tierName', 'lowEstimate', 'midEstimate', 'highEstimate',
-      'priceDrivers', 'skippedAddons', 'disclaimer', 'rangeBufferUsed'].sort());
+      'priceDrivers', 'skippedAddons', 'disclaimer', 'rangeBufferUsed', 'priceUnit', 'taxTreatment'].sort());
   }
   // Inspect decimal tokens from the complete serialized public object, including
   // every root and option amount. No binary multiply-back or toFixed oracle.
