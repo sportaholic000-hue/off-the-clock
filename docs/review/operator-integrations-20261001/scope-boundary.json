@@ -1,0 +1,39 @@
+{
+  "base": "d03a2a3b5e80eb78ca40d3620d0f6dd47d54e809",
+  "existingFileChanges": [
+    {
+      "path": ".env.example",
+      "original": "87fa2bfe4be86c6f18adb640277ffb23f41103ae",
+      "current": "61f2476788235eb2cb873aeea1cd712c79acb978",
+      "authorized": true
+    },
+    {
+      "path": "client/src/api.js",
+      "original": "ec2f7fbb02b8e8c9c587e4a5914e60e37b14c4e5",
+      "current": "9b012f75bce692ab3938ed955850a41b107e2dc4",
+      "authorized": true
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "original": "f5d626f30be90d386d1a942fb492b699ebe1e16a",
+      "current": "7b1c708b41a516cdbb79f963f6fa1a93547927d5",
+      "authorized": true
+    },
+    {
+      "path": "server/src/migrations.js",
+      "original": "39e50b4c2a613849017642b8d70f551f0b770ed3",
+      "current": "78acc7730988a83ee13ab4bbff89e0e74222e6fa",
+      "authorized": true
+    },
+    {
+      "path": "server/src/server.js",
+      "original": "42569ced581e8b9ebb18ff593962b1c639cc1ac8",
+      "current": "ebce7f57830c668a8c7df2a01418a4bd167b23a6",
+      "authorized": true
+    }
+  ],
+  "publicWebsiteChanges": 0,
+  "stylesheetChanges": 0,
+  "voiceChanges": 0,
+  "quoteEngineChanges": 0
+}

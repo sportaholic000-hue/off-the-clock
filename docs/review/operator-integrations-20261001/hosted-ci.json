@@ -1,0 +1,45 @@
+{
+  "original": {
+    "commit": "fbf6e2767f1fae66fbc232c5d03a6ed4c9215364",
+    "runId": 36835956484,
+    "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36835956484",
+    "tests": 948,
+    "pass": 918,
+    "fail": 28,
+    "skipped": 2
+  },
+  "implementation": {
+    "commit": "e9342d6b04eb6d6a53fb00f51f80ab8afab812f6",
+    "runId": 36844984150,
+    "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36844984150",
+    "tests": 989,
+    "pass": 959,
+    "fail": 28,
+    "skipped": 2
+  },
+  "sameFailureSet": true,
+  "passingIncrease": 41,
+  "knownVoiceFailures": 9,
+  "inheritedBrowserFailures": [
+    "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+    "editor D1: a genuine absent default is displayed without being written by focus or blur",
+    "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+    "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+    "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+    "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+    "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+    "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+    "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+    "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+    "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+    "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+    "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+    "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+    "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+    "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+    "late 200 response cannot replace a new service preview",
+    "late 400 response cannot replace a new service preview",
+    "old completion cannot clear current loading and invalid input cannot retain old ready"
+  ],
+  "buildsAndAuditSkippedByCI": true
+}
