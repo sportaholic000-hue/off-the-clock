@@ -1,3 +1,4 @@
+import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
 import { installAuthTokenSchema } from './authTokenService.js';
@@ -232,5 +233,6 @@ export function migrateDatabase(database) {
   installAuthTokenSchema(database);
   installAuthSessionSchema(database);
   installAuthLimitSchema(database);
+  installOutboundWebhookSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

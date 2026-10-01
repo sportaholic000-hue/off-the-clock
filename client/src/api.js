@@ -47,7 +47,7 @@ export async function logout() {
   if(payload.ok!==true)throw requestError({error:'Sign-out could not be confirmed. Please try again.'},503);
   if(getSessionKey()===identity)setToken(null,{notify:true});
 }
-export async function api(path,{method='GET',body,auth=true,idempotencyKey}={}) {
+export async function api(path,{method='GET',body,auth=true,idempotencyKey,format='json'}={}) {
   if(!auth&&/^\/api\/auth\/(?:login|register|admin-login)$/.test(path)){
     const flight=refreshFlights.get(getSessionKey());if(flight)await flight.catch(()=>{});
   }
@@ -61,7 +61,7 @@ export async function api(path,{method='GET',body,auth=true,idempotencyKey}={}) 
     if(token)headers.authorization='Bearer '+token;
     const response=await fetch(API_BASE+path,{method,headers,credentials:auth||path.startsWith('/api/auth/')?'include':'omit',
       body:body===undefined?undefined:JSON.stringify(body)});
-    return {response,payload:await responseBody(response),token};
+    return {response,payload:response.ok&&format==='blob'?await response.blob():await responseBody(response),token};
   };
   let result=await execute();
   if(auth&&initial&&result.response.status===401){
