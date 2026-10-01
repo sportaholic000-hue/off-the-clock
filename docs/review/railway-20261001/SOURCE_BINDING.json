@@ -1,0 +1,223 @@
+{
+  "baseCommit": "7a911afd993bc0d5c07c3d20f977c8988f072208",
+  "implementationCommit": "d64e25117253ab8f9199f59711f437a897a0963a",
+  "implementationTree": "b1d8393a8bfd37599533221f6b0dc7f1fc70d6c8",
+  "allChangedFilesMatchGitHub": true,
+  "files": [
+    {
+      "path": "package.json",
+      "size": 1104,
+      "sha": "72743514886c680de9a99a777a72d14384c93615"
+    },
+    {
+      "path": "Dockerfile",
+      "size": 703,
+      "sha": "2b9d31f1c74d7ebec4be0f7cad7ee585ba37d56b"
+    },
+    {
+      "path": ".dockerignore",
+      "size": 136,
+      "sha": "e813fb220a43779da64d3205eea548d8790d9ccc"
+    },
+    {
+      "path": "server/src/clientAddress.js",
+      "size": 1536,
+      "sha": "f578cb0d4fa02a97ace85a6bb6b50be0281d5daa"
+    },
+    {
+      "path": "server/src/deploymentConfig.js",
+      "size": 7727,
+      "sha": "749686060536ed6b79cee5ed412d6523f82595ca"
+    },
+    {
+      "path": "server/src/deploymentEnvironment.js",
+      "size": 305,
+      "sha": "b9b7168805825d28d1ae4e3e0ad26fdf41ddf580"
+    },
+    {
+      "path": "server/src/lifecycle.js",
+      "size": 3487,
+      "sha": "88b6f55df496f9e9aabea290c1b299bba8e47d98"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "size": 1430,
+      "sha": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "path": "server/src/backups.js",
+      "size": 8334,
+      "sha": "546ba15164fc32af46840374723d7edd0bc0c186"
+    },
+    {
+      "path": "server/scripts/backup.js",
+      "size": 602,
+      "sha": "5013a1d8322b5d416d43c8f65d3457dc3e1bc505"
+    },
+    {
+      "path": "server/scripts/restore.js",
+      "size": 701,
+      "sha": "df0332c1fdd0ab835841714b90ec77547cc82c70"
+    },
+    {
+      "path": "server/src/server.js",
+      "size": 22093,
+      "sha": "2a8010f64d1fd34ded38aac0e6423a0c2c6fed31"
+    },
+    {
+      "path": "server/src/db.js",
+      "size": 1058,
+      "sha": "c8d8d0d70288903ce74862199bb087c80914ecd6"
+    },
+    {
+      "path": "server/src/demo/liveDemo.js",
+      "size": 7430,
+      "sha": "93dc2188b0e16857656e060c33d1507926e25156"
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "size": 14516,
+      "sha": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "path": "test/helpers/railwayEnv.mjs",
+      "size": 776,
+      "sha": "834aecd6f2e5526daece7e4561026ae8490b3b10"
+    },
+    {
+      "path": "test/deploymentConfig.spec.mjs",
+      "size": 4721,
+      "sha": "9faf8c00f1ee43e77969ea3be2e72cbf6a6bf5e5"
+    },
+    {
+      "path": "test/clientAddress.spec.mjs",
+      "size": 4602,
+      "sha": "cc0c2f3c09dd36d3496d05434d9480e88ad01163"
+    },
+    {
+      "path": "test/backups.spec.mjs",
+      "size": 7093,
+      "sha": "8ed06b27ba657808539578f12a211f7900615aa4"
+    },
+    {
+      "path": "test/lifecycle.spec.mjs",
+      "size": 3682,
+      "sha": "114953e7f149c9e888dc3d0a535c959ee4aff7f2"
+    },
+    {
+      "path": "test/liveDemo.spec.mjs",
+      "size": 8302,
+      "sha": "6c8f9084a7cb265cc126e665799250668de72f77"
+    },
+    {
+      "path": "test/ownerIntegrations.spec.mjs",
+      "size": 33028,
+      "sha": "6672048f1467e3e75b02564013ab99e687c9fe14"
+    },
+    {
+      "path": "test/helpers/railwayProcessFixture.mjs",
+      "size": 1641,
+      "sha": "e3bb676f4229c1b93ea4be3af18c547c95015cc1"
+    },
+    {
+      "path": "test/deploymentProcess.spec.mjs",
+      "size": 5434,
+      "sha": "7ab718143e12e040961c029d5a66e1bc45546843"
+    },
+    {
+      "path": "verification/railway/docker-smoke.mjs",
+      "size": 8377,
+      "sha": "9c0d4e0b30eed5740d7f3594ba4f842883529075"
+    },
+    {
+      "path": ".github/workflows/railway-readiness.yml",
+      "size": 1029,
+      "sha": "4780b4baec49da7babdfdccbc6cba6997bec5819"
+    },
+    {
+      "path": "deployment/railway.env.example",
+      "size": 3246,
+      "sha": "620f2525fffa884b160d35ec1e1b00f0d23c3134"
+    },
+    {
+      "path": "docs/RAILWAY_SETUP.md",
+      "size": 15496,
+      "sha": "095752210254fb79dedc3af255c0c66667c32a2f"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 2254,
+      "sha": "653d347051ed9e153a447e22ff7c031f1480059e"
+    }
+  ],
+  "scope": {
+    "baseTree": "94352cd118a55ba616aca61a1ea0b7f598d337dc",
+    "implementationTree": "b1d8393a8bfd37599533221f6b0dc7f1fc70d6c8",
+    "changedFiles": [
+      ".github/workflows/ci.yml",
+      "package.json",
+      "server/src/db.js",
+      "server/src/demo/liveDemo.js",
+      "server/src/outboundWebhookService.js",
+      "server/src/server.js",
+      "test/liveDemo.spec.mjs",
+      "test/ownerIntegrations.spec.mjs",
+      ".dockerignore",
+      ".github/workflows/railway-readiness.yml",
+      "Dockerfile",
+      "deployment/railway.env.example",
+      "docs/RAILWAY_SETUP.md",
+      "server/scripts/backup.js",
+      "server/scripts/restore.js",
+      "server/src/backups.js",
+      "server/src/clientAddress.js",
+      "server/src/deploymentConfig.js",
+      "server/src/deploymentEnvironment.js",
+      "server/src/lifecycle.js",
+      "server/src/productionAssets.js",
+      "test/backups.spec.mjs",
+      "test/clientAddress.spec.mjs",
+      "test/deploymentConfig.spec.mjs",
+      "test/deploymentProcess.spec.mjs",
+      "test/helpers/railwayEnv.mjs",
+      "test/helpers/railwayProcessFixture.mjs",
+      "test/lifecycle.spec.mjs",
+      "verification/railway/docker-smoke.mjs"
+    ],
+    "unexpected": [],
+    "baseTruncated": false,
+    "headTruncated": false,
+    "unchanged": {
+      "lockfile": true,
+      "demoJS": true,
+      "allClientFiles": true,
+      "allVoiceFiles": true
+    }
+  },
+  "checks": [
+    {
+      "id": 36934367000,
+      "name": "CI",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934367000"
+    },
+    {
+      "id": 36934361209,
+      "name": "Railway container readiness",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934361209"
+    },
+    {
+      "id": 36934361215,
+      "name": "CI",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934361215"
+    }
+  ]
+}

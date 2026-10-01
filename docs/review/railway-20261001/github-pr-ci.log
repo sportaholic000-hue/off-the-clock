@@ -1,0 +1,255 @@
+﻿2026-10-01T22:19:43.8599304Z Current runner version: '2.337.0'
+2026-10-01T22:19:43.8635454Z ##[group]Runner Image Provisioner
+2026-10-01T22:19:43.8636919Z Hosted Compute Agent
+2026-10-01T22:19:43.8638022Z Version: 20260901.588
+2026-10-01T22:19:43.8639075Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-01T22:19:43.8640500Z Build Date: 2026-09-01T19:56:44Z
+2026-10-01T22:19:43.8641868Z Worker ID: {d43b5ede-5c66-43b0-9b2d-ea2abdf65e2a}
+2026-10-01T22:19:43.8643078Z Azure Region: eastus
+2026-10-01T22:19:43.8644231Z ##[endgroup]
+2026-10-01T22:19:43.8647035Z ##[group]Operating System
+2026-10-01T22:19:43.8648296Z Ubuntu
+2026-10-01T22:19:43.8649235Z 24.04.5
+2026-10-01T22:19:43.8650172Z LTS
+2026-10-01T22:19:43.8651046Z ##[endgroup]
+2026-10-01T22:19:43.8652020Z ##[group]Runner Image
+2026-10-01T22:19:43.8653159Z Image: ubuntu-24.04
+2026-10-01T22:19:43.8654152Z Version: 20260927.320.1
+2026-10-01T22:19:43.8656706Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-01T22:19:43.8659539Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-01T22:19:43.8661403Z ##[endgroup]
+2026-10-01T22:19:43.8663331Z ##[group]GITHUB_TOKEN Permissions
+2026-10-01T22:19:43.8666545Z Contents: write
+2026-10-01T22:19:43.8667517Z Metadata: read
+2026-10-01T22:19:43.8668552Z ##[endgroup]
+2026-10-01T22:19:43.8671540Z Secret source: Actions
+2026-10-01T22:19:43.8673363Z Cache mode: write
+2026-10-01T22:19:43.8674507Z Prepare workflow directory
+2026-10-01T22:19:43.9163549Z Prepare all required actions
+2026-10-01T22:19:43.9235993Z Getting action download info
+2026-10-01T22:19:44.1329447Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-01T22:19:44.2658997Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-01T22:19:44.4792132Z Complete job name: test
+2026-10-01T22:19:44.5623137Z ##[group]Run actions/checkout@v4
+2026-10-01T22:19:44.5624128Z with:
+2026-10-01T22:19:44.5624606Z   fetch-depth: 0
+2026-10-01T22:19:44.5625352Z   repository: sportaholic000-hue/off-the-clock
+2026-10-01T22:19:44.5629299Z   token: ***
+2026-10-01T22:19:44.5629750Z   ssh-strict: true
+2026-10-01T22:19:44.5630207Z   ssh-user: git
+2026-10-01T22:19:44.5630673Z   persist-credentials: true
+2026-10-01T22:19:44.5631174Z   clean: true
+2026-10-01T22:19:44.5631630Z   sparse-checkout-cone-mode: true
+2026-10-01T22:19:44.5632165Z   fetch-tags: false
+2026-10-01T22:19:44.5632632Z   show-progress: true
+2026-10-01T22:19:44.5633094Z   lfs: false
+2026-10-01T22:19:44.5633530Z   submodules: false
+2026-10-01T22:19:44.5633995Z   set-safe-directory: true
+2026-10-01T22:19:44.5634521Z   allow-unsafe-pr-checkout: false
+2026-10-01T22:19:44.5635767Z ##[endgroup]
+2026-10-01T22:19:44.6903250Z Syncing repository: sportaholic000-hue/off-the-clock
+2026-10-01T22:19:44.6907770Z ##[group]Getting Git version info
+2026-10-01T22:19:44.6909939Z Working directory is '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-01T22:19:44.6916535Z [command]/usr/bin/git version
+2026-10-01T22:19:44.6970245Z git version 2.55.0
+2026-10-01T22:19:44.6976927Z ##[endgroup]
+2026-10-01T22:19:44.6985810Z Temporarily overriding HOME='/home/runner/work/_temp/588f536b-0ec9-4694-a175-eff665f1d2c1' before making global git config changes
+2026-10-01T22:19:44.6989313Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T22:19:44.6993705Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:19:44.7081186Z Deleting the contents of '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-01T22:19:44.7083551Z ##[group]Initializing the repository
+2026-10-01T22:19:44.7085667Z [command]/usr/bin/git init /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:19:44.7240224Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-01T22:19:44.7266823Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-01T22:19:44.7269656Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-01T22:19:44.7273895Z hint: call:
+2026-10-01T22:19:44.7276576Z hint:
+2026-10-01T22:19:44.7277437Z hint: 	git config --global init.defaultBranch <name>
+2026-10-01T22:19:44.7278454Z hint:
+2026-10-01T22:19:44.7283080Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-01T22:19:44.7287901Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-01T22:19:44.7289330Z hint:
+2026-10-01T22:19:44.7290018Z hint: 	git branch -m <name>
+2026-10-01T22:19:44.7291254Z hint:
+2026-10-01T22:19:44.7292380Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-01T22:19:44.7294146Z Initialized empty Git repository in /home/runner/work/off-the-clock/off-the-clock/.git/
+2026-10-01T22:19:44.7302332Z [command]/usr/bin/git remote add origin https://github.com/sportaholic000-hue/off-the-clock
+2026-10-01T22:19:44.7327647Z ##[endgroup]
+2026-10-01T22:19:44.7329486Z ##[group]Disabling automatic garbage collection
+2026-10-01T22:19:44.7331271Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-01T22:19:44.7388234Z ##[endgroup]
+2026-10-01T22:19:44.7391471Z ##[group]Setting up auth
+2026-10-01T22:19:44.7400813Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T22:19:44.7455928Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T22:19:44.8001927Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T22:19:44.8095963Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T22:19:44.8388965Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T22:19:44.8552011Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T22:19:44.9636072Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-01T22:19:44.9640589Z ##[endgroup]
+2026-10-01T22:19:44.9642363Z ##[group]Fetching the repository
+2026-10-01T22:19:44.9646354Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +5653b690783474cd5ac3f7d0d3bc91925c70eefb:refs/remotes/pull/11/merge
+2026-10-01T22:19:47.4710434Z From https://github.com/sportaholic000-hue/off-the-clock
+2026-10-01T22:19:47.4715562Z  * [new branch]      claude/ci-results                        -> origin/claude/ci-results
+2026-10-01T22:19:47.4722066Z  * [new branch]      claude/gemini-live-probe                 -> origin/claude/gemini-live-probe
+2026-10-01T22:19:47.4724754Z  * [new branch]      claude/integration-pr3-pr4-20261001      -> origin/claude/integration-pr3-pr4-20261001
+2026-10-01T22:19:47.4727900Z  * [new branch]      claude/live-demo                         -> origin/claude/live-demo
+2026-10-01T22:19:47.4730077Z  * [new branch]      claude/phase-2-audit-fixes               -> origin/claude/phase-2-audit-fixes
+2026-10-01T22:19:47.4733244Z  * [new branch]      claude/phase-2-blocker-repairs           -> origin/claude/phase-2-blocker-repairs
+2026-10-01T22:19:47.4736212Z  * [new branch]      claude/phase-2-customer-quote-safety     -> origin/claude/phase-2-customer-quote-safety
+2026-10-01T22:19:47.4739281Z  * [new branch]      claude/phase-2-interview-structured-input -> origin/claude/phase-2-interview-structured-input
+2026-10-01T22:19:47.4742118Z  * [new branch]      claude/probe-results                     -> origin/claude/probe-results
+2026-10-01T22:19:47.4744867Z  * [new branch]      codex/account-email-readiness-20260930   -> origin/codex/account-email-readiness-20260930
+2026-10-01T22:19:47.4748601Z  * [new branch]      codex/auth-ci-proof-20260930             -> origin/codex/auth-ci-proof-20260930
+2026-10-01T22:19:47.4751473Z  * [new branch]      codex/auth-email-recovery-20260929       -> origin/codex/auth-email-recovery-20260929
+2026-10-01T22:19:47.4754063Z  * [new branch]      codex/backend-launch                     -> origin/codex/backend-launch
+2026-10-01T22:19:47.4756513Z  * [new branch]      codex/backend-preservation-20260929      -> origin/codex/backend-preservation-20260929
+2026-10-01T22:19:47.4758640Z  * [new branch]      codex/comparison-conversion-20261001     -> origin/codex/comparison-conversion-20261001
+2026-10-01T22:19:47.4760973Z  * [new branch]      codex/customer-quote-wording-20261001    -> origin/codex/customer-quote-wording-20261001
+2026-10-01T22:19:47.4762833Z  * [new branch]      codex/full-launch-review-20260930        -> origin/codex/full-launch-review-20260930
+2026-10-01T22:19:47.4766440Z  * [new branch]      codex/independent-quote-booking-20260930 -> origin/codex/independent-quote-booking-20260930
+2026-10-01T22:19:47.4769850Z  * [new branch]      codex/launch-plan-security-20261001      -> origin/codex/launch-plan-security-20261001
+2026-10-01T22:19:47.4773263Z  * [new branch]      codex/operator-exports-webhooks-20261001 -> origin/codex/operator-exports-webhooks-20261001
+2026-10-01T22:19:47.4777106Z  * [new branch]      codex/opus-quote-repairs-20261001        -> origin/codex/opus-quote-repairs-20261001
+2026-10-01T22:19:47.4780703Z  * [new branch]      codex/phase-2-onboarding-pricebook       -> origin/codex/phase-2-onboarding-pricebook
+2026-10-01T22:19:47.4784775Z  * [new branch]      codex/phase2-verification-0eb254b        -> origin/codex/phase2-verification-0eb254b
+2026-10-01T22:19:47.4788744Z  * [new branch]      codex/pr4-independent-audit-20260930     -> origin/codex/pr4-independent-audit-20260930
+2026-10-01T22:19:47.4792946Z  * [new branch]      codex/pricebook-integrity-20260912       -> origin/codex/pricebook-integrity-20260912
+2026-10-01T22:19:47.4796695Z  * [new branch]      codex/quote-engine-vnext-audit           -> origin/codex/quote-engine-vnext-audit
+2026-10-01T22:19:47.4800010Z  * [new branch]      codex/quotedone-application-completion   -> origin/codex/quotedone-application-completion
+2026-10-01T22:19:47.4803770Z  * [new branch]      codex/quotedone-audit-repairs-20260927   -> origin/codex/quotedone-audit-repairs-20260927
+2026-10-01T22:19:47.4807463Z  * [new branch]      codex/quotedone-widget-20260929          -> origin/codex/quotedone-widget-20260929
+2026-10-01T22:19:47.4810671Z  * [new branch]      codex/railway-ready-20261001             -> origin/codex/railway-ready-20261001
+2026-10-01T22:19:47.4818378Z  * [new branch]      codex/tenant-owner-addon-20260719        -> origin/codex/tenant-owner-addon-20260719
+2026-10-01T22:19:47.4821618Z  * [new branch]      codex/widget-embed-20261001              -> origin/codex/widget-embed-20261001
+2026-10-01T22:19:47.4824670Z  * [new branch]      demo/website-live-sales                  -> origin/demo/website-live-sales
+2026-10-01T22:19:47.4828016Z  * [new branch]      growth/public-pages-review               -> origin/growth/public-pages-review
+2026-10-01T22:19:47.4830775Z  * [new branch]      main                                     -> origin/main
+2026-10-01T22:19:47.4842862Z  * [new branch]      verification/widget-embed-20261001       -> origin/verification/widget-embed-20261001
+2026-10-01T22:19:47.4846290Z  * [new ref]         5653b690783474cd5ac3f7d0d3bc91925c70eefb -> pull/11/merge
+2026-10-01T22:19:47.4852179Z ##[endgroup]
+2026-10-01T22:19:47.4854815Z ##[group]Determining the checkout info
+2026-10-01T22:19:47.4858020Z ##[endgroup]
+2026-10-01T22:19:47.4859559Z [command]/usr/bin/git sparse-checkout disable
+2026-10-01T22:19:47.4868094Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-01T22:19:47.4874414Z ##[group]Checking out the ref
+2026-10-01T22:19:47.4877619Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/11/merge
+2026-10-01T22:19:48.3741559Z Note: switching to 'refs/remotes/pull/11/merge'.
+2026-10-01T22:19:48.3742564Z 
+2026-10-01T22:19:48.3778141Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-01T22:19:48.3779177Z changes and commit them, and you can discard any commits you make in this
+2026-10-01T22:19:48.3780086Z state without impacting any branches by switching back to a branch.
+2026-10-01T22:19:48.3780847Z 
+2026-10-01T22:19:48.3781216Z If you want to create a new branch to retain commits you create, you may
+2026-10-01T22:19:48.3782005Z do so (now or later) by using -c with the switch command. Example:
+2026-10-01T22:19:48.3782479Z 
+2026-10-01T22:19:48.3782685Z   git switch -c <new-branch-name>
+2026-10-01T22:19:48.3783004Z 
+2026-10-01T22:19:48.3783193Z Or undo this operation with:
+2026-10-01T22:19:48.3783480Z 
+2026-10-01T22:19:48.3783660Z   git switch -
+2026-10-01T22:19:48.3783962Z 
+2026-10-01T22:19:48.3784362Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-01T22:19:48.3785026Z 
+2026-10-01T22:19:48.3786058Z HEAD is now at 5653b69 Merge d64e25117253ab8f9199f59711f437a897a0963a into 7a911afd993bc0d5c07c3d20f977c8988f072208
+2026-10-01T22:19:48.3790674Z ##[endgroup]
+2026-10-01T22:19:48.4014979Z [command]/usr/bin/git log -1 --format=%H
+2026-10-01T22:19:48.4023969Z 5653b690783474cd5ac3f7d0d3bc91925c70eefb
+2026-10-01T22:19:48.4299461Z ##[group]Run actions/setup-node@v4
+2026-10-01T22:19:48.4299755Z with:
+2026-10-01T22:19:48.4299958Z   node-version: 22
+2026-10-01T22:19:48.4300180Z   always-auth: false
+2026-10-01T22:19:48.4300408Z   check-latest: false
+2026-10-01T22:19:48.4302868Z   token: ***
+2026-10-01T22:19:48.4303079Z ##[endgroup]
+2026-10-01T22:19:48.5822903Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-01T22:19:48.5829329Z (node:2085) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T22:19:48.5831336Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T22:19:48.5833653Z ##[group]Environment details
+2026-10-01T22:19:49.1034539Z node: v22.23.3
+2026-10-01T22:19:49.1041619Z npm: 10.9.9
+2026-10-01T22:19:49.1050932Z yarn: 1.22.22
+2026-10-01T22:19:49.1066228Z ##[endgroup]
+2026-10-01T22:19:49.1232626Z ##[group]Run rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+2026-10-01T22:19:49.1233396Z [36;1mrm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund[0m
+2026-10-01T22:19:49.1526973Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:19:49.1527309Z ##[endgroup]
+2026-10-01T22:19:51.3026494Z npm warn deprecated scmp@2.1.0: Just use Node.js's crypto.timingSafeEqual()
+2026-10-01T22:19:51.4095858Z npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+2026-10-01T22:19:52.5744821Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-10-01T22:19:56.7575856Z 
+2026-10-01T22:19:56.7578157Z added 311 packages in 7s
+2026-10-01T22:19:56.8129328Z ##[group]Run npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
+2026-10-01T22:19:56.8130267Z [36;1mnpm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null[0m
+2026-10-01T22:19:56.8192511Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:19:56.8192772Z ##[endgroup]
+2026-10-01T22:19:58.8211077Z 
+2026-10-01T22:19:58.8212203Z added 2 packages in 2s
+2026-10-01T22:23:18.4654243Z 
+2026-10-01T22:23:18.4655400Z Running kernel seems to be up-to-date.
+2026-10-01T22:23:18.4656161Z 
+2026-10-01T22:23:18.4658441Z No services need to be restarted.
+2026-10-01T22:23:18.4659245Z 
+2026-10-01T22:23:18.4663051Z No containers need to be restarted.
+2026-10-01T22:23:18.4663597Z 
+2026-10-01T22:23:18.4664102Z No user sessions are running outdated binaries.
+2026-10-01T22:23:18.4664662Z 
+2026-10-01T22:23:18.4666196Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-01T22:23:29.4576130Z ##[group]Run npm --prefix client run build
+2026-10-01T22:23:29.4576793Z [36;1mnpm --prefix client run build[0m
+2026-10-01T22:23:29.4667738Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:23:29.4668203Z ##[endgroup]
+2026-10-01T22:23:29.5769879Z 
+2026-10-01T22:23:29.5786573Z > off-the-clock-client@0.0.0 build
+2026-10-01T22:23:29.5792444Z > vite build && vite build --config vite.widget.config.js
+2026-10-01T22:23:29.5813740Z 
+2026-10-01T22:23:29.8068662Z [36mvite v6.4.3 [32mbuilding for production...[36m[39m
+2026-10-01T22:23:29.8896858Z transforming...
+2026-10-01T22:23:32.8636394Z [32m✓[39m 1610 modules transformed.
+2026-10-01T22:23:33.1087453Z rendering chunks...
+2026-10-01T22:23:33.1174578Z computing gzip size...
+2026-10-01T22:23:33.1347186Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.40 kB[22m[1m[22m[2m │ gzip:   0.27 kB[22m
+2026-10-01T22:23:33.1349171Z [2mdist/[22m[2massets/[22m[35mindex-Wzmw2GTw.css  [39m[1m[2m 52.77 kB[22m[1m[22m[2m │ gzip:   9.34 kB[22m
+2026-10-01T22:23:33.1350988Z [2mdist/[22m[2massets/[22m[36mindex-DlMWoluR.js   [39m[1m[2m488.10 kB[22m[1m[22m[2m │ gzip: 140.70 kB[22m
+2026-10-01T22:23:33.1352026Z [32m✓ built in 3.30s[39m
+2026-10-01T22:23:33.3768431Z [36mvite v6.4.3 [32mbuilding for production...[36m[39m
+2026-10-01T22:23:33.4196440Z transforming...
+2026-10-01T22:23:35.9276840Z [32m✓[39m 1588 modules transformed.
+2026-10-01T22:23:36.0966806Z rendering chunks...
+2026-10-01T22:23:36.1016085Z computing gzip size...
+2026-10-01T22:23:36.1157068Z [2mdist/[22m[36mwidget-app.js  [39m[1m[2m452.74 kB[22m[1m[22m[2m │ gzip: 104.60 kB[22m
+2026-10-01T22:23:36.1158021Z [32m✓ built in 2.72s[39m
+2026-10-01T22:23:36.1601381Z ##[group]Run node --test test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true
+2026-10-01T22:23:36.1602487Z [36;1mnode --test test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true[0m
+2026-10-01T22:23:36.1671889Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:23:36.1672158Z ##[endgroup]
+2026-10-01T22:25:34.5088752Z ##[group]Run node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
+2026-10-01T22:25:34.5090423Z [36;1mnode .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}[0m
+2026-10-01T22:25:34.5159960Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-01T22:25:34.5160318Z ##[endgroup]
+2026-10-01T22:25:34.5561455Z Summary: {"tests":"1052","pass":"1041","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+2026-10-01T22:25:34.5562933Z Known failures still failing: 9/9
+2026-10-01T22:25:34.5639622Z ##[group]Run npm audit --omit=dev --audit-level=high
+2026-10-01T22:25:34.5640041Z [36;1mnpm audit --omit=dev --audit-level=high[0m
+2026-10-01T22:25:34.5704605Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:25:34.5704880Z ##[endgroup]
+2026-10-01T22:25:35.2341955Z found 0 vulnerabilities
+2026-10-01T22:25:35.2530461Z Post job cleanup.
+2026-10-01T22:25:35.3861949Z (node:4082) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T22:25:35.3863995Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T22:25:35.4136530Z Post job cleanup.
+2026-10-01T22:25:35.5873222Z [command]/usr/bin/git version
+2026-10-01T22:25:35.5986201Z git version 2.55.0
+2026-10-01T22:25:35.6099373Z Temporarily overriding HOME='/home/runner/work/_temp/cb2cf58b-6db6-4f2a-85f9-417973d864f1' before making global git config changes
+2026-10-01T22:25:35.6116286Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T22:25:35.6125634Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:25:35.6247525Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T22:25:35.6364721Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T22:25:35.7028065Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T22:25:35.7084119Z http.https://github.com/.extraheader
+2026-10-01T22:25:35.7111330Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-01T22:25:35.7181570Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T22:25:35.7523619Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T22:25:35.7627520Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T22:25:35.8110128Z Cleaning up orphan processes
+2026-10-01T22:25:35.8441127Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

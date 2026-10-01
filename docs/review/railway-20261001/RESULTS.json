@@ -1,0 +1,88 @@
+{
+  "baseline": {
+    "tests": 1027,
+    "pass": 1016,
+    "fail": 9,
+    "cancelled": 0,
+    "skipped": 2,
+    "duration_ms": 1160961.6453
+  },
+  "final": {
+    "tests": 1052,
+    "pass": 1041,
+    "fail": 9,
+    "cancelled": 0,
+    "skipped": 2,
+    "duration_ms": 675476.3975
+  },
+  "focused": {
+    "tests": 91,
+    "pass": 91,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 74158.1035
+  },
+  "sameFailures": true,
+  "baselineFailures": [
+    "dispatcher rejects handler results containing raw rates instead of exposing them",
+    "mutations are idempotent and conflicting reuse of a tool call id is rejected",
+    "quote release requires an affirmative recap confirmation and availability requires an address-bound lead",
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "test/voicePromptCompiler.spec.mjs",
+    "test/voiceWebSocketServer.spec.mjs",
+    "tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields",
+    "voice runtime binds availability to quote plus lead and sequences one hold before one confirmation",
+    "voice tool runtime persists a safe review quote and lead without exposing internal identities"
+  ],
+  "finalFailures": [
+    "dispatcher rejects handler results containing raw rates instead of exposing them",
+    "mutations are idempotent and conflicting reuse of a tool call id is rejected",
+    "quote release requires an affirmative recap confirmation and availability requires an address-bound lead",
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "test/voicePromptCompiler.spec.mjs",
+    "test/voiceWebSocketServer.spec.mjs",
+    "tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields",
+    "voice runtime binds availability to quote plus lead and sequences one hold before one confirmation",
+    "voice tool runtime persists a safe review quote and lead without exposing internal identities"
+  ],
+  "implementationCommit": "d64e25117253ab8f9199f59711f437a897a0963a",
+  "nodeWindows": "v22.23.2",
+  "docker": {
+    "passed": true,
+    "sourceCommit": "d64e25117253ab8f9199f59711f437a897a0963a",
+    "imageId": "sha256:4c42a3218fc4f94ae0fff2b691006410697f90a5af5659578ef56d4cd05cd841",
+    "checks": [
+      "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+      "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+      "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+      "startup refuses missing actual mount and Railway development-mode override"
+    ]
+  },
+  "githubRuns": [
+    {
+      "id": 36934367000,
+      "name": "CI",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934367000"
+    },
+    {
+      "id": 36934361209,
+      "name": "Railway container readiness",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934361209"
+    },
+    {
+      "id": 36934361215,
+      "name": "CI",
+      "sha": "d64e25117253ab8f9199f59711f437a897a0963a",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934361215"
+    }
+  ]
+}

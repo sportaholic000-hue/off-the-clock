@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "sourceCommit": "d64e25117253ab8f9199f59711f437a897a0963a",
+  "imageId": "sha256:4c42a3218fc4f94ae0fff2b691006410697f90a5af5659578ef56d4cd05cd841",
+  "checks": [
+    "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+    "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+    "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+    "startup refuses missing actual mount and Railway development-mode override"
+  ]
+}

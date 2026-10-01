@@ -1,0 +1,319 @@
+﻿2026-10-01T22:19:39.5360869Z Current runner version: '2.337.0'
+2026-10-01T22:19:39.5437928Z ##[group]Runner Image Provisioner
+2026-10-01T22:19:39.5439241Z Hosted Compute Agent
+2026-10-01T22:19:39.5440399Z Version: 20260901.588
+2026-10-01T22:19:39.5441570Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-01T22:19:39.5443229Z Build Date: 2026-09-01T19:56:44Z
+2026-10-01T22:19:39.5452493Z Worker ID: {560d526c-c7c6-4f14-a4f0-f9ea11ed4791}
+2026-10-01T22:19:39.5454019Z Azure Region: eastus
+2026-10-01T22:19:39.5455073Z ##[endgroup]
+2026-10-01T22:19:39.5458081Z ##[group]Operating System
+2026-10-01T22:19:39.5459295Z Ubuntu
+2026-10-01T22:19:39.5474095Z 24.04.5
+2026-10-01T22:19:39.5475097Z LTS
+2026-10-01T22:19:39.5476029Z ##[endgroup]
+2026-10-01T22:19:39.5476971Z ##[group]Runner Image
+2026-10-01T22:19:39.5478113Z Image: ubuntu-24.04
+2026-10-01T22:19:39.5479077Z Version: 20260927.320.1
+2026-10-01T22:19:39.5481857Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-01T22:19:39.5485038Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-01T22:19:39.5486885Z ##[endgroup]
+2026-10-01T22:19:39.5488807Z ##[group]GITHUB_TOKEN Permissions
+2026-10-01T22:19:39.5491924Z Contents: read
+2026-10-01T22:19:39.5513518Z Metadata: read
+2026-10-01T22:19:39.5514736Z ##[endgroup]
+2026-10-01T22:19:39.5518075Z Secret source: Actions
+2026-10-01T22:19:39.5519800Z Cache mode: write
+2026-10-01T22:19:39.5521556Z Prepare workflow directory
+2026-10-01T22:19:39.6557219Z Prepare all required actions
+2026-10-01T22:19:39.6629618Z Getting action download info
+2026-10-01T22:19:39.8814653Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-01T22:19:40.0190690Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-01T22:19:40.1183210Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-01T22:19:40.3674146Z Complete job name: container-proof
+2026-10-01T22:19:40.4760680Z ##[group]Run actions/checkout@v4
+2026-10-01T22:19:40.4762644Z with:
+2026-10-01T22:19:40.4763592Z   repository: sportaholic000-hue/off-the-clock
+2026-10-01T22:19:40.4772025Z   token: ***
+2026-10-01T22:19:40.4773276Z   ssh-strict: true
+2026-10-01T22:19:40.4774123Z   ssh-user: git
+2026-10-01T22:19:40.4774961Z   persist-credentials: true
+2026-10-01T22:19:40.4775885Z   clean: true
+2026-10-01T22:19:40.4776727Z   sparse-checkout-cone-mode: true
+2026-10-01T22:19:40.4777796Z   fetch-depth: 1
+2026-10-01T22:19:40.4778704Z   fetch-tags: false
+2026-10-01T22:19:40.4779709Z   show-progress: true
+2026-10-01T22:19:40.4780650Z   lfs: false
+2026-10-01T22:19:40.4781557Z   submodules: false
+2026-10-01T22:19:40.4782747Z   set-safe-directory: true
+2026-10-01T22:19:40.4783825Z   allow-unsafe-pr-checkout: false
+2026-10-01T22:19:40.4785378Z ##[endgroup]
+2026-10-01T22:19:40.6450699Z Syncing repository: sportaholic000-hue/off-the-clock
+2026-10-01T22:19:40.6453936Z ##[group]Getting Git version info
+2026-10-01T22:19:40.6455495Z Working directory is '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-01T22:19:40.6457480Z [command]/usr/bin/git version
+2026-10-01T22:19:40.6761188Z git version 2.55.0
+2026-10-01T22:19:40.6790613Z ##[endgroup]
+2026-10-01T22:19:40.6805176Z Temporarily overriding HOME='/home/runner/work/_temp/80e41592-e289-46f5-8876-0f65e6247ab7' before making global git config changes
+2026-10-01T22:19:40.6810050Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T22:19:40.6814647Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:19:40.6821731Z Deleting the contents of '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-01T22:19:40.6826449Z ##[group]Initializing the repository
+2026-10-01T22:19:40.6829881Z [command]/usr/bin/git init /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:19:40.6932975Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-01T22:19:40.6936061Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-01T22:19:40.6938612Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-01T22:19:40.6940528Z hint: call:
+2026-10-01T22:19:40.6941857Z hint:
+2026-10-01T22:19:40.6945494Z hint: 	git config --global init.defaultBranch <name>
+2026-10-01T22:19:40.6946677Z hint:
+2026-10-01T22:19:40.6947947Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-01T22:19:40.6949736Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-01T22:19:40.6951324Z hint:
+2026-10-01T22:19:40.6952388Z hint: 	git branch -m <name>
+2026-10-01T22:19:40.6953369Z hint:
+2026-10-01T22:19:40.6954623Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-01T22:19:40.6956645Z Initialized empty Git repository in /home/runner/work/off-the-clock/off-the-clock/.git/
+2026-10-01T22:19:40.6960329Z [command]/usr/bin/git remote add origin https://github.com/sportaholic000-hue/off-the-clock
+2026-10-01T22:19:40.7015615Z ##[endgroup]
+2026-10-01T22:19:40.7019199Z ##[group]Disabling automatic garbage collection
+2026-10-01T22:19:40.7020377Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-01T22:19:40.7080126Z ##[endgroup]
+2026-10-01T22:19:40.7082555Z ##[group]Setting up auth
+2026-10-01T22:19:40.7084752Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T22:19:40.7171418Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T22:19:40.7814103Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T22:19:40.7819965Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T22:19:40.8043089Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T22:19:40.8085383Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T22:19:40.8331547Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-01T22:19:40.8377474Z ##[endgroup]
+2026-10-01T22:19:40.8379663Z ##[group]Fetching the repository
+2026-10-01T22:19:40.8391601Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d64e25117253ab8f9199f59711f437a897a0963a:refs/remotes/origin/codex/railway-ready-20261001
+2026-10-01T22:19:43.0110523Z From https://github.com/sportaholic000-hue/off-the-clock
+2026-10-01T22:19:43.0123162Z  * [new ref]         d64e25117253ab8f9199f59711f437a897a0963a -> origin/codex/railway-ready-20261001
+2026-10-01T22:19:43.0130190Z ##[endgroup]
+2026-10-01T22:19:43.0132750Z ##[group]Determining the checkout info
+2026-10-01T22:19:43.0135708Z ##[endgroup]
+2026-10-01T22:19:43.0137251Z [command]/usr/bin/git sparse-checkout disable
+2026-10-01T22:19:43.0187538Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-01T22:19:43.0229360Z ##[group]Checking out the ref
+2026-10-01T22:19:43.0249184Z [command]/usr/bin/git checkout --progress --force -B codex/railway-ready-20261001 refs/remotes/origin/codex/railway-ready-20261001
+2026-10-01T22:19:43.9003466Z Switched to a new branch 'codex/railway-ready-20261001'
+2026-10-01T22:19:43.9043094Z branch 'codex/railway-ready-20261001' set up to track 'origin/codex/railway-ready-20261001'.
+2026-10-01T22:19:43.9093128Z ##[endgroup]
+2026-10-01T22:19:43.9124795Z [command]/usr/bin/git log -1 --format=%H
+2026-10-01T22:19:43.9151345Z d64e25117253ab8f9199f59711f437a897a0963a
+2026-10-01T22:19:43.9454670Z ##[group]Run actions/setup-node@v4
+2026-10-01T22:19:43.9455284Z with:
+2026-10-01T22:19:43.9455494Z   node-version: 22
+2026-10-01T22:19:43.9455725Z   always-auth: false
+2026-10-01T22:19:43.9455951Z   check-latest: false
+2026-10-01T22:19:43.9458640Z   token: ***
+2026-10-01T22:19:43.9458859Z ##[endgroup]
+2026-10-01T22:19:44.1099585Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-01T22:19:44.1105789Z (node:2080) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T22:19:44.1107367Z ##[group]Environment details
+2026-10-01T22:19:44.1114248Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T22:19:44.6677486Z node: v22.23.3
+2026-10-01T22:19:44.6701554Z npm: 10.9.9
+2026-10-01T22:19:44.6702693Z yarn: 1.22.22
+2026-10-01T22:19:44.6704400Z ##[endgroup]
+2026-10-01T22:19:44.6829079Z ##[group]Run mkdir -p node_modules client/dist
+2026-10-01T22:19:44.6829611Z [36;1mmkdir -p node_modules client/dist[0m
+2026-10-01T22:19:44.6830052Z [36;1mtouch node_modules/COMMITTED_DEPENDENCIES_POISON[0m
+2026-10-01T22:19:44.6830561Z [36;1mprintf '%s' COMMITTED_DIST_POISON > client/dist/index.html[0m
+2026-10-01T22:19:44.7156611Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:19:44.7157074Z ##[endgroup]
+2026-10-01T22:19:44.7336619Z ##[group]Run docker build --progress=plain -t otc-railway-proof .
+2026-10-01T22:19:44.7337236Z [36;1mdocker build --progress=plain -t otc-railway-proof .[0m
+2026-10-01T22:19:44.7399881Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:19:44.7400208Z ##[endgroup]
+2026-10-01T22:19:45.4528907Z #0 building with "default" instance using docker driver
+2026-10-01T22:19:45.4529352Z 
+2026-10-01T22:19:45.4529628Z #1 [internal] load build definition from Dockerfile
+2026-10-01T22:19:45.4530117Z #1 transferring dockerfile: 742B done
+2026-10-01T22:19:45.4530460Z #1 DONE 0.0s
+2026-10-01T22:19:45.4530610Z 
+2026-10-01T22:19:45.4530913Z #2 [auth] library/node:pull token for registry-1.docker.io
+2026-10-01T22:19:45.4531317Z #2 DONE 0.0s
+2026-10-01T22:19:45.4531460Z 
+2026-10-01T22:19:45.4531858Z #3 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+2026-10-01T22:19:45.6010547Z #3 DONE 0.3s
+2026-10-01T22:19:45.7281847Z 
+2026-10-01T22:19:45.7284360Z #4 [internal] load .dockerignore
+2026-10-01T22:19:45.7285286Z #4 transferring context: 178B done
+2026-10-01T22:19:45.7286178Z #4 DONE 0.0s
+2026-10-01T22:19:45.7286985Z 
+2026-10-01T22:19:45.7288786Z #5 [dependencies 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+2026-10-01T22:19:45.7291794Z #5 resolve docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c done
+2026-10-01T22:19:45.7294796Z #5 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 2.10MB / 28.24MB 0.1s
+2026-10-01T22:19:45.7296911Z #5 sha256:8ab8fd6c944526e5da2ca93b1663b2ab6f4bb8d4ea7b50a90d53c9fdcc5b0b9e 3.31kB / 3.31kB 0.1s done
+2026-10-01T22:19:45.7299356Z #5 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 0B / 49.84MB 0.1s
+2026-10-01T22:19:45.7301594Z #5 sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056 0B / 1.71MB 0.1s
+2026-10-01T22:19:45.7304016Z #5 sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c 5.22kB / 5.22kB done
+2026-10-01T22:19:45.7306017Z #5 sha256:25330af3531fb5e23318554a0aa911125b6e91b1b777edf7655501d207c067a2 1.93kB / 1.93kB done
+2026-10-01T22:19:45.7308432Z #5 sha256:88f8ba583a884279252779bbe221bf1ff2c61cf236cc973f8ca97676ae6d07f0 6.77kB / 6.77kB done
+2026-10-01T22:19:45.8294241Z #5 ...
+2026-10-01T22:19:45.8294507Z 
+2026-10-01T22:19:45.8294768Z #6 [internal] load build context
+2026-10-01T22:19:45.8295660Z #6 transferring context: 2.30MB 0.1s done
+2026-10-01T22:19:45.8296146Z #6 DONE 0.1s
+2026-10-01T22:19:45.8296561Z 
+2026-10-01T22:19:45.8297873Z #5 [dependencies 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+2026-10-01T22:19:45.8300167Z #5 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 14.68MB / 28.24MB 0.2s
+2026-10-01T22:19:45.8302763Z #5 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 9.44MB / 49.84MB 0.2s
+2026-10-01T22:19:45.8304849Z #5 sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056 1.71MB / 1.71MB 0.2s done
+2026-10-01T22:19:45.8309132Z #5 sha256:dc40c63c08b5453854c13da6d72b3182737b2e223156b786c67779e0d6f4e8e0 446B / 446B 0.2s done
+2026-10-01T22:19:45.9458964Z #5 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 28.24MB / 28.24MB 0.3s done
+2026-10-01T22:19:45.9466193Z #5 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 28.31MB / 49.84MB 0.3s
+2026-10-01T22:19:45.9471639Z #5 extracting sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150
+2026-10-01T22:19:46.0524175Z #5 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 49.84MB / 49.84MB 0.4s done
+2026-10-01T22:19:47.3104701Z #5 extracting sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 1.4s done
+2026-10-01T22:19:47.5550009Z #5 extracting sha256:8ab8fd6c944526e5da2ca93b1663b2ab6f4bb8d4ea7b50a90d53c9fdcc5b0b9e done
+2026-10-01T22:19:49.7318434Z #5 extracting sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5
+2026-10-01T22:19:51.3930617Z #5 extracting sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 1.5s done
+2026-10-01T22:19:51.7686312Z #5 extracting sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056
+2026-10-01T22:19:51.8730409Z #5 extracting sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056 0.0s done
+2026-10-01T22:19:51.8732596Z #5 extracting sha256:dc40c63c08b5453854c13da6d72b3182737b2e223156b786c67779e0d6f4e8e0 done
+2026-10-01T22:19:51.8733788Z #5 DONE 6.2s
+2026-10-01T22:19:51.8734033Z 
+2026-10-01T22:19:51.8734313Z #7 [dependencies 2/6] WORKDIR /app
+2026-10-01T22:19:51.8735093Z #7 DONE 0.0s
+2026-10-01T22:19:52.0613777Z 
+2026-10-01T22:19:52.0614953Z #8 [dependencies 3/6] COPY package.json package-lock.json ./
+2026-10-01T22:19:52.0616067Z #8 DONE 0.0s
+2026-10-01T22:19:52.0618477Z 
+2026-10-01T22:19:52.0619197Z #9 [dependencies 4/6] COPY server/package.json server/package.json
+2026-10-01T22:19:52.0620074Z #9 DONE 0.0s
+2026-10-01T22:19:52.0620464Z 
+2026-10-01T22:19:52.0621118Z #10 [dependencies 5/6] COPY client/package.json client/package.json
+2026-10-01T22:19:52.0621966Z #10 DONE 0.0s
+2026-10-01T22:19:52.0622664Z 
+2026-10-01T22:19:52.0623256Z #11 [dependencies 6/6] RUN npm ci --no-audit --no-fund
+2026-10-01T22:19:53.7232725Z #11 1.812 npm warn deprecated scmp@2.1.0: Just use Node.js's crypto.timingSafeEqual()
+2026-10-01T22:19:53.8801884Z #11 1.969 npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+2026-10-01T22:19:55.0228813Z #11 3.112 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-10-01T22:19:59.2512824Z #11 7.341 
+2026-10-01T22:19:59.2514067Z #11 7.341 added 311 packages in 7s
+2026-10-01T22:19:59.3610805Z #11 7.344 npm notice
+2026-10-01T22:19:59.3646158Z #11 7.344 npm notice New major version of npm available! 10.9.9 -> 12.2.0
+2026-10-01T22:19:59.3764734Z #11 7.344 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+2026-10-01T22:19:59.3773091Z #11 7.344 npm notice To update run: npm install -g npm@12.2.0
+2026-10-01T22:19:59.3792692Z #11 7.344 npm notice
+2026-10-01T22:19:59.3829704Z #11 DONE 7.4s
+2026-10-01T22:19:59.5164028Z 
+2026-10-01T22:19:59.5165189Z #12 [build 1/3] COPY server ./server
+2026-10-01T22:20:00.1288735Z #12 DONE 0.8s
+2026-10-01T22:20:00.3218752Z 
+2026-10-01T22:20:00.3219620Z #13 [build 2/3] COPY client ./client
+2026-10-01T22:20:00.3220247Z #13 DONE 0.0s
+2026-10-01T22:20:00.3220494Z 
+2026-10-01T22:20:00.3220982Z #14 [build 3/3] RUN npm run build
+2026-10-01T22:20:00.9080109Z #14 0.738 
+2026-10-01T22:20:00.9093325Z #14 0.738 > build
+2026-10-01T22:20:00.9112814Z #14 0.738 > npm run build --workspace client
+2026-10-01T22:20:00.9122949Z #14 0.738 
+2026-10-01T22:20:01.1677996Z #14 0.998 
+2026-10-01T22:20:01.1693324Z #14 0.998 > off-the-clock-client@0.0.0 build
+2026-10-01T22:20:01.1711933Z #14 0.998 > vite build && vite build --config vite.widget.config.js
+2026-10-01T22:20:01.1722893Z #14 0.998 
+2026-10-01T22:20:01.9615426Z #14 1.790 vite v6.4.3 building for production...
+2026-10-01T22:20:02.2309359Z #14 2.056 transforming...
+2026-10-01T22:20:05.7721098Z #14 ...
+2026-10-01T22:20:05.7721351Z 
+2026-10-01T22:20:05.7722515Z #15 [runtime 3/7] COPY --from=dependencies /app/node_modules ./node_modules
+2026-10-01T22:20:05.7723920Z #15 DONE 3.7s
+2026-10-01T22:20:05.9243061Z 
+2026-10-01T22:20:05.9253750Z #14 [build 3/3] RUN npm run build
+2026-10-01T22:20:07.2417276Z #14 7.072 ✓ 1610 modules transformed.
+2026-10-01T22:20:07.5143435Z #14 7.343 rendering chunks...
+2026-10-01T22:20:07.6917590Z #14 7.354 computing gzip size...
+2026-10-01T22:20:07.6919189Z #14 7.370 dist/index.html                   0.40 kB │ gzip:   0.27 kB
+2026-10-01T22:20:07.6922559Z #14 7.371 dist/assets/index-Wzmw2GTw.css   52.77 kB │ gzip:   9.34 kB
+2026-10-01T22:20:07.6923634Z #14 7.371 dist/assets/index-DlMWoluR.js   488.10 kB │ gzip: 140.70 kB
+2026-10-01T22:20:07.6924891Z #14 7.371 ✓ built in 5.50s
+2026-10-01T22:20:07.7915795Z #14 7.621 vite v6.4.3 building for production...
+2026-10-01T22:20:07.9855958Z #14 7.665 transforming...
+2026-10-01T22:20:10.3905654Z #14 10.22 ✓ 1588 modules transformed.
+2026-10-01T22:20:10.5653363Z #14 10.40 rendering chunks...
+2026-10-01T22:20:10.8096204Z #14 10.40 computing gzip size...
+2026-10-01T22:20:10.8098179Z #14 10.41 dist/widget-app.js  452.74 kB │ gzip: 104.60 kB
+2026-10-01T22:20:10.8099466Z #14 10.41 ✓ built in 2.77s
+2026-10-01T22:20:10.8099991Z #14 DONE 10.5s
+2026-10-01T22:20:10.9474403Z 
+2026-10-01T22:20:10.9477942Z #16 [runtime 4/7] COPY --from=build /app/package.json /app/package-lock.json ./
+2026-10-01T22:20:11.0563447Z #16 DONE 0.0s
+2026-10-01T22:20:11.0563767Z 
+2026-10-01T22:20:11.0564318Z #17 [runtime 5/7] COPY --from=build /app/server ./server
+2026-10-01T22:20:11.0565013Z #17 DONE 0.0s
+2026-10-01T22:20:11.0565281Z 
+2026-10-01T22:20:11.0566045Z #18 [runtime 6/7] COPY --from=build /app/client/package.json ./client/package.json
+2026-10-01T22:20:11.0566943Z #18 DONE 0.0s
+2026-10-01T22:20:11.0567140Z 
+2026-10-01T22:20:11.0567975Z #19 [runtime 7/7] COPY --from=build /app/client/dist ./client/dist
+2026-10-01T22:20:11.0568775Z #19 DONE 0.0s
+2026-10-01T22:20:11.2084116Z 
+2026-10-01T22:20:11.2085087Z #20 exporting to image
+2026-10-01T22:20:11.2085859Z #20 exporting layers
+2026-10-01T22:20:15.2863074Z #20 exporting layers 4.2s done
+2026-10-01T22:20:15.3049994Z #20 writing image sha256:4c42a3218fc4f94ae0fff2b691006410697f90a5af5659578ef56d4cd05cd841 done
+2026-10-01T22:20:15.3053533Z #20 naming to docker.io/library/otc-railway-proof done
+2026-10-01T22:20:15.3054170Z #20 DONE 4.2s
+2026-10-01T22:20:15.3150608Z ##[group]Run node verification/railway/docker-smoke.mjs otc-railway-proof
+2026-10-01T22:20:15.3151343Z [36;1mnode verification/railway/docker-smoke.mjs otc-railway-proof[0m
+2026-10-01T22:20:15.3217642Z shell: /usr/bin/bash -e {0}
+2026-10-01T22:20:15.3218028Z ##[endgroup]
+2026-10-01T22:20:21.8891705Z {
+2026-10-01T22:20:21.8892740Z   "passed": true,
+2026-10-01T22:20:21.8893674Z   "sourceCommit": "d64e25117253ab8f9199f59711f437a897a0963a",
+2026-10-01T22:20:21.8894891Z   "imageId": "sha256:4c42a3218fc4f94ae0fff2b691006410697f90a5af5659578ef56d4cd05cd841",
+2026-10-01T22:20:21.8895916Z   "checks": [
+2026-10-01T22:20:21.8899363Z     "clean lockfile dependencies and rebuilt bundles; existing demo bytes/routes preserved; private files inaccessible",
+2026-10-01T22:20:21.8901406Z     "real Linux SIGTERM drains HTTP/workers and closes SQLite; same-container restart retains database and price books",
+2026-10-01T22:20:21.8903725Z     "fresh container redeploy retains data; actual restore CLI creates verified new root; fresh production process reads restored data",
+2026-10-01T22:20:21.8905468Z     "startup refuses missing actual mount and Railway development-mode override"
+2026-10-01T22:20:21.8906793Z   ]
+2026-10-01T22:20:21.8907257Z }
+2026-10-01T22:20:22.2568988Z ##[group]Run actions/upload-artifact@v4
+2026-10-01T22:20:22.2569318Z with:
+2026-10-01T22:20:22.2569537Z   name: railway-container-proof
+2026-10-01T22:20:22.2569857Z   path: verification/railway/results/docker-proof.json
+2026-10-01T22:20:22.2570203Z   if-no-files-found: warn
+2026-10-01T22:20:22.2570455Z   compression-level: 6
+2026-10-01T22:20:22.2570683Z   overwrite: false
+2026-10-01T22:20:22.2570906Z   include-hidden-files: false
+2026-10-01T22:20:22.2571156Z ##[endgroup]
+2026-10-01T22:20:22.4371922Z (node:3785) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T22:20:22.4374055Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T22:20:22.4472789Z With the provided path, there will be 1 file uploaded
+2026-10-01T22:20:22.4513180Z Artifact name is valid!
+2026-10-01T22:20:22.4552841Z Root directory input is valid!
+2026-10-01T22:20:22.6671676Z Beginning upload of artifact content to blob storage
+2026-10-01T22:20:22.6910870Z (node:3785) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-01T22:20:22.7208411Z Uploaded bytes 573
+2026-10-01T22:20:22.7375953Z Finished uploading artifact content to blob storage!
+2026-10-01T22:20:22.7377918Z SHA256 digest of uploaded artifact zip is 151cce2c2b02ee7db77c9fb2c9566e4654f6ce5b4f82351090ccfd572bef85b3
+2026-10-01T22:20:22.7379423Z Finalizing artifact upload
+2026-10-01T22:20:22.9437298Z Artifact railway-container-proof.zip successfully finalized. Artifact ID 11197920003
+2026-10-01T22:20:22.9439272Z Artifact railway-container-proof has been successfully uploaded! Final size is 573 bytes. Artifact ID is 11197920003
+2026-10-01T22:20:22.9441530Z Artifact download URL: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/36934361209/artifacts/11197920003
+2026-10-01T22:20:22.9643727Z Post job cleanup.
+2026-10-01T22:20:23.1008478Z (node:3797) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T22:20:23.1010274Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T22:20:23.1248424Z Post job cleanup.
+2026-10-01T22:20:23.2362768Z [command]/usr/bin/git version
+2026-10-01T22:20:23.2429102Z git version 2.55.0
+2026-10-01T22:20:23.2485402Z Temporarily overriding HOME='/home/runner/work/_temp/1f360d01-b06d-4360-a044-725ae45ba0cc' before making global git config changes
+2026-10-01T22:20:23.2487088Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T22:20:23.2488660Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-01T22:20:23.2540362Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T22:20:23.2623725Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T22:20:23.3104777Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T22:20:23.3159781Z http.https://github.com/.extraheader
+2026-10-01T22:20:23.3253197Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-01T22:20:23.3370931Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T22:20:23.4183497Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T22:20:23.4300576Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T22:20:23.5093937Z Cleaning up orphan processes
+2026-10-01T22:20:23.5478586Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
