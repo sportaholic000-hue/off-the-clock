@@ -1,0 +1,38 @@
+{
+  "base": {
+    "tests": 973,
+    "suites": 0,
+    "pass": 964,
+    "fail": 9,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1034829.9735
+  },
+  "final": {
+    "tests": 1014,
+    "suites": 0,
+    "pass": 1005,
+    "fail": 9,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1045476.5825
+  },
+  "newFailures": [],
+  "sameFailures": true,
+  "focused": {
+    "pass": 41,
+    "fail": 0
+  },
+  "browser": {
+    "pass": 13,
+    "fail": 0
+  },
+  "builds": {
+    "owner": 0,
+    "widget": 0
+  },
+  "sourceCommit": "e9342d6b04eb6d6a53fb00f51f80ab8afab812f6",
+  "verifiedBeforeAndAfter": true
+}

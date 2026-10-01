@@ -1,0 +1,58 @@
+{
+  "passed": 13,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Built dashboard exposes functional owner integrations",
+      "passed": true
+    },
+    {
+      "name": "leads real browser CSV download is tenant-scoped and formula-protected",
+      "passed": true
+    },
+    {
+      "name": "quote-requests real browser CSV download is tenant-scoped",
+      "passed": true
+    },
+    {
+      "name": "bookings real browser CSV download is tenant-scoped",
+      "passed": true
+    },
+    {
+      "name": "HTTPS webhook saves and reveals its signing secret once",
+      "passed": true
+    },
+    {
+      "name": "Readback omits signing secret and reports disabled test delivery",
+      "passed": true
+    },
+    {
+      "name": "All three new entity events are visible as durable pending deliveries",
+      "passed": true
+    },
+    {
+      "name": "Secret rotation cancels historical pending deliveries",
+      "passed": true
+    },
+    {
+      "name": "Per-event toggles persist",
+      "passed": true
+    },
+    {
+      "name": "Invalid/private HTTP destination fails visibly without replacing the saved endpoint",
+      "passed": true
+    },
+    {
+      "name": "Switching tenants resets the endpoint and removes the prior owner secret",
+      "passed": true
+    },
+    {
+      "name": "Owner removes webhook from the dashboard",
+      "passed": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "passed": true
+    }
+  ]
+}

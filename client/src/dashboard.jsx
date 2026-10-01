@@ -1,3 +1,4 @@
+import OwnerIntegrations from './ownerIntegrations.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import { api, go } from './api.js';
@@ -379,6 +380,7 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {dashboard.role === 'owner' && <OwnerIntegrations />}
         <ErrorMessage error={error} />
       </main>
     </AppShell>

@@ -1,0 +1,31 @@
+{
+  "label": "source-final-cold",
+  "stats": {
+    "tests": 1014,
+    "suites": 0,
+    "pass": 1005,
+    "fail": 9,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1045476.5825
+  },
+  "exitCode": 1,
+  "failures": [
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "voice tool runtime persists a safe review quote and lead without exposing internal identities",
+    "voice runtime binds availability to quote plus lead and sequences one hold before one confirmation",
+    "test/voicePromptCompiler.spec.mjs",
+    "tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields",
+    "quote release requires an affirmative recap confirmation and availability requires an address-bound lead",
+    "dispatcher rejects handler results containing raw rates instead of exposing them",
+    "mutations are idempotent and conflicting reuse of a tool call id is rejected",
+    "test/voiceWebSocketServer.spec.mjs"
+  ],
+  "sha256": "256ab630713c048eeefbc259b47fde69dc84d780cee74e32d049ed966b2c04d5",
+  "originalCommit": "d03a2a3b5e80eb78ca40d3620d0f6dd47d54e809",
+  "sourceCommit": "e9342d6b04eb6d6a53fb00f51f80ab8afab812f6",
+  "newFailures": [],
+  "sameFailureSetAsBaseline": true,
+  "passingIncrease": 41
+}

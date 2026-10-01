@@ -1,3 +1,5 @@
+import { createOutboundWebhookService } from './outboundWebhookService.js';
+import { installOwnerIntegrationRoutes } from './ownerIntegrationRoutes.js';
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -124,6 +126,7 @@ function requireOperatorAccess(req, res, next) {
 
 migrate();
 migrateLegacyGoogleCalendarCredentials();
+const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
@@ -174,6 +177,7 @@ app.post('/api/auth/forgot-password', asyncHandler(forgotPassword));
 app.post('/api/auth/reset-password', asyncHandler(resetPassword));
 app.get('/api/auth/verify-email', verifyEmail);
 installAccountRoutes(app, {requireAuth, asyncHandler});
+installOwnerIntegrationRoutes(app,{service:outboundWebhooks,ownerQuery,requireAuth,requireOperatorAccess,asyncHandler});
 app.post('/api/admin/login', asyncHandler(adminLogin));
 
 if (billingConfig) {
@@ -485,8 +489,11 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
+
+const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
+httpServer.on('close',stopWebhookWorker);
 
 export default app;
