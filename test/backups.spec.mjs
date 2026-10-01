@@ -1,28 +1,9 @@
-import { randomBytes, randomUUID } from 'node:crypto';
-import { encryptCredentialPayload, decryptCredentialPayload } from './credentialEncryption.js';
-import { hasOperatorAccess } from './planAccess.js';
-import { WEBHOOK_EVENTS } from './outboundWebhookSchema.js';
-import { resolveWebhookDestination, postWebhook, signWebhook, webhookDispatchEnabled } from './outboundWebhookTransport.js';
-
-export const WEBHOOK_RETRY_DELAYS_MS = Object.freeze([60_000, 300_000, 900_000, 3_600_000, 10_800_000, 43_200_000, 86_400_000]);
-const LEASE_MS = 60_000;
-const flagFor = type => ({'lead.created':'leadsEnabled','quote.requested':'quotesEnabled','appointment.booked':'bookingsEnabled'})[type];
-
-function transaction(database, work) {
-  if (typeof database.transaction === 'function') return database.transaction(work).immediate();
-  database.exec('BEGIN IMMEDIATE');
-  try { const result = work(); database.exec('COMMIT'); return result; }
-  catch (error) { database.exec('ROLLBACK'); throw error; }
-}
-function problem(message, statusCode = 400) {
-  const error = new Error(message); error.statusCode = statusCode; return error;
-}
-function safePayload(row) {
-  const input = JSON.parse(row.payloadJson);
-  if (!input || input.id !== row.aggregateId) throw new Error('Webhook payload binding failed');
-  const fields = {
-    'lead.created': ['id','createdAt','customerName','phone','email','service','type','status'],
-    'quote.requested': ['id','cre…5978 tokens truncated…rt Database from 'better-sqlite3';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import Database from 'better-sqlite3';
 import {createSnapshot,verifyBackup,restoreBackup,listSnapshots,startBackupScheduler} from '../server/src/backups.js';
 
 const AT=Date.parse('2026-10-01T12:00:00Z');

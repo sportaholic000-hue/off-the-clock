@@ -1,3 +1,4 @@
+import './deploymentEnvironment.js';
 import Database from 'better-sqlite3';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +14,10 @@ mkdirSync(dirname(databasePath), { recursive: true });
 
 export const db = new Database(databasePath);
 db.pragma('foreign_keys = ON');
+if(process.env.NODE_ENV === 'production') {
+  db.pragma('journal_mode = WAL');
+  db.pragma('synchronous = FULL');
+}
 
 export function migrate() {
   return migrateDatabase(db);

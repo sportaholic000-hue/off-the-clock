@@ -380,3 +380,17 @@ test('a sustained backlog from the first worker batch cannot starve later owners
   assert.equal(f.calls.some(call=>call.destination.hostname==='z-later.example.invalid'),true);
   assert.equal(f.rows('busy-00').filter(row=>row.status==='DELIVERED').length,2);
 });
+
+test('stopping the webhook worker waits for an active signed delivery and its database completion',async t=>{
+  const hold=setInterval(()=>{},1000);t.after(()=>clearInterval(hold));
+  let entered,release,deliveries=0;
+  const started=new Promise(resolve=>{entered=resolve;});
+  const f=fixture(t,{deliver:async()=>{deliveries++;entered();await new Promise(resolve=>{release=resolve;});return 204;}});
+  await f.save('a');f.lead('a');
+  const stop=f.service.start({intervalMs:5});
+  await started;let finished=false;const stopping=stop().then(()=>{finished=true;});
+  await new Promise(resolve=>setTimeout(resolve,30));
+  assert.equal(finished,false);assert.equal(f.rows('a')[0].status,'DELIVERING');
+  release();await stopping;assert.equal(f.rows('a')[0].status,'DELIVERED');assert.equal(f.rows('a')[0].attemptCount,1);
+  await new Promise(resolve=>setTimeout(resolve,30));assert.equal(deliveries,1);
+});

@@ -1,3 +1,4 @@
+import {configureClientAddress} from '../server/src/clientAddress.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -9,9 +10,9 @@ const baseEnv = { DEMO_ENABLED: 'true', GEMINI_API_KEY: 'test-key-123', DEMO_ALL
 function harness(envPatch = {}, { mint = () => ({ ok: true, body: { name: 'auth_tokens/abc' } }) } = {}) {
   const db = new Database(':memory:'); const calls = []; let clock = Date.parse('2026-10-01T12:00:00Z');
   const fetchImpl = async (url, init) => { calls.push({ url, init, body: JSON.parse(init.body) }); const m = mint(calls.length); return { ok: m.ok, status: m.ok ? 200 : 500, json: async () => m.body }; };
-  const app = express(); installLiveDemoRoutes(app, { db, env: { ...baseEnv, ...envPatch }, fetchImpl, now: () => clock });
+  const app = express(); configureClientAddress(app,{mode:envPatch.TRUST_PROXY || 'none'}); installLiveDemoRoutes(app, { db, env: { ...baseEnv, ...envPatch }, fetchImpl, now: () => clock });
   const server = app.listen(0); const port = server.address().port;
-  const post = (body, { origin = ORIGIN, xff, raw } = {}) => fetch(`http://127.0.0.1:${port}/api/demo/session`, { method: 'POST', headers: { 'content-type': 'application/json', ...(origin ? { origin } : {}), ...(xff ? { 'x-forwarded-for': xff } : {}) }, body: raw ?? JSON.stringify(body) }).then(async r => ({ status: r.status, headers: r.headers, json: await r.json().catch(() => null) }));
+  const post = (body, { origin = ORIGIN, xff, raw } = {}) => fetch(`http://127.0.0.1:${port}/api/demo/session`, { method: 'POST', headers: { 'content-type': 'application/json', ...(origin ? { origin } : {}), ...(xff ? { 'x-forwarded-for': xff, ...(envPatch.TRUST_PROXY === 'railway' ? {'x-real-ip':xff} : {}) } : {}) }, body: raw ?? JSON.stringify(body) }).then(async r => ({ status: r.status, headers: r.headers, json: await r.json().catch(() => null) }));
   return { db, calls, post, port, advance: ms => { clock += ms; }, close: () => server.close() };
 }
 
@@ -60,23 +61,23 @@ test('two sessions per visitor per rolling hour; spoofed forwarding headers do n
   assert.equal(third.status, 429); assert.equal(third.json.error, 'hourly'); assert.equal(h.calls.length, 2);
   h.advance(3600001); assert.equal((await h.post({ agent: 'miles' })).status, 200); h.close();
 });
-test('trusted proxy hops read the visitor address from X-Forwarded-For', async () => {
-  const h = harness({ DEMO_TRUSTED_PROXY_HOPS: '1', DEMO_MAX_CONCURRENT: '50' });
+test('the shared proxy mode gives the demo the canonical edge address', async () => {
+  const h = harness({ TRUST_PROXY: 'railway', DEMO_MAX_CONCURRENT: '50' });
   for (const ip of ['1.1.1.1', '1.1.1.1']) assert.equal((await h.post({ agent: 'miles' }, { xff: ip })).status, 200);
   assert.equal((await h.post({ agent: 'miles' }, { xff: '1.1.1.1' })).status, 429);
   assert.equal((await h.post({ agent: 'miles' }, { xff: '2.2.2.2' })).status, 200);
-  assert.equal(clientIp({ socket: { remoteAddress: '10.0.0.1' }, headers: { 'x-forwarded-for': 'spoof, 3.3.3.3' } }, 1), '3.3.3.3');
+  assert.equal(clientIp({ socket: { remoteAddress: '10.0.0.1' }, headers: { 'x-forwarded-for': 'spoof, 3.3.3.3' } }, 1), '10.0.0.1');
   assert.equal(clientIp({ socket: { remoteAddress: '10.0.0.1' }, headers: { 'x-forwarded-for': '3.3.3.3' } }, 0), '10.0.0.1');
   h.close();
 });
 test('concurrency ceiling counts sessions still inside their token lifetime', async () => {
-  const h = harness({ DEMO_MAX_CONCURRENT: '1', DEMO_TRUSTED_PROXY_HOPS: '1' });
+  const h = harness({ DEMO_MAX_CONCURRENT: '1', TRUST_PROXY: 'railway' });
   assert.equal((await h.post({ agent: 'miles' }, { xff: '1.1.1.1' })).status, 200);
   const busy = await h.post({ agent: 'miles' }, { xff: '2.2.2.2' }); assert.equal(busy.status, 429); assert.equal(busy.json.error, 'busy');
   h.advance(210001); assert.equal((await h.post({ agent: 'miles' }, { xff: '2.2.2.2' })).status, 200); h.close();
 });
 test('daily cap', async () => {
-  const h = harness({ DEMO_DAILY_SESSION_CAP: '2', DEMO_MAX_CONCURRENT: '50', DEMO_TRUSTED_PROXY_HOPS: '1' });
+  const h = harness({ DEMO_DAILY_SESSION_CAP: '2', DEMO_MAX_CONCURRENT: '50', TRUST_PROXY: 'railway' });
   assert.equal((await h.post({ agent: 'miles' }, { xff: '1.1.1.1' })).status, 200);
   assert.equal((await h.post({ agent: 'miles' }, { xff: '2.2.2.2' })).status, 200);
   const d = await h.post({ agent: 'miles' }, { xff: '3.3.3.3' }); assert.equal(d.status, 429); assert.equal(d.json.error, 'daily');
