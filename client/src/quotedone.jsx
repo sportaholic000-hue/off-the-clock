@@ -119,7 +119,7 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
  return <main ref={mainRef} className="pricebook-page" aria-busy={sending||catalogLoading}>
   <PageHeader eyebrow="QUOTEDONE" title="Request an estimate" description="Tell us about the work and its measurements. Check the job details before receiving your estimate."/>
   {catalogLoading&&<p role="status">Loading available services…</p>}
-  {catalogError&&<><ErrorMessage error={catalogError}/><Button variant="secondary" onClick={loadCatalog}>Retry loading services</Button></>}
+  {catalogError&&<><div role="alert"><ErrorMessage error={catalogError}/></div><Button variant="secondary" onClick={loadCatalog}>Retry loading services</Button></>}
   {!catalogLoading&&!catalogError&&!services.length&&!result&&<Notice>No services are currently available for online estimates. Please contact the business.</Notice>}
   {result?<><QuoteResult result={result}/>{!catalogLoading&&!catalogError&&(renderNextSteps?renderNextSteps(result,nextStepProps):mode==='pricing-only-v2'?<WidgetBooking key={result.quoteId} {...nextStepProps}/>:null)}<Button variant="secondary" onClick={another} disabled={bookingPending}>Start another request</Button></>
    :prepared?<section className="editor-section">
@@ -172,7 +172,7 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
     </>}
     {(!progressive||legacy||pending)&&<Button onClick={send} disabled={sending||(!pending&&(!serviceId||catalogLoading||!!catalogError))}>{sending?'Checking request':pending?'Retry saved request':'Submit estimate request'}</Button>}
    </>}
-   <ErrorMessage error={error}/>
+   {error&&<div role="alert"><ErrorMessage error={error}/></div>}
  </main>;
 }
 

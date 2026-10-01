@@ -30,10 +30,14 @@ export function createWidgetRequest(origin) {
     try {
       const response=await fetch(new URL(path,base.origin),{method,credentials:'omit',signal:controller.signal,
         headers:{accept:'application/json',...(body===undefined?{}:{'content-type':'application/json'}),...(idempotencyKey?{'Idempotency-Key':idempotencyKey}:{})},
-        ...(body===undefined?{}:{body:JSON.stringify(body)})});
+        ...(body===undefined?{}:{body:JSON.stringify(body)})}).catch(error=>{
+          if(error?.name==='AbortError')throw error;
+          throw new Error('The estimate service could not be reached. Please retry the same request.');
+        });
       const payload=await response.json().catch(()=>null);
       if(!response.ok){
-        const error=new Error(payload?.error||payload?.message||'The request could not be completed. Please try again.');
+        const unavailable=path.startsWith('/api/public/quote/')&&[403,404].includes(response.status);
+        const error=new Error(unavailable?'Online estimates are unavailable from this page. Please contact the business.':payload?.error||payload?.message||'The request could not be completed. Please try again.');
         error.status=response.status;error.code=payload?.code;error.details=payload?.details;throw error;
       }
       if(!payload||typeof payload!=='object')throw new Error('The business response could not be confirmed. Please try again.');
