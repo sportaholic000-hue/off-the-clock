@@ -32,6 +32,8 @@ jobs:
           "$RUNNER_TEMP/widget-browser/node_modules/.bin/playwright" install --with-deps chromium
       - name: Build owner application and widget
         run: npm --prefix client run build
+      - name: Focused widget transport and retry regressions
+        run: node --test client/test/widget-transport.test.mjs test/widgetEmbed.spec.mjs
       - name: Exercise separate-origin contractor website
         env:
           WIDGET_BROWSER_MODULE: ${{ runner.temp }}/widget-browser/node_modules/playwright

@@ -20,8 +20,8 @@ const assets='http://127.0.0.1:4790',site='http://127.0.0.1:4791',denied='http:/
 const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
 assert.equal(sourceCommit,process.env.WIDGET_SOURCE_SHA||sourceCommit);
 const rows=[],wire=[],pageErrors=[],servers=[],pages=new Set();
-const omitted=new Set(['password','passwordHash','authorization','token','bookingToken','bookingTokenReceipt','bookingTokenHash']);
-const safe=value=>JSON.parse(JSON.stringify(value,(key,value)=>omitted.has(key)?'[SYNTHETIC SECRET OMITTED]':value));
+const omitted=new Set(['password','passwordHash','authorization','cookie','set-cookie','token','bookingToken','bookingTokenReceipt','bookingTokenHash']);
+const safe=value=>JSON.parse(JSON.stringify(value,(key,value)=>omitted.has(key)?'[SYNTHETIC SECRET OMITTED]':typeof value==='string'?value.replace(/\/api\/public\/bookings\/[^/\s?]+/g,'/api/public/bookings/[SYNTHETIC TOKEN OMITTED]'):value));
 function save(name,value){fs.writeFileSync(path.join(published,name),JSON.stringify(safe(value),null,2));}
 function slug(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');}
 async function listen(server,port){servers.push(server);await new Promise(resolve=>server.listen(port,'127.0.0.1',resolve));}
@@ -114,7 +114,10 @@ async function finish(p,prepared){
  return {body,result,receipt};
 }
 function comparable(value){
- return Object.fromEntries(['resultType','lowEstimate','midEstimate','highEstimate','priceUnit','taxDisclosure','options','pricedEstimate','fullJobTotal','scopeLabel','partialOptionsNotice'].filter(key=>Object.hasOwn(value,key)).map(key=>[key,value[key]]));
+ // Owner preview intentionally includes private calculation records. Compare
+ // every customer price/disclosure field, including each option, recursively.
+ const fields=['resultType','tierName','lowEstimate','midEstimate','highEstimate','priceUnit','taxTreatment','priceDrivers','disclaimer','skippedAddons','rangeBufferUsed','options','pricedEstimate','fullJobTotal','scopeLabel','partialOptionsNotice'];
+ return Object.fromEntries(fields.filter(key=>Object.hasOwn(value,key)).map(key=>[key,key==='options'?value[key].map(comparable):key==='pricedEstimate'?comparable(value[key]):value[key]]));
 }
 async function preview(saved){
  const response=await app.request('POST','/api/pricebook/preview',{...saved.body,revision:(await f.read()).revision},f.owner.token);
@@ -182,7 +185,8 @@ try{
    await p.screenshot({path:path.join(published,'widget-'+width+'-form.png')});
    await fill(p);const prepared=await prepare(p),saved=await finish(p,prepared);
    assert.equal(saved.result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(saved.result.midEstimate,50);
-   assert.equal(saved.result.priceUnit,'per visit');await p.getByText('$50 per visit',{exact:true}).waitFor();
+   assert.equal(saved.result.priceUnit,'per visit');
+   assert.doesNotMatch(JSON.stringify(saved.result),/"(?:lineItems|calculationRecord|rateCents|markupPercent|priceBasisByCategory)"\s*:/);await p.getByText('$50 per visit',{exact:true}).waitFor();
    await p.getByText('No tax added.',{exact:true}).waitFor();
    assert.ok(!/\bmarkup\b|\bmargin\b|mowingBaseRatePerSqft|0\.005/.test(await p.getByRole('dialog').innerText()));
    const ownerPreview=await preview(saved);
@@ -353,11 +357,13 @@ try{
    const next=p.waitForResponse(r=>r.url()===assets+f.url+'/prepare'&&r.request().method()==='POST');
    await p.getByRole('button',{name:'Submit estimate request',exact:true}).click();
    const response=await next,value=await response.json();
-   assert.equal(response.status(),409,JSON.stringify(value));
+   assert.equal(response.status(),200,JSON.stringify(value));assert.equal(value.status,'needs_details');
    assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before);
    assert.equal(await p.getByRole('button',{name:'Get estimate',exact:true}).count(),0);
-   assert.equal(await p.getByRole('alert').count(),1);
-   save('stale-service.json',{status:response.status(),value,body:response.request().postDataJSON(),stored:false});
+   await p.getByText('Some details need checking',{exact:true}).waitFor();
+   const saved=await finish(p,value);
+   assert.equal(saved.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(saved.result.midEstimate,undefined);
+   save('stale-service.json',{status:response.status(),value,body:response.request().postDataJSON(),saved});
    await hostOkay(p);
   }finally{const restored=await f.read();restored.services[0].active=true;await f.call('POST','/api/pricebook/save',restored);await f.approve();}
  });

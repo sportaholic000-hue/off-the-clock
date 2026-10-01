@@ -32,3 +32,12 @@ test('widget retry keeps the original booking idempotency key',async t=>{
  assert.equal((await request('/api/public/bookings/synthetic-token/preference',options)).status,'REQUESTED');
  assert.equal(requests[0].body,requests[1].body);assert.equal(requests[0].headers['Idempotency-Key'],requests[1].headers['Idempotency-Key']);
 });
+
+test('unavailable public quote access shows customer wording without changing rejection metadata',async t=>{
+ let status=403;
+ t.mock.method(globalThis,'fetch',async()=>new Response(JSON.stringify({error:'QuoteDone or Scale is required',code:'ACCESS_UNAVAILABLE'}),{status}));
+ const request=createWidgetRequest('https://quotes.example');
+ for(status of [403,404])await assert.rejects(request('/api/public/quote/synthetic-key'),error=>error.message==='Online estimates are unavailable from this page. Please contact the business.'&&error.status===status&&error.code==='ACCESS_UNAVAILABLE');
+ status=403;
+ await assert.rejects(request('/api/public/bookings/synthetic-token/availability'),error=>error.message==='QuoteDone or Scale is required'&&error.status===403&&error.code==='ACCESS_UNAVAILABLE');
+});
