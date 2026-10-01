@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {randomBytes,createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
+import {execFileSync,spawnSync} from 'node:child_process';
 
 const image=process.argv[2] || 'otc-railway-proof';
 const work=fs.mkdtempSync(path.join(os.tmpdir(),'otc-docker-proof-'));
@@ -28,7 +28,7 @@ async function ready(name) {
  const port=docker('port',name,'3000/tcp').split(':').at(-1),url='http://127.0.0.1:'+port;
  for(let i=0;i<120;i++) {
   try{if((await fetch(url+'/api/health',{signal:AbortSignal.timeout(2000)})).status===200)return url;}catch{}
-  if(docker('inspect','--format','{{.State.Running}}',name)!=='true')throw new Error('Container stopped before readiness: '+docker('logs',name));
+  if(docker('inspect','--format','{{.State.Running}}',name)!=='true'){const logs=spawnSync('docker',['logs',name],{encoding:'utf8'});throw new Error('Container stopped before readiness: '+docker('inspect','--format','{{json .State}}',name)+' '+logs.stdout+' '+logs.stderr);}
   await new Promise(resolve=>setTimeout(resolve,500));
  }
  throw new Error('Readiness timeout');
