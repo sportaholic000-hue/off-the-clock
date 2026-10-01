@@ -1,10 +1,6 @@
-run 36933824847 sha fece08248e6eaa081f176f166d8d728ecf64a59c
-Summary: {"tests":"1052","pass":"1039","fail":"11","cancelled":"0","skipped":"2","todo":"0"}
+run 36934361215 sha d64e25117253ab8f9199f59711f437a897a0963a
+Summary: {"tests":"1052","pass":"1041","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
-::error::New test failure: production derives database, price books, backups and temporary writes from the volume
-::error::New test failure: production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
-not ok 270 - production derives database, price books, backups and temporary writes from the volume
-not ok 278 - production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup
 not ok 29 - test/googleGenAiLiveAdapter.spec.mjs
 not ok 1013 - voice tool runtime persists a safe review quote and lead without exposing internal identities
 not ok 1014 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
