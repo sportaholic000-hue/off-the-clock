@@ -25,7 +25,7 @@ async function child(t,env,registry) {
   await new Promise((resolve,reject)=>{
     proc.on('message',message=>{if(message.ready)resolve();});
     proc.once('exit',()=>reject(new Error('Fixture did not start: '+output)));
-    setTimeout(()=>reject(new Error('Fixture startup timeout: '+output)),20000).unref();
+    setTimeout(()=>reject(new Error('Fixture startup timeout: '+output)),(process.platform==='win32'?60000:20000)).unref();
   });
   const rpc=command=>new Promise((resolve,reject)=>{
     const id=randomUUID(),listener=message=>{if(message.id===id){proc.off('message',listener);message.error?reject(new Error(message.error)):resolve(message.result);}};
@@ -38,7 +38,7 @@ async function child(t,env,registry) {
   };
   return {proc,rpc,stop,env:clean,url:'http://127.0.0.1:'+port};
 }
-test('production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup', {timeout:180000},async t=>{
+test('production app writes to persistent storage, survives two process restarts, and starts from a CLI-restored backup', {timeout:process.platform==='win32'?240000:180000},async t=>{
   const volume=fs.mkdtempSync(path.join(os.tmpdir(),'otc-process-')),processes=[];
   t.after(async()=>{for(const proc of processes)if(proc.exitCode===null&&proc.signalCode===null){const ended=once(proc,'exit');proc.kill('SIGKILL');await ended;}fs.rmSync(volume,{recursive:true,force:true});});
   const env=productionEnv(volume,{DEMO_ALLOWED_ORIGINS:'https://www.offtheclockai.com'});
@@ -55,7 +55,7 @@ test('production app writes to persistent storage, survives two process restarts
   await first.rpc('seed');const written=await first.rpc('read'),snapshot=await first.rpc('backup');
   assert.equal(written.databasePath,path.join(volume,'off-the-clock.sqlite'));
   await first.stop();
-  const second=await child(t,env),persisted=await second.rpc('read');
+  const second=await child(t,env,processes),persisted=await second.rpc('read');
   assert.deepEqual(persisted.rows,written.rows);assert.deepEqual(persisted.books,written.books);assert.ok(persisted.snapshots>=1);await second.stop();
   const target=path.join(volume,'restores','drill');
   const restore=spawn(process.execPath,['server/scripts/restore.js','--backup',snapshot.bundle,'--target',target],{cwd:project,env:second.env,windowsHide:true,stdio:['ignore','pipe','pipe']});
