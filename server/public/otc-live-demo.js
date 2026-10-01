@@ -234,7 +234,8 @@ return true;}}registerProcessor('otc-capture',P);`;
         lastServerMsg = Date.now(); lastActivity = Math.max(lastActivity, Date.now());
         if (s.interrupted) { stopPlayback(); agentLine = null; }
         if (s.inputTranscription && s.inputTranscription.text) { agentLine = null; line('user', s.inputTranscription.text); awaitingAgent = true; els.activity.textContent = 'Listening…'; }
-        if (s.outputTranscription && s.outputTranscription.text) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
+        // Gemini sometimes emits placeholders such as "<no speech detected>"; never show those to visitors.
+        if (s.outputTranscription && s.outputTranscription.text && !/^\s*<[^>]*>\s*$/.test(s.outputTranscription.text)) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
         if (s.turnComplete) {
           agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
