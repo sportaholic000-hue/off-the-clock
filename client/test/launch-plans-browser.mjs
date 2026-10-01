@@ -78,9 +78,14 @@ try {
   }
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:path.join(evidence,plan+'-onboarding.png'),fullPage:true});
+  if(plan==='QuoteDone') {
+   await page.goto(fixture.origin+'/onboarding?step=7',{waitUntil:'domcontentloaded'});
+   await page.getByRole('heading',{name:'Build your price book',exact:true}).waitFor();
+   assert.equal(await page.getByRole('heading',{name:'Activate your QuoteDone plan',exact:true}).count(),0);
+  }
   const activated=fixture.db.prepare('SELECT plan,planStatus,trialEndsAt FROM users WHERE id=?').get(account.id);
   rows.push({plan,passed:true,registration,checkoutPrice:checkout.parameters.line_items[0].price,activated,
-    jurisdictionUnlocked:plan==='QuoteDone',queryDidNotActivate:true});
+    jurisdictionUnlocked:plan==='QuoteDone',priceBookSetupUnlocked:plan==='QuoteDone',queryDidNotActivate:true});
   await context.close();
  }
  assert.deepEqual(errors,[]);

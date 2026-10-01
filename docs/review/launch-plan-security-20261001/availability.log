@@ -1,0 +1,4 @@
+Off The Clock AI server listening on 0
+[email:console] { provider: 'console', simulated: true }
+[email:console] { provider: 'console', simulated: true }
+PASS: real server preserves both plans and disables checkout when provider operations are off

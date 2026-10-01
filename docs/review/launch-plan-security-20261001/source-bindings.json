@@ -1,0 +1,139 @@
+{
+  "baselineCommit": "4df8b23dab66beba557a018d6e351a4b13febd5c",
+  "productionSourceCommit": "8b1ad299ce9b49c5ee0eddb879090d2e828bd17d",
+  "node": "22.23.2",
+  "npm": "10.9.8",
+  "source": [
+    {
+      "path": "client/src/billing.jsx",
+      "bytes": 8050,
+      "gitBlob": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2",
+      "sha256": "abd2b4838ae3ba2d5e8d9a44cf01780fc9f7e846a1ccb13ad1e700ea995857ce"
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "bytes": 3586,
+      "gitBlob": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28",
+      "sha256": "c454c9f7e2556dab69a27b42c114fade8ae7e8e1ae1a3201c3bab17343911077"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "bytes": 44005,
+      "gitBlob": "1fddc78ce4407641aa1ef1e37fad5d16e791492d",
+      "sha256": "0289ff453699842cb7a3083dc508b9ea76ddd4409b16e6657289d55fd2839628"
+    },
+    {
+      "path": "client/test/billing-browser.mjs",
+      "bytes": 14340,
+      "gitBlob": "eafed56e0b926e2c526726c31e64b02e346d3aeb",
+      "sha256": "c5dd729e5942fe7d61b5c1c0937265f467a4d5635283a862f422a3f12a80fedd"
+    },
+    {
+      "path": "client/test/billing-transport.test.mjs",
+      "bytes": 4040,
+      "gitBlob": "a15fc1dcd47ede507c92cd0a449640f87def0a02",
+      "sha256": "bd7795ea4236d28378006a0e02509ea70075cd8458b061c9b226c4ca468375d6"
+    },
+    {
+      "path": "client/test/launch-plans-browser.mjs",
+      "bytes": 6958,
+      "gitBlob": "56993de069e6c1cba9e431ca7bef5b9595bd8dd4",
+      "sha256": "2614c35e92f497e73b6af491d2e49fdb2dba678a4253fc048688930a13476a4b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 163239,
+      "gitBlob": "8df54af5fd45e1618ccd1fc977cfbcb681ae7462",
+      "sha256": "40aaeca4cd10689cbef9fe27077cb5c214147346e70518f15748cc22e42388c2"
+    },
+    {
+      "path": "server/package.json",
+      "bytes": 506,
+      "gitBlob": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8",
+      "sha256": "d42dd1934a51e0bd920ad1a4adec57692b82ac6bfaef430ce7f81cc57372a919"
+    },
+    {
+      "path": "server/src/auth.js",
+      "bytes": 19012,
+      "gitBlob": "63c6556c5fd8a99d888ac47fdebccf72d5a40677",
+      "sha256": "3f9c8cbd8ea4bdca8b41a75770c849039cc7a76b8f53aa26e31eff82224d0819"
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "bytes": 4507,
+      "gitBlob": "760804b2be23b09d9fd1b648d1540fbe8bfe592d",
+      "sha256": "4f8604f19725ea0ddb5305cd78eb7e78915f8f80925c609076f6d4fcbad74279"
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "bytes": 30194,
+      "gitBlob": "cd411e15a57d8003ce209da2b1e04584341db309",
+      "sha256": "a2cd4a039de1a9207a780af4d6e4abf933a6ebacae59f64d676c658d3683b3d9"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "bytes": 26489,
+      "gitBlob": "fbb43b0ecdbc1365448c73f35d476c0988431b40",
+      "sha256": "ae54faf2e264ad0d7c92b8d208ec09b66a5ff92f2b45eda56d5534503bb270cd"
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "bytes": 17213,
+      "gitBlob": "1b26d4ea925569917fe43d1bbefc95621fcd3bba",
+      "sha256": "fe2ddeff88dcf97196d578a3fda0efa36f8d17e410f6bd1e6d42e29b38b0831e"
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "bytes": 3603,
+      "gitBlob": "f66d2794be4237d53c71897e24f40b4d2627f81d",
+      "sha256": "ca630f43660ee5dd9cf5fd748a27c0347a61394a0a70e84086fec01a07f4c208"
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "bytes": 31717,
+      "gitBlob": "8f4284f88f31bfdb4267562911c8516e87975c3a",
+      "sha256": "3e35968a2bc2c1ba432d0b1e477b97c77b621339571f6060fc8141df3d632e19"
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "bytes": 6432,
+      "gitBlob": "c0183c945f329ad9bbc9c517d4fd123d1d550344",
+      "sha256": "bc116ea46610c808cbeb328cbf0ce661f67834ee0dae78aaaa7f4fbe25e9eddf"
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "bytes": 7896,
+      "gitBlob": "c69f34875b1e31ad79a9f1f23e7310408e5006c6",
+      "sha256": "6ca812f5bf7f0a1425087ae31696882bd7241741c34045171e36089ab6e09ccb"
+    },
+    {
+      "path": "server/src/server.js",
+      "bytes": 20489,
+      "gitBlob": "42569ced581e8b9ebb18ff593962b1c639cc1ac8",
+      "sha256": "423291d2e121ade7eec06119c27609a165edd3aace91f3673ca0fe33b888d588"
+    },
+    {
+      "path": "verification/launch-plan-security/availability.mjs",
+      "bytes": 4406,
+      "gitBlob": "f84104abc09eec3c2f42911b17849216c0d6f92a",
+      "sha256": "30d889ec4938795f066caaf5265e7fa2b367cd067d7e51a2a78a78023cd3e0ef"
+    }
+  ],
+  "bundles": {
+    "assets/index-2qxNzUFJ.css": "f51b4ecd208fb6cbda0bd19ae09792a3226e7fbe9845b8aff9f6d55870b63e75",
+    "assets/index-BwE8BqCr.js": "109b6f7b83d553be712a960d83f7e5f5d9936761a3ad241b5059fd5bcf4171b2",
+    "index.html": "9367bc4183c1c619306fa1ddf14a18ae9b15b17ffbaee08218a859dae654173b",
+    "widget-app.js": "3846e1a38417e1e1356800240ccb9d0941df0a57932869d94adeb0483e7ab7fa",
+    "widget.js": "c14c95583dcd7213c55c9a1a65504c8db44bd242f6dd26f23c29dcb8547b307d"
+  },
+  "exits": {
+    "fullSuite": 1,
+    "signupBrowser": 0,
+    "billingBrowser": 0,
+    "planRegressions": 0,
+    "billingTransport": 0,
+    "bundles": 0,
+    "actualServer": 0,
+    "productionAudit": 0
+  }
+}

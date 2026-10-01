@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: Operator signup → verified trialing → correct onboarding access
+ok 1 - Operator signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 9557.7827
+  type: 'test'
+  ...
+# Subtest: Operator signup → verified active → correct onboarding access
+ok 2 - Operator signup → verified active → correct onboarding access
+  ---
+  duration_ms: 5722.7042
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified trialing → correct onboarding access
+ok 3 - QuoteDone signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 5263.1846
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified active → correct onboarding access
+ok 4 - QuoteDone signup → verified active → correct onboarding access
+  ---
+  duration_ms: 4774.0158
+  type: 'test'
+  ...
+# Subtest: Operator cannot unlock a trial without verified payment evidence
+ok 5 - Operator cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 4644.5162
+  type: 'test'
+  ...
+# Subtest: QuoteDone cannot unlock a trial without verified payment evidence
+ok 6 - QuoteDone cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 4751.3309
+  type: 'test'
+  ...
+# Subtest: Scale signup is rejected without creating an account
+ok 7 - Scale signup is rejected without creating an account
+  ---
+  duration_ms: 354.0838
+  type: 'test'
+  ...
+# Subtest: bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+ok 8 - bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+  ---
+  duration_ms: 10465.3998
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 93400.7344
