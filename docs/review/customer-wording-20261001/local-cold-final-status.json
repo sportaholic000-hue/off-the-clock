@@ -1,0 +1,8 @@
+{
+  "source": "b7b329f59303159618588c24d01747daf22be533",
+  "capturedAt": "2026-10-01T09:39:05.443Z",
+  "logLastModified": "2026-10-01T09:11:53.728Z",
+  "complete": false,
+  "reason": "No completed result file; extended local run stalled. No passing full-suite claim.",
+  "runnerTimeoutMinutes": 60
+}

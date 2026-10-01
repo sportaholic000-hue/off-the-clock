@@ -1,0 +1,40 @@
+{
+  "node": "22.23.2",
+  "dependencies": [
+    {
+      "package": "express",
+      "installed": "4.22.2",
+      "locked": "4.22.3"
+    },
+    {
+      "package": "better-sqlite3",
+      "installed": "11.10.0",
+      "locked": "11.10.0"
+    },
+    {
+      "package": "@google/genai",
+      "installed": "2.24.0",
+      "locked": "2.24.0"
+    },
+    {
+      "package": "vite",
+      "installed": "6.4.3",
+      "locked": "6.4.3"
+    },
+    {
+      "package": "react",
+      "installed": "19.2.7",
+      "locked": "19.2.7"
+    },
+    {
+      "package": "react-dom",
+      "installed": "19.2.7",
+      "locked": "19.2.7"
+    },
+    {
+      "package": "esbuild",
+      "installed": "0.25.12",
+      "locked": "0.25.12"
+    }
+  ]
+}

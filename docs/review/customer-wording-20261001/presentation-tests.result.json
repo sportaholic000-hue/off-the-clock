@@ -1,0 +1,20 @@
+{
+  "label": "presentation-tests",
+  "kind": "candidate",
+  "args": [
+    "--test",
+    "test/quotePresentation.spec.mjs"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 1345,
+  "counters": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "logSha256": "8d185583b920c2d9b39a6e365a3cf8378bfcab3c01b1312617d6afacf7db9529"
+}

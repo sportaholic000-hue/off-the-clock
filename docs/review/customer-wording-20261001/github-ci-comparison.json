@@ -1,0 +1,9 @@
+{
+  "source": "b7b329f59303159618588c24d01747daf22be533",
+  "upstreamSource": "fbf6e2767f1fae66fbc232c5d03a6ed4c9215364",
+  "baselineFailures": 28,
+  "finalFailures": 28,
+  "newFailures": [],
+  "removedFailures": [],
+  "sourceVerified": true
+}

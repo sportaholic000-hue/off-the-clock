@@ -1,0 +1,84 @@
+{
+  "source": "92e940269d600460fe25834652d09fa42bbe73d8",
+  "finalSource": "b7b329f59303159618588c24d01747daf22be533",
+  "applicationSourceUnchanged": true,
+  "tests": [
+    {
+      "name": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+      "pass": true
+    },
+    {
+      "name": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+      "pass": true
+    },
+    {
+      "name": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+      "pass": true
+    },
+    {
+      "name": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+      "pass": true
+    },
+    {
+      "name": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+      "pass": true
+    },
+    {
+      "name": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+      "pass": true
+    },
+    {
+      "name": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+      "pass": true
+    },
+    {
+      "name": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+      "pass": true
+    },
+    {
+      "name": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+      "pass": true
+    },
+    {
+      "name": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+      "pass": true
+    },
+    {
+      "name": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+      "pass": true
+    },
+    {
+      "name": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+      "pass": true
+    },
+    {
+      "name": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+      "pass": true
+    },
+    {
+      "name": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+      "pass": true
+    },
+    {
+      "name": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+      "pass": true
+    },
+    {
+      "name": "late 200 response cannot replace a new service preview",
+      "pass": true
+    },
+    {
+      "name": "late 400 response cannot replace a new service preview",
+      "pass": true
+    },
+    {
+      "name": "old completion cannot clear current loading and invalid input cannot retain old ready",
+      "pass": true
+    },
+    {
+      "name": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+      "pass": true
+    }
+  ],
+  "note": "Extracted from completed individual tests in an incomplete 25-minute cold run. This is not a passing full-suite claim."
+}

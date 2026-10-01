@@ -1,0 +1,454 @@
+TAP version 13
+# Subtest: customer wording 1: unspecified decking has one on-site per-sheet disclosure and no internal charge wording
+not ok 1 - customer wording 1: unspecified decking has one on-site per-sheet disclosure and no internal charge wording
+  ---
+  duration_ms: 532.0542
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'Any additional decking is priced per sheet and confirmed on site.',
+    +   'Additional decking requires a confirmed sheet count and a reviewed customer charge.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Any additional decking is priced per sheet and confirmed on site.'
+  actual:
+    0: 'Any additional decking is priced per sheet and confirmed on site.'
+    1: 'Additional decking requires a confirmed sheet count and a reviewed customer charge.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:10:121)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: customer wording 2: the existing roof layer count appears once
+not ok 2 - customer wording 2: the existing roof layer count appears once
+  ---
+  duration_ms: 241.2961
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:14:41)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: customer wording 3: biweekly mowing states its per-visit explanation once
+not ok 3 - customer wording 3: biweekly mowing states its per-visit explanation once
+  ---
+  duration_ms: 129.7942
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:17:114)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording coverage includes every registered service with a complete quote control
+ok 4 - customer wording coverage includes every registered service with a complete quote control
+  ---
+  duration_ms: 2.5147
+  type: 'test'
+  ...
+# Subtest: customer wording scan: ROOFING_REPLACEMENT
+not ok 5 - customer wording scan: ROOFING_REPLACEMENT
+  ---
+  duration_ms: 246.8924
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-ROOFING_REPLACEMENT
+    + actual - expected
+    
+    + [
+    +   'existing roof layers',
+    +   'included decking'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'existing roof layers'
+    1: 'included decking'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: ROOFING_REPAIR
+ok 6 - customer wording scan: ROOFING_REPAIR
+  ---
+  duration_ms: 332.4683
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLAT_ROOF_REPLACEMENT
+not ok 7 - customer wording scan: FLAT_ROOF_REPLACEMENT
+  ---
+  duration_ms: 132.8385
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-FLAT_ROOF_REPLACEMENT
+    + actual - expected
+    
+    + [
+    +   'existing membrane layers'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'existing membrane layers'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: FLAT_ROOF_REPAIR
+ok 8 - customer wording scan: FLAT_ROOF_REPAIR
+  ---
+  duration_ms: 154.4236
+  type: 'test'
+  ...
+# Subtest: customer wording scan: INTERIOR_PAINTING
+not ok 9 - customer wording scan: INTERIOR_PAINTING
+  ---
+  duration_ms: 103.7109
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-INTERIOR_PAINTING
+    + actual - expected
+    
+    + [
+    +   'wall coats'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'wall coats'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: EXTERIOR_PAINTING
+not ok 10 - customer wording scan: EXTERIOR_PAINTING
+  ---
+  duration_ms: 64.7342
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: 'EXTERIOR_PAINTING-installed'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    Owner-defined installed offering
+    This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. No tax added.
+  operator: 'doesNotMatch'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:231)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: FLOORING_INSTALL
+ok 11 - customer wording scan: FLOORING_INSTALL
+  ---
+  duration_ms: 1479.0916
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLOORING_REPLACEMENT
+ok 12 - customer wording scan: FLOORING_REPLACEMENT
+  ---
+  duration_ms: 132.2163
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FENCING_INSTALL
+not ok 13 - customer wording scan: FENCING_INSTALL
+  ---
+  duration_ms: 82.22
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: 'FENCING_INSTALL-installed'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    Owner-defined installed offering
+    This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 2 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware.. Gate posts and footings included in the gate price. No tax added.
+  operator: 'doesNotMatch'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:231)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: FENCING_REPLACEMENT
+not ok 14 - customer wording scan: FENCING_REPLACEMENT
+  ---
+  duration_ms: 103.1913
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: 'FENCING_REPLACEMENT-installed'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    Owner-defined installed offering
+    This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 2 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware.. Gate posts and footings included in the gate price. Removal: [SYNTHETIC] Remove the measured old fence and haul it away. Disposal is included. No tax added.
+  operator: 'doesNotMatch'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:231)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: SIDING_REPLACEMENT
+ok 15 - customer wording scan: SIDING_REPLACEMENT
+  ---
+  duration_ms: 451.2846
+  type: 'test'
+  ...
+# Subtest: customer wording scan: SIDING_REPAIR
+ok 16 - customer wording scan: SIDING_REPAIR
+  ---
+  duration_ms: 95.0914
+  type: 'test'
+  ...
+# Subtest: customer wording scan: CONCRETE_DRIVEWAY
+ok 17 - customer wording scan: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 118.0062
+  type: 'test'
+  ...
+# Subtest: customer wording scan: CONCRETE_PATIO_SLAB
+ok 18 - customer wording scan: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 1112.821
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_CLEANUP
+not ok 19 - customer wording scan: LANDSCAPING_CLEANUP
+  ---
+  duration_ms: 233.7714
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-LANDSCAPING_CLEANUP
+    + actual - expected
+    
+    + [
+    +   'cleanup area',
+    +   'debris level'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'cleanup area'
+    1: 'debris level'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: LANDSCAPING_MULCH
+not ok 20 - customer wording scan: LANDSCAPING_MULCH
+  ---
+  duration_ms: 120.1693
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-LANDSCAPING_MULCH
+    + actual - expected
+    
+    + [
+    +   'mulch volume',
+    +   'edging length'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'mulch volume'
+    1: 'edging length'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: LANDSCAPING_SOD
+not ok 21 - customer wording scan: LANDSCAPING_SOD
+  ---
+  duration_ms: 71.5699
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-LANDSCAPING_SOD
+    + actual - expected
+    
+    + [
+    +   'sod area'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'sod area'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:175)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: LANDSCAPING_PLANTING
+ok 22 - customer wording scan: LANDSCAPING_PLANTING
+  ---
+  duration_ms: 125.0365
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_MOWING
+not ok 23 - customer wording scan: LANDSCAPING_MOWING
+  ---
+  duration_ms: 104.5829
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\customer-wording-repairs-20261001\\test\\customerExplanation.spec.mjs:23:40'
+  failureType: 'testCodeFailure'
+  error: |-
+    catalog-LANDSCAPING_MOWING
+    + actual - expected
+    
+    + [
+    +   'Price is per visit.'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'Price is per visit.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/test/customerExplanation.spec.mjs:24:129)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: customer wording scan: CUSTOM
+ok 24 - customer wording scan: CUSTOM
+  ---
+  duration_ms: 87.6553
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 11
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8921.5751

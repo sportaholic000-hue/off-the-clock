@@ -1,0 +1,163 @@
+{
+  "baseline": "d03a2a3b5e80eb78ca40d3620d0f6dd47d54e809",
+  "source": "b7b329f59303159618588c24d01747daf22be533",
+  "summary": {
+    "sourceRoot": "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001",
+    "cases": 174,
+    "services": 20,
+    "options": 180,
+    "findings": 0,
+    "identicalCalculations": 174
+  },
+  "services": [
+    {
+      "serviceType": "ROOFING_REPLACEMENT",
+      "cases": 15,
+      "beforeFindings": [
+        "repeated fact: existing roof layers",
+        "repeated fact: included decking",
+        "internal wording: reviewed customer charge"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "ROOFING_REPAIR",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FLAT_ROOF_REPLACEMENT",
+      "cases": 9,
+      "beforeFindings": [
+        "repeated fact: existing membrane layers"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FLAT_ROOF_REPAIR",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "INTERIOR_PAINTING",
+      "cases": 12,
+      "beforeFindings": [
+        "repeated fact: wall coats",
+        "internal wording: Owner-defined installed offering",
+        "internal wording: Owner-defined itemized offering"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "EXTERIOR_PAINTING",
+      "cases": 6,
+      "beforeFindings": [
+        "internal wording: Owner-defined installed offering",
+        "internal wording: Owner-defined itemized offering"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FLOORING_INSTALL",
+      "cases": 36,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FLOORING_REPLACEMENT",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FENCING_INSTALL",
+      "cases": 6,
+      "beforeFindings": [
+        "internal wording: Owner-defined installed offering",
+        "internal wording: Owner-defined itemized offering"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "FENCING_REPLACEMENT",
+      "cases": 12,
+      "beforeFindings": [
+        "internal wording: Owner-defined installed offering",
+        "internal wording: Owner-defined itemized offering"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "SIDING_REPLACEMENT",
+      "cases": 15,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "SIDING_REPAIR",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "CONCRETE_DRIVEWAY",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "CONCRETE_PATIO_SLAB",
+      "cases": 15,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "LANDSCAPING_CLEANUP",
+      "cases": 3,
+      "beforeFindings": [
+        "repeated fact: cleanup area",
+        "repeated fact: debris level"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "LANDSCAPING_MULCH",
+      "cases": 3,
+      "beforeFindings": [
+        "repeated fact: mulch volume",
+        "repeated fact: edging length"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "LANDSCAPING_SOD",
+      "cases": 3,
+      "beforeFindings": [
+        "repeated fact: sod area"
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "LANDSCAPING_PLANTING",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "LANDSCAPING_MOWING",
+      "cases": 18,
+      "beforeFindings": [
+        "duplicate sentence: Price is per visit."
+      ],
+      "remainingFindings": 0
+    },
+    {
+      "serviceType": "CUSTOM",
+      "cases": 3,
+      "beforeFindings": [],
+      "remainingFindings": 0
+    }
+  ]
+}

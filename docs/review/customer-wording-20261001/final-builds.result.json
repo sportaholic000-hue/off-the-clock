@@ -1,0 +1,13 @@
+{
+  "label": "final-builds",
+  "kind": "candidate",
+  "args": [
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/build-both.cjs",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 131583,
+  "counters": {},
+  "logSha256": "4c5115d07b4f7b5534e35493435794cb193a0dd64d0f61795a463afe897e7bdb"
+}

@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: customer wording 1: unspecified decking has one on-site per-sheet disclosure and no internal charge wording
+ok 1 - customer wording 1: unspecified decking has one on-site per-sheet disclosure and no internal charge wording
+  ---
+  duration_ms: 377.9304
+  type: 'test'
+  ...
+# Subtest: customer wording 2: the existing roof layer count appears once
+ok 2 - customer wording 2: the existing roof layer count appears once
+  ---
+  duration_ms: 210.6534
+  type: 'test'
+  ...
+# Subtest: customer wording 3: biweekly mowing states its per-visit explanation once
+ok 3 - customer wording 3: biweekly mowing states its per-visit explanation once
+  ---
+  duration_ms: 139.6073
+  type: 'test'
+  ...
+# Subtest: customer wording coverage includes every registered service with a complete quote control
+ok 4 - customer wording coverage includes every registered service with a complete quote control
+  ---
+  duration_ms: 1.7605
+  type: 'test'
+  ...
+# Subtest: customer wording scan: ROOFING_REPLACEMENT
+ok 5 - customer wording scan: ROOFING_REPLACEMENT
+  ---
+  duration_ms: 1028.4158
+  type: 'test'
+  ...
+# Subtest: customer wording scan: ROOFING_REPAIR
+ok 6 - customer wording scan: ROOFING_REPAIR
+  ---
+  duration_ms: 124.8613
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLAT_ROOF_REPLACEMENT
+ok 7 - customer wording scan: FLAT_ROOF_REPLACEMENT
+  ---
+  duration_ms: 511.0404
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLAT_ROOF_REPAIR
+ok 8 - customer wording scan: FLAT_ROOF_REPAIR
+  ---
+  duration_ms: 190.0276
+  type: 'test'
+  ...
+# Subtest: customer wording scan: INTERIOR_PAINTING
+ok 9 - customer wording scan: INTERIOR_PAINTING
+  ---
+  duration_ms: 1250.1124
+  type: 'test'
+  ...
+# Subtest: customer wording scan: EXTERIOR_PAINTING
+ok 10 - customer wording scan: EXTERIOR_PAINTING
+  ---
+  duration_ms: 312.4752
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLOORING_INSTALL
+ok 11 - customer wording scan: FLOORING_INSTALL
+  ---
+  duration_ms: 2354.3844
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FLOORING_REPLACEMENT
+ok 12 - customer wording scan: FLOORING_REPLACEMENT
+  ---
+  duration_ms: 146.2047
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FENCING_INSTALL
+ok 13 - customer wording scan: FENCING_INSTALL
+  ---
+  duration_ms: 370.8379
+  type: 'test'
+  ...
+# Subtest: customer wording scan: FENCING_REPLACEMENT
+ok 14 - customer wording scan: FENCING_REPLACEMENT
+  ---
+  duration_ms: 647.1028
+  type: 'test'
+  ...
+# Subtest: customer wording scan: SIDING_REPLACEMENT
+ok 15 - customer wording scan: SIDING_REPLACEMENT
+  ---
+  duration_ms: 748.1541
+  type: 'test'
+  ...
+# Subtest: customer wording scan: SIDING_REPAIR
+ok 16 - customer wording scan: SIDING_REPAIR
+  ---
+  duration_ms: 65.7502
+  type: 'test'
+  ...
+# Subtest: customer wording scan: CONCRETE_DRIVEWAY
+ok 17 - customer wording scan: CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 101.2346
+  type: 'test'
+  ...
+# Subtest: customer wording scan: CONCRETE_PATIO_SLAB
+ok 18 - customer wording scan: CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 892.1998
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_CLEANUP
+ok 19 - customer wording scan: LANDSCAPING_CLEANUP
+  ---
+  duration_ms: 90.2532
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_MULCH
+ok 20 - customer wording scan: LANDSCAPING_MULCH
+  ---
+  duration_ms: 100.922
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_SOD
+ok 21 - customer wording scan: LANDSCAPING_SOD
+  ---
+  duration_ms: 83.7216
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_PLANTING
+ok 22 - customer wording scan: LANDSCAPING_PLANTING
+  ---
+  duration_ms: 124.173
+  type: 'test'
+  ...
+# Subtest: customer wording scan: LANDSCAPING_MOWING
+ok 23 - customer wording scan: LANDSCAPING_MOWING
+  ---
+  duration_ms: 1049.8086
+  type: 'test'
+  ...
+# Subtest: customer wording scan: CUSTOM
+ok 24 - customer wording scan: CUSTOM
+  ---
+  duration_ms: 60.8043
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14398.2193

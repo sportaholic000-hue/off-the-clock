@@ -1,0 +1,32 @@
+[
+  {
+    "file": "baseline-complete.json.gz",
+    "bytes": 12511022,
+    "passed": true
+  },
+  {
+    "file": "candidate-complete.json.gz",
+    "bytes": 12458125,
+    "passed": true
+  },
+  {
+    "file": "baseline-render.json.gz",
+    "bytes": 268500,
+    "passed": true
+  },
+  {
+    "file": "candidate-render.json.gz",
+    "bytes": 235257,
+    "passed": true
+  },
+  {
+    "file": "baseline-wording-complete-responses.json.gz",
+    "bytes": 2559776,
+    "passed": true
+  },
+  {
+    "file": "candidate-wording-responses.json.gz",
+    "bytes": 4037009,
+    "passed": true
+  }
+]

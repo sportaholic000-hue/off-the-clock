@@ -1,0 +1,15 @@
+{
+  "label": "baseline-render",
+  "kind": "baseline",
+  "args": [
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/verification/customer-wording/render.mjs",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-baseline-20261001",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/baseline-complete.json",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/baseline-render.json"
+  ],
+  "status": 1,
+  "signal": null,
+  "elapsedMs": 8573,
+  "counters": {},
+  "logSha256": "77c5cdb3bfb5a3871c2bec742125262db29c840c69a7802289cf1cf150861b6e"
+}

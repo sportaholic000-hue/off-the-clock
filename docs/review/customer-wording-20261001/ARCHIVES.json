@@ -1,0 +1,68 @@
+[
+  {
+    "path": "baseline-complete.json.gz",
+    "uncompressedBytes": 12511022,
+    "bytes": 874139,
+    "sha256": "8599de9361195cd8eaa74174fb6cbcda0bd2aa2060f2827ed0699045ffc59386",
+    "uncompressedSha256": "11dc3841eb2c0e9367c884c8f2edea176c4bccfb20fd552c543421d68a6e934a",
+    "parts": [
+      {
+        "path": "baseline-complete.json.gz.part1",
+        "bytes": 524288,
+        "sha256": "f8420bf8cdaa5ac92da79dae6e40a1bde12268166b890581eef1e999d0380000"
+      },
+      {
+        "path": "baseline-complete.json.gz.part2",
+        "bytes": 349851,
+        "sha256": "724d6242c1f8b1f627219e776e787bd5218735737f5b0d80fdbcf40784946c45"
+      }
+    ]
+  },
+  {
+    "path": "candidate-complete.json.gz",
+    "uncompressedBytes": 12458125,
+    "bytes": 867691,
+    "sha256": "ffa05feaf8977ade116e96b6880132707483581fb94955a6a8893e3b98d8c208",
+    "uncompressedSha256": "b0fdff90808ff2c70dc3b65f521821badfcdb1dc042d66fc0556c9b4bf1630b6",
+    "parts": [
+      {
+        "path": "candidate-complete.json.gz.part1",
+        "bytes": 524288,
+        "sha256": "63822f9d3741ec2f8456009c19956ead4cf36001fedb556e0ad46df5ed3e2aa4"
+      },
+      {
+        "path": "candidate-complete.json.gz.part2",
+        "bytes": 343403,
+        "sha256": "1a2b3be9040c74089fbbf15dc8d949be2cb2ec8685df0352e45f437e7d1a5b4e"
+      }
+    ]
+  },
+  {
+    "path": "baseline-render.json.gz",
+    "uncompressedBytes": 268500,
+    "bytes": 8409,
+    "sha256": "541f7a5017d24207a3764331234bcd8a076aec8c88e8330cf8c1739ffda62668",
+    "uncompressedSha256": "0a6a15c402d1db4d287387d58a6d8df59aa3ad45c4b6b813a1dc204951d7f54c"
+  },
+  {
+    "path": "candidate-render.json.gz",
+    "uncompressedBytes": 235257,
+    "bytes": 7668,
+    "sha256": "c4e46f5088918e4020cd6b1ae8a9ae0107fddff7c44ff897bf5021cdf14848dc",
+    "uncompressedSha256": "a95150adb5a4d6da21b707bef88fa657c0288a1313d71f0b8ad6f20a8f192234"
+  },
+  {
+    "path": "baseline-wording-complete-responses.json.gz",
+    "uncompressedBytes": 2559776,
+    "bytes": 186232,
+    "sha256": "816d8fa67b3c0ee7e675647fd23e21c76160fdefa5d039aa7868e9f009ede421",
+    "uncompressedSha256": "73f54f5cb5d0b033b2da2da3a652ef1b715eb08c778ef45e51d208600eba791b"
+  },
+  {
+    "path": "candidate-wording-responses.json.gz",
+    "uncompressedBytes": 4037009,
+    "bytes": 291989,
+    "sha256": "7c9c487dc072c870b2116669d2f17783da71840369943e931f0067065ee41adf",
+    "uncompressedSha256": "35bedc2a651e7a900401a74f92232fd3c7804eefab5143d61dd86540287e2fd9"
+  }
+]

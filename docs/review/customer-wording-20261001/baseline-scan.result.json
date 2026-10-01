@@ -1,0 +1,14 @@
+{
+  "label": "baseline-scan",
+  "kind": "baseline",
+  "args": [
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-repairs-20261001/verification/customer-wording/scan.mjs",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-baseline-20261001",
+    "C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/customer-wording-evidence-20261001/baseline-complete.json"
+  ],
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 23864,
+  "counters": {},
+  "logSha256": "260d0878f73817680e238a0d3a79941690381019e69a45bdd95e6cf80d88fcfc"
+}
