@@ -25,3 +25,5 @@
   for(const el of root.querySelectorAll('[data-enhancement]'))el.hidden=false;
   update();
 })();
+
+(()=>{const label=document.querySelector('[data-demo-context]'),data=document.getElementById('comparison-context');if(!label||!data)return;const contexts=JSON.parse(data.textContent),back=document.querySelector('[data-demo-return]');function update(source){if(!Object.hasOwn(contexts,source)){label.hidden=true;back.href='../compare/index.html';return;}label.textContent='You were comparing '+contexts[source]+'.';label.hidden=false;back.href='../'+source;}update(new URLSearchParams(location.search).get('source'));document.addEventListener('growth-demo-context',event=>update(event.detail?.source));})();

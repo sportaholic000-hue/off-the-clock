@@ -7,24 +7,28 @@ from html import escape
 import json
 import posixpath
 import hashlib
+from urllib.parse import urlsplit, urlunsplit
+import buyer_guide as buyer
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / 'public'
-DATE = 'September 11, 2026'
+DATE = 'October 1, 2026'
 SOURCES = {
  'smith-ai': ('Smith.ai — AI Receptionist pricing', 'https://smith.ai/pricing/ai-receptionist'),
  'smith-human': ('Smith.ai — Virtual Receptionists pricing', 'https://smith.ai/pricing/receptionists'),
  'ruby': ('Ruby — Plans and pricing', 'https://www.ruby.com/plans-and-pricing/'),
  'rosie': ('Rosie — Plans and pricing', 'https://heyrosie.com/pricing'),
  'goodcall': ('Goodcall — Pricing', 'https://www.goodcall.com/pricing'),
- 'answerconnect': ('AnswerConnect — Canadian plans', 'https://www.answerconnect.com/ca/'),
- 'dialzara': ('Dialzara — Indexed official pricing; direct fetch unavailable', 'https://dialzara.com/pricing'),
+ 'answerconnect': ('AnswerConnect — Canadian plans', 'https://www.answerconnect.com/ca/view-pricing'),
+ 'dialzara': ('Dialzara — Pricing; current numeric price unconfirmed', 'https://dialzara.com/pricing'),
 }
 CLOCK = '<svg class="clock" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="11" fill="none" stroke="#00E676" stroke-width="1.7"/><path d="M14 7v7l5 3" fill="none" stroke="#00E676" stroke-width="1.7" stroke-linecap="round"/></svg>'
 
 def url(page, destination):
-    name, sep, fragment = destination.partition('#')
-    return posixpath.relpath(name, posixpath.dirname(page) or '.') + (sep + fragment if sep else '')
+    parsed = urlsplit(destination)
+    if parsed.scheme or parsed.netloc: return destination
+    name = posixpath.relpath(parsed.path, posixpath.dirname(page) or '.') if parsed.path else ''
+    return urlunsplit(('', '', name, parsed.query, parsed.fragment))
 
 def ref(key, number):
     title, href = SOURCES[key]
@@ -32,13 +36,13 @@ def ref(key, number):
 
 def sources(keys):
     items = ''.join(f'<li id="source-{i}"><span>{i:02d}</span><a href="{SOURCES[k][1]}">{escape(SOURCES[k][0])}</a></li>' for i,k in enumerate(keys,1))
-    return f'<section id="sources"><h2>Sources &amp; editorial approach</h2><p>Official vendor material reviewed {DATE}. Prices below are monthly examples, not personalized offers. Check current terms before buying. A published feature is not a hands-on result.</p><ul class="source-list">{items}</ul><p class="editorial-note">Published by Off The Clock AI, a product in this category. Our recommendations are editorial judgments, not independent customer reviews. We do not infer that a feature is impossible merely because a pricing page does not describe it.</p></section>'
+    return f'<section id="sources"><h2>Sources &amp; editorial approach</h2><p>Official vendor sources checked {DATE}; unavailable current prices are marked. Prices below are monthly examples, not personalized offers. Check current terms before buying. A published feature is not a hands-on result.</p><ul class="source-list">{items}</ul><p class="editorial-note">Published by Off The Clock AI, a product in this category. Our recommendations are editorial judgments, not independent customer reviews. We do not infer that a feature is impossible merely because a pricing page does not describe it.</p></section>'
 
 def button(page, destination, text, primary=False):
     return f'<a class="button {"primary" if primary else ""}" href="{url(page,destination)}">{text}<span aria-hidden="true">↗</span></a>'
 
 def bridge(page):
-    return f'<aside class="cta"><div><p class="eyebrow">OFF THE CLOCK AI + QUOTEDONE</p><h2>Bring the job that would convince you.</h2><p>Prepare one representative job for the QuoteDone Challenge. Capture its scope, known measurements and open questions, then review and save your brief.</p><p class="editorial-note">A local brief you can save or print. No quote is calculated and no application is submitted.</p></div>{button(page,"tools/growth-v2.html#challenge","Prepare my job brief",True)}</aside>'
+    return '<aside class="cta"><div><p class="eyebrow">OFF THE CLOCK AI + QUOTEDONE</p><h2>What would you like off your plate?</h2><p>Talk about your trade, your customer inquiries and the work you want handled. Explore quoting, booking, website inquiries and setup without gathering your price book first.</p><p class="editorial-note">Product conversation only; the demo does not issue real job quotes or book appointments.</p><small>30-day money-back guarantee on your first paid month.</small><p class="editorial-note">Prefer to collect a job example? <a href="'+url(page,'tools/growth-v2.html#challenge')+'">Prepare an optional job brief</a>. A local brief you can save or print; nothing is submitted.</p></div>'+buyer.cta(page,url)+'</aside>'
 
 def frame(page, title, description, body, area):
     nav=''.join(f'<a href="{url(page,dest)}"'+(' aria-current="page"' if label==area else '')+f'>{label}</a>' for label,dest in [('Compare','compare/index.html'),('Alternatives','alternatives/index.html'),('Resources','resources/index.html')])
@@ -51,7 +55,7 @@ def frame(page, title, description, body, area):
 <meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>{escape(title)} | Off The Clock AI</title><style>{(OUT/"assets/site.css").read_text(encoding="utf-8")}</style>
 </head><body><a class="skip" href="#main">Skip to content</a><div class="reviewbar"><div class="wrap"><span>OFF THE CLOCK AI / PUBLIC PAGES REVIEW</span><span>NOT PUBLISHED · NO LIVE SUBMISSIONS</span></div></div>
-<header class="header"><div class="wrap header-inner">{brand}<nav class="nav" aria-label="Main navigation">{nav}</nav><div class="header-cta">{button(page,'tools/growth-v2.html#challenge','Prepare a job brief')}</div></div></header>
+<header class="header"><div class="wrap header-inner">{brand}<nav class="nav" aria-label="Main navigation">{nav}</nav><div class="header-cta">{buyer.cta(page,url)}</div></div></header>
 <main id="main" class="wrap" tabindex="-1">{body}</main>
 <footer class="footer"><div class="wrap footer-inner"><div>{brand}<nav aria-label="Footer navigation"><a href="{url(page,'compare/index.html')}">Compare</a><a href="{url(page,'alternatives/index.html')}">Alternatives</a><a href="{url(page,'resources/index.html')}">Resources</a></nav></div><p>Private review • not published. Product offer shown for review; live services are not enabled here. Job briefs stay on your device. Published by Off The Clock AI.</p></div></footer><script>{(OUT/"assets/site.js").read_text(encoding="utf-8")}</script></body></html>'''
 
@@ -77,9 +81,10 @@ def alternatives():
     return p,frame(p,'Answering-service alternatives for your business','Find an alternative by the outcome you need: answering model, billing unit, booking and the remaining owner follow-up.',body,'Alternatives')
 
 def article_shell(p,title,intro,verdict,sections,keys,area):
+    sections = [('buying-questions','Five questions before you choose',buyer.buying_questions(p,url))] + sections
     toc=''.join(f'<a href="#{i}">{label}</a>' for i,label,_ in sections)+ '<a href="#sources">Sources &amp; approach</a>'
     content=''.join(f'<section id="{i}"><h2>{label}</h2>{text}</section>' for i,label,text in sections)+sources(keys)
-    body=f'<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{url(p,"compare/index.html")}">Comparisons</a><span aria-hidden="true">/</span>{title}</nav><div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{title}</h1><p class="intro">{intro}</p><div class="article-meta"><span class="meta">REVIEWED {DATE.upper()}</span><span class="tag">OFFICIAL SOURCES</span><a href="#sources">How we compare</a></div></div><div class="verdict"><strong>The decision</strong><p>{verdict}</p></div><div class="article-layout"><nav class="toc" aria-label="On this page"><p class="eyebrow">ON THIS PAGE</p>{toc}</nav><article class="article">{content}</article></div>{bridge(p)}'
+    body=f'<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{url(p,"compare/index.html")}">Comparisons</a><span aria-hidden="true">/</span>{title}</nav><div class="article-hero"><p class="eyebrow">AN OFF THE CLOCK AI BUYING GUIDE</p><h1>{title}</h1><p class="intro">{intro}</p><div class="article-meta"><span class="meta">REVIEWED {DATE.upper()}</span><span class="tag">OFFICIAL SOURCES</span><a href="#sources">How we compare</a></div>{buyer.invitation(p,url)}</div><div class="verdict"><strong>The decision</strong><p>{verdict}</p></div><div class="article-layout"><nav class="toc" aria-label="On this page"><p class="eyebrow">ON THIS PAGE</p>{toc}</nav><article class="article">{content}</article></div>{bridge(p)}'
     return p,frame(p,title,escape(intro.replace('<strong>','').replace('</strong>','')),body,area)
 
 CALLS='''<ol class="checklist"><li><strong>A straightforward service</strong>Ask for the approved service price and the next available appointment. Record what actually happens.</li><li><strong>A job with several moving parts</strong>Include measurements, removal and an extra. Check what remains for the owner to resolve.</li><li><strong>Something urgent</strong>Test the agreed escalation path without inventing an emergency or contacting real emergency services.</li><li><strong>A reschedule</strong>Check whether the existing booking changes, rather than accepting a new appointment as proof.</li><li><strong>“I need to speak to a person.”</strong>Observe the destination, the handoff and what happens when no one answers.</li></ol>'''
@@ -91,7 +96,7 @@ def smith_ruby():
       ('cost','The monthly amount needs the right unit',f'''<p>Smith.ai AI Receptionist lists a free plan with 25 calls, Pro at $150 for 75 and Enterprise at $500 for 300. Its separate human Starter plan is $300 for 30 calls. The detailed human pricing page lists additional service charges, including appointment booking, separately from the AI-plan pricing.{s('smith-ai',1)}{s('smith-human',2)}</p><p>Ruby lists $250/50 minutes, $395/100, $720/200 and $1,725/500. These are minute allowances, not call allowances.{s('ruby',3)}</p><p>A long project discussion consumes minutes differently from a brief scheduling call. Per-call billing measures a different thing. The actual length of your calls determines how the two usage models compare.</p>'''),
       ('off-the-clock','The third choice: an operator that handles job pricing',f'''<p>Off The Clock is our recommendation for a service business that wants the inquiry answered, the supported job priced and the appointment booked. Business questions, transfers and follow-up are part of the operator. QuoteDone adds calculation from your rates and the customer’s complete job details.</p><p>The difference appears when a customer asks about an installation with selected removal and an extra. A stored service price, a message to the owner and a calculated project quote are three different outcomes. QuoteDone is built for the third where the required information and supported pricing are present; otherwise it preserves a complete request for your review.</p><p>The website quote widget gives visitors the same owner-priced approach without a phone call. Your pricing stays yours, while routine quote preparation no longer has to begin with another conversation with you.</p>'''),
       ('offer','What the QuoteDone plan includes',f'''<div class="price-panels"><div class="price-panel"><p class="eyebrow">OFF THE CLOCK AI / QUOTEDONE</p><span class="metric">$279<span class="plain-meta"> / mo</span></span><p>1,200 minutes. AI operator and website quote widget.</p></div><div class="price-panel"><p class="eyebrow">ADDITIONAL USAGE</p><span class="metric">$0.35<span class="plain-meta"> / min</span></span><p>No setup fee. The price is defined before the sales conversation.</p></div></div><p>This is an AI operator with transfers to your business team, not an outsourced human-receptionist service. The reason to choose it is the owner-priced job and complete customer interaction—rather than an outsourced staffing model.</p>'''),
-      ('decision','Keep the welcome. Finish the inquiry.',f'''<p>Choose Off The Clock when a pleasant first response is only the start of the result you need. Your own pricing, the selected job scope and the next appointment belong together. Prepare a real job brief for the QuoteDone Challenge and make that requirement specific to your business.</p>''')
+      ('decision','Keep the welcome. Finish the inquiry.',f'''<p>Choose Off The Clock when a pleasant first response is only the start of the result you need. Your own pricing, the selected job scope and the next appointment belong together. Talk to Off The Clock about how that would work for your business. No rates or job measurements are needed to explore the product.</p>''')
     ]
     return article_shell(p,'Smith.ai vs Ruby','Compare Smith.ai’s AI-first and human-first plans with Ruby’s live-receptionist service—and Off The Clock’s operator with job quoting.','Choose Off The Clock for answering, owner-priced job quotes and booking together. Smith.ai and Ruby offer different staffing and billing models; QuoteDone’s case is what happens to the price question after the greeting.',sections,['smith-ai','smith-human','ruby'],'Compare')
 
@@ -102,8 +107,8 @@ def ruby_alternatives():
        'QuoteDone is $279/month with 1,200 minutes, the AI operator and website quote widget. Additional usage is $0.35/minute, with no setup fee.',
        'Your flat-rate prices and supported project quotes use your own rates. The operator handles business questions, booking, transfers and follow-up. This is an AI operator with transfers to your team, not outsourced human staffing.',None),
       ('answerconnect','LIVE-HUMAN ANSWERING','AnswerConnect',
-       'Its Canadian entry offer is CAD $325/month for 100 minutes plus CAD $75 setup. Growth lists CAD $425 for 300 minutes with no setup fee.',
-       'The offer supplies live answering. These Canadian figures are explicitly separate from the U.S. dollar displays elsewhere on this page; these are not converted Canadian equivalents of the other plans.','answerconnect'),
+       'The Canadian site directs buyers to its pricing page; current numerical plans could not be independently read on October 1. Request a Canadian offer.',
+       'The offer supplies live answering. Confirm currency, minute allowance, overage, setup and chat inclusions for your region; no current numeric price is asserted here.','answerconnect'),
       ('smith','AI-FIRST WITH A HUMAN ESCALATION PATH','Smith.ai AI Receptionist',
        'AI Pro is $150/month for 75 calls; a free 25-call tier and $500/300-call Enterprise entry configuration are also listed.',
        'The AI product describes live-receptionist escalation. Smith.ai’s separate human-first service starts at $300 for 30 calls. Product choice changes the comparison before usage does.','smith-ai'),
@@ -114,8 +119,8 @@ def ruby_alternatives():
        'Starter is $79/month per agent for 100 unique customers, with $0.50 for an additional unique customer and unlimited minutes and tokens.',
        'Repeat callers and long calls affect this model differently from a receptionist-minute allowance. The number of agents and unique customers remains relevant even when minutes are unlimited.','goodcall'),
       ('dialzara','MINUTE-BASED AI ANSWERING','Dialzara',
-       'The indexed official pricing lists Lite at $29/month for 60 minutes and Pro at $99 for 220 minutes.',
-       'These figures were available only through an official search snapshot; direct retrieval failed. Treat them as source-limited reference prices, with the current amount to be confirmed before purchase.','dialzara')
+       'A current numerical plan could not be independently confirmed on October 1. Request the current plan and minute allowance.',
+       'Direct retrieval failed and search results included older, inconsistent figures. Those snapshots are not presented as current prices; confirm website chat, booking and overage in the offer.','dialzara')
     ]
     vendors=''
     for ident,label,name,price,detail,key in entries:
@@ -180,6 +185,9 @@ def main():
     if hashlib.sha256(html.encode()).hexdigest()!=expected:raise RuntimeError('Preserved V2 does not match its approved artifact. No substitute will be written.')
     (OUT/'tools').mkdir(exist_ok=True);(OUT/'tools/growth-v2.html').write_text(html,encoding='utf-8')
     (OUT/'START_HERE.html').write_text(frame('START_HERE.html','Public page review','Open the separate comparison, alternatives and resources review pages.','<section class="section"><p class="eyebrow">PRIVATE REVIEW BUILD</p><h1>Off The Clock AI<br><span class="green">Public pages.</span></h1><p class="editorial-note">Five new pages and the unchanged V2 tools. Nothing is published or connected to production.</p><div class="hero-actions">'+button('START_HERE.html','compare/index.html','Open the comparison hub',True)+button('START_HERE.html','resources/index.html','Open resources')+'</div></section>',''),encoding='utf-8')
+    demo = OUT/'demo/index.html'
+    demo.parent.mkdir(parents=True,exist_ok=True)
+    demo.write_text(frame('demo/index.html','Talk to Off The Clock about your business','Explore Off The Clock’s operator, QuoteDone, calendar booking and website inquiries.',buyer.demo_body('demo/index.html',url),''),encoding='utf-8')
     build_review_runner()
     print('Built five public review pages, a review launcher, a checklist and the byte-identical V2 tool.')
 
@@ -191,12 +199,13 @@ def build_review_runner():
 'use strict';
 const pages=JSON.parse(document.getElementById('pages').textContent),frame=document.getElementById('site');
 let current='compare/index.html';
-function open(path,hash=''){
+function open(path,hash='',search=''){
  if(!Object.hasOwn(pages,path)||!path.endsWith('.html'))return;
  current=path;document.title='Off The Clock AI | '+path;frame.title='Off The Clock AI — '+path;
- frame.srcdoc=pages[path];history.replaceState(null,'','#'+path+(hash?'::'+hash.slice(1):''));
+ frame.srcdoc=pages[path];history.replaceState(null,'','#'+path+search+(hash?'::'+hash.slice(1):''));
  frame.onload=()=>{
   const doc=frame.contentDocument;
+  if(path==='demo/index.html')doc.dispatchEvent(new CustomEvent('growth-demo-context',{detail:{source:new URLSearchParams(search).get('source')}}));
   if(hash){frame.contentWindow.location.hash=hash;}
   doc.addEventListener('click',e=>{
    const a=e.target.closest('a[href]');if(!a)return;
@@ -207,11 +216,11 @@ function open(path,hash=''){
    if(!Object.hasOwn(pages,key))return;
    e.preventDefault();
    if(key.endsWith('.txt')){const blob=URL.createObjectURL(new Blob([pages[key]],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=blob;link.download=key.split('/').pop();link.click();setTimeout(()=>URL.revokeObjectURL(blob),3000);}
-   else open(key,target.hash);
+   else open(key,target.hash,target.search);
   });
  };
 }
-const [path,fragment]=location.hash.slice(1).split('::');open(pages[path]?path:current,fragment?'#'+fragment:'');
+const [route,fragment]=location.hash.slice(1).split('::'),start=new URL(route||current,'https://local-preview.invalid/'),path=decodeURIComponent(start.pathname.slice(1));open(pages[path]?path:current,fragment?'#'+fragment:'',start.search);
 })();"""
     wrapper='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Off The Clock AI — growth review</title><style>html,body{margin:0;width:100%;height:100%;background:#0A0A0A}iframe{display:block;border:0;width:100%;height:100dvh}</style></head><body><iframe id="site" title="Off The Clock AI review" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe><script id="pages" type="application/json">'+data+'</script><script>'+js+'</script></body></html>'
     (ROOT/'Off_The_Clock_Public_Pages_Review.html').write_text(wrapper,encoding='utf-8')

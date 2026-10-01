@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-09-11",
+  "reviewed": "2026-10-01",
   "provenance": {
     "page_map": "00-CONTENT-MAP.md, priority competitor alternatives and competitor-vs-competitor sections",
     "positioning": "off-the-clock-seo-copy-pack-FINAL(1).md, relevant named competitor sections",
@@ -9,113 +9,171 @@
     "podium-larry": {
       "title": "Podium — Larry for home services",
       "url": "https://homeservices.podium.com/ai/larry",
-      "note": "Price-book access, service fees and dispatch-board booking are described; no blanket claim that Larry cannot quote."
+      "note": "Price-book access, service fees and dispatch-board booking are described; no blanket claim that Larry cannot quote.",
+      "checked": "2026-10-01"
     },
     "podium-fsm": {
       "title": "Podium — Field service management",
       "url": "https://homeservices.podium.com/features/fsm",
-      "note": "Describes HVAC, plumbing and electrical FSM; flat-rate services/parts; technician estimates; dispatch."
+      "note": "Describes HVAC, plumbing and electrical FSM; flat-rate services/parts; technician estimates; dispatch.",
+      "checked": "2026-10-01"
     },
     "podium-plans": {
       "title": "Podium — Plans and packages",
       "url": "https://homeservices.podium.com/plans",
-      "note": "Public home-services offer bundles Larry and FSM, with a sales-quote CTA; no numerical plan price shown."
+      "note": "Public home-services offer bundles Larry and FSM, with a sales-quote CTA; no numerical plan price shown.",
+      "checked": "2026-10-01"
     },
     "sameday-product": {
       "title": "Sameday AI — Product overview",
       "url": "https://sameday.ai/",
-      "note": "Current site covers phones, AI CSRs, campaigns, coaching and connected scheduling. Not represented as message-taking only."
+      "note": "Current site covers phones, AI CSRs, campaigns, coaching and connected scheduling. Not represented as message-taking only.",
+      "checked": "2026-10-01"
     },
     "sameday-pricing": {
       "title": "Sameday AI — Pricing",
       "url": "https://sameday.ai/pricing",
-      "note": "Launch starts at $449/month with 500 minutes; Scale at $789 with 1,000; Enterprise custom. Vendor-displayed dollars; confirm currency and contract. Old gosameday.com URL redirects here."
+      "note": "Launch starts at $449/month with 500 minutes; Scale at $789 with 1,000; Enterprise custom. Vendor-displayed dollars; confirm currency and contract. Old gosameday.com URL redirects here.",
+      "checked": "2026-10-01"
     },
     "sameday-integrations": {
       "title": "Sameday AI — Integrations",
       "url": "https://sameday.ai/integrations",
-      "note": "Names Jobber, ServiceTitan, FieldRoutes and Service Fusion; integration scope still needs an account-specific demonstration."
+      "note": "Names Jobber, ServiceTitan, FieldRoutes and Service Fusion; integration scope still needs an account-specific demonstration.",
+      "checked": "2026-10-01"
     },
     "avoca-inbound": {
       "title": "Avoca — Inbound AI CSR",
       "url": "https://www.avoca.ai/inbound",
-      "note": "Booking, customer recognition and human escalation with context. Current wording does not establish an outsourced human team in every plan."
+      "note": "Booking, customer recognition and human escalation with context. Current wording does not establish an outsourced human team in every plan.",
+      "checked": "2026-10-01"
     },
     "avoca-coach": {
       "title": "Avoca — Coach",
       "url": "https://www.avoca.ai/coach",
-      "note": "Call scoring, outcome reclassification and manager reporting."
+      "note": "Call scoring, outcome reclassification and manager reporting.",
+      "checked": "2026-10-01"
     },
     "avoca-product": {
       "title": "Avoca — Product overview",
       "url": "https://www.avoca.ai/",
-      "note": "Inbound, outbound, web chat and coaching. Reviewed offer is demo-led; no numerical subscription price found on reviewed product pages."
+      "note": "Inbound, outbound, web chat and coaching. Reviewed offer is demo-led; no numerical subscription price found on reviewed product pages.",
+      "checked": "2026-10-01"
     },
     "avoca-servicetitan": {
       "title": "Avoca — ServiceTitan integration",
       "url": "https://www.avoca.ai/integrations/servicetitan",
-      "note": "Direct booking and customer/notes writeback while retaining ServiceTitan."
+      "note": "Direct booking and customer/notes writeback while retaining ServiceTitan.",
+      "checked": "2026-10-01"
     },
     "jobber-help": {
       "title": "Jobber — Receptionist availability and usage",
       "url": "https://help.getjobber.com/en/articles/receptionistpowered-by-jobber-ai/",
-      "note": "Select-plan add-on $29/month, 30 conversations, $0.79 additional conversation; Plus unlimited. Call and text counting differ."
+      "note": "Select-plan add-on $29/month, 30 conversations, $0.79 additional conversation; Plus unlimited. Call and text counting differ.",
+      "checked": "2026-10-01"
     },
     "jobber-pricing": {
       "title": "Jobber — Plans and add-ons",
       "url": "https://www.getjobber.com/pricing/",
-      "note": "Base Jobber subscription is separate from an add-on quote; Plus includes Receptionist. Prices vary by team/billing selection."
+      "note": "Base Jobber subscription is separate from an add-on quote; Plus includes Receptionist. Prices vary by team/billing selection.",
+      "checked": "2026-10-01"
     },
     "hcp-overview": {
       "title": "Housecall Pro — CSR AI overview",
       "url": "https://help.housecallpro.com/en/articles/9740104-csr-ai-overview",
-      "note": "Booking and rescheduling permissions, call records and existing account context. Some overview prose still says coming soon; do not flatten this into an unavailable claim."
+      "note": "Booking and rescheduling permissions, call records and existing account context. Some overview prose still says coming soon; do not flatten this into an unavailable claim.",
+      "checked": "2026-10-01"
     },
     "hcp-practices": {
       "title": "Housecall Pro — CSR AI best practices and FAQs",
       "url": "https://help.housecallpro.com/en/articles/12001958-csr-ai-best-practices-and-faqs",
-      "note": "Set service prices, Online Booking, enabled services and available windows; no invented numerical subscription rate."
+      "note": "Set service prices, Online Booking, enabled services and available windows; no invented numerical subscription rate.",
+      "checked": "2026-10-01"
     },
     "hcp-team": {
       "title": "Housecall Pro — AI Team overview",
       "url": "https://help.housecallpro.com/en/articles/9311875-ai-team-overview",
-      "note": "CSR AI answering is an optional add-on, unlike included AI teammates. No numerical add-on price in reviewed material."
+      "note": "CSR AI answering is an optional add-on, unlike included AI teammates. No numerical add-on price in reviewed material.",
+      "checked": "2026-10-01"
     },
     "hcp-chat": {
       "title": "Housecall Pro — CSR AI Chat Answering",
       "url": "https://help.housecallpro.com/en/articles/12453258-csr-ai-chat-answering",
-      "note": "Website chat with settings, booking and human escalation; not described as lacking website communication."
+      "note": "Website chat with settings, booking and human escalation; not described as lacking website communication.",
+      "checked": "2026-10-01"
     },
     "hcp-text": {
       "title": "Housecall Pro — CSR AI Text Answering (In Alpha)",
       "url": "https://help.housecallpro.com/en/articles/16673934-csr-ai-text-answering-in-alpha",
-      "note": "Alpha, qualifying new-customer calls and permission-dependent actions. Not generalized to all customers or GA."
+      "note": "Alpha, qualifying new-customer calls and permission-dependent actions. Not generalized to all customers or GA.",
+      "checked": "2026-10-01"
     },
     "st-settings": {
       "title": "ServiceTitan — Configure Voice Agent",
       "url": "https://help.servicetitan.com/docs/configure-your-voice-agent-settings-in-servicetitan",
-      "note": "Job types, follow-up questions and configurable dispatch-fee messages."
+      "note": "Job types, follow-up questions and configurable dispatch-fee messages.",
+      "checked": "2026-10-01",
+      "retrieval": "Direct retrieval exceeded the reader size limit; official search-indexed settings and linked release notes reviewed"
     },
     "st-pricing": {
       "title": "ServiceTitan — AI Voice Agent public offer",
       "url": "https://plg.servicetitan.com/va",
       "note": "Official indexed page lists $2.75/call, monthly usage billing and 12-month rate lock, no minimum calls. Direct parsed page body is JS-only; verify account eligibility/currency/base subscription separately. Not an all-in ServiceTitan price.",
-      "retrieval": "Official search-indexed page; direct parsed body incomplete"
+      "retrieval": "Official search-indexed pricing; direct parsed page body remains incomplete",
+      "checked": "2026-10-01"
     },
     "st-escalation": {
       "title": "ServiceTitan — Emergency escalation and after-hours dispatch fees",
       "url": "https://help.servicetitan.com/release-hub/docs/handle-emergency-calls-configure-escalation-triggers-charge-after-hours",
-      "note": "Applies to basic Phones, Phones Pro and Contact Center Pro; not an enterprise-contact-center-only feature."
+      "note": "Applies to basic Phones, Phones Pro and Contact Center Pro; not an enterprise-contact-center-only feature.",
+      "checked": "2026-10-01"
     },
     "st-multi": {
       "title": "ServiceTitan — Multiple Voice Agents",
       "url": "https://help.servicetitan.com/release-hub/docs/run-multiple-voice-agents-from-a-single-account-with-voice-agent-multi-agent-sup",
-      "note": "Independent agents for brands, service lines or locations within an account."
+      "note": "Independent agents for brands, service lines or locations within an account.",
+      "checked": "2026-10-01"
     },
     "avoca-human": {
       "title": "Avoca — Human in the Loop program",
       "url": "https://www.avoca.ai/blog/why-avoca-has-a-human-in-the-loop-program",
-      "note": "Avoca describes a team of Avoca-trained CSRs in North America. Program availability and price must be confirmed in the offer; not assumed included in every plan."
+      "note": "Avoca describes a team of Avoca-trained CSRs in North America. Program availability and price must be confirmed in the offer; not assumed included in every plan.",
+      "checked": "2026-10-01"
+    },
+    "smith-ai": {
+      "title": "Smith.ai — AI Receptionist pricing",
+      "url": "https://smith.ai/pricing/ai-receptionist",
+      "checked": "2026-10-01"
+    },
+    "smith-human": {
+      "title": "Smith.ai — Human receptionist pricing",
+      "url": "https://smith.ai/pricing/receptionists",
+      "checked": "2026-10-01"
+    },
+    "ruby": {
+      "title": "Ruby — Plans and pricing",
+      "url": "https://www.ruby.com/plans-and-pricing/",
+      "checked": "2026-10-01"
+    },
+    "ruby-receptionists": {
+      "title": "Ruby — Live virtual receptionists",
+      "url": "https://www.ruby.com/solutions/live-virtual-receptionists/",
+      "checked": "2026-10-01"
+    },
+    "ruby-integrations": {
+      "title": "Ruby — Calendar and platform integrations",
+      "url": "https://www.ruby.com/solutions/integrations/",
+      "checked": "2026-10-01"
+    },
+    "ruby-chat": {
+      "title": "Ruby — Managed website chat",
+      "url": "https://www.ruby.com/solutions/live-chat/",
+      "checked": "2026-10-01"
+    },
+    "jobber-forms": {
+      "title": "Jobber — Website request and booking forms",
+      "url": "https://help.getjobber.com/en/articles/add-your-request-and-booking-forms-to-your-website-and-social-media/",
+      "checked": "2026-10-01"
     }
   },
   "vendors": {
@@ -126,7 +184,7 @@
       "sources": [],
       "pricing": "QuoteDone: $279/month, 1,200 minutes; $0.35 per extra minute. No setup fee.",
       "boundary": "Your prices stay yours. Missing measurements or prices go to owner review. Off The Clock does not replace a full field-service platform; native connections to other platforms must be verified separately.",
-      "link": "tools/growth-v2.html#challenge"
+      "link": "demo/index.html"
     },
     "podium": {
       "name": "Podium Larry",

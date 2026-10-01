@@ -1,0 +1,274 @@
+{
+  "reviewed": "2026-10-01",
+  "vendors": {
+    "otc": {
+      "name": "Off The Clock AI",
+      "answers": {
+        "quote": [
+          "QuoteDone applies your approved rates to supported jobs. Missing pricing or scope goes to owner review. Operator does not include customer quoting."
+        ],
+        "booking": [
+          "Google Calendar connection and approved availability are required for direct booking. A Calendly link is a separate scheduling path; without a connection, capture the preferred time for follow-up."
+        ],
+        "website": [
+          "QuoteDone includes a text quote widget for your own website. It is separate from the phone agent and uses your approved pricing."
+        ],
+        "setup": [
+          "Configure services, hours, business knowledge and pricing. Confirm the phone arrangement for your US or Canadian number before activation. Carrier control and a universal one-button forwarding switch are not established."
+        ],
+        "cost": [
+          "Operator: $119/month, 300 minutes. QuoteDone: $279/month, 1,200 minutes; website quote widget included. $0.35/minute overage; no setup fee. Confirm billing currency, taxes and phone-related charges before buying."
+        ]
+      }
+    },
+    "ruby": {
+      "name": "Ruby",
+      "answers": {
+        "quote": [
+          "Published material covers personalized call handling and intake. Ask for a demonstration of a measured project quote using your approved rates; the reviewed pages do not establish that workflow.",
+          "ruby-receptionists"
+        ],
+        "booking": [
+          "Ruby lists Calendly, Google Calendar and other scheduling tools. Confirm your calendar, booking permissions and rescheduling workflow.",
+          "ruby-integrations"
+        ],
+        "website": [
+          "Ruby offers managed website chat. Chat has separate allowances and can be bundled with receptionist service.",
+          "ruby-chat"
+        ],
+        "setup": [
+          "Flexible call forwarding and phone hosting are advertised. Confirm your provider, routing hours and what happens when you answer calls yourself.",
+          "ruby"
+        ],
+        "cost": [
+          "Receptionist examples: $250/50 minutes or $395/100 minutes monthly. Website chat is a separate plan or bundle. These are minutes, not calls; confirm overage and regional terms.",
+          "ruby"
+        ]
+      }
+    },
+    "smith": {
+      "name": "Smith.ai",
+      "answers": {
+        "quote": [
+          "Custom intake and workflows are described. That does not by itself establish a measured project calculation; demonstrate the approved-rate job and exception path you need.",
+          "smith-human"
+        ],
+        "booking": [
+          "AI scheduling lists Calendly and more. Human receptionist booking is a separate paid capability; confirm the exact product and calendar connection.",
+          "smith-ai",
+          "smith-human"
+        ],
+        "website": [
+          "Confirm the website-inquiry product and its price separately. AI Receptionist call allowances do not establish that website chat is included.",
+          "smith-ai"
+        ],
+        "setup": [
+          "Human plans offer a dedicated number or free number porting. Confirm the AI or human plan’s routing and escalation arrangement for your existing number.",
+          "smith-human"
+        ],
+        "cost": [
+          "AI Pro: $150/month for 75 calls. Human Starter: $300/month for 30 calls, $11.50/additional call. Booking and other human-plan capabilities can add charges. Calls are not minutes.",
+          "smith-ai",
+          "smith-human"
+        ]
+      }
+    },
+    "podium": {
+      "name": "Podium Larry",
+      "answers": {
+        "quote": [
+          "Larry advertises price-book access and service-fee communication. Check the complete measured job and selected extras rather than assuming a service fee is the whole project price.",
+          "podium-larry"
+        ],
+        "booking": [
+          "Larry books onto Podium’s dispatch board using technician availability. Confirm how your present calendar or FSM participates in the offer.",
+          "podium-fsm"
+        ],
+        "website": [
+          "The home-services bundle lists website chat, text AI and an all-in-one inbox. Confirm which channels are included in your proposal.",
+          "podium-plans"
+        ],
+        "setup": [
+          "The reviewed bundle includes an FSM. Account migration, training and the phone arrangement are part of evaluating that broader purchase.",
+          "podium-fsm"
+        ],
+        "cost": [
+          "The reviewed home-services plan is sales-quoted; no numerical subscription price was published. Request the full bundle, onboarding, usage and add-on costs.",
+          "podium-plans"
+        ]
+      }
+    },
+    "sameday": {
+      "name": "Sameday AI",
+      "answers": {
+        "quote": [
+          "The reviewed offer emphasizes AI CSRs and scheduling. Ask to see your trade’s measured job priced from approved rates, including any unpriced extra.",
+          "sameday-product"
+        ],
+        "booking": [
+          "The directory lists ServiceTitan, Jobber, FieldRoutes and Service Fusion. Confirm the actions and availability checks supported by your specific integration.",
+          "sameday-integrations"
+        ],
+        "website": [
+          "Website quote-widget inclusion was not established in the reviewed phone offer. Confirm website lead handling and any separately priced product.",
+          "sameday-product"
+        ],
+        "setup": [
+          "Sameday says it can provide a forwarding number or integrate with systems such as ServiceTitan Phones Pro. Confirm the route for your existing phone system.",
+          "sameday-pricing"
+        ],
+        "cost": [
+          "Launch: $449/month with 500 minutes; Scale: $789 with 1,000. Confirm currency, overage, contract and integration charges; the published amounts are not an all-in quote.",
+          "sameday-pricing"
+        ]
+      }
+    },
+    "avoca": {
+      "name": "Avoca",
+      "answers": {
+        "quote": [
+          "The reviewed inbound product describes booking and escalation. Confirm how approved pricing, quantities and exceptions are handled for your trade.",
+          "avoca-inbound"
+        ],
+        "booking": [
+          "Avoca advertises booking and ServiceTitan customer, job and notes writeback. Confirm your CRM’s integration and permissions.",
+          "avoca-servicetitan"
+        ],
+        "website": [
+          "Avoca advertises web chat and web-lead handling. Confirm the channels, booking actions and fees in your proposal.",
+          "avoca-product"
+        ],
+        "setup": [
+          "Choose integrations and escalation destinations. Avoca also describes a trained human-backup program; its availability and price need confirmation.",
+          "avoca-inbound",
+          "avoca-human"
+        ],
+        "cost": [
+          "No numerical subscription price was found on the reviewed product pages. Request base, usage, web chat, coaching, integration and human-backup costs.",
+          "avoca-product"
+        ]
+      }
+    },
+    "jobber": {
+      "name": "Jobber Receptionist",
+      "answers": {
+        "quote": [
+          "The reviewed Receptionist help page does not establish measured project quoting. Ask for your approved-rate example; Jobber’s own quote tools are a separate workflow.",
+          "jobber-help"
+        ],
+        "booking": [
+          "Receptionist uses your Online Booking settings to schedule services and team members. Enable the relevant booking and appointment permissions.",
+          "jobber-help"
+        ],
+        "website": [
+          "Jobber separately documents request and booking forms for websites. That is distinct from a conversational, owner-priced quote widget.",
+          "jobber-forms"
+        ],
+        "setup": [
+          "An eligible Jobber account and dedicated Jobber number are required. Existing-number calls can be forwarded; check your carrier and pause behavior.",
+          "jobber-help"
+        ],
+        "cost": [
+          "Eligible-plan add-on: $29/month, 30 conversations, then $0.79 each. Plus includes unlimited usage. Include the base Jobber subscription; calls and 24-hour text sessions have different counting rules.",
+          "jobber-help",
+          "jobber-pricing"
+        ]
+      }
+    },
+    "hcp": {
+      "name": "Housecall Pro CSR AI",
+      "answers": {
+        "quote": [
+          "CSR AI references configured prices for services enabled in Online Booking. Ask for a measured, multi-item project demonstration; do not assume service-price lookup is that calculation.",
+          "hcp-practices"
+        ],
+        "booking": [
+          "CSR AI can book, reschedule and cancel with the permissions you enable. Service selection and availability need setup in the Housecall Pro account.",
+          "hcp-overview"
+        ],
+        "website": [
+          "CSR AI Chat can book jobs and manage appointments, with escalation to your contact. Confirm eligibility and pricing for chat.",
+          "hcp-chat"
+        ],
+        "setup": [
+          "Housecall Pro supplies a forwarding number. Its FAQ says temporarily stopping AI call handling requires deactivating forwarding; confirm the process for your carrier.",
+          "hcp-overview"
+        ],
+        "cost": [
+          "CSR AI is an optional add-on to Housecall Pro. The reviewed pages do not give a numerical add-on rate. Include the base account and any paid HCP Assist workflow.",
+          "hcp-team",
+          "hcp-overview"
+        ]
+      }
+    },
+    "st": {
+      "name": "ServiceTitan Voice Agent",
+      "answers": {
+        "quote": [
+          "ServiceTitan documents configured dispatch fees, including after-hours fees. Confirm measured project pricing separately from quoting a job-type dispatch fee.",
+          "st-escalation"
+        ],
+        "booking": [
+          "Voice Agent books jobs into ServiceTitan’s workflow. Confirm enabled job types, dispatch rules, availability and account eligibility.",
+          "st-settings",
+          "st-escalation"
+        ],
+        "website": [
+          "The reviewed Voice Agent offer covers phone handling. A website quote widget is not established as included; confirm the separate website flow.",
+          "st-pricing"
+        ],
+        "setup": [
+          "The documented emergency feature applies to basic Phones, Phones Pro and Contact Center Pro. Confirm your telecom product, account access and number routing.",
+          "st-escalation"
+        ],
+        "cost": [
+          "The official search-indexed offer lists $2.75 per call. Direct page text is incomplete. Confirm that rate, base ServiceTitan/phone costs, currency and eligibility before purchase.",
+          "st-pricing"
+        ]
+      }
+    }
+  },
+  "pages": {
+    "alternatives/ruby/index.html": [
+      "ruby"
+    ],
+    "compare/smith-ai-vs-ruby/index.html": [
+      "smith",
+      "ruby"
+    ],
+    "alternatives/podium-larry/index.html": [
+      "podium"
+    ],
+    "alternatives/sameday-ai/index.html": [
+      "sameday"
+    ],
+    "alternatives/avoca/index.html": [
+      "avoca"
+    ],
+    "alternatives/jobber-receptionist/index.html": [
+      "jobber"
+    ],
+    "alternatives/housecall-pro-csr-ai/index.html": [
+      "hcp"
+    ],
+    "alternatives/servicetitan-voice-agent/index.html": [
+      "st"
+    ],
+    "compare/podium-larry-vs-sameday-ai/index.html": [
+      "podium",
+      "sameday"
+    ],
+    "compare/sameday-ai-vs-avoca/index.html": [
+      "sameday",
+      "avoca"
+    ],
+    "compare/jobber-receptionist-vs-housecall-pro-csr-ai/index.html": [
+      "jobber",
+      "hcp"
+    ],
+    "compare/servicetitan-voice-agent-vs-podium-larry/index.html": [
+      "st",
+      "podium"
+    ]
+  }
+}

@@ -7,6 +7,7 @@ from urllib.parse import urlsplit, unquote
 import hashlib
 import json
 import re
+import os
 from datetime import datetime, timezone
 from playwright.sync_api import sync_playwright, expect
 
@@ -85,7 +86,7 @@ def verify():
     check('No application or engine import in renderer', not any(s in (ROOT/'build_competitor_library.py').read_text() for s in ['server/','quote-engine-vnext','server.src','requests.get','urllib.request']))
     runner=(ROOT/'Off_The_Clock_Public_Pages_Review.html').read_text()
     with sync_playwright() as pw:
-        browser=pw.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+        browser=pw.chromium.launch(executable_path=os.environ.get('GROWTH_BROWSER_EXECUTABLE', '/usr/bin/chromium'),args=['--no-sandbox'])
         context=browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True)
         page=context.new_page();page.set_default_timeout(8000)
         errors=[];requests=[]
