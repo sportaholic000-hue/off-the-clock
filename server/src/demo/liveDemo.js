@@ -1,3 +1,4 @@
+import {normalizeIp} from '../clientAddress.js';
 // Website live voice demo: mints single-use, short-lived Gemini Live tokens whose
 // model, voice and instructions are locked server-side. The browser talks to Gemini
 // directly with that token; the API key never leaves the server.
@@ -27,7 +28,6 @@ export function liveDemoConfig(env = process.env) {
     dailyCap: intEnv(env, 'DEMO_DAILY_SESSION_CAP', 200, 1, 100000),
     maxConcurrent: intEnv(env, 'DEMO_MAX_CONCURRENT', 10, 1, 1000),
     sessionSeconds: intEnv(env, 'DEMO_SESSION_SECONDS', 180, 30, 600),
-    proxyHops: intEnv(env, 'DEMO_TRUSTED_PROXY_HOPS', 0, 0, 5),
     salt: env.DEMO_IP_SALT || env.JWT_SECRET || '',
     agents: Object.fromEntries(Object.entries(AGENTS).map(([k, a]) => [k, { name: a.name, voice: env[a.voiceEnv] || a.voice }])),
   };
@@ -49,12 +49,9 @@ export function lockedSetup(config, agentKey) {
   };
 }
 
-// The client IP is the direct peer unless the deployment declares how many trusted proxy hops add X-Forwarded-For entries.
-export function clientIp(req, hops) {
-  const peer = req.socket?.remoteAddress || 'unknown';
-  if (!hops) return peer;
-  const chain = String(req.headers['x-forwarded-for'] || '').split(',').map(s => s.trim()).filter(Boolean);
-  return chain.length >= hops ? chain[chain.length - hops] : peer;
+// Every visitor limit uses the same canonical req.ip as auth and booking.
+export function clientIp(req) {
+  return normalizeIp(req.ip) || normalizeIp(req.socket?.remoteAddress) || 'unknown';
 }
 
 export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = globalThis.fetch, now = () => Date.now() } = {}) {
@@ -88,7 +85,7 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
     if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k => k !== 'agent') || !Object.hasOwn(config.agents, body.agent)) return fail(res, 400, 'invalid');
     const t = now();
     prune.run(t - 2 * 86400000);
-    const ipKey = crypto.createHash('sha256').update(config.salt + '|' + clientIp(req, config.proxyHops)).digest('hex');
+    const ipKey = crypto.createHash('sha256').update(config.salt + '|' + clientIp(req)).digest('hex');
     if (countIp.get(ipKey, t - 3600000).n >= config.perIpPerHour) return fail(res, 429, 'hourly');
     if (countSince.get(t - 86400000).n >= config.dailyCap) return fail(res, 429, 'daily');
     if (countSince.get(t - (config.sessionSeconds + 30) * 1000).n >= config.maxConcurrent) return fail(res, 429, 'busy');

@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+.git
+work
+data
+server/data
+**/*.sqlite
+**/*.sqlite-*
+**/.env
+**/.env.*
+!.env.example
+docs
+design-reference
+site

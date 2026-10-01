@@ -237,13 +237,16 @@ export function createOutboundWebhookService({
     return {processed:owners.length};
   }
   function start({intervalMs = 1000, onError = () => {}} = {}) {
-    let stopped = false, timer;
-    const tick = async () => {
-      try { await dispatchOnce(); } catch { onError('WEBHOOK_WORKER_UNAVAILABLE'); }
-      if (!stopped) { timer = setTimeout(tick,intervalMs); timer.unref?.(); }
+    let stopped = false, timer, active;
+    const tick = () => {
+      if(stopped) return;
+      active = Promise.resolve().then(dispatchOnce).catch(()=>onError('WEBHOOK_WORKER_UNAVAILABLE')).finally(()=>{
+        active = null;
+        if (!stopped) { timer = setTimeout(tick,intervalMs); timer.unref?.(); }
+      });
     };
     timer = setTimeout(tick,intervalMs); timer.unref?.();
-    return () => {stopped = true;clearTimeout(timer);};
+    return () => {stopped = true;clearTimeout(timer);return active || Promise.resolve();};
   }
   return {getConfiguration,save,remove,rotate,retry,dispatchOnce,start};
 }

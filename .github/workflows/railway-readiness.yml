@@ -1,0 +1,30 @@
+name: Railway container readiness
+on:
+  push:
+    branches: [codex/railway-ready-20261001]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  container-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Poison tracked artifacts in this ephemeral checkout
+        run: |
+          mkdir -p node_modules client/dist
+          touch node_modules/COMMITTED_DEPENDENCIES_POISON
+          printf '%s' COMMITTED_DIST_POISON > client/dist/index.html
+      - name: Build clean image from the lockfile
+        run: docker build --progress=plain -t otc-railway-proof .
+      - name: Prove Linux restart, redeploy, SIGTERM and restore
+        run: node verification/railway/docker-smoke.mjs otc-railway-proof
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: railway-container-proof
+          path: verification/railway/results/docker-proof.json

@@ -1,6 +1,11 @@
+import 'dotenv/config';
+import {deploymentConfig} from './deploymentEnvironment.js';
+import {configureClientAddress} from './clientAddress.js';
+import {createLifecycle} from './lifecycle.js';
+import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
+import {startBackupScheduler} from './backups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
 import { installOwnerIntegrationRoutes } from './ownerIntegrationRoutes.js';
-import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import Stripe from 'stripe';
@@ -83,6 +88,8 @@ import {
 const runtimeConfig = validateRuntimeConfig();
 
 const app = express();
+const lifecycle = createLifecycle(app,db);
+configureClientAddress(app,{mode:deploymentConfig.mode});
 const port = Number(process.env.PORT || 3000);
 const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
@@ -155,6 +162,7 @@ const billingStateService = billingConfig
 
 // Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
 installLiveDemoRoutes(app, { db });
+if(deploymentConfig.production) installWidgetAssets(app,deploymentConfig.ownerDist);
 app.use(cors(createCorsOptionsDelegate({ configuredOrigins: runtimeConfig.corsOrigins })));
 if (billingConfig) {
   installBillingWebhookRoute(app, {
@@ -168,7 +176,7 @@ if (billingConfig) {
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+app.get('/api/health', lifecycle.health);
 
 if (process.env.NODE_ENV !== 'production') {
   app.get('/api/schema', (_req, res) => res.json({ createTableStatements: CREATE_TABLE_STATEMENTS }));
@@ -477,6 +485,8 @@ app.post('/api/twilio/voice/incoming', (_req, res) => {
   res.type('text/xml').send('<Response><Say>Your Off The Clock operator connection is ready.</Say></Response>');
 });
 
+if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
+
 app.use((err, _req, res, _next) => {
   console.error('[error]', err.message);
   if (res.headersSent) return;
@@ -497,6 +507,10 @@ const httpServer = app.listen(port, () => {
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
-httpServer.on('close',stopWebhookWorker);
+const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+
+export {httpServer,lifecycle};
 
 export default app;
