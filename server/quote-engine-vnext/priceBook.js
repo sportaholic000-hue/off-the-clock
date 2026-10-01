@@ -341,7 +341,7 @@ function uniqueStatusDiagnostics(items) {
 }
 
 function scopeCoverageForService(service) {
-  if (!service || !SERVICE_TYPES.includes(service.serviceType)) return [];
+  if (!service || !SERVICE_TYPES.includes(service.serviceType) || validateTierDefinitionsDetailedVNext(service, service.serviceType).length) return [];
   const type = service.serviceType, base = pricingOf(service);
   const variants = service.tiers?.length ? service.tiers.map(t => ({ name: t.name, pricing: mergePricingForValidationVNext(base, t.overrides || {}) })) : [{ name: null, pricing: base }];
   const rows = new Map();

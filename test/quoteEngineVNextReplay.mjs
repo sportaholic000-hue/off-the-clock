@@ -35,8 +35,8 @@ async function moduleFor(specifier,ref){
 for(const testFile of ['test/quoteEngineVNextRepairs.spec.js','test/quoteEngineVNext.spec.js']){const module=await moduleFor(path.resolve(testFile));await module.link(moduleFor);await module.evaluate();}
 delete globalThis.__vnextAuditCapture;
 function visit(v){if(v===null||typeof v!=='object'){leaves++;if(typeof v==='number')assert.ok(Number.isFinite(v));assert.ok(!['function','symbol','bigint'].includes(typeof v));return;}objects++;for(const d of Object.values(Object.getOwnPropertyDescriptors(v))){assert.ok(Object.hasOwn(d,'value'));visit(d.value);}}
-const readyKeys=new Set(['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','optionAvailabilityNotice']);
-const optionKeys=new Set(['tierName','lowEstimate','midEstimate','highEstimate','priceDrivers','skippedAddons','disclaimer','rangeBufferUsed']);
+const readyKeys=new Set(['resultType','lowEstimate','midEstimate','highEstimate','priceDrivers','disclaimer','quoteId','rangeBufferUsed','options','optionAvailabilityNotice','priceUnit','taxTreatment']);
+const optionKeys=new Set(['tierName','lowEstimate','midEstimate','highEstimate','priceDrivers','skippedAddons','disclaimer','rangeBufferUsed','priceUnit','taxTreatment']);
 for(const capture of captures){
  if(capture.error){visit(capture.error);continue;}const r=capture.result;visit(r);
  if(capture.entry==='sanitizeForCustomerVNext'){

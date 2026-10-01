@@ -39,8 +39,10 @@ try {
     if(['enum','boolean','integer_or_unknown'].includes(field.type))await input.selectOption(String(value));else await input.fill(String(value));
     if(field.type==='slug'&&!(field.name==='existingFloorType'&&value==='none'))await input.locator('..').getByRole('checkbox',{name:'I have identified this exact offering.',exact:true}).check();
   }
+  async function openSection(title){const button=page.locator('button.disclose-summary').filter({hasText:title});if(await button.getAttribute('aria-expanded')!=='true')await button.click();}
   for(const entry of f.cases){
     await page.locator('.service-pick').filter({hasText:entry.name}).click();
+    await openSection('Additional priced scope');
     const definitions=scopeDefinitions(entry.type,entry.service.pricing);
     for(const [key,d]of Object.entries(entry.service.pricing.scopeDetails)){
       const def=definitions[key];await page.getByRole('button',{name:'Configure '+def.label,exact:true}).click();
@@ -68,6 +70,7 @@ try {
     await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByRole('checkbox',{name:'I confirm these exact saved prices, units, factors and rules.',exact:true}).check();
     const approve=async()=>{const approved=page.waitForResponse(r=>r.url().endsWith('/services/'+entry.id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);};
     await approve();
+    await openSection('Project measurements for preview');
     const previewSection=page.getByRole('heading',{name:'Project measurements for preview',exact:true}).locator('..');
     const previewWaiting=page.waitForResponse(async r=>{if(!r.url().endsWith('/api/pricebook/preview')||r.status()!==200||r.request().postDataJSON().serviceId!==entry.id)return false;const result=await r.json();return result.resultType==='INSTANT_ESTIMATE_READY'&&result.midEstimate===entry.expected;}).catch(error=>({testError:error}));
     const m=meta.services.find(s=>s.serviceType===entry.type),p=entry.service.pricing;const fields=[...(p.offeringMode?m.offeringCustomerFields[p.offeringMode]:m.customerFields),...Object.entries(scopeCustomerFields(entry.type,p,entry.service)).map(([name,field])=>({name,...field}))];for(const field of fields)await answer(previewSection,field,entry.inputs[field.name]);
@@ -78,7 +81,7 @@ try {
     console.log(JSON.stringify({completed:rows.at(-1).name}));
   }
   // Save measured preview drafts once, then prove definitions survive reload.
-  const finalSave=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save'));await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await finalSave).status(),200);await page.reload();await page.getByRole('heading',{name:'Additional priced scope',exact:true}).waitFor();
+  const finalSave=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save'));await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal((await finalSave).status(),200);await page.reload();await openSection('Additional priced scope');await page.getByRole('heading',{name:'Additional priced scope',exact:true}).waitFor();
   const reloaded=await f.call('GET','/api/pricebook/'+f.owner.id);for(const entry of f.cases){const stored=reloaded.services.find(s=>s.id===entry.id);assert.deepEqual(stored.pricing.scopeDetails,entry.service.pricing.scopeDetails);assert.deepEqual(stored.pricing.scopeRates,entry.service.pricing.scopeRates);}
   for(const entry of f.cases)if(entry.tier)assert.deepEqual(reloaded.services.find(s=>s.id===entry.id).tiers,[{name:'Good',overrides:{}},{name:'Better',overrides:{scopeRates:{[entry.tier.rate]:entry.tier.price}}}]);
   fs.writeFileSync(path.join(evidence,'saved-book.json'),JSON.stringify(reloaded,null,2));await page.screenshot({path:path.join(evidence,'owner-scopes.png'),fullPage:true});await page.close();

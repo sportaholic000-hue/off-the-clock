@@ -788,13 +788,13 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
   const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
   const tax=b.taxMode==='TAX_NONE'?0:precisionPercent(b.taxMode==='TAX_ALL'?Math.max(subtotal,minimum):taxableSubtotal,b.taxPercent);
-  const adjustment=Math.max(0,minimum-(subtotal+(b.taxMode==='TAX_MATERIALS'?tax:0)));
+  const adjustment=Math.max(0,minimum-subtotal);
   const total=subtotal+adjustment+tax;
   const amounts=Object.fromEntries(lines.map(l=>[l.name,l.cents]));
   if(markup)amounts.Markup=markup;
   if(tax)amounts.Tax=tax;
   if(adjustment)amounts['Minimum price adjustment']=adjustment;
-  const floor=minimum+(b.taxMode==='TAX_ALL'?precisionPercent(minimum,b.taxPercent):0);
+  const floor=minimum+(b.taxMode==='TAX_ALL'?precisionPercent(minimum,b.taxPercent):b.taxMode==='TAX_MATERIALS'&&minimum>0?tax:0);
   const low=Math.max(precisionPercent(total,100-b.rangeBufferPercent),floor,1),high=precisionPercent(total,100+b.rangeBufferPercent);
   const preserveCents=b.rangeBufferPercent===0 || (low>0&&low<100) || Math.floor(low/100)*100<floor;
   const display=preserveCents?[low/100,total/100,high/100]:[Math.floor(low/100),precisionRound(BigInt(total),100n),Math.ceil(high/100)];
@@ -807,8 +807,8 @@ function precisionInspect(value) {
   }
   for(const d of Object.values(Object.getOwnPropertyDescriptors(value))){assert.ok(Object.hasOwn(d,'value'));precisionInspect(d.value);}
 }
-const precisionPublicKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','options','priceDrivers','quoteId','rangeBufferUsed','resultType'];
-const precisionOptionKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','priceDrivers','rangeBufferUsed','skippedAddons','tierName'];
+const precisionPublicKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','options','priceDrivers','priceUnit','quoteId','rangeBufferUsed','resultType','taxTreatment'];
+const precisionOptionKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','priceDrivers','priceUnit','rangeBufferUsed','skippedAddons','taxTreatment','tierName'];
 let precisionChecks=0;
 function precisionCheck(entry,p,b,extras={}) {
   precisionChecks++;

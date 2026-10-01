@@ -976,3 +976,42 @@ test('A provider write already started remains pending after restart until its e
  assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
 });
 
+
+// Opus follow-up: an interrupted provider-write marker has no terminal response.
+async function missingEventRecoveryFixture() {
+ const s=harness({calendarMode:'PENDING_CONFIRMATION'}),available=await slots(s);
+ const held=s.booking.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold1,slotId:available[0].slotId});
+ const request={ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)};
+ const receipt=await s.booking.confirm(request);
+ s.db.prepare("UPDATE appointments SET status='PENDING_PROVIDER',providerEventStatus='PENDING_PROVIDER' WHERE ownerId=?").run(OWNER);
+ s.calendar.idempotentCreateByEventId=true;s.calendar.mode='CONFIRMED';
+ return {s,request,receipt,poll:{bookingToken:s.intent.bookingToken,confirmationId:receipt.body.confirmationId}};
+}
+test('Opus booking: missing event after write marker retries the exact saved event and confirms once',async()=>{
+ const {s,request,receipt,poll}=await missingEventRecoveryFixture(),original=s.calendar.createCalls[0],restarted=s.restart();
+ const answer=await restarted.getConfirmationStatus(poll);
+ assert.equal(answer.body.status,'CONFIRMED');assert.deepEqual(s.calendar.createCalls[1],original);
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'CONFIRMED');
+ assert.equal(s.db.prepare('SELECT count(*) n FROM appointments').get().n,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+ assert.deepEqual(await restarted.confirm(request),receipt,'Original receipt remains exact; polling supplies current outcome');
+ await restarted.getConfirmationStatus(poll);assert.equal(s.calendar.createCalls.length,2);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+});
+test('Opus booking: simultaneous recovery polls create only one retry',async()=>{
+ const {s,poll}=await missingEventRecoveryFixture(),restarted=s.restart();
+ const answers=await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]);
+ assert.ok(answers.some(r=>r.body.status==='CONFIRMED'));assert.equal(s.calendar.createCalls.length,2);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
+});
+for(const boundary of ['lookup-failed','busy','policy-changed','calendar-changed','no-idempotency','expired-time'])test('Opus booking control: '+boundary+' never creates a new event or announces confirmation',async()=>{
+ const {s,poll}=await missingEventRecoveryFixture();
+ if(boundary==='lookup-failed')s.calendar.getEvent=async()=>{throw Error('network unavailable');};
+ if(boundary==='busy')s.calendar.busy=[{startAtUtc:s.calendar.createCalls[0].startAtUtc,endAtUtc:s.calendar.createCalls[0].endAtUtc}];
+ if(boundary==='policy-changed')s.db.prepare('UPDATE bookingPolicies SET revision=? WHERE ownerId=?').run('changed',OWNER);
+ if(boundary==='calendar-changed')s.db.prepare('UPDATE bookingSettings SET calendarId=? WHERE ownerId=?').run('changed',OWNER);
+ if(boundary==='no-idempotency')s.calendar.idempotentCreateByEventId=false;
+ if(boundary==='expired-time')s.advance(2*86400000);
+ const answer=await s.restart().getConfirmationStatus(poll);assert.equal(answer.body.status,'PENDING_CONFIRMATION');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,0);
+});
+test('Opus booking: existing event is reconciled without a write',async()=>{
+ const {s,poll}=await missingEventRecoveryFixture();s.calendar.recoveredEvent=r=>({status:'CONFIRMED',eventId:r.eventId,startAtUtc:r.startAtUtc,endAtUtc:r.endAtUtc});
+ assert.equal((await s.restart().getConfirmationStatus(poll)).body.status,'CONFIRMED');assert.equal(s.calendar.createCalls.length,1);
+});

@@ -44,3 +44,7 @@ for(const [finish,access,labor,total]of [['stamped','difficult',225000,443889],[
  assert.equal(s.lineItems.find(x=>x.name==='Ready-mix concrete').amountCents,48889);
  assert.equal(s.finalTotalCents,total);
 });
+
+test('Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing',()=>{
+ for(const tiers of ['bad',{length:1},[null],[3]]){const input=coverageCases()[0].input;input.ownerPricing.tiers=tiers;const status=engine.vNextServiceStatus(input.ownerPricing,input.businessDefaults);assert.equal(status.status,'NEEDS PRICING');assert.ok(status.invalidOwnerFields.some(field=>field.startsWith('tiers')));}
+});

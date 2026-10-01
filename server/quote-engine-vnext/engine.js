@@ -1444,7 +1444,7 @@ export function generateQuoteVNext(input = {}) {
 
   const first = options[0];
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
-  const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, defaults)), []);
+  const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults)), []);
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
     engineVersion: ENGINE_VERSION,

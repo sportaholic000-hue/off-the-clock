@@ -622,5 +622,7 @@ export function createGoogleCalendarAdapter({
     return normalizeEvent(payload, input.eventId);
   }
 
-  return { listBusy, createEvent, getEvent };
+  // Google Calendar's caller-supplied event ID prevents duplicate event creation
+  // when a successful write loses its response. Recovery must reuse that ID.
+  return { listBusy, createEvent, getEvent, idempotentCreateByEventId: true };
 }

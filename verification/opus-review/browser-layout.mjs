@@ -22,7 +22,7 @@ try{
  browser=await chromium.launch({headless:true,executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE,timeout:180000});
  const page=await browser.newPage({viewport:{width:1280,height:900}});page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(token=>localStorage.setItem('otc_token',token),owner.token);await page.goto(site+'/pricebook');await page.getByRole('heading',{name:'Price book',exact:true}).waitFor();
- for(const s of services){await page.locator('.service-pick').filter({hasText:s.service}).click();const coverage=page.locator('.scope-coverage');const visible=await coverage.count()?await coverage.innerText():'';check('Opus 6 actionable scope warning '+s.service,()=>assert.match(visible,/lead/i),{warning:visible});}
+ for(const s of services){await page.locator('.service-pick').filter({hasText:s.service}).click();const coverage=page.locator('.scope-coverage');await coverage.waitFor({state:'visible',timeout:5000}).catch(()=>{});const visible=await coverage.count()?await coverage.innerText():'';check('Opus 6 actionable scope warning '+s.service,()=>assert.match(visible,/lead/i),{warning:visible});}
  const flooring=services.find(s=>s.serviceType==='FLOORING_INSTALL');await page.locator('.service-pick').filter({hasText:flooring.service}).click();
  for(const width of [375,1280]){
   await page.setViewportSize({width,height:900});await page.evaluate(()=>scrollTo(0,0));

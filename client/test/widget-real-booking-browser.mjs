@@ -157,7 +157,8 @@ try{
   if(scenario.review){assert.equal(saved.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(saved.result.midEstimate,undefined);await p.getByText('Request saved for review',{exact:true}).waitFor();}
   else{
    const estimate=scenario.partial?saved.result.pricedEstimate:saved.result;assert.equal(estimate.midEstimate,scenario.price);
-   await p.getByText('$'+scenario.price,{exact:true}).waitFor();
+   await p.getByText('$'+scenario.price+' per visit',{exact:true}).waitFor();
+   assert.equal(estimate.priceUnit,'per visit');await p.getByText('No tax added.',{exact:true}).waitFor();
    if(scenario.partial){assert.equal(saved.result.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(saved.result.fullJobTotal,null);assert.equal(saved.result.midEstimate,undefined);await p.getByText('Total for all requested work: not yet available.',{exact:true}).waitFor();}
   }
   assert.equal(await p.getByRole('button',{name:'Book it',exact:true}).count(),saved.result.bookingToken?1:0);
@@ -174,7 +175,7 @@ try{
  await retry.getByRole('button',{name:'Retry saved request',exact:true}).click();const retried=await waiting;
  assert.equal(retried.status(),200);assert.deepEqual(retried.request().postDataJSON(),committed.body);assert.deepEqual(await retried.json(),committed.result);
  assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before+1);
- await retry.getByText('$50',{exact:true}).waitFor();await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();await retry.getByText('$50',{exact:true}).waitFor();
+ await retry.getByText('$50 per visit',{exact:true}).waitFor();await retry.reload();await retry.getByRole('button',{name:'Get an estimate',exact:true}).click();await retry.getByText('$50 per visit',{exact:true}).waitFor();
  rows.push({name:'Real committed response loss survives reload and exact retry, then the saved result survives reload',passed:true,committed});await retry.close();
 
  const rejected=await page();await open(rejected);await fill(rejected,{email:''});

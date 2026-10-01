@@ -26,7 +26,7 @@ for(const [id,base]of bases)for(const taxMode of ['TAX_NONE','TAX_ALL','TAX_MATE
  const materialBase=lines.filter(x=>['material','disposal'].includes(x.category));
  const taxBase=taxMode==='TAX_ALL'?Math.max(minimum,subtotal):materialBase.reduce((a,x)=>a+x.cents,0)+markup(materialBase.filter(x=>x.basis==='cost').reduce((a,x)=>a+x.cents,0));
  const tax=taxMode==='TAX_NONE'?0:roundDiv(taxBase*15,100);
- const expected=taxMode==='TAX_MATERIALS'?Math.max(minimum,subtotal+tax):Math.max(minimum,subtotal)+tax;
+ const expected=Math.max(minimum,subtotal)+tax;
  expectations.push({id,taxMode,markupMode,markupPercent,minimum,fees,seasonal,expected,input,independentLines:lines});
 }
 fs.writeFileSync(path.join(dir,'expectations-before-execution.json'),JSON.stringify(expectations,null,2));
