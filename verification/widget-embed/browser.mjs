@@ -181,6 +181,7 @@ try{
   await p.evaluate(()=>document.querySelector('dialog').showModal());await p.locator('#close').focus();
   const trace=[];
   for(let i=0;i<10;i++){await p.keyboard.press('Tab');trace.push(await p.evaluate(()=>({inside:document.querySelector('dialog').contains(document.activeElement),documentHasFocus:document.hasFocus(),active:document.activeElement?.outerHTML.slice(0,200)})));}
+  assert.ok(trace.every(state=>state.inside||!state.documentHasFocus));
   save('native-dialog-focus.json',trace);return trace;
  });
  for(const width of [320,375,768,1280]){
@@ -198,7 +199,7 @@ try{
    assert.ok(!/\bmarkup\b|\bmargin\b|mowingBaseRatePerSqft|0\.005/.test(await p.getByRole('dialog').innerText()));
    const ownerPreview=await preview(saved);
    await controlsReachable(p);
-   await p.locator('.widget-scroll').evaluate(el=>el.scrollTop=0);
+   await p.getByText('$50 per visit',{exact:true}).scrollIntoViewIfNeeded();
    await p.screenshot({path:path.join(published,'widget-'+width+'-quote.png')});
    const accessibility=await p.getByRole('dialog').ariaSnapshot();
    save('quote-'+width+'.json',{prepared,saved,ownerPreview,geometry:await geometry(p),accessibility});
@@ -211,7 +212,9 @@ try{
     focusTrace.push(await p.evaluate(()=>{const root=document.querySelector('[data-otc-widget]').shadowRoot;const active=root.activeElement;return {inside:root.querySelector('dialog').contains(active),documentHasFocus:document.hasFocus(),documentActive:document.activeElement?.outerHTML.slice(0,200),shadowActive:active?.outerHTML.slice(0,200)||null};}));
    }
    save('focus-'+width+'.json',focusTrace);
-   assert.equal(focusTrace.every(state=>state.inside),true,'Focus escaped the modal: '+JSON.stringify(focusTrace.filter(state=>!state.inside)));
+   // Chromium permits Tab into browser chrome even for a plain native modal.
+   // While the document has focus, it must stay inside the widget dialog.
+   assert.equal(focusTrace.every(state=>state.inside||(!state.documentHasFocus&&state.shadowActive===null)),true,'Focus reached the host page: '+JSON.stringify(focusTrace.filter(state=>!state.inside)));
    await p.keyboard.press('Escape');
    assert.equal(await p.evaluate(()=>{const root=document.querySelector('[data-otc-widget]').shadowRoot;return root.activeElement===root.querySelector('.launcher');}),true);
    await hostOkay(p);
@@ -258,6 +261,49 @@ try{
   save('preferred-time.json',{saved,request:response.request().postDataJSON(),response:result,record});
   await p.screenshot({path:path.join(published,'widget-320-preferred-time.png')});
   return {status:result.status,stored:!!record};
+ });
+ await check('Lost quote response retries the same stored request once',async page=>{
+  const p=await page(375);await open(p);await fill(p);await prepare(p);
+  const before=db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n;
+  let lost;
+  await p.route(assets+f.url,async route=>{
+   if(route.request().method()!=='POST'){await route.continue();return;}
+   const response=await route.fetch();
+   lost={body:route.request().postDataJSON(),status:response.status(),response:await response.json()};
+   await route.abort('failed');
+  });
+  await p.getByRole('button',{name:'Get estimate',exact:true}).click();
+  await p.getByRole('button',{name:'Retry saved request',exact:true}).waitFor();
+  assert.equal(lost.status,201);assert.equal(await p.getByRole('alert').count(),1);
+  assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before+1);
+  await p.unroute(assets+f.url);
+  const next=p.waitForResponse(r=>r.url()===assets+f.url&&r.request().method()==='POST');
+  await p.getByRole('button',{name:'Retry saved request',exact:true}).click();
+  const response=await next,result=await response.json();
+  assert.equal(response.status(),200);assert.deepEqual(response.request().postDataJSON(),lost.body);assert.deepEqual(result,lost.response);
+  assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before+1);
+  await p.getByText('$50 per visit',{exact:true}).waitFor();
+  save('lost-response-retry.json',{lost,retry:{status:response.status(),body:response.request().postDataJSON(),response:result},record:db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(f.owner.id,lost.body.requestId)});
+  return {responseLostAfterStored:true,recordsCreated:1,retryStatus:response.status()};
+ });
+ await check('Rejected contact remains editable and correction quotes',async page=>{
+  const p=await page(320);await open(p);await fill(p);
+  await p.getByRole('button',{name:'Back',exact:true}).click();
+  await p.getByLabel('Email',{exact:true}).fill('synthetic-invalid-email');
+  await p.getByRole('button',{name:'Continue',exact:true}).click();
+  const before=db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n;
+  const next=p.waitForResponse(r=>r.url()===assets+f.url+'/prepare'&&r.request().method()==='POST');
+  await p.getByRole('button',{name:'Submit estimate request',exact:true}).click();
+  const rejected=await next;assert.equal(rejected.status(),422);
+  await p.getByRole('alert').waitFor();
+  assert.equal(db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(f.owner.id).n,before);
+  await p.getByRole('button',{name:'Back',exact:true}).click();
+  await p.getByLabel('Email',{exact:true}).fill('synthetic-corrected@example.invalid');
+  await p.getByRole('button',{name:'Continue',exact:true}).click();
+  const saved=await finish(p,await prepare(p));
+  assert.equal(saved.result.midEstimate,50);
+  save('editable-rejection.json',{rejected:{status:rejected.status(),body:rejected.request().postDataJSON(),response:await rejected.json()},saved});
+  return {rejectionStatus:422,editable:true,correctedEstimate:50};
  });
  await check('Unreachable API offers retry and announces the error',async page=>{
   const p=await page(375);await p.route(assets+f.url,route=>route.abort('failed'));
