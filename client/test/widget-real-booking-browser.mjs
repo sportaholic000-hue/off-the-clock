@@ -10,11 +10,11 @@ import {mowingFixture} from '../../verification/quotedone/repair-fixture.mjs';
 import {catalogMode,pricingEnvelope} from '../src/widgetTransport.js';
 
 const [root,evidence]=process.argv.slice(2).map(value=>path.resolve(value));
-const app=await startApplication(root,evidence,{port:4592,calendarFixture:true});
+const assets='http://127.0.0.1:4590',site='http://127.0.0.1:4591',denied='http://127.0.0.1:4593';
+const app=await startApplication(root,evidence,{port:4592,calendarFixture:true,browserOrigins:[assets]});
 fs.copyFileSync(fileURLToPath(import.meta.url),path.join(evidence,'executed-widget-browser.mjs'));
 const require=createRequire(path.join(root,'package.json'));
 const {chromium}=require(process.env.PRICEBOOK_BROWSER_MODULE),Database=require('better-sqlite3');
-const assets='http://127.0.0.1:4590',site='http://127.0.0.1:4591',denied='http://127.0.0.1:4593';
 const rows=[],wire=[],errors=[],servers=[];
 let browser,db,f;
 const bytes=value=>Buffer.from(value||'');
