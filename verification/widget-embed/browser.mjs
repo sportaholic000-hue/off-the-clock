@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
+import {gzipSync} from 'node:zlib';
 import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
 import {startApplication,quoteReceiptResponse} from '../../client/test/widget-application-harness.mjs';
@@ -173,7 +174,8 @@ try{
  assert.equal(snippet,'<script src="'+assets+'/widget.js" data-key="'+f.access.publicKey+'" async></script>');
  assert.ok(!snippet.includes(f.owner.token)&&!snippet.includes(f.owner.password));
  save('owner-snippet.json',{snippet,source:'Rendered owner price-book installation textarea',publicKeyOnly:true});
- await owner.screenshot({path:path.join(published,'owner-installation.png'),fullPage:true});await owner.close();
+ await owner.getByRole('textbox',{name:/^Widget code/}).scrollIntoViewIfNeeded();
+ await owner.screenshot({path:path.join(published,'owner-installation.png')});await owner.close();
  rows.push({name:'Exact snippet copied from owner interface, async, public key only',passed:true});
 
  await check('Native dialog keyboard control',async page=>{
@@ -454,8 +456,11 @@ finally{
  // Portable retrieval through the repository connector when the local workspace
  // is read-only. Only synthetic, sanitized evidence in public/ is exported.
  for(const name of fs.readdirSync(published)){
-  const data=fs.readFileSync(path.join(published,name));const base64=data.toString('base64');
-  for(let offset=0;offset<base64.length;offset+=24000)console.log('WIDGET_FILE '+JSON.stringify({name,offset,total:base64.length,base64:base64.slice(offset,offset+24000)}));
+  const original=fs.readFileSync(path.join(published,name)),packed=name.endsWith('.json');
+  const exportedName=packed?name+'.gz':name,data=packed?gzipSync(original,{level:9}):original;
+  if(packed)fs.writeFileSync(path.join(published,exportedName),data);
+  const base64=data.toString('base64');
+  for(let offset=0;offset<base64.length;offset+=24000)console.log('WIDGET_FILE '+JSON.stringify({name:exportedName,offset,total:base64.length,base64:base64.slice(offset,offset+24000)}));
  }
 }
 process.exitCode=rows.every(row=>row.passed)?0:1;
