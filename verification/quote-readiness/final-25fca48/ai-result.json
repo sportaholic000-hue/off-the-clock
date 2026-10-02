@@ -1,0 +1,63 @@
+{
+  "source": "25fca4812bbc0eb905b1d91124c2aa53aced791a",
+  "model": "gemini-3.5-flash-lite",
+  "checks": [
+    {
+      "name": "current model exists and supports text generation while voice keeps its separate setting",
+      "passed": true
+    },
+    {
+      "name": "real Gemini starter through owner browser becomes an inactive unconfirmed saved draft",
+      "passed": true
+    },
+    {
+      "name": "real Gemini interview captures precise subcent owner answer and transfers it to editor intact",
+      "passed": true
+    },
+    {
+      "name": "real starter suggestions use current schemas across every service and remain inactive after saving",
+      "passed": true
+    },
+    {
+      "name": "free-text prompt injection cannot confirm or activate pricing",
+      "passed": true
+    },
+    {
+      "name": "another owner cannot read, edit or generate against this draft",
+      "passed": true
+    },
+    {
+      "name": "invalid model outputs never modify the persisted interview draft",
+      "passed": true
+    },
+    {
+      "name": "invalid starter outputs are rejected through the authenticated application route",
+      "passed": true
+    },
+    {
+      "name": "manual interview writes validate all fields and changed values lose prior confirmation",
+      "passed": true
+    },
+    {
+      "name": "down Gemini shows owner error and the manual editor stays usable",
+      "passed": true
+    },
+    {
+      "name": "slow Gemini times out visibly and preserves draft and manual path",
+      "passed": true
+    },
+    {
+      "name": "AI values require separate exact saved-value confirmation before a normal quote can succeed",
+      "passed": true
+    },
+    {
+      "name": "widget summary is friendly at mobile width and the unchanged job still quotes $50",
+      "passed": true
+    },
+    {
+      "name": "keys never reach browser responses, application records or public evidence",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

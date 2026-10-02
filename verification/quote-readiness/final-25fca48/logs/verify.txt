@@ -1,0 +1,1373 @@
+﻿2026-10-02T14:52:28.4406862Z Current runner version: '2.337.0'
+2026-10-02T14:52:28.4486899Z ##[group]Runner Image Provisioner
+2026-10-02T14:52:28.4488219Z Hosted Compute Agent
+2026-10-02T14:52:28.4489633Z Version: 20260901.588
+2026-10-02T14:52:28.4490833Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-02T14:52:28.4492107Z Build Date: 2026-09-01T19:56:44Z
+2026-10-02T14:52:28.4493395Z Worker ID: {29730c1e-4afd-4bac-bb2c-91a89a9496c5}
+2026-10-02T14:52:28.4514990Z Azure Region: eastus2
+2026-10-02T14:52:28.4516494Z ##[endgroup]
+2026-10-02T14:52:28.4519034Z ##[group]Operating System
+2026-10-02T14:52:28.4520140Z Ubuntu
+2026-10-02T14:52:28.4521352Z 24.04.5
+2026-10-02T14:52:28.4522423Z LTS
+2026-10-02T14:52:28.4523525Z ##[endgroup]
+2026-10-02T14:52:28.4524535Z ##[group]Runner Image
+2026-10-02T14:52:28.4525999Z Image: ubuntu-24.04
+2026-10-02T14:52:28.4527238Z Version: 20260927.320.1
+2026-10-02T14:52:28.4529518Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-02T14:52:28.4532528Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-02T14:52:28.4534346Z ##[endgroup]
+2026-10-02T14:52:28.4556915Z ##[group]GITHUB_TOKEN Permissions
+2026-10-02T14:52:28.4560542Z Contents: read
+2026-10-02T14:52:28.4561577Z Metadata: read
+2026-10-02T14:52:28.4562552Z ##[endgroup]
+2026-10-02T14:52:28.4566419Z Secret source: Actions
+2026-10-02T14:52:28.4568015Z Cache mode: write
+2026-10-02T14:52:28.4569746Z Prepare workflow directory
+2026-10-02T14:52:28.5749403Z Prepare all required actions
+2026-10-02T14:52:28.5823075Z Getting action download info
+2026-10-02T14:52:29.0349174Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-02T14:52:29.1491249Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-02T14:52:29.2474059Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-02T14:52:29.4754084Z Complete job name: verify
+2026-10-02T14:52:29.5542071Z ##[group]Run actions/checkout@v4
+2026-10-02T14:52:29.5542962Z with:
+2026-10-02T14:52:29.5543415Z   persist-credentials: false
+2026-10-02T14:52:29.5543917Z   fetch-depth: 0
+2026-10-02T14:52:29.5544421Z   repository: sportaholic000-hue/off-the-clock
+2026-10-02T14:52:29.5548321Z   token: ***
+2026-10-02T14:52:29.5548752Z   ssh-strict: true
+2026-10-02T14:52:29.5549178Z   ssh-user: git
+2026-10-02T14:52:29.5549591Z   clean: true
+2026-10-02T14:52:29.5550039Z   sparse-checkout-cone-mode: true
+2026-10-02T14:52:29.5550556Z   fetch-tags: false
+2026-10-02T14:52:29.5550995Z   show-progress: true
+2026-10-02T14:52:29.5551439Z   lfs: false
+2026-10-02T14:52:29.5551847Z   submodules: false
+2026-10-02T14:52:29.5552294Z   set-safe-directory: true
+2026-10-02T14:52:29.5552794Z   allow-unsafe-pr-checkout: false
+2026-10-02T14:52:29.5553570Z env:
+2026-10-02T14:52:29.5553975Z   DEMO_ENABLED: false
+2026-10-02T14:52:29.5554433Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:52:29.5555431Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:52:29.5555995Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:52:29.5556506Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:52:29.5557005Z ##[endgroup]
+2026-10-02T14:52:29.6754413Z Syncing repository: sportaholic000-hue/off-the-clock
+2026-10-02T14:52:29.6757853Z ##[group]Getting Git version info
+2026-10-02T14:52:29.6759615Z Working directory is '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-02T14:52:29.6763208Z [command]/usr/bin/git version
+2026-10-02T14:52:29.6947130Z git version 2.55.0
+2026-10-02T14:52:29.6977525Z ##[endgroup]
+2026-10-02T14:52:29.7002220Z Temporarily overriding HOME='/home/runner/work/_temp/b00a6f3c-85bd-48a3-bf0f-d572fb20a9a9' before making global git config changes
+2026-10-02T14:52:29.7020156Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-02T14:52:29.7022380Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-02T14:52:29.7094509Z Deleting the contents of '/home/runner/work/off-the-clock/off-the-clock'
+2026-10-02T14:52:29.7104370Z ##[group]Initializing the repository
+2026-10-02T14:52:29.7125921Z [command]/usr/bin/git init /home/runner/work/off-the-clock/off-the-clock
+2026-10-02T14:52:29.7255106Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-02T14:52:29.7272690Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-02T14:52:29.7295957Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-02T14:52:29.7306185Z hint: call:
+2026-10-02T14:52:29.7307118Z hint:
+2026-10-02T14:52:29.7308461Z hint: 	git config --global init.defaultBranch <name>
+2026-10-02T14:52:29.7345572Z hint:
+2026-10-02T14:52:29.7347159Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-02T14:52:29.7349678Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-02T14:52:29.7355371Z hint:
+2026-10-02T14:52:29.7408338Z hint: 	git branch -m <name>
+2026-10-02T14:52:29.7409736Z hint:
+2026-10-02T14:52:29.7411573Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-02T14:52:29.7413868Z Initialized empty Git repository in /home/runner/work/off-the-clock/off-the-clock/.git/
+2026-10-02T14:52:29.7418917Z [command]/usr/bin/git remote add origin https://github.com/sportaholic000-hue/off-the-clock
+2026-10-02T14:52:29.7423243Z ##[endgroup]
+2026-10-02T14:52:29.7425607Z ##[group]Disabling automatic garbage collection
+2026-10-02T14:52:29.7429812Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-02T14:52:29.7434360Z ##[endgroup]
+2026-10-02T14:52:29.7436121Z ##[group]Setting up auth
+2026-10-02T14:52:29.7437870Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-02T14:52:29.7505355Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-02T14:52:29.8024588Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-02T14:52:29.8095198Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-02T14:52:29.8369962Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-02T14:52:29.8410012Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-02T14:52:29.8660277Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-02T14:52:29.8705895Z ##[endgroup]
+2026-10-02T14:52:29.8708087Z ##[group]Fetching the repository
+2026-10-02T14:52:29.8718423Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-02T14:52:32.4239837Z From https://github.com/sportaholic000-hue/off-the-clock
+2026-10-02T14:52:32.4246761Z  * [new branch]      claude/ci-results       -> origin/claude/ci-results
+2026-10-02T14:52:32.4249868Z  * [new branch]      claude/demo-test-link   -> origin/claude/demo-test-link
+2026-10-02T14:52:32.4252974Z  * [new branch]      claude/gemini-live-probe -> origin/claude/gemini-live-probe
+2026-10-02T14:52:32.4256620Z  * [new branch]      claude/integration-pr3-pr4-20261001 -> origin/claude/integration-pr3-pr4-20261001
+2026-10-02T14:52:32.4260192Z  * [new branch]      claude/live-demo        -> origin/claude/live-demo
+2026-10-02T14:52:32.4263466Z  * [new branch]      claude/phase-2-audit-fixes -> origin/claude/phase-2-audit-fixes
+2026-10-02T14:52:32.4267399Z  * [new branch]      claude/phase-2-blocker-repairs -> origin/claude/phase-2-blocker-repairs
+2026-10-02T14:52:32.4270050Z  * [new branch]      claude/phase-2-customer-quote-safety -> origin/claude/phase-2-customer-quote-safety
+2026-10-02T14:52:32.4273046Z  * [new branch]      claude/phase-2-interview-structured-input -> origin/claude/phase-2-interview-structured-input
+2026-10-02T14:52:32.4280286Z  * [new branch]      claude/probe-results    -> origin/claude/probe-results
+2026-10-02T14:52:32.4282178Z  * [new branch]      claude/voice-runtime    -> origin/claude/voice-runtime
+2026-10-02T14:52:32.4285189Z  * [new branch]      codex/account-email-readiness-20260930 -> origin/codex/account-email-readiness-20260930
+2026-10-02T14:52:32.4289200Z  * [new branch]      codex/auth-ci-proof-20260930 -> origin/codex/auth-ci-proof-20260930
+2026-10-02T14:52:32.4293290Z  * [new branch]      codex/auth-email-recovery-20260929 -> origin/codex/auth-email-recovery-20260929
+2026-10-02T14:52:32.4297575Z  * [new branch]      codex/backend-launch    -> origin/codex/backend-launch
+2026-10-02T14:52:32.4301614Z  * [new branch]      codex/backend-preservation-20260929 -> origin/codex/backend-preservation-20260929
+2026-10-02T14:52:32.4306852Z  * [new branch]      codex/comparison-conversion-20261001 -> origin/codex/comparison-conversion-20261001
+2026-10-02T14:52:32.4311898Z  * [new branch]      codex/customer-quote-wording-20261001 -> origin/codex/customer-quote-wording-20261001
+2026-10-02T14:52:32.4316915Z  * [new branch]      codex/full-launch-review-20260930 -> origin/codex/full-launch-review-20260930
+2026-10-02T14:52:32.4324095Z  * [new branch]      codex/independent-quote-booking-20260930 -> origin/codex/independent-quote-booking-20260930
+2026-10-02T14:52:32.4329940Z  * [new branch]      codex/launch-plan-security-20261001 -> origin/codex/launch-plan-security-20261001
+2026-10-02T14:52:32.4337205Z  * [new branch]      codex/operator-exports-webhooks-20261001 -> origin/codex/operator-exports-webhooks-20261001
+2026-10-02T14:52:32.4343072Z  * [new branch]      codex/opus-quote-repairs-20261001 -> origin/codex/opus-quote-repairs-20261001
+2026-10-02T14:52:32.4349305Z  * [new branch]      codex/phase-2-onboarding-pricebook -> origin/codex/phase-2-onboarding-pricebook
+2026-10-02T14:52:32.4354144Z  * [new branch]      codex/phase2-verification-0eb254b -> origin/codex/phase2-verification-0eb254b
+2026-10-02T14:52:32.4359524Z  * [new branch]      codex/pr4-independent-audit-20260930 -> origin/codex/pr4-independent-audit-20260930
+2026-10-02T14:52:32.4364191Z  * [new branch]      codex/pricebook-ai-20261001 -> origin/codex/pricebook-ai-20261001
+2026-10-02T14:52:32.4369524Z  * [new branch]      codex/pricebook-integrity-20260912 -> origin/codex/pricebook-integrity-20260912
+2026-10-02T14:52:32.4374239Z  * [new branch]      codex/quote-engine-vnext-audit -> origin/codex/quote-engine-vnext-audit
+2026-10-02T14:52:32.4379474Z  * [new branch]      codex/quote-readiness-20261002 -> origin/codex/quote-readiness-20261002
+2026-10-02T14:52:32.4385321Z  * [new branch]      codex/quotedone-application-completion -> origin/codex/quotedone-application-completion
+2026-10-02T14:52:32.4391190Z  * [new branch]      codex/quotedone-audit-repairs-20260927 -> origin/codex/quotedone-audit-repairs-20260927
+2026-10-02T14:52:32.4397233Z  * [new branch]      codex/quotedone-widget-20260929 -> origin/codex/quotedone-widget-20260929
+2026-10-02T14:52:32.4401794Z  * [new branch]      codex/railway-ready-20261001 -> origin/codex/railway-ready-20261001
+2026-10-02T14:52:32.4407510Z  * [new branch]      codex/tenant-owner-addon-20260719 -> origin/codex/tenant-owner-addon-20260719
+2026-10-02T14:52:32.4411933Z  * [new branch]      codex/widget-embed-20261001 -> origin/codex/widget-embed-20261001
+2026-10-02T14:52:32.4416394Z  * [new branch]      demo/website-live-sales -> origin/demo/website-live-sales
+2026-10-02T14:52:32.4420807Z  * [new branch]      evidence/railway-readiness-20261001 -> origin/evidence/railway-readiness-20261001
+2026-10-02T14:52:32.4425848Z  * [new branch]      growth/public-pages-review -> origin/growth/public-pages-review
+2026-10-02T14:52:32.4429335Z  * [new branch]      main                    -> origin/main
+2026-10-02T14:52:32.4432964Z  * [new branch]      verification/pricebook-ai-20261001 -> origin/verification/pricebook-ai-20261001
+2026-10-02T14:52:32.4439812Z  * [new branch]      verification/quote-readiness-20261002 -> origin/verification/quote-readiness-20261002
+2026-10-02T14:52:32.4445415Z  * [new branch]      verification/widget-embed-20261001 -> origin/verification/widget-embed-20261001
+2026-10-02T14:52:32.4449810Z  * [new branch]      work/call-usage-20261002 -> origin/work/call-usage-20261002
+2026-10-02T14:52:32.4456935Z [command]/usr/bin/git branch --list --remote origin/codex/quote-readiness-20261002
+2026-10-02T14:52:32.4459426Z   origin/codex/quote-readiness-20261002
+2026-10-02T14:52:32.4462834Z [command]/usr/bin/git rev-parse refs/remotes/origin/codex/quote-readiness-20261002
+2026-10-02T14:52:32.4465494Z 25fca4812bbc0eb905b1d91124c2aa53aced791a
+2026-10-02T14:52:32.4470388Z ##[endgroup]
+2026-10-02T14:52:32.4472767Z ##[group]Determining the checkout info
+2026-10-02T14:52:32.4475341Z ##[endgroup]
+2026-10-02T14:52:32.4477134Z [command]/usr/bin/git sparse-checkout disable
+2026-10-02T14:52:32.4498980Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-02T14:52:32.4538718Z ##[group]Checking out the ref
+2026-10-02T14:52:32.4543870Z [command]/usr/bin/git checkout --progress --force -B codex/quote-readiness-20261002 refs/remotes/origin/codex/quote-readiness-20261002
+2026-10-02T14:52:33.3576585Z Switched to a new branch 'codex/quote-readiness-20261002'
+2026-10-02T14:52:33.3587018Z branch 'codex/quote-readiness-20261002' set up to track 'origin/codex/quote-readiness-20261002'.
+2026-10-02T14:52:33.3634177Z ##[endgroup]
+2026-10-02T14:52:33.3671001Z [command]/usr/bin/git log -1 --format=%H
+2026-10-02T14:52:33.3705928Z 25fca4812bbc0eb905b1d91124c2aa53aced791a
+2026-10-02T14:52:33.3714923Z ##[group]Removing auth
+2026-10-02T14:52:33.3720399Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-02T14:52:33.3759232Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-02T14:52:33.4011592Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-02T14:52:33.4046424Z http.https://github.com/.extraheader
+2026-10-02T14:52:33.4057362Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-02T14:52:33.4109850Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-02T14:52:33.4363565Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-02T14:52:33.4487405Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-02T14:52:33.4690398Z ##[endgroup]
+2026-10-02T14:52:33.4958960Z ##[group]Run actions/setup-node@v4
+2026-10-02T14:52:33.4959377Z with:
+2026-10-02T14:52:33.4959631Z   node-version: 22.23.2
+2026-10-02T14:52:33.4959913Z   always-auth: false
+2026-10-02T14:52:33.4960193Z   check-latest: false
+2026-10-02T14:52:33.4962529Z   token: ***
+2026-10-02T14:52:33.4962779Z env:
+2026-10-02T14:52:33.4963018Z   DEMO_ENABLED: false
+2026-10-02T14:52:33.4963306Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:52:33.4963615Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:52:33.4963928Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:52:33.4964235Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:52:33.4964546Z ##[endgroup]
+2026-10-02T14:52:33.6455558Z Attempting to download 22.23.2...
+2026-10-02T14:52:33.6565545Z (node:2148) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-02T14:52:33.6569174Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-02T14:52:34.1848843Z Acquiring 22.23.2 - x64 from https://github.com/actions/node-versions/releases/download/22.23.2-30508424155/node-22.23.2-linux-x64.tar.gz
+2026-10-02T14:52:34.8361040Z Extracting ...
+2026-10-02T14:52:34.8512836Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/1df8be44-2ec6-446a-9b1a-bb00b630fb3d -f /home/runner/work/_temp/7be8f169-5455-4d8a-a535-251d4b5a59ef
+2026-10-02T14:52:36.2476072Z Adding to the cache ...
+2026-10-02T14:52:39.2542600Z ##[group]Environment details
+2026-10-02T14:52:39.5350665Z node: v22.23.2
+2026-10-02T14:52:39.5359099Z npm: 10.9.8
+2026-10-02T14:52:39.5359855Z yarn: 1.22.22
+2026-10-02T14:52:39.5361512Z ##[endgroup]
+2026-10-02T14:52:39.5543833Z ##[group]Run rm -rf node_modules server/node_modules client/node_modules
+2026-10-02T14:52:39.5544420Z [36;1mrm -rf node_modules server/node_modules client/node_modules[0m
+2026-10-02T14:52:39.5545261Z [36;1mnpm ci --no-audit --no-fund[0m
+2026-10-02T14:52:39.5545555Z [36;1mnpm --prefix client run build[0m
+2026-10-02T14:52:39.5545914Z [36;1mmkdir -p .portable-runtime/node-v22.23.2-win-x64[0m
+2026-10-02T14:52:39.5546397Z [36;1mcp "$(command -v node)" .portable-runtime/node-v22.23.2-win-x64/node.exe[0m
+2026-10-02T14:52:39.5546881Z [36;1mchmod +x .portable-runtime/node-v22.23.2-win-x64/node.exe[0m
+2026-10-02T14:52:39.5861291Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:52:39.5861644Z env:
+2026-10-02T14:52:39.5861898Z   DEMO_ENABLED: false
+2026-10-02T14:52:39.5862177Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:52:39.5862475Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:52:39.5862775Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:52:39.5863136Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:52:39.5863435Z ##[endgroup]
+2026-10-02T14:52:41.8539478Z npm warn deprecated scmp@2.1.0: Just use Node.js's crypto.timingSafeEqual()
+2026-10-02T14:52:42.0397032Z npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+2026-10-02T14:52:43.3848561Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-10-02T14:52:47.8485595Z 
+2026-10-02T14:52:47.8505868Z added 311 packages in 8s
+2026-10-02T14:52:48.0605360Z 
+2026-10-02T14:52:48.0645888Z > off-the-clock-client@0.0.0 build
+2026-10-02T14:52:48.0646922Z > vite build && vite build --config vite.widget.config.js
+2026-10-02T14:52:48.0664483Z 
+2026-10-02T14:52:48.3693764Z [36mvite v6.4.3 [32mbuilding for production...[36m[39m
+2026-10-02T14:52:48.4785092Z transforming...
+2026-10-02T14:52:52.6535519Z [32m✓[39m 1610 modules transformed.
+2026-10-02T14:52:52.9122370Z rendering chunks...
+2026-10-02T14:52:52.9212104Z computing gzip size...
+2026-10-02T14:52:52.9368395Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.40 kB[22m[1m[22m[2m │ gzip:   0.27 kB[22m
+2026-10-02T14:52:52.9386264Z [2mdist/[22m[2massets/[22m[35mindex-Wzmw2GTw.css  [39m[1m[2m 52.77 kB[22m[1m[22m[2m │ gzip:   9.34 kB[22m
+2026-10-02T14:52:52.9406463Z [2mdist/[22m[2massets/[22m[36mindex-BmZFRjP_.js   [39m[1m[2m490.70 kB[22m[1m[22m[2m │ gzip: 141.53 kB[22m
+2026-10-02T14:52:52.9413792Z [32m✓ built in 4.53s[39m
+2026-10-02T14:52:53.1886551Z [36mvite v6.4.3 [32mbuilding for production...[36m[39m
+2026-10-02T14:52:53.2316037Z transforming...
+2026-10-02T14:52:55.8306653Z [32m✓[39m 1588 modules transformed.
+2026-10-02T14:52:56.0073987Z rendering chunks...
+2026-10-02T14:52:56.0114214Z computing gzip size...
+2026-10-02T14:52:56.0254463Z [2mdist/[22m[36mwidget-app.js  [39m[1m[2m453.39 kB[22m[1m[22m[2m │ gzip: 104.72 kB[22m
+2026-10-02T14:52:56.0256949Z [32m✓ built in 2.82s[39m
+2026-10-02T14:52:56.1081371Z ##[group]Run mkdir -p "$RUNNER_TEMP/readiness/public"
+2026-10-02T14:52:56.1081837Z [36;1mmkdir -p "$RUNNER_TEMP/readiness/public"[0m
+2026-10-02T14:52:56.1082371Z [36;1mgit worktree add --detach "$RUNNER_TEMP/readiness-before" 1b70096e25a1310df556e2f8672f9741d025c04e[0m
+2026-10-02T14:52:56.1083067Z [36;1mcp -R verification/quote-readiness "$RUNNER_TEMP/readiness-before/verification/"[0m
+2026-10-02T14:52:56.1083883Z [36;1mcp test/quoteReadinessRepairs.spec.mjs "$RUNNER_TEMP/readiness-before/test/"[0m
+2026-10-02T14:52:56.1085042Z [36;1mrm -rf "$RUNNER_TEMP/readiness-before/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"[0m
+2026-10-02T14:52:56.1085934Z [36;1mln -s "$GITHUB_WORKSPACE/server/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules"[0m
+2026-10-02T14:52:56.1086601Z [36;1mln -s "$GITHUB_WORKSPACE/client/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"[0m
+2026-10-02T14:52:56.1087265Z [36;1mln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/readiness-before/node_modules"[0m
+2026-10-02T14:52:56.1087894Z [36;1mln -s "$GITHUB_WORKSPACE/.portable-runtime" "$RUNNER_TEMP/readiness-before/.portable-runtime"[0m
+2026-10-02T14:52:56.1088384Z [36;1mcd "$RUNNER_TEMP/readiness-before"[0m
+2026-10-02T14:52:56.1088952Z [36;1mif node --test test/quoteReadinessRepairs.spec.mjs > "$RUNNER_TEMP/readiness/public/regressions-before.tap" 2>&1; then[0m
+2026-10-02T14:52:56.1089596Z [36;1m  echo "Original defects unexpectedly absent"[0m
+2026-10-02T14:52:56.1089900Z [36;1m  exit 1[0m
+2026-10-02T14:52:56.1090088Z [36;1mfi[0m
+2026-10-02T14:52:56.1090454Z [36;1mgrep -E '^(not ok |# (tests|pass|fail))' "$RUNNER_TEMP/readiness/public/regressions-before.tap"[0m
+2026-10-02T14:52:56.1091409Z [36;1mGITHUB_SHA=1b70096e25a1310df556e2f8672f9741d025c04e .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/reproduce.mjs "$RUNNER_TEMP/readiness/before"[0m
+2026-10-02T14:52:56.1157286Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:52:56.1157541Z env:
+2026-10-02T14:52:56.1157735Z   DEMO_ENABLED: false
+2026-10-02T14:52:56.1157972Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:52:56.1158228Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:52:56.1158476Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:52:56.1158735Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:52:56.1158992Z ##[endgroup]
+2026-10-02T14:52:56.1284408Z Preparing worktree (detached HEAD 1b70096)
+2026-10-02T14:52:57.0786228Z HEAD is now at 1b70096 Keep editor integrity evidence tied to named state after AI UI additions
+2026-10-02T14:52:57.6285782Z not ok 1 - B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries
+2026-10-02T14:52:57.6286987Z not ok 3 - M1 wall base service remains active without unrequested extras
+2026-10-02T14:52:57.6289535Z not ok 4 - M1 paint packages base service remains active without unrequested extras
+2026-10-02T14:52:57.6306027Z not ok 5 - M1 concrete base service remains active without unrequested extras
+2026-10-02T14:52:57.6323920Z not ok 6 - M1 mulch base service remains active without unrequested extras
+2026-10-02T14:52:57.6336059Z not ok 7 - M1 cleanup base service remains active without unrequested extras
+2026-10-02T14:52:57.6337189Z not ok 8 - M1 sod base service remains active without unrequested extras
+2026-10-02T14:52:57.6338515Z not ok 9 - M1 planting base service remains active without unrequested extras
+2026-10-02T14:52:57.6339872Z not ok 23 - M1 owner coverage reports absent optional prices before activation
+2026-10-02T14:52:57.6347778Z not ok 24 - M6 purchased paint identifies missing trim product rather than a generic coverage error
+2026-10-02T14:52:57.6349336Z not ok 25 - M2 setup requests an offering instead of unused exterior and fence standard prices
+2026-10-02T14:52:57.6350784Z not ok 28 - M7 governing interior painting specification uses measured wall area
+2026-10-02T14:52:57.6352606Z not ok 29 - M5 shared flat-roof help never instructs owners to price an unused Average fallback
+2026-10-02T14:52:57.6354386Z not ok 30 - B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+2026-10-02T14:52:57.6355940Z # tests 30
+2026-10-02T14:52:57.6356468Z # pass 16
+2026-10-02T14:52:57.6357082Z # fail 14
+2026-10-02T14:52:59.6819027Z READINESS_CASE {"id":"M1-cleanup-no-haul","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":150,"low":150,"high":150}
+2026-10-02T14:53:00.7797068Z READINESS_CASE {"id":"M1-sod-no-preparation","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":2037.5,"low":2037.5,"high":2037.5}
+2026-10-02T14:53:01.9948220Z READINESS_CASE {"id":"M1-planting-no-mulch","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":105,"low":105,"high":105}
+2026-10-02T14:53:03.2597276Z READINESS_CASE {"id":"B2-unready-safe-integer-range","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":20000000100,"low":20000000100,"high":20000000100}
+2026-10-02T14:53:05.4180593Z READINESS_CASE {"id":"B1-roof-minimum","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":2500,"mid":943,"low":848,"high":1038}
+2026-10-02T14:53:07.2348979Z READINESS_CASE {"id":"B2-M1-concrete","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3188.89,"low":3188.89,"high":3188.89}
+2026-10-02T14:53:08.3475226Z READINESS_CASE {"id":"B2-M1-wall-painting","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":300,"low":300,"high":300}
+2026-10-02T14:53:09.4723486Z READINESS_CASE {"id":"B2-M1-mulch","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":77.78,"low":77.78,"high":77.78}
+2026-10-02T14:53:10.5577726Z READINESS_CASE {"id":"B2-M1-M6-paint-packages","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":250,"low":250,"high":250}
+2026-10-02T14:53:11.4477614Z READINESS_CASE {"id":"M2-exterior-standard","status":"NEEDS PRICING","listed":0,"preview":"ESTIMATE_REQUIRES_REVIEW","public":"ESTIMATE_REQUIRES_REVIEW","staff":"ESTIMATE_REQUIRES_REVIEW","minimum":0}
+2026-10-02T14:53:12.3847233Z READINESS_CASE {"id":"M2-fence-standard","status":"NEEDS PRICING","listed":0,"preview":"ESTIMATE_REQUIRES_REVIEW","public":"ESTIMATE_REQUIRES_REVIEW","staff":"ESTIMATE_REQUIRES_REVIEW","minimum":0}
+2026-10-02T14:53:13.3840336Z READINESS_CASE {"id":"M2-configured-FENCING_INSTALL-installed","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":4500,"low":4500,"high":4500}
+2026-10-02T14:53:14.3531791Z READINESS_CASE {"id":"M2-configured-FENCING_INSTALL-itemized","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3920,"low":3920,"high":3920}
+2026-10-02T14:53:15.3097174Z READINESS_CASE {"id":"M2-configured-EXTERIOR_PAINTING-installed","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3000,"low":3000,"high":3000}
+2026-10-02T14:53:16.2466840Z READINESS_CASE {"id":"M2-configured-EXTERIOR_PAINTING-itemized","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":1794,"low":1794,"high":1794}
+2026-10-02T14:53:17.1586002Z ##[group]Run node --test test/quoteReadinessRepairs.spec.mjs test/priceBookAI.spec.mjs test/opusQuoteRepairs.spec.mjs | tee "$RUNNER_TEMP/readiness/public/focused.tap"
+2026-10-02T14:53:17.1587270Z [36;1mnode --test test/quoteReadinessRepairs.spec.mjs test/priceBookAI.spec.mjs test/opusQuoteRepairs.spec.mjs | tee "$RUNNER_TEMP/readiness/public/focused.tap"[0m
+2026-10-02T14:53:17.1588188Z [36;1mexit ${PIPESTATUS[0]}[0m
+2026-10-02T14:53:17.1651705Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:53:17.1651968Z env:
+2026-10-02T14:53:17.1652166Z   DEMO_ENABLED: false
+2026-10-02T14:53:17.1652404Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:53:17.1652666Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:53:17.1652930Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:53:17.1653182Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:53:17.1653438Z ##[endgroup]
+2026-10-02T14:53:17.2162242Z TAP version 13
+2026-10-02T14:53:18.3495897Z # Subtest: Opus 1: decking explanations never expose the owner unit price
+2026-10-02T14:53:18.3668319Z ok 1 - Opus 1: decking explanations never expose the owner unit price
+2026-10-02T14:53:18.3669393Z   ---
+2026-10-02T14:53:18.3669977Z   duration_ms: 63.42527
+2026-10-02T14:53:18.3689702Z   type: 'test'
+2026-10-02T14:53:18.3692267Z   ...
+2026-10-02T14:53:18.3736361Z # Subtest: Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3737483Z ok 2 - Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3738196Z   ---
+2026-10-02T14:53:18.3738620Z   duration_ms: 7.567512
+2026-10-02T14:53:18.3739114Z   type: 'test'
+2026-10-02T14:53:18.3739518Z   ...
+2026-10-02T14:53:18.3740271Z # Subtest: Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3741290Z ok 3 - Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3742008Z   ---
+2026-10-02T14:53:18.3742425Z   duration_ms: 7.954044
+2026-10-02T14:53:18.3742929Z   type: 'test'
+2026-10-02T14:53:18.3743335Z   ...
+2026-10-02T14:53:18.3744118Z # Subtest: Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3745373Z ok 4 - Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+2026-10-02T14:53:18.3746526Z   ---
+2026-10-02T14:53:18.3747081Z   duration_ms: 5.34168
+2026-10-02T14:53:18.3750743Z   type: 'test'
+2026-10-02T14:53:18.3775189Z   ...
+2026-10-02T14:53:18.3825655Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+2026-10-02T14:53:18.3848026Z ok 5 - Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+2026-10-02T14:53:18.3850314Z   ---
+2026-10-02T14:53:18.3850825Z   duration_ms: 10.358371
+2026-10-02T14:53:18.3851396Z   type: 'test'
+2026-10-02T14:53:18.3851861Z   ...
+2026-10-02T14:53:18.3852742Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+2026-10-02T14:53:18.3854115Z ok 6 - Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+2026-10-02T14:53:18.3855181Z   ---
+2026-10-02T14:53:18.3855659Z   duration_ms: 5.703236
+2026-10-02T14:53:18.3856162Z   type: 'test'
+2026-10-02T14:53:18.3856602Z   ...
+2026-10-02T14:53:18.3857491Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 5ft height
+2026-10-02T14:53:18.3858756Z ok 7 - Opus 3: installed fencing quotes only its explicitly offered 5ft height
+2026-10-02T14:53:18.3859555Z   ---
+2026-10-02T14:53:18.3860001Z   duration_ms: 5.453829
+2026-10-02T14:53:18.3860515Z   type: 'test'
+2026-10-02T14:53:18.3860957Z   ...
+2026-10-02T14:53:18.3861828Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+2026-10-02T14:53:18.3863119Z ok 8 - Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+2026-10-02T14:53:18.3863971Z   ---
+2026-10-02T14:53:18.3864438Z   duration_ms: 5.570066
+2026-10-02T14:53:18.3865207Z   type: 'test'
+2026-10-02T14:53:18.3866770Z   ...
+2026-10-02T14:53:18.3868298Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 7ft height
+2026-10-02T14:53:18.3870000Z ok 9 - Opus 3: installed fencing quotes only its explicitly offered 7ft height
+2026-10-02T14:53:18.3870805Z   ---
+2026-10-02T14:53:18.3871269Z   duration_ms: 6.124484
+2026-10-02T14:53:18.3871751Z   type: 'test'
+2026-10-02T14:53:18.3872204Z   ...
+2026-10-02T14:53:18.3873017Z # Subtest: Opus 3: installed fencing quotes only its explicitly offered 9ft height
+2026-10-02T14:53:18.3874908Z ok 10 - Opus 3: installed fencing quotes only its explicitly offered 9ft height
+2026-10-02T14:53:18.3875840Z   ---
+2026-10-02T14:53:18.3876401Z   duration_ms: 6.300843
+2026-10-02T14:53:18.3877261Z   type: 'test'
+2026-10-02T14:53:18.3877822Z   ...
+2026-10-02T14:53:18.3878763Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+2026-10-02T14:53:18.3880493Z ok 11 - Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+2026-10-02T14:53:18.3881587Z   ---
+2026-10-02T14:53:18.3915387Z   duration_ms: 8.050515
+2026-10-02T14:53:18.3917236Z   type: 'test'
+2026-10-02T14:53:18.3917753Z   ...
+2026-10-02T14:53:18.3946999Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+2026-10-02T14:53:18.3948652Z ok 12 - Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+2026-10-02T14:53:18.3949701Z   ---
+2026-10-02T14:53:18.3950201Z   duration_ms: 7.954997
+2026-10-02T14:53:18.3950781Z   type: 'test'
+2026-10-02T14:53:18.3951268Z   ...
+2026-10-02T14:53:18.3952166Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+2026-10-02T14:53:18.3953496Z ok 13 - Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+2026-10-02T14:53:18.3954476Z   ---
+2026-10-02T14:53:18.3955339Z   duration_ms: 7.943565
+2026-10-02T14:53:18.3955949Z   type: 'test'
+2026-10-02T14:53:18.3956429Z   ...
+2026-10-02T14:53:18.3957334Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+2026-10-02T14:53:18.3958668Z ok 14 - Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+2026-10-02T14:53:18.3959559Z   ---
+2026-10-02T14:53:18.3960084Z   duration_ms: 7.428552
+2026-10-02T14:53:18.3980110Z   type: 'test'
+2026-10-02T14:53:18.3980669Z   ...
+2026-10-02T14:53:18.3981672Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+2026-10-02T14:53:18.3982997Z ok 15 - Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+2026-10-02T14:53:18.3983879Z   ---
+2026-10-02T14:53:18.3984352Z   duration_ms: 11.728453
+2026-10-02T14:53:18.3985327Z   type: 'test'
+2026-10-02T14:53:18.3985971Z   ...
+2026-10-02T14:53:18.3986979Z # Subtest: Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+2026-10-02T14:53:18.3988426Z ok 16 - Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+2026-10-02T14:53:18.3989449Z   ---
+2026-10-02T14:53:18.3990003Z   duration_ms: 13.837067
+2026-10-02T14:53:18.3990688Z   type: 'test'
+2026-10-02T14:53:18.3991236Z   ...
+2026-10-02T14:53:18.3992294Z # Subtest: Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+2026-10-02T14:53:18.3993907Z ok 17 - Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+2026-10-02T14:53:18.3995295Z   ---
+2026-10-02T14:53:18.3995966Z   duration_ms: 8.24026
+2026-10-02T14:53:18.3996739Z   type: 'test'
+2026-10-02T14:53:18.3997412Z   ...
+2026-10-02T14:53:18.3998244Z # Subtest: Opus 4: mowing weekly labels prices per visit
+2026-10-02T14:53:18.3999398Z ok 18 - Opus 4: mowing weekly labels prices per visit
+2026-10-02T14:53:18.4000394Z   ---
+2026-10-02T14:53:18.4001163Z   duration_ms: 7.794927
+2026-10-02T14:53:18.4001991Z   type: 'test'
+2026-10-02T14:53:18.4002641Z   ...
+2026-10-02T14:53:18.4003614Z # Subtest: Opus 4: mowing biweekly labels prices per visit
+2026-10-02T14:53:18.4005101Z ok 19 - Opus 4: mowing biweekly labels prices per visit
+2026-10-02T14:53:18.4006043Z   ---
+2026-10-02T14:53:18.4006749Z   duration_ms: 7.104406
+2026-10-02T14:53:18.4007480Z   type: 'test'
+2026-10-02T14:53:18.4008010Z   ...
+2026-10-02T14:53:18.4009198Z # Subtest: Opus 4: mowing monthly labels prices per visit
+2026-10-02T14:53:18.4010395Z ok 20 - Opus 4: mowing monthly labels prices per visit
+2026-10-02T14:53:18.4011234Z   ---
+2026-10-02T14:53:18.4011763Z   duration_ms: 7.353763
+2026-10-02T14:53:18.4012471Z   type: 'test'
+2026-10-02T14:53:18.4013169Z   ...
+2026-10-02T14:53:18.4014353Z # Subtest: Opus 4: mowing one_time labels prices per visit
+2026-10-02T14:53:18.4016259Z ok 21 - Opus 4: mowing one_time labels prices per visit
+2026-10-02T14:53:18.4017086Z   ---
+2026-10-02T14:53:18.4017655Z   duration_ms: 7.337121
+2026-10-02T14:53:18.4018354Z   type: 'test'
+2026-10-02T14:53:18.4018983Z   ...
+2026-10-02T14:53:18.4019835Z # Subtest: Opus 5: every TAX_NONE option states its tax treatment
+2026-10-02T14:53:18.4021048Z ok 22 - Opus 5: every TAX_NONE option states its tax treatment
+2026-10-02T14:53:18.4021970Z   ---
+2026-10-02T14:53:18.4022614Z   duration_ms: 7.501628
+2026-10-02T14:53:18.4023285Z   type: 'test'
+2026-10-02T14:53:18.4023905Z   ...
+2026-10-02T14:53:18.4025125Z # Subtest: Opus 5: every TAX_MATERIALS option states its tax treatment
+2026-10-02T14:53:18.4026452Z ok 23 - Opus 5: every TAX_MATERIALS option states its tax treatment
+2026-10-02T14:53:18.4027401Z   ---
+2026-10-02T14:53:18.4027978Z   duration_ms: 8.279904
+2026-10-02T14:53:18.4028656Z   type: 'test'
+2026-10-02T14:53:18.4029259Z   ...
+2026-10-02T14:53:18.4030115Z # Subtest: Opus 5: every TAX_ALL option states its tax treatment
+2026-10-02T14:53:18.4031374Z ok 24 - Opus 5: every TAX_ALL option states its tax treatment
+2026-10-02T14:53:18.4032261Z   ---
+2026-10-02T14:53:18.4032814Z   duration_ms: 7.376094
+2026-10-02T14:53:18.4033504Z   type: 'test'
+2026-10-02T14:53:18.4034155Z   ...
+2026-10-02T14:53:18.4035587Z # Subtest: Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4037306Z ok 25 - Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4038475Z   ---
+2026-10-02T14:53:18.4039057Z   duration_ms: 22.439002
+2026-10-02T14:53:18.4039706Z   type: 'test'
+2026-10-02T14:53:18.4040272Z   ...
+2026-10-02T14:53:18.4041468Z # Subtest: Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4043260Z ok 26 - Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4044390Z   ---
+2026-10-02T14:53:18.4045143Z   duration_ms: 440.29077
+2026-10-02T14:53:18.4045804Z   type: 'test'
+2026-10-02T14:53:18.4046328Z   ...
+2026-10-02T14:53:18.4047518Z # Subtest: Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4049330Z ok 27 - Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4050450Z   ---
+2026-10-02T14:53:18.4050987Z   duration_ms: 9.864097
+2026-10-02T14:53:18.4051626Z   type: 'test'
+2026-10-02T14:53:18.4052173Z   ...
+2026-10-02T14:53:18.4053390Z # Subtest: Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4055529Z ok 28 - Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+2026-10-02T14:53:18.4056703Z   ---
+2026-10-02T14:53:18.4057280Z   duration_ms: 21.601386
+2026-10-02T14:53:18.4057970Z   type: 'test'
+2026-10-02T14:53:18.4058608Z   ...
+2026-10-02T14:53:18.4059837Z # Subtest: Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4061440Z ok 29 - Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4062479Z   ---
+2026-10-02T14:53:18.4063006Z   duration_ms: 18.134583
+2026-10-02T14:53:18.4063665Z   type: 'test'
+2026-10-02T14:53:18.4064183Z   ...
+2026-10-02T14:53:18.4065481Z # Subtest: Opus 6 control: demolition-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4067227Z ok 30 - Opus 6 control: demolition-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4068256Z   ---
+2026-10-02T14:53:18.4068822Z   duration_ms: 195.099963
+2026-10-02T14:53:18.4069447Z   type: 'test'
+2026-10-02T14:53:18.4069950Z   ...
+2026-10-02T14:53:18.4070965Z # Subtest: Opus 6 control: commercial-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4072462Z ok 31 - Opus 6 control: commercial-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4073707Z   ---
+2026-10-02T14:53:18.4074214Z   duration_ms: 15.741357
+2026-10-02T14:53:18.4075054Z   type: 'test'
+2026-10-02T14:53:18.4075582Z   ...
+2026-10-02T14:53:18.4076557Z # Subtest: Opus 6 control: stairs-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4078025Z ok 32 - Opus 6 control: stairs-installed remains quotable with complete scope setup
+2026-10-02T14:53:18.4078993Z   ---
+2026-10-02T14:53:18.4079502Z   duration_ms: 23.698889
+2026-10-02T14:53:18.4080160Z   type: 'test'
+2026-10-02T14:53:18.4080683Z   ...
+2026-10-02T14:53:18.4081574Z # Subtest: Opus 7: access applies to all stamped labor with difficult access
+2026-10-02T14:53:18.4082856Z ok 33 - Opus 7: access applies to all stamped labor with difficult access
+2026-10-02T14:53:18.4083830Z   ---
+2026-10-02T14:53:18.4084345Z   duration_ms: 9.900895
+2026-10-02T14:53:18.4085193Z   type: 'test'
+2026-10-02T14:53:18.4085796Z   ...
+2026-10-02T14:53:18.4086689Z # Subtest: Opus 7: access applies to all smooth labor with difficult access
+2026-10-02T14:53:18.4087868Z ok 34 - Opus 7: access applies to all smooth labor with difficult access
+2026-10-02T14:53:18.4088753Z   ---
+2026-10-02T14:53:18.4090785Z   duration_ms: 9.756074
+2026-10-02T14:53:18.4091227Z   type: 'test'
+2026-10-02T14:53:18.4091552Z   ...
+2026-10-02T14:53:18.4092202Z # Subtest: Opus 7: access applies to all stamped labor with easy access
+2026-10-02T14:53:18.4093127Z ok 35 - Opus 7: access applies to all stamped labor with easy access
+2026-10-02T14:53:18.4093557Z   ---
+2026-10-02T14:53:18.4093756Z   duration_ms: 8.056797
+2026-10-02T14:53:18.4093999Z   type: 'test'
+2026-10-02T14:53:18.4094194Z   ...
+2026-10-02T14:53:18.4096201Z # Subtest: Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+2026-10-02T14:53:18.4097622Z ok 36 - Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+2026-10-02T14:53:18.4098484Z   ---
+2026-10-02T14:53:18.4098829Z   duration_ms: 23.623327
+2026-10-02T14:53:18.4099190Z   type: 'test'
+2026-10-02T14:53:18.4099473Z   ...
+2026-10-02T14:53:19.2172076Z # Subtest: price-book generation is independent of the voice setting and never puts the key in its URL
+2026-10-02T14:53:19.2178830Z ok 37 - price-book generation is independent of the voice setting and never puts the key in its URL
+2026-10-02T14:53:19.2200900Z   ---
+2026-10-02T14:53:19.2201590Z   duration_ms: 46.172757
+2026-10-02T14:53:19.2202397Z   type: 'test'
+2026-10-02T14:53:19.2248943Z   ...
+2026-10-02T14:53:19.2271238Z # Subtest: starter rejects non JSON without silently dropping input
+2026-10-02T14:53:19.2300220Z ok 38 - starter rejects non JSON without silently dropping input
+2026-10-02T14:53:19.2303265Z   ---
+2026-10-02T14:53:19.2306605Z   duration_ms: 27.129765
+2026-10-02T14:53:19.2307559Z   type: 'test'
+2026-10-02T14:53:19.2308314Z   ...
+2026-10-02T14:53:19.2309605Z # Subtest: starter rejects fenced JSON without silently dropping input
+2026-10-02T14:53:19.2312974Z ok 39 - starter rejects fenced JSON without silently dropping input
+2026-10-02T14:53:19.2314166Z   ---
+2026-10-02T14:53:19.2315222Z   duration_ms: 26.242205
+2026-10-02T14:53:19.2315931Z   type: 'test'
+2026-10-02T14:53:19.2316561Z   ...
+2026-10-02T14:53:19.2317578Z # Subtest: starter rejects unknown service without silently dropping input
+2026-10-02T14:53:19.2319027Z ok 40 - starter rejects unknown service without silently dropping input
+2026-10-02T14:53:19.2320023Z   ---
+2026-10-02T14:53:19.2320633Z   duration_ms: 14.354435
+2026-10-02T14:53:19.2321340Z   type: 'test'
+2026-10-02T14:53:19.2321951Z   ...
+2026-10-02T14:53:19.2323275Z # Subtest: starter rejects unknown field without silently dropping input
+2026-10-02T14:53:19.2324954Z ok 41 - starter rejects unknown field without silently dropping input
+2026-10-02T14:53:19.2325970Z   ---
+2026-10-02T14:53:19.2326589Z   duration_ms: 42.614132
+2026-10-02T14:53:19.2327275Z   type: 'test'
+2026-10-02T14:53:19.2327895Z   ...
+2026-10-02T14:53:19.2329200Z # Subtest: starter rejects negative field without silently dropping input
+2026-10-02T14:53:19.2330609Z ok 42 - starter rejects negative field without silently dropping input
+2026-10-02T14:53:19.2331603Z   ---
+2026-10-02T14:53:19.2332213Z   duration_ms: 104.060252
+2026-10-02T14:53:19.2332921Z   type: 'test'
+2026-10-02T14:53:19.2333525Z   ...
+2026-10-02T14:53:19.2334500Z # Subtest: starter rejects absurd value without silently dropping input
+2026-10-02T14:53:19.2336377Z ok 43 - starter rejects absurd value without silently dropping input
+2026-10-02T14:53:19.2337360Z   ---
+2026-10-02T14:53:19.2338193Z   duration_ms: 60.594878
+2026-10-02T14:53:19.2339123Z   type: 'test'
+2026-10-02T14:53:19.2340028Z   ...
+2026-10-02T14:53:19.2341075Z # Subtest: starter rejects out of domain key without silently dropping input
+2026-10-02T14:53:19.2342534Z ok 44 - starter rejects out of domain key without silently dropping input
+2026-10-02T14:53:19.2343499Z   ---
+2026-10-02T14:53:19.2344125Z   duration_ms: 29.128894
+2026-10-02T14:53:19.2345278Z   type: 'test'
+2026-10-02T14:53:19.2345899Z   ...
+2026-10-02T14:53:19.2347343Z # Subtest: starter rejects extra root field without silently dropping input
+2026-10-02T14:53:19.2349063Z ok 45 - starter rejects extra root field without silently dropping input
+2026-10-02T14:53:19.2350358Z   ---
+2026-10-02T14:53:19.2350980Z   duration_ms: 15.034395
+2026-10-02T14:53:19.2351779Z   type: 'test'
+2026-10-02T14:53:19.2352417Z   ...
+2026-10-02T14:53:19.2353857Z # Subtest: starter rejects extra confirmation without silently dropping input
+2026-10-02T14:53:19.2355556Z ok 46 - starter rejects extra confirmation without silently dropping input
+2026-10-02T14:53:19.2356617Z   ---
+2026-10-02T14:53:19.2365291Z   duration_ms: 15.870439
+2026-10-02T14:53:19.2370143Z   type: 'test'
+2026-10-02T14:53:19.2370727Z   ...
+2026-10-02T14:53:19.2371553Z # Subtest: starter rejects duplicate service without silently dropping input
+2026-10-02T14:53:19.2372979Z ok 47 - starter rejects duplicate service without silently dropping input
+2026-10-02T14:53:19.2374169Z   ---
+2026-10-02T14:53:19.2374541Z   duration_ms: 14.389559
+2026-10-02T14:53:19.2375228Z   type: 'test'
+2026-10-02T14:53:19.2375593Z   ...
+2026-10-02T14:53:19.2376357Z # Subtest: starter rejects numeric string without silently dropping input
+2026-10-02T14:53:19.2377755Z ok 48 - starter rejects numeric string without silently dropping input
+2026-10-02T14:53:19.2395631Z   ---
+2026-10-02T14:53:19.2395987Z   duration_ms: 36.457839
+2026-10-02T14:53:19.2396405Z   type: 'test'
+2026-10-02T14:53:19.2396745Z   ...
+2026-10-02T14:53:19.2397509Z # Subtest: starter rejects duplicate JSON key without silently dropping input
+2026-10-02T14:53:19.2398664Z ok 49 - starter rejects duplicate JSON key without silently dropping input
+2026-10-02T14:53:19.2399385Z   ---
+2026-10-02T14:53:19.2399726Z   duration_ms: 8.948554
+2026-10-02T14:53:19.2400125Z   type: 'test'
+2026-10-02T14:53:19.2400474Z   ...
+2026-10-02T14:53:19.2401177Z # Subtest: starter rejects decimal drift without silently dropping input
+2026-10-02T14:53:19.2402248Z ok 50 - starter rejects decimal drift without silently dropping input
+2026-10-02T14:53:19.2402944Z   ---
+2026-10-02T14:53:19.2403283Z   duration_ms: 9.955087
+2026-10-02T14:53:19.2403678Z   type: 'test'
+2026-10-02T14:53:19.2404011Z   ...
+2026-10-02T14:53:19.2468518Z # Subtest: starter rejects missing service without silently dropping input
+2026-10-02T14:53:19.2469731Z ok 51 - starter rejects missing service without silently dropping input
+2026-10-02T14:53:19.2470397Z   ---
+2026-10-02T14:53:19.2470739Z   duration_ms: 11.94075
+2026-10-02T14:53:19.2471101Z   type: 'test'
+2026-10-02T14:53:19.2471379Z   ...
+2026-10-02T14:53:19.2472428Z # Subtest: starter preserves subcent rates and exact nested domain values
+2026-10-02T14:53:19.2473462Z ok 52 - starter preserves subcent rates and exact nested domain values
+2026-10-02T14:53:19.2474136Z   ---
+2026-10-02T14:53:19.2474435Z   duration_ms: 26.15907
+2026-10-02T14:53:19.2475058Z   type: 'test'
+2026-10-02T14:53:19.2475374Z   ...
+2026-10-02T14:53:19.2476574Z # Subtest: starter catalog only proposes supported current fields; new roof maps are not scalar rates
+2026-10-02T14:53:19.2478065Z ok 53 - starter catalog only proposes supported current fields; new roof maps are not scalar rates
+2026-10-02T14:53:19.2495456Z   ---
+2026-10-02T14:53:19.2495832Z   duration_ms: 118.921609
+2026-10-02T14:53:19.2496268Z   type: 'test'
+2026-10-02T14:53:19.2496621Z   ...
+2026-10-02T14:53:19.2497520Z # Subtest: interview extracts only one unconfirmed value despite instructions in free text
+2026-10-02T14:53:19.2498915Z ok 54 - interview extracts only one unconfirmed value despite instructions in free text
+2026-10-02T14:53:19.2499743Z   ---
+2026-10-02T14:53:19.2500076Z   duration_ms: 12.089949
+2026-10-02T14:53:19.2500480Z   type: 'test'
+2026-10-02T14:53:19.2500813Z   ...
+2026-10-02T14:53:19.2501693Z # Subtest: interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+2026-10-02T14:53:19.2503011Z ok 55 - interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+2026-10-02T14:53:19.2503811Z   ---
+2026-10-02T14:53:19.2504141Z   duration_ms: 3.73783
+2026-10-02T14:53:19.2504528Z   type: 'test'
+2026-10-02T14:53:19.2565489Z   ...
+2026-10-02T14:53:19.2566207Z # Subtest: interview rejects invalid or privileged output {"value":-1}
+2026-10-02T14:53:19.2567195Z ok 56 - interview rejects invalid or privileged output {"value":-1}
+2026-10-02T14:53:19.2567816Z   ---
+2026-10-02T14:53:19.2568129Z   duration_ms: 10.878714
+2026-10-02T14:53:19.2568501Z   type: 'test'
+2026-10-02T14:53:19.2568810Z   ...
+2026-10-02T14:53:19.2569480Z # Subtest: interview rejects invalid or privileged output {"value":1e100}
+2026-10-02T14:53:19.2570544Z ok 57 - interview rejects invalid or privileged output {"value":1e100}
+2026-10-02T14:53:19.2571176Z   ---
+2026-10-02T14:53:19.2571489Z   duration_ms: 16.633596
+2026-10-02T14:53:19.2571881Z   type: 'test'
+2026-10-02T14:53:19.2572210Z   ...
+2026-10-02T14:53:19.2572906Z # Subtest: interview rejects invalid or privileged output {"value":"0.01"}
+2026-10-02T14:53:19.2574035Z ok 58 - interview rejects invalid or privileged output {"value":"0.01"}
+2026-10-02T14:53:19.2574930Z   ---
+2026-10-02T14:53:19.2575263Z   duration_ms: 14.078098
+2026-10-02T14:53:19.2575654Z   type: 'test'
+2026-10-02T14:53:19.2575976Z   ...
+2026-10-02T14:53:19.2576668Z # Subtest: interview rejects invalid or privileged output {"value":null}
+2026-10-02T14:53:19.2674918Z ok 59 - interview rejects invalid or privileged output {"value":null}
+2026-10-02T14:53:19.2675591Z   ---
+2026-10-02T14:53:19.2675937Z   duration_ms: 10.794727
+2026-10-02T14:53:19.2676344Z   type: 'test'
+2026-10-02T14:53:19.2676675Z   ...
+2026-10-02T14:53:19.2677390Z # Subtest: interview rejects invalid or privileged output {"active":true}
+2026-10-02T14:53:19.2678429Z ok 60 - interview rejects invalid or privileged output {"active":true}
+2026-10-02T14:53:19.2679069Z   ---
+2026-10-02T14:53:19.2679402Z   duration_ms: 6.517849
+2026-10-02T14:53:19.2679784Z   type: 'test'
+2026-10-02T14:53:19.2680105Z   ...
+2026-10-02T14:53:19.2680988Z # Subtest: interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+2026-10-02T14:53:19.2682245Z ok 61 - interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+2026-10-02T14:53:19.2682981Z   ---
+2026-10-02T14:53:19.2683308Z   duration_ms: 11.241727
+2026-10-02T14:53:19.2683694Z   type: 'test'
+2026-10-02T14:53:19.2684027Z   ...
+2026-10-02T14:53:19.8208993Z # Subtest: slow response body is bounded and manual-path error exposes no provider details
+2026-10-02T14:53:19.8228914Z ok 62 - slow response body is bounded and manual-path error exposes no provider details
+2026-10-02T14:53:19.8346599Z   ---
+2026-10-02T14:53:19.8361877Z   duration_ms: 45.368042
+2026-10-02T14:53:19.8363150Z   type: 'test'
+2026-10-02T14:53:19.8364016Z   ...
+2026-10-02T14:53:19.8365699Z # Subtest: provider error containing a secret is never propagated
+2026-10-02T14:53:19.8367157Z ok 63 - provider error containing a secret is never propagated
+2026-10-02T14:53:19.8368519Z   ---
+2026-10-02T14:53:19.8369690Z   duration_ms: 37.083465
+2026-10-02T14:53:19.8370796Z   type: 'test'
+2026-10-02T14:53:19.8371537Z   ...
+2026-10-02T14:53:19.8372986Z # Subtest: interview rejects out-of-domain and unknown keys before draft persistence
+2026-10-02T14:53:19.8378761Z ok 64 - interview rejects out-of-domain and unknown keys before draft persistence
+2026-10-02T14:53:19.8380205Z   ---
+2026-10-02T14:53:19.8380975Z   duration_ms: 19.173105
+2026-10-02T14:53:19.8382057Z   type: 'test'
+2026-10-02T14:53:19.8382764Z   ...
+2026-10-02T14:53:19.8384039Z # Subtest: widget summary uses customer words and preserves original measurements
+2026-10-02T14:53:19.8385751Z ok 65 - widget summary uses customer words and preserves original measurements
+2026-10-02T14:53:19.8387022Z   ---
+2026-10-02T14:53:19.8387775Z   duration_ms: 5.139251
+2026-10-02T14:53:19.8388801Z   type: 'test'
+2026-10-02T14:53:19.8389461Z   ...
+2026-10-02T14:53:19.8390667Z # Subtest: every catalog enum is displayed using customer words rather than snake case
+2026-10-02T14:53:19.8392089Z ok 66 - every catalog enum is displayed using customer words rather than snake case
+2026-10-02T14:53:19.8393306Z   ---
+2026-10-02T14:53:19.8394017Z   duration_ms: 5.750764
+2026-10-02T14:53:19.8395836Z   type: 'test'
+2026-10-02T14:53:19.8396509Z   ...
+2026-10-02T14:53:19.8398021Z # Subtest: current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+2026-10-02T14:53:19.8399812Z ok 67 - current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+2026-10-02T14:53:19.8401363Z   ---
+2026-10-02T14:53:19.8402157Z   duration_ms: 30.039195
+2026-10-02T14:53:19.8403265Z   type: 'test'
+2026-10-02T14:53:19.8404104Z   ...
+2026-10-02T14:53:19.8405908Z # Subtest: current starter schema accepts supported draft fields for ROOFING_REPAIR
+2026-10-02T14:53:19.8409596Z ok 68 - current starter schema accepts supported draft fields for ROOFING_REPAIR
+2026-10-02T14:53:19.8410287Z   ---
+2026-10-02T14:53:19.8410601Z   duration_ms: 19.688543
+2026-10-02T14:53:19.8410978Z   type: 'test'
+2026-10-02T14:53:19.8411287Z   ...
+2026-10-02T14:53:19.8412078Z # Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+2026-10-02T14:53:19.8413236Z ok 69 - current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+2026-10-02T14:53:19.8413939Z   ---
+2026-10-02T14:53:19.8414246Z   duration_ms: 20.848297
+2026-10-02T14:53:19.8414879Z   type: 'test'
+2026-10-02T14:53:19.8415205Z   ...
+2026-10-02T14:53:19.8415953Z # Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+2026-10-02T14:53:19.8417069Z ok 70 - current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+2026-10-02T14:53:19.8417736Z   ---
+2026-10-02T14:53:19.8418039Z   duration_ms: 16.986326
+2026-10-02T14:53:19.8418401Z   type: 'test'
+2026-10-02T14:53:19.8418699Z   ...
+2026-10-02T14:53:19.8419469Z # Subtest: current starter schema accepts supported draft fields for INTERIOR_PAINTING
+2026-10-02T14:53:19.8420542Z ok 71 - current starter schema accepts supported draft fields for INTERIOR_PAINTING
+2026-10-02T14:53:19.8421191Z   ---
+2026-10-02T14:53:19.8421484Z   duration_ms: 31.882893
+2026-10-02T14:53:19.8421831Z   type: 'test'
+2026-10-02T14:53:19.8422123Z   ...
+2026-10-02T14:53:19.8422833Z # Subtest: current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+2026-10-02T14:53:19.8423920Z ok 72 - current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+2026-10-02T14:53:19.8424831Z   ---
+2026-10-02T14:53:19.8425158Z   duration_ms: 9.585496
+2026-10-02T14:53:19.8425512Z   type: 'test'
+2026-10-02T14:53:19.8425826Z   ...
+2026-10-02T14:53:19.8426867Z # Subtest: current starter schema accepts supported draft fields for FLOORING_INSTALL
+2026-10-02T14:53:19.8428040Z ok 73 - current starter schema accepts supported draft fields for FLOORING_INSTALL
+2026-10-02T14:53:19.8428739Z   ---
+2026-10-02T14:53:19.8429066Z   duration_ms: 27.128834
+2026-10-02T14:53:19.8429445Z   type: 'test'
+2026-10-02T14:53:19.8429765Z   ...
+2026-10-02T14:53:19.8430766Z # Subtest: current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+2026-10-02T14:53:19.8431983Z ok 74 - current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+2026-10-02T14:53:19.8432706Z   ---
+2026-10-02T14:53:19.8433040Z   duration_ms: 72.538223
+2026-10-02T14:53:19.8433416Z   type: 'test'
+2026-10-02T14:53:19.8433735Z   ...
+2026-10-02T14:53:19.8434487Z # Subtest: current starter schema accepts supported draft fields for FENCING_INSTALL
+2026-10-02T14:53:19.8435804Z ok 75 - current starter schema accepts supported draft fields for FENCING_INSTALL
+2026-10-02T14:53:19.8436467Z   ---
+2026-10-02T14:53:19.8436794Z   duration_ms: 9.922887
+2026-10-02T14:53:19.8437159Z   type: 'test'
+2026-10-02T14:53:19.8437465Z   ...
+2026-10-02T14:53:19.8438244Z # Subtest: current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+2026-10-02T14:53:19.8439399Z ok 76 - current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+2026-10-02T14:53:19.8440127Z   ---
+2026-10-02T14:53:19.8440441Z   duration_ms: 10.366456
+2026-10-02T14:53:19.8440811Z   type: 'test'
+2026-10-02T14:53:19.8441128Z   ...
+2026-10-02T14:53:19.8441906Z # Subtest: current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+2026-10-02T14:53:19.8443064Z ok 77 - current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+2026-10-02T14:53:19.8443773Z   ---
+2026-10-02T14:53:19.8444129Z   duration_ms: 28.521046
+2026-10-02T14:53:19.8444518Z   type: 'test'
+2026-10-02T14:53:19.8445371Z   ...
+2026-10-02T14:53:19.8446154Z # Subtest: current starter schema accepts supported draft fields for SIDING_REPAIR
+2026-10-02T14:53:19.8447250Z ok 78 - current starter schema accepts supported draft fields for SIDING_REPAIR
+2026-10-02T14:53:19.8447914Z   ---
+2026-10-02T14:53:19.8448233Z   duration_ms: 14.177113
+2026-10-02T14:53:19.8448615Z   type: 'test'
+2026-10-02T14:53:19.8448934Z   ...
+2026-10-02T14:53:19.8449698Z # Subtest: current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+2026-10-02T14:53:19.8450966Z ok 79 - current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+2026-10-02T14:53:19.8451648Z   ---
+2026-10-02T14:53:19.8451958Z   duration_ms: 46.853129
+2026-10-02T14:53:19.8452332Z   type: 'test'
+2026-10-02T14:53:19.8452642Z   ...
+2026-10-02T14:53:19.8453446Z # Subtest: current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+2026-10-02T14:53:19.8454631Z ok 80 - current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+2026-10-02T14:53:19.8455581Z   ---
+2026-10-02T14:53:19.8455920Z   duration_ms: 41.926326
+2026-10-02T14:53:19.8456306Z   type: 'test'
+2026-10-02T14:53:19.8456625Z   ...
+2026-10-02T14:53:19.8457418Z # Subtest: current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+2026-10-02T14:53:19.8458613Z ok 81 - current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+2026-10-02T14:53:19.8459305Z   ---
+2026-10-02T14:53:19.8459679Z   duration_ms: 20.7482
+2026-10-02T14:53:19.8460066Z   type: 'test'
+2026-10-02T14:53:19.8460409Z   ...
+2026-10-02T14:53:19.8461204Z # Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+2026-10-02T14:53:19.8462615Z ok 82 - current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+2026-10-02T14:53:19.8463337Z   ---
+2026-10-02T14:53:19.8463541Z   duration_ms: 16.271439
+2026-10-02T14:53:19.8463778Z   type: 'test'
+2026-10-02T14:53:19.8463968Z   ...
+2026-10-02T14:53:19.8464412Z # Subtest: current starter schema accepts supported draft fields for LANDSCAPING_SOD
+2026-10-02T14:53:19.8476133Z ok 83 - current starter schema accepts supported draft fields for LANDSCAPING_SOD
+2026-10-02T14:53:19.8476856Z   ---
+2026-10-02T14:53:19.8477073Z   duration_ms: 19.648174
+2026-10-02T14:53:19.8477315Z   type: 'test'
+2026-10-02T14:53:19.8477511Z   ...
+2026-10-02T14:53:19.8478161Z # Subtest: current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+2026-10-02T14:53:19.8479230Z ok 84 - current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+2026-10-02T14:53:19.8479657Z   ---
+2026-10-02T14:53:19.8479848Z   duration_ms: 19.328005
+2026-10-02T14:53:19.8480115Z   type: 'test'
+2026-10-02T14:53:19.8480400Z   ...
+2026-10-02T14:53:19.8480853Z # Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+2026-10-02T14:53:19.8481659Z ok 85 - current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+2026-10-02T14:53:19.8482065Z   ---
+2026-10-02T14:53:19.8482254Z   duration_ms: 26.422372
+2026-10-02T14:53:19.8482549Z   type: 'test'
+2026-10-02T14:53:19.8482837Z   ...
+2026-10-02T14:53:19.8483242Z # Subtest: current starter schema accepts supported draft fields for CUSTOM
+2026-10-02T14:53:19.8483953Z ok 86 - current starter schema accepts supported draft fields for CUSTOM
+2026-10-02T14:53:19.8484311Z   ---
+2026-10-02T14:53:19.8484493Z   duration_ms: 13.355967
+2026-10-02T14:53:19.8485040Z   type: 'test'
+2026-10-02T14:53:19.8485330Z   ...
+2026-10-02T14:53:20.3425984Z # Subtest: B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries
+2026-10-02T14:53:20.3428274Z ok 87 - B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries
+2026-10-02T14:53:20.3433228Z   ---
+2026-10-02T14:53:20.3475396Z   duration_ms: 9.042039
+2026-10-02T14:53:20.3525290Z   type: 'test'
+2026-10-02T14:53:20.3541128Z   ...
+2026-10-02T14:53:20.3542732Z # Subtest: B1 owner floor gives independently calculated $2875 midpoint and lower bound
+2026-10-02T14:53:20.3544286Z ok 88 - B1 owner floor gives independently calculated $2875 midpoint and lower bound
+2026-10-02T14:53:20.3545512Z   ---
+2026-10-02T14:53:20.3546092Z   duration_ms: 32.782095
+2026-10-02T14:53:20.3546685Z   type: 'test'
+2026-10-02T14:53:20.3547220Z   ...
+2026-10-02T14:53:20.3548076Z # Subtest: M1 wall base service remains active without unrequested extras
+2026-10-02T14:53:20.3549278Z ok 89 - M1 wall base service remains active without unrequested extras
+2026-10-02T14:53:20.3550150Z   ---
+2026-10-02T14:53:20.3550667Z   duration_ms: 14.064682
+2026-10-02T14:53:20.3551224Z   type: 'test'
+2026-10-02T14:53:20.3551799Z   ...
+2026-10-02T14:53:20.3552679Z # Subtest: M1 paint packages base service remains active without unrequested extras
+2026-10-02T14:53:20.3553977Z ok 90 - M1 paint packages base service remains active without unrequested extras
+2026-10-02T14:53:20.3555063Z   ---
+2026-10-02T14:53:20.3555412Z   duration_ms: 16.119675
+2026-10-02T14:53:20.3555804Z   type: 'test'
+2026-10-02T14:53:20.3556136Z   ...
+2026-10-02T14:53:20.3556849Z # Subtest: M1 concrete base service remains active without unrequested extras
+2026-10-02T14:53:20.3557873Z ok 91 - M1 concrete base service remains active without unrequested extras
+2026-10-02T14:53:20.3558499Z   ---
+2026-10-02T14:53:20.3558825Z   duration_ms: 56.376118
+2026-10-02T14:53:20.3559199Z   type: 'test'
+2026-10-02T14:53:20.3559513Z   ...
+2026-10-02T14:53:20.3560165Z # Subtest: M1 mulch base service remains active without unrequested extras
+2026-10-02T14:53:20.3561102Z ok 92 - M1 mulch base service remains active without unrequested extras
+2026-10-02T14:53:20.3561469Z   ---
+2026-10-02T14:53:20.3561669Z   duration_ms: 15.446246
+2026-10-02T14:53:20.3561895Z   type: 'test'
+2026-10-02T14:53:20.3562084Z   ...
+2026-10-02T14:53:20.3562483Z # Subtest: M1 cleanup base service remains active without unrequested extras
+2026-10-02T14:53:20.3563053Z ok 93 - M1 cleanup base service remains active without unrequested extras
+2026-10-02T14:53:20.3563411Z   ---
+2026-10-02T14:53:20.3563599Z   duration_ms: 15.365575
+2026-10-02T14:53:20.3563817Z   type: 'test'
+2026-10-02T14:53:20.3564284Z   ...
+2026-10-02T14:53:20.3564937Z # Subtest: M1 sod base service remains active without unrequested extras
+2026-10-02T14:53:20.3565504Z ok 94 - M1 sod base service remains active without unrequested extras
+2026-10-02T14:53:20.3565844Z   ---
+2026-10-02T14:53:20.3566037Z   duration_ms: 7.771413
+2026-10-02T14:53:20.3566267Z   type: 'test'
+2026-10-02T14:53:20.3566622Z   ...
+2026-10-02T14:53:20.3567023Z # Subtest: M1 planting base service remains active without unrequested extras
+2026-10-02T14:53:20.3567608Z ok 95 - M1 planting base service remains active without unrequested extras
+2026-10-02T14:53:20.3567967Z   ---
+2026-10-02T14:53:20.3568161Z   duration_ms: 13.919781
+2026-10-02T14:53:20.3568387Z   type: 'test'
+2026-10-02T14:53:20.3568574Z   ...
+2026-10-02T14:53:20.3568966Z # Subtest: M1 selected unpriced cleanup haul-away never receives a subtotal
+2026-10-02T14:53:20.3569533Z ok 96 - M1 selected unpriced cleanup haul-away never receives a subtotal
+2026-10-02T14:53:20.3569891Z   ---
+2026-10-02T14:53:20.3570084Z   duration_ms: 1.721399
+2026-10-02T14:53:20.3570303Z   type: 'test'
+2026-10-02T14:53:20.3570489Z   ...
+2026-10-02T14:53:20.3570866Z # Subtest: M1 selected unpriced sod preparation never receives a subtotal
+2026-10-02T14:53:20.3571415Z ok 97 - M1 selected unpriced sod preparation never receives a subtotal
+2026-10-02T14:53:20.3571757Z   ---
+2026-10-02T14:53:20.3571948Z   duration_ms: 0.885947
+2026-10-02T14:53:20.3572157Z   type: 'test'
+2026-10-02T14:53:20.3572342Z   ...
+2026-10-02T14:53:20.3572739Z # Subtest: M1 selected unpriced planting preparation never receives a subtotal
+2026-10-02T14:53:20.3573329Z ok 98 - M1 selected unpriced planting preparation never receives a subtotal
+2026-10-02T14:53:20.3573685Z   ---
+2026-10-02T14:53:20.3573865Z   duration_ms: 0.848768
+2026-10-02T14:53:20.3574072Z   type: 'test'
+2026-10-02T14:53:20.3574253Z   ...
+2026-10-02T14:53:20.3574619Z # Subtest: M1 selected unpriced planting mulch never receives a subtotal
+2026-10-02T14:53:20.3576075Z ok 99 - M1 selected unpriced planting mulch never receives a subtotal
+2026-10-02T14:53:20.3576700Z   ---
+2026-10-02T14:53:20.3577026Z   duration_ms: 0.961969
+2026-10-02T14:53:20.3577392Z   type: 'test'
+2026-10-02T14:53:20.3577709Z   ...
+2026-10-02T14:53:20.3578323Z # Subtest: M1 selected unpriced ceiling never receives a subtotal
+2026-10-02T14:53:20.3579205Z ok 100 - M1 selected unpriced ceiling never receives a subtotal
+2026-10-02T14:53:20.3579785Z   ---
+2026-10-02T14:53:20.3580099Z   duration_ms: 0.80253
+2026-10-02T14:53:20.3580469Z   type: 'test'
+2026-10-02T14:53:20.3580783Z   ...
+2026-10-02T14:53:20.3581362Z # Subtest: M1 selected unpriced trim never receives a subtotal
+2026-10-02T14:53:20.3582203Z ok 101 - M1 selected unpriced trim never receives a subtotal
+2026-10-02T14:53:20.3582750Z   ---
+2026-10-02T14:53:20.3583077Z   duration_ms: 1.11788
+2026-10-02T14:53:20.3583436Z   type: 'test'
+2026-10-02T14:53:20.3583752Z   ...
+2026-10-02T14:53:20.3584407Z # Subtest: M1 selected unpriced paint product never receives a subtotal
+2026-10-02T14:53:20.3585606Z ok 102 - M1 selected unpriced paint product never receives a subtotal
+2026-10-02T14:53:20.3586222Z   ---
+2026-10-02T14:53:20.3586539Z   duration_ms: 1.368179
+2026-10-02T14:53:20.3586915Z   type: 'test'
+2026-10-02T14:53:20.3587233Z   ...
+2026-10-02T14:53:20.3587863Z # Subtest: M1 selected unpriced concrete base never receives a subtotal
+2026-10-02T14:53:20.3588805Z ok 103 - M1 selected unpriced concrete base never receives a subtotal
+2026-10-02T14:53:20.3589413Z   ---
+2026-10-02T14:53:20.3589728Z   duration_ms: 0.892148
+2026-10-02T14:53:20.3590088Z   type: 'test'
+2026-10-02T14:53:20.3590398Z   ...
+2026-10-02T14:53:20.3590989Z # Subtest: M1 selected unpriced wire mesh never receives a subtotal
+2026-10-02T14:53:20.3591864Z ok 104 - M1 selected unpriced wire mesh never receives a subtotal
+2026-10-02T14:53:20.3592431Z   ---
+2026-10-02T14:53:20.3592739Z   duration_ms: 0.849339
+2026-10-02T14:53:20.3593105Z   type: 'test'
+2026-10-02T14:53:20.3593417Z   ...
+2026-10-02T14:53:20.3594275Z # Subtest: M1 selected unpriced rebar never receives a subtotal
+2026-10-02T14:53:20.3595307Z ok 105 - M1 selected unpriced rebar never receives a subtotal
+2026-10-02T14:53:20.3595887Z   ---
+2026-10-02T14:53:20.3596213Z   duration_ms: 0.900123
+2026-10-02T14:53:20.3596583Z   type: 'test'
+2026-10-02T14:53:20.3596900Z   ...
+2026-10-02T14:53:20.3597554Z # Subtest: M1 selected unpriced stamped finish never receives a subtotal
+2026-10-02T14:53:20.3598723Z ok 106 - M1 selected unpriced stamped finish never receives a subtotal
+2026-10-02T14:53:20.3599356Z   ---
+2026-10-02T14:53:20.3599681Z   duration_ms: 0.755723
+2026-10-02T14:53:20.3600060Z   type: 'test'
+2026-10-02T14:53:20.3600389Z   ...
+2026-10-02T14:53:20.3601031Z # Subtest: M1 selected unpriced mulch edging never receives a subtotal
+2026-10-02T14:53:20.3601976Z ok 107 - M1 selected unpriced mulch edging never receives a subtotal
+2026-10-02T14:53:20.3602585Z   ---
+2026-10-02T14:53:20.3602906Z   duration_ms: 0.805066
+2026-10-02T14:53:20.3603284Z   type: 'test'
+2026-10-02T14:53:20.3603615Z   ...
+2026-10-02T14:53:20.3604346Z # Subtest: M1 selected unpriced mulch bed preparation never receives a subtotal
+2026-10-02T14:53:20.3605657Z ok 108 - M1 selected unpriced mulch bed preparation never receives a subtotal
+2026-10-02T14:53:20.3606339Z   ---
+2026-10-02T14:53:20.3606657Z   duration_ms: 0.778185
+2026-10-02T14:53:20.3607030Z   type: 'test'
+2026-10-02T14:53:20.3607361Z   ...
+2026-10-02T14:53:20.3608065Z # Subtest: M1 owner coverage reports absent optional prices before activation
+2026-10-02T14:53:20.3609115Z ok 109 - M1 owner coverage reports absent optional prices before activation
+2026-10-02T14:53:20.3609737Z   ---
+2026-10-02T14:53:20.3610063Z   duration_ms: 53.209687
+2026-10-02T14:53:20.3610444Z   type: 'test'
+2026-10-02T14:53:20.3610761Z   ...
+2026-10-02T14:53:20.3611652Z # Subtest: M6 purchased paint identifies missing trim product rather than a generic coverage error
+2026-10-02T14:53:20.3613002Z ok 110 - M6 purchased paint identifies missing trim product rather than a generic coverage error
+2026-10-02T14:53:20.3613758Z   ---
+2026-10-02T14:53:20.3614062Z   duration_ms: 1.333874
+2026-10-02T14:53:20.3614408Z   type: 'test'
+2026-10-02T14:53:20.3614955Z   ...
+2026-10-02T14:53:20.3615872Z # Subtest: M2 setup requests an offering instead of unused exterior and fence standard prices
+2026-10-02T14:53:20.3617094Z ok 111 - M2 setup requests an offering instead of unused exterior and fence standard prices
+2026-10-02T14:53:20.3617859Z   ---
+2026-10-02T14:53:20.3618168Z   duration_ms: 73.348908
+2026-10-02T14:53:20.3618540Z   type: 'test'
+2026-10-02T14:53:20.3618864Z   ...
+2026-10-02T14:53:20.3619613Z # Subtest: M3/M4 current AI schema accepts engine-used measured fields and typed maps
+2026-10-02T14:53:20.3620727Z ok 112 - M3/M4 current AI schema accepts engine-used measured fields and typed maps
+2026-10-02T14:53:20.3621393Z   ---
+2026-10-02T14:53:20.3621720Z   duration_ms: 56.813115
+2026-10-02T14:53:20.3622079Z   type: 'test'
+2026-10-02T14:53:20.3622621Z   ...
+2026-10-02T14:53:20.3623560Z # Subtest: M5 current flat roof setup requests named membrane rates without an Average fallback
+2026-10-02T14:53:20.3625367Z ok 113 - M5 current flat roof setup requests named membrane rates without an Average fallback
+2026-10-02T14:53:20.3626310Z   ---
+2026-10-02T14:53:20.3626777Z   duration_ms: 9.76932
+2026-10-02T14:53:20.3627423Z   type: 'test'
+2026-10-02T14:53:20.3627905Z   ...
+2026-10-02T14:53:20.3628853Z # Subtest: M7 governing interior painting specification uses measured wall area
+2026-10-02T14:53:20.3630106Z ok 114 - M7 governing interior painting specification uses measured wall area
+2026-10-02T14:53:20.3630913Z   ---
+2026-10-02T14:53:20.3631530Z   duration_ms: 0.836114
+2026-10-02T14:53:20.3632853Z   type: 'test'
+2026-10-02T14:53:20.3633280Z   ...
+2026-10-02T14:53:20.3634407Z # Subtest: M5 shared flat-roof help never instructs owners to price an unused Average fallback
+2026-10-02T14:53:20.3636257Z ok 115 - M5 shared flat-roof help never instructs owners to price an unused Average fallback
+2026-10-02T14:53:20.3637479Z   ---
+2026-10-02T14:53:20.3651819Z   duration_ms: 0.298638
+2026-10-02T14:53:20.3652259Z   type: 'test'
+2026-10-02T14:53:20.3652589Z   ...
+2026-10-02T14:53:20.3653653Z # Subtest: B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+2026-10-02T14:53:20.3655685Z ok 116 - B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+2026-10-02T14:53:20.3656886Z   ---
+2026-10-02T14:53:20.3657214Z   duration_ms: 0.710098
+2026-10-02T14:53:20.3657601Z   type: 'test'
+2026-10-02T14:53:20.3657940Z   ...
+2026-10-02T14:53:20.3808132Z 1..116
+2026-10-02T14:53:20.3809399Z # tests 116
+2026-10-02T14:53:20.3810199Z # suites 0
+2026-10-02T14:53:20.3810933Z # pass 116
+2026-10-02T14:53:20.3811517Z # fail 0
+2026-10-02T14:53:20.3812116Z # cancelled 0
+2026-10-02T14:53:20.3812764Z # skipped 0
+2026-10-02T14:53:20.3813362Z # todo 0
+2026-10-02T14:53:20.3814019Z # duration_ms 3180.57835
+2026-10-02T14:53:20.3897788Z ##[group]Run .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/reproduce.mjs "$RUNNER_TEMP/readiness/after"
+2026-10-02T14:53:20.3898822Z [36;1m.portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/reproduce.mjs "$RUNNER_TEMP/readiness/after"[0m
+2026-10-02T14:53:20.3962563Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:53:20.3962840Z env:
+2026-10-02T14:53:20.3963037Z   DEMO_ENABLED: false
+2026-10-02T14:53:20.3963275Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:53:20.3963531Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:53:20.3963802Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:53:20.3964078Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:53:20.3964348Z   READINESS_ASSERT_FIXED: true
+2026-10-02T14:53:20.3964861Z ##[endgroup]
+2026-10-02T14:53:22.5897590Z READINESS_CASE {"id":"M1-cleanup-no-haul","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":150,"low":150,"high":150}
+2026-10-02T14:53:23.7611660Z READINESS_CASE {"id":"M1-sod-no-preparation","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":2037.5,"low":2037.5,"high":2037.5}
+2026-10-02T14:53:24.9753568Z READINESS_CASE {"id":"M1-planting-no-mulch","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":105,"low":105,"high":105}
+2026-10-02T14:53:25.9637963Z READINESS_CASE {"id":"B2-unready-safe-integer-range","status":"NEEDS PRICING","listed":0,"preview":"INSTANT_ESTIMATE_READY","public":"ESTIMATE_REQUIRES_REVIEW","staff":"ESTIMATE_REQUIRES_REVIEW","minimum":0}
+2026-10-02T14:53:27.1822083Z READINESS_CASE {"id":"B1-roof-minimum","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":250000,"mid":2875,"low":2875,"high":3163}
+2026-10-02T14:53:28.9884417Z READINESS_CASE {"id":"B2-M1-concrete","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3188.89,"low":3188.89,"high":3188.89}
+2026-10-02T14:53:30.1013586Z READINESS_CASE {"id":"B2-M1-wall-painting","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":300,"low":300,"high":300}
+2026-10-02T14:53:31.3121440Z READINESS_CASE {"id":"B2-M1-mulch","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","mid":77.78,"low":77.78,"high":77.78}
+2026-10-02T14:53:32.4423486Z READINESS_CASE {"id":"B2-M1-M6-paint-packages","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":250,"low":250,"high":250}
+2026-10-02T14:53:33.3330463Z READINESS_CASE {"id":"M2-exterior-standard","status":"NEEDS PRICING","listed":0,"preview":"ESTIMATE_REQUIRES_REVIEW","public":"ESTIMATE_REQUIRES_REVIEW","staff":"ESTIMATE_REQUIRES_REVIEW","minimum":0}
+2026-10-02T14:53:34.2885632Z READINESS_CASE {"id":"M2-fence-standard","status":"NEEDS PRICING","listed":0,"preview":"ESTIMATE_REQUIRES_REVIEW","public":"ESTIMATE_REQUIRES_REVIEW","staff":"ESTIMATE_REQUIRES_REVIEW","minimum":0}
+2026-10-02T14:53:35.5267321Z READINESS_CASE {"id":"M2-configured-FENCING_INSTALL-installed","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":4500,"low":4500,"high":4500}
+2026-10-02T14:53:36.5127273Z READINESS_CASE {"id":"M2-configured-FENCING_INSTALL-itemized","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3920,"low":3920,"high":3920}
+2026-10-02T14:53:37.4721251Z READINESS_CASE {"id":"M2-configured-EXTERIOR_PAINTING-installed","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":3000,"low":3000,"high":3000}
+2026-10-02T14:53:38.4175895Z READINESS_CASE {"id":"M2-configured-EXTERIOR_PAINTING-itemized","status":"QUOTING LIVE","listed":1,"preview":"INSTANT_ESTIMATE_READY","public":"INSTANT_ESTIMATE_READY","staff":"INSTANT_ESTIMATE_READY","minimum":0,"mid":1794,"low":1794,"high":1794}
+2026-10-02T14:53:39.3451312Z ##[group]Run npm --prefix "$RUNNER_TEMP/readiness-browser" install --no-save --package-lock=false playwright@1.56.0
+2026-10-02T14:53:39.3452180Z [36;1mnpm --prefix "$RUNNER_TEMP/readiness-browser" install --no-save --package-lock=false playwright@1.56.0[0m
+2026-10-02T14:53:39.3452898Z [36;1m"$RUNNER_TEMP/readiness-browser/node_modules/.bin/playwright" install --with-deps chromium[0m
+2026-10-02T14:53:39.3514967Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:53:39.3515228Z env:
+2026-10-02T14:53:39.3515419Z   DEMO_ENABLED: false
+2026-10-02T14:53:39.3515647Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:53:39.3515897Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:53:39.3516149Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:53:39.3516403Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:53:39.3516650Z ##[endgroup]
+2026-10-02T14:53:41.2545770Z 
+2026-10-02T14:53:41.2546918Z added 2 packages in 2s
+2026-10-02T14:53:41.8537678Z Installing dependencies...
+2026-10-02T14:53:41.8601086Z Switching to root user to install dependencies...
+2026-10-02T14:53:42.0216764Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-02T14:53:42.0319613Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-02T14:53:42.0550134Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-02T14:53:42.0552478Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-02T14:53:42.0653610Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-02T14:53:42.0752133Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-02T14:53:42.1713826Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [458 kB]
+2026-10-02T14:53:42.2136457Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.6 kB]
+2026-10-02T14:53:42.2138345Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [510 kB]
+2026-10-02T14:53:42.3215474Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1364 kB]
+2026-10-02T14:53:42.3256018Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [304 kB]
+2026-10-02T14:53:42.3609148Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [180 kB]
+2026-10-02T14:53:42.3626232Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1699 kB]
+2026-10-02T14:53:42.4046821Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [341 kB]
+2026-10-02T14:53:42.4065879Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+2026-10-02T14:53:42.4246769Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1720 kB]
+2026-10-02T14:53:42.4248715Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [394 kB]
+2026-10-02T14:53:42.4456327Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-10-02T14:53:42.4465274Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5764 B]
+2026-10-02T14:53:42.4543254Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+2026-10-02T14:53:42.4545449Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1069 kB]
+2026-10-02T14:53:42.4547355Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [221 kB]
+2026-10-02T14:53:42.4666171Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.3 kB]
+2026-10-02T14:53:42.4667988Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1216 kB]
+2026-10-02T14:53:42.4669788Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [244 kB]
+2026-10-02T14:53:42.4671860Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+2026-10-02T14:53:42.4936489Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1566 kB]
+2026-10-02T14:53:42.4938210Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [361 kB]
+2026-10-02T14:53:47.0861091Z Fetched 12.6 MB in 2s (7746 kB/s)
+2026-10-02T14:53:47.9719670Z Reading package lists...
+2026-10-02T14:53:47.9976000Z Reading package lists...
+2026-10-02T14:53:48.2186814Z Building dependency tree...
+2026-10-02T14:53:48.2196178Z Reading state information...
+2026-10-02T14:53:48.4070202Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-02T14:53:48.4071398Z libasound2t64 set to manually installed.
+2026-10-02T14:53:48.4072835Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-02T14:53:48.4073938Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-02T14:53:48.4075193Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-02T14:53:48.4076169Z libatk1.0-0t64 set to manually installed.
+2026-10-02T14:53:48.4077183Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-02T14:53:48.4078226Z libatspi2.0-0t64 set to manually installed.
+2026-10-02T14:53:48.4079449Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-02T14:53:48.4080408Z libcairo2 set to manually installed.
+2026-10-02T14:53:48.4081526Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-02T14:53:48.4082418Z libcups2t64 set to manually installed.
+2026-10-02T14:53:48.4083382Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-02T14:53:48.4084260Z libdbus-1-3 set to manually installed.
+2026-10-02T14:53:48.4085360Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-02T14:53:48.4086336Z libdrm2 set to manually installed.
+2026-10-02T14:53:48.4087011Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-02T14:53:48.4087736Z libglib2.0-0t64 set to manually installed.
+2026-10-02T14:53:48.4088462Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-02T14:53:48.4089108Z libnspr4 set to manually installed.
+2026-10-02T14:53:48.4089815Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-02T14:53:48.4090498Z libnss3 set to manually installed.
+2026-10-02T14:53:48.4091226Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-02T14:53:48.4091946Z libpango-1.0-0 set to manually installed.
+2026-10-02T14:53:48.4092633Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-02T14:53:48.4093264Z libx11-6 set to manually installed.
+2026-10-02T14:53:48.4093886Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-02T14:53:48.4094509Z libxcb1 set to manually installed.
+2026-10-02T14:53:48.4095499Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-02T14:53:48.4096217Z libxcomposite1 set to manually installed.
+2026-10-02T14:53:48.4097253Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-02T14:53:48.4097678Z libxdamage1 set to manually installed.
+2026-10-02T14:53:48.4098085Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-02T14:53:48.4098461Z libxext6 set to manually installed.
+2026-10-02T14:53:48.4098858Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-02T14:53:48.4099243Z libxfixes3 set to manually installed.
+2026-10-02T14:53:48.4099648Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-02T14:53:48.4100050Z libxkbcommon0 set to manually installed.
+2026-10-02T14:53:48.4100454Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-02T14:53:48.4100833Z libxrandr2 set to manually installed.
+2026-10-02T14:53:48.4101227Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-02T14:53:48.4101786Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-02T14:53:48.4102362Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-02T14:53:48.4102967Z libfontconfig1 set to manually installed.
+2026-10-02T14:53:48.4103430Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-02T14:53:48.4103875Z libfreetype6 set to manually installed.
+2026-10-02T14:53:48.4104291Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-02T14:53:48.4105089Z fonts-liberation set to manually installed.
+2026-10-02T14:53:48.4105682Z The following additional packages will be installed:
+2026-10-02T14:53:48.4106158Z   libgl1-mesa-dri libglx-mesa0 libwayland-server0 mesa-libgallium
+2026-10-02T14:53:48.4106583Z   xfonts-encodings xfonts-utils
+2026-10-02T14:53:48.4106877Z Recommended packages:
+2026-10-02T14:53:48.4107155Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-10-02T14:53:48.4357179Z The following NEW packages will be installed:
+2026-10-02T14:53:48.4358614Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-02T14:53:48.4370755Z   fonts-wqy-zenhei libwayland-server0 xfonts-cyrillic xfonts-encodings
+2026-10-02T14:53:48.4371680Z   xfonts-scalable xfonts-utils
+2026-10-02T14:53:48.4378557Z The following packages will be upgraded:
+2026-10-02T14:53:48.4385206Z   libgbm1 libgl1-mesa-dri libglx-mesa0 mesa-libgallium
+2026-10-02T14:53:48.4583959Z 4 upgraded, 10 newly installed, 0 to remove and 21 not upgraded.
+2026-10-02T14:53:48.4585325Z Need to get 32.1 MB of archives.
+2026-10-02T14:53:48.4586427Z After this operation, 79.7 MB of additional disk space will be used.
+2026-10-02T14:53:48.4587552Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-02T14:53:48.5590033Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-02T14:53:48.7450509Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-02T14:53:48.9877153Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-02T14:53:49.0756967Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-02T14:53:49.2585542Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-02T14:53:49.5690572Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgl1-mesa-dri amd64 25.2.8-0ubuntu0.24.04.3 [37.9 kB]
+2026-10-02T14:53:49.6568972Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-server0 amd64 1.22.0-2.1build1 [33.9 kB]
+2026-10-02T14:53:49.7434889Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglx-mesa0 amd64 25.2.8-0ubuntu0.24.04.3 [110 kB]
+2026-10-02T14:53:49.8286062Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm1 amd64 25.2.8-0ubuntu0.24.04.3 [34.3 kB]
+2026-10-02T14:53:49.9105089Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mesa-libgallium amd64 25.2.8-0ubuntu0.24.04.3 [10.8 MB]
+2026-10-02T14:53:50.3815193Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-02T14:53:50.4909983Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-02T14:53:50.5784228Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-02T14:53:50.6841097Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-02T14:53:50.9750342Z Fetched 32.1 MB in 2s (14.2 MB/s)
+2026-10-02T14:53:51.0007762Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-02T14:53:51.0329243Z (Reading database ... 
+2026-10-02T14:53:51.0329760Z (Reading database ... 5%
+2026-10-02T14:53:51.0330205Z (Reading database ... 10%
+2026-10-02T14:53:51.0330631Z (Reading database ... 15%
+2026-10-02T14:53:51.0331065Z (Reading database ... 20%
+2026-10-02T14:53:51.0331524Z (Reading database ... 25%
+2026-10-02T14:53:51.0332007Z (Reading database ... 30%
+2026-10-02T14:53:51.0333054Z (Reading database ... 35%
+2026-10-02T14:53:51.0333667Z (Reading database ... 40%
+2026-10-02T14:53:51.0334111Z (Reading database ... 45%
+2026-10-02T14:53:51.0334532Z (Reading database ... 50%
+2026-10-02T14:53:51.0406928Z (Reading database ... 55%
+2026-10-02T14:53:51.1466183Z (Reading database ... 60%
+2026-10-02T14:53:51.3543104Z (Reading database ... 65%
+2026-10-02T14:53:51.5606971Z (Reading database ... 70%
+2026-10-02T14:53:51.7131222Z (Reading database ... 75%
+2026-10-02T14:53:51.8639823Z (Reading database ... 80%
+2026-10-02T14:53:52.0010990Z (Reading database ... 85%
+2026-10-02T14:53:52.0841878Z (Reading database ... 90%
+2026-10-02T14:53:52.1773221Z (Reading database ... 95%
+2026-10-02T14:53:52.1774071Z (Reading database ... 100%
+2026-10-02T14:53:52.1776842Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-02T14:53:52.1818532Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-02T14:53:52.1912326Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-02T14:53:52.4327274Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-02T14:53:52.4436582Z Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-02T14:53:52.4452606Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-02T14:53:52.5372592Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-02T14:53:52.5503493Z Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-02T14:53:52.5510558Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-02T14:53:52.5796524Z Selecting previously unselected package fonts-unifont.
+2026-10-02T14:53:52.5869834Z Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-02T14:53:52.5876854Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-02T14:53:52.7033520Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-02T14:53:52.7165259Z Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-02T14:53:52.7274006Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-02T14:53:53.2229323Z Preparing to unpack .../05-libgl1-mesa-dri_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-02T14:53:53.2396237Z Unpacking libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-02T14:53:53.2792111Z Selecting previously unselected package libwayland-server0:amd64.
+2026-10-02T14:53:53.2923493Z Preparing to unpack .../06-libwayland-server0_1.22.0-2.1build1_amd64.deb ...
+2026-10-02T14:53:53.2946411Z Unpacking libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-02T14:53:53.3302323Z Preparing to unpack .../07-libglx-mesa0_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-02T14:53:53.3331443Z Unpacking libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-02T14:53:53.3718990Z Preparing to unpack .../08-libgbm1_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-02T14:53:53.3746006Z Unpacking libgbm1:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-02T14:53:53.4128931Z Preparing to unpack .../09-mesa-libgallium_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-02T14:53:53.4150873Z Unpacking mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-02T14:53:53.6066182Z Selecting previously unselected package xfonts-encodings.
+2026-10-02T14:53:53.6193131Z Preparing to unpack .../10-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-02T14:53:53.6200807Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-02T14:53:53.6506718Z Selecting previously unselected package xfonts-utils.
+2026-10-02T14:53:53.6634276Z Preparing to unpack .../11-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-02T14:53:53.6640770Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-02T14:53:53.7070347Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-02T14:53:53.7199163Z Preparing to unpack .../12-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-02T14:53:53.7206188Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-02T14:53:53.7586507Z Selecting previously unselected package xfonts-scalable.
+2026-10-02T14:53:53.7702209Z Preparing to unpack .../13-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-02T14:53:53.7715638Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-02T14:53:53.8187015Z Setting up libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-02T14:53:53.8219568Z Setting up mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-02T14:53:53.8241334Z Setting up libgbm1:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-02T14:53:53.8266673Z Setting up libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-02T14:53:53.8341158Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-02T14:53:53.8455926Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-02T14:53:53.8482024Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-02T14:53:53.8500259Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-02T14:53:53.8520817Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-02T14:53:53.8585271Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-02T14:53:53.8600322Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-02T14:53:53.8620761Z Setting up libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-02T14:53:53.8642457Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-02T14:53:53.8683612Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-02T14:53:53.8984606Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-02T14:53:53.9278302Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-02T14:53:53.9670198Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-02T14:53:53.9693620Z Not building database; man-db/auto-update is not 'true'.
+2026-10-02T14:53:53.9708673Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-02T14:53:54.7135640Z 
+2026-10-02T14:53:54.7136852Z Running kernel seems to be up-to-date.
+2026-10-02T14:53:54.7137544Z 
+2026-10-02T14:53:54.7138158Z No services need to be restarted.
+2026-10-02T14:53:54.7138747Z 
+2026-10-02T14:53:54.7139179Z No containers need to be restarted.
+2026-10-02T14:53:54.7139720Z 
+2026-10-02T14:53:54.7140168Z No user sessions are running outdated binaries.
+2026-10-02T14:53:54.7140738Z 
+2026-10-02T14:53:54.7141379Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-02T14:53:55.6233227Z Downloading Chromium 141.0.7390.37 (playwright build v1194) from https://cdn.playwright.dev/dbazure/download/playwright/builds/chromium/1194/chromium-linux.zip
+2026-10-02T14:53:55.8142655Z |                                                                                |   0% of 173.9 MiB
+2026-10-02T14:53:56.0027626Z |■■■■■■■■                                                                        |  10% of 173.9 MiB
+2026-10-02T14:53:56.1287775Z |■■■■■■■■■■■■■■■■                                                                |  20% of 173.9 MiB
+2026-10-02T14:53:56.2481059Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 173.9 MiB
+2026-10-02T14:53:56.3416847Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 173.9 MiB
+2026-10-02T14:53:56.4239731Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 173.9 MiB
+2026-10-02T14:53:56.5131341Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 173.9 MiB
+2026-10-02T14:53:56.6020113Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 173.9 MiB
+2026-10-02T14:53:56.6827232Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 173.9 MiB
+2026-10-02T14:53:56.7638672Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 173.9 MiB
+2026-10-02T14:53:56.8387663Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 173.9 MiB
+2026-10-02T14:54:01.5446666Z Chromium 141.0.7390.37 (playwright build v1194) downloaded to /home/runner/.cache/ms-playwright/chromium-1194
+2026-10-02T14:54:01.5456896Z Downloading FFMPEG playwright build v1011 from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-02T14:54:01.7167738Z |                                                                                |   0% of 2.3 MiB
+2026-10-02T14:54:01.7295972Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-02T14:54:01.7374487Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-02T14:54:01.7433372Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-02T14:54:01.7469591Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-02T14:54:01.7516934Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-02T14:54:01.7545446Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-02T14:54:01.7595519Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-02T14:54:01.7596706Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-02T14:54:01.7624084Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-02T14:54:01.7632515Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-02T14:54:01.8289996Z FFMPEG playwright build v1011 downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-02T14:54:01.8294570Z Downloading Chromium Headless Shell 141.0.7390.37 (playwright build v1194) from https://cdn.playwright.dev/dbazure/download/playwright/builds/chromium/1194/chromium-headless-shell-linux.zip
+2026-10-02T14:54:02.1450306Z |                                                                                |   0% of 104.3 MiB
+2026-10-02T14:54:02.2758336Z |■■■■■■■■                                                                        |  10% of 104.3 MiB
+2026-10-02T14:54:02.3647200Z |■■■■■■■■■■■■■■■■                                                                |  20% of 104.3 MiB
+2026-10-02T14:54:02.4239300Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 104.3 MiB
+2026-10-02T14:54:02.4937899Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 104.3 MiB
+2026-10-02T14:54:02.5594483Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 104.3 MiB
+2026-10-02T14:54:02.6169815Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 104.3 MiB
+2026-10-02T14:54:02.6698927Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 104.3 MiB
+2026-10-02T14:54:02.7184372Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 104.3 MiB
+2026-10-02T14:54:02.7735326Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 104.3 MiB
+2026-10-02T14:54:02.8215897Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 104.3 MiB
+2026-10-02T14:54:05.3515287Z Chromium Headless Shell 141.0.7390.37 (playwright build v1194) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1194
+2026-10-02T14:54:05.6601765Z ##[group]Run .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/browser.mjs "$RUNNER_TEMP/readiness/browser"
+2026-10-02T14:54:05.6602789Z [36;1m.portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/browser.mjs "$RUNNER_TEMP/readiness/browser"[0m
+2026-10-02T14:54:05.6665375Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:54:05.6665641Z env:
+2026-10-02T14:54:05.6665835Z   DEMO_ENABLED: false
+2026-10-02T14:54:05.6666068Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:54:05.6666322Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:54:05.6666574Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:54:05.6666819Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:54:05.6667278Z   READINESS_BROWSER_MODULE: /home/runner/work/_temp/readiness-browser/node_modules/playwright
+2026-10-02T14:54:05.6667751Z ##[endgroup]
+2026-10-02T14:54:10.0283106Z READINESS_BROWSER {"name":"B1 roof minimum entered, saved, reloaded and approved through the real editor","passed":true}
+2026-10-02T14:54:11.0736756Z READINESS_BROWSER {"name":"B1 historical fractional-cent minimum opens and is corrected through the real editor","passed":true}
+2026-10-02T14:54:13.2341183Z READINESS_BROWSER {"name":"M1 base work and lead-only options are visible in the editor","passed":true}
+2026-10-02T14:54:14.5338179Z READINESS_BROWSER {"name":"M2 fence offering is configured from the editor without unused standard rate fields","passed":true}
+2026-10-02T14:54:15.8047739Z READINESS_BROWSER {"name":"M2 exterior offering is configured from the editor with coats preparation and primer","passed":true}
+2026-10-02T14:54:17.1736755Z READINESS_BROWSER {"name":"M1 normal customer widget quotes a configured wall-only job","passed":true}
+2026-10-02T14:54:18.4102625Z READINESS_BROWSER {"name":"M1 normal customer widget captures selected unpriced trim as a lead","passed":true}
+2026-10-02T14:54:18.4134533Z READINESS_BROWSER {"name":"Browser and persistence boundary","passed":true}
+2026-10-02T14:54:18.4991308Z READINESS_BROWSER_RESULT {"source":"25fca4812bbc0eb905b1d91124c2aa53aced791a","checks":[{"name":"B1 roof minimum entered, saved, reloaded and approved through the real editor","passed":true},{"name":"B1 historical fractional-cent minimum opens and is corrected through the real editor","passed":true},{"name":"M1 base work and lead-only options are visible in the editor","passed":true},{"name":"M2 fence offering is configured from the editor without unused standard rate fields","passed":true},{"name":"M2 exterior offering is configured from the editor with coats preparation and primer","passed":true},{"name":"M1 normal customer widget quotes a configured wall-only job","passed":true},{"name":"M1 normal customer widget captures selected unpriced trim as a lead","passed":true},{"name":"Browser and persistence boundary","passed":true}],"passed":true}
+2026-10-02T14:54:18.5175047Z ##[group]Run node verification/quote-readiness/archive.mjs "$RUNNER_TEMP/readiness"
+2026-10-02T14:54:18.5175762Z [36;1mnode verification/quote-readiness/archive.mjs "$RUNNER_TEMP/readiness"[0m
+2026-10-02T14:54:18.5237338Z shell: /usr/bin/bash -e {0}
+2026-10-02T14:54:18.5237589Z env:
+2026-10-02T14:54:18.5237782Z   DEMO_ENABLED: false
+2026-10-02T14:54:18.5238017Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:54:18.5238273Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:54:18.5238518Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:54:18.5238770Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:54:18.5239013Z ##[endgroup]
+2026-10-02T14:54:21.5505680Z ##[group]Run actions/upload-artifact@v4
+2026-10-02T14:54:21.5506552Z with:
+2026-10-02T14:54:21.5507266Z   name: quote-readiness-25fca4812bbc0eb905b1d91124c2aa53aced791a
+2026-10-02T14:54:21.5509222Z   path: /home/runner/work/_temp/readiness/public/
+/home/runner/work/_temp/readiness/before/public/
+/home/runner/work/_temp/readiness/after/public/
+/home/runner/work/_temp/readiness/browser/public/
+
+2026-10-02T14:54:21.5511121Z   if-no-files-found: error
+2026-10-02T14:54:21.5511788Z   retention-days: 30
+2026-10-02T14:54:21.5512439Z   compression-level: 6
+2026-10-02T14:54:21.5513026Z   overwrite: false
+2026-10-02T14:54:21.5513770Z   include-hidden-files: false
+2026-10-02T14:54:21.5514569Z env:
+2026-10-02T14:54:21.5515410Z   DEMO_ENABLED: false
+2026-10-02T14:54:21.5516072Z   VOICE_RUNTIME_ENABLED: false
+2026-10-02T14:54:21.5516723Z   STRIPE_BILLING_ENABLED: false
+2026-10-02T14:54:21.5517492Z   EMAIL_DELIVERY_ENABLED: false
+2026-10-02T14:54:21.5518248Z   OUTBOUND_WEBHOOKS_ENABLED: false
+2026-10-02T14:54:21.5519032Z ##[endgroup]
+2026-10-02T14:54:21.7729103Z (node:3369) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-02T14:54:21.7731317Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-02T14:54:21.8186302Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-02T14:54:21.8190225Z The least common ancestor is /home/runner/work/_temp/readiness. This will be the root directory of the artifact
+2026-10-02T14:54:21.8191623Z With the provided path, there will be 31 files uploaded
+2026-10-02T14:54:21.8193060Z Artifact name is valid!
+2026-10-02T14:54:21.8193897Z Root directory input is valid!
+2026-10-02T14:54:22.0225594Z Beginning upload of artifact content to blob storage
+2026-10-02T14:54:22.3107994Z (node:3369) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-02T14:54:22.4472052Z Uploaded bytes 1929027
+2026-10-02T14:54:22.4605497Z Finished uploading artifact content to blob storage!
+2026-10-02T14:54:22.4607187Z SHA256 digest of uploaded artifact zip is f51d4dfb985f2ec9b730645ea9dad2d35b4155e921119a3cf37fe74734617fae
+2026-10-02T14:54:22.4608639Z Finalizing artifact upload
+2026-10-02T14:54:22.7167267Z Artifact quote-readiness-25fca4812bbc0eb905b1d91124c2aa53aced791a.zip successfully finalized. Artifact ID 11232978790
+2026-10-02T14:54:22.7170722Z Artifact quote-readiness-25fca4812bbc0eb905b1d91124c2aa53aced791a has been successfully uploaded! Final size is 1929027 bytes. Artifact ID is 11232978790
+2026-10-02T14:54:22.7177941Z Artifact download URL: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37022927668/artifacts/11232978790
+2026-10-02T14:54:22.7379971Z Post job cleanup.
+2026-10-02T14:54:22.8709157Z (node:3382) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-02T14:54:22.8710957Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-02T14:54:22.8970702Z Post job cleanup.
+2026-10-02T14:54:23.0045385Z [command]/usr/bin/git version
+2026-10-02T14:54:23.0122648Z git version 2.55.0
+2026-10-02T14:54:23.0194984Z Temporarily overriding HOME='/home/runner/work/_temp/4e2dc112-f20f-4d88-857b-0a8ba03fd228' before making global git config changes
+2026-10-02T14:54:23.0197086Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-02T14:54:23.0198507Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/off-the-clock/off-the-clock
+2026-10-02T14:54:23.0266093Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-02T14:54:23.0312572Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-02T14:54:23.0980648Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-02T14:54:23.1041594Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-02T14:54:23.1728006Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-02T14:54:23.1826422Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-02T14:54:23.2414361Z Cleaning up orphan processes
+2026-10-02T14:54:23.2696623Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

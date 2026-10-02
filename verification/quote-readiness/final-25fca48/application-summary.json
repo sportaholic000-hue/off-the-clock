@@ -1,0 +1,252 @@
+{
+  "source": "25fca4812bbc0eb905b1d91124c2aa53aced791a",
+  "rows": [
+    {
+      "id": "M1-cleanup-no-haul",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 150,
+      "optional": 2,
+      "records": {
+        "submissions": 4,
+        "quotes": 2,
+        "leads": 2
+      }
+    },
+    {
+      "id": "M1-sod-no-preparation",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 2037.5,
+      "optional": 2,
+      "records": {
+        "submissions": 4,
+        "quotes": 2,
+        "leads": 2
+      }
+    },
+    {
+      "id": "M1-planting-no-mulch",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 105,
+      "optional": 4,
+      "records": {
+        "submissions": 6,
+        "quotes": 2,
+        "leads": 4
+      }
+    },
+    {
+      "id": "B2-unready-safe-integer-range",
+      "status": "NEEDS PRICING",
+      "publicType": "ESTIMATE_REQUIRES_REVIEW",
+      "staffType": "ESTIMATE_REQUIRES_REVIEW",
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 0,
+        "leads": 2
+      }
+    },
+    {
+      "id": "B1-roof-minimum",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 2875,
+      "optional": 0,
+      "records": {
+        "submissions": 4,
+        "quotes": 2,
+        "leads": 2
+      }
+    },
+    {
+      "id": "B2-M1-concrete",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 3188.89,
+      "optional": 8,
+      "records": {
+        "submissions": 10,
+        "quotes": 2,
+        "leads": 8
+      }
+    },
+    {
+      "id": "B2-M1-wall-painting",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 300,
+      "optional": 4,
+      "records": {
+        "submissions": 6,
+        "quotes": 2,
+        "leads": 4
+      }
+    },
+    {
+      "id": "B2-M1-mulch",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 77.78,
+      "optional": 4,
+      "records": {
+        "submissions": 6,
+        "quotes": 2,
+        "leads": 4
+      }
+    },
+    {
+      "id": "B2-M1-M6-paint-packages",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 250,
+      "optional": 2,
+      "records": {
+        "submissions": 4,
+        "quotes": 2,
+        "leads": 2
+      }
+    },
+    {
+      "id": "M2-exterior-standard",
+      "status": "NEEDS PRICING",
+      "publicType": "ESTIMATE_REQUIRES_REVIEW",
+      "staffType": "ESTIMATE_REQUIRES_REVIEW",
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 0,
+        "leads": 2
+      }
+    },
+    {
+      "id": "M2-fence-standard",
+      "status": "NEEDS PRICING",
+      "publicType": "ESTIMATE_REQUIRES_REVIEW",
+      "staffType": "ESTIMATE_REQUIRES_REVIEW",
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 0,
+        "leads": 2
+      }
+    },
+    {
+      "id": "M2-configured-FENCING_INSTALL-installed",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 4500,
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 2,
+        "leads": 0
+      }
+    },
+    {
+      "id": "M2-configured-FENCING_INSTALL-itemized",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 3920,
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 2,
+        "leads": 0
+      }
+    },
+    {
+      "id": "M2-configured-EXTERIOR_PAINTING-installed",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 3000,
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 2,
+        "leads": 0
+      }
+    },
+    {
+      "id": "M2-configured-EXTERIOR_PAINTING-itemized",
+      "status": "QUOTING LIVE",
+      "publicType": "INSTANT_ESTIMATE_READY",
+      "staffType": "INSTANT_ESTIMATE_READY",
+      "mid": 1794,
+      "optional": 0,
+      "records": {
+        "submissions": 2,
+        "quotes": 2,
+        "leads": 0
+      }
+    }
+  ],
+  "interview": [
+    {
+      "input": {
+        "fields": {
+          "INTERIOR_PAINTING": {
+            "laborPerWallSqftPerCoat": 1
+          }
+        }
+      },
+      "status": 200
+    },
+    {
+      "input": {
+        "fields": {
+          "ROOFING_REPLACEMENT": {
+            "minimumJob": 2500
+          }
+        }
+      },
+      "status": 200
+    },
+    {
+      "input": {
+        "fields": {
+          "ROOFING_REPLACEMENT": {
+            "laborPerSquare": {
+              "asphalt_shingle": 90
+            }
+          }
+        }
+      },
+      "status": 200
+    },
+    {
+      "input": {
+        "fields": {
+          "INTERIOR_PAINTING": {
+            "laborPerFloorSqft": 1
+          }
+        }
+      },
+      "status": 422
+    },
+    {
+      "input": {
+        "fields": {
+          "ROOFING_REPLACEMENT": {
+            "laborPerSquare": 90
+          }
+        }
+      },
+      "status": 422
+    }
+  ],
+  "history": 2875.58
+}

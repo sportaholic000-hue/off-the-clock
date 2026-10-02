@@ -11,3 +11,9 @@ M1 interior wall-only: 100 measured wall sq ft * 2 coats * $1 labor + 100 * 2 * 
 M1 purchased wall paint: labor $200; ceil(100 * 2 * 1.10 / 400) = 1 package at $50; total $250.
 M1 clean-bed mulch: 96 sq ft * 3 inches / 324 = 8/9 cubic yard; with 15% waste = 46/45 yard. Material round((46/45)*$50)=$51.11; labor round((46/45)*$30)=$30.67; total $81.78.
 The concrete and configured-offering controls retain their previously independently calculated fixture totals; no pricing formula changes are planned.
+
+Fixture correction after the first baseline run, before any formula change: mulch waste applies to purchased material only. Installed labor is round((8/9)*$30)=$26.67, so the unchanged positive-control total is $77.78. The initial $81.78 expectation incorrectly applied material waste to labor; the engine did not.
+
+Further M1 controls, same existing arithmetic: light cleanup 1000 sqft × $0.10 + $50 debris disposal = $150 with no extra haul-away. Sod 1000 sqft × 1.05 material waste × $0.75 + 1000 sqft × $1.25 installation = $2037.50 without ground preparation. Planting: (2×$10 + 1×$20 + 1×$30) labor + (2×$5 + 1×$10 + 1×$15) material = $105, without bed preparation or mulch.
+
+Historical editability control: an old stored 2500.5-cent minimum is displayed exactly as $25.005 and cannot be saved or approved as an exact-cent minimum. No rounding or inferred correction is allowed. When the synthetic owner explicitly enters $2500.50, storage must be 250050 cents; TAX_ALL 15% adds round(37507.5)=37508 cents, for a $2875.58 floor and midpoint.

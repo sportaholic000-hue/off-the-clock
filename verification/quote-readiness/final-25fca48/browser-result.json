@@ -1,0 +1,38 @@
+{
+  "source": "25fca4812bbc0eb905b1d91124c2aa53aced791a",
+  "checks": [
+    {
+      "name": "B1 roof minimum entered, saved, reloaded and approved through the real editor",
+      "passed": true
+    },
+    {
+      "name": "B1 historical fractional-cent minimum opens and is corrected through the real editor",
+      "passed": true
+    },
+    {
+      "name": "M1 base work and lead-only options are visible in the editor",
+      "passed": true
+    },
+    {
+      "name": "M2 fence offering is configured from the editor without unused standard rate fields",
+      "passed": true
+    },
+    {
+      "name": "M2 exterior offering is configured from the editor with coats preparation and primer",
+      "passed": true
+    },
+    {
+      "name": "M1 normal customer widget quotes a configured wall-only job",
+      "passed": true
+    },
+    {
+      "name": "M1 normal customer widget captures selected unpriced trim as a lead",
+      "passed": true
+    },
+    {
+      "name": "Browser and persistence boundary",
+      "passed": true
+    }
+  ],
+  "passed": true
+}
