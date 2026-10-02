@@ -1,8 +1,8 @@
 [
  {
   "status": "COMPLETED",
-  "outcome": "VOICE_MEDIA_FAILURE",
-  "duration": 0,
+  "outcome": "TWILIO_STOP",
+  "duration": 27,
   "transcriptJson": "[]",
   "failureCode": null
  }

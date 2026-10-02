@@ -1,4 +1,2 @@
 Off The Clock AI server listening on 3999
 [email:console] { provider: 'console', simulated: true }
-[voice] provider connect Cannot assign to read only property 'parameters' of object '#<Object>'
-[voice] VOICE_SESSION_OPEN_FAILED:GEMINI_CONNECT_FAILED
