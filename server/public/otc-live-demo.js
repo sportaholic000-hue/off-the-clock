@@ -38,7 +38,7 @@ class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0
 this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(this.len)this.fade=true;}else if(d==='go'){this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
 at(k){let c=0;while(c<this.q.length&&k>=this.q[c].length){k-=this.q[c].length;c++;}return c<this.q.length?this.q[c][k]:0;}
 process(i,o){const out=o[0]&&o[0][0];if(!out)return true;const need=this.under?2400:4800;
-const avail=this.len-this.pos;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need||(this.force&&avail>=2)))this.on=true;
+const avail=this.len-this.pos;const need2=this.under?Math.min(28800,2400*(1+Math.min(this.underruns,11))):4800;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need2||(this.force&&avail>=2)))this.on=true;
 for(let n=0;n<out.length;n++){if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
 const k=Math.floor(this.pos),f=this.pos-k;let v=this.at(k)*(1-f)+this.at(k+1)*f;
 if(this.fade){v*=this.g;this.g-=1/(0.012*sampleRate);if(this.g<=0){this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.fade=false;this.force=false;this.g=1;out.fill(0,n);break;}}
@@ -100,7 +100,7 @@ registerProcessor('otc-player',Q);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
-  let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0;
+  let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0, turnAudio = { sec: 0, firstAt: 0 };
   let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
   const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
@@ -178,7 +178,7 @@ registerProcessor('otc-player',Q);`;
     const n = bytes.length >> 1; if (!n) return;
     const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length); const f = new Float32Array(n);
     for (let i = 0; i < n; i++) f[i] = dv.getInt16(2 * i, true) / 32768;
-    lastAgentAudioAt = Date.now();
+    lastAgentAudioAt = Date.now(); if (!turnAudio.firstAt) turnAudio.firstAt = Date.now(); turnAudio.sec += n / 24000;
     player.port.postMessage(f, [f.buffer]);
   }
   // Wall-clock time when queued agent audio finishes (0 when nothing is queued or in text mode).
@@ -210,7 +210,8 @@ registerProcessor('otc-player',Q);`;
     dlog('closing', reason); phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
     closingSentAt = Date.now(); closingText = ''; agentLine = null;
     sendTurn(`[SYSTEM] The demo is ending. Say exactly: "${CLOSINGS[reason]}" Then stop.`);
-    closeTimer = setTimeout(() => finish(endMessage(reason)), CLOSE_GRACE_MS);
+    const watch = () => { closeTimer = setTimeout(() => { if (Date.now() - lastServerMsg < 8000 && Date.now() - closingSentAt < 45000) return watch(); finish(endMessage(reason)); }, 2000); };
+    watch();
   }
   function endMessage(reason) { return reason === 'time' ? 'Demo time is up. Your microphone is off.' : 'The demo ended after a pause. Your microphone is off.'; }
   function sendText() {
@@ -278,7 +279,7 @@ registerProcessor('otc-player',Q);`;
         // Gemini sometimes emits placeholders such as "<no speech detected>"; never show those to visitors.
         if (s.outputTranscription && s.outputTranscription.text && !/^\s*<[^>]*>\s*$/.test(s.outputTranscription.text)) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
-        if (s.turnComplete) dlog('turn-complete', { buffered: +playerBuffered.toFixed(2), underruns });
+        if (s.turnComplete) { dlog('turn-complete', { buffered: +playerBuffered.toFixed(2), underruns, audioSec: +turnAudio.sec.toFixed(1), overSec: turnAudio.firstAt ? +((Date.now() - turnAudio.firstAt) / 1000).toFixed(1) : 0 }); turnAudio = { sec: 0, firstAt: 0 }; }
         if (s.outputTranscription && s.outputTranscription.text) dlog('said', s.outputTranscription.text.slice(0, 60));
         if (s.turnComplete && player) player.port.postMessage('go');
         if (s.turnComplete) {
