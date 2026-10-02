@@ -108,8 +108,13 @@ labor AND materials AND markup — so Canada is always TAX_ALL):
     here." }
 
 UNITED STATES:
-  OR, MT, NH, DE, AK → { taxMode:"TAX_NONE", taxPercent:0 }
+  OR, MT, NH, DE → { taxMode:"TAX_NONE", taxPercent:0 }
     // no state sales tax
+  AK → { taxMode:null, taxPercent:null, needsOwnerConfirmation:true }
+    // October 2 audit repair: absence of state sales tax does not settle
+    // local invoice treatment. Require the owner's explicit choice below;
+    // never silently save zero or invent a local rate. Existing saved
+    // owner settings are not changed by this setup correction.
   ALL OTHER STATES → do NOT prefill a mode or rate. Contractor
     sales-tax treatment varies by state and by job type, and this
     system must never guess tax rules. Instead, onboarding asks

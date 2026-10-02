@@ -128,7 +128,14 @@ export function scopeLines(type,c,p={},rules={}){
    continue;
   }
   const multiplier=key==='siding_removal'?[{name:'existing siding stories',value:p.storyMultiplier[c.sidingRemovalStories],path:'storyMultiplier.'+c.sidingRemovalStories}]:[];
-  for(const rateKey of Object.keys(defs).filter(k=>defs[k].scopeKey===key))add(rateKey,quantity,d.mode==='itemized'&&rateKey.endsWith('_removal')?multiplier:[]);
+  for(const rateKey of Object.keys(defs).filter(k=>defs[k].scopeKey===key)){
+   // The October 1 concrete rule applies access to separately priced finish
+   // labor as well as base labor. Installed-price scope retains its own basis.
+   const adjustments=d.mode==='itemized'&&rateKey==='exposed_aggregate_labor'
+    ? [{name:'access',value:p.accessMultiplier[c.accessDifficulty],path:'accessMultiplier.'+c.accessDifficulty}]
+    : d.mode==='itemized'&&rateKey.endsWith('_removal')?multiplier:[];
+   add(rateKey,quantity,adjustments);
+  }
   if((key==='demolition'||key==='siding_removal'||key==='stairs'&&!c.removalNeeded)&&d.disposalIncluded)out.replacedCommonFees.push('disposal');
   if(key==='demolition'||key==='siding_removal')out.feeScope.disposal=true;
  }

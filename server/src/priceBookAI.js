@@ -40,20 +40,24 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   else if (def.type === 'boolean') { if (typeof value !== 'boolean') reject('Choose Yes or No.'); }
   else if (def.type === 'select') { if (!def.options?.includes(value)) reject('Choose one of the displayed pricing options.'); }
   else {
-    const shape = def.shapedKeys;
+    const shape = def.shapedKeys, tree = def.tree;
+    // Current tree metadata supersedes legacy two-level shapedKeys. Leaves
+    // must occur at exactly this depth, not merely at or above a maximum depth.
+    const leafDepth = tree ? tree.depth || 1 : shape?.nested ? 2 : 1;
     let count = 0;
     function visit(v, depth, path) {
-      if (!record(v) || !Object.keys(v).length || depth > (def.tree?.depth || (shape?.nested ? 2 : 1))) reject('Enter a supported price map.');
+      if (!record(v) || !Object.keys(v).length || depth > leafDepth) reject('Enter a supported price map.');
+      const allowed = tree ? (depth === leafDepth ? tree.leafKeys : null) : depth === 1 ? shape?.keys : shape?.nested;
       for (const [key, child] of Object.entries(v)) {
         if (++count > 1000 || !/^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,79}$/.test(key) || ['__proto__','constructor','prototype'].includes(key)) reject('The price map contains an unsupported key.');
-        const allowed = depth === 1 ? shape?.keys : shape?.nested;
         if (allowed && !allowed.includes(key)) reject('The price map contains an out-of-domain key.');
-        if (record(child)) visit(child, depth+1, path+'.'+key);
-        else if (def.tree?.leafType === 'boolean') { if (typeof child !== 'boolean') reject('Choose Yes or No for each option.'); }
-        else if (def.tree?.leafType === 'enum') { if (!def.tree.options?.includes(child)) reject('Choose a supported price basis.'); }
+        if (depth < leafDepth) visit(child, depth+1, path+'.'+key);
+        else if (tree?.leafType === 'boolean') { if (typeof child !== 'boolean') reject('Choose Yes or No for each option.'); }
+        else if (tree?.leafType === 'enum') { if (!tree.options?.includes(child)) reject('Choose a supported price basis.'); }
         else number(child, path+'.'+key);
       }
-      if (shape?.nested && depth === 2 && shape.nested.some(key => !Object.hasOwn(v,key))) reject('Complete each row in the price map.');
+      const required = tree ? (depth === leafDepth ? tree.leafKeys : null) : depth === 2 ? shape?.nested : null;
+      if (required?.some(key => !Object.hasOwn(v,key))) reject('Complete each row in the price map.');
     }
     visit(value,1,field);
   }

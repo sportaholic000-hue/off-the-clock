@@ -3,7 +3,7 @@ const CA = {
   AB: [5], NT: [5], NU: [5], YT: [5],
   BC: [5, true], SK: [5, true], MB: [5, true], QC: [5, true]
 };
-const US_NO_STATE_SALES_TAX = new Set(['OR','MT','NH','DE','AK']);
+const US_ZERO_TAX_PREFILLS = new Set(['OR','MT','NH','DE']);
 const pstNote = 'Your province has PST/QST in addition to GST. PST treatment of contractor work varies by province and job type. Confirm your combined rate with your accountant and update it here.';
 const usNote = 'How do you handle sales tax on customer invoices? Owner confirmation is required; Off The Clock does not provide tax advice.';
 
@@ -16,7 +16,10 @@ export function resolveJurisdiction(country, region) {
     return { taxMode: 'TAX_ALL', taxPercent: found[0], locked: false, needsOwnerConfirmation: Boolean(found[1]), note: found[1] ? pstNote : null };
   }
   if (c === 'US') {
-    if (US_NO_STATE_SALES_TAX.has(r)) return { taxMode: 'TAX_NONE', taxPercent: 0, locked: false, needsOwnerConfirmation: false, note: null };
+    // Alaska has no state sales tax, but that does not determine the owner's
+    // local invoice treatment. Require their explicit mode/rate through the
+    // existing confirmation flow; do not select or migrate a rate for them.
+    if (US_ZERO_TAX_PREFILLS.has(r)) return { taxMode: 'TAX_NONE', taxPercent: 0, locked: false, needsOwnerConfirmation: false, note: null };
     return { taxMode: null, taxPercent: null, locked: false, needsOwnerConfirmation: true, note: usNote };
   }
   return { taxMode: null, taxPercent: null, locked: false, needsOwnerConfirmation: true, note: 'Unsupported jurisdiction. Owner confirmation required.' };

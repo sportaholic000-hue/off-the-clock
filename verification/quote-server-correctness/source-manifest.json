@@ -1,0 +1,56 @@
+{
+  "baseCommit": "c2e9efcdcc4aaca4a7b8f610e4cdf792cb135010",
+  "runtime": "Node 22.23.2",
+  "scope": [
+    "F01",
+    "F02",
+    "F03",
+    "F14",
+    "F27"
+  ],
+  "editorTask": [
+    "F04",
+    "F05",
+    "F07",
+    "F08",
+    "F11",
+    "F13"
+  ],
+  "files": [
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha256": "0472645738159cebd2f5bc3645004ef39763c8fdb95361d29bfc665a4401b3e9",
+      "gitBlobSha": "b9dee4d5862020ca9dd02bff7eaf42dbc051174a"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "sha256": "3b98ef1d488df8e8d5fdbf2f796f314a0a2b1a3390e43b82ed3824dd97def080",
+      "gitBlobSha": "71831cae875029c998702500a22d47f164772717"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "sha256": "bbdacda86039bc58ff9073e5516a376984210cc22b800bf6fe387325fdd1442d",
+      "gitBlobSha": "e71ebf3ed5513a9bd4dcc64df43807bbbb9ef8ed"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "sha256": "7a5d65c9984813a62d47ac7e2380d5cb955f3a96f9cbd8670832d1bde4c7c4a0",
+      "gitBlobSha": "2c0d1c4ef1c035b9bddcfde5c677708f8a17efdb"
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "sha256": "391d1e7b572daab6dbedfabaf23f912a84fd67473dd0b28b78ccdc44d08baccb",
+      "gitBlobSha": "abdbf695ceda016be6c6a5c81d0c04039611748c"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "sha256": "c9bd0120bc51fbbc0e0767c06774ddac3d7608276f6a62e5e173acb98a12bc2c",
+      "gitBlobSha": "619622d1e453b9948794ff89a513634dc303bfbf"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "sha256": "6ac8f73519f0c13d91eacf25177807451daeac71f1762d325e4804d524533f3a",
+      "gitBlobSha": "0c01a19daf72090c972fa5d0741739c501cf0b04"
+    }
+  ]
+}
