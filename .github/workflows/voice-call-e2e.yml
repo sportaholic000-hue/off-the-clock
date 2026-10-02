@@ -28,7 +28,7 @@ jobs:
           echo "TWILIO_ACCOUNT_SID=AC$(openssl rand -hex 16)" >> "$GITHUB_ENV"; echo "TWILIO_AUTH_TOKEN=$(openssl rand -hex 16)" >> "$GITHUB_ENV"
           source "$GITHUB_ENV"
           mkdir -p /tmp/pb
-          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/v.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=https://voice.test CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console VOICE_RUNTIME_ENABLED=true TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN GEMINI_MODEL=gemini-3.8-live nohup node server/src/server.js > /tmp/server.log 2>&1 &
+          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/v.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=https://voice.test CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console VOICE_RUNTIME_ENABLED=true TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN GEMINI_MODEL=gemini-3.8-live VOICE_DEBUG_PROVIDER_ERRORS=true nohup node server/src/server.js > /tmp/server.log 2>&1 &
           for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
           node e2e/voice-seed.mjs http://127.0.0.1:3999 /tmp/v.sqlite +15065550199
       - name: Simulated phone call

@@ -78,6 +78,10 @@ export function installVoiceRuntime(app, { database, env = process.env, genAiCli
   const client = genAiClient || new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
   const openAdapter = createGoogleGenAiLiveSessionOpener({
     client, model: env.GEMINI_MODEL, toolDeclarations: VOICE_TOOL_DECLARATIONS, voiceName: env.VOICE_DEFAULT_VOICE || undefined,
+    // Provider error text is server-log only and only when VOICE_DEBUG_PROVIDER_ERRORS=true; callers never see it.
+    onProviderError: env.VOICE_DEBUG_PROVIDER_ERRORS === 'true'
+      ? (where, message) => console.error('[voice] provider', where, String(message).split(env.GEMINI_API_KEY || '\u0000').join('<key>'))
+      : undefined,
     systemInstruction: ({ context }) => buildCallInstruction({ database, ownerId: context.ownerId, guideText }),
   });
   const calls = new Map(); // callSid -> { dispatcher, startedAt, transcript }

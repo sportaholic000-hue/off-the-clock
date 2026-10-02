@@ -23,7 +23,8 @@ function plainJson(value, depth = 0) {
   return Object.keys(value).every(key => !['__proto__', 'constructor', 'prototype'].includes(key) && plainJson(value[key], depth + 1));
 }
 
-export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstruction, toolDeclarations = [], voiceName } = {}) {
+export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstruction, toolDeclarations = [], voiceName, onProviderError } = {}) {
+  const reportProvider = (where, error) => { try { if (typeof onProviderError === 'function') onProviderError(where, String(error?.message ?? error ?? '').slice(0, 500)); } catch {} };
   if (!client || !client.live || typeof client.live.connect !== 'function') throw new GoogleGenAiLiveAdapterError('GOOGLE_LIVE_CLIENT_REQUIRED');
   if (typeof model !== 'string' || !/^[A-Za-z0-9._-]{1,120}$/.test(model)) throw new GoogleGenAiLiveAdapterError('GOOGLE_LIVE_MODEL_REQUIRED');
   if (!['string', 'function'].includes(typeof systemInstruction)) throw new GoogleGenAiLiveAdapterError('GOOGLE_LIVE_INSTRUCTION_REQUIRED');
@@ -89,11 +90,12 @@ export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstru
         callbacks: {
           onopen: () => {},
           onmessage: message => { run(() => handle(message)); },
-          onerror: () => { run(fail); },
-          onclose: () => { run(async () => { if (closed) return; closed = true; await callbacks.onClose(); }); },
+          onerror: event => { reportProvider('onerror', event?.message ?? event?.error ?? event); run(fail); },
+          onclose: event => { if (event?.code && event.code !== 1000) reportProvider('onclose', `${event.code} ${event.reason || ''}`); run(async () => { if (closed) return; closed = true; await callbacks.onClose(); }); },
         },
       });
-    } catch {
+    } catch (error) {
+      reportProvider('connect', error);
       throw new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED');
     }
 
