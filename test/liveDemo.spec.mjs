@@ -114,3 +114,11 @@ test('voice audition: refused unless enabled; only listed voices, only for Miles
   const plain = await on.post({ agent: 'miles' }); assert.equal(plain.json.agent.voice, 'Charon'); on.close();
   assert.throws(() => liveDemoConfig({ ...baseEnv, DEMO_VOICE_AUDITION: 'true', NODE_ENV: 'production' }), /cannot run in production/);
 });
+test('owner ruling: demo tells any business that callers can get the owner\'s set prices', async () => {
+  const { demoInstructions } = await import('../server/src/demo/demoInstructions.js');
+  const t = demoInstructions('Miles');
+  assert.match(t, /any business, including every business outside those seven trades/i);
+  assert.match(t, /give callers those exact prices over the phone/);
+  assert.match(t, /Never tell a visitor their business can't get phone quotes/);
+  assert.doesNotMatch(t, /do not offer phone quotes/i);
+});
