@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
-import {parseInterviewScalar} from './interviewStructuredValue.js';
+import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {
@@ -491,7 +491,7 @@ function PriceBookStep({ state, metadata, back, next }) {
     () => available.flatMap(service => service.fields.filter(field=>['number','json','select','boolean'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
     [available]
   );
-  const current = interviewFields[position];
+  const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
 
   useEffect(() => {
     if (!quoteAccess || draft) return;

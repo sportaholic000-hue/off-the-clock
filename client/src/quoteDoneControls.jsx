@@ -2,25 +2,30 @@ import {customerFieldVisible} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
+import {treeKeysAt,requiredTreeKeysAt} from '../../server/priceBookTree.js';
+import {humanPricingKey} from './pricebookFormatting.js';
 import {parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import {api} from './api.js';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,approvalMatchesDraft} from './pricebookEditing.js';
 const human=value=>String(value).replaceAll('_',' ');
+const treeLabel=key=>/[A-Z]/.test(key)?humanPricingKey(key):human(key);
 const own=(value,key)=>Object.hasOwn(value||{},key);
 
 export function PricingTree({value,onChange,definition,level=1,label=definition.label}) {
  const tree=definition.tree||{},depth=tree.depth||1;
  const map=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
  const [newKey,setNewKey]=useState('');
- const keys=[...new Set([...Object.keys(map),...(level===depth?tree.leafKeys||[]:[])])];
+ const allowed=treeKeysAt(tree,level),required=requiredTreeKeysAt(tree,level);
+ const keys=[...new Set([...Object.keys(map),...required])];
+ const available=allowed?.filter(key=>!own(map,key)&&!required.includes(key));
  const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(next);};
  return <div className="field-stack">{keys.map(key=><div key={key}>
-  {level<depth?<><strong>{human(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+human(key)}/></>:
-   <Field label={human(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+human(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
-    tree.leafType==='boolean'?<Select aria-label={label+' '+human(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
-    <ExactNumericInput aria-label={label+' '+human(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} wholeCents={definition.wholeCents} onChange={v=>update(key,v)}/>}</Field>}
-   <Button variant="quiet" onClick={()=>update(key,undefined)}>Remove {human(key)}</Button>
- </div>)}{!(level===depth&&tree.leafKeys)&&<div className="field-stack"><TextInput aria-label={label+' offering key'} value={newKey} onChange={e=>setNewKey(e.target.value)}/><Button variant="secondary" onClick={()=>{if(/^[a-z][a-z0-9_]*$/.test(newKey)&&!own(map,newKey)){update(newKey,level<depth?{}:null);setNewKey('');}}}>Add offering</Button><small>Use the exact offering key consistently across the related price maps.</small></div>}</div>;
+  {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
+   <Field label={treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
+    tree.leafType==='boolean'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
+    <ExactNumericInput aria-label={label+' '+treeLabel(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} wholeCents={definition.wholeCents} onChange={v=>update(key,v)}/>}</Field>}
+   {!required.includes(key)&&<Button variant="quiet" onClick={()=>update(key,undefined)}>Remove {treeLabel(key)}</Button>}
+ </div>)}{(!allowed||available.length>0)&&<div className="field-stack">{allowed?<Select aria-label={label+' offering key'} value={newKey} onChange={e=>setNewKey(e.target.value)}><option value="">Choose</option>{available.map(key=><option key={key} value={key}>{treeLabel(key)}</option>)}</Select>:<TextInput aria-label={label+' offering key'} value={newKey} onChange={e=>setNewKey(e.target.value)}/>}<Button variant="secondary" onClick={()=>{if((allowed?available.includes(newKey):/^[a-z][a-z0-9_]*$/.test(newKey))&&!own(map,newKey)){update(newKey,level<depth?{}:null);setNewKey('');}}}>Add offering</Button><small>Use the exact offering key consistently across the related price maps.</small></div>}</div>;
 }
 
 // Coordinates may be negative. Reuse the exact decimal parser for the magnitude;

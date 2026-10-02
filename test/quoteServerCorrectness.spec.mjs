@@ -120,13 +120,13 @@ for(const [type,field,material,repair] of cubes)test('F14 '+type+'.'+field+' acc
  assert.deepEqual(validateInterviewValue(type,field,valid),valid);
  for(const invalid of [{[repair]:sizes},{[repair]:1},{[material]:{[repair]:{small:1,medium:2}}},{[material]:{[repair]:{...sizes,extra:4}}},{[material]:{[repair]:{small:{nested:1},medium:2,large:3}}},{[material]:{}},[],null])assert.throws(()=>validateInterviewValue(type,field,invalid),e=>e.statusCode===422,JSON.stringify(invalid));
 });
-test('F14 current typed/one-level trees reject extra nesting; legacy two-level debris maps retain their shape',()=>{
+test('F14 current typed/one-level trees reject extra nesting; current debris maps require complete typed rows',()=>{
  const basis={asphalt_shingle:'installed_area_sell_price'};assert.deepEqual(validateInterviewValue('ROOFING_REPLACEMENT','underlaymentPriceBasis',basis),basis);
  for(const v of [{asphalt_shingle:{nested:'cost'}},{asphalt_shingle:true}])assert.throws(()=>validateInterviewValue('ROOFING_REPLACEMENT','underlaymentPriceBasis',v),{statusCode:422});
  assert.deepEqual(validateInterviewValue('ROOFING_REPLACEMENT','laborPerSquare',{asphalt_shingle:123.45}),{asphalt_shingle:123.45});
  assert.throws(()=>validateInterviewValue('ROOFING_REPLACEMENT','laborPerSquare',{asphalt_shingle:{nested:1}}),{statusCode:422});
- const debris={light:{laborMultiplier:1,disposalFlat:0}};assert.deepEqual(validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',debris),debris);
- for(const v of [{light:1},{light:{laborMultiplier:1}},{light:{laborMultiplier:1,disposalFlat:{nested:2}}}])assert.throws(()=>validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',v),{statusCode:422});
+ const debris={light:{laborMultiplier:1,disposalFlat:0},moderate:{laborMultiplier:1.5,disposalFlat:20},heavy:{laborMultiplier:2,disposalFlat:40}};assert.deepEqual(validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',debris),debris);
+ for(const v of [{light:1},{light:{laborMultiplier:1,disposalFlat:0}},{light:{laborMultiplier:1}},{light:{laborMultiplier:1,disposalFlat:{nested:2}}}])assert.throws(()=>validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',v),{statusCode:422});
  assert.equal(validateInterviewValue('LANDSCAPING_MOWING','mowingBaseRatePerSqft',.005),.005);
 });
 test('F27 Alaska cannot imply a confirmed zero-tax jurisdiction; existing other prefills remain unchanged',()=>{

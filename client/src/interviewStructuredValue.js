@@ -1,4 +1,5 @@
-import {parseOwnerNumericInput} from '../../server/priceBookMoney.js';
+import {validatePriceBookTree} from '../../server/priceBookTree.js';
+import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 
 // Pure helpers for structured interview answers: shape detection, validation
@@ -141,28 +142,7 @@ export function validateStructuredValue(value, domain, fieldLabel, definition) {
 // activation. The server remains authoritative and may reject an incomplete
 // service. In particular, zero/false are captured answers, not missing answers.
 function validateInterviewTree(value, definition, fieldLabel) {
-  const tree=definition.tree,depth=tree.depth||1;
-  const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
-  function visit(map,level,path) {
-    if(!record(map))throw Error(path+': enter a price map for this group.');
-    const entries=Object.entries(map);
-    if(!entries.length)throw Error(path+': add at least one offering or answer.');
-    if(level===depth&&tree.leafKeys){
-      const missing=tree.leafKeys.filter(key=>isBlank(map[key]));
-      if(missing.length)throw Error(path+': still needed: '+missing.map(humanPricingKey).join(', ')+'.');
-      if(entries.some(([key])=>!tree.leafKeys.includes(key)))throw Error(path+': remove unsupported fields.');
-    }
-    for(const [key,leaf] of entries){
-      const at=path+' / '+humanPricingKey(key);
-      if(!/^[a-z][a-z0-9_]*$/.test(key))throw Error(at+': use the exact supported offering key.');
-      if(level<depth){visit(leaf,level+1,at);continue;}
-      if(isBlank(leaf))throw Error(at+': enter an answer.');
-      if(tree.leafType==='boolean'){if(typeof leaf!=='boolean')throw Error(at+': choose Yes or No.');}
-      else if(tree.leafType==='enum'){if(!tree.options?.includes(leaf))throw Error(at+': choose one of the listed options.');}
-      else parseOwnerNumericInput(leaf,{kind:tree.leafMoneyKinds?.[key]??definition.moneyKind,wholeCents:definition.wholeCents,path:at});
-    }
-  }
-  try{visit(value,1,fieldLabel);return null;}catch(error){return error.message;}
+  try{validatePriceBookTree(value,{...definition,label:fieldLabel});return null;}catch(error){return error.message;}
 }
 
 export function parseInterviewScalar(raw, definition) {
@@ -178,4 +158,12 @@ export function parseInterviewScalar(raw, definition) {
   const value=parseOwnerNumericInput(raw,{kind:definition.moneyKind,wholeCents:definition.wholeCents,path:definition.label||definition.field||''});
   if(value===undefined)throw Error('Enter a number before confirming this field.');
   return value;
+}
+
+// Resolve from the actual saved draft unit on every render/resume. A unit is
+// never inferred from the amount or from a different service's answers.
+export function interviewDefinition(definition, pricing={}) {
+  if(!definition)return definition;
+  return definition.serviceType==='CUSTOM'&&['price','low','high'].includes(definition.field)
+    ? {...definition,moneyKind:moneyKindForField('CUSTOM',definition.field,pricing)} : definition;
 }

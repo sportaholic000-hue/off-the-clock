@@ -131,3 +131,20 @@ export function mergeSavedApproval(draft, before, after, serviceId, approvedRevi
       return edited;
     })};
 }
+
+// Selecting no tax is a complete mode/rate decision. Other modes keep the
+// entered rate and let the owner choose their applicable percentage.
+export function editBusinessDefault(defaults, field, value) {
+  return {...defaults,[field]:value,...(field==='taxMode'&&value==='TAX_NONE'?{taxPercent:0}:{})};
+}
+export function addPriceTier(tiers) {
+  if(tiers.length>=3)return tiers;
+  const name=['Good','Better','Best'].find(candidate=>!tiers.some(tier=>String(tier.name||'').trim().toLowerCase()===candidate.toLowerCase()));
+  return [...tiers,{name,overrides:{}}];
+}
+export function renameTierOverride(overrides, oldField, nextField) {
+  if(oldField===nextField||!Object.hasOwn(overrides,oldField)||Object.hasOwn(overrides,nextField))return overrides;
+  const next={...overrides,[nextField]:overrides[oldField]};
+  delete next[oldField];
+  return next;
+}

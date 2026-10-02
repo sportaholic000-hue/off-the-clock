@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 let browser,bundle;
 before(async()=>{
  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
- browser=await chromium.launch({headless:true});
+ browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
  const result=await build({absWorkingDir:root,stdin:{loader:'jsx',resolveDir:root,contents:
   "import React,{useState} from 'react';import{createRoot}from'react-dom/client';import Question from './client/src/interviewStructured.jsx';function Editor({definition,initial}){const[value,setValue]=useState(initial);return <><Question definition={definition} value={value} onChange={setValue}/><output data-testid='answer'>{JSON.stringify(value)}</output></>}const root=createRoot(document.getElementById('root'));let version=0;window.mount=(definition,initial)=>root.render(<Editor key={++version} definition={definition} initial={initial}/>);"},
  bundle:true,write:false,format:'iife',platform:'browser',define:{'process.env.NODE_ENV':JSON.stringify('development')}});

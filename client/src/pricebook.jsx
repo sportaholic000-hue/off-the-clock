@@ -9,7 +9,7 @@ import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 import { ExactNumericInput } from './pricebookInputs.jsx';
-import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 const PricingContext = createContext({});
 import {
@@ -31,11 +31,11 @@ function JsonEditor({value,onChange}) {
   return <><Textarea aria-invalid={invalid} rows="6" value={raw} onChange={e=>change(e.target.value)}/>{invalid&&<span className="field-error">Enter valid JSON before saving.</span>}</>;
 }
 
-function MoneyInput({ value, onChange, money, kind }) {
+function MoneyInput({ value, onChange, money, kind, wholeCents }) {
   return (
     <div className={money ? 'money-input' : ''}>
       {money && <span>$</span>}
-      <ExactNumericInput value={value} onChange={onChange} kind={kind} />
+      <ExactNumericInput value={value} onChange={onChange} kind={kind} wholeCents={wholeCents} />
     </div>
   );
 }
@@ -300,7 +300,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       ? <ShapedMapField definition={definition} value={value} onChange={onChange} incompleteOfferings={incompleteOfferings} />
       : <JsonEditor value={value} onChange={onChange} />;
   } else {
-    control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} />;
+    control = <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
   }
   if (compact) return control;
   // Approved label ruling: concise trade-specific title is the primary label;
@@ -336,7 +336,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
   const service = useContext(PricingContext);
   function addTier() {
     if (tiers.length >= 3) return;
-    onChange([...tiers, { name:['Good','Better','Best'][tiers.length], overrides:{} }]);
+    onChange(addPriceTier(tiers));
   }
   function patchTier(index, patch) {
     onChange(tiers.map((tier, tierIndex) => tierIndex === index ? { ...tier, ...patch } : tier));
@@ -352,10 +352,8 @@ function TierBuilder({ tiers, definitions, onChange }) {
   }
   function renameOverride(index, oldField, nextField) {
     const tier = tiers[index];
-    const next = { ...(tier.overrides || {}) };
-    const value = next[oldField];
-    delete next[oldField];
-    next[nextField] = value;
+    if(!definitions.some(item=>item.field===nextField))return;
+    const next = renameTierOverride(tier.overrides||{},oldField,nextField);
     patchTier(index, { overrides:next });
   }
   function setOverride(index, field, value) {
@@ -390,7 +388,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
                 return (
                   <div className="override-row" key={field}>
                     <Select value={field} onChange={event => renameOverride(index, field, event.target.value)}>
-                      {definitions.map(item => <option key={item.field} value={item.field}>{item.label}</option>)}
+                      {definitions.map(item => <option key={item.field} value={item.field} disabled={item.field!==field&&Object.hasOwn(tier.overrides||{},item.field)}>{item.label}</option>)}
                     </Select>
                     {definition && <OwnerField definition={definition} value={value} onChange={next => setOverride(index, field, next)} compact />}
                     <Button icon={X} variant="icon" aria-label="Remove override" title="Remove override" onClick={() => removeOverride(index, field)} />
@@ -699,7 +697,7 @@ export default function PriceBook() {
   }
 
   function updateDefault(field, value) {
-    setBook({ ...book, defaults:{ ...book.defaults, [field]:value } });
+    setBook({ ...book, defaults:editBusinessDefault(book.defaults,field,value) });
   }
 
   function resetClass2(field) {

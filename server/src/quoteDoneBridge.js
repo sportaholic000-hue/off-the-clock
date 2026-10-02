@@ -10,7 +10,7 @@ import {
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
   configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions
 } from '../quote-engine-vnext/index.js';
-import { allowedPricingFields, aiConfirmationFieldsVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
+import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook } from '../priceBookService.js';
 import { dollarAmountToCents, centAmountToDollars, moneyKindForField, parseOwnerNumericInput } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
@@ -40,9 +40,16 @@ export function quoteDoneMoneyKind(type,field,pricing={}) {
   if(field==='minimumJob'&&allowedPricingFields(type).includes(field))return 'fixed_amount';
   if(field==='scopeDetails')return null;
   if(NEW_RATES.has(field))return 'unit_rate';
-  if(type==='CUSTOM'&&field==='price')return pricing.unit==='flat'?'fixed_amount':pricing.unit?'unit_rate':'unresolved_unit';
+  if(type==='CUSTOM'&&['price','low','high'].includes(field))return moneyKindForField(type,field,pricing);
   if(NOT_MONEY.has(field)||has(CLASS2_DEFINITIONS[type]||{},field))return null;
   return moneyKindForField(type,field,pricing);
+}
+// Match the current engine's cent domain; retained inactive legacy fields keep
+// their existing lossless conversion. No rate is rounded or inferred here.
+export function quoteDoneWholeCents(type,field,pricing={}) {
+  return allowedPricingFields(type).includes(field) && !!quoteDoneMoneyKind(type,field,pricing) &&
+    !['mowingBaseRatePerSqft','offeringRates','scopeRates'].includes(field) &&
+    !(type==='CUSTOM'&&['price','low','high'].includes(field));
 }
 function moneyTree(value,kind,convert,location) {
   if(record(value))return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,moneyTree(item,kind,convert,location+'.'+key)]));
@@ -66,9 +73,8 @@ function convertedPricing(source,type,direction,location,effective=source) {
       // previously bypassed conversion. Display its stored value exactly so
       // the owner can correct it. Saving and quoting still require whole cents.
       const legacyDisplay=direction==='toDollars'&&type==='ROOFING_REPLACEMENT'&&field==='minimumJob'&&typeof source[field]==='number'&&!Number.isInteger(source[field]);
-      // Keep standard siding labor within its existing integer-cent domain.
-      // Read-back remains lossless so historical invalid rates can be corrected.
-      const convertRate=direction==='toCents'&&type==='SIDING_REPLACEMENT'&&field==='laborPerSqft'
+      // Read-back stays lossless so historical invalid rates can be corrected.
+      const convertRate=direction==='toCents'&&quoteDoneWholeCents(type,field,effective)
         ? (value,options)=>{parseOwnerNumericInput(value,{...options,wholeCents:true});return convert(value,options);}
         : convert;
       result[field]=moneyTree(source[field],legacyDisplay?'unit_rate':kind,convertRate,location+'.'+field);
@@ -246,7 +252,10 @@ export function approveApplicationService(ownerId,serviceId,input) {
     const fields=aiConfirmationFieldsVNext(service,service.pricing);
     if(!Array.isArray(input.fields)||fields.some(field=>!input.fields.includes(field))||input.fields.some(field=>!fields.includes(field)))throw problem('Explicitly confirm every current AI field and tier before approval.',400,{fields});
     service=approveVNextValues(service,{fields:input.fields,ownerId,operationId,approvedAt:now});
-    raw.confirmedFields={...(raw.confirmedFields||{}),...service.confirmedFields};raw.approvedValues={...(raw.approvedValues||{}),...service.approvedValues};
+    // Preserve only retained legacy metadata outside the current contract.
+    // Never merge deleted current-field receipts back into the approved result.
+    const legacy=new Set([...(ALL_OWNER_FIELDS[raw.serviceType]||[]),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[raw.serviceType]||{})].filter(field=>!allowedPricingFields(raw.serviceType).includes(field)));
+    for(const key of ['confirmedFields','approvedValues'])raw[key]={...Object.fromEntries(Object.entries(raw[key]||{}).filter(([field])=>legacy.has(field))),...service[key]};
   }
   if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
   raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
@@ -363,7 +372,7 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
-      if(meta.serviceType==='SIDING_REPLACEMENT'&&field.field==='laborPerSqft')Object.assign(info,{wholeCents:true,help:info.help+' Enter this labor rate in whole cents; fractional cents are not supported for this field.'});
+      if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       const priceMaps={
@@ -384,6 +393,11 @@ export function applicationMetadata() {
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large']}});
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
+      if(info.tree){
+        Object.assign(info.tree,pricingMapDomainVNext(meta.serviceType,field.field));
+        if(info.tree.rootKeys)info.shapedKeys={...info.shapedKeys,keys:info.tree.rootKeys,ownerSelectable:!info.tree.requiredRootKeys};
+      }
+      if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing')info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier']};
       return info;
     });
     return {...old,...meta,name:meta.service,requiresOffering,fields,legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
