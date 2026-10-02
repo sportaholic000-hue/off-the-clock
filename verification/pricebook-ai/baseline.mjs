@@ -31,7 +31,7 @@ try {
   catch(e){return {reproduced:true,error:e.message};}
  });
  await observe('real starter positive control',async()=>{
-  process.env.GEMINI_MODEL='gemini-2.5-flash';
+  process.env.GEMINI_MODEL='gemini-3.8-flash';
   const suggestions=await suggestStarterBook({industry:'[SYNTHETIC] lawn care',serviceTypes:['LANDSCAPING_MOWING']});
   save('starter-real.json',suggestions);return {verified:true,suggestions};
  });
@@ -45,7 +45,7 @@ try {
   try{return {reproduced:true,raw,accepted:await suggestStarterBook({industry:'synthetic',serviceTypes:['LANDSCAPING_MOWING']})};}
   catch(e){return {reproduced:false,error:e.message};}
  });
- mode({mode:'live'});process.env.ALLOW_PROVIDER_WRITES='true';process.env.VOICE_RUNTIME_ENABLED='false';
+ mode({mode:'live'});Object.assign(process.env,{TWILIO_ACCOUNT_SID:'AC'+'0'.repeat(32),TWILIO_API_KEY_SID:'SK'+'0'.repeat(32),TWILIO_API_KEY_SECRET:'SYNTHETIC-NOT-A-REAL-CREDENTIAL'});process.env.ALLOW_PROVIDER_WRITES='true';process.env.VOICE_RUNTIME_ENABLED='false';
  app=await startApplication(root,path.join(out,'private'),{port:4892,browserOrigins:['http://127.0.0.1:4892']});
  const f=await mowingFixture(app,'ai-baseline',['http://127.0.0.1:4892']);
  await observe('interview currently has no Gemini assistance',async()=>{
