@@ -1,37 +1,7 @@
-run 36953376346 sha 3eac1944149b7375052fa5a5e652c497413e6d64
-Summary: {"tests":"1106","pass":"1080","fail":"24","cancelled":"0","skipped":"2","todo":"0"}
+run 36954609186 sha 1b70096e25a1310df556e2f8672f9741d025c04e
+Summary: {"tests":"1106","pass":"1095","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
-::error::New test failure: editor D1: root factor survives no-edit blur save reopen and same-type switches
-::error::New test failure: editor D1: nested factor survives no-edit blur save reopen and same-type switches
-::error::New test failure: editor D1: flat factor survives no-edit blur save reopen and same-type switches
-::error::New test failure: editor D1: equal factor survives no-edit blur save reopen and same-type switches
-::error::New test failure: editor D1: a genuine absent default is displayed without being written by focus or blur
-::error::New test failure: editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
-::error::New test failure: editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
-::error::New test failure: editor locked rate: 0.0049 types blurs saves and reopens exactly
-::error::New test failure: editor locked rate: 0.0050 types blurs saves and reopens exactly
-::error::New test failure: editor locked rate: 0.0051 types blurs saves and reopens exactly
-::error::New test failure: editor locked invalid text: lossless rejection survives blur same-type switch and save
-::error::New test failure: editor locked maps tiers and explicit enablement stay separate for two same-type records
-::error::New test failure: editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
-::error::New test failure: editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
-::error::New test failure: editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
 not ok 29 - test/googleGenAiLiveAdapter.spec.mjs
-not ok 607 - editor D1: root factor survives no-edit blur save reopen and same-type switches
-not ok 608 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
-not ok 609 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
-not ok 610 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
-not ok 611 - editor D1: a genuine absent default is displayed without being written by focus or blur
-not ok 612 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
-not ok 613 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
-not ok 614 - editor locked rate: 0.0049 types blurs saves and reopens exactly
-not ok 615 - editor locked rate: 0.0050 types blurs saves and reopens exactly
-not ok 616 - editor locked rate: 0.0051 types blurs saves and reopens exactly
-not ok 617 - editor locked invalid text: lossless rejection survives blur same-type switch and save
-not ok 618 - editor locked maps tiers and explicit enablement stay separate for two same-type records
-not ok 619 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
-not ok 620 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
-not ok 621 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
 not ok 1063 - voice tool runtime persists a safe review quote and lead without exposing internal identities
 not ok 1064 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
 not ok 64 - test/voicePromptCompiler.spec.mjs
