@@ -272,7 +272,8 @@ Q7 [subfloorIssues]: "Any soft spots, squeaks, or water
 Confirm: "A new fence — let's price it out."
 Q1 [fenceType]: "What style — wood privacy, chain link,
   vinyl?" (owner-priced types)
-Q2 [fenceHeight]: "How tall — four foot, six, or eight?"
+Q2 [fenceHeight]: "How tall do you want it?" (never offer
+height options; the caller says the height)
 Q3 [gateCount]: "How many gates do you want in it?"
 Q4 [cornerCount]: "And how many corners does the fence line
   turn? Picture walking it — every time you'd change

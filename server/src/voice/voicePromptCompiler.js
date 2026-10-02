@@ -8,7 +8,7 @@ export class VoicePromptCompilerError extends Error {
 }
 const fail = code => { throw new VoicePromptCompilerError(code); };
 
-export const IMMUTABLE_VOICE_GUIDE_SHA256 = 'e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6';
+export const IMMUTABLE_VOICE_GUIDE_SHA256 = '205aafb048e1499217ce33cce84ae7f2ee9f4c62fbb32ace2d2f391de586f59e';
 export const VOICE_GUIDE_SERVICE_TYPES = Object.freeze([
   'ROOFING_REPLACEMENT', 'ROOFING_REPAIR', 'FLAT_ROOF_REPLACEMENT', 'FLAT_ROOF_REPAIR', 'INTERIOR_PAINTING',
   'EXTERIOR_PAINTING', 'FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'FENCING_INSTALL', 'FENCING_REPLACEMENT',

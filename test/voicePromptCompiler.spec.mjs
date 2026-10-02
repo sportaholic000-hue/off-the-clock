@@ -52,10 +52,10 @@ function ownerFacts(prompt) {
   return JSON.parse(match[1]);
 }
 
-test("the compiler authenticates and parses every section of the immutable 459-line guide", () => {
+test("the compiler authenticates and parses every section of the immutable 460-line guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6");
+  assert.equal(parsed.digest, "205aafb048e1499217ce33cce84ae7f2ee9f4c62fbb32ace2d2f391de586f59e");
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
   assert.match(parsed.globalRules, /ONE question per turn/);
   assert.match(parsed.globalRules, /read back every number explicitly/);
