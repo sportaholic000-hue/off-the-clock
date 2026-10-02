@@ -86,6 +86,18 @@ try{
   assert.equal(preview.midEstimate,2875);assert.equal(preview.lowEstimate,2875);save('roof-editor.json',{saved,stored,preview});
   for(const width of [375,1280])await snapshot('roof-minimum-editor',width);
  });
+ await check('B1 historical fractional-cent minimum opens and is corrected through the real editor',async()=>{
+  const file=path.join(out,'private/pricebooks',roof.owner.id+'.json'),historical=JSON.parse(fs.readFileSync(file,'utf8'));
+  historical.services[0].pricing.minimumJob=2500.5;delete historical.services[0].quoteDoneApproval.moneyUnitVersion;fs.writeFileSync(file,JSON.stringify(historical));
+  await page.reload();await page.locator('.service-pick').filter({hasText:'[SYNTHETIC] Roof minimum'}).click();
+  assert.equal(await page.locator('#field-minimumJob input').inputValue(),'25.005');
+  await page.locator('#field-minimumJob input').fill('2500.50');await saveAndApprove(roof,roof.services[0].id);
+  const saved=await roof.read(),stored=JSON.parse(fs.readFileSync(file,'utf8'));
+  assert.equal(stored.services[0].pricing.minimumJob,250050);
+  const preview=await roof.call('POST','/api/pricebook/preview',{serviceId:roof.services[0].id,revision:saved.revision,customerInputs:roof.items[0].input.customerInputs});
+  assert.equal(preview.midEstimate,2875.58);save('historical-roof-editor.json',{historical,saved,stored,preview});
+  await snapshot('roof-historical-editor',375);
+ });
  const owner=await fixture('optional-editor',[
   {name:'[SYNTHETIC] Wall painting',input:wallPainting()},{name:'[SYNTHETIC] Concrete',input:bareConcrete()},{name:'[SYNTHETIC] Mulch',input:bareMulch()},
   {name:'[SYNTHETIC] Fence offering',input:standardFence()},{name:'[SYNTHETIC] Exterior offering',input:standardExterior()}
