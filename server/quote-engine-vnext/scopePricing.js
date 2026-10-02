@@ -110,7 +110,9 @@ export function scopeLines(type,c,p={},rules={}){
  };
  for(const key of scopeKeysForRequest(type,c,p,rules)){
   const d=p.scopeDetails[key],label=catalog[key].label;
-  out.disclosures.push(label+': '+d.description);
+   const description=d.description.trim();
+   const ending=/[.!?…](?:["'’”\)\]])?$/.test(description)?'':'.';
+   out.disclosures.push(label+': '+description+ending);
   if(key==='insulation'){
    out.disclosures.push('Insulation: '+d.insulationSystem+'. Coverboard: '+d.coverboardSystem+'.');
    for(const layer of ['insulation','coverboard'])for(const suffix of d.mode==='installed'?['installed']:['labor','material'])add(layer+'_'+suffix,c[layer+'AreaSqft']);

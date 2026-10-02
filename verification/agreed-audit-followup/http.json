@@ -1,0 +1,513 @@
+{
+  "baseSource": "25fca4812bbc0eb905b1d91124c2aa53aced791a",
+  "sourceDescription": "exact base plus agreed m1-m6 local changes; see source manifest",
+  "runtime": "v22.23.2",
+  "probesComplete": true,
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/meta",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/7b25f4e6-3c05-4c62-bbdd-294bd9569ba5",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/7b25f4e6-3c05-4c62-bbdd-294bd9569ba5",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/152e1814-0766-4ff1-a01d-53bf8996b7b8/approve",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/2a1be4b9-da75-4f6d-997a-2f9584303db0/approve",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/5000741d-cea9-4c07-9c6f-6ee2f0acef16/approve",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/3aaa0596-0993-49fb-83b5-3fc8184b6fce/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/7b25f4e6-3c05-4c62-bbdd-294bd9569ba5",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/7b25f4e6-3c05-4c62-bbdd-294bd9569ba5",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/quotedone/access",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/quote/calculate",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/quote/calculate",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/quote/calculate",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/quote/calculate",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/suggest",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/suggest",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/suggest",
+      "status": 422
+    }
+  ],
+  "minimum": {
+    "enteredDollars": 2500,
+    "storedCents": 250000,
+    "reloadedDollars": 2500,
+    "expectedCustomerFloor": 2875
+  },
+  "invalidSiding": {
+    "entered": 2.555,
+    "response": {
+      "error": "This rate requires whole-cent precision (for example, 2.55). Enter your intended rate; it will not be rounded."
+    },
+    "unchangedRevision": true,
+    "persisted": 2.55
+  },
+  "catalog": [
+    "ROOFING_REPLACEMENT",
+    "CONCRETE_PATIO_SLAB",
+    "INTERIOR_PAINTING",
+    "SIDING_REPLACEMENT"
+  ],
+  "quotes": [
+    {
+      "type": "ROOFING_REPLACEMENT",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 2875,
+        "midEstimate": 2875,
+        "highEstimate": 3163,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "authenticated": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 2875,
+        "midEstimate": 2875,
+        "highEstimate": 3163,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 2875,
+        "midEstimate": 2875,
+        "highEstimate": 3163,
+        "taxTreatment": "Includes applicable tax."
+      }
+    },
+    {
+      "type": "CONCRETE_PATIO_SLAB",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 4290,
+        "midEstimate": 4767,
+        "highEstimate": 5245,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "authenticated": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 4290,
+        "midEstimate": 4767,
+        "highEstimate": 5245,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 4290,
+        "midEstimate": 4767,
+        "highEstimate": 5245,
+        "taxTreatment": "Includes applicable tax."
+      }
+    },
+    {
+      "type": "INTERIOR_PAINTING",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 1656,
+        "midEstimate": 1840,
+        "highEstimate": 2024,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "authenticated": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 1656,
+        "midEstimate": 1840,
+        "highEstimate": 2024,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 1656,
+        "midEstimate": 1840,
+        "highEstimate": 2024,
+        "taxTreatment": "Includes applicable tax."
+      }
+    },
+    {
+      "type": "SIDING_REPLACEMENT",
+      "customer": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 13791,
+        "midEstimate": 15324,
+        "highEstimate": 16857,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "authenticated": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 13791,
+        "midEstimate": 15324,
+        "highEstimate": 16857,
+        "taxTreatment": "Includes applicable tax."
+      },
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "lowEstimate": 13791,
+        "midEstimate": 15324,
+        "highEstimate": 16857,
+        "taxTreatment": "Includes applicable tax."
+      }
+    }
+  ],
+  "minimumConverters": [
+    {
+      "type": "ROOFING_REPLACEMENT",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "ROOFING_REPAIR",
+      "field": "repairMinimum",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FLAT_ROOF_REPLACEMENT",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FLAT_ROOF_REPAIR",
+      "field": "repairMinimum",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "INTERIOR_PAINTING",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "EXTERIOR_PAINTING",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FLOORING_INSTALL",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FLOORING_REPLACEMENT",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FENCING_INSTALL",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "FENCING_REPLACEMENT",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "SIDING_REPLACEMENT",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "SIDING_REPAIR",
+      "field": "repairMinimum",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "CONCRETE_DRIVEWAY",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "CONCRETE_PATIO_SLAB",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "LANDSCAPING_CLEANUP",
+      "field": "minimumServiceCharge",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "LANDSCAPING_MULCH",
+      "field": "minimumServiceCharge",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "LANDSCAPING_SOD",
+      "field": "minimumServiceCharge",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "LANDSCAPING_PLANTING",
+      "field": "minimumServiceCharge",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "LANDSCAPING_MOWING",
+      "field": "minimumServiceCharge",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    },
+    {
+      "type": "CUSTOM",
+      "field": "minimumJob",
+      "kind": "fixed_amount",
+      "metadataMoney": true,
+      "stored": 250000
+    }
+  ],
+  "roofMinimumLocations": {
+    "services": [
+      {
+        "serviceType": "ROOFING_REPLACEMENT",
+        "minimumJob": 250000,
+        "pricing": {
+          "minimumJob": 250000
+        },
+        "tiers": [
+          {
+            "name": "Good",
+            "overrides": {
+              "minimumJob": 250000
+            }
+          }
+        ]
+      }
+    ],
+    "defaults": {
+      "minimumJobPrice": 250000
+    }
+  },
+  "unapprovedDefaultQuote": "ESTIMATE_REQUIRES_REVIEW",
+  "aiMarkets": [
+    {
+      "savedProfile": {
+        "country": "CA",
+        "region": "NS"
+      },
+      "forgedCountry": "US",
+      "providerMarket": {
+        "country": "CA",
+        "region": "NS",
+        "currency": "CAD"
+      },
+      "response": {
+        "suggestions": [
+          {
+            "service": "[SYNTHETIC] Mowing",
+            "serviceType": "LANDSCAPING_MOWING",
+            "fields": {
+              "mowingBaseRatePerSqft": 0.02
+            },
+            "source": "AI_SUGGESTED",
+            "status": "DRAFT",
+            "active": false,
+            "confirmedFields": {}
+          }
+        ],
+        "warning": "These are AI-suggested placeholder prices. Review and confirm each value before going live."
+      }
+    },
+    {
+      "savedProfile": {
+        "country": "US",
+        "region": "MA"
+      },
+      "forgedCountry": "CA",
+      "providerMarket": {
+        "country": "US",
+        "region": "MA",
+        "currency": "USD"
+      },
+      "response": {
+        "suggestions": [
+          {
+            "service": "[SYNTHETIC] Mowing",
+            "serviceType": "LANDSCAPING_MOWING",
+            "fields": {
+              "mowingBaseRatePerSqft": 0.02
+            },
+            "source": "AI_SUGGESTED",
+            "status": "DRAFT",
+            "active": false,
+            "confirmedFields": {}
+          }
+        ],
+        "warning": "These are AI-suggested placeholder prices. Review and confirm each value before going live."
+      }
+    }
+  ],
+  "unknownMarket": {
+    "error": "Set your business country in onboarding before requesting starter prices, or enter your prices manually."
+  },
+  "providerRequestCount": 2
+}

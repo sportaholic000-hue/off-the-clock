@@ -7,7 +7,7 @@ import {customerJobSummary} from '../server/src/quoteIntake.js';
 const mowing = fields => [{service:'[SYNTHETIC] Mowing',serviceType:'LANDSCAPING_MOWING',fields}];
 const env={GEMINI_API_KEY:'SYNTHETIC-TEST-KEY',GEMINI_MODEL:'gemini-3.8-live',PRICEBOOK_GEMINI_MODEL:'gemini-3.8-flash'};
 const ok=text=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text}]}}]})});
-const request={industry:'[SYNTHETIC]',serviceTypes:['LANDSCAPING_MOWING']};
+const request={industry:'[SYNTHETIC]',serviceTypes:['LANDSCAPING_MOWING'],country:'CA',region:'NS'};
 
 test('price-book generation is independent of the voice setting and never puts the key in its URL',async()=>{
  const calls=[];const result=await suggestStarterBook(request,{env,fetchImpl:async(url,init)=>{calls.push({url,init});return ok(JSON.stringify(mowing({mowingBaseRatePerSqft:.005})));}});

@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: m1 siding input rejects fractional cents without rounding or changing supported rate domains
+ok 1 - m1 siding input rejects fractional cents without rounding or changing supported rate domains
+  ---
+  duration_ms: 23.306497
+  type: 'test'
+  ...
+# Subtest: m1 root siding rate is refused at the application save boundary
+ok 2 - m1 root siding rate is refused at the application save boundary
+  ---
+  duration_ms: 2.673182
+  type: 'test'
+  ...
+# Subtest: m1 nested siding rate is refused at the application save boundary
+ok 3 - m1 nested siding rate is refused at the application save boundary
+  ---
+  duration_ms: 0.576351
+  type: 'test'
+  ...
+# Subtest: m1 tier siding rate is refused at the application save boundary
+ok 4 - m1 tier siding rate is refused at the application save boundary
+  ---
+  duration_ms: 0.424416
+  type: 'test'
+  ...
+# Subtest: m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+ok 5 - m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+  ---
+  duration_ms: 0.597914
+  type: 'test'
+  ...
+# Subtest: m2 starter explicitly uses CAD and the saved regional context
+ok 6 - m2 starter explicitly uses CAD and the saved regional context
+  ---
+  duration_ms: 37.684873
+  type: 'test'
+  ...
+# Subtest: m2 starter explicitly uses USD and the saved regional context
+ok 7 - m2 starter explicitly uses USD and the saved regional context
+  ---
+  duration_ms: 31.401359
+  type: 'test'
+  ...
+# Subtest: m2 unknown currency does not trigger an assumed-currency generation
+ok 8 - m2 unknown currency does not trigger an assumed-currency generation
+  ---
+  duration_ms: 7.197734
+  type: 'test'
+  ...
+# Subtest: m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+ok 9 - m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 21.779846
+  type: 'test'
+  ...
+# Subtest: m3/m4 demolition-itemized separates scope text and keeps the same price/category
+ok 10 - m3/m4 demolition-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 10.587727
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 150.798647

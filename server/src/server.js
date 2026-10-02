@@ -460,7 +460,8 @@ installBookingAdminRoutes(app, {
 });
 
 app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
-  const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
+  const profile = getBusinessProfile(req.tenantOwnerId);
+  const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes, country:profile.country, region:profile.region });
   return res.json({
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', status:'DRAFT', active:false, confirmedFields: {} })),
     warning: 'These are AI-suggested placeholder prices. Review and confirm each value before going live.'

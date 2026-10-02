@@ -1,0 +1,243 @@
+TAP version 13
+# Subtest: m1 siding input rejects fractional cents without rounding or changing supported rate domains
+not ok 1 - m1 siding input rejects fractional cents without rounding or changing supported rate domains
+  ---
+  duration_ms: 2.194495
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:10:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: m1 root siding rate is refused at the application save boundary
+not ok 2 - m1 root siding rate is refused at the application save boundary
+  ---
+  duration_ms: 1.484068
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:15:48'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: m1 nested siding rate is refused at the application save boundary
+not ok 3 - m1 nested siding rate is refused at the application save boundary
+  ---
+  duration_ms: 0.23516
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:15:48'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m1 tier siding rate is refused at the application save boundary
+not ok 4 - m1 tier siding rate is refused at the application save boundary
+  ---
+  duration_ms: 0.400565
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:15:48'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:21:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+ok 5 - m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+  ---
+  duration_ms: 0.491014
+  type: 'test'
+  ...
+# Subtest: m2 starter explicitly uses CAD and the saved regional context
+not ok 6 - m2 starter explicitly uses CAD and the saved regional context
+  ---
+  duration_ms: 58.657125
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:33:78'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - {
+    -   country: 'CA',
+    -   currency: 'CAD',
+    -   region: 'NS'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    country: 'CA'
+    region: 'NS'
+    currency: 'CAD'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:37:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m2 starter explicitly uses USD and the saved regional context
+not ok 7 - m2 starter explicitly uses USD and the saved regional context
+  ---
+  duration_ms: 43.156587
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:33:78'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - {
+    -   country: 'US',
+    -   currency: 'USD',
+    -   region: 'MA'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    country: 'US'
+    region: 'MA'
+    currency: 'USD'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:37:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m2 unknown currency does not trigger an assumed-currency generation
+not ok 8 - m2 unknown currency does not trigger an assumed-currency generation
+  ---
+  duration_ms: 21.14492
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    Error: AI could not produce a valid draft. Try again, or continue in the manual price-book editor. No prices were changed.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  actual:
+    statusCode: 503
+  error: 'AI could not produce a valid draft. Try again, or continue in the manual price-book editor. No prices were changed.'
+  code: 'PRICEBOOK_AI_UNAVAILABLE'
+  stack: |-
+    generateDraft (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:124:9)
+    async waitForActual (node:assert:644:5)
+    async Function.rejects (node:assert:767:25)
+    async TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:42:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:42:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+not ok 9 - m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 24.694264
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:45:212'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /without terminal punctuation\. No tax added\./. Input:
+    
+    'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Existing siding removal: [SYNTHETIC] Explicit scope without terminal punctuation No tax added.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Existing siding removal: [SYNTHETIC] Explicit scope without terminal punctuation No tax added.'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:50:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: m3/m4 demolition-itemized separates scope text and keeps the same price/category
+not ok 10 - m3/m4 demolition-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 16.215988
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:45:212'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /without terminal punctuation\. No tax added\./. Input:
+    
+    'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Existing slab demolition: [SYNTHETIC] Explicit scope without terminal punctuation No tax added.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Existing slab demolition: [SYNTHETIC] Explicit scope without terminal punctuation No tax added.'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/test/agreedAuditFollowup.spec.mjs:50:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 1
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 182.589776

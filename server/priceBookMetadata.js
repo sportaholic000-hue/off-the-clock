@@ -37,7 +37,7 @@ const FIELD_LABELS = {
   gatePrice: "Installed price per gate INCLUDING gate posts' hardware; gate posts themselves are counted below.",
   basePrepPerSqft: 'Excavation + compacted gravel base + grading, per square foot.',
   groundPrepPerSqft: 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Prep is often the majority of a sod job — make sure this number covers disposal of the old lawn.',
-  materialPerSqft_SIDING_REPLACEMENT: 'All-in installed material per sqft for this siding type, INCLUDING house wrap, J-channel, corner posts, and starter strip — accessories run 20–30% of vinyl material cost.',
+  materialPerSqft_SIDING_REPLACEMENT: 'All-in installed material per sqft for this siding type, INCLUDING house wrap, J-channel, corner posts, and starter strip.',
   laborPerSqft_FLOORING_INSTALL: 'Labor price per square foot by flooring type.',
   laborPerSqft_FLOORING_REPLACEMENT: 'Labor price per square foot by flooring type.',
   materialPerSqft_FLOORING_INSTALL: 'Material price per square foot by flooring type.',

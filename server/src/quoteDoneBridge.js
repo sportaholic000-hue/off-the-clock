@@ -12,7 +12,7 @@ import {
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook } from '../priceBookService.js';
-import { dollarAmountToCents, centAmountToDollars, moneyKindForField } from '../priceBookMoney.js';
+import { dollarAmountToCents, centAmountToDollars, moneyKindForField, parseOwnerNumericInput } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
 // The only application bridge to the quote engine. Transport and persistence
@@ -66,7 +66,12 @@ function convertedPricing(source,type,direction,location,effective=source) {
       // previously bypassed conversion. Display its stored value exactly so
       // the owner can correct it. Saving and quoting still require whole cents.
       const legacyDisplay=direction==='toDollars'&&type==='ROOFING_REPLACEMENT'&&field==='minimumJob'&&typeof source[field]==='number'&&!Number.isInteger(source[field]);
-      result[field]=moneyTree(source[field],legacyDisplay?'unit_rate':kind,convert,location+'.'+field);
+      // Keep standard siding labor within its existing integer-cent domain.
+      // Read-back remains lossless so historical invalid rates can be corrected.
+      const convertRate=direction==='toCents'&&type==='SIDING_REPLACEMENT'&&field==='laborPerSqft'
+        ? (value,options)=>{parseOwnerNumericInput(value,{...options,wholeCents:true});return convert(value,options);}
+        : convert;
+      result[field]=moneyTree(source[field],legacyDisplay?'unit_rate':kind,convertRate,location+'.'+field);
     }
     else if(field==='debrisPricing'&&record(source[field]))for(const [level,row] of Object.entries(source[field])) {
       if(record(row)&&has(row,'disposalFlat'))result[field][level].disposalFlat=convert(row.disposalFlat,{kind:'fixed_amount',path:location+'.debrisPricing.'+level+'.disposalFlat'});
@@ -358,6 +363,7 @@ export function applicationMetadata() {
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
+      if(meta.serviceType==='SIDING_REPLACEMENT'&&field.field==='laborPerSqft')Object.assign(info,{wholeCents:true,help:info.help+' Enter this labor rate in whole cents; fractional cents are not supported for this field.'});
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       const priceMaps={

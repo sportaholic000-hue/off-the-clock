@@ -1,4 +1,29 @@
-# Quote Engine vNext Audit Candidate
+# Active QuoteDone engine
+
+The application imports this engine through `server/src/quoteDoneBridge.js`.
+Owner preview, public widget submissions and authenticated team submissions use
+that bridge; `server/src/quoteDoneRoutes.js` installs the application routes.
+The bridge preserves the dollar/cent boundary, saved configuration approvals
+and tenant-specific price books. This repository wiring does not establish
+which commit is deployed or certify launch readiness.
+
+Current scope and checkpoint records are in `specs/BUILD_STATUS.md` and the
+source-bound repair reports it links. The engine uses configured measured
+contracts; a supported configured offering can quote even when an older
+unconfigured path below was review-only. Customer output excludes private
+rates and financial evidence. Authentication and persistence are application
+responsibilities implemented outside this directory.
+
+## Historical isolated-candidate notes
+
+Everything below describes earlier isolated September checkpoints, before the
+application integration and subsequent configured-scope repairs. Statements
+about non-integration, unsupported services or outstanding application work
+are historical, not a description of current routing or capabilities. Their
+original source-bound evidence remains intact. Use the current specifications
+and build record when assessing present behavior.
+
+---
 
 Current checkpoint: [Customer numeric-amount integrity repair](CUSTOMER_AMOUNT_PRECISION.md), frozen start `11d4ef70fae472b1f18168fa9ea9cc61c4b9a1f7`. Numeric customer amounts must serialize the intended displayed cents exactly or return technical review. Accepted A–C pricing and display rules remain unchanged. Final-SHA execution evidence belongs to the delivery report.
 

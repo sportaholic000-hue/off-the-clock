@@ -103,3 +103,9 @@ Implementation follows the reported B1/B2 and M1–M7 audit, reproduced on PR #1
 - Paint-material diagnostics identify the actual missing product. Shared flat-roof help no longer asks for unused Average rates. The interior-painting specification now states the measured wall-area basis.
 
 No arithmetic formulas, voice runtime, live records, dependencies or deployment settings are changed by this repair. The known voice failures remain outside this task. This is not a declaration that launch or the entire engine has passed; see the source-bound verification report for exact results and remaining limits.
+
+## 2026-10-02 — agreed audit follow-up (m1–m6)
+
+Scoped follow-up on PR #14 base `25fca4812bbc0eb905b1d91124c2aa53aced791a`, preserving that Codex repair. Standard siding labor now rejects unsupported fractional cents in the editor and save boundary without rounding. AI starter requests use the saved tenant country/region and explicit CAD/USD; missing country requires correction before generation. Scope sentence separators, two removal labels, unsupported percentage advice and the engine integration README are corrected. No pricing-policy decisions or findings unique to the independent audit are implemented.
+
+Local verification: 126 focused tests passed; the exact full CI command produced 1,135 passed, 9 existing voice failures and 2 skipped (1,146 records), with no new failure reported by the existing checker. Owner/widget builds passed. Real synthetic HTTP save/reload/quote checks and the actual editor browser check passed. Source hashes, runnable harnesses, logs, scope mapping and limitations are in [the agreed audit follow-up report](../verification/agreed-audit-followup/REPORT.md). No whole-phase, deployment or public-launch gate is claimed.

@@ -17,7 +17,7 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
   {level<depth?<><strong>{human(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+human(key)}/></>:
    <Field label={human(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+human(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
     tree.leafType==='boolean'?<Select aria-label={label+' '+human(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
-    <ExactNumericInput aria-label={label+' '+human(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} onChange={v=>update(key,v)}/>}</Field>}
+    <ExactNumericInput aria-label={label+' '+human(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} wholeCents={definition.wholeCents} onChange={v=>update(key,v)}/>}</Field>}
    <Button variant="quiet" onClick={()=>update(key,undefined)}>Remove {human(key)}</Button>
  </div>)}{!(level===depth&&tree.leafKeys)&&<div className="field-stack"><TextInput aria-label={label+' offering key'} value={newKey} onChange={e=>setNewKey(e.target.value)}/><Button variant="secondary" onClick={()=>{if(/^[a-z][a-z0-9_]*$/.test(newKey)&&!own(map,newKey)){update(newKey,level<depth?{}:null);setNewKey('');}}}>Add offering</Button><small>Use the exact offering key consistently across the related price maps.</small></div>}</div>;
 }
