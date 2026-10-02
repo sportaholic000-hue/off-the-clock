@@ -38,7 +38,7 @@ async function saveAndApprove(f,id){
  await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();
  const approved=page.waitForResponse(r=>r.url().endsWith('/'+id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);
 }
-async function snapshot(name,width){await page.setViewportSize({width,height:900});await page.locator('.editor-required').first().scrollIntoViewIfNeeded().catch(()=>{});const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert.ok(geometry.scroll<=width+1,JSON.stringify(geometry));await page.screenshot({path:path.join(pub,name+'-'+width+'.png')});}
+async function snapshot(name,width){await page.setViewportSize({width,height:900});await page.locator(name.startsWith('roof-')?'#field-minimumJob':name.startsWith('optional-')?'.scope-coverage':'.essentials').first().evaluate(el=>window.scrollTo({top:Math.max(0,window.scrollY+el.getBoundingClientRect().top-170)}));const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert.ok(geometry.scroll<=width+1,JSON.stringify(geometry));await page.screenshot({path:path.join(pub,name+'-'+width+'.png')});}
 async function widget(f,index,changes={},review=false){
  const p=await browser.newPage({viewport:{width:375,height:812}});p.setDefaultTimeout(20000);p.on('pageerror',e=>errors.push(e.message));
  try{

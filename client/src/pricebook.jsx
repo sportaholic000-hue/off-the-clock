@@ -989,7 +989,7 @@ export default function PriceBook() {
                   </Disclosure>
                 )}
 
-                {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by the measured contract.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
+                {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by current quoting rules.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
                 {/* GOOD / BETTER / BEST — collapsed until the owner opts in. */}
                 <Disclosure
                   title="Good / Better / Best tiers"
