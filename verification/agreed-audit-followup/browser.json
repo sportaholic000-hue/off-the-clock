@@ -1,0 +1,9 @@
+{
+  "invalid": {
+    "raw": "2.555",
+    "message": "This rate requires whole-cent precision (for example, 2.55). Enter your intended rate; it will not be rounded."
+  },
+  "corrected": "2.55",
+  "passed": true,
+  "pageErrors": []
+}

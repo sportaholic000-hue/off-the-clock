@@ -1,0 +1,766 @@
+TAP version 13
+# Subtest: m1 siding input rejects fractional cents without rounding or changing supported rate domains
+ok 1 - m1 siding input rejects fractional cents without rounding or changing supported rate domains
+  ---
+  duration_ms: 43.805425
+  type: 'test'
+  ...
+# Subtest: m1 root siding rate is refused at the application save boundary
+ok 2 - m1 root siding rate is refused at the application save boundary
+  ---
+  duration_ms: 5.081587
+  type: 'test'
+  ...
+# Subtest: m1 nested siding rate is refused at the application save boundary
+ok 3 - m1 nested siding rate is refused at the application save boundary
+  ---
+  duration_ms: 2.839776
+  type: 'test'
+  ...
+# Subtest: m1 tier siding rate is refused at the application save boundary
+ok 4 - m1 tier siding rate is refused at the application save boundary
+  ---
+  duration_ms: 2.461569
+  type: 'test'
+  ...
+# Subtest: m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+ok 5 - m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact
+  ---
+  duration_ms: 1.587949
+  type: 'test'
+  ...
+# Subtest: m2 starter explicitly uses CAD and the saved regional context
+ok 6 - m2 starter explicitly uses CAD and the saved regional context
+  ---
+  duration_ms: 92.83114
+  type: 'test'
+  ...
+# Subtest: m2 starter explicitly uses USD and the saved regional context
+ok 7 - m2 starter explicitly uses USD and the saved regional context
+  ---
+  duration_ms: 55.119306
+  type: 'test'
+  ...
+# Subtest: m2 unknown currency does not trigger an assumed-currency generation
+ok 8 - m2 unknown currency does not trigger an assumed-currency generation
+  ---
+  duration_ms: 8.838471
+  type: 'test'
+  ...
+# Subtest: m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+ok 9 - m3/m4 siding-removal-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 36.150667
+  type: 'test'
+  ...
+# Subtest: m3/m4 demolition-itemized separates scope text and keeps the same price/category
+ok 10 - m3/m4 demolition-itemized separates scope text and keeps the same price/category
+  ---
+  duration_ms: 25.369058
+  type: 'test'
+  ...
+# Subtest: Opus 1: decking explanations never expose the owner unit price
+ok 11 - Opus 1: decking explanations never expose the owner unit price
+  ---
+  duration_ms: 128.244769
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+ok 12 - Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 13.179183
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+ok 13 - Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 14.949122
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+ok 14 - Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 8.898651
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+ok 15 - Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+  ---
+  duration_ms: 17.986473
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+ok 16 - Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+  ---
+  duration_ms: 12.71128
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 5ft height
+ok 17 - Opus 3: installed fencing quotes only its explicitly offered 5ft height
+  ---
+  duration_ms: 15.494165
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+ok 18 - Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+  ---
+  duration_ms: 10.401247
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 7ft height
+ok 19 - Opus 3: installed fencing quotes only its explicitly offered 7ft height
+  ---
+  duration_ms: 10.683625
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 9ft height
+ok 20 - Opus 3: installed fencing quotes only its explicitly offered 9ft height
+  ---
+  duration_ms: 9.285046
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+ok 21 - Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+  ---
+  duration_ms: 10.658033
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+ok 22 - Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+  ---
+  duration_ms: 8.33429
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+ok 23 - Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+  ---
+  duration_ms: 11.211248
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+ok 24 - Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+  ---
+  duration_ms: 12.01911
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+ok 25 - Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+  ---
+  duration_ms: 20.27233
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+ok 26 - Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+  ---
+  duration_ms: 10.693677
+  type: 'test'
+  ...
+# Subtest: Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+ok 27 - Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+  ---
+  duration_ms: 6.931628
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing weekly labels prices per visit
+ok 28 - Opus 4: mowing weekly labels prices per visit
+  ---
+  duration_ms: 4.597717
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing biweekly labels prices per visit
+ok 29 - Opus 4: mowing biweekly labels prices per visit
+  ---
+  duration_ms: 4.456824
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing monthly labels prices per visit
+ok 30 - Opus 4: mowing monthly labels prices per visit
+  ---
+  duration_ms: 3.820309
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing one_time labels prices per visit
+ok 31 - Opus 4: mowing one_time labels prices per visit
+  ---
+  duration_ms: 4.504178
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_NONE option states its tax treatment
+ok 32 - Opus 5: every TAX_NONE option states its tax treatment
+  ---
+  duration_ms: 4.160493
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_MATERIALS option states its tax treatment
+ok 33 - Opus 5: every TAX_MATERIALS option states its tax treatment
+  ---
+  duration_ms: 5.904169
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_ALL option states its tax treatment
+ok 34 - Opus 5: every TAX_ALL option states its tax treatment
+  ---
+  duration_ms: 5.984039
+  type: 'test'
+  ...
+# Subtest: Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+ok 35 - Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 10.548614
+  type: 'test'
+  ...
+# Subtest: Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+ok 36 - Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 449.064892
+  type: 'test'
+  ...
+# Subtest: Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+ok 37 - Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 12.268413
+  type: 'test'
+  ...
+# Subtest: Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+ok 38 - Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 22.761874
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+ok 39 - Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 18.762959
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: demolition-installed remains quotable with complete scope setup
+ok 40 - Opus 6 control: demolition-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 225.040295
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: commercial-installed remains quotable with complete scope setup
+ok 41 - Opus 6 control: commercial-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 24.683165
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: stairs-installed remains quotable with complete scope setup
+ok 42 - Opus 6 control: stairs-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 23.512499
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all stamped labor with difficult access
+ok 43 - Opus 7: access applies to all stamped labor with difficult access
+  ---
+  duration_ms: 6.334907
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all smooth labor with difficult access
+ok 44 - Opus 7: access applies to all smooth labor with difficult access
+  ---
+  duration_ms: 6.098716
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all stamped labor with easy access
+ok 45 - Opus 7: access applies to all stamped labor with easy access
+  ---
+  duration_ms: 6.130685
+  type: 'test'
+  ...
+# Subtest: Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+ok 46 - Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+  ---
+  duration_ms: 22.249486
+  type: 'test'
+  ...
+# Subtest: price-book generation is independent of the voice setting and never puts the key in its URL
+ok 47 - price-book generation is independent of the voice setting and never puts the key in its URL
+  ---
+  duration_ms: 94.059501
+  type: 'test'
+  ...
+# Subtest: starter rejects non JSON without silently dropping input
+ok 48 - starter rejects non JSON without silently dropping input
+  ---
+  duration_ms: 31.192478
+  type: 'test'
+  ...
+# Subtest: starter rejects fenced JSON without silently dropping input
+ok 49 - starter rejects fenced JSON without silently dropping input
+  ---
+  duration_ms: 30.476913
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown service without silently dropping input
+ok 50 - starter rejects unknown service without silently dropping input
+  ---
+  duration_ms: 27.859232
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown field without silently dropping input
+ok 51 - starter rejects unknown field without silently dropping input
+  ---
+  duration_ms: 45.369295
+  type: 'test'
+  ...
+# Subtest: starter rejects negative field without silently dropping input
+ok 52 - starter rejects negative field without silently dropping input
+  ---
+  duration_ms: 103.093305
+  type: 'test'
+  ...
+# Subtest: starter rejects absurd value without silently dropping input
+ok 53 - starter rejects absurd value without silently dropping input
+  ---
+  duration_ms: 61.830812
+  type: 'test'
+  ...
+# Subtest: starter rejects out of domain key without silently dropping input
+ok 54 - starter rejects out of domain key without silently dropping input
+  ---
+  duration_ms: 49.845732
+  type: 'test'
+  ...
+# Subtest: starter rejects extra root field without silently dropping input
+ok 55 - starter rejects extra root field without silently dropping input
+  ---
+  duration_ms: 56.69299
+  type: 'test'
+  ...
+# Subtest: starter rejects extra confirmation without silently dropping input
+ok 56 - starter rejects extra confirmation without silently dropping input
+  ---
+  duration_ms: 22.468355
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate service without silently dropping input
+ok 57 - starter rejects duplicate service without silently dropping input
+  ---
+  duration_ms: 17.311033
+  type: 'test'
+  ...
+# Subtest: starter rejects numeric string without silently dropping input
+ok 58 - starter rejects numeric string without silently dropping input
+  ---
+  duration_ms: 66.825636
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate JSON key without silently dropping input
+ok 59 - starter rejects duplicate JSON key without silently dropping input
+  ---
+  duration_ms: 18.754515
+  type: 'test'
+  ...
+# Subtest: starter rejects decimal drift without silently dropping input
+ok 60 - starter rejects decimal drift without silently dropping input
+  ---
+  duration_ms: 18.491822
+  type: 'test'
+  ...
+# Subtest: starter rejects missing service without silently dropping input
+ok 61 - starter rejects missing service without silently dropping input
+  ---
+  duration_ms: 27.397726
+  type: 'test'
+  ...
+# Subtest: starter preserves subcent rates and exact nested domain values
+ok 62 - starter preserves subcent rates and exact nested domain values
+  ---
+  duration_ms: 37.19198
+  type: 'test'
+  ...
+# Subtest: starter catalog only proposes supported current fields; new roof maps are not scalar rates
+ok 63 - starter catalog only proposes supported current fields; new roof maps are not scalar rates
+  ---
+  duration_ms: 133.313844
+  type: 'test'
+  ...
+# Subtest: interview extracts only one unconfirmed value despite instructions in free text
+ok 64 - interview extracts only one unconfirmed value despite instructions in free text
+  ---
+  duration_ms: 11.526154
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+ok 65 - interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+  ---
+  duration_ms: 5.380214
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":-1}
+ok 66 - interview rejects invalid or privileged output {"value":-1}
+  ---
+  duration_ms: 40.380816
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":1e100}
+ok 67 - interview rejects invalid or privileged output {"value":1e100}
+  ---
+  duration_ms: 16.353834
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":"0.01"}
+ok 68 - interview rejects invalid or privileged output {"value":"0.01"}
+  ---
+  duration_ms: 12.590192
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":null}
+ok 69 - interview rejects invalid or privileged output {"value":null}
+  ---
+  duration_ms: 12.774631
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"active":true}
+ok 70 - interview rejects invalid or privileged output {"active":true}
+  ---
+  duration_ms: 5.163152
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+ok 71 - interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+  ---
+  duration_ms: 11.693387
+  type: 'test'
+  ...
+# Subtest: slow response body is bounded and manual-path error exposes no provider details
+ok 72 - slow response body is bounded and manual-path error exposes no provider details
+  ---
+  duration_ms: 35.447618
+  type: 'test'
+  ...
+# Subtest: provider error containing a secret is never propagated
+ok 73 - provider error containing a secret is never propagated
+  ---
+  duration_ms: 31.213995
+  type: 'test'
+  ...
+# Subtest: interview rejects out-of-domain and unknown keys before draft persistence
+ok 74 - interview rejects out-of-domain and unknown keys before draft persistence
+  ---
+  duration_ms: 27.173143
+  type: 'test'
+  ...
+# Subtest: widget summary uses customer words and preserves original measurements
+ok 75 - widget summary uses customer words and preserves original measurements
+  ---
+  duration_ms: 5.076095
+  type: 'test'
+  ...
+# Subtest: every catalog enum is displayed using customer words rather than snake case
+ok 76 - every catalog enum is displayed using customer words rather than snake case
+  ---
+  duration_ms: 11.743609
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+ok 77 - current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+  ---
+  duration_ms: 42.560009
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPAIR
+ok 78 - current starter schema accepts supported draft fields for ROOFING_REPAIR
+  ---
+  duration_ms: 14.750401
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+ok 79 - current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+  ---
+  duration_ms: 19.40944
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+ok 80 - current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+  ---
+  duration_ms: 19.11886
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for INTERIOR_PAINTING
+ok 81 - current starter schema accepts supported draft fields for INTERIOR_PAINTING
+  ---
+  duration_ms: 37.102407
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+ok 82 - current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+  ---
+  duration_ms: 10.135177
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_INSTALL
+ok 83 - current starter schema accepts supported draft fields for FLOORING_INSTALL
+  ---
+  duration_ms: 45.68634
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+ok 84 - current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+  ---
+  duration_ms: 50.047662
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_INSTALL
+ok 85 - current starter schema accepts supported draft fields for FENCING_INSTALL
+  ---
+  duration_ms: 11.891828
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+ok 86 - current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+  ---
+  duration_ms: 12.265029
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+ok 87 - current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+  ---
+  duration_ms: 34.616619
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPAIR
+ok 88 - current starter schema accepts supported draft fields for SIDING_REPAIR
+  ---
+  duration_ms: 19.835864
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+ok 89 - current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 47.09774
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+ok 90 - current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 62.004677
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+ok 91 - current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+  ---
+  duration_ms: 26.976916
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+ok 92 - current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+  ---
+  duration_ms: 18.984769
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_SOD
+ok 93 - current starter schema accepts supported draft fields for LANDSCAPING_SOD
+  ---
+  duration_ms: 23.726868
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+ok 94 - current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+  ---
+  duration_ms: 24.557358
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+ok 95 - current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+  ---
+  duration_ms: 29.749753
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CUSTOM
+ok 96 - current starter schema accepts supported draft fields for CUSTOM
+  ---
+  duration_ms: 13.846666
+  type: 'test'
+  ...
+# Subtest: B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries
+ok 97 - B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries
+  ---
+  duration_ms: 23.976942
+  type: 'test'
+  ...
+# Subtest: B1 owner floor gives independently calculated $2875 midpoint and lower bound
+ok 98 - B1 owner floor gives independently calculated $2875 midpoint and lower bound
+  ---
+  duration_ms: 77.343423
+  type: 'test'
+  ...
+# Subtest: M1 wall base service remains active without unrequested extras
+ok 99 - M1 wall base service remains active without unrequested extras
+  ---
+  duration_ms: 39.726138
+  type: 'test'
+  ...
+# Subtest: M1 paint packages base service remains active without unrequested extras
+ok 100 - M1 paint packages base service remains active without unrequested extras
+  ---
+  duration_ms: 37.092764
+  type: 'test'
+  ...
+# Subtest: M1 concrete base service remains active without unrequested extras
+ok 101 - M1 concrete base service remains active without unrequested extras
+  ---
+  duration_ms: 88.137413
+  type: 'test'
+  ...
+# Subtest: M1 mulch base service remains active without unrequested extras
+ok 102 - M1 mulch base service remains active without unrequested extras
+  ---
+  duration_ms: 45.22056
+  type: 'test'
+  ...
+# Subtest: M1 cleanup base service remains active without unrequested extras
+ok 103 - M1 cleanup base service remains active without unrequested extras
+  ---
+  duration_ms: 25.681646
+  type: 'test'
+  ...
+# Subtest: M1 sod base service remains active without unrequested extras
+ok 104 - M1 sod base service remains active without unrequested extras
+  ---
+  duration_ms: 13.532376
+  type: 'test'
+  ...
+# Subtest: M1 planting base service remains active without unrequested extras
+ok 105 - M1 planting base service remains active without unrequested extras
+  ---
+  duration_ms: 25.573339
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced cleanup haul-away never receives a subtotal
+ok 106 - M1 selected unpriced cleanup haul-away never receives a subtotal
+  ---
+  duration_ms: 2.878948
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced sod preparation never receives a subtotal
+ok 107 - M1 selected unpriced sod preparation never receives a subtotal
+  ---
+  duration_ms: 0.918676
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced planting preparation never receives a subtotal
+ok 108 - M1 selected unpriced planting preparation never receives a subtotal
+  ---
+  duration_ms: 1.028064
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced planting mulch never receives a subtotal
+ok 109 - M1 selected unpriced planting mulch never receives a subtotal
+  ---
+  duration_ms: 1.340631
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced ceiling never receives a subtotal
+ok 110 - M1 selected unpriced ceiling never receives a subtotal
+  ---
+  duration_ms: 0.831205
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced trim never receives a subtotal
+ok 111 - M1 selected unpriced trim never receives a subtotal
+  ---
+  duration_ms: 1.557523
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced paint product never receives a subtotal
+ok 112 - M1 selected unpriced paint product never receives a subtotal
+  ---
+  duration_ms: 1.807802
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced concrete base never receives a subtotal
+ok 113 - M1 selected unpriced concrete base never receives a subtotal
+  ---
+  duration_ms: 1.484206
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced wire mesh never receives a subtotal
+ok 114 - M1 selected unpriced wire mesh never receives a subtotal
+  ---
+  duration_ms: 1.544284
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced rebar never receives a subtotal
+ok 115 - M1 selected unpriced rebar never receives a subtotal
+  ---
+  duration_ms: 2.8437
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced stamped finish never receives a subtotal
+ok 116 - M1 selected unpriced stamped finish never receives a subtotal
+  ---
+  duration_ms: 2.097374
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced mulch edging never receives a subtotal
+ok 117 - M1 selected unpriced mulch edging never receives a subtotal
+  ---
+  duration_ms: 1.713959
+  type: 'test'
+  ...
+# Subtest: M1 selected unpriced mulch bed preparation never receives a subtotal
+ok 118 - M1 selected unpriced mulch bed preparation never receives a subtotal
+  ---
+  duration_ms: 1.655964
+  type: 'test'
+  ...
+# Subtest: M1 owner coverage reports absent optional prices before activation
+ok 119 - M1 owner coverage reports absent optional prices before activation
+  ---
+  duration_ms: 135.198747
+  type: 'test'
+  ...
+# Subtest: M6 purchased paint identifies missing trim product rather than a generic coverage error
+ok 120 - M6 purchased paint identifies missing trim product rather than a generic coverage error
+  ---
+  duration_ms: 4.907666
+  type: 'test'
+  ...
+# Subtest: M2 setup requests an offering instead of unused exterior and fence standard prices
+ok 121 - M2 setup requests an offering instead of unused exterior and fence standard prices
+  ---
+  duration_ms: 95.311093
+  type: 'test'
+  ...
+# Subtest: M3/M4 current AI schema accepts engine-used measured fields and typed maps
+ok 122 - M3/M4 current AI schema accepts engine-used measured fields and typed maps
+  ---
+  duration_ms: 72.241718
+  type: 'test'
+  ...
+# Subtest: M5 current flat roof setup requests named membrane rates without an Average fallback
+ok 123 - M5 current flat roof setup requests named membrane rates without an Average fallback
+  ---
+  duration_ms: 12.09875
+  type: 'test'
+  ...
+# Subtest: M7 governing interior painting specification uses measured wall area
+ok 124 - M7 governing interior painting specification uses measured wall area
+  ---
+  duration_ms: 2.045989
+  type: 'test'
+  ...
+# Subtest: M5 shared flat-roof help never instructs owners to price an unused Average fallback
+ok 125 - M5 shared flat-roof help never instructs owners to price an unused Average fallback
+  ---
+  duration_ms: 0.655234
+  type: 'test'
+  ...
+# Subtest: B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+ok 126 - B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+  ---
+  duration_ms: 0.89012
+  type: 'test'
+  ...
+1..126
+# tests 126
+# suites 0
+# pass 126
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1853.26008

@@ -85,7 +85,7 @@ export function scopeRateDefinitions(type,p={},allModes=false){
   if(installed||allModes)add(key+'_installed',label+' complete installed price',d.category,unit,'sell_price');
   if(!installed||allModes){
    const components=key==='stairs'?['labor','material',...(d.underlaymentIncluded||allModes?['underlayment']:[]),...(d.removalIncluded||allModes?['removal']:[]),...(d.disposalIncluded||allModes?['disposal']:[])]:key==='siding_removal'||key==='demolition'?['removal',...(d.disposalIncluded||allModes?['disposal']:[])]:key==='floor_overlay'?['prep','material']:['labor','material'];
-   for(const cat of components)add(key+'_'+cat,label+' '+cat,cat==='underlayment'?'material':cat,unit,basis);
+   for(const cat of components)add(key+'_'+cat,label+' '+(cat==='removal'&&['siding_removal','demolition'].includes(key)?'labor':cat),cat==='underlayment'?'material':cat,unit,basis);
   }
  }
  return out;

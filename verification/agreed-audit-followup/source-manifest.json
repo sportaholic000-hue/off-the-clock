@@ -1,0 +1,67 @@
+{
+  "baseCommit": "25fca4812bbc0eb905b1d91124c2aa53aced791a",
+  "runtime": "Node 22.23.2",
+  "sourceBinding": "Application changes tested before the source checkpoint; hashes must match the checkpoint. Documentation and copied verification artifacts do not change application bytes.",
+  "files": [
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "sha256": "ba230e5d37db0bbf7d53b815ee529d0a0bab4001aec9ef06a43f7223d6ae48de",
+      "gitBlobSha": "db78dd60c235ecbd6de26a711d5a5050c44c82bc"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "sha256": "53921fca97d228681f82d02784ba3712427c2697ef2ca874feaa665a801f52ea",
+      "gitBlobSha": "9af25725cdaf5fc24317a28dd2e9603caa650cfe"
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "sha256": "d4ddbc315d288c82ac165d6d763a7e5e1461fb1bfb03ef42db0f367eb9a7c11d",
+      "gitBlobSha": "9f5e684f6f5f56eff1101a53a9e1bbaf86b263ca"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "sha256": "58724ee3cf772672f4d0b541a25a4fb17f7caca23fc9ba08e186ee3792d385e1",
+      "gitBlobSha": "47b0dfc92e67ec73360a6eafa0287ac02050dae4"
+    },
+    {
+      "path": "server/quote-engine-vnext/README.md",
+      "sha256": "35246b5eaaf089667a0586b6933e033e4b07214145b17c059843c2eb4bffd596",
+      "gitBlobSha": "8ea209554563b7bc632ff905049260fece590c92"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "sha256": "b2d22d226ade73016393eadcd31d8efbe4cff7845737a06784ca5636818b7cfc",
+      "gitBlobSha": "7764e369f75ecd3ba9700806ef41f0d410b6129a"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "sha256": "b1c8ace29c871021f2689241ec55b62f870af9022e7effd64c44ecdcb79ab46f",
+      "gitBlobSha": "136bea873918bde18d00fb3675c4756f5c2633f8"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "sha256": "1af18c0e308de19b614da7d9502fc7cfcd3e63bd69d3886900fc3da1399901fe",
+      "gitBlobSha": "419c28f134d7bfa928d1166d55e8f48e2b3395fc"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "sha256": "dcf6639019ce11d101cf4a6b0c38da68dba1897447f9303d137a98ac8957999b",
+      "gitBlobSha": "a625bb604e99783c98b34c45afa6be7575d3f2cd"
+    },
+    {
+      "path": "server/src/server.js",
+      "sha256": "d04f5711cc6c7be3af397be02cc99b676e70bd2157288c14448adaf5f6d0e9d1",
+      "gitBlobSha": "9bc5c3d46fdffced0cc82607690d9ed5707c86aa"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "sha256": "066f99b8ad354c56534d23b26ebb33db09939102c444a5288c81b96ebb04a198",
+      "gitBlobSha": "bb2a71149af293ea642fc6b5df6ae901cdf58424"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "sha256": "524fbfa3e7419331be8da188b010c3267323662e811c85c3480a3783b191d2a7",
+      "gitBlobSha": "dfdfb6884fb3de1ef487c0d43d67ad0f49cdd768"
+    }
+  ]
+}

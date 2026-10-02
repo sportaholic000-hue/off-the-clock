@@ -180,7 +180,7 @@ export function centAmountToDollars(value, { kind = 'fixed_amount', path = '' } 
 // Call this with the raw editor text BEFORE Number(raw) loses typed precision.
 // Empty input remains absent. Non-money values receive only decimal fidelity
 // validation, never dollars/cents conversion or monetary magnitude limits.
-export function parseOwnerNumericInput(raw, { kind = null, path = '' } = {}) {
+export function parseOwnerNumericInput(raw, { kind = null, path = '', wholeCents = false } = {}) {
   if (raw === undefined || raw === null) return undefined;
   if (typeof raw !== 'string' && typeof raw !== 'number') failure(path, 'Enter a finite decimal number.');
   const text = String(raw).trim();
@@ -188,7 +188,10 @@ export function parseOwnerNumericInput(raw, { kind = null, path = '' } = {}) {
   const intended = decimal(text, path);
   if (intended.negative) failure(path, 'The value cannot be negative.');
   const value = decimalNumber(intended, path);
-  if (kind !== null) dollarAmountToCents(value, { kind, path });
+  if (kind !== null) {
+    const cents = dollarAmountToCents(value, { kind, path });
+    if (wholeCents && !Number.isSafeInteger(cents)) failure(path, 'This rate requires whole-cent precision (for example, 2.55). Enter your intended rate; it will not be rounded.');
+  }
   return value;
 }
 
