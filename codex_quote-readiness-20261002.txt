@@ -1,16 +1,18 @@
-run 37016565733 sha 8bd7899b920fe33b46a19f77fd4fef72a899eb69
-Summary: {"tests":"1128","pass":"1115","fail":"11","cancelled":"0","skipped":"2","todo":"0"}
+run 37017228328 sha c5d16202af2c33d0c277553cd14399a918748b4f
+Summary: {"tests":"1135","pass":"1121","fail":"12","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
 ::error::New test failure: customer eligibility is enforced before quote generation
 ::error::New test failure: repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+::error::New test failure: repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
 not ok 29 - test/googleGenAiLiveAdapter.spec.mjs
 not ok 514 - customer eligibility is enforced before quote generation
 not ok 877 - repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
-not ok 1085 - voice tool runtime persists a safe review quote and lead without exposing internal identities
-not ok 1086 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 957 - repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+not ok 1092 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 1093 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
 not ok 65 - test/voicePromptCompiler.spec.mjs
-not ok 1107 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
-not ok 1108 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
-not ok 1110 - dispatcher rejects handler results containing raw rates instead of exposing them
-not ok 1111 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 1114 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 1115 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1117 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1118 - mutations are idempotent and conflicting reuse of a tool call id is rejected
 not ok 68 - test/voiceWebSocketServer.spec.mjs
