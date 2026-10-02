@@ -42,7 +42,8 @@ export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstru
       inputAudioTranscription: {},
       outputAudioTranscription: {},
       systemInstruction: instruction,
-      tools: [{ functionDeclarations: toolDeclarations }],
+      // The SDK rewrites declarations in place; give it a private copy so the frozen originals stay intact.
+      tools: [{ functionDeclarations: structuredClone(toolDeclarations) }],
     };
     if (voiceName) config.speechConfig = { voiceConfig: { prebuiltVoiceConfig: { voiceName } } };
 
