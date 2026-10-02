@@ -43,7 +43,7 @@ async function widget(f,index,changes={},review=false){
  const p=await browser.newPage({viewport:{width:375,height:812}});p.setDefaultTimeout(20000);p.on('pageerror',e=>errors.push(e.message));
  try{
   const id=f.services[index].id,inputs={...f.items[index].input.customerInputs,...changes};
-  const catalog=await f.call('GET',f.url),fields=catalog.services.find(s=>s.id===id).customerFields.filter(field=>field.type!=='confirmed_facts');
+  const catalogResponse=await app.request('GET',f.url,undefined,undefined,{Origin:site});assert.equal(catalogResponse.status,200);const catalog=catalogResponse.result,fields=catalog.services.find(s=>s.id===id).customerFields.filter(field=>field.type!=='confirmed_facts');
   await p.goto(site);await p.locator('.launcher').click();const select=p.getByLabel('Service',{exact:true});await select.locator('option[value="'+id+'"]').waitFor({state:'attached'});await select.selectOption(id);await p.getByRole('button',{name:'Continue',exact:true}).click();
   for(const field of fields.filter(field=>customerFieldVisible(field,inputs))){
    const v=inputs[field.name],c=p.getByLabel(field.label,{exact:true});

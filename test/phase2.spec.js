@@ -1054,8 +1054,11 @@ test('customer eligibility is enforced before quote generation', () => {
   // live in verification/quotedone/{first,money,access-retry}-workflow.mjs.
   const bridge=readFileSync('server/src/quoteDoneBridge.js','utf8');
   const calculate=bridge.slice(bridge.indexOf('export function calculateApplicationQuote'),bridge.indexOf('export function applicationMetadata'));
-  assert.ok(calculate.indexOf('service.active=raw.active===true&&current')<calculate.indexOf('generateQuoteVNext(request)'));
-  assert.match(calculate,/approvalCurrent\(raw,book\)/);
+  const eligibility=calculate.indexOf('const eligibility=applicationStatus(raw,book)');
+  const active=calculate.indexOf('service.active=raw.active===true&&ready');
+  assert.ok(eligibility>=0&&active>eligibility&&active<calculate.indexOf('generateQuoteVNext(request)'));
+  assert.match(calculate,/const ready=eligibility.status==='QUOTING LIVE'/);
+  assert.match(bridge.slice(bridge.indexOf('export function applicationStatus'),bridge.indexOf('export function bookRevision')),/approvalCurrent\(raw,book\)/);
   assert.match(calculate,/sanitizeForCustomerVNext\(internalResult\)/);
   assert.doesNotMatch(calculate,/submission\.callerType|generateQuote\(/);
   const routes=readFileSync('server/src/quoteDoneRoutes.js','utf8');

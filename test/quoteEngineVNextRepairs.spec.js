@@ -2486,8 +2486,19 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const permittedZero = !!class2 || /^(minimumJob|minimumServiceCharge|repairMinimum|disposalPerSquare|disposalPerSqft|disposalPerLF|baggingSurchargePercent|edgingPerLinearFoot|pondingWaterSurcharge|haulAwayFee)$|\.disposalFlat$/.test(path) ||
         knownUnconsumed.includes(path);
       if (!permittedZero) {
-        assert.equal(zeroStatus.status,'NEEDS PRICING',zeroLabel);
-        assert.ok(zeroStatus.missingOwnerFields.includes(path),zeroLabel);
+        // Optional work that has not been priced does not disable complete
+        // base work. The selected-scope assertion below still requires review.
+        const optionalPrices={
+          INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
+          CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
+          CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
+          LANDSCAPING_MULCH:['bedPrepLaborPerSqft'],LANDSCAPING_SOD:['groundPrepPerSqft'],
+          LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
+        };
+        const leadOnly=optionalPrices[serviceType]?.includes(path.split('.')[0])===true;
+        assert.equal(zeroStatus.status,leadOnly?'QUOTING LIVE':'NEEDS PRICING',zeroLabel);
+        if(leadOnly)assert.ok(zeroStatus.scopeCoverage.some(scope=>!scope.configurationComplete&&/leads/.test(scope.message)),zeroLabel);
+        else assert.ok(zeroStatus.missingOwnerFields.includes(path),zeroLabel);
         const sample=consumedPricingSamples.get(path);
         if(sample){
           const held=quoteFromVNextPricebook({pricebook:{defaults,services:[zeroed]},serviceType,customerInputs:sample.customerInputs,callerType:'owner',currentMonth:1});
@@ -6853,8 +6864,8 @@ test('repair 128: explicit zero semantics distinguish core prices free offerings
   const mow=auditMowP();mow.pricing.baggingSurchargePercent=0;
   assert.equal(currentRun({...auditMowC(),bagClippings:true},mow).resultType,auditReady);
 
-  // Activation must exercise each consumed preparation branch, including the
-  // lower-priced needs_weeding branch that a maximum-only probe would miss.
+  // Activation exercises every configured preparation branch. An unpriced
+  // optional branch remains lead-only while clean-bed planting stays quotable.
   const planting=service('LANDSCAPING_PLANTING',{
     plantingLaborPerPlant:{small:1000,medium:2000,large:3000},
     plantMaterialAllowance:{small:2000,medium:4000,large:6000},
@@ -6874,8 +6885,8 @@ test('repair 128: explicit zero semantics distinguish core prices free offerings
     if(value>=0)assert.equal(scenario(currentRun(clean,changed)).finalTotalCents,3000);
   }
   for(const {value,status} of evidence){
-    assert.equal(status.status,value>0?'QUOTING LIVE':'NEEDS PRICING',JSON.stringify(evidence));
-    if(value===0)assert.ok(status.missingOwnerFields.includes('bedPrepLaborPerSqft.needs_weeding'));
+    assert.equal(status.status,value>=0?'QUOTING LIVE':'NEEDS PRICING',JSON.stringify(evidence));
+    if(value===0)assert.ok(status.scopeCoverage.some(scope=>!scope.configurationComplete&&scope.variants.some(variant=>variant.missingFields.includes('bedPrepLaborPerSqft.needs_weeding'))));
   }
 });
 test('repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity',()=>{
