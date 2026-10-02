@@ -1,0 +1,127 @@
+name: Quote readiness verification
+on:
+  push:
+    branches: [codex/quote-readiness-20261002]
+permissions:
+  contents: read
+concurrency:
+  group: quote-readiness-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  DEMO_ENABLED: 'false'
+  VOICE_RUNTIME_ENABLED: 'false'
+  STRIPE_BILLING_ENABLED: 'false'
+  EMAIL_DELIVERY_ENABLED: 'false'
+  OUTBOUND_WEBHOOKS_ENABLED: 'false'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Cold dependencies and both builds
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules
+          npm ci --no-audit --no-fund
+          npm --prefix client run build
+          mkdir -p .portable-runtime/node-v22.23.2-win-x64
+          cp "$(command -v node)" .portable-runtime/node-v22.23.2-win-x64/node.exe
+          chmod +x .portable-runtime/node-v22.23.2-win-x64/node.exe
+      - name: Preserve original failures on the previous source
+        run: |
+          mkdir -p "$RUNNER_TEMP/readiness/public"
+          git worktree add --detach "$RUNNER_TEMP/readiness-before" 1b70096e25a1310df556e2f8672f9741d025c04e
+          cp -R verification/quote-readiness "$RUNNER_TEMP/readiness-before/verification/"
+          cp test/quoteReadinessRepairs.spec.mjs "$RUNNER_TEMP/readiness-before/test/"
+          rm -rf "$RUNNER_TEMP/readiness-before/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"
+          ln -s "$GITHUB_WORKSPACE/server/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules"
+          ln -s "$GITHUB_WORKSPACE/client/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/readiness-before/node_modules"
+          ln -s "$GITHUB_WORKSPACE/.portable-runtime" "$RUNNER_TEMP/readiness-before/.portable-runtime"
+          cd "$RUNNER_TEMP/readiness-before"
+          if node --test test/quoteReadinessRepairs.spec.mjs > "$RUNNER_TEMP/readiness/public/regressions-before.tap" 2>&1; then
+            echo "Original defects unexpectedly absent"
+            exit 1
+          fi
+          grep -E '^(not ok |# (tests|pass|fail))' "$RUNNER_TEMP/readiness/public/regressions-before.tap"
+          GITHUB_SHA=1b70096e25a1310df556e2f8672f9741d025c04e .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/reproduce.mjs "$RUNNER_TEMP/readiness/before"
+      - name: Focused final regressions
+        run: |
+          node --test test/quoteReadinessRepairs.spec.mjs test/priceBookAI.spec.mjs test/opusQuoteRepairs.spec.mjs | tee "$RUNNER_TEMP/readiness/public/focused.tap"
+          exit ${PIPESTATUS[0]}
+      - name: Final public staff preview and persistence workflows
+        env:
+          READINESS_ASSERT_FIXED: 'true'
+        run: .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/reproduce.mjs "$RUNNER_TEMP/readiness/after"
+      - name: Browser dependencies
+        run: |
+          npm --prefix "$RUNNER_TEMP/readiness-browser" install --no-save --package-lock=false playwright@1.56.0
+          "$RUNNER_TEMP/readiness-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Actual owner and customer browser flows
+        env:
+          READINESS_BROWSER_MODULE: ${{ runner.temp }}/readiness-browser/node_modules/playwright
+        run: .portable-runtime/node-v22.23.2-win-x64/node.exe verification/quote-readiness/browser.mjs "$RUNNER_TEMP/readiness/browser"
+      - name: Archive complete source-bound evidence in logs
+        if: always()
+        run: node verification/quote-readiness/archive.mjs "$RUNNER_TEMP/readiness"
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quote-readiness-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/readiness/public/
+            ${{ runner.temp }}/readiness/before/public/
+            ${{ runner.temp }}/readiness/after/public/
+            ${{ runner.temp }}/readiness/browser/public/
+          if-no-files-found: error
+          retention-days: 30
+  live-ai:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Cold dependencies
+        run: rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+      - name: Isolated browser
+        run: |
+          npm --prefix "$RUNNER_TEMP/ai-browser" install --no-save --package-lock=false playwright@1.56.0
+          "$RUNNER_TEMP/ai-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Build owner app and widget
+        run: npm --prefix client run build
+      - name: Focused AI and customer-summary regressions
+        run: node --test test/priceBookAI.spec.mjs
+      - name: Real Gemini and application browser verification
+        env:
+          AI_BROWSER_MODULE: ${{ runner.temp }}/ai-browser/node_modules/playwright
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEMO_ENABLED: 'false'
+          VOICE_RUNTIME_ENABLED: 'false'
+          STRIPE_BILLING_ENABLED: 'false'
+          EMAIL_DELIVERY_ENABLED: 'false'
+          OUTBOUND_WEBHOOKS_ENABLED: 'false'
+        run: |
+          mkdir -p .portable-runtime/node-v22.23.2-win-x64
+          cp "$(command -v node)" .portable-runtime/node-v22.23.2-win-x64/node.exe
+          chmod +x .portable-runtime/node-v22.23.2-win-x64/node.exe
+          .portable-runtime/node-v22.23.2-win-x64/node.exe verification/pricebook-ai/verify.mjs "$RUNNER_TEMP/ai-verification"
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: readiness-live-ai-${{ github.sha }}
+          path: ${{ runner.temp }}/ai-verification/public/
+          if-no-files-found: error
+          retention-days: 30

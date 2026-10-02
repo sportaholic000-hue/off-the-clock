@@ -90,3 +90,16 @@ Scoped QuoteDone audit repair gate passed — 2026-09-27 — candidate `codex/qu
 The owner now requires a callback contact for every estimate request. Supported measured inputs may quote; untriaged additional scope/unknowns and unsupported contracts require review. Both fencing services, exterior painting and CUSTOM remain wholly review-only. Operator CRM access is separate from QuoteDone pricing permission.
 
 The running production build, live data, provider integrations, published public pages/demo, backup restoration and multi-instance operation have not been accepted by these local tests. See `../docs/quotedone-completion/REPAIR_CONTRACT_20260927.md` and `OWNER_DECISIONS.md` for governing rules and capability limits.
+
+
+## 2026-10-02 — roof minimum and service readiness repairs
+
+Implementation follows the reported B1/B2 and M1–M7 audit, reproduced on PR #12 head `1b70096e25a1310df556e2f8672f9741d025c04e`. Original saved requests, responses and records are on `verification/quote-readiness-20261002`; final verification is run by `.github/workflows/quote-readiness-verification.yml` and the existing cold CI.
+
+- Roof replacement minimum uses the exact fixed-money dollar/cent boundary, including root, nested and tier prices. Older nonzero roof minima need an explicit owner recheck; no historical value is multiplied by assumption.
+- Standard concrete, measured interior walls, clean-bed mulch, cleanup, sod and planting do not require prices for unrequested extras. Selected unpriced scope still returns review without a customer subtotal. Owner coverage lists those lead-only requests.
+- Customer/staff calculation uses the same saved readiness decision as the service catalog. Owner draft preview remains a diagnostic preview under the existing engine preview behavior; it cannot authorize a customer quote.
+- Fence/exterior setup presents installed or itemized offerings, with explicit inclusions. Earlier standard prices are retained, never converted into assumed offerings. AI setup uses the same usable field list and the interview starts on its current measured field.
+- Paint-material diagnostics identify the actual missing product. Shared flat-roof help no longer asks for unused Average rates. The interior-painting specification now states the measured wall-area basis.
+
+No arithmetic formulas, voice runtime, live records, dependencies or deployment settings are changed by this repair. The known voice failures remain outside this task. This is not a declaration that launch or the entire engine has passed; see the source-bound verification report for exact results and remaining limits.

@@ -175,6 +175,38 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
   return out;
 }
 
+// Optional work is checked only when its complete pricing is configured.
+// Missing optional work stays visible as lead-only coverage. Every actual
+// request still goes through validateOwnerPricing and the unchanged calculator.
+function optionalPricingRequests(service, base) {
+  const type=service.serviceType;
+  if(configuredOffering(type,pricingOf(service)))return [];
+  if(type==='INTERIOR_PAINTING')return [
+    {key:'ceiling_prices',label:'Ceiling painting',changes:{ceilingsIncluded:true,ceilingAreaSqft:1_000_000,ceilingCoats:3}},
+    {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
+  ];
+  if(type.startsWith('CONCRETE_'))return [
+    {key:'base_prices',label:'Concrete base preparation',changes:{baseNeeded:true}},
+    {key:'wire_prices',label:'Wire mesh reinforcement',changes:{reinforcement:'wire_mesh'}},
+    {key:'rebar_prices',label:'Rebar reinforcement',changes:{reinforcement:'rebar'}},
+    {key:'stamped_prices',label:'Stamped concrete finish',changes:{finishType:'stamped'}}
+  ];
+  if(type==='LANDSCAPING_CLEANUP')return [{key:'haul_prices',label:'Additional cleanup haul-away',changes:{haulAway:true}}];
+  if(type==='LANDSCAPING_SOD')return [{key:'ground_prep_prices',label:'Sod ground preparation',changes:{groundPrepNeeded:true}}];
+  if(type==='LANDSCAPING_PLANTING')return [
+    ...['needs_weeding','overgrown'].map(condition=>({key:'planting_bed_'+condition,label:condition==='needs_weeding'?'Planting bed weeding':'Overgrown planting bed preparation',changes:{bedCondition:condition,bedSqft:10_000_000}})),
+    ...keysOf(pricingOf(service).mulchMaterialPerYard,'standard').map(mulchType=>({key:'planting_mulch_'+mulchType,label:'Planting with '+mulchType.replaceAll('_',' ')+' mulch',changes:{mulchNeeded:true,mulchType,mulchYards:100_000}}))
+  ];
+  if(type==='LANDSCAPING_MULCH')return [
+    {key:'edging_prices',label:'Mulch bed edging',changes:{edgingNeeded:true,edgeLF:1_000_000}},
+    ...['needs_weeding','overgrown'].map(condition=>({key:'bed_'+condition,label:condition==='needs_weeding'?'Mulch bed weeding':'Overgrown mulch bed preparation',changes:{bedCondition:condition,bedSqft:10_000_000}}))
+  ];
+  return [];
+}
+function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tierName=null) {
+  return validateOwnerPricing(service.serviceType,scopeActivationInputs(service.serviceType,inputs,pricing,service),pricing,service,tierName).ok;
+}
+
 function baseActivationScenarios(service) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
@@ -222,7 +254,9 @@ function baseActivationScenarios(service) {
   }
   if (serviceType === 'INTERIOR_PAINTING') {
     const wallHeight = greatestConfiguredKey(p.wallHeightLaborMultiplier, ['standard', 'high', 'vaulted'], 'high');
-    return [{ areaInputMethod: 'wall_sqft', wallAreaSqft: 2_000_000, wallHeight, wallScopeUniform: true, surfaceCondition: 'good', coats: 3, ceilingsIncluded: true, ceilingAreaSqft: 1_000_000, ceilingCoats: 3, trimIncluded: true, trimLengthLF: 1_000_000 }];
+    const base={areaInputMethod:'wall_sqft',wallAreaSqft:2_000_000,wallHeight,wallScopeUniform:true,surfaceCondition:'good',coats:3,ceilingsIncluded:false,trimIncluded:false};
+    const extras=optionalPricingRequests(service,base).filter(row=>completeOptionalPricing(service,{...base,...row.changes}));
+    return [base,...extras.map(row=>({...base,...row.changes})),...(extras.length>1?[Object.assign({},base,...extras.map(row=>row.changes))]:[])];
   }
   if (serviceType === 'EXTERIOR_PAINTING') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
@@ -266,29 +300,37 @@ function baseActivationScenarios(service) {
         {x:-100000,y:0},{x:-100000,y:-20}
       ] }
     ];
-    return dimensions.flatMap(dimension => ['broom', 'smooth', 'stamped'].flatMap(finishType => ['none', 'wire_mesh', 'rebar'].map(reinforcement => ({
-      ...dimension, thickness: 24, finishType,
-      demolitionNeeded: false,
-      reinforcement, accessDifficulty, baseNeeded: true
-    }))));
+    return dimensions.flatMap(dimension => {
+      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false};
+      const candidates=['broom','smooth','stamped'].flatMap(finishType=>['none','wire_mesh','rebar'].flatMap(reinforcement=>[false,true].map(baseNeeded=>({...base,finishType,reinforcement,baseNeeded}))));
+      return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
+    });
   }
   if (serviceType === 'LANDSCAPING_CLEANUP') {
     const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
-    return ['light', 'moderate', 'heavy'].map(debrisLevel => ({ yardSqft: 10_000_000, sqftMethod: 'exact', debrisLevel, slope, haulAway: true }));
+    return ['light','moderate','heavy'].flatMap(debrisLevel=>{
+      const base={yardSqft:10_000_000,sqftMethod:'exact',debrisLevel,slope,haulAway:false},extra={...base,haulAway:true};
+      return [base,...(completeOptionalPricing(service,extra)?[extra]:[])];
+    });
   }
-  if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard, 'standard').flatMap(mulchType => ['needs_weeding', 'overgrown'].flatMap(bedCondition => [
-    { inputMethod: 'sqft', mulchArea: 10_000_000, mulchDepth: 24, mulchType, bedCondition, bedSqft: 10_000_000, edgingNeeded: true, edgeLF: 1_000_000 },
-    { inputMethod: 'yards', mulchArea: 10_000_000, mulchType, bedCondition, bedSqft: 10_000_000, edgingNeeded: true, edgeLF: 1_000_000 }
-  ]));
+  if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard,'standard').flatMap(mulchType=>['sqft','yards'].flatMap(inputMethod=>{
+    const base={inputMethod,mulchArea:10_000_000,...(inputMethod==='sqft'?{mulchDepth:24}:{}),mulchType,bedCondition:'clean',edgingNeeded:false};
+    const candidates=['clean','needs_weeding','overgrown'].flatMap(bedCondition=>[false,true].map(edgingNeeded=>({...base,bedCondition,...(bedCondition!=='clean'?{bedSqft:10_000_000}:{}),edgingNeeded,...(edgingNeeded?{edgeLF:1_000_000}:{})})));
+    return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
+  }));
   if (serviceType === 'LANDSCAPING_SOD') {
     const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
-    const scenario = { sodSqft: 10_000_000, sqftMethod: 'exact', groundPrepNeeded: true, slope, accessDifficulty };
-    return service.disposalScope === 'separate_project_debris'
-      ? [false, true].map(separateDisposalSelected => ({ ...scenario, separateDisposalSelected }))
-      : [scenario];
+    const base={sodSqft:10_000_000,sqftMethod:'exact',groundPrepNeeded:false,slope,accessDifficulty},extra={...base,groundPrepNeeded:true};
+    const scenarios=[base,...(completeOptionalPricing(service,extra)?[extra]:[])];
+    return scenarios.flatMap(scenario=>service.disposalScope==='separate_project_debris'?[false,true].map(separateDisposalSelected=>({...scenario,separateDisposalSelected})):[scenario]);
   }
-  if (serviceType === 'LANDSCAPING_PLANTING') return keysOf(p.mulchMaterialPerYard, 'standard').flatMap(mulchType => ['needs_weeding', 'overgrown'].map(bedCondition => ({ plantsBySize: { small: 1_000_000, medium: 1_000_000, large: 1_000_000 }, bedCondition, bedSqft: 10_000_000, mulchNeeded: true, mulchYards: 100_000, mulchType })));
+  if (serviceType === 'LANDSCAPING_PLANTING') {
+    const base={plantsBySize:{small:1_000_000,medium:1_000_000,large:1_000_000},bedCondition:'clean',mulchNeeded:false};
+    const mulch=[{},...keysOf(p.mulchMaterialPerYard,'standard').map(mulchType=>({mulchNeeded:true,mulchYards:100_000,mulchType}))];
+    const candidates=['clean','needs_weeding','overgrown'].flatMap(bedCondition=>mulch.map(extra=>({...base,bedCondition,...(bedCondition!=='clean'?{bedSqft:10_000_000}:{}),...extra})));
+    return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
+  }
   if (serviceType === 'LANDSCAPING_MOWING') {
     const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
     const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
@@ -368,6 +410,16 @@ function scopeCoverageForService(service) {
       const complete = isPlainRecord(p.scopeDetails?.[key]) && rates.length > 0 && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
       const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
+    }
+  }
+  for(const variant of variants){
+    const p=variant.pricing,configured={...service,pricing:p},base=baseActivationScenarios(configured)[0];
+    for(const optional of optionalPricingRequests(configured,base)){
+      const inputs=scopeActivationInputs(type,{...base,...optional.changes},p,service);
+      const validation=validateOwnerPricing(type,inputs,p,service,variant.name),complete=validation.ok;
+      if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
+      const row=rows.get(optional.key);row.configurationComplete ||= complete;
+      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set(validation.ownerDiagnostics.map(d=>d.path))]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.configurationComplete

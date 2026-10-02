@@ -39,7 +39,8 @@ export function OfferingEditor({service,meta,onChange}) {
   const unused=Object.keys(rates).filter(key=>!definitions[key]);
   function removeRate(key){const next={...rates};delete next[key];set('offeringRates',next);}
   return <section className="editor-section"><h2>Fence and painting offering</h2>
-    <Field label="Offering pricing"><Select aria-label="Offering pricing" value={mode||''} onChange={e=>set('offeringMode',e.target.value||undefined)}><option value="" disabled={!!mode}>Existing pricing — choose to configure this offering</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
+    <Field label="Offering pricing"><Select aria-label="Offering pricing" value={mode||''} onChange={e=>set('offeringMode',e.target.value||undefined)}><option value="" disabled={!!mode}>{meta.requiresOffering?'Choose how you price this offering':'Measured wall pricing — choose to configure an offering'}</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
+    {!mode&&meta.requiresOffering&&<Notice>Choose installed or itemized pricing, then define what the offering includes. Earlier standard rates are retained in your saved price book but cannot quote this work on their own.</Notice>}
     {mode&&<>
       <p>Define one offered job and the prices that cover it. Add another offering for a different height, surface, coating or preparation scope. These descriptions are shown to customers.</p>
       {input('description','Included job description')}

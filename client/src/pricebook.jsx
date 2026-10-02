@@ -768,7 +768,8 @@ export default function PriceBook() {
   // while optional charges collapse. requiredAtBase comes from the server's
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)&&(!configuredMode||field.field==='minimumJob')).map(field=>configuredMode&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -815,7 +816,7 @@ export default function PriceBook() {
             {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
               const status = displayStatus(service);
-              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label) || []);
+              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && serviceFieldValue(service, field.field) === undefined).map(field => field.label) || []);
               return (
                 <button key={editorServiceKey(service, index)} className={selectedType === editorServiceKey(service, index) ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(editorServiceKey(service, index))}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
@@ -823,9 +824,13 @@ export default function PriceBook() {
                   <small className="mono service-compact-status">
                     {status.status === 'CHECKING'
                       ? 'Checking'
-                      : missing.length > 0
-                        ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
-                        : status.status === 'DISABLED' ? 'Disabled by you' : status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'}
+                      : status.status === 'DISABLED'
+                        ? 'Disabled by you'
+                        : status.status === 'QUOTING LIVE'
+                          ? status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'
+                          : missing.length > 0
+                            ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
+                            : 'Review configuration'}
                   </small>
                 </button>
               );
@@ -853,9 +858,9 @@ export default function PriceBook() {
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                   {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
                     <h3>Which requests can be quoted?</h3>
-                    <p>Your core prices cover the standard job. These additional requests also need a defined scope and its prices.</p>
+                    <p>Configured work can quote. These additional requests need the listed setup before they can be included.</p>
                     <ul>{selectedStatus.scopeCoverage.map(scope => <li key={scope.key}><strong>{scope.label}</strong><span>{scope.message}</span></li>)}</ul>
-                    {selectedStatus.scopeCoverage.some(scope => !scope.configurationComplete || scope.variants.some(variant => !variant.configurationComplete)) && <p>Open <strong>Additional priced scope</strong> below to finish setup. Unconfigured requests arrive as leads for your estimate.</p>}
+                    {selectedStatus.scopeCoverage.some(scope => !scope.configurationComplete || scope.variants.some(variant => !variant.configurationComplete)) && <p>Enter optional rates under <strong>Optional prices and add-on charges</strong>, and product or scope details under <strong>Additional priced scope</strong>. Unconfigured requests arrive as leads for your estimate.</p>}
                   </section>}
 
                   <Toggle checked={selected.active === true} onChange={active => replaceSelected({ ...selected, active })} label="Enable quoting for this service" />
@@ -934,7 +939,7 @@ export default function PriceBook() {
                 )}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
-                {!configuredMode&&(selectedMeta.class2Fields || []).length > 0 && (
+                {!offeringSetup&&(selectedMeta.class2Fields || []).length > 0 && (
                   <Disclosure
                     title="Quantity assumptions"
                     subtitle="Defaults are already being applied. Adjust only if your jobs differ."
@@ -988,7 +993,7 @@ export default function PriceBook() {
                   </Disclosure>
                 )}
 
-                {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by the measured contract.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
+                {!!selectedMeta.legacyClass2Fields?.length&&<Disclosure title="Retained legacy settings" subtitle="These values retain their saved meaning and location. They are not used by current quoting rules.">{selectedMeta.legacyClass2Fields.filter(d=>serviceFieldValue(selected,d.field)!==undefined).map(d=><Field key={d.field} label={d.label}><ExactNumericInput value={serviceFieldValue(selected,d.field)} onChange={v=>updateField(d.field,v)}/></Field>)}</Disclosure>}
                 {/* GOOD / BETTER / BEST — collapsed until the owner opts in. */}
                 <Disclosure
                   title="Good / Better / Best tiers"

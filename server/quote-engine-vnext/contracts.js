@@ -1,5 +1,5 @@
 import { measuredOutlineVNext } from './geometry.js';
-import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest} from './scopePricing.js';
+import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
@@ -723,7 +723,7 @@ extendMeasuredContract('INTERIOR_PAINTING',{
 },c=>['wallScopeUniform',...(c.ceilingsIncluded?['ceilingCoats']:[])],
  c=>c.wallScopeUniform!==true?'Mixed wall height, access, or coat zones require separate measured scope or inspection.':null,
  c=>c.ceilingsIncluded===false && c.ceilingCoats!==undefined?[{field:'ceilingCoats',message:'Ceiling coats cannot be supplied when ceilings are excluded.'}]:[]);
-extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Exterior substrate and coating system need a supported owner contract; fair preparation also needs measured affected scope or an explicitly bounded package.');
+extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Set up an exterior painting offering with the surface, coating, coats, preparation and primer it includes, then enter its installed or itemized prices.');
 extendMeasuredContract('LANDSCAPING_SOD',{separateDisposalSelected:booleanField('Separate project debris disposal selected')},()=>[]);
 
 for (const [type, contract] of Object.entries(MEASUREMENT_CONTRACTS)) {
@@ -1632,8 +1632,8 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   const ownerDecisionRequired = [];
   const requireDecision = (path, kind, message) => ownerDecisionRequired.push({ path, kind, message });
   if (serviceType.startsWith('FENCING_') && !configuredOffering(serviceType,pricing)) {
-    requireDecision('postDerivationRule', 'post_geometry_contract', 'Approve post derivation from measured fence geometry, including spacing, ends, corners, and gate-post rules. Caller-provided post counts are not accepted.');
-    requireDecision('concretePerPost', 'mixed_charge_allocation', 'Concrete and digging per post needs separate labor and material prices, or an explicit owner-confirmed allocation rule.');
+    requireDecision('postDerivationRule', 'post_geometry_contract', 'Set up a fence offering with its type, height, terrain and included posts and footings. Choose an installed price or measured component prices.');
+    requireDecision('concretePerPost', 'mixed_charge_allocation', 'In the fence offering, define the posts, footings and digging included in the installed price, or enter their separate labor and material prices.');
     if (customerInputs.gateCount > 0) requireDecision(`gatePrice.${customerInputs.fenceType}`, 'gate_width_pricing_contract', 'Selected gates need an owner-confirmed measured-width pricing model; the existing per-gate price cannot distinguish opening widths.');
   }
   if (serviceType === 'ROOFING_REPLACEMENT') {
@@ -1645,7 +1645,10 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
     if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !pricing.scopeDetails?.floor_overlay) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
-  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed') && scopeKeysForRequest(serviceType,customerInputs,pricing,serviceRules).some(k=>!pricing.scopeDetails?.[k])) requireDecision('paintMaterialPurchaseRule', 'purchasable_paint_contract', 'Cost-based paint pricing needs product coverage, coat-specific yield, package size, and purchasable-quantity rounding.');
+  if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {
+    const labels={paint_wall:'Wall paint product',paint_ceiling:'Ceiling paint product',paint_trim:'Trim paint product',paint_primer:'Wall primer product',paint_ceiling_primer:'Ceiling primer product',paint_prep:'Preparation product'};
+    for(const key of scopeKeysForRequest(serviceType,customerInputs,pricing,serviceRules).filter(k=>!pricing.scopeDetails?.[k])) requireDecision('scopeDetails.'+key,'purchasable_paint_contract',(labels[key]||scopeDefinitions(serviceType,pricing)[key]?.label||'Selected paint product')+' is not configured. Enter its coverage, waste allowance and package price in Additional priced scope.');
+  }
   if (serviceType === 'SIDING_REPLACEMENT' && customerInputs.trimIncluded && !pricing.scopeDetails?.siding_trim) requireDecision('trimPerLinearFoot', 'mixed_charge_classification', 'Siding trim installation needs separate labor and material rates, or an explicit owner-confirmed category and allocation rule.');
   if (serviceType === 'CUSTOM' && pricing.customChargeClassification === undefined) requireDecision('customChargeClassification', 'custom_charge_classification', 'Choose the custom service charge category in the owner price book. The category selects the existing owner-configured price basis, taxability and markup settings; no labor/material split is inferred.');
 
