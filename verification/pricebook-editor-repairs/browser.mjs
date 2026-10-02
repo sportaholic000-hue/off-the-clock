@@ -90,6 +90,19 @@ try{
   const before=await bookState();await pick('B');await approve(ap.services[1].id);await pick('A');await openSection('Good / Better / Best tiers');await page.waitForFunction(()=>document.querySelector('.override-row input')?.value==='0.0051');
   const draft=await bookState(),saved=await ap.read();save('F07-unsaved-tier.json',{before,draft,saved});assert.deepEqual(draft.services[0].tiers,before.services[0].tiers);assert.equal(saved.services[0].tiers?.length||0,0);
  });
+ await check('F07-approval-in-flight',async()=>{
+  await useOwner(ap);await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.2345');await pick('B');await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();
+  let release,arrived;const delayed=new Promise(resolve=>{release=resolve;}),received=new Promise(resolve=>{arrived=resolve;});
+  const pattern='**/api/pricebook/services/'+ap.services[1].id+'/approve';
+  await page.route(pattern,async route=>{const response=await route.fetch();arrived();await delayed;await route.fulfill({response});});
+  try{
+   await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();await received;
+   assert.equal(await page.getByLabel('New service type',{exact:true}).isDisabled(),true);assert.equal(await page.getByRole('button',{name:'Add service',exact:true}).isDisabled(),true);assert.equal(await page.getByRole('button',{name:'Save & validate',exact:true}).isDisabled(),true);
+   const during=await bookState();assert.equal(during.services[0].pricing.laborPerWallSqftPerCoat,1.2345);
+   release();await page.waitForFunction(()=>!document.querySelector('fieldset[disabled]'));
+   const after=await bookState();save('F07-approval-in-flight.json',{during,after,saved:await ap.read()});assert.deepEqual(after.services[0],during.services[0]);
+  }finally{release();await page.unroute(pattern);}
+ });
  await check('F07-edit-during-review',async()=>{
   await useOwner(ap);await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.7777');
   const confirm=page.getByRole('button',{name:'Confirm saved configuration',exact:true}),disabled=await confirm.isDisabled();
