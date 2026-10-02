@@ -1,0 +1,223 @@
+{
+  "body": {
+    "serviceId": "188fbae6-20ac-436b-b49e-d85cca28ea93",
+    "revision": "05c6738a2c293a0c6358a79f5cb235367a12890774b1d07c32202666fa5520ec",
+    "service": {
+      "id": "188fbae6-20ac-436b-b49e-d85cca28ea93",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC] A",
+      "pricing": {
+        "laborPerWallSqftPerCoat": 1,
+        "materialPerWallSqftPerCoat": 0.5,
+        "minimumJob": 0,
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "customer_selected",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 100,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      },
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "188fbae6-20ac-436b-b49e-d85cca28ea93",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "a794af30-97f6-4d00-8a4d-bb406f6d2aa1",
+        "operationId": "c1139e8e-55c3-4d6e-8ea3-78bfb33b7116",
+        "createdAt": "2026-10-02T18:06:39.784Z"
+      },
+      "quoteDoneApproval": {
+        "ownerId": "a794af30-97f6-4d00-8a4d-bb406f6d2aa1",
+        "serviceId": "188fbae6-20ac-436b-b49e-d85cca28ea93",
+        "operationId": "c1139e8e-55c3-4d6e-8ea3-78bfb33b7116",
+        "approvedAt": "2026-10-02T18:06:39.784Z",
+        "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "f59f7786abd2c7cc939f03affeeadc92577345af242c08e3a47c1f255556cf66",
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 10,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "customerInputs": {
+      "areaInputMethod": "wall_sqft",
+      "wallAreaSqft": 100,
+      "wallHeight": "standard",
+      "wallScopeUniform": true,
+      "surfaceCondition": "good",
+      "coats": 2,
+      "ceilingsIncluded": false,
+      "trimIncluded": false
+    },
+    "customerFeeSelections": {}
+  },
+  "result": {
+    "resultType": "ESTIMATE_REQUIRES_REVIEW",
+    "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+    "serviceId": "188fbae6-20ac-436b-b49e-d85cca28ea93",
+    "quoteId": "3d13b0c2-6d33-4dea-a4ce-09de818c60bd",
+    "serviceType": "INTERIOR_PAINTING",
+    "submittedCustomerInputs": {
+      "areaInputMethod": "wall_sqft",
+      "wallAreaSqft": 100,
+      "wallHeight": "standard",
+      "wallScopeUniform": true,
+      "surfaceCondition": "good",
+      "coats": 2,
+      "ceilingsIncluded": false,
+      "trimIncluded": false
+    },
+    "normalizedScope": {
+      "areaInputMethod": "wall_sqft",
+      "wallAreaSqft": 100,
+      "wallHeight": "standard",
+      "wallScopeUniform": true,
+      "surfaceCondition": "good",
+      "coats": 2,
+      "ceilingsIncluded": false,
+      "trimIncluded": false
+    },
+    "validatedMeasurements": [
+      {
+        "name": "wallAreaSqft",
+        "value": 100,
+        "unit": "square feet"
+      },
+      {
+        "name": "coats",
+        "value": 2,
+        "unit": "coats"
+      }
+    ],
+    "unconfirmedOwnerFields": [],
+    "reviewReason": "Common fee selection is missing or invalid.",
+    "missingCustomerFields": [],
+    "invalidCustomerFields": [
+      "feeSelections.customer.travel"
+    ],
+    "missingOwnerFields": [],
+    "invalidOwnerFields": [],
+    "unsupportedOwnerFields": [],
+    "crossFieldOwnerFields": [],
+    "ownerDiagnostics": [],
+    "ownerDecisionRequired": [],
+    "failedTierDiagnostics": [
+      {
+        "tierName": null,
+        "reviewReason": "Common fee selection is missing or invalid.",
+        "missingCustomerFields": [],
+        "invalidCustomerFields": [
+          "feeSelections.customer.travel"
+        ],
+        "missingOwnerFields": [],
+        "invalidOwnerFields": [],
+        "unsupportedOwnerFields": [],
+        "crossFieldOwnerFields": [],
+        "ownerDiagnostics": [],
+        "ownerDecisionRequired": [],
+        "validationMessages": [],
+        "normalizedScope": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 100,
+          "wallHeight": "standard",
+          "wallScopeUniform": true,
+          "surfaceCondition": "good",
+          "coats": 2,
+          "ceilingsIncluded": false,
+          "trimIncluded": false
+        },
+        "validatedMeasurements": [
+          {
+            "name": "wallAreaSqft",
+            "value": 100,
+            "unit": "square feet"
+          },
+          {
+            "name": "coats",
+            "value": 2,
+            "unit": "coats"
+          }
+        ],
+        "inspectionFirst": false
+      }
+    ],
+    "validationMessages": [],
+    "inspectionFirst": false,
+    "appliedRules": [],
+    "urgencyFlags": [],
+    "bookRevision": "05c6738a2c293a0c6358a79f5cb235367a12890774b1d07c32202666fa5520ec",
+    "selectedServiceId": "188fbae6-20ac-436b-b49e-d85cca28ea93"
+  },
+  "status": 200
+}

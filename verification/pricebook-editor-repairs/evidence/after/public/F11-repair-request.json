@@ -1,0 +1,27 @@
+{
+  "request": {
+    "fields": {
+      "ROOFING_REPAIR": {
+        "repairHours": {
+          "asphalt_shingle": {
+            "leak_patch": {
+              "small": 0,
+              "medium": 1.2345,
+              "large": 3
+            }
+          }
+        }
+      }
+    },
+    "confirmedFields": {
+      "ROOFING_REPAIR": [
+        "repairHours"
+      ]
+    },
+    "currentField": "ROOFING_REPAIR.repairMaterialAllowance"
+  },
+  "status": 422,
+  "response": {
+    "error": "The price map contains an out-of-domain key."
+  }
+}

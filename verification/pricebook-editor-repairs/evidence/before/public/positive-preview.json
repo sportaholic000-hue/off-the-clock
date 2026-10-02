@@ -1,0 +1,1067 @@
+{
+  "resultType": "INSTANT_ESTIMATE_READY",
+  "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+  "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+  "quoteId": "04dd10d9-9b90-469f-8c59-80f7367c2000",
+  "serviceType": "INTERIOR_PAINTING",
+  "submittedCustomerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 100,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false
+  },
+  "unconfirmedOwnerFields": [],
+  "lowEstimate": 300,
+  "midEstimate": 300,
+  "highEstimate": 300,
+  "options": [
+    {
+      "tierName": null,
+      "priceUnit": null,
+      "taxTreatment": "No tax added.",
+      "lowEstimate": 300,
+      "midEstimate": 300,
+      "highEstimate": 300,
+      "priceDrivers": [
+        "100 measured square feet of paintable wall area",
+        "2 paint coats"
+      ],
+      "skippedAddons": [],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+      "rangeBufferUsed": 0,
+      "effectiveRangeBufferPercent": 0,
+      "lineItems": [
+        {
+          "name": "Wall labor",
+          "category": "labor",
+          "amountCents": 20000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 200,
+            "exactQuantity": {
+              "numerator": "200",
+              "denominator": "1"
+            },
+            "unit": "measured wall square-foot coats",
+            "rateCents": 100,
+            "ratePath": "laborPerWallSqftPerCoat",
+            "multipliers": [
+              {
+                "name": "wall height labor",
+                "value": 1,
+                "path": "wallHeightLaborMultiplier.standard",
+                "exactValue": {
+                  "numerator": "1",
+                  "denominator": "1"
+                }
+              }
+            ],
+            "unroundedCents": 20000,
+            "exactUnroundedCents": {
+              "numerator": "20000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 20000,
+            "effectivePriceBasis": "cost",
+            "markupEligible": true
+          },
+          "customerDriver": "100 measured square feet of paintable wall area",
+          "taxable": false
+        },
+        {
+          "name": "Wall paint and materials",
+          "category": "material",
+          "amountCents": 10000,
+          "ownerVisible": true,
+          "customerVisible": false,
+          "calculation": {
+            "evidenceVariant": "quantity_rate",
+            "quantity": 200,
+            "exactQuantity": {
+              "numerator": "200",
+              "denominator": "1"
+            },
+            "unit": "measured wall square-foot coats",
+            "rateCents": 50,
+            "ratePath": "materialPerWallSqftPerCoat",
+            "multipliers": [],
+            "unroundedCents": 10000,
+            "exactUnroundedCents": {
+              "numerator": "10000",
+              "denominator": "1"
+            },
+            "roundedAmountCents": 10000,
+            "effectivePriceBasis": "sell_price",
+            "markupEligible": false
+          },
+          "customerDriver": "2 paint coats",
+          "taxable": false
+        }
+      ],
+      "calculationRecord": {
+        "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+        "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+        "freeOffering": false,
+        "serviceType": "INTERIOR_PAINTING",
+        "tierName": null,
+        "normalizedCustomerInputs": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 100,
+          "wallHeight": "standard",
+          "wallScopeUniform": true,
+          "surfaceCondition": "good",
+          "coats": 2,
+          "ceilingsIncluded": false,
+          "trimIncluded": false
+        },
+        "measurements": [
+          {
+            "name": "wallAreaSqft",
+            "value": 100,
+            "unit": "square feet",
+            "source": "customer_measured"
+          },
+          {
+            "name": "appliedFinishCoats",
+            "value": 2,
+            "unit": "coats",
+            "source": "customer_confirmed"
+          }
+        ],
+        "quantityDerivations": [
+          {
+            "evidenceVariant": "derived_quantity",
+            "name": "wallCoatSqft",
+            "formula": "wallAreaSqft * coats",
+            "inputs": {
+              "wallAreaSqft": 100,
+              "coats": 2
+            },
+            "result": 200,
+            "exactResult": {
+              "numerator": "200",
+              "denominator": "1"
+            },
+            "unit": "wall square-foot coats",
+            "usedBy": [
+              "Wall labor",
+              "Wall paint and materials"
+            ]
+          }
+        ],
+        "ruleApplications": [],
+        "assumptions": [],
+        "disclosures": [],
+        "lineItems": [
+          {
+            "name": "Wall labor",
+            "category": "labor",
+            "amountCents": 20000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 200,
+              "exactQuantity": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "measured wall square-foot coats",
+              "rateCents": 100,
+              "ratePath": "laborPerWallSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "wall height labor",
+                  "value": 1,
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 20000,
+              "exactUnroundedCents": {
+                "numerator": "20000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 20000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "customerDriver": "100 measured square feet of paintable wall area",
+            "taxable": false
+          },
+          {
+            "name": "Wall paint and materials",
+            "category": "material",
+            "amountCents": 10000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 200,
+              "exactQuantity": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "measured wall square-foot coats",
+              "rateCents": 50,
+              "ratePath": "materialPerWallSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 10000,
+              "exactUnroundedCents": {
+                "numerator": "10000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 10000,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "customerDriver": "2 paint coats",
+            "taxable": false
+          }
+        ],
+        "scenarios": {
+          "mid": {
+            "variant": "mid",
+            "order": [
+              "fees",
+              "seasonal",
+              "taxability",
+              "markup",
+              "minimum"
+            ],
+            "fees": [
+              {
+                "fee": "travel",
+                "mode": "not_applicable",
+                "physicalScopeSelected": true,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "disposal",
+                "mode": "not_applicable",
+                "physicalScopeSelected": false,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "permit",
+                "mode": "not_applicable",
+                "physicalScopeSelected": false,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "overhead",
+                "mode": "not_applicable",
+                "physicalScopeSelected": true,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              }
+            ],
+            "seasonal": {
+              "month": 10,
+              "configuredMonths": [],
+              "percent": 0,
+              "laborSubtotalCents": 20000,
+              "seasonActive": false,
+              "applied": false,
+              "amountCents": 0
+            },
+            "markup": {
+              "mode": "markup",
+              "lineTreatment": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "amountCents": 20000,
+                  "effectivePriceBasis": "cost",
+                  "markupConfiguredForCategory": true,
+                  "markupEligible": true
+                },
+                {
+                  "name": "Wall paint and materials",
+                  "category": "material",
+                  "amountCents": 10000,
+                  "effectivePriceBasis": "sell_price",
+                  "markupConfiguredForCategory": true,
+                  "markupEligible": false
+                }
+              ],
+              "percent": 0,
+              "baseCents": 20000,
+              "amountCents": 0,
+              "eligibleLines": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "amountCents": 20000,
+                  "basis": "cost"
+                }
+              ],
+              "sellPriceLinesExcluded": [
+                "Wall paint and materials"
+              ]
+            },
+            "minimum": {
+              "basis": "post_markup",
+              "subtotalBeforeMinimumCents": 30000,
+              "businessMinimumCents": 0,
+              "serviceMinimumField": "minimumJob",
+              "serviceMinimumCents": 0,
+              "effectiveMinimumCents": 0,
+              "adjustmentCents": 0,
+              "applied": false
+            },
+            "tax": {
+              "mode": "TAX_NONE",
+              "percent": 0,
+              "preTaxSubtotalCents": 30000,
+              "taxableMarkupCents": 0,
+              "taxableSubtotalCents": 0,
+              "nonTaxableSubtotalCents": 30000,
+              "taxCents": 0,
+              "finalTotalCents": 30000,
+              "lineTaxability": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "taxable": false,
+                  "amountCents": 20000
+                },
+                {
+                  "name": "Wall paint and materials",
+                  "category": "material",
+                  "taxable": false,
+                  "amountCents": 10000
+                }
+              ]
+            },
+            "lineItems": [
+              {
+                "name": "Wall labor",
+                "category": "labor",
+                "amountCents": 20000,
+                "ownerVisible": true,
+                "customerVisible": false,
+                "calculation": {
+                  "evidenceVariant": "quantity_rate",
+                  "quantity": 200,
+                  "exactQuantity": {
+                    "numerator": "200",
+                    "denominator": "1"
+                  },
+                  "unit": "measured wall square-foot coats",
+                  "rateCents": 100,
+                  "ratePath": "laborPerWallSqftPerCoat",
+                  "multipliers": [
+                    {
+                      "name": "wall height labor",
+                      "value": 1,
+                      "path": "wallHeightLaborMultiplier.standard",
+                      "exactValue": {
+                        "numerator": "1",
+                        "denominator": "1"
+                      }
+                    }
+                  ],
+                  "unroundedCents": 20000,
+                  "exactUnroundedCents": {
+                    "numerator": "20000",
+                    "denominator": "1"
+                  },
+                  "roundedAmountCents": 20000,
+                  "effectivePriceBasis": "cost",
+                  "markupEligible": true
+                },
+                "customerDriver": "100 measured square feet of paintable wall area",
+                "taxable": false
+              },
+              {
+                "name": "Wall paint and materials",
+                "category": "material",
+                "amountCents": 10000,
+                "ownerVisible": true,
+                "customerVisible": false,
+                "calculation": {
+                  "evidenceVariant": "quantity_rate",
+                  "quantity": 200,
+                  "exactQuantity": {
+                    "numerator": "200",
+                    "denominator": "1"
+                  },
+                  "unit": "measured wall square-foot coats",
+                  "rateCents": 50,
+                  "ratePath": "materialPerWallSqftPerCoat",
+                  "multipliers": [],
+                  "unroundedCents": 10000,
+                  "exactUnroundedCents": {
+                    "numerator": "10000",
+                    "denominator": "1"
+                  },
+                  "roundedAmountCents": 10000,
+                  "effectivePriceBasis": "sell_price",
+                  "markupEligible": false
+                },
+                "customerDriver": "2 paint coats",
+                "taxable": false
+              }
+            ],
+            "finalTotalCents": 30000
+          }
+        },
+        "range": {
+          "source": "business_range_buffer",
+          "bufferPercent": 0,
+          "effectiveRangeBufferPercent": 0,
+          "rangeBufferUsed": 0,
+          "minimumCustomerFloorCents": 0,
+          "lowCents": 30000,
+          "midCents": 30000,
+          "highCents": 30000,
+          "exactMidScenarioTotalCents": 30000
+        },
+        "customerProjection": {
+          "tierName": null,
+          "priceUnit": null,
+          "taxTreatment": "No tax added.",
+          "lowEstimate": 300,
+          "midEstimate": 300,
+          "highEstimate": 300,
+          "priceDrivers": [
+            "100 measured square feet of paintable wall area",
+            "2 paint coats"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+          "rangeBufferUsed": 0
+        }
+      }
+    }
+  ],
+  "priceDrivers": [
+    "100 measured square feet of paintable wall area",
+    "2 paint coats"
+  ],
+  "priceUnit": null,
+  "taxTreatment": "No tax added.",
+  "rangeBufferUsed": 0,
+  "effectiveRangeBufferPercent": 0,
+  "lineItems": [
+    {
+      "name": "Wall labor",
+      "category": "labor",
+      "amountCents": 20000,
+      "ownerVisible": true,
+      "customerVisible": false,
+      "calculation": {
+        "evidenceVariant": "quantity_rate",
+        "quantity": 200,
+        "exactQuantity": {
+          "numerator": "200",
+          "denominator": "1"
+        },
+        "unit": "measured wall square-foot coats",
+        "rateCents": 100,
+        "ratePath": "laborPerWallSqftPerCoat",
+        "multipliers": [
+          {
+            "name": "wall height labor",
+            "value": 1,
+            "path": "wallHeightLaborMultiplier.standard",
+            "exactValue": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ],
+        "unroundedCents": 20000,
+        "exactUnroundedCents": {
+          "numerator": "20000",
+          "denominator": "1"
+        },
+        "roundedAmountCents": 20000,
+        "effectivePriceBasis": "cost",
+        "markupEligible": true
+      },
+      "customerDriver": "100 measured square feet of paintable wall area",
+      "taxable": false
+    },
+    {
+      "name": "Wall paint and materials",
+      "category": "material",
+      "amountCents": 10000,
+      "ownerVisible": true,
+      "customerVisible": false,
+      "calculation": {
+        "evidenceVariant": "quantity_rate",
+        "quantity": 200,
+        "exactQuantity": {
+          "numerator": "200",
+          "denominator": "1"
+        },
+        "unit": "measured wall square-foot coats",
+        "rateCents": 50,
+        "ratePath": "materialPerWallSqftPerCoat",
+        "multipliers": [],
+        "unroundedCents": 10000,
+        "exactUnroundedCents": {
+          "numerator": "10000",
+          "denominator": "1"
+        },
+        "roundedAmountCents": 10000,
+        "effectivePriceBasis": "sell_price",
+        "markupEligible": false
+      },
+      "customerDriver": "2 paint coats",
+      "taxable": false
+    }
+  ],
+  "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+  "appliedRules": [],
+  "urgencyFlags": [],
+  "failedTierDiagnostics": [],
+  "customerEligible": true,
+  "calculationRecord": {
+    "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+    "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+    "quoteId": "04dd10d9-9b90-469f-8c59-80f7367c2000",
+    "serviceType": "INTERIOR_PAINTING",
+    "options": [
+      {
+        "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+        "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+        "freeOffering": false,
+        "serviceType": "INTERIOR_PAINTING",
+        "tierName": null,
+        "normalizedCustomerInputs": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 100,
+          "wallHeight": "standard",
+          "wallScopeUniform": true,
+          "surfaceCondition": "good",
+          "coats": 2,
+          "ceilingsIncluded": false,
+          "trimIncluded": false
+        },
+        "measurements": [
+          {
+            "name": "wallAreaSqft",
+            "value": 100,
+            "unit": "square feet",
+            "source": "customer_measured"
+          },
+          {
+            "name": "appliedFinishCoats",
+            "value": 2,
+            "unit": "coats",
+            "source": "customer_confirmed"
+          }
+        ],
+        "quantityDerivations": [
+          {
+            "evidenceVariant": "derived_quantity",
+            "name": "wallCoatSqft",
+            "formula": "wallAreaSqft * coats",
+            "inputs": {
+              "wallAreaSqft": 100,
+              "coats": 2
+            },
+            "result": 200,
+            "exactResult": {
+              "numerator": "200",
+              "denominator": "1"
+            },
+            "unit": "wall square-foot coats",
+            "usedBy": [
+              "Wall labor",
+              "Wall paint and materials"
+            ]
+          }
+        ],
+        "ruleApplications": [],
+        "assumptions": [],
+        "disclosures": [],
+        "lineItems": [
+          {
+            "name": "Wall labor",
+            "category": "labor",
+            "amountCents": 20000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 200,
+              "exactQuantity": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "measured wall square-foot coats",
+              "rateCents": 100,
+              "ratePath": "laborPerWallSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "wall height labor",
+                  "value": 1,
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 20000,
+              "exactUnroundedCents": {
+                "numerator": "20000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 20000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "customerDriver": "100 measured square feet of paintable wall area",
+            "taxable": false
+          },
+          {
+            "name": "Wall paint and materials",
+            "category": "material",
+            "amountCents": 10000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 200,
+              "exactQuantity": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "measured wall square-foot coats",
+              "rateCents": 50,
+              "ratePath": "materialPerWallSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 10000,
+              "exactUnroundedCents": {
+                "numerator": "10000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 10000,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "customerDriver": "2 paint coats",
+            "taxable": false
+          }
+        ],
+        "scenarios": {
+          "mid": {
+            "variant": "mid",
+            "order": [
+              "fees",
+              "seasonal",
+              "taxability",
+              "markup",
+              "minimum"
+            ],
+            "fees": [
+              {
+                "fee": "travel",
+                "mode": "not_applicable",
+                "physicalScopeSelected": true,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "disposal",
+                "mode": "not_applicable",
+                "physicalScopeSelected": false,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "permit",
+                "mode": "not_applicable",
+                "physicalScopeSelected": false,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              },
+              {
+                "fee": "overhead",
+                "mode": "not_applicable",
+                "physicalScopeSelected": true,
+                "replaced": false,
+                "applied": false,
+                "charged": false,
+                "noCharge": false,
+                "amountCents": 0,
+                "reason": "not_applicable"
+              }
+            ],
+            "seasonal": {
+              "month": 10,
+              "configuredMonths": [],
+              "percent": 0,
+              "laborSubtotalCents": 20000,
+              "seasonActive": false,
+              "applied": false,
+              "amountCents": 0
+            },
+            "markup": {
+              "mode": "markup",
+              "lineTreatment": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "amountCents": 20000,
+                  "effectivePriceBasis": "cost",
+                  "markupConfiguredForCategory": true,
+                  "markupEligible": true
+                },
+                {
+                  "name": "Wall paint and materials",
+                  "category": "material",
+                  "amountCents": 10000,
+                  "effectivePriceBasis": "sell_price",
+                  "markupConfiguredForCategory": true,
+                  "markupEligible": false
+                }
+              ],
+              "percent": 0,
+              "baseCents": 20000,
+              "amountCents": 0,
+              "eligibleLines": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "amountCents": 20000,
+                  "basis": "cost"
+                }
+              ],
+              "sellPriceLinesExcluded": [
+                "Wall paint and materials"
+              ]
+            },
+            "minimum": {
+              "basis": "post_markup",
+              "subtotalBeforeMinimumCents": 30000,
+              "businessMinimumCents": 0,
+              "serviceMinimumField": "minimumJob",
+              "serviceMinimumCents": 0,
+              "effectiveMinimumCents": 0,
+              "adjustmentCents": 0,
+              "applied": false
+            },
+            "tax": {
+              "mode": "TAX_NONE",
+              "percent": 0,
+              "preTaxSubtotalCents": 30000,
+              "taxableMarkupCents": 0,
+              "taxableSubtotalCents": 0,
+              "nonTaxableSubtotalCents": 30000,
+              "taxCents": 0,
+              "finalTotalCents": 30000,
+              "lineTaxability": [
+                {
+                  "name": "Wall labor",
+                  "category": "labor",
+                  "taxable": false,
+                  "amountCents": 20000
+                },
+                {
+                  "name": "Wall paint and materials",
+                  "category": "material",
+                  "taxable": false,
+                  "amountCents": 10000
+                }
+              ]
+            },
+            "lineItems": [
+              {
+                "name": "Wall labor",
+                "category": "labor",
+                "amountCents": 20000,
+                "ownerVisible": true,
+                "customerVisible": false,
+                "calculation": {
+                  "evidenceVariant": "quantity_rate",
+                  "quantity": 200,
+                  "exactQuantity": {
+                    "numerator": "200",
+                    "denominator": "1"
+                  },
+                  "unit": "measured wall square-foot coats",
+                  "rateCents": 100,
+                  "ratePath": "laborPerWallSqftPerCoat",
+                  "multipliers": [
+                    {
+                      "name": "wall height labor",
+                      "value": 1,
+                      "path": "wallHeightLaborMultiplier.standard",
+                      "exactValue": {
+                        "numerator": "1",
+                        "denominator": "1"
+                      }
+                    }
+                  ],
+                  "unroundedCents": 20000,
+                  "exactUnroundedCents": {
+                    "numerator": "20000",
+                    "denominator": "1"
+                  },
+                  "roundedAmountCents": 20000,
+                  "effectivePriceBasis": "cost",
+                  "markupEligible": true
+                },
+                "customerDriver": "100 measured square feet of paintable wall area",
+                "taxable": false
+              },
+              {
+                "name": "Wall paint and materials",
+                "category": "material",
+                "amountCents": 10000,
+                "ownerVisible": true,
+                "customerVisible": false,
+                "calculation": {
+                  "evidenceVariant": "quantity_rate",
+                  "quantity": 200,
+                  "exactQuantity": {
+                    "numerator": "200",
+                    "denominator": "1"
+                  },
+                  "unit": "measured wall square-foot coats",
+                  "rateCents": 50,
+                  "ratePath": "materialPerWallSqftPerCoat",
+                  "multipliers": [],
+                  "unroundedCents": 10000,
+                  "exactUnroundedCents": {
+                    "numerator": "10000",
+                    "denominator": "1"
+                  },
+                  "roundedAmountCents": 10000,
+                  "effectivePriceBasis": "sell_price",
+                  "markupEligible": false
+                },
+                "customerDriver": "2 paint coats",
+                "taxable": false
+              }
+            ],
+            "finalTotalCents": 30000
+          }
+        },
+        "range": {
+          "source": "business_range_buffer",
+          "bufferPercent": 0,
+          "effectiveRangeBufferPercent": 0,
+          "rangeBufferUsed": 0,
+          "minimumCustomerFloorCents": 0,
+          "lowCents": 30000,
+          "midCents": 30000,
+          "highCents": 30000,
+          "exactMidScenarioTotalCents": 30000
+        },
+        "customerProjection": {
+          "tierName": null,
+          "priceUnit": null,
+          "taxTreatment": "No tax added.",
+          "lowEstimate": 300,
+          "midEstimate": 300,
+          "highEstimate": 300,
+          "priceDrivers": [
+            "100 measured square feet of paintable wall area",
+            "2 paint coats"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+          "rangeBufferUsed": 0
+        }
+      }
+    ],
+    "ownerConfiguration": {
+      "id": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC] A",
+      "source": "MANUAL",
+      "origin": {
+        "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "63284ade-a343-437e-9963-2e7e09915d8c",
+        "operationId": "7e2ec40a-ed40-4cd7-80db-d8d07a9a7397",
+        "createdAt": "2026-10-02T18:06:35.389Z"
+      },
+      "active": true,
+      "confirmedFields": {},
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "knownOfferings": {},
+      "pricing": {
+        "laborPerWallSqftPerCoat": 100,
+        "materialPerWallSqftPerCoat": 50,
+        "minimumJob": 0,
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        }
+      },
+      "tiers": []
+    },
+    "financialInputs": {
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 1000,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "feeSelections": {
+        "owner": {},
+        "customer": {}
+      },
+      "currentMonth": 10
+    },
+    "customerEligible": true
+  },
+  "pricedScope": {
+    "serviceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60",
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] A",
+    "facts": [
+      {
+        "label": "Wall area measurement method",
+        "value": "Wall sqft"
+      },
+      {
+        "label": "Measured paintable wall area",
+        "value": "100"
+      },
+      {
+        "label": "Wall height",
+        "value": "Standard"
+      },
+      {
+        "label": "All wall area shares the confirmed height, access, and finish-coat count",
+        "value": "Yes"
+      },
+      {
+        "label": "Wall condition",
+        "value": "Good"
+      },
+      {
+        "label": "Paint coats",
+        "value": "2"
+      },
+      {
+        "label": "Ceilings included",
+        "value": "No"
+      },
+      {
+        "label": "Trim included",
+        "value": "No"
+      }
+    ],
+    "fees": [],
+    "bookRevision": "cacc76c640de9952e4874825629e224cdfba948f0a910e0e949e24c8a3dc816b"
+  },
+  "submittedDetails": {
+    "requestedWork": "[SYNTHETIC] A",
+    "contact": {},
+    "location": {},
+    "timing": "Not supplied",
+    "additionalDetails": "",
+    "unknowns": "",
+    "clarifications": []
+  },
+  "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+  "fullJobTotal": null,
+  "bookRevision": "cacc76c640de9952e4874825629e224cdfba948f0a910e0e949e24c8a3dc816b",
+  "selectedServiceId": "a9bc80bd-8f1f-4bdb-aabc-5d150de5dd60"
+}

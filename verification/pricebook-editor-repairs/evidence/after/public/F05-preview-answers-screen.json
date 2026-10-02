@@ -1,0 +1,380 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\n\nQUOTEDONE\n\nPrice book\n\nYour prices drive every quote.\n\nBuild it with your AI\nSuggest a starter book\nChoose service type\nRoof replacement\nRoof repair\nFlat roof replacement\nFlat roof repair\nInterior painting\nExterior painting\nFlooring installation\nFlooring replacement\nFencing installation\nFencing replacement\nSiding replacement\nSiding repair\nConcrete driveway\nConcrete patio slab\nLandscaping cleanup\nMulch installation\nSod installation\nPlanting\nMowing\nCustom service\nAdd service\n\nSERVICES\n\n[SYNTHETIC] A\nQUOTING LIVE\nStandard jobs ready · more scope needs setup\n[SYNTHETIC] B\nQUOTING LIVE\nStandard jobs ready · more scope needs setup\nRoof replacement\nDISABLED\nDisabled by you\nRoof repair\nDISABLED\nDisabled by you\n\nYOUR PRICES · REQUIRED\n\n[SYNTHETIC] A\nOff The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.\n3 / 3 SET\nFence and painting offering\nOffering pricing\nMeasured wall pricing — choose to configure an offering\nComplete installed prices\nItemized measured components\nWhich requests can be quoted?\n\nConfigured work can quote. These additional requests need the listed setup before they can be included.\n\nCeiling painting\nCeiling painting requests arrive as leads until you configure this scope and its prices.\nTrim painting\nTrim painting requests arrive as leads until you configure this scope and its prices.\n\nEnter optional rates under Optional prices and add-on charges, and product or scope details under Additional priced scope. Unconfigured requests arrive as leads for your estimate.\n\nEnable quoting for this service\nWall painting labor price per measured wall square foot, per coat\nLabor price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nWall paint material price per measured wall square foot, per coat\nPaint and material price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nMinimum job price\nLowest total price for this service. Enter $0 when there is no service minimum. $0 is valid and means no minimum.\n$\nAdditional priced scope\nSet up removal, preparation and other measured work you offer.\nSETUP NEEDED\n▸\nQuote configuration\nLabor, materials, taxes, minimums and pricing rules.\n▸\nQuote configuration\n\nChoose each rate meaning, tax treatment and charge rule. Missing decisions keep customer requests in review.\n\nCATEGORY\tRATE MEANING BY LINE CATEGORY\tTAXABILITY BY LINE CATEGORY\tAPPLY MARKUP / MARGIN\nlabor\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\nmaterial\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\nremoval\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\nprep\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\naddon\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\nequipment\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\ntravel\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\ndisposal\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\npermit\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\noverhead\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\n\nsurcharge\t\nChoose\nOwner cost\nFinal sell price\n\t\nChoose\nTaxable\nNot taxable\n\t\nChoose\nYes\nNo\nCommon-fee applicability\ntravel\nChoose\nnot applicable\nincluded in rates\nalways\nwhen scope selected\nowner selected\ncustomer selected\ndisposal\nChoose\nnot applicable\nincluded in rates\nalways\nwhen scope selected\nowner selected\ncustomer selected\npermit\nChoose\nnot applicable\nincluded in rates\nalways\nwhen scope selected\nowner selected\ncustomer selected\noverhead\nChoose\nnot applicable\nincluded in rates\nalways\nwhen scope selected\nowner selected\ncustomer selected\nBusiness-wide fixed charges and range\noverhead Fixed ($)\nminimum Job Price ($)\ntravel Fee ($)\ndisposal Fee ($)\npermit Fee ($)\nEstimate range buffer (%)\nPeak surcharge (%)\nPeak months\n1 2 3 4 5 6 7 8 9 10 11 12 \nNo peak months\nOwner approval\nReview saved configuration\nOptional prices and add-on charges\nSelected scope needs its configured price; missing pricing returns review.\n0 OF 4 SET\n▸\nQuantity assumptions\nDefaults are already being applied. Adjust only if your jobs differ.\nDEFAULTS APPLIED\n▸\nRetained legacy settings\nThese values retain their saved meaning and location. They are not used by current quoting rules.\n▸\nGood / Better / Best tiers\nOffer up to three options on one quote.\nNOT USED\n▸\n\nBUSINESS-WIDE · APPLIES TO EVERY SERVICE\n\nMarkup and margin\n0% markup = 0.0% margin\n0%\n▸\nTax\nNo tax line on quotes\nNO TAX\n▸\nProject measurements for preview\nEnter a job to check the customer estimate.\n▸\nProject measurements for preview\n\nEnter measured facts. Unknown or unsupported scope returns review.\n\nCustomer fee answers for preview\n\nAnswer as the customer for this preview only. These answers are not saved as owner pricing decisions.\n\nApply travel fee for this preview?\nUnanswered\nYes\nNo\nWall area measurement method\nUnknown / not supplied\nwall sqft\nfloor sqft\nrooms\nMeasured paintable wall area\nsquare feet\nWall height\nUnknown / not supplied\nstandard\nhigh\nvaulted\nWall condition\nUnknown / not supplied\ngood\nfair\npoor\nPaint coats\ncoats\nCeilings included\nUnknown / not supplied\nYes\nNo\nMeasured ceiling area\nsquare feet\nTrim included\nUnknown / not supplied\nYes\nNo\nMeasured trim length\nlinear feet\nPermit required for this measured project\nUnknown / not supplied\nYes\nNo\nAll wall area shares the confirmed height, access, and finish-coat count\nUnknown / not supplied\nYes\nNo\nIndependently confirmed ceiling finish coats\ncoats\nWHAT YOUR CUSTOMER HEARS\nUPDATES AS YOU TYPE\n\nThis is what the estimate will sound like on a call. Nothing saves until you save.\n\nCALCULATING\nCustomer quote link\nAllowed website origins\nEnter the exact HTTPS website origins. Local HTTP origins are available only for non-production verification.\nUse this website origin\nSave quote-link access\nA valid persisted service UUID is required. Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt. feeRules.travel is required. feeRules.disposal is required. feeRules.permit is required. feeRules.overhead is required. priceBasisByCategory.labor is required. priceBasisByCategory.material is required. priceBasisByCategory.removal is required. priceBasisByCategory.prep is required. priceBasisByCategory.addon is required. priceBasisByCategory.equipment is required. priceBasisByCategory.travel is required. priceBasisByCategory.disposal is required. priceBasisByCategory.permit is required. priceBasisByCategory.overhead is required. priceBasisByCategory.surcharge is required. taxabilityByCategory.labor is required. taxabilityByCategory.material is required. taxabilityByCategory.removal is required. taxabilityByCategory.prep is required. taxabilityByCategory.addon is required. taxabilityByCategory.equipment is required. taxabilityByCategory.travel is required. taxabilityByCategory.disposal is required. taxabilityByCategory.permit is required. taxabilityByCategory.overhead is required. taxabilityByCategory.surcharge is required. Service is not enabled for customer quoting. Owner offering registries are incomplete or inconsistent. Confirm this exact saved configuration before enabling customer quotes. A valid persisted service UUID is required. Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt. feeRules.travel is required. feeRules.disposal is required. feeRules.permit is required. feeRules.overhead is required. priceBasisByCategory.labor is required. priceBasisByCategory.material is required. priceBasisByCategory.removal is required. priceBasisByCategory.prep is required. priceBasisByCategory.addon is required. priceBasisByCategory.equipment is required. priceBasisByCategory.travel is required. priceBasisByCategory.disposal is required. priceBasisByCategory.permit is required. priceBasisByCategory.overhead is required. priceBasisByCategory.surcharge is required. taxabilityByCategory.labor is required. taxabilityByCategory.material is required. taxabilityByCategory.removal is required. taxabilityByCategory.prep is required. taxabilityByCategory.addon is required. taxabilityByCategory.equipment is required. taxabilityByCategory.travel is required. taxabilityByCategory.disposal is required. taxabilityByCategory.permit is required. taxabilityByCategory.overhead is required. taxabilityByCategory.surcharge is required. Service is not enabled for customer quoting. Owner offering registries are incomplete or inconsistent. Confirm this exact saved configuration before enabling customer quotes.\nQUOTING LIVE\nChecking your changes\nSave & validate\nSAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/pricebook",
+      "invalid": null
+    },
+    {
+      "label": "New service type",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering pricing",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "1",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0.5",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": "labor price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "labor taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "labor markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "material price basis",
+      "value": "sell_price",
+      "invalid": null
+    },
+    {
+      "label": "material taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "material markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "removal price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "removal taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "removal markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "prep price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "prep taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "prep markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "addon price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "addon taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "addon markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "equipment price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "equipment taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "equipment markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "travel price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "travel taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "travel markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "disposal price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "disposal taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "disposal markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "permit price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "permit taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "permit markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "overhead price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "overhead taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "overhead markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "surcharge price basis",
+      "value": "cost",
+      "invalid": null
+    },
+    {
+      "label": "surcharge taxability",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "surcharge markup applies",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "travel fee rule",
+      "value": "customer_selected",
+      "invalid": null
+    },
+    {
+      "label": "disposal fee rule",
+      "value": "not_applicable",
+      "invalid": null
+    },
+    {
+      "label": "permit fee rule",
+      "value": "not_applicable",
+      "invalid": null
+    },
+    {
+      "label": "overhead fee rule",
+      "value": "not_applicable",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "10",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    },
+    {
+      "label": "travel customer fee for preview",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Wall area measurement method",
+      "value": "wall_sqft",
+      "invalid": null
+    },
+    {
+      "label": "Measured paintable wall area",
+      "value": "100",
+      "invalid": "false"
+    },
+    {
+      "label": "Wall height",
+      "value": "standard",
+      "invalid": null
+    },
+    {
+      "label": "Wall condition",
+      "value": "good",
+      "invalid": null
+    },
+    {
+      "label": "Paint coats",
+      "value": "2",
+      "invalid": "false"
+    },
+    {
+      "label": "Ceilings included",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "Measured ceiling area",
+      "value": "",
+      "invalid": "false"
+    },
+    {
+      "label": "Trim included",
+      "value": "false",
+      "invalid": null
+    },
+    {
+      "label": "Measured trim length",
+      "value": "",
+      "invalid": "false"
+    },
+    {
+      "label": "Permit required for this measured project",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "All wall area shares the confirmed height, access, and finish-coat count",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "Independently confirmed ceiling finish coats",
+      "value": "",
+      "invalid": "false"
+    }
+  ]
+}

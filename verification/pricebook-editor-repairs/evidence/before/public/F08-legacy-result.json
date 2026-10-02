@@ -1,0 +1,224 @@
+{
+  "ownerId": "71ec0d66-d87b-4454-9ba0-780dfe409d2b",
+  "services": [
+    {
+      "id": "17b899b8-b9fb-4c4d-ab8c-2494d24a9429",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC] A",
+      "pricing": {
+        "laborPerWallSqftPerCoat": 1,
+        "materialPerWallSqftPerCoat": 0.5,
+        "minimumJob": 0,
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 100,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      },
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "17b899b8-b9fb-4c4d-ab8c-2494d24a9429",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "71ec0d66-d87b-4454-9ba0-780dfe409d2b",
+        "operationId": "1fffddb8-8877-4a9e-a0a5-599f37e0c6f1",
+        "createdAt": "2026-10-02T18:06:30.778Z"
+      },
+      "quoteDoneApproval": {
+        "ownerId": "71ec0d66-d87b-4454-9ba0-780dfe409d2b",
+        "serviceId": "17b899b8-b9fb-4c4d-ab8c-2494d24a9429",
+        "operationId": "1fffddb8-8877-4a9e-a0a5-599f37e0c6f1",
+        "approvedAt": "2026-10-02T18:06:30.778Z",
+        "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "a02cd955ce2aae22753dd729b50fd3f59c0106142697c62fdb84d25ad4144361",
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "id": "fdfdca52-cf85-464b-a009-68aad716e6fa",
+      "source": "MANUAL",
+      "knownOfferings": {},
+      "active": true,
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "[SYNTHETIC] B",
+      "pricing": {
+        "laborPerWallSqftPerCoat": 1,
+        "materialPerWallSqftPerCoat": 0.5,
+        "minimumJob": 0,
+        "wallHeightLaborMultiplier": {
+          "standard": 1,
+          "high": 1.1,
+          "vaulted": 1.25
+        }
+      },
+      "feeRules": {
+        "travel": "not_applicable",
+        "disposal": "not_applicable",
+        "permit": "not_applicable",
+        "overhead": "not_applicable"
+      },
+      "priceBasisByCategory": {
+        "labor": "cost",
+        "material": "sell_price",
+        "removal": "cost",
+        "prep": "cost",
+        "addon": "cost",
+        "equipment": "cost",
+        "travel": "cost",
+        "disposal": "cost",
+        "permit": "cost",
+        "overhead": "cost",
+        "surcharge": "cost"
+      },
+      "taxabilityByCategory": {
+        "labor": false,
+        "material": false,
+        "removal": false,
+        "prep": false,
+        "addon": false,
+        "equipment": false,
+        "travel": false,
+        "disposal": false,
+        "permit": false,
+        "overhead": false,
+        "surcharge": false
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "validationInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 100,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 2,
+        "ceilingsIncluded": false,
+        "trimIncluded": false
+      },
+      "confirmedFields": {},
+      "origin": {
+        "serviceId": "fdfdca52-cf85-464b-a009-68aad716e6fa",
+        "serviceType": "INTERIOR_PAINTING",
+        "source": "MANUAL",
+        "ownerId": "71ec0d66-d87b-4454-9ba0-780dfe409d2b",
+        "operationId": "dd00ecaa-5b69-47ca-bbb2-747a764ea294",
+        "createdAt": "2026-10-02T18:06:30.793Z"
+      },
+      "quoteDoneApproval": {
+        "ownerId": "71ec0d66-d87b-4454-9ba0-780dfe409d2b",
+        "serviceId": "fdfdca52-cf85-464b-a009-68aad716e6fa",
+        "operationId": "dd00ecaa-5b69-47ca-bbb2-747a764ea294",
+        "approvedAt": "2026-10-02T18:06:30.793Z",
+        "engineVersion": "quote-engine-vnext-opus-repairs-20261001-v1",
+        "moneyUnitVersion": "roof-minimum-cents-v1",
+        "contentDigest": "30fa1ceffbe7ec85d877f7cd0bfd43f36c3bdb78d7c955262adb8948a8b78993",
+        "operation": "owner_confirmed_quotedone_registration"
+      }
+    },
+    {
+      "serviceType": "ROOFING_REPLACEMENT",
+      "service": "Roof replacement",
+      "source": "MANUAL",
+      "active": false,
+      "tiers": [],
+      "validationInputs": {}
+    },
+    {
+      "serviceType": "ROOFING_REPAIR",
+      "service": "Roof repair",
+      "source": "MANUAL",
+      "active": false,
+      "tiers": [],
+      "validationInputs": {}
+    },
+    {
+      "serviceType": "INTERIOR_PAINTING",
+      "service": "OWNER A PRIVATE DRAFT",
+      "pricing": {
+        "laborPerWallSqftPerCoat": 77
+      },
+      "source": "AI_INTERVIEW",
+      "active": false,
+      "tiers": [],
+      "confirmedFields": {}
+    }
+  ],
+  "defaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 10,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "markupApplies": {
+      "labor": true,
+      "material": true,
+      "removal": true,
+      "prep": true,
+      "addon": true,
+      "equipment": true,
+      "travel": true,
+      "disposal": true,
+      "permit": true,
+      "overhead": true,
+      "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+  },
+  "updatedAt": "2026-10-02T18:06:30.794Z",
+  "revision": "9c2432c3f44217cc9315e848aa1339d1c27db3d9fd8100fc43565384a6554af7",
+  "quoteDoneVersion": "quote-engine-vnext-opus-repairs-20261001-v1"
+}

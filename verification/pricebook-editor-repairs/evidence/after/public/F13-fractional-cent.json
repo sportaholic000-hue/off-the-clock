@@ -1,0 +1,42 @@
+{
+  "request": {
+    "fields": {
+      "INTERIOR_PAINTING": {
+        "laborPerWallSqftPerCoat": 0.0051
+      }
+    },
+    "confirmedFields": {
+      "INTERIOR_PAINTING": [
+        "laborPerWallSqftPerCoat"
+      ]
+    },
+    "currentField": "INTERIOR_PAINTING.materialPerWallSqftPerCoat"
+  },
+  "response": {
+    "draft": {
+      "id": "6e318be1-3cfc-4682-8004-36455bfe1d09",
+      "ownerId": "ea8e3032-cbe5-464d-a52b-2d6558ce327f",
+      "status": "DRAFT",
+      "mode": "browser",
+      "serviceTypesJson": "[\"INTERIOR_PAINTING\"]",
+      "fieldsJson": "{\"INTERIOR_PAINTING\":{\"laborPerWallSqftPerCoat\":0.0051}}",
+      "confirmedFieldsJson": "{\"INTERIOR_PAINTING\":[\"laborPerWallSqftPerCoat\"]}",
+      "currentField": "INTERIOR_PAINTING.materialPerWallSqftPerCoat",
+      "createdAt": "2026-10-02T18:06:50.609Z",
+      "updatedAt": "2026-10-02T18:06:51.027Z",
+      "serviceTypes": [
+        "INTERIOR_PAINTING"
+      ],
+      "fields": {
+        "INTERIOR_PAINTING": {
+          "laborPerWallSqftPerCoat": 0.0051
+        }
+      },
+      "confirmedFields": {
+        "INTERIOR_PAINTING": [
+          "laborPerWallSqftPerCoat"
+        ]
+      }
+    }
+  }
+}

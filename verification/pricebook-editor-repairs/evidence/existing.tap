@@ -1,0 +1,996 @@
+TAP version 13
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: F11 browser boolean leaves preserve No, unanswered and the exact key
+ok 1 - F11 browser boolean leaves preserve No, unanswered and the exact key
+  ---
+  duration_ms: 889.8352
+  type: 'test'
+  ...
+# Subtest: F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+ok 2 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text
+  ---
+  duration_ms: 334.123941
+  type: 'test'
+  ...
+# Subtest: F13 browser legacy flat and two-level controls use the same exact parser
+ok 3 - F13 browser legacy flat and two-level controls use the same exact parser
+  ---
+  duration_ms: 549.41539
+  type: 'test'
+  ...
+# (node:3473) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/off-the-clock/off-the-clock/test/phase2.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/runner/work/off-the-clock/off-the-clock/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:3473) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Phase 2 metadata covers every engine service and formula owner field
+ok 4 - Phase 2 metadata covers every engine service and formula owner field
+  ---
+  duration_ms: 2.960298
+  type: 'test'
+  ...
+# Subtest: mandated owner labels are preserved verbatim
+ok 5 - mandated owner labels are preserved verbatim
+  ---
+  duration_ms: 0.771108
+  type: 'test'
+  ...
+# Subtest: dollar conversion handles nested owner rates and leaves factors alone
+ok 6 - dollar conversion handles nested owner rates and leaves factors alone
+  ---
+  duration_ms: 1.265029
+  type: 'test'
+  ...
+# Subtest: minimum fields accept zero while rates still require a nonzero value
+ok 7 - minimum fields accept zero while rates still require a nonzero value
+  ---
+  duration_ms: 0.5518
+  type: 'test'
+  ...
+# Subtest: AI-sourced services require individual confirmation of every field
+ok 8 - AI-sourced services require individual confirmation of every field
+  ---
+  duration_ms: 0.393686
+  type: 'test'
+  ...
+# Subtest: Class 2 fencing override changes labor without changing materials
+ok 9 - Class 2 fencing override changes labor without changing materials
+  ---
+  duration_ms: 2.600796
+  type: 'test'
+  ...
+# Subtest: Phase 2 tables enforce DRAFT-only interview persistence
+ok 10 - Phase 2 tables enforce DRAFT-only interview persistence
+  ---
+  duration_ms: 2.349532
+  type: 'test'
+  ...
+# Subtest: price book shape rejects more than three tiers
+ok 11 - price book shape rejects more than three tiers
+  ---
+  duration_ms: 0.647347
+  type: 'test'
+  ...
+# Subtest: owner-facing Phase 2 source has no gradients or forwarding mechanics
+ok 12 - owner-facing Phase 2 source has no gradients or forwarding mechanics
+  ---
+  duration_ms: 2.606709
+  type: 'test'
+  ...
+# Subtest: server exposes the complete Phase 2 route surface
+ok 13 - server exposes the complete Phase 2 route surface
+  ---
+  duration_ms: 0.625035
+  type: 'test'
+  ...
+# Subtest: every owner field is classified as money or explicitly non-money
+ok 14 - every owner field is classified as money or explicitly non-money
+  ---
+  duration_ms: 0.464684
+  type: 'test'
+  ...
+# Subtest: previously skipped monetary fields now convert dollars to cents
+ok 15 - previously skipped monetary fields now convert dollars to cents
+  ---
+  duration_ms: 0.285812
+  type: 'test'
+  ...
+# Subtest: house wrap remains included in the all-in siding rate with no separate charge
+ok 16 - house wrap remains included in the all-in siding rate with no separate charge
+  ---
+  duration_ms: 0.285075
+  type: 'test'
+  ...
+# Subtest: malformed leaves and business defaults are rejected at save
+ok 17 - malformed leaves and business defaults are rejected at save
+  ---
+  duration_ms: 1.444349
+  type: 'test'
+  ...
+# Subtest: negative pricing is rejected at save and treated as unconfigured by the engine
+ok 18 - negative pricing is rejected at save and treated as unconfigured by the engine
+  ---
+  duration_ms: 0.580482
+  type: 'test'
+  ...
+# Subtest: missing-field statuses carry exact human-facing labels
+ok 19 - missing-field statuses carry exact human-facing labels
+  ---
+  duration_ms: 0.142824
+  type: 'test'
+  ...
+# Subtest: QuoteDone access requires both an eligible plan and a current lifecycle entitlement
+ok 20 - QuoteDone access requires both an eligible plan and a current lifecycle entitlement
+  ---
+  duration_ms: 1.586932
+  type: 'test'
+  ...
+# Subtest: Class 2 defaults are stored per service on save, and money fields round-trip
+ok 21 - Class 2 defaults are stored per service on save, and money fields round-trip
+  ---
+  duration_ms: 7.443693
+  type: 'test'
+  ...
+# Subtest: upgraded starter book: per-field Class 1 drafts for formula services, ranges only for CUSTOM
+ok 22 - upgraded starter book: per-field Class 1 drafts for formula services, ranges only for CUSTOM
+  ---
+  duration_ms: 20.527782
+  type: 'test'
+  ...
+# Subtest: shaped fields enforce spec key domains and never silently drop the customer key
+ok 23 - shaped fields enforce spec key domains and never silently drop the customer key
+  ---
+  duration_ms: 0.574602
+  type: 'test'
+  ...
+# Subtest: every AI-populated field, optional included, must be confirmed before activation
+ok 24 - every AI-populated field, optional included, must be confirmed before activation
+  ---
+  duration_ms: 0.363078
+  type: 'test'
+  ...
+# Subtest: CUSTOM exposes and enforces minimumJob; starter drafts cover closed-domain shaped fields
+ok 25 - CUSTOM exposes and enforces minimumJob; starter drafts cover closed-domain shaped fields
+  ---
+  duration_ms: 1.940568
+  type: 'test'
+  ...
+# Subtest: exact nested shaped prices are required for the selected quote
+ok 26 - exact nested shaped prices are required for the selected quote
+  ---
+  duration_ms: 0.477163
+  type: 'test'
+  ...
+# Subtest: activation requires complete mandated shaped keys and nested rows
+ok 27 - activation requires complete mandated shaped keys and nested rows
+  ---
+  duration_ms: 0.570316
+  type: 'test'
+  ...
+# Subtest: Class 2 maps require the exact supported shape and the editor has no raw JSON factor control
+ok 28 - Class 2 maps require the exact supported shape and the editor has no raw JSON factor control
+  ---
+  duration_ms: 1.548738
+  type: 'test'
+  ...
+# Subtest: current draft status follows dynamic server requirements and never trusts saved LIVE state
+ok 29 - current draft status follows dynamic server requirements and never trusts saved LIVE state
+  ---
+  duration_ms: 0.852779
+  type: 'test'
+  ...
+# Subtest: CUSTOM starter suggestions drop negative and non-finite ranges and minimums
+ok 30 - CUSTOM starter suggestions drop negative and non-finite ranges and minimums
+  ---
+  duration_ms: 0.259151
+  type: 'test'
+  ...
+# Subtest: flooring uses keyed type rates and human pricing keys split snake_case and camelCase
+ok 31 - flooring uses keyed type rates and human pricing keys split snake_case and camelCase
+  ---
+  duration_ms: 1.405759
+  type: 'test'
+  ...
+# Subtest: starter warning ruling is exact across spec, API, and model prompt
+ok 32 - starter warning ruling is exact across spec, API, and model prompt
+  ---
+  duration_ms: 0.763848
+  type: 'test'
+  ...
+# Subtest: service-specific quote fields reject unsupported hidden values
+ok 33 - service-specific quote fields reject unsupported hidden values
+  ---
+  duration_ms: 0.652146
+  type: 'test'
+  ...
+# Subtest: ruled disposal overrides are exposed, validated, converted, and confirmed
+ok 34 - ruled disposal overrides are exposed, validated, converted, and confirmed
+  ---
+  duration_ms: 0.494936
+  type: 'test'
+  ...
+# Subtest: disposal override falls back, prices removal, and reviews malformed values
+ok 35 - disposal override falls back, prices removal, and reviews malformed values
+  ---
+  duration_ms: 0.41372
+  type: 'test'
+  ...
+# Subtest: current draft validates every quote-affecting business default before save
+ok 36 - current draft validates every quote-affecting business default before save
+  ---
+  duration_ms: 2.97951
+  type: 'test'
+  ...
+# Subtest: owner-selectable product offerings activate on a supported subset
+ok 37 - owner-selectable product offerings activate on a supported subset
+  ---
+  duration_ms: 0.208291
+  type: 'test'
+  ...
+# Subtest: every ENABLED product offering must be completely priced
+ok 38 - every ENABLED product offering must be completely priced
+  ---
+  duration_ms: 0.255307
+  type: 'test'
+  ...
+# Subtest: at least one product offering must be enabled and priced
+ok 39 - at least one product offering must be enabled and priced
+  ---
+  duration_ms: 0.100579
+  type: 'test'
+  ...
+# Subtest: a disabled product requested at quote time returns review, never a substituted rate
+ok 40 - a disabled product requested at quote time returns review, never a substituted rate
+  ---
+  duration_ms: 0.113502
+  type: 'test'
+  ...
+# Subtest: closed non-selectable domains still require complete coverage
+ok 41 - closed non-selectable domains still require complete coverage
+  ---
+  duration_ms: 0.093361
+  type: 'test'
+  ...
+# Subtest: disjoint product offering maps must not activate
+ok 42 - disjoint product offering maps must not activate
+  ---
+  duration_ms: 0.184029
+  type: 'test'
+  ...
+# Subtest: a product in labor but absent from material blocks activation
+ok 43 - a product in labor but absent from material blocks activation
+  ---
+  duration_ms: 0.140769
+  type: 'test'
+  ...
+# Subtest: a product in material but absent from labor blocks activation
+ok 44 - a product in material but absent from labor blocks activation
+  ---
+  duration_ms: 0.174988
+  type: 'test'
+  ...
+# Subtest: a consistently priced subset still activates after the consistency check
+ok 45 - a consistently priced subset still activates after the consistency check
+  ---
+  duration_ms: 0.206496
+  type: 'test'
+  ...
+# Subtest: offering consistency does not affect services without selectable products
+ok 46 - offering consistency does not affect services without selectable products
+  ---
+  duration_ms: 0.150765
+  type: 'test'
+  ...
+# Subtest: customer payloads are built from an allowlist, not by removing known keys
+ok 47 - customer payloads are built from an allowlist, not by removing known keys
+  ---
+  duration_ms: 0.497115
+  type: 'test'
+  ...
+# Subtest: customer review outcomes never expose owner configuration
+ok 48 - customer review outcomes never expose owner configuration
+  ---
+  duration_ms: 0.409413
+  type: 'test'
+  ...
+# Subtest: owner results retain full diagnostics
+ok 49 - owner results retain full diagnostics
+  ---
+  duration_ms: 0.304594
+  type: 'test'
+  ...
+# Subtest: customer eligibility is enforced before quote generation
+ok 50 - customer eligibility is enforced before quote generation
+  ---
+  duration_ms: 0.559677
+  type: 'test'
+  ...
+# Subtest: a service that is not QUOTING LIVE cannot produce a customer estimate
+ok 51 - a service that is not QUOTING LIVE cannot produce a customer estimate
+  ---
+  duration_ms: 0.608435
+  type: 'test'
+  ...
+# (node:3480) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/off-the-clock/off-the-clock/test/phase2Terminology.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/runner/work/off-the-clock/off-the-clock/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every owner field has contractor-facing label, explanation, units, and option names
+ok 52 - every owner field has contractor-facing label, explanation, units, and option names
+  ---
+  duration_ms: 4.754277
+  type: 'test'
+  ...
+# Subtest: locked roofing labels and explanations identify the priced work
+ok 53 - locked roofing labels and explanations identify the priced work
+  ---
+  duration_ms: 0.792642
+  type: 'test'
+  ...
+# Subtest: contractor validation messages translate engine paths and unsupported values
+ok 54 - contractor validation messages translate engine paths and unsupported values
+  ---
+  duration_ms: 1.761757
+  type: 'test'
+  ...
+# Subtest: contractor UI has no raw identifier fallback paths
+ok 55 - contractor UI has no raw identifier fallback paths
+  ---
+  duration_ms: 1.898684
+  type: 'test'
+  ...
+# Subtest: local telephony preview is explicit, inert, and impossible in production
+ok 56 - local telephony preview is explicit, inert, and impossible in production
+  ---
+  duration_ms: 0.455273
+  type: 'test'
+  ...
+# Subtest: preview endpoints are registered only inside the development guard
+ok 57 - preview endpoints are registered only inside the development guard
+  ---
+  duration_ms: 0.558531
+  type: 'test'
+  ...
+# Subtest: the customer-facing quote preview never renders owner-only line items
+ok 58 - the customer-facing quote preview never renders owner-only line items
+  ---
+  duration_ms: 0.444467
+  type: 'test'
+  ...
+# Subtest: owner-only line items are flagged customerVisible false by the engine
+ok 59 - owner-only line items are flagged customerVisible false by the engine
+  ---
+  duration_ms: 0.18278
+  type: 'test'
+  ...
+# Subtest: the quote preview renders customer-safe priceDrivers, not raw line items
+ok 60 - the quote preview renders customer-safe priceDrivers, not raw line items
+  ---
+  duration_ms: 0.586207
+  type: 'test'
+  ...
+# Subtest: sanitizeForCustomer strips lineItems and exposes only safe fields
+ok 61 - sanitizeForCustomer strips lineItems and exposes only safe fields
+  ---
+  duration_ms: 1.670574
+  type: 'test'
+  ...
+# Subtest: skipped add-ons are distinguished explicitly in the preview
+ok 62 - skipped add-ons are distinguished explicitly in the preview
+  ---
+  duration_ms: 1.283038
+  type: 'test'
+  ...
+# Subtest: --edge is a border token and is never used as a text colour
+ok 63 - --edge is a border token and is never used as a text colour
+  ---
+  duration_ms: 1.161162
+  type: 'test'
+  ...
+# Subtest: a titled field renders exactly one supporting line, not two
+ok 64 - a titled field renders exactly one supporting line, not two
+  ---
+  duration_ms: 0.41857
+  type: 'test'
+  ...
+# Subtest: the price-book sidebar does not share a class with the dashboard rows
+ok 65 - the price-book sidebar does not share a class with the dashboard rows
+  ---
+  duration_ms: 0.672777
+  type: 'test'
+  ...
+# Subtest: button labels are never repainted by container descendant selectors
+ok 66 - button labels are never repainted by container descendant selectors
+  ---
+  duration_ms: 0.482015
+  type: 'test'
+  ...
+# Subtest: draft validation never clears known statuses or reports failure while typing
+ok 67 - draft validation never clears known statuses or reports failure while typing
+  ---
+  duration_ms: 0.520404
+  type: 'test'
+  ...
+# Subtest: each onboarding step renders exactly one heading composition
+ok 68 - each onboarding step renders exactly one heading composition
+  ---
+  duration_ms: 0.37309
+  type: 'test'
+  ...
+# Subtest: the dashboard blocker section is bounded and grouped by service
+ok 69 - the dashboard blocker section is bounded and grouped by service
+  ---
+  duration_ms: 0.200905
+  type: 'test'
+  ...
+# Subtest: the dashboard has a page-level vertical rhythm, not per-card margins
+ok 70 - the dashboard has a page-level vertical rhythm, not per-card margins
+  ---
+  duration_ms: 0.608576
+  type: 'test'
+  ...
+# Subtest: the AI interview never asks for or speaks raw JSON
+ok 71 - the AI interview never asks for or speaks raw JSON
+  ---
+  duration_ms: 0.348054
+  type: 'test'
+  ...
+# Subtest: structured interview answers keep the exact shape validation expects
+ok 72 - structured interview answers keep the exact shape validation expects
+  ---
+  duration_ms: 3.716278
+  type: 'test'
+  ...
+# Subtest: the interview states a truthful question count, not a fixed time
+ok 73 - the interview states a truthful question count, not a fixed time
+  ---
+  duration_ms: 0.45457
+  type: 'test'
+  ...
+# Subtest: resuming an interview restores a partially completed structured answer
+ok 74 - resuming an interview restores a partially completed structured answer
+  ---
+  duration_ms: 0.256349
+  type: 'test'
+  ...
+# Subtest: the onboarding grid columns can shrink below their content width
+ok 75 - the onboarding grid columns can shrink below their content width
+  ---
+  duration_ms: 0.44882
+  type: 'test'
+  ...
+# Subtest: supporting-text selectors match the markup their components actually render
+ok 76 - supporting-text selectors match the markup their components actually render
+  ---
+  duration_ms: 0.648571
+  type: 'test'
+  ...
+# Subtest: price-book generation is independent of the voice setting and never puts the key in its URL
+ok 77 - price-book generation is independent of the voice setting and never puts the key in its URL
+  ---
+  duration_ms: 36.752562
+  type: 'test'
+  ...
+# Subtest: starter rejects non JSON without silently dropping input
+ok 78 - starter rejects non JSON without silently dropping input
+  ---
+  duration_ms: 28.23855
+  type: 'test'
+  ...
+# Subtest: starter rejects fenced JSON without silently dropping input
+ok 79 - starter rejects fenced JSON without silently dropping input
+  ---
+  duration_ms: 21.173887
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown service without silently dropping input
+ok 80 - starter rejects unknown service without silently dropping input
+  ---
+  duration_ms: 18.366657
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown field without silently dropping input
+ok 81 - starter rejects unknown field without silently dropping input
+  ---
+  duration_ms: 28.627467
+  type: 'test'
+  ...
+# Subtest: starter rejects negative field without silently dropping input
+ok 82 - starter rejects negative field without silently dropping input
+  ---
+  duration_ms: 87.968962
+  type: 'test'
+  ...
+# Subtest: starter rejects absurd value without silently dropping input
+ok 83 - starter rejects absurd value without silently dropping input
+  ---
+  duration_ms: 64.372715
+  type: 'test'
+  ...
+# Subtest: starter rejects out of domain key without silently dropping input
+ok 84 - starter rejects out of domain key without silently dropping input
+  ---
+  duration_ms: 23.675384
+  type: 'test'
+  ...
+# Subtest: starter rejects extra root field without silently dropping input
+ok 85 - starter rejects extra root field without silently dropping input
+  ---
+  duration_ms: 8.889186
+  type: 'test'
+  ...
+# Subtest: starter rejects extra confirmation without silently dropping input
+ok 86 - starter rejects extra confirmation without silently dropping input
+  ---
+  duration_ms: 11.958063
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate service without silently dropping input
+ok 87 - starter rejects duplicate service without silently dropping input
+  ---
+  duration_ms: 15.228511
+  type: 'test'
+  ...
+# Subtest: starter rejects numeric string without silently dropping input
+ok 88 - starter rejects numeric string without silently dropping input
+  ---
+  duration_ms: 39.110542
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate JSON key without silently dropping input
+ok 89 - starter rejects duplicate JSON key without silently dropping input
+  ---
+  duration_ms: 11.917666
+  type: 'test'
+  ...
+# Subtest: starter rejects decimal drift without silently dropping input
+ok 90 - starter rejects decimal drift without silently dropping input
+  ---
+  duration_ms: 9.14052
+  type: 'test'
+  ...
+# Subtest: starter rejects missing service without silently dropping input
+ok 91 - starter rejects missing service without silently dropping input
+  ---
+  duration_ms: 10.470554
+  type: 'test'
+  ...
+# Subtest: starter preserves subcent rates and exact nested domain values
+ok 92 - starter preserves subcent rates and exact nested domain values
+  ---
+  duration_ms: 18.339757
+  type: 'test'
+  ...
+# Subtest: starter catalog only proposes supported current fields; new roof maps are not scalar rates
+ok 93 - starter catalog only proposes supported current fields; new roof maps are not scalar rates
+  ---
+  duration_ms: 108.032697
+  type: 'test'
+  ...
+# Subtest: interview extracts only one unconfirmed value despite instructions in free text
+ok 94 - interview extracts only one unconfirmed value despite instructions in free text
+  ---
+  duration_ms: 12.165787
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+ok 95 - interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+  ---
+  duration_ms: 6.26938
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":-1}
+ok 96 - interview rejects invalid or privileged output {"value":-1}
+  ---
+  duration_ms: 17.929285
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":1e100}
+ok 97 - interview rejects invalid or privileged output {"value":1e100}
+  ---
+  duration_ms: 15.971545
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":"0.01"}
+ok 98 - interview rejects invalid or privileged output {"value":"0.01"}
+  ---
+  duration_ms: 13.92254
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":null}
+ok 99 - interview rejects invalid or privileged output {"value":null}
+  ---
+  duration_ms: 10.891326
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"active":true}
+ok 100 - interview rejects invalid or privileged output {"active":true}
+  ---
+  duration_ms: 6.879617
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+ok 101 - interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+  ---
+  duration_ms: 10.88534
+  type: 'test'
+  ...
+# Subtest: slow response body is bounded and manual-path error exposes no provider details
+ok 102 - slow response body is bounded and manual-path error exposes no provider details
+  ---
+  duration_ms: 39.648705
+  type: 'test'
+  ...
+# Subtest: provider error containing a secret is never propagated
+ok 103 - provider error containing a secret is never propagated
+  ---
+  duration_ms: 24.609217
+  type: 'test'
+  ...
+# Subtest: interview rejects out-of-domain and unknown keys before draft persistence
+ok 104 - interview rejects out-of-domain and unknown keys before draft persistence
+  ---
+  duration_ms: 19.012003
+  type: 'test'
+  ...
+# Subtest: widget summary uses customer words and preserves original measurements
+ok 105 - widget summary uses customer words and preserves original measurements
+  ---
+  duration_ms: 11.268125
+  type: 'test'
+  ...
+# Subtest: every catalog enum is displayed using customer words rather than snake case
+ok 106 - every catalog enum is displayed using customer words rather than snake case
+  ---
+  duration_ms: 5.048929
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+ok 107 - current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+  ---
+  duration_ms: 32.795254
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPAIR
+ok 108 - current starter schema accepts supported draft fields for ROOFING_REPAIR
+  ---
+  duration_ms: 14.272269
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+ok 109 - current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+  ---
+  duration_ms: 16.886825
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+ok 110 - current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+  ---
+  duration_ms: 16.034681
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for INTERIOR_PAINTING
+ok 111 - current starter schema accepts supported draft fields for INTERIOR_PAINTING
+  ---
+  duration_ms: 30.059511
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+ok 112 - current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+  ---
+  duration_ms: 9.779072
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_INSTALL
+ok 113 - current starter schema accepts supported draft fields for FLOORING_INSTALL
+  ---
+  duration_ms: 25.802555
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+ok 114 - current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+  ---
+  duration_ms: 68.487405
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_INSTALL
+ok 115 - current starter schema accepts supported draft fields for FENCING_INSTALL
+  ---
+  duration_ms: 10.705597
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+ok 116 - current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+  ---
+  duration_ms: 10.439763
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+ok 117 - current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+  ---
+  duration_ms: 27.670692
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPAIR
+ok 118 - current starter schema accepts supported draft fields for SIDING_REPAIR
+  ---
+  duration_ms: 13.440197
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+ok 119 - current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 43.907226
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+ok 120 - current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 40.703557
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+ok 121 - current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+  ---
+  duration_ms: 20.837644
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+ok 122 - current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+  ---
+  duration_ms: 15.822936
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_SOD
+ok 123 - current starter schema accepts supported draft fields for LANDSCAPING_SOD
+  ---
+  duration_ms: 20.968102
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+ok 124 - current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+  ---
+  duration_ms: 21.578629
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+ok 125 - current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+  ---
+  duration_ms: 25.444276
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CUSTOM
+ok 126 - current starter schema accepts supported draft fields for CUSTOM
+  ---
+  duration_ms: 12.964563
+  type: 'test'
+  ...
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: editor D1: root factor survives no-edit blur save reopen and same-type switches
+ok 127 - editor D1: root factor survives no-edit blur save reopen and same-type switches
+  ---
+  duration_ms: 3805.434596
+  type: 'test'
+  ...
+# Subtest: editor D1: nested factor survives no-edit blur save reopen and same-type switches
+ok 128 - editor D1: nested factor survives no-edit blur save reopen and same-type switches
+  ---
+  duration_ms: 3175.117028
+  type: 'test'
+  ...
+# Subtest: editor D1: flat factor survives no-edit blur save reopen and same-type switches
+ok 129 - editor D1: flat factor survives no-edit blur save reopen and same-type switches
+  ---
+  duration_ms: 3268.904882
+  type: 'test'
+  ...
+# Subtest: editor D1: equal factor survives no-edit blur save reopen and same-type switches
+ok 130 - editor D1: equal factor survives no-edit blur save reopen and same-type switches
+  ---
+  duration_ms: 3273.11427
+  type: 'test'
+  ...
+# Subtest: editor D1: a genuine absent default is displayed without being written by focus or blur
+ok 131 - editor D1: a genuine absent default is displayed without being written by focus or blur
+  ---
+  duration_ms: 1423.653329
+  type: 'test'
+  ...
+# Subtest: editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+ok 132 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits
+  ---
+  duration_ms: 1943.881087
+  type: 'test'
+  ...
+# Subtest: editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+ok 133 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation
+  ---
+  duration_ms: 2765.316926
+  type: 'test'
+  ...
+# Subtest: editor locked rate: 0.0049 types blurs saves and reopens exactly
+ok 134 - editor locked rate: 0.0049 types blurs saves and reopens exactly
+  ---
+  duration_ms: 2520.192534
+  type: 'test'
+  ...
+# Subtest: editor locked rate: 0.0050 types blurs saves and reopens exactly
+ok 135 - editor locked rate: 0.0050 types blurs saves and reopens exactly
+  ---
+  duration_ms: 2334.635368
+  type: 'test'
+  ...
+# Subtest: editor locked rate: 0.0051 types blurs saves and reopens exactly
+ok 136 - editor locked rate: 0.0051 types blurs saves and reopens exactly
+  ---
+  duration_ms: 2501.344506
+  type: 'test'
+  ...
+# Subtest: editor locked invalid text: lossless rejection survives blur same-type switch and save
+ok 137 - editor locked invalid text: lossless rejection survives blur same-type switch and save
+  ---
+  duration_ms: 1595.62137
+  type: 'test'
+  ...
+# Subtest: editor locked maps tiers and explicit enablement stay separate for two same-type records
+ok 138 - editor locked maps tiers and explicit enablement stay separate for two same-type records
+  ---
+  duration_ms: 3413.587072
+  type: 'test'
+  ...
+# Subtest: editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+ok 139 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy
+  ---
+  duration_ms: 1893.634037
+  type: 'test'
+  ...
+# Subtest: editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+ok 140 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval
+  ---
+  duration_ms: 1572.438795
+  type: 'test'
+  ...
+# Editor browser evidence: /tmp/otc-editor-evidence-2OUJjg
+# Closing editor browser after all scenarios
+# Subtest: editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+ok 141 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject
+  ---
+  duration_ms: 8164.661975
+  type: 'test'
+  ...
+# Editor browser closed
+# Subtest: F04 fee changes discard only incompatible owner answers, including false
+ok 142 - F04 fee changes discard only incompatible owner answers, including false
+  ---
+  duration_ms: 1.202693
+  type: 'test'
+  ...
+# Subtest: F04 stale drafts stay visible until the owner corrects them
+ok 143 - F04 stale drafts stay visible until the owner corrects them
+  ---
+  duration_ms: 0.523935
+  type: 'test'
+  ...
+# Subtest: F05 preview answers are scoped to service and fee rules
+ok 144 - F05 preview answers are scoped to service and fee rules
+  ---
+  duration_ms: 0.184651
+  type: 'test'
+  ...
+# Subtest: F07 approving B preserves unsaved A, tiers, defaults and added services
+ok 145 - F07 approving B preserves unsaved A, tiers, defaults and added services
+  ---
+  duration_ms: 0.504325
+  type: 'test'
+  ...
+# Subtest: F07 changing reviewed values invalidates confirmation without erasing the draft
+ok 146 - F07 changing reviewed values invalidates confirmation without erasing the draft
+  ---
+  duration_ms: 0.287355
+  type: 'test'
+  ...
+# Subtest: F07 newer remote revisions cannot silently replace unsaved editor content
+ok 147 - F07 newer remote revisions cannot silently replace unsaved editor content
+  ---
+  duration_ms: 0.643064
+  type: 'test'
+  ...
+# Subtest: F08 both transfers recover only for the bound authenticated owner
+ok 148 - F08 both transfers recover only for the bound authenticated owner
+  ---
+  duration_ms: 0.682019
+  type: 'test'
+  ...
+# Subtest: F08 legacy malformed and unbound values are rejected without assigning an owner
+ok 149 - F08 legacy malformed and unbound values are rejected without assigning an owner
+  ---
+  duration_ms: 0.180228
+  type: 'test'
+  ...
+# Subtest: F08 only price-book transfers clear on logout/account changes, same-owner refresh retains
+ok 150 - F08 only price-book transfers clear on logout/account changes, same-owner refresh retains
+  ---
+  duration_ms: 0.712416
+  type: 'test'
+  ...
+# Subtest: F11 current repair tree wins over legacy two-level hints and preserves zero
+ok 151 - F11 current repair tree wins over legacy two-level hints and preserves zero
+  ---
+  duration_ms: 1.559883
+  type: 'test'
+  ...
+# Subtest: F11 enum and boolean maps retain exact keys, false, and unanswered distinctions
+ok 152 - F11 enum and boolean maps retain exact keys, false, and unanswered distinctions
+  ---
+  duration_ms: 0.356959
+  type: 'test'
+  ...
+# Subtest: F13 scalar rejects lossy input, blank and invalid fixed amounts, retains unit precision
+ok 153 - F13 scalar rejects lossy input, blank and invalid fixed amounts, retains unit precision
+  ---
+  duration_ms: 0.652824
+  type: 'test'
+  ...
+# Subtest: F13 all map depths reject unrepresentable raw text before readback
+ok 154 - F13 all map depths reject unrepresentable raw text before readback
+  ---
+  duration_ms: 2.77401
+  type: 'test'
+  ...
+# Subtest: F05 changing one fee retains compatible No answers and cannot revive removed answers
+ok 155 - F05 changing one fee retains compatible No answers and cannot revive removed answers
+  ---
+  duration_ms: 0.241649
+  type: 'test'
+  ...
+# ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: late 200 response cannot replace a new service preview
+ok 156 - late 200 response cannot replace a new service preview
+  ---
+  duration_ms: 1841.978234
+  type: 'test'
+  ...
+# Subtest: late 400 response cannot replace a new service preview
+ok 157 - late 400 response cannot replace a new service preview
+  ---
+  duration_ms: 1238.977834
+  type: 'test'
+  ...
+# Subtest: old completion cannot clear current loading and invalid input cannot retain old ready
+ok 158 - old completion cannot clear current loading and invalid input cannot retain old ready
+  ---
+  duration_ms: 1161.79378
+  type: 'test'
+  ...
+# Subtest: invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+ok 159 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again
+  ---
+  duration_ms: 1713.247438
+  type: 'test'
+  ...
+1..159
+# tests 159
+# suites 0
+# pass 159
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54152.354882

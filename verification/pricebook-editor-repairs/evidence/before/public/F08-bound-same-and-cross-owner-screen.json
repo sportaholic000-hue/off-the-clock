@@ -1,0 +1,35 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\n\nQUOTEDONE\n\nPrice book\n\nYour prices drive every quote.\n\nBuild it with your AI\nSuggest a starter book\nChoose service type\nRoof replacement\nRoof repair\nFlat roof replacement\nFlat roof repair\nInterior painting\nExterior painting\nFlooring installation\nFlooring replacement\nFencing installation\nFencing replacement\nSiding replacement\nSiding repair\nConcrete driveway\nConcrete patio slab\nLandscaping cleanup\nMulch installation\nSod installation\nPlanting\nMowing\nCustom service\nAdd service\n\nSERVICES\n\n[SYNTHETIC] A\nCHECKING\nChecking\n[SYNTHETIC] B\nCHECKING\nChecking\nRoof replacement\nCHECKING\nChecking\nRoof repair\nCHECKING\nChecking\nInterior painting\nCHECKING\nChecking\n\nYOUR PRICES · REQUIRED\n\n[SYNTHETIC] A\nOff The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.\n3 / 3 SET\nFence and painting offering\nOffering pricing\nMeasured wall pricing — choose to configure an offering\nComplete installed prices\nItemized measured components\nEnable quoting for this service\nWall painting labor price per measured wall square foot, per coat\nLabor price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nWall paint material price per measured wall square foot, per coat\nPaint and material price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nMinimum job price\nLowest total price for this service. Enter $0 when there is no service minimum. $0 is valid and means no minimum.\n$\nAdditional priced scope\nSet up removal, preparation and other measured work you offer.\nREVIEW SCOPE\n▸\nQuote configuration\nLabor, materials, taxes, minimums and pricing rules.\n▸\nOwner approval\nReview saved configuration\nOptional prices and add-on charges\nSelected scope needs its configured price; missing pricing returns review.\n0 OF 4 SET\n▸\nQuantity assumptions\nDefaults are already being applied. Adjust only if your jobs differ.\nDEFAULTS APPLIED\n▸\nRetained legacy settings\nThese values retain their saved meaning and location. They are not used by current quoting rules.\n▸\nGood / Better / Best tiers\nOffer up to three options on one quote.\nNOT USED\n▸\n\nBUSINESS-WIDE · APPLIES TO EVERY SERVICE\n\nMarkup and margin\n0% markup = 0.0% margin\n0%\n▸\nTax\nNo tax line on quotes\nNO TAX\n▸\nProject measurements for preview\nEnter a job to check the customer estimate.\n▸\nWHAT YOUR CUSTOMER HEARS\nUPDATES AS YOU TYPE\n\nThis is what the estimate will sound like on a call. Nothing saves until you save.\n\nCALCULATING\nCustomer quote link\nAllowed website origins\nEnter the exact HTTPS website origins. Local HTTP origins are available only for non-production verification.\nUse this website origin\nSave quote-link access\nCHECKING\nChecking your changes\nSave & validate\nSAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/pricebook",
+      "invalid": null
+    },
+    {
+      "label": "New service type",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering pricing",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "1",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0.5",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    }
+  ]
+}

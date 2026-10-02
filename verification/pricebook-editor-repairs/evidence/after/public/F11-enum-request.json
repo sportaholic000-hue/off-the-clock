@@ -1,0 +1,47 @@
+{
+  "request": {
+    "fields": {
+      "ROOFING_REPLACEMENT": {
+        "underlaymentPriceBasis": {
+          "asphalt_shingle": "installed_area_sell_price"
+        }
+      }
+    },
+    "confirmedFields": {
+      "ROOFING_REPLACEMENT": [
+        "underlaymentPriceBasis"
+      ]
+    },
+    "currentField": "ROOFING_REPLACEMENT.accessoryPricingMode"
+  },
+  "status": 200,
+  "response": {
+    "draft": {
+      "id": "eddc47b3-224e-4a50-bf44-ee0e0ac9d82f",
+      "ownerId": "ea8e3032-cbe5-464d-a52b-2d6558ce327f",
+      "status": "DRAFT",
+      "mode": "browser",
+      "serviceTypesJson": "[\"ROOFING_REPLACEMENT\"]",
+      "fieldsJson": "{\"ROOFING_REPLACEMENT\":{\"underlaymentPriceBasis\":{\"asphalt_shingle\":\"installed_area_sell_price\"}}}",
+      "confirmedFieldsJson": "{\"ROOFING_REPLACEMENT\":[\"underlaymentPriceBasis\"]}",
+      "currentField": "ROOFING_REPLACEMENT.accessoryPricingMode",
+      "createdAt": "2026-10-02T18:06:50.095Z",
+      "updatedAt": "2026-10-02T18:06:50.494Z",
+      "serviceTypes": [
+        "ROOFING_REPLACEMENT"
+      ],
+      "fields": {
+        "ROOFING_REPLACEMENT": {
+          "underlaymentPriceBasis": {
+            "asphalt_shingle": "installed_area_sell_price"
+          }
+        }
+      },
+      "confirmedFields": {
+        "ROOFING_REPLACEMENT": [
+          "underlaymentPriceBasis"
+        ]
+      }
+    }
+  }
+}

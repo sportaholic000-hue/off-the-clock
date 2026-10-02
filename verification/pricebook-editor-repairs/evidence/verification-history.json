@@ -1,0 +1,148 @@
+{
+  "firstProbeRun": 37041224282,
+  "firstProbe": {
+    "source": "ae788d7e6160bd3687919fd6555fa4f0dcb1b731",
+    "checks": [
+      {
+        "name": "F04-transition",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:58:97\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:56:2"
+      },
+      {
+        "name": "F04-existing-stale",
+        "passed": false,
+        "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Remove outdated travel answer', exact: true })\n\n    at /home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:63:143\n    at async check (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:61:2"
+      },
+      {
+        "name": "F05-preview-answers",
+        "passed": false,
+        "error": "locator.getAttribute: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^Preview project details/ }).first()\n\n    at openSection (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:35:118)\n    at /home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:68:28\n    at async check (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:67:2"
+      },
+      {
+        "name": "F07-other-unsaved-service",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'1' !== '1.2345'\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:84:115\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:82:2"
+      },
+      {
+        "name": "F07-edit-during-review",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'1' !== '1.7777'\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:90:103\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:86:2"
+      },
+      {
+        "name": "F07-revision-conflict",
+        "passed": true
+      },
+      {
+        "name": "F08-legacy-cross-owner",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:100:77\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:98:2"
+      },
+      {
+        "name": "F08-bound-same-and-cross-owner",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:105:237\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:102:2"
+      },
+      {
+        "name": "F11-three-level-repair",
+        "passed": false,
+        "error": "locator.fill: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByLabel('Roof repair labor hours by repair type and project size offering key', { exact: true })\n\n    at /home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:109:65\n    at async check (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:107:2"
+      },
+      {
+        "name": "F11-enum-leaf",
+        "passed": false,
+        "error": "locator.fill: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByLabel('Underlayment price basis offering key', { exact: true })\n\n    at /home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:118:65\n    at async check (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:116:2"
+      },
+      {
+        "name": "F13-scalar-exactness",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:123:240\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:121:2"
+      },
+      {
+        "name": "F13-map-exactness",
+        "passed": false,
+        "error": "locator.check: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.structured-toggle').filter({ hasText: /asphalt/i }).locator('input')\n\n    at /home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:129:95\n    at async check (/home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:126:2"
+      },
+      {
+        "name": "positive-normal-preview",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'ESTIMATE_REQUIRES_REVIEW'\n- 'INSTANT_ESTIMATE_READY'\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:133:262\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:132:2"
+      }
+    ],
+    "errors": [],
+    "dependencies": [],
+    "passed": false
+  },
+  "validBaselineRun": 37041899907,
+  "firstRepairRun": 37042615216,
+  "firstRepair": {
+    "source": "385d1acd269731a9b47216c8b76bb4b3476086cf",
+    "checks": [
+      {
+        "name": "F04-transition",
+        "passed": true
+      },
+      {
+        "name": "F04-existing-stale",
+        "passed": true
+      },
+      {
+        "name": "F05-preview-answers",
+        "passed": true
+      },
+      {
+        "name": "F07-other-unsaved-service",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'1' !== '1.2345'\n\n    at file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:85:115\n    at async check (file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/off-the-clock/off-the-clock/verification/pricebook-editor-repairs/browser.mjs:83:2"
+      },
+      {
+        "name": "F07-edit-during-review",
+        "passed": true
+      },
+      {
+        "name": "F07-revision-conflict",
+        "passed": true
+      },
+      {
+        "name": "F08-legacy-cross-owner",
+        "passed": true
+      },
+      {
+        "name": "F08-bound-same-and-cross-owner",
+        "passed": true
+      },
+      {
+        "name": "F11-three-level-repair",
+        "passed": true
+      },
+      {
+        "name": "F11-enum-leaf",
+        "passed": true
+      },
+      {
+        "name": "F13-scalar-exactness",
+        "passed": true
+      },
+      {
+        "name": "F13-map-exactness",
+        "passed": true
+      },
+      {
+        "name": "positive-normal-preview",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "dependencies": [
+      {
+        "id": "F14",
+        "case": "three-level-repair",
+        "status": 422,
+        "response": {
+          "error": "The price map contains an out-of-domain key."
+        }
+      }
+    ],
+    "passed": false
+  },
+  "renderTimingTraceRun": 37043296051
+}

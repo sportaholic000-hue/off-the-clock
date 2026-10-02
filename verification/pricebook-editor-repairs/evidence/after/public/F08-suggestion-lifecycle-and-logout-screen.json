@@ -1,0 +1,25 @@
+{
+  "text": "SELF-SERVE SETUP\nPut your operator on the line.\nCreate account\nSign in\nOwner first name\nBusiness name\nEmail\nPassword\nPlan\nOperator\nQuoteDone\nStart setup\nForgot password?",
+  "inputs": [
+    {
+      "label": null,
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "",
+      "invalid": null
+    }
+  ]
+}

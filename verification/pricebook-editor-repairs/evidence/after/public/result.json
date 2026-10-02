@@ -1,0 +1,81 @@
+{
+  "source": "1b8cac5c6aad522867e08f3bdd5de66edafa2258",
+  "checks": [
+    {
+      "name": "F04-transition",
+      "passed": true
+    },
+    {
+      "name": "F04-existing-stale",
+      "passed": true
+    },
+    {
+      "name": "F05-preview-answers",
+      "passed": true
+    },
+    {
+      "name": "F07-other-unsaved-service",
+      "passed": true
+    },
+    {
+      "name": "F07-unsaved-tier-and-switching",
+      "passed": true
+    },
+    {
+      "name": "F07-approval-in-flight",
+      "passed": true
+    },
+    {
+      "name": "F07-edit-during-review",
+      "passed": true
+    },
+    {
+      "name": "F07-revision-conflict",
+      "passed": true
+    },
+    {
+      "name": "F08-legacy-cross-owner",
+      "passed": true
+    },
+    {
+      "name": "F08-bound-same-and-cross-owner",
+      "passed": true
+    },
+    {
+      "name": "F08-suggestion-lifecycle-and-logout",
+      "passed": true
+    },
+    {
+      "name": "F11-three-level-repair",
+      "passed": true
+    },
+    {
+      "name": "F11-enum-leaf",
+      "passed": true
+    },
+    {
+      "name": "F13-scalar-exactness",
+      "passed": true
+    },
+    {
+      "name": "F13-map-exactness",
+      "passed": true
+    },
+    {
+      "name": "positive-normal-preview",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "dependencies": [
+    {
+      "id": "F14",
+      "case": "three-level-repair",
+      "status": 422,
+      "response": {
+        "error": "The price map contains an out-of-domain key."
+      }
+    }
+  ],
+  "passed": true
+}

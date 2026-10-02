@@ -1,0 +1,40 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\n\nQUOTEDONE\n\nPrice book\n\nYour prices drive every quote.\n\nBuild it with your AI\nSuggest a starter book\nChoose service type\nRoof replacement\nRoof repair\nFlat roof replacement\nFlat roof repair\nInterior painting\nExterior painting\nFlooring installation\nFlooring replacement\nFencing installation\nFencing replacement\nSiding replacement\nSiding repair\nConcrete driveway\nConcrete patio slab\nLandscaping cleanup\nMulch installation\nSod installation\nPlanting\nMowing\nCustom service\nAdd service\n\nSERVICES\n\n[SYNTHETIC] A\nCHECKING\nChecking\n[SYNTHETIC] B\nCHECKING\nChecking\nRoof replacement\nCHECKING\nChecking\nRoof repair\nCHECKING\nChecking\n\nYOUR PRICES · REQUIRED\n\n[SYNTHETIC] A\nOff The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.\n3 / 3 SET\nFence and painting offering\nOffering pricing\nMeasured wall pricing — choose to configure an offering\nComplete installed prices\nItemized measured components\nEnable quoting for this service\nWall painting labor price per measured wall square foot, per coat\nLabor price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nWall paint material price per measured wall square foot, per coat\nPaint and material price multiplied by measured paintable wall area and the confirmed number of finish coats.\n$\nMinimum job price\nLowest total price for this service. Enter $0 when there is no service minimum. $0 is valid and means no minimum.\n$\nAdditional priced scope\nSet up removal, preparation and other measured work you offer.\nREVIEW SCOPE\n▸\nQuote configuration\nLabor, materials, taxes, minimums and pricing rules.\n▸\nOwner approval\nReview saved configuration\nThe editor changed after this review opened. Your unsaved edits are still here and are not approved. Save them, then open a new review.\nThis review shows the saved configuration. Save editor changes before opening a new review. Confirming does not enable a disabled service.\n{\n  \"service\": {\n    \"id\": \"a8c207bf-bae3-4303-b337-9b5b4fb12e28\",\n    \"source\": \"MANUAL\",\n    \"knownOfferings\": {},\n    \"active\": true,\n    \"serviceType\": \"INTERIOR_PAINTING\",\n    \"service\": \"[SYNTHETIC] A\",\n    \"pricing\": {\n      \"laborPerWallSqftPerCoat\": 1,\n      \"materialPerWallSqftPerCoat\": 0.5,\n      \"minimumJob\": 0,\n      \"wallHeightLaborMultiplier\": {\n        \"standard\": 1,\n        \"high\": 1.1,\n        \"vaulted\": 1.25\n      }\n    },\n    \"feeRules\": {\n      \"travel\": \"not_applicable\",\n      \"disposal\": \"not_applicable\",\n      \"permit\": \"not_applicable\",\n      \"overhead\": \"not_applicable\"\n    },\n    \"priceBasisByCategory\": {\n      \"labor\": \"cost\",\n      \"material\": \"sell_price\",\n      \"removal\": \"cost\",\n      \"prep\": \"cost\",\n      \"addon\": \"cost\",\n      \"equipment\": \"cost\",\n      \"travel\": \"cost\",\n      \"disposal\": \"cost\",\n      \"permit\": \"cost\",\n      \"overhead\": \"cost\",\n      \"surcharge\": \"cost\"\n    },\n    \"taxabilityByCategory\": {\n      \"labor\": false,\n      \"material\": false,\n      \"removal\": false,\n      \"prep\": false,\n      \"addon\": false,\n      \"equipment\": false,\n      \"travel\": false,\n      \"disposal\": false,\n      \"permit\": false,\n      \"overhead\": false,\n      \"surcharge\": false\n    },\n    \"peakMonths\": [],\n    \"peakSurchargePercent\": 0,\n    \"validationInputs\": {\n      \"areaInputMethod\": \"wall_sqft\",\n      \"wallAreaSqft\": 100,\n      \"wallHeight\": \"standard\",\n      \"wallScopeUniform\": true,\n      \"surfaceCondition\": \"good\",\n      \"coats\": 2,\n      \"ceilingsIncluded\": false,\n      \"trimIncluded\": false\n    },\n    \"confirmedFields\": {},\n    \"origin\": {\n      \"serviceId\": \"a8c207bf-bae3-4303-b337-9b5b4fb12e28\",\n      \"serviceType\": \"INTERIOR_PAINTING\",\n      \"source\": \"MANUAL\",\n      \"ownerId\": \"89591a63-c8f1-42de-b433-fb6c4c9127d8\",\n      \"operationId\": \"baf23918-15d5-43f6-9aa6-6d22a1b02a71\",\n      \"createdAt\": \"2026-10-02T18:06:42.460Z\"\n    },\n    \"quoteDoneApproval\": {\n      \"ownerId\": \"89591a63-c8f1-42de-b433-fb6c4c9127d8\",\n      \"serviceId\": \"a8c207bf-bae3-4303-b337-9b5b4fb12e28\",\n      \"operationId\": \"baf23918-15d5-43f6-9aa6-6d22a1b02a71\",\n      \"approvedAt\": \"2026-10-02T18:06:42.460Z\",\n      \"engineVersion\": \"quote-engine-vnext-opus-repairs-20261001-v1\",\n      \"moneyUnitVersion\": \"roof-minimum-cents-v1\",\n      \"contentDigest\": \"c2c08c5ba34e069a206b0a4817572b382d39426a5317e4d2c355c171b919104e\",\n      \"operation\": \"owner_confirmed_quotedone_registration\"\n    }\n  },\n  \"defaults\": {\n    \"markupPercent\": 0,\n    \"markupMode\": \"markup\",\n    \"overheadFixed\": 0,\n    \"minimumJobPrice\": 0,\n    \"travelFee\": 10,\n    \"disposalFee\": 0,\n    \"permitFee\": 0,\n    \"taxMode\": \"TAX_NONE\",\n    \"taxPercent\": 0,\n    \"rangeBufferPercent\": 0,\n    \"markupApplies\": {\n      \"labor\": true,\n      \"material\": true,\n      \"removal\": true,\n      \"prep\": true,\n      \"addon\": true,\n      \"equipment\": true,\n      \"travel\": true,\n      \"disposal\": true,\n      \"permit\": true,\n      \"overhead\": true,\n      \"surcharge\": true\n    },\n    \"peakMonths\": [],\n    \"peakSurchargePercent\": 0\n  }\n}\nExplicit free offerings and included required prices\n I confirm these exact saved prices, units, factors and rules.\nConfirm saved configuration\nOptional prices and add-on charges\nSelected scope needs its configured price; missing pricing returns review.\n0 OF 4 SET\n▸\nQuantity assumptions\nDefaults are already being applied. Adjust only if your jobs differ.\nDEFAULTS APPLIED\n▸\nRetained legacy settings\nThese values retain their saved meaning and location. They are not used by current quoting rules.\n▸\nGood / Better / Best tiers\nOffer up to three options on one quote.\nNOT USED\n▸\n\nBUSINESS-WIDE · APPLIES TO EVERY SERVICE\n\nMarkup and margin\n0% markup = 0.0% margin\n0%\n▸\nTax\nNo tax line on quotes\nNO TAX\n▸\nProject measurements for preview\nEnter a job to check the customer estimate.\n▸\nWHAT YOUR CUSTOMER HEARS\nUPDATES AS YOU TYPE\n\nThis is what the estimate will sound like on a call. Nothing saves until you save.\n\nCALCULATING\nCustomer quote link\nAllowed website origins\nEnter the exact HTTPS website origins. Local HTTP origins are available only for non-production verification.\nUse this website origin\nSave quote-link access\nCHECKING\nChecking your changes\nSave & validate\nSAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/pricebook",
+      "invalid": null
+    },
+    {
+      "label": "New service type",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering pricing",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": null,
+      "value": "1.7777",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0.5",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "on",
+      "invalid": null
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\nGET SET UP\nAccount\nBusiness type\nJurisdiction\nPhone number\nKnowledge base\nGo live\n7\nPrice book\n8\nCalendar\nSKIPPABLE\n9\nVoice & greeting\nANSWERING STATUS\nNot live yet\nFlips on once your number is set and the About and Hours sections have content. Quoting turns on per service later. Answering never waits on your price book.\nVerify your email\n\nCheck the inbox for synthetic-interview-a@example.invalid, or request another verification link.\n\nResend verification email\nCheck verification status\n\nSTEP 7 OF 9\n\nBuild your price book\n\nThis step is skippable and resumable. Answering stays live while you finish pricing.\n\n1 · FLAGSHIP\nAI price-book interview\n\nHave your AI build your price book with you. 24 pricing questions across 3 services.\n\nDRAFT\nDescribe this price in your own words\nUse AI to capture this answer\n\n5 / 24 · Roof replacement\n\nUnderlayment price basis\n\nAdd each type you work with and give it a price.\n\nAsphalt shingle\n$\nRemove\nAdd\nRead it back\nReview captured values in editor\n2\nSuggest a starter book\n\nGenerate AI-suggested placeholder prices, then review and confirm each value before going live.\n\nSuggest a starter book\n3\nManual editor\n\nEnter every service price directly and check that each service has what it needs to quote.\n\nOpen manual editor\nBack\nSkip for now",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/onboarding",
+      "invalid": null
+    },
+    {
+      "label": "Asphalt shingle price",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Add type",
+      "value": "",
+      "invalid": null
+    }
+  ]
+}

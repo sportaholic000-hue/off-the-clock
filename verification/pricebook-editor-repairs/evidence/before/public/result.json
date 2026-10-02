@@ -1,0 +1,87 @@
+{
+  "source": "c2e9efcdcc4aaca4a7b8f610e4cdf792cb135010",
+  "checks": [
+    {
+      "name": "F04-transition",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:59:97\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:57:2"
+    },
+    {
+      "name": "F04-existing-stale",
+      "passed": false,
+      "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Remove outdated travel answer', exact: true })\n\n    at /home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:64:143\n    at async check (/home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:62:2"
+    },
+    {
+      "name": "F05-preview-answers",
+      "passed": false,
+      "error": "locator.inputValue: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByLabel('travel customer fee for preview', { exact: true })\n\n    at /home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:69:179\n    at async check (/home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:68:2"
+    },
+    {
+      "name": "F07-other-unsaved-service",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 10000ms exceeded.\n    at /home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:84:172\n    at async check (/home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:83:2"
+    },
+    {
+      "name": "F07-unsaved-tier-and-switching",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 10000ms exceeded.\n    at /home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:90:158\n    at async check (/home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:87:2"
+    },
+    {
+      "name": "F07-approval-in-flight",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    active: true,\n    confirmedFields: {},\n    feeRules: {\n      disposal: 'not_applicable',\n...\n    pricing: {\n+     laborPerWallSqftPerCoat: 1,\n-     laborPerWallSqftPerCoat: 1.2345,\n      materialPerWallSqftPerCoat: 0.5,\n      minimumJob: 0,\n      wallHeightLaborMultiplier: {\n        high: 1.1,\n        standard: 1,\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:103:114\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:93:2"
+    },
+    {
+      "name": "F07-edit-during-review",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'1' !== '1.7777'\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:110:103\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:106:2"
+    },
+    {
+      "name": "F07-revision-conflict",
+      "passed": false,
+      "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.quote-midpoint-value') to be hidden\n    25 × locator resolved to visible <span class=\"mono quote-midpoint-value\">$300</span>\n\n    at /home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:115:415\n    at async check (/home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:112:2"
+    },
+    {
+      "name": "F08-legacy-cross-owner",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:120:77\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:118:2"
+    },
+    {
+      "name": "F08-bound-same-and-cross-owner",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:125:237\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:122:2"
+    },
+    {
+      "name": "F08-suggestion-lifecycle-and-logout",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:139:56\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:127:2"
+    },
+    {
+      "name": "F11-three-level-repair",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Current metadata requires {\"depth\":3,\"leafKeys\":[\"small\",\"medium\",\"large\"]} but the legacy interview renders DRAFT\nDescribe this price in your own words\nUse AI to capture this answer\n\n16 / 24 · Roof repair\n\nRoof repair labor hours by repair type and project size\n\nGive a price for each size of every roof repair type you handle.\n\nAsphalt shingle\nRemove\nSmall\nMedium\nLarge\nAdd\nRead it back\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:148:282\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:146:2"
+    },
+    {
+      "name": "F11-enum-leaf",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Current metadata requires {\"leafType\":\"enum\",\"options\":[\"installed_area_sell_price\",\"cost\"]} but the legacy interview renders DRAFT\nDescribe this price in your own words\nUse AI to capture this answer\n\n5 / 24 · Roof replacement\n\nUnderlayment price basis\n\nAdd each type you work with and give it a price.\n\nAsphalt shingle\n$\nRemove\nAdd\nRead it back\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:158:282\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:156:2"
+    },
+    {
+      "name": "F13-scalar-exactness",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:164:240\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:162:2"
+    },
+    {
+      "name": "F13-map-exactness",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:171:239\n    at async check (file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:18:35)\n    at async file:///home/runner/work/_temp/editor-before/verification/pricebook-editor-repairs/browser.mjs:167:2"
+    },
+    {
+      "name": "positive-normal-preview",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "dependencies": [],
+  "passed": false
+}
