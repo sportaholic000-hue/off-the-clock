@@ -58,7 +58,7 @@ try {
   return {reproduced:after===before&&missing.status===404,providerCalls:after-before,draft,captured,review,assist:missing,editorWouldImport:review.services[0].pricing||review.services[0].fields||{}};
  });
  await observe('widget summary exposes internal enum values',async()=>{
-  const r=await f.call('POST',f.url+'/prepare',f.submission(),200,undefined,f.headers);
+  const r=await f.call('POST',f.url+'/prepare',f.submission({intakeFlow:'job-details-v1'}),200,undefined,f.headers);
   return {reproduced:r.summary.facts.some(f=>['exact','maintained'].includes(f.value)),response:r};
  });
 } finally {

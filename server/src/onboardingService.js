@@ -5,6 +5,7 @@ import { saveGoogleCalendarConnection } from './calendarCredentials.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
+import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', neverSay: [], draft: false };
 const EMPTY_CALENDAR = { provider: null, status: 'not_connected', calendlyUrl: null };
@@ -602,25 +603,42 @@ export function saveInterviewDraft(ownerId, id, input) {
     error.statusCode = 404;
     throw error;
   }
-  const nextFields = { ...draft.fields };
-  const nextConfirmed = { ...draft.confirmedFields };
+  const fail = message => { throw Object.assign(new Error(message), {statusCode:422}); };
+  const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+  if (!record(input) || Object.keys(input).some(key=>!['fields','confirmedFields','currentField'].includes(key))) fail('Unsupported interview update. Your saved draft was not changed.');
+  for (const map of [input.fields,input.confirmedFields]) {
+    if (map !== undefined && (!record(map) || Object.keys(map).some(type=>!draft.serviceTypes.includes(type)))) fail('Choose a service in this interview.');
+  }
+  const nextFields = structuredClone(draft.fields);
+  const nextConfirmed = structuredClone(draft.confirmedFields);
   for (const serviceType of draft.serviceTypes) {
-    const allowed = new Set(ALL_OWNER_FIELDS[serviceType] || []);
-    const incoming = input.fields?.[serviceType] || {};
+    const incoming = input.fields?.[serviceType] ?? {};
+    if (!record(incoming)) fail('Enter supported price-book fields.');
     nextFields[serviceType] = { ...(nextFields[serviceType] || {}) };
-    for (const [field, value] of Object.entries(incoming)) {
-      if (allowed.has(field)) nextFields[serviceType][field] = value;
+    const confirmed = new Set(nextConfirmed[serviceType] || []);
+    for (const [field,value] of Object.entries(incoming)) {
+      validateInterviewValue(serviceType,field,value,{...nextFields[serviceType],...incoming});
+      if (JSON.stringify(value) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
+      nextFields[serviceType][field] = structuredClone(value);
     }
-    const confirmations = Array.isArray(input.confirmedFields?.[serviceType])
-      ? input.confirmedFields[serviceType].filter(field => allowed.has(field))
-      : nextConfirmed[serviceType] || [];
-    nextConfirmed[serviceType] = [...new Set(confirmations)];
+    const explicit = input.confirmedFields?.[serviceType];
+    if (explicit !== undefined) {
+      if (!Array.isArray(explicit) || explicit.some(field=>typeof field!=='string'||!Object.hasOwn(nextFields[serviceType],field))) fail('Confirm only values captured in this draft.');
+      for (const field of explicit) interviewField(serviceType,field);
+      nextConfirmed[serviceType] = [...new Set(explicit)];
+    } else nextConfirmed[serviceType] = [...confirmed];
+  }
+  if (input.currentField != null) {
+    if (typeof input.currentField!=='string') fail('Choose a supported interview question.');
+    const [type,field,...extra]=input.currentField.split('.');
+    if (extra.length || !draft.serviceTypes.includes(type)) fail('Choose a supported interview question.');
+    interviewField(type,field);
   }
   ownerQuery(`UPDATE priceBookDrafts SET fieldsJson = ?, confirmedFieldsJson = ?,
     currentField = ?, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
     JSON.stringify(nextFields),
     JSON.stringify(nextConfirmed),
-    input.currentField || draft.currentField,
+    Object.hasOwn(input,'currentField') ? input.currentField : draft.currentField,
     new Date().toISOString(),
     id,
     ownerId
@@ -642,9 +660,28 @@ export function draftReviewPayload(ownerId, id) {
     return {
       serviceType,
       service: SERVICE_NAMES[serviceType],
-      ...Object.fromEntries(Object.entries(fields).filter(([field]) => confirmed.has(field))),
-      unconfirmedFields
+      fields: structuredClone(fields),
+      source: 'AI_INTERVIEW', active: false, confirmedFields: {},
+      unconfirmedFields: Object.keys(fields)
     };
   });
   return { status: 'DRAFT', services };
+}
+
+export async function assistInterviewDraft(ownerId, id, input) {
+  const before = getInterviewDraft(ownerId,id);
+  if (!before) throw Object.assign(new Error('Draft not found'),{statusCode:404});
+  if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).some(key=>!['serviceType','field','answer'].includes(key)) || !before.serviceTypes.includes(input.serviceType)) {
+    throw Object.assign(new Error('Choose a field in this interview. No draft values were changed.'),{statusCode:422});
+  }
+  const value = await interpretInterviewAnswer({...input,pricing:before.fields[input.serviceType]||{}});
+  const current = getInterviewDraft(ownerId,id);
+  if (!current || current.updatedAt!==before.updatedAt || current.fieldsJson!==before.fieldsJson || current.confirmedFieldsJson!==before.confirmedFieldsJson || current.currentField!==before.currentField) {
+    throw Object.assign(new Error('This draft changed while AI was working. Review it and try again.'),{statusCode:409});
+  }
+  const draft = saveInterviewDraft(ownerId,id,{
+    fields:{[input.serviceType]:{[input.field]:value}},
+    confirmedFields:{[input.serviceType]:(current.confirmedFields[input.serviceType]||[]).filter(field=>field!==input.field)}
+  });
+  return {draft,field:input.field,value,status:'DRAFT',confirmed:false};
 }

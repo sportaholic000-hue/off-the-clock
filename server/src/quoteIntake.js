@@ -1,3 +1,4 @@
+import {customerSummaryValue} from './customerSummary.js';
 import crypto from 'node:crypto';
 
 export const JOB_DETAILS_FLOW = 'job-details-v1';
@@ -89,7 +90,7 @@ export function customerJobSummary(service,definition,submission,revision) {
   // This presentation view never changes the saved input or signed submission.
   const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts').map(([key,value])=>{
     const field=labels.get(key);
-    let formatted=typeof value==='string'&&field?.optionLabels?.[value]||display(value);
+    let formatted=customerSummaryValue(field,value,display);
     if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {
       formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name.replaceAll('_',' '))).join('; ')||'No gates';
     }
