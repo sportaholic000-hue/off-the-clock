@@ -239,29 +239,70 @@ function matchService(args) {
   return { query: text(args.query, { max: 500 }) };
 }
 
+// Contact and address details belong to captureLead, never to quote measurements.
+const CUSTOMER_INPUT_CONTACT_KEYS = /address|contact|email|phone|^name$|customername|callername/;
+function assertNoContactKeys(value, depth = 0) {
+  if (depth > 6 || value === null || typeof value !== "object") return;
+  if (Array.isArray(value)) { for (const item of value) assertNoContactKeys(item, depth + 1); return; }
+  for (const key of Object.keys(value)) {
+    if (CUSTOMER_INPUT_CONTACT_KEYS.test(normalizedKey(key))) fail("FORBIDDEN_TOOL_FIELD");
+    assertNoContactKeys(value[key], depth + 1);
+  }
+}
+
 function getQuote(args) {
   assertClosed(
     args,
-    ["serviceHandle", "customerInputs", "feeSelectionHandles", "additionalWork"],
-    ["serviceHandle", "customerInputs"],
+    ["serviceHandle", "customerInputs", "feeSelectionHandles", "additionalWork", "customerConfirmed"],
+    ["serviceHandle", "customerInputs", "customerConfirmed"],
   );
+  if (args.customerInputs === null || typeof args.customerInputs !== "object" || Array.isArray(args.customerInputs)) {
+    fail("INVALID_TOOL_OBJECT");
+  }
+  const customerInputs = safeDynamicValue(args.customerInputs);
+  assertNoContactKeys(customerInputs);
   const result = {
     serviceHandle: handle(args.serviceHandle),
-    customerInputs: safeDynamicValue(args.customerInputs),
+    customerInputs,
   };
   if (args.feeSelectionHandles !== undefined) {
     result.feeSelectionHandles = handleList(args.feeSelectionHandles);
   }
   if (args.additionalWork !== undefined) result.additionalWork = textList(args.additionalWork);
+  result.customerConfirmed = confirmed(args.customerConfirmed);
+  return result;
+}
+
+const TIMES_OF_DAY = ["morning", "afternoon", "evening"];
+function calendarDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) fail("INVALID_TOOL_DATE");
+  const [y, m, d] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  if (date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d) fail("INVALID_TOOL_DATE");
+  return value;
+}
+function preference(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) fail("INVALID_TOOL_OBJECT");
+  assertClosed(value, ["fromDate", "days", "timeOfDay"]);
+  const result = {};
+  if (value.fromDate !== undefined) result.fromDate = calendarDate(value.fromDate);
+  if (value.days !== undefined) {
+    if (!Number.isInteger(value.days) || value.days < 1 || value.days > 31) fail("INVALID_TOOL_NUMBER");
+    result.days = value.days;
+  }
+  if (value.timeOfDay !== undefined) {
+    if (!Array.isArray(value.timeOfDay) || !value.timeOfDay.length || value.timeOfDay.length > 3) fail("INVALID_TOOL_ARRAY");
+    const items = value.timeOfDay.map((item) => oneOf(item, TIMES_OF_DAY));
+    if (new Set(items).size !== items.length) fail("INVALID_TOOL_ARRAY");
+    result.timeOfDay = items;
+  }
   return result;
 }
 
 function checkAvailability(args) {
-  assertClosed(args, ["quoteHandle", "preference"], ["quoteHandle"]);
-  const result = { quoteHandle: handle(args.quoteHandle) };
-  if (args.preference !== undefined) {
-    result.preference = text(args.preference, { max: 300 });
-  }
+  assertClosed(args, ["quoteHandle", "leadHandle", "preference"], ["quoteHandle", "leadHandle"]);
+  const result = { quoteHandle: handle(args.quoteHandle), leadHandle: handle(args.leadHandle) };
+  if (args.preference !== undefined) result.preference = preference(args.preference);
   return result;
 }
 
@@ -379,3 +420,69 @@ export function isForbiddenVoiceField(key) {
   return typeof key !== "string" || forbiddenNormalizedKey(normalizedKey(key));
 }
 
+
+// Gemini function declarations. Every declaration mirrors its validator exactly: the same
+// field names, the same required list, closed objects. Validators stay authoritative.
+const S = (description) => ({ type: "STRING", description });
+const HANDLE_DECL = (what) => S(`Opaque ${what} handle returned by an earlier tool result. Copy it exactly.`);
+const ADDRESS_DECL = {
+  type: "OBJECT",
+  description: "Service address the caller gave.",
+  properties: { line1: S("Street address"), line2: S("Unit or suite"), city: S("City"), region: S("Province or state"), postalCode: S("Postal or ZIP code"), country: S("Two-letter country code") },
+  required: ["line1", "city", "region", "postalCode"],
+  additionalProperties: false,
+};
+const DECLARATION_SPECS = [
+  ["matchService", "Match what the caller described to one of this business's services. Returns a serviceHandle.",
+    { query: S("The caller's description of the work, in their words.") }, ["query"]],
+  ["getQuote", "Get the business's quote for a matched service. Call only after reading back every measurement and the caller confirming the recap.",
+    {
+      serviceHandle: HANDLE_DECL("service"),
+      customerInputs: { type: "OBJECT", description: "The job measurements and answers, keyed by the exact field names in the active service flow. Never include contact details or an address." },
+      feeSelectionHandles: { type: "ARRAY", items: HANDLE_DECL("fee option"), description: "Fee options the caller chose, if the service offers any." },
+      additionalWork: { type: "ARRAY", items: S("Separately requested work, in the caller's words."), description: "Other work the caller asked about that is not part of this service." },
+      customerConfirmed: { type: "BOOLEAN", description: "True only after the caller confirmed the read-back recap." },
+    }, ["serviceHandle", "customerInputs", "customerConfirmed"]],
+  ["checkAvailability", "Find appointment openings for a quoted job. Requires the quote handle and the lead handle from captureLead.",
+    {
+      quoteHandle: HANDLE_DECL("quote"),
+      leadHandle: HANDLE_DECL("lead"),
+      preference: {
+        type: "OBJECT", description: "Optional timing the caller prefers.",
+        properties: {
+          fromDate: S("Earliest date, YYYY-MM-DD."),
+          days: { type: "INTEGER", description: "How many days to search, 1 to 31." },
+          timeOfDay: { type: "ARRAY", items: { type: "STRING", enum: TIMES_OF_DAY }, description: "Preferred parts of the day." },
+        },
+        additionalProperties: false,
+      },
+    }, ["quoteHandle", "leadHandle"]],
+  ["bookAppointment", "Book an opening the caller chose and confirmed.",
+    { slotHandle: HANDLE_DECL("slot"), leadHandle: HANDLE_DECL("lead"), customerConfirmed: { type: "BOOLEAN", description: "True only after the caller confirmed the date, time and address." } },
+    ["slotHandle", "leadHandle", "customerConfirmed"]],
+  ["captureLead", "Save the caller's name and contact details, with the service address when booking.",
+    { name: S("Caller's name."), email: S("Caller's email, if given."), address: ADDRESS_DECL, notes: S("Short notes for the business.") }, ["name"]],
+  ["logQuoteRequest", "Record a job that can't be priced on this call so the business follows up.",
+    { description: S("What the caller needs, in plain words."), leadHandle: HANDLE_DECL("lead") }, ["description"]],
+  ["sendSms", "Send the caller a text about a quote, booking, callback or reminder.",
+    { template: { type: "STRING", enum: ["quote", "booking", "callback", "reminder"], description: "Which message to send." }, recordHandle: HANDLE_DECL("record") },
+    ["template", "recordHandle"]],
+  ["flagUrgent", "Flag an urgent situation for the business.",
+    { reason: { type: "STRING", enum: ["active_leak", "flooding", "safety", "complaint"], description: "Why it is urgent." }, summary: S("One-sentence summary.") }, ["reason"]],
+  ["transferCall", "Transfer the call to the business after the caller agrees.",
+    { reason: { type: "STRING", enum: ["caller_requested", "urgent", "escalation"], description: "Why the call is transferred." }, customerConfirmed: { type: "BOOLEAN", description: "True only after the caller agreed to be transferred." } },
+    ["reason", "customerConfirmed"]],
+  ["modifyAppointment", "Reschedule or cancel an existing appointment after the caller confirms.",
+    { appointmentHandle: HANDLE_DECL("appointment"), action: { type: "STRING", enum: ["reschedule", "cancel"], description: "What to do." }, slotHandle: HANDLE_DECL("new slot (reschedule only)"), customerConfirmed: { type: "BOOLEAN", description: "True only after the caller confirmed." } },
+    ["appointmentHandle", "action", "customerConfirmed"]],
+  ["getCustomerContext", "Look up whether this caller has an open quote or appointment with the business.", {}, []],
+];
+
+export const VOICE_TOOL_DECLARATIONS = deepFreeze(DECLARATION_SPECS.map(([name, description, properties, required]) => ({
+  name, description,
+  parameters: { type: "OBJECT", properties, required, additionalProperties: false },
+})));
+
+export function getVoiceToolDeclarations() {
+  return VOICE_TOOL_DECLARATIONS;
+}
