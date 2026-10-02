@@ -14,7 +14,7 @@
   const START_TURN = '[SYSTEM] A visitor just started the demo. Greet them now.';
   const CLOSINGS = {
     time: "That's our demo time. Start your free trial to put Off The Clock to work for your business.",
-    silence: "Looks like you've stepped away. I'll be here when you're ready to talk about your business.",
+    silence: "Looks like you've stepped away. Whenever you're ready, you can start your free trial right here on the site. Talk soon!",
   };
   const SILENCE_MS = 10000, CLOSE_GRACE_MS = 15000, STALL_MS = 20000;
   const CLOSING_MARKERS = { time: 'free trial', silence: 'stepped away' };
