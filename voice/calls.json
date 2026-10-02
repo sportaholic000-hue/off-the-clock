@@ -1,9 +1,9 @@
 [
  {
   "status": "COMPLETED",
-  "outcome": "TWILIO_STOP",
-  "duration": 27,
-  "transcriptJson": "[{\"role\":\"agent\",\"text\":\"Thank you for calling Fundy Roofing, this is Nova. How can I help you today?\",\"at\":\"2026-10-02T01:58:11.639Z\"},{\"role\":\"agent\",\"text\":\"हा\",\"at\":\"2026-10-02T01:58:14.765Z\"},{\"role\":\"agent\",\"text\":\"Could you please tell me what you need assistance with today?\",\"at\":\"2026-10-02T01:58:17.732Z\"}]",
+  "outcome": "GEMINI_AUDIO_RATE_LIMIT",
+  "duration": 2,
+  "transcriptJson": "[]",
   "failureCode": null
  }
 ]

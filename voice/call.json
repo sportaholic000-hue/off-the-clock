@@ -8,18 +8,22 @@
       "opened": true
     },
     "media": {
-      "sentFrames": 1322,
-      "agentAudioSeconds": 7,
-      "mediaFrames": 18,
-      "mediaBytes": 56000,
-      "marks": 18,
+      "sentFrames": 94,
+      "agentAudioSeconds": 3.71,
+      "mediaFrames": 11,
+      "mediaBytes": 29680,
+      "marks": 11,
       "clears": 0,
-      "firstMediaMs": 1067,
+      "firstMediaMs": 1059,
       "events": [],
-      "closed": null
+      "closed": {
+        "code": 1008,
+        "reason": "Voice media unavailable",
+        "atMs": 1919
+      }
     }
   },
-  "startedAt": "2026-10-02T01:58:06.451Z",
-  "callSid": "CA9f82832200f15ddac1e2bb86fa25a93f",
-  "finishedAt": "2026-10-02T01:58:36.568Z"
+  "startedAt": "2026-10-02T14:51:31.585Z",
+  "callSid": "CA3d6cae561c440fce0b52424220a9211f",
+  "finishedAt": "2026-10-02T14:51:36.548Z"
 }
