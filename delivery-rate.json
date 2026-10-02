@@ -1,0 +1,136 @@
+{
+ "model": "gemini-3.8-live",
+ "turns": [
+  {
+   "atSec": 1.6,
+   "prompt": "[SYSTEM] A visitor just started the demo",
+   "firstAudioMs": 1365,
+   "audioSec": 4.5,
+   "deliveredOverSec": 1,
+   "speedVsPlayback": 4.49,
+   "chunks": 15,
+   "maxGapMs": 253
+  },
+  {
+   "atSec": 11.4,
+   "prompt": "I have a roofing company.",
+   "firstAudioMs": 1097,
+   "audioSec": 5.8,
+   "deliveredOverSec": 1.3,
+   "speedVsPlayback": 4.6,
+   "chunks": 17,
+   "maxGapMs": 202
+  },
+  {
+   "atSec": 22.3,
+   "prompt": "I just answer them all myself.",
+   "firstAudioMs": 998,
+   "audioSec": 13.8,
+   "deliveredOverSec": 3.2,
+   "speedVsPlayback": 4.25,
+   "chunks": 43,
+   "maxGapMs": 379
+  },
+  {
+   "atSec": 41.1,
+   "prompt": "What happens if a customer gives the wro",
+   "firstAudioMs": 882,
+   "audioSec": 10,
+   "deliveredOverSec": 2.3,
+   "speedVsPlayback": 4.36,
+   "chunks": 31,
+   "maxGapMs": 226
+  },
+  {
+   "atSec": 56,
+   "prompt": "What questions do you ask people who wan",
+   "firstAudioMs": 1298,
+   "audioSec": 10.5,
+   "deliveredOverSec": 2.3,
+   "speedVsPlayback": 4.55,
+   "chunks": 34,
+   "maxGapMs": 433
+  },
+  {
+   "atSec": 71.9,
+   "prompt": "Is that all of them?",
+   "firstAudioMs": 1051,
+   "audioSec": 3.8,
+   "deliveredOverSec": 0.8,
+   "speedVsPlayback": 4.47,
+   "chunks": 12,
+   "maxGapMs": 253
+  },
+  {
+   "atSec": 80.7,
+   "prompt": "How do I set up my number?",
+   "firstAudioMs": 1343,
+   "audioSec": 10.2,
+   "deliveredOverSec": 1.9,
+   "speedVsPlayback": 5.31,
+   "chunks": 29,
+   "maxGapMs": 545
+  },
+  {
+   "atSec": 96.3,
+   "prompt": "Can it run all night?",
+   "firstAudioMs": 1207,
+   "audioSec": 5.6,
+   "deliveredOverSec": 1.3,
+   "speedVsPlayback": 4.47,
+   "chunks": 17,
+   "maxGapMs": 441
+  },
+  {
+   "atSec": 107.1,
+   "prompt": "What does QuoteDone cost?",
+   "firstAudioMs": 762,
+   "audioSec": 5.4,
+   "deliveredOverSec": 1.2,
+   "speedVsPlayback": 4.38,
+   "chunks": 18,
+   "maxGapMs": 388
+  },
+  {
+   "atSec": 117.3,
+   "prompt": "What if I want to cancel?",
+   "firstAudioMs": 842,
+   "audioSec": 4.8,
+   "deliveredOverSec": 1.2,
+   "speedVsPlayback": 4.07,
+   "chunks": 18,
+   "maxGapMs": 326
+  },
+  {
+   "atSec": 127,
+   "prompt": "Do you work for landscapers too?",
+   "firstAudioMs": 806,
+   "audioSec": 10.3,
+   "deliveredOverSec": 2.4,
+   "speedVsPlayback": 4.26,
+   "chunks": 33,
+   "maxGapMs": 290
+  },
+  {
+   "atSec": 142.2,
+   "prompt": "What questions for a lawn mowing quote?",
+   "firstAudioMs": 1217,
+   "audioSec": 8.1,
+   "deliveredOverSec": 1.9,
+   "speedVsPlayback": 4.36,
+   "chunks": 27,
+   "maxGapMs": 602
+  },
+  {
+   "atSec": 155.6,
+   "prompt": "Okay, sounds good.",
+   "firstAudioMs": 963,
+   "audioSec": 4.4,
+   "deliveredOverSec": 1,
+   "speedVsPlayback": 4.57,
+   "chunks": 13,
+   "maxGapMs": 386
+  }
+ ],
+ "setupMs": 233
+}
