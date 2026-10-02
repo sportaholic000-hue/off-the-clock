@@ -28,7 +28,18 @@ for(const r of x){let left=16000;const v=Math.max(-1,Math.min(1,Number.isFinite(
 while(left>0){const t=Math.min(left,this.rem);this.sum+=v*t;this.rem-=t;left-=t;
 if(this.rem===0){const s=Math.max(-1,Math.min(1,this.sum/this.span));this.buf[this.n++]=Math.round(s*(s<0?32768:32767));this.sum=0;this.rem=this.span;
 if(this.n===this.buf.length){const b=new ArrayBuffer(this.buf.length*2),d=new DataView(b);for(let k=0;k<this.buf.length;k++)d.setInt16(k*2,this.buf[k],true);this.port.postMessage(b,[b]);this.n=0;}}}}
-return true;}}registerProcessor('otc-capture',P);`;
+return true;}}registerProcessor('otc-capture',P);
+class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.g=1;this.fade=false;this.force=false;this.step=24000/sampleRate;this.tick=0;this.underruns=0;
+this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(this.len)this.fade=true;}else if(d==='go'){this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
+at(k){let c=0;while(c<this.q.length&&k>=this.q[c].length){k-=this.q[c].length;c++;}return c<this.q.length?this.q[c][k]:0;}
+process(i,o){const out=o[0]&&o[0][0];if(!out)return true;const need=this.under?2400:4800;
+const avail=this.len-this.pos;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need||(this.force&&avail>=2)))this.on=true;
+for(let n=0;n<out.length;n++){if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
+const k=Math.floor(this.pos),f=this.pos-k;let v=this.at(k)*(1-f)+this.at(k+1)*f;
+if(this.fade){v*=this.g;this.g-=1/(0.012*sampleRate);if(this.g<=0){this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.fade=false;this.force=false;this.g=1;out.fill(0,n);break;}}
+out[n]=v;this.pos+=this.step;while(this.q.length&&this.pos>=this.q[0].length){this.pos-=this.q[0].length;this.len-=this.q[0].length;this.q.shift();}}
+if(++this.tick%8===0)this.port.postMessage({buffered:Math.max(0,this.len-this.pos)/24000,playing:this.on,underruns:this.underruns});return true;}}
+registerProcessor('otc-player',Q);`;
 
   const CSS = `
 #otc-live-demo{--g:#00E676;--t:#F2F5F2;--m:#8A948A;--p:#111411;--b:#1E241E;--bg:#0A0A0A;font-family:Inter,system-ui,sans-serif;color:var(--t);position:absolute;z-index:5;margin:0;display:none}
@@ -84,6 +95,8 @@ return true;}}registerProcessor('otc-capture',P);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
+  let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
+  const ECHO_GATE = 0.15, ECHO_TAIL_MS = 400;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
@@ -139,19 +152,23 @@ return true;}}registerProcessor('otc-capture',P);`;
     cur.textContent += text;
     if (near) els.log.scrollTop = els.log.scrollHeight;
   }
-  function stopPlayback() { for (const p of plays) { try { p.stop(); p.disconnect(); } catch {} } plays = []; nextPlay = 0; }
+  function stopPlayback() { if (player) player.port.postMessage('flush'); pendingByte = null; }
+  // Agent audio is PCM16 at 24 kHz. Chunks go to one continuous player with a 200 ms jitter buffer,
+  // so network timing doesn't cut words or click between chunks. Odd byte counts carry over.
   function play(b64) {
-    if (!ctx || mode !== 'voice') return;
-    const raw = atob(b64); const n = raw.length >> 1; if (!n) return;
-    const buf = ctx.createBuffer(1, n, 24000), ch = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) { let v = raw.charCodeAt(2 * i) | (raw.charCodeAt(2 * i + 1) << 8); if (v > 32767) v -= 65536; ch[i] = v / 32768; }
-    const s = ctx.createBufferSource(); s.buffer = buf; s.connect(ctx.destination);
-    const at = Math.max(ctx.currentTime + 0.02, nextPlay); nextPlay = at + buf.duration;
-    plays.push(s); s.onended = () => { plays = plays.filter(x => x !== s); try { s.disconnect(); } catch {} };
-    s.start(at);
+    if (!player || mode !== 'voice') return;
+    const raw = atob(b64); let bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    if (pendingByte !== null) { const joined = new Uint8Array(bytes.length + 1); joined[0] = pendingByte; joined.set(bytes, 1); bytes = joined; pendingByte = null; }
+    if (bytes.length % 2) { pendingByte = bytes[bytes.length - 1]; bytes = bytes.subarray(0, bytes.length - 1); }
+    const n = bytes.length >> 1; if (!n) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length); const f = new Float32Array(n);
+    for (let i = 0; i < n; i++) f[i] = dv.getInt16(2 * i, true) / 32768;
+    lastAgentAudioAt = Date.now();
+    player.port.postMessage(f, [f.buffer]);
   }
   // Wall-clock time when queued agent audio finishes (0 when nothing is queued or in text mode).
-  function agentBusyUntil() { return ctx && mode === 'voice' && nextPlay > ctx.currentTime ? Date.now() + (nextPlay - ctx.currentTime) * 1000 : 0; }
+  function agentBusyUntil() { return player && mode === 'voice' && (playerPlaying || playerBuffered > 0) ? Date.now() + playerBuffered * 1000 : 0; }
   function releaseMic() {
     if (node) { node.port.onmessage = null; try { node.disconnect(); } catch {} node = null; }
     try { src && src.disconnect(); } catch {} src = null;
@@ -160,7 +177,7 @@ return true;}}registerProcessor('otc-capture',P);`;
   }
   function teardown() {
     gen++; clearInterval(tick); tick = null; clearTimeout(closeTimer); closeTimer = null;
-    releaseMic(); stopPlayback();
+    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false;
     if (ws) { const w = ws; ws = null; w.onmessage = w.onclose = w.onerror = null; try { w.close(1000, 'demo ended'); } catch {} }
     const c = ctx; ctx = null; if (c && c.state !== 'closed') c.close().catch(() => {});
   }
@@ -203,6 +220,8 @@ return true;}}registerProcessor('otc-capture',P);`;
         stream = media; for (const t of media.getTracks()) t.onended = () => { if (g === gen) finish('The microphone was disconnected. Your session has ended.'); };
         const url = URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' }));
         try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
+        player = new AudioWorkletNode(ctx, 'otc-player', { outputChannelCount: [1] }); player.connect(ctx.destination);
+        player.port.onmessage = e => { const d = e.data || {}; playerBuffered = d.buffered || 0; playerPlaying = Boolean(d.playing); underruns = d.underruns || 0; };
         if (g !== gen) return;
       }
       const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agent }), cache: 'no-store' });
@@ -237,6 +256,7 @@ return true;}}registerProcessor('otc-capture',P);`;
         // Gemini sometimes emits placeholders such as "<no speech detected>"; never show those to visitors.
         if (s.outputTranscription && s.outputTranscription.text && !/^\s*<[^>]*>\s*$/.test(s.outputTranscription.text)) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
+        if (s.turnComplete && player) player.port.postMessage('go');
         if (s.turnComplete) {
           agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
           // While closing, only the turn that actually spoke the closing line ends the session.
@@ -259,6 +279,10 @@ return true;}}registerProcessor('otc-capture',P);`;
         for (let i = 0; i < bytes.length; i += 2) peak = Math.max(peak, Math.abs(dv.getInt16(i, true)) / 32768);
         els.meter.style.width = Math.min(100, peak * 220) + '%';
         peakMax = Math.max(peakMax, peak); if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
+        // Speakers feed the agent's own voice back into the mic. While it is talking, quiet input is sent as
+        // silence so the agent doesn't interrupt itself; a caller speaking clearly still cuts in.
+        const agentTalking = playerPlaying || playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS;
+        if (agentTalking && peak < ECHO_GATE) bytes.fill(0);
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
         send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
       };
@@ -311,7 +335,7 @@ return true;}}registerProcessor('otc-capture',P);`;
     window.addEventListener('pagehide', () => teardown());
     return true;
   }
-  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, get framesSent() { return framesSent; }, get peakMax() { return peakMax; }, els };
+  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, get framesSent() { return framesSent; }, get peakMax() { return peakMax; }, get underruns() { return underruns; }, els };
   function waitAndMount(tries) { if (mount() || tries <= 0) return; setTimeout(() => waitAndMount(tries - 1), 250); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => waitAndMount(80)); else waitAndMount(80);
 })();
