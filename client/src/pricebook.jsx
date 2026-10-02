@@ -562,6 +562,7 @@ export default function PriceBook() {
   const [preview, setPreview] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
+  const [suggesting,setSuggesting] = useState(false);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [approvalPending, setApprovalPending] = useState(false);
@@ -708,12 +709,14 @@ export default function PriceBook() {
   }
 
   async function suggest() {
-    setError(null);
+    if(suggesting)return;
+    setSuggesting(true);setError(null);
     try {
       const industry = (onboarding.profile.businessTypes || []).join(', ');
       const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:(onboarding.profile.businessTypes || []) } });
       setSuggestions(result);
     } catch (nextError) { setError(nextError); }
+    finally {setSuggesting(false);}
   }
 
   function addSuggestion(item) {
@@ -786,9 +789,10 @@ export default function PriceBook() {
           eyebrow="QUOTEDONE"
           title="Price book"
           description="Your prices drive every quote."
-          actions={<><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={suggest}>Suggest a starter book</Button></>}
+          actions={<><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending||suggesting} onClick={suggest}>{suggesting?'Generating draft…':'Suggest a starter book'}</Button></>}
         />
         <fieldset disabled={saving||approvalPending} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
+        {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. You can keep editing prices manually.</p>}
         {suggestions && (
           <section className="starter-panel">
             <div className="section-title"><Notice tone="warning">{suggestions.warning}</Notice><Button icon={X} variant="icon" onClick={() => setSuggestions(null)} aria-label="Close suggestions" /></div>

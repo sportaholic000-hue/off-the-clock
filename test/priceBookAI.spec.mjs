@@ -82,3 +82,9 @@ test('every catalog enum is displayed using customer words rather than snake cas
   assert.ok(!summary.facts[0].value.includes('_'),service.serviceType+'.'+field.name+': '+value);
  }
 });
+
+for(const service of applicationMetadata().services)test('current starter schema accepts supported draft fields for '+service.serviceType,()=>{
+ const numeric=def=>def.type==='number'?1:Object.fromEntries(def.shapedKeys.keys.map(key=>[key,def.shapedKeys.nested?Object.fromEntries(def.shapedKeys.nested.map(n=>[n,1])):1]));
+ const raw=service.serviceType==='CUSTOM'?[{service:'Synthetic',serviceType:'CUSTOM',low:1,high:2,unit:'flat',minimumJob:0}]:[{service:'Synthetic',serviceType:service.serviceType,fields:Object.fromEntries(starterFields(service.serviceType).map(def=>[def.field,numeric(def)]))}];
+ const accepted=validateStarterOutput(raw,[service.serviceType]);assert.equal(accepted.length,1);assert.ok(Object.keys(accepted[0].fields).length);
+});

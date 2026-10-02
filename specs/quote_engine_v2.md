@@ -1363,12 +1363,18 @@ POST /api/pricebook/suggest
     high: integer greater than low, unit: one of exactly
     flat|per_sqft|per_hour|per_unit|per_LF|per_square,
     minimumJob: integer }.
-  Response handling: strip ```json fences, JSON.parse, retry once
-  on failure, then error "Could not generate suggestions. Please
-  build your price book manually."
-  Validation: drop unknown/invalid fields (never coerce); numbers
-  must be finite and non-negative; require ≥1 valid service or
-  return the error above. Timeout 15s, one retry.
+  [AMENDED 2026-10-01 by owner instruction: malformed or unsupported
+  AI output must be rejected or explicitly flagged, never silently stored.]
+  Response handling: strict JSON and exact decimal validation, one bounded
+  retry, then a clear error with the manual editor still available.
+  Reject unknown fields, extra properties, out-of-domain keys, negative
+  values and values outside the existing supported numeric/money range.
+  Validate against the current application pricing metadata; never coerce
+  values or infer open-domain offering keys. Do not invent market-price
+  ceilings. All AI values still require explicit owner confirmation.
+  Timeout 15s per attempt including response-body parsing; one retry.
+  PRICEBOOK_GEMINI_MODEL selects the text model independently; GEMINI_MODEL
+  retains its existing voice-runtime meaning.
   IMPORTANT: every suggested value is a STARTING POINT saved as
   DRAFT with source AI_SUGGESTED and an empty confirmedFields
   map. The dashboard must show: "These are AI-suggested placeholder prices. Review and confirm each value before going live."

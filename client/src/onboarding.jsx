@@ -492,6 +492,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [readBack, setReadBack] = useState(null);
   const [existingDrafts, setExistingDrafts] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
+  const [suggesting,setSuggesting] = useState(false);
   const [error, setError] = useState(null);
   const interviewFields = useMemo(
     () => available.flatMap(service => service.fields.filter(field=>['number','json','select','boolean'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
@@ -626,13 +627,15 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   async function suggest() {
-    setError(null);
+    if(suggesting)return;
+    setSuggesting(true);setError(null);
     try {
       const industry = TRADE_GROUPS.filter(group => group.types.some(type => activeTypes.includes(type))).map(group => group.label).join(', ');
       const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:activeTypes } });
       setSuggestions(result);
       sessionStorage.setItem('otc_pricebook_suggestions', JSON.stringify(result));
     } catch (nextError) { setError(nextError); }
+    finally {setSuggesting(false);}
   }
 
   if (!quoteAccess) {
@@ -714,7 +717,8 @@ function PriceBookStep({ state, metadata, back, next }) {
         </div>
         <div className="path-row">
           <div><span className="eyebrow">2</span><h2>Suggest a starter book</h2><p>Generate AI-suggested placeholder prices, then review and confirm each value before going live.</p></div>
-          <Button icon={Sparkles} variant="secondary" onClick={suggest}>Suggest a starter book</Button>
+          <Button icon={Sparkles} variant="secondary" disabled={suggesting} onClick={suggest}>{suggesting?'Generating draft…':'Suggest a starter book'}</Button>
+          {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. The manual editor remains available below.</p>}
         </div>
         {suggestions && (
           <div className="suggestion-results">
