@@ -140,7 +140,10 @@ registerProcessor('otc-player',Q);`;
     els.note = h('p', { class: 'otcd-note', role: 'alert' });
     els.diag = h('button', { type: 'button', class: 'otcd-link', text: 'Copy diagnostics', onclick: copyDiag });
     els.diagOut = h('textarea', { readonly: '', rows: '6', style: 'width:100%;margin-top:8px;background:#0A0A0A;color:#8A948A;border:1px solid #1E241E;font:11px monospace', hidden: '' });
-    const diagBox = h('div', { style: 'margin-top:10px' }, [els.diag, els.diagOut]); if (!DEBUG) diagBox.hidden = true;
+    // Owner voice audition (test link only; the server refuses it unless DEMO_VOICE_AUDITION is on).
+    els.voicePick = h('select', { 'aria-label': 'Miles test voice', style: 'margin-left:10px;background:#0A0A0A;color:#F2F5F2;border:1px solid #1E241E;font:12px monospace;padding:4px' },
+      [h('option', { value: '', text: 'Miles voice: default' }), ...['Charon', 'Algenib', 'Algieba', 'Orus', 'Alnilam', 'Puck'].map(v => h('option', { value: v, text: 'Miles voice: ' + v }))]);
+    const diagBox = h('div', { style: 'margin-top:10px' }, [els.diag, els.voicePick, els.diagOut]); if (!DEBUG) diagBox.hidden = true;
     const panel = h('div', { class: 'otcd-panel' }, [h('div', { class: 'otcd-top' }, [els.status, els.timer]), els.idle, els.convo, els.ended, els.note, diagBox]);
     return h('div', { id: 'otc-live-demo' }, h('div', { class: 'otcd-grid' }, [h('div', { class: 'otcd-col' }, [...cards, rules]), panel]));
   }
@@ -242,8 +245,8 @@ registerProcessor('otc-player',Q);`;
         player.port.onmessage = e => { const d = e.data || {}; playerBuffered = d.buffered || 0; playerPlaying = Boolean(d.playing); underruns = d.underruns || 0; };
         if (g !== gen) return;
       }
-      const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agent }), cache: 'no-store' });
-      const data = await readJson(r); dlog('token', { status: r.status });
+      const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(DEBUG && agent === 'miles' && els.voicePick.value ? { agent, voice: els.voicePick.value } : { agent }), cache: 'no-store' });
+      const data = await readJson(r); dlog('token', { status: r.status, voice: data && data.agent && data.agent.voice });
       if (!r.ok || !data || !data.token) throw new Error((data && data.message) || 'The demo could not connect. Please try again.');
       if (g !== gen) return;
       sessionMs = data.sessionSeconds * 1000; setStatus('Connecting');

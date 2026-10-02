@@ -30,7 +30,7 @@ jobs:
         env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
         run: |
           mkdir -p /tmp/pb
-          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/a.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=http://localhost:3999 CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console DEMO_ENABLED=true DEMO_IP_SALT=$(openssl rand -hex 16) DEMO_ALLOWED_ORIGINS=$URL DEMO_SESSIONS_PER_IP_PER_HOUR=60 DEMO_MAX_CONCURRENT=5 DEMO_DAILY_SESSION_CAP=200 nohup node server/src/server.js > /tmp/app.log 2>&1 &
+          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/a.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=http://localhost:3999 CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console DEMO_ENABLED=true DEMO_IP_SALT=$(openssl rand -hex 16) DEMO_ALLOWED_ORIGINS=$URL DEMO_VOICE_AUDITION=true DEMO_SESSIONS_PER_IP_PER_HOUR=60 DEMO_MAX_CONCURRENT=5 DEMO_DAILY_SESSION_CAP=200 nohup node server/src/server.js > /tmp/app.log 2>&1 &
           for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
       - name: Check the link end to end and publish it
         run: |
