@@ -1,0 +1,17 @@
+{
+  "kind": "browser-regression",
+  "args": [
+    "--test",
+    "--test-concurrency=1",
+    "test/priceBookEditor.browser.spec.mjs",
+    "test/pricebookPreviewFreshness.browser.spec.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedMs": 441517,
+  "tests": 19,
+  "suites": 0,
+  "pass": 19,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0
+}

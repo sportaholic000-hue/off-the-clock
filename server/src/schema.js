@@ -83,6 +83,7 @@ export const CREATE_TABLE_STATEMENTS = [
     integrationIdentifier TEXT NOT NULL,
     stripeSessionId TEXT,
     stripeSubscriptionId TEXT,
+    stripeUsagePriceId TEXT,
     sessionUrlCiphertext TEXT,
     sessionUrlIv TEXT,
     sessionUrlTag TEXT,

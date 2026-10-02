@@ -233,7 +233,8 @@ export function createBillingStateService({
   pricePlanMap,
   supplementalPriceIds = [],
   clock = () => new Date(),
-  randomUUID = crypto.randomUUID
+  randomUUID = crypto.randomUUID,
+  onVerifiedTransition
 }) {
   if (!db || typeof db.prepare !== 'function' || typeof db.exec !== 'function') {
     throw new TypeError('BillingStateService requires a SQLite-compatible database.');
@@ -783,7 +784,10 @@ export function createBillingStateService({
         if (existing.eventDigest !== event.digest) {
           throw billingError('EVENT_ID_CONFLICT', 'This Stripe event ID was already received with different state data.');
         }
-        return parseStoredJson(existing.resultJson);
+        const replay = parseStoredJson(existing.resultJson);
+        // Supplementary usage evidence is written atomically with a new receipt.
+        // A replay must not reinterpret historical evidence against a changed plan.
+        return replay;
       }
 
       let context = resolveAccountContext(event);
@@ -860,6 +864,7 @@ export function createBillingStateService({
         event.digest, receiptOutcome, JSON.stringify(event.sanitizedReceipt),
         JSON.stringify(result), processedAt
       );
+      if (receiptOutcome === 'APPLIED') onVerifiedTransition?.(rawEvent, result);
       return result;
     });
   }

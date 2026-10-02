@@ -7,6 +7,10 @@ function completeEnv(overrides = {}) {
   return {
     NODE_ENV: 'production',
     STRIPE_BILLING_ENABLED: 'true',
+    STRIPE_USAGE_ENABLED: 'true',
+    STRIPE_OVERAGE_MONTHLY_PRICE_ID: 'price_usage_month',
+    STRIPE_USAGE_METER_ID: 'mtr_usage',
+    STRIPE_USAGE_EVENT_NAME: 'otc_voice_overage',
     STRIPE_SECRET_KEY: 'rk_live_backendOnly',
     STRIPE_WEBHOOK_SECRET: 'whsec_signingSecret',
     STRIPE_OPERATOR_MONTHLY_PRICE_ID: 'price_operator_month',

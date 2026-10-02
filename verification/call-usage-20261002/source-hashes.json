@@ -1,0 +1,127 @@
+[
+  {
+    "path": "server/src/usagePolicy.js",
+    "length": 1357,
+    "sha": "78f0260e24a26e9d7d86bcb7408a6eab5ae8855b"
+  },
+  {
+    "path": "server/src/usageSchema.js",
+    "length": 4849,
+    "sha": "75d93ec827e2419a4bc2da4acf2dbca11f56410e"
+  },
+  {
+    "path": "server/src/callUsageService.js",
+    "length": 17080,
+    "sha": "a0e017547aef8ebe3f9b8fe16d025d39acc78d86"
+  },
+  {
+    "path": "server/src/callUsage.js",
+    "length": 748,
+    "sha": "6f96f933632cce4641f51eb4854c46c14a553d3c"
+  },
+  {
+    "path": "server/src/usageReporter.js",
+    "length": 6627,
+    "sha": "ed462a42bccf3834cb1e2078e56019423af94aef"
+  },
+  {
+    "path": "server/src/usageStripe.js",
+    "length": 3601,
+    "sha": "5d790af39a87b3824c9021e3ccadbc2bb13236d4"
+  },
+  {
+    "path": "server/src/usageRoutes.js",
+    "length": 408,
+    "sha": "3a1ddcc566b87d24c2096786ddc3ef35086169a8"
+  },
+  {
+    "path": "server/src/usageItemProvisioner.js",
+    "length": 4730,
+    "sha": "060d8e148896c778355d555d6125dec53d0a3ffb"
+  },
+  {
+    "path": "test/helpers/usageFixture.mjs",
+    "length": 3679,
+    "sha": "052da688ffe64cbd50ca5a8d591b29271a8c2af2"
+  },
+  {
+    "path": "test/helpers/usageReportWorker.mjs",
+    "length": 689,
+    "sha": "5f15666489e6dacfa4ff6e16bbbf3d6f68a320c7"
+  },
+  {
+    "path": "test/callUsage.spec.mjs",
+    "length": 13300,
+    "sha": "922944f8b35acf2445d5c6421ef4549ad9321ec9"
+  },
+  {
+    "path": "test/usageStripe.spec.mjs",
+    "length": 18665,
+    "sha": "fdce0a1e81f44d2e4a52c6eec03076e57676ab89"
+  },
+  {
+    "path": "test/usageRoutes.spec.mjs",
+    "length": 2919,
+    "sha": "5f44fc12ec147dd3956759c51d04018526c57b38"
+  },
+  {
+    "path": "docs/call-usage.md",
+    "length": 9964,
+    "sha": "02f4c1b4cc8b4a317430559cbcfb7e287a8c3b98"
+  },
+  {
+    "path": "server/src/migrations.js",
+    "length": 8718,
+    "sha": "9143201adcd1ce48fb3473368d587a2beb913de5"
+  },
+  {
+    "path": "server/src/schema.js",
+    "length": 22757,
+    "sha": "3a54bed6f510ef42766573052a0a85573717a3a3"
+  },
+  {
+    "path": "server/src/billingConfig.js",
+    "length": 4633,
+    "sha": "a796605e33d7cab09a2a4b056fe1959deb7b3451"
+  },
+  {
+    "path": "server/src/billingStateService.js",
+    "length": 37994,
+    "sha": "73e5e6742996f852dd721ceb908cce381c8db10f"
+  },
+  {
+    "path": "server/src/billingRoutes.js",
+    "length": 30468,
+    "sha": "f84282be21cb0262f0f3f238483c6756e0ee1293"
+  },
+  {
+    "path": "server/src/server.js",
+    "length": 23232,
+    "sha": "46ef1142cf2662657a9a06d2599d246cd94beba0"
+  },
+  {
+    "path": "client/src/dashboard.jsx",
+    "length": 19328,
+    "sha": "0c2186560df8c3716a1db786054cc777f87442b1"
+  },
+  {
+    "path": "test/billingConfig.spec.mjs",
+    "length": 3785,
+    "sha": "1438cb103f6bc045dd4ba2ec5ba2ad0fb169c635"
+  },
+  {
+    "path": "test/runtimeConfig.spec.mjs",
+    "length": 4641,
+    "sha": "f7586fe2a4f76dcbef55c1d01e7d51bbbf7b066f"
+  },
+  {
+    "path": ".env.example",
+    "length": 2209,
+    "sha": "0bd56d65b82246ffb5d471fc10eeec98ec74ad5f"
+  },
+  {
+    "path": "deployment/railway.env.example",
+    "length": 3422,
+    "sha": "e9a29d29655f160d2ccd126ee3d7ac2aaeafffbd"
+  }
+]

@@ -332,6 +332,7 @@ export function installBillingRoutes(app, {
   cancelUrl,
   portalReturnUrl,
   integrationIdentifier,
+  usageConfig = null,
   checkoutReceiptEncryptionKey = process.env.CREDENTIAL_ENCRYPTION_KEY,
   allowInsecureLoopback = process.env.NODE_ENV !== 'production',
   providerOperationsEnabled = true,
@@ -419,10 +420,10 @@ export function installBillingRoutes(app, {
   const insertCheckoutClaim = database.prepare(`
     INSERT INTO billingCheckoutRequests (
       id, ownerId, idempotencyKeyHash, requestDigest, plan, billingInterval,
-      stripePriceId, stripeCustomerId, providerIdempotencyKey,
+      stripePriceId, stripeCustomerId, providerIdempotencyKey, stripeUsagePriceId,
       successUrl, cancelUrl, integrationIdentifier, status,
       attemptCount, leaseExpiresAt, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'CREATING', 1, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'CREATING', 1, ?, ?, ?)
   `);
   const reclaimCheckout = database.prepare(`
     UPDATE billingCheckoutRequests
@@ -565,7 +566,7 @@ export function installBillingRoutes(app, {
       insertCheckoutClaim.run(
         id, ownerId, idempotencyKeyHash, requestDigest, selection.plan,
         selection.billingInterval, selection.priceId, account.stripeCustomerId,
-        providerKey, success.value, cancel.value, checkoutIntegration,
+        providerKey, usageConfig?.priceId || null, success.value, cancel.value, checkoutIntegration,
         leaseExpiresAt, nowIso, nowIso
       );
       return {
@@ -628,9 +629,11 @@ export function installBillingRoutes(app, {
     return {
       mode: 'subscription',
       customer: row.stripeCustomerId,
-      line_items: [{ price: row.stripePriceId, quantity: 1 }],
+      line_items: [{ price: row.stripePriceId, quantity: 1 },
+        ...(row.stripeUsagePriceId && row.billingInterval !== 'annual' ? [{ price: row.stripeUsagePriceId }] : [])],
       payment_method_collection: 'always',
       subscription_data: {
+        ...(row.stripeUsagePriceId ? { billing_mode: { type: 'flexible' } } : {}),
         trial_period_days: 14,
         trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }
       },

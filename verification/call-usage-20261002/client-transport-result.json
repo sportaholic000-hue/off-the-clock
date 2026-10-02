@@ -1,0 +1,16 @@
+{
+  "kind": "client-transport",
+  "args": [
+    "--test",
+    "client/test/billing-transport.test.mjs",
+    "client/test/widget-transport.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedMs": 2985,
+  "tests": 17,
+  "suites": 0,
+  "pass": 17,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0
+}
