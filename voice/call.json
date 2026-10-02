@@ -9,17 +9,17 @@
     },
     "media": {
       "sentFrames": 1322,
-      "agentAudioSeconds": 0,
-      "mediaFrames": 0,
-      "mediaBytes": 0,
-      "marks": 0,
+      "agentAudioSeconds": 6.12,
+      "mediaFrames": 19,
+      "mediaBytes": 48960,
+      "marks": 19,
       "clears": 0,
-      "firstMediaMs": null,
+      "firstMediaMs": 987,
       "events": [],
       "closed": null
     }
   },
-  "startedAt": "2026-10-02T01:54:09.198Z",
-  "callSid": "CA6fa3b755107fff364381831f639a6bdc",
-  "finishedAt": "2026-10-02T01:54:39.052Z"
+  "startedAt": "2026-10-02T01:57:01.855Z",
+  "callSid": "CA9675e9c197f4be4ee7a2390392ed4203",
+  "finishedAt": "2026-10-02T01:57:31.790Z"
 }
