@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "33605e99c834f2fa7c189626d6d6cbfc8b1d5f61",
+  "findingGroupsFixed": [
+    "R01",
+    "R02",
+    "R03",
+    "R04",
+    "R05",
+    "R06",
+    "R07",
+    "R08",
+    "R09"
+  ],
+  "newRegressionTests": 35,
+  "independentArithmeticChecks": 409,
+  "browserHttpChecks": 11,
+  "fullSuite": {
+    "tests": 1244,
+    "pass": 1233,
+    "fail": 9,
+    "skipped": 2,
+    "unexpectedFailures": 0
+  },
+  "builds": [
+    "owner",
+    "widget"
+  ],
+  "roundingChanged": false,
+  "subagentsUsed": false,
+  "liveDataChanged": false,
+  "deploymentPerformed": false,
+  "archives": [
+    {
+      "path": "AFTER-EVIDENCE.zip",
+      "bytes": 2939989,
+      "sha256": "71c5b4508de6eae6c9c0c7a0b77d49d8c8f3d397765fe2045790fd66ce3dd526"
+    },
+    {
+      "path": "BEFORE-EVIDENCE.zip",
+      "bytes": 1849191,
+      "sha256": "60597f20f5a3629317e87d97259071c446486bea154258e567781b8b1e6b1ad9"
+    }
+  ]
+}
