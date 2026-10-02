@@ -90,7 +90,8 @@ export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstru
         config,
         callbacks: {
           onopen: () => {},
-          onmessage: message => { run(() => handle(message)); },
+          // The SDK delivers class instances; reduce each message to plain JSON before validating it.
+          onmessage: message => { let plain; try { plain = JSON.parse(JSON.stringify(message)); } catch { run(fail); return; } run(() => handle(plain)); },
           onerror: event => { reportProvider('onerror', event?.message ?? event?.error ?? event); run(fail); },
           onclose: event => { if (event?.code && event.code !== 1000) reportProvider('onclose', `${event.code} ${event.reason || ''}`); run(async () => { if (closed) return; closed = true; await callbacks.onClose(); }); },
         },
