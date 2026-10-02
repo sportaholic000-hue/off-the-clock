@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: F01 CONCRETE_PATIO_SLAB exact easy multiplies configured finishing labor exactly once
+ok 1 - F01 CONCRETE_PATIO_SLAB exact easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 99.994199
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB exact moderate multiplies configured finishing labor exactly once
+ok 2 - F01 CONCRETE_PATIO_SLAB exact moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 38.897848
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB exact difficult multiplies configured finishing labor exactly once
+ok 3 - F01 CONCRETE_PATIO_SLAB exact difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 34.046493
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline easy multiplies configured finishing labor exactly once
+ok 4 - F01 CONCRETE_PATIO_SLAB measured_outline easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 38.380441
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline moderate multiplies configured finishing labor exactly once
+ok 5 - F01 CONCRETE_PATIO_SLAB measured_outline moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 32.735781
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline difficult multiplies configured finishing labor exactly once
+ok 6 - F01 CONCRETE_PATIO_SLAB measured_outline difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 28.708937
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact easy multiplies configured finishing labor exactly once
+ok 7 - F01 CONCRETE_DRIVEWAY exact easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 32.893063
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact moderate multiplies configured finishing labor exactly once
+ok 8 - F01 CONCRETE_DRIVEWAY exact moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 34.911113
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact difficult multiplies configured finishing labor exactly once
+ok 9 - F01 CONCRETE_DRIVEWAY exact difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 19.844484
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline easy multiplies configured finishing labor exactly once
+ok 10 - F01 CONCRETE_DRIVEWAY measured_outline easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 26.970329
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline moderate multiplies configured finishing labor exactly once
+ok 11 - F01 CONCRETE_DRIVEWAY measured_outline moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 29.239809
+  type: 'test'
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline difficult multiplies configured finishing labor exactly once
+ok 12 - F01 CONCRETE_DRIVEWAY measured_outline difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 32.893676
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB easy area/perimeter alone still requires geometry review
+ok 13 - F01 control CONCRETE_PATIO_SLAB easy area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 4.745765
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB moderate area/perimeter alone still requires geometry review
+ok 14 - F01 control CONCRETE_PATIO_SLAB moderate area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 9.202683
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB difficult area/perimeter alone still requires geometry review
+ok 15 - F01 control CONCRETE_PATIO_SLAB difficult area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 3.917818
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY easy area/perimeter alone still requires geometry review
+ok 16 - F01 control CONCRETE_DRIVEWAY easy area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 8.021695
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY moderate area/perimeter alone still requires geometry review
+ok 17 - F01 control CONCRETE_DRIVEWAY moderate area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 2.708523
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY difficult area/perimeter alone still requires geometry review
+ok 18 - F01 control CONCRETE_DRIVEWAY difficult area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 8.11907
+  type: 'test'
+  ...
+# Subtest: F01 configured labor keeps one final cent rounding and the owner access override
+ok 19 - F01 configured labor keeps one final cent rounding and the owner access override
+  ---
+  duration_ms: 19.345027
+  type: 'test'
+  ...
+# Subtest: F01 tiers and markup/tax/minimum consume the corrected labor amount
+ok 20 - F01 tiers and markup/tax/minimum consume the corrected labor amount
+  ---
+  duration_ms: 39.67416
+  type: 'test'
+  ...
+# Subtest: F01 installed finish pricing remains unchanged pending its separate rate-basis decision
+ok 21 - F01 installed finish pricing remains unchanged pending its separate rate-basis decision
+  ---
+  duration_ms: 10.862428
+  type: 'test'
+  ...
+# Subtest: F02 travel preview uses draft true rather than the saved opposite choice
+ok 22 - F02 travel preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 318.661567
+  type: 'test'
+  ...
+# Subtest: F02 travel preview uses draft false rather than the saved opposite choice
+ok 23 - F02 travel preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 227.243243
+  type: 'test'
+  ...
+# Subtest: F02 disposal preview uses draft true rather than the saved opposite choice
+ok 24 - F02 disposal preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 610.50428
+  type: 'test'
+  ...
+# Subtest: F02 disposal preview uses draft false rather than the saved opposite choice
+ok 25 - F02 disposal preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 190.978565
+  type: 'test'
+  ...
+# Subtest: F02 permit preview uses draft true rather than the saved opposite choice
+ok 26 - F02 permit preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 68.343197
+  type: 'test'
+  ...
+# Subtest: F02 permit preview uses draft false rather than the saved opposite choice
+ok 27 - F02 permit preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 63.292429
+  type: 'test'
+  ...
+# Subtest: F02 overhead preview uses draft true rather than the saved opposite choice
+ok 28 - F02 overhead preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 55.406837
+  type: 'test'
+  ...
+# Subtest: F02 overhead preview uses draft false rather than the saved opposite choice
+ok 29 - F02 overhead preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 53.309833
+  type: 'test'
+  ...
+# Subtest: F03 travel requires a saved owner decision and accepts explicit false
+ok 30 - F03 travel requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 36.295328
+  type: 'test'
+  ...
+# Subtest: F03 disposal requires a saved owner decision and accepts explicit false
+ok 31 - F03 disposal requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 43.208524
+  type: 'test'
+  ...
+# Subtest: F03 permit requires a saved owner decision and accepts explicit false
+ok 32 - F03 permit requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 39.183576
+  type: 'test'
+  ...
+# Subtest: F03 overhead requires a saved owner decision and accepts explicit false
+ok 33 - F03 overhead requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 40.801803
+  type: 'test'
+  ...
+# Subtest: F03 malformed owner selection {"travel":"true"} cannot claim live readiness
+ok 34 - F03 malformed owner selection {"travel":"true"} cannot claim live readiness
+  ---
+  duration_ms: 5.309103
+  type: 'test'
+  ...
+# Subtest: F03 malformed owner selection null cannot claim live readiness
+ok 35 - F03 malformed owner selection null cannot claim live readiness
+  ---
+  duration_ms: 8.032364
+  type: 'test'
+  ...
+# Subtest: F03 malformed owner selection [] cannot claim live readiness
+ok 36 - F03 malformed owner selection [] cannot claim live readiness
+  ---
+  duration_ms: 7.917079
+  type: 'test'
+  ...
+# Subtest: F03 malformed owner selection {"unexpected":true} cannot claim live readiness
+ok 37 - F03 malformed owner selection {"unexpected":true} cannot claim live readiness
+  ---
+  duration_ms: 6.472457
+  type: 'test'
+  ...
+# Subtest: F03 stale choices are diagnosed, while customer choices remain per request
+ok 38 - F03 stale choices are diagnosed, while customer choices remain per request
+  ---
+  duration_ms: 54.019124
+  type: 'test'
+  ...
+# Subtest: F14 ROOFING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+ok 39 - F14 ROOFING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 47.076167
+  type: 'test'
+  ...
+# Subtest: F14 ROOFING_REPAIR.repairMaterialAllowance accepts the complete current cube and rejects malformed depths
+ok 40 - F14 ROOFING_REPAIR.repairMaterialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 39.706606
+  type: 'test'
+  ...
+# Subtest: F14 FLAT_ROOF_REPAIR.patchRepairHours accepts the complete current cube and rejects malformed depths
+ok 41 - F14 FLAT_ROOF_REPAIR.patchRepairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 40.948125
+  type: 'test'
+  ...
+# Subtest: F14 FLAT_ROOF_REPAIR.patchMaterialAllowance accepts the complete current cube and rejects malformed depths
+ok 42 - F14 FLAT_ROOF_REPAIR.patchMaterialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 39.935849
+  type: 'test'
+  ...
+# Subtest: F14 SIDING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+ok 43 - F14 SIDING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 70.378023
+  type: 'test'
+  ...
+# Subtest: F14 SIDING_REPAIR.materialAllowance accepts the complete current cube and rejects malformed depths
+ok 44 - F14 SIDING_REPAIR.materialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 40.503399
+  type: 'test'
+  ...
+# Subtest: F14 current typed/one-level trees reject extra nesting; legacy two-level debris maps retain their shape
+ok 45 - F14 current typed/one-level trees reject extra nesting; legacy two-level debris maps retain their shape
+  ---
+  duration_ms: 53.331906
+  type: 'test'
+  ...
+# Subtest: F27 Alaska cannot imply a confirmed zero-tax jurisdiction; existing other prefills remain unchanged
+ok 46 - F27 Alaska cannot imply a confirmed zero-tax jurisdiction; existing other prefills remain unchanged
+  ---
+  duration_ms: 0.292831
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2765.617315

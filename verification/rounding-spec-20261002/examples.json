@@ -1,0 +1,104 @@
+{
+  "cases": 7,
+  "passed": 7,
+  "results": [
+    {
+      "id": "ordinary-buffer",
+      "internalCents": [
+        9044,
+        10049,
+        11054
+      ],
+      "customerDollars": [
+        90,
+        100,
+        111
+      ],
+      "passed": true
+    },
+    {
+      "id": "exact-price",
+      "internalCents": [
+        10049,
+        10049,
+        10049
+      ],
+      "customerDollars": [
+        100.49,
+        100.49,
+        100.49
+      ],
+      "passed": true
+    },
+    {
+      "id": "fractional-minimum-no-tax",
+      "internalCents": [
+        40250,
+        40250,
+        44275
+      ],
+      "customerDollars": [
+        402.5,
+        402.5,
+        442.75
+      ],
+      "passed": true
+    },
+    {
+      "id": "fractional-minimum-materials-tax",
+      "internalCents": [
+        41250,
+        41250,
+        45375
+      ],
+      "customerDollars": [
+        412.5,
+        412.5,
+        453.75
+      ],
+      "passed": true
+    },
+    {
+      "id": "fractional-minimum-all-tax",
+      "internalCents": [
+        44275,
+        44275,
+        48703
+      ],
+      "customerDollars": [
+        442.75,
+        442.75,
+        487.03
+      ],
+      "passed": true
+    },
+    {
+      "id": "positive-sub-dollar",
+      "internalCents": [
+        44,
+        49,
+        54
+      ],
+      "customerDollars": [
+        0.44,
+        0.49,
+        0.54
+      ],
+      "passed": true
+    },
+    {
+      "id": "intrinsic-custom-range",
+      "internalCents": [
+        10049,
+        15050,
+        20051
+      ],
+      "customerDollars": [
+        100,
+        151,
+        201
+      ],
+      "passed": true
+    }
+  ]
+}
