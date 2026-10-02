@@ -37,8 +37,10 @@ async function saveAndApprove(f,id){
  await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();
  await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();
  const approved=page.waitForResponse(r=>r.url().endsWith('/'+id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await approved).status(),200);
+ await page.waitForFunction(()=>document.querySelector('.service-pick.active')?.textContent.includes('QUOTING LIVE'));
+ await page.getByText('Checking changes',{exact:true}).waitFor({state:'hidden'});
 }
-async function snapshot(name,width){await page.setViewportSize({width,height:900});await page.locator(name.startsWith('roof-')?'#field-minimumJob':name.startsWith('optional-')?'.scope-coverage':'.essentials').first().evaluate(el=>window.scrollTo({top:Math.max(0,window.scrollY+el.getBoundingClientRect().top-170)}));const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert.ok(geometry.scroll<=width+1,JSON.stringify(geometry));await page.screenshot({path:path.join(pub,name+'-'+width+'.png')});}
+async function snapshot(name,width){await page.getByText('Checking changes',{exact:true}).waitFor({state:'hidden'});await page.getByText('CALCULATING',{exact:true}).waitFor({state:'hidden'});await page.setViewportSize({width,height:900});await page.locator(name.startsWith('roof-')?'#field-minimumJob':name.startsWith('optional-')?'.scope-coverage':'.essentials').first().evaluate(el=>window.scrollTo({top:Math.max(0,window.scrollY+el.getBoundingClientRect().top-170)}));const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert.ok(geometry.scroll<=width+1,JSON.stringify(geometry));await page.screenshot({path:path.join(pub,name+'-'+width+'.png')});}
 async function widget(f,index,changes={},review=false){
  const p=await browser.newPage({viewport:{width:375,height:812}});p.setDefaultTimeout(20000);p.on('pageerror',e=>errors.push(e.message));
  try{
@@ -105,6 +107,11 @@ try{
  await check('M1 base work and lead-only options are visible in the editor',async()=>{
   await login(owner);await page.locator('.service-pick').filter({hasText:'[SYNTHETIC] Wall painting'}).click();
   await page.getByText('Ceiling painting requests arrive as leads until you configure this scope and its prices.',{exact:true}).waitFor();
+  await page.waitForFunction(()=>document.querySelector('.service-pick.active .service-compact-status')?.textContent.trim()==='Standard jobs ready · more scope needs setup');
+  for(const name of ['[SYNTHETIC] Wall painting','[SYNTHETIC] Concrete','[SYNTHETIC] Mulch']){
+   const pick=page.locator('.service-pick').filter({hasText:name});
+   assert.doesNotMatch(await pick.locator('.service-compact-status').innerText(),/prices? needed/);
+  }
   for(const width of [375,1280])await snapshot('optional-prices-editor',width);
  });
  await check('M2 fence offering is configured from the editor without unused standard rate fields',async()=>{

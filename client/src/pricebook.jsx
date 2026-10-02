@@ -816,7 +816,7 @@ export default function PriceBook() {
             {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
               const status = displayStatus(service);
-              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && service[field.field] === undefined).map(field => field.label) || []);
+              const missing = status?.missingOwnerLabels || (meta?.fields.filter(field => field.requiredAtBase && serviceFieldValue(service, field.field) === undefined).map(field => field.label) || []);
               return (
                 <button key={editorServiceKey(service, index)} className={selectedType === editorServiceKey(service, index) ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(editorServiceKey(service, index))}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
@@ -824,9 +824,13 @@ export default function PriceBook() {
                   <small className="mono service-compact-status">
                     {status.status === 'CHECKING'
                       ? 'Checking'
-                      : missing.length > 0
-                        ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
-                        : status.status === 'DISABLED' ? 'Disabled by you' : status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'}
+                      : status.status === 'DISABLED'
+                        ? 'Disabled by you'
+                        : status.status === 'QUOTING LIVE'
+                          ? status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'
+                          : missing.length > 0
+                            ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
+                            : 'Review configuration'}
                   </small>
                 </button>
               );
