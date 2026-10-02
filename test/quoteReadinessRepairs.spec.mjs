@@ -98,3 +98,13 @@ test('M7 governing interior painting specification uses measured wall area',()=>
 test('M5 shared flat-roof help never instructs owners to price an unused Average fallback',()=>{
  for(const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'])assert.doesNotMatch(ownerFieldCopy('FLAT_ROOF_REPLACEMENT',field).help,/Include an Average/);
 });
+
+test('B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save',()=>{
+ const stored={services:[{serviceType:'ROOFING_REPLACEMENT',pricing:{minimumJob:2500.5}}],defaults:{}};
+ const before=structuredClone(stored),shown=convertApplicationBook(stored,'toDollars');
+ assert.equal(shown.services[0].pricing.minimumJob,25.005);
+ assert.deepEqual(stored,before);
+ assert.throws(()=>convertApplicationBook(shown,'toCents'),/whole-cent/);
+ shown.services[0].pricing.minimumJob=2500.5;
+ assert.equal(convertApplicationBook(shown,'toCents').services[0].pricing.minimumJob,250050);
+});

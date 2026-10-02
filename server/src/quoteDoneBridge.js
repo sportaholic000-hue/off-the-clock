@@ -61,7 +61,13 @@ function convertedPricing(source,type,direction,location,effective=source) {
       continue;
     }
     const kind=quoteDoneMoneyKind(type,field,effective);
-    if(kind)result[field]=moneyTree(source[field],kind,convert,location+'.'+field);
+    if(kind){
+      // An old roof minimum can contain fractional cents because that field
+      // previously bypassed conversion. Display its stored value exactly so
+      // the owner can correct it. Saving and quoting still require whole cents.
+      const legacyDisplay=direction==='toDollars'&&type==='ROOFING_REPLACEMENT'&&field==='minimumJob'&&typeof source[field]==='number'&&!Number.isInteger(source[field]);
+      result[field]=moneyTree(source[field],legacyDisplay?'unit_rate':kind,convert,location+'.'+field);
+    }
     else if(field==='debrisPricing'&&record(source[field]))for(const [level,row] of Object.entries(source[field])) {
       if(record(row)&&has(row,'disposalFlat'))result[field][level].disposalFlat=convert(row.disposalFlat,{kind:'fixed_amount',path:location+'.debrisPricing.'+level+'.disposalFlat'});
     }
@@ -219,6 +225,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
   const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
   const raw=clone(book.services[index]);
   if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
+  if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
   if(legacySettings(raw,book).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
   const now=new Date().toISOString(),operationId=crypto.randomUUID();
   if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);

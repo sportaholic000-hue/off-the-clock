@@ -15,3 +15,5 @@ The concrete and configured-offering controls retain their previously independen
 Fixture correction after the first baseline run, before any formula change: mulch waste applies to purchased material only. Installed labor is round((8/9)*$30)=$26.67, so the unchanged positive-control total is $77.78. The initial $81.78 expectation incorrectly applied material waste to labor; the engine did not.
 
 Further M1 controls, same existing arithmetic: light cleanup 1000 sqft × $0.10 + $50 debris disposal = $150 with no extra haul-away. Sod 1000 sqft × 1.05 material waste × $0.75 + 1000 sqft × $1.25 installation = $2037.50 without ground preparation. Planting: (2×$10 + 1×$20 + 1×$30) labor + (2×$5 + 1×$10 + 1×$15) material = $105, without bed preparation or mulch.
+
+Historical editability control: an old stored 2500.5-cent minimum is displayed exactly as $25.005 and cannot be saved or approved as an exact-cent minimum. No rounding or inferred correction is allowed. When the synthetic owner explicitly enters $2500.50, storage must be 250050 cents; TAX_ALL 15% adds round(37507.5)=37508 cents, for a $2875.58 floor and midpoint.

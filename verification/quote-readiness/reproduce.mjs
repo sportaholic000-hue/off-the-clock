@@ -73,6 +73,16 @@ try{
       const response=await app.request('POST',lane==='staff'?'/api/quote/calculate':url,body,lane==='staff'?login.token:undefined,lane==='staff'?{}:headers);
       prior.attempts.push({lane,body,response});assert.equal(response.status,201);assert.equal(response.result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(response.result.midEstimate,undefined);
     }
+    const fractional=structuredClone(old);fractional.services[0].pricing.minimumJob=2500.5;fs.writeFileSync(file,JSON.stringify(fractional));
+    const fractionalRead=await call('GET','/api/pricebook/'+owner.id);assert.equal(fractionalRead.services[0].pricing.minimumJob,25.005);
+    const refused=await call('POST','/api/pricebook/services/'+service.id+'/approve',{revision:fractionalRead.revision,confirmConfiguration:true},422);
+    fractionalRead.services[0].pricing.minimumJob=2500.5;await call('POST','/api/pricebook/save',fractionalRead);
+    let correctedFraction=await call('GET','/api/pricebook/'+owner.id);await call('POST','/api/pricebook/services/'+service.id+'/approve',{revision:correctedFraction.revision,confirmConfiguration:true});
+    correctedFraction=await call('GET','/api/pricebook/'+owner.id);
+    const fractionalPreview=await call('POST','/api/pricebook/preview',{serviceId:service.id,revision:correctedFraction.revision,customerInputs:item.input.customerInputs});
+    assert.equal(fractionalPreview.midEstimate,2875.58);
+    prior.fractional={stored:fractional,displayed:fractionalRead,rejectedApproval:refused,corrected:correctedFraction,preview:fractionalPreview};
+    historical=correctedFraction;
     historical.services[0].pricing.minimumJob=2500;await call('POST','/api/pricebook/save',historical);historical=await call('GET','/api/pricebook/'+owner.id);
     await call('POST','/api/pricebook/services/'+service.id+'/approve',{revision:historical.revision,confirmConfiguration:true});
     prior.corrected=await call('GET','/api/pricebook/'+owner.id);row.historical=prior;
