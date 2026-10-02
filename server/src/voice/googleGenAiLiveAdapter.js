@@ -90,8 +90,9 @@ export function createGoogleGenAiLiveSessionOpener({ client, model, systemInstru
         config,
         callbacks: {
           onopen: () => {},
-          // The SDK delivers class instances; reduce each message to plain JSON before validating it.
-          onmessage: message => { let plain; try { plain = JSON.parse(JSON.stringify(message)); } catch { run(fail); return; } run(() => handle(plain)); },
+          // The SDK wraps each message in a class instance whose fields are parsed JSON. Copy the top
+          // level into a plain object; nested values keep their shape so validation still applies.
+          onmessage: message => { const plain = message && typeof message === 'object' && !Array.isArray(message) ? { ...message } : message; run(() => handle(plain)); },
           onerror: event => { reportProvider('onerror', event?.message ?? event?.error ?? event); run(fail); },
           onclose: event => { if (event?.code && event.code !== 1000) reportProvider('onclose', `${event.code} ${event.reason || ''}`); run(async () => { if (closed) return; closed = true; await callbacks.onClose(); }); },
         },
