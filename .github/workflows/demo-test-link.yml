@@ -34,13 +34,14 @@ jobs:
           for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
       - name: Check the link end to end and publish it
         run: |
-          sleep 10
-          page=$(curl -s -o /dev/null -w '%{http_code}' "$URL/")
-          widget=$(curl -s -o /dev/null -w '%{http_code}' "$URL/demo/otc-live-demo.js")
-          token=$(curl -s -o /tmp/t.json -w '%{http_code}' -X POST "$URL/api/demo/session" -H "origin: $URL" -H 'content-type: application/json' -d '{"agent":"miles"}')
+          page=000
+          for i in $(seq 1 30); do page=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/" || true); [ "$page" = "200" ] && break; sleep 4; done
+          widget=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/demo/otc-live-demo.js" || true)
+          token=$(curl -s -o /tmp/t.json -w '%{http_code}' --max-time 20 -X POST "$URL/api/demo/session" -H "origin: $URL" -H 'content-type: application/json' -d '{"agent":"miles"}' || true)
+          tail -5 /tmp/tunnel.log | tr -d '"\\' | tr '\n' ' ' | cut -c1-600 > /tmp/tunnel-tail.txt
           minted=$(node -e "try{const j=require('/tmp/t.json');console.log(typeof j.token==='string'&&j.token.startsWith('auth_tokens/'))}catch{console.log(false)}")
           until=$(date -u -d "+${{ inputs.minutes || '120' }} minutes" +%Y-%m-%dT%H:%MZ)
-          printf '{"url":"%s","pageStatus":%s,"widgetStatus":%s,"sessionStatus":%s,"tokenMinted":%s,"upUntilUtc":"%s","run":"%s"}\n' "$URL" "$page" "$widget" "$token" "$minted" "$until" "$GITHUB_RUN_ID" > /tmp/test-link.json
+          printf '{"url":"%s","pageStatus":"%s","widgetStatus":"%s","sessionStatus":"%s","tokenMinted":%s,"upUntilUtc":"%s","run":"%s","tunnelLogTail":"%s"}\n' "$URL" "$page" "$widget" "$token" "$minted" "$until" "$GITHUB_RUN_ID" "$(cat /tmp/tunnel-tail.txt)" > /tmp/test-link.json
           cat /tmp/test-link.json
           git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
           cp /tmp/test-link.json /tmp/r/test-link.json && cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
