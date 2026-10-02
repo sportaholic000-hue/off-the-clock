@@ -656,74 +656,65 @@ calculate():
   + travel, disposal, permit, overhead flat.
 
 ── INTERIOR_PAINTING ────────────────────────────────
-// BASIS: FLOOR SQUARE FEET. This is deliberate and must not be
-// changed: homeowners know their floor area; most painters price
-// per floor sqft. Every rate label says FLOOR area explicitly.
+// CURRENT BASIS: measured paintable WALL SQUARE FEET.
+// This supersedes the earlier floor-area / room-count rules. Never derive wall
+// area from floor area, room count or a size category. Never convert retained
+// floor-area prices into wall-area prices or reuse their confirmations.
 
-getRequiredFields(customerInputs):
-  base: ['areaInputMethod','wallHeight','surfaceCondition',
-    'coats','ceilingsIncluded','trimIncluded']
-  if areaInputMethod=sqft:  add 'floorAreaSqft'
-  if areaInputMethod=rooms: add 'roomCount'  // roomSizes optional
-  if trimIncluded:          add 'roomCount'  // needed either path
+Standard measured wall pricing:
+  areaInputMethod='wall_sqft'; wallAreaSqft is measured paintable wall area.
+  wallHeight, surfaceCondition, coats, wallScopeUniform, ceilingsIncluded and
+  trimIncluded must be confirmed. Mixed height/access/coating zones require
+  separate measured scope. Good condition is supported by the standard mode;
+  other preparation needs an explicitly configured offering or owner review.
 
-getRequiredOwnerFields(customerInputs):
-  base: ['laborPerFloorSqft','materialPerFloorSqft2Coats',
-    'minimumJob']
-  // Dashboard labels (exact text):
-  //  laborPerFloorSqft: "Your labor price per square foot of
-  //   FLOOR area — walls only, two coats, standard 8-ft ceilings."
-  //  materialPerFloorSqft2Coats: "Your paint/material cost per
-  //   square foot of FLOOR area for two coats on walls."
-  if surfaceCondition ≠ 'good': add 'laborHourlyRate'   // SCOPE
-  if ceilingsIncluded: add 'ceilingLaborPerFloorSqft'   // SCOPE
-  if trimIncluded: add ['trimLaborPerLF','trimMaterialPerLF',
-    'trimLinearFeetPerRoom']                            // SCOPE
-  Class 2 defaults (overridable): roomFloorSqft map
-    small=120, medium=200, large=320
-  coatLaborFactor:    1 coat=0.70, 2=1.00, 3=1.30
-  coatMaterialFactor: 1 coat=0.50, 2=1.00, 3=1.50
-  wallHeightMultiplier: standard=1.00, high=1.10, vaulted=1.25
+Owner wall prices:
+  laborPerWallSqftPerCoat: labor cents per measured wall square foot per coat.
+  materialPerWallSqftPerCoat: installed material selling price per measured
+    wall square foot per coat when material basis is sell_price.
+  minimumJob: a pre-tax floor in cents (the editor accepts dollars).
+  wallHeightLaborMultiplier: applies to wall labor only. Measured area already
+    represents the full wall area; height does not increase material quantity.
 
-calculate():
-  if areaInputMethod=sqft: floorArea = floorAreaSqft
-  if areaInputMethod=rooms:
-    floorArea = roomSizes provided
-      ? sum of mapped roomFloorSqft values
-      : roomCount × roomFloorSqft.medium
-    estimationUsed = true (rooms path is an estimate)
-    apply SIZE CATEGORY ASSUMPTION RULE
+calculate standard walls:
+  wallLaborCents = round(wallAreaSqft * coats * laborPerWallSqftPerCoat
+    * wallHeightLaborMultiplier[wallHeight])
+  wallMaterialCents = round(wallAreaSqft * coats * materialPerWallSqftPerCoat)
+  If material basis is cost, use the explicitly configured paint_wall product,
+    coverage, waste allowance and package price, with purchasable quantity
+    rounding. Never treat an installed-area cost as a purchased paint product.
 
-  wallLaborCents = round(floorArea × laborPerFloorSqft
-    × wallHeightMultiplier[wallHeight]
-    × coatLaborFactor[coats])
-  // height multiplier on WALL labor+material only — taller walls
-  // mean more wall per floor sqft. NEVER applied to ceilings.
-  wallMaterialCents = round(floorArea × materialPerFloorSqft2Coats
-    × wallHeightMultiplier[wallHeight]
-    × coatMaterialFactor[coats])
+Optional ceilings:
+  Require independently measured ceilingAreaSqft and confirmed ceilingCoats.
+  ceilingLaborCents = round(ceilingAreaSqft * ceilingCoats
+    * ceilingLaborPerSqftPerCoat)
+  ceilingMaterialCents = round(ceilingAreaSqft * ceilingCoats
+    * ceilingMaterialPerSqftPerCoat), or the configured paint_ceiling product
+    for cost-based paint. Never infer ceiling area from wall/floor area or
+    reuse wall coats, wall rates or wall-height multipliers.
 
-  prepHours: good=0, fair=floorArea×0.015, poor=floorArea×0.035
-  // Class 2 defaults, per FLOOR sqft, overridable
-  prepCents = round(prepHours × laborHourlyRate)   // category: prep
+Optional trim:
+  Require measured trimLengthLF; never derive it from room count.
+  trimLaborCents = round(trimLengthLF * trimLaborPerLF)
+  trimMaterialCents = round(trimLengthLF * trimMaterialPerLF), or the configured
+    complete paint_trim coating product for cost-based paint.
 
-  if ceilingsIncluded:
-    // ceiling area = floor area. Exact. No ratio, no multiplier.
-    ceilingLaborCents = round(floorArea × ceilingLaborPerFloorSqft)
-    ceilingMaterialCents = round(floorArea
-      × materialPerFloorSqft2Coats × 0.5
-      × coatMaterialFactor[coats])
-    // 0.5: ceilings take roughly half the paint of two walls of
-    // coverage per floor sqft — Class 2 constant, overridable as
-    // ceilingMaterialFactor.
+Configured offerings:
+  The owner may instead define one installed or itemized painting offering.
+  Its declared surface, coats, preparation and primer inclusions must match
+  the customer's confirmed facts. Installed prices use measured area once;
+  itemized prices use the configured components and measured quantities.
+  Ceiling/trim options require their own explicit inclusions and prices.
+  No extra coat, preparation, primer, price or measurement is inferred.
 
-  if trimIncluded:
-    trimLF = roomCount × trimLinearFeetPerRoom
-    trimLaborCents = round(trimLF × trimLaborPerLF)
-    trimMaterialCents = round(trimLF × trimMaterialPerLF)
-    // NO hardcoded trim price anywhere. Owner sets all three.
-
-  + travel, disposal, permit, overhead flat.
+Activation and requests:
+  Complete wall-only work remains quotable without optional ceiling/trim
+  prices. The editor shows which optional requests will arrive as leads.
+  An actual request selecting unpriced or unresolved scope receives review,
+  without a customer-ready subtotal. Cost-based paint diagnostics identify
+  the specific missing product.
+  Apply the existing owner-approved fees, price basis, markup, tax and
+  pre-tax minimum pipeline. Selling-price lines are never marked up.
 
 ── EXTERIOR_PAINTING ────────────────────────────────
 // ONE condition input drives prep. The old spec stacked a prep

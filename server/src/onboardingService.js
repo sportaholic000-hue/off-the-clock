@@ -1,10 +1,11 @@
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
-import { ALL_OWNER_FIELDS, SERVICE_NAMES } from '../priceBookMetadata.js';
+import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
+import { applicationMetadata } from './quoteDoneBridge.js';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', neverSay: [], draft: false };
@@ -559,8 +560,9 @@ export function onboardingState(ownerId) {
 
 export function createInterviewDraft(ownerId, input) {
   const mode = ['phone','browser'].includes(input.mode) ? input.mode : 'browser';
+  const definitions=applicationMetadata().services;
   const serviceTypes = [...new Set((input.serviceTypes || []).map(String))]
-    .filter(type => Object.hasOwn(ALL_OWNER_FIELDS, type));
+    .filter(type => definitions.some(service=>service.serviceType===type));
   if (!serviceTypes.length) {
     const error = new Error('Select at least one service for the interview');
     error.statusCode = 400;
@@ -573,7 +575,7 @@ export function createInterviewDraft(ownerId, input) {
     confirmedFieldsJson, currentField, createdAt, updatedAt
   ) VALUES (?, ?, 'DRAFT', ?, ?, '{}', '{}', ?, ?, ?)`).run(
     id, ownerId, mode, JSON.stringify(serviceTypes),
-    `${serviceTypes[0]}.${ALL_OWNER_FIELDS[serviceTypes[0]][0] || ''}`,
+    `${serviceTypes[0]}.${definitions.find(service=>service.serviceType===serviceTypes[0]).fields.find(field=>['number','json','select','boolean'].includes(field.type))?.field || ''}`,
     now, now
   );
   return getInterviewDraft(ownerId, id);

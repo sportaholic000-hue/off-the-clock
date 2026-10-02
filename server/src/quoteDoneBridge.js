@@ -37,6 +37,7 @@ export const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(can
 const pick = (v,keys) => Object.fromEntries(keys.filter(k=>has(v,k)).map(k=>[k,clone(v[k])]));
 
 export function quoteDoneMoneyKind(type,field,pricing={}) {
+  if(field==='minimumJob'&&allowedPricingFields(type).includes(field))return 'fixed_amount';
   if(field==='scopeDetails')return null;
   if(NEW_RATES.has(field))return 'unit_rate';
   if(type==='CUSTOM'&&field==='price')return pricing.unit==='flat'?'fixed_amount':pricing.unit?'unit_rate':'unresolved_unit';
@@ -120,9 +121,15 @@ function approvalContent(raw,book) {
   const service=projection(raw);delete service.active;delete service.confirmedFields;delete service.approvedValues;
   return {service,businessDefaults:defaultsProjection(book),legacySettings:legacySettings(raw,book),ownerFeeSelections:raw.ownerFeeSelections||{}};
 }
+const ROOF_MINIMUM_MONEY_VERSION='roof-minimum-cents-v1';
+function roofMinimumNeedsConfirmation(raw) {
+  if(raw.serviceType!=='ROOFING_REPLACEMENT')return false;
+  const amounts=[raw.minimumJob,raw.pricing?.minimumJob,...(raw.tiers||[]).map(t=>t.overrides?.minimumJob)];
+  return amounts.some(value=>typeof value==='number'&&value>0)&&raw.quoteDoneApproval?.moneyUnitVersion!==ROOF_MINIMUM_MONEY_VERSION;
+}
 function approvalCurrent(raw,book) {
   const receipt=raw.quoteDoneApproval;
-  return record(receipt)&&receipt.ownerId===book.ownerId&&receipt.serviceId===raw.id&&receipt.engineVersion===ENGINE_VERSION&&receipt.contentDigest===digest(approvalContent(raw,book));
+  return !roofMinimumNeedsConfirmation(raw)&&record(receipt)&&receipt.ownerId===book.ownerId&&receipt.serviceId===raw.id&&receipt.engineVersion===ENGINE_VERSION&&receipt.contentDigest===digest(approvalContent(raw,book));
 }
 function seasonalDecision(raw,book) {
   const months=raw.peakMonths??book.defaults.peakMonths,percent=raw.peakSurchargePercent??book.defaults.peakSurchargePercent;
@@ -142,7 +149,8 @@ export function applicationStatus(raw,book) {
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
   const status=vNextServiceStatus(service,defaultsProjection(book));
   const issues=[];
-  if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
+  if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
+  else if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
   if(seasonalDecision(raw,book))issues.push('Seasonal date policy remains an owner decision; seasonal requests require review.');
   return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
 }
@@ -229,7 +237,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
     raw.confirmedFields={...(raw.confirmedFields||{}),...service.confirmedFields};raw.approvedValues={...(raw.approvedValues||{}),...service.approvedValues};
   }
   if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
-  raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
+  raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
   book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
   return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved)};
 }
@@ -248,7 +256,7 @@ export function previewApplicationQuote(ownerId,input) {
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
-  service.active=raw.active===true&&draftRaw.active===true&&approvalCurrent(raw,saved)&&!seasonalDecision(raw,saved)&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
+  service.active=applicationStatus(raw,saved).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,customerInputs:input.customerInputs||{},feeSelections:{owner:raw.ownerFeeSelections||{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(raw);
   return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
@@ -261,17 +269,18 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
-  const current=approvalCurrent(raw,book)&&!seasonalDecision(raw,book);
+  const eligibility=applicationStatus(raw,book),current=eligibility.approvalCurrent;
+  const ready=eligibility.status==='QUOTING LIVE';
   // Active-for-customers is a trusted application eligibility decision. Preserve
   // raw owner intent separately; never change a rate or measurement to make it quote.
-  service.active=raw.active===true&&current;
+  service.active=raw.active===true&&ready;
   const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
   const definition=applicationServiceDefinition(raw);
   const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
   let leadEnvelope=null;
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
-  return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:applicationStatus(raw,book).applicationIssues}};
+  return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:eligibility.validationErrors}};
 }
 export function prepareApplicationIntake(ownerId,submission) {
   if(!record(submission))throw problem('Use the job-details form to check this request.',422);
@@ -326,9 +335,19 @@ export function applicationMetadata() {
   const legacy=getServiceMetadata();
   return {engineVersion:ENGINE_VERSION,categories:PRICE_BASIS_CATEGORIES,feeNames:FEE_NAMES,feeModes:FEE_RULE_MODES,defaultFields:DEFAULT_FIELDS,services:getVNextPriceBookMetadata().map(meta=>{
     const old=legacy.find(row=>row.serviceType===meta.serviceType);
-    const fields=meta.pricingFields.map(field=>{
+    const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
+    const setupFields=meta.pricingFields.filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(field.field));
+    const optionalFields={
+      INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
+      CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
+      CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
+      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot']
+    };
+    const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
+      if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
+      if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
       const priceMaps={
@@ -351,6 +370,6 @@ export function applicationMetadata() {
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
       return info;
     });
-    return {...old,...meta,name:meta.service,fields,legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
+    return {...old,...meta,name:meta.service,requiresOffering,fields,legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
   })};
 }

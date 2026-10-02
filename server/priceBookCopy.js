@@ -67,8 +67,8 @@ export const OWNER_FIELD_COPY = {
   baggingSurchargePercent: copy('Clipping bagging and disposal surcharge (%)', 'Optional percentage added to mowing labor when the customer wants clippings bagged and removed.'),
   materialAllowance: copy('Siding repair material allowance by damage level and project size', 'Material allowance for each damage level and small, medium, or large affected area.'),
   trimPerLinearFoot: copy('Siding trim installation price per linear foot', 'Charge applied to measured or estimated trim length when siding trim is included.'),
-  membraneCostPerSqft: copy('Flat-roof membrane material price per square foot by membrane type', 'Material charge for each square foot of flat roof using the selected membrane type. Include an Average rate for unknown membranes.'),
-  tearOffPerSqft: copy('Flat-roof tear-off price per square foot by membrane type', 'Removal charge for each square foot and existing layer, adjusted for roof access. Include an Average rate for unknown membranes.'),
+  membraneCostPerSqft: copy('Flat-roof membrane material price per square foot by membrane type', 'Material charge for each square foot of flat roof using the selected membrane type. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
+  tearOffPerSqft: copy('Flat-roof tear-off price per square foot by membrane type', 'Removal charge for each square foot and existing layer, adjusted for roof access. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
   insulationPerSqft: copy('Rigid insulation and coverboard material price per square foot', 'Material charge applied to commercial flat-roof replacement when insulation or coverboard is required.'),
   patchRepairHours: copy('Flat-roof repair labor hours by repair type and project size', 'Enter labor hours for each repair type and small, medium, or large affected area.'),
   patchMaterialAllowance: copy('Flat-roof repair material allowance by repair type and project size', 'Enter the material allowance for each repair type and small, medium, or large affected area.'),
@@ -100,7 +100,7 @@ export const OWNER_FIELD_COPY = {
   'CONCRETE_PATIO_SLAB.disposalPerSqft': copy('Concrete disposal price per demolished square foot', 'Optional disposal charge applied when existing patio concrete is demolished.'),
   'ROOFING_REPAIR.repairHours': copy('Roof repair labor hours by repair type and project size', 'Enter labor hours for each roof repair type and small, medium, or large affected area.'),
   'SIDING_REPAIR.repairHours': copy('Siding repair labor hours by damage level and project size', 'Enter labor hours for each damage level and small, medium, or large affected area.'),
-  'FLAT_ROOF_REPLACEMENT.laborPerSqft': copy('Flat-roof installation labor price per square foot by membrane type', 'Labor rate for each membrane type, applied to roof area and adjusted for access. Include an Average rate for unknown membranes.'),
+  'FLAT_ROOF_REPLACEMENT.laborPerSqft': copy('Flat-roof installation labor price per square foot by membrane type', 'Labor rate for each membrane type, applied to roof area and adjusted for access. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
   'FLAT_ROOF_REPLACEMENT.disposalPerSqft': copy('Flat-roof disposal price per removed square foot', 'Optional disposal charge applied to each square foot and existing layer removed. When blank, the business-wide disposal charge is used.')
 };
 
