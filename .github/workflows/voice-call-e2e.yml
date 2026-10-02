@@ -1,5 +1,9 @@
 name: Voice call end-to-end
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [claude/voice-runtime]
+    paths: ['.github/workflows/voice-call-e2e.yml', 'e2e/voice-*.mjs', 'server/src/voice/**', 'server/src/voiceRuntimeRoutes.js', 'server/src/voiceWebSocketServer.js']
 permissions: { contents: write }
 concurrency: { group: voice-call-e2e, cancel-in-progress: false }
 jobs:
