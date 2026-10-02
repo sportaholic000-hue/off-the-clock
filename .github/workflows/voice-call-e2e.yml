@@ -1,0 +1,42 @@
+name: Voice call end-to-end
+on: { workflow_dispatch: {} }
+permissions: { contents: write }
+concurrency: { group: voice-call-e2e, cancel-in-progress: false }
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+          sudo apt-get install -y -q espeak-ng > /dev/null
+      - name: Caller speech as 8 kHz mu-law
+        run: |
+          espeak-ng -v en-us -s 145 -w /tmp/q.wav "Hi, I need a roof repair. A few shingles blew off in the storm and it's leaking a little."
+          ffmpeg -loglevel error -y -i /tmp/q.wav -ar 8000 -ac 1 -f mulaw /tmp/q.ulaw && ls -la /tmp/q.ulaw
+      - name: Start server with the voice runtime and seed one owner
+        env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          echo "TWILIO_ACCOUNT_SID=AC$(openssl rand -hex 16)" >> "$GITHUB_ENV"; echo "TWILIO_AUTH_TOKEN=$(openssl rand -hex 16)" >> "$GITHUB_ENV"
+          source "$GITHUB_ENV"
+          mkdir -p /tmp/pb
+          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/v.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=https://voice.test CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console VOICE_RUNTIME_ENABLED=true TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN GEMINI_MODEL=gemini-3.8-live nohup node server/src/server.js > /tmp/server.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
+          node e2e/voice-seed.mjs http://127.0.0.1:3999 /tmp/v.sqlite +15065550199
+      - name: Simulated phone call
+        run: node e2e/voice-call-sim.mjs http://127.0.0.1:3999 https://voice.test "$TWILIO_AUTH_TOKEN" "$TWILIO_ACCOUNT_SID" +15065550199 /tmp/q.ulaw voice-results
+      - name: Call record and publish results to claude/probe-results (voice/)
+        if: always()
+        run: |
+          mkdir -p voice-results
+          node -e "const D=require('./node_modules/better-sqlite3');const d=new D('/tmp/v.sqlite',{readonly:true});console.log(JSON.stringify(d.prepare('SELECT status,outcome,duration,transcriptJson,failureCode FROM calls').all(),null,1))" > voice-results/calls.json || true
+          grep -v "^\s*at " /tmp/server.log | tail -40 > voice-results/server.log || true
+          if grep -rl -- "${{ secrets.GEMINI_API_KEY }}" voice-results > /dev/null 2>&1; then echo "key in results"; exit 1; fi
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
+          rm -rf /tmp/r/voice && mkdir -p /tmp/r/voice && cp -r voice-results/* /tmp/r/voice/
+          cd /tmp/r && git config user.name e2e-bot && git config user.email e2e-bot@users.noreply.github.com
+          git add -A && git commit -q -m "Voice call ${GITHUB_SHA::7} run ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results

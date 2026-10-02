@@ -41,6 +41,9 @@ import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from '.
 import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
 import { installLiveDemoRoutes } from './demo/liveDemo.js';
+import { installVoiceRuntime } from './voice/voiceRuntime.js';
+const voiceRuntimeEnabled = String(process.env.VOICE_RUNTIME_ENABLED || '').toLowerCase() === 'true';
+let voiceRuntime = null;
 import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
@@ -481,9 +484,15 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
   res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'A2P status', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
-app.post('/api/twilio/voice/incoming', (_req, res) => {
-  res.type('text/xml').send('<Response><Say>Your Off The Clock operator connection is ready.</Say></Response>');
-});
+// Live calls: real Twilio webhook, media stream and Gemini session when VOICE_RUNTIME_ENABLED=true.
+// Otherwise a caller who reaches the number hears a plain message instead of dead air.
+if (voiceRuntimeEnabled) {
+  voiceRuntime = installVoiceRuntime(app, { database: db, onError: code => console.error('[voice]', code) });
+} else {
+  app.post('/api/twilio/voice/incoming', (_req, res) => {
+    res.type('text/xml').send('<Response><Say>Sorry, this line can\'t take calls right now. Please try again later.</Say><Hangup/></Response>');
+  });
+}
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
@@ -505,10 +514,11 @@ app.use((err, _req, res, _next) => {
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
+const voiceServer = voiceRuntime ? voiceRuntime.attach(httpServer) : null;
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+lifecycle.attach(httpServer,{stopWorkers:[...(voiceServer?[()=>voiceServer.close()]:[]),stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
 httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
