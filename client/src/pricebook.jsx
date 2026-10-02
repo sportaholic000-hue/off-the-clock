@@ -1,14 +1,15 @@
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import {ScopeEditor} from './scopeEditor.jsx';
-import {PricingTree,CustomerMeasurements,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
+import {PricingTree,CustomerMeasurements,CustomerFeePreview,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
 import {OfferingEditor,offeringPreviewFields,offeringTierFields} from './offeringEditor.jsx';
 import {QuoteAccess} from './quotedone.jsx';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
+import {consumePricebookTransfer} from './pricebookDrafts.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 import { ExactNumericInput } from './pricebookInputs.jsx';
-import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices } from './pricebookEditing.js';
+import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 const PricingContext = createContext({});
 import {
@@ -570,6 +571,9 @@ export default function PriceBook() {
   const [locked, setLocked] = useState(false);
   const [contract,setContract] = useState({});
   const [newServiceType,setNewServiceType] = useState('');
+  const [transferNotice,setTransferNotice] = useState(null);
+  const [previewFeeDraft,setPreviewFeeDraft] = useState({context:null,values:{}});
+  const [revisionConflict,setRevisionConflict] = useState(null);
 
   async function load() {
     const [dash, state, meta] = await Promise.all([
@@ -582,20 +586,20 @@ export default function PriceBook() {
     setLocked(!canQuote);
     const activeTypes = state.profile.businessTypes || [];
     const services = editorServices(loadedBook.services, meta.services, activeTypes);
-    const draft = JSON.parse(sessionStorage.getItem('otc_pricebook_draft') || 'null');
+    const transferredDraft = consumePricebookTransfer('draft',dash.ownerId);
+    const transferredSuggestions = consumePricebookTransfer('suggestions',dash.ownerId);
+    setTransferNotice([transferredDraft.notice,transferredSuggestions.notice].filter(Boolean).join(' '));
+    const draft = transferredDraft.value;
     if (draft?.services) {
       for (const incoming of draft.services) {
-        const index = services.findIndex(service => service.serviceType === incoming.serviceType);
         // Interview values are DRAFT: on-screen field-by-field confirmation
         // starts from zero here regardless of the verbal confirmation.
         services.push({serviceType:incoming.serviceType,service:incoming.service,pricing:incoming.pricing||incoming.fields||{},source:'AI_INTERVIEW',active:false,tiers:incoming.tiers||[],confirmedFields:{}});
       }
-      sessionStorage.removeItem('otc_pricebook_draft');
     }
-    const starter = JSON.parse(sessionStorage.getItem('otc_pricebook_suggestions') || 'null');
+    const starter = transferredSuggestions.value;
     if (starter) {
       setSuggestions(starter);
-      sessionStorage.removeItem('otc_pricebook_suggestions');
     }
     setDashboard(dash);
     setOnboarding(state);
@@ -614,6 +618,12 @@ export default function PriceBook() {
 
   const selected = book?.services.find((service, index) => editorServiceKey(service, index) === selectedType);
   const selectedMeta = metadata.find(service => service.serviceType === selected?.serviceType);
+  const feeContext = previewFeeContext(selectedType,selected?.feeRules);
+  const customerFeeSelections = useMemo(() => reconcilePreviewFees(previewFeeDraft,selectedType,selected?.feeRules).values,[previewFeeDraft,feeContext]);
+  useEffect(() => {
+    setPreviewFeeDraft(previous=>reconcilePreviewFees(previous,selectedType,selected?.feeRules));
+  },[feeContext]);
+
 
   useEffect(() => {
     if (!book || locked) return;
@@ -651,6 +661,7 @@ export default function PriceBook() {
     // Cleanup invalidates already-running requests as well as the debounce.
     let current = true;
     setPreview(null);
+    if(revisionConflict){setPreviewLoading(false);setPreview({resultType:'ESTIMATE_REQUIRES_REVIEW',reviewReason:revisionConflict});return () => {current=false;};}
     if (!selected || !selectedMeta || !book || locked) {
       setPreviewLoading(false);
       return () => { current = false; };
@@ -665,13 +676,13 @@ export default function PriceBook() {
     const timer = setTimeout(() => {
       api('/api/pricebook/preview', {
         method:'POST',
-        body:{ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs }
+        body:{ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs, customerFeeSelections }
       }).then(result => { if (current) setPreview(result); })
         .catch(nextError => { if (current) setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); })
         .finally(() => { if (current) setPreviewLoading(false); });
     }, 350);
     return () => { current = false; clearTimeout(timer); };
-  }, [selected, selectedMeta, book?.defaults, book?.revision, locked]);
+  }, [selected, selectedMeta, book?.defaults, book?.revision, locked, customerFeeSelections, revisionConflict]);
 
   function replaceSelected(next) {
     setBook({ ...book, services:book.services.map((service, index) => editorServiceKey(service, index) === selectedType ? next : service) });
@@ -911,7 +922,7 @@ export default function PriceBook() {
                 {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
                 {contract.engineVersion&&<>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={async()=>{const next=await api(`/api/pricebook/${dashboard.ownerId}`);setBook(next);}}/></div>
+                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
@@ -1046,11 +1057,12 @@ export default function PriceBook() {
                   </Disclosure>
                 </div>
               </div>
-              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
+              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,serviceKey:selectedType,rules:{...selected.feeRules},values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>
+        {transferNotice&&<Notice tone="warning">{transferNotice}</Notice>}
         {contract.engineVersion&&<QuoteAccess/>}<ErrorMessage error={error} />
         {draftValidationErrors.length > 0 && (
           <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>

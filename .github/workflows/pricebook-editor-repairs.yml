@@ -1,0 +1,83 @@
+name: Price-book editor repair verification
+on:
+  push:
+    branches: [codex/pricebook-editor-repairs-20261002]
+permissions:
+  contents: read
+concurrency:
+  group: pricebook-editor-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  DEMO_ENABLED: 'false'
+  VOICE_RUNTIME_ENABLED: 'false'
+  STRIPE_BILLING_ENABLED: 'false'
+  EMAIL_DELIVERY_ENABLED: 'false'
+  OUTBOUND_WEBHOOKS_ENABLED: 'false'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Cold dependencies and both builds
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules
+          npm ci --no-audit --no-fund
+          npm --prefix client run build
+          mkdir -p .portable-runtime/node-v22.23.2-win-x64
+          cp "$(command -v node)" .portable-runtime/node-v22.23.2-win-x64/node.exe
+          chmod +x .portable-runtime/node-v22.23.2-win-x64/node.exe
+      - name: Temporary browser
+        run: |
+          npm --prefix "$RUNNER_TEMP/editor-browser" install --no-save --package-lock=false playwright@1.56.0
+          "$RUNNER_TEMP/editor-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Reproduce exact PR 15 source
+        env:
+          PRICEBOOK_BROWSER_MODULE: ${{ runner.temp }}/editor-browser/node_modules/playwright
+        run: |
+          mkdir -p "$RUNNER_TEMP/editor-evidence"
+          git worktree add --detach "$RUNNER_TEMP/editor-before" c2e9efcdcc4aaca4a7b8f610e4cdf792cb135010
+          cp -R verification/pricebook-editor-repairs "$RUNNER_TEMP/editor-before/verification/"
+          rm -rf "$RUNNER_TEMP/editor-before/node_modules" "$RUNNER_TEMP/editor-before/server/node_modules" "$RUNNER_TEMP/editor-before/client/node_modules"
+          ln -s "$GITHUB_WORKSPACE/server/node_modules" "$RUNNER_TEMP/editor-before/server/node_modules"
+          ln -s "$GITHUB_WORKSPACE/client/node_modules" "$RUNNER_TEMP/editor-before/client/node_modules"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/editor-before/node_modules"
+          ln -s "$GITHUB_WORKSPACE/.portable-runtime" "$RUNNER_TEMP/editor-before/.portable-runtime"
+          cd "$RUNNER_TEMP/editor-before"
+          npm --prefix client run build
+          EDITOR_TEST_SOURCE=c2e9efcdcc4aaca4a7b8f610e4cdf792cb135010 .portable-runtime/node-v22.23.2-win-x64/node.exe verification/pricebook-editor-repairs/browser.mjs "$RUNNER_TEMP/editor-evidence/before" > "$RUNNER_TEMP/editor-evidence/before.log" 2>&1 || true
+          cat "$RUNNER_TEMP/editor-evidence/before.log"
+          node -e "const r=require(process.env.RUNNER_TEMP+'/editor-evidence/before/public/result.json');for(const id of ['F04','F05','F07','F08','F11','F13'])if(!r.checks.some(c=>c.name.startsWith(id)&&!c.passed))throw Error(id+' did not reproduce');if(!r.checks.find(c=>c.name==='positive-normal-preview')?.passed)throw Error('Positive control failed');"
+      - name: Final browser workflows
+        if: always()
+        env:
+          PRICEBOOK_BROWSER_MODULE: ${{ runner.temp }}/editor-browser/node_modules/playwright
+        run: .portable-runtime/node-v22.23.2-win-x64/node.exe verification/pricebook-editor-repairs/browser.mjs "$RUNNER_TEMP/editor-evidence/after" | tee "$RUNNER_TEMP/editor-evidence/after.log"; exit ${PIPESTATUS[0]}
+      - name: Existing editor and interview regressions
+        if: always()
+        env:
+          PRICEBOOK_BROWSER_MODULE: ${{ runner.temp }}/editor-browser/node_modules/playwright
+        run: |
+          node --test test/pricebookEditorRepairs.spec.mjs test/interviewControls.browser.spec.mjs test/phase2Terminology.spec.js test/phase2.spec.js test/priceBookAI.spec.mjs test/priceBookEditor.browser.spec.mjs test/pricebookPreviewFreshness.browser.spec.mjs | tee "$RUNNER_TEMP/editor-evidence/existing.tap"
+          exit ${PIPESTATUS[0]}
+      - name: Source-bound evidence for review
+        if: always()
+        run: node verification/pricebook-editor-repairs/archive.mjs "$RUNNER_TEMP/editor-evidence"
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pricebook-editor-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/editor-evidence/before/public/
+            ${{ runner.temp }}/editor-evidence/after/public/
+            ${{ runner.temp }}/editor-evidence/*.log
+            ${{ runner.temp }}/editor-evidence/*.tap
+          retention-days: 30
+          if-no-files-found: error
