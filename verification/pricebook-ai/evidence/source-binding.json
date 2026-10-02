@@ -1,0 +1,152 @@
+{
+  "base": "380c9153ae0598293dc81ab42072498e04483d97",
+  "final": "1b70096e25a1310df556e2f8672f9741d025c04e",
+  "finalTree": "fd455697b7044d516b4c07c58d31c69abe0676c4",
+  "applicationBrowserRun": 36954609141,
+  "applicationBrowserJob": 110674695859,
+  "CIrun": 36954609186,
+  "CIjob": 110674696637,
+  "model": "gemini-3.5-flash-lite",
+  "artifacts": [
+    {
+      "id": 11205296663,
+      "name": "pricebook-ai-1b70096e25a1310df556e2f8672f9741d025c04e",
+      "size_in_bytes": 1174613,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/artifacts/11205296663",
+      "archive_download_url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/actions/artifacts/11205296663/zip",
+      "expired": false,
+      "created_at": "2026-10-02T02:16:21Z",
+      "expires_at": "2026-11-01T02:16:20Z",
+      "updated_at": "2026-10-02T02:16:21Z",
+      "digest": "sha256:97667019a659ad54259cf9b43d40d4381076a38cc64093f1fcf33f9a2a476b0f",
+      "workflow_run": {
+        "id": 36954609141,
+        "repository_id": 1305318820,
+        "head_repository_id": 1305318820,
+        "head_branch": "codex/pricebook-ai-20261001",
+        "head_sha": "1b70096e25a1310df556e2f8672f9741d025c04e"
+      }
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": ".env.example",
+      "blob": "2f4dcaba2283a26339570998cf458fcdcd4ca5be",
+      "status": "modified"
+    },
+    {
+      "path": ".github/workflows/pricebook-ai-verification.yml",
+      "blob": "844e795f29004531aa21a42d1e6dfbee85ed4536",
+      "status": "added"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "blob": "a4b70ccdcedddde9d7b3d87852564c11b14924e3",
+      "status": "modified"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "blob": "14c120aca7090266ed151f83bb61af235e55b28f",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "blob": "fda01c2ada008fd0c3fc4e614dfea9e405578089",
+      "status": "added"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "blob": "2b3cf83a98ac484db44b9802e35570b815a6da00",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "blob": "0f41167ce68ded3b43b23fa064e5cdd72290e9de",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "blob": "c1166b16cc0606e624ebeb6a30721e842788c31c",
+      "status": "added"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "blob": "0613dffb81bb55233bd88b44f0c9e546e016c408",
+      "status": "modified"
+    },
+    {
+      "path": "server/src/server.js",
+      "blob": "190397fcc1d5fb8489125e295fca7525dee3a540",
+      "status": "modified"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "blob": "c33734fd34fed980c6340c9887198f05595d62a3",
+      "status": "modified"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "blob": "8fd7ef8e96bf9c2cf8620dce59284eea907e2474",
+      "status": "added"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "blob": "97d65ba8345912c2a225a80f5c3e18323b9e9b54",
+      "status": "modified"
+    },
+    {
+      "path": "verification/pricebook-ai/baseline.mjs",
+      "blob": "4286ee06d0d054ff6bd90e13573cbe5f8720d018",
+      "status": "added"
+    },
+    {
+      "path": "verification/pricebook-ai/provider-fixture.mjs",
+      "blob": "9dd5f274350804d535dda31259760f51c0b54998",
+      "status": "added"
+    },
+    {
+      "path": "verification/pricebook-ai/verify.mjs",
+      "blob": "84978ecac01e8a726e5fc2c82d2ebf8a15d9c875",
+      "status": "added"
+    }
+  ],
+  "unchangedArithmeticEngine": true,
+  "unchangedVoiceRuntime": true,
+  "unchangedDemo": true,
+  "unchangedDependencies": true,
+  "results": {
+    "focused": {
+      "tests": 50,
+      "pass": 50
+    },
+    "editor": {
+      "tests": 15,
+      "pass": 15
+    },
+    "applicationBrowser": {
+      "checks": 14,
+      "pass": 14
+    },
+    "coldSuite": {
+      "tests": 1106,
+      "pass": 1095,
+      "fail": 9,
+      "skipped": 2,
+      "newFailures": 0
+    },
+    "builds": "owner and widget passed",
+    "liveGenerationRequests": 8,
+    "liveGenerationHTTP200": 8
+  },
+  "knownFailures": [
+    "dispatcher rejects handler results containing raw rates instead of exposing them",
+    "mutations are idempotent and conflicting reuse of a tool call id is rejected",
+    "quote release requires an affirmative recap confirmation and availability requires an address-bound lead",
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "test/voicePromptCompiler.spec.mjs",
+    "test/voiceWebSocketServer.spec.mjs",
+    "tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields",
+    "voice runtime binds availability to quote plus lead and sequences one hold before one confirmation",
+    "voice tool runtime persists a safe review quote and lead without exposing internal identities"
+  ]
+}
