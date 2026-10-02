@@ -81,8 +81,8 @@ try{
  });
  const ap=await fixture('approval');
  await check('F07-other-unsaved-service',async()=>{
-  await useOwner(ap);await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.2345');await pick('B');await approve(ap.services[1].id);await pick('A');
-  const draft=await bookState(),saved=await ap.read();save('F07-other-draft-and-saved.json',{draft,saved});assert.equal(await page.locator('#field-laborPerWallSqftPerCoat input').inputValue(),'1.2345');assert.equal(saved.services[0].pricing.laborPerWallSqftPerCoat,1);assert.equal(draft.services[0].pricing.laborPerWallSqftPerCoat,1.2345);assert.equal(draft.revision,saved.revision);
+  await useOwner(ap);await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.2345');console.log('APPROVAL_TRACE edited '+JSON.stringify(await bookState()));await pick('B');console.log('APPROVAL_TRACE switched '+JSON.stringify(await bookState()));await approve(ap.services[1].id);console.log('APPROVAL_TRACE approved '+JSON.stringify(await bookState()));await pick('A');
+  const draft=await bookState(),saved=await ap.read();save('F07-other-draft-and-saved.json',{draft,saved});console.log('APPROVAL_TRACE returned '+JSON.stringify({draft,saved}));assert.equal(await page.locator('#field-laborPerWallSqftPerCoat input').inputValue(),'1.2345');assert.equal(saved.services[0].pricing.laborPerWallSqftPerCoat,1);assert.equal(draft.services[0].pricing.laborPerWallSqftPerCoat,1.2345);assert.equal(draft.revision,saved.revision);
  });
  await check('F07-edit-during-review',async()=>{
   await useOwner(ap);await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.7777');
@@ -104,6 +104,25 @@ try{
   const id=await newInterview(ia,'INTERIOR_PAINTING','laborPerWallSqftPerCoat',1.2345);await page.route('**/api/dashboard',route=>route.abort());await page.getByRole('button',{name:'Review captured values in editor',exact:true}).click();await page.waitForFunction(()=>sessionStorage.getItem('otc_pricebook_draft'));const payload=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('otc_pricebook_draft')));await page.unroute('**/api/dashboard');
   await useOwner(ia,'/pricebook',{clear:false});const same=await bookState();assert.ok(same.services.some(s=>s.source==='AI_INTERVIEW'&&s.pricing.laborPerWallSqftPerCoat===1.2345));assert.ok(same.services.filter(s=>s.source==='AI_INTERVIEW').every(s=>s.active===false&&Object.keys(s.confirmedFields).length===0));
   await page.evaluate(p=>sessionStorage.setItem('otc_pricebook_draft',JSON.stringify(p)),payload);await useOwner(ib,'/pricebook',{clear:false});const other=await bookState();save('F08-bound-results.json',{payload,same,other,id});assert.equal(other.services.some(s=>s.source==='AI_INTERVIEW'),false);assert.equal(payload.ownerId,ia.owner.id);
+ });
+ await check('F08-suggestion-lifecycle-and-logout',async()=>{
+  await useOwner(ia,'/onboarding?step=7');
+  const suggestion={warning:'[SYNTHETIC] Fixture suggestion; no external AI call.',suggestions:[{serviceType:'INTERIOR_PAINTING',service:'[SYNTHETIC] Owner A suggestion',fields:{laborPerWallSqftPerCoat:0.0051}}]};
+  await page.route('**/api/pricebook/suggest',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(suggestion)}));
+  await page.getByRole('button',{name:'Suggest a starter book',exact:true}).click();
+  await page.waitForFunction(()=>sessionStorage.getItem('otc_pricebook_suggestions'));
+  const payload=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('otc_pricebook_suggestions')));
+  await page.unroute('**/api/pricebook/suggest');await page.getByRole('button',{name:'Open in editor',exact:true}).click();
+  await page.locator('.starter-grid').getByText('[SYNTHETIC] Owner A suggestion',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Use as draft',exact:true}).click();
+  const draft=await bookState();assert.ok(draft.services.some(s=>s.source==='AI_SUGGESTED'&&s.active===false&&s.pricing.laborPerWallSqftPerCoat===0.0051));
+  await page.evaluate(p=>sessionStorage.setItem('otc_pricebook_suggestions',JSON.stringify(p)),payload);
+  await useOwner(ib,'/pricebook',{clear:false});assert.equal(await page.locator('.starter-grid').count(),0);assert.equal(payload.ownerId,ia.owner.id);
+  await page.evaluate(p=>{sessionStorage.setItem('otc_pricebook_suggestions',JSON.stringify(p));sessionStorage.setItem('otc_pricebook_draft',JSON.stringify({version:1,ownerId:p.ownerId,payload:{services:[]}}));sessionStorage.setItem('unrelated','keep');},payload);
+  await page.getByRole('button',{name:'Sign out',exact:true}).first().click();
+  await page.waitForFunction(()=>!localStorage.getItem('otc_token'));
+  const storage=await page.evaluate(()=>({draft:sessionStorage.getItem('otc_pricebook_draft'),suggestions:sessionStorage.getItem('otc_pricebook_suggestions'),unrelated:sessionStorage.getItem('unrelated')}));
+  save('F08-suggestions-and-logout.json',{payload,draft,storage});assert.deepEqual(storage,{draft:null,suggestions:null,unrelated:'keep'});
  });
  await check('F11-three-level-repair',async()=>{
   const type='ROOFING_REPAIR',field='repairHours',id=await newInterview(ia,type,field),def=applicationMetadata().services.find(s=>s.serviceType===type).fields.find(f=>f.field===field);assert.equal(def.tree.depth,3);
