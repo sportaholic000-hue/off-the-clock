@@ -141,7 +141,7 @@ try{
   mode({mode:'down'});await page.goto(base+'/onboarding?step=7');
   const pending=page.waitForResponse(r=>r.url()===base+'/api/pricebook/suggest');
   await page.getByRole('button',{name:'Suggest a starter book',exact:true}).click();assert.equal((await pending).status(),503);
-  await page.getByText(/AI could not produce a valid draft/).waitFor();await page.screenshot({path:path.join(pub,'ai-unavailable.png')});
+  await page.getByText(/AI could not produce a valid draft/).waitFor();assert.ok(await page.getByText(/AI could not produce a valid draft/).evaluate(el=>{const b=el.getBoundingClientRect();return b.top>=0&&b.bottom<=innerHeight;}),'AI error must be in the visible viewport');await page.screenshot({path:path.join(pub,'ai-unavailable.png')});
   await page.getByRole('button',{name:'Open manual editor',exact:true}).click();await page.getByRole('button',{name:'Save & validate',exact:true}).waitFor();
   assert.equal(await page.getByRole('button',{name:'Save & validate',exact:true}).isEnabled(),true);
  });
@@ -152,7 +152,7 @@ try{
   await page.getByRole('button',{name:'Use AI to capture this answer',exact:true}).click();
   assert.equal(await page.getByRole('button',{name:'Open manual editor',exact:true}).isEnabled(),true);
   assert.equal((await pending).status(),503);assert.ok(Date.now()-started<36000);assert.deepEqual(draftRow(interview.id),before);
-  await page.getByText(/AI could not produce a valid draft/).waitFor();await page.screenshot({path:path.join(pub,'ai-timeout.png')});
+  await page.getByText(/AI could not produce a valid draft/).waitFor();assert.ok(await page.getByText(/AI could not produce a valid draft/).evaluate(el=>{const b=el.getBoundingClientRect();return b.top>=0&&b.bottom<=innerHeight;}),'AI error must be in the visible viewport');await page.screenshot({path:path.join(pub,'ai-timeout.png')});
   await page.getByRole('button',{name:'Open manual editor',exact:true}).click();
  });
  await check('AI values require separate exact saved-value confirmation before a normal quote can succeed',async()=>{
@@ -191,7 +191,7 @@ try{
    await p.getByRole('button',{name:'Continue',exact:true}).click();await p.getByRole('button',{name:'Continue',exact:true}).click();await p.getByLabel('Email',{exact:true}).fill('synthetic-customer@example.invalid');await p.getByRole('button',{name:'Continue',exact:true}).click();await p.getByLabel('Urgency',{exact:true}).selectOption('flexible');
    const preparing=p.waitForResponse(r=>r.url().endsWith('/prepare'));await p.getByRole('button',{name:'Submit estimate request',exact:true}).click();const prepared=await (await preparing).json();
    assert.ok(prepared.summary.facts.some(f=>f.value==='Measured area'));assert.ok(prepared.summary.facts.some(f=>f.value==='Regularly maintained'));
-   await p.getByText('Measured area',{exact:true}).waitFor();await p.screenshot({path:path.join(pub,'widget-friendly-summary-375.png')});
+   await p.getByText('Regularly maintained',{exact:true}).scrollIntoViewIfNeeded();await p.screenshot({path:path.join(pub,'widget-friendly-summary-375.png')});
    const receiving=p.waitForResponse(r=>r.url()===base+f.url&&r.request().method()==='POST');await p.getByRole('button',{name:'Get estimate',exact:true}).click();const response=await receiving,result=await response.json();assert.equal(response.status(),201);assert.equal(result.midEstimate,50);
    save('widget-result.json',{prepared,result,submission:response.request().postDataJSON()});await p.screenshot({path:path.join(pub,'widget-quote-375.png')});
   }finally{await p.close();}

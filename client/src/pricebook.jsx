@@ -563,6 +563,7 @@ export default function PriceBook() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
   const [suggesting,setSuggesting] = useState(false);
+  const [suggestionError,setSuggestionError] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [approvalPending, setApprovalPending] = useState(false);
@@ -710,12 +711,12 @@ export default function PriceBook() {
 
   async function suggest() {
     if(suggesting)return;
-    setSuggesting(true);setError(null);
+    setSuggesting(true);setError(null);setSuggestionError(null);
     try {
       const industry = (onboarding.profile.businessTypes || []).join(', ');
       const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:(onboarding.profile.businessTypes || []) } });
       setSuggestions(result);
-    } catch (nextError) { setError(nextError); }
+    } catch (nextError) { setSuggestionError(nextError); }
     finally {setSuggesting(false);}
   }
 
@@ -793,6 +794,7 @@ export default function PriceBook() {
         />
         <fieldset disabled={saving||approvalPending} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
         {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. You can keep editing prices manually.</p>}
+        <ErrorMessage error={suggestionError} />
         {suggestions && (
           <section className="starter-panel">
             <div className="section-title"><Notice tone="warning">{suggestions.warning}</Notice><Button icon={X} variant="icon" onClick={() => setSuggestions(null)} aria-label="Close suggestions" /></div>
