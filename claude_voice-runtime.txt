@@ -1,12 +1,5 @@
-run 36950472161 sha e751222d650123eb98588c5b2cb087cbb549d10d
-Summary: {"tests":"1067","pass":"1064","fail":"1","cancelled":"0","skipped":"2","todo":"0"}
-Known failures still failing: 1/9
-::notice::Known failure now passes, remove it from the list: dispatcher rejects handler results containing raw rates instead of exposing them
-::notice::Known failure now passes, remove it from the list: mutations are idempotent and conflicting reuse of a tool call id is rejected
-::notice::Known failure now passes, remove it from the list: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
-::notice::Known failure now passes, remove it from the list: test/googleGenAiLiveAdapter.spec.mjs
-::notice::Known failure now passes, remove it from the list: test/voiceWebSocketServer.spec.mjs
-::notice::Known failure now passes, remove it from the list: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
-::notice::Known failure now passes, remove it from the list: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
-::notice::Known failure now passes, remove it from the list: voice tool runtime persists a safe review quote and lead without exposing internal identities
-not ok 63 - test/voicePromptCompiler.spec.mjs
+run 36953294634 sha 0de4f95ed8086f87aaca83e2a82a9734c9e10db1
+Summary: {"tests":"1074","pass":"1071","fail":"1","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 0/0
+::error::New test failure: provider protocol violations fail closed without exposing provider details
+not ok 308 - provider protocol violations fail closed without exposing provider details
