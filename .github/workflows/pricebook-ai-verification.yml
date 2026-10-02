@@ -1,0 +1,43 @@
+name: Price-book AI verification
+on:
+  push:
+    branches: [codex/pricebook-ai-20261001]
+permissions:
+  contents: read
+concurrency:
+  group: pricebook-ai-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - name: Cold dependencies
+        run: rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+      - name: Reproduce against real Gemini and isolated application
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEMO_ENABLED: 'false'
+          VOICE_RUNTIME_ENABLED: 'false'
+          STRIPE_BILLING_ENABLED: 'false'
+          EMAIL_DELIVERY_ENABLED: 'false'
+          OUTBOUND_WEBHOOKS_ENABLED: 'false'
+        run: |
+          mkdir -p .portable-runtime/node-v22.23.2-win-x64
+          cp "$(command -v node)" .portable-runtime/node-v22.23.2-win-x64/node.exe
+          chmod +x .portable-runtime/node-v22.23.2-win-x64/node.exe
+          .portable-runtime/node-v22.23.2-win-x64/node.exe verification/pricebook-ai/baseline.mjs "$RUNNER_TEMP/ai-baseline"
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pricebook-ai-${{ github.sha }}
+          path: ${{ runner.temp }}/ai-baseline/public/
+          if-no-files-found: error
+          retention-days: 30
