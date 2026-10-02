@@ -1,0 +1,1030 @@
+{
+  "baseCommit": "883182a49e2dce64653b0473043be25bec8b4121",
+  "baseTree": "4ef1fd49e43f2c59094d3a84301287a971e0efb0",
+  "scope": "R5 documentation reconciliation only",
+  "runtime": "Node 22.23.2",
+  "verification": {
+    "examples": {
+      "pass": 7,
+      "fail": 0
+    },
+    "selectedRegressionTests": {
+      "pass": 405,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "artifacts": [
+    {
+      "path": "specs/quote_engine_v2.md",
+      "bytes": 74341,
+      "sha256": "8dd705c068c18d5766e101da5871a92284aad71140fecc3ded140c6433e90ba2",
+      "gitBlobSha": "109985e93f46431d86e64fba097365c396fbcebc"
+    },
+    {
+      "path": "verification/rounding-spec-20261002/REPORT.md",
+      "bytes": 4029,
+      "sha256": "4c977578098354d3a19a6a1b306a849e2d40899d21efe8eb2f01b55fa53dc9b6",
+      "gitBlobSha": "317ff24f231df5583b4648e3eb706a22b86b6897"
+    },
+    {
+      "path": "verification/rounding-spec-20261002/examples.json",
+      "bytes": 1639,
+      "sha256": "d1cbc8aa99645a742732c947279929240e5401f8f4d8e5eadb72948d6adfa633",
+      "gitBlobSha": "7747fada9d34966cd88928998797308b4466d16a"
+    },
+    {
+      "path": "verification/rounding-spec-20261002/examples.mjs",
+      "bytes": 3349,
+      "sha256": "5b1454b7f79e38d068b3fce73827802b5c46acd5e34d61e38c2fcff482a50d78",
+      "gitBlobSha": "0bbc0565f1d94a022098d312106b22babe5c4456"
+    },
+    {
+      "path": "verification/rounding-spec-20261002/regressions.tap",
+      "bytes": 99003,
+      "sha256": "13dd2b88ffee4e2111294fc265d638d16bfcf77fba6afb13f4551b50f6f4302c",
+      "gitBlobSha": "16da3a5c24b76cb9064515c6b7c647999aa66eb9"
+    }
+  ],
+  "verifiedBaseBindings": [
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_147_150.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00df50cd44089140e8e99943e5872392739f6bc1",
+      "size": 12348,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/00df50cd44089140e8e99943e5872392739f6bc1"
+    },
+    {
+      "path": "server/quote-engine-vnext/HANDOFF_ABC.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02ae250b3d209e5e6505b8cd050bcdab115bce74",
+      "size": 13212,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/02ae250b3d209e5e6505b8cd050bcdab115bce74"
+    },
+    {
+      "path": "server/quote-engine-vnext/OWNER_HANDOFF_20260910.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2d6e89fa207dea5fad676fb3667725639558345",
+      "size": 14306,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/f2d6e89fa207dea5fad676fb3667725639558345"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d36a18c4b550af53e079edf87726c44492d674c",
+      "size": 142548,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/5d36a18c4b550af53e079edf87726c44492d674c"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4efb0622cf45d75edc6b18857618c58898128ab2",
+      "size": 92464,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/4efb0622cf45d75edc6b18857618c58898128ab2"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "619622d1e453b9948794ff89a513634dc303bfbf",
+      "size": 70741,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/619622d1e453b9948794ff89a513634dc303bfbf"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e99443ad3bfe858291d999901d9f2c230d261ea4",
+      "size": 4975,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/e99443ad3bfe858291d999901d9f2c230d261ea4"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3cefbe5e02ac78a6916471dd580b98d0d3c03ff8",
+      "size": 4973,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/3cefbe5e02ac78a6916471dd580b98d0d3c03ff8"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "218175b4cd313797daa588a75d1cb6cb369cd103",
+      "size": 15316,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/218175b4cd313797daa588a75d1cb6cb369cd103"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5e0a74490d15d0e03dfb664cac01dbc223dcc0a",
+      "size": 58135,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/a5e0a74490d15d0e03dfb664cac01dbc223dcc0a"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29bcd95708ad194724c70f1fa58f9a388e63f78d",
+      "size": 35986,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/29bcd95708ad194724c70f1fa58f9a388e63f78d"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23a92ac51fd70b05916d1fb1a9aa72497bc52e26",
+      "size": 430749,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/23a92ac51fd70b05916d1fb1a9aa72497bc52e26"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "655502741636841661190e7519fc8e02810282b7",
+      "size": 17653,
+      "url": "https://api.github.com/repos/sportaholic000-hue/off-the-clock/git/blobs/655502741636841661190e7519fc8e02810282b7"
+    }
+  ],
+  "unchangedRuntimeAndTestBlobs": [
+    {
+      "path": "server/package.json",
+      "gitBlobSha": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8"
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "gitBlobSha": "d11671f4c9d40f2713061c506d73b36e9b367ba1"
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "gitBlobSha": "9f5e684f6f5f56eff1101a53a9e1bbaf86b263ca"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "gitBlobSha": "47b0dfc92e67ec73360a6eafa0287ac02050dae4"
+    },
+    {
+      "path": "server/priceBookService.js",
+      "gitBlobSha": "04e74baefd81258f5db7c1b3ef6b9b15b70365b4"
+    },
+    {
+      "path": "server/public/otc-live-demo.js",
+      "gitBlobSha": "76fcfdb99325d2a202f358b17c8e75cf4ba82c11"
+    },
+    {
+      "path": "server/quote-engine-vnext/README.md",
+      "gitBlobSha": "8ea209554563b7bc632ff905049260fece590c92"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "gitBlobSha": "65f0454541cd6e75b58aa0727590ca0e4c47a710"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "gitBlobSha": "5d36a18c4b550af53e079edf87726c44492d674c"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "gitBlobSha": "4efb0622cf45d75edc6b18857618c58898128ab2"
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "gitBlobSha": "56d78ed30fd10294db35a6e44f01d2e2008f531b"
+    },
+    {
+      "path": "server/quote-engine-vnext/geometry.js",
+      "gitBlobSha": "925ed38777dc914a8965a0b85278ac0dc883f0c5"
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "gitBlobSha": "9765a3a9cb65fa7901871bfd763f2bfa35c63491"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "gitBlobSha": "b9dee4d5862020ca9dd02bff7eaf42dbc051174a"
+    },
+    {
+      "path": "server/quote-engine-vnext/safeData.js",
+      "gitBlobSha": "cf183be9c29368f3bd9b6dfa1f87020b74705050"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "gitBlobSha": "71831cae875029c998702500a22d47f164772717"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "gitBlobSha": "31455b14ae6ca2f9646fba2cf15655696e80ba2a"
+    },
+    {
+      "path": "server/quoteEngine.js",
+      "gitBlobSha": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18"
+    },
+    {
+      "path": "server/quoteLog.js",
+      "gitBlobSha": "56e2ac691408160ac532ede99fd258179e710475"
+    },
+    {
+      "path": "server/quoteTemplates.js",
+      "gitBlobSha": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "gitBlobSha": "136bea873918bde18d00fb3675c4756f5c2633f8"
+    },
+    {
+      "path": "server/scripts/backup.js",
+      "gitBlobSha": "5013a1d8322b5d416d43c8f65d3457dc3e1bc505"
+    },
+    {
+      "path": "server/scripts/dev.js",
+      "gitBlobSha": "01b420264ffb45e4d8e779ccc9274b640b531c0c"
+    },
+    {
+      "path": "server/scripts/phase0-gate.js",
+      "gitBlobSha": "14c65e637c5c162bb841f136da795d284594ce48"
+    },
+    {
+      "path": "server/scripts/phase1-gate.js",
+      "gitBlobSha": "f4b9ae35283a505a9e50da45d4d272376713262a"
+    },
+    {
+      "path": "server/scripts/phase2-gate.js",
+      "gitBlobSha": "3a262912d997ae44f1c3902e031199fc8e2e3189"
+    },
+    {
+      "path": "server/scripts/quote-vnext-gate.js",
+      "gitBlobSha": "d42020d32e77473722539176765367466774be58"
+    },
+    {
+      "path": "server/scripts/restore.js",
+      "gitBlobSha": "df0332c1fdd0ab835841714b90ec77547cc82c70"
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "gitBlobSha": "681135fd8396e506883bf854ba50da81161cfe18"
+    },
+    {
+      "path": "server/src/auth.js",
+      "gitBlobSha": "63c6556c5fd8a99d888ac47fdebccf72d5a40677"
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "gitBlobSha": "2db2c74bce1245110c38e5af5166d2e34945d620"
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "gitBlobSha": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5"
+    },
+    {
+      "path": "server/src/authRateLimitService.js",
+      "gitBlobSha": "4869358cec735654c77f63b371fa090257e8a37f"
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "gitBlobSha": "b79d90a514a93465a3dc6f76fca027fcfb8b9b53"
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "gitBlobSha": "06176e808b145f4d5f1c3523122b564d62fa9729"
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "gitBlobSha": "a42dab7abe98467cd266d338028c591cddd16ee7"
+    },
+    {
+      "path": "server/src/backups.js",
+      "gitBlobSha": "546ba15164fc32af46840374723d7edd0bc0c186"
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "gitBlobSha": "760804b2be23b09d9fd1b648d1540fbe8bfe592d"
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "gitBlobSha": "cd411e15a57d8003ce209da2b1e04584341db309"
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "gitBlobSha": "96dac32b654d757975ba0b39883d5a76ee904742"
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "gitBlobSha": "98792bab9be179a26015b963d622361dc6349d89"
+    },
+    {
+      "path": "server/src/bookingAdminService.js",
+      "gitBlobSha": "8c667bce6ea7fdaea1d578775133eda887626685"
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "gitBlobSha": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621"
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "gitBlobSha": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4"
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "gitBlobSha": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "gitBlobSha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2"
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "gitBlobSha": "930501e5550e32342a8616dc7e4eb3e2b6a138b4"
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "gitBlobSha": "2f5075e8428257b75a5c0ead20cea3065f7d904c"
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "gitBlobSha": "87035db4d213ddb4d6d55f16b699c1ffb23ab926"
+    },
+    {
+      "path": "server/src/calendarOAuthState.js",
+      "gitBlobSha": "439ea0f4bac871421357b28a1b81f9d2bb6111e6"
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "gitBlobSha": "de4d42efaec332115fec229af2b7fe14ad7323aa"
+    },
+    {
+      "path": "server/src/clientAddress.js",
+      "gitBlobSha": "f578cb0d4fa02a97ace85a6bb6b50be0281d5daa"
+    },
+    {
+      "path": "server/src/corsPolicy.js",
+      "gitBlobSha": "10063b96d6b27140603f56d4202c0a219a648baa"
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "gitBlobSha": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "gitBlobSha": "fda01c2ada008fd0c3fc4e614dfea9e405578089"
+    },
+    {
+      "path": "server/src/db.js",
+      "gitBlobSha": "c8d8d0d70288903ce74862199bb087c80914ecd6"
+    },
+    {
+      "path": "server/src/demo/demoInstructions.js",
+      "gitBlobSha": "322e5b06f8c859cf08e9ccd49803aa00f1c61dd0"
+    },
+    {
+      "path": "server/src/demo/liveDemo.js",
+      "gitBlobSha": "93dc2188b0e16857656e060c33d1507926e25156"
+    },
+    {
+      "path": "server/src/deploymentConfig.js",
+      "gitBlobSha": "749686060536ed6b79cee5ed412d6523f82595ca"
+    },
+    {
+      "path": "server/src/deploymentEnvironment.js",
+      "gitBlobSha": "b9b7168805825d28d1ae4e3e0ad26fdf41ddf580"
+    },
+    {
+      "path": "server/src/email.js",
+      "gitBlobSha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d"
+    },
+    {
+      "path": "server/src/exactJson.js",
+      "gitBlobSha": "260c1500b3943998e17df19e174b2ec64be7cb26"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "gitBlobSha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58"
+    },
+    {
+      "path": "server/src/integrationData.js",
+      "gitBlobSha": "878f631cd765ab7373590501f84fa73483ff63ad"
+    },
+    {
+      "path": "server/src/lifecycle.js",
+      "gitBlobSha": "88b6f55df496f9e9aabea290c1b299bba8e47d98"
+    },
+    {
+      "path": "server/src/migrations.js",
+      "gitBlobSha": "78acc7730988a83ee13ab4bbff89e0e74222e6fa"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "gitBlobSha": "fe71c36cf1050ea49f5e319303f1e8cc3208edbb"
+    },
+    {
+      "path": "server/src/outboundWebhookSchema.js",
+      "gitBlobSha": "ca804f3c2f2e1432998ce59b41a8e63527355b32"
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "gitBlobSha": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "path": "server/src/outboundWebhookTransport.js",
+      "gitBlobSha": "f4e13c2cb9219096cede5170068d8a1b66c8b32b"
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "gitBlobSha": "4f8f00cd827e76fe8a67be3d924042959fcf91a5"
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "gitBlobSha": "b8b3331240cce15a14e8fdea59e538e6d906b68e"
+    },
+    {
+      "path": "server/src/ownerIntegrationRoutes.js",
+      "gitBlobSha": "38d70812f7cfead22cbf5ad8426ea4ad61757a96"
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "gitBlobSha": "c0a85d8569618fbdec8899dafe12659fb2791cd7"
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "gitBlobSha": "0f41167ce68ded3b43b23fa064e5cdd72290e9de"
+    },
+    {
+      "path": "server/src/previewMode.js",
+      "gitBlobSha": "4282015139d69aa1e62737a8389c3122bed0f90e"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "gitBlobSha": "e71ebf3ed5513a9bd4dcc64df43807bbbb9ef8ed"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "gitBlobSha": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "path": "server/src/quoteContact.js",
+      "gitBlobSha": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "gitBlobSha": "2c0d1c4ef1c035b9bddcfde5c677708f8a17efdb"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "gitBlobSha": "f83b0a0eac476dd4aea32391480898a3480ef5c7"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "gitBlobSha": "0613dffb81bb55233bd88b44f0c9e546e016c408"
+    },
+    {
+      "path": "server/src/quoteRequestScope.js",
+      "gitBlobSha": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "gitBlobSha": "afd6f3810e38c9ee88734aa400c20f0b511655b9"
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "gitBlobSha": "8b85216517fd711d2050d65c88ee23d91dd4e353"
+    },
+    {
+      "path": "server/src/schema.js",
+      "gitBlobSha": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e"
+    },
+    {
+      "path": "server/src/server.js",
+      "gitBlobSha": "9bc5c3d46fdffced0cc82607690d9ed5707c86aa"
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "gitBlobSha": "4dd6b93e46fc62d825767e07f679ee1545d23cb5"
+    },
+    {
+      "path": "server/src/tenant.js",
+      "gitBlobSha": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5"
+    },
+    {
+      "path": "server/src/voice/audioCodec.js",
+      "gitBlobSha": "db715b52e6efc6bb1ff5e59e3754e002025e8099"
+    },
+    {
+      "path": "server/src/voice/geminiMediaBridge.js",
+      "gitBlobSha": "79b7da7beb957155b597efb5ac2bc2541565658e"
+    },
+    {
+      "path": "server/src/voice/sessionNonceService.js",
+      "gitBlobSha": "69529472280fd305dee751465187caf5f2c69199"
+    },
+    {
+      "path": "server/src/voice/tenantResolver.js",
+      "gitBlobSha": "8314a25c3b8a3c16d78096a5fa803ed267b0e935"
+    },
+    {
+      "path": "server/src/voice/toolDispatcher.js",
+      "gitBlobSha": "5b9f128f3b028c89c1589bde1b2edd5ea4dd4316"
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "gitBlobSha": "e121f84ed705799c973374b69d9e84def5b5c1d1"
+    },
+    {
+      "path": "server/src/voice/twilioValidation.js",
+      "gitBlobSha": "db4a0e7781cf1d13671799fdc8f82f2524ce345a"
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "gitBlobSha": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f"
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "gitBlobSha": "384ad107ab1754f9006485833b2fa676cb75c1aa"
+    },
+    {
+      "path": "server/src/voiceRuntimeRoutes.js",
+      "gitBlobSha": "c4e2034bc6276d535d444834724ad60141308987"
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "gitBlobSha": "abdbf695ceda016be6c6a5c81d0c04039611748c"
+    },
+    {
+      "path": "client/src/accountRecovery.css",
+      "gitBlobSha": "cf15876bee07a662db73297cebf2c392fb9ae8de"
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "gitBlobSha": "58ef15b9bc6d50409ae16671fe94d9779bf2c445"
+    },
+    {
+      "path": "client/src/api.js",
+      "gitBlobSha": "9b012f75bce692ab3938ed955850a41b107e2dc4"
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "gitBlobSha": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2"
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "gitBlobSha": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28"
+    },
+    {
+      "path": "client/src/calendar.css",
+      "gitBlobSha": "c29a0d7e8d4c0385d4cba48465f3197623d40b47"
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "gitBlobSha": "d28d7e533e812750a42c050dcfd84019bb6f4280"
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "gitBlobSha": "4bf229e9d0d04158632335aac8193e3732b460a5"
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "gitBlobSha": "7b1c708b41a516cdbb79f963f6fa1a93547927d5"
+    },
+    {
+      "path": "client/src/integrationDownloads.js",
+      "gitBlobSha": "e90d7073d576320af02e9bec2d31a5e5096493f9"
+    },
+    {
+      "path": "client/src/interviewStructured.jsx",
+      "gitBlobSha": "1550812b81ede34cd8fe22da73c75adfacb86070"
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "gitBlobSha": "37d14f497b5b9bd965436fb0744d0eae2f49c197"
+    },
+    {
+      "path": "client/src/main.jsx",
+      "gitBlobSha": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "gitBlobSha": "39fbf348894f49069a80ef4e0c334d590c4e80fb"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "gitBlobSha": "a4b70ccdcedddde9d7b3d87852564c11b14924e3"
+    },
+    {
+      "path": "client/src/ownerIntegrations.jsx",
+      "gitBlobSha": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "gitBlobSha": "32d143b862c508b1381f952cd1968d6974e84807"
+    },
+    {
+      "path": "client/src/pricebookEditing.js",
+      "gitBlobSha": "20463d8ee200316220d22e8b1076177b2ef9daf5"
+    },
+    {
+      "path": "client/src/pricebookFormatting.js",
+      "gitBlobSha": "b361b6230fae8985531e7b1268f2b0633ac629ba"
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "gitBlobSha": "db78dd60c235ecbd6de26a711d5a5050c44c82bc"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "gitBlobSha": "9af25725cdaf5fc24317a28dd2e9603caa650cfe"
+    },
+    {
+      "path": "client/src/quotePresentation.js",
+      "gitBlobSha": "a1b271c3a03f5e24ab3bccb07da88e8ab090b3ec"
+    },
+    {
+      "path": "client/src/quoteSubmission.js",
+      "gitBlobSha": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0"
+    },
+    {
+      "path": "client/src/quoteWizard.jsx",
+      "gitBlobSha": "62fdd0167c47126d255463af3efeebe48d0b77df"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "gitBlobSha": "64a6a91141aa07255d33346316777b7054559e8f"
+    },
+    {
+      "path": "client/src/reference.jsx",
+      "gitBlobSha": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd"
+    },
+    {
+      "path": "client/src/scopeEditor.jsx",
+      "gitBlobSha": "f2e99113b8b9098ea05473797466b0db9973a4dc"
+    },
+    {
+      "path": "client/src/sessionIdentity.js",
+      "gitBlobSha": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369"
+    },
+    {
+      "path": "client/src/styles.css",
+      "gitBlobSha": "789db161c483eb505764c6627dc7ce76377ca3c4"
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "gitBlobSha": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7"
+    },
+    {
+      "path": "client/src/widget-entry.jsx",
+      "gitBlobSha": "7d59afdd4335adcfe564f619795e807749f7a351"
+    },
+    {
+      "path": "client/src/widget.css",
+      "gitBlobSha": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186"
+    },
+    {
+      "path": "client/src/widgetBooking.jsx",
+      "gitBlobSha": "08a088699117eb51256437beaf83da462b7bc093"
+    },
+    {
+      "path": "client/src/widgetInstall.jsx",
+      "gitBlobSha": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a"
+    },
+    {
+      "path": "client/src/widgetTransport.js",
+      "gitBlobSha": "3212c586aa7fc39e4d288cb7fd631ba4ab02bd26"
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "gitBlobSha": "1b26d4ea925569917fe43d1bbefc95621fcd3bba"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "gitBlobSha": "bb2a71149af293ea642fc6b5df6ae901cdf58424"
+    },
+    {
+      "path": "test/applicationPersistence.spec.mjs",
+      "gitBlobSha": "56d87ace29544a24197efdb1c5ab49ef03a374c1"
+    },
+    {
+      "path": "test/authSessionClient.spec.mjs",
+      "gitBlobSha": "78fc946e58766f2ac1828c870dc642f1dd09ee71"
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "gitBlobSha": "66b72d5d09bf9fb2f6187f953dceec5e9c12c4a5"
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "gitBlobSha": "03f0545de79bb772a0fe89e067ec6301edd64f1b"
+    },
+    {
+      "path": "test/authTokenService.spec.mjs",
+      "gitBlobSha": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577"
+    },
+    {
+      "path": "test/backups.spec.mjs",
+      "gitBlobSha": "8ed06b27ba657808539578f12a211f7900615aa4"
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "gitBlobSha": "f66d2794be4237d53c71897e24f40b4d2627f81d"
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "gitBlobSha": "8f4284f88f31bfdb4267562911c8516e87975c3a"
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "gitBlobSha": "d21a8308f8cf6c962b8e0bc918b8735193f66da3"
+    },
+    {
+      "path": "test/bookingAdminRoutes.spec.mjs",
+      "gitBlobSha": "4e766e19ff9b9123710a356612ef557265726b05"
+    },
+    {
+      "path": "test/bookingAdminService.spec.mjs",
+      "gitBlobSha": "fcaf840932948dac12970aeacef919dc6942d4f7"
+    },
+    {
+      "path": "test/bookingCapabilities.spec.mjs",
+      "gitBlobSha": "6f8538474437d84235633cd9ff65e3b2cfc097a7"
+    },
+    {
+      "path": "test/bookingPreferenceService.spec.mjs",
+      "gitBlobSha": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd"
+    },
+    {
+      "path": "test/bookingRoutes.spec.mjs",
+      "gitBlobSha": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214"
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "gitBlobSha": "17f5ea03ac2d6d95e785949ef72dd4a7cfbc7f5e"
+    },
+    {
+      "path": "test/bookingTokenReceipt.spec.mjs",
+      "gitBlobSha": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c"
+    },
+    {
+      "path": "test/calendarCredentials.spec.mjs",
+      "gitBlobSha": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f"
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "gitBlobSha": "2a409e0feeb63ce2aa536c314243dad4009459f1"
+    },
+    {
+      "path": "test/calendarOAuthState.spec.mjs",
+      "gitBlobSha": "36e24ad9928e623805ed2ffec8b2e52bea932ba4"
+    },
+    {
+      "path": "test/clientAddress.spec.mjs",
+      "gitBlobSha": "cc0c2f3c09dd36d3496d05434d9480e88ad01163"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "gitBlobSha": "d4cd01dfb375e0254d9c2c7d6bff901272e997f0"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "gitBlobSha": "ccbfa03d06f9736dc72fd3f699410110a452a1f0"
+    },
+    {
+      "path": "test/corsPolicy.spec.mjs",
+      "gitBlobSha": "8111d13baab45950a31f79f4b5b0c951b491e7b3"
+    },
+    {
+      "path": "test/customerExplanation.spec.mjs",
+      "gitBlobSha": "a29d4cec06628c355f456b3041ad1644b7a45886"
+    },
+    {
+      "path": "test/customerExplanationCatalog.json",
+      "gitBlobSha": "3ac124bc9353a6f0be72281c0c353658a3138f38"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "gitBlobSha": "99093f72b28ce4c8bce04997f71489a5ed8b72a8"
+    },
+    {
+      "path": "test/deploymentConfig.spec.mjs",
+      "gitBlobSha": "9faf8c00f1ee43e77969ea3be2e72cbf6a6bf5e5"
+    },
+    {
+      "path": "test/deploymentProcess.spec.mjs",
+      "gitBlobSha": "7ab718143e12e040961c029d5a66e1bc45546843"
+    },
+    {
+      "path": "test/geminiMediaBridge.spec.mjs",
+      "gitBlobSha": "a03f9ee6c1386af467135f250c2663887a751f46"
+    },
+    {
+      "path": "test/googleCalendarAdapter.spec.mjs",
+      "gitBlobSha": "c7fe7ea3256f7367c4b5a301ce582f0d86d4f7f5"
+    },
+    {
+      "path": "test/googleGenAiLiveAdapter.spec.mjs",
+      "gitBlobSha": "8d7cdf021c62193b308aeb3012df506ef687f875"
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "gitBlobSha": "c69f34875b1e31ad79a9f1f23e7310408e5006c6"
+    },
+    {
+      "path": "test/helpers/railwayEnv.mjs",
+      "gitBlobSha": "834aecd6f2e5526daece7e4561026ae8490b3b10"
+    },
+    {
+      "path": "test/helpers/railwayProcessFixture.mjs",
+      "gitBlobSha": "e3bb676f4229c1b93ea4be3af18c547c95015cc1"
+    },
+    {
+      "path": "test/helpers/syntheticTls.mjs",
+      "gitBlobSha": "03a0c72131c660aee99b817183b75fb172be5c2c"
+    },
+    {
+      "path": "test/integrationDownloads.spec.mjs",
+      "gitBlobSha": "af838169ffe76df0c05997c39647dfc2c05b8b6a"
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "gitBlobSha": "c0183c945f329ad9bbc9c517d4fd123d1d550344"
+    },
+    {
+      "path": "test/lifecycle.spec.mjs",
+      "gitBlobSha": "114953e7f149c9e888dc3d0a535c959ee4aff7f2"
+    },
+    {
+      "path": "test/liveDemo.spec.mjs",
+      "gitBlobSha": "6c8f9084a7cb265cc126e665799250668de72f77"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "gitBlobSha": "52223ec7b2b15bc9342737826756de216bd1ccf0"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "gitBlobSha": "b22c0e91677b7c4e6ce7fd231695f21e1a31382a"
+    },
+    {
+      "path": "test/onboardingCalendar.spec.mjs",
+      "gitBlobSha": "ec24c70f94b0c52bced8b08ef39025ebddb9a38f"
+    },
+    {
+      "path": "test/onboardingServiceArea.spec.mjs",
+      "gitBlobSha": "bdc6b7dba9d69655079cf0655d087f69ca6afab9"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "gitBlobSha": "e99443ad3bfe858291d999901d9f2c230d261ea4"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "gitBlobSha": "3cefbe5e02ac78a6916471dd580b98d0d3c03ff8"
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "gitBlobSha": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058"
+    },
+    {
+      "path": "test/ownerIntegrations.spec.mjs",
+      "gitBlobSha": "6672048f1467e3e75b02564013ab99e687c9fe14"
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "gitBlobSha": "9dca68199c14a50afe525ed77f2f2794bb7adf15"
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "gitBlobSha": "e9ac0cb653458888ede0b2257fb558acc15bca00"
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "gitBlobSha": "574a4727e94e30d70690fd35add7f14e43613b03"
+    },
+    {
+      "path": "test/platformSchema.spec.mjs",
+      "gitBlobSha": "e624614185172858e93b70b4deb40aebe9e216c5"
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "gitBlobSha": "9996b9982c538a8ff0272901bcd709fe720ae0d8"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "gitBlobSha": "dfdfb6884fb3de1ef487c0d43d67ad0f49cdd768"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "gitBlobSha": "97d65ba8345912c2a225a80f5c3e18323b9e9b54"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "gitBlobSha": "67525782264a2672b567a8c659181cfe019c0f32"
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "gitBlobSha": "60bf6e373ce83069714a4796b9f4cca4ffb0cdb8"
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "gitBlobSha": "7ef313141ed6bb78d3964534c4f39efec7c4b21d"
+    },
+    {
+      "path": "test/providerCredentials.spec.mjs",
+      "gitBlobSha": "e37ff538447d28a6fb3ddffc195db8f22f5478ee"
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "gitBlobSha": "aaab006f57e27318bb7eae66b4fd1670b5042a1d"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "gitBlobSha": "218175b4cd313797daa588a75d1cb6cb369cd103"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "gitBlobSha": "a5e0a74490d15d0e03dfb664cac01dbc223dcc0a"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "gitBlobSha": "29bcd95708ad194724c70f1fa58f9a388e63f78d"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "gitBlobSha": "043ac6fe93d2dbf033b9d6f61bfe3ed4f11b798f"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "gitBlobSha": "23a92ac51fd70b05916d1fb1a9aa72497bc52e26"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "gitBlobSha": "c672f18cf9770b48d3818317f92ec454de2607d0"
+    },
+    {
+      "path": "test/quoteFlowRepairs.spec.mjs",
+      "gitBlobSha": "0e3979b0f0d410728b40290c4f93900981dcfbc0"
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "gitBlobSha": "18df625130f68a26b01c801e1e8cacdfdf2d532a"
+    },
+    {
+      "path": "test/quotePresentation.spec.mjs",
+      "gitBlobSha": "09a5e4dfeeb415b7d08f5f74994132987d501265"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "gitBlobSha": "db69e56864af489b1ab4270314ee95ff532ffded"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "gitBlobSha": "0c01a19daf72090c972fa5d0741739c501cf0b04"
+    },
+    {
+      "path": "test/runtimeConfig.spec.mjs",
+      "gitBlobSha": "cc1cb461004b36a445f88f708bec4507e01ebfa2"
+    },
+    {
+      "path": "test/serviceArea.spec.mjs",
+      "gitBlobSha": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "gitBlobSha": "655502741636841661190e7519fc8e02810282b7"
+    },
+    {
+      "path": "test/voiceAudioCodec.spec.mjs",
+      "gitBlobSha": "ef6f7824829caf58129edb9bb597fce1db55a243"
+    },
+    {
+      "path": "test/voicePersistence.spec.mjs",
+      "gitBlobSha": "3bbf285b98bfd5de2d177883fe4e37fffb6d188c"
+    },
+    {
+      "path": "test/voicePromptCompiler.spec.mjs",
+      "gitBlobSha": "abf5f3e9b21bd2c7039736e6c2bffdc21f46f4bf"
+    },
+    {
+      "path": "test/voiceRuntimeRoutes.spec.mjs",
+      "gitBlobSha": "1131301fb01885062063ebfdf60a02b3e4a5caf7"
+    },
+    {
+      "path": "test/voiceSecurity.spec.mjs",
+      "gitBlobSha": "5d6a78e15284836b91d0df83e98c1f87fd3378c7"
+    },
+    {
+      "path": "test/voiceWebSocketServer.spec.mjs",
+      "gitBlobSha": "055c8543ddfc30484956830fc608a06711940aea"
+    },
+    {
+      "path": "test/widgetEmbed.spec.mjs",
+      "gitBlobSha": "e5f34834f221e2c4b91e51812e4884ef1e6041b6"
+    },
+    {
+      "path": "verification/engine-independent/fixtures.mjs",
+      "gitBlobSha": "22ee81a35f8359e83fd5d706f22d07ff21c824f6"
+    }
+  ]
+}

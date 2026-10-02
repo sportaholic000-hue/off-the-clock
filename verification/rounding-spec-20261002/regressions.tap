@@ -1,0 +1,2477 @@
+TAP version 13
+# Subtest: Opus 1: decking explanations never expose the owner unit price
+ok 1 - Opus 1: decking explanations never expose the owner unit price
+  ---
+  duration_ms: 108.436371
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+ok 2 - Opus 2: TAX_NONE preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 14.983277
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+ok 3 - Opus 2: TAX_MATERIALS preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 17.868425
+  type: 'test'
+  ...
+# Subtest: Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+ok 4 - Opus 2: TAX_ALL preserves the 45000-cent pre-tax minimum
+  ---
+  duration_ms: 7.906175
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+ok 5 - Opus 3: installed fencing quotes only its explicitly offered 0.5ft height
+  ---
+  duration_ms: 19.510012
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+ok 6 - Opus 3: installed fencing quotes only its explicitly offered 3.5ft height
+  ---
+  duration_ms: 21.880039
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 5ft height
+ok 7 - Opus 3: installed fencing quotes only its explicitly offered 5ft height
+  ---
+  duration_ms: 12.915136
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+ok 8 - Opus 3: installed fencing quotes only its explicitly offered 5.5ft height
+  ---
+  duration_ms: 20.689042
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 7ft height
+ok 9 - Opus 3: installed fencing quotes only its explicitly offered 7ft height
+  ---
+  duration_ms: 13.203352
+  type: 'test'
+  ...
+# Subtest: Opus 3: installed fencing quotes only its explicitly offered 9ft height
+ok 10 - Opus 3: installed fencing quotes only its explicitly offered 9ft height
+  ---
+  duration_ms: 11.855157
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+ok 11 - Opus 3: itemized fencing quotes only its explicitly offered 0.5ft height
+  ---
+  duration_ms: 17.446732
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+ok 12 - Opus 3: itemized fencing quotes only its explicitly offered 3.5ft height
+  ---
+  duration_ms: 18.839089
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+ok 13 - Opus 3: itemized fencing quotes only its explicitly offered 5ft height
+  ---
+  duration_ms: 15.959141
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+ok 14 - Opus 3: itemized fencing quotes only its explicitly offered 5.5ft height
+  ---
+  duration_ms: 18.412811
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+ok 15 - Opus 3: itemized fencing quotes only its explicitly offered 7ft height
+  ---
+  duration_ms: 15.267802
+  type: 'test'
+  ...
+# Subtest: Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+ok 16 - Opus 3: itemized fencing quotes only its explicitly offered 9ft height
+  ---
+  duration_ms: 25.350415
+  type: 'test'
+  ...
+# Subtest: Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+ok 17 - Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed
+  ---
+  duration_ms: 15.678397
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing weekly labels prices per visit
+ok 18 - Opus 4: mowing weekly labels prices per visit
+  ---
+  duration_ms: 9.401119
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing biweekly labels prices per visit
+ok 19 - Opus 4: mowing biweekly labels prices per visit
+  ---
+  duration_ms: 9.004232
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing monthly labels prices per visit
+ok 20 - Opus 4: mowing monthly labels prices per visit
+  ---
+  duration_ms: 8.351394
+  type: 'test'
+  ...
+# Subtest: Opus 4: mowing one_time labels prices per visit
+ok 21 - Opus 4: mowing one_time labels prices per visit
+  ---
+  duration_ms: 9.635332
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_NONE option states its tax treatment
+ok 22 - Opus 5: every TAX_NONE option states its tax treatment
+  ---
+  duration_ms: 9.235733
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_MATERIALS option states its tax treatment
+ok 23 - Opus 5: every TAX_MATERIALS option states its tax treatment
+  ---
+  duration_ms: 9.693051
+  type: 'test'
+  ...
+# Subtest: Opus 5: every TAX_ALL option states its tax treatment
+ok 24 - Opus 5: every TAX_ALL option states its tax treatment
+  ---
+  duration_ms: 10.038713
+  type: 'test'
+  ...
+# Subtest: Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+ok 25 - Opus 6: siding-removal-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 20.797323
+  type: 'test'
+  ...
+# Subtest: Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+ok 26 - Opus 6: demolition-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 501.099829
+  type: 'test'
+  ...
+# Subtest: Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+ok 27 - Opus 6: commercial-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 9.150159
+  type: 'test'
+  ...
+# Subtest: Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+ok 28 - Opus 6: stairs-installed reports lead-only scope before activation and in saved service status
+  ---
+  duration_ms: 26.855779
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+ok 29 - Opus 6 control: siding-removal-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 26.386737
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: demolition-installed remains quotable with complete scope setup
+ok 30 - Opus 6 control: demolition-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 241.704911
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: commercial-installed remains quotable with complete scope setup
+ok 31 - Opus 6 control: commercial-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 19.247076
+  type: 'test'
+  ...
+# Subtest: Opus 6 control: stairs-installed remains quotable with complete scope setup
+ok 32 - Opus 6 control: stairs-installed remains quotable with complete scope setup
+  ---
+  duration_ms: 26.980309
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all stamped labor with difficult access
+ok 33 - Opus 7: access applies to all stamped labor with difficult access
+  ---
+  duration_ms: 9.507403
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all smooth labor with difficult access
+ok 34 - Opus 7: access applies to all smooth labor with difficult access
+  ---
+  duration_ms: 6.527109
+  type: 'test'
+  ...
+# Subtest: Opus 7: access applies to all stamped labor with easy access
+ok 35 - Opus 7: access applies to all stamped labor with easy access
+  ---
+  duration_ms: 8.428835
+  type: 'test'
+  ...
+# Subtest: Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+ok 36 - Opus 6 regression: malformed owner tiers still return editable diagnostics without throwing
+  ---
+  duration_ms: 27.729201
+  type: 'test'
+  ...
+# (node:41982) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/db4162af70ba/quote-server-repairs/test/quoteEngine.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/db4162af70ba/quote-server-repairs/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: build guide Test 1 roofing replacement
+ok 37 - build guide Test 1 roofing replacement
+  ---
+  duration_ms: 7.852748
+  type: 'test'
+  ...
+# Subtest: roofing repair
+ok 38 - roofing repair
+  ---
+  duration_ms: 0.840365
+  type: 'test'
+  ...
+# Subtest: flat roof replacement
+ok 39 - flat roof replacement
+  ---
+  duration_ms: 1.098958
+  type: 'test'
+  ...
+# Subtest: flat roof repair
+ok 40 - flat roof repair
+  ---
+  duration_ms: 0.761227
+  type: 'test'
+  ...
+# Subtest: interior painting
+ok 41 - interior painting
+  ---
+  duration_ms: 0.51764
+  type: 'test'
+  ...
+# Subtest: exterior painting
+ok 42 - exterior painting
+  ---
+  duration_ms: 0.529336
+  type: 'test'
+  ...
+# Subtest: flooring install
+ok 43 - flooring install
+  ---
+  duration_ms: 0.683518
+  type: 'test'
+  ...
+# Subtest: flooring replacement
+ok 44 - flooring replacement
+  ---
+  duration_ms: 0.373044
+  type: 'test'
+  ...
+# Subtest: fencing install
+ok 45 - fencing install
+  ---
+  duration_ms: 1.946623
+  type: 'test'
+  ...
+# Subtest: fencing replacement
+ok 46 - fencing replacement
+  ---
+  duration_ms: 1.23069
+  type: 'test'
+  ...
+# Subtest: build guide Test 2 concrete driveway
+ok 47 - build guide Test 2 concrete driveway
+  ---
+  duration_ms: 0.52589
+  type: 'test'
+  ...
+# Subtest: concrete patio slab
+ok 48 - concrete patio slab
+  ---
+  duration_ms: 0.259692
+  type: 'test'
+  ...
+# Subtest: landscaping cleanup
+ok 49 - landscaping cleanup
+  ---
+  duration_ms: 0.417836
+  type: 'test'
+  ...
+# Subtest: landscaping mulch
+ok 50 - landscaping mulch
+  ---
+  duration_ms: 0.590551
+  type: 'test'
+  ...
+# Subtest: landscaping sod
+ok 51 - landscaping sod
+  ---
+  duration_ms: 0.20414
+  type: 'test'
+  ...
+# Subtest: landscaping planting
+ok 52 - landscaping planting
+  ---
+  duration_ms: 0.17334
+  type: 'test'
+  ...
+# Subtest: landscaping mowing
+ok 53 - landscaping mowing
+  ---
+  duration_ms: 0.329451
+  type: 'test'
+  ...
+# Subtest: siding replacement
+ok 54 - siding replacement
+  ---
+  duration_ms: 0.209413
+  type: 'test'
+  ...
+# Subtest: siding repair
+ok 55 - siding repair
+  ---
+  duration_ms: 0.18617
+  type: 'test'
+  ...
+# Subtest: custom flat service
+ok 56 - custom flat service
+  ---
+  duration_ms: 0.145338
+  type: 'test'
+  ...
+# Subtest: minimum fields must be present, but zero means no minimum
+ok 57 - minimum fields must be present, but zero means no minimum
+  ---
+  duration_ms: 0.599586
+  type: 'test'
+  ...
+# Subtest: cleanup disposal flat is not multiplied by 100
+ok 58 - cleanup disposal flat is not multiplied by 100
+  ---
+  duration_ms: 0.213939
+  type: 'test'
+  ...
+# Subtest: per-service minimums are enforced
+ok 59 - per-service minimums are enforced
+  ---
+  duration_ms: 0.549609
+  type: 'test'
+  ...
+# Subtest: interior painting sqft path with trim has no NaN line items
+ok 60 - interior painting sqft path with trim has no NaN line items
+  ---
+  duration_ms: 0.348081
+  type: 'test'
+  ...
+# Subtest: TAX_ALL applies minimum pre-tax
+ok 61 - TAX_ALL applies minimum pre-tax
+  ---
+  duration_ms: 0.503017
+  type: 'test'
+  ...
+# Subtest: TAX_MATERIALS taxes the marked-up material base
+ok 62 - TAX_MATERIALS taxes the marked-up material base
+  ---
+  duration_ms: 0.285338
+  type: 'test'
+  ...
+# Subtest: TAX_NONE produces no tax line
+ok 63 - TAX_NONE produces no tax line
+  ---
+  duration_ms: 0.249593
+  type: 'test'
+  ...
+# Subtest: every formula price field appears in its required owner field list
+ok 64 - every formula price field appears in its required owner field list
+  ---
+  duration_ms: 0.621611
+  type: 'test'
+  ...
+# Subtest: tier overrides change only overridden fields
+ok 65 - tier overrides change only overridden fields
+  ---
+  duration_ms: 0.698026
+  type: 'test'
+  ...
+# (node:41983) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/db4162af70ba/quote-server-repairs/test/quoteEngineVNext.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/db4162af70ba/quote-server-repairs/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: vNext hand calculation: roof replacement uses measured itemized accessory lengths
+ok 66 - vNext hand calculation: roof replacement uses measured itemized accessory lengths
+  ---
+  duration_ms: 36.06489
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: roof repair maps the canonical medium size exactly
+ok 67 - vNext hand calculation: roof repair maps the canonical medium size exactly
+  ---
+  duration_ms: 8.001333
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: flat roof replacement uses measured area and layer count
+ok 68 - vNext hand calculation: flat roof replacement uses measured area and layer count
+  ---
+  duration_ms: 17.502805
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: flat roof repair consumes the selected nested size price
+ok 69 - vNext hand calculation: flat roof repair consumes the selected nested size price
+  ---
+  duration_ms: 4.428888
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: interior painting uses measured trim length
+ok 70 - vNext hand calculation: interior painting uses measured trim length
+  ---
+  duration_ms: 4.31254
+  type: 'test'
+  ...
+# Subtest: vNext fail-closed contract: exterior painting records measured fair-condition preparation
+ok 71 - vNext fail-closed contract: exterior painting records measured fair-condition preparation
+  ---
+  duration_ms: 4.459775
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: flooring installation uses measured area and explicit vinyl rule
+ok 72 - vNext hand calculation: flooring installation uses measured area and explicit vinyl rule
+  ---
+  duration_ms: 10.643147
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: flooring replacement prices measured removal and subfloor scope
+ok 73 - vNext hand calculation: flooring replacement prices measured removal and subfloor scope
+  ---
+  duration_ms: 11.442265
+  type: 'test'
+  ...
+# Subtest: vNext fail-closed contract: fencing installation defers the mixed concrete-and-digging allocation
+ok 74 - vNext fail-closed contract: fencing installation defers the mixed concrete-and-digging allocation
+  ---
+  duration_ms: 2.533073
+  type: 'test'
+  ...
+# Subtest: vNext fail-closed contract: fencing replacement defers the mixed concrete-and-digging allocation
+ok 75 - vNext fail-closed contract: fencing replacement defers the mixed concrete-and-digging allocation
+  ---
+  duration_ms: 2.29446
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: concrete driveway uses measured dimensions and correct waste addition
+ok 76 - vNext hand calculation: concrete driveway uses measured dimensions and correct waste addition
+  ---
+  duration_ms: 5.800247
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: concrete patio uses measured rectangular perimeter
+ok 77 - vNext hand calculation: concrete patio uses measured rectangular perimeter
+  ---
+  duration_ms: 8.797691
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: cleanup disposal remains integer cents with explicit debris pricing
+ok 78 - vNext hand calculation: cleanup disposal remains integer cents with explicit debris pricing
+  ---
+  duration_ms: 5.656651
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: mulch bed preparation uses direct condition pricing without hidden multiplier
+ok 79 - vNext hand calculation: mulch bed preparation uses direct condition pricing without hidden multiplier
+  ---
+  duration_ms: 4.97992
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: sod installation uses measured area
+ok 80 - vNext hand calculation: sod installation uses measured area
+  ---
+  duration_ms: 3.390668
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: planting prices each measured plant-size count
+ok 81 - vNext hand calculation: planting prices each measured plant-size count
+  ---
+  duration_ms: 3.74003
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: mowing uses measured lawn and edging lengths
+ok 82 - vNext hand calculation: mowing uses measured lawn and edging lengths
+  ---
+  duration_ms: 2.62035
+  type: 'test'
+  ...
+# Subtest: vNext fail-closed contract: siding replacement uses measured wall and trim lengths
+ok 83 - vNext fail-closed contract: siding replacement uses measured wall and trim lengths
+  ---
+  duration_ms: 1.112569
+  type: 'test'
+  ...
+# Subtest: vNext hand calculation: siding repair consumes material-type and damage-specific rates
+ok 84 - vNext hand calculation: siding repair consumes material-type and damage-specific rates
+  ---
+  duration_ms: 4.506013
+  type: 'test'
+  ...
+# Subtest: vNext fail-closed contract: custom fixed hourly service honors exact configured unit
+ok 85 - vNext fail-closed contract: custom fixed hourly service honors exact configured unit
+  ---
+  duration_ms: 1.310476
+  type: 'test'
+  ...
+# Subtest: vNext negative control: ROOFING_REPLACEMENT rejects malformed roofSizeInput
+ok 86 - vNext negative control: ROOFING_REPLACEMENT rejects malformed roofSizeInput
+  ---
+  duration_ms: 7.898693
+  type: 'test'
+  ...
+# Subtest: vNext negative control: ROOFING_REPAIR rejects malformed affectedArea
+ok 87 - vNext negative control: ROOFING_REPAIR rejects malformed affectedArea
+  ---
+  duration_ms: 1.765208
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FLAT_ROOF_REPLACEMENT rejects malformed existingLayers
+ok 88 - vNext negative control: FLAT_ROOF_REPLACEMENT rejects malformed existingLayers
+  ---
+  duration_ms: 1.61568
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FLAT_ROOF_REPAIR rejects malformed membraneType
+ok 89 - vNext negative control: FLAT_ROOF_REPAIR rejects malformed membraneType
+  ---
+  duration_ms: 2.773
+  type: 'test'
+  ...
+# Subtest: vNext negative control: INTERIOR_PAINTING rejects malformed coats
+ok 90 - vNext negative control: INTERIOR_PAINTING rejects malformed coats
+  ---
+  duration_ms: 1.696326
+  type: 'test'
+  ...
+# Subtest: vNext negative control: EXTERIOR_PAINTING rejects malformed exteriorAreaSqft
+ok 91 - vNext negative control: EXTERIOR_PAINTING rejects malformed exteriorAreaSqft
+  ---
+  duration_ms: 1.205567
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FLOORING_INSTALL rejects malformed sqft
+ok 92 - vNext negative control: FLOORING_INSTALL rejects malformed sqft
+  ---
+  duration_ms: 2.531491
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FLOORING_REPLACEMENT rejects malformed subfloorRepairAreaSqft
+ok 93 - vNext negative control: FLOORING_REPLACEMENT rejects malformed subfloorRepairAreaSqft
+  ---
+  duration_ms: 1.765411
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FENCING_INSTALL rejects malformed gateWidthTotalLF
+ok 94 - vNext negative control: FENCING_INSTALL rejects malformed gateWidthTotalLF
+  ---
+  duration_ms: 1.243562
+  type: 'test'
+  ...
+# Subtest: vNext negative control: FENCING_REPLACEMENT rejects malformed cornerCount
+ok 95 - vNext negative control: FENCING_REPLACEMENT rejects malformed cornerCount
+  ---
+  duration_ms: 0.904855
+  type: 'test'
+  ...
+# Subtest: vNext negative control: CONCRETE_DRIVEWAY rejects malformed thickness
+ok 96 - vNext negative control: CONCRETE_DRIVEWAY rejects malformed thickness
+  ---
+  duration_ms: 1.34117
+  type: 'test'
+  ...
+# Subtest: vNext negative control: CONCRETE_PATIO_SLAB rejects malformed reinforcement
+ok 97 - vNext negative control: CONCRETE_PATIO_SLAB rejects malformed reinforcement
+  ---
+  duration_ms: 1.371188
+  type: 'test'
+  ...
+# Subtest: vNext negative control: LANDSCAPING_CLEANUP rejects malformed debrisLevel
+ok 98 - vNext negative control: LANDSCAPING_CLEANUP rejects malformed debrisLevel
+  ---
+  duration_ms: 0.893185
+  type: 'test'
+  ...
+# Subtest: vNext negative control: LANDSCAPING_MULCH rejects malformed mulchDepth
+ok 99 - vNext negative control: LANDSCAPING_MULCH rejects malformed mulchDepth
+  ---
+  duration_ms: 1.621467
+  type: 'test'
+  ...
+# Subtest: vNext negative control: LANDSCAPING_SOD rejects malformed sodSqft
+ok 100 - vNext negative control: LANDSCAPING_SOD rejects malformed sodSqft
+  ---
+  duration_ms: 1.098672
+  type: 'test'
+  ...
+# Subtest: vNext negative control: LANDSCAPING_PLANTING rejects malformed plantsBySize
+ok 101 - vNext negative control: LANDSCAPING_PLANTING rejects malformed plantsBySize
+  ---
+  duration_ms: 1.271889
+  type: 'test'
+  ...
+# Subtest: vNext negative control: LANDSCAPING_MOWING rejects malformed serviceFrequency
+ok 102 - vNext negative control: LANDSCAPING_MOWING rejects malformed serviceFrequency
+  ---
+  duration_ms: 0.669748
+  type: 'test'
+  ...
+# Subtest: vNext negative control: SIDING_REPLACEMENT rejects malformed stories
+ok 103 - vNext negative control: SIDING_REPLACEMENT rejects malformed stories
+  ---
+  duration_ms: 0.714799
+  type: 'test'
+  ...
+# Subtest: vNext negative control: SIDING_REPAIR rejects malformed affectedArea
+ok 104 - vNext negative control: SIDING_REPAIR rejects malformed affectedArea
+  ---
+  duration_ms: 1.378545
+  type: 'test'
+  ...
+# Subtest: vNext negative control: CUSTOM rejects malformed hours
+ok 105 - vNext negative control: CUSTOM rejects malformed hours
+  ---
+  duration_ms: 1.491424
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: ROOFING_REPLACEMENT requires starterLengthLF
+ok 106 - vNext sufficiency contract: ROOFING_REPLACEMENT requires starterLengthLF
+  ---
+  duration_ms: 1.417656
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: ROOFING_REPAIR requires affectedArea
+ok 107 - vNext sufficiency contract: ROOFING_REPAIR requires affectedArea
+  ---
+  duration_ms: 1.247618
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FLAT_ROOF_REPLACEMENT requires roofSqft
+ok 108 - vNext sufficiency contract: FLAT_ROOF_REPLACEMENT requires roofSqft
+  ---
+  duration_ms: 1.710392
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FLAT_ROOF_REPAIR requires affectedArea
+ok 109 - vNext sufficiency contract: FLAT_ROOF_REPAIR requires affectedArea
+  ---
+  duration_ms: 0.746789
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: INTERIOR_PAINTING requires trimLengthLF
+ok 110 - vNext sufficiency contract: INTERIOR_PAINTING requires trimLengthLF
+  ---
+  duration_ms: 0.988153
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: EXTERIOR_PAINTING requires exteriorAreaSqft
+ok 111 - vNext sufficiency contract: EXTERIOR_PAINTING requires exteriorAreaSqft
+  ---
+  duration_ms: 2.17945
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FLOORING_INSTALL requires sqft
+ok 112 - vNext sufficiency contract: FLOORING_INSTALL requires sqft
+  ---
+  duration_ms: 1.300689
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FLOORING_REPLACEMENT requires subfloorRepairAreaSqft
+ok 113 - vNext sufficiency contract: FLOORING_REPLACEMENT requires subfloorRepairAreaSqft
+  ---
+  duration_ms: 0.946005
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FENCING_INSTALL requires gateWidthTotalLF
+ok 114 - vNext sufficiency contract: FENCING_INSTALL requires gateWidthTotalLF
+  ---
+  duration_ms: 0.911341
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: FENCING_REPLACEMENT requires linearFeet
+ok 115 - vNext sufficiency contract: FENCING_REPLACEMENT requires linearFeet
+  ---
+  duration_ms: 0.740124
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: CONCRETE_DRIVEWAY requires width
+ok 116 - vNext sufficiency contract: CONCRETE_DRIVEWAY requires width
+  ---
+  duration_ms: 1.157649
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: CONCRETE_PATIO_SLAB requires length
+ok 117 - vNext sufficiency contract: CONCRETE_PATIO_SLAB requires length
+  ---
+  duration_ms: 0.759058
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: LANDSCAPING_CLEANUP requires yardSqft
+ok 118 - vNext sufficiency contract: LANDSCAPING_CLEANUP requires yardSqft
+  ---
+  duration_ms: 1.925304
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: LANDSCAPING_MULCH requires edgeLF
+ok 119 - vNext sufficiency contract: LANDSCAPING_MULCH requires edgeLF
+  ---
+  duration_ms: 1.685229
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: LANDSCAPING_SOD requires sodSqft
+ok 120 - vNext sufficiency contract: LANDSCAPING_SOD requires sodSqft
+  ---
+  duration_ms: 1.241188
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: LANDSCAPING_PLANTING requires plantsBySize
+ok 121 - vNext sufficiency contract: LANDSCAPING_PLANTING requires plantsBySize
+  ---
+  duration_ms: 1.246928
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: LANDSCAPING_MOWING requires edgingLengthLF
+ok 122 - vNext sufficiency contract: LANDSCAPING_MOWING requires edgingLengthLF
+  ---
+  duration_ms: 2.669038
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: SIDING_REPLACEMENT requires trimLengthLF
+ok 123 - vNext sufficiency contract: SIDING_REPLACEMENT requires trimLengthLF
+  ---
+  duration_ms: 1.108528
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: SIDING_REPAIR requires affectedArea
+ok 124 - vNext sufficiency contract: SIDING_REPAIR requires affectedArea
+  ---
+  duration_ms: 0.77499
+  type: 'test'
+  ...
+# Subtest: vNext sufficiency contract: CUSTOM requires hours
+ok 125 - vNext sufficiency contract: CUSTOM requires hours
+  ---
+  duration_ms: 0.632546
+  type: 'test'
+  ...
+# Subtest: every built-in service has a documented measurement-sufficiency contract
+ok 126 - every built-in service has a documented measurement-sufficiency contract
+  ---
+  duration_ms: 0.684656
+  type: 'test'
+  ...
+# Subtest: area and perimeter shortcuts are inspection-first, never customer-ready
+ok 127 - area and perimeter shortcuts are inspection-first, never customer-ready
+  ---
+  duration_ms: 2.495305
+  type: 'test'
+  ...
+# Subtest: itemized roofing has no square-root geometry and uses each measured length independently
+ok 128 - itemized roofing has no square-root geometry and uses each measured length independently
+  ---
+  duration_ms: 3.933748
+  type: 'test'
+  ...
+# Subtest: selected mandatory scope distinguishes missing prices from intentionally free prices
+ok 129 - selected mandatory scope distinguishes missing prices from intentionally free prices
+  ---
+  duration_ms: 49.693201
+  type: 'test'
+  ...
+# Subtest: caller-selected repair sizes are rejected instead of overriding measured affected area
+ok 130 - caller-selected repair sizes are rejected instead of overriding measured affected area
+  ---
+  duration_ms: 3.90091
+  type: 'test'
+  ...
+# Subtest: partial flat-roof calculations require valid measured partial scope
+ok 131 - partial flat-roof calculations require valid measured partial scope
+  ---
+  duration_ms: 7.837505
+  type: 'test'
+  ...
+# Subtest: custom units are validated, but public quoting waits for an approved charge classification
+ok 132 - custom units are validated, but public quoting waits for an approved charge classification
+  ---
+  duration_ms: 3.090701
+  type: 'test'
+  ...
+# Subtest: mulch prep has no hidden half-rate branch
+ok 133 - mulch prep has no hidden half-rate branch
+  ---
+  duration_ms: 3.130397
+  type: 'test'
+  ...
+# Subtest: vinyl-plank underlayment follows every explicit owner rule
+ok 134 - vinyl-plank underlayment follows every explicit owner rule
+  ---
+  duration_ms: 26.883942
+  type: 'test'
+  ...
+# Subtest: per-service taxability changes taxable subtotal and is preserved in the record
+ok 135 - per-service taxability changes taxable subtotal and is preserved in the record
+  ---
+  duration_ms: 7.758323
+  type: 'test'
+  ...
+# Subtest: sell-price categories are never marked up twice
+ok 136 - sell-price categories are never marked up twice
+  ---
+  duration_ms: 9.890787
+  type: 'test'
+  ...
+# Subtest: minimum is pre-tax and every displayed range stays above the customer minimum floor
+ok 137 - minimum is pre-tax and every displayed range stays above the customer minimum floor
+  ---
+  duration_ms: 4.013701
+  type: 'test'
+  ...
+# Subtest: common fees obey service rules and per-quantity disposal cannot be charged twice
+ok 138 - common fees obey service rules and per-quantity disposal cannot be charged twice
+  ---
+  duration_ms: 14.473809
+  type: 'test'
+  ...
+# Subtest: preview and live price-book paths use identical validation and calculation
+ok 139 - preview and live price-book paths use identical validation and calculation
+  ---
+  duration_ms: 309.351564
+  type: 'test'
+  ...
+# Subtest: inactive and AI-unconfirmed services cannot produce customer-ready quotes
+ok 140 - inactive and AI-unconfirmed services cannot produce customer-ready quotes
+  ---
+  duration_ms: 8.389012
+  type: 'test'
+  ...
+# Subtest: customer payload remains strictly allowlisted while owner record remains complete
+ok 141 - customer payload remains strictly allowlisted while owner record remains complete
+  ---
+  duration_ms: 14.849764
+  type: 'test'
+  ...
+# Subtest: unpriced optional extras disclose exclusions without omitting the original request
+ok 142 - unpriced optional extras disclose exclusions without omitting the original request
+  ---
+  duration_ms: 13.405711
+  type: 'test'
+  ...
+# Subtest: every tier validates effective pricing and only its explicit override changes
+ok 143 - every tier validates effective pricing and only its explicit override changes
+  ---
+  duration_ms: 7.909159
+  type: 'test'
+  ...
+# Subtest: no valid service calculation emits NaN, Infinity, undefined money, or omitted mandatory lines
+ok 144 - no valid service calculation emits NaN, Infinity, undefined money, or omitted mandatory lines
+  ---
+  duration_ms: 35.17627
+  type: 'test'
+  ...
+# Subtest: price-book metadata exposes readable controls for every candidate factor and rule
+ok 145 - price-book metadata exposes readable controls for every candidate factor and rule
+  ---
+  duration_ms: 12.631512
+  type: 'test'
+  ...
+# Subtest: candidate price-book validation rejects incomplete rules and invalid defaults
+ok 146 - candidate price-book validation rejects incomplete rules and invalid defaults
+  ---
+  duration_ms: 18.226897
+  type: 'test'
+  ...
+# Subtest: business-wide defaults fail closed across markup, tax, fees, minimums, ranges, and seasonal settings
+ok 147 - business-wide defaults fail closed across markup, tax, fees, minimums, ranges, and seasonal settings
+  ---
+  duration_ms: 0.759277
+  type: 'test'
+  ...
+# Subtest: the isolated candidate is not imported by the production server
+ok 148 - the isolated candidate is not imported by the production server
+  ---
+  duration_ms: 0.812826
+  type: 'test'
+  ...
+# Subtest: precision follow-up: all-service catalog covers every registered ready or review path and public entry point
+ok 149 - precision follow-up: all-service catalog covers every registered ready or review path and public entry point
+  ---
+  duration_ms: 496.649077
+  type: 'test'
+  ...
+# Subtest: precision follow-up: ROOFING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 150 - precision follow-up: ROOFING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 1431.815291
+  type: 'test'
+  ...
+# {"serviceType":"ROOFING_REPLACEMENT","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: ROOFING_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 151 - precision follow-up: ROOFING_REPAIR independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 820.345222
+  type: 'test'
+  ...
+# {"serviceType":"ROOFING_REPAIR","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: FLAT_ROOF_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 152 - precision follow-up: FLAT_ROOF_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 802.230524
+  type: 'test'
+  ...
+# {"serviceType":"FLAT_ROOF_REPLACEMENT","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: FLAT_ROOF_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 153 - precision follow-up: FLAT_ROOF_REPAIR independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 665.825051
+  type: 'test'
+  ...
+# {"serviceType":"FLAT_ROOF_REPAIR","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: INTERIOR_PAINTING independent finance matrix fees tiers minima and range boundaries
+ok 154 - precision follow-up: INTERIOR_PAINTING independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 763.511558
+  type: 'test'
+  ...
+# {"serviceType":"INTERIOR_PAINTING","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: FLOORING_INSTALL independent finance matrix fees tiers minima and range boundaries
+ok 155 - precision follow-up: FLOORING_INSTALL independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 755.211993
+  type: 'test'
+  ...
+# {"serviceType":"FLOORING_INSTALL","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: FLOORING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 156 - precision follow-up: FLOORING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 973.274702
+  type: 'test'
+  ...
+# {"serviceType":"FLOORING_REPLACEMENT","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: CONCRETE_DRIVEWAY independent finance matrix fees tiers minima and range boundaries
+ok 157 - precision follow-up: CONCRETE_DRIVEWAY independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 866.453682
+  type: 'test'
+  ...
+# {"serviceType":"CONCRETE_DRIVEWAY","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: CONCRETE_PATIO_SLAB independent finance matrix fees tiers minima and range boundaries
+ok 158 - precision follow-up: CONCRETE_PATIO_SLAB independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 746.863001
+  type: 'test'
+  ...
+# {"serviceType":"CONCRETE_PATIO_SLAB","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: LANDSCAPING_CLEANUP independent finance matrix fees tiers minima and range boundaries
+ok 159 - precision follow-up: LANDSCAPING_CLEANUP independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 1020.793799
+  type: 'test'
+  ...
+# {"serviceType":"LANDSCAPING_CLEANUP","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: LANDSCAPING_MULCH independent finance matrix fees tiers minima and range boundaries
+ok 160 - precision follow-up: LANDSCAPING_MULCH independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 1031.513702
+  type: 'test'
+  ...
+# {"serviceType":"LANDSCAPING_MULCH","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: LANDSCAPING_SOD independent finance matrix fees tiers minima and range boundaries
+ok 161 - precision follow-up: LANDSCAPING_SOD independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 790.511553
+  type: 'test'
+  ...
+# {"serviceType":"LANDSCAPING_SOD","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: LANDSCAPING_PLANTING independent finance matrix fees tiers minima and range boundaries
+ok 162 - precision follow-up: LANDSCAPING_PLANTING independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 1102.056116
+  type: 'test'
+  ...
+# {"serviceType":"LANDSCAPING_PLANTING","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: LANDSCAPING_MOWING independent finance matrix fees tiers minima and range boundaries
+ok 163 - precision follow-up: LANDSCAPING_MOWING independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 778.560922
+  type: 'test'
+  ...
+# {"serviceType":"LANDSCAPING_MOWING","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: SIDING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+ok 164 - precision follow-up: SIDING_REPLACEMENT independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 737.178897
+  type: 'test'
+  ...
+# {"serviceType":"SIDING_REPLACEMENT","independentReadyChecks":95,"reviewControls":7}
+# Subtest: precision follow-up: SIDING_REPAIR independent finance matrix fees tiers minima and range boundaries
+ok 165 - precision follow-up: SIDING_REPAIR independent finance matrix fees tiers minima and range boundaries
+  ---
+  duration_ms: 700.231665
+  type: 'test'
+  ...
+# {"serviceType":"SIDING_REPAIR","independentReadyChecks":95,"reviewControls":7}
+# (node:41984) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/db4162af70ba/quote-server-repairs/test/quoteEngineVNextAdversarial.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/db4162af70ba/quote-server-repairs/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: activation validates every configured offering, not only the first map key
+ok 166 - activation validates every configured offering, not only the first map key
+  ---
+  duration_ms: 69.305026
+  type: 'test'
+  ...
+# Subtest: quote-time requests for an unconfigured offering require review
+ok 167 - quote-time requests for an unconfigured offering require review
+  ---
+  duration_ms: 12.358534
+  type: 'test'
+  ...
+# Subtest: flat-roof activation requires both an actual offering and the mandated average fallback
+ok 168 - flat-roof activation requires both an actual offering and the mandated average fallback
+  ---
+  duration_ms: 22.308769
+  type: 'test'
+  ...
+# Subtest: a medium repair cannot quote from a nested map containing only small
+ok 169 - a medium repair cannot quote from a nested map containing only small
+  ---
+  duration_ms: 2.67333
+  type: 'test'
+  ...
+# Subtest: misspelled Class 2 map keys fail closed
+ok 170 - misspelled Class 2 map keys fail closed
+  ---
+  duration_ms: 8.416083
+  type: 'test'
+  ...
+# Subtest: reversed flooring room-size thresholds fail shared validation
+ok 171 - reversed flooring room-size thresholds fail shared validation
+  ---
+  duration_ms: 8.071088
+  type: 'test'
+  ...
+# Subtest: itemized roofing cannot activate or quote with an accessory price missing
+ok 172 - itemized roofing cannot activate or quote with an accessory price missing
+  ---
+  duration_ms: 4.278322
+  type: 'test'
+  ...
+# Subtest: an explicitly confirmed zero accessory length is recorded as no physical scope
+ok 173 - an explicitly confirmed zero accessory length is recorded as no physical scope
+  ---
+  duration_ms: 6.161455
+  type: 'test'
+  ...
+# Subtest: fractional cents and unsupported pricing controls are rejected
+ok 174 - fractional cents and unsupported pricing controls are rejected
+  ---
+  duration_ms: 4.708553
+  type: 'test'
+  ...
+# Subtest: unexpected customer fields never influence a quote
+ok 175 - unexpected customer fields never influence a quote
+  ---
+  duration_ms: 0.826208
+  type: 'test'
+  ...
+# Subtest: AI-suggested pricing and optional disposal overrides cannot quote before confirmation
+ok 176 - AI-suggested pricing and optional disposal overrides cannot quote before confirmation
+  ---
+  duration_ms: 1.7471
+  type: 'test'
+  ...
+# Subtest: customer review responses are sanitized at early and late gates
+ok 177 - customer review responses are sanitized at early and late gates
+  ---
+  duration_ms: 3.544637
+  type: 'test'
+  ...
+# Subtest: partial flat-roof area and percentage must agree
+ok 178 - partial flat-roof area and percentage must agree
+  ---
+  duration_ms: 2.418297
+  type: 'test'
+  ...
+# Subtest: interior floor-area and room-count shortcuts are inspection-first
+ok 179 - interior floor-area and room-count shortcuts are inspection-first
+  ---
+  duration_ms: 2.016662
+  type: 'test'
+  ...
+# Subtest: painting labor and material respond exactly to measured wall area and coat count
+ok 180 - painting labor and material respond exactly to measured wall area and coat count
+  ---
+  duration_ms: 4.932468
+  type: 'test'
+  ...
+# Subtest: fencing rejects caller post counts and exposes the missing geometry and mixed-charge decisions
+ok 181 - fencing rejects caller post counts and exposes the missing geometry and mixed-charge decisions
+  ---
+  duration_ms: 12.314823
+  type: 'test'
+  ...
+# Subtest: common disposal follows physical scope and cannot substitute for missing selected bagging pricing
+ok 182 - common disposal follows physical scope and cannot substitute for missing selected bagging pricing
+  ---
+  duration_ms: 9.14925
+  type: 'test'
+  ...
+# Subtest: mulch disposal scope follows measured bed preparation scope
+ok 183 - mulch disposal scope follows measured bed preparation scope
+  ---
+  duration_ms: 12.820891
+  type: 'test'
+  ...
+# Subtest: TAX_ALL taxes the full pre-tax subtotal regardless of category taxability flags
+ok 184 - TAX_ALL taxes the full pre-tax subtotal regardless of category taxability flags
+  ---
+  duration_ms: 5.527967
+  type: 'test'
+  ...
+# Subtest: service status and the real price-book path preserve valid tiers when another tier fails
+ok 185 - service status and the real price-book path preserve valid tiers when another tier fails
+  ---
+  duration_ms: 45.707422
+  type: 'test'
+  ...
+# Subtest: complete tier overrides can activate and quote even when the base pricing is incomplete
+ok 186 - complete tier overrides can activate and quote even when the base pricing is incomplete
+  ---
+  duration_ms: 79.387947
+  type: 'test'
+  ...
+# Subtest: duplicate tier names fail before calculation
+ok 187 - duplicate tier names fail before calculation
+  ---
+  duration_ms: 3.676841
+  type: 'test'
+  ...
+# Subtest: custom ranges reject negative values and exact service-name mismatches
+ok 188 - custom ranges reject negative values and exact service-name mismatches
+  ---
+  duration_ms: 4.061135
+  type: 'test'
+  ...
+# Subtest: every custom quantity unit validates its matching input but all calculation paths fail closed
+ok 189 - every custom quantity unit validates its matching input but all calculation paths fail closed
+  ---
+  duration_ms: 10.832555
+  type: 'test'
+  ...
+# Subtest: unknown flat-roof facts require inspection and obsolete assumption controls are rejected
+ok 190 - unknown flat-roof facts require inspection and obsolete assumption controls are rejected
+  ---
+  duration_ms: 7.312739
+  type: 'test'
+  ...
+# Subtest: customer sanitizer never exposes calculation records, rates, or owner rules
+ok 191 - customer sanitizer never exposes calculation records, rates, or owner rules
+  ---
+  duration_ms: 2.523251
+  type: 'test'
+  ...
+# Subtest: candidate formulas contain none of the removed geometry and hidden-factor shortcuts
+ok 192 - candidate formulas contain none of the removed geometry and hidden-factor shortcuts
+  ---
+  duration_ms: 0.877079
+  type: 'test'
+  ...
+# Subtest: candidate price-book metadata has specific labels instead of generic raw-key fallbacks
+ok 193 - candidate price-book metadata has specific labels instead of generic raw-key fallbacks
+  ---
+  duration_ms: 17.981274
+  type: 'test'
+  ...
+# Subtest: owner-selected common fees require an explicit owner decision
+ok 194 - owner-selected common fees require an explicit owner decision
+  ---
+  duration_ms: 3.264744
+  type: 'test'
+  ...
+# Subtest: installation services reject replacement-only scope instead of silently deleting it
+ok 195 - installation services reject replacement-only scope instead of silently deleting it
+  ---
+  duration_ms: 4.896513
+  type: 'test'
+  ...
+# Subtest: underlayment and gate measurements reject contradictory selected scope
+ok 196 - underlayment and gate measurements reject contradictory selected scope
+  ---
+  duration_ms: 4.0452
+  type: 'test'
+  ...
+# Subtest: supported concrete finishes round the base and finish-extra components independently
+ok 197 - supported concrete finishes round the base and finish-extra components independently
+  ---
+  duration_ms: 6.48757
+  type: 'test'
+  ...
+# Subtest: buffered ranges cannot use remitted tax to satisfy a pre-tax minimum
+ok 198 - buffered ranges cannot use remitted tax to satisfy a pre-tax minimum
+  ---
+  duration_ms: 3.369699
+  type: 'test'
+  ...
+# Subtest: price-book statuses fail closed when business-wide defaults are invalid
+ok 199 - price-book statuses fail closed when business-wide defaults are invalid
+  ---
+  duration_ms: 12.572632
+  type: 'test'
+  ...
+# Subtest: duplicate built-in services are invalid and cannot be quoted ambiguously
+ok 200 - duplicate built-in services are invalid and cannot be quoted ambiguously
+  ---
+  duration_ms: 96.431553
+  type: 'test'
+  ...
+# Subtest: case-insensitive duplicate custom service names cannot activate or quote ambiguously
+ok 201 - case-insensitive duplicate custom service names cannot activate or quote ambiguously
+  ---
+  duration_ms: 6.491144
+  type: 'test'
+  ...
+# Subtest: custom ranges remain fail-closed at public and raw boundaries pending charge classification
+ok 202 - custom ranges remain fail-closed at public and raw boundaries pending charge classification
+  ---
+  duration_ms: 2.094599
+  type: 'test'
+  ...
+# (node:41990) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/db4162af70ba/quote-server-repairs/test/quoteEngineVNextRepairs.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/db4162af70ba/quote-server-repairs/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repair 1: tax modes use independently calculated bases
+ok 203 - repair 1: tax modes use independently calculated bases
+  ---
+  duration_ms: 30.262349
+  type: 'test'
+  ...
+# Subtest: repairs 2 and 4: tax mode controls minimum ordering and adjustment tax
+ok 204 - repairs 2 and 4: tax mode controls minimum ordering and adjustment tax
+  ---
+  duration_ms: 12.991343
+  type: 'test'
+  ...
+# Subtest: repair 3: minimum floor uses tax attributable to the minimum scenario
+ok 205 - repair 3: minimum floor uses tax attributable to the minimum scenario
+  ---
+  duration_ms: 9.644176
+  type: 'test'
+  ...
+# Subtest: repair 5: positive cent totals remain exact and free complete offerings require classification
+ok 206 - repair 5: positive cent totals remain exact and free complete offerings require classification
+  ---
+  duration_ms: 32.403155
+  type: 'test'
+  ...
+# Subtest: repair 6: roof replacement enforces only its supported service minimum
+ok 207 - repair 6: roof replacement enforces only its supported service minimum
+  ---
+  duration_ms: 24.058796
+  type: 'test'
+  ...
+# Subtest: repair 7: inherited interior prep factors cannot price measured wall area
+ok 208 - repair 7: inherited interior prep factors cannot price measured wall area
+  ---
+  duration_ms: 4.60503
+  type: 'test'
+  ...
+# Subtest: repair 8: exterior primer scope fails closed without an approved primer price contract
+ok 209 - repair 8: exterior primer scope fails closed without an approved primer price contract
+  ---
+  duration_ms: 3.217759
+  type: 'test'
+  ...
+# Subtest: repair 9: wall height does not alter ceiling labor
+ok 210 - repair 9: wall height does not alter ceiling labor
+  ---
+  duration_ms: 4.706099
+  type: 'test'
+  ...
+# Subtest: repair 10: flooring underlayment has a field-specific installed-area sell basis
+ok 211 - repair 10: flooring underlayment has a field-specific installed-area sell basis
+  ---
+  duration_ms: 15.584241
+  type: 'test'
+  ...
+# Subtest: repair 10: roofing underlayment has a field-specific installed-area sell basis
+ok 212 - repair 10: roofing underlayment has a field-specific installed-area sell basis
+  ---
+  duration_ms: 13.143758
+  type: 'test'
+  ...
+# Subtest: repair 11: unknown flat-roof membrane or layer count always requires review
+ok 213 - repair 11: unknown flat-roof membrane or layer count always requires review
+  ---
+  duration_ms: 6.249918
+  type: 'test'
+  ...
+# Subtest: repair 12: measured affected area derives repair categories at every boundary
+ok 214 - repair 12: measured affected area derives repair categories at every boundary
+  ---
+  duration_ms: 42.140397
+  type: 'test'
+  ...
+# Subtest: repair 13: active leak urgency survives every review path
+ok 215 - repair 13: active leak urgency survives every review path
+  ---
+  duration_ms: 23.847863
+  type: 'test'
+  ...
+# Subtest: repair 14: selected gate widths fail closed without an approved width-pricing contract
+ok 216 - repair 14: selected gate widths fail closed without an approved width-pricing contract
+  ---
+  duration_ms: 3.049932
+  type: 'test'
+  ...
+# Subtest: repair 15: corner count is not required and cannot be silently ignored
+ok 217 - repair 15: corner count is not required and cannot be silently ignored
+  ---
+  duration_ms: 1.796025
+  type: 'test'
+  ...
+# Subtest: repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar
+ok 218 - repair 16: fencing requires executable post prices but never consumes the obsolete per-gate scalar
+  ---
+  duration_ms: 1.033814
+  type: 'test'
+  ...
+# Subtest: repair 17: mixed concrete and digging charge fails closed without an allocation rule
+ok 219 - repair 17: mixed concrete and digging charge fails closed without an allocation rule
+  ---
+  duration_ms: 2.117461
+  type: 'test'
+  ...
+# Subtest: repair 18: exposed aggregate fails closed without approved material pricing
+ok 220 - repair 18: exposed aggregate fails closed without approved material pricing
+  ---
+  duration_ms: 8.203901
+  type: 'test'
+  ...
+# Subtest: repair 19: zero and missing remain distinct for conditional prices
+ok 221 - repair 19: zero and missing remain distinct for conditional prices
+  ---
+  duration_ms: 19.531258
+  type: 'test'
+  ...
+# Subtest: repair 20: owner preview evaluates a valid inactive draft without enabling customer quote
+ok 222 - repair 20: owner preview evaluates a valid inactive draft without enabling customer quote
+  ---
+  duration_ms: 2.596434
+  type: 'test'
+  ...
+# Subtest: repair 21: owner pricing diagnostics identify exact fields and failure kinds
+ok 223 - repair 21: owner pricing diagnostics identify exact fields and failure kinds
+  ---
+  duration_ms: 6.923826
+  type: 'test'
+  ...
+# Subtest: repair 22: every failed tier retains separate field diagnostics
+ok 224 - repair 22: every failed tier retains separate field diagnostics
+  ---
+  duration_ms: 6.464335
+  type: 'test'
+  ...
+# Subtest: repair 23: customer sees unavailable option notice without owner diagnostics
+ok 225 - repair 23: customer sees unavailable option notice without owner diagnostics
+  ---
+  duration_ms: 15.579848
+  type: 'test'
+  ...
+# Subtest: repair 24: every customer review uses the same truthful request message
+ok 226 - repair 24: every customer review uses the same truthful request message
+  ---
+  duration_ms: 3.763089
+  type: 'test'
+  ...
+# Subtest: repair 25: customer-safe price drivers rank by financial significance
+ok 227 - repair 25: customer-safe price drivers rank by financial significance
+  ---
+  duration_ms: 27.56907
+  type: 'test'
+  ...
+# Subtest: repair 26: every calculation line declares a reproducible evidence variant
+ok 228 - repair 26: every calculation line declares a reproducible evidence variant
+  ---
+  duration_ms: 37.500705
+  type: 'test'
+  ...
+# Subtest: repair 27: measured quotes expose the exact effective range buffer
+ok 229 - repair 27: measured quotes expose the exact effective range buffer
+  ---
+  duration_ms: 3.242528
+  type: 'test'
+  ...
+# Subtest: repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+ok 230 - repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+  ---
+  duration_ms: 0.551373
+  type: 'test'
+  ...
+# Subtest: repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+ok 231 - repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+  ---
+  duration_ms: 26.795853
+  type: 'test'
+  ...
+# Subtest: repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+ok 232 - repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+  ---
+  duration_ms: 21.937628
+  type: 'test'
+  ...
+# Subtest: repair 31: flooring underlayment requirements are product-specific and vinyl-only controls do not block tile
+ok 233 - repair 31: flooring underlayment requirements are product-specific and vinyl-only controls do not block tile
+  ---
+  duration_ms: 9.221263
+  type: 'test'
+  ...
+# Subtest: repair 32: unresolved material cost inputs review while exact flooring thresholds quote
+ok 234 - repair 32: unresolved material cost inputs review while exact flooring thresholds quote
+  ---
+  duration_ms: 24.03132
+  type: 'test'
+  ...
+# Subtest: repair 33: conditional customer fields are rejected whenever their selected scope cannot consume them
+ok 235 - repair 33: conditional customer fields are rejected whenever their selected scope cannot consume them
+  ---
+  duration_ms: 3.733163
+  type: 'test'
+  ...
+# Subtest: repair 34: missing and duplicate service previews report the lookup defect instead of inactive status
+ok 236 - repair 34: missing and duplicate service previews report the lookup defect instead of inactive status
+  ---
+  duration_ms: 2.228891
+  type: 'test'
+  ...
+# Subtest: repair 35: decking distinguishes missing scope from confirmed zero and preserves the per-sheet explanation without its owner rate
+ok 237 - repair 35: decking distinguishes missing scope from confirmed zero and preserves the per-sheet explanation without its owner rate
+  ---
+  duration_ms: 17.397936
+  type: 'test'
+  ...
+# Subtest: repair 36: internal review retains lead evidence and customer sanitization removes it
+ok 238 - repair 36: internal review retains lead evidence and customer sanitization removes it
+  ---
+  duration_ms: 3.051846
+  type: 'test'
+  ...
+# Subtest: repair 37: metadata and customer results describe only behavior the candidate actually implements
+ok 239 - repair 37: metadata and customer results describe only behavior the candidate actually implements
+  ---
+  duration_ms: 17.962711
+  type: 'test'
+  ...
+# Subtest: repair 38: intrinsic range scenarios rewrite amount and evidence together, including an intentional free low bound
+ok 240 - repair 38: intrinsic range scenarios rewrite amount and evidence together, including an intentional free low bound
+  ---
+  duration_ms: 2.102362
+  type: 'test'
+  ...
+# Subtest: repair 39: inspection-first reviews retain submitted scope and validated measurements through the real price-book path
+ok 241 - repair 39: inspection-first reviews retain submitted scope and validated measurements through the real price-book path
+  ---
+  duration_ms: 2.014845
+  type: 'test'
+  ...
+# Subtest: repair 40: invalid provenance and disclaimer values fail every status, preview, and live path closed
+ok 242 - repair 40: invalid provenance and disclaimer values fail every status, preview, and live path closed
+  ---
+  duration_ms: 16.39754
+  type: 'test'
+  ...
+# Subtest: repair 41: only an explicit owner caller can receive internal quote or review data
+ok 243 - repair 41: only an explicit owner caller can receive internal quote or review data
+  ---
+  duration_ms: 2.563755
+  type: 'test'
+  ...
+# Subtest: repair 42: every open shaped-map family rejects noncanonical keys at the exact dotted path
+ok 244 - repair 42: every open shaped-map family rejects noncanonical keys at the exact dotted path
+  ---
+  duration_ms: 3.375785
+  type: 'test'
+  ...
+# Subtest: repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation
+ok 245 - repair 43: a concrete finish multiplier below one cannot save or disappear from the calculation
+  ---
+  duration_ms: 16.174592
+  type: 'test'
+  ...
+# Subtest: repair 44: money-driving derived quantities are hand-recomputed across every affected trade
+ok 246 - repair 44: money-driving derived quantities are hand-recomputed across every affected trade
+  ---
+  duration_ms: 38.281471
+  type: 'test'
+  ...
+# Subtest: repair 45: every scenario line records its effective basis, markup eligibility, and exact scenario cents
+ok 247 - repair 45: every scenario line records its effective basis, markup eligibility, and exact scenario cents
+  ---
+  duration_ms: 6.78691
+  type: 'test'
+  ...
+# Subtest: repair 46: blocked scopes expose only executable Class 2 controls and the actual owner decision
+ok 248 - repair 46: blocked scopes expose only executable Class 2 controls and the actual owner decision
+  ---
+  duration_ms: 33.833562
+  type: 'test'
+  ...
+# Subtest: repair 47: intrinsic range multiplication and midpoint arithmetic stay within safe integer cents
+ok 249 - repair 47: intrinsic range multiplication and midpoint arithmetic stay within safe integer cents
+  ---
+  duration_ms: 1.369479
+  type: 'test'
+  ...
+# Subtest: repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+ok 250 - repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed
+  ---
+  duration_ms: 39632.189428
+  type: 'test'
+  ...
+# Subtest: repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge
+ok 251 - repair 49: a positive peak percentage over intentionally free labor remains a valid zero charge
+  ---
+  duration_ms: 2.123474
+  type: 'test'
+  ...
+# Subtest: repair 50: misplaced quote-affecting service controls fail closed instead of being ignored
+ok 252 - repair 50: misplaced quote-affecting service controls fail closed instead of being ignored
+  ---
+  duration_ms: 7.441201
+  type: 'test'
+  ...
+# Subtest: repair 51: malformed top-level quote containers return review diagnostics instead of throwing
+ok 253 - repair 51: malformed top-level quote containers return review diagnostics instead of throwing
+  ---
+  duration_ms: 2.246462
+  type: 'test'
+  ...
+# Subtest: repair 52: activation executes formulas and cannot mark an overflowing service live
+ok 254 - repair 52: activation executes formulas and cannot mark an overflowing service live
+  ---
+  duration_ms: 25.111202
+  type: 'test'
+  ...
+# Subtest: repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows
+ok 255 - repair 53: displayed ranges fail closed before integer-cent rounding or buffering overflows
+  ---
+  duration_ms: 2.997997
+  type: 'test'
+  ...
+# Subtest: repair 54: exported validators and tier boundaries fail closed on malformed structured data
+ok 256 - repair 54: exported validators and tier boundaries fail closed on malformed structured data
+  ---
+  duration_ms: 3.195102
+  type: 'test'
+  ...
+# Subtest: repair 55: an independent arithmetic oracle matches the shared pipeline across 1,152 policy combinations
+ok 257 - repair 55: an independent arithmetic oracle matches the shared pipeline across 1,152 policy combinations
+  ---
+  duration_ms: 2658.751225
+  type: 'test'
+  ...
+# Subtest: repair 56: direct calculator boundaries fail closed with exact defensive diagnostics
+ok 258 - repair 56: direct calculator boundaries fail closed with exact defensive diagnostics
+  ---
+  duration_ms: 14.980634
+  type: 'test'
+  ...
+# Subtest: repair 57: every selected common fee follows its exact owner or customer boolean without cross-fee leakage
+ok 259 - repair 57: every selected common fee follows its exact owner or customer boolean without cross-fee leakage
+  ---
+  duration_ms: 63.828823
+  type: 'test'
+  ...
+# Subtest: repair 58: cross-field and shaped-structure validators reject every adversarial relationship at its exact path
+ok 260 - repair 58: cross-field and shaped-structure validators reject every adversarial relationship at its exact path
+  ---
+  duration_ms: 2.817609
+  type: 'test'
+  ...
+# Subtest: repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior
+ok 261 - repair 59: public wrappers, materializers, and deep merges have explicit boundary behavior
+  ---
+  duration_ms: 7.055884
+  type: 'test'
+  ...
+# Subtest: repair 60: exported raw boundaries reject unresolved custom classification and malformed intrinsic range evidence
+ok 262 - repair 60: exported raw boundaries reject unresolved custom classification and malformed intrinsic range evidence
+  ---
+  duration_ms: 4.604392
+  type: 'test'
+  ...
+# Subtest: repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline
+ok 263 - repair 61: price-book LIVE status executes fees, markup, add-ons, and final-total integrity through the real pipeline
+  ---
+  duration_ms: 88.76692
+  type: 'test'
+  ...
+# Subtest: repair 62: inherited properties and prototype-shaped tier overrides cannot supply hidden quote rates or approvals
+ok 264 - repair 62: inherited properties and prototype-shaped tier overrides cannot supply hidden quote rates or approvals
+  ---
+  duration_ms: 30.791474
+  type: 'test'
+  ...
+# Subtest: repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent
+ok 265 - repair 63: zero-charge evidence distinguishes configured free prices from positive amounts rounded below one cent
+  ---
+  duration_ms: 9.18914
+  type: 'test'
+  ...
+# Subtest: repair 64: AI-sourced service rules cannot change a customer quote before explicit own-field confirmation
+ok 266 - repair 64: AI-sourced service rules cannot change a customer quote before explicit own-field confirmation
+  ---
+  duration_ms: 75.284526
+  type: 'test'
+  ...
+# Subtest: repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade
+ok 267 - repair 65: LIVE activation executes worst-case configured branches across every variable-scope trade
+  ---
+  duration_ms: 383.400246
+  type: 'test'
+  ...
+# Subtest: repair 66: customer and lead boundaries reject malformed, inherited, or aliased records
+ok 268 - repair 66: customer and lead boundaries reject malformed, inherited, or aliased records
+  ---
+  duration_ms: 8.554509
+  type: 'test'
+  ...
+# Subtest: repair 67: public registries and malformed request boundaries cannot poison or crash the engine
+ok 269 - repair 67: public registries and malformed request boundaries cannot poison or crash the engine
+  ---
+  duration_ms: 14.829787
+  type: 'test'
+  ...
+# Subtest: repair 68: nested pricing is the one canonical service shape across status, preview, and live quotes
+ok 270 - repair 68: nested pricing is the one canonical service shape across status, preview, and live quotes
+  ---
+  duration_ms: 18.150062
+  type: 'test'
+  ...
+# Subtest: repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup
+ok 271 - repair 69: equal partial measurements quote; unconfigured flooring overlays still require setup
+  ---
+  duration_ms: 19.773506
+  type: 'test'
+  ...
+# Subtest: repair 70: malformed business-default containers keep one exact root path across public APIs
+ok 272 - repair 70: malformed business-default containers keep one exact root path across public APIs
+  ---
+  duration_ms: 19.215997
+  type: 'test'
+  ...
+# Subtest: repair 71: accessor-backed public requests fail closed without leaking customer diagnostics
+ok 273 - repair 71: accessor-backed public requests fail closed without leaking customer diagnostics
+  ---
+  duration_ms: 1.850304
+  type: 'test'
+  ...
+# Subtest: repair 72: sparse tiers and seasonal arrays are rejected at exact paths
+ok 274 - repair 72: sparse tiers and seasonal arrays are rejected at exact paths
+  ---
+  duration_ms: 10.961209
+  type: 'test'
+  ...
+# Subtest: repair 74: snapshot trust is non-observable and cannot be forged through an exported value
+ok 275 - repair 74: snapshot trust is non-observable and cannot be forged through an exported value
+  ---
+  duration_ms: 0.390166
+  type: 'test'
+  ...
+# Subtest: repair 75: every exported evidence helper rejects accessors, sparse arrays, and named array data
+ok 276 - repair 75: every exported evidence helper rejects accessors, sparse arrays, and named array data
+  ---
+  duration_ms: 4.926782
+  type: 'test'
+  ...
+# Subtest: repair 76: price-book service arrays cannot hide sparse or named definitions
+ok 277 - repair 76: price-book service arrays cannot hide sparse or named definitions
+  ---
+  duration_ms: 1.656309
+  type: 'test'
+  ...
+# Subtest: repair 77: function and symbol values fail at their exact quote-data paths
+ok 278 - repair 77: function and symbol values fail at their exact quote-data paths
+  ---
+  duration_ms: 0.824155
+  type: 'test'
+  ...
+# Subtest: repair 78: landscaping fields explicitly sold as labor use labor financial treatment
+ok 279 - repair 78: landscaping fields explicitly sold as labor use labor financial treatment
+  ---
+  duration_ms: 5.953584
+  type: 'test'
+  ...
+# Subtest: repair 79: customer estimates require cent precision and a consistent first-option projection
+ok 280 - repair 79: customer estimates require cent precision and a consistent first-option projection
+  ---
+  duration_ms: 25.811936
+  type: 'test'
+  ...
+# Subtest: repair 80: customer projections are independent and bound to safe calculation evidence
+ok 281 - repair 80: customer projections are independent and bound to safe calculation evidence
+  ---
+  duration_ms: 11.545814
+  type: 'test'
+  ...
+# Subtest: repair 81: malformed pricing primitives retain exact paths through direct and price-book execution
+ok 282 - repair 81: malformed pricing primitives retain exact paths through direct and price-book execution
+  ---
+  duration_ms: 69.14569
+  type: 'test'
+  ...
+# Subtest: repair 82: prototype-backed approvals and fee selections are rejected across public APIs
+ok 283 - repair 82: prototype-backed approvals and fee selections are rejected across public APIs
+  ---
+  duration_ms: 5.980097
+  type: 'test'
+  ...
+# Subtest: repair 83: an exported service status cannot report LIVE without complete business defaults
+ok 284 - repair 83: an exported service status cannot report LIVE without complete business defaults
+  ---
+  duration_ms: 33.341134
+  type: 'test'
+  ...
+# Subtest: repair 84: fee selections and tier definitions enforce exact supported request shapes
+ok 285 - repair 84: fee selections and tier definitions enforce exact supported request shapes
+  ---
+  duration_ms: 7.598097
+  type: 'test'
+  ...
+# Subtest: repair 85: mutation after snapshot cannot bypass any later public boundary inspection
+ok 286 - repair 85: mutation after snapshot cannot bypass any later public boundary inspection
+  ---
+  duration_ms: 4.075711
+  type: 'test'
+  ...
+# Subtest: repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record
+ok 287 - repair 86: customer projections remain bound to scenario totals, line sums, and the root calculation record
+  ---
+  duration_ms: 6.308832
+  type: 'test'
+  ...
+# Subtest: repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary
+ok 288 - repair 87: AI confirmation maps reject ignored keys and non-boolean approvals at every activation boundary
+  ---
+  duration_ms: 139.888454
+  type: 'test'
+  ...
+# Subtest: repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary
+ok 289 - repair 88: deeply nested quote data fails closed without executing past the shared snapshot boundary
+  ---
+  duration_ms: 5.128538
+  type: 'test'
+  ...
+# Subtest: repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary
+ok 290 - repair 89: oversized sparse arrays fail before any dense-array scan can exhaust the request boundary
+  ---
+  duration_ms: 0.468918
+  type: 'test'
+  ...
+# Subtest: repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence
+ok 291 - repair 90: omitted caller context is customer-safe and only explicit owner paths expose internal evidence
+  ---
+  duration_ms: 25.550109
+  type: 'test'
+  ...
+# Subtest: repair 91: the direct calculator never rereads validated proxies or accessor-backed context
+ok 292 - repair 91: the direct calculator never rereads validated proxies or accessor-backed context
+  ---
+  duration_ms: 3.616855
+  type: 'test'
+  ...
+# Subtest: repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data
+ok 293 - repair 92: standalone validation and owner previews cannot launder nested prototype-backed quote data
+  ---
+  duration_ms: 4.299296
+  type: 'test'
+  ...
+# Subtest: repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities
+ok 294 - repair 93: exact decimal half-cents round correctly without an epsilon across measured and derived quantities
+  ---
+  duration_ms: 9.055378
+  type: 'test'
+  ...
+# Subtest: repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding
+ok 295 - repair 93: exact percentage arithmetic governs seasonal, markup, tax, add-on, and customer-range rounding
+  ---
+  duration_ms: 9.771887
+  type: 'test'
+  ...
+# Subtest: repair 94: customer sanitization independently rejects forged exact line evidence
+ok 296 - repair 94: customer sanitization independently rejects forged exact line evidence
+  ---
+  duration_ms: 6.996042
+  type: 'test'
+  ...
+# Subtest: repair 95: preview-only results cannot be laundered into customer-ready estimates
+ok 297 - repair 95: preview-only results cannot be laundered into customer-ready estimates
+  ---
+  duration_ms: 28.617563
+  type: 'test'
+  ...
+# Subtest: repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries
+ok 298 - repair 96: class-instance approvals and fee selections cannot cross plain-data trust boundaries
+  ---
+  duration_ms: 5.927264
+  type: 'test'
+  ...
+# Subtest: repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence
+ok 299 - repair 97: every markup percentage accepted by defaults validation has reproducible exact evidence
+  ---
+  duration_ms: 69.758638
+  type: 'test'
+  ...
+# Subtest: repair 98: fee selections are accepted only for the matching configured selection mode
+ok 300 - repair 98: fee selections are accepted only for the matching configured selection mode
+  ---
+  duration_ms: 5.575984
+  type: 'test'
+  ...
+# Subtest: repair 99: the exported scenario materializer never returns an unvalidated regular line
+ok 301 - repair 99: the exported scenario materializer never returns an unvalidated regular line
+  ---
+  duration_ms: 2.33506
+  type: 'test'
+  ...
+# Subtest: repair 100: exact concrete dimensions obey the same practical area bound as direct area input
+ok 302 - repair 100: exact concrete dimensions obey the same practical area bound as direct area input
+  ---
+  duration_ms: 249.259046
+  type: 'test'
+  ...
+# Subtest: repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values
+ok 303 - repair 101: positive quantities and factors below machine epsilon retain exact cents without admitting zero or negative values
+  ---
+  duration_ms: 84.304429
+  type: 'test'
+  ...
+# Subtest: repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries
+ok 304 - repair 102: request diagnostics retain owner versus customer responsibility across direct and price-book boundaries
+  ---
+  duration_ms: 30.611297
+  type: 'test'
+  ...
+# Subtest: repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections
+ok 305 - repair 103: standard and composite lines calculate from original exact multipliers, never their floating-point projections
+  ---
+  duration_ms: 54.644668
+  type: 'test'
+  ...
+# Subtest: repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values
+ok 306 - repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values
+  ---
+  duration_ms: 375.621998
+  type: 'test'
+  ...
+# Subtest: repair 105: decking rates stay internal under markup, margin and sell-price basis
+ok 307 - repair 105: decking rates stay internal under markup, margin and sell-price basis
+  ---
+  duration_ms: 66.825666
+  type: 'test'
+  ...
+# Subtest: repair 106: included and explicitly exclusive itemized accessories charge each component once
+ok 308 - repair 106: included and explicitly exclusive itemized accessories charge each component once
+  ---
+  duration_ms: 41.754955
+  type: 'test'
+  ...
+# Subtest: repair 107: flat roof existing membrane selects removal and explicit replacement selects installation
+ok 309 - repair 107: flat roof existing membrane selects removal and explicit replacement selects installation
+  ---
+  duration_ms: 48.489973
+  type: 'test'
+  ...
+# Subtest: repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris
+ok 310 - repair 108: sod preparation owns old-lawn disposal and common fees require separate declared debris
+  ---
+  duration_ms: 41.816874
+  type: 'test'
+  ...
+# Subtest: repair 109: replaced owner and customer common disposal need no selection but active fees do
+ok 311 - repair 109: replaced owner and customer common disposal need no selection but active fees do
+  ---
+  duration_ms: 74.99549
+  type: 'test'
+  ...
+# Subtest: repair 110: exact derived areas enforce direct minimum maximum and strict partial scope bounds
+ok 312 - repair 110: exact derived areas enforce direct minimum maximum and strict partial scope bounds
+  ---
+  duration_ms: 226.384765
+  type: 'test'
+  ...
+# Subtest: repair 111: decimal flooring bands use exact division at and around the threshold
+ok 313 - repair 111: decimal flooring bands use exact division at and around the threshold
+  ---
+  duration_ms: 64.267091
+  type: 'test'
+  ...
+# Subtest: repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates
+ok 314 - repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates
+  ---
+  duration_ms: 66.129058
+  type: 'test'
+  ...
+# Subtest: repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back
+ok 315 - repair 113: membrane-specific maps activate without dormant average rates and unknown never falls back
+  ---
+  duration_ms: 135.779835
+  type: 'test'
+  ...
+# Subtest: repair 114: unsupported legacy or misspelled service roots are rejected at the exact path
+ok 316 - repair 114: unsupported legacy or misspelled service roots are rejected at the exact path
+  ---
+  duration_ms: 28.473887
+  type: 'test'
+  ...
+# Subtest: repair 115: leads require actionable reasons and matching request identity and submitted scope
+ok 317 - repair 115: leads require actionable reasons and matching request identity and submitted scope
+  ---
+  duration_ms: 3.051968
+  type: 'test'
+  ...
+# Subtest: repair 116: fractional mowing cents represent fifty dollars per ten thousand square feet exactly
+ok 318 - repair 116: fractional mowing cents represent fifty dollars per ten thousand square feet exactly
+  ---
+  duration_ms: 35.144699
+  type: 'test'
+  ...
+# Subtest: repair 117: permit fees follow confirmed job scope with explicit always and included controls
+ok 319 - repair 117: permit fees follow confirmed job scope with explicit always and included controls
+  ---
+  duration_ms: 66.479725
+  type: 'test'
+  ...
+# Subtest: repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation
+ok 320 - repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation
+  ---
+  duration_ms: 101.681325
+  type: 'test'
+  ...
+# Subtest: repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries
+ok 321 - repair 119: customer ranges retain cent precision through ten and twenty dollar boundaries
+  ---
+  duration_ms: 245.691348
+  type: 'test'
+  ...
+# Subtest: repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists
+ok 322 - repair 120: stair counts remain review-only until an all-inclusive or allocated owner contract exists
+  ---
+  duration_ms: 14.082268
+  type: 'test'
+  ...
+# Subtest: repair 121: flooring removal and disposal use only independently measured removal area
+ok 323 - repair 121: flooring removal and disposal use only independently measured removal area
+  ---
+  duration_ms: 74.894853
+  type: 'test'
+  ...
+# Subtest: repair 122: siding removal cannot reuse replacement type and installation area
+ok 324 - repair 122: siding removal cannot reuse replacement type and installation area
+  ---
+  duration_ms: 14.174123
+  type: 'test'
+  ...
+# Subtest: repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline
+ok 325 - repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline
+  ---
+  duration_ms: 113.438851
+  type: 'test'
+  ...
+# Subtest: repair 124: concrete demolition is review-only without existing-slab pricing facts
+ok 326 - repair 124: concrete demolition is review-only without existing-slab pricing facts
+  ---
+  duration_ms: 14.47986
+  type: 'test'
+  ...
+# Subtest: repair 125: commercial building type does not establish insulation or coverboard scope
+ok 327 - repair 125: commercial building type does not establish insulation or coverboard scope
+  ---
+  duration_ms: 13.78483
+  type: 'test'
+  ...
+# Subtest: repair 126: wall uniformity is explicit and ceiling coats are independently measured
+ok 328 - repair 126: wall uniformity is explicit and ceiling coats are independently measured
+  ---
+  duration_ms: 61.242302
+  type: 'test'
+  ...
+# Subtest: repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract
+ok 329 - repair 127: exterior substrate coating and affected preparation remain review-only without an owner contract
+  ---
+  duration_ms: 11.869878
+  type: 'test'
+  ...
+# Subtest: repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+ok 330 - repair 128: explicit zero semantics distinguish core prices free offerings included components and valid tiers
+  ---
+  duration_ms: 437.141585
+  type: 'test'
+  ...
+# Subtest: repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity
+ok 331 - repair 129: persisted service UUID survives status preview quote and lead and rejects malformed or missing identity
+  ---
+  duration_ms: 34.589159
+  type: 'test'
+  ...
+# Subtest: repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying
+ok 332 - repair 130: AI approval cannot be bypassed by deletion ordinary origin edits or same-type service copying
+  ---
+  duration_ms: 109.426752
+  type: 'test'
+  ...
+# Subtest: repair 131: price-map aliases require affirmative registered offering facts across materials and repairs
+ok 333 - repair 131: price-map aliases require affirmative registered offering facts across materials and repairs
+  ---
+  duration_ms: 258.754146
+  type: 'test'
+  ...
+# Subtest: repair 132: sod separate disposal uses one shared quote activation metadata and customer contract
+ok 334 - repair 132: sod separate disposal uses one shared quote activation metadata and customer contract
+  ---
+  duration_ms: 70.270827
+  type: 'test'
+  ...
+# Subtest: repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+ok 335 - repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices
+  ---
+  duration_ms: 224.930523
+  type: 'test'
+  ...
+# Subtest: repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice
+ok 336 - repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice
+  ---
+  duration_ms: 4.312777
+  type: 'test'
+  ...
+# Subtest: repair 135: lead urgency must equal the independently derived roof-leak facts
+ok 337 - repair 135: lead urgency must equal the independently derived roof-leak facts
+  ---
+  duration_ms: 11.409397
+  type: 'test'
+  ...
+# Subtest: repair 136: ready review and lead records require the current immutable behavior build identifier
+ok 338 - repair 136: ready review and lead records require the current immutable behavior build identifier
+  ---
+  duration_ms: 26.666067
+  type: 'test'
+  ...
+# Subtest: repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals
+ok 339 - repair 137: direct rational projection handles the one-ULP counterexample halfway neighbors and subnormals
+  ---
+  duration_ms: 19.679132
+  type: 'test'
+  ...
+# Subtest: repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure
+ok 340 - repair 138: continuing collinear measured edges preserve exact geometry and reject backtracking crossing and nonclosure
+  ---
+  duration_ms: 139.457693
+  type: 'test'
+  ...
+# Subtest: owner ruling: customer ranges expand to whole dollars while exact single prices retain cents
+ok 341 - owner ruling: customer ranges expand to whole dollars while exact single prices retain cents
+  ---
+  duration_ms: 134.271577
+  type: 'test'
+  ...
+# Subtest: owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap
+ok 342 - owner ruling: all safe margins below one hundred percent apply exactly without an arbitrary cap
+  ---
+  duration_ms: 74.518687
+  type: 'test'
+  ...
+# Subtest: repair 139: offering UUIDs are unique per selector and facts bind the exact field value and UUID
+ok 343 - repair 139: offering UUIDs are unique per selector and facts bind the exact field value and UUID
+  ---
+  duration_ms: 55.839632
+  type: 'test'
+  ...
+# Subtest: repair 140: colliding persisted service IDs diagnose both records while unique IDs retain quote approval and lead identity
+ok 344 - repair 140: colliding persisted service IDs diagnose both records while unique IDs retain quote approval and lead identity
+  ---
+  duration_ms: 135.233601
+  type: 'test'
+  ...
+# Subtest: repair 141: missing registries inconsistent registries unsupported offerings and missing facts have distinct responsibility
+ok 345 - repair 141: missing registries inconsistent registries unsupported offerings and missing facts have distinct responsibility
+  ---
+  duration_ms: 39.240464
+  type: 'test'
+  ...
+# Subtest: repair 142: configured leads require the exact selected service and only explicit lookup reviews accept null identity
+ok 346 - repair 142: configured leads require the exact selected service and only explicit lookup reviews accept null identity
+  ---
+  duration_ms: 8.396857
+  type: 'test'
+  ...
+# Subtest: repair 143: included zero prices retain category and basis with independently calculated tax and markup controls
+ok 347 - repair 143: included zero prices retain category and basis with independently calculated tax and markup controls
+  ---
+  duration_ms: 289.152581
+  type: 'test'
+  ...
+# Subtest: repair 144: review-only metadata names exact supported fields and the actual outstanding scope decisions
+ok 348 - repair 144: review-only metadata names exact supported fields and the actual outstanding scope decisions
+  ---
+  duration_ms: 37.499712
+  type: 'test'
+  ...
+# Subtest: repair 145: fully rebuilt rate multiplier fee tax and markup forgeries cannot detach calculations from retained configuration
+ok 349 - repair 145: fully rebuilt rate multiplier fee tax and markup forgeries cannot detach calculations from retained configuration
+  ---
+  duration_ms: 179.530688
+  type: 'test'
+  ...
+# Subtest: repair 146: free included zero physical scope and sub-cent rounding have distinct private evidence reasons
+ok 350 - repair 146: free included zero physical scope and sub-cent rounding have distinct private evidence reasons
+  ---
+  duration_ms: 192.190027
+  type: 'test'
+  ...
+# Subtest: precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion
+ok 351 - precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion
+  ---
+  duration_ms: 378.753865
+  type: 'test'
+  ...
+# Subtest: repair 147: requested stored and receipt service types agree for every source and ordinary edits cannot convert identity
+ok 352 - repair 147: requested stored and receipt service types agree for every source and ordinary edits cannot convert identity
+  ---
+  duration_ms: 275.819222
+  type: 'test'
+  ...
+# Subtest: repair 147: equivalent UUID spellings canonicalize consistently across identity approvals zero policy offerings facts and duplicate detection
+ok 353 - repair 147: equivalent UUID spellings canonicalize consistently across identity approvals zero policy offerings facts and duplicate detection
+  ---
+  duration_ms: 1287.464288
+  type: 'test'
+  ...
+# Subtest: repair 148: explicit free offerings bypass only their own minima with private evidence and paid sibling controls
+ok 354 - repair 148: explicit free offerings bypass only their own minima with private evidence and paid sibling controls
+  ---
+  duration_ms: 508.531204
+  type: 'test'
+  ...
+# Subtest: repair 149: positive cent ranges never display free and retain exact cents only when whole-dollar display would contain zero
+ok 355 - repair 149: positive cent ranges never display free and retain exact cents only when whole-dollar display would contain zero
+  ---
+  duration_ms: 524.152618
+  type: 'test'
+  ...
+# Subtest: repair 150: every inclusion path belongs to the exact configured service price contract
+ok 356 - repair 150: every inclusion path belongs to the exact configured service price contract
+  ---
+  duration_ms: 38.216932
+  type: 'test'
+  ...
+# Subtest: repair 150: dormant tier inclusion is validated using effective tier prices and preserves valid sibling options
+ok 357 - repair 150: dormant tier inclusion is validated using effective tier prices and preserves valid sibling options
+  ---
+  duration_ms: 87.637344
+  type: 'test'
+  ...
+# Subtest: handoff A: unrestricted markup has exact positive boundary and gross-margin controls
+ok 358 - handoff A: unrestricted markup has exact positive boundary and gross-margin controls
+  ---
+  duration_ms: 307.842361
+  type: 'test'
+  ...
+# Subtest: handoff A: quote preview price-book activation and evidence agree above the former cap
+ok 359 - handoff A: quote preview price-book activation and evidence agree above the former cap
+  ---
+  duration_ms: 145.823825
+  type: 'test'
+  ...
+# Subtest: handoff A: high markup preserves category tax fee and tier arithmetic
+ok 360 - handoff A: high markup preserves category tax fee and tier arithmetic
+  ---
+  duration_ms: 71.499173
+  type: 'test'
+  ...
+# Subtest: optional extras: absent prices disclose exclusions; malformed values and disclosure failures still review
+ok 361 - optional extras: absent prices disclose exclusions; malformed values and disclosure failures still review
+  ---
+  duration_ms: 241.919145
+  type: 'test'
+  ...
+# Subtest: handoff B: priced and explicitly zero selections charge once with signed price boundaries
+ok 362 - handoff B: priced and explicitly zero selections charge once with signed price boundaries
+  ---
+  duration_ms: 258.599266
+  type: 'test'
+  ...
+# Subtest: optional extras: tiers disclose their own exclusions and price edits invalidate AI approval
+ok 363 - optional extras: tiers disclose their own exclusions and price edits invalidate AI approval
+  ---
+  duration_ms: 579.715423
+  type: 'test'
+  ...
+# Subtest: handoff C: customer minima retain exact cents across all tax modes service floors and buffers
+ok 364 - handoff C: customer minima retain exact cents across all tax modes service floors and buffers
+  ---
+  duration_ms: 1039.515884
+  type: 'test'
+  ...
+# Subtest: handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges
+ok 365 - handoff C: minimum display agrees across entrypoints and does not change nonbinding ranges
+  ---
+  duration_ms: 127.425595
+  type: 'test'
+  ...
+# Subtest: handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior
+ok 366 - handoff C: free sub-dollar and safe-money boundary controls retain their distinct behavior
+  ---
+  duration_ms: 115.9836
+  type: 'test'
+  ...
+# Subtest: handoff B: candidate metadata identifies missing selected prices without changing production copy
+ok 367 - handoff B: candidate metadata identifies missing selected prices without changing production copy
+  ---
+  duration_ms: 4.279751
+  type: 'test'
+  ...
+# Subtest: customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct
+ok 368 - customer amount precision: maximum down-error reviews exact and cents-preserving prices while adjacent cents stay distinct
+  ---
+  duration_ms: 42.09413
+  type: 'test'
+  ...
+# Subtest: customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact
+ok 369 - customer amount precision: positive one-cent errors review and both neighboring interior-painting amounts remain exact
+  ---
+  duration_ms: 58.880139
+  type: 'test'
+  ...
+# Subtest: customer amount precision: service minima and entered-rate totals use the same guard in two services
+ok 370 - customer amount precision: service minima and entered-rate totals use the same guard in two services
+  ---
+  duration_ms: 56.055342
+  type: 'test'
+  ...
+# Subtest: customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome
+ok 371 - customer amount precision: generation live preview and price-book entrypoints preserve the same complete outcome
+  ---
+  duration_ms: 195.82391
+  type: 'test'
+  ...
+# Subtest: customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices
+ok 372 - customer amount precision: unsupported tier representations preserve supported siblings and exact availability notices
+  ---
+  duration_ms: 75.341012
+  type: 'test'
+  ...
+# Subtest: customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead
+ok 373 - customer amount precision: all-failed tiers retain scope and technical diagnostics in a buildable internal lead
+  ---
+  duration_ms: 3.899162
+  type: 'test'
+  ...
+# Subtest: customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents
+ok 374 - customer amount precision: ordinary ranges fractional minima sub-dollar free and unrestricted markup controls retain wire cents
+  ---
+  duration_ms: 97.303575
+  type: 'test'
+  ...
+# Subtest: customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration
+ok 375 - customer amount precision: synchronized public projection copies cannot replace the price fixed by original cents and configuration
+  ---
+  duration_ms: 31.780002
+  type: 'test'
+  ...
+# Subtest: customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries
+ok 376 - customer amount precision: outward high display and cents-preserving high endpoints fail safely at their own boundaries
+  ---
+  duration_ms: 35.601197
+  type: 'test'
+  ...
+# Subtest: optional extra: Clipping bagging and disposal preserves main price, submitted scope and per-option disclosure
+ok 377 - optional extra: Clipping bagging and disposal preserves main price, submitted scope and per-option disclosure
+  ---
+  duration_ms: 100.494533
+  type: 'test'
+  ...
+# Subtest: optional extra: Lawn edging preserves main price, submitted scope and per-option disclosure
+ok 378 - optional extra: Lawn edging preserves main price, submitted scope and per-option disclosure
+  ---
+  duration_ms: 49.338564
+  type: 'test'
+  ...
+# Subtest: optional extra: Ponding water surcharge preserves main price, submitted scope and per-option disclosure
+ok 379 - optional extra: Ponding water surcharge preserves main price, submitted scope and per-option disclosure
+  ---
+  duration_ms: 59.507484
+  type: 'test'
+  ...
+# Subtest: tier exclusions remain specific; missing optional prices keep valid lower-priced options
+ok 380 - tier exclusions remain specific; missing optional prices keep valid lower-priced options
+  ---
+  duration_ms: 64.439075
+  type: 'test'
+  ...
+# Subtest: malformed optional prices and missing main-job rates still require correction
+ok 381 - malformed optional prices and missing main-job rates still require correction
+  ---
+  duration_ms: 51.226026
+  type: 'test'
+  ...
+# Subtest: flooring default thresholds follow the specified 150 medium / 300 large bands
+ok 382 - flooring default thresholds follow the specified 150 medium / 300 large bands
+  ---
+  duration_ms: 97.01498
+  type: 'test'
+  ...
+# Subtest: fixed custom service positive control has an explicit amount and confirmed service
+ok 383 - fixed custom service positive control has an explicit amount and confirmed service
+  ---
+  duration_ms: 15.649939
+  type: 'test'
+  ...
+# Subtest: custom price category is an editable owner setting, never a guessed allocation
+ok 384 - custom price category is an editable owner setting, never a guessed allocation
+  ---
+  duration_ms: 92.466751
+  type: 'test'
+  ...
+# Subtest: fixed custom units retain measured quantities and fractional-cent unit prices
+ok 385 - fixed custom units retain measured quantities and fractional-cent unit prices
+  ---
+  duration_ms: 73.4046
+  type: 'test'
+  ...
+# Subtest: custom cost and final selling price follow saved markup tax fee and minimum rules
+ok 386 - custom cost and final selling price follow saved markup tax fee and minimum rules
+  ---
+  duration_ms: 58.400265
+  type: 'test'
+  ...
+# Subtest: custom configured ranges preserve independently calculated low midpoint and high scenarios
+ok 387 - custom configured ranges preserve independently calculated low midpoint and high scenarios
+  ---
+  duration_ms: 32.841673
+  type: 'test'
+  ...
+# Subtest: custom service confirmation missing quantities mismatched units and unsafe amounts still review
+ok 388 - custom service confirmation missing quantities mismatched units and unsafe amounts still review
+  ---
+  duration_ms: 9.192304
+  type: 'test'
+  ...
+# (node:42006) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/scratch/db4162af70ba/quote-server-repairs/test/tenantAddon.spec.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /workspace/scratch/db4162af70ba/quote-server-repairs/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:42006) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: add-on missing-price guard executes every priced and unpriced path without a helper ReferenceError
+ok 389 - add-on missing-price guard executes every priced and unpriced path without a helper ReferenceError
+  ---
+  duration_ms: 8.166964
+  type: 'test'
+  ...
+# Subtest: unpriced ponding water addon is skipped and disclosed
+ok 390 - unpriced ponding water addon is skipped and disclosed
+  ---
+  duration_ms: 1.21005
+  type: 'test'
+  ...
+# Subtest: unpriced mowing bagging addon is skipped and disclosed
+ok 391 - unpriced mowing bagging addon is skipped and disclosed
+  ---
+  duration_ms: 0.864347
+  type: 'test'
+  ...
+# Subtest: unpriced mowing edging addon is skipped and disclosed
+ok 392 - unpriced mowing edging addon is skipped and disclosed
+  ---
+  duration_ms: 1.596932
+  type: 'test'
+  ...
+# Subtest: both unpriced mowing addons are skipped and disclosed together
+ok 393 - both unpriced mowing addons are skipped and disclosed together
+  ---
+  duration_ms: 2.159556
+  type: 'test'
+  ...
+# Subtest: tier addon divergence keeps option disclaimers separate and top-level base-only
+ok 394 - tier addon divergence keeps option disclaimers separate and top-level base-only
+  ---
+  duration_ms: 1.585828
+  type: 'test'
+  ...
+# Subtest: tiers sharing the same addon exclusion may disclose it at top level
+ok 395 - tiers sharing the same addon exclusion may disclose it at top level
+  ---
+  duration_ms: 0.416454
+  type: 'test'
+  ...
+# Subtest: deleted staff token returns 401 through requireAuth
+ok 396 - deleted staff token returns 401 through requireAuth
+  ---
+  duration_ms: 77.35223
+  type: 'test'
+  ...
+# Subtest: deleted owner token returns 401 through requireAuth
+ok 397 - deleted owner token returns 401 through requireAuth
+  ---
+  duration_ms: 30.302533
+  type: 'test'
+  ...
+# Subtest: role-changed token returns 401 through requireAuth
+ok 398 - role-changed token returns 401 through requireAuth
+  ---
+  duration_ms: 16.953305
+  type: 'test'
+  ...
+# Subtest: staff protected route reads only the current database owner tenant
+ok 399 - staff protected route reads only the current database owner tenant
+  ---
+  duration_ms: 16.497452
+  type: 'test'
+  ...
+# Subtest: environment admin path works without tenant context
+ok 400 - environment admin path works without tenant context
+  ---
+  duration_ms: 27.349031
+  type: 'test'
+  ...
+# Subtest: users table rejects staff without ownerId at the DB level
+ok 401 - users table rejects staff without ownerId at the DB level
+  ---
+  duration_ms: 2.401345
+  type: 'test'
+  ...
+# Subtest: triggers reject staff and admin rows as staff parents
+ok 402 - triggers reject staff and admin rows as staff parents
+  ---
+  duration_ms: 21.069719
+  type: 'test'
+  ...
+# Subtest: owner demotion is blocked while staff reference the owner
+ok 403 - owner demotion is blocked while staff reference the owner
+  ---
+  duration_ms: 13.111108
+  type: 'test'
+  ...
+# Subtest: constraint detection requires the full role and nullability CHECK
+ok 404 - constraint detection requires the full role and nullability CHECK
+  ---
+  duration_ms: 13.828308
+  type: 'test'
+  ...
+# Subtest: migration aborts for legacy staff linked to a non-owner parent
+ok 405 - migration aborts for legacy staff linked to a non-owner parent
+  ---
+  duration_ms: 8.638808
+  type: 'test'
+  ...
+1..405
+# tests 405
+# suites 0
+# pass 405
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55884.475812
