@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,previewFeeContext,approvalMatchesDraft,mergeSavedApproval} from '../client/src/pricebookEditing.js';
+import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,previewFeeContext,reconcilePreviewFees,approvalMatchesDraft,mergeSavedApproval} from '../client/src/pricebookEditing.js';
 import {writePricebookTransfer,consumePricebookTransfer,clearPricebookTransfersForSessionChange} from '../client/src/pricebookDrafts.js';
 import {validateStructuredValue,describeStructuredValue,parseInterviewScalar} from '../client/src/interviewStructuredValue.js';
 
@@ -97,4 +97,11 @@ test('F13 all map depths reject unrepresentable raw text before readback',()=>{
   assert.equal(validateStructuredValue(nest(0.0051),null,'Rate',d),null);
   assert.equal(validateStructuredValue(nest(0),null,'Rate',d),null);
  }
+});
+
+test('F05 changing one fee retains compatible No answers and cannot revive removed answers',()=>{
+ const rules={travel:'customer_selected',permit:'customer_selected'},state={...reconcilePreviewFees({values:{}},'a',rules),values:{travel:true,permit:false}};
+ const changed=reconcilePreviewFees(state,'a',{...rules,travel:'not_applicable'});assert.deepEqual(changed.values,{permit:false});
+ const restored=reconcilePreviewFees(changed,'a',rules);assert.deepEqual(restored.values,{permit:false});
+ assert.deepEqual(reconcilePreviewFees(restored,'b',rules).values,{});
 });

@@ -9,7 +9,7 @@ import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 import { ExactNumericInput } from './pricebookInputs.jsx';
-import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext } from './pricebookEditing.js';
+import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 const PricingContext = createContext({});
 import {
@@ -619,9 +619,9 @@ export default function PriceBook() {
   const selected = book?.services.find((service, index) => editorServiceKey(service, index) === selectedType);
   const selectedMeta = metadata.find(service => service.serviceType === selected?.serviceType);
   const feeContext = previewFeeContext(selectedType,selected?.feeRules);
-  const customerFeeSelections = useMemo(() => previewFeeDraft.context===feeContext ? previewFeeDraft.values : {},[previewFeeDraft,feeContext]);
+  const customerFeeSelections = useMemo(() => reconcilePreviewFees(previewFeeDraft,selectedType,selected?.feeRules).values,[previewFeeDraft,feeContext]);
   useEffect(() => {
-    setPreviewFeeDraft(previous=>previous.context===feeContext ? previous : {context:feeContext,values:{}});
+    setPreviewFeeDraft(previous=>reconcilePreviewFees(previous,selectedType,selected?.feeRules));
   },[feeContext]);
 
 
@@ -1057,7 +1057,7 @@ export default function PriceBook() {
                   </Disclosure>
                 </div>
               </div>
-              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
+              <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,serviceKey:selectedType,rules:{...selected.feeRules},values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} /></div>
             </div>
             </PricingContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}

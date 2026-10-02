@@ -83,9 +83,8 @@ export function describeStructuredValue(value, domain, fieldLabel, definition) {
   return `${fieldLabel} — ${parts.join(', ')}`;
 }
 
-// Validation mirrors the server's activation rules so the owner is told about a
-// gap here rather than after saving. It never accepts a shape the price book
-// would reject.
+// Immediate interview feedback. Current tree metadata describes draft values;
+// the server still validates persistence, approval and live-price readiness.
 export function validateStructuredValue(value, domain, fieldLabel, definition) {
   if (definition?.tree) return validateInterviewTree(value,definition,fieldLabel);
   // Exact parsing precedes the legacy positivity rule too: raw rejected text
@@ -108,7 +107,7 @@ export function validateStructuredValue(value, domain, fieldLabel, definition) {
         if (isBlank(amount)) {
           return `Enter a ${humanPricingKey(size)} price for ${humanPricingKey(key)}.`;
         }
-        if (!(Number(amount) > 0)) {
+        if (!(parseOwnerNumericInput(amount) > 0)) {
           return `${humanPricingKey(key)} ${humanPricingKey(size)} must be more than zero.`;
         }
       }
@@ -123,7 +122,7 @@ export function validateStructuredValue(value, domain, fieldLabel, definition) {
       : `Enter a price for ${fieldLabel}.`;
   }
   for (const [key, amount] of priced) {
-    if (!(Number(amount) > 0)) {
+    if (!(parseOwnerNumericInput(amount) > 0)) {
       return `${humanPricingKey(key)} must be more than zero.`;
     }
   }

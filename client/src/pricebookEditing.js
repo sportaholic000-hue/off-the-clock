@@ -87,6 +87,18 @@ export function previewFeeContext(serviceKey, rules = {}) {
   return JSON.stringify([serviceKey, Object.keys(rules).sort().map(fee => [fee, rules[fee]])]);
 }
 
+// Keep compatible answers when another fee rule changes. A different service
+// always starts unanswered; a fee that stopped being customer-selected cannot
+// recover an old hidden answer when switched back.
+export function reconcilePreviewFees(previous, serviceKey, rules = {}) {
+  const context=previewFeeContext(serviceKey,rules);
+  if(previous.context===context)return previous;
+  const values=previous.serviceKey===serviceKey
+    ? Object.fromEntries(Object.entries(previous.values||{}).filter(([fee,value])=>rules[fee]==='customer_selected'&&previous.rules?.[fee]==='customer_selected'&&typeof value==='boolean'))
+    : {};
+  return {context,serviceKey,rules:{...rules},values};
+}
+
 function canonicalEditorValue(value) {
   return Array.isArray(value) ? value.map(canonicalEditorValue)
     : value && typeof value === 'object'
