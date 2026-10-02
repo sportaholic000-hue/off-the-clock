@@ -18,6 +18,11 @@
   };
   const SILENCE_MS = 10000, CLOSE_GRACE_MS = 15000, STALL_MS = 20000;
   const CLOSING_MARKERS = { time: 'free trial', silence: 'stepped away' };
+  // Diagnostics: a rolling log of what happened in the session, for the owner to copy after a problem.
+  // Shown only with ?debug=1 in the page address (or data-debug="true"). Contains no audio.
+  const DEBUG = (SCRIPT && SCRIPT.dataset.debug === 'true') || /[?&]debug=1(&|$)/.test(location.search);
+  let diagT0 = Date.now(); const diag = [];
+  function dlog(type, detail) { if (diag.length >= 600) diag.shift(); diag.push([+((Date.now() - diagT0) / 1000).toFixed(1), type, detail === undefined ? '' : detail]); }
   const AGENTS = [{ key: 'miles', name: 'Miles', tag: 'VOICE 01 · MALE' }, { key: 'nova', name: 'Nova', tag: 'VOICE 02 · FEMALE' }];
 
   // 16 kHz mono PCM capture. Integrates source samples over each output interval so
@@ -95,6 +100,7 @@ registerProcessor('otc-player',Q);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
+  let micWin = { frames: 0, peak: 0, gated: 0 };
   let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
   const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
@@ -132,8 +138,16 @@ registerProcessor('otc-player',Q);`;
     if (SIGNUP) endKids.push(h('a', { class: 'otcd-link', href: SIGNUP, text: 'Start your free trial' }));
     els.ended = h('div', { class: 'otcd-end', hidden: '' }, endKids);
     els.note = h('p', { class: 'otcd-note', role: 'alert' });
-    const panel = h('div', { class: 'otcd-panel' }, [h('div', { class: 'otcd-top' }, [els.status, els.timer]), els.idle, els.convo, els.ended, els.note]);
+    els.diag = h('button', { type: 'button', class: 'otcd-link', text: 'Copy diagnostics', onclick: copyDiag });
+    els.diagOut = h('textarea', { readonly: '', rows: '6', style: 'width:100%;margin-top:8px;background:#0A0A0A;color:#8A948A;border:1px solid #1E241E;font:11px monospace', hidden: '' });
+    const diagBox = h('div', { style: 'margin-top:10px' }, [els.diag, els.diagOut]); if (!DEBUG) diagBox.hidden = true;
+    const panel = h('div', { class: 'otcd-panel' }, [h('div', { class: 'otcd-top' }, [els.status, els.timer]), els.idle, els.convo, els.ended, els.note, diagBox]);
     return h('div', { id: 'otc-live-demo' }, h('div', { class: 'otcd-grid' }, [h('div', { class: 'otcd-col' }, [...cards, rules]), panel]));
+  }
+  function copyDiag() {
+    const text = JSON.stringify({ page: location.origin, userAgent: navigator.userAgent, mode, agent, phase, events: diag });
+    els.diagOut.hidden = false; els.diagOut.value = text; els.diagOut.select();
+    try { navigator.clipboard.writeText(text).then(() => { els.diag.textContent = 'Copied'; }, () => {}); } catch {}
   }
   function choose(key) {
     if (phase !== 'idle' && phase !== 'ended') return;
@@ -183,6 +197,7 @@ registerProcessor('otc-player',Q);`;
   }
   function finish(message) {
     if (phase === 'ended' || phase === 'idle') return;
+    dlog('finish', message);
     teardown(); phase = 'ended'; lockCards(false);
     els.idle.hidden = true; els.convo.hidden = true; els.ended.hidden = false;
     els.endText.textContent = message; setStatus('Session ended'); els.activity.textContent = '';
@@ -192,7 +207,7 @@ registerProcessor('otc-player',Q);`;
   function sendTurn(text) { send({ clientContent: { turns: [{ role: 'user', parts: [{ text }] }], turnComplete: true } }); }
   function beginClosing(reason) {
     if (phase !== 'live') return;
-    phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
+    dlog('closing', reason); phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
     closingSentAt = Date.now(); closingText = ''; agentLine = null;
     sendTurn(`[SYSTEM] The demo is ending. Say exactly: "${CLOSINGS[reason]}" Then stop.`);
     closeTimer = setTimeout(() => finish(endMessage(reason)), CLOSE_GRACE_MS);
@@ -206,6 +221,7 @@ registerProcessor('otc-player',Q);`;
 
   async function start(which) {
     if (phase !== 'idle' && phase !== 'ended') return;
+    diag.length = 0; diagT0 = Date.now(); dlog('start', { mode: which, agent });
     const g = ++gen; mode = which; phase = 'starting'; note(''); lockCards(true); closingReason = null; greeted = false; awaitingAgent = false; closingText = '';
     els.idle.hidden = true; els.ended.hidden = true; els.convo.hidden = false; els.log.replaceChildren(); agentLine = userLine = null;
     els.form.hidden = which !== 'text'; els.meterBox.hidden = which !== 'voice'; els.send.disabled = true;
@@ -214,7 +230,7 @@ registerProcessor('otc-player',Q);`;
       if (which === 'voice') {
         if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Voice needs a secure connection in a current browser. You can use text chat instead.');
         const AC = window.AudioContext || window.webkitAudioContext; if (!AC) throw new Error('This browser can’t play live audio. You can use text chat instead.');
-        ctx = new AC(); await ctx.resume();
+        ctx = new AC(); await ctx.resume(); dlog('audio', { state: ctx.state, rate: ctx.sampleRate }); ctx.onstatechange = () => dlog('audio', ctx && ctx.state);
         const media = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
         if (g !== gen) { media.getTracks().forEach(t => t.stop()); return; }
         stream = media; for (const t of media.getTracks()) t.onended = () => { if (g === gen) finish('The microphone was disconnected. Your session has ended.'); };
@@ -242,20 +258,24 @@ registerProcessor('otc-player',Q);`;
       const fail = () => { if (g === gen) reject(new Error('The demo could not connect. Please try again.')); };
       const handshake = setTimeout(fail, 15000);
       sock.onerror = () => {};
-      sock.onclose = () => { clearTimeout(handshake); if (g !== gen) return; if (phase === 'starting') return fail(); finish(phase === 'closing' ? endMessage(closingReason) : 'The connection ended. Your microphone is off.'); };
-      sock.onopen = () => sock.send(JSON.stringify({ setup: { model: `models/${data.model}` } }));
+      sock.onclose = e => { dlog('socket-close', { code: e && e.code, reason: e && String(e.reason || '').slice(0, 80), phase }); clearTimeout(handshake); if (g !== gen) return; if (phase === 'starting') return fail(); finish(phase === 'closing' ? endMessage(closingReason) : 'The connection ended. Your microphone is off.'); };
+      sock.onopen = () => (dlog('socket-open'), sock.send(JSON.stringify({ setup: { model: `models/${data.model}` } })));
       sock.onmessage = async ev => {
         if (g !== gen) return;
         let m; try { m = JSON.parse(typeof ev.data === 'string' ? ev.data : await ev.data.text()); } catch { return; }
-        if (m.setupComplete) { clearTimeout(handshake); live(g); resolve(); return; }
+        if (m.setupComplete) { dlog('setup-complete'); clearTimeout(handshake); live(g); resolve(); return; }
+        if (m.goAway) dlog('go-away', m.goAway);
         if (m.goAway) return finish('The connection ended. Your microphone is off.');
         const s = m.serverContent; if (!s) return;
         lastServerMsg = Date.now(); lastActivity = Math.max(lastActivity, Date.now());
-        if (s.interrupted) { stopPlayback(); agentLine = null; }
+        if (s.interrupted) { dlog('interrupted'); stopPlayback(); agentLine = null; }
+        if (s.inputTranscription && s.inputTranscription.text) dlog('heard', s.inputTranscription.text.slice(0, 60));
         if (s.inputTranscription && s.inputTranscription.text) { agentLine = null; line('user', s.inputTranscription.text); awaitingAgent = true; els.activity.textContent = 'Listening…'; }
         // Gemini sometimes emits placeholders such as "<no speech detected>"; never show those to visitors.
         if (s.outputTranscription && s.outputTranscription.text && !/^\s*<[^>]*>\s*$/.test(s.outputTranscription.text)) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
+        if (s.turnComplete) dlog('turn-complete', { buffered: +playerBuffered.toFixed(2), underruns });
+        if (s.outputTranscription && s.outputTranscription.text) dlog('said', s.outputTranscription.text.slice(0, 60));
         if (s.turnComplete && player) player.port.postMessage('go');
         if (s.turnComplete) {
           agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
@@ -282,7 +302,9 @@ registerProcessor('otc-player',Q);`;
         // Speakers feed the agent's own voice back into the mic. While it is talking, quiet input is sent as
         // silence so the agent doesn't interrupt itself; a caller speaking clearly still cuts in.
         const agentTalking = playerPlaying && (playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS);
-        if (agentTalking && peak < ECHO_GATE) bytes.fill(0);
+        const gated = agentTalking && peak < ECHO_GATE; if (gated) bytes.fill(0);
+        micWin.frames++; micWin.peak = Math.max(micWin.peak, peak); if (gated) micWin.gated++;
+        if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state }); micWin = { frames: 0, peak: 0, gated: 0 }; }
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
         send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
       };
@@ -292,6 +314,7 @@ registerProcessor('otc-player',Q);`;
       const used = Date.now() - startedAt; els.timer.textContent = `${fmt(Math.min(used, sessionMs))} / ${fmt(sessionMs)}`;
       if (phase !== 'live') return;
       if (used >= sessionMs - 6000) return beginClosing('time');
+      if (awaitingAgent && Date.now() - lastServerMsg >= STALL_MS) dlog('stall', { sinceServerMs: Date.now() - lastServerMsg });
       if (awaitingAgent && Date.now() - lastServerMsg >= STALL_MS) return finish('The demo stopped responding. Your microphone is off.');
       if (greeted && !awaitingAgent && Date.now() - Math.max(lastActivity, agentBusyUntil()) >= SILENCE_MS) beginClosing('silence');
     }, 250);
