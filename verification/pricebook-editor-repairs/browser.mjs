@@ -133,7 +133,7 @@ try{
   await input.fill('1.0000000000000001');await page.getByRole('button',{name:'Read it back',exact:true}).click();save('F13-map-rejection.json',{raw:await input.inputValue(),text:await page.locator('.interview-field').innerText()});assert.equal(await page.getByRole('button',{name:'Yes, save these prices',exact:true}).count(),0);assert.equal(await input.inputValue(),'1.0000000000000001');
  });
  await check('positive-normal-preview',async()=>{
-  const normal=await fixture('positive-normal');await useOwner(normal);const result=await normal.call('POST','/api/pricebook/preview',{serviceId:normal.services[0].id,revision:(await normal.read()).revision,customerInputs:wallPainting().customerInputs});save('positive-preview.json',result);console.log('POSITIVE_PREVIEW '+JSON.stringify(result));assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,300);
+  const normal=await fixture('positive-normal');await useOwner(normal);const result=await normal.call('POST','/api/pricebook/preview',{serviceId:normal.services[0].id,revision:(await normal.read()).revision,customerInputs:wallPainting().customerInputs});save('positive-preview.json',result);console.log('POSITIVE_PREVIEW '+JSON.stringify({resultType:result.resultType,midEstimate:result.midEstimate}));assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,300);
  });
  save('stored-records.json',{drafts:db.prepare('SELECT * FROM priceBookDrafts').all(),books:fs.readdirSync(path.join(out,'private/pricebooks')).filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync(path.join(out,'private/pricebooks',f))))});
 }catch(e){checks.push({name:'setup',passed:false,error:e.stack});}

@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { humanPricingKey } from './pricebookFormatting.js';
 import { Button, TextInput } from './ui.jsx';
+import {PricingTree} from './quoteDoneControls.jsx';
+import {ExactNumericInput} from './pricebookInputs.jsx';
 import {
   structuredShape, describeStructuredValue, validateStructuredValue
 } from './interviewStructuredValue.js';
@@ -36,6 +38,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
     [domain.keys, map]
   );
 
+  // Current metadata defines both map depth and leaf type. Legacy shapedKeys
+  // remains a fallback only for metadata without a current tree definition.
+  if (definition.tree) return <PricingTree definition={definition} value={value} onChange={onChange}/>;
+
   function write(next) {
     // An empty object is the same as "nothing answered yet".
     onChange(Object.keys(next).length ? next : {});
@@ -43,16 +49,16 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
 
   function setFlat(key, raw) {
     const next = { ...map };
-    if (raw === '') delete next[key];
-    else next[key] = Number(raw);
+    if (raw === undefined) delete next[key];
+    else next[key] = raw;
     write(next);
   }
 
   function setNested(key, size, raw) {
     const next = { ...map };
     const row = { ...(next[key] && typeof next[key] === 'object' ? next[key] : {}) };
-    if (raw === '') delete row[size];
-    else row[size] = Number(raw);
+    if (raw === undefined) delete row[size];
+    else row[size] = raw;
     if (Object.keys(row).length) next[key] = row;
     else delete next[key];
     write(next);
@@ -66,7 +72,7 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
   }
 
   function addKey() {
-    const key = newKey.trim().toLowerCase().replace(/[\s-]+/g, '_');
+    const key = newKey;
     if (!/^[a-z][a-z0-9_]*$/.test(key) || map[key] !== undefined) return;
     write({ ...map, [key]: shape === 'NESTED' ? {} : '' });
     setNewKey('');
@@ -99,11 +105,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
                   <span className="structured-cell-label">{humanPricingKey(size)}</span>
                   <span className="structured-input">
                     <span className="structured-prefix mono">{unit.startsWith('$') ? '$' : ''}</span>
-                    <input
-                      type="number" step="0.01" min="0" inputMode="decimal"
+                    <ExactNumericInput kind={definition.moneyKind} wholeCents={definition.wholeCents}
                       aria-label={`${humanPricingKey(key)} ${humanPricingKey(size)}`}
                       value={map[key]?.[size] ?? ''}
-                      onChange={event => setNested(key, size, event.target.value)}
+                      onChange={raw => setNested(key, size, raw)}
                     />
                   </span>
                 </label>
@@ -147,11 +152,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
               {offered ? (
                 <span className="structured-input">
                   <span className="structured-prefix mono">{unit.startsWith('$') ? '$' : ''}</span>
-                  <input
-                    type="number" step="0.01" min="0" inputMode="decimal"
+                  <ExactNumericInput kind={definition.moneyKind} wholeCents={definition.wholeCents}
                     aria-label={`${humanPricingKey(key)} price`}
                     value={map[key] ?? ''}
-                    onChange={event => setFlat(key, event.target.value)}
+                    onChange={raw => setFlat(key, raw)}
                   />
                 </span>
               ) : (
@@ -176,11 +180,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
             <span className="structured-row-label">{humanPricingKey(key)}</span>
             <span className="structured-input">
               <span className="structured-prefix mono">{unit.startsWith('$') ? '$' : ''}</span>
-              <input
-                type="number" step="0.01" min="0" inputMode="decimal"
+              <ExactNumericInput kind={definition.moneyKind} wholeCents={definition.wholeCents}
                 aria-label={`${humanPricingKey(key)} ${unit}`}
                 value={map[key] ?? ''}
-                onChange={event => setFlat(key, event.target.value)}
+                onChange={raw => setFlat(key, raw)}
               />
             </span>
           </div>
@@ -200,11 +203,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
           <span className="structured-row-label">{humanPricingKey(key)}</span>
           <span className="structured-input">
             <span className="structured-prefix mono">{unit.startsWith('$') ? '$' : ''}</span>
-            <input
-              type="number" step="0.01" min="0" inputMode="decimal"
+            <ExactNumericInput kind={definition.moneyKind} wholeCents={definition.wholeCents}
               aria-label={`${humanPricingKey(key)} price`}
               value={map[key] ?? ''}
-              onChange={event => setFlat(key, event.target.value)}
+              onChange={raw => setFlat(key, raw)}
             />
           </span>
           <Button variant="quiet" icon={Trash2} onClick={() => removeKey(key)}

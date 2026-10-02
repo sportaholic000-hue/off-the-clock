@@ -1,10 +1,13 @@
 import {sessionClaims,sessionIdentity} from './sessionIdentity.js';
+import {clearPricebookTransfersForSessionChange} from './pricebookDrafts.js';
 const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhost:3000':'')).replace(/\/$/,'');
 const refreshFlights=new Map();
 export function getToken(){return localStorage.getItem('otc_token');}
 export function getSessionKey(token=getToken()){return sessionIdentity(token);}
 export function setToken(token,{notify=true}={}) {
+  const previousToken=getToken();
   if(token)localStorage.setItem('otc_token',token);else localStorage.removeItem('otc_token');
+  clearPricebookTransfersForSessionChange(previousToken,token);
   if(notify)window.dispatchEvent(new Event('otc:session'));
 }
 function requestError(payload,status) {
@@ -74,3 +77,8 @@ export async function api(path,{method='GET',body,auth=true,idempotencyKey,forma
   return result.payload;
 }
 export function go(path){window.history.pushState({},'',path);window.dispatchEvent(new PopStateEvent('popstate'));}
+
+// Account changes in another tab also invalidate this tab's price-book transfers.
+globalThis.window?.addEventListener?.('storage',event=>{
+  if(event.key==='otc_token'||event.key===null)clearPricebookTransfersForSessionChange(event.oldValue,event.newValue);
+});

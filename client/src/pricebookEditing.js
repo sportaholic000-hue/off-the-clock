@@ -67,3 +67,55 @@ export function editorServices(saved, metadata, businessTypes) {
   }
   return services;
 }
+
+
+// Fee answers belong only to the rule under which the owner supplied them.
+// Removing an incompatible answer changes no price and chooses no applicability.
+export function removeOwnerFeeSelection(service, fee) {
+  const selections = {...service.ownerFeeSelections};
+  delete selections[fee];
+  return {...service, ownerFeeSelections:selections};
+}
+export function changeFeeRule(service, fee, mode) {
+  const next = {...service, feeRules:{...service.feeRules, [fee]:mode}};
+  return mode === 'owner_selected' ? next : removeOwnerFeeSelection(next, fee);
+}
+export function outdatedOwnerFeeSelections(service) {
+  return Object.keys(service.ownerFeeSelections || {}).filter(fee => service.feeRules?.[fee] !== 'owner_selected');
+}
+export function previewFeeContext(serviceKey, rules = {}) {
+  return JSON.stringify([serviceKey, Object.keys(rules).sort().map(fee => [fee, rules[fee]])]);
+}
+
+function canonicalEditorValue(value) {
+  return Array.isArray(value) ? value.map(canonicalEditorValue)
+    : value && typeof value === 'object'
+      ? Object.fromEntries(Object.keys(value).sort().map(key => [key, canonicalEditorValue(value[key])]))
+      : value;
+}
+const sameEditorValue = (a,b) => JSON.stringify(canonicalEditorValue(a)) === JSON.stringify(canonicalEditorValue(b));
+export function approvalMatchesDraft(draft, review) {
+  return !!review && draft?.revision === review.book.revision &&
+    sameEditorValue(draft.defaults, review.book.defaults) &&
+    sameEditorValue(draft.services.find(service => service.id === review.service.id), review.service);
+}
+
+// Approval returns a new saved revision. Reconcile only the reviewed service;
+// the rest of the editor may contain unsaved services, tiers or rejected text.
+export function mergeSavedApproval(draft, before, after, serviceId, approvedRevision) {
+  const savedService = after.services?.find(service => service.id === serviceId);
+  const reviewed = before.services.find(service => service.id === serviceId);
+  if (!savedService || !reviewed || draft.revision !== before.revision || after.revision !== approvedRevision ||
+      !sameEditorValue(before.defaults, after.defaults) ||
+      !sameEditorValue(before.services.filter(s => s.id !== serviceId), after.services.filter(s => s.id !== serviceId))) {
+    throw Error('The saved price book changed during approval. Your unsaved edits are still here. Review the newer saved version before saving again.');
+  }
+  return {...draft, revision:after.revision, updatedAt:after.updatedAt,
+    services:draft.services.map(service => {
+      if (service.id !== serviceId) return service;
+      if (sameEditorValue(service, reviewed) && sameEditorValue(draft.defaults, before.defaults)) return savedService;
+      const edited = {...service};
+      delete edited.quoteDoneApproval;
+      return edited;
+    })};
+}
