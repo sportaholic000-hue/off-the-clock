@@ -21,6 +21,7 @@ async function fixture(label,fee='not_applicable',selection){
  const f=wallPainting(),converted=convertApplicationBook({services:[f.ownerPricing],defaults:f.businessDefaults},'toDollars');
  const services=['A','B'].map(name=>{const s=structuredClone(converted.services[0]);for(const k of ['origin','confirmedFields','approvedValues'])delete s[k];s.id=crypto.randomUUID();s.service='[SYNTHETIC] '+name;s.validationInputs=f.customerInputs;s.feeRules.travel=fee;if(selection!==undefined)s.ownerFeeSelections={travel:selection};return s;});
  let book=await call('GET','/api/pricebook/'+owner.id);Object.assign(book,{services,defaults:{...converted.defaults,travelFee:10}});await call('POST','/api/pricebook/save',book);
+ for(const service of services){book=await call('GET','/api/pricebook/'+owner.id);await call('POST','/api/pricebook/services/'+service.id+'/approve',{revision:book.revision,confirmConfiguration:true});}
  await call('GET','/api/onboarding/state');db.prepare('UPDATE businessProfiles SET businessTypesJson=? WHERE ownerId=?').run(JSON.stringify(['INTERIOR_PAINTING','ROOFING_REPLACEMENT','ROOFING_REPAIR']),owner.id);
  return {owner,services,read:()=>call('GET','/api/pricebook/'+owner.id),call};
 }
@@ -65,7 +66,7 @@ try{
  });
  const cf=await fixture('preview-fees','customer_selected');
  await check('F05-preview-answers',async()=>{
-  await useOwner(cf);await openSection('Preview project details');const choice=page.getByLabel('travel customer fee for preview',{exact:true});assert.equal(await choice.inputValue(),'');
+  await useOwner(cf);await openSection('Project measurements for preview');const choice=page.getByLabel('travel customer fee for preview',{exact:true});assert.equal(await choice.inputValue(),'');
   for(const answer of ['false','true','']){
    const expected=answer===''?undefined:answer==='true';
    const wait=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/preview')&&r.request().postDataJSON()?.customerFeeSelections?.travel===expected);
@@ -73,7 +74,7 @@ try{
    if(answer!==''){assert.equal(response.status(),200);assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,answer==='true'?310:300);}
    else assert.ok(response.status()!==200||result.resultType==='ESTIMATE_REQUIRES_REVIEW');
   }
-  await choice.selectOption('false');await pick('B');await openSection('Preview project details');assert.equal(await choice.inputValue(),'');await pick('A');await openSection('Preview project details');assert.equal(await choice.inputValue(),'');
+  await choice.selectOption('false');await pick('B');await openSection('Project measurements for preview');assert.equal(await choice.inputValue(),'');await pick('A');await openSection('Project measurements for preview');assert.equal(await choice.inputValue(),'');
   await choice.selectOption('true');await openSection('Quote configuration');await page.getByLabel('travel fee rule',{exact:true}).selectOption('not_applicable');await page.getByLabel('travel fee rule',{exact:true}).selectOption('customer_selected');assert.equal(await choice.inputValue(),'');
   const draft=await bookState();assert.equal(draft.customerFeeSelections,undefined);assert.equal(draft.services[0].customerFeeSelections,undefined);
   const wait=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/save')&&r.request().method()==='POST');await page.getByRole('button',{name:'Save & validate',exact:true}).click();assert.equal(JSON.stringify((await wait).request().postDataJSON()).includes('customerFeeSelections'),false);
@@ -106,6 +107,7 @@ try{
  });
  await check('F11-three-level-repair',async()=>{
   const type='ROOFING_REPAIR',field='repairHours',id=await newInterview(ia,type,field),def=applicationMetadata().services.find(s=>s.serviceType===type).fields.find(f=>f.field===field);assert.equal(def.tree.depth,3);
+  if(!(await page.getByLabel(def.label+' offering key',{exact:true}).count())){const old=page.locator('.structured-add input');if(await old.count()){await old.fill('asphalt_shingle');await page.locator('.structured-add').getByRole('button',{name:'Add',exact:true}).click();}assert.fail('Current metadata requires '+JSON.stringify(def.tree)+' but the legacy interview renders '+await page.locator('.interview-field').innerText());}
   await page.getByLabel(def.label+' offering key',{exact:true}).fill('asphalt_shingle');await page.getByRole('button',{name:'Add offering',exact:true}).first().click();
   await page.getByLabel(def.label+' asphalt shingle offering key',{exact:true}).fill('leak_patch');await page.getByRole('button',{name:'Add offering',exact:true}).first().click();
   for(const [size,v]of [['small','0'],['medium','1.2345'],['large','3']])await page.getByLabel(def.label+' asphalt shingle leak patch '+size,{exact:true}).fill(v);
@@ -115,6 +117,7 @@ try{
  });
  await check('F11-enum-leaf',async()=>{
   const type='ROOFING_REPLACEMENT',field='underlaymentPriceBasis',id=await newInterview(ia,type,field),def=applicationMetadata().services.find(s=>s.serviceType===type).fields.find(f=>f.field===field);
+  if(!(await page.getByLabel(def.label+' offering key',{exact:true}).count())){const old=page.locator('.structured-add input');if(await old.count()){await old.fill('asphalt_shingle');await page.locator('.structured-add').getByRole('button',{name:'Add',exact:true}).click();}assert.fail('Current metadata requires '+JSON.stringify(def.tree)+' but the legacy interview renders '+await page.locator('.interview-field').innerText());}
   await page.getByLabel(def.label+' offering key',{exact:true}).fill('asphalt_shingle');await page.getByRole('button',{name:'Add offering',exact:true}).click();await page.getByLabel(def.label+' asphalt shingle',{exact:true}).selectOption('installed_area_sell_price');await page.getByRole('button',{name:'Read it back',exact:true}).click();
   const wait=page.waitForResponse(r=>r.url().endsWith('/api/pricebook/interview/'+id)&&r.request().method()==='PUT');await page.getByRole('button',{name:'Yes, save these prices',exact:true}).click();const r=await wait;save('F11-enum-request.json',{request:r.request().postDataJSON(),status:r.status(),response:await r.json()});assert.equal(r.status(),200);
  });
@@ -126,11 +129,11 @@ try{
  await check('F13-map-exactness',async()=>{
   const type='ROOFING_REPLACEMENT',field='laborPerSquare';await newInterview(ia,type,field);const def=applicationMetadata().services.find(s=>s.serviceType===type).fields.find(f=>f.field===field),add=page.getByLabel(def.label+' offering key',{exact:true});let input;
   if(await add.count()){await add.fill('asphalt_shingle');await page.getByRole('button',{name:'Add offering',exact:true}).click();input=page.getByLabel(def.label+' asphalt shingle',{exact:true});}
-  else{await page.locator('.structured-toggle').filter({hasText:/asphalt/i}).locator('input').check();input=page.getByRole('spinbutton').first();}
+  else{if(await page.locator('.structured-add input').count()){await page.locator('.structured-add input').fill('asphalt_shingle');await page.locator('.structured-add').getByRole('button',{name:'Add',exact:true}).click();}else await page.locator('.structured-toggle').filter({hasText:/asphalt/i}).locator('input').check();input=page.getByRole('spinbutton').first();}
   await input.fill('1.0000000000000001');await page.getByRole('button',{name:'Read it back',exact:true}).click();save('F13-map-rejection.json',{raw:await input.inputValue(),text:await page.locator('.interview-field').innerText()});assert.equal(await page.getByRole('button',{name:'Yes, save these prices',exact:true}).count(),0);assert.equal(await input.inputValue(),'1.0000000000000001');
  });
  await check('positive-normal-preview',async()=>{
-  const normal=await fixture('positive-normal');await useOwner(normal);const result=await normal.call('POST','/api/pricebook/preview',{serviceId:normal.services[0].id,revision:(await normal.read()).revision,customerInputs:wallPainting().customerInputs});assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,300);save('positive-preview.json',result);
+  const normal=await fixture('positive-normal');await useOwner(normal);const result=await normal.call('POST','/api/pricebook/preview',{serviceId:normal.services[0].id,revision:(await normal.read()).revision,customerInputs:wallPainting().customerInputs});save('positive-preview.json',result);console.log('POSITIVE_PREVIEW '+JSON.stringify(result));assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.equal(result.midEstimate,300);
  });
  save('stored-records.json',{drafts:db.prepare('SELECT * FROM priceBookDrafts').all(),books:fs.readdirSync(path.join(out,'private/pricebooks')).filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync(path.join(out,'private/pricebooks',f))))});
 }catch(e){checks.push({name:'setup',passed:false,error:e.stack});}
