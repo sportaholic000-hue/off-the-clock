@@ -100,7 +100,7 @@ registerProcessor('otc-player',Q);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
-  let micWin = { frames: 0, peak: 0, gated: 0 };
+  let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0;
   let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
   const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
@@ -232,6 +232,7 @@ registerProcessor('otc-player',Q);`;
         const AC = window.AudioContext || window.webkitAudioContext; if (!AC) throw new Error('This browser can’t play live audio. You can use text chat instead.');
         ctx = new AC(); await ctx.resume(); dlog('audio', { state: ctx.state, rate: ctx.sampleRate }); ctx.onstatechange = () => dlog('audio', ctx && ctx.state);
         const media = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+        dlog('mic-granted');
         if (g !== gen) { media.getTracks().forEach(t => t.stop()); return; }
         stream = media; for (const t of media.getTracks()) t.onended = () => { if (g === gen) finish('The microphone was disconnected. Your session has ended.'); };
         const url = URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' }));
@@ -241,7 +242,7 @@ registerProcessor('otc-player',Q);`;
         if (g !== gen) return;
       }
       const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agent }), cache: 'no-store' });
-      const data = await readJson(r);
+      const data = await readJson(r); dlog('token', { status: r.status });
       if (!r.ok || !data || !data.token) throw new Error((data && data.message) || 'The demo could not connect. Please try again.');
       if (g !== gen) return;
       sessionMs = data.sessionSeconds * 1000; setStatus('Connecting');
@@ -263,8 +264,11 @@ registerProcessor('otc-player',Q);`;
       sock.onmessage = async ev => {
         if (g !== gen) return;
         let m; try { m = JSON.parse(typeof ev.data === 'string' ? ev.data : await ev.data.text()); } catch { return; }
+        lastServerMsg = Date.now();
         if (m.setupComplete) { dlog('setup-complete'); clearTimeout(handshake); live(g); resolve(); return; }
         if (m.goAway) dlog('go-away', m.goAway);
+        if (m.usageMetadata) dlog('usage', m.usageMetadata.totalTokenCount);
+        if (m.error) dlog('server-error', String(JSON.stringify(m.error)).slice(0, 200));
         if (m.goAway) return finish('The connection ended. Your microphone is off.');
         const s = m.serverContent; if (!s) return;
         lastServerMsg = Date.now(); lastActivity = Math.max(lastActivity, Date.now());
@@ -304,9 +308,12 @@ registerProcessor('otc-player',Q);`;
         const agentTalking = playerPlaying && (playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS);
         const gated = agentTalking && peak < ECHO_GATE; if (gated) bytes.fill(0);
         micWin.frames++; micWin.peak = Math.max(micWin.peak, peak); if (gated) micWin.gated++;
-        if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state }); micWin = { frames: 0, peak: 0, gated: 0 }; }
+        if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state, sendBuf: micWin.maxBuf || 0, dropped: micWin.dropped || 0, sinceServerMs: Date.now() - lastServerMsg }); micWin = { frames: 0, peak: 0, gated: 0 }; }
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-        send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
+        const backlog = ws ? ws.bufferedAmount : 0; micWin.maxBuf = Math.max(micWin.maxBuf || 0, backlog);
+        if (backlog > 64000) { micWin.dropped = (micWin.dropped || 0) + 1; if (!stalledSince) stalledSince = Date.now(); }
+        else { stalledSince = 0; send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++; }
+        if (stalledSince && Date.now() - stalledSince > 8000) { dlog('upload-stalled', { backlog }); return finish('Your connection stopped sending audio. Please check your internet and start again.'); }
       };
     }
     tick = setInterval(() => {
