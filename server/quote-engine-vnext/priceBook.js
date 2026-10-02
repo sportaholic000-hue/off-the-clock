@@ -449,11 +449,13 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   };
 }
 
-function activationFeeSelections(service) {
+function activationFeeSelections(service, options) {
   const selections = { owner: {}, customer: {} };
+  const savedOwnerChoices = Object.hasOwn(options, 'ownerFeeSelections');
+  if (savedOwnerChoices) selections.owner = options.ownerFeeSelections;
   for (const fee of ['travel', 'disposal', 'permit', 'overhead']) {
     const mode = service.feeRules?.[fee];
-    if (mode === 'owner_selected') selections.owner[fee] = true;
+    if (mode === 'owner_selected' && !savedOwnerChoices) selections.owner[fee] = true;
     if (mode === 'customer_selected') selections.customer[fee] = true;
   }
   return selections;
@@ -479,7 +481,7 @@ function activationMonth(service, defaults) {
   return Array.isArray(months) && months.length ? months[0] : 1;
 }
 
-function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults) {
+function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   const diagnostics = [];
   const scenarios = activationScenarios({ ...service, pricing: effectivePricing });
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
@@ -525,7 +527,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             ...(service.approvedValues ? {approvedValues:Object.fromEntries(Object.entries(service.approvedValues).filter(([key])=>key!=='tiers'))}:{}) },
           businessDefaults,
           callerType: 'owner',
-          feeSelections: activationFeeSelections(service),
+          feeSelections: activationFeeSelections(service, options),
           currentMonth: activationMonth(service, businessDefaults),
           allowInactiveOwnerPreview: true
         });
@@ -556,7 +558,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   };
 }
 
-export function vNextServiceStatus(service, businessDefaults = null) {
+// Application readiness supplies saved owner fee decisions. Engine-only callers
+// without saved decisions retain synthetic probes of the per-request contract.
+export function vNextServiceStatus(service, businessDefaults = null, options = {}) {
   const snapshot = snapshotPlainData(service, 'service');
   if (!snapshot.ok) return statusFromDiagnostics(null, [{
     type: 'invalid', kind: 'service', path: snapshot.errorPath,
@@ -610,7 +614,7 @@ export function vNextServiceStatus(service, businessDefaults = null) {
     : [{ tier: { name: null, overrides: {} }, index: null }];
   const variants = tierEntries.map(({ tier, index }) => {
     try {
-      return evaluateActivationVariant(service, mergePricingForValidationVNext(pricing, tier.overrides || {}), tier.name, index, defaultValidation.ok ? businessDefaults : null);
+      return evaluateActivationVariant(service, mergePricingForValidationVNext(pricing, tier.overrides || {}), tier.name, index, defaultValidation.ok ? businessDefaults : null, options);
     } catch {
       const path = index === null ? 'pricing' : `tiers.${index}.overrides`;
       return {

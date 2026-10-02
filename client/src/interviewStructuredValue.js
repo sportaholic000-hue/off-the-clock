@@ -1,3 +1,5 @@
+import {validatePriceBookTree} from '../../server/priceBookTree.js';
+import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 
 // Pure helpers for structured interview answers: shape detection, validation
@@ -37,7 +39,19 @@ function speakAmount(amount, leafUnit) {
   return unit ? `${amount} ${unit}` : String(amount);
 }
 
-export function describeStructuredValue(value, domain, fieldLabel) {
+export function describeStructuredValue(value, domain, fieldLabel, definition) {
+  if (definition?.tree) {
+    const parts=[];
+    function visit(map, path=[]) {
+      for (const [key, leaf] of Object.entries(map || {})) {
+        const at=[...path,humanPricingKey(key)];
+        if (leaf && typeof leaf==='object' && !Array.isArray(leaf)) visit(leaf,at);
+        else if (!isBlank(leaf)) parts.push(at.join(' / ')+': '+(typeof leaf==='boolean' ? (leaf?'Yes':'No') : typeof leaf==='string' ? humanPricingKey(leaf) : speakAmount(leaf,domain?.leafUnit)));
+      }
+    }
+    visit(value);
+    return fieldLabel+' — '+parts.join('; ');
+  }
   const shape = structuredShape(domain);
   const entries = Object.entries(value || {});
 
@@ -70,10 +84,19 @@ export function describeStructuredValue(value, domain, fieldLabel) {
   return `${fieldLabel} — ${parts.join(', ')}`;
 }
 
-// Validation mirrors the server's activation rules so the owner is told about a
-// gap here rather than after saving. It never accepts a shape the price book
-// would reject.
-export function validateStructuredValue(value, domain, fieldLabel) {
+// Immediate interview feedback. Current tree metadata describes draft values;
+// the server still validates persistence, approval and live-price readiness.
+export function validateStructuredValue(value, domain, fieldLabel, definition) {
+  if (definition?.tree) return validateInterviewTree(value,definition,fieldLabel);
+  // Exact parsing precedes the legacy positivity rule too: raw rejected text
+  // must never become a rounded number when the owner requests a readback.
+  function exactLeaves(map) {
+    for(const leaf of Object.values(map || {})){
+      if(leaf && typeof leaf==='object' && !Array.isArray(leaf))exactLeaves(leaf);
+      else if(!isBlank(leaf))parseOwnerNumericInput(leaf,{kind:definition?.moneyKind,wholeCents:definition?.wholeCents});
+    }
+  }
+  try{exactLeaves(value);}catch(error){return error.message;}
   const shape = structuredShape(domain);
   const entries = Object.entries(value || {});
 
@@ -85,7 +108,7 @@ export function validateStructuredValue(value, domain, fieldLabel) {
         if (isBlank(amount)) {
           return `Enter a ${humanPricingKey(size)} price for ${humanPricingKey(key)}.`;
         }
-        if (!(Number(amount) > 0)) {
+        if (!(parseOwnerNumericInput(amount) > 0)) {
           return `${humanPricingKey(key)} ${humanPricingKey(size)} must be more than zero.`;
         }
       }
@@ -100,7 +123,7 @@ export function validateStructuredValue(value, domain, fieldLabel) {
       : `Enter a price for ${fieldLabel}.`;
   }
   for (const [key, amount] of priced) {
-    if (!(Number(amount) > 0)) {
+    if (!(parseOwnerNumericInput(amount) > 0)) {
       return `${humanPricingKey(key)} must be more than zero.`;
     }
   }
@@ -113,3 +136,34 @@ export function validateStructuredValue(value, domain, fieldLabel) {
   return null;
 }
 
+
+
+// This checks the interview controls' shape and exact input, not service
+// activation. The server remains authoritative and may reject an incomplete
+// service. In particular, zero/false are captured answers, not missing answers.
+function validateInterviewTree(value, definition, fieldLabel) {
+  try{validatePriceBookTree(value,{...definition,label:fieldLabel});return null;}catch(error){return error.message;}
+}
+
+export function parseInterviewScalar(raw, definition) {
+  if(definition.type==='boolean'){
+    if(raw===true||raw==='true')return true;
+    if(raw===false||raw==='false')return false;
+    throw Error('Choose Yes or No before confirming this field.');
+  }
+  if(definition.type==='select'){
+    if(!definition.options?.includes(raw))throw Error('Choose one of the listed pricing options.');
+    return raw;
+  }
+  const value=parseOwnerNumericInput(raw,{kind:definition.moneyKind,wholeCents:definition.wholeCents,path:definition.label||definition.field||''});
+  if(value===undefined)throw Error('Enter a number before confirming this field.');
+  return value;
+}
+
+// Resolve from the actual saved draft unit on every render/resume. A unit is
+// never inferred from the amount or from a different service's answers.
+export function interviewDefinition(definition, pricing={}) {
+  if(!definition)return definition;
+  return definition.serviceType==='CUSTOM'&&['price','low','high'].includes(definition.field)
+    ? {...definition,moneyKind:moneyKindForField('CUSTOM',definition.field,pricing)} : definition;
+}

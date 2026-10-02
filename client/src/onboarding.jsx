@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
+import {ExactNumericInput} from './pricebookInputs.jsx';
+import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
+import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
@@ -465,18 +468,6 @@ function GoLiveStep({ state, refresh, back, next }) {
   );
 }
 
-function parseInterviewValue(raw, type) {
-  if (type === 'boolean') return raw === 'true';
-  // Structured fields are edited through StructuredPricingQuestion and are
-  // already the exact object the price book expects. They are never serialized
-  // to text and never parsed back.
-  if (type === 'json') return raw;
-  if (type === 'select') return raw;
-  const number = Number(raw);
-  if (!Number.isFinite(number)) throw new Error('Enter a number before confirming this field');
-  return number;
-}
-
 function PriceBookStep({ state, metadata, back, next }) {
   const quoteAccess = ['QuoteDone','Scale'].includes(state.account.plan);
   const activeTypes = state.profile.businessTypes || [];
@@ -489,7 +480,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [suggestionError,setSuggestionError] = useState(null);
   const [draft, setDraft] = useState(null);
   const [position, setPosition] = useState(0);
-  // Scalar/select fields hold a string; structured fields hold the object.
+  // Exact numeric controls retain rejected text; accepted numbers and maps keep their types.
   const [rawValue, setRawValue] = useState('');
   const [readBack, setReadBack] = useState(null);
   const [existingDrafts, setExistingDrafts] = useState(null);
@@ -500,7 +491,7 @@ function PriceBookStep({ state, metadata, back, next }) {
     () => available.flatMap(service => service.fields.filter(field=>['number','json','select','boolean'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
     [available]
   );
-  const current = interviewFields[position];
+  const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
 
   useEffect(() => {
     if (!quoteAccess || draft) return;
@@ -576,17 +567,17 @@ function PriceBookStep({ state, metadata, back, next }) {
     if (!current) return;
     setError(null);
     try {
-      const value = parseInterviewValue(rawValue, current.type);
+      const value = current.type==='json' ? rawValue : parseInterviewScalar(rawValue,current);
       if (current.type === 'json') {
         // Structured answers are confirmed as a human sentence. Raw serialized
         // data is never displayed or spoken.
-        const problem = validateStructuredValue(value, current.shapedKeys, current.title || current.label);
+        const problem = validateStructuredValue(value, current.shapedKeys, current.title || current.label, current);
         if (problem) throw new Error(problem);
       }
       const spoken = current.type === 'json'
-        ? describeStructuredValue(value, current.shapedKeys, current.title || current.label)
+        ? describeStructuredValue(value, current.shapedKeys, current.title || current.label, current)
         : typeof value === 'number'
-          ? `${String(rawValue).split('').join(' ')}, ${value.toLocaleString('en-US')}`
+          ? `${String(rawValue).split('').join(' ')}, ${String(value)}`
           : current.type === 'select'
             ? current.optionLabels?.[value] || 'Selected pricing option'
             : String(rawValue);
@@ -623,7 +614,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   async function reviewDraft() {
     try {
       const review = await api(`/api/pricebook/interview/${draft.id}/review`);
-      sessionStorage.setItem('otc_pricebook_draft', JSON.stringify(review));
+      writePricebookTransfer('draft',state.account.id,review);
       go('/pricebook');
     } catch (nextError) { setError(nextError); }
   }
@@ -635,7 +626,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       const industry = TRADE_GROUPS.filter(group => group.types.some(type => activeTypes.includes(type))).map(group => group.label).join(', ');
       const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:activeTypes } });
       setSuggestions(result);
-      sessionStorage.setItem('otc_pricebook_suggestions', JSON.stringify(result));
+      writePricebookTransfer('suggestions',state.account.id,result);
     } catch (nextError) { setSuggestionError(nextError); }
     finally {setSuggesting(false);}
   }
@@ -690,15 +681,16 @@ function PriceBookStep({ state, metadata, back, next }) {
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>
                 ) : current.type === 'json' ? (
                   <StructuredPricingQuestion
+                    key={current.serviceType+'.'+current.field}
                     definition={current}
                     value={typeof rawValue === 'object' && rawValue !== null ? rawValue : {}}
                     onChange={editValue}
                   />
                 ) : (
-                  <TextInput type="number" step="0.01" value={rawValue} onChange={event => editValue(event.target.value)} />
+                  <ExactNumericInput key={current.serviceType+'.'+current.field} value={rawValue} kind={current.moneyKind} wholeCents={current.wholeCents} onChange={editValue} />
                 )}
               </Field>
-              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : !rawValue)}>Read it back</Button>}
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : rawValue === '' || rawValue === undefined || rawValue === null)}>Read it back</Button>}
               {readBack && (
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>

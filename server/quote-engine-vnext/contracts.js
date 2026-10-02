@@ -1,6 +1,6 @@
 import { measuredOutlineVNext } from './geometry.js';
-import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions} from './scopePricing.js';
-import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics} from './configuredOfferings.js';
+import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
+import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
@@ -1069,6 +1069,14 @@ const AI_CONFIRMABLE_SERVICE_FIELDS = [
   'disclaimer', 'disposalScope', 'knownOfferings', 'zeroPricePolicy'
 ];
 
+export function pricingMapDomainVNext(type, field) {
+  if(type.startsWith('FLOORING_')&&['laborPerSqft','materialPerSqft'].includes(field))return {rootKeys:[...FLOORING_TYPES]};
+  if(type==='SIDING_REPLACEMENT'&&['laborPerSqft','materialPerSqft'].includes(field)||type==='SIDING_REPAIR'&&['repairHours','materialAllowance'].includes(field))return {rootKeys:[...SIDING_TYPES]};
+  if(['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(type)&&field==='bedPrepLaborPerSqft')return {rootKeys:['needs_weeding','overgrown'],requiredRootKeys:['needs_weeding','overgrown']};
+  if(type==='LANDSCAPING_PLANTING'&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(field))return {rootKeys:[...SIZE_KEYS],requiredRootKeys:[...SIZE_KEYS]};
+  return {};
+}
+
 export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
   const fields = isRecord(pricing) ? Object.keys(pricing) : [];
   if (!isRecord(service)) return fields;
@@ -1884,8 +1892,11 @@ export function approveVNextValues(input,operation) {
   if (identityDiagnosticsVNext(service).length || op.ownerId !== service.origin.ownerId) throw new TypeError('Approval must match the persisted service and its authenticated owner context.');
   const allowed=aiConfirmationFieldsVNext(service,service.pricing);
   if(Object.keys(op).some(k=>!['fields','ownerId','operationId','approvedAt'].includes(k))||!Array.isArray(op.fields)||denseArrayIssue(op.fields)||!op.fields.length||new Set(op.fields).size!==op.fields.length||op.fields.some(k=>!allowed.includes(k))||['ownerId','operationId','approvedAt'].some(k=>typeof op[k]!=='string'||!op[k].trim())||!/^\d{4}-\d{2}-\d{2}T/.test(op.approvedAt)||!Number.isFinite(Date.parse(op.approvedAt)))throw new TypeError('Explicit fields and auditable owner, operation, and timestamp are required.');
-  service.confirmedFields={...(isRecord(service.confirmedFields)?service.confirmedFields:{})};
-  service.approvedValues={...(isRecord(service.approvedValues)?service.approvedValues:{})};
+  // Explicit approval retires receipts for fields no longer in this contract.
+  // Current fields not selected in a partial approval retain their old receipts.
+  for(const key of ['confirmedFields','approvedValues'])service[key]=Object.fromEntries(
+    Object.entries(isRecord(service[key])?service[key]:{}).filter(([field])=>allowed.includes(field))
+  );
   for(const field of op.fields){service.confirmedFields[field]=true;service.approvedValues[field]={value:structuredClone(Object.hasOwn(service.pricing,field)?service.pricing[field]:service[field]),serviceType:service.serviceType,serviceId:service.id,ownerId:op.ownerId,operationId:op.operationId,approvedAt:op.approvedAt};}
   return service;
 }
@@ -1965,7 +1976,7 @@ export function identityDiagnosticsVNext(service, requestedType = service?.servi
 }
 
 
-function supportedIncludedPricePath(serviceType, path) {
+function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   if (typeof path !== 'string' || !SERVICE_TYPES.includes(serviceType)) return false;
   const parts = path.split('.'), [root, key, leaf, size] = parts;
   if (!allowedPricingFields(serviceType).includes(root)) return false;
@@ -1981,7 +1992,8 @@ function supportedIncludedPricePath(serviceType, path) {
     LANDSCAPING_MULCH:['mulchMaterialPerYard'], LANDSCAPING_PLANTING:['mulchMaterialPerYard']
   };
   if (parts.length === 2) {
-    if(root==='scopeRates'&&SCOPE_TYPES.includes(serviceType))return CANONICAL_SLUG.test(key);
+    if(root==='scopeRates'&&SCOPE_TYPES.includes(serviceType))return Object.hasOwn(scopeRateDefinitions(serviceType,pricing),key);
+    if(root==='offeringRates'&&configuredOffering(serviceType,pricing))return Object.hasOwn(offeringRateDefinitions(serviceType,pricing),key);
     if (openMaps[serviceType]?.includes(root)) return CANONICAL_SLUG.test(key);
     if (serviceType.startsWith('FLOORING_') && ['laborPerSqft','materialPerSqft'].includes(root)) return FLOORING_TYPES.includes(key);
     if (serviceType === 'SIDING_REPLACEMENT' && ['laborPerSqft','materialPerSqft'].includes(root)) return SIDING_TYPES.includes(key);
@@ -1998,24 +2010,30 @@ function supportedIncludedPricePath(serviceType, path) {
 function includedPathDiagnosticsVNext(service, pricing) {
   const mappings = service.zeroPricePolicy?.includedPrices;
   if (!isRecord(mappings)) return [];
-  const out = [], configured = path => valueAtPath(service.pricing, path) !== undefined ||
-    (Array.isArray(service.tiers) && service.tiers.some(t => valueAtPath(t?.overrides, path) !== undefined));
-  const validPrice = (path, value) => path === 'mowingBaseRatePerSqft' && service.serviceType === 'LANDSCAPING_MOWING'
-    ? nonNegative(value) && value <= Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
+  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>({...service.pricing,...t?.overrides}))];
+  const supported=(path,p)=>supportedIncludedPricePath(service.serviceType,path,p);
+  const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
+  const validPrice = (path, value) => {
+    const [root,key]=path.split('.');
+    const fractional=(path==='mowingBaseRatePerSqft'&&service.serviceType==='LANDSCAPING_MOWING') ||
+      (service.serviceType==='CUSTOM'&&['price','low','high'].includes(path)&&pricing?.unit!=='flat') ||
+      root==='offeringRates' || (root==='scopeRates'&&scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate');
+    return fractional ? nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
+  };
   for (const [source, covering] of Object.entries(mappings)) {
     const path = 'zeroPricePolicy.includedPrices.' + source;
     for (const [role, pricePath] of [['source',source],['covering',covering]]) {
-      if (!supportedIncludedPricePath(service.serviceType, pricePath) || !configured(pricePath)) {
+      if (!configured(pricePath)) {
         out.push(ownerDiagnostic('invalid','included_price_path',path,'The '+role+' path '+String(pricePath)+' must name an explicitly configured price in this exact service contract or one of its tiers.'));
       }
     }
-    if (pricing !== undefined && supportedIncludedPricePath(service.serviceType, source)) {
+    if (pricing !== undefined && supported(source,pricing)) {
       const value = valueAtPath(pricing, source);
       // A source absent from this variant belongs to another configured tier.
       // A present source is checked even when it is not selected by this request.
       if (value !== undefined) {
         const coveringValue = valueAtPath(pricing, covering);
-        if (!validPrice(source, value) || !supportedIncludedPricePath(service.serviceType, covering) ||
+        if (!validPrice(source, value) || !supported(covering,pricing) ||
             !validPrice(covering, coveringValue) || (value === 0 && coveringValue === 0)) {
           out.push(ownerDiagnostic('invalid','included_price_path',path,'The effective tier must retain valid source and covering prices; an included zero needs a positive covering price.'));
         }

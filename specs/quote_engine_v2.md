@@ -11,6 +11,17 @@ These rulings govern the active QuoteDone implementation and supersede conflicti
 
 - Customer explanations state each generated fact once. Decking without a confirmed sheet count uses only the per-sheet/on-site disclosure; generated copy never mentions internal charge review or offering setup. Mowing keeps its per-visit unit and tax treatment in the API; displays show those labels beside the price and omit their exact repeated sentences from the displayed disclaimer. All amounts, scope validation and exclusions remain unchanged.
 
+# Range/display clarification — October 2, 2026 (audit R5)
+
+STEP 9 below now states the existing active QuoteDone/VNext range and
+customer-display contract. It replaces the historical nearest-$10 rule;
+it does not change owner prices or calculation code. The September
+[minimum-display handoff](../server/quote-engine-vnext/HANDOFF_ABC.md)
+and [sub-dollar correction](../server/quote-engine-vnext/AUDIT_REPAIRS_147_150.md)
+established the display exceptions; the October 1 minimum ruling above
+governs every tax mode. Historical legacy-engine tests retain their old
+expectations and are not the active application's display specification.
+
 # OFF THE CLOCK AI — QUOTE ENGINE v2
 # Give this to the build agent as a single message.
 # Build ONLY what is described here. Backend only.
@@ -108,8 +119,13 @@ labor AND materials AND markup — so Canada is always TAX_ALL):
     here." }
 
 UNITED STATES:
-  OR, MT, NH, DE, AK → { taxMode:"TAX_NONE", taxPercent:0 }
+  OR, MT, NH, DE → { taxMode:"TAX_NONE", taxPercent:0 }
     // no state sales tax
+  AK → { taxMode:null, taxPercent:null, needsOwnerConfirmation:true }
+    // October 2 audit repair: absence of state sales tax does not settle
+    // local invoice treatment. Require the owner's explicit choice below;
+    // never silently save zero or invent a local rate. Existing saved
+    // owner settings are not changed by this setup correction.
   ALL OTHER STATES → do NOT prefill a mode or rate. Contractor
     sales-tax treatment varies by state and by job type, and this
     system must never guess tax rules. Instead, onboarding asks
@@ -406,19 +422,72 @@ STEP 8 — MINIMUM JOB PRICE (per-service minimums ENFORCED)
     subtotalCents = effectiveMinimumCents
     appliedRules.push("Minimum job price applied")
 
-STEP 9 — RANGE (with confidence widening)
-  effectiveBufferPercent = businessDefaults.rangeBufferPercent
-  if estimationUsed: effectiveBufferPercent += 5
-  cap effectiveBufferPercent at 25
-  midCents  = round(subtotalCents/1000)*1000   // nearest $10
-  lowCents  = round(midCents×(1−effectiveBufferPercent/100)/1000)*1000
-  highCents = round(midCents×(1+effectiveBufferPercent/100)/1000)*1000
-  // estimationUsed is set by templates whenever a quantity was
-  // assumed or derived rather than customer-measured: size
-  // categories, derived roof area, estimated accessory/trim/
-  // edging LF, unknown layers, average membrane, assumed
-  // dimensions. Unverified inputs get a wider honest range —
-  // never false precision.
+STEP 9 — RANGE AND CUSTOMER DISPLAY (active QuoteDone/VNext)
+  Calculate the range separately from its customer formatting. All
+  internal amounts remain safe integer cents, using exact decimal
+  arithmetic and nearest-cent rounding (positive half cents round up).
+  Never round the underlying total or range to the nearest $10.
+
+  STANDARD BUFFERED QUOTE:
+    T = final total cents after fees, markup, minimum and tax
+    M = effective pre-tax minimum cents
+    B = businessDefaults.rangeBufferPercent, finite and 0 <= B <= 25
+    Invalid B requires review; never silently clamp it. The active
+    engine uses B as configured, with no automatic extra 5 percentage
+    points for estimationUsed. Historical assumption-based widening
+    does not authorize quoting unsupported or unconfirmed measurements.
+
+    Customer minimum floor F:
+      TAX_NONE:      M
+      TAX_ALL:       roundCent(M * (1 + taxPercent / 100))
+      TAX_MATERIALS: M + calculated tax cents, when M > 0; otherwise 0
+    TAX_MATERIALS retains the configured category taxability and markup
+    allocation. The minimum adjustment contributes no taxable amount.
+
+    For a positive, valid total:
+      midCents  = T
+      lowCents  = min(T, max(roundCent(T * (1 - B / 100)), F, 1))
+      highCents = max(roundCent(T * (1 + B / 100)), T, lowCents, 1)
+    Require F <= lowCents <= midCents <= highCents, safe integer cents
+    and exact monetary representation; otherwise return review.
+
+  OWNER-CONFIGURED CUSTOM RANGE:
+    Calculate the low, midpoint and high scenarios independently,
+    including their own fees, markup, minimum and tax. Use the smallest
+    and largest final totals as the endpoints and the midpoint scenario
+    total bounded by them. Do not apply B again; rangeBufferUsed is null.
+    Apply the same customer-display rules and minimum/integrity checks.
+
+  CUSTOMER DISPLAY, independently for each valid option:
+    - A standard quote with B = 0 and equal endpoints keeps its exact
+      cents for all three displayed amounts.
+    - Otherwise, round the low DOWN to a whole dollar, the high UP to
+      a whole dollar, and the midpoint to the NEAREST whole dollar
+      (a positive half dollar rounds up).
+    - If that whole-dollar low would fall below F, or whole-dollar
+      formatting would turn any positive endpoint into zero, preserve
+      the exact cents of ALL THREE endpoints instead. Do not raise the
+      low to the next dollar or lower it beneath the minimum.
+    - An explicitly approved free complete offering keeps zero for all
+      three amounts under the existing free-offering contract. Missing
+      or unclassified zero prices do not become free through rounding.
+    - If any displayed numeric JSON amount cannot represent its intended
+      cents exactly, require review without publishing a price.
+    Customer values are dollar numbers; formatting does not change the
+    calculation record, rates, tax, minimum or eligibility.
+
+  Hand-calculated examples (low / midpoint / high, in dollars):
+    T=$100.49, B=10%, no minimum:       $90 / $100 / $111
+      Internal range is 9,044 / 10,049 / 11,054 cents.
+    T=$100.49, B=0%, no minimum:        $100.49 / $100.49 / $100.49
+    $100 before minimum, M=$402.50, B=10%:
+      TAX_NONE:                       $402.50 / $402.50 / $442.75
+      TAX_MATERIALS, $10 actual tax:   $412.50 / $412.50 / $453.75
+      TAX_ALL, taxPercent=10:          $442.75 / $442.75 / $487.03
+    T=$0.49, B=10%, no minimum:        $0.44 / $0.49 / $0.54
+    Custom final scenarios $100.49 / $150.50 / $200.51, no minimum:
+                                      $100 / $151 / $201
+      A configured business buffer does not widen this custom range.
 
 STEP 10 — PRICE DRIVERS
   Sort line items by amountCents desc; take top 4 labor/material.

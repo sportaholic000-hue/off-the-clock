@@ -1,0 +1,1054 @@
+TAP version 13
+# Subtest: F01 CONCRETE_PATIO_SLAB exact easy multiplies configured finishing labor exactly once
+not ok 1 - F01 CONCRETE_PATIO_SLAB exact easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 53.884304
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:36:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB exact moderate multiplies configured finishing labor exactly once
+not ok 2 - F01 CONCRETE_PATIO_SLAB exact moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 9.416573
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 33000
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 33000
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB exact difficult multiplies configured finishing labor exactly once
+not ok 3 - F01 CONCRETE_PATIO_SLAB exact difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 12.421682
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 37500
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 37500
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline easy multiplies configured finishing labor exactly once
+not ok 4 - F01 CONCRETE_PATIO_SLAB measured_outline easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 25.368713
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:36:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline moderate multiplies configured finishing labor exactly once
+not ok 5 - F01 CONCRETE_PATIO_SLAB measured_outline moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 24.566229
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 33000
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 33000
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_PATIO_SLAB measured_outline difficult multiplies configured finishing labor exactly once
+not ok 6 - F01 CONCRETE_PATIO_SLAB measured_outline difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 13.487724
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 37500
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 37500
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact easy multiplies configured finishing labor exactly once
+not ok 7 - F01 CONCRETE_DRIVEWAY exact easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 10.67094
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:36:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact moderate multiplies configured finishing labor exactly once
+not ok 8 - F01 CONCRETE_DRIVEWAY exact moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 23.65453
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 33000
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 33000
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY exact difficult multiplies configured finishing labor exactly once
+not ok 9 - F01 CONCRETE_DRIVEWAY exact difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 12.431704
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 37500
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 37500
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline easy multiplies configured finishing labor exactly once
+not ok 10 - F01 CONCRETE_DRIVEWAY measured_outline easy multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 18.289759
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:36:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline moderate multiplies configured finishing labor exactly once
+not ok 11 - F01 CONCRETE_DRIVEWAY measured_outline moderate multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 23.314986
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 33000
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 33000
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 CONCRETE_DRIVEWAY measured_outline difficult multiplies configured finishing labor exactly once
+not ok 12 - F01 CONCRETE_DRIVEWAY measured_outline difficult multiplies configured finishing labor exactly once
+  ---
+  duration_ms: 31.430118
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    30000 !== 37500
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 37500
+  actual: 30000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:35:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB easy area/perimeter alone still requires geometry review
+ok 13 - F01 control CONCRETE_PATIO_SLAB easy area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 22.675015
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB moderate area/perimeter alone still requires geometry review
+ok 14 - F01 control CONCRETE_PATIO_SLAB moderate area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 7.07619
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_PATIO_SLAB difficult area/perimeter alone still requires geometry review
+ok 15 - F01 control CONCRETE_PATIO_SLAB difficult area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 7.495112
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY easy area/perimeter alone still requires geometry review
+ok 16 - F01 control CONCRETE_DRIVEWAY easy area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 11.129546
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY moderate area/perimeter alone still requires geometry review
+ok 17 - F01 control CONCRETE_DRIVEWAY moderate area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 10.355558
+  type: 'test'
+  ...
+# Subtest: F01 control CONCRETE_DRIVEWAY difficult area/perimeter alone still requires geometry review
+ok 18 - F01 control CONCRETE_DRIVEWAY difficult area/perimeter alone still requires geometry review
+  ---
+  duration_ms: 27.568911
+  type: 'test'
+  ...
+# Subtest: F01 configured labor keeps one final cent rounding and the owner access override
+not ok 19 - F01 configured labor keeps one final cent rounding and the owner access override
+  ---
+  duration_ms: 18.372863
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    3800 !== 4750
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 4750
+  actual: 3800
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:53:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 tiers and markup/tax/minimum consume the corrected labor amount
+not ok 20 - F01 tiers and markup/tax/minimum consume the corrected labor amount
+  ---
+  duration_ms: 25.749035
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   4538.89,
+    +   4688.89
+    -   4613.89,
+    -   4801.39
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 4613.89
+    1: 4801.39
+  actual:
+    0: 4538.89
+    1: 4688.89
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:61:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F01 installed finish pricing remains unchanged pending its separate rate-basis decision
+ok 21 - F01 installed finish pricing remains unchanged pending its separate rate-basis decision
+  ---
+  duration_ms: 7.822483
+  type: 'test'
+  ...
+# Subtest: F02 travel preview uses draft true rather than the saved opposite choice
+not ok 22 - F02 travel preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 177.654275
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    100 !== 150
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 150
+  actual: 100
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 travel preview uses draft false rather than the saved opposite choice
+not ok 23 - F02 travel preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 118.210119
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    150 !== 100
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 100
+  actual: 150
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 disposal preview uses draft true rather than the saved opposite choice
+not ok 24 - F02 disposal preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 68.930138
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    100 !== 150
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 150
+  actual: 100
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 disposal preview uses draft false rather than the saved opposite choice
+not ok 25 - F02 disposal preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 79.416759
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    150 !== 100
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 100
+  actual: 150
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 permit preview uses draft true rather than the saved opposite choice
+not ok 26 - F02 permit preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 98.451695
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    100 !== 150
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 150
+  actual: 100
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 permit preview uses draft false rather than the saved opposite choice
+not ok 27 - F02 permit preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 92.903306
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    150 !== 100
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 100
+  actual: 150
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 overhead preview uses draft true rather than the saved opposite choice
+not ok 28 - F02 overhead preview uses draft true rather than the saved opposite choice
+  ---
+  duration_ms: 73.340788
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    100 !== 150
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 150
+  actual: 100
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F02 overhead preview uses draft false rather than the saved opposite choice
+not ok 29 - F02 overhead preview uses draft false rather than the saved opposite choice
+  ---
+  duration_ms: 66.505268
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:89:98'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    150 !== 100
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 100
+  actual: 150
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:93:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 travel requires a saved owner decision and accepts explicit false
+not ok 30 - F03 travel requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 23.689808
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:100:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:102:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 disposal requires a saved owner decision and accepts explicit false
+not ok 31 - F03 disposal requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 17.932866
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:100:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:102:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 permit requires a saved owner decision and accepts explicit false
+not ok 32 - F03 permit requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 34.174668
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:100:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:102:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 overhead requires a saved owner decision and accepts explicit false
+not ok 33 - F03 overhead requires a saved owner decision and accepts explicit false
+  ---
+  duration_ms: 11.935607
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:100:60'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:102:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 malformed owner selection {"travel":"true"} cannot claim live readiness
+not ok 34 - F03 malformed owner selection {"travel":"true"} cannot claim live readiness
+  ---
+  duration_ms: 37.167265
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:107:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:108:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 malformed owner selection null cannot claim live readiness
+not ok 35 - F03 malformed owner selection null cannot claim live readiness
+  ---
+  duration_ms: 17.487959
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:107:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:108:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 malformed owner selection [] cannot claim live readiness
+not ok 36 - F03 malformed owner selection [] cannot claim live readiness
+  ---
+  duration_ms: 13.216898
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:107:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:108:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 malformed owner selection {"unexpected":true} cannot claim live readiness
+not ok 37 - F03 malformed owner selection {"unexpected":true} cannot claim live readiness
+  ---
+  duration_ms: 11.198157
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:107:68'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:108:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 stale choices are diagnosed, while customer choices remain per request
+not ok 38 - F03 stale choices are diagnosed, while customer choices remain per request
+  ---
+  duration_ms: 19.509289
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'QUOTING LIVE'
+    - 'NEEDS PRICING'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'NEEDS PRICING'
+  actual: 'QUOTING LIVE'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:112:69)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F14 ROOFING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+not ok 39 - F14 ROOFING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 11.682577
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'The price map contains an out-of-domain key.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    reject (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:16:43)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:50:48)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:51:28)
+    validateInterviewValue (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:58:5)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:120:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: F14 ROOFING_REPAIR.repairMaterialAllowance accepts the complete current cube and rejects malformed depths
+not ok 40 - F14 ROOFING_REPAIR.repairMaterialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 17.070917
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception: {"patch":{"small":1,"medium":2,"large":3}}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: [Function (anonymous)]
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:121:232)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F14 FLAT_ROOF_REPAIR.patchRepairHours accepts the complete current cube and rejects malformed depths
+not ok 41 - F14 FLAT_ROOF_REPAIR.patchRepairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 17.151852
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'The price map contains an out-of-domain key.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    reject (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:16:43)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:50:48)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:51:28)
+    validateInterviewValue (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:58:5)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:120:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: F14 FLAT_ROOF_REPAIR.patchMaterialAllowance accepts the complete current cube and rejects malformed depths
+not ok 42 - F14 FLAT_ROOF_REPAIR.patchMaterialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 22.196959
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'The price map contains an out-of-domain key.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    reject (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:16:43)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:50:48)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:51:28)
+    validateInterviewValue (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:58:5)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:120:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: F14 SIDING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+not ok 43 - F14 SIDING_REPAIR.repairHours accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 8.937116
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'The price map contains an out-of-domain key.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    reject (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:16:43)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:50:48)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:51:28)
+    validateInterviewValue (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:58:5)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:120:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: F14 SIDING_REPAIR.materialAllowance accepts the complete current cube and rejects malformed depths
+not ok 44 - F14 SIDING_REPAIR.materialAllowance accepts the complete current cube and rejects malformed depths
+  ---
+  duration_ms: 9.432497
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:118:49'
+  failureType: 'testCodeFailure'
+  error: 'The price map contains an out-of-domain key.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    reject (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:16:43)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:50:48)
+    visit (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:51:28)
+    validateInterviewValue (file:///workspace/scratch/db4162af70ba/quote-agreed-repairs/server/src/priceBookAI.js:58:5)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:120:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: F14 current typed/one-level trees reject extra nesting; legacy two-level debris maps retain their shape
+not ok 45 - F14 current typed/one-level trees reject extra nesting; legacy two-level debris maps retain their shape
+  ---
+  duration_ms: 97.77309
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:123:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    statusCode: 422
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:129:116)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F27 Alaska cannot imply a confirmed zero-tax jurisdiction; existing other prefills remain unchanged
+not ok 46 - F27 Alaska cannot imply a confirmed zero-tax jurisdiction; existing other prefills remain unchanged
+  ---
+  duration_ms: 0.772874
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:132:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/server-repair-evidence/baseline-correctness.mjs:133:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 7
+# fail 39
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1688.044703

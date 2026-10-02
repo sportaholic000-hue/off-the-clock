@@ -1,0 +1,396 @@
+{
+  "baseCommit": "c2e9efcdcc4aaca4a7b8f610e4cdf792cb135010",
+  "sourceBinding": "base plus source-manifest.json changes",
+  "runtime": "v22.23.2",
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/eac4e82d-23d8-4cb0-afc4-6edbe6347410/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/78c6b77b-8ba6-4281-ac9f-b9dcfcf6bbe6/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/quotedone/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/quote/calculate",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/eac4e82d-23d8-4cb0-afc4-6edbe6347410/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/eac4e82d-23d8-4cb0-afc4-6edbe6347410/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/services/eac4e82d-23d8-4cb0-afc4-6edbe6347410/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/2438e09e-2e3c-4ff4-92cb-deb74f9ecb42",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/public/quote/[SYNTHETIC]",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "url": "/api/pricebook/interview",
+      "status": 201
+    },
+    {
+      "method": "PUT",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 422
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 422
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 422
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/api/pricebook/interview/9d3c8b5a-8c39-4f94-af46-de6d0ee1c191/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "url": "/api/business/jurisdiction",
+      "status": 400
+    }
+  ],
+  "checks": [
+    {
+      "id": "F01",
+      "public": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 4613.89,
+        "mid": 4613.89,
+        "high": 4613.89
+      },
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 4613.89,
+        "mid": 4613.89,
+        "high": 4613.89
+      },
+      "authenticated": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 4613.89,
+        "mid": 4613.89,
+        "high": 4613.89
+      },
+      "finishingLaborCents": 37500,
+      "customerHasNoPrivateLines": true
+    },
+    {
+      "id": "F02",
+      "draftChoice": true,
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 150,
+        "mid": 150,
+        "high": 150
+      },
+      "beforeSave": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 100,
+        "mid": 100,
+        "high": 100
+      },
+      "afterSaveBeforeApproval": "ESTIMATE_REQUIRES_REVIEW",
+      "afterApproval": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 150,
+        "mid": 150,
+        "high": 150
+      },
+      "previewDidNotChangeSavedBook": true
+    },
+    {
+      "id": "F02",
+      "draftChoice": false,
+      "preview": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 100,
+        "mid": 100,
+        "high": 100
+      },
+      "beforeSave": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 150,
+        "mid": 150,
+        "high": 150
+      },
+      "afterSaveBeforeApproval": "ESTIMATE_REQUIRES_REVIEW",
+      "afterApproval": {
+        "resultType": "INSTANT_ESTIMATE_READY",
+        "low": 100,
+        "mid": 100,
+        "high": 100
+      },
+      "previewDidNotChangeSavedBook": true
+    },
+    {
+      "id": "F03",
+      "savedStatus": "NEEDS PRICING",
+      "diagnosticPaths": [
+        "feeSelections.owner.travel"
+      ],
+      "catalogOmitsService": true,
+      "request": {
+        "resultType": "ESTIMATE_REQUIRES_REVIEW"
+      }
+    },
+    {
+      "id": "F14",
+      "validHours": {
+        "asphalt_shingle": {
+          "patch": {
+            "small": 1,
+            "medium": 2,
+            "large": 3
+          }
+        }
+      },
+      "validMaterialAllowances": {
+        "asphalt_shingle": {
+          "patch": {
+            "small": 0,
+            "medium": 25.25,
+            "large": 40
+          }
+        }
+      },
+      "malformedRequestsRejected": 3,
+      "savedDraftUnchangedAfterRejection": true,
+      "reviewHandoffPreservesCube": true
+    },
+    {
+      "id": "F27",
+      "implicitZeroRejected": true,
+      "bookAndProfileUnchangedAfterRejection": true,
+      "explicitSyntheticSettingsAccepted": [
+        {
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0
+        },
+        {
+          "taxMode": "TAX_MATERIALS",
+          "taxPercent": 5.25
+        },
+        {
+          "taxMode": "TAX_ALL",
+          "taxPercent": 7.125
+        }
+      ],
+      "invalidTaxableRatesRejected": 3
+    }
+  ],
+  "passed": true
+}
