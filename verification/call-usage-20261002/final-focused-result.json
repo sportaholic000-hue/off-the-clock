@@ -1,0 +1,23 @@
+{
+  "kind": "final-focused",
+  "args": [
+    "--test",
+    "test/callUsage.spec.mjs",
+    "test/usageStripe.spec.mjs",
+    "test/usageRoutes.spec.mjs",
+    "test/billingStateService.spec.mjs",
+    "test/billingRoutes.spec.mjs",
+    "test/billingConfig.spec.mjs",
+    "test/runtimeConfig.spec.mjs",
+    "test/authSessionHttp.spec.mjs",
+    "test/authSessionService.spec.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedMs": 17522,
+  "tests": 108,
+  "suites": 0,
+  "pass": 108,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0
+}
