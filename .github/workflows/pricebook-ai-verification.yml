@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22.23.2'
@@ -26,6 +27,20 @@ jobs:
           "$RUNNER_TEMP/ai-browser/node_modules/.bin/playwright" install --with-deps chromium
       - name: Build owner app and widget
         run: npm --prefix client run build
+      - name: Preserve original editor-probe failure and verify all pricing assertions
+        env:
+          PRICEBOOK_BROWSER_MODULE: ${{ runner.temp }}/ai-browser/node_modules/playwright
+        run: |
+          mkdir -p "$RUNNER_TEMP/ai-verification/public"
+          git show 3eac1944149b7375052fa5a5e652c497413e6d64:test/priceBookEditor.browser.spec.mjs > test/priceBookEditor.previous-probe.mjs
+          if PRICEBOOK_EDITOR_EVIDENCE_DIR="$RUNNER_TEMP/editor-original" node --test --test-name-pattern="editor D1: root factor" test/priceBookEditor.previous-probe.mjs > "$RUNNER_TEMP/ai-verification/public/editor-original-probe.tap" 2>&1; then
+            echo "Original broken state probe unexpectedly passed"
+            exit 1
+          fi
+          rm test/priceBookEditor.previous-probe.mjs
+          cat "$RUNNER_TEMP/ai-verification/public/editor-original-probe.tap"
+          PRICEBOOK_EDITOR_EVIDENCE_DIR="$RUNNER_TEMP/editor-final" node --test test/priceBookEditor.browser.spec.mjs | tee "$RUNNER_TEMP/ai-verification/public/editor-final.tap"
+          cp "$RUNNER_TEMP/editor-final/execution.json" "$RUNNER_TEMP/ai-verification/public/editor-final-execution.json"
       - name: Focused AI and customer-summary regressions
         run: node --test test/priceBookAI.spec.mjs
       - name: Real Gemini and application browser verification

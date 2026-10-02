@@ -18,6 +18,13 @@ import { getVNextPriceBookMetadata } from '../server/quote-engine-vnext/index.js
 // Use an already-installed Playwright via PRICEBOOK_BROWSER_MODULE if needed;
 // PRICEBOOK_BROWSER_EXECUTABLE can select an already-installed browser binary.
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// This diagnostic capture follows named hooks in the source being exercised.
+ // AI loading/error hooks may be added without changing any pricing behavior.
+ // Keep the original stored-record, decimal and UI assertions below intact.
+const componentSource=readFileSync(join(repo,'client/src/pricebook.jsx'),'utf8').split('export default function PriceBook() {')[1].split('  async function load()')[0];
+const hookNames=[...componentSource.matchAll(/const\s+(?:\[\s*(\w+)\s*,[^\]]+\]|(\w+))\s*=\s*(?:useState|useRef)\s*\(/g)].map(match=>match[1]||match[2]);
+const stateIndex=Object.fromEntries(hookNames.map((name,index)=>[name,index]));
+for(const name of ['book','selectedType','statuses','validating','draftValidationErrors','preview','previewLoading','error','saving','locked']) assert.ok(Number.isInteger(stateIndex[name]),'Missing observed hook: '+name);
 const evidence = process.env.PRICEBOOK_EDITOR_EVIDENCE_DIR || mkdtempSync(join(tmpdir(), 'otc-editor-evidence-'));
 mkdirSync(evidence, { recursive:true });
 const storeRoot = mkdtempSync(join(tmpdir(), 'otc-editor-store-'));
@@ -141,22 +148,22 @@ async function scenario(name, services, run) {
     await route.fulfill({status,contentType:'application/json',body:JSON.stringify(response)});
   });
   const capture=async(label,screenshot=false)=>{
-    await page.waitForFunction(()=>{
+    await page.waitForFunction(stateIndex=>{
       function find(node){if(!node)return null;if(node.type?.name==='PriceBook')return node;return find(node.child)||find(node.sibling);}
       const fiber=find(window.__editorFiberRoot?.current);if(!fiber)return false;
       const values=[];for(let h=fiber.memoizedState;h;h=h.next)values.push(h.memoizedState);
-      return values[3]?.services && values[6]===false && values[10]===false && values[13]===false;
-    });
-    const state=await page.evaluate(()=>{
+      return values[stateIndex.book]?.services && values[stateIndex.validating]===false && values[stateIndex.previewLoading]===false && values[stateIndex.saving]===false;
+    },stateIndex);
+    const state=await page.evaluate(stateIndex=>{
       function find(node){if(!node)return null;if(node.type?.name==='PriceBook')return node;return find(node.child)||find(node.sibling);}
       const fiber=find(window.__editorFiberRoot.current),values=[];
       for(let h=fiber.memoizedState;h;h=h.next)values.push(h.memoizedState);
-      return {book:values[3],selectedKey:values[4],statuses:values[5],validating:values[6],draftValidationErrors:values[8],
-        preview:values[9],previewLoading:values[10],error:values[12]?.message || null,saving:values[13],locked:values[14],
+      return {book:values[stateIndex.book],selectedKey:values[stateIndex.selectedType],statuses:values[stateIndex.statuses],validating:values[stateIndex.validating],draftValidationErrors:values[stateIndex.draftValidationErrors],
+        preview:values[stateIndex.preview],previewLoading:values[stateIndex.previewLoading],error:values[stateIndex.error]?.message || null,saving:values[stateIndex.saving],locked:values[stateIndex.locked],
         visibleText:document.body.innerText,html:document.getElementById('root').innerHTML,
         inputs:[...document.querySelectorAll('input,select,textarea')].map(node=>({tag:node.tagName,label:node.getAttribute('aria-label'),value:node.value,
           invalid:node.getAttribute('aria-invalid'),field:node.closest('[id^="field-"]')?.id || null}))};
-    });
+    },stateIndex);
     assert.ok(state.book.services && state.selectedKey,'React capture must find the actual loaded book and selection');
     snapshots.push({label,...state,stored:readFileSync(join(storeRoot,owner+'.json'),'utf8'),requestsThrough:requests.length});
     if(screenshot) await page.screenshot({path:join(dir,label+'.png'),fullPage:true});
