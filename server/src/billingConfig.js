@@ -1,3 +1,5 @@
+import { loadUsageBillingConfig } from './usageStripe.js';
+
 const PLAN_PRICE_ENV = Object.freeze({
   Operator: Object.freeze({
     monthly: 'STRIPE_OPERATOR_MONTHLY_PRICE_ID',
@@ -111,7 +113,8 @@ export function loadBillingConfig(env = process.env) {
     successUrl: success.value,
     cancelUrl: cancel.value,
     portalReturnUrl: portal.value,
-    integrationIdentifier
+    integrationIdentifier,
+    usage: loadUsageBillingConfig(env, priceIds, { production })
   });
 }
 

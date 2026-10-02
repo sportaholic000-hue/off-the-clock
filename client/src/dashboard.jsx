@@ -103,6 +103,7 @@ export default function Dashboard() {
 
   const view = operatorView(dashboard.operator);
   const activity = dashboard.previewActivity || null;
+  const usage = dashboard.usage || null;
   const statuses = dashboard.pricebookStatuses || [];
   const ready = statuses.filter(service => service.status === 'QUOTING LIVE');
   const needs = statuses.filter(service => service.status !== 'QUOTING LIVE');
@@ -128,6 +129,21 @@ export default function Dashboard() {
             </span>
           </button>
           <div className="operator-side">
+            {usage && !activity && (
+              <div className="minutes-meter" aria-live="polite">
+                {usage.available ? <>
+                  <div className="minutes-head">
+                    <span className="chip chip-plan mono">{usage.period.kind === 'TRIAL' ? 'TRIAL' : usage.plan}</span>
+                    <span className="mono minutes-count">{usage.minutesUsed} / {usage.includedMinutes} MIN</span>
+                  </div>
+                  <span className="minutes-track">
+                    <span className="minutes-fill" style={{width: String(Math.min(100,Math.max(0,usage.minutesUsed / usage.includedMinutes * 100))) + '%'}} />
+                  </span>
+                  <span className="mono">{usage.minutesUsed} minutes used · {usage.minutesRemaining} minutes remaining</span>
+                  {usage.overageMinutes > 0 && <span className="mono">Overage: {usage.overageMinutes} min · {'$' + (usage.overageCents / 100).toFixed(2)}</span>}
+                </> : <span className="mono">Minutes unavailable — awaiting verified billing period</span>}
+              </div>
+            )}
             {activity && (
               <div className="minutes-meter">
                 <div className="minutes-head">

@@ -1,3 +1,4 @@
+import { installCallUsageSchema } from './usageSchema.js';
 import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
@@ -14,6 +15,7 @@ const USERS_COLUMNS = [
 const USERS_ROLE_NULLABILITY_CHECK = /CHECK\s*\(\s*\(\s*role\s*=\s*'staff'\s+AND\s+ownerId\s+IS\s+NOT\s+NULL\s*\)\s+OR\s+\(\s*role\s+IN\s*\(\s*'owner'\s*,\s*'admin'\s*\)\s+AND\s+ownerId\s+IS\s+NULL\s*\)\s*\)/i;
 
 const ADDITIVE_COLUMNS = {
+  billingCheckoutRequests: { stripeUsagePriceId: 'TEXT' },
   users: {
     paymentFailedAt: 'TEXT',
     emailVerifiedAt: 'TEXT'
@@ -234,5 +236,6 @@ export function migrateDatabase(database) {
   installAuthSessionSchema(database);
   installAuthLimitSchema(database);
   installOutboundWebhookSchema(database);
+  installCallUsageSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

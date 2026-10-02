@@ -1,4 +1,8 @@
 import 'dotenv/config';
+import {callUsageService} from './callUsage.js';
+import {installUsageRoutes} from './usageRoutes.js';
+import {createUsageReporter} from './usageReporter.js';
+import {verifyUsageBillingCatalog} from './usageStripe.js';
 import {deploymentConfig} from './deploymentEnvironment.js';
 import {configureClientAddress} from './clientAddress.js';
 import {createLifecycle} from './lifecycle.js';
@@ -151,13 +155,16 @@ const ownerCalendarService = createOwnerCalendarService({ ownerQuery, calendar: 
 const billingConfig = runtimeConfig.stripeBilling ? loadBillingConfig() : null;
 const stripeClient = billingConfig
   ? new Stripe(billingConfig.secretKey, {
+      apiVersion: '2026-08-26.dahlia',
       maxNetworkRetries: 2,
       timeout: 20_000,
       appInfo: { name: 'off-the-clock', version: '0.0.0' }
     })
   : null;
 const billingStateService = billingConfig
-  ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap })
+  ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap,
+      supplementalPriceIds: billingConfig.usage ? [billingConfig.usage.priceId] : [],
+      onVerifiedTransition: (event,transition) => callUsageService.captureVerifiedStripeEvent(event,transition) })
   : null;
 
 // Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
@@ -207,7 +214,8 @@ if (billingConfig) {
     successUrl: billingConfig.successUrl,
     cancelUrl: billingConfig.cancelUrl,
     portalReturnUrl: billingConfig.portalReturnUrl,
-    integrationIdentifier: billingConfig.integrationIdentifier
+    integrationIdentifier: billingConfig.integrationIdentifier,
+    usageConfig: billingConfig.usage
   });
 }
 
@@ -470,12 +478,15 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     operator: profileState.operator,
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
+    usage: req.role === 'owner' ? callUsageService.getUsageSnapshot(req.tenantOwnerId) : null,
     pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.
     previewActivity: previewDashboardActivity(),
     sections: ['Home', 'Calls', 'Leads', 'Quotes', 'Customers', 'Price Book', 'Calendar', 'Settings']
   });
 });
+
+installUsageRoutes(app,{service:callUsageService,requireAuth});
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
   res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'A2P status', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
@@ -502,14 +513,19 @@ app.use((err, _req, res, _next) => {
   });
 });
 
+try { await verifyUsageBillingCatalog(stripeClient,billingConfig?.usage); }
+catch { db.close();throw new Error('STRIPE_USAGE_CATALOG_VALIDATION_FAILED: verify the configured Stripe plan prices, monthly 35-cent price and sum meter.'); }
+const usageReporter = createUsageReporter({database:db,ownerQuery,service:callUsageService,stripeClient,
+  usageConfig:billingConfig?.usage,providerEnabled:providerWritesEnabled});
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
 
+usageReporter.start();
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,usageReporter.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{void usageReporter.stop();void stopWebhookWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 
