@@ -17,11 +17,11 @@ jobs:
       - name: Install
         run: |
           rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
-          sudo apt-get install -y -q espeak-ng > /dev/null
+          sudo apt-get update -q > /dev/null && sudo apt-get install -y -q espeak-ng > /dev/null
       - name: Caller speech as 8 kHz mu-law
         run: |
           espeak-ng -v en-us -s 145 -w /tmp/q.wav "Hi, I need a roof repair. A few shingles blew off in the storm and it's leaking a little."
-          ffmpeg -loglevel error -y -i /tmp/q.wav -ar 8000 -ac 1 -f mulaw /tmp/q.ulaw && ls -la /tmp/q.ulaw
+          node e2e/wav-to-ulaw.mjs /tmp/q.wav /tmp/q.ulaw
       - name: Start server with the voice runtime and seed one owner
         env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
         run: |
