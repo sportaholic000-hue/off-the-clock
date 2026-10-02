@@ -15,7 +15,7 @@ const base='http://127.0.0.1:5010',checks=[],wire=[],errors=[],dependencies=[];
 const safe=v=>JSON.parse(JSON.stringify(v,(k,v)=>['password','passwordHash','token','bookingToken','bookingTokenReceipt','bookingTokenHash'].includes(k)?'[SYNTHETIC SECRET OMITTED]':v));
 const save=(n,v)=>fs.writeFileSync(path.join(pub,n),JSON.stringify(safe(v),null,2));
 let app,browser,proxy,db,page;
-async function check(name,fn){try{await fn();checks.push({name,passed:true});}catch(e){checks.push({name,passed:false,error:e.stack});}finally{if(page&&!page.isClosed()){await page.screenshot({path:path.join(pub,name+'.png')}).catch(()=>{});save(name+'-screen.json',{text:await page.locator('body').innerText(),inputs:await page.locator('input,select').evaluateAll(nodes=>nodes.map(n=>({label:n.getAttribute('aria-label'),value:n.value,invalid:n.getAttribute('aria-invalid')})))});}}console.log('EDITOR_CHECK '+JSON.stringify(checks.at(-1)));}
+async function check(name,fn){try{await fn();checks.push({name,passed:true});}catch(e){checks.push({name,passed:false,error:e.stack});}finally{if(page&&!page.isClosed()){const focus=name.startsWith('F04')?page.getByLabel('travel fee rule',{exact:true}):name.startsWith('F07')?page.locator('#field-laborPerWallSqftPerCoat'):name.startsWith('F11')||name.startsWith('F13')?page.locator('.interview-field'):null;if(focus&&await focus.count())await focus.first().scrollIntoViewIfNeeded().catch(()=>{});await page.screenshot({path:path.join(pub,name+'.png')}).catch(()=>{});save(name+'-screen.json',{text:await page.locator('body').innerText(),inputs:await page.locator('input,select').evaluateAll(nodes=>nodes.map(n=>({label:n.getAttribute('aria-label'),value:n.value,invalid:n.getAttribute('aria-invalid')})))});}}console.log('EDITOR_CHECK '+JSON.stringify(checks.at(-1)));}
 async function fixture(label,fee='not_applicable',selection){
  const owner=await app.owner(label),call=async(method,url,body,status=200)=>{const r=await app.request(method,url,body,owner.token);assert.equal(r.status,status,JSON.stringify(r));return r.result;};
  const f=wallPainting(),converted=convertApplicationBook({services:[f.ownerPricing],defaults:f.businessDefaults},'toDollars');
@@ -81,8 +81,14 @@ try{
  });
  const ap=await fixture('approval');
  await check('F07-other-unsaved-service',async()=>{
-  await useOwner(ap);await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.2345');console.log('APPROVAL_TRACE edited '+JSON.stringify(await bookState()));await pick('B');console.log('APPROVAL_TRACE switched '+JSON.stringify(await bookState()));await approve(ap.services[1].id);console.log('APPROVAL_TRACE approved '+JSON.stringify(await bookState()));await pick('A');
-  const draft=await bookState(),saved=await ap.read();save('F07-other-draft-and-saved.json',{draft,saved});console.log('APPROVAL_TRACE returned '+JSON.stringify({draft,saved}));assert.equal(await page.locator('#field-laborPerWallSqftPerCoat input').inputValue(),'1.2345');assert.equal(saved.services[0].pricing.laborPerWallSqftPerCoat,1);assert.equal(draft.services[0].pricing.laborPerWallSqftPerCoat,1.2345);assert.equal(draft.revision,saved.revision);
+  await useOwner(ap);await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.2345');await pick('B');await approve(ap.services[1].id);await pick('A');await page.waitForFunction(()=>document.querySelector('#field-laborPerWallSqftPerCoat input')?.value==='1.2345');
+  const draft=await bookState(),saved=await ap.read();save('F07-other-draft-and-saved.json',{draft,saved});assert.equal(await page.locator('#field-laborPerWallSqftPerCoat input').inputValue(),'1.2345');assert.equal(saved.services[0].pricing.laborPerWallSqftPerCoat,1);assert.equal(draft.services[0].pricing.laborPerWallSqftPerCoat,1.2345);assert.equal(draft.revision,saved.revision);
+ });
+ await check('F07-unsaved-tier-and-switching',async()=>{
+  await useOwner(ap);await openSection('Good / Better / Best tiers');await page.getByRole('button',{name:'Add tier',exact:true}).click();await page.getByLabel('Tier 1 name',{exact:true}).fill('[SYNTHETIC] Unsaved tier');
+  await page.getByRole('button',{name:'Override a field',exact:true}).click();await page.locator('.override-row select').selectOption('laborPerWallSqftPerCoat');await page.locator('.override-row input').fill('0.0051');
+  const before=await bookState();await pick('B');await approve(ap.services[1].id);await pick('A');await openSection('Good / Better / Best tiers');await page.waitForFunction(()=>document.querySelector('.override-row input')?.value==='0.0051');
+  const draft=await bookState(),saved=await ap.read();save('F07-unsaved-tier.json',{before,draft,saved});assert.deepEqual(draft.services[0].tiers,before.services[0].tiers);assert.equal(saved.services[0].tiers?.length||0,0);
  });
  await check('F07-edit-during-review',async()=>{
   await useOwner(ap);await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();await page.locator('#field-laborPerWallSqftPerCoat input').fill('1.7777');
@@ -92,8 +98,8 @@ try{
  });
  await check('F07-revision-conflict',async()=>{
   await useOwner(ap);await page.getByRole('button',{name:'Review saved configuration',exact:true}).click();await page.getByLabel('I confirm these exact saved prices, units, factors and rules.',{exact:true}).check();
-  const external=await ap.read();external.services[1].pricing.laborPerWallSqftPerCoat=2;await ap.call('POST','/api/pricebook/save',external);
-  const wait=page.waitForResponse(r=>r.url().endsWith('/'+ap.services[0].id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await wait).status(),409);save('F07-conflict.json',{draft:await bookState(),saved:await ap.read()});assert.equal((await bookState()).services[1].pricing.laborPerWallSqftPerCoat,1);
+  await page.locator('.quote-midpoint-value').waitFor();const external=await ap.read();external.services[1].pricing.laborPerWallSqftPerCoat=2;await ap.call('POST','/api/pricebook/save',external);
+  const wait=page.waitForResponse(r=>r.url().endsWith('/'+ap.services[0].id+'/approve'));await page.getByRole('button',{name:'Confirm saved configuration',exact:true}).click();assert.equal((await wait).status(),409);save('F07-conflict.json',{draft:await bookState(),saved:await ap.read()});assert.equal((await bookState()).services[1].pricing.laborPerWallSqftPerCoat,1);await page.locator('.quote-midpoint-value').waitFor({state:'hidden'});
  });
  const ia=await fixture('interview-a'),ib=await fixture('interview-b');
  await check('F08-legacy-cross-owner',async()=>{
@@ -115,7 +121,7 @@ try{
   await page.unroute('**/api/pricebook/suggest');await page.getByRole('button',{name:'Open in editor',exact:true}).click();
   await page.locator('.starter-grid').getByText('[SYNTHETIC] Owner A suggestion',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Use as draft',exact:true}).click();
-  const draft=await bookState();assert.ok(draft.services.some(s=>s.source==='AI_SUGGESTED'&&s.active===false&&s.pricing.laborPerWallSqftPerCoat===0.0051));
+  const draft=await bookState();assert.ok(draft.services.some(s=>s.source==='AI_SUGGESTED'&&s.active===false&&(s.pricing||s).laborPerWallSqftPerCoat===0.0051));
   await page.evaluate(p=>sessionStorage.setItem('otc_pricebook_suggestions',JSON.stringify(p)),payload);
   await useOwner(ib,'/pricebook',{clear:false});assert.equal(await page.locator('.starter-grid').count(),0);assert.equal(payload.ownerId,ia.owner.id);
   await page.evaluate(p=>{sessionStorage.setItem('otc_pricebook_suggestions',JSON.stringify(p));sessionStorage.setItem('otc_pricebook_draft',JSON.stringify({version:1,ownerId:p.ownerId,payload:{services:[]}}));sessionStorage.setItem('unrelated','keep');},payload);

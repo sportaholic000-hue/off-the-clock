@@ -108,7 +108,7 @@ export function mergeSavedApproval(draft, before, after, serviceId, approvedRevi
   if (!savedService || !reviewed || draft.revision !== before.revision || after.revision !== approvedRevision ||
       !sameEditorValue(before.defaults, after.defaults) ||
       !sameEditorValue(before.services.filter(s => s.id !== serviceId), after.services.filter(s => s.id !== serviceId))) {
-    throw Error('The saved price book changed during approval. Your unsaved edits are still here. Review the newer saved version before saving again.');
+    throw Object.assign(Error('The saved price book changed during approval. Your unsaved edits are still here. Review the newer saved version before saving again.'),{status:409});
   }
   return {...draft, revision:after.revision, updatedAt:after.updatedAt,
     services:draft.services.map(service => {

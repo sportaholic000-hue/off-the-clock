@@ -573,6 +573,7 @@ export default function PriceBook() {
   const [newServiceType,setNewServiceType] = useState('');
   const [transferNotice,setTransferNotice] = useState(null);
   const [previewFeeDraft,setPreviewFeeDraft] = useState({context:null,values:{}});
+  const [revisionConflict,setRevisionConflict] = useState(null);
 
   async function load() {
     const [dash, state, meta] = await Promise.all([
@@ -660,6 +661,7 @@ export default function PriceBook() {
     // Cleanup invalidates already-running requests as well as the debounce.
     let current = true;
     setPreview(null);
+    if(revisionConflict){setPreviewLoading(false);setPreview({resultType:'ESTIMATE_REQUIRES_REVIEW',reviewReason:revisionConflict});return () => {current=false;};}
     if (!selected || !selectedMeta || !book || locked) {
       setPreviewLoading(false);
       return () => { current = false; };
@@ -680,7 +682,7 @@ export default function PriceBook() {
         .finally(() => { if (current) setPreviewLoading(false); });
     }, 350);
     return () => { current = false; clearTimeout(timer); };
-  }, [selected, selectedMeta, book?.defaults, book?.revision, locked, customerFeeSelections]);
+  }, [selected, selectedMeta, book?.defaults, book?.revision, locked, customerFeeSelections, revisionConflict]);
 
   function replaceSelected(next) {
     setBook({ ...book, services:book.services.map((service, index) => editorServiceKey(service, index) === selectedType ? next : service) });
@@ -920,7 +922,7 @@ export default function PriceBook() {
                 {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
                 {contract.engineVersion&&<>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
+                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}

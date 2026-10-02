@@ -64,7 +64,7 @@ jobs:
         env:
           PRICEBOOK_BROWSER_MODULE: ${{ runner.temp }}/editor-browser/node_modules/playwright
         run: |
-          node --test test/pricebookEditorRepairs.spec.mjs test/phase2Terminology.spec.js test/phase2.spec.js test/priceBookAI.spec.mjs test/priceBookEditor.browser.spec.mjs test/pricebookPreviewFreshness.browser.spec.mjs | tee "$RUNNER_TEMP/editor-evidence/existing.tap"
+          node --test test/pricebookEditorRepairs.spec.mjs test/interviewControls.browser.spec.mjs test/phase2Terminology.spec.js test/phase2.spec.js test/priceBookAI.spec.mjs test/priceBookEditor.browser.spec.mjs test/pricebookPreviewFreshness.browser.spec.mjs | tee "$RUNNER_TEMP/editor-evidence/existing.tap"
           exit ${PIPESTATUS[0]}
       - name: Source-bound evidence for review
         if: always()
