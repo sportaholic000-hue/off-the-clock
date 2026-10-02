@@ -282,39 +282,8 @@ export function validateStarterServices(raw, serviceTypes) {
   return out;
 }
 
-export async function suggestStarterBook({ industry, serviceTypes }) {
-  const requested = [...new Set((serviceTypes || []).filter(type => SERVICE_TYPE_OPTIONS.includes(type)))];
-  if (!requested.length) {
-    const error = new Error('Select at least one service before requesting suggestions');
-    error.statusCode = 400;
-    throw error;
-  }
-  const fieldCatalog = requested.map(serviceType => {
-    if (serviceType === 'CUSTOM') return 'CUSTOM: { service, serviceType:"CUSTOM", low: integer dollars, high: integer greater than low, unit: one of ' + UNIT_OPTIONS.join('|') + ', minimumJob: integer dollars }';
-    const specs = starterFieldSpecs(serviceType);
-    return `${serviceType}: { service, serviceType:"${serviceType}", fields: { ${specs.map(def => describeStarterField(def)).join(', ')} } }`;
-  }).join('\n');
-  const labelNotes = requested.filter(type => type !== 'CUSTOM').map(serviceType =>
-    `${serviceType} field meanings: ${starterFieldSpecs(serviceType).map(def => `${def.field} = ${def.label}`).join(' | ')}`
-  ).join('\n');
-  const systemInstruction = 'You are a contractor pricing assistant. Return ONLY a valid JSON array. No markdown. No code blocks. No backticks. No explanation. Response must start with [ and end with ] and be parseable by JSON.parse() with zero modifications.';
-  const userMessage = `Suggest STARTER draft prices for a ${String(industry || '').slice(0, 80)} business. Return one object per requested service, in this exact shape (money fields are US dollars, quantity fields use their natural unit; plain numbers only, no strings, no $ signs):\n${fieldCatalog}\n${labelNotes}\nOnly include the listed fields. Use realistic mid-market rates. These are AI-suggested placeholder prices. Review and confirm each value before going live.`;
-  let lastError;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      const result = await geminiJson({ systemInstruction, userMessage });
-      const valid = validateStarterServices(result, requested);
-      if (!valid.length) throw new Error('AI returned no valid starter services');
-      return valid;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  const failure = new Error('Could not generate suggestions. Please build your price book manually.');
-  failure.cause = lastError;
-  failure.statusCode = 503;
-  throw failure;
-}
+// These are AI-suggested placeholder prices. Review and confirm each value before going live.
+export { suggestStarterBook } from './priceBookAI.js';
 
 export async function draftKnowledgeBase({ businessName, businessTypes, websiteUrl }) {
   const systemInstruction = 'Draft a business knowledge base as strict JSON with exactly these keys: about, hours, services, policies, faqs, neverSay. Use only facts supplied by the owner. Leave unknown values empty. neverSay must be an array. Do not add markdown or explanations.';

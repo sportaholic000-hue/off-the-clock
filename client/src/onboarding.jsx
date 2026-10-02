@@ -482,6 +482,11 @@ function PriceBookStep({ state, metadata, back, next }) {
   const activeTypes = state.profile.businessTypes || [];
   const available = metadata.filter(service => activeTypes.includes(service.serviceType));
   const [mode, setMode] = useState('browser');
+  const [answer,setAnswer] = useState('');
+  const [aiBusy,setAiBusy] = useState(false);
+  const [aiNotice,setAiNotice] = useState('');
+  const [aiError,setAiError] = useState(null);
+  const [suggestionError,setSuggestionError] = useState(null);
   const [draft, setDraft] = useState(null);
   const [position, setPosition] = useState(0);
   // Scalar/select fields hold a string; structured fields hold the object.
@@ -489,9 +494,10 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [readBack, setReadBack] = useState(null);
   const [existingDrafts, setExistingDrafts] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
+  const [suggesting,setSuggesting] = useState(false);
   const [error, setError] = useState(null);
   const interviewFields = useMemo(
-    () => available.flatMap(service => service.fields.map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
+    () => available.flatMap(service => service.fields.filter(field=>['number','json','select','boolean'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
     [available]
   );
   const current = interviewFields[position];
@@ -515,6 +521,19 @@ function PriceBookStep({ state, metadata, back, next }) {
     }
     const index = interviewFields.findIndex(field => !(loaded.confirmedFields?.[field.serviceType] || []).includes(field.field));
     return index >= 0 ? index : interviewFields.length;
+  }
+
+  async function assistAnswer() {
+    if (!draft || !current || aiBusy) return;
+    setAiBusy(true);setError(null);setAiError(null);setAiNotice('');
+    try {
+      const result=await api('/api/pricebook/interview/'+draft.id+'/assist',{method:'POST',body:{serviceType:current.serviceType,field:current.field,answer}});
+      setDraft(result.draft);
+      setRawValue(current.type==='json'?result.value:String(result.value));
+      setReadBack(null);
+      setAiNotice('AI captured this as an unconfirmed draft. Check the value below before saving it.');
+    } catch(nextError) {setAiError(nextError);}
+    finally {setAiBusy(false);}
   }
 
   async function startInterview() {
@@ -593,6 +612,7 @@ function PriceBookStep({ state, metadata, back, next }) {
         }
       });
       setDraft(result.draft);
+      setAnswer('');setAiNotice('');
       const nextField = interviewFields[position + 1];
       setRawValue(nextField?.type === 'json' ? {} : '');
       setReadBack(null);
@@ -609,13 +629,15 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   async function suggest() {
-    setError(null);
+    if(suggesting)return;
+    setSuggesting(true);setError(null);setSuggestionError(null);
     try {
       const industry = TRADE_GROUPS.filter(group => group.types.some(type => activeTypes.includes(type))).map(group => group.label).join(', ');
       const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:activeTypes } });
       setSuggestions(result);
       sessionStorage.setItem('otc_pricebook_suggestions', JSON.stringify(result));
-    } catch (nextError) { setError(nextError); }
+    } catch (nextError) { setSuggestionError(nextError); }
+    finally {setSuggesting(false);}
   }
 
   if (!quoteAccess) {
@@ -650,6 +672,13 @@ function PriceBookStep({ state, metadata, back, next }) {
           {draft && current && (
             <div className="interview-field">
               <StatusChip status="DRAFT" />
+              <Field label="Describe this price in your own words">
+                <Textarea value={answer} disabled={aiBusy} maxLength={4000} onChange={event=>{setAnswer(event.target.value);setAiError(null);}} />
+              </Field>
+              <Button icon={Sparkles} disabled={aiBusy||!answer.trim()} onClick={assistAnswer}>{aiBusy?'Reading your answer…':'Use AI to capture this answer'}</Button>
+              {aiBusy&&<p role="status">AI is working. You can still open the manual editor below.</p>}
+              {aiNotice&&<p role="status">{aiNotice}</p>}
+              <ErrorMessage error={aiError} />
               <p className="mono">{position + 1} / {interviewFields.length} · {current.serviceName}</p>
               <Field label={current.label}>
                 {current.type === 'select' ? (
@@ -669,18 +698,19 @@ function PriceBookStep({ state, metadata, back, next }) {
                   <TextInput type="number" step="0.01" value={rawValue} onChange={event => editValue(event.target.value)} />
                 )}
               </Field>
-              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : !rawValue}>Read it back</Button>}
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : !rawValue)}>Read it back</Button>}
               {readBack && (
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
                   <div className="test-call-row">
-                    <Button icon={Check} onClick={confirmField}>{current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
+                    <Button icon={Check} disabled={aiBusy} onClick={confirmField}>{current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
                     <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
                   </div>
                 </div>
               )}
             </div>
           )}
+          {draft && current && <Button variant="secondary" disabled={aiBusy} onClick={reviewDraft}>Review captured values in editor</Button>}
           {draft && !current && (
             <div className="interview-complete">
               <Notice tone="success">Every captured field is confirmed. The result is still DRAFT until you review and save it in the editor.</Notice>
@@ -690,7 +720,9 @@ function PriceBookStep({ state, metadata, back, next }) {
         </div>
         <div className="path-row">
           <div><span className="eyebrow">2</span><h2>Suggest a starter book</h2><p>Generate AI-suggested placeholder prices, then review and confirm each value before going live.</p></div>
-          <Button icon={Sparkles} variant="secondary" onClick={suggest}>Suggest a starter book</Button>
+          <Button icon={Sparkles} variant="secondary" disabled={suggesting} onClick={suggest}>{suggesting?'Generating draft…':'Suggest a starter book'}</Button>
+          {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. The manual editor remains available below.</p>}
+          <ErrorMessage error={suggestionError} />
         </div>
         {suggestions && (
           <div className="suggestion-results">

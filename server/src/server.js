@@ -1,3 +1,4 @@
+import {PriceBookAIError} from './priceBookAI.js';
 import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
 import {configureClientAddress} from './clientAddress.js';
@@ -49,6 +50,7 @@ import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
 import {
   createInterviewDraft,
+  assistInterviewDraft,
   draftReviewPayload,
   getBusinessProfile,
   getInterviewDraft,
@@ -92,6 +94,14 @@ const lifecycle = createLifecycle(app,db);
 configureClientAddress(app,{mode:deploymentConfig.mode});
 const port = Number(process.env.PORT || 3000);
 const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+// Only the price-book adapter's fixed, credential-free messages are exposed.
+const priceBookAIHandler = fn => asyncHandler(async(req,res)=>{
+  try { return await fn(req,res); }
+  catch(error) {
+    if (!(error instanceof PriceBookAIError)) throw error;
+    return res.status(503).json({error:error.message,code:error.code,retryable:true});
+  }
+});
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
 
@@ -414,6 +424,10 @@ app.put('/api/pricebook/interview/:draftId', requireAuth(['owner']), requireQuot
   return res.json({ draft });
 }));
 
+app.post('/api/pricebook/interview/:draftId/assist', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
+  res.json(await assistInterviewDraft(req.tenantOwnerId, req.params.draftId, req.body || {}));
+}));
+
 app.get('/api/pricebook/interview/:draftId/review', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   return res.json(draftReviewPayload(req.tenantOwnerId, req.params.draftId));
 }));
@@ -445,10 +459,10 @@ installBookingAdminRoutes(app, {
   asyncHandler
 });
 
-app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, asyncHandler(async (req, res) => {
+app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
   const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes });
   return res.json({
-    suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', confirmedFields: {} })),
+    suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', status:'DRAFT', active:false, confirmedFields: {} })),
     warning: 'These are AI-suggested placeholder prices. Review and confirm each value before going live.'
   });
 }));
