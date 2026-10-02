@@ -96,7 +96,7 @@ registerProcessor('otc-player',Q);`;
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
   let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
-  const ECHO_GATE = 0.15, ECHO_TAIL_MS = 400;
+  const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
@@ -281,7 +281,7 @@ registerProcessor('otc-player',Q);`;
         peakMax = Math.max(peakMax, peak); if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
         // Speakers feed the agent's own voice back into the mic. While it is talking, quiet input is sent as
         // silence so the agent doesn't interrupt itself; a caller speaking clearly still cuts in.
-        const agentTalking = playerPlaying || playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS;
+        const agentTalking = playerPlaying && (playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS);
         if (agentTalking && peak < ECHO_GATE) bytes.fill(0);
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
         send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
