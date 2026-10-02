@@ -23,8 +23,14 @@ export function bareMulch(){const f=mulch('TAX_NONE');f.businessDefaults.minimum
 export function standardExterior(){return fixture('EXTERIOR_PAINTING',{exteriorLaborPerSqftPerCoat:100,materialPerSqftPerCoat:50,minimumJob:0,laborHourlyRate:5000},{areaInputMethod:'wall_sqft',exteriorAreaSqft:100,stories:1,surfaceCondition:'good',coats:2});}
 export function standardFence(){return fixture('FENCING_INSTALL',{laborPerLinearFoot:{wood:1000},materialPerLinearFoot:{wood:2000},postPrice:{wood:2000},concretePerPost:1000,postsIncludedInMaterial:{wood:false},gatePrice:{wood:25000},minimumJob:0},{linearFeet:100,lfMethod:'exact',fenceType:'wood',fenceHeight:6,gateCount:0,terrainSlope:'flat'});}
 export const expected={roof:{storedMinimumCents:250000,editorMinimumDollars:2500,preTaxCents:250000,taxCents:37500,midDollars:2875,lowDollars:2875,highDollars:3163},wall:{midDollars:300},wallCost:{midDollars:250},mulch:{midDollars:77.78}};
+export function bareCleanup(){return fixture('LANDSCAPING_CLEANUP',{cleanupBaseRatePerSqft:10,debrisPricing:{light:{laborMultiplier:1,disposalFlat:5000},moderate:{laborMultiplier:1.5,disposalFlat:10000},heavy:{laborMultiplier:2,disposalFlat:15000}},minimumServiceCharge:0},{yardSqft:1000,sqftMethod:'exact',debrisLevel:'light',slope:'flat',haulAway:false});}
+export function bareSod(){return fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:75,sodInstallLaborPerSqft:125,minimumServiceCharge:0},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:false,slope:'flat',accessDifficulty:'easy'});}
+export function barePlanting(){return fixture('LANDSCAPING_PLANTING',{plantingLaborPerPlant:{small:1000,medium:2000,large:3000},plantMaterialAllowance:{small:500,medium:1000,large:1500},minimumServiceCharge:0},{plantsBySize:{small:2,medium:1,large:1},bedCondition:'clean',mulchNeeded:false});}
 export function unsafeRange(){const f=wallPainting();f.ownerPricing.pricing.laborPerWallSqftPerCoat=10_000_000_000;return f;}
 export function cases(){return [
+ {id:'M1-cleanup-no-haul',input:bareCleanup(),expected:{midDollars:150}},
+ {id:'M1-sod-no-preparation',input:bareSod(),expected:{midDollars:2037.5}},
+ {id:'M1-planting-no-mulch',input:barePlanting(),expected:{midDollars:105}},
  {id:'B2-unready-safe-integer-range',input:unsafeRange()},
  {id:'B1-roof-minimum',input:roofMinimum(),minimumDollars:2500,expected:expected.roof},
  {id:'B2-M1-concrete',input:bareConcrete()},

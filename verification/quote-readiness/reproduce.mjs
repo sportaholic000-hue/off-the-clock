@@ -41,6 +41,9 @@ try{
    }
    row.optional=[];
    const extras={
+    'M1-cleanup-no-haul':[{haulAway:true}],
+    'M1-sod-no-preparation':[{groundPrepNeeded:true}],
+    'M1-planting-no-mulch':[{bedCondition:'needs_weeding',bedSqft:100},{mulchNeeded:true,mulchType:'brown',mulchYards:2}],
     'B2-M1-wall-painting':[{ceilingsIncluded:true,ceilingAreaSqft:100,ceilingCoats:2},{trimIncluded:true,trimLengthLF:20}],
     'B2-M1-M6-paint-packages':[{trimIncluded:true,trimLengthLF:20}],
     'B2-M1-concrete':[{baseNeeded:true},{reinforcement:'wire_mesh'},{reinforcement:'rebar'},{finishType:'stamped'}],

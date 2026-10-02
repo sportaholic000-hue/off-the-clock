@@ -39,6 +39,9 @@ jobs:
           git worktree add --detach "$RUNNER_TEMP/readiness-before" 1b70096e25a1310df556e2f8672f9741d025c04e
           cp -R verification/quote-readiness "$RUNNER_TEMP/readiness-before/verification/"
           cp test/quoteReadinessRepairs.spec.mjs "$RUNNER_TEMP/readiness-before/test/"
+          rm -rf "$RUNNER_TEMP/readiness-before/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"
+          ln -s "$GITHUB_WORKSPACE/server/node_modules" "$RUNNER_TEMP/readiness-before/server/node_modules"
+          ln -s "$GITHUB_WORKSPACE/client/node_modules" "$RUNNER_TEMP/readiness-before/client/node_modules"
           ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/readiness-before/node_modules"
           ln -s "$GITHUB_WORKSPACE/.portable-runtime" "$RUNNER_TEMP/readiness-before/.portable-runtime"
           cd "$RUNNER_TEMP/readiness-before"

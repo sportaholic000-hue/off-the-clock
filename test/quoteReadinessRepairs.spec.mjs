@@ -5,7 +5,7 @@ import {ownerFieldCopy} from '../server/priceBookCopy.js';
 import {convertApplicationBook,quoteDoneMoneyKind,applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {vNextServiceStatus,generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/index.js';
 import {starterFields,validateInterviewValue} from '../server/src/priceBookAI.js';
-import {roofMinimum,wallPainting,bareConcrete,bareMulch,expected} from '../verification/quote-readiness/fixtures.mjs';
+import {roofMinimum,wallPainting,bareConcrete,bareMulch,bareCleanup,bareSod,barePlanting,expected} from '../verification/quote-readiness/fixtures.mjs';
 
 test('B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries',()=>{
  assert.equal(quoteDoneMoneyKind('ROOFING_REPLACEMENT','minimumJob'),'fixed_amount');
@@ -23,13 +23,17 @@ test('B1 owner floor gives independently calculated $2875 midpoint and lower bou
  assert.equal(r.resultType,'INSTANT_ESTIMATE_READY');
  const c=sanitizeForCustomerVNext(r);assert.equal(c.midEstimate,expected.roof.midDollars);assert.equal(c.lowEstimate,expected.roof.lowDollars);assert.equal(c.highEstimate,expected.roof.highDollars);
 });
-for(const [name,make,total] of [['wall',()=>wallPainting(),300],['paint packages',()=>wallPainting(true),250],['concrete',bareConcrete,3188.89],['mulch',bareMulch,77.78]]){
+for(const [name,make,total] of [['wall',()=>wallPainting(),300],['paint packages',()=>wallPainting(true),250],['concrete',bareConcrete,3188.89],['mulch',bareMulch,77.78],['cleanup',bareCleanup,150],['sod',bareSod,2037.5],['planting',barePlanting,105]]){
  test('M1 '+name+' base service remains active without unrequested extras',()=>{
   const f=make();assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
   const r=generateQuoteVNext(f);assert.equal(r.resultType,'INSTANT_ESTIMATE_READY');assert.equal(sanitizeForCustomerVNext(r).midEstimate,total);
  });
 }
 for(const [name,make,patch] of [
+ ['cleanup haul-away',bareCleanup,{haulAway:true}],
+ ['sod preparation',bareSod,{groundPrepNeeded:true}],
+ ['planting preparation',barePlanting,{bedCondition:'needs_weeding',bedSqft:100}],
+ ['planting mulch',barePlanting,{mulchNeeded:true,mulchType:'brown',mulchYards:2}],
  ['ceiling',()=>wallPainting(),{ceilingsIncluded:true,ceilingAreaSqft:100,ceilingCoats:2}],
  ['trim',()=>wallPainting(),{trimIncluded:true,trimLengthLF:20}],
  ['paint product',()=>wallPainting(true),{trimIncluded:true,trimLengthLF:20}],

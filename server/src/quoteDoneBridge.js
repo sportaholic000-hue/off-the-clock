@@ -341,7 +341,10 @@ export function applicationMetadata() {
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
-      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot']
+      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot'],
+      LANDSCAPING_CLEANUP:['haulAwayFee'],
+      LANDSCAPING_SOD:['groundPrepPerSqft'],
+      LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
     };
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
