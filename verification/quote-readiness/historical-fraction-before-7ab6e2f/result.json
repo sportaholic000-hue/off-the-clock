@@ -1,0 +1,232 @@
+{
+  "source": "7ab6e2f6d025d9c2ff34e4681d79a383a5d50845",
+  "stored": {
+    "ownerId": "e90c2b27-afaf-45f0-bb30-9bcde81c6644",
+    "services": [
+      {
+        "id": "8e2d86c8-8566-4304-be6e-b16e247b7b7c",
+        "source": "MANUAL",
+        "serviceType": "ROOFING_REPLACEMENT",
+        "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+        "active": true,
+        "knownOfferings": {
+          "existingRoofType": {
+            "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+            "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+            "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+            "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+          },
+          "replacementRoofType": {
+            "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+            "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+            "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+            "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+          }
+        },
+        "pricing": {
+          "laborPerSquare": {
+            "asphalt_shingle": 9000
+          },
+          "materialCostPerSquare": {
+            "asphalt_shingle": 15000
+          },
+          "tearOffPerSquare": {
+            "asphalt_shingle": 4500
+          },
+          "underlaymentPerSquare": {
+            "asphalt_shingle": 2000
+          },
+          "accessoryPricingMode": "per_square_allin",
+          "minimumJob": 2500.5,
+          "wasteFactorByComplexity": {
+            "simple": 0.1,
+            "moderate": 0.13,
+            "complex": 0.18
+          },
+          "pitchMultiplier": {
+            "low": 1,
+            "medium": 1.15,
+            "steep": 1.25,
+            "very_steep": 1.4
+          },
+          "storyMultiplier": {
+            "1": 1,
+            "2": 1.1,
+            "3": 1.2
+          },
+          "underlaymentPriceBasis": {
+            "asphalt_shingle": "installed_area_sell_price"
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": true,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "confirmedFields": {}
+      }
+    ],
+    "defaults": {
+      "markupPercent": 30,
+      "markupMode": "markup",
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "taxMode": "TAX_ALL",
+      "taxPercent": 15,
+      "rangeBufferPercent": 10,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-02T14:29:43.638Z"
+  },
+  "rows": [
+    {
+      "status": 200,
+      "result": {
+        "success": true,
+        "statuses": [
+          {
+            "serviceType": "ROOFING_REPLACEMENT",
+            "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+            "scopeCoverage": [],
+            "status": "NEEDS PRICING",
+            "missingOwnerFields": [
+              "origin"
+            ],
+            "invalidOwnerFields": [],
+            "unsupportedOwnerFields": [],
+            "crossFieldOwnerFields": [],
+            "ownerDecisionRequired": [],
+            "ownerDiagnostics": [
+              {
+                "type": "missing",
+                "kind": "service_identity",
+                "path": "origin",
+                "message": "Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt."
+              },
+              {
+                "type": "missing",
+                "kind": "activation_pipeline",
+                "path": "origin",
+                "message": "Service identity and type do not agree."
+              }
+            ],
+            "validationErrors": [
+              "Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt.",
+              "Service identity and type do not agree.",
+              "Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed."
+            ],
+            "failedTierDiagnostics": [
+              {
+                "tierName": null,
+                "reviewReason": "Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt.",
+                "missingOwnerFields": [
+                  "origin"
+                ],
+                "invalidOwnerFields": [],
+                "unsupportedOwnerFields": [],
+                "crossFieldOwnerFields": [],
+                "ownerDiagnostics": [
+                  {
+                    "type": "missing",
+                    "kind": "service_identity",
+                    "path": "origin",
+                    "message": "Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt."
+                  },
+                  {
+                    "type": "missing",
+                    "kind": "activation_pipeline",
+                    "path": "origin",
+                    "message": "Service identity and type do not agree."
+                  }
+                ],
+                "ownerDecisionRequired": [],
+                "validationMessages": [
+                  "Retain the immutable creation receipt: serviceId, serviceType, source, ownerId, operationId, and createdAt.",
+                  "Service identity and type do not agree."
+                ]
+              }
+            ],
+            "validTierNames": [],
+            "serviceId": "8e2d86c8-8566-4304-be6e-b16e247b7b7c",
+            "applicationIssues": [
+              "Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed."
+            ],
+            "legacySettings": [],
+            "approvalCurrent": false,
+            "confirmationFields": [
+              "laborPerSquare",
+              "materialCostPerSquare",
+              "tearOffPerSquare",
+              "underlaymentPerSquare",
+              "accessoryPricingMode",
+              "minimumJob",
+              "wasteFactorByComplexity",
+              "pitchMultiplier",
+              "storyMultiplier",
+              "underlaymentPriceBasis",
+              "feeRules",
+              "priceBasisByCategory",
+              "taxabilityByCategory",
+              "peakMonths",
+              "peakSurchargePercent",
+              "knownOfferings"
+            ]
+          }
+        ],
+        "revision": "b20cf2d0009e2bb9456c353055f9e7a4156b1975a021ffc8336a52929e6fa5e0"
+      }
+    },
+    {
+      "status": 400,
+      "result": {
+        "error": "A fixed charge or minimum must be an exact whole-cent amount; it cannot be rounded during save."
+      }
+    }
+  ]
+}

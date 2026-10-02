@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+not ok 1 - B1 historical fractional-cent roof minimum stays visible without rounding and requires correction before save
+  ---
+  duration_ms: 18.976
+  type: 'test'
+  location: 'C:\\Users\\money\\Documents\\Codex\\2026-09-27\\read-the-audit-check-the-current\\work\\quote-readiness-20261002\\test\\quoteReadinessRepairs.spec.mjs:102:1'
+  failureType: 'testCodeFailure'
+  error: 'A fixed charge or minimum must be an exact whole-cent amount; it cannot be rounded during save.'
+  code: 'ERR_TEST_FAILURE'
+  name: 'PricebookMoneyError'
+  stack: |-
+    failure (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/priceBookMoney.js:76:40)
+    assertCentDomain (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/priceBookMoney.js:149:5)
+    centAmountToDollars (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/priceBookMoney.js:172:3)
+    moneyTree (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/src/quoteDoneBridge.js:49:10)
+    convertedPricing (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/src/quoteDoneBridge.js:64:27)
+    file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/src/quoteDoneBridge.js:78:44
+    Array.map (<anonymous>)
+    convertApplicationBook (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/server/src/quoteDoneBridge.js:74:31)
+    TestContext.<anonymous> (file:///C:/Users/money/Documents/Codex/2026-09-27/read-the-audit-check-the-current/work/quote-readiness-20261002/test/quoteReadinessRepairs.spec.mjs:104:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1166.2394
