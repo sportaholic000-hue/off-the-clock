@@ -1,0 +1,9 @@
+[
+ {
+  "status": "COMPLETED",
+  "outcome": "VOICE_MEDIA_FAILURE",
+  "duration": 0,
+  "transcriptJson": "[]",
+  "failureCode": null
+ }
+]

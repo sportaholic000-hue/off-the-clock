@@ -1,0 +1,29 @@
+{
+  "steps": {
+    "webhook": {
+      "status": 200,
+      "twiml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Connect><Stream url=\"wss://voice.test/api/twilio/voice/stream/<nonce>\"/></Connect></Response>"
+    },
+    "websocket": {
+      "opened": true
+    },
+    "media": {
+      "sentFrames": 6,
+      "agentAudioSeconds": 0,
+      "mediaFrames": 0,
+      "mediaBytes": 0,
+      "marks": 0,
+      "clears": 0,
+      "firstMediaMs": null,
+      "events": [],
+      "closed": {
+        "code": 1008,
+        "reason": "Voice media unavailable",
+        "atMs": 122
+      }
+    }
+  },
+  "startedAt": "2026-10-02T01:47:37.151Z",
+  "callSid": "CA0c419caa60a96aac14852a370a2d8a9f",
+  "finishedAt": "2026-10-02T01:47:40.344Z"
+}
