@@ -25,15 +25,19 @@ jobs:
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
         shell: bash
-      - name: Publish test summary to claude/ci-results (push events only)
+      - name: Publish test summary to claude/ci-results (push events only; never fails the build)
         if: always() && github.event_name == 'push'
+        continue-on-error: true
         shell: bash
         run: |
-          mkdir -p /tmp/ci && cd /tmp/ci
-          git clone -q --depth 1 --branch claude/ci-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" . 2>/dev/null || { git init -q && git checkout -q -b claude/ci-results; }
           name="$(echo "${GITHUB_REF_NAME}" | tr '/' '_').txt"
-          { echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat "$GITHUB_WORKSPACE/test-check.txt" 2>/dev/null; grep -E '^not ok ' "$GITHUB_WORKSPACE/test-results.tap" 2>/dev/null; } > "$name"
-          git config user.name ci-bot && git config user.email ci-bot@users.noreply.github.com
-          git add "$name" && git commit -q -m "CI ${GITHUB_REF_NAME} ${GITHUB_SHA::7}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/ci-results || true
+          { echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat test-check.txt 2>/dev/null; grep -E '^not ok ' test-results.tap 2>/dev/null; } > "/tmp/$name"
+          for attempt in 1 2 3 4 5; do
+            rm -rf /tmp/ci && git clone -q --depth 1 --branch claude/ci-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/ci || exit 0
+            cp "/tmp/$name" "/tmp/ci/$name" && cd /tmp/ci && git config user.name ci-bot && git config user.email ci-bot@users.noreply.github.com
+            git add "$name" && { git diff --cached --quiet || git commit -q -m "CI ${GITHUB_REF_NAME} ${GITHUB_SHA::7}"; }
+            git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/ci-results && exit 0
+            cd "$GITHUB_WORKSPACE"; sleep $((attempt * 3))
+          done
       - name: Production dependency audit
         run: npm audit --omit=dev --audit-level=high
