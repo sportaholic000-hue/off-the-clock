@@ -3,7 +3,7 @@
   "status": "COMPLETED",
   "outcome": "TWILIO_STOP",
   "duration": 27,
-  "transcriptJson": "[{\"role\":\"agent\",\"text\":\"Thank you for calling Fundy Roofing, this is Nova. How can I help you today?\",\"at\":\"2026-10-02T01:57:06.630Z\"},{\"role\":\"agent\",\"text\":\"हा\",\"at\":\"2026-10-02T01:57:09.206Z\"},{\"role\":\"agent\",\"text\":\"How can I help you with your roofing needs today?\",\"at\":\"2026-10-02T01:57:11.621Z\"}]",
+  "transcriptJson": "[{\"role\":\"agent\",\"text\":\"Thank you for calling Fundy Roofing, this is Nova. How can I help you today?\",\"at\":\"2026-10-02T01:58:11.639Z\"},{\"role\":\"agent\",\"text\":\"हा\",\"at\":\"2026-10-02T01:58:14.765Z\"},{\"role\":\"agent\",\"text\":\"Could you please tell me what you need assistance with today?\",\"at\":\"2026-10-02T01:58:17.732Z\"}]",
   "failureCode": null
  }
 ]
