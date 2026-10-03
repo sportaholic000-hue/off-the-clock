@@ -1,0 +1,11 @@
+{
+  "scope": "Owner required-blocker messages and condition coverage: real built editor and authenticated/public HTTP",
+  "checks": [
+    {
+      "name": "B01-required-blocker-and-unpriced-conditions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

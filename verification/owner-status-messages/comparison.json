@@ -1,0 +1,10 @@
+{
+  "beforeRegressionExit": 1,
+  "afterRegressionExit": 0,
+  "quoteCases": 48,
+  "exactMatch": true,
+  "beforeSourceSha256": "b6defb067cb5677b46e5f486ca9fa9cdaaab1d2706a4ede1cdc5f588e3b8d7e2",
+  "afterSourceSha256": "c2936bd80461ffe5f21afc2c1ce355999b1374310c8f81f3e801e3e2e51a12ca",
+  "beforeQuotesSha256": "ec979809918cb02ec4dc48cf14f483c952205b1553f6633be6481293e3f5ddc4",
+  "afterQuotesSha256": "ec979809918cb02ec4dc48cf14f483c952205b1553f6633be6481293e3f5ddc4"
+}

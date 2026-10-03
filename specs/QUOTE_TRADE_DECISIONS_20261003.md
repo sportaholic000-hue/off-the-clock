@@ -27,3 +27,7 @@ Offering price fields and notes explicitly state their baseline: fencing covers 
 When any business or service peak months are selected and no quote time zone has been explicitly chosen, the price book prompts for one without blocking quoting. Until selected, the existing saved profile zone is used, with UTC as a temporary fallback when unavailable. A selected quote time zone takes precedence; Atlantic October 31 at 10:30 pm remains October even when UTC has moved to November. No time zone is inferred from the browser.
 
 This follow-up leaves the engine approval version unchanged to avoid invalidating otherwise current approvals; the legacy-offering condition gate runs in shared owner validation for every quote and readiness check. Changes to saved price-book content still require ordinary fresh approval. Evidence is in `verification/quote-decision-followup/`.
+
+## Owner follow-up — required status messages
+
+Owner status messages list actual service blockers separately from optional itemized-painting surface-condition coverage. Missing good/fair/poor preparation prices are shown as “Not yet priced. Requests for this condition go to review.” They are not individual service requirements. If no condition has complete preparation pricing, the required message asks for at least one condition. Malformed saved prices remain validation errors. Activation results, per-condition eligibility, quote calculations, approvals and customer outputs are unchanged. Evidence is in `verification/owner-status-messages/`.

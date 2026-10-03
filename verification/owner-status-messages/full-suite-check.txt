@@ -1,0 +1,2 @@
+Summary: {"tests":"1306","pass":"1295","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 9/9

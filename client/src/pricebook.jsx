@@ -868,7 +868,13 @@ export default function PriceBook() {
                   </div>
 
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
-                  {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label="Product pricing coverage"><h3>Product pricing coverage</h3><ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}><strong>{[product.tierName,...Object.values(product.selection).map(humanPricingKey)].filter(Boolean).join(' · ')}</strong><span>{product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' ')}</span></li>)}</ul></section>}
+                  {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>
+                    <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
+                    <ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}>
+                      <strong>{[product.tierName,...Object.values(product.selection).map(humanPricingKey)].filter(Boolean).join(' · ')}</strong>
+                      <span>{product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' '))}</span>
+                    </li>)}</ul>
+                  </section>}
                   {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
                     <h3>Which requests can be quoted?</h3>
                     <p>Configured work can quote. These additional requests need the listed setup before they can be included.</p>

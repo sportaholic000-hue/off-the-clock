@@ -383,6 +383,31 @@ function uniqueStatusDiagnostics(items) {
   });
 }
 
+function isUnpricedPreparation(item) {
+  return item.type === 'missing' && /^offeringRates\.prep(?:Labor|Material)PerSqft(?:_(?:good|fair|poor))?$/.test(item.path);
+}
+
+function conditionStatusDiagnostics(variant) {
+  if (!variant.products?.length || !variant.products.every(product => Object.hasOwn(product.selection, 'surfaceCondition'))) return variant.diagnostics;
+  // Readiness still uses the unmodified activation results. Missing prices for
+  // an optional condition belong in coverage, not in the required setup list.
+  const diagnostics = variant.diagnostics.filter(item => !isUnpricedPreparation(item));
+  if (variant.products.every(product => product.diagnostics.some(isUnpricedPreparation))) {
+    diagnostics.push({ type: 'missing', kind: 'condition_coverage', path: 'offeringRates',
+      message: 'Price preparation for at least one surface condition before this offering can quote.' });
+  }
+  return diagnostics;
+}
+
+function productStatusCoverage(variant, product) {
+  const coverage = { tierName: variant.tierName, selection: product.selection,
+    configurationComplete: product.ok, ownerDiagnostics: product.diagnostics };
+  if (!Object.hasOwn(product.selection, 'surfaceCondition')) return coverage;
+  const unpricedOwnerFields = [...new Set(product.diagnostics.filter(isUnpricedPreparation).map(item => item.path))];
+  return { ...coverage, ownerDiagnostics: product.diagnostics.filter(item => !isUnpricedPreparation(item)), unpricedOwnerFields,
+    ...(unpricedOwnerFields.length ? { coverageMessage: 'Not yet priced. Requests for this condition go to review.' } : {}) };
+}
+
 function scopeCoverageForService(service) {
   if (!service || !SERVICE_TYPES.includes(service.serviceType) || validateTierDefinitionsDetailedVNext(service, service.serviceType).length) return [];
   const type = service.serviceType, base = pricingOf(service);
@@ -638,7 +663,11 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     }
   });
   const validVariants = variants.filter(variant => variant.ok);
-  const failedTierDiagnostics = variants.filter(variant => !variant.ok).map(variant => ({
+  const statusVariants = variants.map(variant => {
+    const diagnostics = conditionStatusDiagnostics(variant);
+    return { ...variant, diagnostics, reviewReason: diagnostics === variant.diagnostics ? variant.reviewReason : diagnostics[0]?.message || variant.reviewReason };
+  });
+  const failedTierDiagnostics = statusVariants.filter(variant => !variant.ok).map(variant => ({
     tierName: variant.tierName,
     reviewReason: variant.reviewReason,
     missingOwnerFields: [...new Set(variant.diagnostics.filter(item => item.type === 'missing').map(item => item.path))],
@@ -649,8 +678,8 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     ownerDecisionRequired: variant.diagnostics.filter(item => item.type === 'owner_decision').map(({ path, kind, message }) => ({ path, kind, message })),
     validationMessages: variant.diagnostics.map(item => item.message)
   }));
-  if (!validVariants.length) diagnostics.push(...variants.flatMap(variant => variant.diagnostics));
-  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>({tierName:variant.tierName,selection:product.selection,configurationComplete:product.ok,ownerDiagnostics:product.diagnostics})))};
+  if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
+  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product)))};
 }
 function serviceIdentity(service) {
   if (!isPlainRecord(service)) return null;

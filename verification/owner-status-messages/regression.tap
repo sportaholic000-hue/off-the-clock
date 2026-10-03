@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: INTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+ok 1 - INTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+  ---
+  duration_ms: 34.63275
+  type: 'test'
+  ...
+# Subtest: EXTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+ok 2 - EXTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+  ---
+  duration_ms: 5.723251
+  type: 'test'
+  ...
+# Subtest: clearing the actual blocker keeps fair live at $2,475 and good/poor review-only
+ok 3 - clearing the actual blocker keeps fair live at $2,475 and good/poor review-only
+  ---
+  duration_ms: 28.904732
+  type: 'test'
+  ...
+# Subtest: another required rate remains required without optional condition prices
+ok 4 - another required rate remains required without optional condition prices
+  ---
+  duration_ms: 2.918245
+  type: 'test'
+  ...
+# Subtest: no priced prep condition still blocks, requiring one condition rather than every condition
+ok 5 - no priced prep condition still blocks, requiring one condition rather than every condition
+  ---
+  duration_ms: 8.255795
+  type: 'test'
+  ...
+# Subtest: partial optional prices and unclassified zero prices retain existing review rules
+ok 6 - partial optional prices and unclassified zero prices retain existing review rules
+  ---
+  duration_ms: 17.26396
+  type: 'test'
+  ...
+# Subtest: malformed condition prices remain genuine blockers
+ok 7 - malformed condition prices remain genuine blockers
+  ---
+  duration_ms: 3.621922
+  type: 'test'
+  ...
+# Subtest: failed price-option messages separate optional prep without changing option eligibility
+ok 8 - failed price-option messages separate optional prep without changing option eligibility
+  ---
+  duration_ms: 9.920649
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 217.053987
