@@ -12,4 +12,6 @@ console.log(`Known failures still failing: ${[...known].filter(n => failed.has(n
 for (const n of fixed) console.log(`::notice::Known failure now passes, remove it from the list: ${n}`);
 for (const n of unexpected) console.log(`::error::New test failure: ${n}`);
 if (Number(summary.cancelled || 0) > 0) { console.log('::error::Tests were cancelled'); process.exit(1); }
+// A run that crashed or never started has no summary; that must fail, not pass.
+if (!(Number(summary.tests) > 0)) { console.log('::error::No test summary found; the test run did not complete'); process.exit(1); }
 process.exit(unexpected.length ? 1 : 0);

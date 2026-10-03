@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "node server/scripts/dev.js",
-    "test": "node --test test/quoteEngine.spec.js test/tenantAddon.spec.js test/phase2.spec.js test/phase2Terminology.spec.js test/quoteEngineVNext.spec.js test/quoteEngineVNextAdversarial.spec.js test/quoteEngineVNextRepairs.spec.js",
+    "test": "node scripts/test-full.mjs",
+    "test:engine-legacy": "node --test test/quoteEngine.spec.js test/tenantAddon.spec.js test/phase2.spec.js test/phase2Terminology.spec.js test/quoteEngineVNext.spec.js test/quoteEngineVNextAdversarial.spec.js test/quoteEngineVNextRepairs.spec.js",
     "phase0:gate": "node server/scripts/phase0-gate.js",
     "phase1:test": "node --test test/quoteEngine.spec.js test/tenantAddon.spec.js",
     "gate:0": "npm run phase0:gate",

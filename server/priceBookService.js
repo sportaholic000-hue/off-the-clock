@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync } from 'node:fs';
 import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,8 +14,21 @@ const dir = configuredDir
   : resolve(projectRoot, 'data', 'pricebooks');
 const zeroAllowedOwnerFields = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 
+// A saved book that cannot be read, or that is not this owner's book, stops
+// quoting for that owner. It is never replaced by defaults, a temporary file or
+// any earlier copy, because that would quote outdated prices without anyone
+// noticing. The owner sees an error until the file is restored on purpose.
+export function unreadablePricebook(ownerId, reason) {
+  const error = new Error(`The saved price book for ${ownerId} cannot be used (${reason}). Quoting is paused until it is restored.`);
+  error.code = 'PRICEBOOK_UNREADABLE';
+  error.statusCode = 503;
+  error.retryable = false;
+  return error;
+}
+
 export function loadPricebook(ownerId) {
-  try { return JSON.parse(readFileSync(resolve(dir, `${ownerId}.json`), 'utf8')); }
+  let text;
+  try { text = readFileSync(resolve(dir, `${ownerId}.json`), 'utf8'); }
   catch (err) {
     if (err.code === 'ENOENT') {
       return {
@@ -32,6 +45,55 @@ export function loadPricebook(ownerId) {
     }
     throw err;
   }
+  let book;
+  try { book = JSON.parse(text); }
+  catch { throw unreadablePricebook(ownerId, 'the file is not valid JSON'); }
+  if (!book || typeof book !== 'object' || Array.isArray(book)) throw unreadablePricebook(ownerId, 'the file is not a price book');
+  if (Object.hasOwn(book, 'ownerId') && book.ownerId !== ownerId) throw unreadablePricebook(ownerId, 'the file belongs to a different business');
+  if (!Array.isArray(book.services)) throw unreadablePricebook(ownerId, 'the service list is missing');
+  if (book.defaults !== undefined && (!book.defaults || typeof book.defaults !== 'object' || Array.isArray(book.defaults))) throw unreadablePricebook(ownerId, 'the business settings are malformed');
+  return book;
+}
+
+// The replacement below is atomic (rename over the old file) but only durable
+// once the directory entry itself is flushed. Without that flush a power loss
+// can bring back the previous file after the owner was told the save
+// succeeded. Windows cannot open a directory for flushing, so it is skipped
+// there; deployment is Linux.
+const defaultFileOps = { writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, platform: process.platform };
+export function flushDirectory(path, ops = defaultFileOps) {
+  if (ops.platform === 'win32') return;
+  const descriptor = ops.openSync(path, 'r');
+  try { ops.fsyncSync(descriptor); }
+  finally { ops.closeSync(descriptor); }
+}
+
+// Writes a complete sibling file, flushes it, renames it over the saved book,
+// then flushes the directory. Success is reported only after all four steps.
+// Exported with replaceable file operations so each failure can be tested.
+export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps) {
+  const target = resolve(directory, `${ownerId}.json`);
+  const temporary = resolve(directory, `${ownerId}.${crypto.randomUUID()}.tmp`);
+  try {
+    ops.writeFileSync(temporary, serialized, { flag: 'wx', flush: true });
+    ops.renameSync(temporary, target);
+  } catch (error) {
+    if (error.code !== 'EEXIST') {
+      try { ops.unlinkSync(temporary); } catch (cleanupError) {
+        if (cleanupError.code !== 'ENOENT') error.cleanupError = cleanupError.code;
+      }
+    }
+    throw error;
+  }
+  try { flushDirectory(directory, ops); }
+  catch (cause) {
+    const error = new Error('The price book was replaced but the change could not be confirmed on disk. Save again before relying on these prices.');
+    error.code = 'PRICEBOOK_NOT_DURABLE';
+    error.statusCode = 503;
+    error.retryable = true;
+    error.cause = cause;
+    throw error;
+  }
 }
 
 export function savePricebook(ownerId, data) {
@@ -45,22 +107,9 @@ export function savePricebook(ownerId, data) {
       ...service
     }))
   };
-  // Prepare and flush a complete sibling file before replacing the saved book.
-  // A failed write or rename must never truncate the last accepted owner data.
-  const target = resolve(dir, `${ownerId}.json`);
-  const temporary = resolve(dir, `${ownerId}.${crypto.randomUUID()}.tmp`);
-  const serialized = JSON.stringify(next, null, 2);
-  try {
-    writeFileSync(temporary, serialized, { flag: 'wx', flush: true });
-    renameSync(temporary, target);
-  } catch (error) {
-    if (error.code !== 'EEXIST') {
-      try { unlinkSync(temporary); } catch (cleanupError) {
-        if (cleanupError.code !== 'ENOENT') error.cleanupError = cleanupError.code;
-      }
-    }
-    throw error;
-  }
+  // A failed write, rename or directory flush must never truncate the last
+  // accepted owner data or report an unconfirmed save as successful.
+  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2));
   return { success: true, pricebook: next };
 }
 

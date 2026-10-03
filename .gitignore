@@ -5,3 +5,6 @@ data/*.sqlite-journal
 data/*.sqlite-wal
 data/*.sqlite-shm
 .env
+# npm test / CI output
+test-results.tap
+test-check.txt

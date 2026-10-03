@@ -1,7 +1,7 @@
 import {scaleOwnerDecimal,moneyKindForField} from '../../server/priceBookMoney.js';
 import {humanPricingKey} from './pricebookFormatting.js';
 import {scopeDefinitions,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
-import {offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {offeringRateDefinitions,formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import {servicePricing} from './pricebookEditing.js';
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs']);
@@ -28,6 +28,8 @@ export function priceChoices(service,meta={}) {
 function shownValue(path,value,service,meta,group,prices){
  const root=path.replace(/^pricing\./,'').split('.')[0];
  const numeric=typeof value==='number';
+ // Fence heights read the way they were entered ("5 ft 3.65 in"), never as a long decimal.
+ if(numeric&&Number.isFinite(value)&&value>0&&/(^|\.)fenceHeight$/.test(path.replace(/^pricing\./,'')))return formatFenceHeight(value);
  let shown=value===undefined||value===null?'Not entered':Array.isArray(value)?value.map(v=>typeof v==='string'?humanPricingKey(v):String(v)).join(', ')||'None':typeof value==='boolean'?(value?'Yes':'No'):typeof value==='string'?humanPricingKey(value):String(value);
  // Preserve descriptions and free text exactly; only named enum values get friendly labels.
  if(typeof value==='string'&&!/^[A-Za-z][A-Za-z0-9_]*$/.test(value))shown=value;
