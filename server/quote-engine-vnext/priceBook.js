@@ -164,10 +164,11 @@ function flooringRoomBands(pricing) {
   ];
 }
 
-function repairScenarios(serviceType, cube, fallbacks, makeScenario) {
+function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit) {
   const affectedAreas = serviceType === 'ROOFING_REPAIR'
     ? { small: 25, medium: 100, large: 250 }
     : { small: 10, medium: 50, large: 100 };
+  if (typeof largeLimit === 'number' && Number.isFinite(largeLimit) && largeLimit < affectedAreas.large) affectedAreas.large = largeLimit;
   const out = [];
   for (const first of keysOf(cube, fallbacks[0])) {
     for (const second of keysOf(cube?.[first], fallbacks[1])) {
@@ -233,7 +234,7 @@ function baseActivationScenarios(service) {
   if (serviceType === 'ROOFING_REPAIR') {
     const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch, stories, leakPresent: false }));
+    return repairScenarios(serviceType, p.repairHours, ['asphalt_shingle', 'patch'], (roofType, repairType, affectedArea) => ({ repairType, affectedArea, roofType, pitch, stories, leakPresent: false }), p.largeRepairMaxSqft);
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
@@ -246,7 +247,7 @@ function baseActivationScenarios(service) {
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') }));
+    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') }), p.largeRepairMaxSqft);
     // Probe optional treatment when configured; real selected requests always
     // require its price. An unpriced extra does not disable complete base repairs.
     return [undefined, null, ''].includes(p.pondingWaterSurcharge) ? base : base.flatMap(inputs => [
@@ -349,7 +350,7 @@ function baseActivationScenarios(service) {
   }
   if (serviceType === 'SIDING_REPAIR') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories }));
+    return repairScenarios(serviceType, p.repairHours, ['vinyl', 'minor'], (sidingType, damageLevel, affectedArea) => ({ sidingType, damageLevel, affectedArea, stories }), p.largeRepairMaxSqft);
   }
   if (serviceType === 'CUSTOM') return [{ service: service.service, serviceConfirmed: true, unit: p.unit || 'flat', ...({ per_hour: { hours: 4 }, per_unit: { itemCount: 3 }, per_sqft: { areaSqft: 500 }, per_LF: { linearFeet: 120 }, per_square: { roofSquares: 20 } }[p.unit] || {}) }];
   return [];

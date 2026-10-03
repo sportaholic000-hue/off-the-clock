@@ -23,7 +23,7 @@ export const DEFAULT_FIELDS = ['quoteTimeZone','markupPercent','markupMode','ove
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
 const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
-const NOT_MONEY = new Set(['installedMaterialsPercent','installedLaborPercent','underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
+const NOT_MONEY = new Set(['largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent','underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);

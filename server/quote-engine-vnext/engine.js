@@ -1095,11 +1095,13 @@ function validatedMeasurementsFor(serviceType, normalized = {}) {
 
 function customerPriceLabels(serviceType, defaults) {
   return { priceUnit: serviceType === 'LANDSCAPING_MOWING' ? 'per visit' : null,
-    taxTreatment: defaults.taxMode === 'TAX_NONE' ? 'No tax added.' : 'Includes applicable tax.' };
+    taxTreatment: defaults.taxMode === 'TAX_NONE' ? 'No tax added.' : 'Includes applicable tax.',
+    ...(['CAD','USD'].includes(defaults.currency) ? { currency: defaults.currency } : {}) };
 }
 
 function priceLabelDisclosures(labels) {
-  return [...(labels.priceUnit ? ['Price is ' + labels.priceUnit + '.'] : []), labels.taxTreatment];
+  const currency = { CAD:'Prices are in Canadian dollars (CAD).', USD:'Prices are in US dollars (USD).' }[labels.currency];
+  return [...(labels.priceUnit ? ['Price is ' + labels.priceUnit + '.'] : []), labels.taxTreatment, ...(currency ? [currency] : [])];
 }
 
 function disclaimer(base, disclosures, skippedAddons) {
@@ -1488,6 +1490,7 @@ export function generateQuoteVNext(input = {}) {
     priceDrivers: first.priceDrivers,
     priceUnit: first.priceUnit,
     taxTreatment: first.taxTreatment,
+    ...(first.currency ? { currency: first.currency } : {}),
     rangeBufferUsed: first.rangeBufferUsed,
     effectiveRangeBufferPercent: first.effectiveRangeBufferPercent,
     lineItems: first.lineItems,
@@ -1836,7 +1839,7 @@ export function sanitizeForCustomerVNext(result) {
       (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
     if (!validReady) return customerReviewPayload(result,true);
     return structuredClone({
-      ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'priceUnit', 'taxTreatment']),
+      ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'priceUnit', 'taxTreatment', 'currency']),
       options: result.options.map(option => pickOwn(option, CUSTOMER_OPTION_FIELDS))
     });
   } catch {

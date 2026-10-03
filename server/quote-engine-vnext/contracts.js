@@ -697,6 +697,17 @@ const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract(type,
   { leakSourceIdentified: booleanField('Leak source specifically identified') }, () => [],
   c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null);
+// Owner ruling area (audit M03): a repair larger than the area the owner prices as a
+// large repair is not quoted from the fixed large-repair hours and allowance.
+export const LARGE_REPAIR_LIMIT_MESSAGE = 'This repair is larger than the area this business prices as a repair. The business will follow up to assess it.';
+export function largeRepairLimitProblem(serviceType, value) {
+  if (value === undefined) return null;
+  const mediumMax = serviceType === 'ROOFING_REPAIR' ? 200 : 80;
+  return typeof value === 'number' && Number.isFinite(value) && value > mediumMax && value <= 1_000_000 ? null
+    : `Enter the largest affected area priced as a repair: more than ${mediumMax} sq ft (the medium-repair limit) and at most 1,000,000.`;
+}
+for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
+  (c, p) => repairSizeFromAffectedArea(type, c.affectedArea) === 'large' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
 for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
   if(c.serviceScope !== 'partial') return [];
   const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
@@ -1047,9 +1058,9 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 
 const ALLOWED_PRICING_FIELDS = {
   ROOFING_REPLACEMENT: ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare', 'minimumJob'],
-  ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance'],
+  ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
-  FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge'],
+  FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
   INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
   FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule'],
@@ -1064,7 +1075,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
-  SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance'],
+  SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
 
@@ -1107,7 +1118,7 @@ export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
 
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
-const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone',
+const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'
@@ -1206,6 +1217,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
     add(`repairHours.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair labor hours for the measured affected-area category', { kind: 'positive_number' });
     add(`repairMaterialAllowance.${c.roofType}.${c.repairType}.${repairSize}`, 'Repair material allowance for the measured affected-area category');
+    // A large repair is priced only up to the area the owner says it covers.
+    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
   } else if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const membrane = c.replacementMembraneType;
     add(`laborPerSqft.${membrane}`, 'Flat-roof labor price for the selected membrane');
@@ -1219,6 +1232,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
     add(`patchRepairHours.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`patchMaterialAllowance.${c.membraneType}.${c.repairType}.${repairSize}`, 'Flat-roof material allowance for the measured affected-area category');
+    // A large repair is priced only up to the area the owner says it covers.
+    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
     // Optional ponding treatment is disclosed as excluded when unpriced.
   } else if (serviceType === 'INTERIOR_PAINTING') {
     add('laborPerWallSqftPerCoat', 'Wall painting labor price per measured wall square foot per coat');
@@ -1312,6 +1327,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     const repairSize = repairSizeFromAffectedArea(serviceType, c.affectedArea);
     add(`repairHours.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding repair hours for the measured affected-area category', { kind: 'positive_number' });
     add(`materialAllowance.${c.sidingType}.${c.damageLevel}.${repairSize}`, 'Siding material allowance for the measured affected-area category');
+    // A large repair is priced only up to the area the owner says it covers.
+    if (repairSize === 'large') add('largeRepairMaxSqft', 'Largest affected area priced as a repair', { kind: 'positive_number' });
   } else if (serviceType === 'CUSTOM') {
     out.push({ path: 'customPricingMode', label: 'Custom service pricing mode', kind: 'enum', values: ['fixed', 'range', 'inspection_first'] });
     out.push({ path: 'unit', label: 'Custom service unit', kind: 'enum', values: ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square'] });
@@ -1489,6 +1506,10 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
       if(name==='underlaymentPerSquare'&&p.underlaymentPriceBasis?.[key]==='cost'&&p.scopeDetails?.['roof_underlayment_'+key])continue;
       if(!isRecord(p[name])||!Object.hasOwn(p[name],key))structureDiagnostic(diagnostics,'missing',name+'.'+key,'Roof replacement labor, material and selected underlayment pricing must cover the same replacement types.','relationship');
     }
+  }
+  if (['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(serviceType)) {
+    const limitProblem = largeRepairLimitProblem(serviceType, p.largeRepairMaxSqft);
+    if (limitProblem) structureDiagnostic(diagnostics, 'invalid', 'largeRepairMaxSqft', limitProblem);
   }
   if (serviceType === 'ROOFING_REPAIR') {
     inspectRepairCube(diagnostics, p.repairHours, 'repairHours');
@@ -1826,7 +1847,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>field!=='quoteTimeZone');
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency'].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -1865,6 +1886,8 @@ export function validateBusinessDefaults(defaults = {}) {
     invalidFields.push(path);
     diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
   };
+  // Prices are in one stated currency (set from the business country at onboarding).
+  if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))invalid('currency','Choose CAD or USD as the currency of your prices.');
   if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw new Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone}).format(new Date(0));}catch{invalid('quoteTimeZone','Choose a valid business time zone for quote-date pricing.');}}
   if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
   if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');

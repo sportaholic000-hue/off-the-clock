@@ -159,3 +159,45 @@ test('D08/D09: tax note states the installed-share rule; no accessible name expo
   for (const file of ['offeringEditor.jsx', 'installedMaterialsEditor.jsx', 'scopeEditor.jsx'])
     assert.doesNotMatch(src(file), /aria-label=\{'(Offering price|Scope price) '\+|aria-label=\{title\+' '\+path\}/, file);
 });
+
+const contracts = await import('../server/quote-engine-vnext/contracts.js');
+test('M03: a large repair is priced only up to the area the owner says it covers', () => {
+  const known = { roofType:{ asphalt_shingle:crypto.randomUUID() }, repairType:{ shingle_patch:crypto.randomUUID() } };
+  const roof = limit => live({ serviceType:'ROOFING_REPAIR', service:'Roof repair', knownOfferings:known, pricing:{ laborHourlyRate:100, repairMinimum:0,
+    repairHours:{ asphalt_shingle:{ shingle_patch:{ small:2, medium:4, large:8 } } }, repairMaterialAllowance:{ asphalt_shingle:{ shingle_patch:{ small:50, medium:100, large:160 } } },
+    ...(limit === undefined ? {} : { largeRepairMaxSqft:limit }) } });
+  const request = area => ({ repairType:'shingle_patch', affectedArea:area, roofType:'asphalt_shingle', pitch:'low', stories:1, leakPresent:false,
+    confirmedFacts:Object.fromEntries(Object.entries(known).map(([field, map]) => [field, { status:'identified', field, value:Object.keys(map)[0], offeringId:Object.values(map)[0] }])) });
+  const unset = roof(undefined);
+  assert.equal(unset.status.status, 'NEEDS PRICING', 'the large band needs its limit before going live');
+  const tooSmall = roof(150);
+  assert.equal(tooSmall.status.status, 'NEEDS PRICING');
+  assert.ok(tooSmall.status.validationErrors.some(message => /more than 200 sq ft/.test(message)));
+  const set = roof(500);
+  assert.equal(set.status.status, 'QUOTING LIVE');
+  assert.equal(total(set.quote(request(201))), 96000);
+  assert.equal(total(set.quote(request(500))), 96000, 'the limit itself is covered');
+  const over = set.quote(request(20000));
+  assert.equal(over.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(over.reviewReason, contracts.LARGE_REPAIR_LIMIT_MESSAGE);
+  assert.equal(total(set.quote(request(100))), 50000, 'small and medium repairs are unaffected');
+  for (const type of ['FLAT_ROOF_REPAIR', 'SIDING_REPAIR']) assert.match(contracts.largeRepairLimitProblem(type, 80), /more than 80 sq ft/);
+  assert.equal(contracts.allowedPricingFields('FLAT_ROOF_REPAIR').includes('largeRepairMaxSqft'), true);
+});
+
+test('C03: the price-book currency is validated, stated on every quote and carried in the customer result', () => {
+  for (const [currency, sentence] of [['CAD', 'Prices are in Canadian dollars (CAD).'], ['USD', 'Prices are in US dollars (USD).']]) {
+    const svc = live(fenceSvc(), defaults({ currency }));
+    assert.equal(svc.status.status, 'QUOTING LIVE');
+    const ownerId = svc.ownerId, book = store.loadPricebook(ownerId), raw = book.services[0];
+    const quoted = bridge.calculateApplicationQuote(book, raw, { serviceId:raw.id, customerInputs:job() }, { ownerId });
+    assert.equal(quoted.internalResult.currency, currency);
+    assert.equal(quoted.customerResult.currency, currency);
+    assert.ok(quoted.customerResult.disclaimer.includes(sentence));
+  }
+  const wrong = live(fenceSvc(), defaults({ currency:'EUR' }));
+  assert.equal(wrong.status.status, 'NEEDS PRICING');
+  assert.ok(wrong.status.validationErrors.includes('Choose CAD or USD as the currency of your prices.'));
+  const server = fs.readFileSync(new URL('../server/src/server.js', import.meta.url), 'utf8');
+  assert.match(server, /\{ CA: 'CAD', US: 'USD' \}\[country\]/, 'onboarding sets the currency from the business country');
+});

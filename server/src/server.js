@@ -280,7 +280,9 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
     defaults: {
       ...(book.defaults || {}),
       taxMode: resolved.taxMode,
-      taxPercent: resolved.taxPercent
+      taxPercent: resolved.taxPercent,
+      // The business country chosen in onboarding sets the currency of its prices.
+      ...({ CA: 'CAD', US: 'USD' }[country] ? { currency: { CA: 'CAD', US: 'USD' }[country] } : {})
     }
   });
   saveJurisdictionProfile(ownerId, { country, region });

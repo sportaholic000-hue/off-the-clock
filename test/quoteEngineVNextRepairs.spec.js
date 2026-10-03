@@ -633,6 +633,7 @@ function repairFixture(serviceType) {
     ownerPricing: service(serviceType, {
       laborHourlyRate: 10000,
       repairMinimum: 0,
+      largeRepairMaxSqft: 1000000,
       repairHours: { asphalt_shingle: { patch: { small: 1, medium: 2, large: 3 } } },
       repairMaterialAllowance: { asphalt_shingle: { patch: { small: 1000, medium: 2000, large: 3000 } } }
     }),
@@ -645,6 +646,7 @@ function repairFixture(serviceType) {
     ownerPricing: service(serviceType, {
       laborHourlyRate: 10000,
       repairMinimum: 0,
+      largeRepairMaxSqft: 1000000,
       patchRepairHours: { epdm: { seam_patch: { small: 1, medium: 2, large: 3 } } },
       patchMaterialAllowance: { epdm: { seam_patch: { small: 1000, medium: 2000, large: 3000 } } }
     }),
@@ -657,6 +659,7 @@ function repairFixture(serviceType) {
     ownerPricing: service(serviceType, {
       laborHourlyRate: 10000,
       repairMinimum: 0,
+      largeRepairMaxSqft: 1000000,
       repairHours: { vinyl: { minor: { small: 1, medium: 2, large: 3 } } },
       materialAllowance: { vinyl: { minor: { small: 1000, medium: 2000, large: 3000 } } }
     }),
@@ -841,6 +844,7 @@ test('repair 19: zero and missing remain distinct for conditional prices', () =>
   const pondingPricing = service('FLAT_ROOF_REPAIR', {
     laborHourlyRate: 10000,
     repairMinimum: 0,
+    largeRepairMaxSqft: 1000000,
     pondingWaterSurcharge: 0,
     patchRepairHours: { epdm: { seam_patch: { small: 1, medium: 2, large: 3 } } },
     patchMaterialAllowance: { epdm: { seam_patch: { small: 1000, medium: 2000, large: 3000 } } }
@@ -2488,7 +2492,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const class2 = CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]];
       const requiresPositive = class2
         ? class2.min > 0
-        : /^(?:repairHours|patchRepairHours)(?:\.|$)|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\./.test(path);
+        : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\./.test(path);
       const zeroed = structuredClone(ownerPricing);
       setPricingLeaf(zeroed.pricing, path, 0);
       const zeroStatus = vNextServiceStatus(zeroed, defaults);
@@ -2991,6 +2995,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   const sidingRepairOwner = service('SIDING_REPAIR', {
     laborHourlyRate: 10000,
     repairMinimum: 0,
+    largeRepairMaxSqft: 1000000,
     repairHours: Object.fromEntries(sidingTypes.map(type => [type, structuredClone(sidingRow)])),
     materialAllowance: Object.fromEntries(sidingTypes.map(type => [type, structuredClone(sidingAllowance)]))
   });
@@ -6705,7 +6710,7 @@ test('repair 111: decimal flooring bands use exact division at and around the th
 });
 test('repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates',()=>{
  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR'])for(const slug of ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average','named_patch']){
-   const flat=type==='FLAT_ROOF_REPAIR',p=service(type,{laborHourlyRate:10000,repairMinimum:0,[flat?'patchRepairHours':'repairHours']:{epdm:{[slug]:{small:1,medium:1,large:1}}},[flat?'patchMaterialAllowance':'repairMaterialAllowance']:{epdm:{[slug]:{small:100,medium:100,large:100}}}}),c={repairType:slug,affectedArea:1,leakPresent:true,...(flat?confirmedFixtureInputs({membraneType:'epdm',pondingWater:false}):confirmedFixtureInputs({roofType:'epdm',pitch:'low',stories:1}))};
+   const flat=type==='FLAT_ROOF_REPAIR',p=service(type,{laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,[flat?'patchRepairHours':'repairHours']:{epdm:{[slug]:{small:1,medium:1,large:1}}},[flat?'patchMaterialAllowance':'repairMaterialAllowance']:{epdm:{[slug]:{small:100,medium:100,large:100}}}}),c={repairType:slug,affectedArea:1,leakPresent:true,...(flat?confirmedFixtureInputs({membraneType:'epdm',pondingWater:false}):confirmedFixtureInputs({roofType:'epdm',pitch:'low',stories:1}))};
    assert.equal(auditRun(c,p).resultType,auditReview);const identified=auditRun(confirmedFixtureInputs({...c,leakSourceIdentified:true}),p);assert.equal(identified.resultType,slug==='named_patch'?auditReady:auditReview);
  }
 });
@@ -6823,9 +6828,9 @@ function currentRun(c,p,options={}) {
 function currentRepairFixture(type) {
   const flat=type==='FLAT_ROOF_REPAIR',siding=type==='SIDING_REPAIR';
   const p=service(type,siding
-    ? {laborHourlyRate:10000,repairMinimum:0,repairHours:{vinyl:{minor:{small:2,medium:4,large:8}}},materialAllowance:{vinyl:{minor:{small:4000,medium:8000,large:16000}}}}
-    : flat ? {laborHourlyRate:10000,repairMinimum:0,patchRepairHours:{epdm:{seam_patch:{small:2,medium:4,large:8}}},patchMaterialAllowance:{epdm:{seam_patch:{small:4000,medium:8000,large:16000}}}}
-    : {laborHourlyRate:10000,repairMinimum:0,repairHours:{asphalt_shingle:{shingle_patch:{small:2,medium:4,large:8}}},repairMaterialAllowance:{asphalt_shingle:{shingle_patch:{small:4000,medium:8000,large:16000}}}});
+    ? {laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,repairHours:{vinyl:{minor:{small:2,medium:4,large:8}}},materialAllowance:{vinyl:{minor:{small:4000,medium:8000,large:16000}}}}
+    : flat ? {laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,patchRepairHours:{epdm:{seam_patch:{small:2,medium:4,large:8}}},patchMaterialAllowance:{epdm:{seam_patch:{small:4000,medium:8000,large:16000}}}}
+    : {laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,repairHours:{asphalt_shingle:{shingle_patch:{small:2,medium:4,large:8}}},repairMaterialAllowance:{asphalt_shingle:{shingle_patch:{small:4000,medium:8000,large:16000}}}});
   const c=confirmedFixtureInputs(siding ? confirmedFixtureInputs({sidingType:'vinyl',damageLevel:'minor',affectedArea:10,stories:1})
     : flat ? confirmedFixtureInputs({membraneType:'epdm',repairType:'seam_patch',affectedArea:10,leakPresent:false,pondingWater:false})
     : confirmedFixtureInputs({roofType:'asphalt_shingle',repairType:'shingle_patch',affectedArea:25,pitch:'low',stories:1,leakPresent:false}));
@@ -7703,7 +7708,7 @@ test('handoff A: high markup preserves category tax fee and tier arithmetic', ()
 });
 
 function handoffSelections() {
-  const flat=service('FLAT_ROOF_REPAIR',{laborHourlyRate:10000,repairMinimum:0,
+  const flat=service('FLAT_ROOF_REPAIR',{laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,
     patchRepairHours:{epdm:{seam_patch:{small:2,medium:4,large:8}}},
     patchMaterialAllowance:{epdm:{seam_patch:{small:4000,medium:8000,large:16000}}},pondingWaterSurcharge:1000});
   const flatInputs=confirmedFixtureInputs({repairType:'seam_patch',affectedArea:10,membraneType:'epdm',leakPresent:false,pondingWater:false});

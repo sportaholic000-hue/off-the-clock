@@ -156,3 +156,7 @@ Feet-and-inches fence heights are priced exactly as entered (5 ft 3.65 in = 63.6
 
 Branch `claude/audit-fixes-20261003` (base `4cbbc87`): D01, D03, D04, D05, D06, D08, D09, D10, D11, D12 and M04 repaired, plus price-book save durability, half-cent and combination/boundary tests. `npm test`: 1,386 tests, 1,375 pass, the nine known voice failures, two skips, checker passes. `npm run test:quote`: 855 tests, zero failures. New audit tests: 1 pass / 8 fail on `4cbbc87`, 9 pass after. Not merged or deployed.
 
+## October 3 audit follow-up 2 (Claude)
+
+Large-repair area limit, CAD/USD currency, fence-height and post-count rules recorded. `npm test`: 1,388 tests, 1,377 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 857 tests, zero failures. Onboarding over HTTP: CA-NB sets CAD, US-OR sets USD. Not merged or deployed.
+

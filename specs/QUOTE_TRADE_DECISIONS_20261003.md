@@ -85,3 +85,11 @@ Fence height is entered directly as whole feet and decimal inches in the owner e
 - **Tests.** `npm test` runs CI's full suite and known-failure check; `npm run test:quote` checks the engine architecture and runs every quote-engine and price-book test file with zero failures allowed.
 - Engine version `-v3`: the billed-share and surcharge-basis rules change arithmetic and require fresh owner approval.
 
+## October 3 audit follow-up 2 (Claude)
+
+- **Fence height pricing stays simple (owner direction).** No second priced height and no per-price height settings. Prices are entered for one height; any other height is priced in proportion to height for fence, posts, footings and gates; old-fence removal is not scaled. This closes the audit's fence-scaling question.
+- **Fence posts.** The post count is a stated allowance: ceil(length / spacing) + 1 end + 1 per corner + 2 per gate whose price excludes posts. Checked against every layout of whole-foot runs (6, 8 and 10 ft spacing, up to 60 ft, up to 3 corners, about 1.67 million layouts): it never under-counts and over-counts by at most one post per corner (one more on a closed loop). An exact takeoff would require callers to give every run length, which the owner has ruled out (posts are engine math).
+- **Mixed preparation prices** (concrete base prep, sod ground prep) remain single lines that follow their category for markup, tax and peak pricing; they are not split into labor and material portions.
+- **Large repairs are bounded.** Each repair service has an owner-entered largest affected area priced as a repair (more than the medium-repair limit: 200 sq ft roof, 80 sq ft flat roof and siding). It is required before large repairs quote; larger requests go to review.
+- **Currency.** Price books carry CAD or USD, set from the business country in onboarding and editable in the price book. Every quote states it ("Prices are in Canadian dollars (CAD).") and the customer result carries the code. No conversion is performed.
+

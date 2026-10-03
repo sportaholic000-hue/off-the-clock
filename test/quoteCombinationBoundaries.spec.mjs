@@ -123,7 +123,7 @@ test('painting area and coat boundaries: supported values quote, unsafe values r
 
 test('repair size bands switch exactly at the specified boundaries', () => {
   const roofKnown = { roofType:{ asphalt_shingle:crypto.randomUUID() }, repairType:{ shingle_patch:crypto.randomUUID() } };
-  const roof = live({ serviceType:'ROOFING_REPAIR', service:'Roof repair', knownOfferings:roofKnown, pricing:{ laborHourlyRate:95.5, repairMinimum:0,
+  const roof = live({ serviceType:'ROOFING_REPAIR', service:'Roof repair', knownOfferings:roofKnown, pricing:{ laborHourlyRate:95.5, repairMinimum:0, largeRepairMaxSqft:500,
     repairHours:{ asphalt_shingle:{ shingle_patch:{ small:2, medium:3.5, large:6 } } }, repairMaterialAllowance:{ asphalt_shingle:{ shingle_patch:{ small:45, medium:85.25, large:160 } } } } });
   const facts = (known, inputs) => ({ ...inputs, confirmedFacts:Object.fromEntries(Object.entries(known).map(([field, map]) => [field, { status:'identified', field, value:inputs[field], offeringId:map[inputs[field]] }])) });
   const band = { small:cents(mul(D(2), D(9550), D('1.15'))) + 4500, medium:cents(mul(D('3.5'), D(9550), D('1.15'))) + 8525, large:cents(mul(D(6), D(9550), D('1.15'))) + 16000 };
@@ -132,7 +132,7 @@ test('repair size bands switch exactly at the specified boundaries', () => {
     assert.equal(result.options[0].calculationRecord.scenarios.mid.finalTotalCents, band[size], area + ' sq ft is ' + size);
   }
   const sidingKnown = { damageLevel:{ minor:crypto.randomUUID() } };
-  const siding = live({ serviceType:'SIDING_REPAIR', service:'Siding repair', knownOfferings:sidingKnown, pricing:{ laborHourlyRate:72.5, repairMinimum:0,
+  const siding = live({ serviceType:'SIDING_REPAIR', service:'Siding repair', knownOfferings:sidingKnown, pricing:{ laborHourlyRate:72.5, repairMinimum:0, largeRepairMaxSqft:150,
     repairHours:{ vinyl:{ minor:{ small:2.5, medium:4, large:7 } } }, materialAllowance:{ vinyl:{ minor:{ small:55, medium:90, large:150 } } } } });
   const sidingBand = { small:cents(mul(D('2.5'), D(7250), D('1.2'))) + 5500, medium:cents(mul(D(4), D(7250), D('1.2'))) + 9000, large:cents(mul(D(7), D(7250), D('1.2'))) + 15000 };
   for (const [area, size] of [[19.99, 'small'], [20, 'medium'], [80, 'medium'], [80.01, 'large']]) {

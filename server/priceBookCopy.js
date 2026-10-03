@@ -20,6 +20,7 @@ export const OWNER_FIELD_COPY = {
   disposalPerSquare: copy('Disposal price per roofing square', 'Optional disposal charge for each roofing square and each removed layer. When blank, the business-wide disposal charge is used.'),
   allowAssumptionBasedQuotes: copy('Allow size estimates (small/medium/large) instead of exact measurements', 'When enabled, the service may quote from the documented size assumptions when a customer cannot provide exact measurements.'),
   laborHourlyRate: copy('Labor rate per hour', 'Hourly labor charge used for repair work or preparation labor when that scope applies.'),
+  largeRepairMaxSqft: copy('Largest area priced as a repair (sq ft)', 'Affected areas larger than this are not priced from your large-repair hours and material allowance; those requests come to you for review.'),
   repairMinimum: copy('Minimum repair visit price', 'Lowest total price for this repair service. Enter $0 when there is no repair minimum.'),
   repairHours: copy('Repair labor hours by repair type and project size', 'Enter the labor hours normally required for each repair type and small, medium, or large affected area.'),
   repairMaterialAllowance: copy('Roof repair material allowance by repair type', 'Material allowance added for each roof repair type before the final site inspection.'),
