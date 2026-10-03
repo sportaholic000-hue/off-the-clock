@@ -1,0 +1,85 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\n\nQUOTEDONE\n\nPrice book\n\nYour prices drive every quote.\n\nBuild it with your AI\nSuggest a starter book\nChoose service type\nRoof replacement\nRoof repair\nFlat roof replacement\nFlat roof repair\nInterior painting\nExterior painting\nFlooring installation\nFlooring replacement\nFencing installation\nFencing replacement\nSiding replacement\nSiding repair\nConcrete driveway\nConcrete patio slab\nLandscaping cleanup\nMulch installation\nSod installation\nPlanting\nMowing\nCustom service\nAdd service\n\nSERVICES\n\n[SYNTHETIC] A\nCHECKING\nChecking\n[SYNTHETIC] B\nCHECKING\nChecking\nRoof replacement\nCHECKING\nChecking\nRoof repair\nCHECKING\nChecking\nInterior painting\nCHECKING\nChecking\nExterior painting\nCHECKING\nChecking\nFlooring installation\nCHECKING\nChecking\nFencing replacement\nCHECKING\nChecking\nSiding replacement\nCHECKING\nChecking\nLandscaping cleanup\nCHECKING\nChecking\nPlanting\nCHECKING\nChecking\nCustom service\nCHECKING\nChecking\n\nYOUR PRICES · REQUIRED\n\n[SYNTHETIC] A\nOff The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.\n1 / 1 SET\nFence and painting offering\nOffering pricing\nChoose how you price this offering\nComplete installed prices\nItemized measured components\n\nDefine one offered job and the prices that cover it. Add another offering for a different height, surface, coating or preparation scope. These descriptions are shown to customers.\n\nIncluded job description\nOffered fence type\nOffered fence height (ft)\nStandard posts, footings and digging included\nThe per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings. Fence length excludes gate openings.\nOffered gates\nwalk\nGate opening width (ft)\nGate, hardware and installation included\nGate price includes gate posts and footings\nChoose\nYes\nNo — counted and priced separately\nRemove gate offering\nNew gate name\nAdd gate offering\nOwner prices for this offering\nInstalled fence including standard posts and footings ($ per fence linear feet)\nComplete selling price; no additional markup is applied.\nInstalled gate: walk ($ per gates)\nComplete selling price; no additional markup is applied.\nEnable quoting for this service\nMinimum job price\nMinimum job price $0 is valid and means no minimum.\n$\nLabor and materials in installed prices\n\nSet these once for each complete installed price. Labor adjustments affect only the labor portion. Materials-only tax affects only the material portion. These percentages stay private. Enter 0 for a portion that is absent; the total cannot exceed 100%.\n\nFence Per LF\nLabor portion (%)\nMaterials share (%)\ngate walk\nLabor portion (%)\nMaterials share (%)\nQuote configuration\nLabor, materials, taxes, minimums and pricing rules.\n▸\nOwner approval\nReview saved configuration\nQuantity assumptions\nDefaults are already being applied. Adjust only if your jobs differ.\n1 CHANGED\n▸\nRetained legacy settings\nThese values retain their saved meaning and location. They are not used by current quoting rules.\n▸\nGood / Better / Best tiers\nOffer up to three options on one quote.\nNOT USED\n▸\n\nBUSINESS-WIDE · APPLIES TO EVERY SERVICE\n\nMarkup and margin\n0% markup = 0.0% margin\n0%\n▸\nTax\nMaterials taxed at 8%\nSET\n▸\nProject measurements for preview\nEnter a job to check the customer estimate.\n▸\nWHAT YOUR CUSTOMER HEARS\nUPDATES AS YOU TYPE\n\nThis is what the estimate will sound like on a call. Nothing saves until you save.\n\nCALCULATING\nCustomer quote link\nAllowed website origins\nEnter the exact HTTPS website origins. Local HTTP origins are available only for non-production verification.\nUse this website origin\nSave quote-link access\n\nOpen customer quote form\n\nInstall your website widget\nWebsite platform\nPlain HTML\nWordPress\nWix\nSquarespace\nShopify\nGoDaddy\nWebflow\nSave your website's exact origin in Allowed website origins above.\nPaste the script before the closing body tag on each page where you want the launcher.\nPublish your page, then use Check installation below and try a complete estimate.\nWidget code\nCopy widget code\nWebsite to check\nhttp://127.0.0.1:5210\nCheck installation\nInstall the code on your published website. Some builders restrict scripts or place them inside frames; the checker reports only a verified connection.\nCHECKING\nChecking your changes\nSave & validate\nSAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/pricebook",
+      "invalid": null
+    },
+    {
+      "label": "New service type",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering pricing",
+      "value": "installed",
+      "invalid": null
+    },
+    {
+      "label": "Offered fence height (ft)",
+      "value": "6",
+      "invalid": "false"
+    },
+    {
+      "label": "Gate opening width walk",
+      "value": "4",
+      "invalid": "false"
+    },
+    {
+      "label": "Gate posts included walk",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "New gate name",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering price installedFencePerLF",
+      "value": "10",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price gate_walk",
+      "value": "250",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": "Labor portion offeringRates.installedFencePerLF",
+      "value": "60",
+      "invalid": "false"
+    },
+    {
+      "label": "Materials share offeringRates.installedFencePerLF",
+      "value": "40",
+      "invalid": "false"
+    },
+    {
+      "label": "Labor portion offeringRates.gate_walk",
+      "value": "60",
+      "invalid": "false"
+    },
+    {
+      "label": "Materials share offeringRates.gate_walk",
+      "value": "40",
+      "invalid": "false"
+    },
+    {
+      "label": "Website platform",
+      "value": "Plain HTML",
+      "invalid": null
+    },
+    {
+      "label": "Website to check",
+      "value": "http://127.0.0.1:5210",
+      "invalid": null
+    }
+  ]
+}

@@ -1179,3 +1179,8 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .quote-price-unit { font-size: 14px; color: var(--white); align-self: end; padding-bottom: 4px; }
 .quote-tax-treatment { margin: 8px 0 0; color: var(--gray); font-size: 13px; }
 .quote-range-values { flex-wrap: wrap; }
+
+/* Saved approval keeps both the setting and its exact value in view. */
+.pricing-matrix.saved-price-review { min-width: 0; table-layout: fixed; }
+.pricing-matrix.saved-price-review th { width: 60%; white-space: normal; }
+.pricing-matrix.saved-price-review th, .pricing-matrix.saved-price-review td { overflow-wrap: anywhere; vertical-align: top; }

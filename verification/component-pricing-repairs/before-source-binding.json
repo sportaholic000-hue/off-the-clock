@@ -1,0 +1,1180 @@
+{
+  "commit": "9457a50a538d2c437f3f821f89ec1c49966229bf",
+  "files": [
+    {
+      "path": "server/quoteTemplates.js",
+      "sha256": "a72710cc0151bbc01238c2f0d6bc40ffe7a13bc4c3e7e2c11617c6a521ef4d89",
+      "git_blob_sha": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c"
+    },
+    {
+      "path": "server/quoteEngine.js",
+      "sha256": "827c21f84141b6a78eec2232071181662e1f67a5ee58dabd14feff2281be714e",
+      "git_blob_sha": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18"
+    },
+    {
+      "path": "server/quoteLog.js",
+      "sha256": "0f1dd2050902c1ad34e9ee7fccf5e09cca4f336d24850f020cc42ac665f8f599",
+      "git_blob_sha": "56e2ac691408160ac532ede99fd258179e710475"
+    },
+    {
+      "path": "server/priceBookService.js",
+      "sha256": "ee379e52523239a61ce5f7edb7a58de77b21fdc1f7a49f8ae2310dcf0c21c4ec",
+      "git_blob_sha": "ee9abed7e8fadd80852718e645e6811fbb547430"
+    },
+    {
+      "path": "server/package.json",
+      "sha256": "d42dd1934a51e0bd920ad1a4adec57692b82ac6bfaef430ce7f81cc57372a919",
+      "git_blob_sha": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "sha256": "44297329c110808a2047eb5d8c62404f65d9bb6302fb473ab58057b7b7197cb3",
+      "git_blob_sha": "372a12de3b36e090298b10b883411eeae95d6530"
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "sha256": "391d1e7b572daab6dbedfabaf23f912a84fd67473dd0b28b78ccdc44d08baccb",
+      "git_blob_sha": "abdbf695ceda016be6c6a5c81d0c04039611748c"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "sha256": "02de4637b091804467f840a9a8fd7a80328ccff96c104ef5d15999a15aa2ab93",
+      "git_blob_sha": "1121aa244e03681ddd8a5b91bece6bb421a193e9"
+    },
+    {
+      "path": "server/installedPriceConfiguration.js",
+      "sha256": "15b27ad8e2237ec64841f72bfac60793848dbce74fc7784a453a22f8d6490f73",
+      "git_blob_sha": "6fffd20238a5856c658535c53a8e7415926ba37d"
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "sha256": "05e9fba0b861ea20bc94abecaa9b4d2177cbee478511fa7bc980abf215487695",
+      "git_blob_sha": "d11671f4c9d40f2713061c506d73b36e9b367ba1"
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "sha256": "d4ddbc315d288c82ac165d6d763a7e5e1461fb1bfb03ef42db0f367eb9a7c11d",
+      "git_blob_sha": "9f5e684f6f5f56eff1101a53a9e1bbaf86b263ca"
+    },
+    {
+      "path": "server/priceBookTree.js",
+      "sha256": "7a65fd756945b1a7a30b4004f8c1f3e079938d83b92e09784e245b0cdf3abbc4",
+      "git_blob_sha": "2de2a771db9deed2d224862967afd4677386f3b9"
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "sha256": "8b6a4d9fd246c330a6a00f1f1eb08d35efcd5a5c7865752a39f239d834a52ff1",
+      "git_blob_sha": "9765a3a9cb65fa7901871bfd763f2bfa35c63491"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha256": "691dbf2451e688670a6ea26695d4ba7d0a6b21c5d61e137b96e845c26eb949e7",
+      "git_blob_sha": "4fa9e48010d8c221137d0308e2b042f685180c63"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha256": "c2936bd80461ffe5f21afc2c1ce355999b1374310c8f81f3e801e3e2e51a12ca",
+      "git_blob_sha": "4eff45bf90e4800728058bd73d8b31a68a86620e"
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "sha256": "6dd34c9b97f2f2c8e126b3729310a2b180f503102c429dd28b72a75b7f6c3e2f",
+      "git_blob_sha": "56d78ed30fd10294db35a6e44f01d2e2008f531b"
+    },
+    {
+      "path": "server/quote-engine-vnext/README.md",
+      "sha256": "64f5ac04a5cdb0d9ba53621dd53f56c272c2adbbb9a1b446cf03dd6f729f431f",
+      "git_blob_sha": "1a9008f2cc23fe523b6dbcce4867e20e1589dbb8"
+    },
+    {
+      "path": "server/quote-engine-vnext/tradeAdjustments.js",
+      "sha256": "c714f5cc8d1b1dd4c3cdb5e35b78546d57ca59b8ea85fc2b797a6d685f8a2e86",
+      "git_blob_sha": "7f0e127a691b3f774b527d1320feab67ce453cb2"
+    },
+    {
+      "path": "server/quote-engine-vnext/geometry.js",
+      "sha256": "a371e81d294cfc9d60403863e502cb52a9cfd04e0c1172a3ddab31e786ea7cf1",
+      "git_blob_sha": "925ed38777dc914a8965a0b85278ac0dc883f0c5"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "sha256": "ab35babe578bf5862cafb4071ff1b4ff922a2822a1ef69396107126411a64a85",
+      "git_blob_sha": "3059e2fcb3c8416697acfe2d163d32f1c149f17c"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "sha256": "c7cce315d97cc297a88a03e52d2f6689d46724298c1c49236608fecf87ddbbb6",
+      "git_blob_sha": "3f4086b936188fcd7f926a8c1961cbcb29da9c75"
+    },
+    {
+      "path": "server/quote-engine-vnext/safeData.js",
+      "sha256": "1c86be4d957015ec04224d54d2cf1564ade21b63f30cfde89e695d6d6d88828f",
+      "git_blob_sha": "cf183be9c29368f3bd9b6dfa1f87020b74705050"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "sha256": "9306ddb2a1017907ee1fe96cdf26101115c24874a166b3009b1cc849eb624543",
+      "git_blob_sha": "337fd9a3e67d9f1b8b173e7b163e63ceeb1ebfab"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha256": "77ca6c437fe77a0f77964136eadb79473bde7dac19621741397e1d8074884dff",
+      "git_blob_sha": "e68331badad689630f026d56ed357354a870b583"
+    },
+    {
+      "path": "server/src/previewMode.js",
+      "sha256": "348b269e347c6ec1c3503176394a86c500fa5f31b6b31629c871676974184918",
+      "git_blob_sha": "4282015139d69aa1e62737a8389c3122bed0f90e"
+    },
+    {
+      "path": "server/src/auth.js",
+      "sha256": "3f9c8cbd8ea4bdca8b41a75770c849039cc7a76b8f53aa26e31eff82224d0819",
+      "git_blob_sha": "63c6556c5fd8a99d888ac47fdebccf72d5a40677"
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "sha256": "5b6c29ddc9fb2da94b786bf9a18c405bf9d329f02b694948c3df78ca623f6dbc",
+      "git_blob_sha": "4f8f00cd827e76fe8a67be3d924042959fcf91a5"
+    },
+    {
+      "path": "server/src/server.js",
+      "sha256": "4405e6a7cac8c627d8428269a56794d432c81a665a6e48114ec1acbd553f4dc2",
+      "git_blob_sha": "7dacc917d096481f43c280f6ec766a736567f9bd"
+    },
+    {
+      "path": "server/src/corsPolicy.js",
+      "sha256": "2764222b4a72b08eb59f96927f89b9dce74bd31f920e33f0e7823b18262bb62a",
+      "git_blob_sha": "10063b96d6b27140603f56d4202c0a219a648baa"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "sha256": "73a4d4b9fbe2d15d289b54633ec16b4035aa977f78010ab72a24681b1e30e267",
+      "git_blob_sha": "c25d6f33d2d3d62e01f744a406b3ed733e37e9f1"
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "sha256": "2d044fb4306de19517633014948da3013d74161f5970e847b5717a4b6b34719b",
+      "git_blob_sha": "87035db4d213ddb4d6d55f16b699c1ffb23ab926"
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "sha256": "d40560968613c7000d088086a647179c523487e11984ac0ac41d0ec11a0ec29e",
+      "git_blob_sha": "96dac32b654d757975ba0b39883d5a76ee904742"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "sha256": "e83b221063205d1c5999c67da1f231abb07343d82a846f9013e9c2daf83d2072",
+      "git_blob_sha": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "path": "server/src/db.js",
+      "sha256": "676b85ceab85fcd621ee59a7ea5ea050b0eded28aadac6c9e982bf65c7f08d6d",
+      "git_blob_sha": "c8d8d0d70288903ce74862199bb087c80914ecd6"
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "sha256": "44f8691ec7b7df18731f88be556caf723f4fc0e2810712c977b5e7b36e845881",
+      "git_blob_sha": "930501e5550e32342a8616dc7e4eb3e2b6a138b4"
+    },
+    {
+      "path": "server/src/outboundWebhookTransport.js",
+      "sha256": "b7feeae3d3305808dcaf27227ff63f573e2536356c0c2602cc4bdc1ac3ab47bb",
+      "git_blob_sha": "f4e13c2cb9219096cede5170068d8a1b66c8b32b"
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "sha256": "1807364720aa26631ef1f5dc809b119a76fa8c4d544fb20bf1eeb3203bcc3f28",
+      "git_blob_sha": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "sha256": "24ccbbfdd5f4d4238704e867c77111b43c9d1dfb31abf99891f7608e59d53616",
+      "git_blob_sha": "b79d90a514a93465a3dc6f76fca027fcfb8b9b53"
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "sha256": "3a81b434b45c94cbbd2363e8be88e56362f1c6a3ae084661e0c8ccec0464f183",
+      "git_blob_sha": "b8b3331240cce15a14e8fdea59e538e6d906b68e"
+    },
+    {
+      "path": "server/src/voiceRuntimeRoutes.js",
+      "sha256": "0c5083297e409535a68c0bf55bafaa76134ee922c67e432eaf02fa1e1e5b45ac",
+      "git_blob_sha": "c4e2034bc6276d535d444834724ad60141308987"
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "sha256": "58e5f4fe37b642afd68162c2e25180ae0b37cbb7d1cecac4b8585ed196aaa3a7",
+      "git_blob_sha": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621"
+    },
+    {
+      "path": "server/src/lifecycle.js",
+      "sha256": "621089fee4ce3f0ede45f2ddd9113bc2ffb673ea9c1b4d02bed753b147fccd16",
+      "git_blob_sha": "88b6f55df496f9e9aabea290c1b299bba8e47d98"
+    },
+    {
+      "path": "server/src/tenant.js",
+      "sha256": "81e7f7142ff8ee783a5ecb86fce4a8f93fb2ea79fe27483325106a125f396129",
+      "git_blob_sha": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5"
+    },
+    {
+      "path": "server/src/email.js",
+      "sha256": "e8525fcd9727bf677e6d779817daf30b5068f9722bb7e8f3d0e269884d7cdbb2",
+      "git_blob_sha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d"
+    },
+    {
+      "path": "server/src/migrations.js",
+      "sha256": "a589ed7f434accdd802fa88737322ef05270574f6b79f00b02c9d9374d063e8b",
+      "git_blob_sha": "78acc7730988a83ee13ab4bbff89e0e74222e6fa"
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "sha256": "273a9cc8824cdb97124cb9445f93602f0fb3ed13f99ed3fad2ef44bafd400897",
+      "git_blob_sha": "de4d42efaec332115fec229af2b7fe14ad7323aa"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "sha256": "c44b1aff180d8138323287bbe81a87972dbd632f108366d6980a254d0bdea26e",
+      "git_blob_sha": "b7b5152b0dd3ceb5a514b8a6e73a8c027da3b1e7"
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "sha256": "3e36f462091fc6334e3ce5db016c54dfa646f5dc8256965289cdb27ecd1b38c3",
+      "git_blob_sha": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5"
+    },
+    {
+      "path": "server/src/quoteDate.js",
+      "sha256": "4676901e13650d7528256a34d4aeb166e10d3f1a98f3892e5861b154818be1c3",
+      "git_blob_sha": "a739a4af564e674791e75b593df5ad12d8a6506a"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "sha256": "f3e9c3b76e5e8a7152c093fb4bbbcdb3e971d5a65786e4ebe1e826e12a51bda9",
+      "git_blob_sha": "0d8d91675cf216e55dcb921d61b58b0d90069a4c"
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "sha256": "4f8604f19725ea0ddb5305cd78eb7e78915f8f80925c609076f6d4fcbad74279",
+      "git_blob_sha": "760804b2be23b09d9fd1b648d1540fbe8bfe592d"
+    },
+    {
+      "path": "server/src/clientAddress.js",
+      "sha256": "026da3a7fad6e2d78e68c0a85b46b526bf83ad6ba5ce2ae21f4792d2f28d5e92",
+      "git_blob_sha": "f578cb0d4fa02a97ace85a6bb6b50be0281d5daa"
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "sha256": "eb22ec33b83c78cd3d6dafd592da1ff80cd297482e8e3860fb1c34173ce706bb",
+      "git_blob_sha": "06176e808b145f4d5f1c3523122b564d62fa9729"
+    },
+    {
+      "path": "server/src/exactJson.js",
+      "sha256": "78fd10e321d3046bfd189c1132b7bd192be68325fe88f94865c304729e0b803e",
+      "git_blob_sha": "260c1500b3943998e17df19e174b2ec64be7cb26"
+    },
+    {
+      "path": "server/src/calendarOAuthState.js",
+      "sha256": "e59b6b1760356b1d8b0bb5d7cef8fdd712763d1252c821f6035c79c9e3daea7d",
+      "git_blob_sha": "439ea0f4bac871421357b28a1b81f9d2bb6111e6"
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "sha256": "01c427c71062a311da524877e1d4127de9b95ad0c2d856cb2d8bc74c7386cb59",
+      "git_blob_sha": "8b85216517fd711d2050d65c88ee23d91dd4e353"
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "sha256": "d64a9900b5b03fe7bc3de8dfc26357dcb796f5a22ef71bdfbbe99752dc45e597",
+      "git_blob_sha": "681135fd8396e506883bf854ba50da81161cfe18"
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "sha256": "a2cd4a039de1a9207a780af4d6e4abf933a6ebacae59f64d676c658d3683b3d9",
+      "git_blob_sha": "cd411e15a57d8003ce209da2b1e04584341db309"
+    },
+    {
+      "path": "server/src/integrationData.js",
+      "sha256": "ac9e3b04f9d9821846f5f522493a475c82f93003a7e4811fbabe729aadec9d67",
+      "git_blob_sha": "878f631cd765ab7373590501f84fa73483ff63ad"
+    },
+    {
+      "path": "server/src/deploymentConfig.js",
+      "sha256": "b8680903f46ca22bd511170d06df5989234550cd46d12c1873f65eeb08ebc043",
+      "git_blob_sha": "749686060536ed6b79cee5ed412d6523f82595ca"
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "sha256": "0f2d9dbdec06af608d3f5c34c3dc4afb26cce5e92d7c69c33bdf5fa23b301d97",
+      "git_blob_sha": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4"
+    },
+    {
+      "path": "server/src/quoteContact.js",
+      "sha256": "f51823a4da2ed7a1f86c5058c59e1eb8597e95e89eb0883b3dce5f830cebe3e6",
+      "git_blob_sha": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57"
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "sha256": "c39a4d04fb54dac77fc6814caa44b56127bafb9ef5bb0c61d7d29112507d8386",
+      "git_blob_sha": "2db2c74bce1245110c38e5af5166d2e34945d620"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "sha256": "55547064b8c1914cf60af6b344f1afd81121cbc2d018727d8bab697c99627b10",
+      "git_blob_sha": "123d34892f4d33a583f4353de28410a55c16029f"
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "sha256": "af0e34c9c8a4e2eb4ec546cf640a439f05abb08ef20b139e3969e93c0b2aec65",
+      "git_blob_sha": "4dd6b93e46fc62d825767e07f679ee1545d23cb5"
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "sha256": "b86fce76f398656f7c95fbb90e90aa7230d346488c4f85912cce29227404c0a2",
+      "git_blob_sha": "0f41167ce68ded3b43b23fa064e5cdd72290e9de"
+    },
+    {
+      "path": "server/src/deploymentEnvironment.js",
+      "sha256": "4386f47147914b3b8130fa9b8029888dbc930e13696312584087a57e9f46c409",
+      "git_blob_sha": "b9b7168805825d28d1ae4e3e0ad26fdf41ddf580"
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "sha256": "a0a813b9bcbdbfde9e77d3e56fcf4ab19bd51902ce27c7c84d6d775fe454183e",
+      "git_blob_sha": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b"
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "sha256": "de207bb20766618bd28dba2da98ffd2a1d22bd153fcc26fd049cbd976d43d647",
+      "git_blob_sha": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8"
+    },
+    {
+      "path": "server/src/authRateLimitService.js",
+      "sha256": "71705f143dec27f9162a21103e83f516081a9f813dae58a2dcff21b80197482d",
+      "git_blob_sha": "4869358cec735654c77f63b371fa090257e8a37f"
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "sha256": "3399ce4bd5c441c07ff99337cac20891629e7a2869b9fcaa76e7849386dfe79b",
+      "git_blob_sha": "a42dab7abe98467cd266d338028c591cddd16ee7"
+    },
+    {
+      "path": "server/src/schema.js",
+      "sha256": "aed021b444e55e8f9d5ef24cb4a209463c9b6f746c2d4e7ffa395d528f71f026",
+      "git_blob_sha": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e"
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "sha256": "c0553d6710b4c985500650f8ba3dd44abc2a346a26319815866998de62826235",
+      "git_blob_sha": "2f5075e8428257b75a5c0ead20cea3065f7d904c"
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "sha256": "224b65479c3432dee40f70b245fcf91b2ba448b0cba334e2d4ac62d218ef6951",
+      "git_blob_sha": "c0a85d8569618fbdec8899dafe12659fb2791cd7"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "sha256": "233f956b86ff487b6f9e1463d823864234f886a69f458a2f60840e947a4b3718",
+      "git_blob_sha": "243a2b567351f96c65d020df0d258de9583eb9cd"
+    },
+    {
+      "path": "server/src/backups.js",
+      "sha256": "8e5ece19a8d019106b5a39458853b301c4c5ed1a2cf340e9cd37e9b48738fa61",
+      "git_blob_sha": "546ba15164fc32af46840374723d7edd0bc0c186"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha256": "7dee6b302b19a191c54589411951479b66bb5b00c8c82225e9caea0386d0f362",
+      "git_blob_sha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2"
+    },
+    {
+      "path": "server/src/ownerIntegrationRoutes.js",
+      "sha256": "850c178123066a678faf3cf9cddec4ed02c5a2f551d4c772a5c260deacaec4f3",
+      "git_blob_sha": "38d70812f7cfead22cbf5ad8426ea4ad61757a96"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "sha256": "ae37eb726e82bcb963172f5c70505bb05882ad685b07833f54aac2e1e10d97bd",
+      "git_blob_sha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58"
+    },
+    {
+      "path": "server/src/quoteRequestScope.js",
+      "sha256": "789ea4987e3155f69fae3b1391b2a3be71aee683efb6b16ca866f84f8390f1ba",
+      "git_blob_sha": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "sha256": "7bb9688ae1a800581ade19b20e1ade2212bf04b15cbb0bd2a5a84fb91ab5f4b3",
+      "git_blob_sha": "fdef53ea3afcabd5fba84e66d1454400ba05945b"
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "sha256": "3da09b73bc0918077b47c9da87d47183da4e5ae4df7a46ed6fc5a10b21b22a1f",
+      "git_blob_sha": "98792bab9be179a26015b963d622361dc6349d89"
+    },
+    {
+      "path": "server/src/bookingAdminService.js",
+      "sha256": "2aa9931a0908c9b0a68c0ee5ad4ce726d977db11a8f1eec735d65c31ebf4ce0b",
+      "git_blob_sha": "8c667bce6ea7fdaea1d578775133eda887626685"
+    },
+    {
+      "path": "server/src/outboundWebhookSchema.js",
+      "sha256": "ec1d8ac84a19251954969652f19ac94190456eec4ef3e53704056247650be693",
+      "git_blob_sha": "ca804f3c2f2e1432998ce59b41a8e63527355b32"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "sha256": "302453955853480a39ce6a9644c450dd07ce8971a770bd740868e04727145b5a",
+      "git_blob_sha": "fe71c36cf1050ea49f5e319303f1e8cc3208edbb"
+    },
+    {
+      "path": "server/public/otc-live-demo.js",
+      "sha256": "e0f354002c6ddb64bbbcc822b3023c25e098fa923ca8c78c176bb928943e2284",
+      "git_blob_sha": "76fcfdb99325d2a202f358b17c8e75cf4ba82c11"
+    },
+    {
+      "path": "server/scripts/dev.js",
+      "sha256": "f6666cb3867594b569e0347b1c4214dff59c45524d9227aa5c0c9481b7786b87",
+      "git_blob_sha": "01b420264ffb45e4d8e779ccc9274b640b531c0c"
+    },
+    {
+      "path": "server/scripts/phase0-gate.js",
+      "sha256": "5ab16d3df0141c1d83c2e489e881866d75fb42b8ab253d302c2309ab7517a8d0",
+      "git_blob_sha": "14c65e637c5c162bb841f136da795d284594ce48"
+    },
+    {
+      "path": "server/scripts/phase2-gate.js",
+      "sha256": "6d1353aecc30f30264dd68ef9bd30f90578b6d25dec5fecdd9736f6e78a996e6",
+      "git_blob_sha": "3a262912d997ae44f1c3902e031199fc8e2e3189"
+    },
+    {
+      "path": "server/scripts/backup.js",
+      "sha256": "7be6e183ef2ca161325e6eb17c67b8ad2debe1fe0dfd1ed0421807528a70d4d6",
+      "git_blob_sha": "5013a1d8322b5d416d43c8f65d3457dc3e1bc505"
+    },
+    {
+      "path": "server/scripts/quote-vnext-gate.js",
+      "sha256": "e17f56df3205316b443ae1af57c7e1bdd6fbfe9e266b861cb59df81c7b9746b4",
+      "git_blob_sha": "d42020d32e77473722539176765367466774be58"
+    },
+    {
+      "path": "server/scripts/restore.js",
+      "sha256": "26b079fcac65ff444ac3eeab153eede3080de4f5cf61fad4a1d80bf206261b06",
+      "git_blob_sha": "df0332c1fdd0ab835841714b90ec77547cc82c70"
+    },
+    {
+      "path": "server/scripts/phase1-gate.js",
+      "sha256": "b6070fa0c9444d1794b56aac6041e1e4eb84440ab5329034479a3307c48db6c6",
+      "git_blob_sha": "f4b9ae35283a505a9e50da45d4d272376713262a"
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "sha256": "ae3c74516f2b3d7e1a3d57196a5e7252ff25bec6aa2f7ab91cabdf9ad2aa0c38",
+      "git_blob_sha": "e121f84ed705799c973374b69d9e84def5b5c1d1"
+    },
+    {
+      "path": "server/src/voice/geminiMediaBridge.js",
+      "sha256": "76ecd22343e26ce0cd775ceb79d99bebca20a348fa6fcdf79cebdc9f73d56da3",
+      "git_blob_sha": "79b7da7beb957155b597efb5ac2bc2541565658e"
+    },
+    {
+      "path": "server/src/voice/tenantResolver.js",
+      "sha256": "a0a91ab45fd70d0ab658001719ec5acdade753e35a9763e19911431c8ec209bc",
+      "git_blob_sha": "8314a25c3b8a3c16d78096a5fa803ed267b0e935"
+    },
+    {
+      "path": "server/src/voice/audioCodec.js",
+      "sha256": "0763d5e78621369192fb31c12a2a80fd96bf376eb78eeeed1f36150076045dbd",
+      "git_blob_sha": "db715b52e6efc6bb1ff5e59e3754e002025e8099"
+    },
+    {
+      "path": "server/src/voice/twilioValidation.js",
+      "sha256": "493361313f54032f8fc96bce96e965909fe52f58ff01ce692e687b5dc7f05c27",
+      "git_blob_sha": "db4a0e7781cf1d13671799fdc8f82f2524ce345a"
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "sha256": "80b9ffb88e9ee09aeaccba523ff133d9928a73552171c2cfa2c92cef1bc84199",
+      "git_blob_sha": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f"
+    },
+    {
+      "path": "server/src/voice/sessionNonceService.js",
+      "sha256": "9105c7458056f54670c09aa49e0497a53abc1732f14fce519a550bd273e271a9",
+      "git_blob_sha": "69529472280fd305dee751465187caf5f2c69199"
+    },
+    {
+      "path": "server/src/voice/toolDispatcher.js",
+      "sha256": "1cd26e36bcf9667eedd3ebc6260bd5d3f40512009038a85c823c21ec305fbaf8",
+      "git_blob_sha": "5b9f128f3b028c89c1589bde1b2edd5ea4dd4316"
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "sha256": "0bffafe02649b20e86ee656ecd05ed2f89797fd171fc69c7b0aa55c6d59f1792",
+      "git_blob_sha": "b5670a5246fa8c23966b101cc73fd37b8934d393"
+    },
+    {
+      "path": "server/src/demo/liveDemo.js",
+      "sha256": "07e3c568b031231499b438acab057942e8322b71483ac458cf20a99b6caebf42",
+      "git_blob_sha": "93dc2188b0e16857656e060c33d1507926e25156"
+    },
+    {
+      "path": "server/src/demo/demoInstructions.js",
+      "sha256": "f2ec9fb37be26856a1626f9ba82956b40519433952e00eb63d561330a8dc4653",
+      "git_blob_sha": "322e5b06f8c859cf08e9ccd49803aa00f1c61dd0"
+    },
+    {
+      "path": "client/src/styles.css",
+      "sha256": "5e3a3e0024baa6af824535c6053375a2a5d79336dbf30fa790c75586b926bad8",
+      "git_blob_sha": "789db161c483eb505764c6627dc7ce76377ca3c4"
+    },
+    {
+      "path": "client/src/ownerIntegrations.jsx",
+      "sha256": "854b4c4bc424ca1d9e1865a266c298b858027a4a8c0fbc6c2db5c879237aeebb",
+      "git_blob_sha": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f"
+    },
+    {
+      "path": "client/src/pricebookDrafts.js",
+      "sha256": "8c0a2b4c7f00ea017ff096abe041f922ff0110d62d36d3587f4a4f736c5d29f8",
+      "git_blob_sha": "065ae1fde30f3acb876fff8a36e6cd96dcec9d21"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "sha256": "fc862131ce64b990e57039ab3bd76486213d0481d75ca6d09d3efa923d3e46d5",
+      "git_blob_sha": "7e5f5eefbdfc76e7a960e2c47b89956379dbb055"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha256": "9b1071d233cd7286812cc39e6959e0120acd22fab3c2fb002a201cb9b7bf5ede",
+      "git_blob_sha": "6b778beeaa01a23c78b297fa6af0977dc4947e9d"
+    },
+    {
+      "path": "client/src/pricebookFormatting.js",
+      "sha256": "662b80eef1d3c71d103f7927ceb160291f228bcf66ebffbb699fc9c0a9836270",
+      "git_blob_sha": "b361b6230fae8985531e7b1268f2b0633ac629ba"
+    },
+    {
+      "path": "client/src/integrationDownloads.js",
+      "sha256": "e9ff9d4b30b98f9926bba36e1dad9e233caa8c96ecf1f6de0c25351247d214d1",
+      "git_blob_sha": "e90d7073d576320af02e9bec2d31a5e5096493f9"
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "sha256": "abd2b4838ae3ba2d5e8d9a44cf01780fc9f7e846a1ccb13ad1e700ea995857ce",
+      "git_blob_sha": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2"
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "sha256": "8199ba2ecea976666da9282b14c6e83add516fdad12550b24ec4358f8e3384cc",
+      "git_blob_sha": "d28d7e533e812750a42c050dcfd84019bb6f4280"
+    },
+    {
+      "path": "client/src/quoteWizard.jsx",
+      "sha256": "d03b5723a59919f63c0b3ccab118d7a46671ea8c6a275e43a9d1107eed44b11b",
+      "git_blob_sha": "62fdd0167c47126d255463af3efeebe48d0b77df"
+    },
+    {
+      "path": "client/src/installedMaterialsEditor.jsx",
+      "sha256": "e50b2cff9bd151d56d82beacef5ccef312e0c6508851805ce790f9db1a1cab7a",
+      "git_blob_sha": "63cd57bd82d02a4a49047e43a89a753887d857ab"
+    },
+    {
+      "path": "client/src/scopeEditor.jsx",
+      "sha256": "97ee42b7c84765502a2e73b2c6602b59b247fbd664b7684db9904328f0a4395e",
+      "git_blob_sha": "f2e99113b8b9098ea05473797466b0db9973a4dc"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha256": "e7af16461b8f1f7bc32226c0f8037af1c2649a538cc18673e4978fd89bb9d1b4",
+      "git_blob_sha": "64a6a91141aa07255d33346316777b7054559e8f"
+    },
+    {
+      "path": "client/src/widget-entry.jsx",
+      "sha256": "ac60bee52171757ba70502cc4c8a80f9d50b4ac93d854cadd087172f715701ab",
+      "git_blob_sha": "7d59afdd4335adcfe564f619795e807749f7a351"
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "sha256": "da7d8d5d70fdc78efb55e034ab5cba676edc9dbd1226590b5b9fe7ac5e29fb29",
+      "git_blob_sha": "ae8177c39d37fb1d24261c3c67dd054d995c1957"
+    },
+    {
+      "path": "client/src/widgetBooking.jsx",
+      "sha256": "fe9e9fe0194d6c2e5d63e72b7f61ce5957dc6ae57d0fa5ff1225889526ef7b4b",
+      "git_blob_sha": "08a088699117eb51256437beaf83da462b7bc093"
+    },
+    {
+      "path": "client/src/widgetTransport.js",
+      "sha256": "7fa1542fc79faa36eed45de8029c8e21507d0453ef5c4dea57a231adbbe31b14",
+      "git_blob_sha": "3212c586aa7fc39e4d288cb7fd631ba4ab02bd26"
+    },
+    {
+      "path": "client/src/widget.css",
+      "sha256": "3f10c3ed7bdad0941059fcbf15fea58d7114b7035f243f58e7cb64a932a2d46a",
+      "git_blob_sha": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186"
+    },
+    {
+      "path": "client/src/widgetInstall.jsx",
+      "sha256": "c899a954cbfde491e35f2d1df75be73a4377ee3330be57813ab2eb8995decb9d",
+      "git_blob_sha": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a"
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "sha256": "6172b9e122d0b984877f7b1eb6af14018f1c81b580ea9ab2f0217958e589d45d",
+      "git_blob_sha": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7"
+    },
+    {
+      "path": "client/src/quoteSubmission.js",
+      "sha256": "dabcdfa08babdd5ef986821d10e77bc2f24a5761963a221d79f3dd28628028d9",
+      "git_blob_sha": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "sha256": "a701d0e09df4f7fbc6d12623a2ec661116b207dab1064127203870129b716418",
+      "git_blob_sha": "daa52f72e41a4e5ff6496fa7a8f7b6a114b7ff92"
+    },
+    {
+      "path": "client/src/sessionIdentity.js",
+      "sha256": "27170a3487de77c325952d072da134c932328340cf334eb39723f846a8ec9dfa",
+      "git_blob_sha": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369"
+    },
+    {
+      "path": "client/src/api.js",
+      "sha256": "841cf5fd2e08a540fc87e0fb3183e53204e41dd2ed11dba76a9f7faf478bed62",
+      "git_blob_sha": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982"
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "sha256": "a346effbbf642cd41d2e4e314554f9473af0644c0d0405f344cbf5a4a6dcc351",
+      "git_blob_sha": "58ef15b9bc6d50409ae16671fe94d9779bf2c445"
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "sha256": "c78306fbf221e3b9c0a975513a521ce2dad202236e1298903c0eeecc97ca367e",
+      "git_blob_sha": "6fe58dc51a2112d9d2f8dc2698260c651ee0ba00"
+    },
+    {
+      "path": "client/src/reference.jsx",
+      "sha256": "87e9a9240b06613f5f79fafad42ed04e3cb49c500ae23807e3a000af38255f77",
+      "git_blob_sha": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd"
+    },
+    {
+      "path": "client/src/interviewStructured.jsx",
+      "sha256": "fa00bc4acdd7fb5554dbdc2b8660cceb76a3452f6dafbddb4412eab091ef98ac",
+      "git_blob_sha": "a2be8c0b7ecf2a8138b9bbef0dd805de77b89b3a"
+    },
+    {
+      "path": "client/src/quotePresentation.js",
+      "sha256": "c1775daf11b18664e00f8c52383fabca3f777862c31900455206191dec3023e1",
+      "git_blob_sha": "a1b271c3a03f5e24ab3bccb07da88e8ab090b3ec"
+    },
+    {
+      "path": "client/src/accountRecovery.css",
+      "sha256": "2397c38183912b17a93fac61ad761f9c1967925f993fd8ac58c217c9a023d4a3",
+      "git_blob_sha": "cf15876bee07a662db73297cebf2c392fb9ae8de"
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "sha256": "c454c9f7e2556dab69a27b42c114fade8ae7e8e1ae1a3201c3bab17343911077",
+      "git_blob_sha": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28"
+    },
+    {
+      "path": "client/src/main.jsx",
+      "sha256": "996b5729b81632c1269a4fec2ced48b7396217624581bbb30ceb08284abc2149",
+      "git_blob_sha": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f"
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "sha256": "446e97b79ccaf500899135b3e2e59d58b9ad308ee2c6a4417d3f77ad9ff7967a",
+      "git_blob_sha": "7b1c708b41a516cdbb79f963f6fa1a93547927d5"
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "sha256": "c51371c84ad24da257d4e52a60ea0d311f95b25d1c731e0a13baf8be406f0f46",
+      "git_blob_sha": "4bf229e9d0d04158632335aac8193e3732b460a5"
+    },
+    {
+      "path": "client/src/calendar.css",
+      "sha256": "d1fbd3df058027b924f1d3dedb63fb8dda427f254fce42bde31c6a041d2a02f4",
+      "git_blob_sha": "c29a0d7e8d4c0385d4cba48465f3197623d40b47"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha256": "b9ea0358ac96feaaa115fbd34e5fa4959c70e4b0ce33dddd8d9cc668caf28471",
+      "git_blob_sha": "232de850a6f7eb80e29d2139f53cc098a6c371a9"
+    },
+    {
+      "path": "client/src/pricebookEditing.js",
+      "sha256": "b38ca5e684e3fb4d9fab8adff10656730483ffb501c6400365c91e358a7732a0",
+      "git_blob_sha": "697c5a663dfaadd02a9d31070a3144360bb4d259"
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "sha256": "76622210c5f64cce1644ee7566bbd20c5b56843593e980ed011a16b54723a031",
+      "git_blob_sha": "7ef313141ed6bb78d3964534c4f39efec7c4b21d"
+    },
+    {
+      "path": "test/calendarCredentials.spec.mjs",
+      "sha256": "70cb719de2c2a7d3e2a73ccf57fedd354d5f2fa7cb40301f78198f4e019304bf",
+      "git_blob_sha": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f"
+    },
+    {
+      "path": "test/quoteDecisionFollowup.spec.mjs",
+      "sha256": "44af12efb1ce19c7ce6dbb3e0798373e2f0b588eea49b1fe51f7b1059e8372f1",
+      "git_blob_sha": "da4af80690e02a071e276bf7a7b7f665b84c2eea"
+    },
+    {
+      "path": "test/interviewControls.browser.spec.mjs",
+      "sha256": "92fde602ad8f045bfa11a8277d613297a594896064bcd2a0ca734c7bcefe1d49",
+      "git_blob_sha": "c082539b552c74d69d15a86a801c0d25e99e1ebd"
+    },
+    {
+      "path": "test/liveDemo.spec.mjs",
+      "sha256": "41a749698e4342a3b1e2a7952dde89e3cb2550536ff649bcb0ad1f4b62d78b99",
+      "git_blob_sha": "6c8f9084a7cb265cc126e665799250668de72f77"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "sha256": "b30678cd8b53a7a8ca17baec50f61859f375365b4b0686b3a7ac3438dcbe4ec3",
+      "git_blob_sha": "5d8ad4c67203dea0344baa8bf1592ecf53e5e9b6"
+    },
+    {
+      "path": "test/bookingTokenReceipt.spec.mjs",
+      "sha256": "2ab83615727f6041c3441bc11182eeb1d392827f1028eb3c842ca42042f8f7cb",
+      "git_blob_sha": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c"
+    },
+    {
+      "path": "test/clientAddress.spec.mjs",
+      "sha256": "e3ff842428ae675534ed1cd7c3fd531b18f11b86bae55c98058e49c53864a17c",
+      "git_blob_sha": "cc0c2f3c09dd36d3496d05434d9480e88ad01163"
+    },
+    {
+      "path": "test/serviceArea.spec.mjs",
+      "sha256": "c52376a8e3d836be2875d4d75f97324f94635ff7157a334aa4dec4aa7289b907",
+      "git_blob_sha": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f"
+    },
+    {
+      "path": "test/quoteTradeDecisions.spec.mjs",
+      "sha256": "3ece54d262aa539b5893908d368df44014f5325bd14dfa2342b93e7b792dc79f",
+      "git_blob_sha": "e10420287ed55a3a16794c50e6455d07c8287856"
+    },
+    {
+      "path": "test/calendarOAuthState.spec.mjs",
+      "sha256": "48ba1ba191dfacbbd44ba393fa02607019b8fbe7e87b04fc920b9fa4db3a6bd1",
+      "git_blob_sha": "36e24ad9928e623805ed2ffec8b2e52bea932ba4"
+    },
+    {
+      "path": "test/platformSchema.spec.mjs",
+      "sha256": "8840510c59f703e9eb02654df650db4e707aadd121a050e34868443ea862c8db",
+      "git_blob_sha": "e624614185172858e93b70b4deb40aebe9e216c5"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "sha256": "c70c6bdf9d8e13b3a40999a722cdc0da735993778605a538ba40e800f81bcfdb",
+      "git_blob_sha": "655502741636841661190e7519fc8e02810282b7"
+    },
+    {
+      "path": "test/voiceAudioCodec.spec.mjs",
+      "sha256": "deed968ed8063c35a760193b32fd34f08e0d0665f63fe5647e117f9192e4c8a0",
+      "git_blob_sha": "ef6f7824829caf58129edb9bb597fce1db55a243"
+    },
+    {
+      "path": "test/voiceWebSocketServer.spec.mjs",
+      "sha256": "10b138bf90684453f9d95523782dfb78d431a6103f40de414a451fb0eb6b3a93",
+      "git_blob_sha": "055c8543ddfc30484956830fc608a06711940aea"
+    },
+    {
+      "path": "test/voiceSecurity.spec.mjs",
+      "sha256": "c95b80c894c7ac52f36bb0f784d42146fcc2df04e3b3c8c7710e154e73f69039",
+      "git_blob_sha": "5d6a78e15284836b91d0df83e98c1f87fd3378c7"
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "sha256": "2e94c322a589039f5d3d70b540ca1d6e3b7ee3dcf41664a7dc150681b01e1898",
+      "git_blob_sha": "03f0545de79bb772a0fe89e067ec6301edd64f1b"
+    },
+    {
+      "path": "test/bookingAdminRoutes.spec.mjs",
+      "sha256": "c0dc1bf6d9efc05368730248c34601f991b1146b150607139d82f7af1fa4a15c",
+      "git_blob_sha": "4e766e19ff9b9123710a356612ef557265726b05"
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "sha256": "fe2ddeff88dcf97196d578a3fda0efa36f8d17e410f6bd1e6d42e29b38b0831e",
+      "git_blob_sha": "1b26d4ea925569917fe43d1bbefc95621fcd3bba"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "sha256": "7b03de279505afef0c29d23e0bc2f86f14c03e9d21e58891c3e43cd308b8c950",
+      "git_blob_sha": "97d65ba8345912c2a225a80f5c3e18323b9e9b54"
+    },
+    {
+      "path": "test/runtimeConfig.spec.mjs",
+      "sha256": "27c54c13700736ae0ecb937d6802e0cd5a0f98efddec38697790ab3436f5dd23",
+      "git_blob_sha": "cc1cb461004b36a445f88f708bec4507e01ebfa2"
+    },
+    {
+      "path": "test/bookingCapabilities.spec.mjs",
+      "sha256": "fc158a3a7d3e8988928d4636203a3c1bec63ad94d4b3437688aec7a44df9dc32",
+      "git_blob_sha": "6f8538474437d84235633cd9ff65e3b2cfc097a7"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "sha256": "0594c8aa49b7aa0830a506d82115f80d195adc49dd31cadcb3ea22d2228a7ffb",
+      "git_blob_sha": "df91c7671ef82ecc78c82f13001070097bfcd3a0"
+    },
+    {
+      "path": "test/voicePersistence.spec.mjs",
+      "sha256": "222909fb061c822cb7079c1b13eb0408c063eb46812b28e913353882617b985c",
+      "git_blob_sha": "3bbf285b98bfd5de2d177883fe4e37fffb6d188c"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "sha256": "d10aa76c736002e4ee9a8094cacd556d8c9107692484f3c21e58951cb7f49b57",
+      "git_blob_sha": "a941044dbab87085da2205669dbd687d2265af3f"
+    },
+    {
+      "path": "test/integrationDownloads.spec.mjs",
+      "sha256": "9ac4740bdc610e41d89e2077d93c2b81a3e25ba45df30d083dd7912cb2139a4b",
+      "git_blob_sha": "af838169ffe76df0c05997c39647dfc2c05b8b6a"
+    },
+    {
+      "path": "test/onboardingServiceArea.spec.mjs",
+      "sha256": "807c65dd7b404981bf4152cbbd1707c31f45ed988c9e5496867541eeca123dcf",
+      "git_blob_sha": "bdc6b7dba9d69655079cf0655d087f69ca6afab9"
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "sha256": "cbae3acfd133e32d676e6795b6ed4b026758baa7c0c6899b5d7f3d245370b670",
+      "git_blob_sha": "574a4727e94e30d70690fd35add7f14e43613b03"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "sha256": "89213b3426c013fae82ea6e8810bf8f993b433f5516bf0fbd7d750e0369de050",
+      "git_blob_sha": "b777dd6e141321535f2d6ba37c441613a7f32787"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "sha256": "e9524df69537123a1c5479e129fc573e0d44ec4c5c1696c08c47a1f09f78709d",
+      "git_blob_sha": "7672d3a49667de4550e133fe4479a902d99b718c"
+    },
+    {
+      "path": "test/bookingAdminService.spec.mjs",
+      "sha256": "62203569688e71d5ad40f7a1c2d6b15b73c0fb700cec2784d1554c816fc96a10",
+      "git_blob_sha": "fcaf840932948dac12970aeacef919dc6942d4f7"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "sha256": "5dc1296bd25b46abbc62c94ff4d066b0d50913fa5ffb4b33eaeac5fce35a8e2e",
+      "git_blob_sha": "218175b4cd313797daa588a75d1cb6cb369cd103"
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "sha256": "649c0124e67916c40a3caf01c85f07ef38cc366fafe7f95dca284d53c8e78472",
+      "git_blob_sha": "9996b9982c538a8ff0272901bcd709fe720ae0d8"
+    },
+    {
+      "path": "test/ownerStatusMessages.spec.mjs",
+      "sha256": "5af83c5874a3d549e48ad481c510d22152cd49d0f6ad596794a067a519a5c16a",
+      "git_blob_sha": "f96a2621856239d61d32257279ac0888ba2f1519"
+    },
+    {
+      "path": "test/quoteFlowRepairs.spec.mjs",
+      "sha256": "13c25e90ea59110e8123363d7e186f0363cc8116337c9d4f81d5ddc1d5782ab8",
+      "git_blob_sha": "0e3979b0f0d410728b40290c4f93900981dcfbc0"
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "sha256": "e8419d844df85bc5ebc2b3cb2d587c5e662f90a2c79108b3c50989df7c33cbe0",
+      "git_blob_sha": "60bf6e373ce83069714a4796b9f4cca4ffb0cdb8"
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "sha256": "7498110a8bb674789919ef7235a468e35f9ed3bb29cf18ef22415e3e2e9a80c6",
+      "git_blob_sha": "d21a8308f8cf6c962b8e0bc918b8735193f66da3"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "sha256": "33fea7858f2e68b32fc92a880202ea65909b78b868537e993b56047f7b564d7f",
+      "git_blob_sha": "5c599f734f6db41fcba9fc7929f9c97b1b9331f7"
+    },
+    {
+      "path": "test/authSessionClient.spec.mjs",
+      "sha256": "93196f9402252436bcfd9c3d4e8a6c2e356e86460d35d7170e932e4851a51cec",
+      "git_blob_sha": "78fc946e58766f2ac1828c870dc642f1dd09ee71"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "sha256": "b2c1e4a08f5c2296169ed63b92e6669750dbebf28b1cd0c5d6ff81173a2a19d1",
+      "git_blob_sha": "e8212bc6762be4606392a775af514fe22f9b52ca"
+    },
+    {
+      "path": "test/authTokenService.spec.mjs",
+      "sha256": "34cdf6591e12fc6c14277a946c8a9134aefbc71b194b9f95c4f25ea03aef6a92",
+      "git_blob_sha": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577"
+    },
+    {
+      "path": "test/geminiMediaBridge.spec.mjs",
+      "sha256": "fa9010e32c9cba3531c81032158416a491a5ba4b113c7514384b90f53d0af9fb",
+      "git_blob_sha": "a03f9ee6c1386af467135f250c2663887a751f46"
+    },
+    {
+      "path": "test/quoteReauditRepairs.spec.mjs",
+      "sha256": "502165f7c220a4b2fc3121f9b420051c3ea1570090912f748f8bc86446499d03",
+      "git_blob_sha": "b0e9229cc7decf9bbac829529e15fe3226c3f6d3"
+    },
+    {
+      "path": "test/pricebookEditorRepairs.spec.mjs",
+      "sha256": "b95201fc40819fed22118c832507c4b6c4771ea3ac0918a06dd1b8c2ecead645",
+      "git_blob_sha": "3cca6dd3f980453bf6952295e67da5cd7a9bb451"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "sha256": "787ba7048998534efbdcceff23a1226156b3ce26be890ff521ce6f71687a62f3",
+      "git_blob_sha": "c672f18cf9770b48d3818317f92ec454de2607d0"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "sha256": "066f99b8ad354c56534d23b26ebb33db09939102c444a5288c81b96ebb04a198",
+      "git_blob_sha": "bb2a71149af293ea642fc6b5df6ae901cdf58424"
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "sha256": "bbba32d129ffa763ca20c8a3feb9f0420af14a7a4f19e7be2642d2751776a845",
+      "git_blob_sha": "aaab006f57e27318bb7eae66b4fd1670b5042a1d"
+    },
+    {
+      "path": "test/backups.spec.mjs",
+      "sha256": "9ca7cafd9bbddb28fcc52017892835991c6475caf101a8f7d0cb60fe6bd5185c",
+      "git_blob_sha": "8ed06b27ba657808539578f12a211f7900615aa4"
+    },
+    {
+      "path": "test/deploymentProcess.spec.mjs",
+      "sha256": "851b105b186ecbb9e7d1314233e6448de96212c6154def02d8d82c4bbbaf4f8f",
+      "git_blob_sha": "7ab718143e12e040961c029d5a66e1bc45546843"
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "sha256": "ca630f43660ee5dd9cf5fd748a27c0347a61394a0a70e84086fec01a07f4c208",
+      "git_blob_sha": "f66d2794be4237d53c71897e24f40b4d2627f81d"
+    },
+    {
+      "path": "test/applicationPersistence.spec.mjs",
+      "sha256": "6574c30cc1ebdabf4e82d32af1622174e3f2c6ebc1b5bd6e4fe69fddc1f7e926",
+      "git_blob_sha": "56d87ace29544a24197efdb1c5ab49ef03a374c1"
+    },
+    {
+      "path": "test/bookingRoutes.spec.mjs",
+      "sha256": "b1c0dba75254d44ef7e85b3be4d37fcf9398097bc47f917d172b2835d93ab64d",
+      "git_blob_sha": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214"
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "sha256": "f5f565ecfa18e140d6dbebd8ad365ddb0cb01d82cdb3db160371b50ca3887c98",
+      "git_blob_sha": "e9ac0cb653458888ede0b2257fb558acc15bca00"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "sha256": "b22a9815cdb71b633782a8e03f1f2a422340b9aa82a46ff40cf4982e081cd280",
+      "git_blob_sha": "92f14629b9e2028fe96b070da4a5a634d6a8691e"
+    },
+    {
+      "path": "test/voicePromptCompiler.spec.mjs",
+      "sha256": "f911ed6efd5d043059eb1a4c61e046003d85fb82085b06b134eccd5f7e465dba",
+      "git_blob_sha": "abf5f3e9b21bd2c7039736e6c2bffdc21f46f4bf"
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "sha256": "bc116ea46610c808cbeb328cbf0ce661f67834ee0dae78aaaa7f4fbe25e9eddf",
+      "git_blob_sha": "c0183c945f329ad9bbc9c517d4fd123d1d550344"
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "sha256": "248493047a22e021f2960cc2a85fd83434e0ecda19c382dccbad3547aa2dc40e",
+      "git_blob_sha": "17f5ea03ac2d6d95e785949ef72dd4a7cfbc7f5e"
+    },
+    {
+      "path": "test/ownerIntegrations.spec.mjs",
+      "sha256": "bf056fad7f9ac22d19849deb8512a62f01868daadd31ad04f1e9aa4a337655c2",
+      "git_blob_sha": "6672048f1467e3e75b02564013ab99e687c9fe14"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "sha256": "34f9143daf37d78c0719a82c31ab6728849f9e5812515d50b4b7900a053ca7f6",
+      "git_blob_sha": "c2af56773077e480c62ab2db13d0a0b660aea0f1"
+    },
+    {
+      "path": "test/customerExplanation.spec.mjs",
+      "sha256": "6ab5178417c3ae77c663624cbb94cc4525cdcc6ae718cf9d96d6aa3de2e26dd8",
+      "git_blob_sha": "a29d4cec06628c355f456b3041ad1644b7a45886"
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "sha256": "3e35968a2bc2c1ba432d0b1e477b97c77b621339571f6060fc8141df3d632e19",
+      "git_blob_sha": "8f4284f88f31bfdb4267562911c8516e87975c3a"
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "sha256": "ec5bb3e8db169062ce378a5b86ddb699467affa47ae10bec0343a28be9e1d577",
+      "git_blob_sha": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "sha256": "524fbfa3e7419331be8da188b010c3267323662e811c85c3480a3783b191d2a7",
+      "git_blob_sha": "dfdfb6884fb3de1ef487c0d43d67ad0f49cdd768"
+    },
+    {
+      "path": "test/quotePresentation.spec.mjs",
+      "sha256": "ede776fb1625ccd7d0b809cdf75defdc53a76be8eda59de202c955c2adf795da",
+      "git_blob_sha": "09a5e4dfeeb415b7d08f5f74994132987d501265"
+    },
+    {
+      "path": "test/deploymentConfig.spec.mjs",
+      "sha256": "d4a98054e5dfb549a9fa6a9a0c65c950f2cc9c793078ef458f789d52d697355a",
+      "git_blob_sha": "9faf8c00f1ee43e77969ea3be2e72cbf6a6bf5e5"
+    },
+    {
+      "path": "test/customerExplanationCatalog.json",
+      "sha256": "4da40cc5d3c706d472a40e450e674fd2c6258e9274af028c500839bea4f28742",
+      "git_blob_sha": "3ac124bc9353a6f0be72281c0c353658a3138f38"
+    },
+    {
+      "path": "test/googleCalendarAdapter.spec.mjs",
+      "sha256": "06abf11937a2fbd615ae6232848ac1895a5fd23344fd62bb1b66e1443957e0c3",
+      "git_blob_sha": "c7fe7ea3256f7367c4b5a301ce582f0d86d4f7f5"
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "sha256": "0968abc954dd94ef12370c5516fbb6274bd881322f0073ea81547f5a953213ec",
+      "git_blob_sha": "18df625130f68a26b01c801e1e8cacdfdf2d532a"
+    },
+    {
+      "path": "test/onboardingCalendar.spec.mjs",
+      "sha256": "ac2f54e7fbdf48fa78cb87008cf4dd1a6dfe6d120dfa3b33a14e2d3278426d61",
+      "git_blob_sha": "ec24c70f94b0c52bced8b08ef39025ebddb9a38f"
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "sha256": "e531efb9c6d1ee045718d1013ff19fc7ab89fc2178c0bd98c03ca78a0db0800f",
+      "git_blob_sha": "2a409e0feeb63ce2aa536c314243dad4009459f1"
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "sha256": "1a23feb86c6bd715509bfe88cfa8ee7c828e89401b56201b92e0c4f25610ac3b",
+      "git_blob_sha": "66b72d5d09bf9fb2f6187f953dceec5e9c12c4a5"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "sha256": "305f3560ad5bc741d8f80b0945daa4d9c92783fa6e6f43dd9fbbe6abd67aae8d",
+      "git_blob_sha": "e99443ad3bfe858291d999901d9f2c230d261ea4"
+    },
+    {
+      "path": "test/corsPolicy.spec.mjs",
+      "sha256": "a0d322d6f8bd4c9d3101b9389396e0e9f92fe5d2a31979abce23af2609d39512",
+      "git_blob_sha": "8111d13baab45950a31f79f4b5b0c951b491e7b3"
+    },
+    {
+      "path": "test/providerCredentials.spec.mjs",
+      "sha256": "f58b99ca8fd687888df2f2658266fc773654cb5e75b58037b9009223c780b903",
+      "git_blob_sha": "e37ff538447d28a6fb3ddffc195db8f22f5478ee"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "sha256": "5a5cc6acec6cf24a738dd6a2eb257bb9554613bc06b1839a11f9599be644fb1e",
+      "git_blob_sha": "73f59b9fd214a498eac3c223c6aec1b02e640bb5"
+    },
+    {
+      "path": "test/voiceRuntimeRoutes.spec.mjs",
+      "sha256": "85730caed48d542371ef4d48edcbeecb8182a0807b9514b68ec4eff6e4535a0b",
+      "git_blob_sha": "1131301fb01885062063ebfdf60a02b3e4a5caf7"
+    },
+    {
+      "path": "test/widgetEmbed.spec.mjs",
+      "sha256": "109417290359119a7874571b5448f80665612025ca132287cedf536c12826610",
+      "git_blob_sha": "e5f34834f221e2c4b91e51812e4884ef1e6041b6"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "sha256": "f49496b52aa364187017aba73018d90bd1011bb0f1f648046e90fdc888a66579",
+      "git_blob_sha": "8ebc20e518531abc4df51cbd27e5306d173644ba"
+    },
+    {
+      "path": "test/bookingPreferenceService.spec.mjs",
+      "sha256": "66271ae462c26a7566b35444918d77dec7e689e3f66fd64404d09297bc479df5",
+      "git_blob_sha": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd"
+    },
+    {
+      "path": "test/googleGenAiLiveAdapter.spec.mjs",
+      "sha256": "23dc2b3cca96657227fa8f9938b04fda06610cd48724225ba86258199e1fcf6e",
+      "git_blob_sha": "8d7cdf021c62193b308aeb3012df506ef687f875"
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "sha256": "aec59079c1acf7f99bcab7c4f105904643606ae42cbef30fc3d42e2a6c8a00d1",
+      "git_blob_sha": "9dca68199c14a50afe525ed77f2f2794bb7adf15"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "sha256": "0ba57e4205fdc9db40bb356dec744819ff9978f8ea35ead99267513a35ed1830",
+      "git_blob_sha": "99f60dedae2db260fd8a8c6f649cbc06159c2b98"
+    },
+    {
+      "path": "test/lifecycle.spec.mjs",
+      "sha256": "de7fa8e48ad524017e0627f42959836c811481fdfe223072d2339617b42a3424",
+      "git_blob_sha": "114953e7f149c9e888dc3d0a535c959ee4aff7f2"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "sha256": "8494d00e2fec4c7c335e9caf07bc23b69f2767c5638df2c09f56297107518527",
+      "git_blob_sha": "9f7058146d3fa9de4c44c97a2586cefe66d7870f"
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "sha256": "6ca812f5bf7f0a1425087ae31696882bd7241741c34045171e36089ab6e09ccb",
+      "git_blob_sha": "c69f34875b1e31ad79a9f1f23e7310408e5006c6"
+    },
+    {
+      "path": "test/helpers/railwayEnv.mjs",
+      "sha256": "0cbf60f90edfdbc70d4516022b5a6ebe485a4ce93150063342bb9d9eb88a5e8c",
+      "git_blob_sha": "834aecd6f2e5526daece7e4561026ae8490b3b10"
+    },
+    {
+      "path": "test/helpers/railwayProcessFixture.mjs",
+      "sha256": "385a65a9288d76ce1da488704f53f6896d7b3914279a5da5ffaca1b701827f3a",
+      "git_blob_sha": "e3bb676f4229c1b93ea4be3af18c547c95015cc1"
+    },
+    {
+      "path": "test/helpers/syntheticTls.mjs",
+      "sha256": "8e298916b3064676b76b1534e533ac5fa74bfc6586bebf82168e59e3312f87e8",
+      "git_blob_sha": "03a0c72131c660aee99b817183b75fb172be5c2c"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "sha256": "9b3bbf75be002f19d6b286bbd6b26ed9c825f0715c3adffe4cf5361928d091eb",
+      "git_blob_sha": "6c68b2deb07ad377f0c227e54ebd282f3cd49dbf"
+    },
+    {
+      "path": "specs/platform_spec_v2.md",
+      "sha256": "050c9554867abafe95691276c293d51190b791c60cdc9c1f6135da6f800663e3",
+      "git_blob_sha": "deab01d05cc6265d3b2636906d46872a6da4a518"
+    },
+    {
+      "path": "specs/QUOTE_TRADE_DECISIONS_20261003.md",
+      "sha256": "57fa337ca9176b168821ffc64bf31f2dc1dfdaf1c573955351977da78584b2af",
+      "git_blob_sha": "3115481391cb993aa91dcd60878bcd661e09b962"
+    },
+    {
+      "path": "specs/voice_quote_flows.md",
+      "sha256": "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6",
+      "git_blob_sha": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5"
+    },
+    {
+      "path": "specs/build_guide.md",
+      "sha256": "d580ed3a850b52775170c2e72e0f3d214e47476356adf72d530108ca5d35711d",
+      "git_blob_sha": "63d7de75309a938e854c61e6d687fd3b3e7027fb"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "sha256": "245308aa43a425b3dbcec8cb29444ada5fcc604196ab64e08102e3a65e64c44a",
+      "git_blob_sha": "4068f48e6fa28cbc34cd19edd4fdca4606e9ab94"
+    }
+  ]
+}

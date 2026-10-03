@@ -28,8 +28,8 @@ test('Installed scope receives no second markup; fractional unit prices remain e
 });
 test('Purchased paint cost gets material markup and tax once; installed trim does not',()=>{
  const f=get('paint-cost-packages');f.businessDefaults.markupPercent=20;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
- // Costs 209000 *1.2=250800 +20000 installed trim +32000*1.2*.1 tax=274640.
- assert.equal(generateQuoteVNext(f).midEstimate,2746.40);
+ // Costs 279000 *1.2=334800 +20000 installed trim +44000*1.2*.1 material tax +20000*.4*.1 installed-material tax =360880.
+ assert.equal(generateQuoteVNext(f).midEstimate,3608.80);
 });
 test('Package rounding handles exact and just-over boundaries, and rejects conflicting purchase groups',()=>{
  const f=get('floor-hardwood-packages');f.ownerPricing.pricing.scopeDetails.floor_underlayment_hardwood.wastePercent=0;
@@ -69,7 +69,7 @@ test('Identical partial measurements quote; any numerical contradiction remains 
  const flat=flatRoof(),roof=get('roof-underlayment-packages');
  Object.assign(flat.customerInputs,{serviceScope:'partial',partialAreaSqft:500,partialPercent:50});
  Object.assign(roof.customerInputs,{serviceScope:'partial',partialAreaSqft:500,partialPercent:25});
- assert.equal(generateQuoteVNext(flat).midEstimate,7000); //500*(500+700+200).
+ assert.equal(generateQuoteVNext(flat).midEstimate,7350); //500*(500+700*1.1+200).
  assert.equal(generateQuoteVNext(roof).midEstimate,4950); //250000+165000+50000+ceil(550/500)*15000.
  for(const f of [flat,roof])for(const area of [499.9,499.9999999999,500.0000000001]){
   const changed=structuredClone(f);changed.customerInputs.partialAreaSqft=area;

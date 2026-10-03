@@ -1,0 +1,12 @@
+{
+  "commit": "9457a50a538d2c437f3f821f89ec1c49966229bf",
+  "git_tree": "6c0388953070dad95e4f3201ce940d1cdafef60f",
+  "checked_source_test_spec_files": 235,
+  "github_blob_mismatches": [],
+  "before_new_regressions": {
+    "tests": 39,
+    "pass": 10,
+    "fail": 29
+  },
+  "note": "The unchanged base already supported exact positive fence heights. New tests cover both repairs and preservation controls."
+}

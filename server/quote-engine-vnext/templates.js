@@ -1,4 +1,6 @@
 import {scopeLines,scopeRatePath,scopesSuppressPrice} from './scopePricing.js';
+import {tradeAdjustment} from './tradeAdjustments.js';
+import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath} from './configuredOfferings.js';
 import {
@@ -899,7 +901,7 @@ function calculateMulch(c, p) {
     ? exactDivide(exactMultiply(measured(c.mulchArea, 'mulchArea'), measured(c.mulchDepth, 'mulchDepth')), 324)
     : exactDecimal(measured(c.mulchArea, 'mulchArea'));
   const yards = exactToNumber(exactYards);
-  const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
+  const overage = c.inputMethod==='sqft' ? quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor') : 1;
   const exactOrderYards = exactMultiply(exactYards, overage);
   const orderYards = exactToNumber(exactOrderYards);
   if (c.inputMethod === 'sqft') {
@@ -916,14 +918,14 @@ function calculateMulch(c, p) {
     result: exactOrderYards, unit: 'cubic yards',
     usedBy: ['Mulch material']
   });
-  if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}`, customerDriver: `${c.bedSqft} measured square feet of ${c.bedCondition.replaceAll('_', ' ')} bed preparation` }));
-  add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactOrderYards, unit: 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}`, customerDriver: `${yards.toFixed(2)} calculated cubic yards of ${c.mulchType.replaceAll('_', ' ')} mulch` }));
+  if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}`, customerDriver: `${c.bedSqft} square feet of bed preparation: ${c.bedCondition==='needs_weeding'?'weeding':'clearing overgrowth'}` }));
+  add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactOrderYards, unit: 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}`, customerDriver: `${yards.toFixed(2)} ${c.inputMethod!=='sqft'?'customer-stated':'calculated'} cubic yards of ${c.mulchType.replaceAll('_', ' ')} mulch` }));
   add(out, makeLine({ name: 'Mulch installation labor', category: 'labor', quantity: exactYards, unit: 'calculated cubic yards installed', rateCents: p.mulchInstallLaborPerYard, ratePath: 'mulchInstallLaborPerYard' }));
   if (c.edgingNeeded) add(out, makeLine({ name: 'Bed edging', category: 'labor', quantity: c.edgeLF, unit: 'measured linear feet', rateCents: p.edgingPerLinearFoot, ratePath: 'edgingPerLinearFoot', customerDriver: `${c.edgeLF} measured linear feet of bed edging` }));
   out.feeScope.disposal = c.bedCondition !== 'clean';
   recordMeasurement(out, 'mulchVolume', yards, 'cubic yards', c.inputMethod === 'sqft' ? 'derived_from_measured_area_and_depth' : 'customer_measured');
   if (c.edgingNeeded) recordMeasurement(out, 'edgeLengthLF', c.edgeLF, 'linear feet');
-  out.priceDrivers.push(`${yards.toFixed(2)} calculated cubic yards of ${c.mulchType.replaceAll('_', ' ')} mulch`, c.edgingNeeded ? `${c.edgeLF} measured linear feet of bed edging` : `Bed condition: ${c.bedCondition.replaceAll('_', ' ')}`);
+  out.priceDrivers.push(`${yards.toFixed(2)} ${c.inputMethod!=='sqft'?'customer-stated':'calculated'} cubic yards of ${c.mulchType.replaceAll('_', ' ')} mulch`, c.edgingNeeded ? `${c.edgeLF} measured linear feet of bed edging` : `Bed condition: ${c.bedCondition.replaceAll('_', ' ')}`);
   return out;
 }
 
@@ -969,7 +971,7 @@ function calculatePlanting(c, p) {
   }
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {
-    const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
+    const overage = 1; // Caller-stated cubic yards are already an ordering quantity.
     const exactMulchOrderYards = exactMultiply(c.mulchYards, overage);
     const mulchOrderYards = exactToNumber(exactMulchOrderYards);
     recordQuantityDerivation(out, {
@@ -1219,6 +1221,25 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     for(const rule of extra.rules)recordRuleApplication(result,rule);
     result.replacedCommonFees=[...new Set([...result.replacedCommonFees,...extra.replacedCommonFees])];
     Object.assign(result.feeScope,extra.feeScope);
+    result.lineItems=result.lineItems.map(line=>{
+      const ratePath=line.calculation?.ratePath;
+      if(Object.hasOwn(installedPriceDefinitions(serviceType,pricing),ratePath)) {
+        const factorPath=installedLaborFactorPath(serviceType,customerInputs,ratePath);
+        const factor=factorPath?valueAtPath(pricing,factorPath):1;
+        const laborShare=pricing.installedLaborPercent?.[ratePath];
+        const base=exactFromEvidence(line.calculation.exactUnroundedCents);
+        if(factor!==1 && laborShare===undefined)throw new QuoteReviewError('Set the labor portion of this installed price before applying a labor adjustment.',{missingOwnerFields:['installedLaborPercent.'+ratePath]});
+        const adjusted=factor===1?line:makeLine({...line,...line.calculation,multipliers:[...line.calculation.multipliers,{name:'Installed labor portion adjustment',path:factorPath,value:exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(factor,1))),laborSharePercent:laborShare,laborFactor:factor}]});
+        adjusted.installedBaseExactCents=exactEvidence(base);
+        if(laborShare!==undefined)adjusted.installedLaborExactCents=exactEvidence(exactMultiply(base,exactDivide(laborShare,100),factor));
+        return adjusted;
+      }
+      const adjustment=tradeAdjustment(serviceType,customerInputs,pricing,line);
+      if(!adjustment)return line;
+      const rebuilt=makeLine({...line,...line.calculation,...adjustment});
+      if(adjustment.wastePath)recordQuantityDerivation(result,{name:line.name+' material quantity',formula:'measured quantity * (1 + owner material waste)',inputs:{measuredQuantity:adjustment.originalQuantity,wasteFactor:adjustment.waste,wastePath:adjustment.wastePath},result:adjustment.quantity,unit:line.calculation.unit,usedBy:[line.name]});
+      return rebuilt;
+    });
     return recordNoChargeClassification(result,serviceRules);
   };
   if(configuredOffering(serviceType,pricing)) {

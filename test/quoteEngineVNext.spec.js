@@ -1,4 +1,4 @@
-import {fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
+import {explicitUnderlaymentFixtureShares, fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -57,6 +57,7 @@ function service(serviceType, pricing, overrides = {}) {
     if (pricing.roomSizeThresholds === undefined) configuredPricing.roomSizeThresholds = { smallMaxSqft: 149, mediumMaxSqft: 299 };
     if (configuredPricing.underlaymentPerSqft !== undefined && configuredPricing.underlaymentPriceBasis === undefined) configuredPricing.underlaymentPriceBasis = 'installed_area_sell_price';
   }
+  explicitUnderlaymentFixtureShares(serviceType,configuredPricing);
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {
@@ -113,7 +114,7 @@ const happyCases = [
       minimumJob: 0
     }, { priceBasisByCategory: { ...costBasis, material: 'sell_price' } }),
     expected: {
-      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 15000, 'Starter strip': 10000, 'Drip edge': 20000, 'Ridge cap': 6000, 'Decking replacement': 10000 },
+      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 15000, 'Starter strip': 11000, 'Drip edge': 22000, 'Ridge cap': 6600, 'Decking replacement': 10000 },
       low: 2170, mid: 2410, high: 2650
     }
   },
@@ -137,7 +138,7 @@ const happyCases = [
       tearOffPerSqft: { epdm: 200, average: 200 }, minimumJob: 0,
       insulationPerSqft: 250
     }),
-    expected: { lines: { 'Flat roof labor': 575000, Membrane: 700000, 'Tear-off': 460000 }, low: 15620, mid: 17350, high: 19090 }
+    expected: { lines: { 'Flat roof labor': 575000, Membrane: 770000, 'Tear-off': 460000 }, low: 15620, mid: 17350, high: 19090 }
   },
   {
     name: 'flat roof repair consumes the selected nested size price',
@@ -160,7 +161,7 @@ const happyCases = [
       ceilingLaborPerSqftPerCoat: 100, ceilingMaterialPerSqftPerCoat: 30,
       trimLaborPerLF: 125, trimMaterialPerLF: 50
     }),
-    expected: { lines: { 'Wall labor': 100000, 'Wall paint and materials': 30000, 'Trim labor': 25000, 'Trim materials': 10000 }, low: 1490, mid: 1650, high: 1820 }
+    expected: { lines: { 'Wall labor': 100000, 'Wall paint and materials': 33000, 'Trim labor': 25000, 'Trim materials': 11000 }, low: 1490, mid: 1650, high: 1820 }
   },
   {
     name: 'exterior painting records measured fair-condition preparation',
@@ -225,7 +226,7 @@ const happyCases = [
       formworkPerLF: 2500, minimumJob: 0, basePrepPerSqft: 175,
       wireReinforcementPerSqft: 150
     }),
-    expected: { lines: { 'Concrete labor': 300000, 'Ready-mix concrete': 122222, Formwork: 300000, 'Base preparation': 87500, 'Wire mesh reinforcement': 75000 }, low: 7970, mid: 8850, high: 9740 }
+    expected: { lines: { 'Concrete labor': 300000, 'Ready-mix concrete': 122222, Formwork: 300000, 'Base preparation': 87500, 'Wire mesh reinforcement': 82500 }, low: 7970, mid: 8850, high: 9740 }
   },
   {
     name: 'concrete patio uses measured rectangular perimeter',
@@ -282,7 +283,7 @@ const happyCases = [
       bedPrepLaborPerSqft: { needs_weeding: 20, overgrown: 40 },
       mulchMaterialPerYard: { brown: 5000 }, mulchInstallLaborPerYard: 3000
     }),
-    expected: { lines: { 'Small plant installation labor': 2000, 'Small plant material allowance': 1000, 'Medium plant installation labor': 2000, 'Medium plant material allowance': 1000, 'Large plant installation labor': 3000, 'Large plant material allowance': 1500, 'Bed preparation': 2000, 'Mulch material': 11500, 'Mulch installation labor': 6000 }, low: 270, mid: 300, high: 330 }
+    expected: { lines: { 'Small plant installation labor': 2000, 'Small plant material allowance': 1000, 'Medium plant installation labor': 2000, 'Medium plant material allowance': 1000, 'Large plant installation labor': 3000, 'Large plant material allowance': 1500, 'Bed preparation': 2000, 'Mulch material': 10000, 'Mulch installation labor': 6000 }, low: 270, mid: 300, high: 330 }
   },
   {
     name: 'mowing uses measured lawn and edging lengths',
@@ -439,9 +440,9 @@ test('itemized roofing has no square-root geometry and uses each measured length
   assert.equal(source.includes('Math.sqrt'), false);
   const entry = happyCases[0];
   const changed = quote({ ...entry, customerInputs: { ...entry.customerInputs, dripEdgeLengthLF: 125 } });
-  assert.equal(lineMap(changed)['Drip edge'], 25000);
-  assert.equal(lineMap(changed)['Starter strip'], 10000);
-  assert.equal(lineMap(changed)['Ridge cap'], 6000);
+  assert.equal(lineMap(changed)['Drip edge'], 27500);
+  assert.equal(lineMap(changed)['Starter strip'], 11000);
+  assert.equal(lineMap(changed)['Ridge cap'], 6600);
 });
 
 test('selected mandatory scope distinguishes missing prices from intentionally free prices', () => {
@@ -552,9 +553,9 @@ test('per-service taxability changes taxable subtotal and is preserved in the re
   const noTaxOwner = structuredClone(entry.ownerPricing);
   noTaxOwner.taxabilityByCategory.material = false;
   const untaxed = quote({ ...entry, ownerPricing: noTaxOwner }, { businessDefaults: taxedDefaults });
-  assert.equal(lineMap(materialTaxed).Tax, 4000);
+  assert.equal(lineMap(materialTaxed).Tax, 4400);
   assert.equal(Object.hasOwn(lineMap(untaxed), 'Tax'), false);
-  assert.equal(materialTaxed.calculationRecord.options[0].scenarios.mid.tax.taxableSubtotalCents, 40000);
+  assert.equal(materialTaxed.calculationRecord.options[0].scenarios.mid.tax.taxableSubtotalCents, 44000);
 });
 
 test('sell-price categories are never marked up twice', () => {
@@ -574,7 +575,7 @@ test('minimum is pre-tax and every displayed range stays above the customer mini
   ownerPricing.pricing.minimumJob = 300000;
   const taxedDefaults = { ...defaults, taxMode: 'TAX_ALL', taxPercent: 10, rangeBufferPercent: 25 };
   const result = quote({ ...entry, ownerPricing }, { businessDefaults: taxedDefaults });
-  assert.equal(lineMap(result)['Minimum price adjustment'], 135000);
+  assert.equal(lineMap(result)['Minimum price adjustment'], 131000);
   assert.equal(lineMap(result).Tax, 30000);
   assert.equal(result.lowEstimate, 3300);
   assert.equal(result.midEstimate, 3300);
@@ -627,7 +628,7 @@ test('customer payload remains strictly allowlisted while owner record remains c
   const serialized = JSON.stringify(safe);
   for (const forbidden of ['lineItems', 'calculationRecord', 'rateCents', 'ratePath', 'appliedRules', 'urgencyFlags']) assert.equal(serialized.includes(forbidden), false, forbidden);
   assert.equal(result.calculationRecord.options[0].lineItems[0].calculation.rateCents, 5000);
-  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 241000);
+  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 244600);
 });
 
 test('unpriced optional extras disclose exclusions without omitting the original request', () => {
@@ -660,8 +661,8 @@ test('every tier validates effective pricing and only its explicit override chan
   const result = quote({ ...entry, ownerPricing });
   assert.equal(result.options.length, 2);
   assert.equal(lineMap(result.options[0])['Wall labor'], lineMap(result.options[1])['Wall labor']);
-  assert.equal(lineMap(result.options[0])['Wall paint and materials'], 30000);
-  assert.equal(lineMap(result.options[1])['Wall paint and materials'], 40000);
+  assert.equal(lineMap(result.options[0])['Wall paint and materials'], 33000);
+  assert.equal(lineMap(result.options[1])['Wall paint and materials'], 44000);
   assert.equal(result.appliedRules.some(rule => rule.startsWith('Broken tier skipped:')), true);
 });
 
@@ -784,7 +785,7 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;
   const sum=values=>values.reduce((total,l)=>total+l.cents,0);
   const base=sum(lines.filter(eligible)),markup=precisionMarkup(base,b),subtotal=sum(lines)+markup;
-  const taxable=lines.filter(l=>p.taxabilityByCategory[l.category]===true);
+  const taxable=lines.filter(l=>l.name==='Underlayment'||p.taxabilityByCategory[l.category]===true);
   const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
   const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
   const tax=b.taxMode==='TAX_NONE'?0:precisionPercent(b.taxMode==='TAX_ALL'?Math.max(subtotal,minimum):taxableSubtotal,b.taxPercent);
@@ -795,8 +796,8 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   if(tax)amounts.Tax=tax;
   if(adjustment)amounts['Minimum price adjustment']=adjustment;
   const floor=minimum+(b.taxMode==='TAX_ALL'?precisionPercent(minimum,b.taxPercent):b.taxMode==='TAX_MATERIALS'&&minimum>0?tax:0);
-  const low=Math.max(precisionPercent(total,100-b.rangeBufferPercent),floor,1),high=precisionPercent(total,100+b.rangeBufferPercent);
-  const preserveCents=b.rangeBufferPercent===0 || (low>0&&low<100) || Math.floor(low/100)*100<floor;
+  const low=minimum>0&&total===floor?total:Math.max(precisionPercent(total,100-b.rangeBufferPercent),floor,1),high=minimum>0&&total===floor?total:precisionPercent(total,100+b.rangeBufferPercent);
+  const preserveCents=total===floor || b.rangeBufferPercent===0 || (low>0&&low<100) || Math.floor(low/100)*100<floor;
   const display=preserveCents?[low/100,total/100,high/100]:[Math.floor(low/100),precisionRound(BigInt(total),100n),Math.ceil(high/100)];
   return {amounts,total,markup,tax,adjustment,subtotal,floor,range:[low,total,high],display};
 }
@@ -807,8 +808,8 @@ function precisionInspect(value) {
   }
   for(const d of Object.values(Object.getOwnPropertyDescriptors(value))){assert.ok(Object.hasOwn(d,'value'));precisionInspect(d.value);}
 }
-const precisionPublicKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','options','priceDrivers','priceUnit','quoteId','rangeBufferUsed','resultType','taxTreatment'];
-const precisionOptionKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','priceDrivers','priceUnit','rangeBufferUsed','skippedAddons','taxTreatment','tierName'];
+const precisionPublicKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','options','priceDrivers','priceUnit','quoteId','resultType','taxTreatment'];
+const precisionOptionKeys=['disclaimer','highEstimate','lowEstimate','midEstimate','priceDrivers','priceUnit','skippedAddons','taxTreatment','tierName'];
 let precisionChecks=0;
 function precisionCheck(entry,p,b,extras={}) {
   precisionChecks++;

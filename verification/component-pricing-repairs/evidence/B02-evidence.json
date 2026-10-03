@@ -1,0 +1,250 @@
+{
+  "saved": {
+    "ownerId": "f265d2d1-23f4-4404-b88d-1f08a15e14c9",
+    "services": [
+      {
+        "id": "786e79d4-5e8e-4af4-a0c5-7431d3ea3890",
+        "source": "MANUAL",
+        "knownOfferings": {
+          "existingFloorType": {
+            "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+            "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+            "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+            "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+            "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+            "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+          }
+        },
+        "active": true,
+        "serviceType": "FLOORING_INSTALL",
+        "service": "[SYNTHETIC] floor",
+        "pricing": {
+          "laborPerSqft": {
+            "laminate": 3
+          },
+          "materialPerSqft": {
+            "laminate": 5
+          },
+          "minimumJob": 0,
+          "vinylPlankUnderlaymentRule": "never_included",
+          "perStepPrice": 100,
+          "wasteFactorByType": {
+            "hardwood": 0.1,
+            "laminate": 0.08,
+            "vinyl_plank": 0.08,
+            "carpet": 0.1,
+            "tile": 0.12
+          },
+          "patternWasteAdder": {
+            "straight": 0,
+            "diagonal_or_pattern": 0.07
+          },
+          "roomComplexityMultiplier": {
+            "large": 1,
+            "medium": 1.1,
+            "small": 1.2
+          },
+          "roomSizeThresholds": {
+            "smallMaxSqft": 150,
+            "mediumMaxSqft": 300
+          },
+          "layoutLaborMultiplier": {
+            "straight": 1,
+            "diagonal_or_pattern": 1.2
+          },
+          "scopeDetails": {
+            "floor_underlayment_laminate": {
+              "description": "[SYNTHETIC] Explicitly defined floor_underlayment_laminate",
+              "mode": "included_in_floor_price"
+            }
+          },
+          "scopeRates": {
+            "floor_underlayment_laminate": 1
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "sqft": 200,
+          "sqftMethod": "exact",
+          "newFlooringType": "laminate",
+          "existingFloorType": "none",
+          "removalNeeded": false,
+          "roomCount": 1,
+          "layoutPattern": "straight",
+          "stairSteps": 0,
+          "underlaymentScopeConfirmed": true
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "786e79d4-5e8e-4af4-a0c5-7431d3ea3890",
+          "serviceType": "FLOORING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "f265d2d1-23f4-4404-b88d-1f08a15e14c9",
+          "operationId": "e22a5b86-5d4d-4fa7-88c4-bc96d3f73943",
+          "createdAt": "2026-10-03T07:05:03.773Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "f265d2d1-23f4-4404-b88d-1f08a15e14c9",
+          "serviceId": "786e79d4-5e8e-4af4-a0c5-7431d3ea3890",
+          "operationId": "e51e32c2-651f-4ff1-b77a-9a7aee154da4",
+          "approvedAt": "2026-10-03T07:05:04.495Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "716d767f5fc656d84d08a61ad508072d3544f7f031338ceb91e2052957243614",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T07:05:04.496Z",
+    "revision": "654edfcfe80d3abf8ac593b21444bde3ffbfacb12677c82213e7a2eddc3a340e",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 1740,
+    "midEstimate": 1740,
+    "highEstimate": 1740,
+    "priceDrivers": [
+      "Flooring type: laminate",
+      "200 measured square feet"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. laminate underlayment: [SYNTHETIC] Explicitly defined floor_underlayment_laminate. Underlayment is included in the flooring material price. No tax added.",
+    "quoteId": "cf8ebeb1-a491-4a0c-b2b1-9f60ebaa4568",
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 1740,
+        "midEstimate": 1740,
+        "highEstimate": 1740,
+        "priceDrivers": [
+          "Flooring type: laminate",
+          "200 measured square feet"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. laminate underlayment: [SYNTHETIC] Explicitly defined floor_underlayment_laminate. Underlayment is included in the flooring material price. No tax added.",
+        "priceUnit": null,
+        "taxTreatment": "No tax added."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] floor",
+      "facts": [
+        {
+          "label": "Measured flooring area",
+          "value": "200"
+        },
+        {
+          "label": "Floor measurement method",
+          "value": "Measured area"
+        },
+        {
+          "label": "New flooring type",
+          "value": "Laminate"
+        },
+        {
+          "label": "Existing floor type",
+          "value": "None"
+        },
+        {
+          "label": "Existing floor removal included",
+          "value": "No"
+        },
+        {
+          "label": "Rooms in scope",
+          "value": "1"
+        },
+        {
+          "label": "Flooring layout",
+          "value": "Straight"
+        },
+        {
+          "label": "Stair steps in scope",
+          "value": "0"
+        },
+        {
+          "label": "Confirmed laminate underlayment: [SYNTHETIC] Explicitly defined floor_underlayment_laminate",
+          "value": "Yes"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] floor",
+      "contact": {
+        "email": "synthetic-followup@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T07:05:04.655Z"
+  }
+}

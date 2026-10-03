@@ -1,0 +1,293 @@
+{
+  "saved": {
+    "ownerId": "8ce2ad90-043a-41ad-a730-21107c1c7636",
+    "services": [
+      {
+        "id": "8dc354e0-3057-456b-abcf-a4f321162d45",
+        "source": "MANUAL",
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_MOWING",
+        "service": "[SYNTHETIC] permit",
+        "pricing": {
+          "mowingBaseRatePerSqft": 0.02,
+          "minimumServiceCharge": 0,
+          "frequencyMultipliers": {
+            "weekly": 1,
+            "biweekly": 1.2,
+            "monthly": 1.5,
+            "one_time": 1.8
+          },
+          "overgrowthMultipliers": {
+            "maintained": 1,
+            "overgrown": 1.5,
+            "severe": 2
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "owner_selected",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "yardSqft": 5000,
+          "sqftMethod": "exact",
+          "serviceFrequency": "weekly",
+          "grassCondition": "maintained",
+          "bagClippings": false,
+          "edgingIncluded": false
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "8dc354e0-3057-456b-abcf-a4f321162d45",
+          "serviceType": "LANDSCAPING_MOWING",
+          "source": "MANUAL",
+          "ownerId": "8ce2ad90-043a-41ad-a730-21107c1c7636",
+          "operationId": "26f52d41-cd23-4ef9-adb9-e7f477adca18",
+          "createdAt": "2026-10-03T07:05:06.650Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "8ce2ad90-043a-41ad-a730-21107c1c7636",
+          "serviceId": "8dc354e0-3057-456b-abcf-a4f321162d45",
+          "operationId": "130c7c7f-53aa-4bb5-a30f-74985d9797b9",
+          "approvedAt": "2026-10-03T07:05:06.996Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "5d58ba8b9f24ce185df1009df5773ebf67354f8a73f73f464d19e2b94412338b",
+          "operation": "owner_confirmed_quotedone_registration"
+        },
+        "ownerFeeSelections": {
+          "permit": true
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 50,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T07:05:06.997Z",
+    "revision": "b4795829bef699a1326debfa0037ac03871109126aa0ecb5acf618d309141903",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "catalog": {
+    "contractVersion": "2026-09-29.1",
+    "capabilities": {
+      "quoteEnvelope": "pricing-only-v2",
+      "booking": "booking-v1",
+      "postQuoteIdentity": true,
+      "serverPricingOnly": true
+    },
+    "branding": {
+      "businessName": "Synthetic permit",
+      "accentColor": "#16A34A",
+      "launcherLabel": "Get an estimate",
+      "clickToCallNumber": null
+    },
+    "services": [
+      {
+        "id": "8dc354e0-3057-456b-abcf-a4f321162d45",
+        "serviceType": "LANDSCAPING_MOWING",
+        "name": "[SYNTHETIC] permit",
+        "customerFields": [
+          {
+            "name": "yardSqft",
+            "label": "Measured mowable lawn area",
+            "unit": "square feet",
+            "type": "number",
+            "min": 1,
+            "max": 10000000
+          },
+          {
+            "name": "sqftMethod",
+            "label": "Lawn area method",
+            "unit": null,
+            "type": "enum",
+            "values": [
+              "exact",
+              "assumption"
+            ]
+          },
+          {
+            "name": "serviceFrequency",
+            "label": "Service frequency",
+            "unit": null,
+            "type": "enum",
+            "values": [
+              "weekly",
+              "biweekly",
+              "monthly",
+              "one_time"
+            ]
+          },
+          {
+            "name": "grassCondition",
+            "label": "Grass condition",
+            "unit": null,
+            "type": "enum",
+            "values": [
+              "maintained",
+              "overgrown",
+              "severe"
+            ]
+          },
+          {
+            "name": "bagClippings",
+            "label": "Clipping bagging selected",
+            "unit": null,
+            "type": "boolean"
+          },
+          {
+            "name": "edgingIncluded",
+            "label": "Lawn edging selected",
+            "unit": null,
+            "type": "boolean"
+          },
+          {
+            "name": "edgingLengthLF",
+            "label": "Measured edging length",
+            "unit": "linear feet",
+            "type": "number",
+            "min": 0.1,
+            "max": 1000000
+          }
+        ],
+        "knownOfferings": {},
+        "customerFees": [],
+        "quoteCapability": "LIVE_OR_REVIEW",
+        "bookingCapability": "PREFERRED_TIME_ONLY"
+      }
+    ]
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 150,
+    "midEstimate": 150,
+    "highEstimate": 150,
+    "priceDrivers": [
+      "5000 measured mowable square feet",
+      "weekly service"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Price is per visit. No tax added.",
+    "quoteId": "841c60f3-747c-434d-8829-b691b90e1753",
+    "priceUnit": "per visit",
+    "taxTreatment": "No tax added.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 150,
+        "midEstimate": 150,
+        "highEstimate": 150,
+        "priceDrivers": [
+          "5000 measured mowable square feet",
+          "weekly service"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Price is per visit. No tax added.",
+        "priceUnit": "per visit",
+        "taxTreatment": "No tax added."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] permit",
+      "facts": [
+        {
+          "label": "Measured mowable lawn area",
+          "value": "5000"
+        },
+        {
+          "label": "Lawn area method",
+          "value": "Measured area"
+        },
+        {
+          "label": "Service frequency",
+          "value": "Weekly"
+        },
+        {
+          "label": "Grass condition",
+          "value": "Regularly maintained"
+        },
+        {
+          "label": "Clipping bagging selected",
+          "value": "No"
+        },
+        {
+          "label": "Lawn edging selected",
+          "value": "No"
+        },
+        {
+          "label": "permitRequired",
+          "value": "Yes"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] permit",
+      "contact": {
+        "email": "synthetic-followup@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T07:05:07.294Z"
+  }
+}

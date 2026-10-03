@@ -1,0 +1,8 @@
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B01-fence-fractional-height-and-distinct-names","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B02-included-flooring-save-approve-quote","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B03-installed-labor-coverage-notice-and-repair","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B04-owner-controlled-permit","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B05-readable-approval-and-explicit-defaults","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B06-registry-hides-identifiers-and-accepts-product-names","passed":true}
+COMPONENT_REPAIR_BROWSER_CHECK {"name":"B07-included-price-selectors-without-internal-path-entry","passed":true}
+COMPONENT_REPAIR_BROWSER_RESULT {"scope":"Component pricing and price-book controls: built editor with authenticated save/approval and public customer quotes","checks":[{"name":"B01-fence-fractional-height-and-distinct-names","passed":true},{"name":"B02-included-flooring-save-approve-quote","passed":true},{"name":"B03-installed-labor-coverage-notice-and-repair","passed":true},{"name":"B04-owner-controlled-permit","passed":true},{"name":"B05-readable-approval-and-explicit-defaults","passed":true},{"name":"B06-registry-hides-identifiers-and-accepts-product-names","passed":true},{"name":"B07-included-price-selectors-without-internal-path-entry","passed":true}],"errors":[],"passed":true}

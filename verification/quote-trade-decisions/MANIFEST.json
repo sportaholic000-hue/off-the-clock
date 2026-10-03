@@ -1,0 +1,431 @@
+{
+  "base": "c714b6eb6bbe8deed8ccac83df03a52f811019ce",
+  "files": [
+    {
+      "path": "client/src/installedMaterialsEditor.jsx",
+      "size": 1331,
+      "sha256": "edd702cb921ebc33f2318538c23749e416c3837cc087fab192d7be29b139589a",
+      "gitBlobSha": "d3bf661a5665f43378c4efd814ae36fd7ce55c14"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "size": 10871,
+      "sha256": "91c662dcd3c1093fe133b2ebb73d73f6d57c20efb4ec1c578dcb1728dee117f2",
+      "gitBlobSha": "3839340c703ceb8a3a44a636bee2be5ce96924e0"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "size": 61987,
+      "sha256": "618495646ab13a662e02207774aead2112d7f98362319bf16ecdc9fd37891501",
+      "gitBlobSha": "7d1232f17f7edcbd6b71242931274d3526b609d1"
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "size": 1963,
+      "sha256": "da7d8d5d70fdc78efb55e034ab5cba676edc9dbd1226590b5b9fe7ac5e29fb29",
+      "gitBlobSha": "ae8177c39d37fb1d24261c3c67dd054d995c1957"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "size": 24782,
+      "sha256": "c970f9e426f2d2e956cd89ba6c8abf3a3ce6ac5706d316a06d62e630567de70a",
+      "gitBlobSha": "126bb4843bd91aff69d215cfd660ed89700ffe71"
+    },
+    {
+      "path": "server/installedPriceConfiguration.js",
+      "size": 1740,
+      "sha256": "15b27ad8e2237ec64841f72bfac60793848dbce74fc7784a453a22f8d6490f73",
+      "gitBlobSha": "6fffd20238a5856c658535c53a8e7415926ba37d"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "size": 21358,
+      "sha256": "02de4637b091804467f840a9a8fd7a80328ccff96c104ef5d15999a15aa2ab93",
+      "gitBlobSha": "1121aa244e03681ddd8a5b91bece6bb421a193e9"
+    },
+    {
+      "path": "server/priceBookService.js",
+      "size": 28858,
+      "sha256": "ee379e52523239a61ce5f7edb7a58de77b21fdc1f7a49f8ae2310dcf0c21c4ec",
+      "gitBlobSha": "ee9abed7e8fadd80852718e645e6811fbb547430"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "size": 21411,
+      "sha256": "1496fb3e1822b4dad61bb53d05e0cbf3b5bb05d90641bca00f0ef125552eac35",
+      "gitBlobSha": "6a0bdd47c6f4875d4aa24d74a306064880468830"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "size": 148560,
+      "sha256": "9008ebcc71977360fb0c3d4185c415b612479d4291253c5f05eb942e7a80a1fe",
+      "gitBlobSha": "f7d4c302abe1e85d77314f87ef8760f0838098a4"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "size": 94994,
+      "sha256": "aebcddb36643cd6bc9fae458f2bac39c3985f0901d91d7a193e7b23a75ebd82d",
+      "gitBlobSha": "38795fdba9ceee5f47c2fc61dc4b6fbb1e4d6774"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "size": 70747,
+      "sha256": "b6defb067cb5677b46e5f486ca9fa9cdaaab1d2706a4ede1cdc5f588e3b8d7e2",
+      "gitBlobSha": "466f42ffe19883136d21bc1f0daf1e7cfadc13d8"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "size": 15108,
+      "sha256": "c7cce315d97cc297a88a03e52d2f6689d46724298c1c49236608fecf87ddbbb6",
+      "gitBlobSha": "3f4086b936188fcd7f926a8c1961cbcb29da9c75"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "size": 83605,
+      "sha256": "ab35babe578bf5862cafb4071ff1b4ff922a2822a1ef69396107126411a64a85",
+      "gitBlobSha": "3059e2fcb3c8416697acfe2d163d32f1c149f17c"
+    },
+    {
+      "path": "server/quote-engine-vnext/tradeAdjustments.js",
+      "size": 2844,
+      "sha256": "c714f5cc8d1b1dd4c3cdb5e35b78546d57ca59b8ea85fc2b797a6d685f8a2e86",
+      "gitBlobSha": "7f0e127a691b3f774b527d1320feab67ce453cb2"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "size": 13795,
+      "sha256": "44297329c110808a2047eb5d8c62404f65d9bb6302fb473ab58057b7b7197cb3",
+      "gitBlobSha": "372a12de3b36e090298b10b883411eeae95d6530"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "size": 984,
+      "sha256": "f3e9c3b76e5e8a7152c093fb4bbbcdb3e971d5a65786e4ebe1e826e12a51bda9",
+      "gitBlobSha": "0d8d91675cf216e55dcb921d61b58b0d90069a4c"
+    },
+    {
+      "path": "server/src/quoteDate.js",
+      "size": 1043,
+      "sha256": "89353896f5df45807cbc0174a8f59d403ba710135061d6ecf724871afe5adddd",
+      "gitBlobSha": "3ce395dc6e003e0d4570480aad6310aabdae89c9"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "size": 39133,
+      "sha256": "7bb9688ae1a800581ade19b20e1ade2212bf04b15cbb0bd2a5a84fb91ab5f4b3",
+      "gitBlobSha": "fdef53ea3afcabd5fba84e66d1454400ba05945b"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "size": 19312,
+      "sha256": "c44b1aff180d8138323287bbe81a87972dbd632f108366d6980a254d0bdea26e",
+      "gitBlobSha": "b7b5152b0dd3ceb5a514b8a6e73a8c027da3b1e7"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "size": 8628,
+      "sha256": "233f956b86ff487b6f9e1463d823864234f886a69f458a2f60840e947a4b3718",
+      "gitBlobSha": "243a2b567351f96c65d020df0d258de9583eb9cd"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "size": 3191,
+      "sha256": "73a4d4b9fbe2d15d289b54633ec16b4035aa977f78010ab72a24681b1e30e267",
+      "gitBlobSha": "c25d6f33d2d3d62e01f744a406b3ed733e37e9f1"
+    },
+    {
+      "path": "server/src/server.js",
+      "size": 23010,
+      "sha256": "4405e6a7cac8c627d8428269a56794d432c81a665a6e48114ec1acbd553f4dc2",
+      "gitBlobSha": "7dacc917d096481f43c280f6ec766a736567f9bd"
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "size": 51978,
+      "sha256": "0bffafe02649b20e86ee656ecd05ed2f89797fd171fc69c7b0aa55c6d59f1792",
+      "gitBlobSha": "b5670a5246fa8c23966b101cc73fd37b8934d393"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "size": 17053,
+      "sha256": "55da0ff729de2c31f8879e5192761e4e53a9b9fbed031d20190ea9782922c76d",
+      "gitBlobSha": "22dc692ae8c6383a8bfb7c97d7a3164d0a949316"
+    },
+    {
+      "path": "specs/QUOTE_TRADE_DECISIONS_20261003.md",
+      "size": 4498,
+      "sha256": "be4fee1a03f5daf02f029efd605b348133fcb19fa8c70a1e2bb968b525a2e03d",
+      "gitBlobSha": "36f65843a7ed93d18d1963d5fd96fffe0736af08"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "size": 74547,
+      "sha256": "245308aa43a425b3dbcec8cb29444ada5fcc604196ab64e08102e3a65e64c44a",
+      "gitBlobSha": "4068f48e6fa28cbc34cd19edd4fdca4606e9ab94"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "size": 7359,
+      "sha256": "e9524df69537123a1c5479e129fc573e0d44ec4c5c1696c08c47a1f09f78709d",
+      "gitBlobSha": "7672d3a49667de4550e133fe4479a902d99b718c"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "size": 4070,
+      "sha256": "39f61ff48b86e91938c988e8155b297d542c498e356b2b459ba7e0bf0da00830",
+      "gitBlobSha": "f850b2073c251b9533c66b0a8ebed93b89b66dae"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "size": 4211,
+      "sha256": "5a5cc6acec6cf24a738dd6a2eb257bb9554613bc06b1839a11f9599be644fb1e",
+      "gitBlobSha": "73f59b9fd214a498eac3c223c6aec1b02e640bb5"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "size": 6908,
+      "sha256": "f49496b52aa364187017aba73018d90bd1011bb0f1f648046e90fdc888a66579",
+      "gitBlobSha": "8ebc20e518531abc4df51cbd27e5306d173644ba"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "size": 8419,
+      "sha256": "0594c8aa49b7aa0830a506d82115f80d195adc49dd31cadcb3ea22d2228a7ffb",
+      "gitBlobSha": "df91c7671ef82ecc78c82f13001070097bfcd3a0"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "size": 4973,
+      "sha256": "b2c1e4a08f5c2296169ed63b92e6669750dbebf28b1cd0c5d6ff81173a2a19d1",
+      "gitBlobSha": "e8212bc6762be4606392a775af514fe22f9b52ca"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "size": 45839,
+      "sha256": "0ba57e4205fdc9db40bb356dec744819ff9978f8ea35ead99267513a35ed1830",
+      "gitBlobSha": "99f60dedae2db260fd8a8c6f649cbc06159c2b98"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "size": 58306,
+      "sha256": "b22a9815cdb71b633782a8e03f1f2a422340b9aa82a46ff40cf4982e081cd280",
+      "gitBlobSha": "92f14629b9e2028fe96b070da4a5a634d6a8691e"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "size": 36998,
+      "sha256": "89213b3426c013fae82ea6e8810bf8f993b433f5516bf0fbd7d750e0369de050",
+      "gitBlobSha": "b777dd6e141321535f2d6ba37c441613a7f32787"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "size": 3186,
+      "sha256": "34f9143daf37d78c0719a82c31ab6728849f9e5812515d50b4b7900a053ca7f6",
+      "gitBlobSha": "c2af56773077e480c62ab2db13d0a0b660aea0f1"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "size": 432974,
+      "sha256": "8494d00e2fec4c7c335e9caf07bc23b69f2767c5638df2c09f56297107518527",
+      "gitBlobSha": "9f7058146d3fa9de4c44c97a2586cefe66d7870f"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "size": 7312,
+      "sha256": "d10aa76c736002e4ee9a8094cacd556d8c9107692484f3c21e58951cb7f49b57",
+      "gitBlobSha": "a941044dbab87085da2205669dbd687d2265af3f"
+    },
+    {
+      "path": "test/quoteReauditRepairs.spec.mjs",
+      "size": 15365,
+      "sha256": "502165f7c220a4b2fc3121f9b420051c3ea1570090912f748f8bc86446499d03",
+      "gitBlobSha": "b0e9229cc7decf9bbac829529e15fe3226c3f6d3"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "size": 12516,
+      "sha256": "b30678cd8b53a7a8ca17baec50f61859f375365b4b0686b3a7ac3438dcbe4ec3",
+      "gitBlobSha": "5d8ad4c67203dea0344baa8bf1592ecf53e5e9b6"
+    },
+    {
+      "path": "test/quoteTradeDecisions.spec.mjs",
+      "size": 16822,
+      "sha256": "3ece54d262aa539b5893908d368df44014f5325bd14dfa2342b93e7b792dc79f",
+      "gitBlobSha": "e10420287ed55a3a16794c50e6455d07c8287856"
+    },
+    {
+      "path": "verification/engine-independent/fixtures.mjs",
+      "size": 9786,
+      "sha256": "c0f5de5876abad0b366f2ac1aae30ff6f42104c0a7e060842d93d2cf708918de",
+      "gitBlobSha": "8c1f22877a540fe44278c0385fe475da02ac3623"
+    },
+    {
+      "path": "verification/quote-trade-decisions/EXPECTED.md",
+      "size": 4950,
+      "sha256": "4a1e9d33dd12be0adb6873217bc72612bd24ec6725905cb34b991d16d11f9cd4",
+      "gitBlobSha": "33b8739714ccea826013d67d5031185119e15b88"
+    },
+    {
+      "path": "verification/quote-trade-decisions/REPORT.md",
+      "size": 7906,
+      "sha256": "2155e9b6bc234a8488615418d06b5244361a4e619a453f73e4b52ca82bef7110",
+      "gitBlobSha": "62e383cd01016fcbaeb2a3ee22c7d09c6ad13974"
+    },
+    {
+      "path": "verification/quote-trade-decisions/RESULTS.json",
+      "size": 1646,
+      "sha256": "74b27c0facb9f6eee2eb3cd8c533cbde56f0839e27a8996037b0489fba5f66d0",
+      "gitBlobSha": "1990605527d76722b7463dac116dc672e7304b83"
+    },
+    {
+      "path": "verification/quote-trade-decisions/VOICE_HANDOFF.md",
+      "size": 1734,
+      "sha256": "02b850c405c1977122bf8084f5e2cb6c04759756a7131abdf24eb1aeacda5895",
+      "gitBlobSha": "df7bf39a599ecd47114946a1fac11edd9db91144"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B01-evidence.json",
+      "size": 21652,
+      "sha256": "8cd38f89205267b2aca14859b2cda3b9071f706d7f623830195c01f674ebe68f",
+      "gitBlobSha": "e88bea4d8b7c227f07672571b0c95159bdf9cdf2"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B01-installed-labor-surcharge-save-approve-public-quote-screen.json",
+      "size": 6321,
+      "sha256": "132d7298cb0bb9d3f3fb5f47caa025e6448d3e96c0870f9f0fcb2f1e4ff04084",
+      "gitBlobSha": "e03e05772bc6352b08ae23c3a8f029cfc9486023"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B01-installed-labor-surcharge-save-approve-public-quote.png",
+      "size": 140376,
+      "sha256": "4defdbf11832c215b6c8c2d5d3711da6d574b754f35c41e9ca26c1fda7552bed",
+      "gitBlobSha": "30c30059839b22e1e0a07a51a3009efc19822856"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B02-evidence.json",
+      "size": 97991,
+      "sha256": "2d29a991e3d5e345958d2e57f702dc5ac3376acccdc4139198afc99203520e69",
+      "gitBlobSha": "04d217e1a414f2c24a5fd5d0ab7ba851188f2043"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B02-fence-waste-percent-spacing-and-new-questions-screen.json",
+      "size": 8450,
+      "sha256": "e5d40d1759b219c64af87c0849a747059541f2435fb49e458f26b49456e0d49f",
+      "gitBlobSha": "4216346fec3b42a085e89c5d750d6332700891fa"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B02-fence-waste-percent-spacing-and-new-questions.png",
+      "size": 120252,
+      "sha256": "258caa0567a0d8d71f5dfcf8bc49c2d57da9872acd3f7a6a1ce6e96cdd5d54f4",
+      "gitBlobSha": "8f82ac7a1d205ed8da80307d315619d7671dae36"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B03-evidence.json",
+      "size": 153601,
+      "sha256": "d54a4df3089845672d232449dd65de40c8cf2bd491bd9176fbeeee9325459de8",
+      "gitBlobSha": "7bd0df4a631e1a6cfa067a6f9884340f7c55a50e"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B03-paint-condition-coats-save-approve-screen.json",
+      "size": 8826,
+      "sha256": "bd27dd779d028e41cfe542269664a72652e229ed97e46b165cd59097797ed309",
+      "gitBlobSha": "4b30d9ccbbe4606585710246be54bfd69fc08504"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B03-paint-condition-coats-save-approve.png",
+      "size": 146120,
+      "sha256": "0352fa4f23e80b7328c895aaffc2325723bbf91f83d3013d824942c8e59b55e2",
+      "gitBlobSha": "97edd0890ca2a07624c87eff726adff778e12065"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B04-evidence.json",
+      "size": 11552,
+      "sha256": "3d3729eb213849e5edf7381fa9a192ba2f4dd3f523c68d1f95b8e2beb2bb8443",
+      "gitBlobSha": "32027da1d099e9ab72dd80c1c68e9e0a75ae0943"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B04-incomplete-product-keeps-complete-product-live-screen.json",
+      "size": 22651,
+      "sha256": "d8fc86e08dbf069334cb7fe76c89b9cc0e3e55f2d6100eb26c323e69bc83a48a",
+      "gitBlobSha": "2bd39778293828081efb2a272c043f4a8dce7b93"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/B04-incomplete-product-keeps-complete-product-live.png",
+      "size": 161106,
+      "sha256": "9235ae769f0c4ecf9cbb6c56bfd0d880698b87991d298e15b65b5edf35ad6069",
+      "gitBlobSha": "38875d8519b2b8b9205863b5d6f4705001d745c6"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/browser-wire.json.gz",
+      "size": 226503,
+      "sha256": "90272e36d2b7212166e419de2813271b234e3a5ea3205a0a72f2299ed3d51f7a",
+      "gitBlobSha": "05055ae9fcd770d88a15c26891cbab77175c9769"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/http.json.gz",
+      "size": 83157,
+      "sha256": "4fa4818240fdfd0b8adff5fa3eb3df9aacc55846de51277b92600419f761e96f",
+      "gitBlobSha": "c4ada5edddc2b404e005f85dc6720f3cb24d70d8"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/result.json",
+      "size": 524,
+      "sha256": "757e71537832bd3defaf5bfb2d1256b1c0040c1392b5c701786c17718e94704f",
+      "gitBlobSha": "fdf3fb6e483501ff33262a45886b4c7e89a4e396"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final/public/source-binding.json",
+      "size": 16388,
+      "sha256": "8effe8b2c43a35c312cc4d67c24b581c21ede8a17a5c449c2806374eed8a01f4",
+      "gitBlobSha": "cb4c1ca9f74d8bacc0876480b85214aae1195531"
+    },
+    {
+      "path": "verification/quote-trade-decisions/application-final.log",
+      "size": 770,
+      "sha256": "88e8493598ef4a0a0f87cc64796eed1cceb72cc80a5fb3b754d0774be7bbae62",
+      "gitBlobSha": "1e735f6a62bb3371533bc596fc508d33ce0bbd94"
+    },
+    {
+      "path": "verification/quote-trade-decisions/baseline.tap",
+      "size": 5297,
+      "sha256": "86147322ab39f3529b23952c74b8fcb80c93cee5a00bcb1f28d5abcf1ce7fcda",
+      "gitBlobSha": "d069399efe5a51e016da43031af60eddb4af0e2d"
+    },
+    {
+      "path": "verification/quote-trade-decisions/browser.mjs",
+      "size": 16142,
+      "sha256": "8eba71f525a197585f1878b768d75995fbc9f711877bf7e73feeaf43ed1853fb",
+      "gitBlobSha": "0cff7dc6e26ade6cfb7d3e6aba8a948c3f4d967a"
+    },
+    {
+      "path": "verification/quote-trade-decisions/full-verified.tap",
+      "size": 308972,
+      "sha256": "1a1ef19eb029448c5278b6c671d360040b55b50e6f8e22a260eae0f0bdf77168",
+      "gitBlobSha": "1ac4ee4d165d78cb9f33fb92e1c5c6bf7787467f"
+    },
+    {
+      "path": "verification/quote-trade-decisions/owner-build.log",
+      "size": 665,
+      "sha256": "305ef1fee885e5153599adca53ff8d89385ad6ed88002eabd9dbafd4cff27a0c",
+      "gitBlobSha": "73c47257eba39be36a5491c62f6c04ed66da8e93"
+    },
+    {
+      "path": "verification/quote-trade-decisions/trade-acceptance.tap",
+      "size": 6205,
+      "sha256": "4eb57624c153c76a152afb513899336ae6fdd850286a03430385d42b86425db3",
+      "gitBlobSha": "1c2e515c16a654df01a660ee81c285b2df8b86ce"
+    },
+    {
+      "path": "verification/quote-trade-decisions/voice-baseline.tap",
+      "size": 15004,
+      "sha256": "6db51c75bf56e4d0f5b1fa9c562f4aeb35bc2261ddaf709da1a40786b6c422ca",
+      "gitBlobSha": "7fa807a3a734de86acef36447c3df5c65b14bea2"
+    },
+    {
+      "path": "verification/quote-trade-decisions/widget-build.log",
+      "size": 197,
+      "sha256": "3d16c6ebfb4fb11aa3eebc9fc60b8c68146b2f0efe0d5a4d2cfe7b71e3a0a353",
+      "gitBlobSha": "8c75aa0a5be0786cbc15c2b3c3dc4e0cbf09eded"
+    }
+  ]
+}

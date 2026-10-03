@@ -12,7 +12,7 @@ export function offeringFixture(type,mode) {
   }:{
     description:'[SYNTHETIC] Defined painting offering',substrate:interior?'[SYNTHETIC] Drywall':'[SYNTHETIC] Wood siding',coating:'[SYNTHETIC] Owner-specified coating',
     finishCoats:2,surfaceCondition:'fair',preparation:'[SYNTHETIC] Defined preparation of the measured affected area.',primerCoats:1,
-    ...(interior?{wallHeight:'standard',ceilingsOffered:true,trimOffered:true,ceilingCoats:2,ceilingPrimerCoats:1,trimDescription:'[SYNTHETIC] Trim with preparation, one primer and two finish coats.'}:{stories:2})
+    ...(interior?{wallHeight:'standard',ceilingsOffered:true,trimOffered:true,ceilingCoats:2,ceilingPrimerCoats:1,trimDescription:'[SYNTHETIC] Trim with preparation, one primer and two finish coats.'}:{stories:2,baselinePricesConfirmed:true})
   };
   const rates=fence?{
     ...(installed?{installedFencePerLF:4000}:{fenceLaborPerLF:1000,fenceMaterialPerLF:2000,postMaterialEach:2000,footingLaborEach:400,footingMaterialEach:600}),
@@ -20,10 +20,10 @@ export function offeringFixture(type,mode) {
   }:installed?{
     installedWallPerSqft:600,...(interior?{installedCeilingPerSqft:300,installedTrimPerLF:200}:{})
   }:{wallLaborPerSqftPerCoat:100,wallMaterialPerSqftPerCoat:30,prepLaborPerSqft:100,prepMaterialPerSqft:20,primerLaborPerSqftPerCoat:50,primerMaterialPerSqftPerCoat:20,...(interior?{ceilingLaborPerSqftPerCoat:80,ceilingMaterialPerSqftPerCoat:25,ceilingPrimerLaborPerSqftPerCoat:40,ceilingPrimerMaterialPerSqftPerCoat:15,installedTrimPerLF:200}:{})};
-  const customerInputs=fence?confirmedFixtureInputs({linearFeet:100,lfMethod:'exact',fenceType:'wood',fenceHeight:6,terrainSlope:'flat',gates:{walk:2},...(!installed?{postCount:14}:{}),...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:true,removalLengthLF:50}:{})}):{
+  const customerInputs=fence?confirmedFixtureInputs({linearFeet:100,lfMethod:'exact',fenceType:'wood',fenceHeight:6,terrainSlope:'flat',gates:{walk:2},cornerCount:0,...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:true,removalLengthLF:50}:{})}):{
     areaInputMethod:'wall_sqft',[interior?'wallAreaSqft':'exteriorAreaSqft']:500,coats:2,surfaceCondition:'fair',
-    ...(!installed?{prepAreaSqft:120}:{}),...(interior?{wallHeight:'standard',wallScopeUniform:true,ceilingsIncluded:true,ceilingAreaSqft:200,trimIncluded:true,trimLengthLF:100}:{stories:2})
+    ...(interior?{wallHeight:'standard',wallScopeUniform:true,ceilingsIncluded:true,ceilingAreaSqft:200,trimIncluded:true,trimLengthLF:100}:{stories:2})
   };
   const priceBasis=map('cost');priceBasis.addon='sell_price';if(!fence)priceBasis.material='sell_price';
-  return {serviceType:type,customerInputs,ownerPricing:{...fixtureIdentity('MANUAL',undefined,type),serviceType:type,service:type,active:true,knownOfferings:fixtureOfferings(type),pricing:withClass2Defaults(type,{minimumJob:0,offeringMode:mode,offeringDetails:details,offeringRates:rates}),priceBasisByCategory:priceBasis,taxabilityByCategory:map(false),feeRules:{travel:'not_applicable',disposal:'not_applicable',permit:'not_applicable',overhead:'not_applicable'},peakMonths:[],peakSurchargePercent:0},businessDefaults:structuredClone(offeringDefaults),callerType:'owner',currentMonth:1};
+  return {serviceType:type,customerInputs,ownerPricing:{...fixtureIdentity('MANUAL',undefined,type),serviceType:type,service:type,active:true,knownOfferings:fixtureOfferings(type),pricing:withClass2Defaults(type,{minimumJob:0,offeringMode:mode,offeringDetails:details,offeringRates:rates,installedLaborPercent:Object.fromEntries(Object.keys(rates).filter(key=>key.startsWith('installed')||key.startsWith('gate_')||key==='removalPerLF').map(key=>['offeringRates.'+key,60])),installedMaterialsPercent:Object.fromEntries(Object.keys(rates).filter(key=>key.startsWith('installed')||key.startsWith('gate_')||key==='removalPerLF').map(key=>['offeringRates.'+key,40]))}),priceBasisByCategory:priceBasis,taxabilityByCategory:map(false),feeRules:{travel:'not_applicable',disposal:'not_applicable',permit:'not_applicable',overhead:'not_applicable'},peakMonths:[],peakSurchargePercent:0},businessDefaults:structuredClone(offeringDefaults),callerType:'owner',currentMonth:1};
 }

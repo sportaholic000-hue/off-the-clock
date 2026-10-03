@@ -1,0 +1,379 @@
+{
+  "beforeStatus": {
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "[SYNTHETIC] owner-status-exterior",
+    "scopeCoverage": [],
+    "status": "NEEDS PRICING",
+    "missingOwnerFields": [],
+    "invalidOwnerFields": [
+      "offeringDetails.baselinePricesConfirmed"
+    ],
+    "unsupportedOwnerFields": [],
+    "crossFieldOwnerFields": [],
+    "ownerDecisionRequired": [
+      {
+        "path": "offeringDetails.baselinePricesConfirmed",
+        "kind": "offering_price_baseline",
+        "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+      }
+    ],
+    "ownerDiagnostics": [
+      {
+        "type": "owner_decision",
+        "kind": "offering_price_baseline",
+        "path": "offeringDetails.baselinePricesConfirmed",
+        "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+      }
+    ],
+    "validationErrors": [
+      "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+    ],
+    "failedTierDiagnostics": [
+      {
+        "tierName": null,
+        "reviewReason": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.",
+        "missingOwnerFields": [],
+        "invalidOwnerFields": [
+          "offeringDetails.baselinePricesConfirmed"
+        ],
+        "unsupportedOwnerFields": [],
+        "crossFieldOwnerFields": [],
+        "ownerDiagnostics": [
+          {
+            "type": "owner_decision",
+            "kind": "offering_price_baseline",
+            "path": "offeringDetails.baselinePricesConfirmed",
+            "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+          }
+        ],
+        "ownerDecisionRequired": [
+          {
+            "path": "offeringDetails.baselinePricesConfirmed",
+            "kind": "offering_price_baseline",
+            "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+          }
+        ],
+        "validationMessages": [
+          "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+        ]
+      }
+    ],
+    "validTierNames": [],
+    "productCoverage": [
+      {
+        "tierName": null,
+        "selection": {
+          "surfaceCondition": "good"
+        },
+        "configurationComplete": false,
+        "ownerDiagnostics": [
+          {
+            "type": "owner_decision",
+            "kind": "offering_price_baseline",
+            "path": "offeringDetails.baselinePricesConfirmed",
+            "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+          }
+        ],
+        "unpricedOwnerFields": [
+          "offeringRates.prepLaborPerSqft_good",
+          "offeringRates.prepMaterialPerSqft_good"
+        ],
+        "coverageMessage": "Not yet priced. Requests for this condition go to review."
+      },
+      {
+        "tierName": null,
+        "selection": {
+          "surfaceCondition": "fair"
+        },
+        "configurationComplete": false,
+        "ownerDiagnostics": [
+          {
+            "type": "owner_decision",
+            "kind": "offering_price_baseline",
+            "path": "offeringDetails.baselinePricesConfirmed",
+            "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+          }
+        ],
+        "unpricedOwnerFields": []
+      },
+      {
+        "tierName": null,
+        "selection": {
+          "surfaceCondition": "poor"
+        },
+        "configurationComplete": false,
+        "ownerDiagnostics": [
+          {
+            "type": "owner_decision",
+            "kind": "offering_price_baseline",
+            "path": "offeringDetails.baselinePricesConfirmed",
+            "message": "This offering was saved for 2-story building. Offering prices now cover one-story building, with stories adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed."
+          }
+        ],
+        "unpricedOwnerFields": [
+          "offeringRates.prepLaborPerSqft_poor",
+          "offeringRates.prepMaterialPerSqft_poor"
+        ],
+        "coverageMessage": "Not yet priced. Requests for this condition go to review."
+      }
+    ],
+    "serviceId": "20ff6518-b2ee-45f1-8c4d-6bbd5b2bab81",
+    "applicationIssues": [],
+    "legacySettings": [],
+    "approvalCurrent": true,
+    "confirmationFields": [
+      "minimumJob",
+      "offeringMode",
+      "offeringDetails",
+      "offeringRates",
+      "installedLaborPercent",
+      "installedMaterialsPercent",
+      "storyMultiplier",
+      "prepHoursPerSqft",
+      "paintWasteFactor",
+      "primerWasteFactor",
+      "prepMaterialWasteFactor",
+      "feeRules",
+      "priceBasisByCategory",
+      "taxabilityByCategory",
+      "peakMonths",
+      "peakSurchargePercent",
+      "knownOfferings"
+    ]
+  },
+  "before": {
+    "resultType": "ESTIMATE_REQUIRES_REVIEW",
+    "customerMessage": "We received your request. Someone will follow up to complete or verify the estimate.",
+    "quoteId": "fd7a61be-4c64-44b8-a2a5-9cdb23f005cb",
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T05:06:57.313Z"
+  },
+  "after": {
+    "fair": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 2475,
+      "midEstimate": 2475,
+      "highEstimate": 2475,
+      "priceDrivers": [
+        "500 measured square feet of paintable wall area"
+      ],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. No tax added.",
+      "quoteId": "6ea4df7a-8ee4-46b1-8e42-03307332082d",
+      "priceUnit": null,
+      "taxTreatment": "No tax added.",
+      "options": [
+        {
+          "tierName": null,
+          "lowEstimate": 2475,
+          "midEstimate": 2475,
+          "highEstimate": 2475,
+          "priceDrivers": [
+            "500 measured square feet of paintable wall area"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. No tax added.",
+          "priceUnit": null,
+          "taxTreatment": "No tax added."
+        }
+      ],
+      "pricedScope": {
+        "service": "[SYNTHETIC] owner-status-exterior",
+        "facts": [
+          {
+            "label": "Wall area measurement method",
+            "value": "Wall sqft"
+          },
+          {
+            "label": "Measured paintable wall area",
+            "value": "500"
+          },
+          {
+            "label": "Finish coats on walls and selected ceilings",
+            "value": "2"
+          },
+          {
+            "label": "Surface condition",
+            "value": "Fair"
+          },
+          {
+            "label": "Building stories",
+            "value": "2"
+          }
+        ],
+        "fees": []
+      },
+      "submittedDetails": {
+        "requestedWork": "[SYNTHETIC] owner-status-exterior",
+        "contact": {
+          "email": "synthetic-followup@example.invalid"
+        },
+        "location": {},
+        "timing": "Not supplied",
+        "additionalDetails": "",
+        "unknowns": "",
+        "clarifications": []
+      },
+      "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+      "fullJobTotal": null,
+      "bookingCapability": "PREFERRED_TIME_ONLY",
+      "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+      "bookingTokenExpiresAt": "2026-10-10T05:06:59.037Z"
+    },
+    "good": {
+      "resultType": "ESTIMATE_REQUIRES_REVIEW",
+      "customerMessage": "We received your request. Someone will follow up to complete or verify the estimate.",
+      "quoteId": "4035794e-29b2-43b3-81bb-068f5fd15225",
+      "bookingCapability": "PREFERRED_TIME_ONLY",
+      "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+      "bookingTokenExpiresAt": "2026-10-10T05:06:59.190Z"
+    },
+    "poor": {
+      "resultType": "ESTIMATE_REQUIRES_REVIEW",
+      "customerMessage": "We received your request. Someone will follow up to complete or verify the estimate.",
+      "quoteId": "8fc93ed8-21ce-412e-a3be-df3d2f53ef9d",
+      "bookingCapability": "PREFERRED_TIME_ONLY",
+      "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+      "bookingTokenExpiresAt": "2026-10-10T05:06:59.292Z"
+    }
+  },
+  "saved": {
+    "ownerId": "c398d36c-48e5-4524-9e7c-f2b74a37a2ae",
+    "services": [
+      {
+        "id": "20ff6518-b2ee-45f1-8c4d-6bbd5b2bab81",
+        "source": "MANUAL",
+        "serviceType": "EXTERIOR_PAINTING",
+        "service": "[SYNTHETIC] owner-status-exterior",
+        "active": true,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "stories": 2,
+            "finishCoats": 2,
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Wood siding",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "baselinePricesConfirmed": true
+          },
+          "offeringRates": {
+            "wallLaborPerSqftPerCoat": 1,
+            "wallMaterialPerSqftPerCoat": 0.3,
+            "prepLaborPerSqft": 1,
+            "prepMaterialPerSqft": 0.2,
+            "primerLaborPerSqftPerCoat": 0.5,
+            "primerMaterialPerSqftPerCoat": 0.2
+          },
+          "installedLaborPercent": {},
+          "installedMaterialsPercent": {},
+          "storyMultiplier": {
+            "1": 1,
+            "2": 1.1,
+            "3": 1.2
+          },
+          "prepHoursPerSqft": {
+            "fair": 0.008
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "areaInputMethod": "wall_sqft",
+          "exteriorAreaSqft": 500,
+          "coats": 2,
+          "surfaceCondition": "fair",
+          "stories": 2
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "20ff6518-b2ee-45f1-8c4d-6bbd5b2bab81",
+          "serviceType": "EXTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "c398d36c-48e5-4524-9e7c-f2b74a37a2ae",
+          "operationId": "8dd6de32-ea1b-4679-8ca5-c99d552c8d8d",
+          "createdAt": "2026-10-03T05:06:57.212Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "c398d36c-48e5-4524-9e7c-f2b74a37a2ae",
+          "serviceId": "20ff6518-b2ee-45f1-8c4d-6bbd5b2bab81",
+          "operationId": "c9b1bcd3-a8b5-4abc-971c-87aa05c346cd",
+          "approvedAt": "2026-10-03T05:06:58.464Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "c98254b9c5f89fffee47531171135f82f8e063179106984cf8ffcb3c54714c52",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T05:06:58.465Z",
+    "revision": "9c3f708ed3475fbb39c379dad5db3122b6716eca3ae35adb3fa9e2a783ab6272",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  }
+}

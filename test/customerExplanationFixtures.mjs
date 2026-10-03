@@ -1,3 +1,5 @@
+import {withClass2Defaults} from '../server/quote-engine-vnext/index.js';
+import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import fs from 'node:fs';
 import {roof,mowing} from './opusQuoteFixtures.mjs';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
@@ -5,7 +7,7 @@ import {custom} from '../verification/engine-independent/fixtures.mjs';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 const catalog=JSON.parse(fs.readFileSync(new URL('./customerExplanationCatalog.json',import.meta.url),'utf8'));
 export function explanationCases(){
- const rows=catalog.entries.filter(e=>!e.expectedOwnerDecision).map(e=>({id:'catalog-'+e.serviceType,input:{serviceType:e.serviceType,customerInputs:e.customerInputs,ownerPricing:e.ownerPricing,businessDefaults:catalog.defaults,callerType:'owner',currentMonth:1}}));
+ const rows=catalog.entries.filter(e=>!e.expectedOwnerDecision).map(e=>({id:'catalog-'+e.serviceType,input:{serviceType:e.serviceType,customerInputs:confirmedFixtureInputs(e.customerInputs),ownerPricing:{...e.ownerPricing,pricing:withClass2Defaults(e.serviceType,e.ownerPricing.pricing)},businessDefaults:catalog.defaults,callerType:'owner',currentMonth:1}}));
  rows.push({id:'custom-fixed',input:custom()});
  for(const type of ['FENCING_INSTALL','FENCING_REPLACEMENT','INTERIOR_PAINTING','EXTERIOR_PAINTING'])for(const mode of ['installed','itemized'])rows.push({id:type+'-'+mode,input:offeringFixture(type,mode)});
  for(const sheets of [undefined,0,2]){const input=roof(sheets);input.customerInputs.existingLayers=2;rows.push({id:'roof-decking-'+String(sheets),input});}

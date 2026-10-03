@@ -1,0 +1,156 @@
+# Subtest: T01 complete tile remains live beside incomplete vinyl_plank
+ok 1160 - T01 complete tile remains live beside incomplete vinyl_plank
+  ---
+  duration_ms: 127.843345
+  type: 'test'
+  ...
+# Subtest: T01 complete tile remains live beside incomplete hardwood
+ok 1161 - T01 complete tile remains live beside incomplete hardwood
+  ---
+  duration_ms: 79.751085
+  type: 'test'
+  ...
+# Subtest: T02 customer output excludes owner buffer, revision and internal service identity
+ok 1162 - T02 customer output excludes owner buffer, revision and internal service identity
+  ---
+  duration_ms: 57.774753
+  type: 'test'
+  ...
+# Subtest: T03 configured peak season does not disable service
+ok 1163 - T03 configured peak season does not disable service
+  ---
+  duration_ms: 10.627105
+  type: 'test'
+  ...
+# Subtest: T03 local quote month determines labor surcharge across UTC month boundary
+ok 1164 - T03 local quote month determines labor surcharge across UTC month boundary
+  ---
+  duration_ms: 108.284746
+  type: 'test'
+  ...
+# Subtest: T04 fence derives 18 posts, waste on infill only and terrain on labor only
+ok 1165 - T04 fence derives 18 posts, waste on infill only and terrain on labor only
+  ---
+  duration_ms: 28.804345
+  type: 'test'
+  ...
+# Subtest: T05 patterned flooring changes labor and retains existing additive material waste
+ok 1166 - T05 patterned flooring changes labor and retains existing additive material waste
+  ---
+  duration_ms: 12.064669
+  type: 'test'
+  ...
+# Subtest: T06 membrane waste does not increase labor or tear-off
+ok 1167 - T06 membrane waste does not increase labor or tear-off
+  ---
+  duration_ms: 7.571334
+  type: 'test'
+  ...
+# Subtest: T06 flat repair access affects labor, not fixed material allowance
+ok 1168 - T06 flat repair access affects labor, not fixed material allowance
+  ---
+  duration_ms: 11.397349
+  type: 'test'
+  ...
+# Subtest: T07 measured concrete area and perimeter match rectangular control; impossible geometry stays review-only
+ok 1169 - T07 measured concrete area and perimeter match rectangular control; impossible geometry stays review-only
+  ---
+  duration_ms: 15.791497
+  type: 'test'
+  ...
+# Subtest: T08 stated mulch yards are used as-is; only derived yards receive ordering overage
+ok 1170 - T08 stated mulch yards are used as-is; only derived yards receive ordering overage
+  ---
+  duration_ms: 14.088959
+  type: 'test'
+  ...
+# Subtest: T09 a minimum-priced job shows one exact price including applicable tax
+ok 1171 - T09 a minimum-priced job shows one exact price including applicable tax
+  ---
+  duration_ms: 4.993444
+  type: 'test'
+  ...
+# Subtest: T10 itemized painting uses the entire painted area for condition preparation and wastes materials only
+ok 1172 - T10 itemized painting uses the entire painted area for condition preparation and wastes materials only
+  ---
+  duration_ms: 56.930143
+  type: 'test'
+  ...
+# Subtest: T11 installed materials-only tax uses the explicit share; tax-all and no-tax totals stay unchanged
+ok 1173 - T11 installed materials-only tax uses the explicit share; tax-all and no-tax totals stay unchanged
+  ---
+  duration_ms: 20.190446
+  type: 'test'
+  ...
+# Subtest: T12 installed labor-only adjustments preserve materials and produce one customer total
+ok 1174 - T12 installed labor-only adjustments preserve materials and produce one customer total
+  ---
+  duration_ms: 24.17393
+  type: 'test'
+  ...
+# Subtest: T13 asphalt remains quotable beside incomplete metal; complete control stays 599000 cents
+ok 1175 - T13 asphalt remains quotable beside incomplete metal; complete control stays 599000 cents
+  ---
+  duration_ms: 78.655626
+  type: 'test'
+  ...
+# Subtest: T14 saved quote timezone survives reload, overrides profile zone, and rejects invalid zones
+ok 1176 - T14 saved quote timezone survives reload, overrides profile zone, and rejects invalid zones
+  ---
+  duration_ms: 43.846062
+  type: 'test'
+  ...
+# Subtest: T15 waste rates are independently editable; accessories and decking have distinct quantity rules
+ok 1177 - T15 waste rates are independently editable; accessories and decking have distinct quantity rules
+  ---
+  duration_ms: 20.959011
+  type: 'test'
+  ...
+# Subtest: T16 concrete wire and stamped material each add quantity waste without multiplying labor twice
+ok 1178 - T16 concrete wire and stamped material each add quantity waste without multiplying labor twice
+  ---
+  duration_ms: 14.834587
+  type: 'test'
+  ...
+# Subtest: T17 planting uses access on labor, direct mulch yards, and no waste on plant counts
+ok 1179 - T17 planting uses access on labor, direct mulch yards, and no waste on plant counts
+  ---
+  duration_ms: 12.071244
+  type: 'test'
+  ...
+# Subtest: T18 installed shares preserve fractional-cent allocation until tax rounding and reject impossible splits
+ok 1180 - T18 installed shares preserve fractional-cent allocation until tax rounding and reject impossible splits
+  ---
+  duration_ms: 10.712304
+  type: 'test'
+  ...
+# Subtest: T19 installed underlayment also uses an explicit materials share
+ok 1181 - T19 installed underlayment also uses an explicit materials share
+  ---
+  duration_ms: 11.59297
+  type: 'test'
+  ...
+# Subtest: T20 customer field contracts exclude post count and preparation area, and require new measured facts
+ok 1182 - T20 customer field contracts exclude post count and preparation area, and require new measured facts
+  ---
+  duration_ms: 1.89184
+  type: 'test'
+  ...
+# Subtest: T21 owner percentage display scales exactly and preserves invalid text
+ok 1183 - T21 owner percentage display scales exactly and preserves invalid text
+  ---
+  duration_ms: 0.596209
+  type: 'test'
+  ...
+# Subtest: T22 labor-only peak surcharge includes explicitly priced preparation labor without changing its markup category
+ok 1184 - T22 labor-only peak surcharge includes explicitly priced preparation labor without changing its markup category
+  ---
+  duration_ms: 13.216583
+  type: 'test'
+  ...
+# Subtest: T23 complete painting condition remains live without unused exact-match owner settings
+ok 1185 - T23 complete painting condition remains live without unused exact-match owner settings
+  ---
+  duration_ms: 27.614279
+  type: 'test'
+  ...

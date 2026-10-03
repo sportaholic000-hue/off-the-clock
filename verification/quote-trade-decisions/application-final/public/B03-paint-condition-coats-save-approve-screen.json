@@ -1,0 +1,135 @@
+{
+  "text": "Off The Clock AI\nDashboard\nLeads\nQuotes\nPrice Book\nOnboarding\nCalendar\nSettings\nSign out\n\nQUOTEDONE\n\nPrice book\n\nYour prices drive every quote.\n\nBuild it with your AI\nSuggest a starter book\nChoose service type\nRoof replacement\nRoof repair\nFlat roof replacement\nFlat roof repair\nInterior painting\nExterior painting\nFlooring installation\nFlooring replacement\nFencing installation\nFencing replacement\nSiding replacement\nSiding repair\nConcrete driveway\nConcrete patio slab\nLandscaping cleanup\nMulch installation\nSod installation\nPlanting\nMowing\nCustom service\nAdd service\n\nSERVICES\n\n[SYNTHETIC] A\nCHECKING\nChecking\n[SYNTHETIC] B\nCHECKING\nChecking\nRoof replacement\nCHECKING\nChecking\nRoof repair\nCHECKING\nChecking\nExterior painting\nCHECKING\nChecking\nFlooring installation\nCHECKING\nChecking\nFencing installation\nCHECKING\nChecking\nFencing replacement\nCHECKING\nChecking\nSiding replacement\nCHECKING\nChecking\nLandscaping cleanup\nCHECKING\nChecking\nPlanting\nCHECKING\nChecking\nCustom service\nCHECKING\nChecking\n\nYOUR PRICES · REQUIRED\n\n[SYNTHETIC] A\nOff The Clock never guesses these. Complete these prices and choose whether quoting is enabled for this service.\n1 / 1 SET\nFence and painting offering\nOffering pricing\nMeasured wall pricing — choose to configure an offering\nComplete installed prices\nItemized measured components\n\nDefine one offered job and the prices that cover it. Add another offering for a different height, surface, coating or preparation scope. These descriptions are shown to customers.\n\nIncluded job description\nPaintable surface covered\nCoating and product system\nCondition for retained preparation prices\nChoose\ngood\nfair\npoor\nPreparation work included\nWall primer coats included\nChoose\n0\n1\n2\n3\nFinish paint uses the requested coat count. Preparation covers the entire measured painted area at your price for the reported surface condition. Material quantities include the waste settings below. For owner material costs, configure products, package coverage and purchase prices under Additional priced scope.\nOffer ceiling painting\nChoose\nYes\nNo\nCeiling primer coats\nChoose\n0\n1\n2\n3\nOffer trim painting\nChoose\nYes\nNo\nTrim coats, preparation and primer included\nOwner prices for this offering\nWall finish labor ($ per wall square-foot coats)\nUses the configured price basis and tax treatment for labor.\nWall finish materials ($ per wall square-foot coats)\nUses the configured price basis and tax treatment for material.\ngood surface preparation labor ($ per painted square feet)\nUses the configured price basis and tax treatment for prep.\ngood surface preparation materials ($ per painted square feet)\nUses the configured price basis and tax treatment for material.\nfair surface preparation labor ($ per painted square feet)\nUses the configured price basis and tax treatment for prep.\nfair surface preparation materials ($ per painted square feet)\nUses the configured price basis and tax treatment for material.\npoor surface preparation labor ($ per painted square feet)\nUses the configured price basis and tax treatment for prep.\npoor surface preparation materials ($ per painted square feet)\nUses the configured price basis and tax treatment for material.\nWall primer labor ($ per wall square-foot primer coats)\nUses the configured price basis and tax treatment for labor.\nWall primer materials ($ per wall square-foot primer coats)\nUses the configured price basis and tax treatment for material.\nCeiling finish labor ($ per ceiling square-foot coats)\nUses the configured price basis and tax treatment for labor.\nCeiling finish materials ($ per ceiling square-foot coats)\nUses the configured price basis and tax treatment for material.\nCeiling primer labor ($ per ceiling square-foot primer coats)\nUses the configured price basis and tax treatment for labor.\nCeiling primer materials ($ per ceiling square-foot primer coats)\nUses the configured price basis and tax treatment for material.\nInstalled trim painting including the defined scope ($ per trim linear feet)\nComplete selling price; no additional markup is applied.\nEnable quoting for this service\nMinimum job price\nMinimum job price $0 is valid and means no minimum.\n$\nAdditional priced scope\nSet up removal, preparation and other measured work you offer.\nREVIEW SCOPE\n▸\nLabor and materials in installed prices\n\nSet these once for each complete installed price. Labor adjustments affect only the labor portion. Materials-only tax affects only the material portion. These percentages stay private. Enter 0 for a portion that is absent; the total cannot exceed 100%.\n\nTrim Per LF\nLabor portion (%)\nMaterials share (%)\nQuote configuration\nLabor, materials, taxes, minimums and pricing rules.\n▸\nOwner approval\nReview saved configuration\nQuantity assumptions\nDefaults are already being applied. Adjust only if your jobs differ.\nDEFAULTS APPLIED\n▸\nRetained legacy settings\nThese values retain their saved meaning and location. They are not used by current quoting rules.\n▸\nGood / Better / Best tiers\nOffer up to three options on one quote.\nNOT USED\n▸\n\nBUSINESS-WIDE · APPLIES TO EVERY SERVICE\n\nMarkup and margin\n0% markup = 0.0% margin\n0%\n▸\nTax\nNo tax line on quotes\nNO TAX\n▸\nProject measurements for preview\nEnter a job to check the customer estimate.\n▸\nWHAT YOUR CUSTOMER HEARS\nUPDATES AS YOU TYPE\n\nThis is what the estimate will sound like on a call. Nothing saves until you save.\n\nCALCULATING\nCustomer quote link\nAllowed website origins\nEnter the exact HTTPS website origins. Local HTTP origins are available only for non-production verification.\nUse this website origin\nSave quote-link access\nCHECKING\nChecking your changes\nSave & validate\nSAVES PRICES | CHECKS EVERY SERVICE | UPDATES QUOTING STATUS",
+  "inputs": [
+    {
+      "label": "Go to page",
+      "value": "/pricebook",
+      "invalid": null
+    },
+    {
+      "label": "New service type",
+      "value": "",
+      "invalid": null
+    },
+    {
+      "label": "Offering pricing",
+      "value": "itemized",
+      "invalid": null
+    },
+    {
+      "label": "Condition for retained preparation prices",
+      "value": "fair",
+      "invalid": null
+    },
+    {
+      "label": "Wall primer coats included",
+      "value": "1",
+      "invalid": null
+    },
+    {
+      "label": "Offer ceiling painting",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "Ceiling primer coats",
+      "value": "1",
+      "invalid": null
+    },
+    {
+      "label": "Offer trim painting",
+      "value": "true",
+      "invalid": null
+    },
+    {
+      "label": "Offering price wallLaborPerSqftPerCoat",
+      "value": "1",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price wallMaterialPerSqftPerCoat",
+      "value": "0.3",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepLaborPerSqft_good",
+      "value": "",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepMaterialPerSqft_good",
+      "value": "",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepLaborPerSqft_fair",
+      "value": "1",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepMaterialPerSqft_fair",
+      "value": "0.2",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepLaborPerSqft_poor",
+      "value": "2",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price prepMaterialPerSqft_poor",
+      "value": "0.4",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price primerLaborPerSqftPerCoat",
+      "value": "0.5",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price primerMaterialPerSqftPerCoat",
+      "value": "0.2",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price ceilingLaborPerSqftPerCoat",
+      "value": "0.8",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price ceilingMaterialPerSqftPerCoat",
+      "value": "0.25",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price ceilingPrimerLaborPerSqftPerCoat",
+      "value": "0.4",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price ceilingPrimerMaterialPerSqftPerCoat",
+      "value": "0.15",
+      "invalid": "false"
+    },
+    {
+      "label": "Offering price installedTrimPerLF",
+      "value": "2",
+      "invalid": "false"
+    },
+    {
+      "label": null,
+      "value": "0",
+      "invalid": "false"
+    },
+    {
+      "label": "Labor portion offeringRates.installedTrimPerLF",
+      "value": "60",
+      "invalid": "false"
+    },
+    {
+      "label": "Materials share offeringRates.installedTrimPerLF",
+      "value": "40",
+      "invalid": "false"
+    }
+  ]
+}

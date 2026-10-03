@@ -1,0 +1,255 @@
+{
+  "before": {
+    "resultType": "ESTIMATE_REQUIRES_REVIEW",
+    "customerMessage": "We received your request. Someone will follow up to complete or verify the estimate.",
+    "quoteId": "0caa9b11-07ad-4b7f-9c8b-bcb6a87ee76f",
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T04:17:32.831Z"
+  },
+  "after": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 3904.5,
+    "midEstimate": 3904.5,
+    "highEstimate": 3904.5,
+    "priceDrivers": [
+      "500 measured square feet of paintable wall area"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 2 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+    "quoteId": "9149a828-8def-4f93-be1f-c96671cef3ca",
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 3904.5,
+        "midEstimate": 3904.5,
+        "highEstimate": 3904.5,
+        "priceDrivers": [
+          "500 measured square feet of paintable wall area"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 2 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+        "priceUnit": null,
+        "taxTreatment": "No tax added."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] b03-interior",
+      "facts": [
+        {
+          "label": "Wall area measurement method",
+          "value": "Wall sqft"
+        },
+        {
+          "label": "Measured paintable wall area",
+          "value": "500"
+        },
+        {
+          "label": "Finish coats on walls and selected ceilings",
+          "value": "2"
+        },
+        {
+          "label": "Surface condition",
+          "value": "Fair"
+        },
+        {
+          "label": "Wall height",
+          "value": "Vaulted"
+        },
+        {
+          "label": "All wall area shares the confirmed height, access, and finish-coat count",
+          "value": "Yes"
+        },
+        {
+          "label": "Ceiling painting included",
+          "value": "Yes"
+        },
+        {
+          "label": "Measured ceiling area",
+          "value": "200"
+        },
+        {
+          "label": "Trim painting included",
+          "value": "Yes"
+        },
+        {
+          "label": "Measured trim length",
+          "value": "100"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] b03-interior",
+      "contact": {
+        "email": "synthetic-followup@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T04:17:34.401Z"
+  },
+  "saved": {
+    "ownerId": "9843b16f-a4ef-42fe-bf00-48876ae227d3",
+    "services": [
+      {
+        "id": "1f1537e0-f24c-483d-8919-6fc0578a9064",
+        "source": "MANUAL",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "[SYNTHETIC] b03-interior",
+        "active": true,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "wallHeight": "vaulted",
+            "finishCoats": 2,
+            "ceilingCoats": 2,
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Drywall",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "ceilingsOffered": true,
+            "trimOffered": true,
+            "ceilingPrimerCoats": 1,
+            "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats.",
+            "baselinePricesConfirmed": true
+          },
+          "offeringRates": {
+            "wallLaborPerSqftPerCoat": 1,
+            "wallMaterialPerSqftPerCoat": 0.3,
+            "prepLaborPerSqft": 1,
+            "prepMaterialPerSqft": 0.2,
+            "primerLaborPerSqftPerCoat": 0.5,
+            "primerMaterialPerSqftPerCoat": 0.2,
+            "ceilingLaborPerSqftPerCoat": 0.8,
+            "ceilingMaterialPerSqftPerCoat": 0.25,
+            "ceilingPrimerLaborPerSqftPerCoat": 0.4,
+            "ceilingPrimerMaterialPerSqftPerCoat": 0.15,
+            "installedTrimPerLF": 2
+          },
+          "installedLaborPercent": {
+            "offeringRates.installedTrimPerLF": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedTrimPerLF": 40
+          },
+          "wallHeightLaborMultiplier": {
+            "standard": 1,
+            "high": 1.1,
+            "vaulted": 1.25
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 500,
+          "coats": 2,
+          "surfaceCondition": "fair",
+          "wallHeight": "vaulted",
+          "wallScopeUniform": true,
+          "ceilingsIncluded": true,
+          "ceilingAreaSqft": 200,
+          "trimIncluded": true,
+          "trimLengthLF": 100
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "1f1537e0-f24c-483d-8919-6fc0578a9064",
+          "serviceType": "INTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "9843b16f-a4ef-42fe-bf00-48876ae227d3",
+          "operationId": "389d65e3-b6ee-48f6-a0df-be0877be7aa1",
+          "createdAt": "2026-10-03T04:17:32.770Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "9843b16f-a4ef-42fe-bf00-48876ae227d3",
+          "serviceId": "1f1537e0-f24c-483d-8919-6fc0578a9064",
+          "operationId": "e688e51b-a20f-4abe-9d7e-9644abebad83",
+          "approvedAt": "2026-10-03T04:17:33.708Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "03ddcd8a1fc721f1976ec4c04077f0f95ed4c19b000b41adab10497a60e3f403",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T04:17:33.710Z",
+    "revision": "1de8b371135178ba7c20c01eb543a8115e194ea263ed3de7fcc5cedc544c660f",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  }
+}

@@ -99,7 +99,6 @@ export function customerJobSummary(service,definition,submission,revision) {
   return {
     service:service?.service||definition?.service||'Selected service',
     requestedWork:structuredClone(submission.serviceRequest??service?.service??definition?.service??'Selected service'),
-    bookRevision:revision,
     facts,
     fees:Object.entries(record(submission.customerFeeSelections)?submission.customerFeeSelections:{}).map(([key,value])=>({label:key.replaceAll('_',' '),value:display(value)})),
     contact:structuredClone(submission.contact??{}),

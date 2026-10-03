@@ -1,0 +1,25 @@
+{
+  "commit": "0c8c77420ec84bdd1c6004ce06a25d219ebb8baa",
+  "files": [
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha256": "b6defb067cb5677b46e5f486ca9fa9cdaaab1d2706a4ede1cdc5f588e3b8d7e2",
+      "git_blob_sha": "466f42ffe19883136d21bc1f0daf1e7cfadc13d8"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha256": "661af18b48e8c7192bf4ae19bc78a03f2a7ac1db41b359d7e0f8f39693c5a0dd",
+      "git_blob_sha": "13e231bc2533086eb86c08f3e9c03fedb554d49c"
+    },
+    {
+      "path": "specs/QUOTE_TRADE_DECISIONS_20261003.md",
+      "sha256": "25a6e3a390dc910b0f45d46166cdb5c90ae7397651d7c5dc1d5aeaa37faeafe2",
+      "git_blob_sha": "baa2eab4e82ba3fe7500bdc4156352d8e9203c65"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "sha256": "69e48599c518dc01fcc86cf06f208782527f22c0abbf9a80eb1b7a56b5afe755",
+      "git_blob_sha": "2b178406334c1865b7d72b95f8e05af138b01ff8"
+    }
+  ]
+}

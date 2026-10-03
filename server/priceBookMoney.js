@@ -195,6 +195,17 @@ export function parseOwnerNumericInput(raw, { kind = null, path = '', wholeCents
   return value;
 }
 
+// Exact display scaling for non-money percentages. Refuse a value that would
+// change when the owner saves and reloads the draft.
+export function scaleOwnerDecimal(value, places) {
+  if (value === undefined || value === null || typeof value === 'string') return value;
+  const original = numberDecimal(value, '');
+  const scaled = decimalNumber(shifted(original, places), '');
+  const restored = decimalNumber(shifted(numberDecimal(scaled, ''), -places), '');
+  if (!sameDecimal(numberDecimal(restored, ''), original)) failure('', 'This percentage cannot be saved without changing.');
+  return scaled;
+}
+
 // Transport fidelity is separate from field semantics. Signed measurements and
 // ordinary decimals such as 0.1 are valid; a wire decimal which Number would
 // replace with a different decimal is rejected before any route can save it.

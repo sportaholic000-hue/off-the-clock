@@ -1,0 +1,290 @@
+TAP version 13
+# Subtest: INTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+not ok 1 - INTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+  ---
+  duration_ms: 24.850749
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:15:64'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'offeringRates.prepLaborPerSqft_good',
+    +   'offeringRates.prepMaterialPerSqft_good',
+        'offeringDetails.baselinePricesConfirmed',
+    +   'offeringRates.prepLaborPerSqft_poor',
+    +   'offeringRates.prepMaterialPerSqft_poor'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'offeringDetails.baselinePricesConfirmed'
+  actual:
+    0: 'offeringRates.prepLaborPerSqft_good'
+    1: 'offeringRates.prepMaterialPerSqft_good'
+    2: 'offeringDetails.baselinePricesConfirmed'
+    3: 'offeringRates.prepLaborPerSqft_poor'
+    4: 'offeringRates.prepMaterialPerSqft_poor'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:21:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: EXTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+not ok 2 - EXTERIOR_PAINTING: legacy baseline is the only required item; unpriced prep is separate
+  ---
+  duration_ms: 4.582695
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:15:64'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'offeringRates.prepLaborPerSqft_good',
+    +   'offeringRates.prepMaterialPerSqft_good',
+        'offeringDetails.baselinePricesConfirmed',
+    +   'offeringRates.prepLaborPerSqft_poor',
+    +   'offeringRates.prepMaterialPerSqft_poor'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'offeringDetails.baselinePricesConfirmed'
+  actual:
+    0: 'offeringRates.prepLaborPerSqft_good'
+    1: 'offeringRates.prepMaterialPerSqft_good'
+    2: 'offeringDetails.baselinePricesConfirmed'
+    3: 'offeringRates.prepLaborPerSqft_poor'
+    4: 'offeringRates.prepMaterialPerSqft_poor'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:21:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: clearing the actual blocker keeps fair live at $2,475 and good/poor review-only
+not ok 3 - clearing the actual blocker keeps fair live at $2,475 and good/poor review-only
+  ---
+  duration_ms: 33.429328
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    noOptionalRequirements (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:11:12)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:46:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: another required rate remains required without optional condition prices
+not ok 4 - another required rate remains required without optional condition prices
+  ---
+  duration_ms: 2.367591
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'offeringRates.wallLaborPerSqftPerCoat',
+    +   'offeringRates.prepLaborPerSqft_good',
+    +   'offeringRates.prepMaterialPerSqft_good',
+    +   'offeringRates.prepLaborPerSqft_poor',
+    +   'offeringRates.prepMaterialPerSqft_poor'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'offeringRates.wallLaborPerSqftPerCoat'
+  actual:
+    0: 'offeringRates.wallLaborPerSqftPerCoat'
+    1: 'offeringRates.prepLaborPerSqft_good'
+    2: 'offeringRates.prepMaterialPerSqft_good'
+    3: 'offeringRates.prepLaborPerSqft_poor'
+    4: 'offeringRates.prepMaterialPerSqft_poor'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:54:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: no priced prep condition still blocks, requiring one condition rather than every condition
+not ok 5 - no priced prep condition still blocks, requiring one condition rather than every condition
+  ---
+  duration_ms: 5.482785
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'good surface preparation labor is required.',
+    +   'good surface preparation materials is required.',
+    +   'Saved preparation labor for the defined condition is required.',
+    +   'Saved preparation materials for the defined condition is required.',
+    +   'poor surface preparation labor is required.',
+    +   'poor surface preparation materials is required.'
+    -   'Price preparation for at least one surface condition before this offering can quote.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Price preparation for at least one surface condition before this offering can quote.'
+  actual:
+    0: 'good surface preparation labor is required.'
+    1: 'good surface preparation materials is required.'
+    2: 'Saved preparation labor for the defined condition is required.'
+    3: 'Saved preparation materials for the defined condition is required.'
+    4: 'poor surface preparation labor is required.'
+    5: 'poor surface preparation materials is required.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:64:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: partial optional prices and unclassified zero prices retain existing review rules
+not ok 6 - partial optional prices and unclassified zero prices retain existing review rules
+  ---
+  duration_ms: 7.973457
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:73:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - [
+    -   'offeringRates.prepMaterialPerSqft_good'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'offeringRates.prepMaterialPerSqft_good'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:78:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: malformed condition prices remain genuine blockers
+not ok 7 - malformed condition prices remain genuine blockers
+  ---
+  duration_ms: 4.19895
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:89:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    noOptionalRequirements (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:11:12)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:96:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: failed price-option messages separate optional prep without changing option eligibility
+not ok 8 - failed price-option messages separate optional prep without changing option eligibility
+  ---
+  duration_ms: 10.599854
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:99:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'offeringRates.prepLaborPerSqft_good',
+    +   'offeringRates.prepMaterialPerSqft_good',
+        'offeringDetails.baselinePricesConfirmed',
+    +   'offeringRates.prepLaborPerSqft_poor',
+    +   'offeringRates.prepMaterialPerSqft_poor'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'offeringDetails.baselinePricesConfirmed'
+  actual:
+    0: 'offeringRates.prepLaborPerSqft_good'
+    1: 'offeringRates.prepMaterialPerSqft_good'
+    2: 'offeringDetails.baselinePricesConfirmed'
+    3: 'offeringRates.prepLaborPerSqft_poor'
+    4: 'offeringRates.prepMaterialPerSqft_poor'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-repairs/test/ownerStatusMessages.spec.mjs:105:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 203.665244

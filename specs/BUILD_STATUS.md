@@ -111,3 +111,31 @@ No arithmetic formulas, voice runtime, live records, dependencies or deployment 
 Scoped follow-up on PR #14 base `25fca4812bbc0eb905b1d91124c2aa53aced791a`, preserving that Codex repair. Standard siding labor now rejects unsupported fractional cents in the editor and save boundary without rounding. AI starter requests use the saved tenant country/region and explicit CAD/USD; missing country requires correction before generation. Scope sentence separators, two removal labels, unsupported percentage advice and the engine integration README are corrected. No pricing-policy decisions or findings unique to the independent audit are implemented.
 
 Local verification: 126 focused tests passed; the exact full CI command produced 1,135 passed, 9 existing voice failures and 2 skipped (1,146 records), with no new failure reported by the existing checker. Owner/widget builds passed. Real synthetic HTTP save/reload/quote checks and the actual editor browser check passed. Source hashes, runnable harnesses, logs, scope mapping and limitations are in [the agreed audit follow-up report](../verification/agreed-audit-followup/REPORT.md). No whole-phase, deployment or public-launch gate is claimed.
+
+## 2026-10-03 — owner trade decisions and labor-only surcharge
+
+Scoped implementation on `c714b6e`, candidate `codex/quote-trade-decisions-20261003`. The owner's [trade-decision amendment](QUOTE_TRADE_DECISIONS_20261003.md) governs local quote-date peak pricing, private installed-price labor/material allocation, product-specific readiness, derived posts, condition-based prep, listed material waste, labor factors, concrete area/perimeter, direct mulch yards and minimum-price display. Customer cost breakdowns remain private.
+
+Verification: 1,259 passed / nine unchanged baseline voice failures / two skipped; 26 new acceptance cases; four real application/browser workflows; both builds passed. All 153 application source-binding entries matched final source. Existing money values are retained; changed arithmetic requires fresh approval and necessary installed-price shares. Draft checkpoint only, no merge/deployment. Exact evidence and limits: [implementation report](../verification/quote-trade-decisions/REPORT.md). Voice wording handoff is included there; live calls remain unverified.
+
+## 2026-10-03 — dependency security repair
+
+Removed unused Tailwind and its exclusive dependency chain after the CI audit flagged the braces advisory GHSA-vfj7-8cjw-p6xm. Removed the old tracked `node_modules` directory; the existing ignore rule and clean-install workflows remain. Retained package versions and application source are unchanged. Clean install passed; production and full dependency audits each report zero known vulnerabilities; both builds passed and all five output files are byte-identical. Full suite: 1,259 passed, nine unchanged known voice failures, two skipped; existing failure checker passes. Local gate only; GitHub checks are verified after publication. No merge/deployment. Evidence: [security repair report](../verification/dependency-security-20261003/REPORT.md).
+
+## 2026-10-03 — three quote-decision gaps
+
+Follow-up on `535a16f` preserves the security repair. Missing installed labor allocations contribute zero to peak pricing and no longer block readiness or quotes. Offering price fields/notes state the flat-ground, standard-height or one-story baseline; retained non-baseline offerings require explicit owner confirmation before quoting, without changing saved money. Peak configuration prompts for an explicit quote time zone while profile/UTC fallback quoting continues. No other arithmetic changes. The governing trade-decision amendment is updated.
+
+Local gate: 28/28 new regressions pass; the same file detects 25 failures and three passing controls on pre-edit source. Full suite: 1,287 passed, the same nine known voice failures, two skipped (1,298 records); existing checker passes. Both builds and four actual built-editor/application workflows pass; all 153 application source hashes match. No merge/deployment. Evidence: [follow-up report](../verification/quote-decision-followup/REPORT.md).
+
+## 2026-10-03 — owner status messages
+
+Scoped presentation repair on `0c8c774`: itemized-painting status requirements now exclude optional unpriced surface-condition rates. Condition coverage identifies requests that still go to review; a service with no priced condition still requires at least one. Activation results, quote arithmetic, approvals and customer output are unchanged.
+
+Verification: eight new regressions pass (all eight detect the old presentation); 48 complete quote/status snapshots match byte for byte; full suite 1,295 passed, the same nine known voice failures, two skipped (1,306 records), with the existing failure checker passing. Both builds and the real editor/save/approve/public-quote workflow pass; all 153 application source-binding entries match. No dependency changes, merge or deployment. Evidence: [owner status report](../verification/owner-status-messages/REPORT.md).
+
+## October 3 component-pricing and price-book follow-up
+
+Implemented the owner's latest confirmed quote-engine/price-book repairs: scope-specific siding removal; trim-height exclusion; access/story factors on separately priced roof layers/siding trim; cost-compatible included underlayment and a plain inclusion mode; conditional labor-allocation coverage; owner-controlled permits; named arbitrary-height fence offerings with feet/inches input; readable approval and inclusion controls; registry/field/customer wording and retired-field presentation. Existing default percentages are explicitly acknowledged, not changed.
+
+Verification: 39 new regression cases (10 passed/29 failed on the unchanged base; 39 pass after), 267 focused passes, final full suite 1,334 passes / same nine voice failures / two skipped, expected-failure checker passes; both builds pass. Seven real-browser save/approve/public-quote workflows pass with zero page errors. No dependencies, merge, deployment, or voice implementation changes. See [component repair report](../verification/component-pricing-repairs/REPORT.md).

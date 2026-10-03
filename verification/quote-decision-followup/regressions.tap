@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: G1 roof stays live throughout the year without an installed-underlayment labor share
+ok 1 - G1 roof stays live throughout the year without an installed-underlayment labor share
+  ---
+  duration_ms: 535.868797
+  type: 'test'
+  ...
+# Subtest: G1 peak uses explicit fence labor plus only the entered installed-gate labor share
+ok 2 - G1 peak uses explicit fence labor plus only the entered installed-gate labor share
+  ---
+  duration_ms: 19.747103
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak FENCING_INSTALL installed
+ok 3 - G1 missing installed labor allocation never blocks peak FENCING_INSTALL installed
+  ---
+  duration_ms: 11.968348
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak FENCING_INSTALL itemized
+ok 4 - G1 missing installed labor allocation never blocks peak FENCING_INSTALL itemized
+  ---
+  duration_ms: 14.927431
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak FENCING_REPLACEMENT installed
+ok 5 - G1 missing installed labor allocation never blocks peak FENCING_REPLACEMENT installed
+  ---
+  duration_ms: 16.100325
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak FENCING_REPLACEMENT itemized
+ok 6 - G1 missing installed labor allocation never blocks peak FENCING_REPLACEMENT itemized
+  ---
+  duration_ms: 21.754973
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak INTERIOR_PAINTING installed
+ok 7 - G1 missing installed labor allocation never blocks peak INTERIOR_PAINTING installed
+  ---
+  duration_ms: 14.855814
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak INTERIOR_PAINTING itemized
+ok 8 - G1 missing installed labor allocation never blocks peak INTERIOR_PAINTING itemized
+  ---
+  duration_ms: 26.384149
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak EXTERIOR_PAINTING installed
+ok 9 - G1 missing installed labor allocation never blocks peak EXTERIOR_PAINTING installed
+  ---
+  duration_ms: 8.889188
+  type: 'test'
+  ...
+# Subtest: G1 missing installed labor allocation never blocks peak EXTERIOR_PAINTING itemized
+ok 10 - G1 missing installed labor allocation never blocks peak EXTERIOR_PAINTING itemized
+  ---
+  duration_ms: 13.890126
+  type: 'test'
+  ...
+# Subtest: G1 materials-only tax remains independent of missing installed labor share
+ok 11 - G1 materials-only tax remains independent of missing installed labor share
+  ---
+  duration_ms: 8.111528
+  type: 'test'
+  ...
+# Subtest: G1 installed floor underlayment and additional installed scopes do not require a seasonal labor share
+ok 12 - G1 installed floor underlayment and additional installed scopes do not require a seasonal labor share
+  ---
+  duration_ms: 47.326967
+  type: 'test'
+  ...
+# Subtest: G2 old FENCING_INSTALL itemized moderate requires explicit baseline confirmation
+ok 13 - G2 old FENCING_INSTALL itemized moderate requires explicit baseline confirmation
+  ---
+  duration_ms: 12.961295
+  type: 'test'
+  ...
+# Subtest: G2 old FENCING_INSTALL itemized steep requires explicit baseline confirmation
+ok 14 - G2 old FENCING_INSTALL itemized steep requires explicit baseline confirmation
+  ---
+  duration_ms: 10.97427
+  type: 'test'
+  ...
+# Subtest: G2 old FENCING_INSTALL installed steep requires explicit baseline confirmation
+ok 15 - G2 old FENCING_INSTALL installed steep requires explicit baseline confirmation
+  ---
+  duration_ms: 8.449175
+  type: 'test'
+  ...
+# Subtest: G2 old INTERIOR_PAINTING itemized high requires explicit baseline confirmation
+ok 16 - G2 old INTERIOR_PAINTING itemized high requires explicit baseline confirmation
+  ---
+  duration_ms: 18.622284
+  type: 'test'
+  ...
+# Subtest: G2 old INTERIOR_PAINTING itemized vaulted requires explicit baseline confirmation
+ok 17 - G2 old INTERIOR_PAINTING itemized vaulted requires explicit baseline confirmation
+  ---
+  duration_ms: 18.308716
+  type: 'test'
+  ...
+# Subtest: G2 old INTERIOR_PAINTING installed high requires explicit baseline confirmation
+ok 18 - G2 old INTERIOR_PAINTING installed high requires explicit baseline confirmation
+  ---
+  duration_ms: 8.288238
+  type: 'test'
+  ...
+# Subtest: G2 old EXTERIOR_PAINTING itemized 2 requires explicit baseline confirmation
+ok 19 - G2 old EXTERIOR_PAINTING itemized 2 requires explicit baseline confirmation
+  ---
+  duration_ms: 9.879753
+  type: 'test'
+  ...
+# Subtest: G2 old EXTERIOR_PAINTING itemized 3 requires explicit baseline confirmation
+ok 20 - G2 old EXTERIOR_PAINTING itemized 3 requires explicit baseline confirmation
+  ---
+  duration_ms: 10.57704
+  type: 'test'
+  ...
+# Subtest: G2 old EXTERIOR_PAINTING installed 2 requires explicit baseline confirmation
+ok 21 - G2 old EXTERIOR_PAINTING installed 2 requires explicit baseline confirmation
+  ---
+  duration_ms: 6.504636
+  type: 'test'
+  ...
+# Subtest: G2 old EXTERIOR_PAINTING installed 3 requires explicit baseline confirmation
+ok 22 - G2 old EXTERIOR_PAINTING installed 3 requires explicit baseline confirmation
+  ---
+  duration_ms: 6.568737
+  type: 'test'
+  ...
+# Subtest: G2 saving or approving a legacy offering cannot silently confirm its baseline; explicit confirmation persists
+ok 23 - G2 saving or approving a legacy offering cannot silently confirm its baseline; explicit confirmation persists
+  ---
+  duration_ms: 109.613674
+  type: 'test'
+  ...
+# Subtest: G2 baseline offerings need no migration confirmation; strings cannot counterfeit confirmation
+ok 24 - G2 baseline offerings need no migration confirmation; strings cannot counterfeit confirmation
+  ---
+  duration_ms: 11.494377
+  type: 'test'
+  ...
+# Subtest: G3 missing quote/profile zone keeps quoting while explicit Atlantic choice respects the local month
+ok 25 - G3 missing quote/profile zone keeps quoting while explicit Atlantic choice respects the local month
+  ---
+  duration_ms: 110.762695
+  type: 'test'
+  ...
+# Subtest: G2 actual offering component states baseline conditions beside prices and shows legacy notice
+ok 26 - G2 actual offering component states baseline conditions beside prices and shows legacy notice
+  ---
+  duration_ms: 303.771583
+  type: 'test'
+  ...
+# Subtest: G3 actual quote controls ask for time zone with business or service peak months and never auto-select one
+ok 27 - G3 actual quote controls ask for time zone with business or service peak months and never auto-select one
+  ---
+  duration_ms: 104.814139
+  type: 'test'
+  ...
+# Subtest: Locked independent roof and tile product controls remain 599000 and 178000 cents
+ok 28 - Locked independent roof and tile product controls remain 599000 and 178000 cents
+  ---
+  duration_ms: 22.802026
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1675.533402
