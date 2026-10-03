@@ -1,0 +1,96 @@
+{
+  "base_commit": "a662b76766eaa827a247ed564b624665c30ed41e",
+  "deleted_git_tree": "node_modules",
+  "files": [
+    {
+      "path": "client/package.json",
+      "bytes": 598,
+      "sha256": "3197549d14c974775c5f1533fb9da74da2113d74c8606c47f568e1b090943beb",
+      "git_blob_sha": "8d38de72c610767512b4b641a6b9a7dc35840b79"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 137894,
+      "sha256": "02a1494d969cb379ba7ef635a1ef360567bede5fc58ced78c07d9d9678f9294c",
+      "git_blob_sha": "c9d5f66837c8311a2ec11400d81379efa870673b"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "bytes": 17852,
+      "sha256": "b1797046b0049f5c6c0acb1bd2a5b51d1f44f7ddfb0ecdcf3c2e1dc6130202d7",
+      "git_blob_sha": "05fe76f1b988f18f0eb3093f99e4722a33975a81"
+    },
+    {
+      "path": "verification/dependency-security-20261003/REPORT.md",
+      "bytes": 3625,
+      "sha256": "3ea6ef99dff1705ee5a46c08044773d6efb26f03cbecfddfabc74900205e2e1c",
+      "git_blob_sha": "3e9ae32e13ebe2556f02b951e46b7420a38d51d3"
+    },
+    {
+      "path": "verification/dependency-security-20261003/before-ci-audit.txt",
+      "bytes": 2403,
+      "sha256": "66118a8de3867138ba79921e0693ed14654820657c02340f409d19a2b24611c3",
+      "git_blob_sha": "2fe0185bb6e8218df20f6e01f16fce0ff95e4e59"
+    },
+    {
+      "path": "verification/dependency-security-20261003/clean-install.log",
+      "bytes": 444,
+      "sha256": "d4ae03b044390f403836fe26914e239a638cccb2bcde95c76380cbfa6956e1af",
+      "git_blob_sha": "5694a9611e64f2cce0fac62ef94fb17bbc37db6f"
+    },
+    {
+      "path": "verification/dependency-security-20261003/production-audit.json",
+      "bytes": 363,
+      "sha256": "bae4e52f168595f8512c29f5ab2db82a2e3a309cf3f2d1ba9aa1827b5b781c43",
+      "git_blob_sha": "c3711cc967d989772d4d6cb26c0cbc055159dc94"
+    },
+    {
+      "path": "verification/dependency-security-20261003/all-dependencies-audit.json",
+      "bytes": 363,
+      "sha256": "bae4e52f168595f8512c29f5ab2db82a2e3a309cf3f2d1ba9aa1827b5b781c43",
+      "git_blob_sha": "c3711cc967d989772d4d6cb26c0cbc055159dc94"
+    },
+    {
+      "path": "verification/dependency-security-20261003/build.log",
+      "bytes": 1056,
+      "sha256": "e37ac44ecd33cd30c88a9d869b4de1914ddf7728a9653651415b9136d1b5d696",
+      "git_blob_sha": "cc4fefa08e24956bb437a26ac05cc4ed3b33cede"
+    },
+    {
+      "path": "verification/dependency-security-20261003/before-build-sha256.json",
+      "bytes": 454,
+      "sha256": "9ee978b40ca92a2bdb4629b3197bd85517100249affa76df94da76af56dafdeb",
+      "git_blob_sha": "a1fdba76887d46ef17e60fe7d6c5e1bca7bca1ca"
+    },
+    {
+      "path": "verification/dependency-security-20261003/after-build-sha256.json",
+      "bytes": 454,
+      "sha256": "9ee978b40ca92a2bdb4629b3197bd85517100249affa76df94da76af56dafdeb",
+      "git_blob_sha": "a1fdba76887d46ef17e60fe7d6c5e1bca7bca1ca"
+    },
+    {
+      "path": "verification/dependency-security-20261003/lockfile-diff.json",
+      "bytes": 1906,
+      "sha256": "a5337543f653be7ed106c4378dffe825a13a94da8413b1be50b0559f50185302",
+      "git_blob_sha": "f450b7534a1faf66ba0bfc5df7890a637ee0166f"
+    },
+    {
+      "path": "verification/dependency-security-20261003/source-binding.json",
+      "bytes": 642,
+      "sha256": "5eef9e25a6edf34f2493d629a13fc5bb357929b1415141da619f2b705f324d3a",
+      "git_blob_sha": "a63ba22044e09f78bbed106fa1c6fc68ec76ab18"
+    },
+    {
+      "path": "verification/dependency-security-20261003/full-suite.tap.gz",
+      "bytes": 54461,
+      "sha256": "915ff07f3dee9ebacc989ceea1b06fe22cef679995c2c6fb0c3c40ce6e24e77e",
+      "git_blob_sha": "a387fc632f38ed496b588493e2c51cb9cdc07428"
+    },
+    {
+      "path": "verification/dependency-security-20261003/test-check.txt",
+      "bytes": 126,
+      "sha256": "ba16b0297f0112f319e92077d08cf4856c126c7fc3241a9a153e1bba6369234f",
+      "git_blob_sha": "30d7ed8cbe907a466aa4b285ca4a5082046e12d1"
+    }
+  ]
+}

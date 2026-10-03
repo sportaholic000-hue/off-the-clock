@@ -1,0 +1,19 @@
+{
+  "base_commit": "a662b76766eaa827a247ed564b624665c30ed41e",
+  "base_tree": "d1856921a2ffb2d7a5a8bf2d92a04e014f9250c4",
+  "source_files": [
+    {
+      "path": "client/package.json",
+      "sha256": "3197549d14c974775c5f1533fb9da74da2113d74c8606c47f568e1b090943beb"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "02a1494d969cb379ba7ef635a1ef360567bede5fc58ced78c07d9d9678f9294c"
+    }
+  ],
+  "git_tree_deletion": "node_modules",
+  "existing_gitignore_rule": "node_modules/",
+  "remaining_locked_packages_unchanged": true,
+  "build_artifacts_byte_identical": true,
+  "vulnerable_packages_absent_from_clean_install": true
+}
