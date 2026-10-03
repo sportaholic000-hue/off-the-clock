@@ -17,9 +17,21 @@ for(const [mode,tax,total]of [['TAX_NONE',0,45000],['TAX_MATERIALS',767,45767],[
  assert.equal(s.finalTotalCents,total);assert.equal(c.midEstimate,total/100);
  assert.ok(c.lowEstimate*100>=45000+tax,'The customer lower bound must also preserve the pre-tax floor.');
 });
-for(const mode of ['installed','itemized'])for(const height of [0.5,3.5,5,5.5,7,9])test('Opus 3: '+mode+' fencing quotes only its explicitly offered '+height+'ft height',()=>{
+// Owner ruling (Oct 3): any requested height quotes. Each height-dependent line is the
+// priced-height line scaled exactly by requested height / priced height.
+const exactOf=e=>[BigInt(e.numerator),BigInt(e.denominator)];
+for(const mode of ['installed','itemized'])for(const height of [0.5,3.5,5,5.5,7,9])test('Opus 3: '+mode+' fencing priced at '+height+'ft quotes any other height in exact proportion',()=>{
  const input=fence(height,mode),{r}=quote(input);assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,mode==='installed'?450000:424000);
- input.customerInputs.fenceHeight=height+0.25;assert.equal(engine.generateQuoteVNext(input).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ for(const requested of [height+0.25,height*2,13,2]){
+  const other=structuredClone(input);other.customerInputs.fenceHeight=requested;const {r:scaled}=quote(other);
+  for(const line of scaled.options[0].lineItems){
+   const base=r.options[0].lineItems.find(row=>row.calculation?.ratePath===line.calculation?.ratePath);assert.ok(base,line.name);
+   const [a,b]=exactOf(line.calculation.exactUnroundedCents),[c,d]=exactOf(base.calculation.exactUnroundedCents);
+   // a/b == (c/d) * requested/height, compared exactly via the same decimal text the engine uses.
+   const [rn,rd]=[BigInt(Math.round(requested*1000)),1000n],[hn,hd]=[BigInt(Math.round(height*1000)),1000n];
+   assert.equal(a*d*rd*hn,c*b*rn*hd,line.name+' at '+requested+' ft');
+  }
+ }
 });
 test('Opus 3: zero, negative, missing and nonnumeric offered fence heights fail closed',()=>{
  for(const height of [0,-1,undefined,'5.5',Infinity,NaN]){const f=fence(height);f.ownerPricing.pricing.offeringDetails.fenceHeight=height;f.customerInputs.fenceHeight=height;assert.equal(engine.generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}

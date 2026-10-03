@@ -159,7 +159,8 @@ export function offeringContract(type,p) {
     const errors=[],bad=(field,message)=>errors.push({field,message});
     const equal=(field,expected)=>{if(c[field]!==undefined&&c[field]!==expected)bad(field,'This detail does not match the selected owner offering.');};
     if(fence(type)) {
-      for(const key of ['fenceType','fenceHeight'])equal(key,d[key]);
+      // Any positive height is quotable (owner ruling, Oct 3): only the fence type must match.
+      equal('fenceType',d.fenceType);
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
@@ -187,14 +188,30 @@ export function calculatedFencePosts(c,p) {
  if(!Number.isSafeInteger(count)||count<1)throw new RangeError('Fence post quantity is outside the supported range.');
  return count;
 }
+// Fence prices are entered for the offering's height. Any other requested height
+// is priced in proportion to height (price per square foot of fence face): fence
+// labor and material per foot, posts, footings and gates all scale by
+// requested height / priced height. Post and footing depth follow the standard
+// rule of burying a fixed fraction of the post, so they scale the same way.
+// Removal of an existing fence is priced per foot as entered.
+export function fenceHeightFactor(c,d){
+  const ratio=exactDivide(c.fenceHeight,d.fenceHeight);
+  return exactCompare(ratio,1)===0?null:ratio;
+}
+export function formatFenceHeight(feet){
+  let whole=Math.floor(feet),inches=Math.round((feet-whole)*1200)/100;
+  if(inches>=12){whole+=1;inches=0;}
+  return inches?(whole?whole+' ft ':'')+inches+' in':whole+' ft';
+}
 export function offeringLines(type,c,p) {
   const d=p.offeringDetails||{},installed=p.offeringMode==='installed',definitions=offeringRateDefinitions(type,p),lines=[];
-  const add=(key,quantity,derivation)=>{const def=definitions[key];lines.push({key,quantity,...def,ratePath:'offeringRates.'+key,rateCents:p.offeringRates?.[key],...(derivation?{derivation}:{})});};
+  const add=(key,quantity,derivation,multipliers)=>{const def=definitions[key];lines.push({key,quantity,...def,ratePath:'offeringRates.'+key,rateCents:p.offeringRates?.[key],...(derivation?{derivation}:{}),...(multipliers?.length?{multipliers}:{})});};
   const coated=(key,area,coats)=>add(key,exactMultiply(area,coats),{formula:'measuredAreaSqft * definedCoats',inputs:{measuredAreaSqft:area,definedCoats:coats}});
   if(fence(type)) {
-    if(installed)add('installedFencePerLF',c.linearFeet);
-    else {add('fenceLaborPerLF',c.linearFeet);add('fenceMaterialPerLF',c.linearFeet);for(const key of ['postMaterialEach','footingLaborEach','footingMaterialEach'])add(key,calculatedFencePosts(c,p),{formula:'ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices',inputs:{linearFeet:c.linearFeet,postSpacingLF:p.postSpacingLF,cornerCount:c.cornerCount,gates:c.gates}});}
-    if(record(c.gates))for(const [key,count] of Object.entries(c.gates))if(count>0)add('gate_'+key,count);
+    const factor=fenceHeightFactor(c,d),height=factor?[{name:'Fence height adjustment (requested height / priced height)',path:'offeringDetails.fenceHeight',value:factor}]:[];
+    if(installed)add('installedFencePerLF',c.linearFeet,undefined,height);
+    else {add('fenceLaborPerLF',c.linearFeet,undefined,height);add('fenceMaterialPerLF',c.linearFeet,undefined,height);for(const key of ['postMaterialEach','footingLaborEach','footingMaterialEach'])add(key,calculatedFencePosts(c,p),{formula:'ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices',inputs:{linearFeet:c.linearFeet,postSpacingLF:p.postSpacingLF,cornerCount:c.cornerCount,gates:c.gates}},height);}
+    if(record(c.gates))for(const [key,count] of Object.entries(c.gates))if(count>0)add('gate_'+key,count,undefined,height);
     if(c.oldFenceRemoval===true)add('removalPerLF',c.removalLengthLF);
   } else {
     const area=c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'];
@@ -235,6 +252,7 @@ export function offeringDisclosures(type,p,c) {
   const d=p.offeringDetails||{}, out=[d.description];
   if(fence(type)) {
     out.push('Standard posts and footings: '+d.postFootingDescription,'Fence length excludes gate openings.');
+    if(fenceHeightFactor(c,d))out.push(`Priced from this business's ${formatFenceHeight(d.fenceHeight)} fence prices, scaled to the requested ${formatFenceHeight(c.fenceHeight)} height.`);
     for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {

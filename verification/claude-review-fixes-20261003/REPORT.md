@@ -32,3 +32,17 @@ A regression found during browser verification and fixed before commit: marking 
 - Stored names are canonical keys, so display drops punctuation ("O'Brien cedar" shows as "O brien cedar"). Names must start with a letter (engine rule).
 - The AI interview control is verified by source tests, the client build and the existing interview browser spec; the browser run above did not exercise the interview.
 - Review message texts are unchanged; only which message is chosen changed.
+
+## Fence height (owner ruling, October 3)
+
+Before: a fence quoted only at the exact height its prices were entered for; any other height (2 ft, 9 ft, 13 ft) went to the owner as a lead, and the base fence contract still listed fixed 4/6/8 ft heights.
+
+After: any positive height quotes. Prices are entered for one height ("Height these prices are for"); other heights scale every height-dependent price by requested height / priced height (fence labor and material per foot, posts, footings, installed fence per foot, gates). Old-fence removal is not scaled. Terrain, waste and installed labor shares apply on top. The quote states it was scaled from the priced height. The fence type must still match.
+
+Exactness defect found and fixed while verifying: when a later step (waste, terrain, installed labor share) re-priced a line, it reused the rounded binary value of an earlier factor. Existing factors were all terminating decimals, so nothing changed before; with a 1/3 height factor a half-cent line rounded down ($977.07 instead of $977.08 at 2 ft). The re-pricing step now reuses the exact factor.
+
+Verification:
+- `test/fenceAnyHeight.spec.mjs` (3 tests): 2 ft, 5 ft 3.65 in, 6, 9 and 13 ft against 6 ft itemized prices, line by line in exact fractions; 2, 4 and 13 ft against 4 ft installed prices with unscaled removal; 9 in fence; wrong fence type still reviews; no fixed height list in metadata.
+- Three older tests that asserted the superseded rule were updated: `opusQuoteRepairs` now checks every line at four other heights equals the priced-height line × requested/priced exactly; `configuredOfferings` uses a mismatched fence type for its no-quote case; `componentPricingRepairs` expects the 6 ft request to quote with the scaling statement.
+- Real HTTP preview against the real server, 6 ft itemized wood fence (187 ft, moderate ground, walk gate): 2 ft $2,428.60; 6 ft $7,285.81; 9 ft $10,928.70; 13 ft $15,785.91. Each equals an independent exact-fraction calculation. The editor shows the new height wording (`fence-editor.png`); no page errors.
+- Full suite: 1,356 tests, 1,345 pass, the nine known voice failures, two skips; checker passes. Client build passes. Claude's other price suites (22 jobs, 11 charge/tax cases, options, boundaries, all add-on scopes) are unchanged.

@@ -329,7 +329,7 @@ function fencingContract(replacement) {
       linearFeet: numberField('Measured fence length', 'linear feet', 1, 1_000_000),
       lfMethod: enumField('Fence measurement method', ['exact', 'assumption']),
       fenceType: slugField('Fence type'),
-      fenceHeight: enumField('Fence height', [4, 6, 8]),
+      fenceHeight: numberField('Fence height', 'feet', Number.MIN_VALUE, Number.MAX_VALUE),
       gateCount: numberField('Gate count', 'gates', 0, 10_000, { integer: true }),
       gateWidthTotalLF: numberField('Measured total gate-opening width', 'linear feet', 0, 100_000),
       terrainSlope: enumField('Terrain slope', SLOPES),

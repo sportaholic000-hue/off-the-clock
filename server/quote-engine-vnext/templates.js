@@ -2,7 +2,7 @@ import {scopeLines,scopeRatePath,scopesSuppressPrice} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
-import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath} from './configuredOfferings.js';
+import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {
   SERVICE_TYPES,
   inspectionOwnerDecisionsVNext,
@@ -125,7 +125,10 @@ function makeLine({
     let exactValue;
     let numericValue;
     try {
-      exactValue = exactDecimal(multiplier.value);
+      // A line re-priced by a later step (waste, terrain, installed labor share)
+      // carries its earlier factors' exact evidence; reuse it so a factor such as
+      // 1/3 is never replaced by its rounded binary value.
+      exactValue = multiplier.exactValue !== undefined ? exactFromEvidence(multiplier.exactValue) : exactDecimal(multiplier.value);
       numericValue = exactToNumber(exactValue);
     } catch {
       throw new QuoteReviewError('A quantity factor is missing or invalid.', { invalidOwnerFields: [multiplier.path] });
@@ -1246,13 +1249,13 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     const out=baseOutput(serviceType);
     for(const item of offeringLines(serviceType,customerInputs,pricing)) {
       if(scopesSuppressPrice(serviceType,customerInputs,pricing,serviceRules,item.ratePath))continue;
-      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:item.priceBasis}));
+      add(out,makeLine({name:item.label,category:item.category,quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:item.priceBasis,multipliers:item.multipliers||[]}));
       if(item.derivation)recordQuantityDerivation(out,{name:item.key+'Quantity',...item.derivation,result:item.quantity,unit:item.unit,usedBy:[item.label]});
       else recordMeasurement(out,item.key,exactToNumber(exactDecimal(item.quantity)),item.unit,'confirmed_offering_scope');
     }
     out.disclosures.push(...offeringDisclosures(serviceType,pricing,customerInputs));
     out.priceDrivers.push(serviceType.startsWith('FENCING_')
-      ? `${customerInputs.linearFeet} measured linear feet of ${customerInputs.fenceHeight} ft ${customerInputs.fenceType.replaceAll('_', ' ')} fencing`
+      ? `${customerInputs.linearFeet} measured linear feet of ${formatFenceHeight(customerInputs.fenceHeight)} ${customerInputs.fenceType.replaceAll('_', ' ')} fencing`
       : `${customerInputs[serviceType==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']} measured square feet of paintable wall area`);
     out.feeScope.disposal=customerInputs.oldFenceRemoval===true;
     if(customerInputs.oldFenceRemoval&&pricing.offeringDetails.removalIncludesDisposal)out.replacedCommonFees.push('disposal');

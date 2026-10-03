@@ -66,7 +66,9 @@ test('component permit decisions are owner-controlled; legacy customer rules nee
  const fields=applicationServiceDefinition(f.ownerPricing).customerFields;assert.equal(fields.some(field=>field.name==='permitRequired'),false);
 });
 test('component arbitrary fence heights retain exact offering matching',()=>{
- const f=offeringFixture('FENCING_INSTALL','itemized');f.ownerPricing.pricing.offeringDetails.fenceHeight=5+3.65/12;f.customerInputs.fenceHeight=5+3.65/12;ready(f);f.customerInputs.fenceHeight=6;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ const f=offeringFixture('FENCING_INSTALL','itemized');f.ownerPricing.pricing.offeringDetails.fenceHeight=5+3.65/12;f.customerInputs.fenceHeight=5+3.65/12;ready(f);f.customerInputs.fenceHeight=6;
+ // Owner ruling (Oct 3): any requested height quotes, scaled from the priced height.
+ const scaled=generateQuoteVNext(f);assert.equal(scaled.resultType,'INSTANT_ESTIMATE_READY');assert.match(scaled.disclaimer,/scaled to the requested 6 ft height/);
 });
 test('component retired scalar prices no longer appear in the current entry list',()=>{
  const metadata=applicationMetadata();for(const [type,field]of [['FLOORING_INSTALL','perStepPrice'],['SIDING_REPLACEMENT','removalPerSqft'],['FLAT_ROOF_REPLACEMENT','insulationPerSqft'],['CONCRETE_PATIO_SLAB','demolitionPerSqft']])assert.equal(metadata.services.find(s=>s.serviceType===type).fields.some(f=>f.field===field),false);

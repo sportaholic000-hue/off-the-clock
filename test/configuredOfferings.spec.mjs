@@ -23,7 +23,7 @@ test('Configured offerings: missing selected prices and mismatched defined scope
   for(const [type,mode] of cases){
     const missing=offeringFixture(type,mode);delete missing.ownerPricing.pricing.offeringRates[Object.keys(missing.ownerPricing.pricing.offeringRates)[0]];
     assert.equal(generateQuoteVNext(missing).resultType,'ESTIMATE_REQUIRES_REVIEW');
-    const mismatch=offeringFixture(type,mode);if(type.startsWith('FENCING_'))mismatch.customerInputs.fenceHeight=8;else mismatch.customerInputs.coats=mode==='installed'?3:4;
+    const mismatch=offeringFixture(type,mode);if(type.startsWith('FENCING_'))mismatch.customerInputs.fenceType='steel_panel';else mismatch.customerInputs.coats=mode==='installed'?3:4;
     assert.equal(generateQuoteVNext(mismatch).resultType,'ESTIMATE_REQUIRES_REVIEW');
   }
 });

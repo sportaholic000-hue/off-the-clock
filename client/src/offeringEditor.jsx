@@ -55,7 +55,7 @@ export function OfferingEditor({service,meta,onChange}) {
       {legacyCondition&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for {baseline.condition}</label>}
       {input('description','Included job description')}
       {fence?<>
-        {input('fenceType','Offered fence type')}<Field label="Offered fence height (ft)"><FenceHeightInput label="Offered fence height (ft)" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
+        {input('fenceType','Offered fence type')}<Field label="Height these prices are for (ft)" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for (ft)" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
         {input('postFootingDescription','Standard posts, footings and digging included')}
         <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings are calculated from fence length, your post spacing, corners and gate counts. Posts included in gate prices are excluded.'} Fence length excludes gate openings.</Notice>
         <h3>Offered gates</h3>
