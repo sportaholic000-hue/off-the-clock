@@ -885,7 +885,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     const registry = serviceRules.knownOfferings?.[name], selected = customerInputs[name];
     if (!isRecord(registry)) {
       missingOfferingMaps.push(name);
-      offeringOwnerDiagnostics.push(ownerDiagnostic('missing','known_offerings','knownOfferings.'+name,'Configure the owner offering registry before validating this selection.'));
+      offeringOwnerDiagnostics.push(ownerDiagnostic('missing','known_offerings','knownOfferings.'+name,'Register the products you offer for this selection in the price book.'));
       continue;
     }
     const registryErrors = offeringRegistryDiagnosticsVNext(name, registry);
@@ -893,7 +893,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     const offeringId = Object.hasOwn(registry, selected) ? registry[selected] : undefined;
     if (!validServiceIdVNext(offeringId)) {
       if (hasSelectedOfferingPriceVNext(serviceType, customerInputs, pricing, name)) {
-        offeringOwnerDiagnostics.push(ownerDiagnostic('invalid','offering_registry_inconsistency','knownOfferings.'+name+'.'+selected,'The configured price selector is absent from the owner offering registry.'));
+        offeringOwnerDiagnostics.push(ownerDiagnostic('invalid','offering_registry_inconsistency','knownOfferings.'+name+'.'+selected,'Register this priced product under Registered products before quoting it.'));
       } else {
         unsupportedOfferingFields.push(name);
         invalidCustomerFields.push(name);
@@ -935,7 +935,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       invalidCustomerFields: [...new Set(invalidCustomerFields)],
       validationMessages,
       ...((explicitInspection || factVerificationNeeded) ? { inspectionFirst: true } : {}),
-      reviewReason: explicitInspection || (offeringOwnerDiagnostics.length ? 'Owner offering registries are incomplete or inconsistent.' : null) || (unsupportedOfferingFields.length ? 'The selected value is not an offered service option.' : null) || (factVerificationNeeded ? 'Price-selecting project facts require affirmative confirmation of known offerings before pricing.' : null) || (missingCustomerFields.length
+      reviewReason: explicitInspection || (offeringOwnerDiagnostics.length ? 'Register the products you offer and check that their names match your priced products.' : null) || (unsupportedOfferingFields.length ? 'The selected value is not an offered service option.' : null) || (factVerificationNeeded ? 'Price-selecting project facts require affirmative confirmation of known offerings before pricing.' : null) || (missingCustomerFields.length
         ? 'Required measured project details were not provided.'
         : 'Project details were invalid or internally inconsistent.')
     };
@@ -1772,7 +1772,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   diagnostics.push(...zeroPolicyDiagnosticsVNext(ownerPricing));
   if (ownerPricing.knownOfferings !== undefined) {
     const maps = ownerPricing.knownOfferings;
-    if (!isRecord(maps)) diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings','Known offerings must be an explicit selector-to-offering registry.'));
+    if (!isRecord(maps)) diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings','Use Registered products to identify the products you offer.'));
     else for (const [field, values] of Object.entries(maps)) {
       if (MEASUREMENT_CONTRACTS[serviceType]?.fields[field]?.type !== 'slug') diagnostics.push(ownerDiagnostic('invalid','known_offerings','knownOfferings.'+field,'This is not an open offering selector.'));
       else diagnostics.push(...offeringRegistryDiagnosticsVNext(field,values));
@@ -1807,6 +1807,7 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
     }
   }
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
+  if(['when_scope_selected','customer_selected'].includes(ownerPricing.feeRules?.permit))diagnostics.push(ownerDiagnostic('owner_decision','service_rule','feeRules.permit','Choose whether the permit fee always applies, is included, does not apply, or is selected by you. Customers do not decide permit charges.'));
   inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
   inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
   if (ownerPricing.peakMonths !== undefined) {

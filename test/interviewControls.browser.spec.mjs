@@ -25,23 +25,23 @@ async function withQuestion(definition,initial,run){
 }
 test('F11 browser boolean leaves preserve No, unanswered and the exact key',async()=>{
  await withQuestion({type:'json',field:'postsIncludedInMaterial',label:'Posts included',tree:{leafType:'boolean'}},{wood:false},async(page,answer)=>{
-  const input=page.getByLabel('Posts included wood',{exact:true});assert.equal(await input.inputValue(),'false');
+  const input=page.getByLabel('Posts included Wood',{exact:true});assert.equal(await input.inputValue(),'false');
   await input.selectOption('');assert.deepEqual(await answer(),{});
   // Re-create the exact owner offering; blank does not become a free/false answer.
-  await page.getByLabel('Posts included offering key',{exact:true}).fill('wood');await page.getByRole('button',{name:'Add offering',exact:true}).click();
+  await page.getByLabel('Posts included product name',{exact:true}).fill('wood');await page.getByRole('button',{name:'Add offering',exact:true}).click();
   await input.selectOption('false');assert.deepEqual(await answer(),{wood:false});await input.selectOption('true');assert.deepEqual(await answer(),{wood:true});
  });
 });
 test('F11/F13 browser depth-three values retain zero, fractional rates and rejected text',async()=>{
  const definition={type:'json',field:'repairHours',label:'Repair hours',tree:{depth:3,leafKeys:['small','medium','large']},shapedKeys:{nested:['small','medium','large']}};
  await withQuestion(definition,{asphalt_shingle:{leak_patch:{small:0,medium:0.0051,large:3}}},async(page,answer)=>{
-  const input=page.getByLabel('Repair hours asphalt shingle leak patch medium',{exact:true});
-  assert.equal(await input.inputValue(),'0.0051');assert.equal(await page.getByLabel('Repair hours asphalt shingle leak patch small',{exact:true}).inputValue(),'0');
+  const input=page.getByLabel('Repair hours Asphalt shingle Leak patch Medium',{exact:true});
+  assert.equal(await input.inputValue(),'0.0051');assert.equal(await page.getByLabel('Repair hours Asphalt shingle Leak patch Small',{exact:true}).inputValue(),'0');
   await input.fill('1.0000000000000001');assert.equal(await input.getAttribute('aria-invalid'),'true');assert.equal((await answer()).asphalt_shingle.leak_patch.medium,'1.0000000000000001');
   await input.fill('');assert.equal(Object.hasOwn((await answer()).asphalt_shingle.leak_patch,'medium'),false);
   await input.fill('0.0051');assert.equal((await answer()).asphalt_shingle.leak_patch.medium,0.0051);
   // Switching questions remounts only the question controls, not another field's text.
-  await page.evaluate(()=>window.mount({type:'json',label:'Other',tree:{leafType:'boolean'}},{wood:false}));assert.equal(await page.getByLabel('Other wood',{exact:true}).inputValue(),'false');
+  await page.evaluate(()=>window.mount({type:'json',label:'Other',tree:{leafType:'boolean'}},{wood:false}));assert.equal(await page.getByLabel('Other Wood',{exact:true}).inputValue(),'false');
  });
 });
 test('F13 browser legacy flat and two-level controls use the same exact parser',async()=>{

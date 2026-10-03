@@ -1139,8 +1139,6 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
-  template.feeScope.permit = customerInputs.permitRequired === true;
-  if(ownerPricing.feeRules.permit==='when_scope_selected' && typeof customerInputs.permitRequired!=='boolean')throw new QuoteReviewError('Confirm whether this project requires the permit charge.',{missingCustomerFields:['permitRequired']});
   const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
   if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
   const freeOffering = freeOfferingVNext(ownerPricing, tierName);
@@ -1757,10 +1755,18 @@ function customerProjectionMatchesFirstOption(result) {
   return true;
 }
 
-function customerReviewPayload(result) {
+function customerReviewPayload(result,safe=false) {
+  let message='We received your request. Someone will follow up to complete or verify the estimate.';
+  if(safe&&result?.resultType==='ESTIMATE_REQUIRES_REVIEW'){
+  const missing=ownDataValue(result,'missingCustomerFields'),invalid=ownDataValue(result,'invalidCustomerFields'),reason=ownDataValue(result,'reviewReason');
+  const fields=[...(missing.ok&&Array.isArray(missing.value)?missing.value:[]),...(invalid.ok&&Array.isArray(invalid.value)?invalid.value:[])].filter(field=>typeof field==='string'&&Object.hasOwn(MEASUREMENT_CONTRACTS[result.serviceType]?.fields||{},field));
+  if(fields.some(field=>typeof field==='string'&&/sqft|area|length|width|height|size|depth|yards|perimeter|outline/i.test(field)))message='We need to confirm the job measurements or size before providing an estimate. The business will follow up.';
+  else if(reason.ok&&typeof reason.value==='string'&&/inspection|inspect|unknown leak/i.test(reason.value))message='This work needs an inspection before a reliable estimate can be provided. The business will follow up.';
+  else if(fields.length)message='We need to confirm a few details about the requested work before providing an estimate. The business will follow up.';
+  }
   const payload = {
     resultType: 'ESTIMATE_REQUIRES_REVIEW',
-    customerMessage: 'We received your request. Someone will follow up to complete or verify the estimate.'
+    customerMessage: message
   };
   const quoteId = ownDataValue(result, 'quoteId');
   if (quoteId.ok && quoteId.present && typeof quoteId.value === 'string' && quoteId.value.trim()) payload.quoteId = quoteId.value;
@@ -1791,7 +1797,7 @@ export function sanitizeForCustomerVNext(result) {
       configuredCalculationMatches(result) &&
       customerProjectionMatchesFirstOption(result) &&
       (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
-    if (!validReady) return customerReviewPayload(result);
+    if (!validReady) return customerReviewPayload(result,true);
     return structuredClone({
       ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'priceUnit', 'taxTreatment']),
       options: result.options.map(option => pickOwn(option, CUSTOMER_OPTION_FIELDS))

@@ -70,7 +70,7 @@ test('T09 a minimum-priced job shows one exact price including applicable tax',(
 });
 test('T10 itemized painting uses the entire painted area for condition preparation and wastes materials only',()=>{
  const f=offeringFixture('INTERIOR_PAINTING','itemized');cents(f,328700);
- f.customerInputs.wallHeight='high';cents(f,353400);
+ f.customerInputs.wallHeight='high';cents(f,352200); // Trim stays 20000; wall/ceiling labor adds 23500.
  f.customerInputs.wallHeight='standard';f.customerInputs.coats=1;cents(f,240700);
  f.customerInputs.coats=3;cents(f,416700);
  f.customerInputs.surfaceCondition='poor';assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');

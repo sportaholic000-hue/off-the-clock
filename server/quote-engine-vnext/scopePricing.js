@@ -99,7 +99,7 @@ export function scopesSuppressPrice(type,c,p,rules,path){
 function ceilExact(value){const e=exactDecimal(value),n=(e.numerator+e.denominator-1n)/e.denominator;if(n<0n||n>BigInt(Number.MAX_SAFE_INTEGER))throw new RangeError('Purchased quantity exceeds the supported numeric range.');return Number(n);}
 export function scopeLines(type,c,p={},rules={}){
  const out={lines:[],disclosures:[],rules:[],replacedCommonFees:[],feeScope:{}},defs=scopeRateDefinitions(type,p),catalog=scopeDefinitions(type,p),purchases=new Map();
- const add=(key,quantity,multipliers=[])=>{const f=defs[key];if(!f)throw new TypeError('Missing configured scope price definition: '+key);out.lines.push({key,name:f.label,quantity,category:f.category,unit:f.unit,rateCents:p.scopeRates[key],ratePath:'scopeRates.'+key,priceBasis:f.priceBasis,multipliers});};
+ const add=(key,quantity,multipliers=[])=>{const f=defs[key];if(!f)throw new TypeError('Missing configured scope price definition: '+key);out.lines.push({key,name:f.label,quantity,category:f.category,unit:f.unit,rateCents:p.scopeRates[key],ratePath:'scopeRates.'+key,priceBasis:key.startsWith('floor_underlayment_')&&p.scopeRates[key]===0&&rules.zeroPricePolicy?.includedPrices?.['scopeRates.'+key]==='materialPerSqft.'+key.slice('floor_underlayment_'.length)?rules.priceBasisByCategory?.material:f.priceBasis,multipliers});};
  const quantityFor=key=>{
   if(key.startsWith('floor_underlayment')||key==='floor_overlay')return c.sqft;
   if(key.startsWith('roof_underlayment'))return c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(c.roofSizeInput,c.partialPercent),100)):c.roofSizeInput;
@@ -115,11 +115,12 @@ export function scopeLines(type,c,p={},rules={}){
    out.disclosures.push(label+': '+description+ending);
   if(key==='insulation'){
    out.disclosures.push('Insulation: '+d.insulationSystem+'. Coverboard: '+d.coverboardSystem+'.');
-   for(const layer of ['insulation','coverboard'])for(const suffix of d.mode==='installed'?['installed']:['labor','material'])add(layer+'_'+suffix,c[layer+'AreaSqft']);
+   for(const layer of ['insulation','coverboard'])for(const suffix of d.mode==='installed'?['installed']:['labor','material'])add(layer+'_'+suffix,c[layer+'AreaSqft'],suffix==='labor'?[{name:'roof access',value:p.accessMultiplier[c.accessDifficulty],path:'accessMultiplier.'+c.accessDifficulty}]:[]);
    continue;
   }
   const quantity=quantityFor(key);
   if(key.includes('underlayment')||key.startsWith('paint_')){
+   if(d.mode==='included_in_floor_price'){out.disclosures.push('Underlayment is included in the flooring material price.');continue;}
    if(d.mode==='package_cost'){
     const unit=key==='paint_trim'?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),previous=purchases.get(d.productKey);
     if(previous&&previous.signature!==signature)throw new TypeError('The same material purchase group has conflicting unit, coverage, waste or package prices.');
@@ -127,13 +128,12 @@ export function scopeLines(type,c,p={},rules={}){
    }else add(key,quantity);
    continue;
   }
-  const multiplier=key==='siding_removal'?[{name:'existing siding stories',value:p.storyMultiplier[c.sidingRemovalStories],path:'storyMultiplier.'+c.sidingRemovalStories}]:[];
   for(const rateKey of Object.keys(defs).filter(k=>defs[k].scopeKey===key)){
    // The October 1 concrete rule applies access to separately priced finish
    // labor as well as base labor. Installed-price scope retains its own basis.
    const adjustments=d.mode==='itemized'&&rateKey==='exposed_aggregate_labor'
     ? [{name:'access',value:p.accessMultiplier[c.accessDifficulty],path:'accessMultiplier.'+c.accessDifficulty}]
-    : d.mode==='itemized'&&rateKey.endsWith('_removal')?multiplier:[];
+    : d.mode==='itemized'&&rateKey==='siding_trim_labor'?[{name:'building stories',value:p.storyMultiplier[c.stories],path:'storyMultiplier.'+c.stories}]:[];
    add(rateKey,quantity,adjustments);
   }
   if((key==='demolition'||key==='siding_removal'||key==='stairs'&&!c.removalNeeded)&&d.disposalIncluded)out.replacedCommonFees.push('disposal');

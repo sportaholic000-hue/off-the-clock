@@ -2,7 +2,7 @@ import {scopeCustomerFields,scopeRateDefinitions} from '../../server/scopeConfig
 import {offeringPriceBaseline,offeringBaselineConfirmation} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
-import {ExactNumericInput} from './pricebookInputs.jsx';
+import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField} from './pricebookEditing.js';
 
 export function offeringPreviewFields(meta,service) {
@@ -26,7 +26,7 @@ export function OfferingEditor({service,meta,onChange}) {
   const [gateName,setGateName]=useState('');
   const baseline=offeringPriceBaseline(service.serviceType),confirmation=offeringBaselineConfirmation(service.serviceType,p);
   const legacyCondition=d[baseline.field]!==undefined&&d[baseline.field]!==baseline.value;
-  const baselineNote=`Baseline prices cover ${baseline.condition}. ${baseline.adjustment} adjustments apply on top to labor only.`;
+  const baselineNote=`Baseline prices cover ${baseline.condition}. ${baseline.adjustment} adjustments apply on top to labor only.${interior?' Wall height adjusts walls and ceilings; trim prices do not change with wall height.':''}`;
   const set=(key,value)=>onChange(editServiceField(service,key,value));
   const detail=(key,value)=>set('offeringDetails',{...(fence?{terrainSlope:'flat'}:interior?{wallHeight:'standard',finishCoats:2,ceilingCoats:2}:{stories:1,finishCoats:2}),...d,[key]:value});
   const input=(key,label,type='text',options)=> <Field key={key} label={label}>{type==='select'||type==='boolean'?<Select aria-label={label} value={d[key]===undefined?'':String(d[key])} onChange={e=>detail(key,e.target.value===''?undefined:type==='boolean'?e.target.value==='true':options.find(v=>String(v)===e.target.value))}><option value="">Choose</option>{(type==='boolean'?[true,false]:options).map(value=><option key={String(value)} value={String(value)}>{typeof value==='boolean'?(value?'Yes':'No'):String(value)}</option>)}</Select>:type==='number'?<ExactNumericInput aria-label={label} value={d[key]} onChange={value=>detail(key,value)}/>:<Textarea aria-label={label} value={d[key]||''} onChange={e=>detail(key,e.target.value)}/>}</Field>;
@@ -54,7 +54,7 @@ export function OfferingEditor({service,meta,onChange}) {
       {legacyCondition&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for {baseline.condition}</label>}
       {input('description','Included job description')}
       {fence?<>
-        {input('fenceType','Offered fence type')}{input('fenceHeight','Offered fence height (ft)','number')}
+        {input('fenceType','Offered fence type')}<Field label="Offered fence height (ft)"><FenceHeightInput label="Offered fence height (ft)" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
         {input('postFootingDescription','Standard posts, footings and digging included')}
         <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings are calculated from fence length, your post spacing, corners and gate counts. Posts included in gate prices are excluded.'} Fence length excludes gate openings.</Notice>
         <h3>Offered gates</h3>
@@ -78,7 +78,7 @@ export function OfferingEditor({service,meta,onChange}) {
         {interior?<>{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{mode==='installed'&&input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&input('trimDescription','Trim coats, preparation and primer included')}</>:null}
       </>}
       <h3>Owner prices for this offering — {baseline.condition}</h3>
-      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+' — '+baseline.condition+' ($ per '+field.unit+')'} help={baselineNote+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={'Offering price '+key} kind="unit_rate" value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
+      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={'Offering price '+key} kind="unit_rate" value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
       {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{key}: {String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}
     </>}
   </section>;

@@ -25,7 +25,7 @@ const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFloori
 export function scopeDefinitions(type,p={}){
  const out={};
  if(type.startsWith('FLOORING_')){
-  for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',product,'underlaymentScopeConfirmed');
+  for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
   out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
    stairWidthLF:cnumber('Measured stair tread width','feet'),stairRemovalNeeded:confirm('Existing stair covering removal requested'),stairDisposalNeeded:confirm('Stair debris disposal requested'),floorAreaExcludesStairs:confirm('The measured flooring area excludes the separately priced stairs')});
   out.floor_overlay=rule('Additional preparation for flooring over an existing floor',{...common,mode:modes,category,existingFloorType:string('Existing flooring type covered'),newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile']),basePriceExcludesPreparation:bool('Base flooring prices exclude this additional preparation')},'overlayScopeConfirmed');
@@ -72,6 +72,7 @@ export function scopeRateDefinitions(type,p={},allModes=false){
   if(!own(catalog,key)||!record(d))continue;
   const add=(rateKey,label,category,unit,priceBasis,kind='unit_rate')=>out[rateKey]={scopeKey:key,label,category,unit,...(priceBasis?{priceBasis}:{}),moneyKind:kind};
   const label=catalog[key].label;
+  if(key.startsWith('floor_underlayment_')&&d.mode==='included_in_floor_price'&&!allModes)continue;
   if(key.includes('underlayment')||key.startsWith('paint_')){add(key,label,'material',d.mode==='package_cost'?'purchased packages':key==='paint_trim'?'linear feet':'installed square feet',d.mode==='package_cost'?'cost':'sell_price',d.mode==='package_cost'?'fixed_amount':'unit_rate');continue;}
   const installed=d.mode==='installed',basis=installed?'sell_price':undefined;
   if(key==='insulation'){
@@ -124,7 +125,7 @@ export function scopeCustomerFields(type,p={},rules={}){
   const name=defs[key].confirmation,label=key.startsWith('paint_')?'The selected paint products, coating variants and preparation products match this job':'Confirmed '+defs[key].label.toLowerCase()+': '+(d.description||'owner-defined scope');
   const details=[defs[key].label+': '+(d.description||'')];
   if(key==='insulation')details.push('Insulation: '+(d.insulationSystem||''),'Coverboard: '+(d.coverboardSystem||''));
-  if(key==='stairs')details.push('Flooring: '+d.flooringType+'. Maximum tread width: '+d.maximumWidthLF+' ft. Underlayment included: '+d.underlaymentIncluded+'. Removal included: '+d.removalIncluded+'. Disposal included: '+d.disposalIncluded+'.');
+  if(key==='stairs')details.push('Flooring: '+d.flooringType+'. Maximum tread width: '+d.maximumWidthLF+' ft. '+['underlayment','removal','disposal'].map(key=>(key==='underlayment'?'Underlayment':key==='removal'?'Existing covering removal':'Debris disposal')+(d[key+'Included']?' is included.':' is not included.')).join(' '));
   out[name]={...confirm(label),details:[...(out[name]?.details||[]),...details],visibleWhen:[...(out[name]?.visibleWhen||[]),...visibleWhen]};
  }
  return out;

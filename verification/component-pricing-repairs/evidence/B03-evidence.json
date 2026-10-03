@@ -1,0 +1,210 @@
+{
+  "saved": {
+    "ownerId": "8c8cd286-19ff-46b9-8221-20940c1321f9",
+    "services": [
+      {
+        "id": "67c915a7-08bc-4e9d-b868-003f5c60c619",
+        "source": "MANUAL",
+        "serviceType": "EXTERIOR_PAINTING",
+        "service": "[SYNTHETIC] coverage",
+        "active": true,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "installed",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Wood siding",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "finishCoats": 2,
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "stories": 1,
+            "baselinePricesConfirmed": true
+          },
+          "offeringRates": {
+            "installedWallPerSqft": 6
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedWallPerSqft": 40
+          },
+          "storyMultiplier": {
+            "1": 1,
+            "2": 1.1,
+            "3": 1.2
+          },
+          "prepHoursPerSqft": {
+            "fair": 0.008
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1,
+          "installedLaborPercent": {
+            "offeringRates.installedWallPerSqft": 60
+          }
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "areaInputMethod": "wall_sqft",
+          "exteriorAreaSqft": 500,
+          "coats": 2,
+          "surfaceCondition": "fair",
+          "stories": 2
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "67c915a7-08bc-4e9d-b868-003f5c60c619",
+          "serviceType": "EXTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "8c8cd286-19ff-46b9-8221-20940c1321f9",
+          "operationId": "a65907b8-8775-4cc1-be37-df9586ffc4b6",
+          "createdAt": "2026-10-03T07:05:05.210Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "8c8cd286-19ff-46b9-8221-20940c1321f9",
+          "serviceId": "67c915a7-08bc-4e9d-b868-003f5c60c619",
+          "operationId": "8e00b3c7-87f5-459b-ba3a-e37a8bd3508c",
+          "approvedAt": "2026-10-03T07:05:05.884Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "eeda142a52f2ab894fc65cbed8106b8046a24b5f3c7267b0d639d8f0a34fd2bd",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 0,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T07:05:05.884Z",
+    "revision": "31b8562322288a4ddd50e51e2335b99890c0996cbfd2ae98feb562afb6a1356f",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 3180,
+    "midEstimate": 3180,
+    "highEstimate": 3180,
+    "priceDrivers": [
+      "500 measured square feet of paintable wall area"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. No tax added.",
+    "quoteId": "38bb3aab-99fc-45ed-8019-54dcac4b9feb",
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 3180,
+        "midEstimate": 3180,
+        "highEstimate": 3180,
+        "priceDrivers": [
+          "500 measured square feet of paintable wall area"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Wood siding; [SYNTHETIC] Owner-specified coating 2 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. No tax added.",
+        "priceUnit": null,
+        "taxTreatment": "No tax added."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] coverage",
+      "facts": [
+        {
+          "label": "Wall area measurement method",
+          "value": "Wall sqft"
+        },
+        {
+          "label": "Measured paintable wall area",
+          "value": "500"
+        },
+        {
+          "label": "Finish paint coats",
+          "value": "2"
+        },
+        {
+          "label": "Surface condition",
+          "value": "Fair"
+        },
+        {
+          "label": "Building stories",
+          "value": "2"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] coverage",
+      "contact": {
+        "email": "synthetic-followup@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T07:05:06.099Z"
+  }
+}

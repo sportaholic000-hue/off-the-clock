@@ -123,11 +123,12 @@ function projection(raw) {
   return materializeVNextService(out);
 }
 function defaultsProjection(book) { const out=clone(book.defaults);delete out.laborHourlyRate;return out; }
-function legacySettings(raw,book) {
+const retiredPriceFields=type=>type.startsWith('FLOORING_')?['perStepPrice']:type.startsWith('CONCRETE_')?['demolitionPerSqft']:type==='SIDING_REPLACEMENT'?['removalPerSqft']:type==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:[];
+function legacySettings(raw,book,includeRetired=false) {
   const fields=new Set(allowedPricingFields(raw.serviceType));
   const prior=new Set([...(ALL_OWNER_FIELDS[raw.serviceType]||[]),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[raw.serviceType]||{})]);
   const discarded=[];
-  for(const field of prior)if(!fields.has(field)) {
+  for(const field of new Set([...prior,...retiredPriceFields(raw.serviceType)]))if(!fields.has(field)||includeRetired&&retiredPriceFields(raw.serviceType).includes(field)) {
     if(has(raw,field))discarded.push({path:field,value:clone(raw[field])});
     if(record(raw.pricing)&&has(raw.pricing,field))discarded.push({path:'pricing.'+field,value:clone(raw.pricing[field])});
     for(const receipts of ['confirmedFields','approvedValues'])if(record(raw[receipts])&&has(raw[receipts],field))discarded.push({path:receipts+'.'+field,value:clone(raw[receipts][field])});
@@ -169,7 +170,7 @@ export function applicationStatus(raw,book) {
   const issues=[];
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
-  return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
+  return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 export function readApplicationBook(ownerId) {
@@ -237,7 +238,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
   const raw=clone(book.services[index]);
   if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
   if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
-  if(legacySettings(raw,book).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
+  if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
   const now=new Date().toISOString(),operationId=crypto.randomUUID();
   if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);
   if(!raw.source) {if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(input.source))throw problem('Confirm the original source of this legacy service.');raw.source=input.source;}
@@ -338,7 +339,7 @@ export function applicationServiceName(raw) {
 export function applicationServiceDefinition(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
-  const customerFields=Object.entries(customerContractForVNext(raw.serviceType,p,raw).fields).map(([name,field])=>({name,...field}));
+  const customerFields=Object.entries(customerContractForVNext(raw.serviceType,p,raw).fields).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}));
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   const d=p.offeringDetails||{};
   const summary=[d.description];
@@ -357,7 +358,7 @@ export function applicationMetadata() {
   return {engineVersion:ENGINE_VERSION,categories:PRICE_BASIS_CATEGORIES,feeNames:FEE_NAMES,feeModes:FEE_RULE_MODES,defaultFields:DEFAULT_FIELDS,services:getVNextPriceBookMetadata().map(meta=>{
     const old=legacy.find(row=>row.serviceType===meta.serviceType);
     const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
-    const setupFields=meta.pricingFields.filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(field.field));
+    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],

@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions} from './configuredOfferings.js';
 import {
@@ -432,7 +433,7 @@ function scopeCoverageForService(service) {
       const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === key).map(([name]) => 'scopeRates.' + name);
       const related = d => d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + key || d.path?.startsWith('scopeDetails.' + key + '.') || rates.includes(d.path);
       const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related);
-      const complete = isPlainRecord(p.scopeDetails?.[key]) && rates.length > 0 && errors.length === 0;
+      const complete = isPlainRecord(p.scopeDetails?.[key]) && (rates.length > 0 || p.scopeDetails[key].mode === 'included_in_floor_price') && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
       const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
     }
@@ -452,6 +453,18 @@ function scopeCoverageForService(service) {
     : row.label + ' requests arrive as leads until you configure this scope and its prices.' }));
 }
 
+function laborAdjustmentCoverage(service) {
+  if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
+  const type=service.serviceType,base=pricingOf(service),rows=[];
+  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'?[{stories:1},{stories:2},{stories:3}]:[];
+  const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
+  for(const {name,pricing:p} of variants)for(const selection of selections){
+    const missing=Object.entries(installedPriceDefinitions(type,p)).filter(([path])=>{const factorPath=installedLaborFactorPath(type,selection,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
+    if(missing.length)rows.push({tierName:name,selection,missingOwnerFields:missing.map(([path])=>'installedLaborPercent.'+path),components:missing.map(([,label])=>label),message:'Requests for this condition that include these installed prices need review until you enter their labor portions.'});
+  }
+  return rows;
+}
+
 function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
   const blocking = uniqueStatusDiagnostics(diagnostics);
   const live = service?.active === true && blocking.length === 0 && validTierNames.length > 0;
@@ -460,6 +473,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
     scopeCoverage: scopeCoverageForService(service),
+    laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
     missingOwnerFields: [...new Set(blocking.filter(item => item.type === 'missing').map(item => item.path))],
     invalidOwnerFields: [...new Set(blocking.filter(item => invalidTypes.has(item.type)).map(item => item.path))],
@@ -964,8 +978,9 @@ function fieldCopy(serviceType, field) {
 export function getVNextPriceBookMetadata() {
   return contractMetadata().map(contract => ({
     ...contract,
+    customerFields:contract.customerFields.filter(field=>field.name!=='permitRequired'),
     ...(OFFERING_TYPES.includes(contract.serviceType)?{
-      offeringCustomerFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,Object.entries(offeringContract(contract.serviceType,{offeringMode:mode}).fields).map(([name,field])=>({name,...field}))])),
+      offeringCustomerFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,Object.entries(offeringContract(contract.serviceType,{offeringMode:mode}).fields).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}))])),
       offeringRateFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,offeringRateDefinitions(contract.serviceType,{offeringMode:mode,offeringDetails:{primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}})]))
     }:{}),
     service: SERVICE_NAMES[contract.serviceType],

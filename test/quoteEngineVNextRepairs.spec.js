@@ -1023,7 +1023,7 @@ test('repair 23: customer sees unavailable option notice without owner diagnosti
   }
 });
 
-test('repair 24: every customer review uses the same truthful request message', () => {
+test('repair 24: customer review wording distinguishes missing measurements and details without exposing owner setup', () => {
   const expected = 'We received your request. Someone will follow up to complete or verify the estimate.';
   const cases = [
     run('INTERIOR_PAINTING', { ...interiorInputs(), wallAreaSqft: undefined }, interiorService(), { callerType: 'customer' }),
@@ -1033,8 +1033,9 @@ test('repair 24: every customer review uses the same truthful request message', 
   ];
   for (const result of cases) {
     assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-    assert.equal(result.customerMessage, expected);
+    assert.ok([expected,'We need to confirm the job measurements or size before providing an estimate. The business will follow up.','We need to confirm a few details about the requested work before providing an estimate. The business will follow up.'].includes(result.customerMessage));
   }
+  assert.notEqual(cases[0].customerMessage,cases[2].customerMessage);
 });
 
 test('repair 25: customer-safe price drivers rank by financial significance', () => {
@@ -3818,6 +3819,7 @@ test('repair 57: every selected common fee follows its exact owner or customer b
           currentMonth: 1
         });
         const label = fee + ':' + mode + ':' + selected;
+        if(fee==='permit'&&mode==='customer_selected'){assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(result.ownerDiagnostics.some(d=>d.path==='feeRules.permit'));continue;}
         assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', label + ': ' + JSON.stringify(result));
         const record = scenario(result);
         const feeRecord = record.fees.find(item => item.fee === fee);
@@ -3859,6 +3861,7 @@ test('repair 57: every selected common fee follows its exact owner or customer b
         currentMonth: 1
       });
       assert.equal(missingSelection.resultType, 'ESTIMATE_REQUIRES_REVIEW', fee + ':' + mode);
+      if(fee==='permit'&&mode==='customer_selected'){assert.ok(missingSelection.ownerDiagnostics.some(d=>d.path==='feeRules.permit'));continue;}
       const collection = mode === 'owner_selected' ? missingSelection.invalidOwnerFields : missingSelection.invalidCustomerFields;
       assert.equal(collection.includes('feeSelections.' + (mode === 'owner_selected' ? 'owner' : 'customer') + '.' + fee), true);
     }
@@ -6723,9 +6726,9 @@ test('repair 116: fractional mowing cents represent fifty dollars per ten thousa
  for(const [rate,cents] of [[0.4999,4999],[0.5,5000],[0.5001,5001],[1,10000]]){const p=auditMowP();p.pricing.mowingBaseRatePerSqft=rate;const r=auditRun(auditMowC(),p);assert.equal(r.resultType,auditReady);assert.equal(lineAmount(r,'Mowing labor'),cents);assert.equal(scenario(r).tax.finalTotalCents,cents);}
  for(const rate of [-0.0001,Infinity]){const p=auditMowP();p.pricing.mowingBaseRatePerSqft=rate;assert.equal(auditRun(auditMowC(),p).resultType,auditReview);}
 });
-test('repair 117: permit fees follow confirmed job scope with explicit always and included controls',()=>{
+test('repair 117: permits require owner-controlled applicability with always and included controls',()=>{
  const p=roofService();p.feeRules.permit='when_scope_selected';const opts={businessDefaults:{...defaults,permitFee:10000}};
- for(const required of [false,true,undefined]){const r=auditRun(roofInputs({permitRequired:required}),p,opts);assert.equal(r.resultType,required===undefined?auditReview:auditReady);if(required!==undefined)assert.equal(lineAmount(r,'Permit'),required?10000:undefined);}
+ for(const required of [false,true,undefined]){const r=auditRun(roofInputs({permitRequired:required}),p,opts);assert.equal(r.resultType,auditReview);assert.ok(r.ownerDiagnostics.some(d=>d.path==='feeRules.permit'));}
  for(const mode of ['always','included_in_rates']){p.feeRules.permit=mode;const r=auditRun(roofInputs(),p,opts);assert.equal(r.resultType,auditReady);assert.equal(lineAmount(r,'Permit'),mode==='always'?10000:undefined);}
 });
 test('repair 118: smallest finite factors and their products remain exact while unsupported factors fail validation',()=>{

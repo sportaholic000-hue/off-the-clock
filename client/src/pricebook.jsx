@@ -839,7 +839,7 @@ export default function PriceBook() {
                       : status.status === 'DISABLED'
                         ? 'Disabled by you'
                         : status.status === 'QUOTING LIVE'
-                          ? status.scopeCoverage?.some(scope => !scope.configurationComplete) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'
+                          ? (status.scopeCoverage?.some(scope => !scope.configurationComplete)||status.laborAdjustmentCoverage?.length) ? 'Standard jobs ready · more scope needs setup' : 'Ready to quote'
                           : missing.length > 0
                             ? `${missing.length} ${missing.length === 1 ? 'price needed' : 'prices needed'}`
                             : 'Review configuration'}
@@ -867,6 +867,7 @@ export default function PriceBook() {
                     </span>
                   </div>
 
+                  <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer."><TextInput aria-label="Offering name" maxLength={40} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/></Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
                   {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>
                     <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
@@ -875,6 +876,7 @@ export default function PriceBook() {
                       <span>{product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' '))}</span>
                     </li>)}</ul>
                   </section>}
+                  {!!selectedStatus.laborAdjustmentCoverage?.length&&<section className="scope-coverage" aria-label="Labor adjustment coverage"><h3>Conditions that still need a labor portion</h3><ul>{selectedStatus.laborAdjustmentCoverage.map((row,index)=><li key={index}><strong>{[row.tierName,...Object.entries(row.selection).map(([key,value])=>key==='stories'?value+'-story building':humanPricingKey(value)+' '+(key==='terrainSlope'?'ground':'walls'))].filter(Boolean).join(' · ')}</strong><span>{row.message} {row.components.map(humanPricingKey).join('; ')}.</span></li>)}</ul><p>Enter the percentages under Labor and materials in installed prices. Supported jobs remain available to quote.</p></section>}
                   {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
                     <h3>Which requests can be quoted?</h3>
                     <p>Configured work can quote. These additional requests need the listed setup before they can be included.</p>
@@ -931,7 +933,7 @@ export default function PriceBook() {
                 {contract.engineVersion&&<>
                   <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
+                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
