@@ -49,13 +49,13 @@ export function OfferingEditor({service,meta,onChange}) {
     <Field label="Offering pricing"><Select aria-label="Offering pricing" value={mode||''} onChange={e=>set('offeringMode',e.target.value||undefined)}><option value="" disabled={!!mode}>{meta.requiresOffering?'Choose how you price this offering':'Measured wall pricing — choose to configure an offering'}</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
     {!mode&&meta.requiresOffering&&<Notice>Choose installed or itemized pricing, then define what the offering includes. Earlier standard rates are retained in your saved price book but cannot quote this work on their own.</Notice>}
     {mode&&<>
-      <p>Define one offered job and the prices that cover it. Add another offering for a different {fence?'fence height, material or installation scope':'surface, coating or preparation scope'}. These descriptions are shown to customers.</p>
+      <p>Define one offered job and the prices that cover it. Add another offering for a different {fence?'material or installation scope':'surface, coating or preparation scope'}. These descriptions are shown to customers.</p>
       <Notice>{baselineNote}</Notice>
       {confirmation&&<Notice tone="warning">{confirmation.message}</Notice>}
       {legacyCondition&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for {baseline.condition}</label>}
       {input('description','Included job description')}
       {fence?<>
-        {input('fenceType','Offered fence type')}<Field label="Height these prices are for (ft)" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for (ft)" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
+        {input('fenceType','Offered fence type')}<Field label="Height these prices are for" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
         {input('postFootingDescription','Standard posts, footings and digging included')}
         <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings are calculated from fence length, your post spacing, corners and gate counts. Posts included in gate prices are excluded.'} Fence length excludes gate openings.</Notice>
         <h3>Offered gates</h3>

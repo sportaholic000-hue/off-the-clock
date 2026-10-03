@@ -66,3 +66,8 @@ The owner ruled that fence height must never limit a quote: 2 ft, 9 ft, 13 ft or
 
 Exactness: a line re-priced by a later step (waste, terrain, installed labor share) reuses its earlier factors' exact values, so a factor such as 1/3 is never replaced by its rounded binary value (found while verifying a 2 ft request against 6 ft prices, where a half-cent line rounded down).
 
+
+
+## Owner correction — one fence-height control (October 3)
+
+Fence height is entered directly as whole feet and decimal inches in the owner editor and customer form. There is no decimal-feet mode toggle or fixed-height preset list. This scoped correction changes presentation only; saved numeric heights, conversion and quote arithmetic are unchanged. Verification: four rendered height examples, all five existing fence-height tests, and owner/widget builds passed. The separate precision, storage and test-runner repair draft remains paused and is not included.
