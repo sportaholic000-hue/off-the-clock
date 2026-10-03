@@ -66,5 +66,5 @@ export function FenceHeightInput({value,onChange,label='Fence height'}) {
  }
  return <div>{split?<><Field label="Whole feet"><ExactNumericInput aria-label={label+' whole feet'} value={parts.feet} onChange={v=>change('feet',v)}/></Field><Field label="Inches (decimals allowed)"><ExactNumericInput aria-label={label+' inches'} value={parts.inches} onChange={v=>change('inches',v)}/></Field>{typeof value==='string'&&<span role="alert">Enter whole feet and inches from 0 up to, but not including, 12.</span>}</>:<ExactNumericInput aria-label={label} value={value} onChange={onChange}/>}
  <Button variant="quiet" onClick={()=>{if(!split)setParts(unpack(value));setSplit(!split);}}>{split?'Enter decimal feet':'Enter feet and inches'}</Button>
- <small>Any positive height can be priced, including fractional inches. The quote must match the offered height.</small></div>;
+ <small>Any positive height, including fractional inches.</small></div>;
 }

@@ -194,14 +194,38 @@ export function calculatedFencePosts(c,p) {
 // requested height / priced height. Post and footing depth follow the standard
 // rule of burying a fixed fraction of the post, so they scale the same way.
 // Removal of an existing fence is priced per foot as entered.
+// Heights arrive as binary numbers, and a feet-and-inches entry (feet + inches/12)
+// is usually not exactly representable (5 ft 3.65 in = 63.65/12 ft). Recover the
+// exact value that was entered: the first scale 12 x 10^k (inches with up to six
+// decimals, which also covers decimal feet) at which the number is a whole count
+// to within binary rounding. Any other number is used exactly as given.
+export function exactFenceHeight(feet){
+  for(let k=0;k<=6;k++){
+    const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);
+    if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return exactDivide(whole,scale);
+  }
+  return exactDecimal(feet);
+}
 export function fenceHeightFactor(c,d){
-  const ratio=exactDivide(c.fenceHeight,d.fenceHeight);
+  const ratio=exactDivide(exactFenceHeight(c.fenceHeight),exactFenceHeight(d.fenceHeight));
   return exactCompare(ratio,1)===0?null:ratio;
 }
+// Exact decimal text of a rational that terminates within maxDigits, else null.
+function decimalText(numerator,denominator,maxDigits=6){
+  for(let k=0;k<=maxDigits;k++){
+    const scaled=numerator*10n**BigInt(k);
+    if(scaled%denominator!==0n)continue;
+    const digits=(scaled/denominator).toString().padStart(k+1,'0');
+    return k?(digits.slice(0,-k)+'.'+digits.slice(-k)).replace(/\.?0+$/,''):digits;
+  }
+  return null;
+}
+// Shows a height the way it was entered: "6 ft", "5 ft 3.65 in", "9 in".
 export function formatFenceHeight(feet){
-  let whole=Math.floor(feet),inches=Math.round((feet-whole)*1200)/100;
-  if(inches>=12){whole+=1;inches=0;}
-  return inches?(whole?whole+' ft ':'')+inches+' in':whole+' ft';
+  const inches=exactMultiply(exactFenceHeight(feet),12),whole=inches.numerator/(inches.denominator*12n);
+  const rest=decimalText(inches.numerator-whole*12n*inches.denominator,inches.denominator);
+  if(rest===null){let w=Math.floor(feet),i=Math.round((feet-w)*1200)/100;if(i>=12){w+=1;i=0;}return i?(w?w+' ft ':'')+i+' in':w+' ft';}
+  return rest==='0'?whole+' ft':(whole?whole+' ft ':'')+rest+' in';
 }
 export function offeringLines(type,c,p) {
   const d=p.offeringDetails||{},installed=p.offeringMode==='installed',definitions=offeringRateDefinitions(type,p),lines=[];

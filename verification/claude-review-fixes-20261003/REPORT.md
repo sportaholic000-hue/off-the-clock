@@ -46,3 +46,18 @@ Verification:
 - Three older tests that asserted the superseded rule were updated: `opusQuoteRepairs` now checks every line at four other heights equals the priced-height line × requested/priced exactly; `configuredOfferings` uses a mismatched fence type for its no-quote case; `componentPricingRepairs` expects the 6 ft request to quote with the scaling statement.
 - Real HTTP preview against the real server, 6 ft itemized wood fence (187 ft, moderate ground, walk gate): 2 ft $2,428.60; 6 ft $7,285.81; 9 ft $10,928.70; 13 ft $15,785.91. Each equals an independent exact-fraction calculation. The editor shows the new height wording (`fence-editor.png`); no page errors.
 - Full suite: 1,356 tests, 1,345 pass, the nine known voice failures, two skips; checker passes. Client build passes. Claude's other price suites (22 jobs, 11 charge/tax cases, options, boundaries, all add-on scopes) are unchanged.
+
+## Astra review follow-up (October 3)
+
+Astra's three points on `7811c6f`, all reproduced before changing anything:
+
+1. **One-cent error on feet-and-inches heights (fixed).** 100 ft at $45/ft priced for 6 ft, request 5 ft 3.65 in: exact price 100 × 4500 × (63.65/12)/6 = 397,812.5 cents → $3,978.13; the engine returned $3,978.12. Cause: the shared feet-and-inches control sends feet + inches/12 as a binary number (5.304166666666666), which is slightly below 63.65/12, so the half cent rounded down. My own test had used that same binary number as its expected value, so it could not catch this. Fix: the engine recovers the exact entered height before pricing (the first scale 12 × 10^k, k = 0–6, at which the number is a whole count within binary rounding; anything else is used as given).
+2. **Wording and display (fixed).** The height control said "The quote must match the offered height"; it now says "Any positive height, including fractional inches." The customer's priced scope showed `5.304166666666666`; heights now read as entered ("5 ft 3.65 in") in the scope facts, price driver and scaling statement.
+3. **Proportional scaling of posts, footing labor and gates (not changed; owner decision).** Confirmed as the rule implemented. It is an approximation: fixed parts (gate hardware, per-hole setup, stock post lengths, heavier posts on tall fences) do not scale with height. Raised with the owner.
+
+Verification:
+- `test/fenceAnyHeight.spec.mjs` now 5 tests; the two new ones fail on `7811c6f` and pass now. Expected values use 63.65/12 exactly, not the control's binary number.
+- Real browser (editor preview, typed "5" ft and "3.65" in): the browser sent 5.304166666666666; preview total 397,813 cents; page shows $3,978.13 and "5 ft 3.65 in"; no raw decimal; new wording present; no page errors (`fence-inches-preview.png`).
+- Full suite: 1,358 tests, 1,347 pass, the nine known voice failures, two skips; checker passes. Client build passes. Claude's 22-job and fence-height price suites unchanged apart from this fix.
+
+Noticed, not changed: the offering price and installed-share inputs carry screen-reader labels with internal keys (for example "Offering price installedFencePerLF"). Codex's browser verification scripts select inputs by those labels, so changing them needs coordination.

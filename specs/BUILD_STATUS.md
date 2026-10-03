@@ -148,3 +148,7 @@ On `claude/quote-review-fixes-20261003` (base `88e5040`): one shared product-nam
 
 On `claude/quote-review-fixes-20261003`: fence quotes work at any positive height. Prices entered for one height scale by requested height / priced height (fence per foot, posts, footings, installed per foot, gates); old-fence removal is not scaled; the quote states the scaling. The fixed 4/6/8 ft list is removed. A line re-priced by waste, terrain or an installed labor share now reuses its exact factors (fixes a one-cent rounding error found at 2 ft). Verification: new `fenceAnyHeight` tests plus three updated tests; real HTTP previews at 2, 6, 9 and 13 ft match exact fractions; full suite 1,356 tests, 1,345 pass, same nine voice failures, two skips. [Evidence](../verification/claude-review-fixes-20261003/REPORT.md). Not merged or deployed.
 
+## October 3 Astra follow-up (Claude)
+
+Feet-and-inches fence heights are priced exactly as entered (5 ft 3.65 in = 63.65/12 ft; previously a binary approximation could round a half cent down, $3,978.12 instead of $3,978.13), and heights read as entered for customers ("5 ft 3.65 in"). The height control no longer says the quote must match the offered height. Proportional scaling of posts, footings and gates is unchanged pending the owner's decision. Full suite 1,358 tests, 1,347 pass, same nine voice failures, two skips. [Evidence](../verification/claude-review-fixes-20261003/REPORT.md). Not merged or deployed.
+
