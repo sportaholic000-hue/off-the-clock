@@ -12,7 +12,7 @@ export function offeringFixture(type,mode) {
   }:{
     description:'[SYNTHETIC] Defined painting offering',substrate:interior?'[SYNTHETIC] Drywall':'[SYNTHETIC] Wood siding',coating:'[SYNTHETIC] Owner-specified coating',
     finishCoats:2,surfaceCondition:'fair',preparation:'[SYNTHETIC] Defined preparation of the measured affected area.',primerCoats:1,
-    ...(interior?{wallHeight:'standard',ceilingsOffered:true,trimOffered:true,ceilingCoats:2,ceilingPrimerCoats:1,trimDescription:'[SYNTHETIC] Trim with preparation, one primer and two finish coats.'}:{stories:2})
+    ...(interior?{wallHeight:'standard',ceilingsOffered:true,trimOffered:true,ceilingCoats:2,ceilingPrimerCoats:1,trimDescription:'[SYNTHETIC] Trim with preparation, one primer and two finish coats.'}:{stories:2,baselinePricesConfirmed:true})
   };
   const rates=fence?{
     ...(installed?{installedFencePerLF:4000}:{fenceLaborPerLF:1000,fenceMaterialPerLF:2000,postMaterialEach:2000,footingLaborEach:400,footingMaterialEach:600}),

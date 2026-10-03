@@ -1,6 +1,6 @@
 import { measuredOutlineVNext } from './geometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
-import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions} from './configuredOfferings.js';
+import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
@@ -1677,6 +1677,8 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
 
   const ownerDecisionRequired = [];
   const requireDecision = (path, kind, message) => ownerDecisionRequired.push({ path, kind, message });
+  const baselineConfirmation=offeringBaselineConfirmation(serviceType,pricing);
+  if(baselineConfirmation)ownerDecisionRequired.push(baselineConfirmation);
   if (serviceType.startsWith('FENCING_') && !configuredOffering(serviceType,pricing)) {
     requireDecision('postDerivationRule', 'post_geometry_contract', 'Set up a fence offering with its type, height, terrain and included posts and footings. Choose an installed price or measured component prices.');
     requireDecision('concretePerPost', 'mixed_charge_allocation', 'In the fence offering, define the posts, footings and digging included in the installed price, or enter their separate labor and material prices.');

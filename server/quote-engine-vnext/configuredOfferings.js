@@ -19,6 +19,20 @@ const number = (label,unit,min=0,max=1_000_000,extra={}) => ({label,unit,type:'n
 const choice = (label,values) => ({label,unit:null,type:'enum',values});
 const bool = label => ({label,unit:null,type:'boolean'});
 
+export function offeringPriceBaseline(type) {
+  if(fence(type))return {field:'terrainSlope',value:'flat',condition:'flat ground',adjustment:'Terrain'};
+  if(type==='INTERIOR_PAINTING')return {field:'wallHeight',value:'standard',condition:'standard-height walls',adjustment:'Wall-height'};
+  if(type==='EXTERIOR_PAINTING')return {field:'stories',value:1,condition:'one-story building',adjustment:'Stories'};
+  return null;
+}
+
+export function offeringBaselineConfirmation(type,p={}) {
+  const baseline=offeringPriceBaseline(type),d=p.offeringDetails;
+  if(!baseline||!configuredOffering(type,p)||!record(d)||d[baseline.field]===undefined||d[baseline.field]===baseline.value||d.baselinePricesConfirmed===true)return null;
+  const saved=baseline.field==='stories'?`${d.stories}-story building`:baseline.field==='wallHeight'?`${d.wallHeight} walls`:`${d.terrainSlope} ground`;
+  return {path:'offeringDetails.baselinePricesConfirmed',kind:'offering_price_baseline',message:`This offering was saved for ${saved}. Offering prices now cover ${baseline.condition}, with ${baseline.adjustment.toLowerCase()} adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.`};
+}
+
 export function offeringRateDefinitions(type,p={}) {
   const installed=p.offeringMode==='installed', d=p.offeringDetails||{}, out={};
   const add=(key,label,category,unit,priceBasis)=>out[key]={label,category,unit,...(priceBasis?{priceBasis}:{})};
@@ -67,6 +81,7 @@ export function offeringStructureDiagnostics(type,p) {
   const d=p.offeringDetails,allowed=['description'];
   const check=(key,valid,message)=>{allowed.push(key);if(!valid(d[key]))add('offeringDetails.'+key,message);};
   check('description',text,'Describe the complete offered job.');
+  check('baselinePricesConfirmed',v=>v===undefined||typeof v==='boolean','Explicitly confirm baseline prices with Yes or No.');
   if(fence(type)) {
     check('fenceType',slug,'Identify the offered fence material/style.');
     check('fenceHeight',v=>typeof v==='number'&&Number.isFinite(v)&&v>0,'Enter the positive height in feet covered by these prices.');

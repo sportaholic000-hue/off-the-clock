@@ -583,7 +583,8 @@ function seasonalConfiguration(ownerPricing, defaults) {
 function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
-  if(active)for(const line of lines)if(line.installedBaseExactCents&&!line.installedLaborExactCents)throw new QuoteReviewError('Set the labor portion of this installed price before applying a labor-only surcharge.',{missingOwnerFields:['installedLaborPercent.'+line.calculation.ratePath]});
+  // An installed price with no explicit labor allocation contributes zero.
+  // Seasonal pricing must not turn an otherwise configured job into review.
   const exactLabor=lines.reduce((sum,line)=>exactAdd(sum,line.installedLaborExactCents?exactFromEvidence(line.installedLaborExactCents):!line.installedBaseExactCents&&(line.category==='labor'||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?line.amountCents:0),exactDecimal(0));
   const laborSubtotalCents=exactToNumber(exactLabor);
   const seasonalMoney = exactMoneyResult(active ? exactPercentOf(exactLabor, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');

@@ -71,8 +71,9 @@ export function CustomerMeasurements({fields=[],value={},onChange,knownOfferings
  </div>)}</div>;
 }
 
-export function ServiceRules({service,meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {
- const [offering,setOffering]=useState({});
+export function ServiceRules({service,services=[],meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {
+  const [offering,setOffering]=useState({});
+ const needsQuoteTimeZone=!defaults.quoteTimeZone&&[defaults.peakMonths,service.peakMonths,...services.map(s=>s.peakMonths)].some(months=>Array.isArray(months)&&months.length>0);
  const label=name=>meta.ruleFields?.find(f=>f.field===name)?.label||name;
  const setMap=(name,key,value)=>onService({...service,[name]:{...(service[name]||{}),[key]:value}});
  return <section className="editor-section"><h2>Quote configuration</h2>
@@ -85,11 +86,12 @@ export function ServiceRules({service,meta,categories=[],feeNames=[],feeModes=[]
   <h3>Business-wide fixed charges and range</h3>{['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee'].map(field=><Field key={field} label={human(field.replace(/([A-Z])/g,' $1'))+' ($)'}><ExactNumericInput kind="fixed_amount" value={defaults[field]} onChange={v=>onDefault(field,v)}/></Field>)}
   <Field label="Estimate range buffer (%)"><ExactNumericInput value={defaults.rangeBufferPercent} onChange={v=>onDefault('rangeBufferPercent',v)}/></Field>
   <Field label="Peak surcharge (%)"><ExactNumericInput value={defaults.peakSurchargePercent} onChange={v=>onDefault('peakSurchargePercent',v)}/></Field>
-  <p>The surcharge applies only to labor. Select every month for a year-round labor surcharge.</p>
+  <p>The surcharge applies to labor lines and the entered labor portion of installed prices. Installed prices with no labor portion entered carry no surcharge. Select every month for a year-round labor surcharge.</p>
   <Button variant="quiet" onClick={()=>onDefault('peakMonths',Array.from({length:12},(_,i)=>i+1))}>Use business surcharge every month</Button>
   <Field label="Surcharge settings for this service"><Select aria-label="Surcharge settings for this service" value={service.peakMonths!==undefined||service.peakSurchargePercent!==undefined?'custom':'business'} onChange={event=>{const next={...service};if(event.target.value==='business'){delete next.peakMonths;delete next.peakSurchargePercent;}else{next.peakMonths=[...(defaults.peakMonths||[])];next.peakSurchargePercent=defaults.peakSurchargePercent;}onService(next);}}><option value="business">Use business settings</option><option value="custom">Custom settings for this service</option></Select></Field>
   {(service.peakMonths!==undefined||service.peakSurchargePercent!==undefined)&&<><Field label="This service labor surcharge (%)"><ExactNumericInput aria-label="This service labor surcharge (%)" value={service.peakSurchargePercent??defaults.peakSurchargePercent} onChange={value=>onService({...service,peakSurchargePercent:value})}/></Field><fieldset><legend>This service peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" aria-label={'This service month '+month} checked={(service.peakMonths??defaults.peakMonths??[]).includes(month)} onChange={event=>{const months=service.peakMonths??defaults.peakMonths??[];onService({...service,peakMonths:event.target.checked?[...months,month].sort((a,b)=>a-b):months.filter(value=>value!==month)});}}/>{new Date(2026,month-1,1).toLocaleString('en-US',{month:'short'})} </label>)}</fieldset><Button variant="quiet" onClick={()=>onService({...service,peakMonths:Array.from({length:12},(_,i)=>i+1)})}>Apply to this service every month</Button></>}
-  <Field label="Business time zone for quotes" help="Peak pricing uses today's date here, even when the job is scheduled for another month."><Select aria-label="Business time zone for quotes" value={defaults.quoteTimeZone||''} onChange={e=>onDefault('quoteTimeZone',e.target.value||undefined)}><option value="">Use the saved business time zone</option>{['UTC',...Intl.supportedValuesOf('timeZone')].map(zone=><option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}</Select></Field>
+  {needsQuoteTimeZone&&<Notice tone="warning">Choose a business time zone for peak pricing. Quotes continue using the saved profile time zone, or UTC if none is available, until you choose.</Notice>}
+  <Field label="Business time zone for quotes" help="Peak pricing uses today's date here, even when the job is scheduled for another month."><Select aria-label="Business time zone for quotes" value={defaults.quoteTimeZone||''} onChange={e=>onDefault('quoteTimeZone',e.target.value||undefined)}><option value="">Choose a business time zone</option>{['UTC',...Intl.supportedValuesOf('timeZone')].map(zone=><option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}</Select></Field>
     <fieldset><legend>Peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" checked={defaults.peakMonths?.includes(month)||false} onChange={e=>onDefault('peakMonths',e.target.checked?[...(defaults.peakMonths||[]),month].sort((a,b)=>a-b):(defaults.peakMonths||[]).filter(n=>n!==month))}/>{month} </label>)}<Button variant="quiet" onClick={()=>onDefault('peakMonths',[])}>No peak months</Button></fieldset>
  </section>;
 }

@@ -1,0 +1,23 @@
+{
+  "scope": "Three quote-decision gaps: real built editor and authenticated/public HTTP",
+  "checks": [
+    {
+      "name": "B01-roof-peak-time-zone-prompt-keeps-public-quotes-live",
+      "passed": true
+    },
+    {
+      "name": "B02-fence-legacy-confirmation-and-baseline-labels",
+      "passed": true
+    },
+    {
+      "name": "B03-interior-legacy-confirmation-and-baseline-labels",
+      "passed": true
+    },
+    {
+      "name": "B04-exterior-legacy-confirmation-and-baseline-labels",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -6,14 +6,9 @@ export function quoteDateContext(database,ownerId,now=new Date()) {
   return {timeZone:row?.timezone,quoteInstant:now};
 }
 export function applicationQuoteMonth(service,defaults,{timeZone,quoteInstant=new Date()}={}) {
+  // Missing zone setup is prompted in the price book, never a quoting gate.
+  // Preserve the profile fallback until the owner explicitly chooses a zone.
   timeZone=defaults.quoteTimeZone??timeZone;
-  const peakMonths=service.peakMonths??defaults.peakMonths;
-  const peakPercent=service.peakSurchargePercent??defaults.peakSurchargePercent;
-  if(!isValidIanaTimeZone(timeZone)) {
-    if(Array.isArray(peakMonths)&&peakMonths.length&&peakPercent>0) {
-      const error=new Error('Set a valid business time zone before calculating seasonal prices.');error.statusCode=409;throw error;
-    }
-    return 1; // Month has no price effect when seasonal pricing is off.
-  }
+  if(!isValidIanaTimeZone(timeZone))timeZone='UTC';
   return Number(utcToLocalParts(quoteInstant,timeZone).month);
 }

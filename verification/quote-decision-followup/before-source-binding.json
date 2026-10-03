@@ -1,0 +1,60 @@
+{
+  "commit": "535a16f33beef67cfbaa29f94f59fc65dd3dfb94",
+  "files": [
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha256": "aebcddb36643cd6bc9fae458f2bac39c3985f0901d91d7a193e7b23a75ebd82d",
+      "git_blob_sha": "38795fdba9ceee5f47c2fc61dc4b6fbb1e4d6774"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "sha256": "9008ebcc71977360fb0c3d4185c415b612479d4291253c5f05eb942e7a80a1fe",
+      "git_blob_sha": "f7d4c302abe1e85d77314f87ef8760f0838098a4"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha256": "1496fb3e1822b4dad61bb53d05e0cbf3b5bb05d90641bca00f0ef125552eac35",
+      "git_blob_sha": "6a0bdd47c6f4875d4aa24d74a306064880468830"
+    },
+    {
+      "path": "server/src/quoteDate.js",
+      "sha256": "89353896f5df45807cbc0174a8f59d403ba710135061d6ecf724871afe5adddd",
+      "git_blob_sha": "3ce395dc6e003e0d4570480aad6310aabdae89c9"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha256": "91c662dcd3c1093fe133b2ebb73d73f6d57c20efb4ec1c578dcb1728dee117f2",
+      "git_blob_sha": "3839340c703ceb8a3a44a636bee2be5ce96924e0"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "sha256": "c970f9e426f2d2e956cd89ba6c8abf3a3ce6ac5706d316a06d62e630567de70a",
+      "git_blob_sha": "126bb4843bd91aff69d215cfd660ed89700ffe71"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha256": "618495646ab13a662e02207774aead2112d7f98362319bf16ecdc9fd37891501",
+      "git_blob_sha": "7d1232f17f7edcbd6b71242931274d3526b609d1"
+    },
+    {
+      "path": "client/src/installedMaterialsEditor.jsx",
+      "sha256": "edd702cb921ebc33f2318538c23749e416c3837cc087fab192d7be29b139589a",
+      "git_blob_sha": "d3bf661a5665f43378c4efd814ae36fd7ce55c14"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "sha256": "39f61ff48b86e91938c988e8155b297d542c498e356b2b459ba7e0bf0da00830",
+      "git_blob_sha": "f850b2073c251b9533c66b0a8ebed93b89b66dae"
+    },
+    {
+      "path": "specs/QUOTE_TRADE_DECISIONS_20261003.md",
+      "sha256": "be4fee1a03f5daf02f029efd605b348133fcb19fa8c70a1e2bb968b525a2e03d",
+      "git_blob_sha": "36f65843a7ed93d18d1963d5fd96fffe0736af08"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "sha256": "b1797046b0049f5c6c0acb1bd2a5b51d1f44f7ddfb0ecdcf3c2e1dc6130202d7",
+      "git_blob_sha": "05fe76f1b988f18f0eb3093f99e4722a33975a81"
+    }
+  ]
+}

@@ -121,3 +121,9 @@ Verification: 1,259 passed / nine unchanged baseline voice failures / two skippe
 ## 2026-10-03 — dependency security repair
 
 Removed unused Tailwind and its exclusive dependency chain after the CI audit flagged the braces advisory GHSA-vfj7-8cjw-p6xm. Removed the old tracked `node_modules` directory; the existing ignore rule and clean-install workflows remain. Retained package versions and application source are unchanged. Clean install passed; production and full dependency audits each report zero known vulnerabilities; both builds passed and all five output files are byte-identical. Full suite: 1,259 passed, nine unchanged known voice failures, two skipped; existing failure checker passes. Local gate only; GitHub checks are verified after publication. No merge/deployment. Evidence: [security repair report](../verification/dependency-security-20261003/REPORT.md).
+
+## 2026-10-03 — three quote-decision gaps
+
+Follow-up on `535a16f` preserves the security repair. Missing installed labor allocations contribute zero to peak pricing and no longer block readiness or quotes. Offering price fields/notes state the flat-ground, standard-height or one-story baseline; retained non-baseline offerings require explicit owner confirmation before quoting, without changing saved money. Peak configuration prompts for an explicit quote time zone while profile/UTC fallback quoting continues. No other arithmetic changes. The governing trade-decision amendment is updated.
+
+Local gate: 28/28 new regressions pass; the same file detects 25 failures and three passing controls on pre-edit source. Full suite: 1,287 passed, the same nine known voice failures, two skipped (1,298 records); existing checker passes. Both builds and four actual built-editor/application workflows pass; all 153 application source hashes match. No merge/deployment. Evidence: [follow-up report](../verification/quote-decision-followup/REPORT.md).
