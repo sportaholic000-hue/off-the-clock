@@ -59,7 +59,7 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
  if(costing(type,p,rules)){
   keys.push('paint_wall');const d=p.offeringDetails||{};
   if(p.offeringMode==='itemized'){
-   if(d.primerCoats>0)keys.push('paint_primer');if(c.prepAreaSqft>0)keys.push('paint_prep');
+   if(d.primerCoats>0)keys.push('paint_primer');keys.push('paint_prep');
    if(c.ceilingsIncluded){keys.push('paint_ceiling');if(d.ceilingPrimerCoats>0)keys.push('paint_ceiling_primer');}
   }else{if(c.ceilingsIncluded)keys.push('paint_ceiling');if(c.trimIncluded)keys.push('paint_trim');}
  }

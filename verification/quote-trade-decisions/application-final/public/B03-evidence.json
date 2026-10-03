@@ -1,0 +1,4251 @@
+{
+  "saved": {
+    "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+    "services": [
+      {
+        "id": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+        "source": "MANUAL",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "[SYNTHETIC] A",
+        "active": true,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Drywall",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "finishCoats": 2,
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "wallHeight": "standard",
+            "ceilingsOffered": true,
+            "trimOffered": true,
+            "ceilingCoats": 2,
+            "ceilingPrimerCoats": 1,
+            "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+          },
+          "offeringRates": {
+            "wallLaborPerSqftPerCoat": 1,
+            "wallMaterialPerSqftPerCoat": 0.3,
+            "prepLaborPerSqft": 1,
+            "prepMaterialPerSqft": 0.2,
+            "primerLaborPerSqftPerCoat": 0.5,
+            "primerMaterialPerSqftPerCoat": 0.2,
+            "ceilingLaborPerSqftPerCoat": 0.8,
+            "ceilingMaterialPerSqftPerCoat": 0.25,
+            "ceilingPrimerLaborPerSqftPerCoat": 0.4,
+            "ceilingPrimerMaterialPerSqftPerCoat": 0.15,
+            "installedTrimPerLF": 2,
+            "prepLaborPerSqft_poor": 2,
+            "prepMaterialPerSqft_poor": 0.4
+          },
+          "installedLaborPercent": {
+            "offeringRates.installedTrimPerLF": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedTrimPerLF": 40
+          },
+          "wallHeightLaborMultiplier": {
+            "standard": 1,
+            "high": 1.1,
+            "vaulted": 1.25
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 500,
+          "coats": 3,
+          "surfaceCondition": "poor",
+          "wallHeight": "standard",
+          "wallScopeUniform": true,
+          "ceilingsIncluded": true,
+          "ceilingAreaSqft": 200,
+          "trimIncluded": true,
+          "trimLengthLF": 100
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "serviceType": "INTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+          "operationId": "af6c37a2-24ed-456b-8488-9875237300cc",
+          "createdAt": "2026-10-03T03:31:28.505Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+          "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "operationId": "af6c37a2-24ed-456b-8488-9875237300cc",
+          "approvedAt": "2026-10-03T03:31:28.505Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "d10efd292d4e71e5cfada0fd87f7ca41ad22f7ebd449ed0603027bd30e0da469",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "a2ec276f-e56f-471b-81b3-2d44bddb57bb",
+        "source": "MANUAL",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "[SYNTHETIC] B",
+        "active": true,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Drywall",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "finishCoats": 2,
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "wallHeight": "standard",
+            "ceilingsOffered": true,
+            "trimOffered": true,
+            "ceilingCoats": 2,
+            "ceilingPrimerCoats": 1,
+            "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+          },
+          "offeringRates": {
+            "wallLaborPerSqftPerCoat": 1,
+            "wallMaterialPerSqftPerCoat": 0.3,
+            "prepLaborPerSqft": 1,
+            "prepMaterialPerSqft": 0.2,
+            "primerLaborPerSqftPerCoat": 0.5,
+            "primerMaterialPerSqftPerCoat": 0.2,
+            "ceilingLaborPerSqftPerCoat": 0.8,
+            "ceilingMaterialPerSqftPerCoat": 0.25,
+            "ceilingPrimerLaborPerSqftPerCoat": 0.4,
+            "ceilingPrimerMaterialPerSqftPerCoat": 0.15,
+            "installedTrimPerLF": 2,
+            "prepLaborPerSqft_poor": 2,
+            "prepMaterialPerSqft_poor": 0.4
+          },
+          "installedLaborPercent": {
+            "offeringRates.installedTrimPerLF": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedTrimPerLF": 40
+          },
+          "wallHeightLaborMultiplier": {
+            "standard": 1,
+            "high": 1.1,
+            "vaulted": 1.25
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "areaInputMethod": "wall_sqft",
+          "wallAreaSqft": 500,
+          "coats": 3,
+          "surfaceCondition": "poor",
+          "wallHeight": "standard",
+          "wallScopeUniform": true,
+          "ceilingsIncluded": true,
+          "ceilingAreaSqft": 200,
+          "trimIncluded": true,
+          "trimLengthLF": 100
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "a2ec276f-e56f-471b-81b3-2d44bddb57bb",
+          "serviceType": "INTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+          "operationId": "c3a77e76-82b8-4a49-82d1-3182a5d8f0db",
+          "createdAt": "2026-10-03T03:31:28.558Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+          "serviceId": "a2ec276f-e56f-471b-81b3-2d44bddb57bb",
+          "operationId": "c3a77e76-82b8-4a49-82d1-3182a5d8f0db",
+          "approvedAt": "2026-10-03T03:31:28.558Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "e6a2ae9f56c14e1433eb43804fd687405ff2a889333cefff07c1b56253e30405",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 10,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T03:31:28.559Z",
+    "revision": "96c00e0c8cb6d603a92cd508835159471a4460d6203066d118e69e645fb1bf7e",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+    "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+    "quoteId": "559614d8-b649-4580-b46b-45c3a02f686e",
+    "serviceType": "INTERIOR_PAINTING",
+    "submittedCustomerInputs": {
+      "areaInputMethod": "wall_sqft",
+      "wallAreaSqft": 500,
+      "coats": 3,
+      "surfaceCondition": "poor",
+      "wallHeight": "standard",
+      "wallScopeUniform": true,
+      "ceilingsIncluded": true,
+      "ceilingAreaSqft": 200,
+      "trimIncluded": true,
+      "trimLengthLF": 100
+    },
+    "unconfirmedOwnerFields": [],
+    "lowEstimate": 5021,
+    "midEstimate": 5021,
+    "highEstimate": 5021,
+    "options": [
+      {
+        "tierName": null,
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "lowEstimate": 5021,
+        "midEstimate": 5021,
+        "highEstimate": 5021,
+        "priceDrivers": [
+          "500 measured square feet of paintable wall area"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 3 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 3 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+        "rangeBufferUsed": 0,
+        "effectiveRangeBufferPercent": 0,
+        "lineItems": [
+          {
+            "name": "Wall finish labor",
+            "category": "labor",
+            "amountCents": 150000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 1500,
+              "exactQuantity": {
+                "numerator": "1500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "rateCents": 100,
+              "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 150000,
+              "exactUnroundedCents": {
+                "numerator": "150000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 150000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Wall finish materials",
+            "category": "material",
+            "amountCents": 49500,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 1650,
+              "exactQuantity": {
+                "numerator": "1650",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "rateCents": 30,
+              "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 49500,
+              "exactUnroundedCents": {
+                "numerator": "49500",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 49500,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "taxable": false
+          },
+          {
+            "name": "Wall primer labor",
+            "category": "labor",
+            "amountCents": 25000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 500,
+              "exactQuantity": {
+                "numerator": "500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "rateCents": 50,
+              "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 25000,
+              "exactUnroundedCents": {
+                "numerator": "25000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 25000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Wall primer materials",
+            "category": "material",
+            "amountCents": 11000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 550,
+              "exactQuantity": {
+                "numerator": "550",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "rateCents": 20,
+              "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 11000,
+              "exactUnroundedCents": {
+                "numerator": "11000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 11000,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "taxable": false
+          },
+          {
+            "name": "poor surface preparation labor",
+            "category": "prep",
+            "amountCents": 140000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 700,
+              "exactQuantity": {
+                "numerator": "700",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "rateCents": 200,
+              "ratePath": "offeringRates.prepLaborPerSqft_poor",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 140000,
+              "exactUnroundedCents": {
+                "numerator": "140000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 140000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "poor surface preparation materials",
+            "category": "material",
+            "amountCents": 30800,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 770,
+              "exactQuantity": {
+                "numerator": "770",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "rateCents": 40,
+              "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+              "multipliers": [],
+              "unroundedCents": 30800,
+              "exactUnroundedCents": {
+                "numerator": "30800",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 30800,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "taxable": false
+          },
+          {
+            "name": "Ceiling finish labor",
+            "category": "labor",
+            "amountCents": 48000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 600,
+              "exactQuantity": {
+                "numerator": "600",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "rateCents": 80,
+              "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 48000,
+              "exactUnroundedCents": {
+                "numerator": "48000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 48000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Ceiling finish materials",
+            "category": "material",
+            "amountCents": 16500,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 660,
+              "exactQuantity": {
+                "numerator": "660",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "rateCents": 25,
+              "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 16500,
+              "exactUnroundedCents": {
+                "numerator": "16500",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 16500,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "taxable": false
+          },
+          {
+            "name": "Ceiling primer labor",
+            "category": "labor",
+            "amountCents": 8000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 200,
+              "exactQuantity": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "rateCents": 40,
+              "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "wallHeightLaborMultiplier.standard",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 8000,
+              "exactUnroundedCents": {
+                "numerator": "8000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 8000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Ceiling primer materials",
+            "category": "material",
+            "amountCents": 3300,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 220,
+              "exactQuantity": {
+                "numerator": "220",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "rateCents": 15,
+              "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+              "multipliers": [],
+              "unroundedCents": 3300,
+              "exactUnroundedCents": {
+                "numerator": "3300",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 3300,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "taxable": false
+          },
+          {
+            "name": "Installed trim painting including the defined scope",
+            "category": "addon",
+            "priceBasis": "sell_price",
+            "amountCents": 20000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 100,
+              "exactQuantity": {
+                "numerator": "100",
+                "denominator": "1"
+              },
+              "unit": "trim linear feet",
+              "rateCents": 200,
+              "ratePath": "offeringRates.installedTrimPerLF",
+              "priceBasis": "sell_price",
+              "multipliers": [],
+              "unroundedCents": 20000,
+              "exactUnroundedCents": {
+                "numerator": "20000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 20000,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "installedBaseExactCents": {
+              "numerator": "20000",
+              "denominator": "1"
+            },
+            "installedLaborExactCents": {
+              "numerator": "12000",
+              "denominator": "1"
+            },
+            "taxable": false
+          }
+        ],
+        "calculationRecord": {
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "freeOffering": false,
+          "serviceType": "INTERIOR_PAINTING",
+          "tierName": null,
+          "normalizedCustomerInputs": {
+            "areaInputMethod": "wall_sqft",
+            "wallAreaSqft": 500,
+            "coats": 3,
+            "surfaceCondition": "poor",
+            "wallHeight": "standard",
+            "wallScopeUniform": true,
+            "ceilingsIncluded": true,
+            "ceilingAreaSqft": 200,
+            "trimIncluded": true,
+            "trimLengthLF": 100
+          },
+          "measurements": [
+            {
+              "name": "installedTrimPerLF",
+              "value": 100,
+              "unit": "trim linear feet",
+              "source": "confirmed_offering_scope"
+            }
+          ],
+          "quantityDerivations": [
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "wallLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 3
+              },
+              "result": 1500,
+              "exactResult": {
+                "numerator": "1500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "wallMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 3
+              },
+              "result": 1500,
+              "exactResult": {
+                "numerator": "1500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "primerLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 1
+              },
+              "result": 500,
+              "exactResult": {
+                "numerator": "500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "primerMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 1
+              },
+              "result": 500,
+              "exactResult": {
+                "numerator": "500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "prepLaborPerSqft_poorQuantity",
+              "formula": "measured walls + selected measured ceilings",
+              "inputs": {
+                "wallArea": 500,
+                "ceilingArea": 200,
+                "surfaceCondition": "poor"
+              },
+              "result": 700,
+              "exactResult": {
+                "numerator": "700",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "prepMaterialPerSqft_poorQuantity",
+              "formula": "measured walls + selected measured ceilings",
+              "inputs": {
+                "wallArea": 500,
+                "ceilingArea": 200,
+                "surfaceCondition": "poor"
+              },
+              "result": 700,
+              "exactResult": {
+                "numerator": "700",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 3
+              },
+              "result": 600,
+              "exactResult": {
+                "numerator": "600",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 3
+              },
+              "result": 600,
+              "exactResult": {
+                "numerator": "600",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingPrimerLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 1
+              },
+              "result": 200,
+              "exactResult": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingPrimerMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 1
+              },
+              "result": 200,
+              "exactResult": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Wall finish materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 1500,
+                "wasteFactor": 0.1,
+                "wastePath": "paintWasteFactor"
+              },
+              "result": 1650,
+              "exactResult": {
+                "numerator": "1650",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Wall primer materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 500,
+                "wasteFactor": 0.1,
+                "wastePath": "primerWasteFactor"
+              },
+              "result": 550,
+              "exactResult": {
+                "numerator": "550",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "poor surface preparation materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 700,
+                "wasteFactor": 0.1,
+                "wastePath": "prepMaterialWasteFactor"
+              },
+              "result": 770,
+              "exactResult": {
+                "numerator": "770",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Ceiling finish materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 600,
+                "wasteFactor": 0.1,
+                "wastePath": "paintWasteFactor"
+              },
+              "result": 660,
+              "exactResult": {
+                "numerator": "660",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Ceiling primer materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 200,
+                "wasteFactor": 0.1,
+                "wastePath": "primerWasteFactor"
+              },
+              "result": 220,
+              "exactResult": {
+                "numerator": "220",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer materials"
+              ]
+            }
+          ],
+          "ruleApplications": [],
+          "assumptions": [],
+          "disclosures": [
+            "[SYNTHETIC] Defined painting offering",
+            "Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating",
+            "3 wall finish coat(s); 1 wall primer coat(s).",
+            "Preparation: [SYNTHETIC] Defined preparation of the measured affected area.",
+            "3 ceiling finish coat(s); 1 ceiling primer coat(s).",
+            "Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats."
+          ],
+          "lineItems": [
+            {
+              "name": "Wall finish labor",
+              "category": "labor",
+              "amountCents": 150000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1500,
+                "exactQuantity": {
+                  "numerator": "1500",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot coats",
+                "rateCents": 100,
+                "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 150000,
+                "exactUnroundedCents": {
+                  "numerator": "150000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 150000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall finish materials",
+              "category": "material",
+              "amountCents": 49500,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1650,
+                "exactQuantity": {
+                  "numerator": "1650",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot coats",
+                "rateCents": 30,
+                "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 49500,
+                "exactUnroundedCents": {
+                  "numerator": "49500",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 49500,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall primer labor",
+              "category": "labor",
+              "amountCents": 25000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 500,
+                "exactQuantity": {
+                  "numerator": "500",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot primer coats",
+                "rateCents": 50,
+                "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 25000,
+                "exactUnroundedCents": {
+                  "numerator": "25000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 25000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall primer materials",
+              "category": "material",
+              "amountCents": 11000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 550,
+                "exactQuantity": {
+                  "numerator": "550",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot primer coats",
+                "rateCents": 20,
+                "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 11000,
+                "exactUnroundedCents": {
+                  "numerator": "11000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 11000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "poor surface preparation labor",
+              "category": "prep",
+              "amountCents": 140000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 700,
+                "exactQuantity": {
+                  "numerator": "700",
+                  "denominator": "1"
+                },
+                "unit": "painted square feet",
+                "rateCents": 200,
+                "ratePath": "offeringRates.prepLaborPerSqft_poor",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 140000,
+                "exactUnroundedCents": {
+                  "numerator": "140000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 140000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "poor surface preparation materials",
+              "category": "material",
+              "amountCents": 30800,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 770,
+                "exactQuantity": {
+                  "numerator": "770",
+                  "denominator": "1"
+                },
+                "unit": "painted square feet",
+                "rateCents": 40,
+                "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+                "multipliers": [],
+                "unroundedCents": 30800,
+                "exactUnroundedCents": {
+                  "numerator": "30800",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 30800,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling finish labor",
+              "category": "labor",
+              "amountCents": 48000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 600,
+                "exactQuantity": {
+                  "numerator": "600",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot coats",
+                "rateCents": 80,
+                "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 48000,
+                "exactUnroundedCents": {
+                  "numerator": "48000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 48000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling finish materials",
+              "category": "material",
+              "amountCents": 16500,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 660,
+                "exactQuantity": {
+                  "numerator": "660",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot coats",
+                "rateCents": 25,
+                "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 16500,
+                "exactUnroundedCents": {
+                  "numerator": "16500",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 16500,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling primer labor",
+              "category": "labor",
+              "amountCents": 8000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 200,
+                "exactQuantity": {
+                  "numerator": "200",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot primer coats",
+                "rateCents": 40,
+                "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 8000,
+                "exactUnroundedCents": {
+                  "numerator": "8000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 8000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling primer materials",
+              "category": "material",
+              "amountCents": 3300,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 220,
+                "exactQuantity": {
+                  "numerator": "220",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot primer coats",
+                "rateCents": 15,
+                "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 3300,
+                "exactUnroundedCents": {
+                  "numerator": "3300",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 3300,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Installed trim painting including the defined scope",
+              "category": "addon",
+              "priceBasis": "sell_price",
+              "amountCents": 20000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 100,
+                "exactQuantity": {
+                  "numerator": "100",
+                  "denominator": "1"
+                },
+                "unit": "trim linear feet",
+                "rateCents": 200,
+                "ratePath": "offeringRates.installedTrimPerLF",
+                "priceBasis": "sell_price",
+                "multipliers": [],
+                "unroundedCents": 20000,
+                "exactUnroundedCents": {
+                  "numerator": "20000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 20000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "installedBaseExactCents": {
+                "numerator": "20000",
+                "denominator": "1"
+              },
+              "installedLaborExactCents": {
+                "numerator": "12000",
+                "denominator": "1"
+              },
+              "taxable": false
+            }
+          ],
+          "scenarios": {
+            "mid": {
+              "variant": "mid",
+              "order": [
+                "fees",
+                "seasonal",
+                "taxability",
+                "markup",
+                "minimum"
+              ],
+              "fees": [
+                {
+                  "fee": "travel",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "disposal",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "permit",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "overhead",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                }
+              ],
+              "seasonal": {
+                "month": 10,
+                "configuredMonths": [],
+                "percent": 0,
+                "laborSubtotalCents": 383000,
+                "seasonActive": false,
+                "applied": false,
+                "amountCents": 0
+              },
+              "markup": {
+                "mode": "markup",
+                "lineTreatment": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "amountCents": 150000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Wall finish materials",
+                    "category": "material",
+                    "amountCents": 49500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "amountCents": 25000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Wall primer materials",
+                    "category": "material",
+                    "amountCents": 11000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "amountCents": 140000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "poor surface preparation materials",
+                    "category": "material",
+                    "amountCents": 30800,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "amountCents": 48000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Ceiling finish materials",
+                    "category": "material",
+                    "amountCents": 16500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "amountCents": 8000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Ceiling primer materials",
+                    "category": "material",
+                    "amountCents": 3300,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Installed trim painting including the defined scope",
+                    "category": "addon",
+                    "amountCents": 20000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  }
+                ],
+                "percent": 0,
+                "baseCents": 371000,
+                "amountCents": 0,
+                "eligibleLines": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "amountCents": 150000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "amountCents": 25000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "amountCents": 140000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "amountCents": 48000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "amountCents": 8000,
+                    "basis": "cost"
+                  }
+                ],
+                "sellPriceLinesExcluded": [
+                  "Wall finish materials",
+                  "Wall primer materials",
+                  "poor surface preparation materials",
+                  "Ceiling finish materials",
+                  "Ceiling primer materials",
+                  "Installed trim painting including the defined scope"
+                ]
+              },
+              "minimum": {
+                "basis": "post_markup",
+                "subtotalBeforeMinimumCents": 502100,
+                "businessMinimumCents": 0,
+                "serviceMinimumField": "minimumJob",
+                "serviceMinimumCents": 0,
+                "effectiveMinimumCents": 0,
+                "adjustmentCents": 0,
+                "applied": false
+              },
+              "tax": {
+                "mode": "TAX_NONE",
+                "percent": 0,
+                "preTaxSubtotalCents": 502100,
+                "taxableMarkupCents": 0,
+                "taxableSubtotalCents": 0,
+                "nonTaxableSubtotalCents": 502100,
+                "taxCents": 0,
+                "finalTotalCents": 502100,
+                "lineTaxability": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 150000
+                  },
+                  {
+                    "name": "Wall finish materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 49500
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 25000
+                  },
+                  {
+                    "name": "Wall primer materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 11000
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "taxable": false,
+                    "amountCents": 140000
+                  },
+                  {
+                    "name": "poor surface preparation materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 30800
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 48000
+                  },
+                  {
+                    "name": "Ceiling finish materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 16500
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 8000
+                  },
+                  {
+                    "name": "Ceiling primer materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 3300
+                  },
+                  {
+                    "name": "Installed trim painting including the defined scope",
+                    "category": "addon",
+                    "taxable": false,
+                    "amountCents": 20000
+                  }
+                ]
+              },
+              "lineItems": [
+                {
+                  "name": "Wall finish labor",
+                  "category": "labor",
+                  "amountCents": 150000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1500,
+                    "exactQuantity": {
+                      "numerator": "1500",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot coats",
+                    "rateCents": 100,
+                    "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 150000,
+                    "exactUnroundedCents": {
+                      "numerator": "150000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 150000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall finish materials",
+                  "category": "material",
+                  "amountCents": 49500,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1650,
+                    "exactQuantity": {
+                      "numerator": "1650",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot coats",
+                    "rateCents": 30,
+                    "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 49500,
+                    "exactUnroundedCents": {
+                      "numerator": "49500",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 49500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall primer labor",
+                  "category": "labor",
+                  "amountCents": 25000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 500,
+                    "exactQuantity": {
+                      "numerator": "500",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot primer coats",
+                    "rateCents": 50,
+                    "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 25000,
+                    "exactUnroundedCents": {
+                      "numerator": "25000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 25000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall primer materials",
+                  "category": "material",
+                  "amountCents": 11000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 550,
+                    "exactQuantity": {
+                      "numerator": "550",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot primer coats",
+                    "rateCents": 20,
+                    "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 11000,
+                    "exactUnroundedCents": {
+                      "numerator": "11000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 11000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "poor surface preparation labor",
+                  "category": "prep",
+                  "amountCents": 140000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 700,
+                    "exactQuantity": {
+                      "numerator": "700",
+                      "denominator": "1"
+                    },
+                    "unit": "painted square feet",
+                    "rateCents": 200,
+                    "ratePath": "offeringRates.prepLaborPerSqft_poor",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 140000,
+                    "exactUnroundedCents": {
+                      "numerator": "140000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 140000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "poor surface preparation materials",
+                  "category": "material",
+                  "amountCents": 30800,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 770,
+                    "exactQuantity": {
+                      "numerator": "770",
+                      "denominator": "1"
+                    },
+                    "unit": "painted square feet",
+                    "rateCents": 40,
+                    "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+                    "multipliers": [],
+                    "unroundedCents": 30800,
+                    "exactUnroundedCents": {
+                      "numerator": "30800",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 30800,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling finish labor",
+                  "category": "labor",
+                  "amountCents": 48000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 600,
+                    "exactQuantity": {
+                      "numerator": "600",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot coats",
+                    "rateCents": 80,
+                    "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 48000,
+                    "exactUnroundedCents": {
+                      "numerator": "48000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 48000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling finish materials",
+                  "category": "material",
+                  "amountCents": 16500,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 660,
+                    "exactQuantity": {
+                      "numerator": "660",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot coats",
+                    "rateCents": 25,
+                    "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 16500,
+                    "exactUnroundedCents": {
+                      "numerator": "16500",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 16500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling primer labor",
+                  "category": "labor",
+                  "amountCents": 8000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 200,
+                    "exactQuantity": {
+                      "numerator": "200",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot primer coats",
+                    "rateCents": 40,
+                    "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 8000,
+                    "exactUnroundedCents": {
+                      "numerator": "8000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 8000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling primer materials",
+                  "category": "material",
+                  "amountCents": 3300,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 220,
+                    "exactQuantity": {
+                      "numerator": "220",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot primer coats",
+                    "rateCents": 15,
+                    "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 3300,
+                    "exactUnroundedCents": {
+                      "numerator": "3300",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 3300,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Installed trim painting including the defined scope",
+                  "category": "addon",
+                  "priceBasis": "sell_price",
+                  "amountCents": 20000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 100,
+                    "exactQuantity": {
+                      "numerator": "100",
+                      "denominator": "1"
+                    },
+                    "unit": "trim linear feet",
+                    "rateCents": 200,
+                    "ratePath": "offeringRates.installedTrimPerLF",
+                    "priceBasis": "sell_price",
+                    "multipliers": [],
+                    "unroundedCents": 20000,
+                    "exactUnroundedCents": {
+                      "numerator": "20000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 20000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "installedBaseExactCents": {
+                    "numerator": "20000",
+                    "denominator": "1"
+                  },
+                  "installedLaborExactCents": {
+                    "numerator": "12000",
+                    "denominator": "1"
+                  },
+                  "taxable": false
+                }
+              ],
+              "finalTotalCents": 502100
+            }
+          },
+          "range": {
+            "source": "business_range_buffer",
+            "bufferPercent": 0,
+            "effectiveRangeBufferPercent": 0,
+            "rangeBufferUsed": 0,
+            "minimumCustomerFloorCents": 0,
+            "lowCents": 502100,
+            "midCents": 502100,
+            "highCents": 502100,
+            "exactMidScenarioTotalCents": 502100
+          },
+          "customerProjection": {
+            "tierName": null,
+            "priceUnit": null,
+            "taxTreatment": "No tax added.",
+            "lowEstimate": 5021,
+            "midEstimate": 5021,
+            "highEstimate": 5021,
+            "priceDrivers": [
+              "500 measured square feet of paintable wall area"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 3 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 3 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+            "rangeBufferUsed": 0
+          }
+        }
+      }
+    ],
+    "priceDrivers": [
+      "500 measured square feet of paintable wall area"
+    ],
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "rangeBufferUsed": 0,
+    "effectiveRangeBufferPercent": 0,
+    "lineItems": [
+      {
+        "name": "Wall finish labor",
+        "category": "labor",
+        "amountCents": 150000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 1500,
+          "exactQuantity": {
+            "numerator": "1500",
+            "denominator": "1"
+          },
+          "unit": "wall square-foot coats",
+          "rateCents": 100,
+          "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "wallHeightLaborMultiplier.standard",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 150000,
+          "exactUnroundedCents": {
+            "numerator": "150000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 150000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Wall finish materials",
+        "category": "material",
+        "amountCents": 49500,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 1650,
+          "exactQuantity": {
+            "numerator": "1650",
+            "denominator": "1"
+          },
+          "unit": "wall square-foot coats",
+          "rateCents": 30,
+          "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+          "multipliers": [],
+          "unroundedCents": 49500,
+          "exactUnroundedCents": {
+            "numerator": "49500",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 49500,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "taxable": false
+      },
+      {
+        "name": "Wall primer labor",
+        "category": "labor",
+        "amountCents": 25000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 500,
+          "exactQuantity": {
+            "numerator": "500",
+            "denominator": "1"
+          },
+          "unit": "wall square-foot primer coats",
+          "rateCents": 50,
+          "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "wallHeightLaborMultiplier.standard",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 25000,
+          "exactUnroundedCents": {
+            "numerator": "25000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 25000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Wall primer materials",
+        "category": "material",
+        "amountCents": 11000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 550,
+          "exactQuantity": {
+            "numerator": "550",
+            "denominator": "1"
+          },
+          "unit": "wall square-foot primer coats",
+          "rateCents": 20,
+          "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+          "multipliers": [],
+          "unroundedCents": 11000,
+          "exactUnroundedCents": {
+            "numerator": "11000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 11000,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "taxable": false
+      },
+      {
+        "name": "poor surface preparation labor",
+        "category": "prep",
+        "amountCents": 140000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 700,
+          "exactQuantity": {
+            "numerator": "700",
+            "denominator": "1"
+          },
+          "unit": "painted square feet",
+          "rateCents": 200,
+          "ratePath": "offeringRates.prepLaborPerSqft_poor",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "wallHeightLaborMultiplier.standard",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 140000,
+          "exactUnroundedCents": {
+            "numerator": "140000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 140000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "poor surface preparation materials",
+        "category": "material",
+        "amountCents": 30800,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 770,
+          "exactQuantity": {
+            "numerator": "770",
+            "denominator": "1"
+          },
+          "unit": "painted square feet",
+          "rateCents": 40,
+          "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+          "multipliers": [],
+          "unroundedCents": 30800,
+          "exactUnroundedCents": {
+            "numerator": "30800",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 30800,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "taxable": false
+      },
+      {
+        "name": "Ceiling finish labor",
+        "category": "labor",
+        "amountCents": 48000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 600,
+          "exactQuantity": {
+            "numerator": "600",
+            "denominator": "1"
+          },
+          "unit": "ceiling square-foot coats",
+          "rateCents": 80,
+          "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "wallHeightLaborMultiplier.standard",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 48000,
+          "exactUnroundedCents": {
+            "numerator": "48000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 48000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Ceiling finish materials",
+        "category": "material",
+        "amountCents": 16500,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 660,
+          "exactQuantity": {
+            "numerator": "660",
+            "denominator": "1"
+          },
+          "unit": "ceiling square-foot coats",
+          "rateCents": 25,
+          "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+          "multipliers": [],
+          "unroundedCents": 16500,
+          "exactUnroundedCents": {
+            "numerator": "16500",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 16500,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "taxable": false
+      },
+      {
+        "name": "Ceiling primer labor",
+        "category": "labor",
+        "amountCents": 8000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 200,
+          "exactQuantity": {
+            "numerator": "200",
+            "denominator": "1"
+          },
+          "unit": "ceiling square-foot primer coats",
+          "rateCents": 40,
+          "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "wallHeightLaborMultiplier.standard",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 8000,
+          "exactUnroundedCents": {
+            "numerator": "8000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 8000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Ceiling primer materials",
+        "category": "material",
+        "amountCents": 3300,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 220,
+          "exactQuantity": {
+            "numerator": "220",
+            "denominator": "1"
+          },
+          "unit": "ceiling square-foot primer coats",
+          "rateCents": 15,
+          "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+          "multipliers": [],
+          "unroundedCents": 3300,
+          "exactUnroundedCents": {
+            "numerator": "3300",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 3300,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "taxable": false
+      },
+      {
+        "name": "Installed trim painting including the defined scope",
+        "category": "addon",
+        "priceBasis": "sell_price",
+        "amountCents": 20000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 100,
+          "exactQuantity": {
+            "numerator": "100",
+            "denominator": "1"
+          },
+          "unit": "trim linear feet",
+          "rateCents": 200,
+          "ratePath": "offeringRates.installedTrimPerLF",
+          "priceBasis": "sell_price",
+          "multipliers": [],
+          "unroundedCents": 20000,
+          "exactUnroundedCents": {
+            "numerator": "20000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 20000,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "installedBaseExactCents": {
+          "numerator": "20000",
+          "denominator": "1"
+        },
+        "installedLaborExactCents": {
+          "numerator": "12000",
+          "denominator": "1"
+        },
+        "taxable": false
+      }
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 3 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 3 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+    "appliedRules": [],
+    "urgencyFlags": [],
+    "failedTierDiagnostics": [],
+    "customerEligible": true,
+    "calculationRecord": {
+      "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+      "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+      "quoteId": "559614d8-b649-4580-b46b-45c3a02f686e",
+      "serviceType": "INTERIOR_PAINTING",
+      "options": [
+        {
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "freeOffering": false,
+          "serviceType": "INTERIOR_PAINTING",
+          "tierName": null,
+          "normalizedCustomerInputs": {
+            "areaInputMethod": "wall_sqft",
+            "wallAreaSqft": 500,
+            "coats": 3,
+            "surfaceCondition": "poor",
+            "wallHeight": "standard",
+            "wallScopeUniform": true,
+            "ceilingsIncluded": true,
+            "ceilingAreaSqft": 200,
+            "trimIncluded": true,
+            "trimLengthLF": 100
+          },
+          "measurements": [
+            {
+              "name": "installedTrimPerLF",
+              "value": 100,
+              "unit": "trim linear feet",
+              "source": "confirmed_offering_scope"
+            }
+          ],
+          "quantityDerivations": [
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "wallLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 3
+              },
+              "result": 1500,
+              "exactResult": {
+                "numerator": "1500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "wallMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 3
+              },
+              "result": 1500,
+              "exactResult": {
+                "numerator": "1500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "primerLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 1
+              },
+              "result": 500,
+              "exactResult": {
+                "numerator": "500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "primerMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 500,
+                "definedCoats": 1
+              },
+              "result": 500,
+              "exactResult": {
+                "numerator": "500",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "prepLaborPerSqft_poorQuantity",
+              "formula": "measured walls + selected measured ceilings",
+              "inputs": {
+                "wallArea": 500,
+                "ceilingArea": 200,
+                "surfaceCondition": "poor"
+              },
+              "result": 700,
+              "exactResult": {
+                "numerator": "700",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "prepMaterialPerSqft_poorQuantity",
+              "formula": "measured walls + selected measured ceilings",
+              "inputs": {
+                "wallArea": 500,
+                "ceilingArea": 200,
+                "surfaceCondition": "poor"
+              },
+              "result": 700,
+              "exactResult": {
+                "numerator": "700",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 3
+              },
+              "result": 600,
+              "exactResult": {
+                "numerator": "600",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 3
+              },
+              "result": 600,
+              "exactResult": {
+                "numerator": "600",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingPrimerLaborPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 1
+              },
+              "result": 200,
+              "exactResult": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "ceilingPrimerMaterialPerSqftPerCoatQuantity",
+              "formula": "measuredAreaSqft * definedCoats",
+              "inputs": {
+                "measuredAreaSqft": 200,
+                "definedCoats": 1
+              },
+              "result": 200,
+              "exactResult": {
+                "numerator": "200",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Wall finish materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 1500,
+                "wasteFactor": 0.1,
+                "wastePath": "paintWasteFactor"
+              },
+              "result": 1650,
+              "exactResult": {
+                "numerator": "1650",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot coats",
+              "usedBy": [
+                "Wall finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Wall primer materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 500,
+                "wasteFactor": 0.1,
+                "wastePath": "primerWasteFactor"
+              },
+              "result": 550,
+              "exactResult": {
+                "numerator": "550",
+                "denominator": "1"
+              },
+              "unit": "wall square-foot primer coats",
+              "usedBy": [
+                "Wall primer materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "poor surface preparation materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 700,
+                "wasteFactor": 0.1,
+                "wastePath": "prepMaterialWasteFactor"
+              },
+              "result": 770,
+              "exactResult": {
+                "numerator": "770",
+                "denominator": "1"
+              },
+              "unit": "painted square feet",
+              "usedBy": [
+                "poor surface preparation materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Ceiling finish materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 600,
+                "wasteFactor": 0.1,
+                "wastePath": "paintWasteFactor"
+              },
+              "result": 660,
+              "exactResult": {
+                "numerator": "660",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot coats",
+              "usedBy": [
+                "Ceiling finish materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Ceiling primer materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 200,
+                "wasteFactor": 0.1,
+                "wastePath": "primerWasteFactor"
+              },
+              "result": 220,
+              "exactResult": {
+                "numerator": "220",
+                "denominator": "1"
+              },
+              "unit": "ceiling square-foot primer coats",
+              "usedBy": [
+                "Ceiling primer materials"
+              ]
+            }
+          ],
+          "ruleApplications": [],
+          "assumptions": [],
+          "disclosures": [
+            "[SYNTHETIC] Defined painting offering",
+            "Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating",
+            "3 wall finish coat(s); 1 wall primer coat(s).",
+            "Preparation: [SYNTHETIC] Defined preparation of the measured affected area.",
+            "3 ceiling finish coat(s); 1 ceiling primer coat(s).",
+            "Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats."
+          ],
+          "lineItems": [
+            {
+              "name": "Wall finish labor",
+              "category": "labor",
+              "amountCents": 150000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1500,
+                "exactQuantity": {
+                  "numerator": "1500",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot coats",
+                "rateCents": 100,
+                "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 150000,
+                "exactUnroundedCents": {
+                  "numerator": "150000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 150000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall finish materials",
+              "category": "material",
+              "amountCents": 49500,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1650,
+                "exactQuantity": {
+                  "numerator": "1650",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot coats",
+                "rateCents": 30,
+                "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 49500,
+                "exactUnroundedCents": {
+                  "numerator": "49500",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 49500,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall primer labor",
+              "category": "labor",
+              "amountCents": 25000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 500,
+                "exactQuantity": {
+                  "numerator": "500",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot primer coats",
+                "rateCents": 50,
+                "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 25000,
+                "exactUnroundedCents": {
+                  "numerator": "25000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 25000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Wall primer materials",
+              "category": "material",
+              "amountCents": 11000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 550,
+                "exactQuantity": {
+                  "numerator": "550",
+                  "denominator": "1"
+                },
+                "unit": "wall square-foot primer coats",
+                "rateCents": 20,
+                "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 11000,
+                "exactUnroundedCents": {
+                  "numerator": "11000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 11000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "poor surface preparation labor",
+              "category": "prep",
+              "amountCents": 140000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 700,
+                "exactQuantity": {
+                  "numerator": "700",
+                  "denominator": "1"
+                },
+                "unit": "painted square feet",
+                "rateCents": 200,
+                "ratePath": "offeringRates.prepLaborPerSqft_poor",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 140000,
+                "exactUnroundedCents": {
+                  "numerator": "140000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 140000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "poor surface preparation materials",
+              "category": "material",
+              "amountCents": 30800,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 770,
+                "exactQuantity": {
+                  "numerator": "770",
+                  "denominator": "1"
+                },
+                "unit": "painted square feet",
+                "rateCents": 40,
+                "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+                "multipliers": [],
+                "unroundedCents": 30800,
+                "exactUnroundedCents": {
+                  "numerator": "30800",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 30800,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling finish labor",
+              "category": "labor",
+              "amountCents": 48000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 600,
+                "exactQuantity": {
+                  "numerator": "600",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot coats",
+                "rateCents": 80,
+                "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 48000,
+                "exactUnroundedCents": {
+                  "numerator": "48000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 48000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling finish materials",
+              "category": "material",
+              "amountCents": 16500,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 660,
+                "exactQuantity": {
+                  "numerator": "660",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot coats",
+                "rateCents": 25,
+                "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 16500,
+                "exactUnroundedCents": {
+                  "numerator": "16500",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 16500,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling primer labor",
+              "category": "labor",
+              "amountCents": 8000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 200,
+                "exactQuantity": {
+                  "numerator": "200",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot primer coats",
+                "rateCents": 40,
+                "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "wallHeightLaborMultiplier.standard",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 8000,
+                "exactUnroundedCents": {
+                  "numerator": "8000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 8000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Ceiling primer materials",
+              "category": "material",
+              "amountCents": 3300,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 220,
+                "exactQuantity": {
+                  "numerator": "220",
+                  "denominator": "1"
+                },
+                "unit": "ceiling square-foot primer coats",
+                "rateCents": 15,
+                "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+                "multipliers": [],
+                "unroundedCents": 3300,
+                "exactUnroundedCents": {
+                  "numerator": "3300",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 3300,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "taxable": false
+            },
+            {
+              "name": "Installed trim painting including the defined scope",
+              "category": "addon",
+              "priceBasis": "sell_price",
+              "amountCents": 20000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 100,
+                "exactQuantity": {
+                  "numerator": "100",
+                  "denominator": "1"
+                },
+                "unit": "trim linear feet",
+                "rateCents": 200,
+                "ratePath": "offeringRates.installedTrimPerLF",
+                "priceBasis": "sell_price",
+                "multipliers": [],
+                "unroundedCents": 20000,
+                "exactUnroundedCents": {
+                  "numerator": "20000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 20000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "installedBaseExactCents": {
+                "numerator": "20000",
+                "denominator": "1"
+              },
+              "installedLaborExactCents": {
+                "numerator": "12000",
+                "denominator": "1"
+              },
+              "taxable": false
+            }
+          ],
+          "scenarios": {
+            "mid": {
+              "variant": "mid",
+              "order": [
+                "fees",
+                "seasonal",
+                "taxability",
+                "markup",
+                "minimum"
+              ],
+              "fees": [
+                {
+                  "fee": "travel",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "disposal",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "permit",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "overhead",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                }
+              ],
+              "seasonal": {
+                "month": 10,
+                "configuredMonths": [],
+                "percent": 0,
+                "laborSubtotalCents": 383000,
+                "seasonActive": false,
+                "applied": false,
+                "amountCents": 0
+              },
+              "markup": {
+                "mode": "markup",
+                "lineTreatment": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "amountCents": 150000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Wall finish materials",
+                    "category": "material",
+                    "amountCents": 49500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "amountCents": 25000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Wall primer materials",
+                    "category": "material",
+                    "amountCents": 11000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "amountCents": 140000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "poor surface preparation materials",
+                    "category": "material",
+                    "amountCents": 30800,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "amountCents": 48000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Ceiling finish materials",
+                    "category": "material",
+                    "amountCents": 16500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "amountCents": 8000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Ceiling primer materials",
+                    "category": "material",
+                    "amountCents": 3300,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  },
+                  {
+                    "name": "Installed trim painting including the defined scope",
+                    "category": "addon",
+                    "amountCents": 20000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  }
+                ],
+                "percent": 0,
+                "baseCents": 371000,
+                "amountCents": 0,
+                "eligibleLines": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "amountCents": 150000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "amountCents": 25000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "amountCents": 140000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "amountCents": 48000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "amountCents": 8000,
+                    "basis": "cost"
+                  }
+                ],
+                "sellPriceLinesExcluded": [
+                  "Wall finish materials",
+                  "Wall primer materials",
+                  "poor surface preparation materials",
+                  "Ceiling finish materials",
+                  "Ceiling primer materials",
+                  "Installed trim painting including the defined scope"
+                ]
+              },
+              "minimum": {
+                "basis": "post_markup",
+                "subtotalBeforeMinimumCents": 502100,
+                "businessMinimumCents": 0,
+                "serviceMinimumField": "minimumJob",
+                "serviceMinimumCents": 0,
+                "effectiveMinimumCents": 0,
+                "adjustmentCents": 0,
+                "applied": false
+              },
+              "tax": {
+                "mode": "TAX_NONE",
+                "percent": 0,
+                "preTaxSubtotalCents": 502100,
+                "taxableMarkupCents": 0,
+                "taxableSubtotalCents": 0,
+                "nonTaxableSubtotalCents": 502100,
+                "taxCents": 0,
+                "finalTotalCents": 502100,
+                "lineTaxability": [
+                  {
+                    "name": "Wall finish labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 150000
+                  },
+                  {
+                    "name": "Wall finish materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 49500
+                  },
+                  {
+                    "name": "Wall primer labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 25000
+                  },
+                  {
+                    "name": "Wall primer materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 11000
+                  },
+                  {
+                    "name": "poor surface preparation labor",
+                    "category": "prep",
+                    "taxable": false,
+                    "amountCents": 140000
+                  },
+                  {
+                    "name": "poor surface preparation materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 30800
+                  },
+                  {
+                    "name": "Ceiling finish labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 48000
+                  },
+                  {
+                    "name": "Ceiling finish materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 16500
+                  },
+                  {
+                    "name": "Ceiling primer labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 8000
+                  },
+                  {
+                    "name": "Ceiling primer materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 3300
+                  },
+                  {
+                    "name": "Installed trim painting including the defined scope",
+                    "category": "addon",
+                    "taxable": false,
+                    "amountCents": 20000
+                  }
+                ]
+              },
+              "lineItems": [
+                {
+                  "name": "Wall finish labor",
+                  "category": "labor",
+                  "amountCents": 150000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1500,
+                    "exactQuantity": {
+                      "numerator": "1500",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot coats",
+                    "rateCents": 100,
+                    "ratePath": "offeringRates.wallLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 150000,
+                    "exactUnroundedCents": {
+                      "numerator": "150000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 150000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall finish materials",
+                  "category": "material",
+                  "amountCents": 49500,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1650,
+                    "exactQuantity": {
+                      "numerator": "1650",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot coats",
+                    "rateCents": 30,
+                    "ratePath": "offeringRates.wallMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 49500,
+                    "exactUnroundedCents": {
+                      "numerator": "49500",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 49500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall primer labor",
+                  "category": "labor",
+                  "amountCents": 25000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 500,
+                    "exactQuantity": {
+                      "numerator": "500",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot primer coats",
+                    "rateCents": 50,
+                    "ratePath": "offeringRates.primerLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 25000,
+                    "exactUnroundedCents": {
+                      "numerator": "25000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 25000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Wall primer materials",
+                  "category": "material",
+                  "amountCents": 11000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 550,
+                    "exactQuantity": {
+                      "numerator": "550",
+                      "denominator": "1"
+                    },
+                    "unit": "wall square-foot primer coats",
+                    "rateCents": 20,
+                    "ratePath": "offeringRates.primerMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 11000,
+                    "exactUnroundedCents": {
+                      "numerator": "11000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 11000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "poor surface preparation labor",
+                  "category": "prep",
+                  "amountCents": 140000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 700,
+                    "exactQuantity": {
+                      "numerator": "700",
+                      "denominator": "1"
+                    },
+                    "unit": "painted square feet",
+                    "rateCents": 200,
+                    "ratePath": "offeringRates.prepLaborPerSqft_poor",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 140000,
+                    "exactUnroundedCents": {
+                      "numerator": "140000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 140000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "poor surface preparation materials",
+                  "category": "material",
+                  "amountCents": 30800,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 770,
+                    "exactQuantity": {
+                      "numerator": "770",
+                      "denominator": "1"
+                    },
+                    "unit": "painted square feet",
+                    "rateCents": 40,
+                    "ratePath": "offeringRates.prepMaterialPerSqft_poor",
+                    "multipliers": [],
+                    "unroundedCents": 30800,
+                    "exactUnroundedCents": {
+                      "numerator": "30800",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 30800,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling finish labor",
+                  "category": "labor",
+                  "amountCents": 48000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 600,
+                    "exactQuantity": {
+                      "numerator": "600",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot coats",
+                    "rateCents": 80,
+                    "ratePath": "offeringRates.ceilingLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 48000,
+                    "exactUnroundedCents": {
+                      "numerator": "48000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 48000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling finish materials",
+                  "category": "material",
+                  "amountCents": 16500,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 660,
+                    "exactQuantity": {
+                      "numerator": "660",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot coats",
+                    "rateCents": 25,
+                    "ratePath": "offeringRates.ceilingMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 16500,
+                    "exactUnroundedCents": {
+                      "numerator": "16500",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 16500,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling primer labor",
+                  "category": "labor",
+                  "amountCents": 8000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 200,
+                    "exactQuantity": {
+                      "numerator": "200",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot primer coats",
+                    "rateCents": 40,
+                    "ratePath": "offeringRates.ceilingPrimerLaborPerSqftPerCoat",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "wallHeightLaborMultiplier.standard",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 8000,
+                    "exactUnroundedCents": {
+                      "numerator": "8000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 8000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Ceiling primer materials",
+                  "category": "material",
+                  "amountCents": 3300,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 220,
+                    "exactQuantity": {
+                      "numerator": "220",
+                      "denominator": "1"
+                    },
+                    "unit": "ceiling square-foot primer coats",
+                    "rateCents": 15,
+                    "ratePath": "offeringRates.ceilingPrimerMaterialPerSqftPerCoat",
+                    "multipliers": [],
+                    "unroundedCents": 3300,
+                    "exactUnroundedCents": {
+                      "numerator": "3300",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 3300,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Installed trim painting including the defined scope",
+                  "category": "addon",
+                  "priceBasis": "sell_price",
+                  "amountCents": 20000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 100,
+                    "exactQuantity": {
+                      "numerator": "100",
+                      "denominator": "1"
+                    },
+                    "unit": "trim linear feet",
+                    "rateCents": 200,
+                    "ratePath": "offeringRates.installedTrimPerLF",
+                    "priceBasis": "sell_price",
+                    "multipliers": [],
+                    "unroundedCents": 20000,
+                    "exactUnroundedCents": {
+                      "numerator": "20000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 20000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "installedBaseExactCents": {
+                    "numerator": "20000",
+                    "denominator": "1"
+                  },
+                  "installedLaborExactCents": {
+                    "numerator": "12000",
+                    "denominator": "1"
+                  },
+                  "taxable": false
+                }
+              ],
+              "finalTotalCents": 502100
+            }
+          },
+          "range": {
+            "source": "business_range_buffer",
+            "bufferPercent": 0,
+            "effectiveRangeBufferPercent": 0,
+            "rangeBufferUsed": 0,
+            "minimumCustomerFloorCents": 0,
+            "lowCents": 502100,
+            "midCents": 502100,
+            "highCents": 502100,
+            "exactMidScenarioTotalCents": 502100
+          },
+          "customerProjection": {
+            "tierName": null,
+            "priceUnit": null,
+            "taxTreatment": "No tax added.",
+            "lowEstimate": 5021,
+            "midEstimate": 5021,
+            "highEstimate": 5021,
+            "priceDrivers": [
+              "500 measured square feet of paintable wall area"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined painting offering Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating 3 wall finish coat(s); 1 wall primer coat(s). Preparation: [SYNTHETIC] Defined preparation of the measured affected area. 3 ceiling finish coat(s); 1 ceiling primer coat(s). Trim: [SYNTHETIC] Trim with preparation, one primer and two finish coats. No tax added.",
+            "rangeBufferUsed": 0
+          }
+        }
+      ],
+      "ownerConfiguration": {
+        "id": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "[SYNTHETIC] A",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "serviceType": "INTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "c304cc47-8975-4a15-95d0-36bff47e5390",
+          "operationId": "af6c37a2-24ed-456b-8488-9875237300cc",
+          "createdAt": "2026-10-03T03:31:28.505Z"
+        },
+        "active": true,
+        "confirmedFields": {},
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "knownOfferings": {},
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined painting offering",
+            "substrate": "[SYNTHETIC] Drywall",
+            "coating": "[SYNTHETIC] Owner-specified coating",
+            "finishCoats": 2,
+            "surfaceCondition": "fair",
+            "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+            "primerCoats": 1,
+            "wallHeight": "standard",
+            "ceilingsOffered": true,
+            "trimOffered": true,
+            "ceilingCoats": 2,
+            "ceilingPrimerCoats": 1,
+            "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+          },
+          "offeringRates": {
+            "wallLaborPerSqftPerCoat": 100,
+            "wallMaterialPerSqftPerCoat": 30,
+            "prepLaborPerSqft": 100,
+            "prepMaterialPerSqft": 20,
+            "primerLaborPerSqftPerCoat": 50,
+            "primerMaterialPerSqftPerCoat": 20,
+            "ceilingLaborPerSqftPerCoat": 80,
+            "ceilingMaterialPerSqftPerCoat": 25,
+            "ceilingPrimerLaborPerSqftPerCoat": 40,
+            "ceilingPrimerMaterialPerSqftPerCoat": 15,
+            "installedTrimPerLF": 200,
+            "prepLaborPerSqft_poor": 200,
+            "prepMaterialPerSqft_poor": 40
+          },
+          "installedLaborPercent": {
+            "offeringRates.installedTrimPerLF": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedTrimPerLF": 40
+          },
+          "wallHeightLaborMultiplier": {
+            "standard": 1,
+            "high": 1.1,
+            "vaulted": 1.25
+          },
+          "paintWasteFactor": 0.1,
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "tiers": []
+      },
+      "financialInputs": {
+        "businessDefaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 1000,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0
+        },
+        "feeSelections": {
+          "owner": {},
+          "customer": {}
+        },
+        "currentMonth": 10
+      },
+      "customerEligible": true
+    },
+    "pricedScope": {
+      "service": "[SYNTHETIC] A",
+      "facts": [
+        {
+          "label": "Wall area measurement method",
+          "value": "Wall sqft"
+        },
+        {
+          "label": "Measured paintable wall area",
+          "value": "500"
+        },
+        {
+          "label": "Finish coats on walls and selected ceilings",
+          "value": "3"
+        },
+        {
+          "label": "Surface condition",
+          "value": "Poor"
+        },
+        {
+          "label": "Wall height",
+          "value": "Standard"
+        },
+        {
+          "label": "All wall area shares the confirmed height, access, and finish-coat count",
+          "value": "Yes"
+        },
+        {
+          "label": "Ceiling painting included",
+          "value": "Yes"
+        },
+        {
+          "label": "Measured ceiling area",
+          "value": "200"
+        },
+        {
+          "label": "Trim painting included",
+          "value": "Yes"
+        },
+        {
+          "label": "Measured trim length",
+          "value": "100"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] A",
+      "contact": {},
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookRevision": "96c00e0c8cb6d603a92cd508835159471a4460d6203066d118e69e645fb1bf7e",
+    "selectedServiceId": "00dfe4f2-0364-4a4e-b69d-2090cccb6239"
+  },
+  "catalog": {
+    "status": 200,
+    "result": {
+      "contractVersion": "2026-09-29.1",
+      "capabilities": {
+        "quoteEnvelope": "pricing-only-v2",
+        "booking": "booking-v1",
+        "postQuoteIdentity": true,
+        "serverPricingOnly": true
+      },
+      "branding": {
+        "businessName": "Synthetic trade-paint",
+        "accentColor": "#16A34A",
+        "launcherLabel": "Get an estimate",
+        "clickToCallNumber": null
+      },
+      "services": [
+        {
+          "id": "00dfe4f2-0364-4a4e-b69d-2090cccb6239",
+          "serviceType": "INTERIOR_PAINTING",
+          "name": "[SYNTHETIC] A",
+          "customerFields": [
+            {
+              "name": "permitRequired",
+              "label": "Permit required for this measured project",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "areaInputMethod",
+              "label": "Wall area measurement method",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "wall_sqft",
+                "homesize"
+              ]
+            },
+            {
+              "name": "wallAreaSqft",
+              "label": "Measured paintable wall area",
+              "unit": "square feet",
+              "type": "number",
+              "min": 1,
+              "max": 2000000
+            },
+            {
+              "name": "coats",
+              "label": "Finish coats on walls and selected ceilings",
+              "unit": "coats",
+              "type": "number",
+              "min": 1,
+              "max": 3,
+              "integer": true
+            },
+            {
+              "name": "surfaceCondition",
+              "label": "Surface condition",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "good",
+                "fair",
+                "poor"
+              ]
+            },
+            {
+              "name": "wallHeight",
+              "label": "Wall height",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "standard",
+                "high",
+                "vaulted"
+              ]
+            },
+            {
+              "name": "wallScopeUniform",
+              "label": "All wall area shares the confirmed height, access, and finish-coat count",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "ceilingsIncluded",
+              "label": "Ceiling painting included",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "ceilingAreaSqft",
+              "label": "Measured ceiling area",
+              "unit": "square feet",
+              "type": "number",
+              "min": 1,
+              "max": 2000000
+            },
+            {
+              "name": "trimIncluded",
+              "label": "Trim painting included",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "trimLengthLF",
+              "label": "Measured trim length",
+              "unit": "linear feet",
+              "type": "number",
+              "min": 0.1,
+              "max": 1000000
+            }
+          ],
+          "offeringSummary": [
+            "[SYNTHETIC] Defined painting offering",
+            "Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating",
+            "One to three requested finish coats; 1 primer coat(s).",
+            "Preparation: [SYNTHETIC] Defined preparation of the measured affected area."
+          ],
+          "knownOfferings": {},
+          "customerFees": [],
+          "quoteCapability": "LIVE_OR_REVIEW",
+          "bookingCapability": "PREFERRED_TIME_ONLY"
+        },
+        {
+          "id": "a2ec276f-e56f-471b-81b3-2d44bddb57bb",
+          "serviceType": "INTERIOR_PAINTING",
+          "name": "[SYNTHETIC] B",
+          "customerFields": [
+            {
+              "name": "permitRequired",
+              "label": "Permit required for this measured project",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "areaInputMethod",
+              "label": "Wall area measurement method",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "wall_sqft",
+                "homesize"
+              ]
+            },
+            {
+              "name": "wallAreaSqft",
+              "label": "Measured paintable wall area",
+              "unit": "square feet",
+              "type": "number",
+              "min": 1,
+              "max": 2000000
+            },
+            {
+              "name": "coats",
+              "label": "Finish coats on walls and selected ceilings",
+              "unit": "coats",
+              "type": "number",
+              "min": 1,
+              "max": 3,
+              "integer": true
+            },
+            {
+              "name": "surfaceCondition",
+              "label": "Surface condition",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "good",
+                "fair",
+                "poor"
+              ]
+            },
+            {
+              "name": "wallHeight",
+              "label": "Wall height",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "standard",
+                "high",
+                "vaulted"
+              ]
+            },
+            {
+              "name": "wallScopeUniform",
+              "label": "All wall area shares the confirmed height, access, and finish-coat count",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "ceilingsIncluded",
+              "label": "Ceiling painting included",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "ceilingAreaSqft",
+              "label": "Measured ceiling area",
+              "unit": "square feet",
+              "type": "number",
+              "min": 1,
+              "max": 2000000
+            },
+            {
+              "name": "trimIncluded",
+              "label": "Trim painting included",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "trimLengthLF",
+              "label": "Measured trim length",
+              "unit": "linear feet",
+              "type": "number",
+              "min": 0.1,
+              "max": 1000000
+            }
+          ],
+          "offeringSummary": [
+            "[SYNTHETIC] Defined painting offering",
+            "Surface and coating: [SYNTHETIC] Drywall; [SYNTHETIC] Owner-specified coating",
+            "One to three requested finish coats; 1 primer coat(s).",
+            "Preparation: [SYNTHETIC] Defined preparation of the measured affected area."
+          ],
+          "knownOfferings": {},
+          "customerFees": [],
+          "quoteCapability": "LIVE_OR_REVIEW",
+          "bookingCapability": "PREFERRED_TIME_ONLY"
+        }
+      ]
+    }
+  }
+}

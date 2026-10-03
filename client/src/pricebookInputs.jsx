@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { parseOwnerNumericInput } from '../../server/priceBookMoney.js';
+import { parseOwnerNumericInput, scaleOwnerDecimal } from '../../server/priceBookMoney.js';
 import { TextInput } from './ui.jsx';
 
 // Keep entered decimal text while editing. Invalid text stays in the draft,
@@ -35,4 +35,14 @@ export function ExactNumericInput({ value, onChange, kind = null, wholeCents = f
       aria-invalid={Boolean(error)} onChange={event => change(event.target.value)} />
     {error && <span className="field-error" role="alert">{error}</span>}
   </>;
+}
+
+// Saved waste remains a fraction; the owner enters the familiar percentage.
+export function WastePercentInput({value,onChange,...props}) {
+ let shown=value;
+ try { shown=scaleOwnerDecimal(value,2); } catch { /* preserve rejected value */ }
+ return <ExactNumericInput {...props} value={shown} onChange={number=>{
+   try { onChange(scaleOwnerDecimal(number,-2)); }
+   catch { onChange(String(number)); }
+ }}/>;
 }

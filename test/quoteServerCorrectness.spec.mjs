@@ -40,11 +40,12 @@ test('F01 '+type+' '+method+' '+access+' multiplies configured finishing labor e
  assert.deepEqual(f,before);
  assert.equal(sanitizeForCustomerVNext(q).lineItems,undefined);
 });
-for(const type of ['CONCRETE_PATIO_SLAB','CONCRETE_DRIVEWAY'])for(const access of ['easy','moderate','difficult'])test('F01 control '+type+' '+access+' area/perimeter alone still requires geometry review',()=>{
+for(const type of ['CONCRETE_PATIO_SLAB','CONCRETE_DRIVEWAY'])for(const access of ['easy','moderate','difficult'])test('F01 control '+type+' '+access+' measured area and perimeter quotes the same independently calculated geometry',()=>{
  const f=exposed();f.serviceType=type;f.ownerPricing.serviceType=type;f.ownerPricing.origin.serviceType=type;
  delete f.customerInputs.length;delete f.customerInputs.width;
  Object.assign(f.customerInputs,{dimensionMethod:'measured_area_perimeter',areaSqft:200,perimeterLF:60,accessDifficulty:access});
- const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/geometry/);assert.equal(q.midEstimate,undefined);
+ const q=ready(f);assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,{easy:423889,moderate:438889,difficult:461389}[access]);
+ f.customerInputs.perimeterLF=40;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 test('F01 configured labor keeps one final cent rounding and the owner access override',()=>{
  const f=exposed();Object.assign(f.customerInputs,{length:10.1,width:2.5,accessDifficulty:'difficult'});

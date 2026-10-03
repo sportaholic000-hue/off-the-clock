@@ -1,3 +1,4 @@
+import {quoteDateContext} from '../quoteDate.js';
 import crypto from 'node:crypto';
 
 import { loadPricebook } from '../../priceBookService.js';
@@ -219,15 +220,15 @@ function providerStatus(value) {
   return typeof value?.status === 'string' ? value.status.trim().toUpperCase() : '';
 }
 
-function quoteApplicationDefaults() {
+function quoteApplicationDefaults(database) {
   return {
     loadBook: loadPricebook,
     status: applicationStatus,
     serviceName: applicationServiceName,
     serviceMatches: applicationServiceMatches,
     revision: bookRevision,
-    prepare: prepareApplicationIntake,
-    calculate: calculateApplicationQuote
+    prepare: (ownerId,submission)=>prepareApplicationIntake(ownerId,submission,quoteDateContext(database,ownerId)),
+    calculate: (book,service,submission,options)=>calculateApplicationQuote(book,service,submission,{...options,...quoteDateContext(database,options.ownerId)})
   };
 }
 
@@ -251,7 +252,7 @@ export function createVoiceToolRuntime({
   }
   const context = normalizeContext(callContext);
   const secret = secretBuffer(handleSecret);
-  const quoteApp = Object.freeze({ ...quoteApplicationDefaults(), ...quoteApplication });
+  const quoteApp = Object.freeze({ ...quoteApplicationDefaults(database), ...quoteApplication });
   const handleStore = createVoiceHandleStore({ database, secret, clock });
   const idempotencyStore = createVoiceToolIdempotencyStore({
     database, clock, leaseMs: idempotencyLeaseMs

@@ -132,14 +132,14 @@ function checkedCandidateBase(savedService, expectedCents) {
   }
   const publicResult = generateQuoteVNext({ ...request, callerType:'customer' });
   assert.deepEqual(Object.keys(publicResult).sort(), ['resultType','quoteId','lowEstimate','midEstimate',
-    'highEstimate','options','priceDrivers','disclaimer','rangeBufferUsed','priceUnit','taxTreatment'].sort());
+    'highEstimate','options','priceDrivers','disclaimer','priceUnit','taxTreatment'].sort());
   for (const field of ['lowEstimate','midEstimate','highEstimate']) {
     const [n, d] = decimalFraction(JSON.stringify(publicResult[field]));
     assert.equal(n * 100n, BigInt(expectedCents) * d);
   }
   for (const option of publicResult.options) {
     assert.deepEqual(Object.keys(option).sort(), ['tierName','lowEstimate','midEstimate','highEstimate',
-      'priceDrivers','skippedAddons','disclaimer','rangeBufferUsed','priceUnit','taxTreatment'].sort());
+      'priceDrivers','skippedAddons','disclaimer','priceUnit','taxTreatment'].sort());
   }
   assert.deepEqual(request, frozen);
 }

@@ -5,13 +5,12 @@ import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 
 // Independent cents expectations, written before execution:
 // Fence installed: 100*4000+2*25000=450000; removal adds50*800=40000.
-// Fence itemized:100*(1000+2000)+14*(2000+400+600)+2*25000=392000.
+// Fence itemized:100*1000+110*2000+18*(2000+400+600)+2*25000=424000.
 // Interior installed:500*600+200*300+100*200=380000.
-// Interior itemized:500*2*(100+30)+500*(50+20)+120*(100+20)
-//                   +200*2*(80+25)+200*(40+15)+100*200=252400.
-// Exterior installed:500*600=300000.
-// Exterior itemized:500*2*(100+30)+500*(50+20)+120*(100+20)=179400.
-const cases=[['FENCING_INSTALL','installed',450000],['FENCING_INSTALL','itemized',392000],['FENCING_REPLACEMENT','installed',490000],['FENCING_REPLACEMENT','itemized',432000],['INTERIOR_PAINTING','installed',380000],['INTERIOR_PAINTING','itemized',252400],['EXTERIOR_PAINTING','installed',300000],['EXTERIOR_PAINTING','itemized',179400]];
+// Interior itemized: labor235000 + waste-adjusted materials73700 + trim20000 =328700.
+// Exterior installed:300000*(1+60% labor*10% stories)=318000.
+// Exterior itemized:175000 labor*1.10 +50000 materials*1.10=247500.
+const cases=[['FENCING_INSTALL','installed',450000],['FENCING_INSTALL','itemized',424000],['FENCING_REPLACEMENT','installed',490000],['FENCING_REPLACEMENT','itemized',464000],['INTERIOR_PAINTING','installed',380000],['INTERIOR_PAINTING','itemized',328700],['EXTERIOR_PAINTING','installed',318000],['EXTERIOR_PAINTING','itemized',247500]];
 for(const [type,mode,cents] of cases)test(`${type} ${mode}: independent complete quote`,()=>{
   const input=offeringFixture(type,mode),result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));
@@ -24,7 +23,7 @@ test('Configured offerings: missing selected prices and mismatched defined scope
   for(const [type,mode] of cases){
     const missing=offeringFixture(type,mode);delete missing.ownerPricing.pricing.offeringRates[Object.keys(missing.ownerPricing.pricing.offeringRates)[0]];
     assert.equal(generateQuoteVNext(missing).resultType,'ESTIMATE_REQUIRES_REVIEW');
-    const mismatch=offeringFixture(type,mode);if(type.startsWith('FENCING_'))mismatch.customerInputs.fenceHeight=8;else mismatch.customerInputs.coats=3;
+    const mismatch=offeringFixture(type,mode);if(type.startsWith('FENCING_'))mismatch.customerInputs.fenceHeight=8;else mismatch.customerInputs.coats=mode==='installed'?3:4;
     assert.equal(generateQuoteVNext(mismatch).resultType,'ESTIMATE_REQUIRES_REVIEW');
   }
 });
@@ -43,8 +42,8 @@ test('Itemized fence: owner cost markup and sales tax apply once; installed gate
   input.businessDefaults.markupPercent=25;input.businessDefaults.taxMode='TAX_ALL';input.businessDefaults.taxPercent=10;
   for(const category of Object.keys(input.ownerPricing.taxabilityByCategory))input.ownerPricing.taxabilityByCategory[category]=true;
   const result=generateQuoteVNext(input);
-  // $3420 cost *1.25 + $500 installed gates = $4775; 10% tax = $5252.50.
-  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));assert.equal(result.midEstimate,5252.50);
+  // $3740 cost *1.25 + $500 installed gates = $4775; 10% tax = $5692.50.
+  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));assert.equal(result.midEstimate,5692.50);
 });
 
 test('Fence removal disposal is charged exactly once and only when selected',()=>{

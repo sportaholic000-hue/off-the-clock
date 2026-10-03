@@ -1,0 +1,355 @@
+{
+  "saved": {
+    "ownerId": "5091cb78-30bc-4f18-825f-aa8d6e7f2300",
+    "services": [
+      {
+        "id": "425d79cb-4b1b-440b-a7e0-a8073e66af49",
+        "source": "MANUAL",
+        "knownOfferings": {
+          "existingFloorType": {
+            "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+            "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+            "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+            "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+            "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+            "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+          }
+        },
+        "active": true,
+        "serviceType": "FLOORING_INSTALL",
+        "service": "[SYNTHETIC] A",
+        "pricing": {
+          "laborPerSqft": {
+            "tile": 3,
+            "vinyl_plank": 3
+          },
+          "materialPerSqft": {
+            "tile": 5,
+            "vinyl_plank": 5
+          },
+          "minimumJob": 0,
+          "vinylPlankUnderlaymentRule": "owner_review",
+          "perStepPrice": 100,
+          "wasteFactorByType": {
+            "hardwood": 0.1,
+            "laminate": 0.08,
+            "vinyl_plank": 0.08,
+            "carpet": 0.1,
+            "tile": 0.12
+          },
+          "patternWasteAdder": {
+            "straight": 0,
+            "diagonal_or_pattern": 0.07
+          },
+          "roomComplexityMultiplier": {
+            "large": 1,
+            "medium": 1.1,
+            "small": 1.2
+          },
+          "roomSizeThresholds": {
+            "smallMaxSqft": 150,
+            "mediumMaxSqft": 300
+          },
+          "layoutLaborMultiplier": {
+            "straight": 1,
+            "diagonal_or_pattern": 1.2
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "sqft": 200,
+          "sqftMethod": "exact",
+          "newFlooringType": "tile",
+          "existingFloorType": "none",
+          "removalNeeded": false,
+          "roomCount": 1,
+          "layoutPattern": "straight",
+          "stairSteps": 0
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "425d79cb-4b1b-440b-a7e0-a8073e66af49",
+          "serviceType": "FLOORING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "5091cb78-30bc-4f18-825f-aa8d6e7f2300",
+          "operationId": "68e0ad3f-38bb-45d9-b19d-17ae8d01a86f",
+          "createdAt": "2026-10-03T03:31:30.081Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "5091cb78-30bc-4f18-825f-aa8d6e7f2300",
+          "serviceId": "425d79cb-4b1b-440b-a7e0-a8073e66af49",
+          "operationId": "68e0ad3f-38bb-45d9-b19d-17ae8d01a86f",
+          "approvedAt": "2026-10-03T03:31:30.081Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "9cd0e3bdbd5d813a491abecade6413ed17fe3bfc7bc33f7f5e8c0e6d1dbf1bba",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "501efa77-0260-4480-9e79-0daf25643e66",
+        "source": "MANUAL",
+        "knownOfferings": {
+          "existingFloorType": {
+            "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+            "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+            "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+            "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+            "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+            "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+          }
+        },
+        "active": true,
+        "serviceType": "FLOORING_INSTALL",
+        "service": "[SYNTHETIC] B",
+        "pricing": {
+          "laborPerSqft": {
+            "tile": 3,
+            "vinyl_plank": 3
+          },
+          "materialPerSqft": {
+            "tile": 5,
+            "vinyl_plank": 5
+          },
+          "minimumJob": 0,
+          "vinylPlankUnderlaymentRule": "owner_review",
+          "perStepPrice": 100,
+          "wasteFactorByType": {
+            "hardwood": 0.1,
+            "laminate": 0.08,
+            "vinyl_plank": 0.08,
+            "carpet": 0.1,
+            "tile": 0.12
+          },
+          "patternWasteAdder": {
+            "straight": 0,
+            "diagonal_or_pattern": 0.07
+          },
+          "roomComplexityMultiplier": {
+            "large": 1,
+            "medium": 1.1,
+            "small": 1.2
+          },
+          "roomSizeThresholds": {
+            "smallMaxSqft": 150,
+            "mediumMaxSqft": 300
+          },
+          "layoutLaborMultiplier": {
+            "straight": 1,
+            "diagonal_or_pattern": 1.2
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "sqft": 200,
+          "sqftMethod": "exact",
+          "newFlooringType": "tile",
+          "existingFloorType": "none",
+          "removalNeeded": false,
+          "roomCount": 1,
+          "layoutPattern": "straight",
+          "stairSteps": 0
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "501efa77-0260-4480-9e79-0daf25643e66",
+          "serviceType": "FLOORING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "5091cb78-30bc-4f18-825f-aa8d6e7f2300",
+          "operationId": "50ee28d1-1d58-4220-9615-b9d61f4fcd01",
+          "createdAt": "2026-10-03T03:31:30.113Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "5091cb78-30bc-4f18-825f-aa8d6e7f2300",
+          "serviceId": "501efa77-0260-4480-9e79-0daf25643e66",
+          "operationId": "50ee28d1-1d58-4220-9615-b9d61f4fcd01",
+          "approvedAt": "2026-10-03T03:31:30.113Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "91eb09c7fafdd81ca5dfabef8a4d6ec910bbd69e78d6fc01a7a416f4a58122ff",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 10,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T03:31:30.114Z",
+    "revision": "56633f6abb49ec0295359e9b9fdd65c359d3c7acb190d5000027b717f7693b2e",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 1780,
+    "midEstimate": 1780,
+    "highEstimate": 1780,
+    "priceDrivers": [
+      "Flooring type: tile",
+      "200 measured square feet"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+    "quoteId": "2ed65ba0-48c9-42ab-96d3-3840aa63150f",
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 1780,
+        "midEstimate": 1780,
+        "highEstimate": 1780,
+        "priceDrivers": [
+          "Flooring type: tile",
+          "200 measured square feet"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added.",
+        "priceUnit": null,
+        "taxTreatment": "No tax added."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] A",
+      "facts": [
+        {
+          "label": "Measured flooring area",
+          "value": "200"
+        },
+        {
+          "label": "Floor measurement method",
+          "value": "Measured area"
+        },
+        {
+          "label": "New flooring type",
+          "value": "Tile"
+        },
+        {
+          "label": "Existing floor type",
+          "value": "None"
+        },
+        {
+          "label": "Existing floor removal included",
+          "value": "No"
+        },
+        {
+          "label": "Rooms in scope",
+          "value": "1"
+        },
+        {
+          "label": "Flooring layout",
+          "value": "Straight"
+        },
+        {
+          "label": "Stair steps in scope",
+          "value": "0"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] A",
+      "contact": {
+        "email": "synthetic-floor@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T03:31:30.812Z"
+  }
+}

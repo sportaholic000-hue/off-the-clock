@@ -106,7 +106,7 @@ export function scopeLines(type,c,p={},rules={}){
   if(key==='stairs')return c.stairSteps;if(key==='siding_removal')return c.sidingRemovalAreaSqft;if(key==='siding_trim')return c.trimLengthLF;if(key==='demolition')return c.demolitionAreaSqft;
   if(key==='exposed_aggregate')return c.dimensionMethod==='exact'?exactMultiply(c.length,c.width):c.dimensionMethod==='measured_outline'?measuredOutlineVNext(c.outlinePoints).exactAreaSqft:c.areaSqft;
   const d=p.offeringDetails||{},area=c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'];
-  return {paint_wall:()=>exactMultiply(area,p.offeringMode?d.finishCoats:c.coats),paint_primer:()=>exactMultiply(area,d.primerCoats),paint_prep:()=>c.prepAreaSqft,paint_ceiling:()=>exactMultiply(c.ceilingAreaSqft,p.offeringMode?d.ceilingCoats:c.ceilingCoats),paint_ceiling_primer:()=>exactMultiply(c.ceilingAreaSqft,d.ceilingPrimerCoats),paint_trim:()=>c.trimLengthLF}[key]?.();
+  return {paint_wall:()=>exactMultiply(area,c.coats),paint_primer:()=>exactMultiply(area,d.primerCoats),paint_prep:()=>exactAdd(area,c.ceilingsIncluded?c.ceilingAreaSqft:0),paint_ceiling:()=>exactMultiply(c.ceilingAreaSqft,p.offeringMode==='itemized'?c.coats:c.ceilingCoats),paint_ceiling_primer:()=>exactMultiply(c.ceilingAreaSqft,d.ceilingPrimerCoats),paint_trim:()=>c.trimLengthLF}[key]?.();
  };
  for(const key of scopeKeysForRequest(type,c,p,rules)){
   const d=p.scopeDetails[key],label=catalog[key].label;

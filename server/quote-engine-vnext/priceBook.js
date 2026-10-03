@@ -17,6 +17,7 @@ import {
   validateCustomerInputs,
   validateOwnerPricing,
   validatePricingStructuresDetailed,
+  pricingDiagnosticsForSelection,
   validateServiceRules,
   validateServiceRulesDetailed,
   vinylUnderlaymentApplies
@@ -244,7 +245,7 @@ function baseActivationScenarios(service) {
     return scenarios;
   }
   if (serviceType === 'FLAT_ROOF_REPAIR') {
-    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false }));
+    const base = repairScenarios(serviceType, p.patchRepairHours, ['epdm', 'patch'], (membraneType, repairType, affectedArea) => ({ repairType, affectedArea, membraneType, leakPresent: false, pondingWater: false, accessDifficulty: greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult') }));
     // Probe optional treatment when configured; real selected requests always
     // require its price. An unpriced extra does not disable complete base repairs.
     return [undefined, null, ''].includes(p.pondingWaterSurcharge) ? base : base.flatMap(inputs => [
@@ -314,7 +315,7 @@ function baseActivationScenarios(service) {
     });
   }
   if (serviceType === 'LANDSCAPING_MULCH') return keysOf(p.mulchMaterialPerYard,'standard').flatMap(mulchType=>['sqft','yards'].flatMap(inputMethod=>{
-    const base={inputMethod,mulchArea:10_000_000,...(inputMethod==='sqft'?{mulchDepth:24}:{}),mulchType,bedCondition:'clean',edgingNeeded:false};
+    const base={accessDifficulty:greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult'),inputMethod,mulchArea:10_000_000,...(inputMethod==='sqft'?{mulchDepth:24}:{}),mulchType,bedCondition:'clean',edgingNeeded:false};
     const candidates=['clean','needs_weeding','overgrown'].flatMap(bedCondition=>[false,true].map(edgingNeeded=>({...base,bedCondition,...(bedCondition!=='clean'?{bedSqft:10_000_000}:{}),edgingNeeded,...(edgingNeeded?{edgeLF:1_000_000}:{})})));
     return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
   }));
@@ -326,7 +327,7 @@ function baseActivationScenarios(service) {
     return scenarios.flatMap(scenario=>service.disposalScope==='separate_project_debris'?[false,true].map(separateDisposalSelected=>({...scenario,separateDisposalSelected})):[scenario]);
   }
   if (serviceType === 'LANDSCAPING_PLANTING') {
-    const base={plantsBySize:{small:1_000_000,medium:1_000_000,large:1_000_000},bedCondition:'clean',mulchNeeded:false};
+    const base={accessDifficulty:greatestConfiguredKey(p.accessMultiplier,['easy','moderate','difficult'],'difficult'),plantsBySize:{small:1_000_000,medium:1_000_000,large:1_000_000},bedCondition:'clean',mulchNeeded:false};
     const mulch=[{},...keysOf(p.mulchMaterialPerYard,'standard').map(mulchType=>({mulchNeeded:true,mulchYards:100_000,mulchType}))];
     const candidates=['clean','needs_weeding','overgrown'].flatMap(bedCondition=>mulch.map(extra=>({...base,bedCondition,...(bedCondition!=='clean'?{bedSqft:10_000_000}:{}),...extra})));
     return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
@@ -400,7 +401,6 @@ function scopeCoverageForService(service) {
       if (key === 'demolition') probe.demolitionNeeded = true;
       if (key === 'exposed_aggregate') probe.finishType = 'exposed_aggregate';
       if (key === 'insulation') probe.buildingType = 'commercial';
-      if (key === 'paint_prep') probe.prepAreaSqft = 1;
       if (key.includes('ceiling')) { if (type !== 'INTERIOR_PAINTING' || p.offeringMode && p.offeringDetails?.ceilingsOffered !== true) continue; probe.ceilingsIncluded = true; }
       if (key === 'paint_trim') { if (type !== 'INTERIOR_PAINTING') continue; probe.trimIncluded = true; }
       if (!scopeKeysForRequest(type, probe, p, service).includes(key)) continue;
@@ -482,15 +482,26 @@ function activationMonth(service, defaults) {
 }
 
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
+  // All boundary probes within one product must pass; incomplete siblings do not block it.
+  const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
+  if(selectors.length&&!options.productScenarios){
+    const groups=new Map();
+    for(const scenario of activationScenarios({...service,pricing:effectivePricing})){
+      const key=JSON.stringify(selectors.map(field=>scenario[field]));
+      if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
+    }
+    const products=[...groups.values()].map(scenarios=>({selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]])),...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,productScenarios:scenarios})}));
+    if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
+  }
   const diagnostics = [];
-  const scenarios = activationScenarios({ ...service, pricing: effectivePricing });
+  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing });
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
     if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'field', path: key, message: 'This pricing field is not supported for the selected service.' });
   }
   diagnostics.push(
-    ...validatePricingStructuresDetailed(service.serviceType, effectivePricing),
+    ...pricingDiagnosticsForSelection(service.serviceType,validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{}),
     ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
   );
   for (const scenarioInputs of scenarios) {
@@ -639,7 +650,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     validationMessages: variant.diagnostics.map(item => item.message)
   }));
   if (!validVariants.length) diagnostics.push(...variants.flatMap(variant => variant.diagnostics));
-  return statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName));
+  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>({tierName:variant.tierName,selection:product.selection,configurationComplete:product.ok,ownerDiagnostics:product.diagnostics})))};
 }
 function serviceIdentity(service) {
   if (!isPlainRecord(service)) return null;
@@ -897,6 +908,8 @@ export function reviewOnlyScopesVNext(serviceType) {
 }
 
 function fieldCopy(serviceType, field) {
+  if(field==='installedLaborPercent')return {label:'Labor portion of installed prices',help:'Owner-set percentages used for labor adjustments.'};
+  if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};
   if(['offeringMode','offeringDetails','offeringRates'].includes(field))return NEW_FIELD_COPY[field];
   const scopes = reviewOnlyScopesVNext(serviceType).filter(scope => scope.always || scope.fields.includes(field));
@@ -931,7 +944,7 @@ export function getVNextPriceBookMetadata() {
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
-    class2Fields: contract.class2Fields.map(definition => ({
+    class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
       ...definition,
       help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
     }))

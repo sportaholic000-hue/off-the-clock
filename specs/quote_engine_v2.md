@@ -1,3 +1,5 @@
+> October 3, 2026 owner amendment: [quote trade decisions](QUOTE_TRADE_DECISIONS_20261003.md) governs the listed formulas, labor-only surcharges and customer fields. All other rules below remain in force.
+
 # Owner rulings - October 1, 2026
 
 These rulings govern the active QuoteDone implementation and supersede conflicting earlier wording below.

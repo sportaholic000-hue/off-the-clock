@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {applicationQuoteMonth} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -18,11 +19,11 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
-export const DEFAULT_FIELDS = ['markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
 const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
-const NOT_MONEY = new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
+const NOT_MONEY = new Set(['installedMaterialsPercent','installedLaborPercent','underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -168,7 +169,6 @@ export function applicationStatus(raw,book) {
   const issues=[];
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
-  if(seasonalDecision(raw,book))issues.push('Seasonal date policy remains an owner decision; seasonal requests require review.');
   return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
@@ -262,7 +262,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
   book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
   return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved)};
 }
-export function previewApplicationQuote(ownerId,input) {
+export function previewApplicationQuote(ownerId,input,dateContext={}) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');
   requireApplicationPricingEnvelope(input);
   const contactFields=invalidCallbackFields(input.contact);
@@ -278,11 +278,11 @@ export function previewApplicationQuote(ownerId,input) {
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=applicationStatus(raw,saved).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
-  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
+  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(raw);
   return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
-export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false}={}) {
+export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false,...dateContext}={}) {
   requireApplicationPricingEnvelope(submission);
   const guidedIntake=preparingIntake||!!ownerId&&validIntakeConfirmation(ownerId,bookRevision(book),submission);
   const clarification=intakeClarification(ownerId,bookRevision(book),submission,applicationServiceName(raw));
@@ -295,7 +295,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   // Active-for-customers is a trusted application eligibility decision. Preserve
   // raw owner intent separately; never change a rate or measurement to make it quote.
   service.active=raw.active===true&&ready;
-  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
+  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
   const definition=applicationServiceDefinition(raw);
   const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
@@ -303,7 +303,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   if(internalResult.resultType==='ESTIMATE_REQUIRES_REVIEW'&&record(request.customerInputs))leadEnvelope=buildInternalLeadVNext({request:{...submission,serviceId:raw.id,serviceType:raw.serviceType,customerInputs:request.customerInputs,ownerPricing:service},internalResult});
   return {request,internalResult,customerResult,leadEnvelope,customerClarifications:clarificationSummary(submission,applicationServiceName(raw)),applicationEligibility:{ownerRequestedActive:raw.active===true,approvalCurrent:current,issues:eligibility.validationErrors}};
 }
-export function prepareApplicationIntake(ownerId,submission) {
+export function prepareApplicationIntake(ownerId,submission,dateContext={}) {
   if(!record(submission))throw problem('Use the job-details form to check this request.',422);
   requireApplicationPricingEnvelope(submission);
   if(submission.intakeFlow!==JOB_DETAILS_FLOW)throw problem('Use the job-details form to check this request.',422);
@@ -315,7 +315,7 @@ export function prepareApplicationIntake(ownerId,submission) {
   const book=loadPricebook(ownerId),raw=uniqueApplicationService(book,submission.serviceId);
   if(!raw)throw problem('Choose a current saved service before checking the job details.',409);
   const revision=bookRevision(book),definition=applicationServiceDefinition(raw);
-  const outcome=calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake:true});
+  const outcome=calculateApplicationQuote(book,raw,submission,{...dateContext,ownerId,preparingIntake:true});
   const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
   const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,field.label]));
   const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[])];
@@ -343,7 +343,7 @@ export function applicationServiceDefinition(raw) {
   const d=p.offeringDetails||{};
   const summary=[d.description];
   if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');
-  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),String(d.finishCoats??'Unconfigured')+' finish coat(s); '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
+  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),(p.offeringMode==='itemized'?'One to three requested finish coats':String(d.finishCoats??'Unconfigured')+' finish coat(s)')+'; '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
   return {...definition,customerFields,offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
 }
 function applicationScopeReview(raw,submission,options) {
@@ -370,6 +370,7 @@ export function applicationMetadata() {
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:prior?.type||'number',requiredAtBase:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind};
+      if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if(requiresOffering&&field.field==='minimumJob')Object.assign(info,{label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; enter zero when there is no service minimum.',reviewOnly:false});
       if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;

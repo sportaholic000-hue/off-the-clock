@@ -21,9 +21,9 @@ test('B1 roof minimum is an exact fixed amount through root, nested and tier edi
 test('B1 owner floor gives independently calculated $2875 midpoint and lower bound',()=>{
  const f=roofMinimum(); const r=generateQuoteVNext(f);
  assert.equal(r.resultType,'INSTANT_ESTIMATE_READY');
- const c=sanitizeForCustomerVNext(r);assert.equal(c.midEstimate,expected.roof.midDollars);assert.equal(c.lowEstimate,expected.roof.lowDollars);assert.equal(c.highEstimate,expected.roof.highDollars);
+ const c=sanitizeForCustomerVNext(r);assert.equal(c.midEstimate,expected.roof.midDollars);assert.equal(c.lowEstimate,expected.roof.lowDollars);assert.equal(c.highEstimate,expected.roof.midDollars);
 });
-for(const [name,make,total] of [['wall',()=>wallPainting(),300],['paint packages',()=>wallPainting(true),250],['concrete',bareConcrete,3188.89],['mulch',bareMulch,77.78],['cleanup',bareCleanup,150],['sod',bareSod,2037.5],['planting',barePlanting,105]]){
+for(const [name,make,total] of [['wall',()=>wallPainting(),310],['paint packages',()=>wallPainting(true),250],['concrete',bareConcrete,3188.89],['mulch',bareMulch,77.78],['cleanup',bareCleanup,150],['sod',bareSod,2037.5],['planting',barePlanting,105]]){
  test('M1 '+name+' base service remains active without unrequested extras',()=>{
   const f=make();assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
   const r=generateQuoteVNext(f);assert.equal(r.resultType,'INSTANT_ESTIMATE_READY');assert.equal(sanitizeForCustomerVNext(r).midEstimate,total);

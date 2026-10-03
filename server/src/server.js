@@ -1,3 +1,4 @@
+import {quoteDateContext} from './quoteDate.js';
 import {PriceBookAIError} from './priceBookAI.js';
 import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
@@ -470,7 +471,7 @@ app.post('/api/pricebook/suggest', requireAuth(['owner']), requireQuoteDonePlan,
 
 app.post('/api/quote/test', requireAuth(['owner']), requireQuoteDonePlan, asyncHandler(async (req, res) => {
   if (process.env.NODE_ENV === 'production') return res.status(404).json({ error: 'Not found' });
-  const result = previewApplicationQuote(req.tenantOwnerId, req.body || {});
+  const result = previewApplicationQuote(req.tenantOwnerId, req.body || {},quoteDateContext(db,req.tenantOwnerId));
   console.log('[quote-test-breakdown]', JSON.stringify(result, null, 2));
   return res.json(result);
 }));

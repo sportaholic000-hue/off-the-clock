@@ -1,0 +1,2805 @@
+{
+  "saved": {
+    "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+    "services": [
+      {
+        "id": "94b56376-eca3-458c-9dc1-3c63143ab990",
+        "source": "MANUAL",
+        "serviceType": "FENCING_INSTALL",
+        "service": "[SYNTHETIC] A",
+        "active": true,
+        "knownOfferings": {
+          "fenceType": {
+            "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        },
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined six-foot wood fence",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "gates": {
+              "walk": {
+                "widthLF": 4,
+                "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+                "postsAndFootingsIncluded": false
+              }
+            }
+          },
+          "offeringRates": {
+            "fenceLaborPerLF": 10,
+            "fenceMaterialPerLF": 20,
+            "postMaterialEach": 20,
+            "footingLaborEach": 4,
+            "footingMaterialEach": 6,
+            "gate_walk": 250
+          },
+          "installedLaborPercent": {
+            "offeringRates.gate_walk": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.gate_walk": 40
+          },
+          "postSpacingLF": 10,
+          "fenceWasteFactor": 0.2,
+          "terrainLaborMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.3
+          }
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "linearFeet": 100,
+          "lfMethod": "exact",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "flat",
+          "gates": {
+            "walk": 1
+          },
+          "cornerCount": 2,
+          "confirmedFacts": {
+            "fenceType": {
+              "status": "identified",
+              "field": "fenceType",
+              "value": "wood",
+              "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          }
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "serviceType": "FENCING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+          "operationId": "692fb7e6-5559-4d36-9649-0f79f6909e1e",
+          "createdAt": "2026-10-03T03:31:26.498Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+          "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "operationId": "b2676ec0-0af8-4752-a200-6b57b7a5578d",
+          "approvedAt": "2026-10-03T03:31:27.103Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "5debfba437bcc0e5b574d0001d8c03746cce085ba87df5fd63ecb0161a7e2120",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "89cff460-3772-4104-929d-bf3b56adb626",
+        "source": "MANUAL",
+        "serviceType": "FENCING_INSTALL",
+        "service": "[SYNTHETIC] B",
+        "active": true,
+        "knownOfferings": {
+          "fenceType": {
+            "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        },
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined six-foot wood fence",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "gates": {
+              "walk": {
+                "widthLF": 4,
+                "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+                "postsAndFootingsIncluded": false
+              }
+            }
+          },
+          "offeringRates": {
+            "fenceLaborPerLF": 10,
+            "fenceMaterialPerLF": 20,
+            "postMaterialEach": 20,
+            "footingLaborEach": 4,
+            "footingMaterialEach": 6,
+            "gate_walk": 250
+          },
+          "installedLaborPercent": {
+            "offeringRates.gate_walk": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.gate_walk": 40
+          },
+          "postSpacingLF": 8,
+          "fenceWasteFactor": 0.1,
+          "terrainLaborMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.3
+          }
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "linearFeet": 100,
+          "lfMethod": "exact",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "flat",
+          "gates": {
+            "walk": 1
+          },
+          "cornerCount": 2,
+          "confirmedFacts": {
+            "fenceType": {
+              "status": "identified",
+              "field": "fenceType",
+              "value": "wood",
+              "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          }
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "89cff460-3772-4104-929d-bf3b56adb626",
+          "serviceType": "FENCING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+          "operationId": "f7e83ce1-e39a-417d-9805-2c85535fdf0b",
+          "createdAt": "2026-10-03T03:31:26.519Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+          "serviceId": "89cff460-3772-4104-929d-bf3b56adb626",
+          "operationId": "f7e83ce1-e39a-417d-9805-2c85535fdf0b",
+          "approvedAt": "2026-10-03T03:31:26.519Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "71745f53caf43faf1f58ffac97b8e2b2d135038ad982e339fc81490d889c64f0",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "ac94af8c-5518-432c-8916-afa7a6b264df",
+        "serviceType": "ROOFING_REPLACEMENT",
+        "service": "Roof replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "22df0424-0c08-46b3-a8d3-81841da01afe",
+        "serviceType": "ROOFING_REPAIR",
+        "service": "Roof repair",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "e6054768-10f7-42e5-861f-59e469d9f1d8",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "Interior painting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "7b730ddf-6f34-4749-9cbe-3a85c8577409",
+        "serviceType": "EXTERIOR_PAINTING",
+        "service": "Exterior painting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "ed802f28-e8a7-475d-9689-00e0166323d9",
+        "serviceType": "FLOORING_INSTALL",
+        "service": "Flooring installation",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "e8734ae6-e236-435e-b6e3-19ae10e3acbd",
+        "serviceType": "FENCING_REPLACEMENT",
+        "service": "Fencing replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "c5ed2675-ce20-4025-aeb1-7d8b6d1bad21",
+        "serviceType": "SIDING_REPLACEMENT",
+        "service": "Siding replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "8261f6c1-a3e1-4ba8-ad1d-1ac33c299174",
+        "serviceType": "LANDSCAPING_CLEANUP",
+        "service": "Landscaping cleanup",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "03738409-315c-45e7-b6cf-6fd87fd70c6d",
+        "serviceType": "LANDSCAPING_PLANTING",
+        "service": "Planting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "9263c05e-c061-4099-a37b-e5feb9a9ffe8",
+        "serviceType": "CUSTOM",
+        "service": "Custom service",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_NONE",
+      "taxPercent": 0,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 10,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0
+    },
+    "updatedAt": "2026-10-03T03:31:27.104Z",
+    "revision": "5d4c92e317bd664f60941ddab67ec9536500edf455650bae55a679a58df9b2cf",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "quote": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+    "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+    "quoteId": "9649a954-1e41-43b7-a671-68ed8991d768",
+    "serviceType": "FENCING_INSTALL",
+    "submittedCustomerInputs": {
+      "linearFeet": 100,
+      "lfMethod": "exact",
+      "fenceType": "wood",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "gates": {
+        "walk": 1
+      },
+      "cornerCount": 2,
+      "confirmedFacts": {
+        "fenceType": {
+          "status": "identified",
+          "field": "fenceType",
+          "value": "wood",
+          "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+        }
+      }
+    },
+    "unconfirmedOwnerFields": [],
+    "lowEstimate": 4100,
+    "midEstimate": 4100,
+    "highEstimate": 4100,
+    "options": [
+      {
+        "tierName": null,
+        "priceUnit": null,
+        "taxTreatment": "No tax added.",
+        "lowEstimate": 4100,
+        "midEstimate": 4100,
+        "highEstimate": 4100,
+        "priceDrivers": [
+          "100 measured linear feet of 6 ft wood fencing"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total. No tax added.",
+        "rangeBufferUsed": 0,
+        "effectiveRangeBufferPercent": 0,
+        "lineItems": [
+          {
+            "name": "Fence infill installation labor",
+            "category": "labor",
+            "amountCents": 100000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 100,
+              "exactQuantity": {
+                "numerator": "100",
+                "denominator": "1"
+              },
+              "unit": "fence linear feet",
+              "rateCents": 1000,
+              "ratePath": "offeringRates.fenceLaborPerLF",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "terrainLaborMultiplier.flat",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 100000,
+              "exactUnroundedCents": {
+                "numerator": "100000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 100000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Fence infill materials",
+            "category": "material",
+            "amountCents": 240000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 120,
+              "exactQuantity": {
+                "numerator": "120",
+                "denominator": "1"
+              },
+              "unit": "fence linear feet",
+              "rateCents": 2000,
+              "ratePath": "offeringRates.fenceMaterialPerLF",
+              "multipliers": [],
+              "unroundedCents": 240000,
+              "exactUnroundedCents": {
+                "numerator": "240000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 240000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Separately priced post materials",
+            "category": "material",
+            "amountCents": 30000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 15,
+              "exactQuantity": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "rateCents": 2000,
+              "ratePath": "offeringRates.postMaterialEach",
+              "multipliers": [],
+              "unroundedCents": 30000,
+              "exactUnroundedCents": {
+                "numerator": "30000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 30000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Post-hole and footing labor",
+            "category": "labor",
+            "amountCents": 6000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 15,
+              "exactQuantity": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "rateCents": 400,
+              "ratePath": "offeringRates.footingLaborEach",
+              "multipliers": [
+                {
+                  "name": "Labor adjustment",
+                  "path": "terrainLaborMultiplier.flat",
+                  "value": 1,
+                  "exactValue": {
+                    "numerator": "1",
+                    "denominator": "1"
+                  }
+                }
+              ],
+              "unroundedCents": 6000,
+              "exactUnroundedCents": {
+                "numerator": "6000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 6000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Footing materials",
+            "category": "material",
+            "amountCents": 9000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 15,
+              "exactQuantity": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "rateCents": 600,
+              "ratePath": "offeringRates.footingMaterialEach",
+              "multipliers": [],
+              "unroundedCents": 9000,
+              "exactUnroundedCents": {
+                "numerator": "9000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 9000,
+              "effectivePriceBasis": "cost",
+              "markupEligible": true
+            },
+            "taxable": false
+          },
+          {
+            "name": "Installed gate: walk",
+            "category": "addon",
+            "priceBasis": "sell_price",
+            "amountCents": 25000,
+            "ownerVisible": true,
+            "customerVisible": false,
+            "calculation": {
+              "evidenceVariant": "quantity_rate",
+              "quantity": 1,
+              "exactQuantity": {
+                "numerator": "1",
+                "denominator": "1"
+              },
+              "unit": "gates",
+              "rateCents": 25000,
+              "ratePath": "offeringRates.gate_walk",
+              "priceBasis": "sell_price",
+              "multipliers": [],
+              "unroundedCents": 25000,
+              "exactUnroundedCents": {
+                "numerator": "25000",
+                "denominator": "1"
+              },
+              "roundedAmountCents": 25000,
+              "effectivePriceBasis": "sell_price",
+              "markupEligible": false
+            },
+            "installedBaseExactCents": {
+              "numerator": "25000",
+              "denominator": "1"
+            },
+            "installedLaborExactCents": {
+              "numerator": "15000",
+              "denominator": "1"
+            },
+            "taxable": false
+          }
+        ],
+        "calculationRecord": {
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "freeOffering": false,
+          "serviceType": "FENCING_INSTALL",
+          "tierName": null,
+          "normalizedCustomerInputs": {
+            "linearFeet": 100,
+            "lfMethod": "exact",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "gates": {
+              "walk": 1
+            },
+            "cornerCount": 2,
+            "confirmedFacts": {
+              "fenceType": {
+                "status": "identified",
+                "field": "fenceType",
+                "value": "wood",
+                "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+              }
+            }
+          },
+          "measurements": [
+            {
+              "name": "fenceLaborPerLF",
+              "value": 100,
+              "unit": "fence linear feet",
+              "source": "confirmed_offering_scope"
+            },
+            {
+              "name": "fenceMaterialPerLF",
+              "value": 100,
+              "unit": "fence linear feet",
+              "source": "confirmed_offering_scope"
+            },
+            {
+              "name": "gate_walk",
+              "value": 1,
+              "unit": "gates",
+              "source": "confirmed_offering_scope"
+            }
+          ],
+          "quantityDerivations": [
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "postMaterialEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Separately priced post materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "footingLaborEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Post-hole and footing labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "footingMaterialEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Footing materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Fence infill materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 100,
+                "wasteFactor": 0.2,
+                "wastePath": "fenceWasteFactor"
+              },
+              "result": 120,
+              "exactResult": {
+                "numerator": "120",
+                "denominator": "1"
+              },
+              "unit": "fence linear feet",
+              "usedBy": [
+                "Fence infill materials"
+              ]
+            }
+          ],
+          "ruleApplications": [],
+          "assumptions": [],
+          "disclosures": [
+            "[SYNTHETIC] Defined six-foot wood fence",
+            "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "Fence length excludes gate openings.",
+            "1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total."
+          ],
+          "lineItems": [
+            {
+              "name": "Fence infill installation labor",
+              "category": "labor",
+              "amountCents": 100000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 100,
+                "exactQuantity": {
+                  "numerator": "100",
+                  "denominator": "1"
+                },
+                "unit": "fence linear feet",
+                "rateCents": 1000,
+                "ratePath": "offeringRates.fenceLaborPerLF",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "terrainLaborMultiplier.flat",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 100000,
+                "exactUnroundedCents": {
+                  "numerator": "100000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 100000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Fence infill materials",
+              "category": "material",
+              "amountCents": 240000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 120,
+                "exactQuantity": {
+                  "numerator": "120",
+                  "denominator": "1"
+                },
+                "unit": "fence linear feet",
+                "rateCents": 2000,
+                "ratePath": "offeringRates.fenceMaterialPerLF",
+                "multipliers": [],
+                "unroundedCents": 240000,
+                "exactUnroundedCents": {
+                  "numerator": "240000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 240000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Separately priced post materials",
+              "category": "material",
+              "amountCents": 30000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 2000,
+                "ratePath": "offeringRates.postMaterialEach",
+                "multipliers": [],
+                "unroundedCents": 30000,
+                "exactUnroundedCents": {
+                  "numerator": "30000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 30000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Post-hole and footing labor",
+              "category": "labor",
+              "amountCents": 6000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 400,
+                "ratePath": "offeringRates.footingLaborEach",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "terrainLaborMultiplier.flat",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 6000,
+                "exactUnroundedCents": {
+                  "numerator": "6000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 6000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Footing materials",
+              "category": "material",
+              "amountCents": 9000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 600,
+                "ratePath": "offeringRates.footingMaterialEach",
+                "multipliers": [],
+                "unroundedCents": 9000,
+                "exactUnroundedCents": {
+                  "numerator": "9000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 9000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Installed gate: walk",
+              "category": "addon",
+              "priceBasis": "sell_price",
+              "amountCents": 25000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1,
+                "exactQuantity": {
+                  "numerator": "1",
+                  "denominator": "1"
+                },
+                "unit": "gates",
+                "rateCents": 25000,
+                "ratePath": "offeringRates.gate_walk",
+                "priceBasis": "sell_price",
+                "multipliers": [],
+                "unroundedCents": 25000,
+                "exactUnroundedCents": {
+                  "numerator": "25000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 25000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "installedBaseExactCents": {
+                "numerator": "25000",
+                "denominator": "1"
+              },
+              "installedLaborExactCents": {
+                "numerator": "15000",
+                "denominator": "1"
+              },
+              "taxable": false
+            }
+          ],
+          "scenarios": {
+            "mid": {
+              "variant": "mid",
+              "order": [
+                "fees",
+                "seasonal",
+                "taxability",
+                "markup",
+                "minimum"
+              ],
+              "fees": [
+                {
+                  "fee": "travel",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "disposal",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "permit",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "overhead",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                }
+              ],
+              "seasonal": {
+                "month": 10,
+                "configuredMonths": [],
+                "percent": 0,
+                "laborSubtotalCents": 121000,
+                "seasonActive": false,
+                "applied": false,
+                "amountCents": 0
+              },
+              "markup": {
+                "mode": "markup",
+                "lineTreatment": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "amountCents": 100000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "amountCents": 240000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "amountCents": 30000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "amountCents": 6000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "amountCents": 9000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Installed gate: walk",
+                    "category": "addon",
+                    "amountCents": 25000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  }
+                ],
+                "percent": 0,
+                "baseCents": 385000,
+                "amountCents": 0,
+                "eligibleLines": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "amountCents": 100000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "amountCents": 240000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "amountCents": 30000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "amountCents": 6000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "amountCents": 9000,
+                    "basis": "cost"
+                  }
+                ],
+                "sellPriceLinesExcluded": [
+                  "Installed gate: walk"
+                ]
+              },
+              "minimum": {
+                "basis": "post_markup",
+                "subtotalBeforeMinimumCents": 410000,
+                "businessMinimumCents": 0,
+                "serviceMinimumField": "minimumJob",
+                "serviceMinimumCents": 0,
+                "effectiveMinimumCents": 0,
+                "adjustmentCents": 0,
+                "applied": false
+              },
+              "tax": {
+                "mode": "TAX_NONE",
+                "percent": 0,
+                "preTaxSubtotalCents": 410000,
+                "taxableMarkupCents": 0,
+                "taxableSubtotalCents": 0,
+                "nonTaxableSubtotalCents": 410000,
+                "taxCents": 0,
+                "finalTotalCents": 410000,
+                "lineTaxability": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 100000
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 240000
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 30000
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 6000
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 9000
+                  },
+                  {
+                    "name": "Installed gate: walk",
+                    "category": "addon",
+                    "taxable": false,
+                    "amountCents": 25000
+                  }
+                ]
+              },
+              "lineItems": [
+                {
+                  "name": "Fence infill installation labor",
+                  "category": "labor",
+                  "amountCents": 100000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 100,
+                    "exactQuantity": {
+                      "numerator": "100",
+                      "denominator": "1"
+                    },
+                    "unit": "fence linear feet",
+                    "rateCents": 1000,
+                    "ratePath": "offeringRates.fenceLaborPerLF",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "terrainLaborMultiplier.flat",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 100000,
+                    "exactUnroundedCents": {
+                      "numerator": "100000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 100000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Fence infill materials",
+                  "category": "material",
+                  "amountCents": 240000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 120,
+                    "exactQuantity": {
+                      "numerator": "120",
+                      "denominator": "1"
+                    },
+                    "unit": "fence linear feet",
+                    "rateCents": 2000,
+                    "ratePath": "offeringRates.fenceMaterialPerLF",
+                    "multipliers": [],
+                    "unroundedCents": 240000,
+                    "exactUnroundedCents": {
+                      "numerator": "240000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 240000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Separately priced post materials",
+                  "category": "material",
+                  "amountCents": 30000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 2000,
+                    "ratePath": "offeringRates.postMaterialEach",
+                    "multipliers": [],
+                    "unroundedCents": 30000,
+                    "exactUnroundedCents": {
+                      "numerator": "30000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 30000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Post-hole and footing labor",
+                  "category": "labor",
+                  "amountCents": 6000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 400,
+                    "ratePath": "offeringRates.footingLaborEach",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "terrainLaborMultiplier.flat",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 6000,
+                    "exactUnroundedCents": {
+                      "numerator": "6000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 6000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Footing materials",
+                  "category": "material",
+                  "amountCents": 9000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 600,
+                    "ratePath": "offeringRates.footingMaterialEach",
+                    "multipliers": [],
+                    "unroundedCents": 9000,
+                    "exactUnroundedCents": {
+                      "numerator": "9000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 9000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Installed gate: walk",
+                  "category": "addon",
+                  "priceBasis": "sell_price",
+                  "amountCents": 25000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1,
+                    "exactQuantity": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    },
+                    "unit": "gates",
+                    "rateCents": 25000,
+                    "ratePath": "offeringRates.gate_walk",
+                    "priceBasis": "sell_price",
+                    "multipliers": [],
+                    "unroundedCents": 25000,
+                    "exactUnroundedCents": {
+                      "numerator": "25000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 25000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "installedBaseExactCents": {
+                    "numerator": "25000",
+                    "denominator": "1"
+                  },
+                  "installedLaborExactCents": {
+                    "numerator": "15000",
+                    "denominator": "1"
+                  },
+                  "taxable": false
+                }
+              ],
+              "finalTotalCents": 410000
+            }
+          },
+          "range": {
+            "source": "business_range_buffer",
+            "bufferPercent": 0,
+            "effectiveRangeBufferPercent": 0,
+            "rangeBufferUsed": 0,
+            "minimumCustomerFloorCents": 0,
+            "lowCents": 410000,
+            "midCents": 410000,
+            "highCents": 410000,
+            "exactMidScenarioTotalCents": 410000
+          },
+          "customerProjection": {
+            "tierName": null,
+            "priceUnit": null,
+            "taxTreatment": "No tax added.",
+            "lowEstimate": 4100,
+            "midEstimate": 4100,
+            "highEstimate": 4100,
+            "priceDrivers": [
+              "100 measured linear feet of 6 ft wood fencing"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total. No tax added.",
+            "rangeBufferUsed": 0
+          }
+        }
+      }
+    ],
+    "priceDrivers": [
+      "100 measured linear feet of 6 ft wood fencing"
+    ],
+    "priceUnit": null,
+    "taxTreatment": "No tax added.",
+    "rangeBufferUsed": 0,
+    "effectiveRangeBufferPercent": 0,
+    "lineItems": [
+      {
+        "name": "Fence infill installation labor",
+        "category": "labor",
+        "amountCents": 100000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 100,
+          "exactQuantity": {
+            "numerator": "100",
+            "denominator": "1"
+          },
+          "unit": "fence linear feet",
+          "rateCents": 1000,
+          "ratePath": "offeringRates.fenceLaborPerLF",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "terrainLaborMultiplier.flat",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 100000,
+          "exactUnroundedCents": {
+            "numerator": "100000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 100000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Fence infill materials",
+        "category": "material",
+        "amountCents": 240000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 120,
+          "exactQuantity": {
+            "numerator": "120",
+            "denominator": "1"
+          },
+          "unit": "fence linear feet",
+          "rateCents": 2000,
+          "ratePath": "offeringRates.fenceMaterialPerLF",
+          "multipliers": [],
+          "unroundedCents": 240000,
+          "exactUnroundedCents": {
+            "numerator": "240000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 240000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Separately priced post materials",
+        "category": "material",
+        "amountCents": 30000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 15,
+          "exactQuantity": {
+            "numerator": "15",
+            "denominator": "1"
+          },
+          "unit": "calculated posts",
+          "rateCents": 2000,
+          "ratePath": "offeringRates.postMaterialEach",
+          "multipliers": [],
+          "unroundedCents": 30000,
+          "exactUnroundedCents": {
+            "numerator": "30000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 30000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Post-hole and footing labor",
+        "category": "labor",
+        "amountCents": 6000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 15,
+          "exactQuantity": {
+            "numerator": "15",
+            "denominator": "1"
+          },
+          "unit": "calculated posts",
+          "rateCents": 400,
+          "ratePath": "offeringRates.footingLaborEach",
+          "multipliers": [
+            {
+              "name": "Labor adjustment",
+              "path": "terrainLaborMultiplier.flat",
+              "value": 1,
+              "exactValue": {
+                "numerator": "1",
+                "denominator": "1"
+              }
+            }
+          ],
+          "unroundedCents": 6000,
+          "exactUnroundedCents": {
+            "numerator": "6000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 6000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Footing materials",
+        "category": "material",
+        "amountCents": 9000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 15,
+          "exactQuantity": {
+            "numerator": "15",
+            "denominator": "1"
+          },
+          "unit": "calculated posts",
+          "rateCents": 600,
+          "ratePath": "offeringRates.footingMaterialEach",
+          "multipliers": [],
+          "unroundedCents": 9000,
+          "exactUnroundedCents": {
+            "numerator": "9000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 9000,
+          "effectivePriceBasis": "cost",
+          "markupEligible": true
+        },
+        "taxable": false
+      },
+      {
+        "name": "Installed gate: walk",
+        "category": "addon",
+        "priceBasis": "sell_price",
+        "amountCents": 25000,
+        "ownerVisible": true,
+        "customerVisible": false,
+        "calculation": {
+          "evidenceVariant": "quantity_rate",
+          "quantity": 1,
+          "exactQuantity": {
+            "numerator": "1",
+            "denominator": "1"
+          },
+          "unit": "gates",
+          "rateCents": 25000,
+          "ratePath": "offeringRates.gate_walk",
+          "priceBasis": "sell_price",
+          "multipliers": [],
+          "unroundedCents": 25000,
+          "exactUnroundedCents": {
+            "numerator": "25000",
+            "denominator": "1"
+          },
+          "roundedAmountCents": 25000,
+          "effectivePriceBasis": "sell_price",
+          "markupEligible": false
+        },
+        "installedBaseExactCents": {
+          "numerator": "25000",
+          "denominator": "1"
+        },
+        "installedLaborExactCents": {
+          "numerator": "15000",
+          "denominator": "1"
+        },
+        "taxable": false
+      }
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total. No tax added.",
+    "appliedRules": [],
+    "urgencyFlags": [],
+    "failedTierDiagnostics": [],
+    "customerEligible": true,
+    "calculationRecord": {
+      "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+      "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+      "quoteId": "9649a954-1e41-43b7-a671-68ed8991d768",
+      "serviceType": "FENCING_INSTALL",
+      "options": [
+        {
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "freeOffering": false,
+          "serviceType": "FENCING_INSTALL",
+          "tierName": null,
+          "normalizedCustomerInputs": {
+            "linearFeet": 100,
+            "lfMethod": "exact",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "gates": {
+              "walk": 1
+            },
+            "cornerCount": 2,
+            "confirmedFacts": {
+              "fenceType": {
+                "status": "identified",
+                "field": "fenceType",
+                "value": "wood",
+                "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+              }
+            }
+          },
+          "measurements": [
+            {
+              "name": "fenceLaborPerLF",
+              "value": 100,
+              "unit": "fence linear feet",
+              "source": "confirmed_offering_scope"
+            },
+            {
+              "name": "fenceMaterialPerLF",
+              "value": 100,
+              "unit": "fence linear feet",
+              "source": "confirmed_offering_scope"
+            },
+            {
+              "name": "gate_walk",
+              "value": 1,
+              "unit": "gates",
+              "source": "confirmed_offering_scope"
+            }
+          ],
+          "quantityDerivations": [
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "postMaterialEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Separately priced post materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "footingLaborEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Post-hole and footing labor"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "footingMaterialEachQuantity",
+              "formula": "ceil(fence length excluding gates / owner spacing) + 1 end + corners + gate posts not included in gate prices",
+              "inputs": {
+                "linearFeet": 100,
+                "postSpacingLF": 10,
+                "cornerCount": 2,
+                "gates": {
+                  "walk": 1
+                }
+              },
+              "result": 15,
+              "exactResult": {
+                "numerator": "15",
+                "denominator": "1"
+              },
+              "unit": "calculated posts",
+              "usedBy": [
+                "Footing materials"
+              ]
+            },
+            {
+              "evidenceVariant": "derived_quantity",
+              "name": "Fence infill materials material quantity",
+              "formula": "measured quantity * (1 + owner material waste)",
+              "inputs": {
+                "measuredQuantity": 100,
+                "wasteFactor": 0.2,
+                "wastePath": "fenceWasteFactor"
+              },
+              "result": 120,
+              "exactResult": {
+                "numerator": "120",
+                "denominator": "1"
+              },
+              "unit": "fence linear feet",
+              "usedBy": [
+                "Fence infill materials"
+              ]
+            }
+          ],
+          "ruleApplications": [],
+          "assumptions": [],
+          "disclosures": [
+            "[SYNTHETIC] Defined six-foot wood fence",
+            "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "Fence length excludes gate openings.",
+            "1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total."
+          ],
+          "lineItems": [
+            {
+              "name": "Fence infill installation labor",
+              "category": "labor",
+              "amountCents": 100000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 100,
+                "exactQuantity": {
+                  "numerator": "100",
+                  "denominator": "1"
+                },
+                "unit": "fence linear feet",
+                "rateCents": 1000,
+                "ratePath": "offeringRates.fenceLaborPerLF",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "terrainLaborMultiplier.flat",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 100000,
+                "exactUnroundedCents": {
+                  "numerator": "100000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 100000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Fence infill materials",
+              "category": "material",
+              "amountCents": 240000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 120,
+                "exactQuantity": {
+                  "numerator": "120",
+                  "denominator": "1"
+                },
+                "unit": "fence linear feet",
+                "rateCents": 2000,
+                "ratePath": "offeringRates.fenceMaterialPerLF",
+                "multipliers": [],
+                "unroundedCents": 240000,
+                "exactUnroundedCents": {
+                  "numerator": "240000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 240000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Separately priced post materials",
+              "category": "material",
+              "amountCents": 30000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 2000,
+                "ratePath": "offeringRates.postMaterialEach",
+                "multipliers": [],
+                "unroundedCents": 30000,
+                "exactUnroundedCents": {
+                  "numerator": "30000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 30000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Post-hole and footing labor",
+              "category": "labor",
+              "amountCents": 6000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 400,
+                "ratePath": "offeringRates.footingLaborEach",
+                "multipliers": [
+                  {
+                    "name": "Labor adjustment",
+                    "path": "terrainLaborMultiplier.flat",
+                    "value": 1,
+                    "exactValue": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    }
+                  }
+                ],
+                "unroundedCents": 6000,
+                "exactUnroundedCents": {
+                  "numerator": "6000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 6000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Footing materials",
+              "category": "material",
+              "amountCents": 9000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 15,
+                "exactQuantity": {
+                  "numerator": "15",
+                  "denominator": "1"
+                },
+                "unit": "calculated posts",
+                "rateCents": 600,
+                "ratePath": "offeringRates.footingMaterialEach",
+                "multipliers": [],
+                "unroundedCents": 9000,
+                "exactUnroundedCents": {
+                  "numerator": "9000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 9000,
+                "effectivePriceBasis": "cost",
+                "markupEligible": true
+              },
+              "taxable": false
+            },
+            {
+              "name": "Installed gate: walk",
+              "category": "addon",
+              "priceBasis": "sell_price",
+              "amountCents": 25000,
+              "ownerVisible": true,
+              "customerVisible": false,
+              "calculation": {
+                "evidenceVariant": "quantity_rate",
+                "quantity": 1,
+                "exactQuantity": {
+                  "numerator": "1",
+                  "denominator": "1"
+                },
+                "unit": "gates",
+                "rateCents": 25000,
+                "ratePath": "offeringRates.gate_walk",
+                "priceBasis": "sell_price",
+                "multipliers": [],
+                "unroundedCents": 25000,
+                "exactUnroundedCents": {
+                  "numerator": "25000",
+                  "denominator": "1"
+                },
+                "roundedAmountCents": 25000,
+                "effectivePriceBasis": "sell_price",
+                "markupEligible": false
+              },
+              "installedBaseExactCents": {
+                "numerator": "25000",
+                "denominator": "1"
+              },
+              "installedLaborExactCents": {
+                "numerator": "15000",
+                "denominator": "1"
+              },
+              "taxable": false
+            }
+          ],
+          "scenarios": {
+            "mid": {
+              "variant": "mid",
+              "order": [
+                "fees",
+                "seasonal",
+                "taxability",
+                "markup",
+                "minimum"
+              ],
+              "fees": [
+                {
+                  "fee": "travel",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "disposal",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "permit",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": false,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                },
+                {
+                  "fee": "overhead",
+                  "mode": "not_applicable",
+                  "physicalScopeSelected": true,
+                  "replaced": false,
+                  "applied": false,
+                  "charged": false,
+                  "noCharge": false,
+                  "amountCents": 0,
+                  "reason": "not_applicable"
+                }
+              ],
+              "seasonal": {
+                "month": 10,
+                "configuredMonths": [],
+                "percent": 0,
+                "laborSubtotalCents": 121000,
+                "seasonActive": false,
+                "applied": false,
+                "amountCents": 0
+              },
+              "markup": {
+                "mode": "markup",
+                "lineTreatment": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "amountCents": 100000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "amountCents": 240000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "amountCents": 30000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "amountCents": 6000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "amountCents": 9000,
+                    "effectivePriceBasis": "cost",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": true
+                  },
+                  {
+                    "name": "Installed gate: walk",
+                    "category": "addon",
+                    "amountCents": 25000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupConfiguredForCategory": true,
+                    "markupEligible": false
+                  }
+                ],
+                "percent": 0,
+                "baseCents": 385000,
+                "amountCents": 0,
+                "eligibleLines": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "amountCents": 100000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "amountCents": 240000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "amountCents": 30000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "amountCents": 6000,
+                    "basis": "cost"
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "amountCents": 9000,
+                    "basis": "cost"
+                  }
+                ],
+                "sellPriceLinesExcluded": [
+                  "Installed gate: walk"
+                ]
+              },
+              "minimum": {
+                "basis": "post_markup",
+                "subtotalBeforeMinimumCents": 410000,
+                "businessMinimumCents": 0,
+                "serviceMinimumField": "minimumJob",
+                "serviceMinimumCents": 0,
+                "effectiveMinimumCents": 0,
+                "adjustmentCents": 0,
+                "applied": false
+              },
+              "tax": {
+                "mode": "TAX_NONE",
+                "percent": 0,
+                "preTaxSubtotalCents": 410000,
+                "taxableMarkupCents": 0,
+                "taxableSubtotalCents": 0,
+                "nonTaxableSubtotalCents": 410000,
+                "taxCents": 0,
+                "finalTotalCents": 410000,
+                "lineTaxability": [
+                  {
+                    "name": "Fence infill installation labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 100000
+                  },
+                  {
+                    "name": "Fence infill materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 240000
+                  },
+                  {
+                    "name": "Separately priced post materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 30000
+                  },
+                  {
+                    "name": "Post-hole and footing labor",
+                    "category": "labor",
+                    "taxable": false,
+                    "amountCents": 6000
+                  },
+                  {
+                    "name": "Footing materials",
+                    "category": "material",
+                    "taxable": false,
+                    "amountCents": 9000
+                  },
+                  {
+                    "name": "Installed gate: walk",
+                    "category": "addon",
+                    "taxable": false,
+                    "amountCents": 25000
+                  }
+                ]
+              },
+              "lineItems": [
+                {
+                  "name": "Fence infill installation labor",
+                  "category": "labor",
+                  "amountCents": 100000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 100,
+                    "exactQuantity": {
+                      "numerator": "100",
+                      "denominator": "1"
+                    },
+                    "unit": "fence linear feet",
+                    "rateCents": 1000,
+                    "ratePath": "offeringRates.fenceLaborPerLF",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "terrainLaborMultiplier.flat",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 100000,
+                    "exactUnroundedCents": {
+                      "numerator": "100000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 100000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Fence infill materials",
+                  "category": "material",
+                  "amountCents": 240000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 120,
+                    "exactQuantity": {
+                      "numerator": "120",
+                      "denominator": "1"
+                    },
+                    "unit": "fence linear feet",
+                    "rateCents": 2000,
+                    "ratePath": "offeringRates.fenceMaterialPerLF",
+                    "multipliers": [],
+                    "unroundedCents": 240000,
+                    "exactUnroundedCents": {
+                      "numerator": "240000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 240000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Separately priced post materials",
+                  "category": "material",
+                  "amountCents": 30000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 2000,
+                    "ratePath": "offeringRates.postMaterialEach",
+                    "multipliers": [],
+                    "unroundedCents": 30000,
+                    "exactUnroundedCents": {
+                      "numerator": "30000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 30000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Post-hole and footing labor",
+                  "category": "labor",
+                  "amountCents": 6000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 400,
+                    "ratePath": "offeringRates.footingLaborEach",
+                    "multipliers": [
+                      {
+                        "name": "Labor adjustment",
+                        "path": "terrainLaborMultiplier.flat",
+                        "value": 1,
+                        "exactValue": {
+                          "numerator": "1",
+                          "denominator": "1"
+                        }
+                      }
+                    ],
+                    "unroundedCents": 6000,
+                    "exactUnroundedCents": {
+                      "numerator": "6000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 6000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Footing materials",
+                  "category": "material",
+                  "amountCents": 9000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 15,
+                    "exactQuantity": {
+                      "numerator": "15",
+                      "denominator": "1"
+                    },
+                    "unit": "calculated posts",
+                    "rateCents": 600,
+                    "ratePath": "offeringRates.footingMaterialEach",
+                    "multipliers": [],
+                    "unroundedCents": 9000,
+                    "exactUnroundedCents": {
+                      "numerator": "9000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 9000,
+                    "effectivePriceBasis": "cost",
+                    "markupEligible": true
+                  },
+                  "taxable": false
+                },
+                {
+                  "name": "Installed gate: walk",
+                  "category": "addon",
+                  "priceBasis": "sell_price",
+                  "amountCents": 25000,
+                  "ownerVisible": true,
+                  "customerVisible": false,
+                  "calculation": {
+                    "evidenceVariant": "quantity_rate",
+                    "quantity": 1,
+                    "exactQuantity": {
+                      "numerator": "1",
+                      "denominator": "1"
+                    },
+                    "unit": "gates",
+                    "rateCents": 25000,
+                    "ratePath": "offeringRates.gate_walk",
+                    "priceBasis": "sell_price",
+                    "multipliers": [],
+                    "unroundedCents": 25000,
+                    "exactUnroundedCents": {
+                      "numerator": "25000",
+                      "denominator": "1"
+                    },
+                    "roundedAmountCents": 25000,
+                    "effectivePriceBasis": "sell_price",
+                    "markupEligible": false
+                  },
+                  "installedBaseExactCents": {
+                    "numerator": "25000",
+                    "denominator": "1"
+                  },
+                  "installedLaborExactCents": {
+                    "numerator": "15000",
+                    "denominator": "1"
+                  },
+                  "taxable": false
+                }
+              ],
+              "finalTotalCents": 410000
+            }
+          },
+          "range": {
+            "source": "business_range_buffer",
+            "bufferPercent": 0,
+            "effectiveRangeBufferPercent": 0,
+            "rangeBufferUsed": 0,
+            "minimumCustomerFloorCents": 0,
+            "lowCents": 410000,
+            "midCents": 410000,
+            "highCents": 410000,
+            "exactMidScenarioTotalCents": 410000
+          },
+          "customerProjection": {
+            "tierName": null,
+            "priceUnit": null,
+            "taxTreatment": "No tax added.",
+            "lowEstimate": 4100,
+            "midEstimate": 4100,
+            "highEstimate": 4100,
+            "priceDrivers": [
+              "100 measured linear feet of 6 ft wood fencing"
+            ],
+            "skippedAddons": [],
+            "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. 1 4 ft gate(s): [SYNTHETIC] Four-foot installed gate and hardware. Gate posts and footings included in the calculated post total. No tax added.",
+            "rangeBufferUsed": 0
+          }
+        }
+      ],
+      "ownerConfiguration": {
+        "id": "94b56376-eca3-458c-9dc1-3c63143ab990",
+        "serviceType": "FENCING_INSTALL",
+        "service": "[SYNTHETIC] A",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "serviceType": "FENCING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "dc140c9b-f0e3-4689-810d-65db69b964d1",
+          "operationId": "692fb7e6-5559-4d36-9649-0f79f6909e1e",
+          "createdAt": "2026-10-03T03:31:26.498Z"
+        },
+        "active": true,
+        "confirmedFields": {},
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "knownOfferings": {
+          "fenceType": {
+            "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        },
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "itemized",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined six-foot wood fence",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "gates": {
+              "walk": {
+                "widthLF": 4,
+                "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+                "postsAndFootingsIncluded": false
+              }
+            }
+          },
+          "offeringRates": {
+            "fenceLaborPerLF": 1000,
+            "fenceMaterialPerLF": 2000,
+            "postMaterialEach": 2000,
+            "footingLaborEach": 400,
+            "footingMaterialEach": 600,
+            "gate_walk": 25000
+          },
+          "installedLaborPercent": {
+            "offeringRates.gate_walk": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.gate_walk": 40
+          },
+          "postSpacingLF": 10,
+          "fenceWasteFactor": 0.2,
+          "terrainLaborMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.3
+          }
+        },
+        "tiers": []
+      },
+      "financialInputs": {
+        "businessDefaults": {
+          "markupPercent": 0,
+          "markupMode": "markup",
+          "taxMode": "TAX_NONE",
+          "taxPercent": 0,
+          "rangeBufferPercent": 0,
+          "overheadFixed": 0,
+          "minimumJobPrice": 0,
+          "travelFee": 1000,
+          "disposalFee": 0,
+          "permitFee": 0,
+          "markupApplies": {
+            "labor": true,
+            "material": true,
+            "removal": true,
+            "prep": true,
+            "addon": true,
+            "equipment": true,
+            "travel": true,
+            "disposal": true,
+            "permit": true,
+            "overhead": true,
+            "surcharge": true
+          },
+          "peakMonths": [],
+          "peakSurchargePercent": 0
+        },
+        "feeSelections": {
+          "owner": {},
+          "customer": {}
+        },
+        "currentMonth": 10
+      },
+      "customerEligible": true
+    },
+    "pricedScope": {
+      "service": "[SYNTHETIC] A",
+      "facts": [
+        {
+          "label": "Measured fence length excluding gate openings",
+          "value": "100"
+        },
+        {
+          "label": "Fence measurement method",
+          "value": "Exact"
+        },
+        {
+          "label": "Fence type",
+          "value": "Wood"
+        },
+        {
+          "label": "Fence height",
+          "value": "6"
+        },
+        {
+          "label": "Terrain slope",
+          "value": "Flat"
+        },
+        {
+          "label": "Gates by measured opening width",
+          "value": "1 × walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+        },
+        {
+          "label": "Fence corners",
+          "value": "2"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] A",
+      "contact": {},
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookRevision": "5d4c92e317bd664f60941ddab67ec9536500edf455650bae55a679a58df9b2cf",
+    "selectedServiceId": "94b56376-eca3-458c-9dc1-3c63143ab990"
+  },
+  "catalog": {
+    "status": 200,
+    "result": {
+      "contractVersion": "2026-09-29.1",
+      "capabilities": {
+        "quoteEnvelope": "pricing-only-v2",
+        "booking": "booking-v1",
+        "postQuoteIdentity": true,
+        "serverPricingOnly": true
+      },
+      "branding": {
+        "businessName": "Synthetic trade-fence",
+        "accentColor": "#16A34A",
+        "launcherLabel": "Get an estimate",
+        "clickToCallNumber": null
+      },
+      "services": [
+        {
+          "id": "94b56376-eca3-458c-9dc1-3c63143ab990",
+          "serviceType": "FENCING_INSTALL",
+          "name": "[SYNTHETIC] A",
+          "customerFields": [
+            {
+              "name": "permitRequired",
+              "label": "Permit required for this measured project",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "linearFeet",
+              "label": "Measured fence length excluding gate openings",
+              "unit": "linear feet",
+              "type": "number",
+              "min": 1,
+              "max": 1000000
+            },
+            {
+              "name": "lfMethod",
+              "label": "Fence measurement method",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "exact",
+                "assumption"
+              ]
+            },
+            {
+              "name": "fenceType",
+              "label": "Fence type",
+              "type": "slug",
+              "unit": null
+            },
+            {
+              "name": "fenceHeight",
+              "label": "Fence height",
+              "unit": "feet",
+              "type": "number",
+              "min": 5e-324,
+              "max": 1.7976931348623157e+308
+            },
+            {
+              "name": "terrainSlope",
+              "label": "Terrain slope",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "flat",
+                "moderate",
+                "steep"
+              ]
+            },
+            {
+              "name": "gates",
+              "label": "Gates by measured opening width",
+              "type": "offering_counts",
+              "unit": "gates",
+              "values": [
+                "walk"
+              ],
+              "options": {
+                "walk": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+              }
+            },
+            {
+              "name": "confirmedFacts",
+              "label": "Affirmatively identified owner offerings",
+              "type": "confirmed_facts",
+              "unit": null
+            },
+            {
+              "name": "cornerCount",
+              "label": "Fence corners",
+              "unit": "corners",
+              "type": "number",
+              "min": 0,
+              "max": 1000000,
+              "integer": true
+            }
+          ],
+          "offeringSummary": [
+            "[SYNTHETIC] Defined six-foot wood fence",
+            "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "Fence length excludes gate openings."
+          ],
+          "knownOfferings": {
+            "fenceType": {
+              "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          },
+          "customerFees": [],
+          "quoteCapability": "LIVE_OR_REVIEW",
+          "bookingCapability": "PREFERRED_TIME_ONLY"
+        },
+        {
+          "id": "89cff460-3772-4104-929d-bf3b56adb626",
+          "serviceType": "FENCING_INSTALL",
+          "name": "[SYNTHETIC] B",
+          "customerFields": [
+            {
+              "name": "permitRequired",
+              "label": "Permit required for this measured project",
+              "unit": null,
+              "type": "boolean"
+            },
+            {
+              "name": "linearFeet",
+              "label": "Measured fence length excluding gate openings",
+              "unit": "linear feet",
+              "type": "number",
+              "min": 1,
+              "max": 1000000
+            },
+            {
+              "name": "lfMethod",
+              "label": "Fence measurement method",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "exact",
+                "assumption"
+              ]
+            },
+            {
+              "name": "fenceType",
+              "label": "Fence type",
+              "type": "slug",
+              "unit": null
+            },
+            {
+              "name": "fenceHeight",
+              "label": "Fence height",
+              "unit": "feet",
+              "type": "number",
+              "min": 5e-324,
+              "max": 1.7976931348623157e+308
+            },
+            {
+              "name": "terrainSlope",
+              "label": "Terrain slope",
+              "unit": null,
+              "type": "enum",
+              "values": [
+                "flat",
+                "moderate",
+                "steep"
+              ]
+            },
+            {
+              "name": "gates",
+              "label": "Gates by measured opening width",
+              "type": "offering_counts",
+              "unit": "gates",
+              "values": [
+                "walk"
+              ],
+              "options": {
+                "walk": "walk — 4 ft opening; [SYNTHETIC] Four-foot installed gate and hardware."
+              }
+            },
+            {
+              "name": "confirmedFacts",
+              "label": "Affirmatively identified owner offerings",
+              "type": "confirmed_facts",
+              "unit": null
+            },
+            {
+              "name": "cornerCount",
+              "label": "Fence corners",
+              "unit": "corners",
+              "type": "number",
+              "min": 0,
+              "max": 1000000,
+              "integer": true
+            }
+          ],
+          "offeringSummary": [
+            "[SYNTHETIC] Defined six-foot wood fence",
+            "Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "Fence length excludes gate openings."
+          ],
+          "knownOfferings": {
+            "fenceType": {
+              "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          },
+          "customerFees": [],
+          "quoteCapability": "LIVE_OR_REVIEW",
+          "bookingCapability": "PREFERRED_TIME_ONLY"
+        }
+      ]
+    }
+  }
+}

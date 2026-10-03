@@ -1,3 +1,4 @@
+import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import {ScopeEditor} from './scopeEditor.jsx';
 import {PricingTree,CustomerMeasurements,CustomerFeePreview,ServiceRules,SavedApproval} from './quoteDoneControls.jsx';
@@ -8,7 +9,7 @@ import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-re
 import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
 import { humanPricingKey } from './pricebookFormatting.js';
-import { ExactNumericInput } from './pricebookInputs.jsx';
+import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
 const PricingContext = createContext({});
@@ -251,7 +252,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
   );
 }
 
-function StructuredFactorField({ value, defaultValue, onChange, unit }) {
+function StructuredFactorField({ value, defaultValue, onChange, unit, wastePercent = false, label = '' }) {
   if (defaultValue && typeof defaultValue === 'object') {
     const current = value && typeof value === 'object' && !Array.isArray(value)
       ? value
@@ -265,6 +266,8 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
               value={current[key]}
               defaultValue={childDefault}
               unit={unit}
+              wastePercent={wastePercent}
+              label={label+' '+humanPricingKey(key)}
               onChange={child => onChange({ ...current, [key]:child })}
             />
           </div>
@@ -274,8 +277,8 @@ function StructuredFactorField({ value, defaultValue, onChange, unit }) {
   }
   return (
     <div className="factor-value">
-      <ExactNumericInput value={value === undefined ? defaultValue : value} onChange={onChange} />
-      <small>{unit}</small>
+      {wastePercent?<WastePercentInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={onChange}/>:<ExactNumericInput aria-label={label} value={value === undefined ? defaultValue : value} onChange={onChange} />}
+      <small>{wastePercent?'%':unit}</small>
     </div>
   );
 }
@@ -778,7 +781,7 @@ export default function PriceBook() {
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
   const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
+  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&!['offering_configuration','scope_configuration'].includes(field.type)&&(!offeringSetup||field.field==='minimumJob')).map(field=>offeringSetup&&field.field==='minimumJob'?{...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false}:field);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);
@@ -865,6 +868,7 @@ export default function PriceBook() {
                   </div>
 
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
+                  {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label="Product pricing coverage"><h3>Product pricing coverage</h3><ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}><strong>{[product.tierName,...Object.values(product.selection).map(humanPricingKey)].filter(Boolean).join(' · ')}</strong><span>{product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' ')}</span></li>)}</ul></section>}
                   {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
                     <h3>Which requests can be quoted?</h3>
                     <p>Configured work can quote. These additional requests need the listed setup before they can be included.</p>
@@ -919,6 +923,7 @@ export default function PriceBook() {
 
                 {selectedMeta.supportsScopeConfiguration&&<div className="editor-optional" data-editor-section="scope"><Disclosure key={'scope-'+selectedType} title="Additional priced scope" subtitle="Set up removal, preparation and other measured work you offer." summaryChip={selectedStatus.scopeCoverage?.some(scope=>!scope.configurationComplete)?'SETUP NEEDED':'REVIEW SCOPE'}><ScopeEditor service={selected} onChange={replaceSelected}/></Disclosure></div>}
                 {contract.engineVersion&&<>
+                  <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
                   <div className="editor-optional"><SavedApproval key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
@@ -948,7 +953,7 @@ export default function PriceBook() {
                 )}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
-                {!offeringSetup&&(selectedMeta.class2Fields || []).length > 0 && (
+                {(selectedMeta.class2Fields || []).length > 0 && (
                   <Disclosure
                     title="Quantity assumptions"
                     subtitle="Defaults are already being applied. Adjust only if your jobs differ."
@@ -966,6 +971,7 @@ export default function PriceBook() {
                     </div>
                     {(selectedMeta.class2Fields || []).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);
+                      const wastePercent=/WasteFactor$|^wasteFactor$/.test(definition.field);
                       const isStructured = definition.defaultValue && typeof definition.defaultValue === 'object';
                       if (isStructured) {
                         return (
@@ -980,6 +986,8 @@ export default function PriceBook() {
                               value={current}
                               defaultValue={definition.defaultValue}
                               unit={definition.unit}
+                              wastePercent={wastePercent}
+                              label={definition.label}
                               onChange={value => updateField(definition.field, value)}
                             />
                           </div>
@@ -990,11 +998,11 @@ export default function PriceBook() {
                           key={definition.field}
                           label={definition.label}
                           explanation={definition.help}
-                          unit={definition.unit}
+                          unit={wastePercent?'%':definition.unit}
                           value={current}
-                          defaultValue={JSON.stringify(definition.defaultValue).replace(/"/g, '')}
+                          defaultValue={wastePercent?String(definition.defaultValue*100):JSON.stringify(definition.defaultValue).replace(/"/g, '')}
                           overridden={JSON.stringify(current) !== JSON.stringify(definition.defaultValue)}
-                          inputControl={<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
+                          inputControl={wastePercent?<WastePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
                           onReset={() => resetClass2(definition.field)}
                         />
                       );

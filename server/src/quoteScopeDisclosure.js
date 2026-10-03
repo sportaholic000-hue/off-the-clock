@@ -14,7 +14,7 @@ export function declaredAdditionalWork(submission,clarifiedFields=[]) {
 export function discloseQuoteScope(result,service,definition,submission,revision,clarifiedFields=[]) {
   if(result.resultType!=='INSTANT_ESTIMATE_READY')return result;
   const summary=customerJobSummary(service,definition,submission,revision);
-  const pricedScope={serviceId:service.id,serviceType:service.serviceType,service:summary.service,facts:summary.facts,fees:summary.fees,bookRevision:revision};
+  const pricedScope={service:summary.service,facts:summary.facts,fees:summary.fees};
   // All submitted metadata remains visible. The application does not claim
   // that a name/address field has been semantically classified as scope-free.
   const submittedDetails={requestedWork:summary.requestedWork,contact:summary.contact,location:summary.location,timing:summary.timing,additionalDetails:summary.additionalDetails,unknowns:summary.unknowns,clarifications:summary.clarifications};
@@ -24,4 +24,19 @@ export function discloseQuoteScope(result,service,definition,submission,revision
   // A partial response has no top-level amount or options that an API consumer
   // could mistake for the whole job. The unchanged engine estimate is nested.
   return {resultType:'PARTIAL_ESTIMATE_READY',quoteId:result.quoteId,pricedEstimate:result,...scope,additionalWork,additionalWorkStatus:'ON_SITE_ESTIMATE_REQUIRED',customerMessage:ADDITIONAL_WORK_NOTICE};
+}
+
+// Historical retry receipts keep their original amounts. Apply the current
+// public presentation boundary without recalculating or rewriting that record.
+export function customerReceiptPresentation(response) {
+ const next=structuredClone(response);
+ function clean(quote){
+  if(!quote||typeof quote!=='object')return;
+  delete quote.rangeBufferUsed;
+  for(const option of quote.options||[])delete option.rangeBufferUsed;
+  if(quote.pricedScope){for(const field of ['serviceId','serviceType','bookRevision'])delete quote.pricedScope[field];}
+  if(quote.jobSummary)delete quote.jobSummary.bookRevision;
+  if(quote.pricedEstimate)clean(quote.pricedEstimate);
+ }
+ clean(next);return next;
 }

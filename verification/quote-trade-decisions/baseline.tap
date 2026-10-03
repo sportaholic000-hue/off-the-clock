@@ -1,0 +1,143 @@
+TAP version 13
+# Subtest: T01 complete tile remains live beside incomplete vinyl_plank
+not ok 1 - T01 complete tile remains live beside incomplete vinyl_plank
+  ---
+  duration_ms: 78.505873
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:22:47'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:24:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: T01 complete tile remains live beside incomplete hardwood
+not ok 2 - T01 complete tile remains live beside incomplete hardwood
+  ---
+  duration_ms: 37.912858
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:22:47'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:24:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T02 customer output excludes owner buffer, revision and internal service identity
+not ok 3 - T02 customer output excludes owner buffer, revision and internal service identity
+  ---
+  duration_ms: 77.385576
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    rangeBufferUsed
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:30:73)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T03 configured peak season does not disable service
+not ok 4 - T03 configured peak season does not disable service
+  ---
+  duration_ms: 16.290471
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:34:31)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T13 asphalt remains quotable beside incomplete metal; complete control stays 599000 cents
+not ok 5 - T13 asphalt remains quotable beside incomplete metal; complete control stays 599000 cents
+  ---
+  duration_ms: 41.642834
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:95:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/quoteTradeDecisions.spec.mjs:98:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 321.64609

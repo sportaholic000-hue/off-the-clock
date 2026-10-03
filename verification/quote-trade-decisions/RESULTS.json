@@ -1,0 +1,48 @@
+{
+  "baseCommit": "c714b6eb6bbe8deed8ccac83df03a52f811019ce",
+  "fullSuite": {
+    "tests": 1270,
+    "passed": 1259,
+    "failed": 9,
+    "skipped": 2
+  },
+  "unchangedVoiceFailures": [
+    "test/googleGenAiLiveAdapter.spec.mjs",
+    "voice tool runtime persists a safe review quote and lead without exposing internal identities",
+    "voice runtime binds availability to quote plus lead and sequences one hold before one confirmation",
+    "test/voicePromptCompiler.spec.mjs",
+    "tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields",
+    "quote release requires an affirmative recap confirmation and availability requires an address-bound lead",
+    "dispatcher rejects handler results containing raw rates instead of exposing them",
+    "mutations are idempotent and conflicting reuse of a tool call id is rejected",
+    "test/voiceWebSocketServer.spec.mjs"
+  ],
+  "baselineReproductions": 5,
+  "baselineReproductionsFailed": 5,
+  "browserChecks": {
+    "scope": "October 3 quote-engine and price-book acceptance checks",
+    "checks": [
+      {
+        "name": "B01-installed-labor-surcharge-save-approve-public-quote",
+        "passed": true
+      },
+      {
+        "name": "B02-fence-waste-percent-spacing-and-new-questions",
+        "passed": true
+      },
+      {
+        "name": "B03-paint-condition-coats-save-approve",
+        "passed": true
+      },
+      {
+        "name": "B04-incomplete-product-keeps-complete-product-live",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "ownerBuild": "passed",
+  "widgetBuild": "passed",
+  "sourceBindingVerified": true
+}

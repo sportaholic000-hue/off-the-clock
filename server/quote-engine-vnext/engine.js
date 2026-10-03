@@ -1,3 +1,4 @@
+import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath} from './scopePricing.js';
 import {offeringRatePath} from './configuredOfferings.js';
@@ -39,7 +40,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-opus-repairs-20261001-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v1';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -582,8 +583,10 @@ function seasonalConfiguration(ownerPricing, defaults) {
 function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
-  const laborSubtotalCents = lines.filter(line => line.category === 'labor').reduce((sum, line) => sum + line.amountCents, 0);
-  const seasonalMoney = exactMoneyResult(active ? exactPercentOf(laborSubtotalCents, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
+  if(active)for(const line of lines)if(line.installedBaseExactCents&&!line.installedLaborExactCents)throw new QuoteReviewError('Set the labor portion of this installed price before applying a labor-only surcharge.',{missingOwnerFields:['installedLaborPercent.'+line.calculation.ratePath]});
+  const exactLabor=lines.reduce((sum,line)=>exactAdd(sum,line.installedLaborExactCents?exactFromEvidence(line.installedLaborExactCents):!line.installedBaseExactCents&&(line.category==='labor'||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?line.amountCents:0),exactDecimal(0));
+  const laborSubtotalCents=exactToNumber(exactLabor);
+  const seasonalMoney = exactMoneyResult(active ? exactPercentOf(exactLabor, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
   const amountCents = seasonalMoney.amountCents;
   if (amountCents > 0) {
     lines.push({
@@ -596,6 +599,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
         evidenceVariant: 'percentage_derived',
         basisCategory: 'labor',
         basisAmountCents: laborSubtotalCents,
+        exactBasisAmountCents:exactEvidence(exactLabor),
         percent: seasonal.percent,
         unroundedCents: seasonalMoney.unroundedCents,
         exactUnroundedCents: seasonalMoney.exactUnroundedCents,
@@ -742,19 +746,22 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
   const preTaxSubtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   const nonMarkupLines = lines.filter(line => line.category !== 'markup');
   let taxableSubtotalCents = 0;
+  let exactTaxableSubtotal=exactDecimal(0);
   let taxableMarkupCents = 0;
 
   if (defaults.taxMode === 'TAX_ALL') {
     taxableSubtotalCents = preTaxSubtotalCents;
+    exactTaxableSubtotal=exactDecimal(preTaxSubtotalCents);
     taxableMarkupCents = markupRecord.amountCents;
   } else if (defaults.taxMode === 'TAX_MATERIALS') {
-    taxableSubtotalCents = nonMarkupLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
+    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>exactAdd(sum,line.installedMaterialExactCents?exactFromEvidence(line.installedMaterialExactCents):line.taxable?line.amountCents:0),exactDecimal(0));
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
-    taxableSubtotalCents += taxableMarkupCents;
+    exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
+    taxableSubtotalCents=exactToNumber(exactTaxableSubtotal);
   }
 
-  const taxMoney = exactMoneyResult(defaults.taxMode === 'TAX_NONE' ? exactDecimal(0) : exactPercentOf(taxableSubtotalCents, defaults.taxPercent), 'taxPercent', 'Tax configuration produced an invalid amount.');
+  const taxMoney = exactMoneyResult(defaults.taxMode === 'TAX_NONE' ? exactDecimal(0) : exactPercentOf(exactTaxableSubtotal, defaults.taxPercent), 'taxPercent', 'Tax configuration produced an invalid amount.');
   const taxCents = taxMoney.amountCents;
   if (taxCents > 0) {
     lines.push({
@@ -770,6 +777,7 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
         percent: defaults.taxPercent,
         taxPercent: defaults.taxPercent,
         basisAmountCents: taxableSubtotalCents,
+        exactBasisAmountCents:exactEvidence(exactTaxableSubtotal),
         taxableSubtotalCents,
         unroundedCents: taxMoney.unroundedCents,
         exactUnroundedCents: taxMoney.exactUnroundedCents,
@@ -785,7 +793,7 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
   record.nonTaxableSubtotalCents = preTaxSubtotalCents - taxableSubtotalCents;
   record.taxCents = taxCents;
   record.finalTotalCents = preTaxSubtotalCents + taxCents;
-  record.lineTaxability = nonMarkupLines.map(line => ({ name: line.name, category: line.category, taxable: line.taxable, amountCents: line.amountCents }));
+  record.lineTaxability = nonMarkupLines.map(line => ({ name: line.name, category: line.category, taxable: line.taxable, amountCents: line.amountCents, ...(line.installedMaterialCents!==undefined?{installedMaterialCents:line.installedMaterialCents,materialsPercent:line.materialsPercent}:{}) }));
   return record.finalTotalCents;
 }
 
@@ -836,18 +844,20 @@ function validFixedEvidence(calculation, expectedAmountCents) {
 
 function validPercentageEvidence(calculation, expectedAmountCents) {
   // Ordinary owner markup has no commercial cap. Other percentage contracts retain their bounds.
-  if (!Number.isSafeInteger(calculation.basisAmountCents) || calculation.basisAmountCents < 0 ||
+  if (!(calculation.exactBasisAmountCents?typeof calculation.basisAmountCents==='number'&&Number.isFinite(calculation.basisAmountCents):Number.isSafeInteger(calculation.basisAmountCents)) || calculation.basisAmountCents < 0 ||
       typeof calculation.percent !== 'number' || !Number.isFinite(calculation.percent) ||
       calculation.percent < 0 || (calculation.mode !== 'markup' && calculation.percent > 500) ||
       (calculation.mode !== undefined && !['markup', 'margin'].includes(calculation.mode)) ||
       (calculation.mode === 'margin' && calculation.percent >= 100)) return false;
   try {
+    const basis=calculation.exactBasisAmountCents?exactFromEvidence(calculation.exactBasisAmountCents):exactDecimal(calculation.basisAmountCents);
+    if(exactCompare(basis,0)<0||!Object.is(exactToNumber(basis),calculation.basisAmountCents))return false;
     const exactUnrounded = calculation.mode === 'margin'
       ? exactSubtract(
-          exactDivide(calculation.basisAmountCents, exactSubtract(1, exactDivide(calculation.percent, 100))),
-          calculation.basisAmountCents
+          exactDivide(basis, exactSubtract(1, exactDivide(calculation.percent, 100))),
+          basis
         )
-      : exactPercentOf(calculation.basisAmountCents, calculation.percent);
+      : exactPercentOf(basis, calculation.percent);
     return Number.isFinite(calculation.unroundedCents) &&
       Object.is(calculation.unroundedCents, exactToNumber(exactUnrounded)) &&
       exactEvidenceMatches(exactUnrounded, calculation.exactUnroundedCents) &&
@@ -942,6 +952,15 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
   record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
+  if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
+    const path=line.calculation?.ratePath;
+    if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
+    const share=pricing.installedMaterialsPercent?.[path];
+    if(typeof share!=='number'||!Number.isFinite(share)||share<0||share>100)throw new QuoteReviewError('Set the materials share of this installed price before using materials-only tax.',{missingOwnerFields:['installedMaterialsPercent.'+path]});
+    line.installedMaterialExactCents=exactEvidence(exactPercentOf(exactFromEvidence(line.installedBaseExactCents),share));
+    line.installedMaterialCents=exactToNumber(exactFromEvidence(line.installedMaterialExactCents));
+    line.materialsPercent=share;line.taxable=share>0;
+  }
   record.order.push('taxability');
   const markup = applyMarkup(lines, ownerPricing, defaults, record.markup);
   record.order.push('markup');
@@ -1010,6 +1029,7 @@ function roundedCustomerCents(valueCents, incrementCents) {
 function rangeForStandardQuote(totalCents, minimumCents, defaults, materialTaxCents = 0) {
   const buffer = defaults.rangeBufferPercent;
   const minimumFloorCents = minimumCustomerFloor(minimumCents, defaults, materialTaxCents);
+  if(minimumCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents,minimumFloorCents,buffer};
   if (totalCents === 0) {
     return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer };
   }
@@ -1487,7 +1507,7 @@ export function generateQuoteVNext(input = {}) {
 }
 const CUSTOMER_OPTION_FIELDS = [
   'tierName', 'lowEstimate', 'midEstimate', 'highEstimate',
-  'priceDrivers', 'skippedAddons', 'disclaimer', 'rangeBufferUsed', 'priceUnit', 'taxTreatment'
+  'priceDrivers', 'skippedAddons', 'disclaimer', 'priceUnit', 'taxTreatment'
 ];
 
 function hasOwnValue(source, key) {
@@ -1561,6 +1581,7 @@ function standardRangeFromEvidence(totalCents, minimumFloorCents, buffer) {
   if (!Number.isSafeInteger(totalCents) || totalCents < 0 ||
       !Number.isSafeInteger(minimumFloorCents) || minimumFloorCents < 0 ||
       typeof buffer !== 'number' || !Number.isFinite(buffer) || buffer < 0 || buffer > 25) return null;
+  if(totalCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents};
   if (totalCents === 0) {
     return minimumFloorCents === 0
       ? { lowCents: 0, midCents: 0, highCents: 0 }
@@ -1623,7 +1644,7 @@ function calculationEvidenceMatchesOption(option, record, range) {
 }
 
 function displayedEstimates(range) {
-  const exactSingle = range.source === 'business_range_buffer' && range.bufferPercent === 0 &&
+  const exactSingle = ((range.source === 'business_range_buffer' && range.bufferPercent === 0) || range.midCents===range.minimumCustomerFloorCents) &&
     range.lowCents === range.midCents && range.midCents === range.highCents;
   if (exactSingle) return { lowEstimate: toDollars(range.lowCents, 'lowEstimate'), midEstimate: toDollars(range.midCents, 'midEstimate'), highEstimate: toDollars(range.highCents, 'highEstimate') };
   const low = BigInt(range.lowCents) / 100n;
@@ -1771,7 +1792,7 @@ export function sanitizeForCustomerVNext(result) {
       (!Object.hasOwn(result, 'optionAvailabilityNotice') || result.optionAvailabilityNotice === FEWER_OPTIONS_NOTICE);
     if (!validReady) return customerReviewPayload(result);
     return structuredClone({
-      ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'rangeBufferUsed', 'priceUnit', 'taxTreatment']),
+      ...pickOwn(result, ['resultType', 'lowEstimate', 'midEstimate', 'highEstimate', 'priceDrivers', 'disclaimer', 'quoteId', 'optionAvailabilityNotice', 'priceUnit', 'taxTreatment']),
       options: result.options.map(option => pickOwn(option, CUSTOMER_OPTION_FIELDS))
     });
   } catch {

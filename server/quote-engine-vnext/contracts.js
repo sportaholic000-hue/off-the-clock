@@ -2,7 +2,7 @@ import { measuredOutlineVNext } from './geometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
-import { exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
+import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
 function relativeSnapshotPath(snapshot, root) {
   const prefix = `${root}.`;
@@ -660,6 +660,22 @@ export const CLASS2_DEFINITIONS = {
   CUSTOM: {}
 };
 
+// October 3 owner-approved material quantities and labor adjustments.
+const waste = label => factor(0.10,label,'decimal fraction',0,0.5);
+CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.accessoryWasteFactor=factorMap({starterPerLF:0.10,dripEdgePerLF:0.10,ridgeCapPerLF:0.10},'Starter strip, drip edge and ridge cap waste','decimal fraction',0,0.5);
+CLASS2_DEFINITIONS.FLAT_ROOF_REPLACEMENT.membraneWasteFactor=waste('Membrane material waste');
+CLASS2_DEFINITIONS.FLAT_ROOF_REPAIR.accessMultiplier=structuredClone(CLASS2_DEFINITIONS.FLAT_ROOF_REPLACEMENT.accessMultiplier);
+for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING']){
+ CLASS2_DEFINITIONS[type].paintWasteFactor=waste('Finish paint material waste');
+ CLASS2_DEFINITIONS[type].primerWasteFactor=waste('Primer material waste');
+ CLASS2_DEFINITIONS[type].prepMaterialWasteFactor=waste('Preparation material waste');
+}
+CLASS2_DEFINITIONS.FLOORING_INSTALL.layoutLaborMultiplier=factorMap({straight:1,diagonal_or_pattern:1.20},'Flooring layout labor adjustment','multiplier',0.1,5);
+CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,100),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
+CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
+CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
+for(const type of ['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'])CLASS2_DEFINITIONS[type].accessMultiplier=structuredClone(CLASS2_DEFINITIONS.LANDSCAPING_SOD.accessMultiplier);
+
 CLASS2_DEFINITIONS.FLOORING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FLOORING_INSTALL);
 CLASS2_DEFINITIONS.FENCING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FENCING_INSTALL);
 CLASS2_DEFINITIONS.CONCRETE_PATIO_SLAB = structuredClone(CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY);
@@ -673,6 +689,7 @@ function extendMeasuredContract(type, fields, requiredFacts, inspect, cross) {
   contract.inspection = (c,p) => previousInspection?.(c,p) || inspect?.(c,p) || null;
   contract.crossValidate = (c,p) => [...(previousCross?.(c,p) || []), ...(cross?.(c,p) || [])];
 }
+for(const type of ['FLAT_ROOF_REPAIR','LANDSCAPING_MULCH','LANDSCAPING_PLANTING'])extendMeasuredContract(type,{accessDifficulty:enumField('Project access',ACCESS)},()=>['accessDifficulty']);
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])extendMeasuredContract(type,
  {outlinePoints:field('Closed measured orthogonal outline coordinates','feet','orthogonal_outline')},c=>c.dimensionMethod==='measured_outline'?['outlinePoints']:[],null,
  c=>c.dimensionMethod==='measured_outline'?['length','width','areaSqft','perimeterLF'].filter(k=>c[k]!==undefined).map(field=>({field,message:'Measured outline derives area and perimeter; duplicate geometry inputs are not accepted.'})):c.outlinePoints!==undefined?[{field:'outlinePoints',message:'Outline points require the measured_outline method.'}]:[]);
@@ -705,15 +722,15 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!p.scopeDetails?.siding_removal?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
  (c,p)=>c.demolitionNeeded&&!p.scopeDetails?.demolition?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
- :c.dimensionMethod==='measured_area_perimeter'?'Measured outline segments or an independently verified takeoff are required to establish the concrete geometry.':null,
+ :null,
  c=>{
    const errors=[];
    if(c.dimensionMethod==='exact' && Number.isFinite(c.length) && Number.isFinite(c.width)){
      const area=exactMultiply(c.length,c.width),domain=MEASUREMENT_CONTRACTS[type].fields.areaSqft;
      if(exactCompare(area,domain.min)<0 || exactCompare(area,domain.max)>0)errors.push({field:'length',message:'Derived concrete area must satisfy the direct measured-area bounds.'});
    }
-   // P^2 >= 4*pi*A is necessary for every simple planar shape. 12*A is a conservative exact rejection bound.
-   if(c.dimensionMethod==='measured_area_perimeter' && Number.isFinite(c.areaSqft) && Number.isFinite(c.perimeterLF) && exactCompare(exactMultiply(c.perimeterLF,c.perimeterLF),exactMultiply(12,c.areaSqft))<0)
+   // Isoperimetric bound: no planar slab can have less perimeter than an equal-area circle.
+   if(c.dimensionMethod==='measured_area_perimeter' && Number.isFinite(c.areaSqft) && Number.isFinite(c.perimeterLF) && exactCompare(exactMultiply(c.perimeterLF,c.perimeterLF),exactMultiply(4*Math.PI,c.areaSqft))<0)
      errors.push({field:'perimeterLF',message:'The supplied area and perimeter are physically impossible for a simple planar slab.'});
    return errors;
  });
@@ -1057,7 +1074,7 @@ export function customerContractForVNext(type,p={},rules={}) {
 }
 
 export function allowedPricingFields(serviceType) {
-  return [...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
+  return ['installedMaterialsPercent','installedLaborPercent',...(ALLOWED_PRICING_FIELDS[serviceType] || []), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {}), ...(OFFERING_TYPES.includes(serviceType)?OFFERING_FIELDS:[]),...(SCOPE_TYPES.includes(serviceType)?SCOPE_FIELDS:[])];
 }
 
 const AI_CONFIRMABLE_SERVICE_FIELDS = [
@@ -1090,7 +1107,7 @@ export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
 
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
-const BUSINESS_DEFAULT_FIELDS = [
+const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'rangeBufferPercent', 'markupApplies', 'peakMonths', 'peakSurchargePercent'
@@ -1442,8 +1459,15 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     `Pricing must contain only plain data objects; ${nonPlainPath} is not plain data.`
   )];
   p = snapshot.value;
+  for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
+    if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
+    else for(const [key,value] of Object.entries(p[field])){
+      if(!/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft)$/.test(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
+    }
+  }
 
-  if(configuredOffering(serviceType,p))return [...offeringStructureDiagnostics(serviceType,p),...scopeStructureDiagnostics(serviceType,p)];
+  if(configuredOffering(serviceType,p))return [...diagnostics,...offeringStructureDiagnostics(serviceType,p),...scopeStructureDiagnostics(serviceType,p)];
   diagnostics.push(...scopeStructureDiagnostics(serviceType,p));
 
   for (const name of scalarMoneyFields(serviceType)) {
@@ -1488,6 +1512,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'materialPerSqft', { allowedKeys: FLOORING_TYPES });
     inspectPriceMap(diagnostics, p, 'removalPerSqft', { canonicalKeys: true });
     inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Flooring labor and material maps');
+    if(p.vinylPlankUnderlaymentRule!==undefined&&!['always_included','never_included','customer_selectable_addon','subfloor_condition','owner_review'].includes(p.vinylPlankUnderlaymentRule))structureDiagnostic(diagnostics,'invalid','vinylPlankUnderlaymentRule','Vinyl-plank underlayment rule is invalid.');
     if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
   }
   if (serviceType.startsWith('FENCING_')) {
@@ -1552,6 +1577,19 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   return uniqueDiagnostics(diagnostics);
 }
 
+export function pricingDiagnosticsForSelection(type,diagnostics,c) {
+  return diagnostics.filter(item=>{
+    if(item.type!=='missing')return true; // Malformed or unsupported saved data still fails closed.
+    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:null;
+    if(!selected)return true;
+    const roots=type==='ROOFING_REPLACEMENT'?['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']:['laborPerSqft','materialPerSqft'];
+    if(item.kind==='relationship'&&roots.some(root=>item.path.startsWith(root+'.')))return item.path.split('.')[1]===selected;
+    const scope=type==='ROOFING_REPLACEMENT'?'roof_underlayment_':'floor_underlayment_';
+    if(['scopeDetails.','scopeRates.'].some(root=>item.path.startsWith(root+scope)))return item.path.split('.')[1]===scope+selected;
+    return true;
+  });
+}
+
 function uniqueDiagnostics(items) {
   const seen = new Set();
   return items.filter(item => {
@@ -1601,7 +1639,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   serviceRules = rulesSnapshot.value;
   const allowed = new Set(allowedPricingFields(serviceType));
   const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
-  const structureDiagnostics = validatePricingStructuresDetailed(serviceType, pricing);
+  const structureDiagnostics = pricingDiagnosticsForSelection(serviceType,validatePricingStructuresDetailed(serviceType, pricing),customerInputs);
   const class2Diagnostics = validateClass2FactorsDetailed(serviceType, pricing);
   const missingOwnerFields = [];
   const invalidOwnerFields = [];
@@ -1783,7 +1821,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS;
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>field!=='quoteTimeZone');
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -1813,7 +1851,7 @@ export function validateBusinessDefaults(defaults = {}) {
   defaults = snapshot.value;
   const missingFields = required.filter(name => !Object.hasOwn(defaults, name) || missing(defaults[name]));
   const invalidFields = [];
-  const unsupportedFields = Object.keys(defaults).filter(key => !required.includes(key));
+  const unsupportedFields = Object.keys(defaults).filter(key => !BUSINESS_DEFAULT_FIELDS.includes(key));
   const diagnostics = [
     ...missingFields.map(path => ownerDiagnostic('missing', 'business_default', path, `${path} is required.`)),
     ...unsupportedFields.map(path => ownerDiagnostic('unsupported', 'business_default', path, `${path} is not a supported business default.`))
@@ -1822,6 +1860,7 @@ export function validateBusinessDefaults(defaults = {}) {
     invalidFields.push(path);
     diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
   };
+  if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw new Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone}).format(new Date(0));}catch{invalid('quoteTimeZone','Choose a valid business time zone for quote-date pricing.');}}
   if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
   if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');
   for (const name of ['overheadFixed', 'minimumJobPrice', 'travelFee', 'disposalFee', 'permitFee']) if (!missing(defaults[name]) && !nonNegativeMoney(defaults[name])) invalid(name, `${name} must be a non-negative integer-cent amount.`);

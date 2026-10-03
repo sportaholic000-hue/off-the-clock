@@ -49,8 +49,8 @@ test('R01 partial approval preserves current receipts, never approves other edit
  assert.throws(()=>approveVNextValues(approved,{...operation,ownerId:'wrong-owner'}),/owner/);
 });
 function includedFence(){const f=offeringFixture('FENCING_INSTALL','itemized');f.ownerPricing.pricing.offeringRates.postMaterialEach=0;f.ownerPricing=includedFixture(f.ownerPricing,{'offeringRates.postMaterialEach':'offeringRates.fenceMaterialPerLF'});return f;}
-test('R02 offering inclusion quotes hand-calculated 364000 cents',()=>{
- const q=generateQuoteVNext(includedFence());assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q.ownerDiagnostics));assert.equal(q.midEstimate,3640);
+test('R02 offering inclusion quotes hand-calculated 388000 cents',()=>{
+ const q=generateQuoteVNext(includedFence());assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q.ownerDiagnostics));assert.equal(q.midEstimate,3880);
 });
 test('R02 scope inclusion retains fractional-cent rate and rounds line once: 225503 cents',()=>{
  const f=measuredScopeCases().find(r=>r.id==='stairs-itemized').input;
@@ -130,9 +130,9 @@ test('R09 delete first tier then add uses an unused name without modifying price
 test('R09 generated names use the engine case-insensitive name comparison',()=>{
  assert.equal(addPriceTier([{name:'good',overrides:{}},{name:'BETTER',overrides:{}}])[2].name,'Best');
 });
-test('R02 fractional configured offering coverage preserves 364050 cents',()=>{
+test('R02 fractional configured offering coverage preserves 388055 cents',()=>{
  const f=includedFence();f.ownerPricing.pricing.offeringRates.fenceMaterialPerLF=2000.5;
- const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,3640.5);
+ const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,3880.55);
 });
 test('R02 configured gate inclusion keeps camel-case contract keys and sell-price classification',()=>{
  const f=offeringFixture('FENCING_INSTALL','installed');f.ownerPricing.pricing.offeringRates.gate_walk=0;

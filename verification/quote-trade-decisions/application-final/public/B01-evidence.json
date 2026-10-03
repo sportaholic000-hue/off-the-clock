@@ -1,0 +1,621 @@
+{
+  "saved": {
+    "ownerId": "3b66da0e-0267-4cf8-a155-c159eccd9f06",
+    "services": [
+      {
+        "id": "0d14a3ea-c302-4bf8-8e5d-204a93ad7922",
+        "source": "MANUAL",
+        "serviceType": "FENCING_INSTALL",
+        "service": "[SYNTHETIC] A",
+        "active": true,
+        "knownOfferings": {
+          "fenceType": {
+            "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        },
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "installed",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined six-foot wood fence",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "gates": {
+              "walk": {
+                "widthLF": 4,
+                "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+                "postsAndFootingsIncluded": true
+              }
+            }
+          },
+          "offeringRates": {
+            "installedFencePerLF": 10,
+            "gate_walk": 250
+          },
+          "postSpacingLF": 8,
+          "fenceWasteFactor": 0.1,
+          "terrainLaborMultiplier": {
+            "flat": 1,
+            "moderate": 1.25,
+            "steep": 1.3
+          },
+          "installedLaborPercent": {
+            "offeringRates.installedFencePerLF": 60,
+            "offeringRates.gate_walk": 60
+          },
+          "installedMaterialsPercent": {
+            "offeringRates.installedFencePerLF": 40,
+            "offeringRates.gate_walk": 40
+          }
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "peakSurchargePercent": 10,
+        "validationInputs": {
+          "linearFeet": 100,
+          "lfMethod": "exact",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "moderate",
+          "gates": {},
+          "cornerCount": 0,
+          "confirmedFacts": {
+            "fenceType": {
+              "status": "identified",
+              "field": "fenceType",
+              "value": "wood",
+              "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          }
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "0d14a3ea-c302-4bf8-8e5d-204a93ad7922",
+          "serviceType": "FENCING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "3b66da0e-0267-4cf8-a155-c159eccd9f06",
+          "operationId": "094db69b-acbe-4a9f-ac3d-a7396c6a7ef3",
+          "createdAt": "2026-10-03T03:31:23.537Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "3b66da0e-0267-4cf8-a155-c159eccd9f06",
+          "serviceId": "0d14a3ea-c302-4bf8-8e5d-204a93ad7922",
+          "operationId": "12b14107-2137-4172-9a18-449922d5a175",
+          "approvedAt": "2026-10-03T03:31:24.615Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "fe01af4e5054455260a10a54b8b769b9c1f3a52b80d188a54cf14acf5c5d53f0",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "3df81df5-3661-4a3f-8bfc-6d23975a65af",
+        "source": "MANUAL",
+        "serviceType": "FENCING_INSTALL",
+        "service": "[SYNTHETIC] B",
+        "active": true,
+        "knownOfferings": {
+          "fenceType": {
+            "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+          }
+        },
+        "pricing": {
+          "minimumJob": 0,
+          "offeringMode": "installed",
+          "offeringDetails": {
+            "description": "[SYNTHETIC] Defined six-foot wood fence",
+            "fenceType": "wood",
+            "fenceHeight": 6,
+            "terrainSlope": "flat",
+            "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+            "gates": {
+              "walk": {
+                "widthLF": 4,
+                "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+                "postsAndFootingsIncluded": true
+              }
+            }
+          },
+          "offeringRates": {
+            "installedFencePerLF": 10,
+            "gate_walk": 250
+          },
+          "postSpacingLF": 8,
+          "fenceWasteFactor": 0.1,
+          "terrainLaborMultiplier": {
+            "flat": 1,
+            "moderate": 1.25,
+            "steep": 1.3
+          }
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "sell_price",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0,
+        "validationInputs": {
+          "linearFeet": 100,
+          "lfMethod": "exact",
+          "fenceType": "wood",
+          "fenceHeight": 6,
+          "terrainSlope": "moderate",
+          "gates": {},
+          "cornerCount": 0,
+          "confirmedFacts": {
+            "fenceType": {
+              "status": "identified",
+              "field": "fenceType",
+              "value": "wood",
+              "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+            }
+          }
+        },
+        "confirmedFields": {},
+        "origin": {
+          "serviceId": "3df81df5-3661-4a3f-8bfc-6d23975a65af",
+          "serviceType": "FENCING_INSTALL",
+          "source": "MANUAL",
+          "ownerId": "3b66da0e-0267-4cf8-a155-c159eccd9f06",
+          "operationId": "a45d79f1-4688-4878-821a-2de4e7edbceb",
+          "createdAt": "2026-10-03T03:31:23.566Z"
+        },
+        "quoteDoneApproval": {
+          "ownerId": "3b66da0e-0267-4cf8-a155-c159eccd9f06",
+          "serviceId": "3df81df5-3661-4a3f-8bfc-6d23975a65af",
+          "operationId": "a45d79f1-4688-4878-821a-2de4e7edbceb",
+          "approvedAt": "2026-10-03T03:31:23.566Z",
+          "engineVersion": "quote-engine-vnext-trade-decisions-20261003-v1",
+          "moneyUnitVersion": "roof-minimum-cents-v1",
+          "contentDigest": "c287d629b89e241f6175ef033dab529e6ab60748d21005dd29c9c8ea880e35eb",
+          "operation": "owner_confirmed_quotedone_registration"
+        }
+      },
+      {
+        "id": "df13f37a-9300-47da-970b-a83fce56dddc",
+        "serviceType": "ROOFING_REPLACEMENT",
+        "service": "Roof replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "6136185e-ac46-49e0-a442-21f06a75ac61",
+        "serviceType": "ROOFING_REPAIR",
+        "service": "Roof repair",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "c245120b-fb09-4b95-bcb1-bfc9907dd1da",
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "Interior painting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "87416937-964f-4451-85eb-3b0c7cc91780",
+        "serviceType": "EXTERIOR_PAINTING",
+        "service": "Exterior painting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "0b22d854-40ce-4a88-9872-f61acb6ed3e4",
+        "serviceType": "FLOORING_INSTALL",
+        "service": "Flooring installation",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "edf8fcd8-5b47-48be-abb7-e7086ca75824",
+        "serviceType": "FENCING_REPLACEMENT",
+        "service": "Fencing replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "76b3022c-d534-4851-93b6-a54c831d7fc3",
+        "serviceType": "SIDING_REPLACEMENT",
+        "service": "Siding replacement",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "8db6dc10-e561-415a-b77d-9b10617a78bd",
+        "serviceType": "LANDSCAPING_CLEANUP",
+        "service": "Landscaping cleanup",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "915e927e-4647-46bf-b8a1-3e5cff1f1119",
+        "serviceType": "LANDSCAPING_PLANTING",
+        "service": "Planting",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      },
+      {
+        "id": "12aba3d5-7cc7-4a67-91ff-e7c1de7c2015",
+        "serviceType": "CUSTOM",
+        "service": "Custom service",
+        "source": "MANUAL",
+        "active": false,
+        "tiers": [],
+        "validationInputs": {},
+        "confirmedFields": {}
+      }
+    ],
+    "defaults": {
+      "markupPercent": 0,
+      "markupMode": "markup",
+      "taxMode": "TAX_MATERIALS",
+      "taxPercent": 8,
+      "rangeBufferPercent": 0,
+      "overheadFixed": 0,
+      "minimumJobPrice": 0,
+      "travelFee": 10,
+      "disposalFee": 0,
+      "permitFee": 0,
+      "markupApplies": {
+        "labor": true,
+        "material": true,
+        "removal": true,
+        "prep": true,
+        "addon": true,
+        "equipment": true,
+        "travel": true,
+        "disposal": true,
+        "permit": true,
+        "overhead": true,
+        "surcharge": true
+      },
+      "peakMonths": [],
+      "peakSurchargePercent": 0,
+      "quoteTimeZone": "America/Los_Angeles"
+    },
+    "updatedAt": "2026-10-03T03:31:24.616Z",
+    "revision": "b45462d3388ee6550d57e3f24e9ea313754a107264bc07baa69d64b92c72bb68",
+    "quoteDoneVersion": "quote-engine-vnext-trade-decisions-20261003-v1"
+  },
+  "publicQuote": {
+    "status": 201,
+    "result": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 1257,
+      "midEstimate": 1257,
+      "highEstimate": 1257,
+      "priceDrivers": [
+        "100 measured linear feet of 6 ft wood fencing"
+      ],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+      "quoteId": "4f37f7c6-dfa9-45ea-ba98-03932fd33cc5",
+      "priceUnit": null,
+      "taxTreatment": "Includes applicable tax.",
+      "options": [
+        {
+          "tierName": null,
+          "lowEstimate": 1257,
+          "midEstimate": 1257,
+          "highEstimate": 1257,
+          "priceDrivers": [
+            "100 measured linear feet of 6 ft wood fencing"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+          "priceUnit": null,
+          "taxTreatment": "Includes applicable tax."
+        }
+      ],
+      "pricedScope": {
+        "service": "[SYNTHETIC] A",
+        "facts": [
+          {
+            "label": "Measured fence length excluding gate openings",
+            "value": "100"
+          },
+          {
+            "label": "Fence measurement method",
+            "value": "Exact"
+          },
+          {
+            "label": "Fence type",
+            "value": "Wood"
+          },
+          {
+            "label": "Fence height",
+            "value": "6"
+          },
+          {
+            "label": "Terrain slope",
+            "value": "Moderate"
+          },
+          {
+            "label": "Gates by measured opening width",
+            "value": "No gates"
+          },
+          {
+            "label": "Fence corners",
+            "value": "0"
+          }
+        ],
+        "fees": []
+      },
+      "submittedDetails": {
+        "requestedWork": "[SYNTHETIC] A",
+        "contact": {
+          "email": "synthetic-trade@example.invalid"
+        },
+        "location": {},
+        "timing": "Not supplied",
+        "additionalDetails": "",
+        "unknowns": "",
+        "clarifications": []
+      },
+      "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+      "fullJobTotal": null,
+      "bookingCapability": "PREFERRED_TIME_ONLY",
+      "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+      "bookingTokenExpiresAt": "2026-10-10T03:31:24.713Z"
+    }
+  },
+  "staff": {
+    "resultType": "INSTANT_ESTIMATE_READY",
+    "lowEstimate": 1257,
+    "midEstimate": 1257,
+    "highEstimate": 1257,
+    "priceDrivers": [
+      "100 measured linear feet of 6 ft wood fencing"
+    ],
+    "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+    "quoteId": "210742dc-ddef-4d93-ab54-2830a86d588a",
+    "priceUnit": null,
+    "taxTreatment": "Includes applicable tax.",
+    "options": [
+      {
+        "tierName": null,
+        "lowEstimate": 1257,
+        "midEstimate": 1257,
+        "highEstimate": 1257,
+        "priceDrivers": [
+          "100 measured linear feet of 6 ft wood fencing"
+        ],
+        "skippedAddons": [],
+        "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+        "priceUnit": null,
+        "taxTreatment": "Includes applicable tax."
+      }
+    ],
+    "pricedScope": {
+      "service": "[SYNTHETIC] A",
+      "facts": [
+        {
+          "label": "Measured fence length excluding gate openings",
+          "value": "100"
+        },
+        {
+          "label": "Fence measurement method",
+          "value": "Exact"
+        },
+        {
+          "label": "Fence type",
+          "value": "Wood"
+        },
+        {
+          "label": "Fence height",
+          "value": "6"
+        },
+        {
+          "label": "Terrain slope",
+          "value": "Moderate"
+        },
+        {
+          "label": "Gates by measured opening width",
+          "value": "No gates"
+        },
+        {
+          "label": "Fence corners",
+          "value": "0"
+        }
+      ],
+      "fees": []
+    },
+    "submittedDetails": {
+      "requestedWork": "[SYNTHETIC] A",
+      "contact": {
+        "email": "synthetic-trade@example.invalid"
+      },
+      "location": {},
+      "timing": "Not supplied",
+      "additionalDetails": "",
+      "unknowns": "",
+      "clarifications": []
+    },
+    "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+    "fullJobTotal": null,
+    "bookingCapability": "PREFERRED_TIME_ONLY",
+    "bookingToken": "[SYNTHETIC SECRET OMITTED]",
+    "bookingTokenExpiresAt": "2026-10-10T03:31:24.791Z"
+  },
+  "retry": {
+    "status": 200,
+    "result": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 1257,
+      "midEstimate": 1257,
+      "highEstimate": 1257,
+      "priceDrivers": [
+        "100 measured linear feet of 6 ft wood fencing"
+      ],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+      "quoteId": "4f37f7c6-dfa9-45ea-ba98-03932fd33cc5",
+      "priceUnit": null,
+      "taxTreatment": "Includes applicable tax.",
+      "options": [
+        {
+          "tierName": null,
+          "lowEstimate": 1257,
+          "midEstimate": 1257,
+          "highEstimate": 1257,
+          "priceDrivers": [
+            "100 measured linear feet of 6 ft wood fencing"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. [SYNTHETIC] Defined six-foot wood fence Standard posts and footings: [SYNTHETIC] Defined standard posts, concrete footings and digging. Fence length excludes gate openings. Includes applicable tax.",
+          "priceUnit": null,
+          "taxTreatment": "Includes applicable tax."
+        }
+      ],
+      "pricedScope": {
+        "service": "[SYNTHETIC] A",
+        "facts": [
+          {
+            "label": "Measured fence length excluding gate openings",
+            "value": "100"
+          },
+          {
+            "label": "Fence measurement method",
+            "value": "Exact"
+          },
+          {
+            "label": "Fence type",
+            "value": "Wood"
+          },
+          {
+            "label": "Fence height",
+            "value": "6"
+          },
+          {
+            "label": "Terrain slope",
+            "value": "Moderate"
+          },
+          {
+            "label": "Gates by measured opening width",
+            "value": "No gates"
+          },
+          {
+            "label": "Fence corners",
+            "value": "0"
+          }
+        ],
+        "fees": []
+      },
+      "submittedDetails": {
+        "requestedWork": "[SYNTHETIC] A",
+        "contact": {
+          "email": "synthetic-trade@example.invalid"
+        },
+        "location": {},
+        "timing": "Not supplied",
+        "additionalDetails": "",
+        "unknowns": "",
+        "clarifications": []
+      },
+      "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+      "fullJobTotal": null,
+      "bookingCapability": "PREFERRED_TIME_ONLY",
+      "bookingTokenExpiresAt": "2026-10-10T03:31:24.713Z",
+      "bookingToken": "[SYNTHETIC SECRET OMITTED]"
+    }
+  }
+}

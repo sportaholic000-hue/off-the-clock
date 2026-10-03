@@ -1,4 +1,4 @@
-import {fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
+import {explicitUnderlaymentFixtureShares, fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -47,6 +47,12 @@ const defaults = {
 
 function service(serviceType, pricing, overrides = {}) {
   const configuredPricing = withClass2Defaults(serviceType, pricing);
+  // Keep these historical defensive/precision fixtures at their explicitly
+  // chosen pre-Oct3 quantities. quoteTradeDecisions.spec.mjs tests the new defaults.
+  for(const field of ['membraneWasteFactor','paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor','fenceWasteFactor','stampedMaterialWasteFactor'])if(field in configuredPricing && !(field in pricing))configuredPricing[field]=0;
+  if('accessoryWasteFactor' in configuredPricing && !('accessoryWasteFactor' in pricing))configuredPricing.accessoryWasteFactor={starterPerLF:0,dripEdgePerLF:0,ridgeCapPerLF:0};
+  if('reinforcementWasteFactor' in configuredPricing && !('reinforcementWasteFactor' in pricing))configuredPricing.reinforcementWasteFactor={wire_mesh:0,rebar:0};
+  if('layoutLaborMultiplier' in configuredPricing && !('layoutLaborMultiplier' in pricing))configuredPricing.layoutLaborMultiplier={straight:1,diagonal_or_pattern:1};
   if (serviceType === 'ROOFING_REPLACEMENT' && configuredPricing.underlaymentPerSquare && configuredPricing.underlaymentPriceBasis === undefined) {
     configuredPricing.underlaymentPriceBasis = Object.fromEntries(Object.keys(configuredPricing.underlaymentPerSquare).map(key => [key, 'installed_area_sell_price']));
   }
@@ -54,6 +60,7 @@ function service(serviceType, pricing, overrides = {}) {
     if (pricing.roomSizeThresholds === undefined) configuredPricing.roomSizeThresholds = { smallMaxSqft: 149, mediumMaxSqft: 299 };
     if (configuredPricing.underlaymentPerSqft !== undefined && configuredPricing.underlaymentPriceBasis === undefined) configuredPricing.underlaymentPriceBasis = 'installed_area_sell_price';
   }
+  explicitUnderlaymentFixtureShares(serviceType,configuredPricing);
   const basis = structuredClone(costBasis);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) basis.material = 'sell_price';
   return {

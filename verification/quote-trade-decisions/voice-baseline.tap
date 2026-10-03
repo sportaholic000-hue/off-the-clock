@@ -1,0 +1,310 @@
+TAP version 13
+# node:internal/modules/esm/resolve:275
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/googleGenAiLiveAdapter.js' imported from /workspace/scratch/db4162af70ba/quote-trade-baseline/test/googleGenAiLiveAdapter.spec.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:861:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/googleGenAiLiveAdapter.js'
+# }
+# Node.js v22.23.2
+# Subtest: test/googleGenAiLiveAdapter.spec.mjs
+not ok 1 - test/googleGenAiLiveAdapter.spec.mjs
+  ---
+  duration_ms: 47.880557
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/googleGenAiLiveAdapter.spec.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:67732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 2 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 10.168804
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 3 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 4.739214
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 4 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 4.461556
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 5 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 3.623249
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 6 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 9.960244
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 7 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 6.241547
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 8 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 9.863645
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePersistence.spec.mjs:224:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'EXTRA_TOOL_FIELD'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:107:9)
+    assertClosed (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:152:33)
+    Object.getQuote (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:243:3)
+    validateVoiceToolCall (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:375:37)
+    Object.dispatch (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolDispatcher.js:318:20)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePersistence.spec.mjs:266:36)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 9 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 6.463386
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePersistence.spec.mjs:291:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'EXTRA_TOOL_FIELD'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:107:9)
+    assertClosed (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:152:33)
+    Object.checkAvailability (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:260:3)
+    validateVoiceToolCall (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:375:37)
+    Object.dispatch (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolDispatcher.js:318:20)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePersistence.spec.mjs:366:40)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  ...
+# node:internal/modules/esm/resolve:275
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/voicePromptCompiler.js' imported from /workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePromptCompiler.spec.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:861:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/voicePromptCompiler.js'
+# }
+# Node.js v22.23.2
+# Subtest: test/voicePromptCompiler.spec.mjs
+not ok 3 - test/voicePromptCompiler.spec.mjs
+  ---
+  duration_ms: 51.99794
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voicePromptCompiler.spec.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Twilio validation fails closed without the official validator dependency
+ok 11 - Twilio validation fails closed without the official validator dependency
+  ---
+  duration_ms: 1.339116
+  type: 'test'
+  ...
+# Subtest: Twilio validation rejects missing and forged signatures
+ok 12 - Twilio validation rejects missing and forged signatures
+  ---
+  duration_ms: 0.899949
+  type: 'test'
+  ...
+# Subtest: Twilio validation uses only the configured public origin
+ok 13 - Twilio validation uses only the configured public origin
+  ---
+  duration_ms: 0.953696
+  type: 'test'
+  ...
+# Subtest: tenant resolution is by normalized To only and rejects cross-tenant selectors
+ok 14 - tenant resolution is by normalized To only and rejects cross-tenant selectors
+  ---
+  duration_ms: 0.879686
+  type: 'test'
+  ...
+# Subtest: tenant resolution fails closed for unknown and duplicate destinations
+ok 15 - tenant resolution fails closed for unknown and duplicate destinations
+  ---
+  duration_ms: 1.887938
+  type: 'test'
+  ...
+# Subtest: session nonces store only a hash, bind every call identity field, and are one-use
+ok 16 - session nonces store only a hash, bind every call identity field, and are one-use
+  ---
+  duration_ms: 2.248303
+  type: 'test'
+  ...
+# Subtest: session nonces reject expiration and every binding mismatch
+ok 17 - session nonces reject expiration and every binding mismatch
+  ---
+  duration_ms: 1.128426
+  type: 'test'
+  ...
+# Subtest: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 18 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+  ---
+  duration_ms: 1.146533
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:244:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    VoiceToolValidationError: The requested voice action was not valid.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:253:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 19 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+  ---
+  duration_ms: 0.705975
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:298:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:299:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+ok 20 - dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+  ---
+  duration_ms: 1.48071
+  type: 'test'
+  ...
+# Subtest: dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 21 - dispatcher rejects handler results containing raw rates instead of exposing them
+  ---
+  duration_ms: 0.53928
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:442:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    VoiceToolValidationError: The requested voice action was not valid.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:454:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 22 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+  ---
+  duration_ms: 0.236169
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:468:1'
+  failureType: 'testCodeFailure'
+  error: 'The requested voice action was not valid.'
+  code: 'EXTRA_TOOL_FIELD'
+  name: 'VoiceToolValidationError'
+  stack: |-
+    fail (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:107:9)
+    assertClosed (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:152:33)
+    Object.getQuote (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:243:3)
+    validateVoiceToolCall (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolSchemas.js:375:37)
+    Object.dispatch (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voice/toolDispatcher.js:318:20)
+    TestContext.<anonymous> (file:///workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceSecurity.spec.mjs:496:32)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  ...
+# Subtest: mutating tool calls execute sequentially within a call
+ok 23 - mutating tool calls execute sequentially within a call
+  ---
+  duration_ms: 0.920465
+  type: 'test'
+  ...
+# node:internal/modules/esm/resolve:275
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voiceWebSocketServer.js' imported from /workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceWebSocketServer.spec.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:861:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///workspace/scratch/db4162af70ba/quote-trade-baseline/server/src/voiceWebSocketServer.js'
+# }
+# Node.js v22.23.2
+# Subtest: test/voiceWebSocketServer.spec.mjs
+not ok 5 - test/voiceWebSocketServer.spec.mjs
+  ---
+  duration_ms: 55.494573
+  type: 'test'
+  location: '/workspace/scratch/db4162af70ba/quote-trade-baseline/test/voiceWebSocketServer.spec.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 15
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 463.292338

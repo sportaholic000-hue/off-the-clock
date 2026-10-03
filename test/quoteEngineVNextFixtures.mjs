@@ -23,6 +23,7 @@ export function fixtureOfferings(type) {
  return Object.fromEntries(Object.keys(MEASUREMENT_CONTRACTS[type].fields).filter(field=>known[field]).map(field=>[field,Object.fromEntries(known[field].map(value=>[value,offeringId(field,value)]))]));
 }
 export function confirmedFixtureInputs(inputs) {
+ if(inputs.accessDifficulty===undefined&&('pondingWater' in inputs||'inputMethod' in inputs||'plantsBySize' in inputs))inputs={...inputs,accessDifficulty:'easy'};
  const facts=Object.fromEntries(Object.keys(inputs).filter(field=>known[field]?.includes(inputs[field])).map(field=>[field,{status:'identified',field,value:inputs[field],offeringId:offeringId(field,inputs[field])}]));
  return {...inputs,...(Object.keys(facts).length?{confirmedFacts:facts}:{})};
 }
@@ -32,4 +33,10 @@ export function freeFixture(service, overrides={}) {
 
 export function includedFixture(service,includedPrices) {
  return freeFixture(service,{freeCompleteService:false,includedPrices});
+}
+
+export function explicitUnderlaymentFixtureShares(type,p) {
+ const paths=type==='ROOFING_REPLACEMENT'?Object.keys(p.underlaymentPriceBasis||{}).filter(key=>p.underlaymentPriceBasis[key]==='installed_area_sell_price').map(key=>'underlaymentPerSquare.'+key):type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'?['underlaymentPerSqft']:[];
+ if(paths.length){p.installedLaborPercent={...Object.fromEntries(paths.map(path=>[path,0])),...p.installedLaborPercent};p.installedMaterialsPercent={...Object.fromEntries(paths.map(path=>[path,100])),...p.installedMaterialsPercent};}
+ return p;
 }

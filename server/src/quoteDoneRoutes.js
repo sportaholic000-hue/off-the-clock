@@ -1,10 +1,11 @@
+import {quoteDateContext} from './quoteDate.js';
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { requireAuth } from './auth.js';
 import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
-import { declaredAdditionalWork } from './quoteScopeDisclosure.js';
+import { declaredAdditionalWork, customerReceiptPresentation } from './quoteScopeDisclosure.js';
 import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
@@ -105,7 +106,7 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
       FROM quoteSubmissions WHERE ownerId = ? AND requestId = ?`).get(ownerId,body.requestId);
     if(existing) {
       if(existing.contentDigest!==contentDigest)throw problem('This request ID already belongs to different submitted details.',409);
-      const response=JSON.parse(existing.customerResponseJson);
+      const response=customerReceiptPresentation(JSON.parse(existing.customerResponseJson));
       if(existing.bookingTokenReceipt) {
         const receipt=openBookingTokenReceipt(existing.bookingTokenReceipt,bookingTokenSecret);
         if(receipt.ownerId!==ownerId||receipt.intentId!==existing.bookingIntentId) {
@@ -128,7 +129,7 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
     let calculated;
     if(!service)calculated=unresolvedResult('The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.');
     else {
-      try { calculated=calculateApplicationQuote(book,service,body,{ownerId}); }
+      try { calculated=calculateApplicationQuote(book,service,body,{ownerId,...quoteDateContext(db,ownerId)}); }
       catch(error) { calculated=unresolvedResult(error.message); }
     }
     const response=calculated.customerResult;
@@ -217,7 +218,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   });
   app.post('/api/pricebook/save',...owner,asyncHandler(async(req,res)=>res.json(saveApplicationBook(req.tenantOwnerId,req.body))));
   app.post('/api/pricebook/validate',...owner,asyncHandler(async(req,res)=>res.json(validateApplicationDraft(req.tenantOwnerId,req.body))));
-  app.post('/api/pricebook/preview',...owner,asyncHandler(async(req,res)=>res.json(previewApplicationQuote(req.tenantOwnerId,req.body))));
+  app.post('/api/pricebook/preview',...owner,asyncHandler(async(req,res)=>res.json(previewApplicationQuote(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/pricebook/services/:serviceId/approve',...owner,asyncHandler(async(req,res)=>res.json(approveApplicationService(req.tenantOwnerId,req.params.serviceId,req.body))));
   app.post('/api/quotedone/access',...owner,asyncHandler(async(req,res)=>{
     const origins=req.body?.allowedOrigins;
@@ -264,10 +265,10 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
   app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
-    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
+    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)));
   }));
   app.post('/api/quote/prepare',...team,asyncHandler(async(req,res)=>{
-    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body));
+    res.json(prepareApplicationIntake(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)));
   }));
   app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
