@@ -1,7 +1,7 @@
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import crypto from 'node:crypto';
-import {scopeRatePath} from './scopePricing.js';
-import {offeringRatePath} from './configuredOfferings.js';
+import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
+import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {
   PRICE_BASIS_CATEGORIES,
   MEASUREMENT_CONTRACTS,
@@ -40,7 +40,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v1';
+export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v2';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1755,12 +1755,40 @@ function customerProjectionMatchesFirstOption(result) {
   return true;
 }
 
+// Customer review wording classifies each missing or invalid field by the same
+// customer-field metadata the engine validates against (base contracts,
+// configured offerings and owner-defined scopes), never by guessing from the
+// field's name. A field is a measurement when it records a physical size or the
+// method used to measure one; counts and choices are other job details.
+const SIZE_UNITS=new Set(['feet','inches','linear feet','square feet','roofing squares','cubic yards','square feet or cubic yards','percent']);
+const SIZE_METHOD_FIELDS=new Set(['roofSizeMethod','sqftMethod','lfMethod','dimensionMethod','areaInputMethod','inputMethod']);
+const customerFieldIndex=new Map();
+export function customerFieldClassesVNext(serviceType){
+  if(typeof serviceType!=='string'||!SERVICE_TYPES.includes(serviceType))return null;
+  if(!customerFieldIndex.has(serviceType)){
+    const entries=[
+      ...Object.entries(MEASUREMENT_CONTRACTS[serviceType]?.fields||{}),
+      ...(OFFERING_TYPES.includes(serviceType)?['installed','itemized'].flatMap(offeringMode=>Object.entries(offeringContract(serviceType,{offeringMode,offeringDetails:{}}).fields)):[]),
+      ...Object.values(scopeDefinitions(serviceType,{})).flatMap(definition=>Object.entries(definition.customerFields||{}))
+    ];
+    const known=new Set(),measurements=new Set();
+    for(const [name,field] of entries){
+      known.add(name);
+      if(SIZE_METHOD_FIELDS.has(name)||field?.type==='orthogonal_outline'||(field?.type==='number'&&SIZE_UNITS.has(field.unit)))measurements.add(name);
+    }
+    customerFieldIndex.set(serviceType,{known,measurements});
+  }
+  return customerFieldIndex.get(serviceType);
+}
+
 function customerReviewPayload(result,safe=false) {
   let message='We received your request. Someone will follow up to complete or verify the estimate.';
-  if(safe&&result?.resultType==='ESTIMATE_REQUIRES_REVIEW'){
+  const resultType=ownDataValue(result,'resultType'),serviceType=ownDataValue(result,'serviceType');
+  if(safe&&resultType.ok&&resultType.value==='ESTIMATE_REQUIRES_REVIEW'){
+  const classes=serviceType.ok?customerFieldClassesVNext(serviceType.value):null;
   const missing=ownDataValue(result,'missingCustomerFields'),invalid=ownDataValue(result,'invalidCustomerFields'),reason=ownDataValue(result,'reviewReason');
-  const fields=[...(missing.ok&&Array.isArray(missing.value)?missing.value:[]),...(invalid.ok&&Array.isArray(invalid.value)?invalid.value:[])].filter(field=>typeof field==='string'&&Object.hasOwn(MEASUREMENT_CONTRACTS[result.serviceType]?.fields||{},field));
-  if(fields.some(field=>typeof field==='string'&&/sqft|area|length|width|height|size|depth|yards|perimeter|outline/i.test(field)))message='We need to confirm the job measurements or size before providing an estimate. The business will follow up.';
+  const fields=[...(missing.ok&&Array.isArray(missing.value)?missing.value:[]),...(invalid.ok&&Array.isArray(invalid.value)?invalid.value:[])].filter(field=>typeof field==='string'&&Boolean(classes?.known.has(field)));
+  if(fields.some(field=>classes.measurements.has(field)))message='We need to confirm the job measurements or size before providing an estimate. The business will follow up.';
   else if(reason.ok&&typeof reason.value==='string'&&/inspection|inspect|unknown leak/i.test(reason.value))message='This work needs an inspection before a reliable estimate can be provided. The business will follow up.';
   else if(fields.length)message='We need to confirm a few details about the requested work before providing an estimate. The business will follow up.';
   }

@@ -23,27 +23,55 @@ export function priceChoices(service,meta={}) {
  const out=[];function visit(value,path){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,service,meta),value});}
  for(const field of fields)if(p[field]!==undefined)visit(p[field],field);return out;
 }
-export function reviewRows(service,defaults,meta={}) {
+// One value formatter for the approval table and the retained-settings list,
+// so a retained price reads exactly like an active one ($40, 12%, 1.1 ×).
+function shownValue(path,value,service,meta,group,prices){
+ const root=path.replace(/^pricing\./,'').split('.')[0];
+ const numeric=typeof value==='number';
+ let shown=value===undefined||value===null?'Not entered':Array.isArray(value)?value.map(v=>typeof v==='string'?humanPricingKey(v):String(v)).join(', ')||'None':typeof value==='boolean'?(value?'Yes':'No'):typeof value==='string'?humanPricingKey(value):String(value);
+ // Preserve descriptions and free text exactly; only named enum values get friendly labels.
+ if(typeof value==='string'&&!/^[A-Za-z][A-Za-z0-9_]*$/.test(value))shown=value;
+ if(typeof value==='string'&&/description|preparation|coating|substrate|service$|disclaimer/i.test(path))shown=value;
+ const priceRoot=(meta.fields||[]).some(field=>field.field===root&&field.money)||['offeringRates','scopeRates'].includes(root)||Boolean(moneyKindForField(service.serviceType,root,servicePricing(service)));
+ if(numeric&&(prices.has(path.replace(/^pricing\./,''))||priceRoot||group==='Business settings'&&defaultMoney.has(root)))shown=displayAmount(value);
+ else if(numeric&&(/Percent$/.test(root)||root==='installedLaborPercent'||root==='installedMaterialsPercent'))shown=String(value)+'%';
+ const factor=(meta.class2Fields||[]).find(field=>(field.name||field.field)===root);
+ if(numeric&&factor?.unit==='decimal fraction')shown=String(scaleOwnerDecimal(value,2))+'%';
+ else if(numeric&&factor?.unit==='multiplier')shown=String(value)+' ×';
+ else if(numeric&&factor?.unit&&factor.unit!=='percent')shown+=' '+factor.unit;
+ return shown;
+}
+// Retained (retired) settings: path as reported by the server's legacy list,
+// e.g. "pricing.perStepPrice", "perStepPrice" or "defaults.laborHourlyRate".
+export function retainedValueText(path,value,service,meta={}){
+ const business=path.startsWith('defaults.');
+ return shownValue(path.replace(/^defaults\./,''),value,service,meta,business?'Business settings':'Prices and factors',new Map(priceChoices(service,meta).map(row=>[row.path,row])));
+}
+// One labelled row per retained value; a retained map lists each saved entry
+// instead of collapsing to an unreadable object.
+export function retainedRows(path,value,service,meta={}){
+ const rows=[];
+ const visit=(v,at)=>{if(record(v)){for(const [key,child]of Object.entries(v))visit(child,at+'.'+key);return;}
+  const shownPath=at.replace(/^defaults\./,'').replace(/^pricing\./,'');
+  rows.push({path:at,label:reviewLabel(shownPath,service,meta),value:retainedValueText(at,v,service,meta)});};
+ visit(value,path);
+ return rows;
+}
+// Retained settings are listed separately for their own confirmation, so they
+// never appear among the prices that current quotes use.
+export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
  const rows=[],prices=new Map(priceChoices(service,meta).map(row=>[row.path,row]));
+ const retained=new Set(retainedPaths);
  const add=(label,value)=>rows.push({label,value});
  const walk=(value,path,group)=>{
   const root=path.replace(/^pricing\./,'').split('.')[0];
+  if(group==='Prices and factors'&&(retained.has(root)||retained.has('pricing.'+root)))return;
+  if(group==='Offering'&&retained.has(root))return;
+  if(group==='Business settings'&&retained.has('defaults.'+root))return;
   if(record(value)){for(const [key,v]of Object.entries(value))walk(v,path?path+'.'+key:key,group);return;}
   const label=(group?group+' · ':'')+reviewLabel(path,service,meta);
   if(root==='knownOfferings'){add(label,'Registered');return;}
-  const numeric=typeof value==='number';
-  let shown=value===undefined||value===null?'Not entered':Array.isArray(value)?value.map(v=>typeof v==='string'?humanPricingKey(v):String(v)).join(', ')||'None':typeof value==='boolean'?(value?'Yes':'No'):typeof value==='string'?humanPricingKey(value):String(value);
-  // Preserve descriptions and free text exactly; only named enum values get friendly labels.
-  if(typeof value==='string'&&!/^[A-Za-z][A-Za-z0-9_]*$/.test(value))shown=value;
-  if(typeof value==='string'&&/description|preparation|coating|substrate|service$|disclaimer/i.test(path))shown=value;
-  const priceRoot=(meta.fields||[]).some(field=>field.field===root&&field.money)||['offeringRates','scopeRates'].includes(root)||Boolean(moneyKindForField(service.serviceType,root,servicePricing(service)));
-  if(numeric&&(prices.has(path.replace(/^pricing\./,''))||priceRoot||group==='Business settings'&&defaultMoney.has(root)))shown=displayAmount(value);
-  else if(numeric&&(/Percent$/.test(root)||root==='installedLaborPercent'||root==='installedMaterialsPercent'))shown=String(value)+'%';
-  const factor=(meta.class2Fields||[]).find(field=>(field.name||field.field)===root);
-  if(numeric&&factor?.unit==='decimal fraction')shown=String(scaleOwnerDecimal(value,2))+'%';
-  else if(numeric&&factor?.unit==='multiplier')shown=String(value)+' ×';
-  else if(numeric&&factor?.unit&&factor.unit!=='percent')shown+=' '+factor.unit;
-  add(label,shown);
+  add(label,shownValue(path,value,service,meta,group,prices));
  };
  for(const [key,value]of Object.entries(service)){
   if(omitted.has(key)||key==='tiers'||key==='zeroPricePolicy')continue;

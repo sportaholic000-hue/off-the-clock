@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { humanPricingKey } from './pricebookFormatting.js';
+import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { Button, TextInput } from './ui.jsx';
 import {PricingTree} from './quoteDoneControls.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -32,6 +32,7 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
   const keyLabel = domain.keyLabel || 'Type';
   const unit = domain.leafUnit || '$';
   const [newKey, setNewKey] = useState('');
+  const [keyError, setKeyError] = useState('');
 
   const fixedKeys = useMemo(
     () => (Array.isArray(domain.keys) ? domain.keys : Object.keys(map)),
@@ -72,10 +73,12 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
   }
 
   function addKey() {
-    const key = newKey;
-    if (!/^[a-z][a-z0-9_]*$/.test(key) || map[key] !== undefined) return;
+    const { key, error } = productKeyFromName(newKey);
+    if (error) { setKeyError(error); return; }
+    if (map[key] !== undefined) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
     write({ ...map, [key]: shape === 'NESTED' ? {} : '' });
     setNewKey('');
+    setKeyError('');
   }
 
   function removeKey(key) {
@@ -121,9 +124,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
             value={newKey}
             aria-label={`Add ${String(keyLabel).toLowerCase()}`}
             placeholder={`Add a ${String(keyLabel).toLowerCase()}`}
-            onChange={event => setNewKey(event.target.value)}
+            onChange={event => { setNewKey(event.target.value); setKeyError(''); }}
           />
           <Button variant="secondary" icon={Plus} onClick={addKey}>Add</Button>
+          {keyError && <span className="field-error" role="alert">{keyError}</span>}
         </div>
       </div>
     );
@@ -218,9 +222,10 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
           value={newKey}
           aria-label={`Add ${String(keyLabel).toLowerCase()}`}
           placeholder={`Add a ${String(keyLabel).toLowerCase()}`}
-          onChange={event => setNewKey(event.target.value)}
+          onChange={event => { setNewKey(event.target.value); setKeyError(''); }}
         />
         <Button variant="secondary" icon={Plus} onClick={addKey}>Add</Button>
+        {keyError && <span className="field-error" role="alert">{keyError}</span>}
       </div>
     </div>
   );

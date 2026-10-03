@@ -1,0 +1,20 @@
+seed 200
+all input labels: ["Offering name","Mulch material price per cubic yard by mulch type Brown","Mulch material price per cubic yard by mulch type product name"]
+price-table add inputs: ["Mulch material price per cubic yard by mulch type product name"]
+price table add "O'Brien cedar" -> alerts: []
+price table add "3-tab mix" -> alerts: ["Start the name with a letter, for example \"Three-tab shingle\" instead of \"3-tab shingle\"."]
+price table add "O'Brien cedar" -> alerts: ["That name is already listed."]
+price table now shows O brien cedar row: true
+registry input: Mulch type product name
+register "O'Brien cedar" -> alerts: ["That name is already listed."]
+register "O'Brien cedar" -> alerts: ["That name is already listed.","That name is already listed."]
+register "3-tab mix" -> alerts: ["That name is already listed.","Start the name with a letter, for example \"Three-tab shingle\" instead of \"3-tab shingle\"."]
+new row price input present: 1
+save button disabled: false
+save-like buttons: ["Review saved configuration","Save quote-link access","Save & validate"]
+POST pricebook/save 200 {"success":true,"statuses":[…]}
+save response: 200 {"success":true,"statuses":[…]}
+alerts after save: ["That name is already listed.","Start the name with a letter, for example \"Three-tab shingle\" instead of \"3-tab shingle\"."]
+stored price-table keys: ["brown","o_brien_cedar"] | stored registry keys: ["brown","o_brien_cedar"]
+approval table lists per-step price: false | retained section line: "Per step price: $40"
+page errors: []

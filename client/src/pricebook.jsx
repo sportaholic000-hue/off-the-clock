@@ -8,7 +8,7 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
-import { humanPricingKey } from './pricebookFormatting.js';
+import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { moneyKindForField, validatePricebookNumericDraft } from '../../server/priceBookMoney.js';
@@ -51,6 +51,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
   const selectable = domain.ownerSelectable === true;
   const keys = fixed ? domain.keys : Object.keys(map);
   const [newKey, setNewKey] = useState('');
+  const [keyError, setKeyError] = useState('');
 
   function write(next) { onChange(Object.keys(next).length ? next : undefined); }
 
@@ -71,10 +72,12 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
   }
 
   function addKey() {
-    const key = newKey.trim().toLowerCase().replace(/[\s-]+/g, '_');
-    if (!/^[a-z][a-z0-9_]*$/.test(key) || map[key] !== undefined) return;
+    const { key, error } = productKeyFromName(newKey);
+    if (error) { setKeyError(error); return; }
+    if (map[key] !== undefined) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
     write({ ...map, [key]: domain.nested ? {} : 0 });
     setNewKey('');
+    setKeyError('');
   }
 
   // Owner-selectable product offerings: an absent key means NOT OFFERED, never
@@ -197,8 +200,9 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
           <div className="shaped-map-add">
             <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`}
               placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`}
-              onChange={event => setNewKey(event.target.value)} />
+              onChange={event => { setNewKey(event.target.value); setKeyError(''); }} />
             <Button variant="secondary" onClick={addKey}>Add</Button>
+            {keyError && <span className="field-error" role="alert">{keyError}</span>}
           </div>
         )}
       </div>
@@ -244,8 +248,9 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [] 
         <div className="shaped-map-add">
           <TextInput value={newKey} aria-label={`Add ${domain.keyLabel || 'pricing type'}`}
             placeholder={`Add ${String(domain.keyLabel || 'pricing type').toLowerCase()}`}
-            onChange={event => setNewKey(event.target.value)} />
+            onChange={event => { setNewKey(event.target.value); setKeyError(''); }} />
           <Button variant="secondary" onClick={addKey}>Add</Button>
+          {keyError && <span className="field-error" role="alert">{keyError}</span>}
         </div>
       )}
     </div>

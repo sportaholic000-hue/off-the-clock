@@ -4,6 +4,7 @@ import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField} from './pricebookEditing.js';
+import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
 
 export function offeringPreviewFields(meta,service) {
   const p=servicePricing(service),source=meta.offeringCustomerFields?.[p.offeringMode];
@@ -23,7 +24,7 @@ export function offeringTierFields(meta,service) {
 
 export function OfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),mode=p.offeringMode,d=p.offeringDetails||{},rates=p.offeringRates||{},fence=service.serviceType.startsWith('FENCING_'),interior=service.serviceType==='INTERIOR_PAINTING';
-  const [gateName,setGateName]=useState('');
+  const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState('');
   const baseline=offeringPriceBaseline(service.serviceType),confirmation=offeringBaselineConfirmation(service.serviceType,p);
   const legacyCondition=d[baseline.field]!==undefined&&d[baseline.field]!==baseline.value;
   const baselineNote=`Baseline prices cover ${baseline.condition}. ${baseline.adjustment} adjustments apply on top to labor only.${interior?' Wall height adjusts walls and ceilings; trim prices do not change with wall height.':''}`;
@@ -68,8 +69,8 @@ export function OfferingEditor({service,meta,onChange}) {
             <Button variant="quiet" onClick={()=>{const next={...d.gates};delete next[key];detail('gates',next);}}>Remove gate offering</Button>
           </div>;
         })}
-        <Field label="New gate name"><TextInput aria-label="New gate name" value={gateName} onChange={e=>setGateName(e.target.value)}/></Field>
-        <Button variant="secondary" onClick={()=>{const key=gateName.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');if(/^[a-z][a-z0-9_]*$/.test(key)&&!Object.hasOwn(d.gates||{},key)){detail('gates',{...(d.gates||{}),[key]:{description:gateName.trim()}});setGateName('');}}}>Add gate offering</Button>
+        <Field label="New gate name"><TextInput aria-label="New gate name" value={gateName} onChange={e=>{setGateName(e.target.value);setGateError('');}}/></Field>
+        <Button variant="secondary" onClick={()=>{const {key,error}=productKeyFromName(gateName);if(error){setGateError(error);return;}if(Object.hasOwn(d.gates||{},key)){setGateError(DUPLICATE_NAME_MESSAGE);return;}detail('gates',{...(d.gates||{}),[key]:{description:gateName.trim()}});setGateName('');setGateError('');}}>Add gate offering</Button>{gateError&&<span className="field-error" role="alert">{gateError}</span>}
         {service.serviceType==='FENCING_REPLACEMENT'&&<>{input('removalOffered','Offer fence removal','boolean')}{d.removalOffered&&<>{input('removalDescription','Removal work included')}{input('removalIncludesDisposal','Removal price includes disposal','boolean')}</>}</>}
       </>:<>
         {input('substrate','Paintable surface covered')}{input('coating','Coating and product system')}{mode==='installed'&&input('finishCoats','Wall finish coats','select',[1,2,3])}

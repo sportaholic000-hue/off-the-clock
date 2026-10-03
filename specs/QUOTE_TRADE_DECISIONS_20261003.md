@@ -47,4 +47,16 @@ The owner authorized the latest confirmed engine/price-book findings for repair 
 - Existing specified 30% markup and 10% range-buffer starter defaults remain numerically unchanged. The saved approval explicitly states the current markup/margin percentage and range buffer; no silent replacement values are selected.
 - Customer scope copy distinguishes stated and calculated mulch yards, describes bed preparation plainly, and spells out stair inclusions. Review responses distinguish missing measurements, other job details and inspection needs using fixed safe messages. Technical/malformed-result failures keep the generic safe fallback; internal diagnostic strings are never echoed to customers.
 
-These repairs retain the engine approval version and unrelated arithmetic. Changes to saved owner configuration still require ordinary approval. Evidence and independent expected values: `verification/component-pricing-repairs/REPORT.md`.
+These repairs retain unrelated arithmetic. (Amended by the review follow-up below: the engine approval version now changes so this changed arithmetic receives fresh owner approval.) Changes to saved owner configuration still require ordinary approval. Evidence and independent expected values: `verification/component-pricing-repairs/REPORT.md`.
+
+## October 3 review follow-up (Claude)
+
+Three minor findings from the independent re-verification of `88e5040`, plus the approval-version rule, are corrected on `claude/quote-review-fixes-20261003`.
+
+- **One product-name conversion.** Every owner control that names a product, gate or price row (price tables, scope price tables, Registered products, gate offerings and the AI interview tables) uses the same conversion: accents are folded, any punctuation becomes a word break, and the stored name is lowercase words joined by underscores starting with a letter. A name registered in one control therefore matches the same name typed in another (for example "O'Brien cedar" and "Vinyl (D4)"). A refused name is never ignored: the owner sees why ("Start the name with a letter…", "That name is already listed."). A refused name does not block saving.
+- **Review wording from field metadata.** The customer review message is chosen from the engine's own customer-field metadata (base contracts, configured offerings and owner-defined scopes), not by guessing from field names. Any physical size (feet, inches, linear feet, square feet, roofing squares, cubic yards, area percentage, measured outline) or the method used to measure one reads as a measurement; counts and choices read as other job details. Fence length, slab thickness, edging length and scope sizes such as demolition thickness now get the measurement message. Malformed results keep the generic message.
+- **Retained settings stay retained.** The saved-approval table no longer lists retained (retired) values among active prices; they appear only under retained settings, formatted like prices (for example "$40"), with one row per saved value.
+- **Approval version.** Consistent with this document's rule that changed arithmetic requires fresh owner approval, the engine version moves to `quote-engine-vnext-trade-decisions-20261003-v2` because the component-pricing repairs changed trim, siding-removal, insulation/coverboard and siding-trim amounts. Saved prices are unchanged; owners re-confirm the saved configuration.
+
+No prices or formulas change in this follow-up. Evidence: `verification/claude-review-fixes-20261003/REPORT.md`.
+
