@@ -1,0 +1,12 @@
+run 37093732895 sha c714b6eb6bbe8deed8ccac83df03a52f811019ce
+Summary: {"tests":"1244","pass":"1233","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 9/9
+not ok 30 - test/googleGenAiLiveAdapter.spec.mjs
+not ok 1201 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 1202 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 70 - test/voicePromptCompiler.spec.mjs
+not ok 1223 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 1224 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1226 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1227 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 73 - test/voiceWebSocketServer.spec.mjs
