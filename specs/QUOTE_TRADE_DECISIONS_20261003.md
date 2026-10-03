@@ -71,3 +71,17 @@ Exactness: a line re-priced by a later step (waste, terrain, installed labor sha
 ## Owner correction — one fence-height control (October 3)
 
 Fence height is entered directly as whole feet and decimal inches in the owner editor and customer form. There is no decimal-feet mode toggle or fixed-height preset list. This scoped correction changes presentation only; saved numeric heights, conversion and quote arithmetic are unchanged. Verification: four rendered height examples, all five existing fence-height tests, and owner/widget builds passed. The separate precision, storage and test-runner repair draft remains paused and is not included.
+
+## October 3 engine audit repairs (Claude, branch `claude/audit-fixes-20261003`)
+
+- **Installed shares split the billed line.** Labor and materials shares of an installed price are fractions of the amount actually billed (the rounded line), kept exact until the tax or surcharge itself is rounded. A 100% materials share therefore taxes exactly like tax-entire-job, and the portions always add back to the billed line.
+- **Surcharge basis follows its labor.** The peak surcharge on labor inside complete installed (selling) prices is its own line marked as a selling price and is never marked up; the surcharge on ordinary labor keeps the owner's surcharge-category settings.
+- **Flat-roof products are isolated** like pitched roofs and floors: an incomplete membrane does not block a complete one; malformed data still fails closed.
+- **Fence height precision.** Heights are accepted to four decimal places of an inch (decimal feet included); finer values are refused with a message, never rounded. Displays use exact feet and inches.
+- **Fence type** is chosen from, or added to, Registered products through the shared product-name conversion.
+- **Applied default settings** (post spacing, waste, labor factors) are stored with the service on save and listed in the approval review; older records show them marked as defaults.
+- **Included-price choices** list each price option's own overrides by name and never offer minimums.
+- **Price-book saves** flush the directory before reporting success; a book that cannot be read or belongs to another business stops quoting.
+- **Tests.** `npm test` runs CI's full suite and known-failure check; `npm run test:quote` checks the engine architecture and runs every quote-engine and price-book test file with zero failures allowed.
+- Engine version `-v3`: the billed-share and surcharge-basis rules change arithmetic and require fresh owner approval.
+

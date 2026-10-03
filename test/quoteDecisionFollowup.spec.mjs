@@ -32,8 +32,11 @@ test('G1 roof stays live throughout the year without an installed-underlayment l
 test('G1 peak uses explicit fence labor plus only the entered installed-gate labor share',()=>{
  const f=peak(offeringFixture('FENCING_INSTALL','itemized'));Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});
  delete f.ownerPricing.pricing.installedLaborPercent;ready(f,409720);
- f.ownerPricing.pricing.installedLaborPercent={'offeringRates.gate_walk':60};const q=ready(f,411220),line=q.lineItems.find(l=>l.name==='Peak season adjustment');
- assert.equal(line.calculation.basisAmountCents,122200);assert.equal(line.amountCents,12220);
+ f.ownerPricing.pricing.installedLaborPercent={'offeringRates.gate_walk':60};const q=ready(f,411220);
+ // Explicit labor and the installed gate's labor share each get their surcharge line; the installed one is a selling price (never marked up).
+ const explicit=q.lineItems.find(l=>l.name==='Peak season adjustment'),installed=q.lineItems.find(l=>l.name==='Peak season adjustment on installed prices');
+ assert.equal(explicit.calculation.basisAmountCents+installed.calculation.basisAmountCents,122200);assert.equal(explicit.amountCents+installed.amountCents,12220);
+ assert.equal(installed.calculation.basisAmountCents,15000);assert.equal(installed.priceBasis,'sell_price');
 });
 for(const [type,mode,total] of [['FENCING_INSTALL','installed',450000],['FENCING_INSTALL','itemized',434720],['FENCING_REPLACEMENT','installed',490000],['FENCING_REPLACEMENT','itemized',474720],['INTERIOR_PAINTING','installed',380000],['INTERIOR_PAINTING','itemized',352200],['EXTERIOR_PAINTING','installed',300000],['EXTERIOR_PAINTING','itemized',247500]])test('G1 missing installed labor allocation never blocks peak '+type+' '+mode,()=>{
  const f=peak(offeringFixture(type,mode));delete f.ownerPricing.pricing.installedLaborPercent;

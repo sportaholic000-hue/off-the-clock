@@ -1,3 +1,4 @@
+import { productKeyFromName } from './pricebookFormatting.js';
 import { ALL_OWNER_FIELDS } from '../../server/priceBookMetadata.js';
 
 function sameValue(left, right) {
@@ -147,4 +148,15 @@ export function renameTierOverride(overrides, oldField, nextField) {
   const next={...overrides,[nextField]:overrides[oldField]};
   delete next[oldField];
   return next;
+}
+
+// The offered fence type is a registered product. Choosing or naming one stores
+// the same canonical key in the offering and in Registered products (via the
+// shared product-name conversion), so a typed name like "Wood Privacy" quotes.
+export function chooseFenceType(service, name) {
+  const { key, error } = productKeyFromName(name);
+  if (error) return { error };
+  const pricing = servicePricing(service), details = pricing.offeringDetails || {}, known = service.knownOfferings?.fenceType || {};
+  const next = editServiceField(service, 'offeringDetails', { terrainSlope:'flat', ...details, fenceType:key });
+  return { service:{ ...next, knownOfferings:{ ...(service.knownOfferings || {}), fenceType:{ ...known, ...(Object.hasOwn(known, key) ? {} : { [key]:crypto.randomUUID() }) } } } };
 }

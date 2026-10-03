@@ -188,12 +188,12 @@ test('saved approval lists a retained price only under retained settings, format
   assert.ok(mapRows.every(row => !String(row.value).includes('[object Object]') && !String(row.label).includes('[object Object]')));
 });
 
-test('changed arithmetic requires fresh approval: the engine version moved to v2', () => {
-  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v2');
+test('changed arithmetic requires fresh approval: the engine version moved on (v3 after the billed-share and surcharge-basis changes)', () => {
+  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v3');
   const live = liveService(patio);
   assert.equal(live.status.status, 'QUOTING LIVE');
   const book = store.loadPricebook(live.ownerId);
-  const text = JSON.stringify(book).replaceAll(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v1');
+  const text = JSON.stringify(book).replaceAll(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v2');
   assert.notEqual(text, JSON.stringify(book), 'the approval receipt records the engine version');
   store.savePricebook(live.ownerId, JSON.parse(text));
   const stale = store.loadPricebook(live.ownerId);

@@ -40,7 +40,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v2';
+export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v3';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -585,26 +585,35 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
   // An installed price with no explicit labor allocation contributes zero.
   // Seasonal pricing must not turn an otherwise configured job into review.
-  const exactLabor=lines.reduce((sum,line)=>exactAdd(sum,line.installedLaborExactCents?exactFromEvidence(line.installedLaborExactCents):!line.installedBaseExactCents&&(line.category==='labor'||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?line.amountCents:0),exactDecimal(0));
+  // The surcharge takes the price basis of the labor it is calculated from:
+  // labor inside complete installed (final selling) prices yields its own line
+  // marked as a selling price, so it is never marked up; ordinary labor keeps
+  // the owner's surcharge category settings.
+  const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
+  const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
-  const seasonalMoney = exactMoneyResult(active ? exactPercentOf(exactLabor, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
-  const amountCents = seasonalMoney.amountCents;
-  if (amountCents > 0) {
+  let amountCents=0;
+  for(const [basisLabor,name,priceBasis] of [[otherLabor,'Peak season adjustment',undefined],[installedLabor,'Peak season adjustment on installed prices','sell_price']]){
+    const seasonalMoney = exactMoneyResult(active ? exactPercentOf(basisLabor, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
+    if (seasonalMoney.amountCents <= 0) continue;
+    amountCents += seasonalMoney.amountCents;
     lines.push({
-      name: 'Peak season adjustment',
+      name,
       category: 'surcharge',
-      amountCents,
+      ...(priceBasis ? { priceBasis } : {}),
+      amountCents: seasonalMoney.amountCents,
       ownerVisible: true,
       customerVisible: false,
       calculation: {
         evidenceVariant: 'percentage_derived',
         basisCategory: 'labor',
-        basisAmountCents: laborSubtotalCents,
-        exactBasisAmountCents:exactEvidence(exactLabor),
+        basisAmountCents: exactToNumber(basisLabor),
+        exactBasisAmountCents:exactEvidence(basisLabor),
         percent: seasonal.percent,
         unroundedCents: seasonalMoney.unroundedCents,
         exactUnroundedCents: seasonalMoney.exactUnroundedCents,
-        roundedAmountCents: amountCents
+        roundedAmountCents: seasonalMoney.amountCents
       }
     });
   }

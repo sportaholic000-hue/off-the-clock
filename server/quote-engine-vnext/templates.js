@@ -1233,8 +1233,14 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         const base=exactFromEvidence(line.calculation.exactUnroundedCents);
         if(factor!==1 && laborShare===undefined)throw new QuoteReviewError('Set the labor portion of this installed price before applying a labor adjustment.',{missingOwnerFields:['installedLaborPercent.'+ratePath]});
         const adjusted=factor===1?line:makeLine({...line,...line.calculation,multipliers:[...line.calculation.multipliers,{name:'Installed labor portion adjustment',path:factorPath,value:exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(factor,1))),laborSharePercent:laborShare,laborFactor:factor}]});
-        adjusted.installedBaseExactCents=exactEvidence(base);
-        if(laborShare!==undefined)adjusted.installedLaborExactCents=exactEvidence(exactMultiply(base,exactDivide(laborShare,100),factor));
+        // Shares split the amount actually billed (the rounded line), so a 100%
+        // materials or 100% labor share equals the whole billed line and the
+        // portions always add back to it exactly. Fractions are kept until the
+        // tax or surcharge itself is rounded.
+        const scale=factor===1?exactDecimal(1):exactAdd(1,exactMultiply(exactDivide(laborShare,100),exactSubtract(factor,1)));
+        const billedBase=exactDivide(adjusted.amountCents,scale);
+        adjusted.installedBaseExactCents=exactEvidence(billedBase);
+        if(laborShare!==undefined)adjusted.installedLaborExactCents=exactEvidence(exactMultiply(billedBase,exactDivide(laborShare,100),factor));
         return adjusted;
       }
       const adjustment=tradeAdjustment(serviceType,customerInputs,pricing,line);

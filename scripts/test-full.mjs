@@ -13,16 +13,15 @@
 // Missing prerequisites are reported up front; the affected tests then fail and
 // the check fails, exactly as they would in CI.
 import { spawn, spawnSync } from 'node:child_process';
-import { createWriteStream, existsSync, readdirSync } from 'node:fs';
+import { createWriteStream, existsSync } from 'node:fs';
+import { allSpecFiles } from './testSelection.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tapFile = path.join(root, process.env.TEST_RESULTS_FILE || 'test-results.tap');
-const specs = readdirSync(path.join(root, 'test'));
-// Same order as CI's shell globs: all *.spec.js, then all *.spec.mjs, each sorted.
-const files = [...specs.filter(name => name.endsWith('.spec.js')).sort(), ...specs.filter(name => name.endsWith('.spec.mjs')).sort()].map(name => 'test/' + name);
+const files = allSpecFiles(root);
 
 const missing = [];
 // Production start-up (and its tests) requires these three build outputs.

@@ -124,6 +124,6 @@ export function SavedApproval({meta,ownerId,serviceId,draft,onApproved,onBusyCha
 }
 function IncludedPrices({service,meta,value,onChange}) {
  const [from,setFrom]=useState(''),[to,setTo]=useState(''),choices=priceChoices(service,meta);
- const options=positive=>choices.filter(row=>positive?row.value>0:row.value===0).map(row=><option key={row.path} value={row.path}>{row.label} ({displayAmount(row.value)})</option>);
+ const options=positive=>choices.filter(row=>positive?row.value>0:row.value===0).map(row=><option key={row.path+'|'+(row.option||'')} value={row.path}>{row.label} ({displayAmount(row.value)})</option>);
  return <div>{Object.entries(value).map(([a,b])=><p key={a}>{reviewLabel(a,service,meta)} included in {reviewLabel(b,service,meta)} <Button variant="quiet" onClick={()=>{const v={...value};delete v[a];onChange(v);}}>Remove</Button></p>)}<Field label="Price included at no extra charge"><Select aria-label="Price included at no extra charge" value={from} onChange={e=>setFrom(e.target.value)}><option value="">Choose a zero price</option>{options(false)}</Select></Field><Field label="Price that already covers this work"><Select aria-label="Price that already covers this work" value={to} onChange={e=>setTo(e.target.value)}><option value="">Choose the covering price</option>{options(true)}</Select></Field><Button variant="secondary" disabled={!from||!to} onClick={()=>{if(from&&to){onChange({...value,[from]:to});setFrom('');setTo('');}}}>Add explicit inclusion</Button></div>;
 }

@@ -18,10 +18,17 @@ export function reviewLabel(path,service,meta={}) {
  }
  return [meta.fields?.find(f=>f.field===root)?.title||meta.fields?.find(f=>f.field===root)?.label||meta.class2Fields?.find(f=>f.name===root)?.label||humanPricingKey(root),...parts.map(humanPricingKey)].join(' · ');
 }
+// Prices that can take part in an "included" mapping: every money path in the
+// base offering and in each price option (an option's own override shows with
+// its name). Minimums can never be included or cover another price, so they are
+// not offered.
+const MINIMUM_FIELDS=new Set(['minimumJob','repairMinimum','minimumServiceCharge']);
 export function priceChoices(service,meta={}) {
- const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');
- const out=[];function visit(value,path){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,service,meta),value});}
- for(const field of fields)if(p[field]!==undefined)visit(p[field],field);return out;
+ const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');
+ const out=[];function visit(value,path,option){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key,option);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,service,meta)+(option?' — '+option+' option':''),value,option:option||null});}
+ for(const field of fields)if(p[field]!==undefined)visit(p[field],field,null);
+ for(const tier of service.tiers||[])for(const field of fields)if(tier?.overrides?.[field]!==undefined)visit(tier.overrides[field],field,tier.name);
+ return out;
 }
 // One value formatter for the approval table and the retained-settings list,
 // so a retained price reads exactly like an active one ($40, 12%, 1.1 ×).
@@ -80,6 +87,9 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
   if(key==='pricing'){for(const [name,v]of Object.entries(value))walk(v,name,'Prices and factors');}
   else walk(value,key,'Offering');
  }
+ // Default settings the quote uses but the saved record does not list yet.
+ const pricing=servicePricing(service);
+ for(const field of meta.class2Fields||[]){const name=field.name||field.field;if(name&&field.defaultValue!==undefined&&!Object.hasOwn(pricing,name)&&!Object.hasOwn(service,name)&&!retained.has(name))walk(field.defaultValue,name,'Prices and factors (default)');}
  for(const tier of service.tiers||[])for(const [key,value]of Object.entries(tier.overrides||{}))walk(value,key,'Price option: '+tier.name);
  for(const [key,value]of Object.entries(defaults||{}))walk(value,key,'Business settings');
  if(service.zeroPricePolicy){const zero=service.zeroPricePolicy;add('Entire base offering explicitly free',zero.freeCompleteService?'Yes':'No');add('Explicitly free price options',(zero.freeTiers||[]).join(', ')||'None');for(const [from,to]of Object.entries(zero.includedPrices||{}))add('Included price: '+reviewLabel(from,service,meta),reviewLabel(to,service,meta));}

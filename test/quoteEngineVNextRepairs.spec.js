@@ -1155,14 +1155,21 @@ test('repair 27: measured quotes expose the exact effective range buffer', () =>
   assert.equal(unknown.effectiveRangeBufferPercent, undefined);
 });
 
-test('repair 28: ordinary tests include every VNext suite and keep the dedicated gate', () => {
+test('repair 28: ordinary tests include every VNext suite and keep the dedicated gate', async () => {
+  // npm test runs every spec file (CI's suite and known-failure check); the
+  // quote gate runs every quote-engine/price-book spec, found by what it imports.
   const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-  const gate = readFileSync('server/scripts/quote-vnext-gate.js', 'utf8');
-  for (const file of ['test/quoteEngineVNext.spec.js', 'test/quoteEngineVNextAdversarial.spec.js', 'test/quoteEngineVNextRepairs.spec.js']) {
-    assert.equal(pkg.scripts.test.includes(file), true, file);
-    assert.equal(pkg.scripts['test:vnext'].includes(file), true, file);
-    assert.equal(gate.includes(file), true, file);
+  assert.equal(pkg.scripts.test, 'node scripts/test-full.mjs');
+  assert.equal(pkg.scripts['test:quote'], 'node server/scripts/quote-vnext-gate.js');
+  assert.equal(pkg.scripts['test:vnext'], 'node server/scripts/quote-vnext-gate.js');
+  const { allSpecFiles, quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
+  const everything = allSpecFiles(process.cwd()), quote = quotePricebookSpecFiles(process.cwd());
+  for (const file of ['test/quoteEngineVNext.spec.js', 'test/quoteEngineVNextAdversarial.spec.js', 'test/quoteEngineVNextRepairs.spec.js',
+    'test/fenceAnyHeight.spec.mjs', 'test/quoteTradeDecisions.spec.mjs', 'test/componentPricingRepairs.spec.mjs', 'test/pricebookDurability.spec.mjs']) {
+    assert.equal(everything.includes(file), true, file);
+    assert.equal(quote.includes(file), true, file);
   }
+  assert.equal(quote.some(file => /voice/i.test(file)), false);
   assert.equal(pkg.scripts['gate:quote-vnext'], 'node server/scripts/quote-vnext-gate.js');
 });
 

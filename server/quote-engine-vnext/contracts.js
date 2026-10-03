@@ -1580,9 +1580,11 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
 export function pricingDiagnosticsForSelection(type,diagnostics,c) {
   return diagnostics.filter(item=>{
     if(item.type!=='missing')return true; // Malformed or unsupported saved data still fails closed.
-    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:null;
+    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:null;
     if(!selected)return true;
-    const roots=type==='ROOFING_REPLACEMENT'?['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']:['laborPerSqft','materialPerSqft'];
+    // Flat roofs: tear-off prices belong to the existing membrane, so only the requested one matters.
+    if(type==='FLAT_ROOF_REPLACEMENT'&&item.kind==='relationship'&&item.path.startsWith('tearOffPerSqft.'))return item.path.split('.')[1]===c.membraneType;
+    const roots=type==='ROOFING_REPLACEMENT'?['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']:type==='FLAT_ROOF_REPLACEMENT'?['laborPerSqft','membraneCostPerSqft']:['laborPerSqft','materialPerSqft'];
     if(item.kind==='relationship'&&roots.some(root=>item.path.startsWith(root+'.')))return item.path.split('.')[1]===selected;
     const scope=type==='ROOFING_REPLACEMENT'?'roof_underlayment_':'floor_underlayment_';
     if(['scopeDetails.','scopeRates.'].some(root=>item.path.startsWith(root+scope)))return item.path.split('.')[1]===scope+selected;

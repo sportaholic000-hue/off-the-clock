@@ -3,8 +3,8 @@ import {offeringPriceBaseline,offeringBaselineConfirmation} from '../../server/q
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField} from './pricebookEditing.js';
-import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
+import {servicePricing,editServiceField,chooseFenceType} from './pricebookEditing.js';
+import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 
 export function offeringPreviewFields(meta,service) {
   const p=servicePricing(service),source=meta.offeringCustomerFields?.[p.offeringMode];
@@ -24,7 +24,11 @@ export function offeringTierFields(meta,service) {
 
 export function OfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),mode=p.offeringMode,d=p.offeringDetails||{},rates=p.offeringRates||{},fence=service.serviceType.startsWith('FENCING_'),interior=service.serviceType==='INTERIOR_PAINTING';
-  const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState('');
+  const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState(''),[typeName,setTypeName]=useState(''),[typeError,setTypeError]=useState('');
+  const fenceTypes=service.knownOfferings?.fenceType||{};
+  // The fence type is a registered product: choose one, or name a new one, which
+  // registers it through the same conversion as every other product name.
+  const useFenceType=name=>{const chosen=chooseFenceType(service,name);if(chosen.error){setTypeError(chosen.error);return;}onChange(chosen.service);setTypeName('');setTypeError('');};
   const baseline=offeringPriceBaseline(service.serviceType),confirmation=offeringBaselineConfirmation(service.serviceType,p);
   const legacyCondition=d[baseline.field]!==undefined&&d[baseline.field]!==baseline.value;
   const baselineNote=`Baseline prices cover ${baseline.condition}. ${baseline.adjustment} adjustments apply on top to labor only.${interior?' Wall height adjusts walls and ceilings; trim prices do not change with wall height.':''}`;
@@ -55,7 +59,7 @@ export function OfferingEditor({service,meta,onChange}) {
       {legacyCondition&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for {baseline.condition}</label>}
       {input('description','Included job description')}
       {fence?<>
-        {input('fenceType','Offered fence type')}<Field label="Height these prices are for" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
+        <Field key="fenceType" label="Offered fence type" help="Choose a fence type from Registered products, or name a new one. The same name is used for its prices and for quoting."><Select aria-label="Offered fence type" value={d.fenceType??''} onChange={e=>detail('fenceType',e.target.value||undefined)}><option value="">Choose a fence type</option>{Object.keys(fenceTypes).map(key=><option key={key} value={key}>{humanPricingKey(key)}</option>)}{d.fenceType&&!Object.hasOwn(fenceTypes,d.fenceType)&&<option value={d.fenceType}>{d.fenceType} (not registered: add it again below)</option>}</Select><TextInput aria-label="New fence type name" value={typeName} onChange={e=>{setTypeName(e.target.value);setTypeError('');}}/><Button variant="secondary" onClick={()=>useFenceType(typeName)}>Use this fence type</Button>{typeError&&<span className="field-error" role="alert">{typeError}</span>}</Field><Field label="Height these prices are for" help="Customers can ask for any height. Other heights are priced in proportion to height: per-foot, post, footing and gate prices scale by the requested height divided by this height (a 9 ft request from 6 ft prices is 1.5 times). Old-fence removal is not adjusted."><FenceHeightInput label="Height these prices are for" value={d.fenceHeight} onChange={value=>detail('fenceHeight',value)}/></Field>
         {input('postFootingDescription','Standard posts, footings and digging included')}
         <Notice>{mode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':'Infill is priced by fence length. Posts and footings are calculated from fence length, your post spacing, corners and gate counts. Posts included in gate prices are excluded.'} Fence length excludes gate openings.</Notice>
         <h3>Offered gates</h3>
@@ -79,7 +83,7 @@ export function OfferingEditor({service,meta,onChange}) {
         {interior?<>{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{mode==='installed'&&input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&input('trimDescription','Trim coats, preparation and primer included')}</>:null}
       </>}
       <h3>Owner prices for this offering — {baseline.condition}</h3>
-      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={'Offering price '+key} kind="unit_rate" value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
+      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={field.label+' ($ per '+field.unit+')'} kind="unit_rate" value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
       {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{key}: {String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}
     </>}
   </section>;

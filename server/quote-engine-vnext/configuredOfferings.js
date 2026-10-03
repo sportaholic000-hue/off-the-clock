@@ -85,6 +85,7 @@ export function offeringStructureDiagnostics(type,p) {
   if(fence(type)) {
     check('fenceType',slug,'Identify the offered fence material/style.');
     check('fenceHeight',v=>typeof v==='number'&&Number.isFinite(v)&&v>0,'Enter the positive height in feet covered by these prices.');
+    check('fenceHeight',v=>!(typeof v==='number'&&Number.isFinite(v)&&v>0)||fenceHeightWithinPrecision(v),FENCE_HEIGHT_PRECISION_MESSAGE);
     check('terrainSlope',v=>v===undefined||['flat','moderate','steep'].includes(v),'Choose the terrain covered by these prices.');
     check('postFootingDescription',text,'Define the standard posts, footings and digging covered by these prices.');
     check('gates',record,'Define offered gates, or an empty map when none are offered.');
@@ -161,6 +162,7 @@ export function offeringContract(type,p) {
     if(fence(type)) {
       // Any positive height is quotable (owner ruling, Oct 3): only the fence type must match.
       equal('fenceType',d.fenceType);
+      if(c.fenceHeight!==undefined&&typeof c.fenceHeight==='number'&&Number.isFinite(c.fenceHeight)&&c.fenceHeight>0&&!fenceHeightWithinPrecision(c.fenceHeight))bad('fenceHeight',FENCE_HEIGHT_PRECISION_MESSAGE);
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
@@ -199,6 +201,15 @@ export function calculatedFencePosts(c,p) {
 // exact value that was entered: the first scale 12 x 10^k (inches with up to six
 // decimals, which also covers decimal feet) at which the number is a whole count
 // to within binary rounding. Any other number is used exactly as given.
+// Fence heights are accepted to at most four decimal places of an inch (decimal
+// feet with up to four places are included). Finer values are refused with a
+// clear message rather than silently rounded.
+export const FENCE_HEIGHT_PRECISION_MESSAGE='Enter the fence height in feet and inches with at most four decimal places of an inch.';
+export function fenceHeightWithinPrecision(feet){
+  if(typeof feet!=='number'||!Number.isFinite(feet)||feet<=0)return false;
+  for(let k=0;k<=4;k++){const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
+  return false;
+}
 export function exactFenceHeight(feet){
   for(let k=0;k<=6;k++){
     const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);
@@ -220,12 +231,18 @@ function decimalText(numerator,denominator,maxDigits=6){
   }
   return null;
 }
-// Shows a height the way it was entered: "6 ft", "5 ft 3.65 in", "9 in".
-export function formatFenceHeight(feet){
+// Whole feet and exact decimal inches of a height, never "12 in".
+export function fenceHeightParts(feet){
   const inches=exactMultiply(exactFenceHeight(feet),12),whole=inches.numerator/(inches.denominator*12n);
   const rest=decimalText(inches.numerator-whole*12n*inches.denominator,inches.denominator);
-  if(rest===null){let w=Math.floor(feet),i=Math.round((feet-w)*1200)/100;if(i>=12){w+=1;i=0;}return i?(w?w+' ft ':'')+i+' in':w+' ft';}
-  return rest==='0'?whole+' ft':(whole?whole+' ft ':'')+rest+' in';
+  if(rest!==null)return {feet:String(whole),inches:rest};
+  let w=Math.floor(feet),i=Math.round((feet-w)*120000)/10000;if(i>=12){w+=1;i=0;}
+  return {feet:String(w),inches:String(i)};
+}
+// Shows a height the way it was entered: "6 ft", "5 ft 3.65 in", "9 in".
+export function formatFenceHeight(feet){
+  const {feet:whole,inches}=fenceHeightParts(feet);
+  return inches==='0'?whole+' ft':(whole!=='0'?whole+' ft ':'')+inches+' in';
 }
 export function offeringLines(type,c,p) {
   const d=p.offeringDetails||{},installed=p.offeringMode==='installed',definitions=offeringRateDefinitions(type,p),lines=[];

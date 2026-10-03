@@ -522,7 +522,7 @@ function activationMonth(service, defaults) {
 
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // All boundary probes within one product must pass; incomplete siblings do not block it.
-  const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
+  const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
     for(const scenario of activationScenarios({...service,pricing:effectivePricing})){

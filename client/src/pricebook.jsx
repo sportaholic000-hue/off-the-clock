@@ -1072,7 +1072,7 @@ export default function PriceBook() {
                         <ExactNumericInput value={book.defaults.taxPercent} onChange={value => updateDefault('taxPercent', value)} />
                       </Field>
                     )}
-                    <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
+                    <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration, except installed prices with a materials share: their materials share is taxed whatever their category, and the rest is not. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
                   </Disclosure>
                 </div>
               </div>

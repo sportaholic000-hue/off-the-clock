@@ -60,7 +60,12 @@ export function loadPricebook(ownerId) {
 // can bring back the previous file after the owner was told the save
 // succeeded. Windows cannot open a directory for flushing, so it is skipped
 // there; deployment is Linux.
-const defaultFileOps = { writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, platform: process.platform };
+// Each operation calls the current node:fs binding, so tooling that replaces an
+// fs function (and syncs ESM exports) is honoured.
+const defaultFileOps = {
+  writeFileSync: (...args) => writeFileSync(...args), renameSync: (...args) => renameSync(...args), unlinkSync: (...args) => unlinkSync(...args),
+  openSync: (...args) => openSync(...args), fsyncSync: (...args) => fsyncSync(...args), closeSync: (...args) => closeSync(...args), platform: process.platform
+};
 export function flushDirectory(path, ops = defaultFileOps) {
   if (ops.platform === 'win32') return;
   const descriptor = ops.openSync(path, 'r');

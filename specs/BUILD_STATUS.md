@@ -152,3 +152,7 @@ On `claude/quote-review-fixes-20261003`: fence quotes work at any positive heigh
 
 Feet-and-inches fence heights are priced exactly as entered (5 ft 3.65 in = 63.65/12 ft; previously a binary approximation could round a half cent down, $3,978.12 instead of $3,978.13), and heights read as entered for customers ("5 ft 3.65 in"). The height control no longer says the quote must match the offered height. Proportional scaling of posts, footings and gates is unchanged pending the owner's decision. Full suite 1,358 tests, 1,347 pass, same nine voice failures, two skips. [Evidence](../verification/claude-review-fixes-20261003/REPORT.md). Not merged or deployed.
 
+## October 3 engine audit repairs (Claude)
+
+Branch `claude/audit-fixes-20261003` (base `4cbbc87`): D01, D03, D04, D05, D06, D08, D09, D10, D11, D12 and M04 repaired, plus price-book save durability, half-cent and combination/boundary tests. `npm test`: 1,386 tests, 1,375 pass, the nine known voice failures, two skips, checker passes. `npm run test:quote`: 855 tests, zero failures. New audit tests: 1 pass / 8 fail on `4cbbc87`, 9 pass after. Not merged or deployed.
+
