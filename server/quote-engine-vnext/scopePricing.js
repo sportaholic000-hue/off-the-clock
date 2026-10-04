@@ -44,9 +44,12 @@ export function scopeStructureDiagnostics(type,p={}){
  for(const [key,f]of Object.entries(scopeRateDefinitions(type,p)))if(!own(p.scopeRates,key))add('scopeRates.'+key,f.label+' needs an explicit owner price.','missing');
  const groups=new Map();
  for(const [key,d]of Object.entries(details))if(record(d)&&d.mode==='package_cost'&&text(d.productKey)){
-  const signature=JSON.stringify([key==='paint_trim'?'linear feet':'square feet',d.coverage,d.wastePercent,p.scopeRates?.[key]]);
-  if(groups.has(d.productKey)&&groups.get(d.productKey)!==signature)add('scopeDetails.'+key+'.productKey','A shared purchase group must use the same product, unit, coverage, waste allowance and package price.');
-  else groups.set(d.productKey,signature);
+  const signature=[key==='paint_trim'?'linear feet':'square feet',d.coverage,d.wastePercent,p.scopeRates?.[key]],previous=groups.get(d.productKey);
+  // Missing settings already have their own diagnostics. An unfinished scope
+  // does not contradict a configured member of the same purchase group. Keep
+  // every supplied value so a later conflicting member cannot hide behind it.
+  if(previous&&signature.some((value,index)=>value!==undefined&&previous[index]!==undefined&&value!==previous[index]))add('scopeDetails.'+key+'.productKey','A shared purchase group must use the same product, unit, coverage, waste allowance and package price.');
+  else groups.set(d.productKey,signature.map((value,index)=>value===undefined?previous?.[index]:value));
  }
  return errors;
 }

@@ -4,6 +4,41 @@ import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, o
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 
+// Readiness validates many selections against one immutable tier. Only private,
+// fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
+// objects and customer answers always pass the ordinary snapshot boundary.
+const activationSnapshots = new WeakSet();
+const activationPricingChecks = new WeakMap();
+const activationRegistryChecks = new WeakMap();
+function validationSnapshot(value, root) {
+  return activationSnapshots.has(value)
+    ? { ok: true, value, nonPlainPaths: [] }
+    : snapshotPlainData(value, root);
+}
+
+export function createActivationValidationVNext(serviceType, pricing, serviceRules, tierName = null) {
+  const price = snapshotPlainData(pricing, 'pricing');
+  const rules = snapshotPlainData(serviceRules, 'serviceRules');
+  if (price.ok && !price.nonPlainPaths.length && rules.ok && !rules.nonPlainPaths.length) {
+    pricing = deepFreeze(price.value);
+    serviceRules = deepFreeze(rules.value);
+    activationSnapshots.add(pricing);
+    activationSnapshots.add(serviceRules);
+    const structures = deepFreeze(validatePricingStructuresDetailed(serviceType, pricing));
+    const factors = deepFreeze(validateClass2FactorsDetailed(serviceType, pricing));
+    activationPricingChecks.set(pricing, { serviceType, structures, factors });
+    for (const [field, registry] of Object.entries(serviceRules.knownOfferings || {})) {
+      if (isRecord(registry)) activationRegistryChecks.set(registry, {
+        field, diagnostics: deepFreeze(offeringRegistryDiagnosticsVNext(field, registry))
+      });
+    }
+  }
+  return {
+    customer: inputs => validateCustomerInputs(serviceType, inputs, pricing, serviceRules),
+    owner: inputs => validateOwnerPricing(serviceType, inputs, pricing, serviceRules, tierName)
+  };
+}
+
 function relativeSnapshotPath(snapshot, root) {
   const prefix = `${root}.`;
   return snapshot.errorPath.startsWith(prefix)
@@ -846,7 +881,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`
   };
   customerInputs = customerSnapshot.value;
-  const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
+  const pricingSnapshot = validationSnapshot(pricing, 'pricing');
   if (!pricingSnapshot.ok) {
     return {
       ok: false, missingCustomerFields: [], invalidCustomerFields: [],
@@ -864,7 +899,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   };
   pricing = pricingSnapshot.value;
   if(configuredOffering(serviceType,pricing))contract=offeringContract(serviceType,pricing);
-  const rules = snapshotPlainData(serviceRules, 'serviceRules');
+  const rules = validationSnapshot(serviceRules, 'serviceRules');
   if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
   serviceRules = rules.value;
   contract=customerContractForVNext(serviceType,pricing,serviceRules);
@@ -1000,6 +1035,8 @@ function validFactorLeaf(value, definition) {
 }
 
 export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
+  const prepared = activationPricingChecks.get(pricing);
+  if (prepared?.serviceType === serviceType) return [...prepared.factors];
   const diagnostics = [];
   if (!SERVICE_TYPES.includes(serviceType)) {
     return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
@@ -1469,6 +1506,8 @@ function inspectMatchingLeafPaths(diagnostics, pricing, names, relationship) {
 }
 
 export function validatePricingStructuresDetailed(serviceType, p = {}) {
+  const prepared = activationPricingChecks.get(p);
+  if (prepared?.serviceType === serviceType) return [...prepared.structures];
   const diagnostics = [];
   if (!SERVICE_TYPES.includes(serviceType)) {
     return [ownerDiagnostic('invalid', 'service', 'serviceType', 'Unsupported service type.')];
@@ -1606,9 +1645,22 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   return uniqueDiagnostics(diagnostics);
 }
 
-export function pricingDiagnosticsForSelection(type,diagnostics,c) {
+export function pricingDiagnosticsForSelection(type,diagnostics,c,pricing={},serviceRules={}) {
+  const activeScopes = new Set(scopeKeysForRequest(type,c,pricing,serviceRules));
+  let scopeRates;
   return diagnostics.filter(item=>{
     if(item.type!=='missing')return true; // Malformed or unsupported saved data still fails closed.
+    // An unfinished additional scope must not disable independently priced
+    // work. Keep every missing field for a selected scope; global malformed
+    // data was retained above, and unknown/root diagnostics remain blocking.
+    if(item.kind==='scope_configuration'){
+      if(item.path.startsWith('scopeDetails.'))return activeScopes.has(item.path.split('.')[1]);
+      if(item.path.startsWith('scopeRates.')){
+        scopeRates ||= scopeRateDefinitions(type,pricing,true);
+        const key=scopeRates[item.path.split('.')[1]]?.scopeKey;
+        if(key)return activeScopes.has(key);
+      }
+    }
     const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:null;
     if(!selected)return true;
     // Flat roofs: tear-off prices belong to the existing membrane, so only the requested one matters.
@@ -1650,7 +1702,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (!SERVICE_TYPES.includes(serviceType)) {
     return blockedOwnerValidation('serviceType', 'Unsupported service type.');
   }
-  const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
+  const pricingSnapshot = validationSnapshot(pricing, 'pricing');
   if (!pricingSnapshot.ok) return blockedOwnerValidation(
     relativeSnapshotPath(pricingSnapshot, 'pricing'),
     `Owner pricing could not be read safely: ${pricingSnapshot.reason}.`
@@ -1663,14 +1715,14 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
   if (customerNonPlainPath) return blockedOwnerValidation(customerNonPlainPath, `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`);
   customerInputs = customerSnapshot.value;
-  const rulesSnapshot = snapshotPlainData(serviceRules, 'serviceRules');
+  const rulesSnapshot = validationSnapshot(serviceRules, 'serviceRules');
   if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
   const rulesNonPlainPath = firstNonPlainPath(rulesSnapshot, 'serviceRules');
   if (rulesNonPlainPath) return blockedOwnerValidation(rulesNonPlainPath, `Service rules must contain only plain data objects; ${rulesNonPlainPath} is not plain data.`);
   serviceRules = rulesSnapshot.value;
   const allowed = new Set(allowedPricingFields(serviceType));
   const unsupportedOwnerFields = Object.keys(pricing).filter(key => !allowed.has(key));
-  const structureDiagnostics = pricingDiagnosticsForSelection(serviceType,validatePricingStructuresDetailed(serviceType, pricing),customerInputs);
+  const structureDiagnostics = pricingDiagnosticsForSelection(serviceType,validatePricingStructuresDetailed(serviceType, pricing),customerInputs,pricing,serviceRules);
   const class2Diagnostics = validateClass2FactorsDetailed(serviceType, pricing);
   const missingOwnerFields = [];
   const invalidOwnerFields = [];
@@ -2158,6 +2210,8 @@ export function editVNextService(input, changes) {
 // IDs are one-to-one within a selector. Different selectors may have their own
 // registries, but a customer fact must also name its exact field and value.
 function offeringRegistryDiagnosticsVNext(field, values) {
+  const prepared = activationRegistryChecks.get(values);
+  if (prepared?.field === field) return [...prepared.diagnostics];
   const root='knownOfferings.'+field;
   if(!isRecord(values))return [ownerDiagnostic('invalid','known_offerings',root,'Known offerings must be a plain value-to-UUID map.')];
   const out=[],groups=new Map();

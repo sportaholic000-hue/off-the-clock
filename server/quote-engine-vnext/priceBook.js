@@ -5,6 +5,7 @@ import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivation
 import {exactCompare} from './exactMath.js';
 import {
   CLASS2_DEFINITIONS,
+  createActivationValidationVNext,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
@@ -184,8 +185,22 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit)
 // Missing optional work stays visible as lead-only coverage. Every actual
 // request still goes through validateOwnerPricing and the unchanged calculator.
 function optionalPricingRequests(service, base) {
-  const type=service.serviceType;
-  if(configuredOffering(type,pricingOf(service)))return [];
+  const type=service.serviceType,p=pricingOf(service);
+  if(configuredOffering(type,p)){
+    const d=p.offeringDetails||{},fields=offeringContract(type,p,service).fields;
+    if(type==='INTERIOR_PAINTING')return [
+      ...(d.ceilingsOffered?[{key:'ceiling_prices',label:fields.ceilingsIncluded.label,changes:{ceilingsIncluded:true,ceilingAreaSqft:100}}]:[]),
+      ...(d.trimOffered?[{key:'trim_prices',label:fields.trimIncluded.label,changes:{trimIncluded:true,trimLengthLF:100}}]:[])
+    ];
+    if(type.startsWith('FENCING_')){
+      const rates=offeringRateDefinitions(type,p);
+      return [
+        ...Object.keys(d.gates||{}).map(key=>({key:'gate_prices_'+key,label:rates['gate_'+key]?.label||fields.gates.label,changes:{gates:{[key]:1}}})),
+        ...(type==='FENCING_REPLACEMENT'&&d.removalOffered?[{key:'removal_prices',label:rates.removalPerLF.label,changes:{oldFenceRemoval:true,removalLengthLF:50}}]:[])
+      ];
+    }
+    return [];
+  }
   if(type==='INTERIOR_PAINTING')return [
     {key:'ceiling_prices',label:'Ceiling painting',changes:{ceilingsIncluded:true,ceilingAreaSqft:1_000_000,ceilingCoats:3}},
     {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
@@ -358,8 +373,13 @@ function baseActivationScenarios(service,confirmedService=service) {
   return [];
 }
 
-function activationScenarios(service,confirmedService=service) {
- const scenarios=baseActivationScenarios(service,confirmedService),p=pricingOf(service),type=service.serviceType,extra=[];
+function activationScenarios(service,confirmedService=service,tierName=null) {
+ const p=pricingOf(service),type=service.serviceType,extra=[];
+ const scenarios=baseActivationScenarios(service,confirmedService).filter(input=>{
+  if(!configuredOffering(type,p))return true;
+  const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
+  return !additional||completeOptionalPricing(service,input,p,tierName);
+ });
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
  if(type.startsWith('FLOORING_')){
   if(p.scopeDetails?.stairs){const seed=scenarios.find(c=>c.newFlooringType===p.scopeDetails.stairs.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5});}
@@ -374,7 +394,10 @@ function activationScenarios(service,confirmedService=service) {
   if(p.scopeDetails?.exposed_aggregate)add({finishType:'exposed_aggregate'});
  }
  if(type==='FLAT_ROOF_REPLACEMENT'&&p.scopeDetails?.insulation)add({buildingType:'commercial'});
- return [...scenarios,...extra];
+ // Missing optional scope prices are reported by scopeCoverage. Probe their
+ // calculations once configured, without making unfinished additions a gate
+ // on the independently priced base work.
+ return [...scenarios,...extra.filter(input=>completeOptionalPricing(service,input,p,tierName))];
 }
 
 function uniqueStatusDiagnostics(items) {
@@ -451,13 +474,18 @@ function scopeCoverageForService(service) {
     }
   }
   for(const variant of variants){
-    const p=variant.pricing,configured={...service,pricing:p},base=baseActivationScenarios(configured)[0];
+    const p=variant.pricing,configured={...service,pricing:p},scenarios=baseActivationScenarios(configured);
+    // Itemized painting can price only some conditions. Optional coverage uses
+    // a priced base condition when one exists, not necessarily the first one.
+    const base=configuredOffering(type,p)?scenarios.find(input=>completeOptionalPricing(configured,input,p,variant.name))||scenarios[0]:scenarios[0];
     for(const optional of optionalPricingRequests(configured,base)){
       const inputs=scopeActivationInputs(type,{...base,...optional.changes},p,service);
-      const validation=validateOwnerPricing(type,inputs,p,service,variant.name),complete=validation.ok;
+      const validation=validateOwnerPricing(type,inputs,p,service,variant.name);
+      const gateErrors=type.startsWith('FENCING_')&&configuredOffering(type,p)?offeringContract(type,p,service).crossValidate(inputs):[];
+      const complete=validation.ok&&gateErrors.length===0;
       if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
       const row=rows.get(optional.key);row.configurationComplete ||= complete;
-      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set(validation.ownerDiagnostics.map(d=>d.path))]});
+      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>d.path),...gateErrors.map(d=>'customerInputs.'+d.field)])]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
@@ -589,13 +617,15 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
-    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service)){
+    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service,tierName)){
       const key=JSON.stringify(selectors.map(field=>scenario[field]));
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
     const structures=validatePricingStructuresDetailed(service.serviceType,effectivePricing);
     const list=[...groups.values()].map(scenarios=>({scenarios,selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]]))}));
-    const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:g.scenarios})});
+    const validation = createActivationValidationVNext(service.serviceType, effectivePricing, service, tierName);
+    const factors = validateClass2FactorsDetailed(service.serviceType, effectivePricing);
+    const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,factors,validation,productScenarios:g.scenarios})});
     let products=[];
     const pairSelectors=PAIR_SELECTORS[service.serviceType];
     if(pairSelectors&&!options.firstLiveProduct&&list.length>PAIR_DETAIL_LIMIT)products=productAxisCoverage(list,pairSelectors,evaluate);
@@ -603,15 +633,15 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
-  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service);
+  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service,tierName);
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
     if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'field', path: key, message: 'This pricing field is not supported for the selected service.' });
   }
   diagnostics.push(
-    ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{}),
-    ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
+    ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{},effectivePricing,service),
+    ...(options.factors || validateClass2FactorsDetailed(service.serviceType, effectivePricing))
   );
   for (const scenarioInputs of scenarios) {
     const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service), ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
@@ -619,7 +649,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     // establish no facts about a real customer project.
     const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', field, value: customerInputs[field], offeringId: values[customerInputs[field]] }]));
     if (Object.keys(confirmations).length) customerInputs.confirmedFacts = confirmations;
-    const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing, service);
+    const customer = options.validation ? options.validation.customer(customerInputs) : validateCustomerInputs(service.serviceType, customerInputs, effectivePricing, service);
     if (!customer.ok) {
       for (const path of customer.missingOwnerFields || []) diagnostics.push({type:'missing',kind:'known_offerings',path,message:customer.reviewReason});
       for (const path of customer.invalidOwnerFields || []) diagnostics.push({type:'invalid',kind:'known_offerings',path,message:customer.reviewReason});
@@ -628,7 +658,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       if (customer.inspectionFirst) diagnostics.push({ type: 'invalid', kind: 'pricing_policy', path: 'pricingPolicy', message: customer.reviewReason });
       continue;
     }
-    const owner = validateOwnerPricing(service.serviceType, customerInputs, effectivePricing, service, tierName);
+    const owner = options.validation ? options.validation.owner(customerInputs) : validateOwnerPricing(service.serviceType, customerInputs, effectivePricing, service, tierName);
     diagnostics.push(...owner.ownerDiagnostics);
     if (!owner.ok) continue;
     try {
