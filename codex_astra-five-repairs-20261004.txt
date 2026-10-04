@@ -1,12 +1,12 @@
-run 37236232764 sha eda14525dca5c25f15ac9e9f005343cc9ec172ee
-Summary: {"tests":"1438","pass":"1427","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+run 37236801769 sha 73a217bc293e5cea6af83b9421d2de500bd370ee
+Summary: {"tests":"1462","pass":"1451","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
-not ok 34 - test/googleGenAiLiveAdapter.spec.mjs
-not ok 1395 - voice tool runtime persists a safe review quote and lead without exposing internal identities
-not ok 1396 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
-not ok 84 - test/voicePromptCompiler.spec.mjs
-not ok 1417 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
-not ok 1418 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
-not ok 1420 - dispatcher rejects handler results containing raw rates instead of exposing them
-not ok 1421 - mutations are idempotent and conflicting reuse of a tool call id is rejected
-not ok 87 - test/voiceWebSocketServer.spec.mjs
+not ok 36 - test/googleGenAiLiveAdapter.spec.mjs
+not ok 1419 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 1420 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 86 - test/voicePromptCompiler.spec.mjs
+not ok 1441 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 1442 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1444 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1445 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 89 - test/voiceWebSocketServer.spec.mjs
