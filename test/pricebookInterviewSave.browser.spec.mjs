@@ -15,12 +15,12 @@ const source=readFileSync(path.join(root,'client/src/onboarding.jsx'),'utf8');
 let browser,bundle;
 before(async()=>{
   const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
-  browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
   const result=await build({absWorkingDir:root,stdin:{loader:'jsx',resolveDir:root,contents:
     "import React from 'react';import{createRoot}from'react-dom/client';import{PriceBookStep}from'./client/src/onboarding.jsx';const root=createRoot(document.getElementById('root'));window.mount=props=>root.render(<PriceBookStep {...props}/>);"},
     plugins:[{name:'expose-pricebook-step',setup(build){build.onLoad({filter:/[/\\]onboarding\.jsx$/},()=>({contents:source.replace('function PriceBookStep(', 'export function PriceBookStep('),loader:'jsx',resolveDir:path.join(root,'client/src')}));}}],
-    bundle:true,write:false,format:'iife',platform:'browser',define:{'process.env.NODE_ENV':'"development"'},logLevel:'silent'});
+    bundle:true,write:false,outfile:path.join(root,'onboarding-test.js'),format:'iife',platform:'browser',define:{'import.meta.env.VITE_API_URL':'"http://pricebook-interview.test"','process.env.NODE_ENV':'"development"'},logLevel:'silent'});
   bundle=result.outputFiles[0].text;
+  browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
 });
 after(async()=>{await browser?.close();});
 
