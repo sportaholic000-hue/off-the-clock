@@ -138,7 +138,7 @@ export function offeringStructureDiagnostics(type,p) {
 export function offeringGateDefinitions(p={},rules={}) {
   const base=record(rules.pricing)?rules.pricing:record(rules.offeringDetails)?rules:p;
   const gates={...(base.offeringDetails?.gates||{})};
-  for(const tier of rules.tiers||[])for(const [key,gate] of Object.entries(tier.overrides?.offeringDetails?.gates||{}))if(!own(gates,key))gates[key]={...gate};
+  for(const tier of Array.isArray(rules.tiers)?rules.tiers:[])for(const [key,gate] of Object.entries(tier.overrides?.offeringDetails?.gates||{}))if(!own(gates,key))gates[key]={...gate};
   return gates;
 }
 

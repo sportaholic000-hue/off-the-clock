@@ -129,7 +129,8 @@ export function clearChangedScopeConfirmations(fields,before,after){
  const next={...after};
  for(const field of fields)if(field.type==='boolean'&&field.presentationVariants?.some(v=>v.details?.length)&&own(before,field.name)&&own(after,field.name)){
   const oldView=customerFieldForInputs(field,before),newView=customerFieldForInputs(field,after);
-  if(JSON.stringify([oldView.label,oldView.details])!==JSON.stringify([newView.label,newView.details]))delete next[field.name];
+  const wasApplicable=field.presentationVariants.some(v=>matchesConditions(v.visibleWhen,before)),isApplicable=field.presentationVariants.some(v=>matchesConditions(v.visibleWhen,after));
+  if(wasApplicable!==isApplicable||JSON.stringify([oldView.label,oldView.details])!==JSON.stringify([newView.label,newView.details]))delete next[field.name];
  }
  return next;
 }

@@ -1085,7 +1085,7 @@ export function customerContractForVNext(type,p={},rules={}) {
  // work. Accept only its registered confirmation boolean here. All quantities,
  // selections and scope checks remain specific to the option being priced.
  const optionConfirmations={};
- for(const tier of rules.tiers||[]){
+ for(const tier of Array.isArray(rules.tiers)?rules.tiers:[]){
   const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
   for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
  }

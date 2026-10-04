@@ -373,7 +373,7 @@ export function applicationServiceName(raw) {
 export function applicationServiceDefinition(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
-  const variants=raw.tiers?.length?raw.tiers.map(tier=>({tierName:tier.name,fields:customerContractForVNext(raw.serviceType,mergePricingVNext(p,tier.overrides||{}),raw).fields})):[{tierName:null,fields:customerContractForVNext(raw.serviceType,p,raw).fields}];
+  const variants=Array.isArray(raw.tiers)&&raw.tiers.length?raw.tiers.map(tier=>({tierName:tier.name,fields:customerContractForVNext(raw.serviceType,mergePricingVNext(p,tier.overrides||{}),raw).fields})):[{tierName:null,fields:customerContractForVNext(raw.serviceType,p,raw).fields}];
   const displayedVariants=variants.map(variant=>({...variant,fields:Object.fromEntries(Object.entries(variant.fields).filter(([,field])=>!field.evidenceOnly))}));
   const customerFields=Object.entries(mergeCustomerFieldDefinitions(displayedVariants)).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}));
   // Gate selectors describe the confirmed measurement. Tier price changes may
