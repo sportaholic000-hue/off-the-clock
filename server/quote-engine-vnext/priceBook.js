@@ -404,6 +404,8 @@ function conditionStatusDiagnostics(variant) {
 function productStatusCoverage(variant, product) {
   const coverage = { tierName: variant.tierName, selection: product.selection,
     configurationComplete: product.ok, ownerDiagnostics: product.diagnostics };
+  if (product.coverageMode === 'reference_pair') return { ...coverage, coverageMode: product.coverageMode,
+    coverageMessage: product.ok ? 'Ready to quote for the two products shown.' : 'Needs setup for the two products shown: ' + product.diagnostics.map(item => item.message).join(' ') };
   if (!Object.hasOwn(product.selection, 'surfaceCondition')) return coverage;
   const unpricedOwnerFields = [...new Set(product.diagnostics.filter(isUnpricedPreparation).map(item => item.path))];
   return { ...coverage, ownerDiagnostics: product.diagnostics.filter(item => !isUnpricedPreparation(item)), unpricedOwnerFields,
@@ -528,25 +530,27 @@ function activationMonth(service, defaults) {
 // either way; only the per-product detail is skipped.
 // Roof and flat-roof replacement are priced per replacement product and per
 // existing product. Up to PAIR_DETAIL_LIMIT combinations, the owner sees every
-// pair checked exactly. Larger catalogs are reported per product instead: each
-// replacement product is checked against a complete existing product and each
-// existing product against a complete replacement product. Every listed result
-// is an exact check; no pair is claimed ready without being checked, and the
-// requested pair is always fully checked when a customer asks for a quote.
+// pair checked exactly. Larger catalogs show checked reference combinations:
+// each replacement product is checked against a complete existing product and
+// each existing product against a complete replacement product. Both products
+// remain in each result, so readiness is never implied for an untested pairing.
+// Every requested customer pair is still fully checked by the quote engine.
 const PAIR_SELECTORS={ROOFING_REPLACEMENT:['replacementRoofType','existingRoofType'],FLAT_ROOF_REPLACEMENT:['replacementMembraneType','membraneType']};
 const PAIR_DETAIL_LIMIT=100;
 function productAxisCoverage(list,[rField,eField],evaluate){
   const pairs=new Map(list.map(group=>[JSON.stringify([group.selection[rField],group.selection[eField]]),group]));
   const R=[...new Set(list.map(group=>group.selection[rField]))],E=[...new Set(list.map(group=>group.selection[eField]))];
   const done=new Map(),check=(r,e)=>{const key=JSON.stringify([r,e]);if(!pairs.has(key))return null;if(!done.has(key))done.set(key,evaluate(pairs.get(key)));return done.get(key);};
-  // Reference partners: a replacement product that quotes with the first existing
-  // product, or an existing product that quotes with the first replacement product.
-  // If neither exists, fall back to checking every pair so a live pair is never missed.
-  let rRef=R.find(r=>check(r,E[0])?.ok),eRef=rRef===undefined?undefined:E[0];
-  if(rRef===undefined){eRef=E.find(e=>check(R[0],e)?.ok);if(eRef!==undefined)rRef=R[0];}
-  if(rRef===undefined)return list.map(group=>check(group.selection[rField],group.selection[eField]));
-  const entry=(field,value,result)=>({...result,selection:{[field]:value}});
-  return [...R.map(r=>entry(rField,r,check(r,eRef))),...E.map(e=>entry(eField,e,check(rRef,e)))];
+  // A live reference may be inside the grid when both leading products are
+  // incomplete. Stop as soon as one is found; reuse every exact check already
+  // made. If none is live, the completed scan is the exhaustive result.
+  let reference=null;
+  for(const group of list){const result=check(group.selection[rField],group.selection[eField]);if(result?.ok){reference=group.selection;break;}}
+  if(!reference)return list.map(group=>check(group.selection[rField],group.selection[eField]));
+  const results=new Map(),add=(r,e)=>{const result=check(r,e);if(result)results.set(JSON.stringify(result.selection),{...result,coverageMode:'reference_pair'});};
+  for(const r of R)add(r,reference[eField]);
+  for(const e of E)add(reference[rField],e);
+  return [...results.values()];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // All boundary probes within one product must pass; incomplete siblings do not block it.

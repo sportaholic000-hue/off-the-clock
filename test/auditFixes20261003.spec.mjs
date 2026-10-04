@@ -406,23 +406,25 @@ test('Defect 2: when only the flush after clearing the pause fails, the save suc
 });
 
 const { spawn } = await import('node:child_process');
-const holdSaveLock = (mode) => new Promise((resolve, reject) => {
+const holdSaveLock = (ownerId, mode) => new Promise((resolve, reject) => {
   // A separate process takes the save lock exactly as the app does, then either keeps it (alive) or crashes holding it.
-  const script = `const Database=(await import('better-sqlite3')).default;const db=new Database(${JSON.stringify(path.resolve(process.env.PRICEBOOK_PATH) + '.saves.sqlite')});db.pragma('busy_timeout = 2000');db.exec('CREATE TABLE IF NOT EXISTS last_save (id INTEGER PRIMARY KEY CHECK (id = 1), owner TEXT NOT NULL, at TEXT NOT NULL)');db.exec('BEGIN IMMEDIATE');console.log('locked');${mode === 'crash' ? "process.kill(process.pid,'SIGKILL');" : "globalThis.held=db;setTimeout(()=>{globalThis.held.close();process.exit(0);},3500);"}`;
+  const storeUrl = new URL('../server/priceBookService.js', import.meta.url).href;
+  const script = `const store=await import(${JSON.stringify(storeUrl)});store.withPricebookLock(${JSON.stringify(ownerId)},()=>{console.log('locked');${mode === 'crash' ? "process.kill(process.pid,'SIGKILL');" : "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,3500);"}});`;
   const child = spawn(process.execPath, ['--input-type=module', '-e', script], { cwd:path.dirname(new URL(import.meta.url).pathname) + '/..', stdio:['ignore', 'pipe', 'inherit'] });
   child.stdout.on('data', chunk => { if (String(chunk).includes('locked')) resolve(child); });
   child.on('error', reject);
+  child.on('exit', (code, signal) => { if (code !== 0 || signal) reject(new Error('Save-lock holder exited: ' + (signal || code))); });
 });
 const exited = child => new Promise(resolve => { if (child.exitCode !== null || child.signalCode) resolve(); else child.on('exit', () => resolve()); });
 
 test('Save lock: a living holder is never overridden, a crashed holder releases at once, old lock files are ignored, no lock files are created', async () => {
   const svc = live(fenceSvc());
-  const holder = await holdSaveLock('alive');
+  const holder = await holdSaveLock(svc.ownerId, 'alive');
   const current = bridge.readApplicationBook(svc.ownerId), started = Date.now();
   assert.throws(() => bridge.saveApplicationBook(svc.ownerId, { revision:current.revision, services:current.services, defaults:{ ...current.defaults, travelFee:9 } }), { code:'PRICEBOOK_BUSY' });
   assert.ok(Date.now() - started < 3000, 'waiting is bounded');
   await exited(holder);
-  const crashed = await holdSaveLock('crash');
+  const crashed = await holdSaveLock(svc.ownerId, 'crash');
   await exited(crashed);
   fs.writeFileSync(path.join(process.env.PRICEBOOK_PATH, svc.ownerId + '.lock'), '12345');   // lock file from the previous version
   const afterCrash = bridge.readApplicationBook(svc.ownerId), quick = Date.now();
@@ -495,11 +497,12 @@ test('Readiness for large pair catalogs: per-product owner coverage is exact, ne
     assert.equal(owner.status, customer.status, name + ': owner and customer views agree on live/not live');
   }
   const partial = statusOf(variants['one replacement and one existing missing'].service, variants['one replacement and one existing missing'].defaults, false);
-  const flagged = partial.productCoverage.filter(p => !p.configurationComplete).map(p => Object.values(p.selection)[0]).sort();
-  assert.deepEqual(flagged, ['e7', 'r5'], 'exactly the incomplete products are flagged');
+  const flaggedProducts = [...new Set(partial.productCoverage.filter(p => !p.configurationComplete).flatMap(p => Object.entries(p.selection).filter(([field,value]) => (field === 'replacementMembraneType' && value === 'r5') || (field === 'membraneType' && value === 'e7')).map(([,value]) => value)))].sort();
+  assert.deepEqual(flaggedProducts, ['e7', 'r5'], 'exactly the incomplete products are flagged in their checked pair');
+  assert.equal(partial.productCoverage.filter(p => !p.configurationComplete).length, 2, 'no unrelated checked pair is falsely flagged');
   const big = flatCatalog(40, 40), started = performance.now(), owner = statusOf(big.service, big.defaults, false), ms = performance.now() - started;
   assert.equal(owner.status, 'QUOTING LIVE');
-  assert.equal(owner.productCoverage.length, 80, 'per-product coverage for a 1,600-pair catalog');
+  assert.equal(owner.productCoverage.length, 79, 'distinct reference pairs for a 1,600-pair catalog');
   assert.ok(ms < 2000, `owner-facing 40 x 40 readiness took ${Math.round(ms)} ms`);
   console.log('owner-facing 40 x 40 readiness ms:', Math.round(ms));
 });

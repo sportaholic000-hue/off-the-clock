@@ -1,0 +1,1252 @@
+{
+  "base_commit": "3e71b1bbfe15661cbc48f29e0bda809d6c77279b",
+  "code_commit": "3da2104435320867db3af3814f0010f8d228ec7b",
+  "verified_file_count": 311,
+  "mismatches": [],
+  "files": [
+    {
+      "path": "package-lock.json",
+      "sha": "c9d5f66837c8311a2ec11400d81379efa870673b"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12"
+    },
+    {
+      "path": ".env.example",
+      "sha": "2f4dcaba2283a26339570998cf458fcdcd4ca5be"
+    },
+    {
+      "path": "package.json",
+      "sha": "1f9e99c1977aef5ee92b2edec33a57a3ea4af1e7"
+    },
+    {
+      "path": "client/COMBINED_ACCEPTANCE.md",
+      "sha": "575fdb1e225defe9e21c6f1fdb86aa803826425f"
+    },
+    {
+      "path": "client/WIDGET_BACKEND_HANDOFF.md",
+      "sha": "efa13032889fe479dc81680afb4b340a614b64ff"
+    },
+    {
+      "path": "client/package.json",
+      "sha": "8d38de72c610767512b4b641a6b9a7dc35840b79"
+    },
+    {
+      "path": "client/vite.widget.config.js",
+      "sha": "39ae7d0a0a13750d3daf2b4c2b2550e2ee9dd88d"
+    },
+    {
+      "path": "client/index.html",
+      "sha": "11a80921c0890eeceb5fc6c5a7ee3a6834d0b78f"
+    },
+    {
+      "path": "scripts/test-full.mjs",
+      "sha": "18d116d8932c89c21b0b6da623d7d8ccc48a4e9d"
+    },
+    {
+      "path": "scripts/testSelection.mjs",
+      "sha": "18a1e181cc5f6aeb79a4f78c7b713aeaeb39605f"
+    },
+    {
+      "path": "scripts/audit-all-trades.py",
+      "sha": "04f2c82c0bff2896fb94632ba3c59140ea1778e1"
+    },
+    {
+      "path": "scripts/seed-preview.mjs",
+      "sha": "a5da149ff9a220591310c7b9082c33e18d29ad65"
+    },
+    {
+      "path": "scripts/serve-for-capture.mjs",
+      "sha": "6e1dafa99292c03bcab8785744f50fe6191f6b30"
+    },
+    {
+      "path": "scripts/capture.py",
+      "sha": "a3088d00e76b0246ecb94e8ae76aef2e8132c94f"
+    },
+    {
+      "path": "scripts/audit.py",
+      "sha": "3fbbbee4dcf9a864c7013a5518f177aa54c2391f"
+    },
+    {
+      "path": ".github/known-test-failures.txt",
+      "sha": "4a2b5040934bb73537d213e5f99ceec1070fa846"
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "sha": "4068f48e6fa28cbc34cd19edd4fdca4606e9ab94"
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "sha": "3336e8796663a550e60fce559f0b23f95be272b8"
+    },
+    {
+      "path": "specs/QUOTE_TRADE_DECISIONS_20261003.md",
+      "sha": "592ecf121ae74a3d9bf1463fc9444f2dd9f06611"
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "sha": "9f5e684f6f5f56eff1101a53a9e1bbaf86b263ca"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "sha": "1121aa244e03681ddd8a5b91bece6bb421a193e9"
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "sha": "f56fc4b5b775d7054432d2acbd5c9e7138563409"
+    },
+    {
+      "path": "server/priceBookService.js",
+      "sha": "709e65598873f1b2f664319811cd252ab1362497"
+    },
+    {
+      "path": "server/quoteEngine.js",
+      "sha": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18"
+    },
+    {
+      "path": "server/quoteLog.js",
+      "sha": "56e2ac691408160ac532ede99fd258179e710475"
+    },
+    {
+      "path": "server/package.json",
+      "sha": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8"
+    },
+    {
+      "path": "server/priceBookTree.js",
+      "sha": "2de2a771db9deed2d224862967afd4677386f3b9"
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "sha": "abdbf695ceda016be6c6a5c81d0c04039611748c"
+    },
+    {
+      "path": "server/installedPriceConfiguration.js",
+      "sha": "94e2c07f80620eda1345afe5806a8cfdebbf0d0b"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "sha": "739c20a2f057c07f0de97127ea5a5122bee7479e"
+    },
+    {
+      "path": "server/quoteTemplates.js",
+      "sha": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c"
+    },
+    {
+      "path": "test/quoteFlowRepairs.spec.mjs",
+      "sha": "0e3979b0f0d410728b40290c4f93900981dcfbc0"
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "sha": "574a4727e94e30d70690fd35add7f14e43613b03"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "sha": "b777dd6e141321535f2d6ba37c441613a7f32787"
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "sha": "18df625130f68a26b01c801e1e8cacdfdf2d532a"
+    },
+    {
+      "path": "test/customerExplanationCatalog.json",
+      "sha": "3ac124bc9353a6f0be72281c0c353658a3138f38"
+    },
+    {
+      "path": "test/calendarForm.spec.mjs",
+      "sha": "2a409e0feeb63ce2aa536c314243dad4009459f1"
+    },
+    {
+      "path": "test/interviewControls.browser.spec.mjs",
+      "sha": "b5e6fb0d78240629990bd30f704f1959ba3ed8cf"
+    },
+    {
+      "path": "test/onboardingCalendar.spec.mjs",
+      "sha": "ec24c70f94b0c52bced8b08ef39025ebddb9a38f"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "sha": "8ebc20e518531abc4df51cbd27e5306d173644ba"
+    },
+    {
+      "path": "test/bookingRoutes.spec.mjs",
+      "sha": "146b4fa64c0f3ec9d9ca0356172c4d2727a17214"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "sha": "e99443ad3bfe858291d999901d9f2c230d261ea4"
+    },
+    {
+      "path": "test/bookingService.spec.mjs",
+      "sha": "17f5ea03ac2d6d95e785949ef72dd4a7cfbc7f5e"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "sha": "99f60dedae2db260fd8a8c6f649cbc06159c2b98"
+    },
+    {
+      "path": "test/pricebookClarificationHttp.spec.mjs",
+      "sha": "5c179f64274227e2c75fe9cd219ea36a77f0034e"
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "sha": "7ef313141ed6bb78d3964534c4f39efec7c4b21d"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "sha": "655502741636841661190e7519fc8e02810282b7"
+    },
+    {
+      "path": "test/ownerStatusMessages.spec.mjs",
+      "sha": "f96a2621856239d61d32257279ac0888ba2f1519"
+    },
+    {
+      "path": "test/googleCalendarAdapter.spec.mjs",
+      "sha": "c7fe7ea3256f7367c4b5a301ce582f0d86d4f7f5"
+    },
+    {
+      "path": "test/providerCredentials.spec.mjs",
+      "sha": "e37ff538447d28a6fb3ddffc195db8f22f5478ee"
+    },
+    {
+      "path": "test/fenceHeightHalfCent.spec.mjs",
+      "sha": "24314214058fbb6e9a172c1a6b5d1729fe318f1b"
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "sha": "e9ac0cb653458888ede0b2257fb558acc15bca00"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "sha": "7d4294d49ef989fc0726feb8a61a9baf228cc824"
+    },
+    {
+      "path": "test/bookingAdminService.spec.mjs",
+      "sha": "fcaf840932948dac12970aeacef919dc6942d4f7"
+    },
+    {
+      "path": "test/voiceWebSocketServer.spec.mjs",
+      "sha": "055c8543ddfc30484956830fc608a06711940aea"
+    },
+    {
+      "path": "test/corsPolicy.spec.mjs",
+      "sha": "8111d13baab45950a31f79f4b5b0c951b491e7b3"
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "sha": "60bf6e373ce83069714a4796b9f4cca4ffb0cdb8"
+    },
+    {
+      "path": "test/accountEmail.spec.mjs",
+      "sha": "1b26d4ea925569917fe43d1bbefc95621fcd3bba"
+    },
+    {
+      "path": "test/bookingAdminRoutes.spec.mjs",
+      "sha": "4e766e19ff9b9123710a356612ef557265726b05"
+    },
+    {
+      "path": "test/quoteReauditRepairs.spec.mjs",
+      "sha": "c9ba056abedd0d1dd00b1fdb15ecb8fb9788ebe4"
+    },
+    {
+      "path": "test/quotePresentation.spec.mjs",
+      "sha": "09a5e4dfeeb415b7d08f5f74994132987d501265"
+    },
+    {
+      "path": "test/calendarOAuthState.spec.mjs",
+      "sha": "36e24ad9928e623805ed2ffec8b2e52bea932ba4"
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "sha": "f66d2794be4237d53c71897e24f40b4d2627f81d"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "sha": "1cc2c92be7fbeee850336364c29d4996c8b35a80"
+    },
+    {
+      "path": "test/pricebookInterviewSave.browser.spec.mjs",
+      "sha": "7b6471b993deee4d95f9785eea5a7c6b34a3c58e"
+    },
+    {
+      "path": "test/calendarCredentials.spec.mjs",
+      "sha": "e71dd5c526ef67b0d5d3fab17fcb463fe6ef4d6f"
+    },
+    {
+      "path": "test/customerExplanation.spec.mjs",
+      "sha": "a29d4cec06628c355f456b3041ad1644b7a45886"
+    },
+    {
+      "path": "test/widgetEmbed.spec.mjs",
+      "sha": "e5f34834f221e2c4b91e51812e4884ef1e6041b6"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "sha": "dfdfb6884fb3de1ef487c0d43d67ad0f49cdd768"
+    },
+    {
+      "path": "test/lifecycle.spec.mjs",
+      "sha": "114953e7f149c9e888dc3d0a535c959ee4aff7f2"
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "sha": "d21a8308f8cf6c962b8e0bc918b8735193f66da3"
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "sha": "c0183c945f329ad9bbc9c517d4fd123d1d550344"
+    },
+    {
+      "path": "test/pricebookEditorRepairs.spec.mjs",
+      "sha": "3cca6dd3f980453bf6952295e67da5cd7a9bb451"
+    },
+    {
+      "path": "test/voicePersistence.spec.mjs",
+      "sha": "3bbf285b98bfd5de2d177883fe4e37fffb6d188c"
+    },
+    {
+      "path": "test/voiceAudioCodec.spec.mjs",
+      "sha": "ef6f7824829caf58129edb9bb597fce1db55a243"
+    },
+    {
+      "path": "test/authTokenService.spec.mjs",
+      "sha": "27c6f1f8192ce17aba5da2a81879bf48bcb5e577"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "sha": "df91c7671ef82ecc78c82f13001070097bfcd3a0"
+    },
+    {
+      "path": "test/runtimeConfig.spec.mjs",
+      "sha": "cc1cb461004b36a445f88f708bec4507e01ebfa2"
+    },
+    {
+      "path": "test/ownerCalendarService.spec.mjs",
+      "sha": "9b31e6fe0a0b5e2fc70a921434fa50127f3ae058"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "sha": "c672f18cf9770b48d3818317f92ec454de2607d0"
+    },
+    {
+      "path": "test/authSessionClient.spec.mjs",
+      "sha": "78fc946e58766f2ac1828c870dc642f1dd09ee71"
+    },
+    {
+      "path": "test/liveDemo.spec.mjs",
+      "sha": "6c8f9084a7cb265cc126e665799250668de72f77"
+    },
+    {
+      "path": "test/fenceAnyHeight.spec.mjs",
+      "sha": "a63bcf823929e410a3da3758e2f33e17f20b5f6c"
+    },
+    {
+      "path": "test/applicationPersistence.spec.mjs",
+      "sha": "56d87ace29544a24197efdb1c5ab49ef03a374c1"
+    },
+    {
+      "path": "test/quoteTradeDecisions.spec.mjs",
+      "sha": "169ed89fb115bcabd46f723709a6338016551072"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "sha": "198773da0e30eede84a0875cf30afca07196337b"
+    },
+    {
+      "path": "test/serviceArea.spec.mjs",
+      "sha": "050c10d2d67dad9be23e501be9ba9a0f7f57b00f"
+    },
+    {
+      "path": "test/authSessionHttp.spec.mjs",
+      "sha": "66b72d5d09bf9fb2f6187f953dceec5e9c12c4a5"
+    },
+    {
+      "path": "test/deploymentProcess.spec.mjs",
+      "sha": "7ab718143e12e040961c029d5a66e1bc45546843"
+    },
+    {
+      "path": "test/backups.spec.mjs",
+      "sha": "8ed06b27ba657808539578f12a211f7900615aa4"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "sha": "1af4d212457c33d0e4b42add9fbb444e22803d84"
+    },
+    {
+      "path": "test/voiceSecurity.spec.mjs",
+      "sha": "5d6a78e15284836b91d0df83e98c1f87fd3378c7"
+    },
+    {
+      "path": "test/onboardingServiceArea.spec.mjs",
+      "sha": "bdc6b7dba9d69655079cf0655d087f69ca6afab9"
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "sha": "aaab006f57e27318bb7eae66b4fd1670b5042a1d"
+    },
+    {
+      "path": "test/componentPricingRepairs.spec.mjs",
+      "sha": "632567830ecc65e300702a8ca52a380da8d69d6a"
+    },
+    {
+      "path": "test/voicePromptCompiler.spec.mjs",
+      "sha": "abf5f3e9b21bd2c7039736e6c2bffdc21f46f4bf"
+    },
+    {
+      "path": "test/auditFixes20261003.spec.mjs",
+      "sha": "a699c515edc3d342d6e711b12a9168526726345f"
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "sha": "8f4284f88f31bfdb4267562911c8516e87975c3a"
+    },
+    {
+      "path": "test/quoteDecisionFollowup.spec.mjs",
+      "sha": "66e2577791a055e922df867710a9225a7b7273ff"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "sha": "92f14629b9e2028fe96b070da4a5a634d6a8691e"
+    },
+    {
+      "path": "test/bookingCapabilities.spec.mjs",
+      "sha": "6f8538474437d84235633cd9ff65e3b2cfc097a7"
+    },
+    {
+      "path": "test/voiceRuntimeRoutes.spec.mjs",
+      "sha": "1131301fb01885062063ebfdf60a02b3e4a5caf7"
+    },
+    {
+      "path": "test/ownerIntegrations.spec.mjs",
+      "sha": "6672048f1467e3e75b02564013ab99e687c9fe14"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "sha": "c2af56773077e480c62ab2db13d0a0b660aea0f1"
+    },
+    {
+      "path": "test/platformSchema.spec.mjs",
+      "sha": "e624614185172858e93b70b4deb40aebe9e216c5"
+    },
+    {
+      "path": "test/clientAddress.spec.mjs",
+      "sha": "cc0c2f3c09dd36d3496d05434d9480e88ad01163"
+    },
+    {
+      "path": "test/geminiMediaBridge.spec.mjs",
+      "sha": "a03f9ee6c1386af467135f250c2663887a751f46"
+    },
+    {
+      "path": "test/bookingPreferenceService.spec.mjs",
+      "sha": "79b65ff26d2b7a07fc0f262af9e374aa0f3b96bd"
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "sha": "64e6fd74e4f33dc3367b502b83a8ac9e9bf1a1d4"
+    },
+    {
+      "path": "test/googleGenAiLiveAdapter.spec.mjs",
+      "sha": "8d7cdf021c62193b308aeb3012df506ef687f875"
+    },
+    {
+      "path": "test/quoteReviewFixes.spec.mjs",
+      "sha": "9982a085396087a0cf5b088b442244458740c813"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "sha": "5c599f734f6db41fcba9fc7929f9c97b1b9331f7"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "sha": "73f59b9fd214a498eac3c223c6aec1b02e640bb5"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "sha": "a941044dbab87085da2205669dbd687d2265af3f"
+    },
+    {
+      "path": "test/quoteSmallRepairs.spec.mjs",
+      "sha": "0c3d9be5e822f5db34ca54e30004c30c9dec688b"
+    },
+    {
+      "path": "test/pricebookDurability.spec.mjs",
+      "sha": "befd1ef0b559ee0ea11a45d3e94511a7164ddab3"
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "sha": "9996b9982c538a8ff0272901bcd709fe720ae0d8"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "sha": "218175b4cd313797daa588a75d1cb6cb369cd103"
+    },
+    {
+      "path": "test/quoteCombinationBoundaries.spec.mjs",
+      "sha": "ee4726cae96bf6e66b1de19158fba7039ab8a217"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "sha": "bb2a71149af293ea642fc6b5df6ae901cdf58424"
+    },
+    {
+      "path": "test/integrationDownloads.spec.mjs",
+      "sha": "af838169ffe76df0c05997c39647dfc2c05b8b6a"
+    },
+    {
+      "path": "test/deploymentConfig.spec.mjs",
+      "sha": "9faf8c00f1ee43e77969ea3be2e72cbf6a6bf5e5"
+    },
+    {
+      "path": "test/authSessionService.spec.mjs",
+      "sha": "03f0545de79bb772a0fe89e067ec6301edd64f1b"
+    },
+    {
+      "path": "test/bookingTokenReceipt.spec.mjs",
+      "sha": "ec4ae3b1d7329db8d989c1a1a187ffe2c9bbac7c"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "sha": "97d65ba8345912c2a225a80f5c3e18323b9e9b54"
+    },
+    {
+      "path": "client/src/pricebookEditing.js",
+      "sha": "ae69ee3f2aa2a2e79dbe25bd267889201757eff5"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha": "3daa39d97261b013f78b8c50e4446b36f9f81ca4"
+    },
+    {
+      "path": "client/src/integrationDownloads.js",
+      "sha": "e90d7073d576320af02e9bec2d31a5e5096493f9"
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "sha": "fd967bf1c91643093a19129fa358194b6dcb16a2"
+    },
+    {
+      "path": "client/src/main.jsx",
+      "sha": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f"
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "sha": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28"
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "sha": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7"
+    },
+    {
+      "path": "client/src/pricebookFormatting.js",
+      "sha": "63c12a49f9b06e8b9d54b6107cf2d4a4d1cb5e5a"
+    },
+    {
+      "path": "client/src/pricebookDrafts.js",
+      "sha": "065ae1fde30f3acb876fff8a36e6cd96dcec9d21"
+    },
+    {
+      "path": "client/src/widgetTransport.js",
+      "sha": "3212c586aa7fc39e4d288cb7fd631ba4ab02bd26"
+    },
+    {
+      "path": "client/src/quoteSubmission.js",
+      "sha": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0"
+    },
+    {
+      "path": "client/src/ownerIntegrations.jsx",
+      "sha": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f"
+    },
+    {
+      "path": "client/src/styles.css",
+      "sha": "7ed007182eb1103310405d9737231bab8a806f59"
+    },
+    {
+      "path": "client/src/pricebookReview.js",
+      "sha": "cc55d113a889104cf30f3bfc55314e7ceb683998"
+    },
+    {
+      "path": "client/src/scopeEditor.jsx",
+      "sha": "9e3fa9eede77ce46ba97e0fc60c577855fad1841"
+    },
+    {
+      "path": "client/src/reference.jsx",
+      "sha": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd"
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "sha": "d28d7e533e812750a42c050dcfd84019bb6f4280"
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "sha": "6fe58dc51a2112d9d2f8dc2698260c651ee0ba00"
+    },
+    {
+      "path": "client/src/widgetInstall.jsx",
+      "sha": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a"
+    },
+    {
+      "path": "client/src/widget-entry.jsx",
+      "sha": "7d59afdd4335adcfe564f619795e807749f7a351"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha": "64a6a91141aa07255d33346316777b7054559e8f"
+    },
+    {
+      "path": "client/src/api.js",
+      "sha": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982"
+    },
+    {
+      "path": "client/src/calendar.css",
+      "sha": "c29a0d7e8d4c0385d4cba48465f3197623d40b47"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "sha": "e3ec2bb64d194dd1f9c01ecf874adad96ac3b226"
+    },
+    {
+      "path": "client/src/interviewStructured.jsx",
+      "sha": "04a8aa48acd09aa7c774a58c8c49c376ef7b6bc2"
+    },
+    {
+      "path": "client/src/installedMaterialsEditor.jsx",
+      "sha": "641249d95ff9c310fd9edb2875013d9d60ec5dcd"
+    },
+    {
+      "path": "client/src/interviewAssist.js",
+      "sha": "1ec06010fba75cbf3a8f5629d5f9c94b5c42085d"
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "sha": "7b1c708b41a516cdbb79f963f6fa1a93547927d5"
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "sha": "4bf229e9d0d04158632335aac8193e3732b460a5"
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "sha": "58ef15b9bc6d50409ae16671fe94d9779bf2c445"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "sha": "a5d48e96ca9637d42e17eac65bdd3bb4a45e8f84"
+    },
+    {
+      "path": "client/src/widgetBooking.jsx",
+      "sha": "08a088699117eb51256437beaf83da462b7bc093"
+    },
+    {
+      "path": "client/src/widget.css",
+      "sha": "f19c3fe1522fdb7865420d922c6c3f1ad46bd186"
+    },
+    {
+      "path": "client/src/sessionIdentity.js",
+      "sha": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369"
+    },
+    {
+      "path": "client/src/quoteWizard.jsx",
+      "sha": "62fdd0167c47126d255463af3efeebe48d0b77df"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha": "b7c0705582310425dce322e80c4e7c5c8ac8529c"
+    },
+    {
+      "path": "client/src/quotePresentation.js",
+      "sha": "a1b271c3a03f5e24ab3bccb07da88e8ab090b3ec"
+    },
+    {
+      "path": "client/src/accountRecovery.css",
+      "sha": "cf15876bee07a662db73297cebf2c392fb9ae8de"
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "sha": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2"
+    },
+    {
+      "path": "client/dist/index.html",
+      "sha": "ce715c670114d999302f96e2cbde7570dd96f94b"
+    },
+    {
+      "path": "client/public/widget.js",
+      "sha": "558746250ad53adf4486506829b43e67128381cb"
+    },
+    {
+      "path": "client/test/widget-real-booking-browser.mjs",
+      "sha": "5d83b211fa14d72cca70fe6b5bc0363a4e90e484"
+    },
+    {
+      "path": "client/test/widget-full-page-browser.mjs",
+      "sha": "d27d7fb06a89492323122ae091e44fd699f420d9"
+    },
+    {
+      "path": "client/test/configured-offerings-browser.mjs",
+      "sha": "b66e4adfa8c8432a1366cf6cface461dbdfb2aa7"
+    },
+    {
+      "path": "client/test/launch-plans-browser.mjs",
+      "sha": "56993de069e6c1cba9e431ca7bef5b9595bd8dd4"
+    },
+    {
+      "path": "client/test/widget-booking-browser.mjs",
+      "sha": "0fc9acf80eb285a5a6a5d61a03123cf91b9f6c4b"
+    },
+    {
+      "path": "client/test/owner-calendar-browser.mjs",
+      "sha": "0d0f1cb167a01ee0526a48fded1a059bebb873eb"
+    },
+    {
+      "path": "client/test/widget-browser.mjs",
+      "sha": "fb3b35bc9241ea7ff65fc070460f45df1fd4a1ee"
+    },
+    {
+      "path": "client/test/widget-integration-boundary.mjs",
+      "sha": "6f2e023c407c8834f8e73a6ac84bfbba6b6d117a"
+    },
+    {
+      "path": "client/test/billing-browser.mjs",
+      "sha": "eafed56e0b926e2c526726c31e64b02e346d3aeb"
+    },
+    {
+      "path": "client/test/billing-transport.test.mjs",
+      "sha": "a15fc1dcd47ede507c92cd0a449640f87def0a02"
+    },
+    {
+      "path": "client/test/widget-transport.test.mjs",
+      "sha": "7f252495489ba2c3980f9a5ea072c27abbe5589c"
+    },
+    {
+      "path": "client/test/measured-scopes-browser.mjs",
+      "sha": "85f579dea667c530f3876758ffb49ae4b1c58927"
+    },
+    {
+      "path": "client/test/widget-application-harness.mjs",
+      "sha": "3e7e2423b73498c0e2a7bd3831d9ef0c613fdd42"
+    },
+    {
+      "path": "client/dist/assets/index-CkgdoNy-.css",
+      "sha": "88c23bf6ff6b6b70b41057392d42063e8bd8c34e"
+    },
+    {
+      "path": "client/dist/assets/index-ByKtU51H.js",
+      "sha": "a4d127806c4ef9b608ed1cc0b0ed4fb63de68917"
+    },
+    {
+      "path": ".github/scripts/check-test-results.mjs",
+      "sha": "7ed9d2ae92761a82790c3e0bf2cfed3d42724492"
+    },
+    {
+      "path": ".github/workflows/session-security-verification.yml",
+      "sha": "088e57a15d8a830dd37ea8986becf60ce1fb7d32"
+    },
+    {
+      "path": ".github/workflows/pricebook-ai-verification.yml",
+      "sha": "844e795f29004531aa21a42d1e6dfbee85ed4536"
+    },
+    {
+      "path": ".github/workflows/phase0-2-branch-regression.yml",
+      "sha": "c743448c630d1d577d7966d061d50e3fcde993a1"
+    },
+    {
+      "path": ".github/workflows/live-demo-e2e.yml",
+      "sha": "d24d9c77040c9a203b7e2a42598df247e6c4aa70"
+    },
+    {
+      "path": ".github/workflows/quote-readiness-verification.yml",
+      "sha": "a2e30337a3e75be608ddafe088a7e76c0dfaf48b"
+    },
+    {
+      "path": ".github/workflows/pricebook-editor-repairs.yml",
+      "sha": "3b6c15d75194859cf50a05f72f8b90cc48814dc7"
+    },
+    {
+      "path": ".github/workflows/railway-readiness.yml",
+      "sha": "4780b4baec49da7babdfdccbc6cba6997bec5819"
+    },
+    {
+      "path": ".github/workflows/widget-embed-verification.yml",
+      "sha": "ade5875896db32f273dfe32ea1f0d69f67691ebd"
+    },
+    {
+      "path": ".github/workflows/session-evidence-backup.yml",
+      "sha": "ae3980cdb6052702b505680709f4b1aaf5e75553"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha": "29eea84916e3c158cce6cbc2102bd474f857188e"
+    },
+    {
+      "path": "server/src/authRateLimitService.js",
+      "sha": "4869358cec735654c77f63b371fa090257e8a37f"
+    },
+    {
+      "path": "server/src/email.js",
+      "sha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "sha": "a59fa7dc772ec7e25a753eae7d7fe890f21abaad"
+    },
+    {
+      "path": "server/src/ownerIntegrationRoutes.js",
+      "sha": "38d70812f7cfead22cbf5ad8426ea4ad61757a96"
+    },
+    {
+      "path": "server/src/migrations.js",
+      "sha": "78acc7730988a83ee13ab4bbff89e0e74222e6fa"
+    },
+    {
+      "path": "server/src/quoteContact.js",
+      "sha": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57"
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "sha": "98792bab9be179a26015b963d622361dc6349d89"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "sha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58"
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "sha": "0f41167ce68ded3b43b23fa064e5cdd72290e9de"
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "sha": "4f8f00cd827e76fe8a67be3d924042959fcf91a5"
+    },
+    {
+      "path": "server/src/voiceRuntimeRoutes.js",
+      "sha": "c4e2034bc6276d535d444834724ad60141308987"
+    },
+    {
+      "path": "server/src/backups.js",
+      "sha": "546ba15164fc32af46840374723d7edd0bc0c186"
+    },
+    {
+      "path": "server/src/deploymentEnvironment.js",
+      "sha": "b9b7168805825d28d1ae4e3e0ad26fdf41ddf580"
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "sha": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "sha": "48b00153d2506614c56c3c5a3bff4c0fdeffedf1"
+    },
+    {
+      "path": "server/src/outboundWebhookSchema.js",
+      "sha": "ca804f3c2f2e1432998ce59b41a8e63527355b32"
+    },
+    {
+      "path": "server/src/quoteRequestScope.js",
+      "sha": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec"
+    },
+    {
+      "path": "server/src/quoteDate.js",
+      "sha": "a739a4af564e674791e75b593df5ad12d8a6506a"
+    },
+    {
+      "path": "server/src/auth.js",
+      "sha": "63c6556c5fd8a99d888ac47fdebccf72d5a40677"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "sha": "fe71c36cf1050ea49f5e319303f1e8cc3208edbb"
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "sha": "a42dab7abe98467cd266d338028c591cddd16ee7"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "sha": "46bcf7717d755fe82554f921e3ca15034e1ba65c"
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "sha": "de4d42efaec332115fec229af2b7fe14ad7323aa"
+    },
+    {
+      "path": "server/src/bookingAdminService.js",
+      "sha": "261c4d2fac8482804e6cc284264e3019e19082ff"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2"
+    },
+    {
+      "path": "server/src/schema.js",
+      "sha": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e"
+    },
+    {
+      "path": "server/src/db.js",
+      "sha": "c8d8d0d70288903ce74862199bb087c80914ecd6"
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "sha": "87035db4d213ddb4d6d55f16b699c1ffb23ab926"
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "sha": "2f5075e8428257b75a5c0ead20cea3065f7d904c"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "sha": "4e858cb45662d5a7eea5ab1deced44fbe4ab3a76"
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "sha": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "sha": "681135fd8396e506883bf854ba50da81161cfe18"
+    },
+    {
+      "path": "server/src/clientAddress.js",
+      "sha": "f578cb0d4fa02a97ace85a6bb6b50be0281d5daa"
+    },
+    {
+      "path": "server/src/calendarOAuthState.js",
+      "sha": "439ea0f4bac871421357b28a1b81f9d2bb6111e6"
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "sha": "b8b3331240cce15a14e8fdea59e538e6d906b68e"
+    },
+    {
+      "path": "server/src/previewMode.js",
+      "sha": "4282015139d69aa1e62737a8389c3122bed0f90e"
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "sha": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8"
+    },
+    {
+      "path": "server/src/corsPolicy.js",
+      "sha": "10063b96d6b27140603f56d4202c0a219a648baa"
+    },
+    {
+      "path": "server/src/server.js",
+      "sha": "6708614cf8bdfe7abf120df09dd29fb0d99f18ec"
+    },
+    {
+      "path": "server/src/deploymentConfig.js",
+      "sha": "749686060536ed6b79cee5ed412d6523f82595ca"
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "sha": "2db2c74bce1245110c38e5af5166d2e34945d620"
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "sha": "c0a85d8569618fbdec8899dafe12659fb2791cd7"
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "sha": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b"
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "sha": "cd411e15a57d8003ce209da2b1e04584341db309"
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "sha": "930501e5550e32342a8616dc7e4eb3e2b6a138b4"
+    },
+    {
+      "path": "server/src/outboundWebhookTransport.js",
+      "sha": "f4e13c2cb9219096cede5170068d8a1b66c8b32b"
+    },
+    {
+      "path": "server/src/exactJson.js",
+      "sha": "260c1500b3943998e17df19e174b2ec64be7cb26"
+    },
+    {
+      "path": "server/src/integrationData.js",
+      "sha": "878f631cd765ab7373590501f84fa73483ff63ad"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "sha": "243a2b567351f96c65d020df0d258de9583eb9cd"
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "sha": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "sha": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "sha": "c25d6f33d2d3d62e01f744a406b3ed733e37e9f1"
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "sha": "96dac32b654d757975ba0b39883d5a76ee904742"
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "sha": "4dd6b93e46fc62d825767e07f679ee1545d23cb5"
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "sha": "760804b2be23b09d9fd1b648d1540fbe8bfe592d"
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "sha": "06176e808b145f4d5f1c3523122b564d62fa9729"
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "sha": "b79d90a514a93465a3dc6f76fca027fcfb8b9b53"
+    },
+    {
+      "path": "server/src/tenant.js",
+      "sha": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5"
+    },
+    {
+      "path": "server/src/lifecycle.js",
+      "sha": "88b6f55df496f9e9aabea290c1b299bba8e47d98"
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "sha": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621"
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "sha": "8b85216517fd711d2050d65c88ee23d91dd4e353"
+    },
+    {
+      "path": "server/scripts/restore.js",
+      "sha": "df0332c1fdd0ab835841714b90ec77547cc82c70"
+    },
+    {
+      "path": "server/scripts/phase0-gate.js",
+      "sha": "14c65e637c5c162bb841f136da795d284594ce48"
+    },
+    {
+      "path": "server/scripts/phase2-gate.js",
+      "sha": "3a262912d997ae44f1c3902e031199fc8e2e3189"
+    },
+    {
+      "path": "server/scripts/phase1-gate.js",
+      "sha": "f4b9ae35283a505a9e50da45d4d272376713262a"
+    },
+    {
+      "path": "server/scripts/backup.js",
+      "sha": "5013a1d8322b5d416d43c8f65d3457dc3e1bc505"
+    },
+    {
+      "path": "server/scripts/quote-vnext-gate.js",
+      "sha": "617d17edefde8493d9c01753cd9958fb3d7df67d"
+    },
+    {
+      "path": "server/scripts/dev.js",
+      "sha": "01b420264ffb45e4d8e779ccc9274b640b531c0c"
+    },
+    {
+      "path": "server/public/otc-live-demo.js",
+      "sha": "76fcfdb99325d2a202f358b17c8e75cf4ba82c11"
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "sha": "56d78ed30fd10294db35a6e44f01d2e2008f531b"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "sha": "0541f219b20a5e9cd264f1ddf64789f8c6655455"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_PRECISION_20260910.md",
+      "sha": "93db5ede40ecc37b28721f365c555e7521a766f5"
+    },
+    {
+      "path": "server/quote-engine-vnext/COMPLETION.md",
+      "sha": "9a4b7d010e4afe1689d40f806d6ccb930b13e43e"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha": "88e985508fd4f6c166575327149ea68a7e225f58"
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "sha": "9765a3a9cb65fa7901871bfd763f2bfa35c63491"
+    },
+    {
+      "path": "server/quote-engine-vnext/OWNER_HANDOFF_20260910.md",
+      "sha": "f2d6e89fa207dea5fad676fb3667725639558345"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_104_127.md",
+      "sha": "10948df13b06b9cb6bf2f2dafb59d5ecb45ecf3c"
+    },
+    {
+      "path": "server/quote-engine-vnext/CUSTOMER_AMOUNT_PRECISION.md",
+      "sha": "0848762900d85d5e02bfe1dc5c0b6301797ac1ff"
+    },
+    {
+      "path": "server/quote-engine-vnext/tradeAdjustments.js",
+      "sha": "7f0e127a691b3f774b527d1320feab67ce453cb2"
+    },
+    {
+      "path": "server/quote-engine-vnext/HANDOFF_ABC.md",
+      "sha": "02ae250b3d209e5e6505b8cd050bcdab115bce74"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_139_146.md",
+      "sha": "1a8e88aef13c82fc7b94142d24f167618f77075d"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha": "60d1cbb6db9cb831b635e069a001015cf66d37b1"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "sha": "26981155176bd2ef8110782a535533b7cda1ec50"
+    },
+    {
+      "path": "server/quote-engine-vnext/geometry.js",
+      "sha": "925ed38777dc914a8965a0b85278ac0dc883f0c5"
+    },
+    {
+      "path": "server/quote-engine-vnext/README.md",
+      "sha": "1a9008f2cc23fe523b6dbcce4867e20e1589dbb8"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_128_138.md",
+      "sha": "dffe404367ab09806254628cb07bf76268592b5d"
+    },
+    {
+      "path": "server/quote-engine-vnext/safeData.js",
+      "sha": "cf183be9c29368f3bd9b6dfa1f87020b74705050"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT.md",
+      "sha": "a2dcd91ae799eb5894261ec525d747f081d45e42"
+    },
+    {
+      "path": "server/quote-engine-vnext/AUDIT_REPAIRS_147_150.md",
+      "sha": "00df50cd44089140e8e99943e5872392739f6bc1"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "sha": "68f0191044fdd7b26bfa423942d01ef85b679165"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha": "857fb49091ea1c6c9aa388f8f48878b7294b0334"
+    },
+    {
+      "path": "server/src/demo/liveDemo.js",
+      "sha": "93dc2188b0e16857656e060c33d1507926e25156"
+    },
+    {
+      "path": "server/src/demo/demoInstructions.js",
+      "sha": "322e5b06f8c859cf08e9ccd49803aa00f1c61dd0"
+    },
+    {
+      "path": "server/src/voice/audioCodec.js",
+      "sha": "db715b52e6efc6bb1ff5e59e3754e002025e8099"
+    },
+    {
+      "path": "server/src/voice/tenantResolver.js",
+      "sha": "8314a25c3b8a3c16d78096a5fa803ed267b0e935"
+    },
+    {
+      "path": "server/src/voice/toolDispatcher.js",
+      "sha": "5b9f128f3b028c89c1589bde1b2edd5ea4dd4316"
+    },
+    {
+      "path": "server/src/voice/sessionNonceService.js",
+      "sha": "69529472280fd305dee751465187caf5f2c69199"
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "sha": "b5670a5246fa8c23966b101cc73fd37b8934d393"
+    },
+    {
+      "path": "server/src/voice/geminiMediaBridge.js",
+      "sha": "79b7da7beb957155b597efb5ac2bc2541565658e"
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "sha": "e121f84ed705799c973374b69d9e84def5b5c1d1"
+    },
+    {
+      "path": "server/src/voice/twilioValidation.js",
+      "sha": "db4a0e7781cf1d13671799fdc8f82f2524ce345a"
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "sha": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f"
+    },
+    {
+      "path": "test/helpers/railwayEnv.mjs",
+      "sha": "834aecd6f2e5526daece7e4561026ae8490b3b10"
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "sha": "c69f34875b1e31ad79a9f1f23e7310408e5006c6"
+    },
+    {
+      "path": "test/helpers/syntheticTls.mjs",
+      "sha": "03a0c72131c660aee99b817183b75fb172be5c2c"
+    },
+    {
+      "path": "test/helpers/railwayProcessFixture.mjs",
+      "sha": "e3bb676f4229c1b93ea4be3af18c547c95015cc1"
+    },
+    {
+      "path": "verification/engine-independent/fixtures.mjs",
+      "sha": "89836fc9d0ccbd58772a1192e3f0f066933a2166"
+    },
+    {
+      "path": "verification/quote-smalls-20261004/REPORT.md",
+      "sha": "ee68b6cc55f26ac2546c46376abcc54fba92ef39"
+    },
+    {
+      "path": "verification/quote-smalls-20261004/LOCAL_EVIDENCE.txt",
+      "sha": "ec8430b7962bf728fc0a5a2ade9874b3f2fd5c74"
+    },
+    {
+      "path": "verification/quote-smalls-20261004/source-binding.json",
+      "sha": "238a7ad1201425867eb3e63998714f70ccc4cd5d"
+    },
+    {
+      "path": "verification/quote-smalls-20261004/CI_EVIDENCE.txt",
+      "sha": "48edd1a7eb26a6d7ff862c9ae85e30b5a280f97d"
+    },
+    {
+      "path": "verification/quote-readiness/fixtures.mjs",
+      "sha": "c16b9e038642ca591ecaac6ec4055041c61fa3b7"
+    },
+    {
+      "path": "verification/quotedone/run-precision.mjs",
+      "sha": "b60e6aaa9e7a52ea5db75be262b31175ee2d1e20"
+    },
+    {
+      "path": "verification/quotedone/independent/MANIFEST.json",
+      "sha": "219814a1cf67fa1dc177a23dc12a8bfe881f1bf0"
+    },
+    {
+      "path": "verification/quotedone/independent/precision-cases.json.gz",
+      "sha": "502843f4629fac8110c1dbd76a6d8892f446abce"
+    },
+    {
+      "path": "verification/quotedone/independent/precision-regressions.mjs",
+      "sha": "16ef9761796796b962a545156731b826899b6bb3"
+    },
+    {
+      "path": "test/quoteFinalRepairs20261004.spec.mjs",
+      "sha": "8f73ee3d196dd7cd156ca13a4919b4dbe27142ed"
+    },
+    {
+      "path": "verification/quote-final-repairs-20261004/REPORT.md",
+      "sha": "b306c6a12dfa6284dd77bf75eda968e9fac9cbcb"
+    }
+  ]
+}

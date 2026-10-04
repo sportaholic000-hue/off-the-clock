@@ -1,0 +1,40 @@
+Verified code commit: 3da2104435320867db3af3814f0010f8d228ec7b
+CI run: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37222085769
+Job: 111494304370
+Run conclusion: success
+Owner and widget build step: success
+Strict quote engine and price book gate: success
+Full known-failure checker: success
+
+Exact decoded job-log excerpts:
+2026-10-04T17:52:12.2059216Z Running 45 quote-engine and price-book test files; any failure fails the gate.
+2026-10-04T17:54:15.2528750Z # Subtest: N05: save reports the durable book outcome when an auxiliary COMMIT would fail
+2026-10-04T17:54:15.2557814Z ok 840 - N05: save reports the durable book outcome when an auxiliary COMMIT would fail
+2026-10-04T17:54:15.2561149Z # Subtest: N05: approve reports the durable book outcome when an auxiliary COMMIT would fail
+2026-10-04T17:54:15.2562296Z ok 841 - N05: approve reports the durable book outcome when an auxiliary COMMIT would fail
+2026-10-04T17:54:15.2565348Z # Subtest: N05: save keeps its confirmed result after an error closing the released lock
+2026-10-04T17:54:15.2582144Z ok 842 - N05: save keeps its confirmed result after an error closing the released lock
+2026-10-04T17:54:15.2584717Z # Subtest: N05: approve keeps its confirmed result after an error closing the released lock
+2026-10-04T17:54:15.2585426Z ok 843 - N05: approve keeps its confirmed result after an error closing the released lock
+2026-10-04T17:54:15.2587794Z # Subtest: Save-lock controls: nested synchronous writes work and an async callback is rejected before it starts
+2026-10-04T17:54:15.2588661Z ok 844 - Save-lock controls: nested synchronous writes work and an async callback is rejected before it starts
+2026-10-04T17:54:17.8356303Z # partial 40 x 40 ordinary owner readiness ms: 477
+2026-10-04T17:54:18.3584611Z # partial 40 x 40 commercial owner readiness ms: 476
+2026-10-04T17:54:18.5278529Z # Subtest: N06: a real living holder blocks its own owner and does not block another owner
+2026-10-04T17:54:18.5279796Z ok 845 - N06: a real living holder blocks its own owner and does not block another owner
+2026-10-04T17:54:18.5282532Z # Subtest: N03: interior live pairs keep partial 40 x 40 ordinary coverage bounded
+2026-10-04T17:54:18.5283490Z ok 846 - N03: interior live pairs keep partial 40 x 40 ordinary coverage bounded
+2026-10-04T17:54:18.5285973Z # Subtest: N03: interior live pairs keep partial 40 x 40 commercial coverage bounded
+2026-10-04T17:54:18.5287033Z ok 847 - N03: interior live pairs keep partial 40 x 40 commercial coverage bounded
+2026-10-04T17:54:18.5290222Z # Subtest: N03 control: no live interior pair still returns exact incomplete coverage and the customer check agrees
+2026-10-04T17:54:18.5294899Z ok 848 - N03 control: no live interior pair still returns exact incomplete coverage and the customer check agrees
+2026-10-04T17:54:18.5297825Z # Subtest: N07: large coverage identifies the exact failing partner and leaves another ready pairing quotable
+2026-10-04T17:54:18.5299045Z ok 849 - N07: large coverage identifies the exact failing partner and leaves another ready pairing quotable
+2026-10-04T17:54:25.3006145Z # tests 1046
+2026-10-04T17:54:25.3008011Z # pass 1046
+2026-10-04T17:54:25.3008461Z # fail 0
+2026-10-04T17:54:25.3008875Z # cancelled 0
+2026-10-04T17:54:25.3009304Z # skipped 0
+2026-10-04T17:54:25.3071356Z PASS: quote engine and price book gate.
+2026-10-04T17:56:45.4659890Z Summary: {"tests":"1438","pass":"1427","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+2026-10-04T17:56:45.4662401Z Known failures still failing: 9/9
