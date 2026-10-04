@@ -1,0 +1,8 @@
+{
+  "cases": 65,
+  "comparisons": 195,
+  "normalizedOnly": [
+    "quoteId"
+  ],
+  "differences": []
+}

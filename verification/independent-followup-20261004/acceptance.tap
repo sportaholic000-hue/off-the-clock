@@ -1,0 +1,223 @@
+TAP version 13
+# Subtest: QP-01 FENCING_INSTALL: the original 4 ft selection never produces the conflicting 8 ft option
+ok 1 - QP-01 FENCING_INSTALL: the original 4 ft selection never produces the conflicting 8 ft option
+  ---
+  duration_ms: 244.789509
+  type: 'test'
+  ...
+# Subtest: QP-01 FENCING_REPLACEMENT: the original 4 ft selection never produces the conflicting 8 ft option
+ok 2 - QP-01 FENCING_REPLACEMENT: the original 4 ft selection never produces the conflicting 8 ft option
+  ---
+  duration_ms: 168.575828
+  type: 'test'
+  ...
+# Subtest: QP-01 control: same-width gate upgrades retain both original expected totals
+ok 3 - QP-01 control: same-width gate upgrades retain both original expected totals
+  ---
+  duration_ms: 94.292857
+  type: 'test'
+  ...
+# Subtest: QP-02: the original tier-only hardwood package can be answered, prepared, and quoted
+ok 4 - QP-02: the original tier-only hardwood package can be answered, prepared, and quoted
+  ---
+  duration_ms: 158.759378
+  type: 'test'
+  ...
+# Subtest: QP-03 FENCING_INSTALL: confirmed baseline quotes, adjusted job without shares still reviews
+ok 5 - QP-03 FENCING_INSTALL: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 130.460169
+  type: 'test'
+  ...
+# Subtest: QP-03 FENCING_REPLACEMENT: confirmed baseline quotes, adjusted job without shares still reviews
+ok 6 - QP-03 FENCING_REPLACEMENT: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 116.200135
+  type: 'test'
+  ...
+# Subtest: QP-03 INTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+ok 7 - QP-03 INTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 113.368847
+  type: 'test'
+  ...
+# Subtest: QP-03 EXTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+ok 8 - QP-03 EXTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 103.544285
+  type: 'test'
+  ...
+# Subtest: QP-04: original distinct package products display only the selected confirmation; reverse=false
+ok 9 - QP-04: original distinct package products display only the selected confirmation; reverse=false
+  ---
+  duration_ms: 114.144301
+  type: 'test'
+  ...
+# Subtest: QP-04: original distinct package products display only the selected confirmation; reverse=true
+ok 10 - QP-04: original distinct package products display only the selected confirmation; reverse=true
+  ---
+  duration_ms: 107.994663
+  type: 'test'
+  ...
+# {"case":"original-missing-minimum","bytes":14024,"productsPerAxis":80,"elapsedMs":7.50672499999996,"timerDelayMs":21.28447099999994}
+# {"case":"disabled-original","elapsedMs":5.210563999999977}
+# {"case":"restored-minimum","elapsedMs":27.22640699999988}
+# Subtest: QP-05: ORIGINAL 80-by-80 missing-minimum public catalog returns without blocking the worker
+ok 11 - QP-05: ORIGINAL 80-by-80 missing-minimum public catalog returns without blocking the worker
+  ---
+  duration_ms: 23.053617
+  type: 'test'
+  ...
+# Subtest: QP-05 repaired control: disabled original catalog returns promptly
+ok 12 - QP-05 repaired control: disabled original catalog returns promptly
+  ---
+  duration_ms: 5.94479
+  type: 'test'
+  ...
+# Subtest: QP-05 valid control: restored explicit zero minimum permits a fast live engine check
+ok 13 - QP-05 valid control: restored explicit zero minimum permits a fast live engine check
+  ---
+  duration_ms: 27.961456
+  type: 'test'
+  ...
+# Subtest: QP-05: original missing minimum also returns promptly with detailed owner status
+ok 14 - QP-05: original missing minimum also returns promptly with detailed owner status
+  ---
+  duration_ms: 5.651999
+  type: 'test'
+  ...
+# Subtest: QP-05: undefined minimum fails both readiness modes before pair search
+ok 15 - QP-05: undefined minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 11.944238
+  type: 'test'
+  ...
+# Subtest: QP-05: null minimum fails both readiness modes before pair search
+ok 16 - QP-05: null minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 10.521679
+  type: 'test'
+  ...
+# Subtest: QP-05: negative minimum fails both readiness modes before pair search
+ok 17 - QP-05: negative minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 9.16219
+  type: 'test'
+  ...
+# Subtest: QP-05: fractional cents minimum fails both readiness modes before pair search
+ok 18 - QP-05: fractional cents minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 10.166924
+  type: 'test'
+  ...
+# Subtest: QP-05: numeric string minimum fails both readiness modes before pair search
+ok 19 - QP-05: numeric string minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 8.959364
+  type: 'test'
+  ...
+# Subtest: QP-05: boolean minimum fails both readiness modes before pair search
+ok 20 - QP-05: boolean minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 10.155257
+  type: 'test'
+  ...
+# Subtest: QP-05: unsafe integer minimum fails both readiness modes before pair search
+ok 21 - QP-05: unsafe integer minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 8.773885
+  type: 'test'
+  ...
+# Subtest: QP-05: object minimum fails both readiness modes before pair search
+ok 22 - QP-05: object minimum fails both readiness modes before pair search
+  ---
+  duration_ms: 9.348541
+  type: 'test'
+  ...
+# Subtest: QP-05: valid tier supplies missing base minimum 0 without changing cents
+ok 23 - QP-05: valid tier supplies missing base minimum 0 without changing cents
+  ---
+  duration_ms: 1674.03595
+  type: 'test'
+  ...
+# Subtest: QP-05: valid tier supplies missing base minimum 2000000 without changing cents
+ok 24 - QP-05: valid tier supplies missing base minimum 2000000 without changing cents
+  ---
+  duration_ms: 1525.863797
+  type: 'test'
+  ...
+# Subtest: QP-05: an invalid tier minimum cannot hide a valid inherited option
+ok 25 - QP-05: an invalid tier minimum cannot hide a valid inherited option
+  ---
+  duration_ms: 1634.489029
+  type: 'test'
+  ...
+# Subtest: QP-05: passing the shared minimum never bypasses the requested product pair
+ok 26 - QP-05: passing the shared minimum never bypasses the requested product pair
+  ---
+  duration_ms: 183.037901
+  type: 'test'
+  ...
+# Subtest: QP-05: pitched-roof tier minimum follows the same contract
+ok 27 - QP-05: pitched-roof tier minimum follows the same contract
+  ---
+  duration_ms: 17.855123
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker invalid material waste rejects cold catalogs in both modes
+ok 28 - QP-05: shared blocker invalid material waste rejects cold catalogs in both modes
+  ---
+  duration_ms: 9.827112
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker missing stored factor rejects cold catalogs in both modes
+ok 29 - QP-05: shared blocker missing stored factor rejects cold catalogs in both modes
+  ---
+  duration_ms: 10.339204
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker missing access factor rejects cold catalogs in both modes
+ok 30 - QP-05: shared blocker missing access factor rejects cold catalogs in both modes
+  ---
+  duration_ms: 13.055799
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker unsupported price field rejects cold catalogs in both modes
+ok 31 - QP-05: shared blocker unsupported price field rejects cold catalogs in both modes
+  ---
+  duration_ms: 9.42111
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker malformed product map rejects cold catalogs in both modes
+ok 32 - QP-05: shared blocker malformed product map rejects cold catalogs in both modes
+  ---
+  duration_ms: 9.758729
+  type: 'test'
+  ...
+# Subtest: QP-05: shared blocker negative product rate rejects cold catalogs in both modes
+ok 33 - QP-05: shared blocker negative product rate rejects cold catalogs in both modes
+  ---
+  duration_ms: 9.396914
+  type: 'test'
+  ...
+# Subtest: QP-05: tier repairs a shared factor without making the broken tier available
+ok 34 - QP-05: tier repairs a shared factor without making the broken tier available
+  ---
+  duration_ms: 1661.797354
+  type: 'test'
+  ...
+# Subtest: QP-05: missing shared pitched-roof accessory mode does not search products
+ok 35 - QP-05: missing shared pitched-roof accessory mode does not search products
+  ---
+  duration_ms: 9.40008
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8373.410337

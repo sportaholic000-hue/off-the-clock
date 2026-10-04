@@ -1,3 +1,28 @@
+# Current quote-engine / price-book checkpoint — October 4, 2026
+
+**The five original audit findings have passing acceptance checks on
+`codex/quote-audit-ready-20261004` (PR #24).** Tested code:
+`5e2ea7647d46241fc365bb2184422ae4c905cb06`, based on PR #23's `6eb6622`.
+The independent recheck found QP-05 still open in PR #23; the new checkpoint
+repairs the original missing-minimum catalog stall and gates its reproduction.
+
+Local verification: **928/928** scoped regression tests, including **35/35**
+audit acceptance cases; **195** differential comparisons without changes.
+Hosted verification: **1,106/1,106** strict quote tests and both app/widget builds
+pass; the broader suite matches its existing nine-failure baseline. Exact source
+bindings and results are in the
+[independent follow-up](../verification/independent-followup-20261004/README.md).
+Source locations are indexed in the [repository map](../README.md#repository-map).
+
+`main`, the repair branch and any deployment are distinct checkpoints. These
+scoped checks do not pass a new whole-product launch gate. Historical phase
+checkboxes and reports below are preserved for their original source versions;
+they do not supersede this current quote/price-book summary.
+
+## Preserved checkpoint history
+
+---
+
 > **October 2 quote-engine/price-book re-audit repairs:** All nine reproduced groups R01–R09 are repaired on the combined PR #16/#17 source `33605e99c834f2fa7c189626d6d6cbfc8b1d5f61`. Verified: 35 new regression tests, 409 independent arithmetic checks, 11 authenticated browser/HTTP checks, and both builds. Final full suite: 1,233 passed, the nine existing voice failures, two skipped, zero unexpected failures. [Source-bound repair report and evidence](../verification/quote-reaudit-repairs/REPORT.md). Customer rounding is unchanged. Independent Opus review remains next; no full phase or public-launch gate is marked passed.
 
 > **October 1 Opus audit repairs:** The eight quote/editor defects and reproduced provider-marker booking crash are repaired on tested source `6ea52eb10683536206ef91dde35ac88e4cdfa2bc`. Final cold regression: 937/946 pass, with the same nine pre-existing voice failures and no new failures. Independent arithmetic: 960 cases; real application: 19 cases; widget booking: 24 checks; final fencing/painting browser: 26 checks; rendered editor: 12 checks; builds and integration boundary pass. [Source-bound report, screenshots and original evidence](../docs/review/opus-repairs-20261001/README.md). Voice, live providers and public launch remain unaccepted. No full phase or launch gate is marked passed.

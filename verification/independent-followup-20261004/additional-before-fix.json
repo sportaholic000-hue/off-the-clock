@@ -1,0 +1,14 @@
+{
+  "testedCodeCommit": "b8e2e046e03b9ee360513f905a39e3d2efc759c2",
+  "node": "22.16.0",
+  "case": "shared-invalid-waste",
+  "productsPerAxis": 80,
+  "minimumJob": 0,
+  "membraneWasteFactor": -1,
+  "elapsedMs": 8656.650757,
+  "status": "NEEDS PRICING",
+  "invalidOwnerFields": [
+    "membraneWasteFactor"
+  ],
+  "result": "Shared factor blocker still causes expensive pair search; repaired and regression-tested in 5e2ea764."
+}
