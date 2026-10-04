@@ -318,23 +318,28 @@ test('F02: two processes saving against the same revision cannot both succeed', 
   assert.equal(final.defaults.travelFee, 0, 'the rejected edit was not applied and was never reported as saved');
 });
 
-test('F03: a pending interview save keeps a value typed while it was saving and does not move on', async () => {
+test('F03 + audit defects 6 and 7: a pending confirmation keeps a newer entry, blocks a second confirmation and blocks review', async () => {
   const source = fs.readFileSync(new URL('../client/src/onboarding.jsx', import.meta.url), 'utf8');
   const edit = source.slice(source.indexOf('  function editValue(value) {'), source.indexOf('  function positionFor(loaded) {'));
   const confirm = source.slice(source.indexOf('  async function confirmField() {'), source.indexOf('  async function reviewDraft() {'));
+  const review = source.slice(source.indexOf('  async function reviewDraft() {'), source.indexOf('  async function suggest() {'));
   const state = { rawValue:'25', position:0, readBack:{ value:25, spoken:'25' }, aiNotice:'' };
-  const target = { current:{ serviceType:'CUSTOM', field:'price', rawValue:'25' } };
-  let request, complete;
-  const api = (url, options) => { request = { url, ...options }; return new Promise(resolve => { complete = resolve; }); };
+  const target = { current:{ draftId:'d', serviceType:'CUSTOM', field:'price', rawValue:'25' } };
+  const requests = []; let complete;
+  const api = (url, options = {}) => { requests.push({ url, ...options }); return new Promise(resolve => { complete = resolve; }); };
   const set = key => value => { state[key] = value; if (key === 'rawValue') target.current = { ...target.current, rawValue:value }; };
-  const handlers = new Function('api', 'setRawValue', 'setReadBack', 'setDraft', 'setAnswer', 'setAiNotice', 'setPosition', 'setError', 'sameAssistTarget', 'STALE_CONFIRM_NOTICE', 'assistTarget', 'state',
+  const handlers = new Function('api', 'setRawValue', 'setReadBack', 'setDraft', 'setAnswer', 'setAiNotice', 'setPosition', 'setError', 'sameAssistTarget', 'STALE_CONFIRM_NOTICE', 'assistTarget', 'state', 'confirmFlight', 'setConfirmBusy', 'writePricebookTransfer', 'go',
     "const draft={id:'d',confirmedFields:{CUSTOM:[]}};const current={serviceType:'CUSTOM',field:'price',type:'number'};const interviewFields=[current,{serviceType:'CUSTOM',field:'minimumJob',type:'number'}];const position=0;const readBack=state.readBack;const rawValue=state.rawValue;"
-    + edit + confirm + 'return {editValue,confirmField};')(api, set('rawValue'), set('readBack'), () => {}, () => {}, set('aiNotice'), set('position'), () => {}, sameAssistTarget, (await import('../client/src/interviewAssist.js')).STALE_CONFIRM_NOTICE, target, state);
+    + edit + confirm + review + 'return {editValue,confirmField,reviewDraft};')(api, set('rawValue'), set('readBack'), () => {}, () => {}, set('aiNotice'), set('position'), () => {}, sameAssistTarget,
+      (await import('../client/src/interviewAssist.js')).STALE_CONFIRM_NOTICE, target, state, { current:false }, () => {}, () => { throw new Error('review must not transfer while saving'); }, () => {});
   const saving = handlers.confirmField();
   handlers.editValue('50');
-  complete({ draft:{ id:'d', fields:request.body.fields, confirmedFields:request.body.confirmedFields } });
+  await handlers.confirmField();   // a second confirmation while the first is pending does nothing
+  await handlers.reviewDraft();    // review while a confirmation is pending does nothing
+  assert.equal(requests.length, 1, 'one save request only; no second confirmation and no review request');
+  complete({ draft:{ id:'d', fields:requests[0].body.fields, confirmedFields:requests[0].body.confirmedFields } });
   await saving;
-  assert.equal(request.body.fields.CUSTOM.price, 25, 'the read-back value was saved');
+  assert.equal(requests[0].body.fields.CUSTOM.price, 25);
   assert.equal(state.rawValue, '50', 'the newer typed value is kept');
   assert.equal(state.position, 0, 'the interview does not move on');
   assert.match(state.aiNotice, /new entry is still here/);
@@ -355,7 +360,7 @@ test('F06: an AI answer with no clear price asks the owner to clarify, with one 
   let calls = 0;
   const fetchImpl = async () => { calls++; return { ok:true, json:async () => ({ candidates:[{ finishReason:'STOP', content:{ parts:[{ text:'{"value":null}' }] } }] }) }; };
   await assert.rejects(interpretInterviewAnswer({ serviceType:'CUSTOM', field:'price', answer:'not sure what to charge', pricing:{ unit:'flat' } }, { env:{ GEMINI_API_KEY:'synthetic' }, fetchImpl }),
-    error => error.code === 'PRICEBOOK_AI_NEEDS_CLARIFICATION' && error.statusCode === 422 && /Say the price again/.test(error.message));
+    error => error.code === 'PRICEBOOK_AI_CLARIFICATION_REQUIRED' && error.statusCode === 422 && error.retryable === false);
   assert.equal(calls, 1);
 });
 
@@ -372,4 +377,92 @@ test('F04 and G01: readiness for a 10 x 10 flat-roof catalog stays correct and b
   p.tearOffPerSqft.membrane_3 = -1;   // malformed data anywhere still fails closed
   assert.equal(engineIndex.vNextServiceStatus(f.ownerPricing, { ...f.businessDefaults, currency:'CAD' }).status, 'NEEDS PRICING');
   assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /run: npm run test:quote/);
+});
+
+// ---- Fourth review (October 4): the nine remaining defects ----
+const readiness = await import('../server/quote-engine-vnext/priceBook.js');
+const scratchStore = () => { const d = fs.mkdtempSync(path.join(process.env.PRICEBOOK_PATH, 'r4-')), id = 'o-' + crypto.randomUUID(); fs.writeFileSync(path.join(d, id + '.json'), '{"ownerId":"x","services":[],"v":"old"}'); return { d, id }; };
+const realOps = () => ({ writeFileSync:fs.writeFileSync, renameSync:fs.renameSync, unlinkSync:fs.unlinkSync, openSync:fs.openSync, fsyncSync:fs.fsyncSync, closeSync:fs.closeSync, existsSync:fs.existsSync, platform:'linux' });
+
+test('Defect 1: a failed recovery save never clears the pause left by an earlier unconfirmed save', () => {
+  const { d, id } = scratchStore();
+  fs.writeFileSync(path.join(d, id + '.unconfirmed'), 'earlier unconfirmed save\n');
+  for (const failing of [{ renameSync:() => { throw Object.assign(new Error('rename'), { code:'EIO' }); } }, { fsyncSync:() => { throw Object.assign(new Error('flush'), { code:'EIO' }); } }]) {
+    assert.throws(() => store.writePricebookFile(d, id, '{"v":"new"}', { ...realOps(), ...failing }));
+    assert.equal(fs.existsSync(path.join(d, id + '.unconfirmed')), true, 'quoting stays paused');
+  }
+});
+
+test('Defect 2: when only the flush after clearing the pause fails, the save succeeds and nothing claims quoting is paused', () => {
+  const { d, id } = scratchStore();
+  let flushes = 0;
+  store.writePricebookFile(d, id, '{"v":"new"}', { ...realOps(), fsyncSync:fd => { if (++flushes === 3) throw Object.assign(new Error('flush'), { code:'EIO' }); return fs.fsyncSync(fd); } });
+  assert.equal(fs.existsSync(path.join(d, id + '.unconfirmed')), false);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(d, id + '.json'), 'utf8')).v, 'new');
+  let unlinks = 0;
+  assert.throws(() => store.writePricebookFile(d, id, '{"v":"newer"}', { ...realOps(), unlinkSync:file => { if (String(file).endsWith('.unconfirmed') && ++unlinks === 1) throw Object.assign(new Error('unlink'), { code:'EIO' }); return fs.unlinkSync(file); } }),
+    error => error.code === 'PRICEBOOK_PAUSE_NOT_CLEARED' && /stays paused/.test(error.message));
+  assert.equal(fs.existsSync(path.join(d, id + '.unconfirmed')), true, 'the message matches reality: still paused');
+});
+
+test('Defects 3-5: a living holder is never robbed, a stale holder never deletes its successor, errors and waits are bounded', () => {
+  const owner = 'lock-' + crypto.randomUUID(), lock = path.join(process.env.PRICEBOOK_PATH, owner + '.lock');
+  fs.writeFileSync(lock, JSON.stringify({ host:os.hostname(), pid:process.pid, token:'living' }));
+  fs.utimesSync(lock, new Date(Date.now() - 3600_000), new Date(Date.now() - 3600_000));   // old, but its holder is alive
+  const started = Date.now();
+  assert.throws(() => store.withPricebookLock(owner, () => 'ran', { waitMs:200 }), { code:'PRICEBOOK_BUSY' });
+  assert.ok(Date.now() - started < 2000, 'waiting is bounded');
+  assert.equal(JSON.parse(fs.readFileSync(lock, 'utf8')).token, 'living', 'the living holder keeps its lock');
+  const dead = spawnSync(process.execPath, ['-e', 'console.log(process.pid)'], { encoding:'utf8' }).stdout.trim();
+  fs.writeFileSync(lock, JSON.stringify({ host:os.hostname(), pid:Number(dead), token:'dead' }));
+  assert.equal(store.withPricebookLock(owner, () => 'ran'), 'ran', 'a lock whose process is gone is taken over');
+  assert.equal(fs.existsSync(lock), false);
+  // A holder whose lock was replaced does not delete the successor's lock, and its save does not replace the book.
+  const svc = live(fenceSvc()), current = bridge.readApplicationBook(svc.ownerId), successor = JSON.stringify({ host:'other-host', pid:1, token:'successor' });
+  const lockFile = path.join(process.env.PRICEBOOK_PATH, svc.ownerId + '.lock');
+  assert.throws(() => store.withPricebookLock(svc.ownerId, () => { fs.writeFileSync(lockFile, successor); return bridge.saveApplicationBook(svc.ownerId, { revision:current.revision, services:current.services, defaults:{ ...current.defaults, travelFee:7 } }); }), { code:'PRICEBOOK_BUSY' });
+  assert.equal(fs.readFileSync(lockFile, 'utf8'), successor, "the successor's lock is untouched");
+  assert.equal(bridge.readApplicationBook(svc.ownerId).defaults.travelFee, 0, 'the save that lost its lock changed nothing');
+  fs.unlinkSync(lockFile);
+  fs.mkdirSync(lock);   // an unreadable lock path fails immediately instead of looping
+  assert.throws(() => store.withPricebookLock(owner, () => 'ran', { waitMs:60_000 }), error => error.code === 'EISDIR');
+  fs.rmdirSync(lock);
+});
+
+const { flatRoof:flatRoofFixture } = await import('../verification/engine-independent/fixtures.mjs');
+function flatCatalog(replacements, existing, tweak = () => {}) {
+  // A valid persisted flat-roof service (identity, source and approval-ready fields from the shared fixture) with N x M products.
+  const f = flatRoofFixture(), service = f.ownerPricing, p = service.pricing;
+  for (const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft']) p[field] = {};
+  service.knownOfferings = { membraneType:{}, replacementMembraneType:{} };
+  for (let i = 0; i < replacements; i++) { const k = 'r' + i; p.laborPerSqft[k] = 500; p.membraneCostPerSqft[k] = 700; service.knownOfferings.replacementMembraneType[k] = crypto.randomUUID(); }
+  for (let i = 0; i < existing; i++) { const k = 'e' + i; p.tearOffPerSqft[k] = 200; service.knownOfferings.membraneType[k] = crypto.randomUUID(); }
+  tweak(service);
+  return { service, defaults:{ ...f.businessDefaults, currency:'CAD' } };
+}
+const coverage = status => JSON.stringify({ status:status.status, errors:[...status.validationErrors].sort(), pairs:(status.productCoverage || []).map(p => [JSON.stringify(p.selection), p.ok ?? p.status ?? p.configurationComplete]).sort() });
+
+test('Defects 8 and 9: derived pair readiness matches checking every pair across gaps and malformed data, per-pair pruning is gone, and 40 x 40 is fast', () => {
+  const cases = {
+    complete:flatCatalog(4, 4),
+    'replacement missing material':flatCatalog(4, 4, s => { delete s.pricing.membraneCostPerSqft.r2; }),
+    'existing missing tear-off':flatCatalog(4, 4, s => { delete s.pricing.tearOffPerSqft.e1; }),
+    'malformed sibling':flatCatalog(4, 4, s => { s.pricing.tearOffPerSqft.e3 = -1; }),
+    'unregistered price key':flatCatalog(3, 5, s => { s.pricing.laborPerSqft.ghost = 400; })
+  };
+  for (const [name, { service, defaults }] of Object.entries(cases)) {
+    readiness.setReadinessPairDerivationForVerification(true); const derived = readiness.vNextServiceStatus(structuredClone(service), defaults);
+    readiness.setReadinessPairDerivationForVerification(false); const full = readiness.vNextServiceStatus(structuredClone(service), defaults);
+    readiness.setReadinessPairDerivationForVerification(true);
+    assert.equal(coverage(derived), coverage(full), name);
+  }
+  assert.equal(readiness.vNextServiceStatus(cases.complete.service, cases.complete.defaults).status, 'QUOTING LIVE');
+  assert.equal(readiness.vNextServiceStatus(cases['replacement missing material'].service, cases['replacement missing material'].defaults).status, 'QUOTING LIVE', 'an incomplete sibling does not block the rest');
+  assert.equal(readiness.vNextServiceStatus(cases['malformed sibling'].service, cases['malformed sibling'].defaults).status, 'NEEDS PRICING', 'malformed data still fails closed');
+  assert.equal(/pruneToSelection/.test(fs.readFileSync(new URL('../server/quote-engine-vnext/priceBook.js', import.meta.url), 'utf8')), false, 'per-pair price pruning (which broke included prices) is gone');
+  const big = flatCatalog(40, 40), started = performance.now(), status = readiness.vNextServiceStatus(big.service, big.defaults), ms = performance.now() - started;
+  assert.equal(status.status, 'QUOTING LIVE');
+  assert.equal(status.productCoverage.length, 1600, 'every pair is still reported');
+  assert.ok(ms < 1500, `40 x 40 readiness took ${Math.round(ms)} ms`);
+  console.log('40 x 40 readiness ms:', Math.round(ms));
 });

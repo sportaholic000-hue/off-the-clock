@@ -3,6 +3,7 @@ import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { hostname } from 'node:os';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
 import { getActivationOwnerFields, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
@@ -84,43 +85,84 @@ const notDurable = cause => Object.assign(new Error('The price book change could
 
 // Writes a complete sibling file and the unconfirmed marker (both flushed),
 // renames the file over the saved book, flushes the directory, then removes the
-// marker and flushes again. Success is reported only after every step.
+// marker. Rules:
+// - A marker left by an earlier unconfirmed save is never removed by a save that
+//   fails before replacing the book: quoting stays paused on the unconfirmed book.
+// - Once the replacement is confirmed on disk the save has succeeded. If removing
+//   the marker fails, quoting stays paused and the save reports that truthfully;
+//   if only the flush after removing it fails, the save is durable and quoting
+//   resumes (after a crash the marker could reappear, which pauses quoting again:
+//   the safe direction).
 // Exported with replaceable file operations so each failure can be tested.
-export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps) {
+export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps, beforeReplace = null) {
   const target = resolve(directory, `${ownerId}.json`);
   const temporary = resolve(directory, `${ownerId}.${crypto.randomUUID()}.tmp`);
   const marker = unconfirmedMarker(directory, ownerId);
+  const markerExisted = (ops.existsSync || existsSync)(marker);
   const cleanup = (error, paths) => { for (const path of paths) { try { ops.unlinkSync(path); } catch (cleanupError) { if (cleanupError.code !== 'ENOENT') error.cleanupError = cleanupError.code; } } };
+  const ownMarker = markerExisted ? [] : [marker];
   try { ops.writeFileSync(temporary, serialized, { flag: 'wx', flush: true }); }
   catch (error) { if (error.code !== 'EEXIST') cleanup(error, [temporary]); throw error; }
   try { ops.writeFileSync(marker, 'unconfirmed price-book replacement\n', { flush: true }); flushDirectory(directory, ops); }
-  catch (error) { cleanup(error, [temporary, marker]); throw error; }   // nothing replaced: the previous book stays current
-  try { ops.renameSync(temporary, target); }
-  catch (error) { cleanup(error, [temporary, marker]); throw error; }
+  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }   // nothing replaced
+  // Last check before replacing: the caller still holds its save lock.
+  try { beforeReplace?.(); ops.renameSync(temporary, target); }
+  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }    // nothing replaced
   try { flushDirectory(directory, ops); } catch (cause) { throw notDurable(cause); }   // marker stays: quoting paused
-  try { ops.unlinkSync(marker); flushDirectory(directory, ops); } catch (cause) { throw notDurable(cause); }
+  try { ops.unlinkSync(marker); }
+  catch (cause) { throw Object.assign(new Error('The price book was saved, but quoting could not be resumed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_PAUSE_NOT_CLEARED', statusCode:503, retryable:true, cause }); }
+  try { flushDirectory(directory, ops); } catch { /* the replacement is durable; see the rules above */ }
 }
 
-// Saves are read-check-write sequences. Holding this per-owner lock (an
-// exclusively created file) across the whole sequence makes the revision check
-// a compare-and-swap across processes: a second writer waits briefly and then
-// receives a conflict instead of silently overwriting the first writer's change.
-// A lock left by a crashed process expires after 30 seconds.
-const LOCK_WAIT_MS = 2000, LOCK_STALE_MS = 30000;
+// Saves are read-check-write sequences. Holding this per-owner lock across the
+// whole sequence makes the revision check a compare-and-swap across processes:
+// a second writer waits briefly, then gets a conflict instead of silently
+// overwriting the first writer's change. Lock rules:
+// - The lock records its holder (host, process id, unique token).
+// - A lock is taken over only when its holder is a process on this host that no
+//   longer exists, or its record is unreadable 30 seconds after it was written
+//   (a writer that crashed mid-write). A lock held by a living process, or by
+//   another host, is never taken: the waiter gets a conflict.
+// - A holder removes the lock only if it still holds its own token.
+// - Any unexpected filesystem error fails the save; waiting is always bounded.
+const LOCK_WAIT_MS = 2000, LOCK_UNREADABLE_MS = 30000;
+const lockHost = hostname();
+function holderGone(record) {
+  if (!record || record.host !== lockHost || !Number.isSafeInteger(record.pid)) return false;
+  try { process.kill(record.pid, 0); return false; } catch (error) { return error.code === 'ESRCH'; }
+}
+// Locks held by this process, so a save can confirm it still owns its lock
+// immediately before replacing the book, and nested use does not wait on itself.
+const heldLocks = new Map();
 export function withPricebookLock(ownerId, work, { waitMs = LOCK_WAIT_MS } = {}) {
+  if (heldLocks.has(ownerId)) return work();
   mkdirSync(dir, { recursive: true });
-  const lock = resolve(dir, `${ownerId}.lock`), started = Date.now(), sleeper = new Int32Array(new SharedArrayBuffer(4));
+  const lock = resolve(dir, `${ownerId}.lock`), token = crypto.randomUUID(), started = Date.now(), sleeper = new Int32Array(new SharedArrayBuffer(4));
+  const busy = () => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409 });
   for (;;) {
-    try { writeFileSync(lock, String(process.pid), { flag: 'wx' }); break; }
-    catch (error) {
-      if (error.code !== 'EEXIST') throw error;
-      try { if (Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS) { unlinkSync(lock); continue; } } catch { continue; }
-      if (Date.now() - started >= waitMs) throw Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409 });
-      Atomics.wait(sleeper, 0, 0, 25);
+    try { writeFileSync(lock, JSON.stringify({ host:lockHost, pid:process.pid, token }), { flag: 'wx' }); break; }
+    catch (error) { if (error.code !== 'EEXIST') throw error; }
+    let text, written;
+    try { text = readFileSync(lock, 'utf8'); written = statSync(lock).mtimeMs; }
+    catch (error) { if (error.code !== 'ENOENT') throw error; text = null; }
+    if (text !== null) {
+      let record = null; try { record = JSON.parse(text); } catch {}
+      const abandoned = record ? holderGone(record) : Date.now() - written > LOCK_UNREADABLE_MS;
+      if (abandoned) {
+        try { if (readFileSync(lock, 'utf8') === text) unlinkSync(lock); }
+        catch (error) { if (error.code !== 'ENOENT') throw error; }
+      }
     }
+    if (Date.now() - started >= waitMs) throw busy();
+    Atomics.wait(sleeper, 0, 0, 25);
   }
+  heldLocks.set(ownerId, { lock, token });
   try { return work(); }
-  finally { try { unlinkSync(lock); } catch {} }
+  finally {
+    heldLocks.delete(ownerId);
+    try { const current = JSON.parse(readFileSync(lock, 'utf8')); if (current.token === token) unlinkSync(lock); }
+    catch { /* not ours any more, or already gone */ }
+  }
 }
 
 export function savePricebook(ownerId, data) {
@@ -136,7 +178,12 @@ export function savePricebook(ownerId, data) {
   };
   // A failed write, rename or directory flush must never truncate the last
   // accepted owner data or report an unconfirmed save as successful.
-  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2));
+  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2), defaultFileOps, () => {
+    const held = heldLocks.get(ownerId);
+    if (!held) return;
+    let current = null; try { current = JSON.parse(readFileSync(held.lock, 'utf8')); } catch {}
+    if (current?.token !== held.token) throw Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409 });
+  });
   return { success: true, pricebook: next };
 }
 

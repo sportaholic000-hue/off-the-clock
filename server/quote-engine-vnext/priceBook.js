@@ -521,31 +521,45 @@ function activationMonth(service, defaults) {
   return Array.isArray(months) && months.length ? months[0] : 1;
 }
 
-// Readiness checks every product pair. Each pair is evaluated against a copy of
-// the configuration holding only that pair's product entries (the engine copies
-// its whole input for every probe, so carrying every product made the work grow
-// with the cube of the catalog). Structural validation of the full configuration
-// runs once per readiness check and still applies to every pair, so malformed
-// data anywhere keeps failing closed exactly as before.
-const PRODUCT_KEYED_FIELDS = {
-  ROOFING_REPLACEMENT: { replacementRoofType:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'], existingRoofType:['tearOffPerSquare'] },
-  FLAT_ROOF_REPLACEMENT: { replacementMembraneType:['laborPerSqft','membraneCostPerSqft'], membraneType:['tearOffPerSqft'] }
-};
-function pruneToSelection(service, pricing, selection) {
-  const plan = PRODUCT_KEYED_FIELDS[service.serviceType];
-  if (!plan) return { service, pricing };
-  const nextPricing = { ...pricing }, known = { ...(service.knownOfferings || {}) };
-  for (const [selector, fields] of Object.entries(plan)) {
-    const chosen = selection[selector], registered = service.knownOfferings?.[selector];
-    if (typeof chosen !== 'string' || !registered || typeof registered !== 'object' || Array.isArray(registered)) continue;
-    const others = new Set(Object.keys(registered).filter(key => key !== chosen));
-    for (const field of fields) {
-      const value = nextPricing[field];
-      if (value && typeof value === 'object' && !Array.isArray(value)) nextPricing[field] = Object.fromEntries(Object.entries(value).filter(([key]) => !others.has(key)));
-    }
-    known[selector] = Object.fromEntries(Object.entries(registered).filter(([key]) => !others.has(key)));
-  }
-  return { service:{ ...service, knownOfferings:known, ...(service.pricing ? { pricing:nextPricing } : {}) }, pricing:nextPricing };
+// Pair services (replacement product x existing product). Their prices are
+// separable: replacement-keyed prices and existing-keyed prices never interact
+// in a quote, and every pair is probed with the same scenario shapes. Readiness
+// therefore checks each replacement product against one complete existing
+// product and each existing product against one complete replacement product,
+// plus the pair with the largest subtotals (money safety is monotone in the
+// subtotal), and derives every other pair from those results. Anything outside
+// those conditions (no complete reference pair, scenario shapes that differ,
+// or a failing largest pair) falls back to evaluating every pair.
+const PAIR_SERVICES = new Set(['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']);
+// Verification switch: tests compare derived readiness with evaluating every pair.
+let pairDerivation = true;
+export function setReadinessPairDerivationForVerification(enabled) { pairDerivation = Boolean(enabled); }
+function scenarioShape(scenarios, selectors) {
+  return JSON.stringify(scenarios.map(scenario => Object.fromEntries(Object.entries(scenario).filter(([key]) => !selectors.includes(key)))));
+}
+function derivedPairProducts(groups, selectors, evaluate) {
+  const [rField, eField] = selectors, key = (r, e) => JSON.stringify([r, e]);
+  const R = [...new Set(groups.map(g => g.selection[rField]))], E = [...new Set(groups.map(g => g.selection[eField]))];
+  const byPair = new Map(groups.map(g => [key(g.selection[rField], g.selection[eField]), g]));
+  if (byPair.size !== R.length * E.length || R.length * E.length < 4) return null;
+  const shape = scenarioShape(groups[0].scenarios, selectors);
+  if (groups.some(g => scenarioShape(g.scenarios, selectors) !== shape)) return null;
+  const done = new Map(), ev = (r, e) => { const k = key(r, e); if (!done.has(k)) done.set(k, evaluate(byPair.get(k))); return done.get(k); };
+  let ref = null;
+  for (const r of R) if (ev(r, E[0]).ok) { ref = { r, e:E[0] }; break; }
+  if (!ref) for (const e of E) if (ev(R[0], e).ok) { ref = { r:R[0], e }; break; }
+  if (!ref) return null;
+  const row = new Map(R.map(r => [r, ev(r, ref.e)])), col = new Map(E.map(e => [e, ev(ref.r, e)]));
+  const okR = R.filter(r => row.get(r).ok), okE = E.filter(e => col.get(e).ok);
+  const widest = (list, results) => list.reduce((best, item) => results.get(item).maxSubtotalCents > results.get(best).maxSubtotalCents ? item : best, list[0]);
+  if (!ev(widest(okR, row), widest(okE, col)).ok) return null;
+  return groups.map(g => {
+    const r = g.selection[rField], e = g.selection[eField], k = key(r, e);
+    if (done.has(k)) return done.get(k);
+    const parts = [row.get(r), col.get(e)].filter(result => !result.ok);
+    if (!parts.length) return { selection:g.selection, ok:true, tierName:row.get(r).tierName, tierIndex:row.get(r).tierIndex, diagnostics:[], reviewReason:null, derived:true };
+    return { selection:g.selection, ok:false, tierName:parts[0].tierName, tierIndex:parts[0].tierIndex, diagnostics:uniqueStatusDiagnostics(parts.flatMap(part => part.diagnostics)), reviewReason:parts[0].reviewReason, derived:true };
+  });
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // All boundary probes within one product must pass; incomplete siblings do not block it.
@@ -557,11 +571,14 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
     const structures=validatePricingStructuresDetailed(service.serviceType,effectivePricing);
-    const products=[...groups.values()].map(scenarios=>{const selection=Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]])),pruned=pruneToSelection(service,effectivePricing,selection);return {selection,...evaluateActivationVariant(pruned.service,pruned.pricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:scenarios})};});
+    const list=[...groups.values()].map(scenarios=>({scenarios,selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]]))}));
+    const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:g.scenarios})});
+    const products=(PAIR_SERVICES.has(service.serviceType)&&pairDerivation&&derivedPairProducts(list,selectors,evaluate))||list.map(evaluate);
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
   const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing });
+  let maxSubtotalCents = 0;
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
@@ -592,6 +609,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     try {
       const template = calculateServiceVNext(service.serviceType, customer.normalized, effectivePricing, { ownerPricing: service, tierName, skipAddon() {} });
       const subtotalCents = template.lineItems.reduce((sum, line) => sum + line.amountCents, 0);
+      if (Number.isSafeInteger(subtotalCents) && subtotalCents > maxSubtotalCents) maxSubtotalCents = subtotalCents;
       if (!Number.isSafeInteger(subtotalCents) || subtotalCents < 0) {
         throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
       }
@@ -632,7 +650,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     tierName,
     tierIndex,
     diagnostics: unique,
-    reviewReason: unique[0]?.message || null
+    reviewReason: unique[0]?.message || null,
+    maxSubtotalCents
   };
 }
 

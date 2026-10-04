@@ -20,12 +20,12 @@ jobs:
         run: npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
       - name: Build owner app and widget
         run: npm --prefix client run build
+      - name: Strict quote engine and price book gate
+        run: npm run test:quote
       - name: Full test suite
         run: node --test --test-reporter=tap test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
-      - name: Quote engine and price book gate (architecture checks; zero failures allowed)
-        run: npm run test:quote
         shell: bash
       - name: Publish test summary to claude/ci-results (push events only)
         if: always() && github.event_name == 'push'

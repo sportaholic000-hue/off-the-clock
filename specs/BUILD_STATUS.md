@@ -168,3 +168,16 @@ Second audit's six findings repaired: AI answer overwrite, readiness repeated pe
 
 F01-F06 and G01 from the October 4 audit repaired. `npm test`: 1,399 tests, 1,388 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 1,007 tests, zero failures. Readiness for a flat-roof catalog: 15 x 15 products about 0.7 s (was about 1.2 s); 40 x 40 still about 4.5 s. Not merged or deployed.
 
+
+## October 4 — four authorized quote / price-book repairs
+
+On audited base `a96a608868332bcd969d04d88af3d5d7af60508c`, branch `codex/quote-smalls-20261004`: customer currency is bound to retained calculation evidence; ambiguous AI answers return clarification without a second generation or draft mutation; manual interview saves preserve newer numeric/structured edits and prevent duplicate saves or premature review; ordinary CI runs the strict quote architecture and zero-failure regression gate. Quote arithmetic, dependency lockfile and engine approval version are unchanged.
+
+Hosted CI passed on code commit `353947fe6ef29af1e4d173bc5eb49103efef0106`: strict quote gate 1,023/1,023 across 44 files, including five actual browser checks and the actual HTTP/SQLite clarification check; full suite 1,404 passed, the same nine known voice failures, two skipped, zero cancelled; existing failure checker and both builds passed. Local non-browser quote regressions: 998 passed, zero failures. Counts overlap. The complete CI result and evidence are recorded in [the scoped repair report](../verification/quote-smalls-20261004/REPORT.md).
+
+Remaining audited findings: failed durable approval may still leave quoting live (F01, launch blocker); shared-file simultaneous writers can lose updates (F02, conditional); larger-catalog cold readiness can block the server thread (F04). These are not repaired by this checkpoint. No merge, deployment, full-phase or public-launch acceptance.
+
+## October 4 remaining-defect repairs (Claude, branch `claude/audit-fixes-2-20261004`)
+
+Combines `claude/audit-fixes-20261003` (853b23f) with Codex's `codex/quote-smalls-20261004` (1075dd1) and repairs the nine remaining defects: a failed recovery save no longer clears an earlier pause; a failed flush after clearing the pause no longer reports a pause; the save lock is never taken from a living holder, is released only by its owner, is re-checked immediately before the book is replaced, and every wait or filesystem error is bounded; overlapping interview confirmations and review during a pending confirmation are blocked; pair readiness (roof and flat-roof replacement) is derived from row/column probes plus the largest-subtotal pair and matches checking every pair (40 x 40 in about 0.6 s locally); per-pair price pruning is removed. `npm run test:quote`: 1,034 tests, 0 failures. `npm test`: 1,426 tests; all pass except the nine known voice failures (plus one test fixed after that run and re-verified in the gate). Not merged or deployed.
+
