@@ -179,3 +179,35 @@ test('QP-05: pitched-roof tier minimum follows the same contract',()=>{
  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
  assert.equal(generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid.finalTotalCents,1935000);
 });
+
+for(const [label,change,path] of [
+ ['invalid material waste',p=>{p.membraneWasteFactor=-1;},'membraneWasteFactor'],
+ ['missing stored factor',p=>{delete p.membraneWasteFactor;},'membraneWasteFactor'],
+ ['missing access factor',p=>{delete p.accessMultiplier.easy;},'accessMultiplier.easy'],
+ ['unsupported price field',p=>{p.unsupportedSyntheticPrice=1;},'unsupportedSyntheticPrice'],
+ ['malformed product map',p=>{p.membraneCostPerSqft={};},'membraneCostPerSqft'],
+ ['negative product rate',p=>{p.membraneCostPerSqft.product_79=-1;},'membraneCostPerSqft.product_79']
+])test('QP-05: shared blocker '+label+' rejects cold catalogs in both modes',()=>{
+ const book=originalCatalog(),s=book.services[0];s.pricing.minimumJob=0;change(s.pricing);
+ for(const firstLiveProduct of [false,true]){
+  const start=performance.now(),status=vNextServiceStatus(s,book.defaults,{firstLiveProduct});
+  assert.equal(status.status,'NEEDS PRICING');assert.ok([...status.missingOwnerFields,...status.invalidOwnerFields].includes(path));
+  assert.ok(performance.now()-start<1500);assert.deepEqual(status.productCoverage,[]);
+ }
+});
+test('QP-05: tier repairs a shared factor without making the broken tier available',()=>{
+ const book=originalCatalog(),s=book.services[0];s.pricing.minimumJob=0;s.pricing.membraneWasteFactor=-1;
+ s.tiers=[{name:'Good',overrides:{}},{name:'Best',overrides:{membraneWasteFactor:0.1}}];
+ for(const firstLiveProduct of [false,true]){
+  const status=vNextServiceStatus(s,book.defaults,{firstLiveProduct});assert.equal(status.status,'QUOTING LIVE');assert.deepEqual(status.validTierNames,['Best']);
+ }
+ const quote=generateQuoteVNext(catalogRequest(book));assert.deepEqual(quote.options.map(o=>o.tierName),['Best']);
+ assert.equal(quote.options[0].calculationRecord.scenarios.mid.finalTotalCents,1550000);
+});
+test('QP-05: missing shared pitched-roof accessory mode does not search products',()=>{
+ const f=scope('roof-underlayment-packages');delete f.ownerPricing.pricing.accessoryPricingMode;
+ for(const firstLiveProduct of [false,true])assert.ok(vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct}).missingOwnerFields.includes('accessoryPricingMode'));
+ f.ownerPricing.tiers=[{name:'Best',overrides:{accessoryPricingMode:'per_square_allin'}}];
+ assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
+ assert.equal(generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid.finalTotalCents,1935000);
+});

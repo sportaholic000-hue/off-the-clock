@@ -562,14 +562,18 @@ function productAxisCoverage(list,[rField,eField],evaluate){
   return [...results.values()];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
-  // A replacement catalog's minimum is shared by every product pair. Reuse
-  // the owner-pricing contract on this tier's already-merged prices before
-  // constructing/searching the Cartesian product. A tier may supply a missing
-  // base minimum; an explicit zero remains the owner's valid no-minimum choice.
-  // Selection-dependent diagnostics from this empty-input probe are discarded.
+  // Reject selection-independent blockers on this tier's already-merged prices
+  // before constructing/searching product pairs. A tier may repair base prices;
+  // explicit zero minima remain valid. The existing selection filter treats
+  // malformed structures as global, but scopes missing map entries to products.
+  // Keep that distinction: an incomplete sibling must not block a live pair.
   if (PAIR_SELECTORS[service.serviceType] && !options.productScenarios) {
-    const diagnostics = validateOwnerPricing(service.serviceType, {}, effectivePricing, service, tierName)
-      .ownerDiagnostics.filter(item => item.kind === 'minimum');
+    const sharedPaths = new Set(['minimumJob', 'accessoryPricingMode', 'materialAccessoryBasis']);
+    const shared = validateOwnerPricing(service.serviceType, {}, effectivePricing, service, tierName)
+      .ownerDiagnostics.filter(item => item.kind === 'class2' || sharedPaths.has(item.path) ||
+        (item.type === 'unsupported' && item.kind === 'field'));
+    const structures = validatePricingStructuresDetailed(service.serviceType, effectivePricing);
+    const diagnostics = uniqueStatusDiagnostics([...shared, ...structures.filter(item => item.type !== 'missing')]);
     if (diagnostics.length) return { ok: false, tierName, tierIndex, diagnostics, reviewReason: diagnostics[0].message };
   }
   // Fee decisions are shared by the entire catalog. Check them once, before

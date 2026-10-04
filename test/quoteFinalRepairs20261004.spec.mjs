@@ -134,7 +134,9 @@ for(const scoped of [false,true])test('N03: interior live pairs keep partial 40 
   console.log('partial 40 x 40 '+(scoped?'commercial':'ordinary')+' owner readiness ms:',Math.round(ms));
 });
 test('N03 control: no live interior pair still returns exact incomplete coverage and the customer check agrees',()=>{
-  const f=catalog(12);f.ownerPricing.pricing.membraneCostPerSqft={};
+  // Keep structurally valid maps but leave each material price unconfigured.
+  // A malformed empty map is a global blocker and now exits before pair search.
+  const f=catalog(12);f.ownerPricing.pricing.membraneCostPerSqft=Object.fromEntries(Object.keys(f.ownerPricing.pricing.membraneCostPerSqft).map(key=>[key,0]));
   const full=vNextServiceStatus(f.ownerPricing,f.businessDefaults),quick=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:true});
   assert.equal(full.status,'NEEDS PRICING');assert.equal(quick.status,full.status);
   assert.equal(full.productCoverage.length,144);assert.ok(full.productCoverage.every(p=>!p.configurationComplete));
