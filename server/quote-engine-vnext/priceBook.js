@@ -521,45 +521,32 @@ function activationMonth(service, defaults) {
   return Array.isArray(months) && months.length ? months[0] : 1;
 }
 
-// Pair services (replacement product x existing product). Their prices are
-// separable: replacement-keyed prices and existing-keyed prices never interact
-// in a quote, and every pair is probed with the same scenario shapes. Readiness
-// therefore checks each replacement product against one complete existing
-// product and each existing product against one complete replacement product,
-// plus the pair with the largest subtotals (money safety is monotone in the
-// subtotal), and derives every other pair from those results. Anything outside
-// those conditions (no complete reference pair, scenario shapes that differ,
-// or a failing largest pair) falls back to evaluating every pair.
-const PAIR_SERVICES = new Set(['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']);
-// Verification switch: tests compare derived readiness with evaluating every pair.
-let pairDerivation = true;
-export function setReadinessPairDerivationForVerification(enabled) { pairDerivation = Boolean(enabled); }
-function scenarioShape(scenarios, selectors) {
-  return JSON.stringify(scenarios.map(scenario => Object.fromEntries(Object.entries(scenario).filter(([key]) => !selectors.includes(key)))));
-}
-function derivedPairProducts(groups, selectors, evaluate) {
-  const [rField, eField] = selectors, key = (r, e) => JSON.stringify([r, e]);
-  const R = [...new Set(groups.map(g => g.selection[rField]))], E = [...new Set(groups.map(g => g.selection[eField]))];
-  const byPair = new Map(groups.map(g => [key(g.selection[rField], g.selection[eField]), g]));
-  if (byPair.size !== R.length * E.length || R.length * E.length < 4) return null;
-  const shape = scenarioShape(groups[0].scenarios, selectors);
-  if (groups.some(g => scenarioShape(g.scenarios, selectors) !== shape)) return null;
-  const done = new Map(), ev = (r, e) => { const k = key(r, e); if (!done.has(k)) done.set(k, evaluate(byPair.get(k))); return done.get(k); };
-  let ref = null;
-  for (const r of R) if (ev(r, E[0]).ok) { ref = { r, e:E[0] }; break; }
-  if (!ref) for (const e of E) if (ev(R[0], e).ok) { ref = { r:R[0], e }; break; }
-  if (!ref) return null;
-  const row = new Map(R.map(r => [r, ev(r, ref.e)])), col = new Map(E.map(e => [e, ev(ref.r, e)]));
-  const okR = R.filter(r => row.get(r).ok), okE = E.filter(e => col.get(e).ok);
-  const widest = (list, results) => list.reduce((best, item) => results.get(item).maxSubtotalCents > results.get(best).maxSubtotalCents ? item : best, list[0]);
-  if (!ev(widest(okR, row), widest(okE, col)).ok) return null;
-  return groups.map(g => {
-    const r = g.selection[rField], e = g.selection[eField], k = key(r, e);
-    if (done.has(k)) return done.get(k);
-    const parts = [row.get(r), col.get(e)].filter(result => !result.ok);
-    if (!parts.length) return { selection:g.selection, ok:true, tierName:row.get(r).tierName, tierIndex:row.get(r).tierIndex, diagnostics:[], reviewReason:null, derived:true };
-    return { selection:g.selection, ok:false, tierName:parts[0].tierName, tierIndex:parts[0].tierIndex, diagnostics:uniqueStatusDiagnostics(parts.flatMap(part => part.diagnostics)), reviewReason:parts[0].reviewReason, derived:true };
-  });
+// Readiness evaluates every product (pair) exactly. Owner-facing status reports
+// coverage for every product; customer-facing checks only need to know whether
+// the service can quote at all, so they may stop at the first live product
+// (options.firstLiveProduct). The answer to "is this service live" is identical
+// either way; only the per-product detail is skipped.
+// Roof and flat-roof replacement are priced per replacement product and per
+// existing product. Up to PAIR_DETAIL_LIMIT combinations, the owner sees every
+// pair checked exactly. Larger catalogs are reported per product instead: each
+// replacement product is checked against a complete existing product and each
+// existing product against a complete replacement product. Every listed result
+// is an exact check; no pair is claimed ready without being checked, and the
+// requested pair is always fully checked when a customer asks for a quote.
+const PAIR_SELECTORS={ROOFING_REPLACEMENT:['replacementRoofType','existingRoofType'],FLAT_ROOF_REPLACEMENT:['replacementMembraneType','membraneType']};
+const PAIR_DETAIL_LIMIT=100;
+function productAxisCoverage(list,[rField,eField],evaluate){
+  const pairs=new Map(list.map(group=>[JSON.stringify([group.selection[rField],group.selection[eField]]),group]));
+  const R=[...new Set(list.map(group=>group.selection[rField]))],E=[...new Set(list.map(group=>group.selection[eField]))];
+  const done=new Map(),check=(r,e)=>{const key=JSON.stringify([r,e]);if(!pairs.has(key))return null;if(!done.has(key))done.set(key,evaluate(pairs.get(key)));return done.get(key);};
+  // Reference partners: a replacement product that quotes with the first existing
+  // product, or an existing product that quotes with the first replacement product.
+  // If neither exists, fall back to checking every pair so a live pair is never missed.
+  let rRef=R.find(r=>check(r,E[0])?.ok),eRef=rRef===undefined?undefined:E[0];
+  if(rRef===undefined){eRef=E.find(e=>check(R[0],e)?.ok);if(eRef!==undefined)rRef=R[0];}
+  if(rRef===undefined)return list.map(group=>check(group.selection[rField],group.selection[eField]));
+  const entry=(field,value,result)=>({...result,selection:{[field]:value}});
+  return [...R.map(r=>entry(rField,r,check(r,eRef))),...E.map(e=>entry(eField,e,check(rRef,e)))];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // All boundary probes within one product must pass; incomplete siblings do not block it.
@@ -573,12 +560,14 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     const structures=validatePricingStructuresDetailed(service.serviceType,effectivePricing);
     const list=[...groups.values()].map(scenarios=>({scenarios,selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]]))}));
     const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:g.scenarios})});
-    const products=(PAIR_SERVICES.has(service.serviceType)&&pairDerivation&&derivedPairProducts(list,selectors,evaluate))||list.map(evaluate);
+    let products=[];
+    const pairSelectors=PAIR_SELECTORS[service.serviceType];
+    if(pairSelectors&&!options.firstLiveProduct&&list.length>PAIR_DETAIL_LIMIT)products=productAxisCoverage(list,pairSelectors,evaluate);
+    else for(const group of list){const product=evaluate(group);products.push(product);if(options.firstLiveProduct&&product.ok)break;}
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
   const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing });
-  let maxSubtotalCents = 0;
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
@@ -609,7 +598,6 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     try {
       const template = calculateServiceVNext(service.serviceType, customer.normalized, effectivePricing, { ownerPricing: service, tierName, skipAddon() {} });
       const subtotalCents = template.lineItems.reduce((sum, line) => sum + line.amountCents, 0);
-      if (Number.isSafeInteger(subtotalCents) && subtotalCents > maxSubtotalCents) maxSubtotalCents = subtotalCents;
       if (!Number.isSafeInteger(subtotalCents) || subtotalCents < 0) {
         throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
       }
@@ -650,8 +638,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     tierName,
     tierIndex,
     diagnostics: unique,
-    reviewReason: unique[0]?.message || null,
-    maxSubtotalCents
+    reviewReason: unique[0]?.message || null
   };
 }
 

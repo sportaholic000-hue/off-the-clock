@@ -12,8 +12,7 @@ import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
   saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
   calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName,
-  requireApplicationPricingEnvelope, applicationServiceDefinition
-} from './quoteDoneBridge.js';
+  requireApplicationPricingEnvelope, applicationServiceDefinition, bookQuoteStatuses } from './quoteDoneBridge.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
@@ -241,7 +240,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   });
   app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
     const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
-    const statuses=new Map(bookStatuses(book).map(status=>[status.serviceId,status]));
+    const statuses=new Map(bookQuoteStatuses(book).map(status=>[status.serviceId,status]));
     const services=book.services
       .filter(service=>uuid(service.id)&&meta.services.some(m=>m.serviceType===service.serviceType)&&statuses.get(service.id)?.status==='QUOTING LIVE')
       .map(service=>customerCatalogService(

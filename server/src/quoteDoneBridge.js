@@ -163,10 +163,10 @@ function uniqueApplicationService(book,serviceId) {
   if(matches.length>1)throw problem('Duplicate saved service IDs require owner correction before approval or preview.',409);
   return matches[0]||null;
 }
-export function applicationStatus(raw,book) {
+export function applicationStatus(raw,book,{firstLiveProduct=false}={}) {
   if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],approvalCurrent:false};
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
-  const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{}});
+  const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct});
   const issues=[];
   // Every quote states its currency, so a price book without CAD or USD cannot quote.
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
@@ -184,17 +184,21 @@ export function readApplicationBook(ownerId) {
 // computed once per saved revision instead of on every quote. Any save changes
 // the revision; the selected job is still fully validated on every request.
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
-export function cachedApplicationStatus(raw,book) {
-  const key=ENGINE_VERSION+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+// quick: customer-facing checks only need to know whether the service quotes at
+// all, so readiness stops at the first live product (same live/not-live answer).
+export function cachedApplicationStatus(raw,book,{quick=false}={}) {
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
   if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
   statusCacheCounts.misses++;
-  const status=applicationStatus(raw,book);
+  const status=applicationStatus(raw,book,{firstLiveProduct:quick});
   statusCache.set(key,clone(status));
   if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
   return status;
 }
 export function applicationStatusCacheCounts() { return {...statusCacheCounts}; }
 export function bookStatuses(book) { return (book.services||[]).map(service=>cachedApplicationStatus(service,book)); }
+// Customer-facing catalog and scheduling: live/not-live only.
+export function bookQuoteStatuses(book) { return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{quick:true})); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
 function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409); }
 function validateApplicationNumericDraft(book) {
@@ -320,7 +324,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
-  const eligibility=cachedApplicationStatus(raw,book),current=eligibility.approvalCurrent;
+  const eligibility=cachedApplicationStatus(raw,book,{quick:true}),current=eligibility.approvalCurrent;
   const ready=eligibility.status==='QUOTING LIVE';
   // Active-for-customers is a trusted application eligibility decision. Preserve
   // raw owner intent separately; never change a rate or measurement to make it quote.

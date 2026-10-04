@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { loadPricebook } from '../priceBookService.js';
-import { bookStatuses } from './quoteDoneBridge.js';
+import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
 import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
 import { serviceAreaFromKnowledgeBase } from './serviceArea.js';
 
@@ -254,7 +254,7 @@ export function validateWidgetSettingsInput(value, { allowInsecureLoopback = pro
 function defaultLoadServiceCatalog(ownerId) {
   const book = loadPricebook(ownerId);
   const statuses = new Map(
-    bookStatuses(book).map(status => [String(status.serviceId).toLowerCase(), status.status])
+    bookQuoteStatuses(book).map(status => [String(status.serviceId).toLowerCase(), status.status])
   );
   return {
     services: (Array.isArray(book.services) ? book.services : []).map(service => ({

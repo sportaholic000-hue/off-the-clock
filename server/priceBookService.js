@@ -1,9 +1,9 @@
+import Database from 'better-sqlite3';
 import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, existsSync, statSync } from 'node:fs';
 import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
-import { hostname } from 'node:os';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
 import { getActivationOwnerFields, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
@@ -114,58 +114,56 @@ export function writePricebookFile(directory, ownerId, serialized, ops = default
   try { flushDirectory(directory, ops); } catch { /* the replacement is durable; see the rules above */ }
 }
 
-// Saves are read-check-write sequences. Holding this per-owner lock across the
-// whole sequence makes the revision check a compare-and-swap across processes:
-// a second writer waits briefly, then gets a conflict instead of silently
-// overwriting the first writer's change. Lock rules:
-// - The lock records its holder (host, process id, unique token).
-// - A lock is taken over only when its holder is a process on this host that no
-//   longer exists, or its record is unreadable 30 seconds after it was written
-//   (a writer that crashed mid-write). A lock held by a living process, or by
-//   another host, is never taken: the waiter gets a conflict.
-// - A holder removes the lock only if it still holds its own token.
-// - Any unexpected filesystem error fails the save; waiting is always bounded.
-const LOCK_WAIT_MS = 2000, LOCK_UNREADABLE_MS = 30000;
-const lockHost = hostname();
-function holderGone(record) {
-  if (!record || record.host !== lockHost || !Number.isSafeInteger(record.pid)) return false;
-  try { process.kill(record.pid, 0); return false; } catch (error) { return error.code === 'ESRCH'; }
+// Saves are read-check-write sequences. Every save runs inside one exclusive
+// write transaction on a small SQLite file in the price-book directory. SQLite's
+// lock is an operating-system file lock: only one process can hold it, a second
+// writer waits up to 2 seconds and then gets a conflict, and the lock is released
+// automatically if its holder crashes or is killed. There are no lock files to
+// recover, take over or clean up, so a recovering writer can never overwrite a
+// save that already succeeded. (Lock files written by earlier versions are ignored.)
+// The guarantee assumes a local filesystem, which is how the app is deployed.
+const SAVE_WAIT_MS = 2000;
+const heldSaves = new Set();
+let saveMutex = null, saveMutexInode = null;
+function saveMutexDb() {
+  // Kept beside (not inside) the price-book directory so the directory holds only books.
+  const file = resolve(dir) + '.saves.sqlite';
+  // If the lock file was deleted or replaced while running, reopen it so every
+  // process locks the same file.
+  let inode = null; try { inode = statSync(file).ino; } catch { inode = null; }
+  if (saveMutex && inode !== saveMutexInode) { try { saveMutex.close(); } catch {} saveMutex = null; }
+  if (!saveMutex) {
+    mkdirSync(dir, { recursive: true });
+    saveMutex = new Database(file);
+    saveMutex.pragma(`busy_timeout = ${SAVE_WAIT_MS}`);
+    saveMutex.exec('CREATE TABLE IF NOT EXISTS last_save (id INTEGER PRIMARY KEY CHECK (id = 1), owner TEXT NOT NULL, at TEXT NOT NULL)');
+    saveMutexInode = statSync(file).ino;
+  }
+  return saveMutex;
 }
-// Locks held by this process, so a save can confirm it still owns its lock
-// immediately before replacing the book, and nested use does not wait on itself.
-const heldLocks = new Map();
-export function withPricebookLock(ownerId, work, { waitMs = LOCK_WAIT_MS } = {}) {
-  if (heldLocks.has(ownerId)) return work();
-  mkdirSync(dir, { recursive: true });
-  const lock = resolve(dir, `${ownerId}.lock`), token = crypto.randomUUID(), started = Date.now(), sleeper = new Int32Array(new SharedArrayBuffer(4));
-  const busy = () => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409 });
-  for (;;) {
-    try { writeFileSync(lock, JSON.stringify({ host:lockHost, pid:process.pid, token }), { flag: 'wx' }); break; }
-    catch (error) { if (error.code !== 'EEXIST') throw error; }
-    let text, written;
-    try { text = readFileSync(lock, 'utf8'); written = statSync(lock).mtimeMs; }
-    catch (error) { if (error.code !== 'ENOENT') throw error; text = null; }
-    if (text !== null) {
-      let record = null; try { record = JSON.parse(text); } catch {}
-      const abandoned = record ? holderGone(record) : Date.now() - written > LOCK_UNREADABLE_MS;
-      if (abandoned) {
-        try { if (readFileSync(lock, 'utf8') === text) unlinkSync(lock); }
-        catch (error) { if (error.code !== 'ENOENT') throw error; }
-      }
-    }
-    if (Date.now() - started >= waitMs) throw busy();
-    Atomics.wait(sleeper, 0, 0, 25);
-  }
-  heldLocks.set(ownerId, { lock, token });
-  try { return work(); }
-  finally {
-    heldLocks.delete(ownerId);
-    try { const current = JSON.parse(readFileSync(lock, 'utf8')); if (current.token === token) unlinkSync(lock); }
-    catch { /* not ours any more, or already gone */ }
-  }
+const busySave = cause => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409, cause });
+export function withPricebookLock(ownerId, work) {
+  if (heldSaves.size) return work();   // already inside this process's save transaction
+  const db = saveMutexDb();
+  try { db.exec('BEGIN IMMEDIATE'); }
+  catch (error) { if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') throw busySave(error); throw error; }
+  heldSaves.add(ownerId);
+  try {
+    db.prepare('INSERT OR REPLACE INTO last_save (id, owner, at) VALUES (1, ?, ?)').run(String(ownerId), new Date().toISOString());
+    const result = work();
+    // The lock covers synchronous work only; an asynchronous callback would outlive it.
+    if (result && typeof result.then === 'function') throw new Error('Price-book saves must run synchronously inside the save lock.');
+    db.exec('COMMIT');
+    return result;
+  } catch (error) {
+    try { db.exec('ROLLBACK'); } catch { /* already rolled back */ }
+    throw error;
+  } finally { heldSaves.delete(ownerId); }
 }
 
 export function savePricebook(ownerId, data) {
+  // Every write is serialized, even from a caller that did not take the lock itself.
+  if (!heldSaves.size) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
@@ -178,12 +176,7 @@ export function savePricebook(ownerId, data) {
   };
   // A failed write, rename or directory flush must never truncate the last
   // accepted owner data or report an unconfirmed save as successful.
-  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2), defaultFileOps, () => {
-    const held = heldLocks.get(ownerId);
-    if (!held) return;
-    let current = null; try { current = JSON.parse(readFileSync(held.lock, 'utf8')); } catch {}
-    if (current?.token !== held.token) throw Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409 });
-  });
+  writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2));
   return { success: true, pricebook: next };
 }
 

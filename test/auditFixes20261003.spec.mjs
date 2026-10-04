@@ -405,28 +405,47 @@ test('Defect 2: when only the flush after clearing the pause fails, the save suc
   assert.equal(fs.existsSync(path.join(d, id + '.unconfirmed')), true, 'the message matches reality: still paused');
 });
 
-test('Defects 3-5: a living holder is never robbed, a stale holder never deletes its successor, errors and waits are bounded', () => {
-  const owner = 'lock-' + crypto.randomUUID(), lock = path.join(process.env.PRICEBOOK_PATH, owner + '.lock');
-  fs.writeFileSync(lock, JSON.stringify({ host:os.hostname(), pid:process.pid, token:'living' }));
-  fs.utimesSync(lock, new Date(Date.now() - 3600_000), new Date(Date.now() - 3600_000));   // old, but its holder is alive
-  const started = Date.now();
-  assert.throws(() => store.withPricebookLock(owner, () => 'ran', { waitMs:200 }), { code:'PRICEBOOK_BUSY' });
-  assert.ok(Date.now() - started < 2000, 'waiting is bounded');
-  assert.equal(JSON.parse(fs.readFileSync(lock, 'utf8')).token, 'living', 'the living holder keeps its lock');
-  const dead = spawnSync(process.execPath, ['-e', 'console.log(process.pid)'], { encoding:'utf8' }).stdout.trim();
-  fs.writeFileSync(lock, JSON.stringify({ host:os.hostname(), pid:Number(dead), token:'dead' }));
-  assert.equal(store.withPricebookLock(owner, () => 'ran'), 'ran', 'a lock whose process is gone is taken over');
-  assert.equal(fs.existsSync(lock), false);
-  // A holder whose lock was replaced does not delete the successor's lock, and its save does not replace the book.
-  const svc = live(fenceSvc()), current = bridge.readApplicationBook(svc.ownerId), successor = JSON.stringify({ host:'other-host', pid:1, token:'successor' });
-  const lockFile = path.join(process.env.PRICEBOOK_PATH, svc.ownerId + '.lock');
-  assert.throws(() => store.withPricebookLock(svc.ownerId, () => { fs.writeFileSync(lockFile, successor); return bridge.saveApplicationBook(svc.ownerId, { revision:current.revision, services:current.services, defaults:{ ...current.defaults, travelFee:7 } }); }), { code:'PRICEBOOK_BUSY' });
-  assert.equal(fs.readFileSync(lockFile, 'utf8'), successor, "the successor's lock is untouched");
-  assert.equal(bridge.readApplicationBook(svc.ownerId).defaults.travelFee, 0, 'the save that lost its lock changed nothing');
-  fs.unlinkSync(lockFile);
-  fs.mkdirSync(lock);   // an unreadable lock path fails immediately instead of looping
-  assert.throws(() => store.withPricebookLock(owner, () => 'ran', { waitMs:60_000 }), error => error.code === 'EISDIR');
-  fs.rmdirSync(lock);
+const { spawn } = await import('node:child_process');
+const holdSaveLock = (mode) => new Promise((resolve, reject) => {
+  // A separate process takes the save lock exactly as the app does, then either keeps it (alive) or crashes holding it.
+  const script = `const Database=(await import('better-sqlite3')).default;const db=new Database(${JSON.stringify(path.resolve(process.env.PRICEBOOK_PATH) + '.saves.sqlite')});db.pragma('busy_timeout = 2000');db.exec('CREATE TABLE IF NOT EXISTS last_save (id INTEGER PRIMARY KEY CHECK (id = 1), owner TEXT NOT NULL, at TEXT NOT NULL)');db.exec('BEGIN IMMEDIATE');console.log('locked');${mode === 'crash' ? "process.kill(process.pid,'SIGKILL');" : "globalThis.held=db;setTimeout(()=>{globalThis.held.close();process.exit(0);},3500);"}`;
+  const child = spawn(process.execPath, ['--input-type=module', '-e', script], { cwd:path.dirname(new URL(import.meta.url).pathname) + '/..', stdio:['ignore', 'pipe', 'inherit'] });
+  child.stdout.on('data', chunk => { if (String(chunk).includes('locked')) resolve(child); });
+  child.on('error', reject);
+});
+const exited = child => new Promise(resolve => { if (child.exitCode !== null || child.signalCode) resolve(); else child.on('exit', () => resolve()); });
+
+test('Save lock: a living holder is never overridden, a crashed holder releases at once, old lock files are ignored, no lock files are created', async () => {
+  const svc = live(fenceSvc());
+  const holder = await holdSaveLock('alive');
+  const current = bridge.readApplicationBook(svc.ownerId), started = Date.now();
+  assert.throws(() => bridge.saveApplicationBook(svc.ownerId, { revision:current.revision, services:current.services, defaults:{ ...current.defaults, travelFee:9 } }), { code:'PRICEBOOK_BUSY' });
+  assert.ok(Date.now() - started < 3000, 'waiting is bounded');
+  await exited(holder);
+  const crashed = await holdSaveLock('crash');
+  await exited(crashed);
+  fs.writeFileSync(path.join(process.env.PRICEBOOK_PATH, svc.ownerId + '.lock'), '12345');   // lock file from the previous version
+  const afterCrash = bridge.readApplicationBook(svc.ownerId), quick = Date.now();
+  bridge.saveApplicationBook(svc.ownerId, { revision:afterCrash.revision, services:afterCrash.services, defaults:{ ...afterCrash.defaults, travelFee:9 } });
+  assert.ok(Date.now() - quick < 1500, 'a crashed holder does not block saves');
+  assert.equal(bridge.readApplicationBook(svc.ownerId).defaults.travelFee, 9);
+  assert.deepEqual(fs.readdirSync(process.env.PRICEBOOK_PATH).filter(name => name.startsWith(svc.ownerId) && name.endsWith('.lock')), [svc.ownerId + '.lock'], 'saves create no lock files');
+});
+
+test('Save lock: two processes saving the same revision produce one saved edit and one refusal, never a silent overwrite', async () => {
+  const svc = live(fenceSvc()), base = bridge.readApplicationBook(svc.ownerId);
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'pair-')), bridgeUrl = new URL('../server/src/quoteDoneBridge.js', import.meta.url).href;
+  const run = (label, change) => new Promise(resolve => {
+    const file = path.join(work, label + '.json'), book = structuredClone(base); change(book); fs.writeFileSync(file, JSON.stringify(book));
+    const child = spawn(process.execPath, ['--input-type=module', '-e', `const b=await import(${JSON.stringify(bridgeUrl)});const fs=await import('node:fs');try{b.saveApplicationBook(${JSON.stringify(svc.ownerId)},JSON.parse(fs.readFileSync(${JSON.stringify(file)},'utf8')));console.log('saved');}catch(e){console.log('refused:'+e.statusCode);}`], { env:process.env, stdio:['ignore', 'pipe', 'inherit'] });
+    let out = ''; child.stdout.on('data', c => { out += c; }); child.on('exit', () => resolve(out.trim()));
+  });
+  const results = await Promise.all([run('a', b => { b.services[0].pricing.offeringRates.installedFencePerLF = 41; }), run('b', b => { b.defaults.travelFee = 9; })]);
+  assert.equal(results.filter(r => r === 'saved').length, 1, JSON.stringify(results));
+  assert.equal(results.filter(r => r.startsWith('refused:409')).length, 1, JSON.stringify(results));
+  const final = bridge.readApplicationBook(svc.ownerId);
+  const priceSaved = final.services[0].pricing.offeringRates.installedFencePerLF === 41, feeSaved = final.defaults.travelFee === 9;
+  assert.equal(priceSaved !== feeSaved, true, 'exactly the accepted edit is in the book');
 });
 
 const { flatRoof:flatRoofFixture } = await import('../verification/engine-independent/fixtures.mjs');
@@ -442,27 +461,45 @@ function flatCatalog(replacements, existing, tweak = () => {}) {
 }
 const coverage = status => JSON.stringify({ status:status.status, errors:[...status.validationErrors].sort(), pairs:(status.productCoverage || []).map(p => [JSON.stringify(p.selection), p.ok ?? p.status ?? p.configurationComplete]).sort() });
 
-test('Defects 8 and 9: derived pair readiness matches checking every pair across gaps and malformed data, per-pair pruning is gone, and 40 x 40 is fast', () => {
+test('Readiness: every pair is checked exactly; the customer-facing check stops at the first live product with the same answer and stays fast', () => {
   const cases = {
     complete:flatCatalog(4, 4),
-    'replacement missing material':flatCatalog(4, 4, s => { delete s.pricing.membraneCostPerSqft.r2; }),
-    'existing missing tear-off':flatCatalog(4, 4, s => { delete s.pricing.tearOffPerSqft.e1; }),
-    'malformed sibling':flatCatalog(4, 4, s => { s.pricing.tearOffPerSqft.e3 = -1; }),
-    'unregistered price key':flatCatalog(3, 5, s => { s.pricing.laborPerSqft.ghost = 400; })
+    'first product incomplete':flatCatalog(4, 4, s => { delete s.pricing.membraneCostPerSqft.r0; }),
+    'only the last product complete':flatCatalog(3, 3, s => { delete s.pricing.membraneCostPerSqft.r0; delete s.pricing.membraneCostPerSqft.r1; }),
+    'nothing complete':flatCatalog(3, 3, s => { for (const k of Object.keys(s.pricing.membraneCostPerSqft)) delete s.pricing.membraneCostPerSqft[k]; }),
+    'malformed sibling':flatCatalog(4, 4, s => { s.pricing.tearOffPerSqft.e3 = -1; })
   };
   for (const [name, { service, defaults }] of Object.entries(cases)) {
-    readiness.setReadinessPairDerivationForVerification(true); const derived = readiness.vNextServiceStatus(structuredClone(service), defaults);
-    readiness.setReadinessPairDerivationForVerification(false); const full = readiness.vNextServiceStatus(structuredClone(service), defaults);
-    readiness.setReadinessPairDerivationForVerification(true);
-    assert.equal(coverage(derived), coverage(full), name);
+    const full = readiness.vNextServiceStatus(structuredClone(service), defaults), quick = readiness.vNextServiceStatus(structuredClone(service), defaults, { firstLiveProduct:true });
+    assert.equal(quick.status, full.status, name);
+    if (full.status !== 'QUOTING LIVE') assert.deepEqual([...quick.validationErrors].sort(), [...full.validationErrors].sort(), name + ': same reasons when not live');
   }
-  assert.equal(readiness.vNextServiceStatus(cases.complete.service, cases.complete.defaults).status, 'QUOTING LIVE');
-  assert.equal(readiness.vNextServiceStatus(cases['replacement missing material'].service, cases['replacement missing material'].defaults).status, 'QUOTING LIVE', 'an incomplete sibling does not block the rest');
-  assert.equal(readiness.vNextServiceStatus(cases['malformed sibling'].service, cases['malformed sibling'].defaults).status, 'NEEDS PRICING', 'malformed data still fails closed');
-  assert.equal(/pruneToSelection/.test(fs.readFileSync(new URL('../server/quote-engine-vnext/priceBook.js', import.meta.url), 'utf8')), false, 'per-pair price pruning (which broke included prices) is gone');
-  const big = flatCatalog(40, 40), started = performance.now(), status = readiness.vNextServiceStatus(big.service, big.defaults), ms = performance.now() - started;
-  assert.equal(status.status, 'QUOTING LIVE');
-  assert.equal(status.productCoverage.length, 1600, 'every pair is still reported');
-  assert.ok(ms < 1500, `40 x 40 readiness took ${Math.round(ms)} ms`);
-  console.log('40 x 40 readiness ms:', Math.round(ms));
+  assert.equal(readiness.vNextServiceStatus(cases.complete.service, cases.complete.defaults).productCoverage.length, 16, 'owner view covers every pair');
+  assert.equal(/derivedPairProducts|pruneToSelection/.test(fs.readFileSync(new URL('../server/quote-engine-vnext/priceBook.js', import.meta.url), 'utf8')), false, 'no shortcut or pruning remains');
+  const big = flatCatalog(40, 40), started = performance.now(), quick = readiness.vNextServiceStatus(big.service, big.defaults, { firstLiveProduct:true }), ms = performance.now() - started;
+  assert.equal(quick.status, 'QUOTING LIVE');
+  assert.ok(ms < 500, `customer-facing 40 x 40 check took ${Math.round(ms)} ms`);
+  console.log('customer-facing 40 x 40 readiness ms:', Math.round(ms));
+});
+
+test('Readiness for large pair catalogs: per-product owner coverage is exact, never misses a live pair, and stays under a second', () => {
+  const statusOf = (service, defaults, quick) => readiness.vNextServiceStatus(structuredClone(service), defaults, quick ? { firstLiveProduct:true } : {});
+  const variants = {
+    complete:flatCatalog(12, 12),
+    'first replacement and first existing unusable':flatCatalog(12, 12, s => { delete s.pricing.membraneCostPerSqft.r0; delete s.pricing.tearOffPerSqft.e0; }),
+    'one replacement and one existing missing':flatCatalog(12, 12, s => { delete s.pricing.membraneCostPerSqft.r5; delete s.knownOfferings.membraneType.e7; }),
+    'nothing complete':flatCatalog(11, 11, s => { for (const k of Object.keys(s.pricing.membraneCostPerSqft)) delete s.pricing.membraneCostPerSqft[k]; })
+  };
+  for (const [name, { service, defaults }] of Object.entries(variants)) {
+    const owner = statusOf(service, defaults, false), customer = statusOf(service, defaults, true);
+    assert.equal(owner.status, customer.status, name + ': owner and customer views agree on live/not live');
+  }
+  const partial = statusOf(variants['one replacement and one existing missing'].service, variants['one replacement and one existing missing'].defaults, false);
+  const flagged = partial.productCoverage.filter(p => !p.configurationComplete).map(p => Object.values(p.selection)[0]).sort();
+  assert.deepEqual(flagged, ['e7', 'r5'], 'exactly the incomplete products are flagged');
+  const big = flatCatalog(40, 40), started = performance.now(), owner = statusOf(big.service, big.defaults, false), ms = performance.now() - started;
+  assert.equal(owner.status, 'QUOTING LIVE');
+  assert.equal(owner.productCoverage.length, 80, 'per-product coverage for a 1,600-pair catalog');
+  assert.ok(ms < 2000, `owner-facing 40 x 40 readiness took ${Math.round(ms)} ms`);
+  console.log('owner-facing 40 x 40 readiness ms:', Math.round(ms));
 });
