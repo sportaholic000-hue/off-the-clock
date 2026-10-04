@@ -1,0 +1,264 @@
+{
+  "cases": 65,
+  "quoteComparisons": 130,
+  "quoteDifferences": 0,
+  "statusComparisons": 65,
+  "unexplainedStatusDifferences": 0,
+  "normalizedQuoteFields": [
+    "quoteId"
+  ],
+  "expectedStatusChanges": [
+    {
+      "id": "FENCING_INSTALL-installed-control",
+      "addedCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "FENCING_INSTALL-itemized-control",
+      "addedCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "FENCING_REPLACEMENT-installed-control",
+      "addedCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        },
+        {
+          "key": "removal_prices",
+          "label": "Fence removal",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "FENCING_REPLACEMENT-itemized-control",
+      "addedCoverage": [
+        {
+          "key": "gate_prices_walk",
+          "label": "Installed gate: walk",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        },
+        {
+          "key": "removal_prices",
+          "label": "Fence removal",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "INTERIOR_PAINTING-installed-control",
+      "addedCoverage": [
+        {
+          "key": "ceiling_prices",
+          "label": "Ceiling painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        },
+        {
+          "key": "trim_prices",
+          "label": "Trim painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "INTERIOR_PAINTING-itemized-control",
+      "addedCoverage": [
+        {
+          "key": "ceiling_prices",
+          "label": "Ceiling painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        },
+        {
+          "key": "trim_prices",
+          "label": "Trim painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    },
+    {
+      "id": "painting-itemized-cost-basis",
+      "addedCoverage": [
+        {
+          "key": "ceiling_prices",
+          "label": "Ceiling painting included",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "offeringRates.prepLaborPerSqft_good",
+                "scopeDetails.paint_wall",
+                "scopeDetails.paint_primer",
+                "scopeDetails.paint_prep",
+                "scopeDetails.paint_ceiling",
+                "scopeDetails.paint_ceiling_primer"
+              ]
+            }
+          ],
+          "message": "Ceiling painting included requests arrive as leads until you configure this scope and its prices."
+        },
+        {
+          "key": "trim_prices",
+          "label": "Trim painting included",
+          "configurationComplete": false,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": [
+                "offeringRates.prepLaborPerSqft_good",
+                "scopeDetails.paint_wall",
+                "scopeDetails.paint_primer",
+                "scopeDetails.paint_prep"
+              ]
+            }
+          ],
+          "message": "Trim painting included requests arrive as leads until you configure this scope and its prices."
+        }
+      ],
+      "movedFromBaseBlockersToCoverage": [
+        "scopeDetails.paint_ceiling",
+        "scopeDetails.paint_ceiling_primer"
+      ]
+    },
+    {
+      "id": "paint-cost-packages",
+      "addedCoverage": [
+        {
+          "key": "ceiling_prices",
+          "label": "Ceiling painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        },
+        {
+          "key": "trim_prices",
+          "label": "Trim painting included",
+          "configurationComplete": true,
+          "setupSection": "optional_prices",
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": true,
+              "missingFields": []
+            }
+          ],
+          "message": "Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete."
+        }
+      ]
+    }
+  ]
+}

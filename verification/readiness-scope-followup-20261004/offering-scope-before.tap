@@ -1,0 +1,536 @@
+TAP version 13
+# Subtest: Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+not ok 1 - Offering optional INTERIOR_PAINTING installed ceiling prices do not disable base work
+  ---
+  duration_ms: 32.955842
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:27:85)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+not ok 2 - Offering optional INTERIOR_PAINTING installed trim prices do not disable base work
+  ---
+  duration_ms: 11.389071
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:27:85)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Offering optional FENCING_INSTALL installed gate prices do not disable base work
+not ok 3 - Offering optional FENCING_INSTALL installed gate prices do not disable base work
+  ---
+  duration_ms: 9.004512
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+not ok 4 - Offering optional FENCING_REPLACEMENT installed gate prices do not disable base work
+  ---
+  duration_ms: 10.794107
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+not ok 5 - Offering optional FENCING_REPLACEMENT installed removal prices do not disable base work
+  ---
+  duration_ms: 9.531863
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+not ok 6 - Offering optional INTERIOR_PAINTING itemized ceiling prices do not disable base work
+  ---
+  duration_ms: 16.627177
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:27:85)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+not ok 7 - Offering optional INTERIOR_PAINTING itemized trim prices do not disable base work
+  ---
+  duration_ms: 14.755608
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'NEEDS PRICING'
+    - 'QUOTING LIVE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'QUOTING LIVE'
+  actual: 'NEEDS PRICING'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:27:85)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+not ok 8 - Offering optional FENCING_INSTALL itemized gate prices do not disable base work
+  ---
+  duration_ms: 9.311778
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+not ok 9 - Offering optional FENCING_REPLACEMENT itemized gate prices do not disable base work
+  ---
+  duration_ms: 13.456797
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+not ok 10 - Offering optional FENCING_REPLACEMENT itemized removal prices do not disable base work
+  ---
+  duration_ms: 12.55539
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:15:225'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'configurationComplete')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:29:61)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+not ok 11 - Shared paint purchase group: unfinished paint_ceiling.price does not contradict wall prices
+  ---
+  duration_ms: 5.978241
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"ea384a79-34ba-43db-ae65-29e052084dc5","quoteId":"d5ad6c77-46dc-4d4b-9b74-8c284783844d","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.paint_ceiling"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.paint_ceiling","message":"Ceiling finish materials needs an explicit owner price."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.paint_ceiling"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.paint_ceiling","message":"Ceiling finish materials needs an explicit owner price."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Ceiling finish materials needs an explicit owner price.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Ceiling finish materials needs an explicit owner price.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+not ok 12 - Shared paint purchase group: unfinished paint_ceiling.coverage does not contradict wall prices
+  ---
+  duration_ms: 4.241926
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"4f0115cb-a4a1-492a-be01-8c11e29ebe10","quoteId":"81e96675-2cfa-4297-8a21-65b5b4379a8a","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.coverage"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.coverage","message":"Coverage per purchased package must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.coverage"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.coverage","message":"Coverage per purchased package must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Coverage per purchased package must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Coverage per purchased package must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+not ok 13 - Shared paint purchase group: unfinished paint_ceiling.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 4.407358
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"81ba8fe2-b165-410e-b643-8352f9002891","quoteId":"5f7ffd32-16b0-4c08-8442-a8725a1aad8c","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.wastePercent"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.wastePercent","message":"Ordering waste allowance must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.wastePercent"],"invalidOwnerFields":["scopeDetails.paint_ceiling.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.wastePercent","message":"Ordering waste allowance must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Ordering waste allowance must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Ordering waste allowance must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+not ok 14 - Shared paint purchase group: unfinished paint_ceiling.description does not contradict wall prices
+  ---
+  duration_ms: 3.359137
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"d114edea-84d8-42c1-850c-25d27e811590","quoteId":"eb33758a-6587-4fed-b46d-d0aafdf532f3","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.description"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.description","message":"Included work and product specification must be explicitly configured."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.description"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.description","message":"Included work and product specification must be explicitly configured."}],"ownerDecisionRequired":[],"validationMessages":["Included work and product specification must be explicitly configured."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Included work and product specification must be explicitly configured."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+not ok 15 - Shared paint purchase group: unfinished paint_ceiling.productKey does not contradict wall prices
+  ---
+  duration_ms: 4.81095
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"f5a4ca83-50c3-4f77-a4bd-2b0bbec33432","quoteId":"df53e30c-f4e9-423b-92d8-a4020b1de474","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.productKey"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"Product and variant purchase group must be explicitly configured."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling.productKey"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling.productKey","message":"Product and variant purchase group must be explicitly configured."}],"ownerDecisionRequired":[],"validationMessages":["Product and variant purchase group must be explicitly configured."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Product and variant purchase group must be explicitly configured."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+not ok 16 - Shared paint purchase group: unfinished paint_ceiling_primer.price does not contradict wall prices
+  ---
+  duration_ms: 3.417505
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"6e97d68e-d10e-4d9c-84b9-39e7588f8430","quoteId":"ee82bbd6-dd3e-4c7a-a3e4-2a5b74999dcb","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.paint_ceiling_primer"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.paint_ceiling_primer","message":"Ceiling primer materials needs an explicit owner price."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.paint_ceiling_primer"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.paint_ceiling_primer","message":"Ceiling primer materials needs an explicit owner price."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Ceiling primer materials needs an explicit owner price.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Ceiling primer materials needs an explicit owner price.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+not ok 17 - Shared paint purchase group: unfinished paint_ceiling_primer.coverage does not contradict wall prices
+  ---
+  duration_ms: 3.957144
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"b274c311-1564-4439-9311-ca659a3aa848","quoteId":"9fdefc19-6908-4a1c-9340-985e2d5c5276","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.coverage"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.coverage","message":"Coverage per purchased package must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.coverage"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.coverage","message":"Coverage per purchased package must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Coverage per purchased package must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Coverage per purchased package must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+not ok 18 - Shared paint purchase group: unfinished paint_ceiling_primer.wastePercent does not contradict wall prices
+  ---
+  duration_ms: 3.748377
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"94f1749d-3dca-4f45-a73f-c449d6725bd2","quoteId":"0ec14232-94e5-41d6-8bd5-36f7097983dc","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.wastePercent"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.wastePercent","message":"Ordering waste allowance must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.wastePercent"],"invalidOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.wastePercent","message":"Ordering waste allowance must be explicitly configured."},{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"A shared purchase group must use the same product, unit, coverage, waste allowance and package price."}],"ownerDecisionRequired":[],"validationMessages":["Ordering waste allowance must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Ordering waste allowance must be explicitly configured.","A shared purchase group must use the same product, unit, coverage, waste allowance and package price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+not ok 19 - Shared paint purchase group: unfinished paint_ceiling_primer.description does not contradict wall prices
+  ---
+  duration_ms: 3.753455
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"463dfc38-a69a-4944-b47f-8eec2cd38a5e","quoteId":"18640e4a-2ef2-471b-a73d-d40a221042d6","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.description"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.description","message":"Included work and product specification must be explicitly configured."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.description"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.description","message":"Included work and product specification must be explicitly configured."}],"ownerDecisionRequired":[],"validationMessages":["Included work and product specification must be explicitly configured."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Included work and product specification must be explicitly configured."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+not ok 20 - Shared paint purchase group: unfinished paint_ceiling_primer.productKey does not contradict wall prices
+  ---
+  duration_ms: 3.352156
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:33:141'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"d9c0879b-16b5-4ff9-82a6-0f174db582f5","quoteId":"af3baaa7-5be5-4b08-9c32-9d9f77abe62e","serviceType":"INTERIOR_PAINTING","submittedCustomerInputs":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"Product and variant purchase group must be explicitly configured."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeDetails.paint_ceiling_primer.productKey"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeDetails.paint_ceiling_primer.productKey","message":"Product and variant purchase group must be explicitly configured."}],"ownerDecisionRequired":[],"validationMessages":["Product and variant purchase group must be explicitly configured."],"normalizedScope":{"areaInputMethod":"wall_sqft","wallAreaSqft":500,"coats":2,"surfaceCondition":"fair","wallHeight":"standard","wallScopeUniform":true,"ceilingsIncluded":false,"trimIncluded":false,"paintProductsConfirmed":true},"validatedMeasurements":[{"name":"wallAreaSqft","value":500,"unit":"square feet"},{"name":"coats","value":2,"unit":"coats"}],"inspectionFirst":false}],"validationMessages":["Product and variant purchase group must be explicitly configured."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:13:62)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/reopen-baseline/test/quoteOfferingScopeIsolation.spec.mjs:39:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order false
+ok 21 - Shared paint purchase group rejects conflicting supplied values in either map order false
+  ---
+  duration_ms: 29.131009
+  type: 'test'
+  ...
+# Subtest: Shared paint purchase group rejects conflicting supplied values in either map order true
+ok 22 - Shared paint purchase group rejects conflicting supplied values in either map order true
+  ---
+  duration_ms: 28.060795
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 2
+# fail 20
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 321.416775

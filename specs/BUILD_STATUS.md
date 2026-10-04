@@ -1,5 +1,29 @@
 # Current quote-engine / price-book checkpoint — October 4, 2026
 
+**The earlier five-finding completion statement was too broad.** Further checks
+found catalog stalls, unselected measured-scope blockers, incomplete paint-group
+conflicts, and optional offering readiness/coverage defects at `4b6deeca`.
+These reproduced defects are repaired at `42812a71ef31604d34140ea32ecc12b0bda53552`
+on `codex/quote-audit-ready-20261004` (PR #24).
+
+Local verification: **1,056/1,056** scoped tests, including **128 new tests**;
+65 fixtures retain identical internal and customer quotes (130 comparisons).
+All 65 status comparisons are explained by optional coverage changes. The cold
+80-by-80 public readiness failures improved from 2.8–9.1 seconds to 0.15–0.38
+seconds locally. All 187 materialized source/test JSON and JavaScript-family
+files match the uploaded code checkpoint.
+
+Hosted verification: **1,234/1,234** strict quote/price-book tests and both
+builds passed. The broader suite retains the existing nine allowed failures and
+two skips, with no new failures. Detailed reproductions, outcomes and source binding are in the
+[readiness and scope follow-up](../verification/readiness-scope-followup-20261004/README.md).
+
+The PR, `main`, and a deployment remain distinct. No whole-product launch gate
+has passed, and passing the recorded regressions is not proof of zero remaining
+defects. Historical reports below retain their original scope and source.
+
+## Prior October 4 checkpoint — superseded by the follow-up above
+
 **The five original audit findings have passing acceptance checks on
 `codex/quote-audit-ready-20261004` (PR #24).** Tested code:
 `5e2ea7647d46241fc365bb2184422ae4c905cb06`, based on PR #23's `6eb6622`.

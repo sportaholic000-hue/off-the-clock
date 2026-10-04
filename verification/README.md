@@ -1,13 +1,14 @@
 # Verification index
 
-The latest recorded code checkpoint is `5e2ea764`. Its local and hosted results,
-source bindings and reproducible tests are recorded in the
-[October 4 follow-up](independent-followup-20261004/README.md).
+The latest repaired code checkpoint is `42812a71`. Further reproductions reopened
+the previous completion claim. Results and source bindings are recorded in the
+[readiness and scope follow-up](readiness-scope-followup-20261004/README.md).
 
 ## Recent checkpoints
 
 | Evidence | Source checkpoint and meaning |
 | --- | --- |
+| [Readiness and scope follow-up](readiness-scope-followup-20261004/README.md) | Reproduced additional defects at `4b6deeca`; repairs and 128 added tests at `42812a71`. |
 | [Independent follow-up](independent-followup-20261004/README.md) | Verification of `6eb6622`, subsequent repair at `5e2ea764`, and original before/after evidence. |
 | [Astra five-finding repair report](astra-five-repairs-20261004/REPORT.md) | PR #23 implementation evidence, tested code `58769d7`; the follow-up above found and then repaired the remaining original QP-05 case. |
 | [Final repairs](quote-final-repairs-20261004/REPORT.md) | PR #22, prior save-lock/readiness repair checkpoint. |

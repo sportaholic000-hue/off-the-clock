@@ -65,3 +65,8 @@ node --test verification/independent-followup-20261004/verify.mjs
 It preserves the original missing-minimum performance case and valid tier
 controls. See the [follow-up result](verification/independent-followup-20261004/README.md)
 for before/after evidence. No launch or deployment approval is implied.
+
+Additional catalog and optional-scope regressions are included in the same strict
+quote gate. The [latest repair evidence](verification/readiness-scope-followup-20261004/README.md)
+records the further defects found after the original five-case audit, their
+reproductions, and verification at `42812a71`.

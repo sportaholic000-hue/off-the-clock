@@ -1,0 +1,59 @@
+[
+  {
+    "case": "original-missing-minimum",
+    "bytes": 14024,
+    "productsPerAxis": 80,
+    "elapsedMs": 6.159072000000151,
+    "timerDelayMs": 21.0090560000001
+  },
+  {
+    "case": "disabled-original",
+    "elapsedMs": 4.630866999999853
+  },
+  {
+    "case": "restored-minimum",
+    "elapsedMs": 22.381857999999966
+  },
+  {
+    "case": "unconfigured-zero-prices",
+    "firstLiveProduct": false,
+    "productsPerAxis": 80,
+    "elapsedMs": 427.35841700000003,
+    "timerDelayMs": 438.12075300000004
+  },
+  {
+    "case": "unconfigured-zero-prices",
+    "firstLiveProduct": true,
+    "productsPerAxis": 80,
+    "elapsedMs": 309.88107600000006,
+    "timerDelayMs": 310.56312399999996
+  },
+  {
+    "case": "missing-all-registration",
+    "firstLiveProduct": false,
+    "productsPerAxis": 80,
+    "elapsedMs": 123.840735,
+    "timerDelayMs": 124.37832600000002
+  },
+  {
+    "case": "missing-all-registration",
+    "firstLiveProduct": true,
+    "productsPerAxis": 80,
+    "elapsedMs": 88.594336,
+    "timerDelayMs": 89.125448
+  },
+  {
+    "case": "only-final-pair-live",
+    "firstLiveProduct": false,
+    "productsPerAxis": 80,
+    "elapsedMs": 309.2234040000001,
+    "timerDelayMs": 310.325327
+  },
+  {
+    "case": "only-final-pair-live",
+    "firstLiveProduct": true,
+    "productsPerAxis": 80,
+    "elapsedMs": 310.13835900000004,
+    "timerDelayMs": 311.0396989999999
+  }
+]

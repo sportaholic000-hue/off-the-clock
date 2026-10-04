@@ -1,0 +1,51 @@
+{
+  "baseline": "4b6deeca4bd5f3070f3262c3950210602f14b0ae",
+  "verifiedCode": "42812a71ef31604d34140ea32ecc12b0bda53552",
+  "local": {
+    "files": 38,
+    "tests": 1056,
+    "passed": 1056,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "newRegressionTests": 128,
+  "beforeRepair": {
+    "measuredScopeTests": 28,
+    "measuredScopeFailures": 28,
+    "offeringScopeTests": 22,
+    "offeringScopeFailures": 20,
+    "offeringConflictControlsPassed": 2
+  },
+  "differential": {
+    "fixtures": 65,
+    "quoteComparisons": 130,
+    "quoteDifferences": 0,
+    "statusComparisons": 65,
+    "expectedStatusChanges": 8,
+    "unexplainedStatusDifferences": 0
+  },
+  "hosted": {
+    "runId": 37243049494,
+    "jobId": 111555411038,
+    "conclusion": "success",
+    "quoteFiles": 51,
+    "quoteTests": 1234,
+    "quotePassed": 1234,
+    "quoteFailed": 0,
+    "quoteSkipped": 0,
+    "builds": "passed",
+    "fullSuite": {
+      "tests": 1626,
+      "passed": 1615,
+      "failed": 9,
+      "skipped": 2,
+      "cancelled": 0
+    },
+    "existingFailureBaseline": {
+      "matched": 9,
+      "expected": 9,
+      "newFailures": 0
+    }
+  }
+}
