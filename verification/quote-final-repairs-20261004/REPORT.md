@@ -11,7 +11,7 @@ Base: `3e71b1bbfe15661cbc48f29e0bda809d6c77279b`, branch `claude/audit-fixes-2-2
 
 Quote formulas, monetary units, financial pipeline, customer amounts/wording, owner prices and the engine approval version are unchanged. No dependencies or frontend source were changed. The existing owner renderer displays both saved selection values and the specific coverage message.
 
-## Regression evidence available before publication
+## Verified regression evidence
 
 - New `test/quoteFinalRepairs20261004.spec.mjs`: 10 passes, zero failures, skips or cancellations. Includes save and approval commit-error conditions, post-release cleanup errors, nested synchronous operations, rejection of an async callback before execution, real two-process same/distinct-owner behavior, partial ordinary/commercial 40×40 catalogs, no-live coverage, and the extreme-rate reference-partner counterexample. Fixed hand amounts: $125.00; 1,470,000 / 1,690,000 cents for the ordinary/commercial fixtures; 4,680,032,740,000,000 cents for the safe boundary pairing.
 - Current `test/auditFixes20261003.spec.mjs`: 28 passes, zero failures/skips/cancellations. The existing live/crashed-holder helper now acquires the actual exported application lock for the selected owner; it no longer hard-codes the obsolete shared mutex database. Same-revision writers still yield one accepted edit and one conflict. Legacy PID lock files remain harmless.
@@ -20,9 +20,14 @@ Quote formulas, monetary units, financial pipeline, customer amounts/wording, ow
 - Repeated original N02 overflow input remains incomplete/review; no arithmetic shortcut or price pruning was reintroduced.
 - 65 existing independent/measured-scope fixtures have identical internal quote, sanitized customer quote and ordinary readiness snapshots before/after. Only independently generated `quoteId` fields were normalized; monetary values, inputs, identity, rules, diagnostics and wording were compared in full.
 - Owner and widget builds passed locally. The automatic quote test selector includes the new regression file (45 selected files).
-- Hosted final-source CI is pending at this checkpoint. Exact uploaded source hashes and the completed gate result will be added after publication; this initial report is not a launch or deployment acceptance.
+- Hosted ordinary-command CI passed at code commit [`3da2104435320867db3af3814f0010f8d228ec7b`](https://github.com/sportaholic000-hue/off-the-clock/commit/3da2104435320867db3af3814f0010f8d228ec7b): [run 37222085769](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37222085769), job `111494304370`. The strict quote/price-book gate ran **45 files: 1,046 passed, zero failed/skipped/cancelled**. All ten new regressions passed without the workspace retention workaround. Ordinary/commercial partial 40×40 owner checks measured **477 / 476 ms** in that gate. The owner and widget builds passed. The full regression summary was **1,438 records: 1,427 passed, the same nine known failures, two skipped, zero cancelled**; the existing-failure checker passed. No additional failure was accepted.
+- All six uploaded changed files were fetched back from the exact code SHA and matched their local UTF-8 contents. A 311-file Git-blob source binding matched the code commit with zero mismatches. The remote comparison contains exactly two production source changes, two test changes and the report/build-status records; unrelated remote files were preserved by using the base tree.
+
+The evidence-only follow-up updates this report, build status, and verification records. The four production/test blobs remain identical to the code commit that passed the gate. The stored source binding describes that tested code checkpoint, including its documentation at that point. [CI excerpt](CI_EVIDENCE.txt), [source binding](source-binding.json), and [unchanged fixture comparisons](unchanged-snapshots.json) retain the verification evidence.
 
 Local native tests retain genuine database handles in an external harness to avoid this workspace Node 24 runtime's `RemoveEnvironmentCleanupHook` cleanup assertion. They use actual SQL, filesystem writes and real child processes, without substituting business outcomes. Initial aborted combined/native runs were not counted as successful suites. Hosted Node 22 checks run ordinary unmodified test commands without the retention workaround. Counts overlap and are not unique-test totals.
+
+All repairs are saved in draft [PR #22](https://github.com/sportaholic000-hue/off-the-clock/pull/22), branch `codex/quote-final-repairs-20261004`, targeting the inspected Claude repair branch. This is a scoped repair checkpoint, not a full product launch acceptance.
 
 ## Operational limits
 
