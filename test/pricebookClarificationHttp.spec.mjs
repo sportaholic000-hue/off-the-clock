@@ -31,6 +31,10 @@ test('ambiguous AI answer returns clarification over HTTP without changing the s
     const owner='[SYNTHETIC]-pricebook-owner',now=new Date().toISOString();
     db.prepare('INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,emailVerifiedAt,timezone,role,createdAt) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
       .run(owner,'synthetic-pricebook@example.invalid','[SYNTHETIC]-password','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active',now,'America/Halifax','owner',now);
+    // Entitled synthetic owner; production access guards remain in force.
+    db.prepare('INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)')
+      .run(owner,'cus_SYNTHETIC_PRICEBOOK_TEST',now,now,now);
+    db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(owner);
     const {createAuthSessionService}=await import('../server/src/authSessionService.js');
     const token=createAuthSessionService(db).create(db.prepare('SELECT * FROM users WHERE id=?').get(owner)).token;
     const base='http://127.0.0.1:'+server.httpServer.address().port;
@@ -39,7 +43,7 @@ test('ambiguous AI answer returns clarification over HTTP without changing the s
       return {status:response.status,body:await response.json()};
     }
     assert.ok(applicationMetadata().services.some(s=>s.serviceType==='CUSTOM'));
-    const created=await request('/api/pricebook/interview','POST',{mode:'browser',serviceTypes:['CUSTOM']});assert.equal(created.status,201);
+    const created=await request('/api/pricebook/interview','POST',{mode:'browser',serviceTypes:['CUSTOM']});assert.equal(created.status,201,JSON.stringify(created.body));
     const route='/api/pricebook/interview/'+created.body.draft.id;
     const seeded=await request(route,'PUT',{fields:{CUSTOM:{unit:'flat',customPricingMode:'fixed'}},confirmedFields:{CUSTOM:['unit','customPricingMode']},currentField:'CUSTOM.price'});assert.equal(seeded.status,200);
     const before=(await request(route)).body.draft;

@@ -36,7 +36,7 @@ async function interview({structured=false,failure=false}={},run){
       const request=route.request(),url=new URL(request.url());
       const json=(body,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
       if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'});
-      if(request.method()==='GET')return json({drafts:[]});
+      if(request.method()==='GET')return json(url.pathname==='/api/pricebook/interview'?{drafts:structured?[draft]:[]}:{draft});
       if(request.method()==='POST')return json({draft});
       if(request.method()==='PUT'){
         const body=request.postDataJSON();requests.push(body);if(requests.length===1){started();await pending;}
@@ -48,7 +48,7 @@ async function interview({structured=false,failure=false}={},run){
     });
     await page.goto('http://pricebook-interview.test/');
     await page.evaluate(({service,first,second})=>window.mount({state:{account:{id:'[SYNTHETIC]-owner',plan:'QuoteDone'},profile:{businessTypes:[service.serviceType]}},metadata:[{...service,fields:[first,second]}],back:()=>{},next:()=>{}}),{service,first,second});
-    await page.getByRole('button',{name:'Start interview',exact:true}).click();
+    await page.getByRole('button',{name:structured?'Resume saved draft':'Start interview',exact:true}).click();
     const input=page.locator('.interview-field input').first();await input.waitFor();
     if(!structured)await input.fill('25');
     await page.getByRole('button',{name:'Read it back',exact:true}).click();
