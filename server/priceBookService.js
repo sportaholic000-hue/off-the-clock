@@ -1,9 +1,10 @@
 import Database from 'better-sqlite3';
-import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, existsSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, existsSync } from 'node:fs';
 import { convertPricebookMoney } from './priceBookMoney.js';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { types } from 'node:util';
 import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
 import { getActivationOwnerFields, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
@@ -114,56 +115,50 @@ export function writePricebookFile(directory, ownerId, serialized, ops = default
   try { flushDirectory(directory, ops); } catch { /* the replacement is durable; see the rules above */ }
 }
 
-// Saves are read-check-write sequences. Every save runs inside one exclusive
-// write transaction on a small SQLite file in the price-book directory. SQLite's
-// lock is an operating-system file lock: only one process can hold it, a second
-// writer waits up to 2 seconds and then gets a conflict, and the lock is released
-// automatically if its holder crashes or is killed. There are no lock files to
-// recover, take over or clean up, so a recovering writer can never overwrite a
-// save that already succeeded. (Lock files written by earlier versions are ignored.)
-// The guarantee assumes a local filesystem, which is how the app is deployed.
+// A per-owner SQLite transaction locks the whole read-check-write sequence.
+// SQLite releases its OS lock on close or process death; no stale lock record is
+// recovered or unlinked. Different owners use different files and do not wait
+// for each other's saves. The files live beside the price-book directory.
+// The transaction writes no SQLite data: the JSON replacement is the durable
+// save, so there is no auxiliary COMMIT after the book has already been saved.
+// Lock files from older implementations are ignored. All writer processes must
+// run this protocol on a local filesystem, as used by the deployment.
 const SAVE_WAIT_MS = 2000;
 const heldSaves = new Set();
-let saveMutex = null, saveMutexInode = null;
-function saveMutexDb() {
-  // Kept beside (not inside) the price-book directory so the directory holds only books.
-  const file = resolve(dir) + '.saves.sqlite';
-  // If the lock file was deleted or replaced while running, reopen it so every
-  // process locks the same file.
-  let inode = null; try { inode = statSync(file).ino; } catch { inode = null; }
-  if (saveMutex && inode !== saveMutexInode) { try { saveMutex.close(); } catch {} saveMutex = null; }
-  if (!saveMutex) {
-    mkdirSync(dir, { recursive: true });
-    saveMutex = new Database(file);
-    saveMutex.pragma(`busy_timeout = ${SAVE_WAIT_MS}`);
-    saveMutex.exec('CREATE TABLE IF NOT EXISTS last_save (id INTEGER PRIMARY KEY CHECK (id = 1), owner TEXT NOT NULL, at TEXT NOT NULL)');
-    saveMutexInode = statSync(file).ino;
+function runSaveWork(work) {
+  if (types.isAsyncFunction(work)) throw new Error('Price-book saves must run synchronously inside the save lock.');
+  const result = work();
+  if (result && typeof result.then === 'function') throw new Error('Price-book saves must run synchronously inside the save lock.');
+  return result;
+}
+function closeSaveMutex(db) {
+  try { db.close(); }
+  catch {
+    // Cleanup cannot undo a confirmed JSON replacement or change its result.
+    // Retry a still-open handle, and surface an operational warning if needed.
+    try { if (db.open) db.close(); } catch {}
+    if (db.open) process.emitWarning('The price-book save lock could not be closed; restart this worker before retrying saves.', { code:'PRICEBOOK_LOCK_RELEASE_FAILED' });
   }
-  return saveMutex;
 }
 const busySave = cause => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409, cause });
 export function withPricebookLock(ownerId, work) {
-  if (heldSaves.size) return work();   // already inside this process's save transaction
-  const db = saveMutexDb();
-  try { db.exec('BEGIN IMMEDIATE'); }
-  catch (error) { if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') throw busySave(error); throw error; }
-  heldSaves.add(ownerId);
+  const ownerKey = String(ownerId);
+  if (heldSaves.has(ownerKey)) return runSaveWork(work);
+  const directory = resolve(dir) + '.saves';
+  mkdirSync(directory, { recursive: true });
+  const filename = crypto.createHash('sha256').update(ownerKey).digest('hex') + '.sqlite';
+  const db = new Database(resolve(directory, filename), { timeout: SAVE_WAIT_MS });
   try {
-    db.prepare('INSERT OR REPLACE INTO last_save (id, owner, at) VALUES (1, ?, ?)').run(String(ownerId), new Date().toISOString());
-    const result = work();
-    // The lock covers synchronous work only; an asynchronous callback would outlive it.
-    if (result && typeof result.then === 'function') throw new Error('Price-book saves must run synchronously inside the save lock.');
-    db.exec('COMMIT');
-    return result;
-  } catch (error) {
-    try { db.exec('ROLLBACK'); } catch { /* already rolled back */ }
-    throw error;
-  } finally { heldSaves.delete(ownerId); }
+    try { db.exec('BEGIN IMMEDIATE'); }
+    catch (error) { if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') throw busySave(error); throw error; }
+    heldSaves.add(ownerKey);
+    return runSaveWork(work);
+  } finally { heldSaves.delete(ownerKey); closeSaveMutex(db); }
 }
 
 export function savePricebook(ownerId, data) {
   // Every write is serialized, even from a caller that did not take the lock itself.
-  if (!heldSaves.size) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
+  if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
