@@ -113,8 +113,39 @@ function scopeConditions(type,key,p,rules){
 }
 // Retain a supplied value on screen even after scope changes, so the customer
 // can explicitly correct it. Visibility never deletes submitted facts.
+const matchesConditions=(conditions,values)=>!conditions||conditions.some(all=>all.every(([key,op,value])=>values[key]!==undefined&&(op==='eq'?values[key]===value:op==='ne'?values[key]!==value:typeof values[key]==='number'&&values[key]>value)));
 export function customerFieldVisible(field,values={}){
- return own(values,field.name)||!field.visibleWhen||field.visibleWhen.some(all=>all.every(([key,op,value])=>values[key]!==undefined&&(op==='eq'?values[key]===value:op==='ne'?values[key]!==value:typeof values[key]==='number'&&values[key]>value)));
+ return own(values,field.name)||matchesConditions(field.visibleWhen,values);
+}
+// Labels and product details follow the measured selection. A shared Yes/No
+// field must never acquire the last product's wording merely due to map order.
+export function customerFieldForInputs(field,values={}){
+ const selected=(field.presentationVariants||[]).filter(v=>matchesConditions(v.visibleWhen,values));
+ if(!selected.length)return field;
+ const labels=[...new Set(selected.map(v=>v.label))],details=[...new Set(selected.flatMap(v=>(v.details||[]).map(detail=>v.tierName?v.tierName+': '+detail:detail)))];
+ return {...field,label:labels.join('; '),...(details.length?{details}:{})};
+}
+export function clearChangedScopeConfirmations(fields,before,after){
+ const next={...after};
+ for(const field of fields)if(field.type==='boolean'&&field.presentationVariants?.some(v=>v.details?.length)&&own(before,field.name)&&own(after,field.name)){
+  const oldView=customerFieldForInputs(field,before),newView=customerFieldForInputs(field,after);
+  if(JSON.stringify([oldView.label,oldView.details])!==JSON.stringify([newView.label,newView.details]))delete next[field.name];
+ }
+ return next;
+}
+export function mergeCustomerFieldDefinitions(variants){
+ const out={};
+ for(const {tierName,fields} of variants)for(const [name,field] of Object.entries(fields)){
+  const prior=out[name],presentations=(field.presentationVariants||[{label:field.label,details:field.details,visibleWhen:field.visibleWhen}]).map(v=>({...v,...(tierName?{tierName}:{})}));
+  out[name]={...(prior||field),presentationVariants:[...(prior?.presentationVariants||[]),...presentations]};
+  if(prior){
+   if(field.values)out[name].values=[...new Set([...(prior.values||[]),...field.values])];
+   if(field.options)out[name].options={...field.options,...prior.options};
+   if(!prior.visibleWhen||!field.visibleWhen)delete out[name].visibleWhen;
+   else out[name].visibleWhen=[...prior.visibleWhen,...field.visibleWhen];
+  }
+ }
+ return out;
 }
 export function scopeCustomerFields(type,p={},rules={}){
  const out={},defs=scopeDefinitions(type,p);
@@ -126,7 +157,7 @@ export function scopeCustomerFields(type,p={},rules={}){
   const details=[defs[key].label+': '+(d.description||'')];
   if(key==='insulation')details.push('Insulation: '+(d.insulationSystem||''),'Coverboard: '+(d.coverboardSystem||''));
   if(key==='stairs')details.push('Flooring: '+d.flooringType+'. Maximum tread width: '+d.maximumWidthLF+' ft. '+['underlayment','removal','disposal'].map(key=>(key==='underlayment'?'Underlayment':key==='removal'?'Existing covering removal':'Debris disposal')+(d[key+'Included']?' is included.':' is not included.')).join(' '));
-  out[name]={...confirm(label),details:[...(out[name]?.details||[]),...details],visibleWhen:[...(out[name]?.visibleWhen||[]),...visibleWhen]};
+  out[name]={...confirm(out[name]?.label||label),details:[...(out[name]?.details||[]),...details],visibleWhen:[...(out[name]?.visibleWhen||[]),...visibleWhen],presentationVariants:[...(out[name]?.presentationVariants||[]),{label,details,visibleWhen}]};
  }
  return out;
 }

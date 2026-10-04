@@ -133,7 +133,16 @@ export function offeringStructureDiagnostics(type,p) {
   return errors;
 }
 
-export function offeringContract(type,p) {
+// A gate key identifies a measured opening, not a tier-specific measurement.
+// The saved base definition wins; a tier-only gate takes its first definition.
+export function offeringGateDefinitions(p={},rules={}) {
+  const base=record(rules.pricing)?rules.pricing:record(rules.offeringDetails)?rules:p;
+  const gates={...(base.offeringDetails?.gates||{})};
+  for(const tier of rules.tiers||[])for(const [key,gate] of Object.entries(tier.overrides?.offeringDetails?.gates||{}))if(!own(gates,key))gates[key]={...gate};
+  return gates;
+}
+
+export function offeringContract(type,p,rules={}) {
   const d=p.offeringDetails||{}, installed=p.offeringMode==='installed';
   const fields={permitRequired:bool('Permit required for this measured project')};
   if(fence(type))Object.assign(fields,{
@@ -162,6 +171,8 @@ export function offeringContract(type,p) {
     if(fence(type)) {
       // Any positive height is quotable (owner ruling, Oct 3): only the fence type must match.
       equal('fenceType',d.fenceType);
+      const confirmedGates=offeringGateDefinitions(p,rules);
+      for(const [key,count] of Object.entries(c.gates||{}))if(count>0&&positive(d.gates?.[key]?.widthLF)&&positive(confirmedGates[key]?.widthLF)&&exactCompare(d.gates[key].widthLF,confirmedGates[key].widthLF)!==0)bad('gates.'+key,'This option changes the confirmed gate-opening width. Choose an offering for the measured opening.');
       if(c.fenceHeight!==undefined&&typeof c.fenceHeight==='number'&&Number.isFinite(c.fenceHeight)&&c.fenceHeight>0&&!fenceHeightWithinPrecision(c.fenceHeight))bad('fenceHeight',FENCE_HEIGHT_PRECISION_MESSAGE);
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
@@ -304,14 +315,15 @@ export function offeringDisclosures(type,p,c) {
   return out.filter(text);
 }
 
-export function offeringActivationScenarios(type,p) {
+export function offeringActivationScenarios(type,p,rules={}) {
   const d=p.offeringDetails||{};
   if(fence(type)) {
-    const base={linearFeet:100,lfMethod:'exact',fenceType:d.fenceType,fenceHeight:d.fenceHeight,terrainSlope:d.terrainSlope??'flat',gates:{},cornerCount:0,...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:false}:{})};
-    return [base,...Object.keys(d.gates||{}).filter(key=>own(p.offeringRates,'gate_'+key)).map(key=>({...base,gates:{[key]:1}})),...(d.removalOffered&&own(p.offeringRates,'removalPerLF')?[{...base,oldFenceRemoval:true,removalLengthLF:50}]:[])];
+    const base={linearFeet:100,lfMethod:'exact',fenceType:d.fenceType,fenceHeight:d.fenceHeight,terrainSlope:'flat',gates:{},cornerCount:0,...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:false}:{})};
+    const confirmedGates=offeringGateDefinitions(p,rules);
+    return [base,...Object.keys(d.gates||{}).filter(key=>own(p.offeringRates,'gate_'+key)&&positive(d.gates[key]?.widthLF)&&positive(confirmedGates[key]?.widthLF)&&exactCompare(d.gates[key].widthLF,confirmedGates[key].widthLF)===0).map(key=>({...base,gates:{[key]:1}})),...(d.removalOffered&&own(p.offeringRates,'removalPerLF')?[{...base,oldFenceRemoval:true,removalLengthLF:50}]:[])];
   }
   const interior=type==='INTERIOR_PAINTING';
-  const base={areaInputMethod:'wall_sqft',[interior?'wallAreaSqft':'exteriorAreaSqft']:500,coats:p.offeringMode==='itemized'?2:d.finishCoats,surfaceCondition:d.surfaceCondition||['good','fair','poor'].find(condition=>own(p.offeringRates,prepRateKey(p,'Labor',condition))),...(interior?{wallHeight:d.wallHeight??'standard',wallScopeUniform:true,ceilingsIncluded:false,trimIncluded:false}:{stories:d.stories??1})};
+  const base={areaInputMethod:'wall_sqft',[interior?'wallAreaSqft':'exteriorAreaSqft']:500,coats:p.offeringMode==='itemized'?2:d.finishCoats,surfaceCondition:d.surfaceCondition||['good','fair','poor'].find(condition=>own(p.offeringRates,prepRateKey(p,'Labor',condition))),...(interior?{wallHeight:'standard',wallScopeUniform:true,ceilingsIncluded:false,trimIncluded:false}:{stories:1})};
   const scopes=[base,...(d.ceilingsOffered?[{...base,ceilingsIncluded:true,ceilingAreaSqft:100}]:[]),...(d.trimOffered?[{...base,trimIncluded:true,trimLengthLF:100}]:[])];
   return p.offeringMode==='itemized'?['good','fair','poor'].flatMap(surfaceCondition=>scopes.map(scope=>({...scope,surfaceCondition}))):scopes;
 }

@@ -1,4 +1,4 @@
-import {customerFieldVisible} from '../../server/scopeConfiguration.js';
+import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
@@ -54,12 +54,12 @@ function MeasuredOutline({field,value,onChange}) {
  <Button variant="secondary" onClick={()=>onChange([...points,{}])}>Add measured point</Button></div>;
 }
 
-export function CustomerMeasurements({fields=[],value={},onChange,knownOfferings={}}) {
+export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
-  onChange(updated);
+  onChange(clearChangedScopeConfirmations(scopeFields,value,updated));
  };
- return <div className="field-stack">{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&customerFieldVisible(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
+ return <div className="field-stack">{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&customerFieldVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
    f.type==='enum'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
    f.type==='integer_or_unknown'?<Select aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='unknown'?'unknown':Number(e.target.value))}><option value="">Not supplied</option><option value="unknown">Unknown — requires review</option>{Array.from({length:f.max-f.min+1},(_,i)=>f.min+i).map(n=><option key={n} value={n}>{n}</option>)}</Select>:

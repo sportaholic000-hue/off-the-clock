@@ -1,0 +1,395 @@
+{
+  "normalization": "Only generated quoteId fields removed.",
+  "cases": [
+    {
+      "id": "mowing-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "mowing-unpriced-bagging",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "mowing-unpriced-edging",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "mowing-priced-extras-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "flat-repair-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "flat-repair-unpriced-ponding",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "flat-repair-priced-ponding-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-tile-200-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-tile-150-boundary",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-tile-300-boundary",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-type-tile",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-type-vinyl_plank",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-type-hardwood",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-type-laminate",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-type-carpet",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-stairs",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-flat",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-per_hour",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-per_unit",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-per_sqft",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-per_LF",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-per_square",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-fixed-fractional-rate",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-range-flat",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "custom-classification-attempt",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-base-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-trim",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-removal",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "concrete-base-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "concrete-demolition",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "concrete-exposed-aggregate",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "flat-roof-residential-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "flat-roof-commercial",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "FENCING_INSTALL-installed-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "FENCING_INSTALL-itemized-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "FENCING_REPLACEMENT-installed-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "FENCING_REPLACEMENT-itemized-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "INTERIOR_PAINTING-installed-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "INTERIOR_PAINTING-itemized-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "EXTERIOR_PAINTING-installed-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "EXTERIOR_PAINTING-itemized-control",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "painting-itemized-cost-basis",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-hardwood-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-hardwood-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-laminate-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-laminate-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-carpet-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-carpet-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "floor-vinyl-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "stairs-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "overlay-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-trim-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-removal-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "demolition-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "exposed-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "commercial-installed",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "stairs-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "overlay-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-trim-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "siding-removal-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "demolition-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "exposed-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "commercial-itemized",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "paint-cost-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    },
+    {
+      "id": "roof-underlayment-packages",
+      "internalQuoteUnchanged": true,
+      "customerQuoteUnchanged": true,
+      "ordinaryStatusUnchanged": true
+    }
+  ]
+}
