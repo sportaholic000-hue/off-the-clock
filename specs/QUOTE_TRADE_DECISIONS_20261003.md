@@ -101,3 +101,10 @@ Fence height is entered directly as whole feet and decimal inches in the owner e
 - **Fence inches** accept up to two decimal places.
 - **Tests.** `npm test` and CI request TAP output explicitly (Node 24 otherwise prints a different format). `npm run test:quote` selects quote-engine, price-book and quote-presentation tests by following imports through helpers and fixtures.
 
+## Owner ruling — fence size limits are intentional (October 3)
+
+- **Minimum fence length is 1 ft.** No fence is built shorter than a foot, so a request under 1 ft goes to review instead of quoting. This is a deliberate product boundary, not a defect. The "any height" ruling applies to fence height only.
+- **Gate widths come from the gate offerings the owner configures.** Customers choose from the business's gates; they do not enter arbitrary gate widths.
+
+Both are locked in by `test/quoteCombinationBoundaries.spec.mjs` (0.99 ft and 0 ft return review; 1 ft quotes; unknown gate types return review).
+
