@@ -562,6 +562,16 @@ function productAxisCoverage(list,[rField,eField],evaluate){
   return [...results.values()];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
+  // A replacement catalog's minimum is shared by every product pair. Reuse
+  // the owner-pricing contract on this tier's already-merged prices before
+  // constructing/searching the Cartesian product. A tier may supply a missing
+  // base minimum; an explicit zero remains the owner's valid no-minimum choice.
+  // Selection-dependent diagnostics from this empty-input probe are discarded.
+  if (PAIR_SELECTORS[service.serviceType] && !options.productScenarios) {
+    const diagnostics = validateOwnerPricing(service.serviceType, {}, effectivePricing, service, tierName)
+      .ownerDiagnostics.filter(item => item.kind === 'minimum');
+    if (diagnostics.length) return { ok: false, tierName, tierIndex, diagnostics, reviewReason: diagnostics[0].message };
+  }
   // Fee decisions are shared by the entire catalog. Check them once, before
   // repeated product calculations. Disposal may be replaced by an included
   // measured scope; leave its presence to the actual scenario in that case.
