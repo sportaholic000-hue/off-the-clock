@@ -521,6 +521,32 @@ function activationMonth(service, defaults) {
   return Array.isArray(months) && months.length ? months[0] : 1;
 }
 
+// Readiness checks every product pair. Each pair is evaluated against a copy of
+// the configuration holding only that pair's product entries (the engine copies
+// its whole input for every probe, so carrying every product made the work grow
+// with the cube of the catalog). Structural validation of the full configuration
+// runs once per readiness check and still applies to every pair, so malformed
+// data anywhere keeps failing closed exactly as before.
+const PRODUCT_KEYED_FIELDS = {
+  ROOFING_REPLACEMENT: { replacementRoofType:['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'], existingRoofType:['tearOffPerSquare'] },
+  FLAT_ROOF_REPLACEMENT: { replacementMembraneType:['laborPerSqft','membraneCostPerSqft'], membraneType:['tearOffPerSqft'] }
+};
+function pruneToSelection(service, pricing, selection) {
+  const plan = PRODUCT_KEYED_FIELDS[service.serviceType];
+  if (!plan) return { service, pricing };
+  const nextPricing = { ...pricing }, known = { ...(service.knownOfferings || {}) };
+  for (const [selector, fields] of Object.entries(plan)) {
+    const chosen = selection[selector], registered = service.knownOfferings?.[selector];
+    if (typeof chosen !== 'string' || !registered || typeof registered !== 'object' || Array.isArray(registered)) continue;
+    const others = new Set(Object.keys(registered).filter(key => key !== chosen));
+    for (const field of fields) {
+      const value = nextPricing[field];
+      if (value && typeof value === 'object' && !Array.isArray(value)) nextPricing[field] = Object.fromEntries(Object.entries(value).filter(([key]) => !others.has(key)));
+    }
+    known[selector] = Object.fromEntries(Object.entries(registered).filter(([key]) => !others.has(key)));
+  }
+  return { service:{ ...service, knownOfferings:known, ...(service.pricing ? { pricing:nextPricing } : {}) }, pricing:nextPricing };
+}
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // All boundary probes within one product must pass; incomplete siblings do not block it.
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
@@ -530,7 +556,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       const key=JSON.stringify(selectors.map(field=>scenario[field]));
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
-    const products=[...groups.values()].map(scenarios=>({selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]])),...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,productScenarios:scenarios})}));
+    const structures=validatePricingStructuresDetailed(service.serviceType,effectivePricing);
+    const products=[...groups.values()].map(scenarios=>{const selection=Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]])),pruned=pruneToSelection(service,effectivePricing,selection);return {selection,...evaluateActivationVariant(pruned.service,pruned.pricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:scenarios})};});
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
@@ -541,7 +568,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'field', path: key, message: 'This pricing field is not supported for the selected service.' });
   }
   diagnostics.push(
-    ...pricingDiagnosticsForSelection(service.serviceType,validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{}),
+    ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{}),
     ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
   );
   for (const scenarioInputs of scenarios) {

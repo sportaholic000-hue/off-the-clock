@@ -23,16 +23,18 @@ function scratch() {
 }
 const errorWith = code => Object.assign(new Error(code), { code });
 
-test('a save writes and flushes a sibling file, renames it, then flushes the directory before reporting success', () => {
+test('a save flushes a sibling file and a pause marker, renames, flushes, then clears the marker before reporting success', () => {
   const { dir, ownerId, target, files } = scratch(), calls = [];
   const ops = { ...real,
-    writeFileSync:(file, data, options) => { calls.push(['write', path.basename(file).endsWith('.tmp'), options.flush, options.flag]); return real.writeFileSync(file, data, options); },
+    writeFileSync:(file, data, options) => { calls.push(['write', path.extname(String(file)), options.flush, options.flag]); return real.writeFileSync(file, data, options); },
     renameSync:(from, to) => { calls.push(['rename', to === target]); return real.renameSync(from, to); },
+    unlinkSync:file => { calls.push(['unlink', path.extname(String(file))]); return real.unlinkSync(file); },
     openSync:(file, flags) => { calls.push(['open', file === dir, flags]); return real.openSync(file, flags); },
     fsyncSync:fd => { calls.push(['fsync']); return real.fsyncSync(fd); },
     closeSync:fd => { calls.push(['close']); return real.closeSync(fd); } };
   store.writePricebookFile(dir, ownerId, JSON.stringify({ ownerId, services:[], version:'next' }), ops);
-  assert.deepEqual(calls, [['write', true, true, 'wx'], ['rename', true], ['open', true, 'r'], ['fsync'], ['close']]);
+  const flush = [['open', true, 'r'], ['fsync'], ['close']];
+  assert.deepEqual(calls, [['write', '.tmp', true, 'wx'], ['write', '.unconfirmed', true, undefined], ...flush, ['rename', true], ...flush, ['unlink', '.unconfirmed'], ...flush]);
   assert.equal(JSON.parse(fs.readFileSync(target, 'utf8')).version, 'next');
   assert.deepEqual(files(), [ownerId + '.json']);
 });
@@ -60,13 +62,21 @@ test('a real rename failure (saved book path is a directory) leaves no temporary
   assert.deepEqual(fs.readdirSync(dir), [ownerId + '.json']);
 });
 
-test('an unconfirmed directory flush is reported as a failed save, and the directory handle is closed', () => {
-  const { dir, ownerId } = scratch();
+test('a directory flush failure before replacement keeps the previous book; after replacement it is reported and quoting stays paused', () => {
+  const first = scratch();
   let closed = 0;
-  const ops = { ...real, fsyncSync:() => { throw errorWith('EIO'); }, closeSync:fd => { closed++; return real.closeSync(fd); } };
-  assert.throws(() => store.writePricebookFile(dir, ownerId, JSON.stringify({ ownerId, services:[] }), ops), error => error.code === 'PRICEBOOK_NOT_DURABLE' && error.statusCode === 503 && error.cause?.code === 'EIO');
+  assert.throws(() => store.writePricebookFile(first.dir, first.ownerId, JSON.stringify({ ownerId:first.ownerId, services:[] }),
+    { ...real, fsyncSync:() => { throw errorWith('EIO'); }, closeSync:fd => { closed++; return real.closeSync(fd); } }), { code:'EIO' });
+  assert.equal(JSON.parse(fs.readFileSync(first.target, 'utf8')).version, 'previous', 'nothing was replaced');
+  assert.deepEqual(first.files(), [first.ownerId + '.json'], 'no marker or temporary file is left');
   assert.equal(closed, 1);
-  assert.deepEqual(store.flushDirectory(dir, { ...real, platform:'win32', openSync:() => { throw new Error('must not open on Windows'); } }), undefined);
+  const second = scratch();
+  let flushes = 0;
+  assert.throws(() => store.writePricebookFile(second.dir, second.ownerId, JSON.stringify({ ownerId:second.ownerId, services:[], version:'next' }),
+    { ...real, fsyncSync:fd => { if (++flushes === 2) throw errorWith('EIO'); return real.fsyncSync(fd); } }),
+    error => error.code === 'PRICEBOOK_NOT_DURABLE' && error.statusCode === 503 && error.cause?.code === 'EIO');
+  assert.deepEqual(second.files(), [second.ownerId + '.json', second.ownerId + '.unconfirmed'].sort(), 'the pause marker stays until a confirmed save');
+  assert.deepEqual(store.flushDirectory(second.dir, { ...real, platform:'win32', openSync:() => { throw new Error('must not open on Windows'); } }), undefined);
 });
 
 const CATEGORIES = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];

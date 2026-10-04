@@ -108,3 +108,13 @@ Fence height is entered directly as whole feet and decimal inches in the owner e
 
 Both are locked in by `test/quoteCombinationBoundaries.spec.mjs` (0.99 ft and 0 ft return review; 1 ft quotes; unknown gate types return review).
 
+## October 4 audit follow-up (Claude)
+
+- **Unconfirmed saves pause quoting.** A marker file is written and flushed before the saved book is replaced and removed only after the replacement is confirmed on disk. While it exists, every service shows "Your last price-book save could not be confirmed on disk. Save again before quoting resumes." and customer quotes go to review; the owner can still open and save the book.
+- **One writer at a time.** Every price-book save (editor save, approval, onboarding tax/currency) runs its read-check-write under a per-owner lock file, so two processes saving against the same revision produce one success and one conflict ("Another save for this price book is in progress").
+- **Interview saves** keep a value typed while the save was pending and do not move to the next question.
+- **Readiness** evaluates each product pair against that pair's prices only, with full structural validation once per check.
+- **Customer currency** must match the reproduced quote; a changed, unsupported or missing currency is not an instant estimate.
+- **AI answers with no clear price** ask the owner to clarify (422) after one provider call instead of reporting an outage.
+- **CI** runs `npm run test:quote` as its own required step.
+

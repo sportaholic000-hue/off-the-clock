@@ -255,3 +255,121 @@ test('Audit 2 #4 and #5: the runner asks for the report format its checker reads
   for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);
   assert.ok(!files.some(file => /voice/i.test(file)));
 });
+
+// ---- Third audit (October 4): F01-F06 and G01 ----
+const { syncBuiltinESMExports } = await import('node:module');
+const { spawnSync } = await import('node:child_process');
+const { interpretInterviewAnswer } = await import('../server/src/priceBookAI.js');
+const engineIndex = await import('../server/quote-engine-vnext/index.js');
+
+test('F01: a save whose durability cannot be confirmed pauses quoting until a confirmed save', () => {
+  const svc = live(fenceSvc());
+  assert.equal(svc.status.status, 'QUOTING LIVE');
+  const book = store.loadPricebook(svc.ownerId);
+  const realFsync = fs.fsyncSync;
+  // Fail only the directory flush that follows the replacement (the first flush confirms the pause marker).
+  let directoryFlushes = 0;
+  fs.fsyncSync = fd => { if (fs.fstatSync(fd).isDirectory() && ++directoryFlushes === 2) throw Object.assign(new Error('injected directory flush failure'), { code:'EIO' }); return realFsync(fd); };
+  syncBuiltinESMExports();
+  let failure;
+  try { bridge.saveApplicationBook(svc.ownerId, { revision:bridge.bookRevision(book), services:bridge.readApplicationBook(svc.ownerId).services, defaults:bridge.readApplicationBook(svc.ownerId).defaults }); }
+  catch (error) { failure = error; }
+  finally { fs.fsyncSync = realFsync; syncBuiltinESMExports(); }
+  assert.ok(failure, 'the save reports a failure');
+  assert.equal(store.pricebookSaveUnconfirmed(svc.ownerId), true, 'the unconfirmed marker survives the failed request');
+  const after = store.loadPricebook(svc.ownerId), raw = after.services[0];
+  const status = bridge.applicationStatus(raw, after);
+  assert.equal(status.status, 'NEEDS PRICING');
+  assert.ok(status.applicationIssues.includes('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.'));
+  assert.equal(bridge.calculateApplicationQuote(after, raw, { serviceId:raw.id, customerInputs:job() }, { ownerId:svc.ownerId }).internalResult.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  const current = bridge.readApplicationBook(svc.ownerId);
+  bridge.saveApplicationBook(svc.ownerId, { revision:current.revision, services:current.services, defaults:current.defaults });
+  assert.equal(store.pricebookSaveUnconfirmed(svc.ownerId), false, 'a confirmed save clears the pause');
+});
+
+test('F01: if anything fails before the saved book is replaced, the previous book stays current and quoting is not paused', () => {
+  const dirPath = fs.mkdtempSync(path.join(process.env.PRICEBOOK_PATH, 'f01-')), ownerId = 'o-' + crypto.randomUUID(), target = path.join(dirPath, ownerId + '.json');
+  fs.writeFileSync(target, '{"ownerId":"x","services":[]}');
+  const real = { writeFileSync:fs.writeFileSync, renameSync:fs.renameSync, unlinkSync:fs.unlinkSync, openSync:fs.openSync, fsyncSync:fs.fsyncSync, closeSync:fs.closeSync, platform:'linux' };
+  assert.throws(() => store.writePricebookFile(dirPath, ownerId, '{}', { ...real, renameSync:() => { throw Object.assign(new Error('rename'), { code:'EIO' }); } }), { code:'EIO' });
+  assert.deepEqual(fs.readdirSync(dirPath), [ownerId + '.json'], 'no marker or temporary file is left');
+  assert.throws(() => store.writePricebookFile(dirPath, ownerId, '{}', { ...real, writeFileSync:(file, data, options) => { if (String(file).endsWith('.unconfirmed')) throw Object.assign(new Error('marker'), { code:'ENOSPC' }); return real.writeFileSync(file, data, options); } }), { code:'ENOSPC' });
+  assert.deepEqual(fs.readdirSync(dirPath), [ownerId + '.json']);
+  assert.equal(fs.readFileSync(target, 'utf8'), '{"ownerId":"x","services":[]}');
+});
+
+test('F02: two processes saving against the same revision cannot both succeed', () => {
+  const svc = live(fenceSvc());
+  const a = bridge.readApplicationBook(svc.ownerId), b = structuredClone(a);
+  a.services[0].pricing.offeringRates.installedFencePerLF = 41; b.defaults.travelFee = 9;
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'f02-')), input = path.join(work, 'b.json'), child = path.join(work, 'b.mjs');
+  fs.writeFileSync(input, JSON.stringify(b));
+  fs.writeFileSync(child, `const bridge=await import(${JSON.stringify(new URL('../server/src/quoteDoneBridge.js', import.meta.url).href)});const fs=await import('node:fs');try{console.log(JSON.stringify(bridge.saveApplicationBook(${JSON.stringify(svc.ownerId)},JSON.parse(fs.readFileSync(process.argv[2],'utf8')))));}catch(e){console.log(JSON.stringify({error:e.code,status:e.statusCode}));}`);
+  const realWrite = fs.writeFileSync; let other;
+  fs.writeFileSync = (file, ...rest) => { if (!other && String(file).includes(svc.ownerId + '.') && String(file).endsWith('.tmp')) other = spawnSync(process.execPath, [child, input], { encoding:'utf8', env:process.env }); return realWrite(file, ...rest); };
+  syncBuiltinESMExports();
+  let saved; try { saved = bridge.saveApplicationBook(svc.ownerId, a); } finally { fs.writeFileSync = realWrite; syncBuiltinESMExports(); }
+  assert.equal(saved.success, true);
+  const otherResult = JSON.parse(other.stdout.trim().split('\n').pop());
+  assert.equal(otherResult.error, 'PRICEBOOK_BUSY', 'the second writer gets a conflict instead of a silent overwrite');
+  assert.equal(otherResult.status, 409);
+  const final = bridge.readApplicationBook(svc.ownerId);
+  assert.equal(final.services[0].pricing.offeringRates.installedFencePerLF, 41);
+  assert.equal(final.defaults.travelFee, 0, 'the rejected edit was not applied and was never reported as saved');
+});
+
+test('F03: a pending interview save keeps a value typed while it was saving and does not move on', async () => {
+  const source = fs.readFileSync(new URL('../client/src/onboarding.jsx', import.meta.url), 'utf8');
+  const edit = source.slice(source.indexOf('  function editValue(value) {'), source.indexOf('  function positionFor(loaded) {'));
+  const confirm = source.slice(source.indexOf('  async function confirmField() {'), source.indexOf('  async function reviewDraft() {'));
+  const state = { rawValue:'25', position:0, readBack:{ value:25, spoken:'25' }, aiNotice:'' };
+  const target = { current:{ serviceType:'CUSTOM', field:'price', rawValue:'25' } };
+  let request, complete;
+  const api = (url, options) => { request = { url, ...options }; return new Promise(resolve => { complete = resolve; }); };
+  const set = key => value => { state[key] = value; if (key === 'rawValue') target.current = { ...target.current, rawValue:value }; };
+  const handlers = new Function('api', 'setRawValue', 'setReadBack', 'setDraft', 'setAnswer', 'setAiNotice', 'setPosition', 'setError', 'sameAssistTarget', 'STALE_CONFIRM_NOTICE', 'assistTarget', 'state',
+    "const draft={id:'d',confirmedFields:{CUSTOM:[]}};const current={serviceType:'CUSTOM',field:'price',type:'number'};const interviewFields=[current,{serviceType:'CUSTOM',field:'minimumJob',type:'number'}];const position=0;const readBack=state.readBack;const rawValue=state.rawValue;"
+    + edit + confirm + 'return {editValue,confirmField};')(api, set('rawValue'), set('readBack'), () => {}, () => {}, set('aiNotice'), set('position'), () => {}, sameAssistTarget, (await import('../client/src/interviewAssist.js')).STALE_CONFIRM_NOTICE, target, state);
+  const saving = handlers.confirmField();
+  handlers.editValue('50');
+  complete({ draft:{ id:'d', fields:request.body.fields, confirmedFields:request.body.confirmedFields } });
+  await saving;
+  assert.equal(request.body.fields.CUSTOM.price, 25, 'the read-back value was saved');
+  assert.equal(state.rawValue, '50', 'the newer typed value is kept');
+  assert.equal(state.position, 0, 'the interview does not move on');
+  assert.match(state.aiNotice, /new entry is still here/);
+});
+
+test('F05: the sanitizer binds currency to the reproduced quote', () => {
+  const svc = live(fenceSvc(), defaults({ currency:'CAD' }));
+  const book = store.loadPricebook(svc.ownerId), raw = book.services[0];
+  const internal = bridge.calculateApplicationQuote(book, raw, { serviceId:raw.id, customerInputs:job() }, { ownerId:svc.ownerId }).internalResult;
+  assert.equal(engineIndex.sanitizeForCustomerVNext(internal).resultType, 'INSTANT_ESTIMATE_READY');
+  for (const change of [r => { r.currency = 'USD'; }, r => { r.currency = 'EUR'; }, r => { delete r.currency; }]) {
+    const tampered = structuredClone(internal); change(tampered);
+    assert.equal(engineIndex.sanitizeForCustomerVNext(tampered).resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  }
+});
+
+test('F06: an AI answer with no clear price asks the owner to clarify, with one provider call and no retry', async () => {
+  let calls = 0;
+  const fetchImpl = async () => { calls++; return { ok:true, json:async () => ({ candidates:[{ finishReason:'STOP', content:{ parts:[{ text:'{"value":null}' }] } }] }) }; };
+  await assert.rejects(interpretInterviewAnswer({ serviceType:'CUSTOM', field:'price', answer:'not sure what to charge', pricing:{ unit:'flat' } }, { env:{ GEMINI_API_KEY:'synthetic' }, fetchImpl }),
+    error => error.code === 'PRICEBOOK_AI_NEEDS_CLARIFICATION' && error.statusCode === 422 && /Say the price again/.test(error.message));
+  assert.equal(calls, 1);
+});
+
+test('F04 and G01: readiness for a 10 x 10 flat-roof catalog stays correct and bounded; CI runs the strict quote gate', async () => {
+  const { flatRoof } = await import('../verification/engine-independent/fixtures.mjs');
+  const f = flatRoof(), p = f.ownerPricing.pricing;
+  for (const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft']) p[field] = {};
+  f.ownerPricing.knownOfferings = { membraneType:{}, replacementMembraneType:{} };
+  for (let i = 0; i < 10; i++) { const key = 'membrane_' + i; p.laborPerSqft[key] = 500; p.membraneCostPerSqft[key] = 700; p.tearOffPerSqft[key] = 200; f.ownerPricing.knownOfferings.membraneType[key] = crypto.randomUUID(); f.ownerPricing.knownOfferings.replacementMembraneType[key] = crypto.randomUUID(); }
+  const started = performance.now(), status = engineIndex.vNextServiceStatus(f.ownerPricing, { ...f.businessDefaults, currency:'CAD' }), ms = performance.now() - started;
+  assert.equal(status.status, 'QUOTING LIVE');
+  assert.equal(status.productCoverage.length, 100, 'every product pair is still covered');
+  assert.ok(ms < 3000, `10 x 10 readiness took ${Math.round(ms)} ms`);
+  p.tearOffPerSqft.membrane_3 = -1;   // malformed data anywhere still fails closed
+  assert.equal(engineIndex.vNextServiceStatus(f.ownerPricing, { ...f.businessDefaults, currency:'CAD' }).status, 'NEEDS PRICING');
+  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /run: npm run test:quote/);
+});

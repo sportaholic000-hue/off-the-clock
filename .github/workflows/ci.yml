@@ -24,6 +24,8 @@ jobs:
         run: node --test --test-reporter=tap test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
+      - name: Quote engine and price book gate (architecture checks; zero failures allowed)
+        run: npm run test:quote
         shell: bash
       - name: Publish test summary to claude/ci-results (push events only)
         if: always() && github.event_name == 'push'

@@ -164,3 +164,7 @@ Large-repair area limit, CAD/USD currency, fence-height and post-count rules rec
 
 Second audit's six findings repaired: AI answer overwrite, readiness repeated per quote, currency shown as legacy and optional, Node 24 runner format, quote-gate selection. Inches limited to two decimals. `npm test`: 1,392 tests, 1,381 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 1,000 tests (41 files), zero failures. Node 24: default reporter fails the checker; with --test-reporter=tap it passes. Real browser: fence-type picker, refused names, two-decimal inch message and currency select verified. Not merged or deployed.
 
+## October 4 audit follow-up (Claude)
+
+F01-F06 and G01 from the October 4 audit repaired. `npm test`: 1,399 tests, 1,388 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 1,007 tests, zero failures. Readiness for a flat-roof catalog: 15 x 15 products about 0.7 s (was about 1.2 s); 40 x 40 still about 4.5 s. Not merged or deployed.
+

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { sameAssistTarget, STALE_ASSIST_NOTICE } from './interviewAssist.js';
+import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -597,6 +597,9 @@ function PriceBookStep({ state, metadata, back, next }) {
   async function confirmField() {
     if (!draft || !current || !readBack) return;
     setError(null);
+    // The save stores the value that was read back. If the owner types a newer
+    // value or moves while it is pending, that newer entry is kept on screen.
+    const asked={serviceType:current.serviceType,field:current.field,rawValue};
     try {
       const value = readBack.value;
       const existingConfirmed = draft.confirmedFields?.[current.serviceType] || [];
@@ -609,6 +612,7 @@ function PriceBookStep({ state, metadata, back, next }) {
         }
       });
       setDraft(result.draft);
+      if(!sameAssistTarget(asked,assistTarget.current)){setAiNotice(STALE_CONFIRM_NOTICE);return;}
       setAnswer('');setAiNotice('');
       const nextField = interviewFields[position + 1];
       setRawValue(nextField?.type === 'json' ? {} : '');

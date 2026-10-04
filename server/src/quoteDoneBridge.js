@@ -12,7 +12,7 @@ import {
   configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
-import { loadPricebook, savePricebook } from '../priceBookService.js';
+import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
 import { dollarAmountToCents, centAmountToDollars, moneyKindForField, parseOwnerNumericInput } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
@@ -169,6 +169,7 @@ export function applicationStatus(raw,book) {
   const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{}});
   const issues=[];
   // Every quote states its currency, so a price book without CAD or USD cannot quote.
+  if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
   if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
@@ -184,7 +185,7 @@ export function readApplicationBook(ownerId) {
 // the revision; the selected job is still fully validated on every request.
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
 export function cachedApplicationStatus(raw,book) {
-  const key=ENGINE_VERSION+'|'+bookRevision(book)+'|'+raw.id;
+  const key=ENGINE_VERSION+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
   if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
   statusCacheCounts.misses++;
   const status=applicationStatus(raw,book);
@@ -219,6 +220,8 @@ export function validateApplicationDraft(ownerId,input) {
  return {statuses,validationErrors:statuses.flatMap(s=>s.validationErrors||[]),revision:bookRevision(saved)};
 }
 export function saveApplicationBook(ownerId,input) {
+  // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
+  return withPricebookLock(ownerId,()=>{
   requireDraftBook(input);
   const previous=loadPricebook(ownerId);requireRevision(previous,input.revision);
   validateApplicationNumericDraft(input);
@@ -252,8 +255,11 @@ export function saveApplicationBook(ownerId,input) {
   const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
   const result=savePricebook(ownerId,next).pricebook;
   return {success:true,statuses:bookStatuses(result),revision:bookRevision(result)};
+});
 }
 export function approveApplicationService(ownerId,serviceId,input) {
+  // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
+  return withPricebookLock(ownerId,()=>{
   if(!record(input))throw problem('Explicit saved-configuration approval is required.');
   const book=loadPricebook(ownerId);requireRevision(book,input.revision);
   const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
@@ -284,6 +290,7 @@ export function approveApplicationService(ownerId,serviceId,input) {
   raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
   book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
   return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved)};
+});
 }
 export function previewApplicationQuote(ownerId,input,dateContext={}) {
   if(!record(input))throw problem('Select a saved service and revision for preview.');

@@ -154,6 +154,13 @@ export async function interpretInterviewAnswer({serviceType,field,answer,pricing
     {serviceType,field: {name:field,label:def.label,type:def.type,unit:def.money?'dollars':'natural unit',moneyKind:quoteDoneMoneyKind(serviceType,field,pricing),wholeCents:def.wholeCents,options:def.options,shape:def.shapedKeys,tree:def.tree},ownerAnswer:answer},
     raw=>{
       if (!ownKeys(raw,['value']) || !Object.hasOwn(raw,'value')) reject('AI returned an unsupported answer.');
+      // The prompt asks for null when the answer has no clear price; that is a
+      // valid outcome that needs the owner, not a provider failure or a retry.
+      if (raw.value === null) return NEEDS_CLARIFICATION;
       return validateInterviewValue(serviceType,field,raw.value,pricing);
-    },dependencies);
+    },dependencies).then(value => {
+      if (value === NEEDS_CLARIFICATION) throw Object.assign(new Error('AI could not find a clear price in that answer. Say the price again, or enter it below. No prices were changed.'), { statusCode:422, code:'PRICEBOOK_AI_NEEDS_CLARIFICATION' });
+      return value;
+    });
 }
+const NEEDS_CLARIFICATION = Object.freeze({ needsClarification:true });

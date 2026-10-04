@@ -36,8 +36,7 @@ import {
   pricebookDraftValidation,
   pricebookStatuses,
   savePricebook,
-  saveValidatedPricebook
-} from '../priceBookService.js';
+  saveValidatedPricebook, withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
 import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
@@ -274,7 +273,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
     resolved = { ...resolved, taxMode, taxPercent: taxMode === 'TAX_NONE' ? 0 : taxPercent, needsOwnerConfirmation: false };
   }
 
-  const book = loadPricebook(ownerId);
+  withPricebookLock(ownerId, () => { const book = loadPricebook(ownerId);
   savePricebook(ownerId, {
     ...book,
     defaults: {
@@ -284,6 +283,7 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
       // The business country chosen in onboarding sets the currency of its prices.
       ...({ CA: 'CAD', US: 'USD' }[country] ? { currency: { CA: 'CAD', US: 'USD' }[country] } : {})
     }
+  });
   });
   saveJurisdictionProfile(ownerId, { country, region });
   return res.json(resolved);
