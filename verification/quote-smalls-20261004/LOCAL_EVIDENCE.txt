@@ -1,0 +1,55 @@
+Local evidence for four scoped quote / price-book fixes, October 4, 2026
+Counts overlap; these runs must not be added together.
+
+smalls-before.tap
+# tests 17
+# pass 6
+# fail 11
+# cancelled 0
+# skipped 0
+# duration_ms 241.19893
+
+currency-ai-after.tap
+# tests 67
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 1091.01897
+
+focused-after.tap
+# tests 77
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 1106.523354
+
+targeted-final.tap
+# tests 72
+# pass 72
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 1063.725079
+
+local-nonbrowser-quote-final.tap
+# tests 998
+# pass 998
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 40579.751131
+
+Owner and widget build: exit 0 (npm --prefix client run build).
+Build warning: existing bundle-size warning; no build failure.
+
+Original precision runner: 21/22 on both the audited base and repair.
+Failure: ordinary-20001-minimum-ten-percent expects 22001 cents but gets 20001 cents.
+The October 3 owner amendment requires one exact minimum price plus tax.
+The historical expectation predates that rule; current T09 minimum-price regressions pass.
+The historical assets and their hashes were preserved, not edited to manufacture a pass.
+
+Browser launch in this workspace: SIGTRAP before UI execution; not counted as a passing or defect-detecting run.
+Locally rebuilt native SQLite aborts while running migrations on this workspace Node 24; not counted as a successful HTTP run.
+Hosted Node 22/Chromium browser and HTTP results are recorded separately.

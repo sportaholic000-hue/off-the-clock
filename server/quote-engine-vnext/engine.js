@@ -1748,7 +1748,7 @@ function configuredCalculationMatches(result) {
   const reproduced=generateQuoteVNext({serviceType:result.serviceType,customerInputs:result.submittedCustomerInputs,ownerPricing:result.calculationRecord.ownerConfiguration,...inputs,callerType:'owner'});
   if(reproduced.resultType!=='INSTANT_ESTIMATE_READY'||reproduced.customerEligible!==true)return false;
   return plainDataEqual(reproduced.options,result.options) &&
-    ['lowEstimate','midEstimate','highEstimate','rangeBufferUsed','effectiveRangeBufferPercent','priceDrivers','lineItems','disclaimer','optionAvailabilityNotice','priceUnit','taxTreatment'].every(k=>plainDataEqual(reproduced[k],result[k]));
+    ['lowEstimate','midEstimate','highEstimate','rangeBufferUsed','effectiveRangeBufferPercent','priceDrivers','lineItems','disclaimer','optionAvailabilityNotice','priceUnit','taxTreatment','currency'].every(k=>plainDataEqual(reproduced[k],result[k]));
 }
 
 function customerProjectionMatchesFirstOption(result) {

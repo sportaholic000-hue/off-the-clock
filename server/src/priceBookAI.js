@@ -12,6 +12,14 @@ export class PriceBookAIError extends Error {
     this.code='PRICEBOOK_AI_UNAVAILABLE';
   }
 }
+export class PriceBookAIClarificationError extends Error {
+  constructor() {
+    super('That answer does not identify a clear value. State the value or enter it manually. No prices were changed.');
+    this.statusCode=422;
+    this.code='PRICEBOOK_AI_CLARIFICATION_REQUIRED';
+    this.retryable=false;
+  }
+}
 export const AI_DRAFT_WARNING = 'These are AI-suggested placeholder prices. Review and confirm each value before going live.';
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const reject = message => { const error = new Error(message); error.statusCode = 422; throw error; };
@@ -125,7 +133,10 @@ async function generateDraft(systemInstruction, data, validate, {env=process.env
         })(),
         new Promise((_,rejectTimeout)=>{timer=setTimeout(()=>{controller.abort();rejectTimeout(new Error('Provider timeout'));},timeoutMs);})
       ]);
-    } catch { /* One bounded retry. Never expose provider messages or credentials. */ }
+    } catch(error) {
+      if(error instanceof PriceBookAIClarificationError)throw error;
+      /* One bounded retry for invalid output/provider failure. Never expose provider details. */
+    }
     finally { clearTimeout(timer);controller.abort(); }
   }
   throw new PriceBookAIError();
@@ -154,6 +165,7 @@ export async function interpretInterviewAnswer({serviceType,field,answer,pricing
     {serviceType,field: {name:field,label:def.label,type:def.type,unit:def.money?'dollars':'natural unit',moneyKind:quoteDoneMoneyKind(serviceType,field,pricing),wholeCents:def.wholeCents,options:def.options,shape:def.shapedKeys,tree:def.tree},ownerAnswer:answer},
     raw=>{
       if (!ownKeys(raw,['value']) || !Object.hasOwn(raw,'value')) reject('AI returned an unsupported answer.');
+      if(raw.value===null)throw new PriceBookAIClarificationError();
       return validateInterviewValue(serviceType,field,raw.value,pricing);
     },dependencies);
 }
