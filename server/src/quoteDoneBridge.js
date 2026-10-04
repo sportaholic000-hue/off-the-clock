@@ -19,7 +19,7 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
-export const DEFAULT_FIELDS = ['quoteTimeZone','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
 const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
 const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
@@ -168,6 +168,8 @@ export function applicationStatus(raw,book) {
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
   const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{}});
   const issues=[];
+  // Every quote states its currency, so a price book without CAD or USD cannot quote.
+  if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book))issues.push('Confirm this exact saved configuration before enabling customer quotes.');
   return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
@@ -177,7 +179,21 @@ export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
   return {...convertApplicationBook(book,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
 }
-export function bookStatuses(book) { return (book.services||[]).map(service=>applicationStatus(service,book)); }
+// Readiness depends only on the saved book and the engine version, so it is
+// computed once per saved revision instead of on every quote. Any save changes
+// the revision; the selected job is still fully validated on every request.
+const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
+export function cachedApplicationStatus(raw,book) {
+  const key=ENGINE_VERSION+'|'+bookRevision(book)+'|'+raw.id;
+  if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
+  statusCacheCounts.misses++;
+  const status=applicationStatus(raw,book);
+  statusCache.set(key,clone(status));
+  if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
+  return status;
+}
+export function applicationStatusCacheCounts() { return {...statusCacheCounts}; }
+export function bookStatuses(book) { return (book.services||[]).map(service=>cachedApplicationStatus(service,book)); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
 function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409); }
 function validateApplicationNumericDraft(book) {
@@ -297,7 +313,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
-  const eligibility=applicationStatus(raw,book),current=eligibility.approvalCurrent;
+  const eligibility=cachedApplicationStatus(raw,book),current=eligibility.approvalCurrent;
   const ready=eligibility.status==='QUOTING LIVE';
   // Active-for-customers is a trusted application eligibility decision. Preserve
   // raw owner intent separately; never change a rate or measurement to make it quote.

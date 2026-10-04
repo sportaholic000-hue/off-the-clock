@@ -71,7 +71,7 @@ test('an unconfirmed directory flush is reported as a failed save, and the direc
 
 const CATEGORIES = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
 const all = value => Object.fromEntries(CATEGORIES.map(key => [key, value]));
-const defaults = { markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
+const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0 };
 const patio = rate => ({ serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', source:'MANUAL', active:true, tiers:[],
   feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' },

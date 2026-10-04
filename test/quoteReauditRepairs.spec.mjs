@@ -23,7 +23,7 @@ const meta=(type,field)=>({...bridge.applicationMetadata().services.find(s=>s.se
 const approve=ownerId=>{const b=loadPricebook(ownerId),s=bridge.applicationStatus(b.services[0],b);return bridge.approveApplicationService(ownerId,b.services[0].id,{revision:bridge.bookRevision(b),confirmConfiguration:true,confirmLegacySettings:true,fields:s.confirmationFields});};
 function saved(f,source='MANUAL'){
  const ownerId='[SYNTHETIC]-'+crypto.randomUUID(),raw=structuredClone(f.ownerPricing);raw.source=source;delete raw.origin;
- savePricebook(ownerId,{services:[raw],defaults:f.businessDefaults});approve(ownerId);return ownerId;
+ savePricebook(ownerId,{services:[raw],defaults:{currency:'CAD',...f.businessDefaults}});approve(ownerId);return ownerId;
 }
 for(const source of ['AI_SUGGESTED','AI_INTERVIEW'])for(const field of ['baggingSurchargePercent','tiers'])test('R01 '+source+' deletion of '+field+' recovers only after explicit approval',()=>{
  const f=mowing();if(field==='tiers')f.ownerPricing.tiers=[{name:'Basic',overrides:{}}];else f.ownerPricing.pricing[field]=10;

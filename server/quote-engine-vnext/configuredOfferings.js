@@ -201,13 +201,13 @@ export function calculatedFencePosts(c,p) {
 // exact value that was entered: the first scale 12 x 10^k (inches with up to six
 // decimals, which also covers decimal feet) at which the number is a whole count
 // to within binary rounding. Any other number is used exactly as given.
-// Fence heights are accepted to at most four decimal places of an inch (decimal
-// feet with up to four places are included). Finer values are refused with a
-// clear message rather than silently rounded.
-export const FENCE_HEIGHT_PRECISION_MESSAGE='Enter the fence height in feet and inches with at most four decimal places of an inch.';
+// Fence heights are feet and inches, with inches to at most two decimal places
+// (for example 5 ft 3.65 in). Anything finer is refused with this message rather
+// than silently rounded; no real fence is measured that finely.
+export const FENCE_HEIGHT_PRECISION_MESSAGE='Enter inches with no more than 2 decimal places, for example 5 ft 3.65 in.';
 export function fenceHeightWithinPrecision(feet){
   if(typeof feet!=='number'||!Number.isFinite(feet)||feet<=0)return false;
-  for(let k=0;k<=4;k++){const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
+  for(let k=0;k<=2;k++){const scale=12*10**k,scaled=feet*scale,whole=Math.round(scaled);if(Number.isSafeInteger(whole)&&whole>0&&Math.abs(scaled-whole)<=Math.abs(scaled)*1e-12)return true;}
   return false;
 }
 export function exactFenceHeight(feet){
@@ -236,7 +236,7 @@ export function fenceHeightParts(feet){
   const inches=exactMultiply(exactFenceHeight(feet),12),whole=inches.numerator/(inches.denominator*12n);
   const rest=decimalText(inches.numerator-whole*12n*inches.denominator,inches.denominator);
   if(rest!==null)return {feet:String(whole),inches:rest};
-  let w=Math.floor(feet),i=Math.round((feet-w)*120000)/10000;if(i>=12){w+=1;i=0;}
+  let w=Math.floor(feet),i=Math.round((feet-w)*1200)/100;if(i>=12){w+=1;i=0;}
   return {feet:String(w),inches:String(i)};
 }
 // Shows a height the way it was entered: "6 ft", "5 ft 3.65 in", "9 in".

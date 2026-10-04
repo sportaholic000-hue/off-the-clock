@@ -160,3 +160,7 @@ Branch `claude/audit-fixes-20261003` (base `4cbbc87`): D01, D03, D04, D05, D06, 
 
 Large-repair area limit, CAD/USD currency, fence-height and post-count rules recorded. `npm test`: 1,388 tests, 1,377 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 857 tests, zero failures. Onboarding over HTTP: CA-NB sets CAD, US-OR sets USD. Not merged or deployed.
 
+## October 3 audit follow-up 3 (Claude)
+
+Second audit's six findings repaired: AI answer overwrite, readiness repeated per quote, currency shown as legacy and optional, Node 24 runner format, quote-gate selection. Inches limited to two decimals. `npm test`: 1,392 tests, 1,381 pass, nine known voice failures, two skips, checker passes. `npm run test:quote`: 1,000 tests (41 files), zero failures. Node 24: default reporter fails the checker; with --test-reporter=tap it passes. Real browser: fence-type picker, refused names, two-decimal inch message and currency select verified. Not merged or deployed.
+

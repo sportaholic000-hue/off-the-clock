@@ -28,7 +28,7 @@ const INSPECTION = 'This work needs an inspection before a reliable estimate can
 const GENERIC = 'We received your request. Someone will follow up to complete or verify the estimate.';
 const CATEGORIES = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
 const all = value => Object.fromEntries(CATEGORIES.map(key => [key, value]));
-const defaults = () => ({ markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
+const defaults = () => ({ currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0 });
 
 function registry(values) {

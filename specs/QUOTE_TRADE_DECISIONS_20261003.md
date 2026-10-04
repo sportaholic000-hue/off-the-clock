@@ -77,7 +77,7 @@ Fence height is entered directly as whole feet and decimal inches in the owner e
 - **Installed shares split the billed line.** Labor and materials shares of an installed price are fractions of the amount actually billed (the rounded line), kept exact until the tax or surcharge itself is rounded. A 100% materials share therefore taxes exactly like tax-entire-job, and the portions always add back to the billed line.
 - **Surcharge basis follows its labor.** The peak surcharge on labor inside complete installed (selling) prices is its own line marked as a selling price and is never marked up; the surcharge on ordinary labor keeps the owner's surcharge-category settings.
 - **Flat-roof products are isolated** like pitched roofs and floors: an incomplete membrane does not block a complete one; malformed data still fails closed.
-- **Fence height precision.** Heights are accepted to four decimal places of an inch (decimal feet included); finer values are refused with a message, never rounded. Displays use exact feet and inches.
+- **Fence height precision.** Heights are feet and inches with inches to two decimal places (for example 5 ft 3.65 in); anything finer is refused with a message, never rounded. Displays use exact feet and inches. (Amended in follow-up 3 from four places.)
 - **Fence type** is chosen from, or added to, Registered products through the shared product-name conversion.
 - **Applied default settings** (post spacing, waste, labor factors) are stored with the service on save and listed in the approval review; older records show them marked as defaults.
 - **Included-price choices** list each price option's own overrides by name and never offer minimums.
@@ -92,4 +92,12 @@ Fence height is entered directly as whole feet and decimal inches in the owner e
 - **Mixed preparation prices** (concrete base prep, sod ground prep) remain single lines that follow their category for markup, tax and peak pricing; they are not split into labor and material portions.
 - **Large repairs are bounded.** Each repair service has an owner-entered largest affected area priced as a repair (more than the medium-repair limit: 200 sq ft roof, 80 sq ft flat roof and siding). It is required before large repairs quote; larger requests go to review.
 - **Currency.** Price books carry CAD or USD, set from the business country in onboarding and editable in the price book. Every quote states it ("Prices are in Canadian dollars (CAD).") and the customer result carries the code. No conversion is performed.
+
+## October 3 audit follow-up 3 (Claude)
+
+- **Currency is required and active.** A price book must state CAD or USD before any service quotes ("Choose the currency of your prices (CAD or USD) in the price book."). Currency is an active business setting in approval review, never a retained legacy setting. Once chosen it cannot be cleared in the editor.
+- **AI interview answers** apply only to the question and on-screen value they were asked about; a value the owner changed while waiting is kept.
+- **Readiness** is computed once per saved price-book revision and engine version rather than on every quote; every request still validates the selected job.
+- **Fence inches** accept up to two decimal places.
+- **Tests.** `npm test` and CI request TAP output explicitly (Node 24 otherwise prints a different format). `npm run test:quote` selects quote-engine, price-book and quote-presentation tests by following imports through helpers and fixtures.
 

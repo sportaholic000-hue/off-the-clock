@@ -571,7 +571,7 @@ function validateServiceShape(service, index) {
 const SUPPORTED_DEFAULT_FIELDS = new Set([
   'markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee',
   'disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent',
-  'quoteTimeZone','laborHourlyRate','peakMonths','peakSurchargePercent','markupApplies'
+  'quoteTimeZone','currency','laborHourlyRate','peakMonths','peakSurchargePercent','markupApplies'
 ]);
 const MARKUP_CATEGORIES = new Set([
   'labor','material','removal','prep','addon','equipment','travel',
@@ -583,6 +583,7 @@ function validatePricebookDefaults(defaults = {}) {
   for (const field of Object.keys(defaults)) {
     if (!SUPPORTED_DEFAULT_FIELDS.has(field)) throw new Error(`defaults.${field} is not supported`);
   }
+  if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))throw Object.assign(new Error('defaults.currency must be CAD or USD'),{statusCode:400});
   if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone});}catch{throw Error('defaults.quoteTimeZone must be a valid business time zone');}}
   if (!['markup','margin'].includes(defaults.markupMode || 'markup')) throw new Error('markupMode must be markup or margin');
   if (!['TAX_NONE','TAX_MATERIALS','TAX_ALL'].includes(defaults.taxMode || 'TAX_NONE')) throw new Error('taxMode is invalid');

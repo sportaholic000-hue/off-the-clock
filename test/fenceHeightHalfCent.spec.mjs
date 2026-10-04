@@ -55,10 +55,10 @@ test('a priced height entered in feet and inches is also exact, and decimal-feet
   const exact = mul(decimal(3), decimal(3333), div(decimal(7), feetInches(4, '8')));
   assert.ok(isHalfCent(exact));
   assert.equal(installedQuote({ ratePerFootCents:3333, linearFeet:3, pricedHeight:4 + 8 / 12, requestedHeight:7 }), halfUp(exact));
-  // Decimal feet: 5.0001 ft from $45/ft 6 ft prices on 100 ft = 375007.5 cents.
-  const decimalFeet = mul(decimal(100), decimal(4500), div(decimal('5.0001'), decimal(6)));
+  // Decimal feet: 5.0125 ft (5 ft 0.15 in) from $45/ft 6 ft prices on 100 ft = 375937.5 cents.
+  const decimalFeet = mul(decimal(100), decimal(4500), div(decimal('5.0125'), decimal(6)));
   assert.ok(isHalfCent(decimalFeet));
-  assert.equal(installedQuote({ ratePerFootCents:4500, linearFeet:100, pricedHeight:6, requestedHeight:5.0001 }), halfUp(decimalFeet));
+  assert.equal(installedQuote({ ratePerFootCents:4500, linearFeet:100, pricedHeight:6, requestedHeight:5.0125 }), halfUp(decimalFeet));
 });
 
 test('the saved priced height reads as entered in the owner approval table', () => {

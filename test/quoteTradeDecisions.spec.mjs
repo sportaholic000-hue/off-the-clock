@@ -14,7 +14,7 @@ const {offeringFixture}=await import('./configuredOfferingsFixtures.mjs');
 const {fixture}=await import('../verification/engine-independent/fixtures.mjs');
 function cents(f,expected){const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,expected);assert.equal(sanitizeForCustomerVNext(q).resultType,'INSTANT_ESTIMATE_READY');return q;}
 function saved(f){
- const id='[SYNTHETIC]-'+crypto.randomUUID(),raw=structuredClone(f.ownerPricing);delete raw.origin;savePricebook(id,{services:[raw],defaults:f.businessDefaults});
+ const id='[SYNTHETIC]-'+crypto.randomUUID(),raw=structuredClone(f.ownerPricing);delete raw.origin;savePricebook(id,{services:[raw],defaults:{currency:'CAD',...f.businessDefaults}});
  let b=loadPricebook(id),s=bridge.applicationStatus(b.services[0],b);
  bridge.approveApplicationService(id,b.services[0].id,{revision:bridge.bookRevision(b),confirmConfiguration:true,confirmLegacySettings:true,fields:s.confirmationFields});
  return {id,book:loadPricebook(id)};

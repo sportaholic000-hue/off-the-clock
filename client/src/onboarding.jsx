@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { sameAssistTarget, STALE_ASSIST_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -492,6 +493,9 @@ function PriceBookStep({ state, metadata, back, next }) {
     [available]
   );
   const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
+  // What the owner is looking at right now; an AI reading must match it to apply.
+  const assistTarget = useRef(null);
+  assistTarget.current = { serviceType:current?.serviceType, field:current?.field, rawValue };
 
   useEffect(() => {
     if (!quoteAccess || draft) return;
@@ -516,10 +520,12 @@ function PriceBookStep({ state, metadata, back, next }) {
 
   async function assistAnswer() {
     if (!draft || !current || aiBusy) return;
+    const asked={serviceType:current.serviceType,field:current.field,rawValue};
     setAiBusy(true);setError(null);setAiError(null);setAiNotice('');
     try {
       const result=await api('/api/pricebook/interview/'+draft.id+'/assist',{method:'POST',body:{serviceType:current.serviceType,field:current.field,answer}});
       setDraft(result.draft);
+      if(!sameAssistTarget(asked,assistTarget.current)){setAiNotice(STALE_ASSIST_NOTICE);return;}
       setRawValue(current.type==='json'?result.value:String(result.value));
       setReadBack(null);
       setAiNotice('AI captured this as an unconfirmed draft. Check the value below before saving it.');

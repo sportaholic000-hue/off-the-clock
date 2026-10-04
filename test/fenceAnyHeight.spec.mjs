@@ -18,7 +18,7 @@ const { exactFenceHeight, formatFenceHeight } = await import('../server/quote-en
 
 const CATEGORIES = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
 const all = value => Object.fromEntries(CATEGORIES.map(key => [key, value]));
-const defaults = { markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
+const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0 };
 // Exact fractions with BigInt; cents round half up, once per line, like the engine's rule.
 const frac = (n, d = 1n) => { const g = (a, b) => b ? g(b, a % b) : a; const k = g(n < 0n ? -n : n, d) || 1n; return [n / k, d / k]; };

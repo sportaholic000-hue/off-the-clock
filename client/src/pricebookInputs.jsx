@@ -61,11 +61,11 @@ export function FenceHeightInput({value,onChange,label='Fence height'}) {
   try {const feet=parseOwnerNumericInput(draft.feet),inches=parseOwnerNumericInput(draft.inches)||0;
    if(feet===undefined&&draft.inches==='')result=undefined;
    else if(feet===undefined||!Number.isInteger(feet)||inches>=12)throw Error('Enter whole feet and inches below 12.');
-   else if(/\.\d{5,}/.test(draft.inches))throw Error('precision');
+   else if(/\.\d{3,}/.test(draft.inches))throw Error('precision');
    else result=feet+inches/12;
   }catch {result=draft.feet+' ft '+draft.inches+' in';}
   emitted.current=result;onChange(result);
  }
- return <div><><Field label="Whole feet"><ExactNumericInput aria-label={label+' whole feet'} value={parts.feet} onChange={v=>change('feet',v)}/></Field><Field label="Inches (decimals allowed)"><ExactNumericInput aria-label={label+' inches'} value={parts.inches} onChange={v=>change('inches',v)}/></Field>{typeof value==='string'&&<span role="alert">{/\.\d{5,}/.test(parts.inches)?FENCE_HEIGHT_PRECISION_MESSAGE:'Enter whole feet and inches from 0 up to, but not including, 12.'}</span>}</>
+ return <div><><Field label="Whole feet"><ExactNumericInput aria-label={label+' whole feet'} value={parts.feet} onChange={v=>change('feet',v)}/></Field><Field label="Inches (decimals allowed)"><ExactNumericInput aria-label={label+' inches'} value={parts.inches} onChange={v=>change('inches',v)}/></Field>{typeof value==='string'&&<span role="alert">{/\.\d{3,}/.test(parts.inches)?FENCE_HEIGHT_PRECISION_MESSAGE:'Enter whole feet and inches from 0 up to, but not including, 12.'}</span>}</>
  <small>Any positive height, including fractional inches.</small></div>;
 }

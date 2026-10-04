@@ -24,7 +24,7 @@ const cents = ([n, d]) => Number((2n * n + d) / (2n * d));
 const CATS = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
 const all = v => Object.fromEntries(CATS.map(k => [k, v]));
 const ALL_MONTHS = [1,2,3,4,5,6,7,8,9,10,11,12];
-const defaults = (o = {}) => ({ markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
+const defaults = (o = {}) => ({ currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0, ...o });
 function live(service, bookDefaults = defaults()) {
   const ownerId = 'audit-' + crypto.randomUUID();
@@ -139,13 +139,15 @@ test('D03: the default settings a quote uses are saved with the service and show
   assert.ok(unsaved.some(r => /\(default\)/.test(r.label) && /post/i.test(r.label)), 'older records show applied defaults as defaults');
 });
 
-test('D10: heights finer than 1/10,000 inch are refused, never silently rounded; exact parts never show 12 inches', () => {
+test('D10: inches are accepted to two decimal places; finer values are refused, never silently rounded; exact parts never show 12 inches', () => {
   const svc = live(fenceSvc({ offeringRates:{ installedFencePerLF:36 } }));
   const tooFine = svc.quote(job({ linearFeet:100000, fenceHeight:5 + 3.0000001 / 12 }));
   assert.equal(tooFine.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.ok(JSON.stringify(tooFine).includes(offer.FENCE_HEIGHT_PRECISION_MESSAGE));
-  const fine = svc.quote(job({ linearFeet:100000, fenceHeight:5 + 3.0001 / 12 }));
-  assert.equal(total(fine), cents(mul(D(100000), D(3600), div(div(D('63.0001'), D(12)), D(6)))));
+  const threeDecimals = svc.quote(job({ linearFeet:100, fenceHeight:5 + 3.001 / 12 }));
+  assert.equal(threeDecimals.resultType, 'ESTIMATE_REQUIRES_REVIEW', 'three decimal places of an inch are refused');
+  const fine = svc.quote(job({ linearFeet:100000, fenceHeight:5 + 3.65 / 12 }));
+  assert.equal(total(fine), cents(mul(D(100000), D(3600), div(div(D('63.65'), D(12)), D(6)))));
   assert.deepEqual(offer.fenceHeightParts(5 + 3.65 / 12), { feet:'5', inches:'3.65' });
   assert.deepEqual(offer.fenceHeightParts(5.999999999), { feet:'6', inches:'0' });
   const owner = live(fenceSvc({}, { fenceHeight:5 + 3.0000001 / 12 }));
@@ -200,4 +202,56 @@ test('C03: the price-book currency is validated, stated on every quote and carri
   assert.ok(wrong.status.validationErrors.includes('Choose CAD or USD as the currency of your prices.'));
   const server = fs.readFileSync(new URL('../server/src/server.js', import.meta.url), 'utf8');
   assert.match(server, /\{ CA: 'CAD', US: 'USD' \}\[country\]/, 'onboarding sets the currency from the business country');
+});
+
+const { sameAssistTarget, STALE_ASSIST_NOTICE } = await import('../client/src/interviewAssist.js');
+test('Audit 2 #1 (D02): an AI reading applies only to the unchanged question and value it was asked about', () => {
+  const asked = { serviceType:'LANDSCAPING_MOWING', field:'mowingBaseRatePerSqft', rawValue:'100' };
+  assert.equal(sameAssistTarget(asked, { ...asked }), true);
+  assert.equal(sameAssistTarget(asked, { ...asked, rawValue:'150' }), false, 'owner corrected the value while waiting');
+  assert.equal(sameAssistTarget(asked, { ...asked, field:'edgingPerLinearFoot' }), false, 'owner moved to another question');
+  assert.equal(sameAssistTarget(asked, { ...asked, serviceType:'LANDSCAPING_SOD' }), false);
+  const structured = { a:1 };
+  assert.equal(sameAssistTarget({ ...asked, rawValue:structured }, { ...asked, rawValue:structured }), true);
+  assert.equal(sameAssistTarget({ ...asked, rawValue:structured }, { ...asked, rawValue:{ a:1 } }), false, 'an edited structured answer is a new value');
+  const step = fs.readFileSync(new URL('../client/src/onboarding.jsx', import.meta.url), 'utf8'), body = step.slice(step.indexOf('async function assistAnswer'), step.indexOf('async function startInterview'));
+  assert.ok(body.indexOf('sameAssistTarget(asked,assistTarget.current)') > 0 && body.indexOf('sameAssistTarget(asked,assistTarget.current)') < body.indexOf('setRawValue('), 'the check runs before the value is replaced');
+  assert.match(STALE_ASSIST_NOTICE, /newer entry was kept/);
+});
+
+test('Audit 2 #2 (D07): readiness is computed once per saved revision, not on every quote', () => {
+  const svc = live(fenceSvc());
+  const book = store.loadPricebook(svc.ownerId), raw = book.services[0];
+  const before = bridge.applicationStatusCacheCounts();
+  const first = bridge.calculateApplicationQuote(book, raw, { serviceId:raw.id, customerInputs:job() }, { ownerId:svc.ownerId });
+  const second = bridge.calculateApplicationQuote(book, raw, { serviceId:raw.id, customerInputs:job() }, { ownerId:svc.ownerId });
+  const after = bridge.applicationStatusCacheCounts();
+  assert.equal(after.hits - before.hits >= 1, true, 'the second quote reuses readiness');
+  assert.equal(total(first.internalResult), total(second.internalResult));
+  const changed = structuredClone(book); changed.services[0].active = false;
+  assert.equal(bridge.calculateApplicationQuote(changed, changed.services[0], { serviceId:raw.id, customerInputs:job() }, { ownerId:svc.ownerId }).internalResult.resultType, 'ESTIMATE_REQUIRES_REVIEW', 'a changed book is re-checked, not served from the cache');
+});
+
+test('Audit 2 #3 and #6 (C03): currency is an active, required setting and is never shown as retained legacy data', () => {
+  const svc = live(fenceSvc(), defaults({ currency:'USD' }));
+  assert.equal(svc.status.status, 'QUOTING LIVE');
+  assert.ok(!svc.status.legacySettings.some(row => row.path === 'defaults.currency'), 'currency is not a retained legacy setting');
+  assert.ok(bridge.DEFAULT_FIELDS.includes('currency'));
+  const saved = bridge.readApplicationBook(svc.ownerId);
+  const rows = reviewRows(saved.services[0], saved.defaults, bridge.applicationMetadata().services.find(s => s.serviceType === 'FENCING_INSTALL'), svc.status.legacySettings.map(r => r.path));
+  assert.ok(rows.some(row => /Business settings · Currency/i.test(row.label)), 'currency is reviewed as an active business setting');
+  const none = live(fenceSvc(), { ...defaults(), currency:undefined });
+  assert.equal(none.status.status, 'NEEDS PRICING', 'a book without a currency cannot quote');
+  assert.ok(none.status.validationErrors.includes('Choose the currency of your prices (CAD or USD) in the price book.'));
+  assert.equal(none.quote(job()).resultType, 'ESTIMATE_REQUIRES_REVIEW');
+});
+
+test('Audit 2 #4 and #5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers', async () => {
+  const runner = fs.readFileSync(new URL('../scripts/test-full.mjs', import.meta.url), 'utf8');
+  assert.match(runner, /'--test', '--test-reporter=tap'/);
+  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /node --test --test-reporter=tap test\/\*\.spec\.js test\/\*\.spec\.mjs/);
+  const { quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
+  const files = quotePricebookSpecFiles(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..'));
+  for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);
+  assert.ok(!files.some(file => /voice/i.test(file)));
 });

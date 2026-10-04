@@ -81,7 +81,7 @@ function savedMowing({fee='travel',mode='owner_selected',selection,omit=false}={
  const f=mowing(),ownerId='synthetic-'+crypto.randomUUID();delete f.ownerPricing.origin;
  f.ownerPricing.feeRules[fee]=mode;f.businessDefaults[{travel:'travelFee',disposal:'disposalFee',permit:'permitFee',overhead:'overheadFixed'}[fee]]=5000;
  if(!omit)f.ownerPricing.ownerFeeSelections=selection;
- savePricebook(ownerId,{ownerId,services:[f.ownerPricing],defaults:f.businessDefaults});
+ savePricebook(ownerId,{ownerId,services:[f.ownerPricing],defaults:{currency:'CAD',...f.businessDefaults}});
  let book=loadPricebook(ownerId);
  bridge.approveApplicationService(ownerId,f.ownerPricing.id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true});
  book=loadPricebook(ownerId);

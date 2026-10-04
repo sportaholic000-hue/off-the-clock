@@ -22,7 +22,7 @@ const mul = (...xs) => xs.reduce(([a, b], [c, d]) => frac(a * c, b * d), [1n, 1n
 const cents = ([n, d]) => Number((2n * n + d) / (2n * d)); // half up, once per line
 const CATEGORIES = ['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
 const all = value => Object.fromEntries(CATEGORIES.map(key => [key, value]));
-const defaults = { markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
+const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overheadFixed:0, minimumJobPrice:0, travelFee:0, disposalFee:0, permitFee:0,
   taxMode:'TAX_NONE', taxPercent:0, rangeBufferPercent:0, markupApplies:all(true), peakMonths:[], peakSurchargePercent:0 };
 function live(service) {
   const ownerId = 'combo-' + crypto.randomUUID();
