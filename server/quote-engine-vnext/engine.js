@@ -416,7 +416,7 @@ function validateRangedEvidence(line) {
 }
 
 
-function validateFeeSelectionRequest(ownerPricing, feeSelections, replacedFees = [], requirePresence = false) {
+export function validateFeeSelectionRequest(ownerPricing, feeSelections, replacedFees = [], requirePresence = false) {
   const invalidOwnerFields = [];
   const invalidCustomerFields = [];
   const feeNames = Object.keys(FEE_DEFAULT_FIELDS);

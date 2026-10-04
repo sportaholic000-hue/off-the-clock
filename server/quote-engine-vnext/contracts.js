@@ -1080,8 +1080,16 @@ const ALLOWED_PRICING_FIELDS = {
 };
 
 export function customerContractForVNext(type,p={},rules={}) {
- const base=configuredOffering(type,p)?offeringContract(type,p):MEASUREMENT_CONTRACTS[type];
- return {...base,fields:{...base.fields,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
+ const base=configuredOffering(type,p)?offeringContract(type,p,rules):MEASUREMENT_CONTRACTS[type];
+ // A confirmation for another offered option is evidence, not extra measured
+ // work. Accept only its registered confirmation boolean here. All quantities,
+ // selections and scope checks remain specific to the option being priced.
+ const optionConfirmations={};
+ for(const tier of Array.isArray(rules.tiers)?rules.tiers:[]){
+  const effective={...(rules.pricing||{}),...(tier.overrides||{})},definitions=scopeDefinitions(type,effective);
+  for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
+ }
+ return {...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)};
 }
 
 export function allowedPricingFields(serviceType) {

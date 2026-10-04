@@ -1,7 +1,8 @@
 import crypto from 'node:crypto';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
-import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions} from './configuredOfferings.js';
+import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
+import {exactCompare} from './exactMath.js';
 import {
   CLASS2_DEFINITIONS,
   SERVICE_TYPES,
@@ -25,6 +26,7 @@ import {
 } from './contracts.js';
 import {
   generateQuoteVNext,
+  validateFeeSelectionRequest,
   ENGINE_VERSION,
   mergePricingForValidationVNext,
   sanitizeForCustomerVNext,
@@ -210,10 +212,10 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
   return validateOwnerPricing(service.serviceType,scopeActivationInputs(service.serviceType,inputs,pricing,service),pricing,service,tierName).ok;
 }
 
-function baseActivationScenarios(service) {
+function baseActivationScenarios(service,confirmedService=service) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
-  if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p);
+  if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p,confirmedService);
   if (serviceType === 'ROOFING_REPLACEMENT') {
     const replacements = keysOf(p.laborPerSquare, 'asphalt_shingle');
     const existingTypes = keysOf(p.tearOffPerSquare, 'asphalt_shingle');
@@ -356,8 +358,8 @@ function baseActivationScenarios(service) {
   return [];
 }
 
-function activationScenarios(service) {
- const scenarios=baseActivationScenarios(service),p=pricingOf(service),type=service.serviceType,extra=[];
+function activationScenarios(service,confirmedService=service) {
+ const scenarios=baseActivationScenarios(service,confirmedService),p=pricingOf(service),type=service.serviceType,extra=[];
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
  if(type.startsWith('FLOORING_')){
   if(p.scopeDetails?.stairs){const seed=scenarios.find(c=>c.newFlooringType===p.scopeDetails.stairs.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5});}
@@ -419,6 +421,13 @@ function scopeCoverageForService(service) {
   const rows = new Map();
   for (const variant of variants) {
     const p = variant.pricing, definitions = scopeDefinitions(type, p);
+    if(type.startsWith('FENCING_')&&configuredOffering(type,p))for(const [key,gate] of Object.entries(p.offeringDetails?.gates||{})){
+      const measured=offeringGateDefinitions(base,service)[key];
+      if(typeof gate?.widthLF==='number'&&typeof measured?.widthLF==='number'&&exactCompare(gate.widthLF,measured.widthLF)!==0){
+        const id='gate_width_'+key;if(!rows.has(id))rows.set(id,{key:id,label:'Gate opening width: '+key.replaceAll('_',' '),configurationComplete:false,variants:[],message:'This price option changes the confirmed gate-opening width. Requests using this gate need a matching option or owner review.'});
+        rows.get(id).variants.push({tierName:variant.name,configurationComplete:false,missingFields:['offeringDetails.gates.'+key+'.widthLF']});
+      }
+    }
     for (const [key, definition] of Object.entries(definitions)) {
       const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
@@ -451,9 +460,9 @@ function scopeCoverageForService(service) {
       row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set(validation.ownerDiagnostics.map(d=>d.path))]});
     }
   }
-  return [...rows.values()].map(row => ({ ...row, message: row.configurationComplete
+  return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
     ? 'Scope configured. Matching measured requests can quote when the required pricing and saved approval are complete.' + (row.variants.some(v => !v.configurationComplete) ? ' Some price options still need scope setup.' : '')
-    : row.label + ' requests arrive as leads until you configure this scope and its prices.' }));
+    : row.label + ' requests arrive as leads until you configure this scope and its prices.') }));
 }
 
 function laborAdjustmentCoverage(service) {
@@ -553,11 +562,20 @@ function productAxisCoverage(list,[rField,eField],evaluate){
   return [...results.values()];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
+  // Fee decisions are shared by the entire catalog. Check them once, before
+  // repeated product calculations. Disposal may be replaced by an included
+  // measured scope; leave its presence to the actual scenario in that case.
+  const disposalMayBeIncluded=Object.entries(effectivePricing.scopeDetails||{}).some(([key,d])=>['stairs','demolition','siding_removal'].includes(key)&&d?.disposalIncluded===true);
+  const fees=validateFeeSelectionRequest(service,activationFeeSelections(service,options),disposalMayBeIncluded?['disposal']:[],true);
+  if(fees.invalidOwnerFields.length||fees.invalidCustomerFields.length){
+    const diagnostics=[...fees.invalidOwnerFields,...fees.invalidCustomerFields].map(path=>({type:'invalid',kind:'activation_pipeline',path,message:'Common fee selection is missing or invalid.'}));
+    return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
+  }
   // All boundary probes within one product must pass; incomplete siblings do not block it.
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
-    for(const scenario of activationScenarios({...service,pricing:effectivePricing})){
+    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service)){
       const key=JSON.stringify(selectors.map(field=>scenario[field]));
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
@@ -571,7 +589,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
-  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing });
+  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service);
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
@@ -697,6 +715,10 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   }
 
   if (tierDefinitionDiagnostics.length) return statusFromDiagnostics(service, diagnostics);
+  // Customer catalogs need only live/not-live. Disabled or globally blocked
+  // drafts cannot become live through a product calculation. Owner diagnostics
+  // still evaluate the saved draft when detailed coverage is requested.
+  if(options.firstLiveProduct&&diagnostics.length)return statusFromDiagnostics(service,diagnostics);
   const tierEntries = Array.isArray(service.tiers) && service.tiers.length
     ? service.tiers.map((tier, index) => ({ tier, index }))
     : [{ tier: { name: null, overrides: {} }, index: null }];

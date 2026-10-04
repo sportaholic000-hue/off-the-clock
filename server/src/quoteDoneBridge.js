@@ -4,12 +4,13 @@ import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestSco
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
+import { mergeCustomerFieldDefinitions } from '../scopeConfiguration.js';
 import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
-  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions
+  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
@@ -372,7 +373,14 @@ export function applicationServiceName(raw) {
 export function applicationServiceDefinition(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
-  const customerFields=Object.entries(customerContractForVNext(raw.serviceType,p,raw).fields).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}));
+  const variants=Array.isArray(raw.tiers)&&raw.tiers.length?raw.tiers.map(tier=>({tierName:tier.name,fields:customerContractForVNext(raw.serviceType,mergePricingVNext(p,tier.overrides||{}),raw).fields})):[{tierName:null,fields:customerContractForVNext(raw.serviceType,p,raw).fields}];
+  const displayedVariants=variants.map(variant=>({...variant,fields:Object.fromEntries(Object.entries(variant.fields).filter(([,field])=>!field.evidenceOnly))}));
+  const customerFields=Object.entries(mergeCustomerFieldDefinitions(displayedVariants)).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}));
+  // Gate selectors describe the confirmed measurement. Tier price changes may
+  // upgrade hardware, but cannot relabel that measurement in shared scope.
+  const baseGates=raw.serviceType.startsWith('FENCING_')&&configuredOffering(raw.serviceType,p)?offeringContract(raw.serviceType,p).fields.gates:null;
+  const gates=customerFields.find(field=>field.name==='gates');
+  if(gates&&baseGates)gates.options={...gates.options,...baseGates.options};
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   const d=p.offeringDetails||{};
   const summary=[d.description];

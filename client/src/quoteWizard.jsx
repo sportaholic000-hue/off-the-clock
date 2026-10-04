@@ -1,4 +1,4 @@
-import {customerFieldVisible} from '../../server/scopeConfiguration.js';
+import {customerFieldVisible,customerFieldForInputs} from '../../server/scopeConfiguration.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Field, Notice, Select, Textarea, TextInput} from './ui.jsx';
 import {CustomerMeasurements} from './quoteDoneControls.jsx';
@@ -12,7 +12,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
   const steps = [
     {id:'service', title:'What can we help with?'},
     ...(values.requestedService === undefined ? [] : [{id:'requested',title:'Requested work'}]),
-    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerFieldVisible(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
+    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerFieldVisible(field,values.inputs)).map(field=>customerFieldForInputs(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
     ...(service?.customerFees || []).map(fee => ({id:'fee:'+fee,title:'Select '+fee+' charge',fee})),
     {id:'details',title:'Anything we should know about this job?'},
     {id:'additional',title:'Additional work for on-site estimate'},
@@ -41,7 +41,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
       </Select></Field>}
       {step.id === 'service' && !!service?.offeringSummary?.length && <Notice title="What this offering covers"><ul>{service.offeringSummary.map((detail,i)=><li key={i}>{detail}</li>)}</ul></Notice>}
       {step.id === 'requested' && <Field label="Requested work" help="Your earlier description is preserved. Correct it if the work has changed."><Textarea aria-label="Requested work" value={show(values.requestedService)} onChange={event => change('requestedService',event.target.value)}/></Field>}
-      {step.field && <><CustomerMeasurements fields={[step.field]} value={values.inputs} onChange={value => change('inputs',value)} knownOfferings={service.knownOfferings}/><p className="field-help">Use the measurements you know. Leave an unknown answer blank so the business can check it.</p></>}
+      {step.field && <><CustomerMeasurements fields={[step.field]} scopeFields={service.customerFields} value={values.inputs} onChange={value => change('inputs',value)} knownOfferings={service.knownOfferings}/><p className="field-help">Use the measurements you know. Leave an unknown answer blank so the business can check it.</p></>}
       {step.fee && <Field label={step.title}><Select aria-label={step.title} value={values.fees[step.fee] === undefined ? '' : String(values.fees[step.fee])} onChange={event => change('fees',{...values.fees,[step.fee]:event.target.value === '' ? undefined : event.target.value === 'true'})}>
         <option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option>
       </Select></Field>}

@@ -1,0 +1,92 @@
+Astra five-finding repair — hosted verification excerpt
+Code commit: 58769d7c09990647f37bd0c8f3c143ab0567b98c
+Code tree: d85f56ba8fd8f588a806909c2e2007b2892a4e84
+Run: 37237034636; job: 111538123840; conclusion: success
+URL: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37237034636
+Fetched completed job log via GitHub; relevant lines follow.
+Full suite TAP is redirected by the unchanged workflow. Its counts below are the existing failure checker's actual summary, not an inferred pass.
+The nine existing failures remain; this is not a zero-failure whole-application claim.
+
+2026-10-04T21:41:08.2713153Z ✓ built in 2.38s
+2026-10-04T21:41:10.1778285Z ✓ built in 1.73s
+2026-10-04T21:41:10.4124843Z Running 47 quote-engine and price-book test files; any failure fails the gate.
+2026-10-04T21:41:11.5818947Z # Subtest: Astra 1: FENCING_INSTALL excludes an option that changes confirmed gate width
+2026-10-04T21:41:11.5836448Z ok 11 - Astra 1: FENCING_INSTALL excludes an option that changes confirmed gate width
+2026-10-04T21:41:11.5855172Z # Subtest: Astra 1: FENCING_REPLACEMENT excludes an option that changes confirmed gate width
+2026-10-04T21:41:11.5863966Z ok 12 - Astra 1: FENCING_REPLACEMENT excludes an option that changes confirmed gate width
+2026-10-04T21:41:11.5936631Z # Subtest: Astra 1: all conflicting gates return review without customer money
+2026-10-04T21:41:11.5937254Z ok 13 - Astra 1: all conflicting gates return review without customer money
+2026-10-04T21:41:11.5939957Z # Subtest: Astra 1 control: same-width upgrades retain both independently priced options
+2026-10-04T21:41:11.5940629Z ok 14 - Astra 1 control: same-width upgrades retain both independently priced options
+2026-10-04T21:41:11.5942442Z # Subtest: Astra 2: approved tier-only hardwood scope exposes its required confirmation
+2026-10-04T21:41:11.5943068Z ok 15 - Astra 2: approved tier-only hardwood scope exposes its required confirmation
+2026-10-04T21:41:11.5984476Z # Subtest: Astra 2: tier-only commercial-installed retains all measured questions
+2026-10-04T21:41:11.5985179Z ok 16 - Astra 2: tier-only commercial-installed retains all measured questions
+2026-10-04T21:41:11.5987266Z # Subtest: Astra 2: tier-only stairs-installed retains all measured questions
+2026-10-04T21:41:11.5987931Z ok 17 - Astra 2: tier-only stairs-installed retains all measured questions
+2026-10-04T21:41:11.5998446Z # Subtest: Astra 2: tier-only roof-underlayment-packages retains all measured questions
+2026-10-04T21:41:11.5999275Z ok 18 - Astra 2: tier-only roof-underlayment-packages retains all measured questions
+2026-10-04T21:41:11.6001236Z # Subtest: Astra 2: gates introduced by a tier appear with a stable measured width
+2026-10-04T21:41:11.6001898Z ok 19 - Astra 2: gates introduced by a tier appear with a stable measured width
+2026-10-04T21:41:11.6004638Z # Subtest: Astra 2: an option-specific confirmation does not remove another complete option
+2026-10-04T21:41:11.6005493Z ok 20 - Astra 2: an option-specific confirmation does not remove another complete option
+2026-10-04T21:41:11.6007428Z # Subtest: Astra 3: confirmed FENCING_INSTALL legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6011917Z ok 21 - Astra 3: confirmed FENCING_INSTALL legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6013319Z # Subtest: Astra 3: confirmed FENCING_REPLACEMENT legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6013794Z ok 22 - Astra 3: confirmed FENCING_REPLACEMENT legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6015158Z # Subtest: Astra 3: confirmed INTERIOR_PAINTING legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6015959Z ok 23 - Astra 3: confirmed INTERIOR_PAINTING legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6017237Z # Subtest: Astra 3: confirmed EXTERIOR_PAINTING legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6017751Z ok 24 - Astra 3: confirmed EXTERIOR_PAINTING legacy condition permits baseline jobs only
+2026-10-04T21:41:11.6018938Z # Subtest: Astra 3 control: generic approval cannot substitute for explicit baseline confirmation
+2026-10-04T21:41:11.6019546Z ok 25 - Astra 3 control: generic approval cannot substitute for explicit baseline confirmation
+2026-10-04T21:41:11.6020720Z # Subtest: Astra 4: selected underlayment text is independent of map order false
+2026-10-04T21:41:11.6021196Z ok 26 - Astra 4: selected underlayment text is independent of map order false
+2026-10-04T21:41:11.6022310Z # Subtest: Astra 4: selected underlayment text is independent of map order true
+2026-10-04T21:41:11.6022772Z ok 27 - Astra 4: selected underlayment text is independent of map order true
+2026-10-04T21:41:11.6023907Z # Subtest: Astra 4: different tier products are both disclosed for the selected floor
+2026-10-04T21:41:11.6024235Z ok 28 - Astra 4: different tier products are both disclosed for the selected floor
+2026-10-04T21:41:11.6025004Z # Subtest: Astra 4: changing to a product with no underlayment clears its earlier confirmation
+2026-10-04T21:41:11.6025672Z ok 29 - Astra 4: changing to a product with no underlayment clears its earlier confirmation
+2026-10-04T21:41:11.6026996Z # Subtest: Astra 5: cold 80-product incomplete catalog rejects common fee blockers promptly
+2026-10-04T21:41:11.6027327Z ok 30 - Astra 5: cold 80-product incomplete catalog rejects common fee blockers promptly
+2026-10-04T21:41:11.7582603Z # Subtest: Astra 5: cold 80-product disabled catalog rejects common fee blockers promptly
+2026-10-04T21:41:11.7586400Z ok 31 - Astra 5: cold 80-product disabled catalog rejects common fee blockers promptly
+2026-10-04T21:41:11.7588601Z # Subtest: Astra 5 control: selected owner fee still quotes exactly and included disposal is not blocked
+2026-10-04T21:41:11.7589427Z ok 32 - Astra 5 control: selected owner fee still quotes exactly and included disposal is not blocked
+2026-10-04T21:41:12.6970146Z # Subtest: Astra 2 browser: tier-only confirmation can be answered in measurement form
+2026-10-04T21:41:12.6978078Z ok 33 - Astra 2 browser: tier-only confirmation can be answered in measurement form
+2026-10-04T21:41:13.3181220Z # Subtest: Astra 2 browser: tier-only confirmation can be answered in customer wizard
+2026-10-04T21:41:13.3189123Z ok 34 - Astra 2 browser: tier-only confirmation can be answered in customer wizard
+2026-10-04T21:41:13.5397339Z # Subtest: Astra 4 browser: product change shows its own confirmation and clears the old Yes
+2026-10-04T21:41:13.5426848Z ok 35 - Astra 4 browser: product change shows its own confirmation and clears the old Yes
+2026-10-04T21:41:24.8563792Z # Subtest: a feet-and-inches height is priced exactly as entered and shown as entered (Astra reproduction)
+2026-10-04T21:41:24.8564628Z ok 166 - a feet-and-inches height is priced exactly as entered and shown as entered (Astra reproduction)
+2026-10-04T21:43:00.9189825Z # tests 1071
+2026-10-04T21:43:00.9190587Z # pass 1071
+2026-10-04T21:43:00.9190897Z # fail 0
+2026-10-04T21:43:00.9191202Z # cancelled 0
+2026-10-04T21:43:00.9191515Z # skipped 0
+2026-10-04T21:43:00.9246323Z PASS: quote engine and price book gate.
+2026-10-04T21:44:54.1351111Z Summary: {"tests":"1463","pass":"1452","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+2026-10-04T21:44:54.1353182Z Known failures still failing: 9/9
+2026-10-04T21:44:56.0118156Z found 0 vulnerabilities
+
+2026-10-04T21:41:11.6026353Z # Astra 5 cold incomplete milliseconds: 3
+2026-10-04T21:41:11.6196585Z # Astra 5 cold disabled milliseconds: 3
+
+Completed step metadata:
+1. Set up job: completed / success
+2. Run actions/checkout@v4: completed / success
+3. Run actions/setup-node@v4: completed / success
+4. Install from lockfile (ignores committed node_modules): completed / success
+5. Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile): completed / success
+6. Build owner app and widget: completed / success
+7. Strict quote engine and price book gate: completed / success
+8. Full test suite: completed / success
+9. No failures beyond the known list: completed / success
+10. Publish test summary to claude/ci-results (push events only): completed / success
+11. Production dependency audit: completed / success
+21. Post Run actions/setup-node@v4: completed / success
+22. Post Run actions/checkout@v4: completed / success
+23. Complete job: completed / success
