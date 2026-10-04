@@ -1,0 +1,43 @@
+Hosted CI evidence — four scoped quote / price-book repairs
+Implementation commit: 353947fe6ef29af1e4d173bc5eb49103efef0106
+Run: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37180560713
+Job: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37180560713/job/111372110829
+Runner: Node 22, Playwright 1.56.0 / Chromium; install from unchanged lockfile.
+
+2026-10-04T05:41:05.3003242Z PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.
+2026-10-04T05:41:05.4376524Z Running 44 quote-engine and price-book test files; any failure fails the gate.
+2026-10-04T05:42:08.6820146Z ok 403 - ambiguous AI answer returns clarification over HTTP without changing the saved draft
+2026-10-04T05:42:10.8742212Z ok 426 - pending manual save preserves a newer numeric edit and its question
+2026-10-04T05:42:11.3691387Z ok 427 - pending manual save preserves a newer structured price-map edit
+2026-10-04T05:42:11.8116164Z ok 428 - pending manual save prevents duplicate confirmation and premature review
+2026-10-04T05:42:12.3297740Z ok 429 - unchanged confirmed value saves once and advances normally
+2026-10-04T05:42:12.7853066Z ok 430 - failed manual save keeps the confirmed value available for retry
+2026-10-04T05:43:33.0589736Z # tests 1023
+2026-10-04T05:43:33.0609799Z # pass 1023
+2026-10-04T05:43:33.0610301Z # fail 0
+2026-10-04T05:43:33.0610786Z # cancelled 0
+2026-10-04T05:43:33.0611410Z # skipped 0
+2026-10-04T05:43:33.0634649Z PASS: quote engine and price book gate.
+2026-10-04T05:46:07.9130544Z Summary: {"tests":"1415","pass":"1404","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+2026-10-04T05:46:07.9131435Z Known failures still failing: 9/9
+2026-10-04T05:46:10.2224699Z found 0 vulnerabilities
+
+Published full-suite checker output:
+run 37180560713 sha 353947fe6ef29af1e4d173bc5eb49103efef0106
+Summary: {"tests":"1415","pass":"1404","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 9/9
+not ok 34 - test/googleGenAiLiveAdapter.spec.mjs
+not ok 1372 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 1373 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+not ok 83 - test/voicePromptCompiler.spec.mjs
+not ok 1394 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+not ok 1395 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+not ok 1397 - dispatcher rejects handler results containing raw rates instead of exposing them
+not ok 1398 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+not ok 86 - test/voiceWebSocketServer.spec.mjs
+
+Job conclusions: install success; browser install success; owner/widget builds success;
+strict quote gate success; full test command success; known-failure checker success;
+production dependency audit success; whole job success.
+Strict gate counts and full-suite counts overlap; do not add them.
+General suite retains the unchanged pre-existing failure list; voice implementation was not audited or changed.

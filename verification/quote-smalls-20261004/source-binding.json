@@ -1,0 +1,104 @@
+{
+  "base_commit": "a96a608868332bcd969d04d88af3d5d7af60508c",
+  "tested_code_commit": "353947fe6ef29af1e4d173bc5eb49103efef0106",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 2360,
+      "git_blob": "29eea84916e3c158cce6cbc2102bd474f857188e",
+      "sha256": "78840312365ea732510d3929b7078814854ce180db20f6c2d244836b296f0b63",
+      "base_blob": "776865d10cd1f88d6bbae0c37c44468540f9e741"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "bytes": 47309,
+      "git_blob": "9ef1ebb71b8cb0b2eb7d2c766f042711dc286e0b",
+      "sha256": "fad1fb539046192d7d7c584d38341a2d6377d76f40135c635a751ee930935345",
+      "base_blob": "987899cff0ed43a4aa0b96f33e888c9e4cc643a8"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "bytes": 98535,
+      "git_blob": "857fb49091ea1c6c9aa388f8f48878b7294b0334",
+      "sha256": "b42d1947a24350b32df102d5904fb14b98635e58b2154d434bd14b20a44c8069",
+      "base_blob": "8d188f88598f2aef728afc352561a1cbe32c0b67"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "bytes": 12915,
+      "git_blob": "48b00153d2506614c56c3c5a3bff4c0fdeffedf1",
+      "sha256": "4795776e3211d98b62aef86548ada8b48f879687e3e43601adf9cc48d4559f1b",
+      "base_blob": "123d34892f4d33a583f4353de28410a55c16029f"
+    },
+    {
+      "path": "test/pricebookClarificationHttp.spec.mjs",
+      "bytes": 5470,
+      "git_blob": "5c179f64274227e2c75fe9cd219ea36a77f0034e",
+      "sha256": "023e2649f749a126b1cb0403fd9f4d3e6a7f564c1ad777841ed285d7791b0a80",
+      "base_blob": null
+    },
+    {
+      "path": "test/pricebookInterviewSave.browser.spec.mjs",
+      "bytes": 7672,
+      "git_blob": "7b6471b993deee4d95f9785eea5a7c6b34a3c58e",
+      "sha256": "b9c9c40251788df47a2278af358d30efacf8a63e98eb11aa4476ee64d2f0ada6",
+      "base_blob": null
+    },
+    {
+      "path": "test/quoteSmallRepairs.spec.mjs",
+      "bytes": 4004,
+      "git_blob": "0c3d9be5e822f5db34ca54e30004c30c9dec688b",
+      "sha256": "c6fc11320f15c1ef62d4544523743e30e1c89e24235df44c508da64669b95033",
+      "base_blob": null
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 137894,
+      "git_blob": "c9d5f66837c8311a2ec11400d81379efa870673b",
+      "sha256": "02a1494d969cb379ba7ef635a1ef360567bede5fc58ced78c07d9d9678f9294c",
+      "base_blob": "c9d5f66837c8311a2ec11400d81379efa870673b"
+    },
+    {
+      "path": "server/package.json",
+      "bytes": 506,
+      "git_blob": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8",
+      "sha256": "d42dd1934a51e0bd920ad1a4adec57692b82ac6bfaef430ce7f81cc57372a919",
+      "base_blob": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8"
+    },
+    {
+      "path": "client/package.json",
+      "bytes": 598,
+      "git_blob": "8d38de72c610767512b4b641a6b9a7dc35840b79",
+      "sha256": "3197549d14c974775c5f1533fb9da74da2113d74c8606c47f568e1b090943beb",
+      "base_blob": "8d38de72c610767512b4b641a6b9a7dc35840b79"
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "bytes": 1232,
+      "git_blob": "9765a3a9cb65fa7901871bfd763f2bfa35c63491",
+      "sha256": "8b6a4d9fd246c330a6a00f1f1eb08d35efcd5a5c7865752a39f239d834a52ff1",
+      "base_blob": "9765a3a9cb65fa7901871bfd763f2bfa35c63491"
+    },
+    {
+      "path": ".github/known-test-failures.txt",
+      "bytes": 650,
+      "git_blob": "4a2b5040934bb73537d213e5f99ceec1070fa846",
+      "sha256": "634af452e50a1dae11684cb61ba191d200c6b4f5fda8615e9a6e3a3528c61443",
+      "base_blob": "4a2b5040934bb73537d213e5f99ceec1070fa846"
+    },
+    {
+      "path": ".github/scripts/check-test-results.mjs",
+      "bytes": 1476,
+      "git_blob": "7ed9d2ae92761a82790c3e0bf2cfed3d42724492",
+      "sha256": "a215706f2b7c72dd295334d917c6226f5218f47fe08237dfe50db53edb068071",
+      "base_blob": "7ed9d2ae92761a82790c3e0bf2cfed3d42724492"
+    },
+    {
+      "path": "scripts/testSelection.mjs",
+      "bytes": 2493,
+      "git_blob": "18a1e181cc5f6aeb79a4f78c7b713aeaeb39605f",
+      "sha256": "8dece39e46b1513237c0f66298ded2c79319b8b442ce4e2d50c260473eebd328",
+      "base_blob": "18a1e181cc5f6aeb79a4f78c7b713aeaeb39605f"
+    }
+  ]
+}
