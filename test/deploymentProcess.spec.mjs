@@ -54,6 +54,14 @@ test('production app writes to persistent storage, survives two process restarts
   for(const url of ['/api/not-real','/.env','/data/off-the-clock.sqlite','/server/src/db.js','/assets/missing.js'])assert.equal((await fetch(first.url+url)).status,404,url);
   await first.rpc('seed');const written=await first.rpc('read'),snapshot=await first.rpc('backup');
   assert.equal(written.databasePath,path.join(volume,'off-the-clock.sqlite'));
+  // Price books must live on the persistent volume, never in the container's app folder.
+  for(const owner of ['a','b']){
+    assert.ok(fs.existsSync(path.join(volume,'pricebooks',owner+'.json')),'price book '+owner+' is on the volume');
+    assert.equal(fs.existsSync(path.join(project,'data','pricebooks',owner+'.json')),false,'price book '+owner+' is not in the app folder');
+  }
+  assert.equal(written.books.a.marker,'a-approved-price-book');
+  const manifest=JSON.parse(fs.readFileSync(path.join(snapshot.bundle,'manifest.json'),'utf8'));
+  assert.deepEqual(manifest.files.map(file=>file.name).filter(name=>name.startsWith('pricebooks/')).sort(),['pricebooks/a.json','pricebooks/b.json']);
   await first.stop();
   const second=await child(t,env,processes),persisted=await second.rpc('read');
   assert.deepEqual(persisted.rows,written.rows);assert.deepEqual(persisted.books,written.books);assert.ok(persisted.snapshots>=1);await second.stop();
@@ -63,5 +71,6 @@ test('production app writes to persistent storage, survives two process restarts
   const [code]=await once(restore,'exit');assert.equal(code,0,log);assert.equal(JSON.parse(log.trim()).destination,target);
   const third=await child(t,{...env,APP_DATA_DIR:target},processes),restored=await third.rpc('read');
   assert.deepEqual(restored.rows,written.rows);assert.deepEqual(restored.books,written.books);
+  assert.ok(fs.existsSync(path.join(target,'pricebooks','a.json')),'restored price book is in the restored data folder');
   assert.equal(restored.databasePath,path.join(target,'off-the-clock.sqlite'));await third.stop();
 });

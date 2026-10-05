@@ -33,6 +33,8 @@ export function scopeStructureDiagnostics(type,p={}){
    if((active||own(d,name))&&!validField(f,d[name]))add(at+'.'+name,f.label+' must be explicitly configured.',d[name]===undefined?'missing':'invalid');
   }
   if(base==='stairs'&&d.disposalIncluded&&!d.removalIncluded)add(at+'.disposalIncluded','Stair removal debris disposal requires the selected stair removal scope.');
+  if(base==='stairs'&&finite(d.minimumWidthLF)&&finite(d.maximumWidthLF)&&d.minimumWidthLF>=d.maximumWidthLF)add(at+'.minimumWidthLF','The lower width limit must be less than the maximum tread width.');
+  if(base==='demolition'&&finite(d.minimumThickness)&&finite(d.maximumThickness)&&d.minimumThickness>=d.maximumThickness)add(at+'.minimumThickness','The lower thickness limit must be less than the maximum slab thickness.');
   if(key==='exposed_aggregate'&&d.basePriceExcludesFinish!==true)add(at+'.basePriceExcludesFinish','Separate finishing charges require base prices that exclude those same charges.');
   if(key==='insulation'&&d.baseRoofLaborExcludesInstallation!==true)add(at+'.baseRoofLaborExcludesInstallation','Separate installation charges require roof labor that excludes those same installation charges.');
   if(base==='floor_overlay'&&d.basePriceExcludesPreparation!==true)add(at+'.basePriceExcludesPreparation','Separate overlay preparation charges require base flooring prices that exclude that preparation.');
@@ -65,6 +67,7 @@ export function scopeCustomerErrors(type,c,p={},rules={}){
    if(c.floorAreaExcludesStairs===false)bad('floorAreaExcludesStairs','Use floor area excluding separately priced stairs to avoid charging the same materials twice.');
    if(c.newFlooringType!==d.flooringType)bad('newFlooringType','The stair package is configured for a different flooring type.');
    if(finite(c.stairWidthLF)&&finite(d.maximumWidthLF)&&c.stairWidthLF>d.maximumWidthLF)bad('stairWidthLF','The measured tread width exceeds this owner offering.');
+   if(finite(c.stairWidthLF)&&finite(d.minimumWidthLF)&&c.stairWidthLF<=d.minimumWidthLF)bad('stairWidthLF','The measured tread width is below this owner offering.');
    for(const [f,k]of [['stairRemovalNeeded','removalIncluded'],['stairDisposalNeeded','disposalIncluded']])if(c[f]!==undefined&&c[f]!==d[k])bad(f,'This selection does not match the defined stair work.');
   }
   if(base==='floor_overlay')for(const f of ['existingFloorType','newFlooringType'])if(c[f]!==d[f])bad(f,'This installation-over-existing-floor offering does not cover the selected flooring combination.');
@@ -72,6 +75,7 @@ export function scopeCustomerErrors(type,c,p={},rules={}){
   if(base==='siding_removal'&&c.sidingRemovalStories!==undefined&&c.sidingRemovalStories!==d.stories)bad('sidingRemovalStories','The existing siding stories do not match this removal price.');
   if(base==='demolition'){
    if(finite(c.demolitionThickness)&&finite(d.maximumThickness)&&c.demolitionThickness>d.maximumThickness)bad('demolitionThickness','The existing slab exceeds the priced thickness.');
+   if(finite(c.demolitionThickness)&&finite(d.minimumThickness)&&c.demolitionThickness<=d.minimumThickness)bad('demolitionThickness','The existing slab is thinner than this priced thickness band.');
    if(c.demolitionReinforcement!==undefined&&c.demolitionReinforcement!==d.reinforcement)bad('demolitionReinforcement','The existing slab reinforcement does not match this removal scope.');
    if(c.demolitionAccessDifficulty!==undefined&&!scopeMatchesRequest(key,d,{...c,demolitionThickness:Math.min(c.demolitionThickness||d.maximumThickness,d.maximumThickness),demolitionReinforcement:d.reinforcement}))bad('demolitionAccessDifficulty','This access is not covered by the explicitly configured matching rule.');
   }
@@ -116,7 +120,8 @@ export function scopeLines(type,c,p={},rules={}){
   return {paint_wall:()=>exactMultiply(area,c.coats),paint_primer:()=>exactMultiply(area,d.primerCoats),paint_prep:()=>exactAdd(area,c.ceilingsIncluded?c.ceilingAreaSqft:0),paint_ceiling:()=>exactMultiply(c.ceilingAreaSqft,p.offeringMode==='itemized'?c.coats:c.ceilingCoats),paint_ceiling_primer:()=>exactMultiply(c.ceilingAreaSqft,d.ceilingPrimerCoats),paint_trim:()=>c.trimLengthLF}[key]?.();
  };
  for(const key of scopeKeysForRequest(type,c,p,rules)){
-  const base=scopeBaseKey(key),d=p.scopeDetails[key],label=catalog[key].label;
+  const base=scopeBaseKey(key),d=p.scopeDetails?.[key],label=catalog[key].label;
+  if(!record(d))throw new TypeError('Requested scope '+key+' has no owner configuration; validation must stop this request before pricing.');
    const description=d.description.trim();
    const ending=/[.!?…](?:["'’”\)\]])?$/.test(description)?'':'.';
    out.disclosures.push((key==='insulation'?'Roof '+['insulation','coverboard'].filter(layer=>c[layer+'Needed']===true).join(' and '):label)+': '+description+ending);

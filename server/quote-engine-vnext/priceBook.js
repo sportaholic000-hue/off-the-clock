@@ -452,6 +452,7 @@ function scopeCoverageForService(service) {
     for (const [key, definition] of Object.entries(definitions).flatMap(([key,def])=>key==='insulation'?['insulation','coverboard'].map(layer=>[layer,{...def,layer,label:'Roof '+layer}]):[[key,def]])) {
       const configurationKey=definition.layer?'insulation':key;
       const scope=scopeBaseKey(key),detail=p.scopeDetails?.[key]||{};
+      if(scope===key&&!isPlainRecord(p.scopeDetails?.[key])&&scopeEntriesFor(p,scope).length)continue;
       const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
       const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment' } : {}), ...(roof ? { replacementRoofType: roof } : {}) };

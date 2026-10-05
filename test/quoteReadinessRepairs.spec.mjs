@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import {ownerFieldCopy} from '../server/priceBookCopy.js';
 import {convertApplicationBook,quoteDoneMoneyKind,applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {vNextServiceStatus,generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/index.js';
-import {starterFields,validateInterviewValue} from '../server/src/priceBookAI.js';
+import {interviewField, starterFields,validateInterviewValue} from '../server/src/priceBookAI.js';
 import {roofMinimum,wallPainting,bareConcrete,bareMulch,bareCleanup,bareSod,barePlanting,expected} from '../verification/quote-readiness/fixtures.mjs';
 
 test('B1 roof minimum is an exact fixed amount through root, nested and tier editor boundaries',()=>{
@@ -71,8 +71,11 @@ test('M2 setup requests an offering instead of unused exterior and fence standar
   const m=applicationMetadata().services.find(x=>x.serviceType===type);
   assert.equal(m.requiresOffering,true);
   assert.ok(m.fields.filter(f=>f.type==='number'||f.type==='json').every(f=>f.field==='minimumJob'));
-  assert.ok(starterFields(type).every(f=>['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(f.field)));
-  for(const field of ['offeringMode','offeringDetails','offeringRates'])assert.ok(starterFields(type).some(f=>f.field===field));
+  // The AI starter suggests prices only. It never writes offering or scope
+  // definitions (customer-facing inclusions); the owner states those in the
+  // interview or the manual editor.
+  assert.deepEqual(starterFields(type).map(f=>f.field),['minimumJob']);
+  for(const field of ['offeringMode','offeringDetails','offeringRates'])assert.equal(interviewField(type,field).field,field);
  }
 });
 test('M3/M4 current AI schema accepts engine-used measured fields and typed maps',()=>{

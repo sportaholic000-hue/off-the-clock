@@ -3,7 +3,7 @@ import {humanPricingKey} from './pricebookFormatting.js';
 import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,ProductNameInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField} from './pricebookEditing.js';
-import {scopeDefinitions,scopeRateDefinitions,MULTI_SCOPE_KEYS,scopeBaseKey} from '../../server/scopeConfiguration.js';
+import {scopeDefinitions,scopeRateDefinitions,MULTI_SCOPE_KEYS,scopeBaseKey,scopeEntrySummary} from '../../server/scopeConfiguration.js';
 
 export function ScopeEditor({service,onChange}) {
  const p=servicePricing(service),details=p.scopeDetails||{},rates=p.scopeRates||{},catalog=scopeDefinitions(service.serviceType,p),priceFields=scopeRateDefinitions(service.serviceType,p);
@@ -16,7 +16,7 @@ export function ScopeEditor({service,onChange}) {
   {Object.entries(catalog).map(([key,def])=>{
    const d=details[key];
    const activePrices=Object.entries(priceFields).filter(([,field])=>field.scopeKey===key);
-   return <div className="editor-section" key={key}><h3>{def.label}{key!==scopeBaseKey(key)?' ('+key.slice(scopeBaseKey(key).length+2)+')':''}</h3>{!d?<Button variant="secondary" onClick={()=>set('scopeDetails',{...details,[key]:{}})}>Configure {def.label}</Button>:<>
+   return <div className="editor-section" key={key}><h3>{def.label}{MULTI_SCOPE_KEYS.includes(scopeBaseKey(key))&&d?': '+scopeEntrySummary(key,d):''}</h3>{!d?<Button variant="secondary" onClick={()=>set('scopeDetails',{...details,[key]:{}})}>Configure {def.label}</Button>:<>
     {Object.entries(def.fields).filter(([name])=>!(name==='category'&&d.mode!=='installed')&&!(['coverage','wastePercent','productKey'].includes(name)&&d.mode!=='package_cost')).map(([name,f])=><Field key={name} label={f.label+(f.unit?' ('+f.unit+')':'')}>
      {f.type==='boolean'||f.type==='enum'?<Select aria-label={def.label+' — '+f.label} value={d[name]===undefined?'':String(d[name])} onChange={e=>detail(key,name,e.target.value===''?undefined:(f.type==='boolean'?[true,false]:f.values).find(v=>String(v)===e.target.value))}><option value="">{name==='accessMatch'?'Exact match (existing default)':'Choose'}</option>{(f.type==='boolean'?[true,false]:f.values).map(v=><option key={String(v)} value={String(v)}>{typeof v==='boolean'?(v?'Yes':'No'):humanPricingKey(v)}</option>)}</Select>:
       f.type==='number'?<ExactNumericInput aria-label={def.label+' — '+f.label} value={d[name]} onChange={v=>detail(key,name,v)}/>:

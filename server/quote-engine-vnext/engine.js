@@ -590,7 +590,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // marked as a selling price, so it is never marked up; ordinary labor keeps
   // the owner's surcharge category settings.
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
-  const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
+  const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
   const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);

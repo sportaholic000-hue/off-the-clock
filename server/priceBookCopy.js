@@ -70,7 +70,7 @@ export const OWNER_FIELD_COPY = {
   trimPerLinearFoot: copy('Siding trim installation price per linear foot', 'Charge applied to measured or estimated trim length when siding trim is included.'),
   membraneCostPerSqft: copy('Flat-roof membrane material price per square foot by membrane type', 'Material charge for each square foot of flat roof using the selected membrane type. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
   tearOffPerSqft: copy('Flat-roof tear-off labor price per square foot by membrane type', 'Removal labor charge for each square foot and existing layer, adjusted for roof access. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
-  insulationPerSqft: copy('Rigid insulation and coverboard material price per square foot', 'Material charge applied to commercial flat-roof replacement when insulation or coverboard is required.'),
+  insulationPerSqft: copy('Retired insulation and coverboard price (kept for your records)', 'No longer used to price quotes. Insulation and coverboard are priced in Additional priced scope when the customer asks for them.'),
   patchRepairHours: copy('Flat-roof repair labor hours by repair type and project size', 'Enter labor hours for each repair type and small, medium, or large affected area.'),
   patchMaterialAllowance: copy('Flat-roof repair material allowance by repair type and project size', 'Enter the material allowance for each repair type and small, medium, or large affected area.'),
   pondingWaterSurcharge: copy('Ponding-water repair fixed surcharge', 'Optional fixed charge added only when ponding water is reported and this price is configured.'),

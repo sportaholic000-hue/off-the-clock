@@ -32,9 +32,9 @@ export function interviewField(type, field) {
   return definition;
 }
 export function starterFields(type) {
-  return (serviceFor(type)?.fields || []).filter(def => CONFIGURATION_FIELDS.includes(def.field) || def.type === 'number' ||
+  return (serviceFor(type)?.fields || []).filter(def => !CONFIGURATION_FIELDS.includes(def.field) && (def.type === 'number' ||
     (def.type === 'json' && Array.isArray(def.shapedKeys?.keys) && !def.tree?.leafType &&
-      (!def.tree?.depth || (def.tree.depth === 1 && !def.shapedKeys.nested) || (def.tree.depth===2&&def.tree.rootKeys&&def.tree.leafKeys))));
+      (!def.tree?.depth || (def.tree.depth === 1 && !def.shapedKeys.nested) || (def.tree.depth===2&&def.tree.rootKeys&&def.tree.leafKeys)))));
 }
 
 // Use the price book's existing units, key domains and exact-money limits.

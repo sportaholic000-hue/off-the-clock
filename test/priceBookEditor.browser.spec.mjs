@@ -29,14 +29,10 @@ for(const name of ['book','selectedType','statuses','validating','draftValidatio
 const evidence = process.env.PRICEBOOK_EDITOR_EVIDENCE_DIR || mkdtempSync(join(tmpdir(), 'otc-editor-evidence-'));
 mkdirSync(evidence, { recursive:true });
 const storeRoot = mkdtempSync(join(tmpdir(), 'otc-editor-store-'));
-const previousStore = process.env.PRICEBOOK_PATH;
 process.env.PRICEBOOK_PATH = storeRoot;
-let store;
-try { store = await import('../server/priceBookService.js?editor-browser-regression'); }
-finally {
-  if (previousStore === undefined) delete process.env.PRICEBOOK_PATH;
-  else process.env.PRICEBOOK_PATH = previousStore;
-}
+// The price-book service reads its folder at each use, so this file keeps its
+// own folder for its whole run (test files run in separate processes).
+const store = await import('../server/priceBookService.js?editor-browser-regression');
 // Retain the legacy price representation fixtures, with the customer fields
 // supplied by the current application API. Missing metadata is not a quote.
 const customerMetadata = getVNextPriceBookMetadata();

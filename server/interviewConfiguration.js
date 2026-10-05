@@ -23,15 +23,15 @@ export function interviewConfigurationSchema(type,field,pricing={},value){
   return object(field==='scopeRates'?'Additional scope prices':'Offering prices',Object.fromEntries(Object.entries(defs).map(([key,f])=>[key,{...number(f.label,'$ per '+f.unit,0,Number.MAX_SAFE_INTEGER),moneyKind:f.moneyKind}])));
  }
  const fence=type.startsWith('FENCING_'),interior=type==='INTERIOR_PAINTING';
- const fields={description:text('Included job description'),baselinePricesConfirmed:bool('I confirm these are baseline prices')};
+ const fields={description:text('Included job description')};
  if(fence)Object.assign(fields,{
-  fenceType:{...text('Offered fence type'),slug:true},fenceHeight:number('Height these prices are for','feet',Number.MIN_VALUE),terrainSlope:choice('Terrain slope',['flat','moderate','steep']),postFootingDescription:text('Standard posts, footings and digging included'),
+  fenceType:{...text('Offered fence type'),slug:true},fenceHeight:number('Height these prices are for (priced for flat ground)','feet',Number.MIN_VALUE),postFootingDescription:text('Standard posts, footings and digging included'),
   gates:{type:'map',label:'Offered gates',entry:object('Gate',{widthLF:number('Gate opening width','feet',Number.MIN_VALUE),description:text('Gate, hardware and installation included'),postsAndFootingsIncluded:bool('Gate price includes gate posts and footings')})},
   ...(type==='FENCING_REPLACEMENT'?{removalOffered:bool('Old-fence removal offered'),removalDescription:text('Fence removal included'),removalIncludesDisposal:bool('Removal includes disposal')}: {})
  });
  else Object.assign(fields,{
   substrate:text('Paintable substrate'),coating:text('Coating/product system'),finishCoats:{...number('Finish coats','coats',1,3),integer:true},surfaceCondition:choice('Surface condition',['good','fair','poor']),preparation:text('Included preparation'),primerCoats:{...number('Primer coats','coats',0,3),integer:true},
-  ...(interior?{wallHeight:choice('Wall height',['standard','high','vaulted']),ceilingsOffered:bool('Ceiling painting offered'),trimOffered:bool('Trim painting offered'),ceilingCoats:{...number('Ceiling finish coats','coats',1,3),integer:true},ceilingPrimerCoats:{...number('Ceiling primer coats','coats',0,3),integer:true},trimDescription:text('Trim work included')}: {stories:choice('Stories',[1,2,3])})
+  ...(interior?{ceilingsOffered:bool('Ceiling painting offered'),trimOffered:bool('Trim painting offered'),ceilingCoats:{...number('Ceiling finish coats','coats',1,3),integer:true},ceilingPrimerCoats:{...number('Ceiling primer coats','coats',0,3),integer:true},trimDescription:text('Trim work included')}: {})
  });
  return object('Offering details',fields);
 }

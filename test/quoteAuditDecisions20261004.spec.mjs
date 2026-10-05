@@ -99,7 +99,9 @@ for(const share of [undefined,0,40,100])test('installed removal peak uses only d
 for(const type of ['FENCING_INSTALL','FENCING_REPLACEMENT','EXTERIOR_PAINTING'])test('AI interview captures a complete '+type+' offering without manual setup',async()=>{
  const f=offeringFixture(type,'installed'),dollars=convertApplicationBook({services:[f.ownerPricing],defaults:f.businessDefaults},'toDollars').services[0].pricing,captured={};
  for(const field of ['offeringMode','offeringDetails','offeringRates','minimumJob']){
-  const value=dollars[field];captured[field]=await interpretInterviewAnswer({serviceType:type,field,answer:'[SYNTHETIC] Explicit owner definition and prices',pricing:captured},{env:{GEMINI_API_KEY:'synthetic',PRICEBOOK_GEMINI_MODEL:'synthetic-text'},fetchImpl:async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify({value})}]}}]})})});
+  // New offerings are always baseline prices: the interview never collects the legacy
+  // terrain/height/stories settings or the owner's baseline confirmation.
+  const value=field==='offeringDetails'?Object.fromEntries(Object.entries(dollars[field]).filter(([key])=>!['terrainSlope','wallHeight','stories','baselinePricesConfirmed'].includes(key))):dollars[field];captured[field]=await interpretInterviewAnswer({serviceType:type,field,answer:'[SYNTHETIC] Explicit owner definition and prices',pricing:captured},{env:{GEMINI_API_KEY:'synthetic',PRICEBOOK_GEMINI_MODEL:'synthetic-text'},fetchImpl:async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify({value})}]}}]})})});
  }
  const centsBook=convertApplicationBook({services:[{serviceType:type,pricing:captured}],defaults:{}},'toCents');Object.assign(f.ownerPricing.pricing,centsBook.services[0].pricing);assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');ready(f);
 });

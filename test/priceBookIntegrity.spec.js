@@ -11,18 +11,12 @@ import { generateQuote } from '../server/quoteEngine.js';
 import { generateQuoteVNext, PRICE_BASIS_CATEGORIES, TAXABILITY_CATEGORIES } from '../server/quote-engine-vnext/index.js';
 import { fixtureIdentity, fixtureOfferings } from './quoteEngineVNextFixtures.mjs';
 
-// Only an isolated test store is used. Set the existing process-local seam
-// before import; restore the caller's environment immediately afterward.
+// Only an isolated test store is used. The price-book service reads its
+// folder at each use, so this file keeps its own folder for its whole run
+// (test files run in separate processes).
 const storeRoot = mkdtempSync(join(tmpdir(), 'otc-pricebook-integrity-'));
-const previousStore = process.env.PRICEBOOK_PATH;
 process.env.PRICEBOOK_PATH = storeRoot;
-let store;
-try {
-  store = await import('../server/priceBookService.js?scope=pricebook-integrity');
-} finally {
-  if (previousStore === undefined) delete process.env.PRICEBOOK_PATH;
-  else process.env.PRICEBOOK_PATH = previousStore;
-}
+const store = await import('../server/priceBookService.js?scope=pricebook-integrity');
 after(() => {
   const target = resolve(storeRoot);
   assert.ok(target.startsWith(resolve(tmpdir()) + sep));

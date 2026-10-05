@@ -51,3 +51,25 @@ owner approval through the existing engine-version mechanism.
 No deployment, merge, other-feature work, or whole-product launch approval is
 included in these decisions. No customer-facing unit prices or cost breakdowns
 are introduced.
+
+## October 5 amendments (owner-approved; supersede the items above where they differ)
+
+- Peak pricing is an optional seasonal labor surcharge. New owners start with it
+  off (no peak months, 0%), so it never blocks quoting. When an owner turns it
+  on, it applies to all explicit labor, including roof and flat-roof tear-off,
+  flooring removal, and itemized siding-removal, demolition and stair-covering
+  removal labor. Complete packages use only their declared labor portion.
+  Disposal and mixed preparation are never surcharged.
+- Demolition and stair entries may set an optional lower limit ("over X") in
+  addition to the maximum, so owners can price thickness and width bands.
+  A band covers values above its lower limit up to and including its maximum.
+  Bands that share any value are rejected when the owner saves.
+- The AI starter suggests prices only. It never writes offering or scope
+  definitions, descriptions or inclusions; owners state those in the interview
+  or the manual editor.
+- The AI interview never collects the baseline-price confirmation or the legacy
+  terrain, wall-height or stories settings. New offerings are baseline prices.
+- A requested insulation or coverboard layer that the owner has not priced goes
+  to review with that reason, and its measured area is still collected.
+- Price books are stored in the persistent data folder (APP_DATA_DIR/pricebooks);
+  the storage folder is read at each use, never fixed at module load.

@@ -29,7 +29,7 @@ export function scopeDefinitions(type,p={}){
  const out={};
  if(type.startsWith('FLOORING_')){
   for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
-  out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
+  out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),minimumWidthLF:{...number('Covers treads wider than (optional lower limit)','feet',0),optional:true},underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
    stairWidthLF:cnumber('Measured stair tread width','feet'),stairRemovalNeeded:confirm('Existing stair covering removal requested'),stairDisposalNeeded:confirm('Stair debris disposal requested'),floorAreaExcludesStairs:confirm('The measured flooring area excludes the separately priced stairs')});
   out.floor_overlay=rule('Additional preparation for flooring over an existing floor',{...common,mode:modes,category,existingFloorType:{...string('Existing flooring type covered'),slug:true},newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile']),basePriceExcludesPreparation:bool('Base flooring prices exclude this additional preparation')},'overlayScopeConfirmed');
  }
@@ -39,7 +39,7 @@ export function scopeDefinitions(type,p={}){
   out.siding_trim=rule('Siding trim installation',{...common,mode:modes,category,basePriceExcludesTrim:bool('Base siding prices exclude this separately priced trim')},'sidingTrimScopeConfirmed');
  }
  if(type.startsWith('CONCRETE_')){
-  out.demolition=rule('Existing slab demolition',{...common,mode:modes,category,maximumThickness:number('Maximum existing slab thickness included','inches',Number.MIN_VALUE),reinforcement:choice('Existing reinforcement covered',['none','wire_mesh','rebar']),accessDifficulty:choice('Demolition access covered',['easy','moderate','difficult']),accessMatch:{...choice('Demolition access matching',['exact','up_to']),optional:true},disposalIncluded:bool('Demolition debris disposal included')},'demolitionScopeConfirmed',{demolitionThickness:cnumber('Measured existing slab thickness','inches'),demolitionReinforcement:cchoice('Existing slab reinforcement',['none','wire_mesh','rebar']),demolitionAccessDifficulty:cchoice('Existing slab demolition access',['easy','moderate','difficult'])});
+  out.demolition=rule('Existing slab demolition',{...common,mode:modes,category,maximumThickness:number('Maximum existing slab thickness included','inches',Number.MIN_VALUE),minimumThickness:{...number('Covers slabs thicker than (optional lower limit)','inches',0),optional:true},reinforcement:choice('Existing reinforcement covered',['none','wire_mesh','rebar']),accessDifficulty:choice('Demolition access covered',['easy','moderate','difficult']),accessMatch:{...choice('Demolition access matching',['exact','up_to']),optional:true},disposalIncluded:bool('Demolition debris disposal included')},'demolitionScopeConfirmed',{demolitionThickness:cnumber('Measured existing slab thickness','inches'),demolitionReinforcement:cchoice('Existing slab reinforcement',['none','wire_mesh','rebar']),demolitionAccessDifficulty:cchoice('Existing slab demolition access',['easy','moderate','difficult'])});
   out.exposed_aggregate=rule('Additional exposed-aggregate finishing',{...common,mode:modes,category,basePriceExcludesFinish:bool('The base labor and concrete prices exclude these additional finishing charges')},'exposedAggregateScopeConfirmed');
  }
  if(type==='FLAT_ROOF_REPLACEMENT')out.insulation=rule('Roof insulation and coverboard',{...common,mode:modes,category,insulationSystem:string('Insulation system and thickness'),coverboardSystem:string('Coverboard system and thickness'),baseRoofLaborExcludesInstallation:bool('Base roof labor excludes separately priced insulation and coverboard installation')},'insulationScopeConfirmed',{insulationAreaSqft:area('Measured insulation area'),coverboardAreaSqft:area('Measured coverboard area')});
@@ -90,7 +90,7 @@ export function scopeRateDefinitions(type,p={},allModes=false){
   if(installed||allModes)add(key+'_installed',label+' complete installed price',d.category,unit,'sell_price');
   if(!installed||allModes){
    const components=base==='stairs'?['labor','material',...(d.underlaymentIncluded||allModes?['underlayment']:[]),...(d.removalIncluded||allModes?['removal']:[]),...(d.disposalIncluded||allModes?['disposal']:[])]:base==='siding_removal'||base==='demolition'?['removal',...(d.disposalIncluded||allModes?['disposal']:[])]:base==='floor_overlay'?['prep','material']:['labor','material'];
-   for(const cat of components)add(key+'_'+cat,label+' '+(cat==='removal'&&['siding_removal','demolition'].includes(base)?'labor':cat),cat==='underlayment'?'material':cat,unit,basis);
+   for(const cat of components)add(key+'_'+cat,label+' '+(cat==='removal'?(base==='stairs'?'removal labor':['siding_removal','demolition'].includes(base)?'labor':cat):cat),cat==='underlayment'?'material':cat,unit,basis);
   }
  }
  return out;
@@ -170,7 +170,9 @@ export function scopeCustomerFields(type,p={},rules={}){
 }
 export function scopeRequiredCustomer(type,c,p={},rules={}){
  const fields=[],defs=scopeDefinitions(type,p);
- for(const key of scopeKeysForRequest(type,c,p,rules))if(defs[key]&&(record(p.scopeDetails?.[key])||scopeEntriesFor(p,scopeBaseKey(key)).length)){
+ // A requested insulation/coverboard layer always needs its measured area,
+ // even before the owner prices it, so the area is never treated as stray input.
+ for(const key of scopeKeysForRequest(type,c,p,rules))if(defs[key]&&(key==='insulation'||record(p.scopeDetails?.[key])||scopeEntriesFor(p,scopeBaseKey(key)).length)){
   if(record(p.scopeDetails?.[key]))fields.push(defs[key].confirmation);
   fields.push(...Object.keys(defs[key].customerFields).filter(name=>key!=='insulation'||c[(name.startsWith('coverboard')?'coverboard':'insulation')+'Needed']===true));
  }
@@ -179,11 +181,19 @@ export function scopeRequiredCustomer(type,c,p={},rules={}){
 
 function accessValues(d){const ordered=['easy','moderate','difficult'];return d.accessMatch==='up_to'?ordered.slice(0,ordered.indexOf(d.accessDifficulty)+1):[d.accessDifficulty];}
 function scopeMatchConditions(base,d){
- if(base==='stairs')return [['newFlooringType','eq',d.flooringType],['stairWidthLF','lte',d.maximumWidthLF],['stairRemovalNeeded','eq',d.removalIncluded],['stairDisposalNeeded','eq',d.disposalIncluded]];
+ if(base==='stairs')return [['newFlooringType','eq',d.flooringType],['stairWidthLF','lte',d.maximumWidthLF],...(finite(d.minimumWidthLF)?[['stairWidthLF','gt',d.minimumWidthLF]]:[]),['stairRemovalNeeded','eq',d.removalIncluded],['stairDisposalNeeded','eq',d.disposalIncluded]];
  if(base==='floor_overlay')return [['existingFloorType','eq',d.existingFloorType],['newFlooringType','eq',d.newFlooringType]];
  if(base==='siding_removal')return [['existingSidingType','eq',d.existingSidingType],['sidingRemovalStories','eq',d.stories]];
- if(base==='demolition')return [['demolitionThickness','lte',d.maximumThickness],['demolitionReinforcement','eq',d.reinforcement],['demolitionAccessDifficulty','in',accessValues(d)]];
+ if(base==='demolition')return [['demolitionThickness','lte',d.maximumThickness],...(finite(d.minimumThickness)?[['demolitionThickness','gt',d.minimumThickness]]:[]),['demolitionReinforcement','eq',d.reinforcement],['demolitionAccessDifficulty','in',accessValues(d)]];
  return [];
+}
+export function scopeEntrySummary(key,d={}){
+ const base=scopeBaseKey(key),words=v=>typeof v==='string'?v.replaceAll('_',' '):v,range=(low,high,unit)=>(finite(low)?'over '+low+' up to ':'up to ')+(finite(high)?high:'?')+' '+unit;
+ if(base==='siding_removal')return [words(d.existingSidingType)||'siding type not set',d.stories?d.stories+(d.stories===1?' story':' stories'):'stories not set'].join(', ');
+ if(base==='demolition')return [range(d.minimumThickness,d.maximumThickness,'in'),words(d.reinforcement)||'reinforcement not set',(d.accessMatch==='up_to'?'access up to ':'')+(words(d.accessDifficulty)||'access not set')].join(', ');
+ if(base==='stairs')return [words(d.flooringType)||'flooring not set',range(d.minimumWidthLF,d.maximumWidthLF,'ft wide')].join(', ');
+ if(base==='floor_overlay')return (words(d.newFlooringType)||'new floor not set')+' over '+(words(d.existingFloorType)||'existing floor not set');
+ return '';
 }
 export function scopeMatchesRequest(key,d,c){return matchesConditions([scopeMatchConditions(scopeBaseKey(key),d)],c);}
 export function scopeOverlapDiagnostics(type,p={}){
@@ -192,10 +202,11 @@ export function scopeOverlapDiagnostics(type,p={}){
   const entries=scopeEntriesFor(p,base).filter(([key,d])=>catalog[key]&&scopeMatchConditions(base,d).every(([,op,value])=>op==='in'?value.length&&value.every(v=>v!==undefined):value!==undefined));
   for(let i=0;i<entries.length;i++)for(let j=i+1;j<entries.length;j++){
    const [left,a]=entries[i],[right,b]=entries[j];
-   const overlaps=base==='stairs'?a.flooringType===b.flooringType&&a.removalIncluded===b.removalIncluded&&a.disposalIncluded===b.disposalIncluded&&Math.min(a.maximumWidthLF,b.maximumWidthLF)>0:
+   const band=(low,high,low2,high2)=>Math.max(finite(low)?low:0,finite(low2)?low2:0)<Math.min(high,high2);
+   const overlaps=base==='stairs'?a.flooringType===b.flooringType&&a.removalIncluded===b.removalIncluded&&a.disposalIncluded===b.disposalIncluded&&band(a.minimumWidthLF,a.maximumWidthLF,b.minimumWidthLF,b.maximumWidthLF):
     base==='floor_overlay'?a.existingFloorType===b.existingFloorType&&a.newFlooringType===b.newFlooringType:
     base==='siding_removal'?a.existingSidingType===b.existingSidingType&&a.stories===b.stories:
-    a.reinforcement===b.reinforcement&&Math.min(a.maximumThickness,b.maximumThickness)>0&&accessValues(a).some(v=>accessValues(b).includes(v));
+    a.reinforcement===b.reinforcement&&band(a.minimumThickness,a.maximumThickness,b.minimumThickness,b.maximumThickness)&&accessValues(a).some(v=>accessValues(b).includes(v));
    if(overlaps)out.push({type:'invalid',kind:'scope_configuration',path:'scopeDetails.'+right,message:'This scope overlaps '+left+'. Give each entry distinct matching facts before saving.'});
   }
  }

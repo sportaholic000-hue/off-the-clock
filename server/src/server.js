@@ -1,7 +1,8 @@
-import {quoteDateContext} from './quoteDate.js';
-import {PriceBookAIError} from './priceBookAI.js';
+// Production storage paths are set here first, before any service module loads.
 import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
+import {quoteDateContext} from './quoteDate.js';
+import {PriceBookAIError} from './priceBookAI.js';
 import {configureClientAddress} from './clientAddress.js';
 import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';

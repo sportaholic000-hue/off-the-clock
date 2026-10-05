@@ -414,7 +414,7 @@ function concreteContract() {
       reinforcement: enumField('Reinforcement', ['none', 'wire_mesh', 'rebar']),
       accessDifficulty: enumField('Project access', ACCESS),
       baseNeeded: booleanField('Base preparation included'),
-      adjoinsExistingConcrete:booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),
+      adjoinsExistingConcrete:{...booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),summaryLabel:'Edges against foundation or existing concrete'},
       adjoiningEdgeLF:numberField('Total measured length of those adjoining edges','linear feet',0.1,1_000_000,{visibleWhen:[[['adjoinsExistingConcrete','eq',true]]]})
     },
     required(c) {
@@ -775,7 +775,9 @@ for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasur
 extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugField('Replacement membrane type')}, () => ['replacementMembraneType'],
  (c,p) => ['unknown','average'].includes(c.membraneType) || ['unknown','average'].includes(c.replacementMembraneType)
   ? 'Both existing and replacement membrane systems must be identified.'
-  : null);
+  : (c.insulationNeeded===true||c.coverboardNeeded===true)&&!p.scopeDetails?.insulation
+    ? 'New roof insulation or coverboard was requested, but this business has not set up insulation and coverboard pricing.'
+    : null);
 for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
  {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
  (c,p)=>c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,

@@ -10,10 +10,15 @@ import { getActivationOwnerFields, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE,
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const configuredDir = process.env.PRICEBOOK_PATH;
-const dir = configuredDir
-  ? (isAbsolute(configuredDir) ? configuredDir : resolve(projectRoot, configuredDir))
-  : resolve(projectRoot, 'data', 'pricebooks');
+// Read at use, never at module load. Production sets PRICEBOOK_PATH (on the
+// persistent volume) during startup; a module that loads earlier must not
+// freeze the default container folder as the storage location.
+export function pricebookDirectory() {
+  const configuredDir = process.env.PRICEBOOK_PATH;
+  return configuredDir
+    ? (isAbsolute(configuredDir) ? configuredDir : resolve(projectRoot, configuredDir))
+    : resolve(projectRoot, 'data', 'pricebooks');
+}
 const zeroAllowedOwnerFields = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 
 // A saved book that cannot be read, or that is not this owner's book, stops
@@ -30,7 +35,7 @@ export function unreadablePricebook(ownerId, reason) {
 
 export function loadPricebook(ownerId) {
   let text;
-  try { text = readFileSync(resolve(dir, `${ownerId}.json`), 'utf8'); }
+  try { text = readFileSync(resolve(pricebookDirectory(), `${ownerId}.json`), 'utf8'); }
   catch (err) {
     if (err.code === 'ENOENT') {
       return {
@@ -41,7 +46,10 @@ export function loadPricebook(ownerId) {
           markupMode: 'markup',
           taxMode: 'TAX_NONE',
           taxPercent: 0,
-          rangeBufferPercent: 10
+          rangeBufferPercent: 10,
+          // Optional seasonal labor surcharge: off unless the owner turns it on.
+          peakMonths: [],
+          peakSurchargePercent: 0
         }
       };
     }
@@ -81,7 +89,7 @@ export function flushDirectory(path, ops = defaultFileOps) {
 // crash or a restart can never leave quoting running on an unconfirmed save. The
 // owner can still open the book; the next fully confirmed save clears the marker.
 const unconfirmedMarker = (directory, ownerId) => resolve(directory, `${ownerId}.unconfirmed`);
-export function pricebookSaveUnconfirmed(ownerId) { return existsSync(unconfirmedMarker(dir, ownerId)); }
+export function pricebookSaveUnconfirmed(ownerId) { return existsSync(unconfirmedMarker(pricebookDirectory(), ownerId)); }
 const notDurable = cause => Object.assign(new Error('The price book change could not be confirmed on disk. Quoting is paused for this business until a save is confirmed. Save again.'), { code:'PRICEBOOK_NOT_DURABLE', statusCode:503, retryable:true, cause });
 
 // Writes a complete sibling file and the unconfirmed marker (both flushed),
@@ -144,7 +152,7 @@ const busySave = cause => Object.assign(new Error('Another save for this price b
 export function withPricebookLock(ownerId, work) {
   const ownerKey = String(ownerId);
   if (heldSaves.has(ownerKey)) return runSaveWork(work);
-  const directory = resolve(dir) + '.saves';
+  const directory = resolve(pricebookDirectory()) + '.saves';
   mkdirSync(directory, { recursive: true });
   const filename = crypto.createHash('sha256').update(ownerKey).digest('hex') + '.sqlite';
   const db = new Database(resolve(directory, filename), { timeout: SAVE_WAIT_MS });
@@ -159,6 +167,7 @@ export function withPricebookLock(ownerId, work) {
 export function savePricebook(ownerId, data) {
   // Every write is serialized, even from a caller that did not take the lock itself.
   if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
+  const dir = pricebookDirectory();
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
