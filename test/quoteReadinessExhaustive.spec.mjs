@@ -29,7 +29,7 @@ for(const reason of ['unconfigured-zero-prices','missing-all-registration','only
  assert.equal(result.status,reason==='only-final-pair-live'?'QUOTING LIVE':'NEEDS PRICING');
  assert.ok(elapsed<1500&&delay<1500,'Cold call '+Math.round(elapsed)+' ms; timer '+Math.round(delay)+' ms');
  assert.equal(JSON.stringify(f),before);
- if(reason!=='only-final-pair-live')assert.equal(result.productCoverage.length,6400,'Every failed pair remains represented');
+ if(reason!=='only-final-pair-live'){assert.equal(result.productCoverage.length,reason==='missing-all-registration'?160:80,'Every proven incomplete product remains represented without duplicate pairs');assert.ok(result.productCoverage.every(p=>p.coverageMode==='product_axis'&&!p.configurationComplete));}
  else {
   assert.equal(generateQuoteVNext(request(f,'product_0')).resultType,'ESTIMATE_REQUIRES_REVIEW');
   const q=generateQuoteVNext(request(f,'product_79'));assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');
@@ -42,7 +42,7 @@ test('Exhaustive readiness: three unconfigured tiers stay bounded without hiding
  const f=catalog('unconfigured-zero-prices');f.ownerPricing.tiers=['Good','Better','Best'].map(name=>({name,overrides:{}}));
  const start=performance.now(),s=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:true});
  assert.equal(s.status,'NEEDS PRICING');assert.equal(s.failedTierDiagnostics.length,3);
- assert.equal(s.productCoverage.length,19200);assert.ok(performance.now()-start<2000);
+ assert.equal(s.productCoverage.length,240);assert.ok(s.productCoverage.every(p=>p.coverageMode==='product_axis'&&!p.configurationComplete));assert.ok(performance.now()-start<2000);
 });
 test('Exhaustive readiness: explicitly free catalog prices still become live',()=>{
  const f=catalog('unconfigured-zero-prices');

@@ -1,8 +1,11 @@
+import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
+export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {
+  createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
   MEASUREMENT_CONTRACTS,
   SERVICE_TYPES,
@@ -40,7 +43,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-audit-decisions-20261004-v4';
+export const ENGINE_VERSION = 'quote-engine-vnext-audit-repairs-20261005-v5';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -184,70 +187,6 @@ function cloneConfigurationEvidence(value) {
   return value;
 }
 
-function pricingSnapshotOrThrow(value, path) {
-  if (!isPlainObject(value)) {
-    throw new TypeError(`${path} must be an object.`);
-  }
-  const snapshot = snapshotPlainData(value, path);
-  if (!snapshot.ok) {
-    throw new TypeError(`${path} could not be read safely at ${snapshot.errorPath}: ${snapshot.reason}.`);
-  }
-  if (snapshot.nonPlainPaths.length) {
-    throw new TypeError(`${path} must contain only plain data objects; ${snapshot.nonPlainPaths[0]} is not plain data.`);
-  }
-  return snapshot.value;
-}
-
-function clonePricingForDiagnostics(value) {
-  if (value === null || typeof value !== 'object') return value;
-  const out = Array.isArray(value)
-    ? new Array(value.length)
-    : Object.create(Object.getPrototypeOf(value) === null ? null : Object.prototype);
-  for (const key of Object.keys(value)) {
-    Object.defineProperty(out, key, {
-      value: clonePricingForDiagnostics(value[key]),
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  }
-  return out;
-}
-
-function mergePricingSnapshots(base, override) {
-  const out = clonePricingForDiagnostics(base);
-  for (const [key, value] of Object.entries(override)) {
-    const mergedValue = isPlainObject(value) && isPlainObject(out[key])
-      ? mergePricingSnapshots(out[key], value)
-      : clonePricingForDiagnostics(value);
-    Object.defineProperty(out, key, {
-      value: mergedValue,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  }
-  return out;
-}
-
-export function mergePricingForValidationVNext(base, override) {
-  if (!isPlainObject(base) || !isPlainObject(override)) {
-    throw new TypeError('Base pricing and tier overrides must both be objects.');
-  }
-  return mergePricingSnapshots(
-    pricingSnapshotOrThrow(base, 'basePricing'),
-    pricingSnapshotOrThrow(override, 'tierOverrides')
-  );
-}
-
-export function mergePricingVNext(base, override) {
-  const merged = mergePricingForValidationVNext(base, override);
-  try {
-    return structuredClone(merged);
-  } catch {
-    throw new TypeError('Merged pricing contains values that cannot be returned as plain quote data.');
-  }
-}
 
 function extractPricing(ownerPricing) {
   return isPlainObject(ownerPricing.pricing)
@@ -1117,8 +1056,9 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited }) {
-  const customerValidation = validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, inherited, validation }) {
+  if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
+  const customerValidation = validation ? validation.customer(customerInputs) : validateCustomerInputs(serviceType, customerInputs, pricing, ownerPricing);
   if (!customerValidation.ok) {
     const normalizedScope = customerValidation.normalized ? structuredClone(customerValidation.normalized) : null;
     const validatedMeasurements = normalizedScope
@@ -1132,7 +1072,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     });
   }
   customerInputs = customerValidation.normalized;
-  const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing, tierName);
+  const ownerValidation = validation ? validation.owner(customerInputs) : validateOwnerPricing(serviceType, customerInputs, pricing, ownerPricing, tierName);
   if (!ownerValidation.ok) throw new QuoteReviewError('Pricing not fully configured for the measured scope.', {
     ...ownerValidation,
     normalizedScope: structuredClone(customerValidation.normalized),
@@ -1225,9 +1165,35 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
 }
 
 export function generateQuoteVNext(input = {}) {
-  const requestSnapshot = snapshotPlainData(input, 'quoteRequest');
+  return generateQuoteSnapshot(snapshotPlainData(input, 'quoteRequest'), ownDataValue(input, 'callerType'));
+}
+
+// Readiness reuses only private snapshots of the same immutable configuration.
+// Each probe still runs customer/owner validation and optionRun's complete money,
+// fee, range and zero-policy pipeline. It returns readiness, never a quote receipt.
+// No caller-provided flag can enable these caches in the public quote entry point.
+export function createActivationQuoteCheckVNext(input) {
+  const fixed = snapshotPlainData(input, 'quoteRequest');
+  if (!fixed.ok || fixed.nonPlainPaths.length || !isPlainObject(fixed.value)) {
+    return () => generateQuoteVNext(input);
+  }
+  const prepared = new Map();
+  return customerInputs => {
+    const customer = snapshotPlainData(customerInputs, 'quoteRequest.customerInputs');
+    const request = customer.ok
+      ? { ok: true, value: { ...fixed.value, customerInputs: customer.value }, nonPlainPaths: customer.nonPlainPaths }
+      : customer;
+    const result = generateQuoteSnapshot(request, { ok: true, value: fixed.value.callerType }, prepared);
+    return structuredClone(result);
+  };
+}
+function reuseActivation(prepared, key, calculate) {
+  if (!prepared) return calculate();
+  if (!prepared.has(key)) prepared.set(key, calculate());
+  return prepared.get(key);
+}
+function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = null) {
   const requestIsPlainObject = requestSnapshot.ok;
-  const callerDescriptor = ownDataValue(input, 'callerType');
   const fallbackRequest = { callerType: callerDescriptor.ok && callerDescriptor.value === 'owner' ? 'owner' : 'customer' };
   let {
     serviceType,
@@ -1305,14 +1271,14 @@ export function generateQuoteVNext(input = {}) {
   if (!isPlainObject(customerInputs)) return finishReview({ reviewReason: 'Customer inputs must be an object.', invalidCustomerFields: ['customerInputs'] });
   if (!isPlainObject(ownerPricing)) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
   if (!isPlainObject(businessDefaults)) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
-  ownerPricing = canonicalServiceIdentityVNext(ownerPricing);
-  const identityDiagnostics = identityDiagnosticsVNext(ownerPricing, serviceType);
+  ownerPricing = reuseActivation(prepared, 'owner', () => canonicalServiceIdentityVNext(ownerPricing));
+  const identityDiagnostics = reuseActivation(prepared, 'identity', () => identityDiagnosticsVNext(ownerPricing, serviceType));
   if (identityDiagnostics.length) return finishReview({reviewReason:'Service identity and type do not agree.',ownerDiagnostics:identityDiagnostics,missingOwnerFields:identityDiagnostics.filter(d=>d.type==='missing').map(d=>d.path),invalidOwnerFields:identityDiagnostics.filter(d=>d.type!=='missing').map(d=>d.path)});
   const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
   if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.', invalidOwnerFields: ['active'] });
   let basePricing;
   try {
-    basePricing = extractPricing(ownerPricing, serviceType);
+    basePricing = reuseActivation(prepared, 'base', () => extractPricing(ownerPricing, serviceType));
   } catch {
     return finishReview({ reviewReason: 'Pricing contains values that cannot be validated.', invalidOwnerFields: ['pricing'] });
   }
@@ -1344,7 +1310,7 @@ export function generateQuoteVNext(input = {}) {
     }
   }
 
-  const defaultValidation = validateBusinessDefaults(businessDefaults);
+  const defaultValidation = reuseActivation(prepared, 'defaults', () => validateBusinessDefaults(businessDefaults));
   if (!defaultValidation.ok) {
     const ownerDiagnostics = defaultValidation.diagnostics.map(item => ({ ...item, path: `businessDefaults.${item.path}` }));
     return finishReview({
@@ -1356,8 +1322,8 @@ export function generateQuoteVNext(input = {}) {
       validationMessages: defaultValidation.errors
     });
   }
-  const ruleDiagnostics = validateServiceRulesDetailed(ownerPricing, serviceType);
-  const tierDiagnostics = validateTierDefinitionsDetailedVNext(ownerPricing, serviceType);
+  const ruleDiagnostics = reuseActivation(prepared, 'rules', () => validateServiceRulesDetailed(ownerPricing, serviceType));
+  const tierDiagnostics = reuseActivation(prepared, 'tiers', () => validateTierDefinitionsDetailedVNext(ownerPricing, serviceType));
   const configurationDiagnostics = [...ruleDiagnostics, ...tierDiagnostics];
   if (configurationDiagnostics.length) {
     const perTier = new Map();
@@ -1388,7 +1354,7 @@ export function generateQuoteVNext(input = {}) {
       validationMessages: configurationDiagnostics.map(item => item.message)
     });
   }
-  const feeSelectionValidation = validateFeeSelectionRequest(ownerPricing, feeSelections);
+  const feeSelectionValidation = reuseActivation(prepared, 'fees', () => validateFeeSelectionRequest(ownerPricing, feeSelections));
   if (feeSelectionValidation.invalidOwnerFields.length || feeSelectionValidation.invalidCustomerFields.length) {
     return finishReview({
       reviewReason: 'Fee selections are incomplete or invalid.',
@@ -1405,8 +1371,9 @@ export function generateQuoteVNext(input = {}) {
   for (const [tierIndex, tier] of tiers.entries()) {
     let pricing = basePricing;
     try {
-      pricing = mergePricingForValidationVNext(basePricing, tier.overrides || {});
+      pricing = reuseActivation(prepared, 'pricing:' + tierIndex, () => mergePricingForValidationVNext(basePricing, tier.overrides || {}));
       options.push(optionRun({
+        validation: prepared ? reuseActivation(prepared, 'validation:' + tierIndex, () => createActivationValidationVNext(serviceType, pricing, ownerPricing, tier.name)) : null,
         serviceType,
         customerInputs,
         ownerPricing,
@@ -1473,6 +1440,7 @@ export function generateQuoteVNext(input = {}) {
     });
   }
 
+  if (prepared) return { resultType: 'INSTANT_ESTIMATE_READY' };
   const first = options[0];
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
   const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults)), []);

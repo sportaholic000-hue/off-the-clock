@@ -140,7 +140,7 @@ test('N03 control: no live interior pair still returns exact incomplete coverage
   const f=catalog(12);f.ownerPricing.pricing.membraneCostPerSqft=Object.fromEntries(Object.keys(f.ownerPricing.pricing.membraneCostPerSqft).map(key=>[key,0]));
   const full=vNextServiceStatus(f.ownerPricing,f.businessDefaults),quick=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:true});
   assert.equal(full.status,'NEEDS PRICING');assert.equal(quick.status,full.status);
-  assert.equal(full.productCoverage.length,144);assert.ok(full.productCoverage.every(p=>!p.configurationComplete));
+  assert.equal(full.productCoverage.length,12);assert.ok(full.productCoverage.every(p=>p.coverageMode==='product_axis'));assert.ok(full.productCoverage.every(p=>!p.configurationComplete));
   assert.deepEqual(quick.validationErrors,full.validationErrors);
 });
 test('N07: large coverage identifies the exact failing partner and leaves another ready pairing quotable',()=>{
