@@ -600,7 +600,7 @@ export default function PriceBook() {
       for (const incoming of draft.services) {
         // Interview values are DRAFT: on-screen field-by-field confirmation
         // starts from zero here regardless of the verbal confirmation.
-        services.push({serviceType:incoming.serviceType,service:incoming.service,pricing:incoming.pricing||incoming.fields||{},source:'AI_INTERVIEW',active:false,tiers:incoming.tiers||[],confirmedFields:{}});
+        services.push({serviceType:incoming.serviceType,service:incoming.service,pricing:incoming.pricing||incoming.fields||{},source:'AI_INTERVIEW',active:false,knownOfferings:incoming.knownOfferings||{},tiers:incoming.tiers||[],confirmedFields:{}});
       }
     }
     const starter = transferredSuggestions.value;

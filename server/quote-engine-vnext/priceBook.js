@@ -1,3 +1,4 @@
+import {scopeBaseKey,scopeEntriesFor} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
@@ -259,7 +260,7 @@ function baseActivationScenarios(service,confirmedService=service) {
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const configuredExistingTypes = keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
     const existingTypes = configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
-    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential'})));
+    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential',insulationNeeded:false,coverboardNeeded:false})));
 
     return scenarios;
   }
@@ -321,7 +322,7 @@ function baseActivationScenarios(service,confirmedService=service) {
       ] }
     ];
     return dimensions.flatMap(dimension => {
-      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false};
+      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false,adjoinsExistingConcrete:false};
       const candidates=['broom','smooth','stamped'].flatMap(finishType=>['none','wire_mesh','rebar'].flatMap(reinforcement=>[false,true].map(baseNeeded=>({...base,finishType,reinforcement,baseNeeded}))));
       return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
     });
@@ -375,25 +376,22 @@ function baseActivationScenarios(service,confirmedService=service) {
 
 function activationScenarios(service,confirmedService=service,tierName=null) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
- const scenarios=baseActivationScenarios(service,confirmedService).filter(input=>{
+ const scenarios=baseActivationScenarios(service,confirmedService).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
   if(!configuredOffering(type,p))return true;
   const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
   return !additional||completeOptionalPricing(service,input,p,tierName);
  });
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
- if(type.startsWith('FLOORING_')){
-  if(p.scopeDetails?.stairs){const seed=scenarios.find(c=>c.newFlooringType===p.scopeDetails.stairs.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5});}
-  if(p.scopeDetails?.floor_overlay){const d=p.scopeDetails.floor_overlay,seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+ for(const [key,d] of Object.entries(p.scopeDetails||{})){
+  const base=scopeBaseKey(key);
+  if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5,stairWidthLF:d.maximumWidthLF,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
+  if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+  if(base==='siding_removal')add({oldSidingRemoval:true,existingSidingType:d.existingSidingType,sidingRemovalStories:d.stories});
+  if(base==='demolition')add({demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:d.maximumThickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
+  if(key==='siding_trim')add({trimIncluded:true,trimLengthLF:200});
+  if(key==='exposed_aggregate')add({finishType:'exposed_aggregate'});
+  if(key==='insulation')for(const layer of ['insulation','coverboard'])add({[layer+'Needed']:true});
  }
- if(type==='SIDING_REPLACEMENT'){
-  if(p.scopeDetails?.siding_trim)add({trimIncluded:true,trimLengthLF:200});
-  if(p.scopeDetails?.siding_removal)add({oldSidingRemoval:true});
- }
- if(type.startsWith('CONCRETE_')){
-  if(p.scopeDetails?.demolition)add({demolitionNeeded:true,demolitionAreaSqft:200});
-  if(p.scopeDetails?.exposed_aggregate)add({finishType:'exposed_aggregate'});
- }
- if(type==='FLAT_ROOF_REPLACEMENT'&&p.scopeDetails?.insulation)add({buildingType:'commercial'});
  // Missing optional scope prices are reported by scopeCoverage. Probe their
  // calculations once configured, without making unfinished additions a gate
  // on the independently priced base work.
@@ -451,24 +449,26 @@ function scopeCoverageForService(service) {
         rows.get(id).variants.push({tierName:variant.name,configurationComplete:false,missingFields:['offeringDetails.gates.'+key+'.widthLF']});
       }
     }
-    for (const [key, definition] of Object.entries(definitions)) {
+    for (const [key, definition] of Object.entries(definitions).flatMap(([key,def])=>key==='insulation'?['insulation','coverboard'].map(layer=>[layer,{...def,layer,label:'Roof '+layer}]):[[key,def]])) {
+      const configurationKey=definition.layer?'insulation':key;
+      const scope=scopeBaseKey(key),detail=p.scopeDetails?.[key]||{};
       const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
       const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment' } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
-      if (key === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType: p.scopeDetails?.stairs?.flooringType });
-      if (key === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: p.scopeDetails?.floor_overlay?.existingFloorType || 'existing_floor' });
-      if (key === 'siding_removal') probe.oldSidingRemoval = true;
+      if (scope === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType:detail.flooringType,stairWidthLF:detail.maximumWidthLF,stairRemovalNeeded:detail.removalIncluded,stairDisposalNeeded:detail.disposalIncluded });
+      if (scope === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: detail.existingFloorType || 'existing_floor',newFlooringType:detail.newFlooringType });
+      if (scope === 'siding_removal') Object.assign(probe,{oldSidingRemoval:true,existingSidingType:detail.existingSidingType,sidingRemovalStories:detail.stories});
       if (key === 'siding_trim') probe.trimIncluded = true;
-      if (key === 'demolition') probe.demolitionNeeded = true;
+      if (scope === 'demolition') Object.assign(probe,{demolitionNeeded:true,demolitionThickness:detail.maximumThickness,demolitionReinforcement:detail.reinforcement,demolitionAccessDifficulty:detail.accessDifficulty});
       if (key === 'exposed_aggregate') probe.finishType = 'exposed_aggregate';
-      if (key === 'insulation') probe.buildingType = 'commercial';
+      if (definition.layer) Object.assign(probe,{insulationNeeded:false,coverboardNeeded:false,[definition.layer+'Needed']:true});
       if (key.includes('ceiling')) { if (type !== 'INTERIOR_PAINTING' || p.offeringMode && p.offeringDetails?.ceilingsOffered !== true) continue; probe.ceilingsIncluded = true; }
       if (key === 'paint_trim') { if (type !== 'INTERIOR_PAINTING') continue; probe.trimIncluded = true; }
-      if (!scopeKeysForRequest(type, probe, p, service).includes(key)) continue;
-      const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === key).map(([name]) => 'scopeRates.' + name);
-      const related = d => d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + key || d.path?.startsWith('scopeDetails.' + key + '.') || rates.includes(d.path);
+      if (!scopeKeysForRequest(type, probe, p, service).includes(configurationKey)) continue;
+      const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === configurationKey&&(!definition.layer||field.layer===definition.layer)).map(([name]) => 'scopeRates.' + name);
+      const related = d => {if(definition.layer&&d.path==='scopeDetails.insulation.'+(definition.layer==='insulation'?'coverboard':'insulation')+'System')return false;return d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + configurationKey || d.path?.startsWith('scopeDetails.' + configurationKey + '.') || rates.includes(d.path);};
       const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related);
-      const complete = isPlainRecord(p.scopeDetails?.[key]) && (rates.length > 0 || p.scopeDetails[key].mode === 'included_in_floor_price') && errors.length === 0;
+      const complete = isPlainRecord(p.scopeDetails?.[configurationKey]) && (rates.length > 0 || p.scopeDetails[configurationKey].mode === 'included_in_floor_price') && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
       const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
     }
@@ -1045,7 +1045,7 @@ export function reviewOnlyScopesVNext(serviceType) {
     add('Demolition selected', {demolitionNeeded:true}, ['demolitionPerSqft','disposalPerSqft']);
     add('Exposed aggregate selected', {finishType:'exposed_aggregate'}, ['finishMultiplier']);
   }
-  if (serviceType === 'FLAT_ROOF_REPLACEMENT') add('Commercial insulation scope', {buildingType:'commercial'}, ['insulationPerSqft']);
+  if (serviceType === 'FLAT_ROOF_REPLACEMENT') for(const layer of ['insulation','coverboard'])add(layer+' scope', {[layer+'Needed']:true}, ['insulationPerSqft']);
   if (serviceType.startsWith('FENCING_')) add('Every fence request', {}, [], true);
   if (serviceType === 'EXTERIOR_PAINTING') add('Every exterior painting request', {}, [], true);
   return definitions.map(({inputs, ...entry}) => ({...entry, ownerDecisions: uniqueStatusDiagnostics([
@@ -1067,7 +1067,7 @@ function fieldCopy(serviceType, field) {
     ownerDecisions: scopes.flatMap(scope => scope.ownerDecisions)
   };
   if (serviceType === 'FLAT_ROOF_REPLACEMENT' && ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'].includes(field)) return {
-    label: {laborPerSqft:'Installation labor price per square foot by replacement membrane',membraneCostPerSqft:'Material price per square foot by replacement membrane',tearOffPerSqft:'Tear-off price per square foot by existing membrane'}[field],
+    label: {laborPerSqft:'Installation labor price per square foot by replacement membrane',membraneCostPerSqft:'Material price per square foot by replacement membrane',tearOffPerSqft:'Tear-off labor price per square foot by existing membrane'}[field],
     help:'Enter named, identified membrane rates. Unknown materials require verification; no fallback rate is used.'
   };
   if (NEW_FIELD_COPY[field]) return NEW_FIELD_COPY[field];

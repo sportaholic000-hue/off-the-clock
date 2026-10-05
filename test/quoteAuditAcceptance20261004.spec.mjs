@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 // Independent acceptance checks for the five findings reported at eda14525.
 // Run from a checkout with Node 22 and locked dependencies installed:
 // node --test test/quoteAuditAcceptance20261004.spec.mjs

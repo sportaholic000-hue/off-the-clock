@@ -1,3 +1,4 @@
+import {fixedPriceField} from './pricePrecision.js';
 import { ALL_OWNER_FIELDS, MONEY_FIELD_NAMES, CLASS2_DEFAULTS_BY_SERVICE, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
 
 // Existing application fields only. These declarations describe price units;
@@ -28,7 +29,7 @@ const FIXED_AMOUNT_FIELDS = new Set([
 const DEFAULT_MONEY_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','laborHourlyRate'
 ]);
-const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_unit','per_LF','per_square']);
+const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
 const NUMBER_DECIMAL = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))(?:e([+-]?\d+))?$/i;
 const MONEY_KINDS = new Set(['unit_rate','fixed_amount','unresolved_unit']);
 
@@ -218,9 +219,10 @@ export function assertJsonNumberPreserved(raw) {
 export function moneyKindForField(serviceType, field, pricing = {}) {
   if (serviceType === 'CUSTOM' && ['price', 'low', 'high'].includes(field)) {
     if (CUSTOM_RATE_UNITS.has(pricing.unit)) return 'unit_rate';
-    return pricing.unit === 'flat' ? 'fixed_amount' : 'unresolved_unit';
+    return ['flat','per_unit'].includes(pricing.unit) ? 'fixed_amount' : 'unresolved_unit';
   }
   if (!(ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return null;
+  if (fixedPriceField(field,pricing)) return 'fixed_amount';
   if (UNIT_RATE_FIELDS.has(field)) return 'unit_rate';
   if (FIXED_AMOUNT_FIELDS.has(field)) return 'fixed_amount';
   if (MONEY_FIELD_NAMES.has(field)) failure(field, 'This monetary field has no supported price-unit classification.');

@@ -1,5 +1,5 @@
 import {scopeCustomerFields,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
-import {offeringPriceBaseline,offeringBaselineConfirmation} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
@@ -18,7 +18,7 @@ export function offeringTierFields(meta,service) {
   const scopeRates=scopeRateDefinitions(service.serviceType,p);
   const scopeFields=Object.keys(scopeRates).length?[{field:'scopeRates',label:'Additional scope prices',type:'json',tree:{depth:1,leafKeys:Object.keys(scopeRates),leafMoneyKinds:Object.fromEntries(Object.entries(scopeRates).map(([key,f])=>[key,f.moneyKind]))}}]:[];
   const fields=!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)):
-    [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{})}}].filter(Boolean);
+    [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{}),leafMoneyKinds:Object.fromEntries(Object.entries(offeringRateDefinitions(service.serviceType,p)).map(([key,f])=>[key,f.moneyKind]))}}].filter(Boolean);
   return [...fields,...scopeFields];
 }
 
@@ -44,7 +44,7 @@ export function OfferingEditor({service,meta,onChange}) {
     if(key==='installedTrimPerLF'&&!d.trimOffered)delete definitions[key];
     if(key==='removalPerLF'&&!d.removalOffered)delete definitions[key];
   }
-  for(const [key,gate] of Object.entries(d.gates||{}))definitions['gate_'+key]={label:'Installed gate: '+key.replaceAll('_',' '),unit:'gates',priceBasis:'sell_price'};
+  for(const [key,gate] of Object.entries(d.gates||{}))definitions['gate_'+key]={label:'Installed gate: '+key.replaceAll('_',' '),unit:'gates',priceBasis:'sell_price',moneyKind:'fixed_amount'};
   if(!fence&&mode==='itemized'&&service.priceBasisByCategory?.material==='cost')for(const key of Object.keys(definitions))if(definitions[key].category==='material')delete definitions[key];
   const usedLegacyPrep=mode==='itemized'?['prepLaborPerSqft','prepMaterialPerSqft'].filter(key=>rates[key]!==undefined&&rates[key+'_'+d.surfaceCondition]===undefined):[];
   const unused=Object.keys(rates).filter(key=>!definitions[key]&&!usedLegacyPrep.includes(key));
@@ -83,7 +83,7 @@ export function OfferingEditor({service,meta,onChange}) {
         {interior?<>{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{mode==='installed'&&input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&input('trimDescription','Trim coats, preparation and primer included')}</>:null}
       </>}
       <h3>Owner prices for this offering — {baseline.condition}</h3>
-      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={field.label+' ($ per '+field.unit+')'} kind="unit_rate" value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
+      {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')}><ExactNumericInput aria-label={field.label+' ($ per '+field.unit+')'} kind={field.moneyKind} value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
       {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{key}: {String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}
     </>}
   </section>;

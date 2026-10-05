@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import {explicitUnderlaymentFixtureShares, fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -344,9 +345,9 @@ test('an explicitly confirmed zero accessory length is recorded as no physical s
   assert.equal(measurement.value, 0);
 });
 
-test('fractional cents and unsupported pricing controls are rejected', () => {
+test('measured fractional cents are supported; unsupported pricing controls are rejected', () => {
   const fractional = flooringService({ laborPerSqft: { vinyl_plank: 300.5 } });
-  assert.equal(vNextServiceStatus(fractional, defaults).status, 'NEEDS PRICING');
+  assert.equal(vNextServiceStatus(fractional, defaults).status, 'QUOTING LIVE');
   const unsupported = roofService({ repairMinimum: 10000 });
   const result = run('ROOFING_REPLACEMENT', roofInputs(), unsupported);
   assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW');
@@ -717,7 +718,7 @@ test('supported concrete finishes round the base and finish-extra components ind
     minimumJob: 0
   });
   const result = run('CONCRETE_DRIVEWAY', {
-    dimensionMethod: 'exact',
+    adjoinsExistingConcrete:false, dimensionMethod: 'exact',
     length: 1.01,
     width: 1,
     thickness: 2,

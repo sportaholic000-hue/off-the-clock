@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -93,7 +94,7 @@ test('D04: an incomplete second flat-roof membrane does not block a complete one
   assert.equal(roof.status.status, 'QUOTING LIVE');
   const facts = replacement => ({ membraneType:{ status:'identified', field:'membraneType', value:'epdm', offeringId:known.membraneType.epdm },
     replacementMembraneType:{ status:'identified', field:'replacementMembraneType', value:replacement, offeringId:known.replacementMembraneType[replacement] } });
-  const request = replacement => ({ roofSqft:1850, sqftMethod:'exact', membraneType:'epdm', replacementMembraneType:replacement, existingLayers:1, accessDifficulty:'moderate', serviceScope:'full', buildingType:'residential', confirmedFacts:facts(replacement) });
+  const request = replacement => ({ roofSqft:1850, sqftMethod:'exact', membraneType:'epdm', replacementMembraneType:replacement, existingLayers:1, accessDifficulty:'moderate', serviceScope:'full', buildingType:'residential',insulationNeeded:false,coverboardNeeded:false, confirmedFacts:facts(replacement) });
   const epdm = roof.quote(request('epdm'));
   assert.equal(epdm.resultType, 'INSTANT_ESTIMATE_READY');
   assert.equal(total(epdm), cents(mul(D(1850), D(315), D('1.15'))) + cents(mul(D(1850), D('1.1'), D(285))) + cents(mul(D(1850), D(105), D('1.15'))));
@@ -249,7 +250,7 @@ test('Audit 2 #3 and #6 (C03): currency is an active, required setting and is ne
 test('Audit 2 #4 and #5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers', async () => {
   const runner = fs.readFileSync(new URL('../scripts/test-full.mjs', import.meta.url), 'utf8');
   assert.match(runner, /'--test', '--test-reporter=tap'/);
-  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /node --test --test-reporter=tap test\/\*\.spec\.js test\/\*\.spec\.mjs/);
+  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /node --import \.\/test\/pricebookTestEnv\.mjs --test --test-reporter=tap test\/\*\.spec\.js test\/\*\.spec\.mjs/);
   const { quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
   const files = quotePricebookSpecFiles(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..'));
   for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);

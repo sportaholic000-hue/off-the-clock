@@ -1,3 +1,4 @@
+import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
@@ -659,10 +660,11 @@ export function draftReviewPayload(ownerId, id) {
     const fields = draft.fields[serviceType] || {};
     const confirmed = new Set(draft.confirmedFields[serviceType] || []);
     const unconfirmedFields = Object.keys(fields).filter(field => !confirmed.has(field));
+    const captured=materializeInterviewFields(serviceType,fields,()=>crypto.randomUUID());
     return {
       serviceType,
       service: SERVICE_NAMES[serviceType],
-      fields: structuredClone(fields),
+      fields:captured.pricing,knownOfferings:captured.knownOfferings,
       source: 'AI_INTERVIEW', active: false, confirmedFields: {},
       unconfirmedFields: Object.keys(fields)
     };

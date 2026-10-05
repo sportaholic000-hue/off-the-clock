@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -23,7 +24,7 @@ const requests=[
  ['siding-removal','siding_removal',1170000,{oldSidingRemoval:false},['existingSidingType','sidingRemovalAreaSqft','sidingRemovalStories','sidingRemovalScopeConfirmed']],
  ['demolition','demolition',353889,{demolitionNeeded:false},['demolitionAreaSqft','demolitionThickness','demolitionReinforcement','demolitionAccessDifficulty','demolitionScopeConfirmed']],
  ['exposed','exposed_aggregate',353889,{finishType:'broom'},['exposedAggregateScopeConfirmed']],
- ['commercial','insulation',1470000,{buildingType:'residential'},['insulationAreaSqft','coverboardAreaSqft','insulationScopeConfirmed']]
+ ['commercial','insulation',1470000,{buildingType:'residential',insulationNeeded:false,coverboardNeeded:false},['insulationAreaSqft','coverboardAreaSqft','insulationScopeConfirmed']]
 ];
 const cents=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 function ready(f,expected){const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));assert.equal(cents(q),expected);return q;}
@@ -39,8 +40,8 @@ for(const [id,key,baseTotal,changes,remove] of requests)for(const mode of ['inst
    const draft=structuredClone(f);if(missing!=='description')delete draft.ownerPricing.pricing.scopeRates[missing];else delete draft.ownerPricing.pricing.scopeDetails[key].description;
    const before=JSON.stringify(draft);review(draft);ready(base(draft),baseTotal);
    const status=vNextServiceStatus(draft.ownerPricing,draft.businessDefaults);
-   assert.equal(status.status,'QUOTING LIVE');assert.equal(status.scopeCoverage.find(row=>row.key===key).configurationComplete,false);
-   assert.match(status.scopeCoverage.find(row=>row.key===key).message,/leads/);assert.equal(JSON.stringify(draft),before);
+   assert.equal(status.status,'QUOTING LIVE');assert.equal(status.scopeCoverage.find(row=>row.key===(key==='insulation'&&missing.startsWith('coverboard_')?'coverboard':key)).configurationComplete,false);
+   assert.match(status.scopeCoverage.find(row=>row.key===(key==='insulation'&&missing.startsWith('coverboard_')?'coverboard':key)).message,/leads/);assert.equal(JSON.stringify(draft),before);
   }
   // Malformed money is distinct from an unfinished optional price, and remains
   // fail-closed even when that scope is unselected.

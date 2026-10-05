@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';

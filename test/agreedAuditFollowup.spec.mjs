@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseOwnerNumericInput} from '../server/priceBookMoney.js';
@@ -6,19 +7,19 @@ import {suggestStarterBook} from '../server/src/priceBookAI.js';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 
-test('m1 siding input rejects fractional cents without rounding or changing supported rate domains',()=>{
+test('m1 explicit fixed precision remains available; measured siding rates allow fractional cents',()=>{
  assert.throws(()=>parseOwnerNumericInput('2.555',{kind:'unit_rate',wholeCents:true}),/whole.cent/i);
  assert.equal(parseOwnerNumericInput('2.55',{kind:'unit_rate',wholeCents:true}),2.55);
  assert.equal(parseOwnerNumericInput('0.005',{kind:'unit_rate'}),.005);
- assert.equal(applicationMetadata().services.find(s=>s.serviceType==='SIDING_REPLACEMENT').fields.find(f=>f.field==='laborPerSqft').wholeCents,true);
+ assert.equal(applicationMetadata().services.find(s=>s.serviceType==='SIDING_REPLACEMENT').fields.find(f=>f.field==='laborPerSqft').wholeCents,undefined);
 });
-for(const location of ['root','nested','tier'])test('m1 '+location+' siding rate is refused at the application save boundary',()=>{
+for(const location of ['root','nested','tier'])test('m1 '+location+' siding measured rate saves without rounding',()=>{
  const s={serviceType:'SIDING_REPLACEMENT'};
  if(location==='root')s.laborPerSqft={vinyl:2.555};
  if(location==='nested')s.pricing={laborPerSqft:{vinyl:2.555}};
  if(location==='tier')s.tiers=[{name:'Plus',overrides:{laborPerSqft:{vinyl:2.555}}}];
  const b={services:[s],defaults:{}},before=structuredClone(b);
- assert.throws(()=>convertApplicationBook(b,'toCents'),e=>e.statusCode===400&&/whole.cent/i.test(e.message));
+ const stored=convertApplicationBook(b,'toCents').services[0];assert.equal((location==='root'?stored:location==='nested'?stored.pricing:stored.tiers[0].overrides).laborPerSqft.vinyl,255.5);
  assert.deepEqual(b,before);
 });
 test('m1 previously stored invalid rate remains visible for correction; fractional mowing/custom remain exact',()=>{

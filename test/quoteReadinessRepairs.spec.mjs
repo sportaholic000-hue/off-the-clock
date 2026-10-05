@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -70,7 +71,8 @@ test('M2 setup requests an offering instead of unused exterior and fence standar
   const m=applicationMetadata().services.find(x=>x.serviceType===type);
   assert.equal(m.requiresOffering,true);
   assert.ok(m.fields.filter(f=>f.type==='number'||f.type==='json').every(f=>f.field==='minimumJob'));
-  assert.ok(starterFields(type).every(f=>f.field==='minimumJob'));
+  assert.ok(starterFields(type).every(f=>['minimumJob','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates'].includes(f.field)));
+  for(const field of ['offeringMode','offeringDetails','offeringRates'])assert.ok(starterFields(type).some(f=>f.field===field));
  }
 });
 test('M3/M4 current AI schema accepts engine-used measured fields and typed maps',()=>{

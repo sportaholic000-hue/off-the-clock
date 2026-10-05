@@ -40,7 +40,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-trade-decisions-20261003-v3';
+export const ENGINE_VERSION = 'quote-engine-vnext-audit-decisions-20261004-v4';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -590,7 +590,8 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // marked as a selling price, so it is never marked up; ordinary labor keeps
   // the owner's surcharge category settings.
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
-  const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
+  const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
   let amountCents=0;
@@ -819,7 +820,7 @@ function exactOperandFromEvidence(value, evidence, { positive = false } = {}) {
 }
 
 function validQuantityRateEvidence(calculation, expectedAmountCents, allowZeroQuantity = false) {
-  if (!isPlainObject(calculation) || !(Number.isSafeInteger(calculation.rateCents) || ((calculation.ratePath==='price'||calculation.ratePath==='mowingBaseRatePerSqft'||offeringRatePath(calculation.ratePath)||scopeRatePath(calculation.ratePath)) && typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER)) || calculation.rateCents < 0 ||
+  if (!isPlainObject(calculation) || !(typeof calculation.rateCents==='number' && Number.isFinite(calculation.rateCents) && calculation.rateCents<=Number.MAX_SAFE_INTEGER) || calculation.rateCents < 0 ||
       !Array.isArray(calculation.multipliers)) return false;
   const quantity = exactOperandFromEvidence(calculation.quantity, calculation.exactQuantity, { positive: !allowZeroQuantity });
   if (!quantity || denseArrayIssue(calculation.multipliers)) return false;

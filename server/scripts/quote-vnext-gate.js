@@ -39,7 +39,7 @@ console.log('PASS: quotes reach the engine only through quoteDoneBridge.js; cust
 
 const files = quotePricebookSpecFiles(process.cwd());
 console.log(`Running ${files.length} quote-engine and price-book test files; any failure fails the gate.`);
-const child = spawn(process.execPath, ['--test', ...files], { stdio: 'inherit' });
+const child = spawn(process.execPath, ['--import', './test/pricebookTestEnv.mjs', '--test', ...files], { stdio: 'inherit' });
 child.on('error', error => { console.error(`FAIL: unable to start the tests: ${error.message}`); process.exit(1); });
 child.on('exit', code => {
   if (code !== 0) { console.error(`FAIL: quote-engine and price-book tests exited ${code}.`); process.exit(code || 1); }

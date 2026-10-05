@@ -1,3 +1,15 @@
+# October 5 audit decisions — verification in progress
+
+The nine October 4 follow-up decisions are implemented in this candidate.
+The earlier unpublished scope draft was discarded before these agreed rules
+were implemented. See [the approved decisions](QUOTE_AUDIT_DECISIONS_20261004.md).
+
+Current local evidence: 1,129 scoped tests passed before the final interview
+registration and independent roof-layer coverage refinements. The added rate
+precision matrix and rendered interview checks are being included in the final
+gate. Both client builds passed. Hosted verification of this candidate is pending;
+this is a source checkpoint, not a completed release or deployment.
+
 # Current quote-engine / price-book checkpoint — October 4, 2026
 
 **The earlier five-finding completion statement was too broad.** Further checks

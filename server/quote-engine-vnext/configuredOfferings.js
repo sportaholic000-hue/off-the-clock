@@ -33,9 +33,11 @@ export function offeringBaselineConfirmation(type,p={}) {
   return {path:'offeringDetails.baselinePricesConfirmed',kind:'offering_price_baseline',message:`This offering was saved for ${saved}. Offering prices now cover ${baseline.condition}, with ${baseline.adjustment.toLowerCase()} adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.`};
 }
 
+export const offeringMoneyKind=key=>key.startsWith('gate_')||['postMaterialEach','footingLaborEach','footingMaterialEach'].includes(key)?'fixed_amount':'unit_rate';
+
 export function offeringRateDefinitions(type,p={}) {
   const installed=p.offeringMode==='installed', d=p.offeringDetails||{}, out={};
-  const add=(key,label,category,unit,priceBasis)=>out[key]={label,category,unit,...(priceBasis?{priceBasis}:{})};
+  const add=(key,label,category,unit,priceBasis)=>out[key]={label,category,unit,moneyKind:offeringMoneyKind(key),...(priceBasis?{priceBasis}:{})};
   if(fence(type)) {
     if(installed)add('installedFencePerLF','Installed fence including standard posts and footings','addon','fence linear feet','sell_price');
     else {
@@ -127,7 +129,7 @@ export function offeringStructureDiagnostics(type,p) {
     const definitions={...offeringRateDefinitions(type,{offeringMode:'installed',offeringDetails:allDetails}),...offeringRateDefinitions(type,{offeringMode:'itemized',offeringDetails:allDetails})};
     for(const [key,value] of Object.entries(p.offeringRates)) {
       if(!own(definitions,key))add('offeringRates.'+key,'This price is not supported by this offering.','unsupported');
-      else if(!rate(value))add('offeringRates.'+key,'Enter a finite non-negative unit rate in cents.');
+      else if(!rate(value)||definitions[key].moneyKind==='fixed_amount'&&!Number.isSafeInteger(value))add('offeringRates.'+key,'Enter a finite non-negative unit rate in cents.');
     }
   }
   return errors;
@@ -297,7 +299,7 @@ export function offeringRequirements(type,c,p) {
     if(key.startsWith('prepMaterial'))return key===prepRateKey(p,'Material',c.surfaceCondition);
     return true;
   });
-  return [{path:'minimumJob',label:'Minimum job price',kind:'minimum'},...names.map(key=>({path:'offeringRates.'+key,label:definitions[key].label,kind:'non_negative_number'}))];
+  return [{path:'minimumJob',label:'Minimum job price',kind:'minimum'},...names.map(key=>({path:'offeringRates.'+key,label:definitions[key].label,kind:definitions[key].moneyKind==='fixed_amount'?'non_negative_money':'non_negative_number'}))];
 }
 
 export function offeringDisclosures(type,p,c) {

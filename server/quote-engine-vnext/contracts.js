@@ -1,3 +1,5 @@
+import {fixedPriceField} from '../pricePrecision.js';
+import {scopeEntriesFor,scopeBaseKey} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
@@ -189,11 +191,13 @@ export const MEASUREMENT_CONTRACTS = {
       accessDifficulty: enumField('Roof access', ACCESS),
       serviceScope: enumField('Replacement scope', ['full', 'partial']),
       buildingType: enumField('Building type', ['residential', 'commercial']),
+      insulationNeeded:booleanField('New insulation needed'),
+      coverboardNeeded:booleanField('New coverboard needed'),
       partialPercent: numberField('Confirmed affected portion', 'percent', 0.1, 100),
       partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 2_000_000)
     },
     required(c) {
-      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'buildingType'];
+      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'buildingType', 'insulationNeeded', 'coverboardNeeded'];
       if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
       return out;
     },
@@ -409,10 +413,13 @@ function concreteContract() {
       demolitionAreaSqft: numberField('Measured demolition area', 'square feet', 0.1, 10_000_000),
       reinforcement: enumField('Reinforcement', ['none', 'wire_mesh', 'rebar']),
       accessDifficulty: enumField('Project access', ACCESS),
-      baseNeeded: booleanField('Base preparation included')
+      baseNeeded: booleanField('Base preparation included'),
+      adjoinsExistingConcrete:booleanField('Does any edge touch a house foundation, garage foundation, or existing concrete?'),
+      adjoiningEdgeLF:numberField('Total measured length of those adjoining edges','linear feet',0.1,1_000_000,{visibleWhen:[[['adjoinsExistingConcrete','eq',true]]]})
     },
     required(c) {
-      const out = ['dimensionMethod', 'thickness', 'finishType', 'demolitionNeeded', 'reinforcement', 'accessDifficulty', 'baseNeeded'];
+      const out = ['dimensionMethod', 'thickness', 'finishType', 'demolitionNeeded', 'reinforcement', 'accessDifficulty', 'baseNeeded', 'adjoinsExistingConcrete'];
+      if(c.adjoinsExistingConcrete===true)out.push('adjoiningEdgeLF');
       if (c.dimensionMethod === 'exact') out.push('length', 'width');
       if (c.dimensionMethod === 'measured_area_perimeter') out.push('areaSqft', 'perimeterLF');
       if (c.demolitionNeeded) out.push('demolitionAreaSqft');
@@ -441,6 +448,14 @@ function concreteContract() {
       if (c.dimensionMethod === 'measured_area_perimeter') {
         if (c.length !== undefined) errors.push({ field: 'length', message: 'Slab length cannot be supplied when measured area and perimeter are the selected method.' });
         if (c.width !== undefined) errors.push({ field: 'width', message: 'Slab width cannot be supplied when measured area and perimeter are the selected method.' });
+      }
+      if(c.adjoinsExistingConcrete===false&&c.adjoiningEdgeLF!==undefined)errors.push({field:'adjoiningEdgeLF',message:'Adjoining edge length is only supplied when an edge touches foundation or existing concrete.'});
+      if(c.adjoinsExistingConcrete===true&&Number.isFinite(c.adjoiningEdgeLF)){
+        let perimeter;
+        if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))perimeter=exactMultiply(2,exactAdd(c.length,c.width));
+        if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.perimeterLF))perimeter=c.perimeterLF;
+        if(c.dimensionMethod==='measured_outline')try{perimeter=measuredOutlineVNext(c.outlinePoints).exactPerimeterLF;}catch{}
+        if(perimeter!==undefined&&exactCompare(c.adjoiningEdgeLF,perimeter)>0)errors.push({field:'adjoiningEdgeLF',message:'Adjoining edges cannot exceed the measured slab perimeter.'});
       }
       if (c.demolitionNeeded === false && c.demolitionAreaSqft !== undefined) errors.push({ field: 'demolitionAreaSqft', message: 'Demolition area cannot be supplied when demolition is not included.' });
       return errors;
@@ -760,14 +775,14 @@ for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasur
 extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugField('Replacement membrane type')}, () => ['replacementMembraneType'],
  (c,p) => ['unknown','average'].includes(c.membraneType) || ['unknown','average'].includes(c.replacementMembraneType)
   ? 'Both existing and replacement membrane systems must be identified.'
-  : c.buildingType === 'commercial' && !p.scopeDetails?.insulation ? 'Commercial insulation and coverboard scope, system, and measured area require owner verification; building type does not establish that scope.' : null);
+  : null);
 for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
  {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
- (c,p)=>c.stairSteps>0&&!p.scopeDetails?.stairs?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
+ (c,p)=>c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
  c=>c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]);
-extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!p.scopeDetails?.siding_removal?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
+extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
- (c,p)=>c.demolitionNeeded&&!p.scopeDetails?.demolition?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
+ (c,p)=>c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
  :null,
  c=>{
    const errors=[];
@@ -1224,7 +1239,7 @@ export function valueAtPath(source, path) {
 
 export function ownerRequirements(type,c={},p={},rules={}) { return [...baseOwnerRequirements(type,c,p).filter(item=>!scopesSuppressPrice(type,c,p,rules,item.path)),...scopeRequirements(type,c,p,rules)]; }
 
-const requirement = (path, label, options = {}) => ({ path, label, kind: 'non_negative_money', ...options });
+const requirement = (path, label, options = {}) => ({ path, label, kind: fixedPriceField(path.split('.')[0])?'non_negative_money':'non_negative_number', ...options });
 
 export function vinylUnderlaymentApplies(customerInputs, pricing) {
   const type = customerInputs.newFlooringType;
@@ -1378,7 +1393,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}) {
     out.push({ path: 'customPricingMode', label: 'Custom service pricing mode', kind: 'enum', values: ['fixed', 'range', 'inspection_first'] });
     out.push({ path: 'unit', label: 'Custom service unit', kind: 'enum', values: ['flat', 'per_sqft', 'per_hour', 'per_unit', 'per_LF', 'per_square'] });
     add('minimumJob', 'Minimum custom-service price', { kind: 'minimum' });
-    const rateKind = p.unit === 'flat' ? 'non_negative_money' : 'non_negative_number';
+    const rateKind = ['flat','per_unit'].includes(p.unit) ? 'non_negative_money' : 'non_negative_number';
     if (p.customPricingMode === 'fixed') add('price', 'Fixed price per configured unit', {kind:rateKind});
     if (p.customPricingMode === 'range') {
       add('low', 'Low price per configured unit', {kind:rateKind});
@@ -1425,7 +1440,7 @@ function structureDiagnostic(diagnostics, type, path, message, kind = 'structure
   diagnostics.push(ownerDiagnostic(type, kind, path, message));
 }
 
-function inspectPriceMap(diagnostics, pricing, name, { allowedKeys = null, requireAll = false, predicate = nonNegativeMoney, canonicalKeys = false } = {}) {
+function inspectPriceMap(diagnostics, pricing, name, { allowedKeys = null, requireAll = false, predicate = value=>fixedPriceField(name)?nonNegativeMoney(value):nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER, canonicalKeys = false } = {}) {
   const value = pricing[name];
   if (value === undefined) return;
   if (!isRecord(value) || !Object.keys(value).length) {
@@ -1535,7 +1550,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   diagnostics.push(...scopeStructureDiagnostics(serviceType,p));
 
   for (const name of scalarMoneyFields(serviceType)) {
-    if (serviceType === 'CUSTOM' && p.unit !== 'flat' && ['price','low','high'].includes(name)) {
+    if (!fixedPriceField(name,p)) {
       if (p[name] !== undefined && (!nonNegative(p[name]) || p[name] > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a finite non-negative unit rate in cents.`);
       continue;
     }
@@ -1654,11 +1669,15 @@ export function pricingDiagnosticsForSelection(type,diagnostics,c,pricing={},ser
     // work. Keep every missing field for a selected scope; global malformed
     // data was retained above, and unknown/root diagnostics remain blocking.
     if(item.kind==='scope_configuration'){
-      if(item.path.startsWith('scopeDetails.'))return activeScopes.has(item.path.split('.')[1]);
+      if(item.path.startsWith('scopeDetails.')){
+        if(item.path==='scopeDetails.insulation.insulationSystem')return c.insulationNeeded===true;
+        if(item.path==='scopeDetails.insulation.coverboardSystem')return c.coverboardNeeded===true;
+        return activeScopes.has(item.path.split('.')[1]);
+      }
       if(item.path.startsWith('scopeRates.')){
         scopeRates ||= scopeRateDefinitions(type,pricing,true);
-        const key=scopeRates[item.path.split('.')[1]]?.scopeKey;
-        if(key)return activeScopes.has(key);
+        const definition=scopeRates[item.path.split('.')[1]],key=definition?.scopeKey;
+        if(key)return activeScopes.has(key)&&(!definition.layer||c[definition.layer+'Needed']===true);
       }
     }
     const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:null;
@@ -2032,11 +2051,12 @@ export function inspectionOwnerDecisionsVNext(type,c={},p={}) {
  if(configuredOffering(type,p))return [];
  const decisions=previousInspectionOwnerDecisionsVNext(type,c);
  const add=(path,kind,message)=>decisions.push({path,kind,message});
- if(type.startsWith('FLOORING_')&&c.stairSteps>0&&!p.scopeDetails?.stairs)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');
- if(type==='SIDING_REPLACEMENT'&&c.oldSidingRemoval&&!p.scopeDetails?.siding_removal)add('removalPerSqft','existing_siding_removal_contract','Confirm existing siding type, measured removal area, and the supported removal-price scope.');
+ for(const key of scopeKeysForRequest(type,c,p))if(!p.scopeDetails?.[key]&&scopeEntriesFor(p,scopeBaseKey(key)).length)add('scopeDetails.'+key,'scope_matching','No configured scope entry matches these measured job facts.');
+ if(type.startsWith('FLOORING_')&&c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length)add('perStepPrice','stair_scope_contract','Confirm an all-inclusive stair package or separately price every included stair component.');
+ if(type==='SIDING_REPLACEMENT'&&c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length)add('removalPerSqft','existing_siding_removal_contract','Confirm existing siding type, measured removal area, and the supported removal-price scope.');
  if(type==='SIDING_REPLACEMENT'&&c.trimIncluded&&!p.scopeDetails?.siding_trim)add('trimPerLinearFoot','mixed_charge_classification','Confirm trim labor/material allocation.');
- if(type.startsWith('CONCRETE_')&&c.demolitionNeeded&&!p.scopeDetails?.demolition)add('demolitionPerSqft','existing_slab_demolition_contract','Define the existing slab facts or explicit bounded package covered by the demolition price.');
- if(type==='FLAT_ROOF_REPLACEMENT'&&c.buildingType==='commercial'&&!p.scopeDetails?.insulation)add('insulationPerSqft','insulation_scope_contract','Confirm insulation and coverboard scope, systems, and measured areas before pricing.');
+ if(type.startsWith('CONCRETE_')&&c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length)add('demolitionPerSqft','existing_slab_demolition_contract','Define the existing slab facts or explicit bounded package covered by the demolition price.');
+ if(type==='FLAT_ROOF_REPLACEMENT'&&(c.insulationNeeded===true||c.coverboardNeeded===true)&&!p.scopeDetails?.insulation)add('insulationPerSqft','insulation_scope_contract','Confirm insulation and coverboard scope, systems, and measured areas before pricing.');
  if(type==='EXTERIOR_PAINTING')add('exteriorCoatingScope','exterior_coating_scope_contract','Define supported substrate/coating systems and measured preparation scope or a bounded all-area package.');
  return decisions;
 }
@@ -2142,9 +2162,7 @@ function includedPathDiagnosticsVNext(service, pricing) {
   const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
   const validPrice = (path, value) => {
     const [root,key]=path.split('.');
-    const fractional=(path==='mowingBaseRatePerSqft'&&service.serviceType==='LANDSCAPING_MOWING') ||
-      (service.serviceType==='CUSTOM'&&['price','low','high'].includes(path)&&pricing?.unit!=='flat') ||
-      root==='offeringRates' || (root==='scopeRates'&&scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate');
+    const fractional=root==='offeringRates'?offeringRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':root==='scopeRates'?scopeRateDefinitions(service.serviceType,pricing)[key]?.moneyKind==='unit_rate':!fixedPriceField(root,pricing);
     return fractional ? nonNegative(value)&&value<=Number.MAX_SAFE_INTEGER : nonNegativeMoney(value);
   };
   for (const [source, covering] of Object.entries(mappings)) {

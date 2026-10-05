@@ -23,6 +23,7 @@ export function fixtureOfferings(type) {
  return Object.fromEntries(Object.keys(MEASUREMENT_CONTRACTS[type].fields).filter(field=>known[field]).map(field=>[field,Object.fromEntries(known[field].map(value=>[value,offeringId(field,value)]))]));
 }
 export function confirmedFixtureInputs(inputs) {
+  inputs={...inputs,...(inputs.buildingType!==undefined?{insulationNeeded:false,coverboardNeeded:false}:{}),...(inputs.dimensionMethod!==undefined?{adjoinsExistingConcrete:false}:{}),...inputs};
  if(inputs.accessDifficulty===undefined&&('pondingWater' in inputs||'inputMethod' in inputs||'plantsBySize' in inputs))inputs={...inputs,accessDifficulty:'easy'};
  const facts=Object.fromEntries(Object.keys(inputs).filter(field=>known[field]?.includes(inputs[field])).map(field=>[field,{status:'identified',field,value:inputs[field],offeringId:offeringId(field,inputs[field])}]));
  return {...inputs,...(Object.keys(facts).length?{confirmedFacts:facts}:{})};

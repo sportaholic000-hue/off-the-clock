@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {generateQuoteVNext,sanitizeForCustomerVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
