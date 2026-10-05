@@ -1,3 +1,32 @@
+# October 5 included-price catalog repair — hosted verification pending
+
+Branch: `codex/engine-launch-fixes-20261005`.
+Verified parent: `97696354a860f06e8834f44e9c1607f0b1c3bdd0`.
+
+The reported remaining incomplete-catalog stall is reproduced and repaired for
+included-price declarations. Proven covering-product dependencies reduce the pair
+search; same-product allocation failures are reused without rejecting valid
+siblings. Shared missing accessory prices are checked before pair search.
+Immutable readiness snapshots reuse policy diagnostics and scope definitions;
+mutable inputs and new revisions are still revalidated. Actual quote validation,
+arithmetic and the v6 approval boundary are unchanged.
+
+Same 80-product public-catalog probes: cross-product inclusion **4,244 -> 106 ms**;
+same-product material-in-labor inclusion **8,800 -> 92 ms**. Both remain NEEDS
+PRICING with allocation diagnostics. New checks also cover 320 products per
+selector, differing price bases, first/last covering products, complete siblings,
+tier repairs, valid included prices, shared accessories and cache isolation.
+
+**26 new regression cases.** The focused suite passed 179/179 before the last
+three controls; the full local quote gate then passed **1,580 non-browser tests**,
+including all 26 new cases. Its only 35 failures were Chromium startup failures.
+Local cold owner-app/widget builds passed. Hosted verification is pending at this
+source checkpoint. [Handwritten expectations and reproduction](CATALOG_STALL_REPAIR_20261005.md).
+
+No subagents, merge, deployment or live-data changes.
+
+## Previous verified repair checkpoint
+
 # October 5 follow-up repairs — strict gate passed
 
 Branch: `codex/engine-launch-fixes-20261005`.

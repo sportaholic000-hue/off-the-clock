@@ -8,6 +8,7 @@ import {
   CLASS2_DEFINITIONS,
   createActivationValidationVNext,
   valueAtPath,
+  ownerRequirements,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
@@ -617,12 +618,31 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   const type=service.serviceType,configured={...service,pricing:p},[rField,eField]=axes.fields,[R,E]=axes.values;
   const first=firstCatalogSelection(configured),prototype=baseActivationScenarios(configured,service,first)[0];
   const validation=createActivationValidationVNext(type,p,service,tierName),structures=validatePricingStructuresDetailed(type,p),factors=validateClass2FactorsDetailed(type,p);
-  const failures=[new Map(),new Map()];
+  const failures=[new Map(),new Map()],dependencies=[new Map(),new Map()];
+  const productAtPath=(path,axis)=>{
+    if(typeof path!=='string')return null;
+    const [root,product,...rest]=path.split('.');
+    return !rest.length&&axes.roots[axis].includes(root)?product:null;
+  };
+  const sharedPaths=new Set(ownerRequirements(type,prototype,p,service).map(item=>item.path).filter(path=>!path.includes('.')));
+  const shared=validation.owner(prototype).ownerDiagnostics.filter(d=>sharedPaths.has(d.path)&&
+    !(d.kind==='unclassified_zero_core_price'&&axes.roots.some((_,axis)=>productAtPath(service.zeroPricePolicy?.includedPrices?.[d.path],axis))));
+  if(shared.length)return {ok:false,tierName,tierIndex,diagnostics:shared,reviewReason:shared[0].message};
   for(let axis=0;axis<2;axis++)for(const product of axes.values[axis]){
     const field=axes.fields[axis],inputs=scopeActivationInputs(type,{...prototype,[field]:product},p,service);
     inputs.confirmedFacts=Object.fromEntries(axes.fields.filter(name=>Object.hasOwn(service.knownOfferings?.[name]||{},inputs[name])).map(name=>[name,{status:'identified',field:name,value:inputs[name],offeringId:service.knownOfferings[name][inputs[name]]}]));
     const paths=axes.roots[axis].map(root=>root+'.'+product);
     if(axis===0&&type==='ROOFING_REPLACEMENT')paths.push('scopeDetails.roof_underlayment_'+product,'scopeRates.roof_underlayment_'+product);
+    // A selected included zero can only be covered by its declared product.
+    // Read the actual requirements so replaced cost-underlayment prices do not
+    // impose dependencies for lines that the quote would never bill.
+    const needed=new Set();
+    for(const item of ownerRequirements(type,inputs,p,service)){
+      if(valueAtPath(p,item.path)!==0||!(paths.includes(item.path)||sharedPaths.has(item.path)))continue;
+      const covering=productAtPath(service.zeroPricePolicy?.includedPrices?.[item.path],1-axis);
+      if(covering)needed.add(covering);
+    }
+    dependencies[axis].set(product,needed);
     const owner=validation.owner(inputs).ownerDiagnostics.filter(d=>{
       if(!paths.some(path=>d.path===path||d.path.startsWith(path+'.')))return false;
       const includedIn=service.zeroPricePolicy?.includedPrices?.[d.path];
@@ -647,13 +667,37 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
     return result;
   };
   let reference=null;
-  search:for(const r of candidates[0])for(const e of candidates[1]){const result=check(r,e);if(result.ok){reference=result;break search;}}
+  const matches=(axis,product,other)=>[...dependencies[axis].get(product)].every(needed=>needed===other);
+  const rememberAllocation=(result,r,e)=>{
+    for(let axis=0;axis<2;axis++){
+      const product=axis===0?r:e;
+      const diagnostics=result.diagnostics.filter(d=>{
+        if(d.kind!=='included_price_allocation')return false;
+        const path=d.path.replace(/^zeroPricePolicy\.includedPrices\./,'');
+        return productAtPath(path,axis)===product&&productAtPath(service.zeroPricePolicy?.includedPrices?.[path],axis)===product;
+      });
+      if(diagnostics.length)failures[axis].set(product,{selection:{[axes.fields[axis]]:product},ok:false,diagnostics,reviewReason:diagnostics[0].message,coverageMode:'product_axis'});
+    }
+  };
+  search:for(const r of candidates[0]){
+    let checked=false;
+    for(const e of candidates[1]){
+      if(failures[1].has(e)||!matches(0,r,e)||!matches(1,e,r))continue;
+      const result=check(r,e);checked=true;
+      if(result.ok){reference=result;break search;}
+      rememberAllocation(result,r,e);
+      if(failures[0].has(r))break;
+    }
+    // Retain an actual failed reference when all covering products are absent
+    // or blocked. It supplies diagnostics without claiming an untested pair.
+    if(!checked&&candidates[1].length)check(r,candidates[1][0]);
+  }
   const products=new Map(),add=row=>products.set(JSON.stringify(row.selection),row);
   if(reference&&options.firstLiveProduct)add(reference);
   else {
     for(const map of failures)for(const row of map.values())add(row);
-    if(reference){for(const r of candidates[0])add(check(r,reference.selection[eField]));for(const e of candidates[1])add(check(reference.selection[rField],e));}
-    else for(const map of representatives)for(const row of map.values())add(row);
+    if(reference){for(const r of candidates[0])if(!failures[0].has(r))add(check(r,reference.selection[eField]));for(const e of candidates[1])if(!failures[1].has(e))add(check(reference.selection[rField],e));}
+    else for(const map of representatives)for(const row of map.values())if(!failures[0].has(row.selection[rField])&&!failures[1].has(row.selection[eField]))add(row);
   }
   const rows=[...products.values()],diagnostics=uniqueStatusDiagnostics(rows.filter(row=>!row.ok).flatMap(row=>row.diagnostics));
   return {ok:!!reference,tierName,tierIndex,products:rows,diagnostics,reviewReason:diagnostics[0]?.message||null};

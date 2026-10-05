@@ -28,7 +28,16 @@ const rule=(label,fields,confirmation,customerFields={})=>({label,fields,confirm
 const costing=(type,p,rules)=>['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type)&&p.offeringMode!=='installed'&&rules.priceBasisByCategory?.material==='cost';
 const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFlooringType)||c.newFlooringType==='vinyl_plank'&&(p.vinylPlankUnderlaymentRule==='always_included'||p.vinylPlankUnderlaymentRule==='customer_selectable_addon'&&c.underlaymentSelected===true||p.vinylPlankUnderlaymentRule==='subfloor_condition'&&c.subfloorCondition==='requires_underlayment');
 
+const frozenScopeDefinitions=new WeakMap();
+const freezeDefinition=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freezeDefinition(child);Object.freeze(value);}return value;};
 export function scopeDefinitions(type,p={}){
+ // Definitions depend on these maps' keys, not their editable leaf values.
+ // Readiness's frozen snapshots can reuse them; ordinary mutable editor and
+ // quote inputs always rebuild. Freeze a clone so callers cannot poison reuse
+ // or freeze the shared schema objects used by other services.
+ const cacheable=record(p)&&Object.isFrozen(p)&&[p.underlaymentPriceBasis,p.materialCostPerSquare,p.scopeDetails].every(value=>value===undefined||Object.isFrozen(value));
+ const cached=cacheable&&frozenScopeDefinitions.get(p);
+ if(cached?.type===type)return cached.definitions;
  const out={};
  if(type.startsWith('FLOORING_')){
   for(const f of ['hardwood','laminate','carpet','vinyl_plank'])out['floor_underlayment_'+f]=rule(f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
@@ -48,6 +57,7 @@ export function scopeDefinitions(type,p={}){
  if(type==='FLAT_ROOF_REPLACEMENT')out.insulation=rule('Roof insulation and coverboard',{...common,mode:modes,category,insulationSystem:string('Insulation system and thickness'),coverboardSystem:string('Coverboard system and thickness'),baseRoofLaborExcludesInstallation:bool('Base roof labor excludes separately priced insulation and coverboard installation')},'insulationScopeConfirmed',{insulationAreaSqft:area('Measured insulation area'),coverboardAreaSqft:area('Measured coverboard area')});
  if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type))for(const [key,label]of Object.entries({paint_wall:'Wall finish materials',paint_primer:'Wall primer materials',paint_prep:'Preparation materials',paint_ceiling:'Ceiling finish materials',paint_ceiling_primer:'Ceiling primer materials',paint_trim:'Complete trim coating materials'}))out[key]=rule(label,purchase,'paintProductsConfirmed');
  for(const key of Object.keys(p.scopeDetails||{})){const base=scopeBaseKey(key);if(base!==key&&slug(key)&&own(out,base))out[key]={...out[base],baseKey:base};}
+ if(cacheable){const definitions=freezeDefinition(structuredClone(out));frozenScopeDefinitions.set(p,{type,definitions});return definitions;}
  return out;
 }
 

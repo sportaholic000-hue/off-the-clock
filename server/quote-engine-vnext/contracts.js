@@ -13,6 +13,8 @@ import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exac
 const activationSnapshots = new WeakSet();
 const activationPricingChecks = new WeakMap();
 const activationRegistryChecks = new WeakMap();
+const activationZeroPolicyChecks = new WeakMap();
+const activationIncludedPriceChecks = new WeakMap();
 export function validationSnapshotVNext(value, root) {
   return activationSnapshots.has(value)
     ? { ok: true, value, nonPlainPaths: [] }
@@ -2159,6 +2161,13 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   return false;
 }
 function includedPathDiagnosticsVNext(service, pricing) {
+  if(!activationSnapshots.has(service)||(pricing!==undefined&&!activationSnapshots.has(pricing)))return computeIncludedPathDiagnostics(service,pricing);
+  let checks=activationIncludedPriceChecks.get(service);
+  if(!checks){checks=new Map();activationIncludedPriceChecks.set(service,checks);}
+  if(!checks.has(pricing))checks.set(pricing,deepFreeze(computeIncludedPathDiagnostics(service,pricing)));
+  return structuredClone(checks.get(pricing));
+}
+function computeIncludedPathDiagnostics(service, pricing) {
   const mappings = service.zeroPricePolicy?.includedPrices;
   if (!isRecord(mappings)) return [];
   const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>({...service.pricing,...t?.overrides}))];
@@ -2193,6 +2202,11 @@ function includedPathDiagnosticsVNext(service, pricing) {
 }
 
 function zeroPolicyDiagnosticsVNext(service) {
+  if(!activationSnapshots.has(service))return computeZeroPolicyDiagnostics(service);
+  if(!activationZeroPolicyChecks.has(service))activationZeroPolicyChecks.set(service,deepFreeze(computeZeroPolicyDiagnostics(service)));
+  return structuredClone(activationZeroPolicyChecks.get(service));
+}
+function computeZeroPolicyDiagnostics(service) {
   const p = service.zeroPricePolicy;
   if (p === undefined) return [];
   const valid = isRecord(p) && Object.keys(p).length === 7 && validServiceIdVNext(p.serviceId) && sameServiceIdVNext(p.serviceId, service.id) &&
