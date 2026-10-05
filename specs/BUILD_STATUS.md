@@ -1,7 +1,8 @@
-# October 5 included-price catalog repair — hosted verification pending
+# October 5 included-price catalog repair — strict gate passed
 
 Branch: `codex/engine-launch-fixes-20261005`.
 Verified parent: `97696354a860f06e8834f44e9c1607f0b1c3bdd0`.
+Tested source/test SHA: **`a7986c864f37c6a80472bf157f96f61e71a2d94b`**.
 
 The reported remaining incomplete-catalog stall is reproduced and repaired for
 included-price declarations. Proven covering-product dependencies reduce the pair
@@ -20,8 +21,16 @@ tier repairs, valid included prices, shared accessories and cache isolation.
 **26 new regression cases.** The focused suite passed 179/179 before the last
 three controls; the full local quote gate then passed **1,580 non-browser tests**,
 including all 26 new cases. Its only 35 failures were Chromium startup failures.
-Local cold owner-app/widget builds passed. Hosted verification is pending at this
-source checkpoint. [Handwritten expectations and reproduction](CATALOG_STALL_REPAIR_20261005.md).
+Local cold owner-app/widget builds passed.
+
+**Hosted strict quote/price-book gate: 1,649/1,649 passed, zero failures or skips,
+across 66 files**, including all 26 new cases. Hosted fresh installation and both
+builds passed. [CI run 37350086324](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37350086324)
+completed successfully at the tested SHA. The automatically run broader suite
+retained its nine existing allowed failures; no gate allowances were changed.
+
+[Handwritten expectations and reproduction](CATALOG_STALL_REPAIR_20261005.md).
+[Source-bound verification and limitations](../verification/catalog-stall-20261005/CI_EVIDENCE.md).
 
 No subagents, merge, deployment or live-data changes.
 

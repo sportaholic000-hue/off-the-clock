@@ -85,3 +85,9 @@ processes: cross-axis inclusion **4,243.673 -> 105.930 ms** and same-axis inclus
 **8,800.445 -> 92.024 ms** (80 products per selector). These are measured examples,
 not an unlimited-catalog latency guarantee. The 320-product timing regressions
 retain a 1,500 ms status/timer bound, without changing existing gate allowances.
+
+Hosted verification at **a7986c864f37c6a80472bf157f96f61e71a2d94b**: fresh
+lockfile installation and both builds passed; strict quote/price-book tests
+**1,649/1,649 passed**, zero failures or skips across 66 files. CI run
+37350086324 completed successfully. The final documentation checkpoint records
+this tested source SHA without changing source or tests.
