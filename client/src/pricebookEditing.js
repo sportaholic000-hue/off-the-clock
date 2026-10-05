@@ -7,27 +7,29 @@ function sameValue(left, right) {
   const keys=Object.keys(left);
   return keys.length === Object.keys(right).length && keys.every(key => Object.hasOwn(right,key) && sameValue(left[key],right[key]));
 }
-
-export function servicePricing(service) {
+function nestedPricing(service) {
   return service?.pricing && typeof service.pricing === 'object' && !Array.isArray(service.pricing)
-    ? service.pricing : service;
+    ? service.pricing : null;
 }
 
-// Resolve an unambiguous root-only field for display without moving it. If both
-// copies exist, the displayed nested candidate does not resolve their conflict:
-// draft/save validation still checks both, and only an explicit edit can agree them.
+// Editors always receive the complete effective pricing view. Nested values win
+// only for fields actually stored there; untouched root-only offering/scope
+// settings remain visible and are never discarded merely because pricing exists.
+export function servicePricing(service) {
+  const nested = nestedPricing(service);
+  return nested ? { ...service, ...nested } : service;
+}
+
 export function serviceFieldValue(service, field) {
-  const pricing = servicePricing(service);
-  return pricing && Object.hasOwn(pricing, field) ? pricing[field] : service?.[field];
+  return servicePricing(service)?.[field];
 }
 
 export function editServiceField(service, field, value) {
-  const pricing = servicePricing(service);
-  const nested = pricing !== service;
+  const nested = nestedPricing(service);
   const hasRoot = Object.hasOwn(service, field);
-  const hasNested = nested && Object.hasOwn(pricing, field);
+  const hasNested = Boolean(nested && Object.hasOwn(nested, field));
   const changed = (hasRoot && !sameValue(service[field], value))
-    || (hasNested && !sameValue(pricing[field], value))
+    || (hasNested && !sameValue(nested[field], value))
     || (!hasRoot && !hasNested && value !== undefined);
   if (!changed) return service;
 
@@ -35,7 +37,7 @@ export function editServiceField(service, field, value) {
   // a new field uses the service's existing pricing container.
   const next = { ...service };
   if (!nested || hasRoot) next[field] = value;
-  if (nested && (hasNested || !hasRoot)) next.pricing = { ...pricing, [field]: value };
+  if (nested && (hasNested || !hasRoot)) next.pricing = { ...nested, [field]: value };
   if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source) && service.confirmedFields?.[field] === true) {
     next.confirmedFields = { ...service.confirmedFields, [field]: false };
   }
@@ -69,9 +71,6 @@ export function editorServices(saved, metadata, businessTypes) {
   return services;
 }
 
-
-// Fee answers belong only to the rule under which the owner supplied them.
-// Removing an incompatible answer changes no price and chooses no applicability.
 export function removeOwnerFeeSelection(service, fee) {
   const selections = {...service.ownerFeeSelections};
   delete selections[fee];
@@ -88,9 +87,6 @@ export function previewFeeContext(serviceKey, rules = {}) {
   return JSON.stringify([serviceKey, Object.keys(rules).sort().map(fee => [fee, rules[fee]])]);
 }
 
-// Keep compatible answers when another fee rule changes. A different service
-// always starts unanswered; a fee that stopped being customer-selected cannot
-// recover an old hidden answer when switched back.
 export function reconcilePreviewFees(previous, serviceKey, rules = {}) {
   const context=previewFeeContext(serviceKey,rules);
   if(previous.context===context)return previous;
@@ -113,8 +109,6 @@ export function approvalMatchesDraft(draft, review) {
     sameEditorValue(draft.services.find(service => service.id === review.service.id), review.service);
 }
 
-// Approval returns a new saved revision. Reconcile only the reviewed service;
-// the rest of the editor may contain unsaved services, tiers or rejected text.
 export function mergeSavedApproval(draft, before, after, serviceId, approvedRevision) {
   const savedService = after.services?.find(service => service.id === serviceId);
   const reviewed = before.services.find(service => service.id === serviceId);
@@ -133,8 +127,6 @@ export function mergeSavedApproval(draft, before, after, serviceId, approvedRevi
     })};
 }
 
-// Selecting no tax is a complete mode/rate decision. Other modes keep the
-// entered rate and let the owner choose their applicable percentage.
 export function editBusinessDefault(defaults, field, value) {
   return {...defaults,[field]:value,...(field==='taxMode'&&value==='TAX_NONE'?{taxPercent:0}:{})};
 }
@@ -150,9 +142,6 @@ export function renameTierOverride(overrides, oldField, nextField) {
   return next;
 }
 
-// The offered fence type is a registered product. Choosing or naming one stores
-// the same canonical key in the offering and in Registered products (via the
-// shared product-name conversion), so a typed name like "Wood Privacy" quotes.
 export function chooseFenceType(service, name) {
   const { key, error } = productKeyFromName(name);
   if (error) return { error };
