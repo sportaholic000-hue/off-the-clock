@@ -498,9 +498,8 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
   res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'A2P status', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
-app.post('/api/twilio/voice/incoming', (_req, res) => {
-  res.type('text/xml').send('<Response><Say>Your Off The Clock operator connection is ready.</Say></Response>');
-});
+const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
+installProductionVoice({app,database:db,bookingService,runtimeConfig});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 

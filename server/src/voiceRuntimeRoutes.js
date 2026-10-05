@@ -235,13 +235,10 @@ function streamUrl(base, streamPath, nonce) {
   return `wss://${base.host}${streamPath}/${nonce}`;
 }
 
-function streamTwiml(url) {
-  return (
-    '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<Response><Connect><Stream url="' +
-    xmlText(url) +
-    '"/></Connect></Response>'
-  );
+function streamTwiml(url, resumeUrl = null) {
+  return '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<Response><Connect><Stream url="' + xmlText(url) + '"/></Connect>' +
+    (resumeUrl ? '<Redirect method="POST">' + xmlText(resumeUrl) + '</Redirect>' : '') + '</Response>';
 }
 
 function nonceDigest(nonce) {
@@ -307,6 +304,9 @@ export function installVoiceRuntimeRoutes(app, {
   incomingPath: incomingPathValue,
   streamPath: streamPathValue,
   formParser,
+  resumeFallback = false,
+  fallbackPath: fallbackPathValue,
+  loadSessionByNonceHash,
 } = {}) {
   if (!app || typeof app.post !== "function") fail("EXPRESS_APP_REQUIRED");
   assertRuntimeDependencies({ twilioValidator, tenantResolver, nonceService });
@@ -325,6 +325,8 @@ export function installVoiceRuntimeRoutes(app, {
     fail("INVALID_VOICE_RUNTIME_SWITCH");
   }
 
+  const fallbackPath=exactPath(fallbackPathValue,'/api/twilio/voice/fallback');
+  if(typeof resumeFallback!=='boolean'||resumeFallback&&typeof loadSessionByNonceHash!=='function')fail('VOICE_RESUME_FALLBACK_REQUIRED');
   const parseForm =
     formParser ??
     express.urlencoded({ extended: false, limit: "16kb", parameterLimit: 64 });
@@ -444,7 +446,7 @@ export function installVoiceRuntimeRoutes(app, {
         );
       }
 
-      return sendXml(response, streamTwiml(streamUrl(base, streamPath, issued.nonce)));
+      return sendXml(response, streamTwiml(streamUrl(base, streamPath, issued.nonce),resumeFallback?base.origin+fallbackPath+'/'+issued.nonce:null));
     } catch (error) {
       // Once a signed destination has resolved, every downstream failure gets
       // deterministic TwiML instead of silence. Authentication and unknown
@@ -465,6 +467,20 @@ export function installVoiceRuntimeRoutes(app, {
     }
   });
 
+  if(resumeFallback)app.post(fallbackPath+'/:nonce',parseForm,async(request,response)=>{
+    try{
+      const parameters=normalizedFormParameters(request.body);
+      const validation=await twilioValidator.validateHttp({signature:request.get('x-twilio-signature'),requestPath:responsePath(request),params:parameters});
+      const call=normalizeIncomingCall(parameters,validation?.accountSid,accountAllowlist);
+      const nonce=request.params.nonce;
+      if(!NONCE.test(nonce))fail('INVALID_SESSION_NONCE',403);
+      const tenant=await tenantResolver.resolveByCalledNumber({To:call.to});
+      const stored=await loadSessionByNonceHash({sessionKey:nonceDigest(nonce)});
+      const context=stored?.context;
+      if(!context||context.ownerId!==tenant.ownerId||context.callSid!==call.callSid||context.accountSid!==call.accountSid||context.from!==call.from||context.to!==call.to)fail('FALLBACK_BINDING_MISMATCH',403);
+      return sendXml(response,await resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:'VOICE_SESSION_UNAVAILABLE'}));
+    }catch(error){return sendBoundaryFailure(response,error);}
+  });
   return Object.freeze({ incomingPath, streamPath });
 }
 

@@ -29,6 +29,7 @@ const DEFAULT_LIMITS = Object.freeze({
   maxPendingMarks: 128,
   maxTranscriptBytes: 16 * 1024,
   maxToolJsonBytes: 32 * 1024,
+  maxToolResultJsonBytes: 256 * 1024,
 });
 
 export class GeminiMediaBridgeError extends Error {
@@ -165,11 +166,11 @@ function normalizePcmData(value, maxBytes) {
   return output;
 }
 
-function validateJsonValue(value, { maxBytes, code }) {
+function validateJsonValue(value, { maxBytes, code, maxNodes = 2000 }) {
   let nodes = 0;
   function visit(current, depth) {
     nodes += 1;
-    if (nodes > 2_000 || depth > 12) throw bridgeError(code);
+    if (nodes > maxNodes || depth > 12) throw bridgeError(code);
     if (
       current === null ||
       typeof current === "string" ||
@@ -523,7 +524,8 @@ export function createGeminiMediaBridge({
             if (ended) return;
             const response = await onToolCall({ context, session, streamSid, toolCall });
             validateJsonValue(response, {
-              maxBytes: limits.maxToolJsonBytes,
+              maxBytes: limits.maxToolResultJsonBytes,
+              maxNodes: 20000,
               code: "INVALID_TOOL_RESPONSE",
             });
             await gemini.sendToolResponse({
