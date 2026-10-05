@@ -28,6 +28,11 @@ test('noncanonical overlay names are rejected before an interview can claim comp
  assert.throws(()=>validateInterviewValue(f.serviceType,'scopeDetails',scopeDetails,f.ownerPricing.pricing));
  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
+test('an older free-text overlay name does not disable unrelated flooring work',()=>{
+ const f=get('overlay-installed');f.ownerPricing.pricing.scopeDetails.floor_overlay.existingFloorType='Vinyl plank';
+ f.customerInputs.existingFloorType='none';delete f.customerInputs.overlayScopeConfirmed;delete f.customerInputs.confirmedFacts;f.customerInputs=confirmedFixtureInputs(f.customerInputs);
+ assert.equal(cents(ready(f)),178000);
+});
 // Expected charges authored before execution. Base flat roof: 500000 labor +
 // 770000 waste-adjusted membrane + 200000 tear-off = 1470000 cents.
 for(const buildingType of ['residential','commercial'])for(const insulationNeeded of [false,true])for(const coverboardNeeded of [false,true])test('independent layers '+JSON.stringify({buildingType,insulationNeeded,coverboardNeeded}),()=>{

@@ -14,7 +14,9 @@ function validField(f,value){
  if(f.type==='boolean')return typeof value==='boolean';
  if(f.type==='enum')return f.values.includes(value);
  if(f.type==='number')return finite(value)&&value>=f.min;
- return text(value)&&(!f.slug||/^[a-z][a-z0-9_]*$/.test(value));
+ // Older optional scopes may store a display name here. Preserve their
+ // unrelated base work; selected scope matching still requires exact facts.
+ return text(value);
 }
 export function scopeStructureDiagnostics(type,p={}){
  const errors=[],add=(path,message,kind='invalid')=>errors.push({type:kind,kind:'scope_configuration',path,message});
