@@ -1,0 +1,430 @@
+TAP version 13
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: mowing-control
+ok 1 - Prepared full-pipeline readiness matches ordinary engine: mowing-control
+  ---
+  duration_ms: 36.223131
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: mowing-unpriced-bagging
+ok 2 - Prepared full-pipeline readiness matches ordinary engine: mowing-unpriced-bagging
+  ---
+  duration_ms: 18.860089
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: mowing-unpriced-edging
+ok 3 - Prepared full-pipeline readiness matches ordinary engine: mowing-unpriced-edging
+  ---
+  duration_ms: 18.265463
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: mowing-priced-extras-control
+ok 4 - Prepared full-pipeline readiness matches ordinary engine: mowing-priced-extras-control
+  ---
+  duration_ms: 18.155507
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: flat-repair-control
+ok 5 - Prepared full-pipeline readiness matches ordinary engine: flat-repair-control
+  ---
+  duration_ms: 16.734555
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: flat-repair-unpriced-ponding
+ok 6 - Prepared full-pipeline readiness matches ordinary engine: flat-repair-unpriced-ponding
+  ---
+  duration_ms: 15.807948
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: flat-repair-priced-ponding-control
+ok 7 - Prepared full-pipeline readiness matches ordinary engine: flat-repair-priced-ponding-control
+  ---
+  duration_ms: 15.890382
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-tile-200-control
+ok 8 - Prepared full-pipeline readiness matches ordinary engine: floor-tile-200-control
+  ---
+  duration_ms: 25.365225
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-tile-150-boundary
+ok 9 - Prepared full-pipeline readiness matches ordinary engine: floor-tile-150-boundary
+  ---
+  duration_ms: 29.430637
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-tile-300-boundary
+ok 10 - Prepared full-pipeline readiness matches ordinary engine: floor-tile-300-boundary
+  ---
+  duration_ms: 22.066353
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-type-tile
+ok 11 - Prepared full-pipeline readiness matches ordinary engine: floor-type-tile
+  ---
+  duration_ms: 26.155725
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-type-vinyl_plank
+ok 12 - Prepared full-pipeline readiness matches ordinary engine: floor-type-vinyl_plank
+  ---
+  duration_ms: 31.098772
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-type-hardwood
+ok 13 - Prepared full-pipeline readiness matches ordinary engine: floor-type-hardwood
+  ---
+  duration_ms: 16.903384
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-type-laminate
+ok 14 - Prepared full-pipeline readiness matches ordinary engine: floor-type-laminate
+  ---
+  duration_ms: 12.505991
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-type-carpet
+ok 15 - Prepared full-pipeline readiness matches ordinary engine: floor-type-carpet
+  ---
+  duration_ms: 11.384641
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-stairs
+ok 16 - Prepared full-pipeline readiness matches ordinary engine: floor-stairs
+  ---
+  duration_ms: 12.1002
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-flat
+ok 17 - Prepared full-pipeline readiness matches ordinary engine: custom-flat
+  ---
+  duration_ms: 9.434872
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_hour
+ok 18 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_hour
+  ---
+  duration_ms: 9.85766
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_unit
+ok 19 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_unit
+  ---
+  duration_ms: 9.720717
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_sqft
+ok 20 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_sqft
+  ---
+  duration_ms: 8.696198
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_LF
+ok 21 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_LF
+  ---
+  duration_ms: 8.281133
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_square
+ok 22 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-per_square
+  ---
+  duration_ms: 8.760269
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-fixed-fractional-rate
+ok 23 - Prepared full-pipeline readiness matches ordinary engine: custom-fixed-fractional-rate
+  ---
+  duration_ms: 11.798454
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-range-flat
+ok 24 - Prepared full-pipeline readiness matches ordinary engine: custom-range-flat
+  ---
+  duration_ms: 14.984016
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: custom-classification-attempt
+ok 25 - Prepared full-pipeline readiness matches ordinary engine: custom-classification-attempt
+  ---
+  duration_ms: 9.87775
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-base-control
+ok 26 - Prepared full-pipeline readiness matches ordinary engine: siding-base-control
+  ---
+  duration_ms: 16.679612
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-trim
+ok 27 - Prepared full-pipeline readiness matches ordinary engine: siding-trim
+  ---
+  duration_ms: 10.836991
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-removal
+ok 28 - Prepared full-pipeline readiness matches ordinary engine: siding-removal
+  ---
+  duration_ms: 14.455941
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: concrete-base-control
+ok 29 - Prepared full-pipeline readiness matches ordinary engine: concrete-base-control
+  ---
+  duration_ms: 23.570114
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: concrete-demolition
+ok 30 - Prepared full-pipeline readiness matches ordinary engine: concrete-demolition
+  ---
+  duration_ms: 15.239773
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: concrete-exposed-aggregate
+ok 31 - Prepared full-pipeline readiness matches ordinary engine: concrete-exposed-aggregate
+  ---
+  duration_ms: 13.412256
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: flat-roof-residential-control
+ok 32 - Prepared full-pipeline readiness matches ordinary engine: flat-roof-residential-control
+  ---
+  duration_ms: 20.688199
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: flat-roof-commercial
+ok 33 - Prepared full-pipeline readiness matches ordinary engine: flat-roof-commercial
+  ---
+  duration_ms: 14.663012
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: FENCING_INSTALL-installed-control
+ok 34 - Prepared full-pipeline readiness matches ordinary engine: FENCING_INSTALL-installed-control
+  ---
+  duration_ms: 18.974011
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: FENCING_INSTALL-itemized-control
+ok 35 - Prepared full-pipeline readiness matches ordinary engine: FENCING_INSTALL-itemized-control
+  ---
+  duration_ms: 17.559149
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: FENCING_REPLACEMENT-installed-control
+ok 36 - Prepared full-pipeline readiness matches ordinary engine: FENCING_REPLACEMENT-installed-control
+  ---
+  duration_ms: 16.294442
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: FENCING_REPLACEMENT-itemized-control
+ok 37 - Prepared full-pipeline readiness matches ordinary engine: FENCING_REPLACEMENT-itemized-control
+  ---
+  duration_ms: 18.910615
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: INTERIOR_PAINTING-installed-control
+ok 38 - Prepared full-pipeline readiness matches ordinary engine: INTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 16.254041
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: INTERIOR_PAINTING-itemized-control
+ok 39 - Prepared full-pipeline readiness matches ordinary engine: INTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 22.074074
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: EXTERIOR_PAINTING-installed-control
+ok 40 - Prepared full-pipeline readiness matches ordinary engine: EXTERIOR_PAINTING-installed-control
+  ---
+  duration_ms: 15.070081
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: EXTERIOR_PAINTING-itemized-control
+ok 41 - Prepared full-pipeline readiness matches ordinary engine: EXTERIOR_PAINTING-itemized-control
+  ---
+  duration_ms: 20.398768
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: painting-itemized-cost-basis
+ok 42 - Prepared full-pipeline readiness matches ordinary engine: painting-itemized-cost-basis
+  ---
+  duration_ms: 14.683724
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-hardwood-installed
+ok 43 - Prepared full-pipeline readiness matches ordinary engine: floor-hardwood-installed
+  ---
+  duration_ms: 20.642786
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-hardwood-packages
+ok 44 - Prepared full-pipeline readiness matches ordinary engine: floor-hardwood-packages
+  ---
+  duration_ms: 19.195365
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-laminate-installed
+ok 45 - Prepared full-pipeline readiness matches ordinary engine: floor-laminate-installed
+  ---
+  duration_ms: 22.171561
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-laminate-packages
+ok 46 - Prepared full-pipeline readiness matches ordinary engine: floor-laminate-packages
+  ---
+  duration_ms: 20.31335
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-carpet-installed
+ok 47 - Prepared full-pipeline readiness matches ordinary engine: floor-carpet-installed
+  ---
+  duration_ms: 20.246149
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-carpet-packages
+ok 48 - Prepared full-pipeline readiness matches ordinary engine: floor-carpet-packages
+  ---
+  duration_ms: 18.096869
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: floor-vinyl-packages
+ok 49 - Prepared full-pipeline readiness matches ordinary engine: floor-vinyl-packages
+  ---
+  duration_ms: 31.641331
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: stairs-installed
+ok 50 - Prepared full-pipeline readiness matches ordinary engine: stairs-installed
+  ---
+  duration_ms: 24.969077
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: overlay-installed
+ok 51 - Prepared full-pipeline readiness matches ordinary engine: overlay-installed
+  ---
+  duration_ms: 26.047382
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-trim-installed
+ok 52 - Prepared full-pipeline readiness matches ordinary engine: siding-trim-installed
+  ---
+  duration_ms: 17.631567
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-removal-installed
+ok 53 - Prepared full-pipeline readiness matches ordinary engine: siding-removal-installed
+  ---
+  duration_ms: 23.907372
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: demolition-installed
+ok 54 - Prepared full-pipeline readiness matches ordinary engine: demolition-installed
+  ---
+  duration_ms: 30.289156
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: exposed-installed
+ok 55 - Prepared full-pipeline readiness matches ordinary engine: exposed-installed
+  ---
+  duration_ms: 24.698129
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: commercial-installed
+ok 56 - Prepared full-pipeline readiness matches ordinary engine: commercial-installed
+  ---
+  duration_ms: 22.500947
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: stairs-itemized
+ok 57 - Prepared full-pipeline readiness matches ordinary engine: stairs-itemized
+  ---
+  duration_ms: 24.706682
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: overlay-itemized
+ok 58 - Prepared full-pipeline readiness matches ordinary engine: overlay-itemized
+  ---
+  duration_ms: 20.278627
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-trim-itemized
+ok 59 - Prepared full-pipeline readiness matches ordinary engine: siding-trim-itemized
+  ---
+  duration_ms: 24.045405
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: siding-removal-itemized
+ok 60 - Prepared full-pipeline readiness matches ordinary engine: siding-removal-itemized
+  ---
+  duration_ms: 22.996755
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: demolition-itemized
+ok 61 - Prepared full-pipeline readiness matches ordinary engine: demolition-itemized
+  ---
+  duration_ms: 27.061031
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: exposed-itemized
+ok 62 - Prepared full-pipeline readiness matches ordinary engine: exposed-itemized
+  ---
+  duration_ms: 24.068159
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: commercial-itemized
+ok 63 - Prepared full-pipeline readiness matches ordinary engine: commercial-itemized
+  ---
+  duration_ms: 25.54852
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: paint-cost-packages
+ok 64 - Prepared full-pipeline readiness matches ordinary engine: paint-cost-packages
+  ---
+  duration_ms: 30.826747
+  type: 'test'
+  ...
+# Subtest: Prepared full-pipeline readiness matches ordinary engine: roof-underlayment-packages
+ok 65 - Prepared full-pipeline readiness matches ordinary engine: roof-underlayment-packages
+  ---
+  duration_ms: 27.512481
+  type: 'test'
+  ...
+# Subtest: Prepared pipeline cannot trust mutable callers, outputs, or fabricated request flags
+ok 66 - Prepared pipeline cannot trust mutable callers, outputs, or fabricated request flags
+  ---
+  duration_ms: 3.779286
+  type: 'test'
+  ...
+# Subtest: Prepared pipeline rejects unsafe configuration: accessor
+ok 67 - Prepared pipeline rejects unsafe configuration: accessor
+  ---
+  duration_ms: 0.833386
+  type: 'test'
+  ...
+# Subtest: Prepared pipeline rejects unsafe configuration: cycle
+ok 68 - Prepared pipeline rejects unsafe configuration: cycle
+  ---
+  duration_ms: 0.379572
+  type: 'test'
+  ...
+# Subtest: Prepared pipeline rejects unsafe configuration: nonplain
+ok 69 - Prepared pipeline rejects unsafe configuration: nonplain
+  ---
+  duration_ms: 0.520675
+  type: 'test'
+  ...
+# Subtest: Prepared pipeline rejects unsafe configuration: function
+ok 70 - Prepared pipeline rejects unsafe configuration: function
+  ---
+  duration_ms: 1.055301
+  type: 'test'
+  ...
+1..70
+# tests 70
+# suites 0
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1411.572917

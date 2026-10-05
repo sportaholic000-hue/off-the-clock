@@ -1,0 +1,9 @@
+2026-10-05T12:31:44.3639915Z Running 63 quote-engine and price-book test files; any failure fails the gate.
+2026-10-05T12:35:01.5816982Z # Subtest: QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960
+2026-10-05T12:35:01.5818253Z ok 1174 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960
+2026-10-05T12:35:12.8116904Z # tests 1568
+2026-10-05T12:35:12.8139513Z # pass 1568
+2026-10-05T12:35:12.8140137Z # fail 0
+2026-10-05T12:35:12.8141287Z # skipped 0
+2026-10-05T12:35:12.8208296Z PASS: quote engine and price book gate.
+2026-10-05T12:38:44.3843382Z Summary: {"tests":"1957","pass":"1946","fail":"9","cancelled":"0","skipped":"2","todo":"0"}

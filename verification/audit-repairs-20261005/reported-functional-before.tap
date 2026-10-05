@@ -1,0 +1,490 @@
+TAP version 13
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__2
+not ok 1 - QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__2
+  ---
+  duration_ms: 252.449907
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"350fc3f5-aa46-4efc-934c-51e5a14df41b","quoteId":"684c09dd-4c66-4218-8868-908aad88b558","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__named
+not ok 2 - QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__named
+  ---
+  duration_ms: 89.452505
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"6543025a-5526-41ee-b14a-c7c65e024fae","quoteId":"dbe19734-a26e-4ec9-bc90-6c61c6867668","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__2
+not ok 3 - QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__2
+  ---
+  duration_ms: 78.035836
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"edc0544f-45ee-4ebc-9a5b-8ece059b09fb","quoteId":"25356184-7300-4cb0-8ef7-3fdafa21f2fc","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__named
+not ok 4 - QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__named
+  ---
+  duration_ms: 85.804837
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"984d8d42-7ce6-40a5-bb22-f6a657fbb86e","quoteId":"71b88935-d800-4a5d-ad5b-0a92b3d459f3","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__2
+not ok 5 - QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__2
+  ---
+  duration_ms: 76.910855
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"8ee38e0c-0b61-4452-a0a7-c6526757c974","quoteId":"b0fe9882-a5a6-4102-bcf5-9d60f6e2c09a","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__named
+not ok 6 - QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__named
+  ---
+  duration_ms: 89.280736
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"ce5a8c2e-ac47-41c7-9d66-7363b0f0e0f1","quoteId":"84be942b-6549-41fd-abde-3d3135162f1f","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__2
+not ok 7 - QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__2
+  ---
+  duration_ms: 106.562956
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"09b3a571-9b26-4463-b691-30486547becb","quoteId":"9d1c944c-87d1-4314-9d57-032f29ff2236","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__named
+not ok 8 - QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__named
+  ---
+  duration_ms: 75.989892
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"a2f73fa9-7232-4b56-b055-30c612f36c55","quoteId":"3537e8d5-1c67-41b8-a082-ea74b0221e77","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__2
+not ok 9 - QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__2
+  ---
+  duration_ms: 67.403635
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"ed483cd6-29d9-4ea0-a31f-dfefd9c4e7f6","quoteId":"d82ebb72-4e21-4f71-b40d-4b29a4debc65","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__named
+not ok 10 - QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__named
+  ---
+  duration_ms: 60.93522
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"7b35ca1a-b37a-4c95-8d0a-bca5f78fc9e5","quoteId":"e7daa0f7-e7dc-4dcb-acb5-a218319fa87e","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__2
+not ok 11 - QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__2
+  ---
+  duration_ms: 72.4455
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"0d26dd5e-26c4-4c29-a53b-ec447891c509","quoteId":"0aff9b2d-ac97-4e69-94b6-ac1ec58546f4","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__named
+not ok 12 - QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__named
+  ---
+  duration_ms: 69.844729
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"ea98a88e-337e-48ba-9075-ef20c35ad13a","quoteId":"f69fe781-9d0f-4a3c-9136-891592d2c6eb","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__2
+not ok 13 - QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__2
+  ---
+  duration_ms: 73.797288
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"d05c2000-9656-4e77-b280-9eee66c10211","quoteId":"b3bfbd19-f0a9-4f87-8499-174e9dc49a4e","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__named
+not ok 14 - QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__named
+  ---
+  duration_ms: 56.256036
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"e2214230-c04c-4b3e-8ef7-7a8951a9d7db","quoteId":"c1f20834-e6a9-4812-aadd-6a2a90325ea1","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__2
+not ok 15 - QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__2
+  ---
+  duration_ms: 59.692346
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"bdb55ebb-003c-455e-85f8-e34d69869ae1","quoteId":"3d9f720f-f813-4add-9dce-6f1b8c5c0e25","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__named
+not ok 16 - QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__named
+  ---
+  duration_ms: 58.695504
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:24:200'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"3d7da245-95a6-46e7-ba75-2989cd328d1f","quoteId":"8abcb3e3-f2b7-48b6-ab9d-72decb8636b9","serviceType":"FLOORING_REPLACEMENT","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"failedTierDiagnostics":[{"tierName":"Best","reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"owner_decision","kind":"floor_overlay_contract","path":"floorOverlayPricing","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"ownerDecisionRequired":[{"path":"floorOverlayPricing","kind":"floor_overlay_contract","message":"Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"vinyl_plank","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"overlayScopeConfirmed":true,"confirmedFacts":{"existingFloorType":{"status":"identified","field":"existingFloorType","value":"vinyl_plank","offeringId":"1fcdae42-3cd8-41d2-8f5d-42bdb542b932"}},"subfloorIssues":false},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal."],"inspectionFirst":false,"appliedRules":["Best tier skipped: Pricing not fully configured for the measured scope."],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:31:50)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-02 owner preview includes tier-only hardwood underlayment
+not ok 17 - QP-02 owner preview includes tier-only hardwood underlayment
+  ---
+  duration_ms: 35.54246
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:41:55'
+  failureType: 'testCodeFailure'
+  error: 'Owner measurement controls must display the required tier confirmation'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:46:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-02 owner preview includes tier-only laminate underlayment
+not ok 18 - QP-02 owner preview includes tier-only laminate underlayment
+  ---
+  duration_ms: 31.863078
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:41:55'
+  failureType: 'testCodeFailure'
+  error: 'Owner measurement controls must display the required tier confirmation'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:46:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-02 owner preview includes tier-only carpet underlayment
+not ok 19 - QP-02 owner preview includes tier-only carpet underlayment
+  ---
+  duration_ms: 32.460459
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:41:55'
+  failureType: 'testCodeFailure'
+  error: 'Owner measurement controls must display the required tier confirmation'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:46:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-04 October 4 approval is stale after stair removal arithmetic; reapproval restores $2711
+not ok 20 - QP-04 October 4 approval is stale after stair removal arithmetic; reapproval restores $2711
+  ---
+  duration_ms: 42.986835
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/oct5-repairs/test/quoteAudit20261005.spec.mjs:57:49)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 0
+# fail 20
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1656.660539

@@ -1,5 +1,5 @@
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringBaselineConfirmation} from './configuredOfferings.js';
@@ -12,7 +12,7 @@ import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exac
 const activationSnapshots = new WeakSet();
 const activationPricingChecks = new WeakMap();
 const activationRegistryChecks = new WeakMap();
-function validationSnapshot(value, root) {
+export function validationSnapshotVNext(value, root) {
   return activationSnapshots.has(value)
     ? { ok: true, value, nonPlainPaths: [] }
     : snapshotPlainData(value, root);
@@ -35,10 +35,11 @@ export function createActivationValidationVNext(serviceType, pricing, serviceRul
       });
     }
   }
-  return {
+  return Object.freeze({
+    pricing, serviceRules,
     customer: inputs => validateCustomerInputs(serviceType, inputs, pricing, serviceRules),
     owner: inputs => validateOwnerPricing(serviceType, inputs, pricing, serviceRules, tierName)
-  };
+  });
 }
 
 function relativeSnapshotPath(snapshot, root) {
@@ -898,7 +899,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
     reviewReason: `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`
   };
   customerInputs = customerSnapshot.value;
-  const pricingSnapshot = validationSnapshot(pricing, 'pricing');
+  const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
   if (!pricingSnapshot.ok) {
     return {
       ok: false, missingCustomerFields: [], invalidCustomerFields: [],
@@ -916,7 +917,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   };
   pricing = pricingSnapshot.value;
   if(configuredOffering(serviceType,pricing))contract=offeringContract(serviceType,pricing);
-  const rules = validationSnapshot(serviceRules, 'serviceRules');
+  const rules = validationSnapshotVNext(serviceRules, 'serviceRules');
   if (!rules.ok || rules.nonPlainPaths.length) return { ok: false, missingCustomerFields: [], invalidCustomerFields: [], invalidOwnerFields: ['serviceRules'], reviewReason: 'Service rules must be plain data.' };
   serviceRules = rules.value;
   contract=customerContractForVNext(serviceType,pricing,serviceRules);
@@ -1723,7 +1724,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (!SERVICE_TYPES.includes(serviceType)) {
     return blockedOwnerValidation('serviceType', 'Unsupported service type.');
   }
-  const pricingSnapshot = validationSnapshot(pricing, 'pricing');
+  const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
   if (!pricingSnapshot.ok) return blockedOwnerValidation(
     relativeSnapshotPath(pricingSnapshot, 'pricing'),
     `Owner pricing could not be read safely: ${pricingSnapshot.reason}.`
@@ -1736,7 +1737,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   const customerNonPlainPath = firstNonPlainPath(customerSnapshot, 'customerInputs');
   if (customerNonPlainPath) return blockedOwnerValidation(customerNonPlainPath, `Customer inputs must contain only plain data objects; ${customerNonPlainPath} is not plain data.`);
   customerInputs = customerSnapshot.value;
-  const rulesSnapshot = validationSnapshot(serviceRules, 'serviceRules');
+  const rulesSnapshot = validationSnapshotVNext(serviceRules, 'serviceRules');
   if (!rulesSnapshot.ok) return blockedOwnerValidation(rulesSnapshot.errorPath, `Service rules could not be read safely: ${rulesSnapshot.reason}.`);
   const rulesNonPlainPath = firstNonPlainPath(rulesSnapshot, 'serviceRules');
   if (rulesNonPlainPath) return blockedOwnerValidation(rulesNonPlainPath, `Service rules must contain only plain data objects; ${rulesNonPlainPath} is not plain data.`);
@@ -1795,7 +1796,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (serviceType.startsWith('FLOORING_')) {
     if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType) && !pricing.scopeDetails?.['floor_underlayment_'+customerInputs.newFlooringType]) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !pricing.scopeDetails?.floor_overlay) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
+    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs))) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {
     const labels={paint_wall:'Wall paint product',paint_ceiling:'Ceiling paint product',paint_trim:'Trim paint product',paint_primer:'Wall primer product',paint_ceiling_primer:'Ceiling primer product',paint_prep:'Preparation product'};

@@ -7,6 +7,7 @@ import {exactCompare} from './exactMath.js';
 import {
   CLASS2_DEFINITIONS,
   createActivationValidationVNext,
+  valueAtPath,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
@@ -28,6 +29,7 @@ import {
 } from './contracts.js';
 import {
   generateQuoteVNext,
+  createActivationQuoteCheckVNext,
   validateFeeSelectionRequest,
   ENGINE_VERSION,
   mergePricingForValidationVNext,
@@ -228,13 +230,13 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
   return validateOwnerPricing(service.serviceType,scopeActivationInputs(service.serviceType,inputs,pricing,service),pricing,service,tierName).ok;
 }
 
-function baseActivationScenarios(service,confirmedService=service) {
+function baseActivationScenarios(service,confirmedService=service,selection=null) {
   const serviceType = service.serviceType;
   const p = pricingOf(service);
   if(configuredOffering(serviceType,p))return offeringActivationScenarios(serviceType,p,confirmedService);
   if (serviceType === 'ROOFING_REPLACEMENT') {
-    const replacements = keysOf(p.laborPerSquare, 'asphalt_shingle');
-    const existingTypes = keysOf(p.tearOffPerSquare, 'asphalt_shingle');
+    const replacements = selection ? [selection.replacementRoofType] : keysOf(p.laborPerSquare, 'asphalt_shingle');
+    const existingTypes = selection ? [selection.existingRoofType] : keysOf(p.tearOffPerSquare, 'asphalt_shingle');
     const pitch = greatestConfiguredKey(p.pitchMultiplier, ['low', 'medium', 'steep', 'very_steep'], 'medium');
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
     const roofComplexity = greatestConfiguredKey(p.wasteFactorByComplexity, ['simple', 'moderate', 'complex'], 'moderate');
@@ -256,10 +258,10 @@ function baseActivationScenarios(service,confirmedService=service) {
   }
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') {
     const configured = keysOf(p.laborPerSqft, 'epdm').filter(key => key !== 'average');
-    const membraneTypes = configured.length ? configured : ['epdm'];
+    const membraneTypes = selection ? [selection.replacementMembraneType] : configured.length ? configured : ['epdm'];
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const configuredExistingTypes = keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
-    const existingTypes = configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
+    const existingTypes = selection ? [selection.membraneType] : configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
     const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential',insulationNeeded:false,coverboardNeeded:false})));
 
     return scenarios;
@@ -374,13 +376,14 @@ function baseActivationScenarios(service,confirmedService=service) {
   return [];
 }
 
-function activationScenarios(service,confirmedService=service,tierName=null) {
+function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
- const scenarios=baseActivationScenarios(service,confirmedService).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
+ const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
   if(!configuredOffering(type,p))return true;
   const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
   return !additional||completeOptionalPricing(service,input,p,tierName);
  });
+ if(!includeOptionalScopes)return scenarios;
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
  for(const [key,d] of Object.entries(p.scopeDetails||{})){
   const base=scopeBaseKey(key);
@@ -427,6 +430,7 @@ function conditionStatusDiagnostics(variant) {
 function productStatusCoverage(variant, product) {
   const coverage = { tierName: variant.tierName, selection: product.selection,
     configurationComplete: product.ok, ownerDiagnostics: product.diagnostics };
+  if(product.coverageMode==='product_axis')return {...coverage,coverageMode:product.coverageMode};
   if (product.coverageMode === 'reference_pair') return { ...coverage, coverageMode: product.coverageMode,
     coverageMessage: product.ok ? 'Ready to quote for the two products shown.' : 'Needs setup for the two products shown: ' + product.diagnostics.map(item => item.message).join(' ') };
   if (!Object.hasOwn(product.selection, 'surfaceCondition')) return coverage;
@@ -475,7 +479,7 @@ function scopeCoverageForService(service) {
     }
   }
   for(const variant of variants){
-    const p=variant.pricing,configured={...service,pricing:p},scenarios=baseActivationScenarios(configured);
+    const p=variant.pricing,configured={...service,pricing:p},scenarios=baseActivationScenarios(configured,configured,firstCatalogSelection(configured));
     // Itemized painting can price only some conditions. Optional coverage uses
     // a priced base condition when one exists, not necessarily the first one.
     const base=configuredOffering(type,p)?scenarios.find(input=>completeOptionalPricing(configured,input,p,variant.name))||scenarios[0]:scenarios[0];
@@ -575,20 +579,80 @@ function activationMonth(service, defaults) {
 // Every requested customer pair is still fully checked by the quote engine.
 const PAIR_SELECTORS={ROOFING_REPLACEMENT:['replacementRoofType','existingRoofType'],FLAT_ROOF_REPLACEMENT:['replacementMembraneType','membraneType']};
 const PAIR_DETAIL_LIMIT=100;
-function productAxisCoverage(list,[rField,eField],evaluate){
-  const pairs=new Map(list.map(group=>[JSON.stringify([group.selection[rField],group.selection[eField]]),group]));
-  const R=[...new Set(list.map(group=>group.selection[rField]))],E=[...new Set(list.map(group=>group.selection[eField]))];
-  const done=new Map(),check=(r,e)=>{const key=JSON.stringify([r,e]);if(!pairs.has(key))return null;if(!done.has(key))done.set(key,evaluate(pairs.get(key)));return done.get(key);};
-  // A live reference may be inside the grid when both leading products are
-  // incomplete. Stop as soon as one is found; reuse every exact check already
-  // made. If none is live, the completed scan is the exhaustive result.
+function roofCatalogAxes(service) {
+  const type=service.serviceType,p=pricingOf(service),fields=PAIR_SELECTORS[type];
+  if(!fields)return null;
+  if(type==='ROOFING_REPLACEMENT')return {fields,values:[keysOf(p.laborPerSquare,'asphalt_shingle'),keysOf(p.tearOffPerSquare,'asphalt_shingle')],roots:[['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'],['tearOffPerSquare']]};
+  const replacements=keysOf(p.laborPerSqft,'epdm').filter(key=>key!=='average'),existing=keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
+  const R=replacements.length?replacements:['epdm'];
+  return {fields,values:[R,existing.length?existing:R],roots:[['laborPerSqft','membraneCostPerSqft'],['tearOffPerSqft']]};
+}
+function firstCatalogSelection(service) {
+  const axes=roofCatalogAxes(service);
+  return axes?Object.fromEntries(axes.fields.map((field,i)=>[field,axes.values[i][0]])):null;
+}
+
+// Remove only proven, counterpart-independent failures before searching. A zero
+// included in a price on the other axis is deliberately NOT pruned: its validity
+// depends on the requested pair. Actual candidate pairs still use every existing
+// customer, owner, template and financial-pipeline check.
+function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes) {
+  const type=service.serviceType,configured={...service,pricing:p},[rField,eField]=axes.fields,[R,E]=axes.values;
+  const first=firstCatalogSelection(configured),prototype=baseActivationScenarios(configured,service,first)[0];
+  const validation=createActivationValidationVNext(type,p,service,tierName),structures=validatePricingStructuresDetailed(type,p),factors=validateClass2FactorsDetailed(type,p);
+  const failures=[new Map(),new Map()];
+  for(let axis=0;axis<2;axis++)for(const product of axes.values[axis]){
+    const field=axes.fields[axis],inputs=scopeActivationInputs(type,{...prototype,[field]:product},p,service);
+    inputs.confirmedFacts=Object.fromEntries(axes.fields.filter(name=>Object.hasOwn(service.knownOfferings?.[name]||{},inputs[name])).map(name=>[name,{status:'identified',field:name,value:inputs[name],offeringId:service.knownOfferings[name][inputs[name]]}]));
+    const paths=axes.roots[axis].map(root=>root+'.'+product);
+    if(axis===0&&type==='ROOFING_REPLACEMENT')paths.push('scopeDetails.roof_underlayment_'+product,'scopeRates.roof_underlayment_'+product);
+    const owner=validation.owner(inputs).ownerDiagnostics.filter(d=>{
+      if(!paths.some(path=>d.path===path||d.path.startsWith(path+'.')))return false;
+      const includedIn=service.zeroPricePolicy?.includedPrices?.[d.path];
+      return !(d.kind==='unclassified_zero_core_price'&&typeof includedIn==='string'&&axes.roots[1-axis].some(root=>includedIn.startsWith(root+'.'))&&valueAtPath(p,includedIn)>0);
+    });
+    const registry=(validation.customer(inputs).ownerDiagnostics||[]).filter(d=>d.path==='knownOfferings.'+field||d.path.startsWith('knownOfferings.'+field+'.'));
+    const diagnostics=uniqueStatusDiagnostics([...owner,...registry]);
+    if(diagnostics.length)failures[axis].set(product,{selection:{[field]:product},ok:false,diagnostics,reviewReason:diagnostics[0].message,coverageMode:'product_axis'});
+  }
+  const candidates=axes.values.map((values,axis)=>values.filter(value=>!failures[axis].has(value)));
+  const pipelineCheck=defaults?createActivationQuoteCheckVNext(activationPipelineRequest(service,p,tierName,defaults,options)):null;
+  const cache=new Map(),representatives=[new Map(),new Map()];
+  const check=(r,e)=>{
+    const key=JSON.stringify([r,e]);if(cache.has(key))return cache.get(key);
+    const selection={[rField]:r,[eField]:e};
+    // Optional-scope probes belong to the original first pair, exactly as in
+    // the former eager scenario list. A missing sibling never gains new work.
+    const scenarios=activationScenarios(configured,service,tierName,selection,r===R[0]&&e===E[0]);
+    const result={selection,...evaluateActivationVariant(service,p,tierName,tierIndex,defaults,{...options,structures,factors,validation,pipelineCheck,productScenarios:scenarios}),coverageMode:'reference_pair'};
+    if(cache.size<2*(R.length+E.length))cache.set(key,result);
+    if(!result.ok){if(!representatives[0].has(r))representatives[0].set(r,result);if(!representatives[1].has(e))representatives[1].set(e,result);}
+    return result;
+  };
   let reference=null;
-  for(const group of list){const result=check(group.selection[rField],group.selection[eField]);if(result?.ok){reference=group.selection;break;}}
-  if(!reference)return list.map(group=>check(group.selection[rField],group.selection[eField]));
-  const results=new Map(),add=(r,e)=>{const result=check(r,e);if(result)results.set(JSON.stringify(result.selection),{...result,coverageMode:'reference_pair'});};
-  for(const r of R)add(r,reference[eField]);
-  for(const e of E)add(reference[rField],e);
-  return [...results.values()];
+  search:for(const r of candidates[0])for(const e of candidates[1]){const result=check(r,e);if(result.ok){reference=result;break search;}}
+  const products=new Map(),add=row=>products.set(JSON.stringify(row.selection),row);
+  if(reference&&options.firstLiveProduct)add(reference);
+  else {
+    for(const map of failures)for(const row of map.values())add(row);
+    if(reference){for(const r of candidates[0])add(check(r,reference.selection[eField]));for(const e of candidates[1])add(check(reference.selection[rField],e));}
+    else for(const map of representatives)for(const row of map.values())add(row);
+  }
+  const rows=[...products.values()],diagnostics=uniqueStatusDiagnostics(rows.filter(row=>!row.ok).flatMap(row=>row.diagnostics));
+  return {ok:!!reference,tierName,tierIndex,products:rows,diagnostics,reviewReason:diagnostics[0]?.message||null};
+}
+function activationPipelineRequest(service, pricing, tierName, businessDefaults, options) {
+  return {
+    serviceType: service.serviceType,
+    ownerPricing: { ...service, active: true, pricing, tiers: [],
+      ...(service.zeroPricePolicy ? {zeroPricePolicy:{...service.zeroPricePolicy,freeCompleteService:freeOfferingVNext(service,tierName),freeTiers:[]}} : {}),
+      ...(service.confirmedFields ? {confirmedFields:Object.fromEntries(Object.entries(service.confirmedFields).filter(([key])=>key!=='tiers'))}:{}),
+      ...(service.approvedValues ? {approvedValues:Object.fromEntries(Object.entries(service.approvedValues).filter(([key])=>key!=='tiers'))}:{}) },
+    businessDefaults, callerType: 'owner',
+    feeSelections: activationFeeSelections(service, options),
+    currentMonth: activationMonth(service, businessDefaults),
+    allowInactiveOwnerPreview: true
+  };
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
   // Reject selection-independent blockers on this tier's already-merged prices
@@ -614,6 +678,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     const diagnostics=[...fees.invalidOwnerFields,...fees.invalidCustomerFields].map(path=>({type:'invalid',kind:'activation_pipeline',path,message:'Common fee selection is missing or invalid.'}));
     return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
   }
+  const axes=!options.productScenarios&&roofCatalogAxes({...service,pricing:effectivePricing});
+  if(axes&&axes.values[0].length*axes.values[1].length>PAIR_DETAIL_LIMIT)return evaluateRoofCatalog(service,effectivePricing,tierName,tierIndex,businessDefaults,options,axes);
   // All boundary probes within one product must pass; incomplete siblings do not block it.
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
@@ -628,9 +694,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     const factors = validateClass2FactorsDetailed(service.serviceType, effectivePricing);
     const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,factors,validation,productScenarios:g.scenarios})});
     let products=[];
-    const pairSelectors=PAIR_SELECTORS[service.serviceType];
-    if(pairSelectors&&!options.firstLiveProduct&&list.length>PAIR_DETAIL_LIMIT)products=productAxisCoverage(list,pairSelectors,evaluate);
-    else for(const group of list){const product=evaluate(group);products.push(product);if(options.firstLiveProduct&&product.ok)break;}
+    for(const group of list){const product=evaluate(group);products.push(product);if(options.firstLiveProduct&&product.ok)break;}
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
@@ -663,25 +727,15 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     diagnostics.push(...owner.ownerDiagnostics);
     if (!owner.ok) continue;
     try {
-      const template = calculateServiceVNext(service.serviceType, customer.normalized, effectivePricing, { ownerPricing: service, tierName, skipAddon() {} });
+      const template = calculateServiceVNext(service.serviceType, customer.normalized, options.validation?.pricing || effectivePricing, { ownerPricing: options.validation?.serviceRules || service, tierName, skipAddon() {} });
       const subtotalCents = template.lineItems.reduce((sum, line) => sum + line.amountCents, 0);
       if (!Number.isSafeInteger(subtotalCents) || subtotalCents < 0) {
         throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
       }
       if (businessDefaults) {
-        const pipelineResult = generateQuoteVNext({
-          serviceType: service.serviceType,
-          customerInputs: customer.normalized,
-          ownerPricing: { ...service, active: true, pricing: effectivePricing, tiers: [],
-            ...(service.zeroPricePolicy ? {zeroPricePolicy:{...service.zeroPricePolicy,freeCompleteService:freeOfferingVNext(service,tierName),freeTiers:[]}} : {}),
-            ...(service.confirmedFields ? {confirmedFields:Object.fromEntries(Object.entries(service.confirmedFields).filter(([key])=>key!=='tiers'))}:{}),
-            ...(service.approvedValues ? {approvedValues:Object.fromEntries(Object.entries(service.approvedValues).filter(([key])=>key!=='tiers'))}:{}) },
-          businessDefaults,
-          callerType: 'owner',
-          feeSelections: activationFeeSelections(service, options),
-          currentMonth: activationMonth(service, businessDefaults),
-          allowInactiveOwnerPreview: true
-        });
+        const pipelineResult = options.pipelineCheck
+          ? options.pipelineCheck(customer.normalized)
+          : generateQuoteVNext({ ...activationPipelineRequest(service,effectivePricing,tierName,businessDefaults,options), customerInputs: customer.normalized });
         if (pipelineResult.resultType !== 'INSTANT_ESTIMATE_READY') appendActivationReviewDiagnostics(diagnostics, pipelineResult);
       }
     } catch (error) {

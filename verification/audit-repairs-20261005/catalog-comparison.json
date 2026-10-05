@@ -1,0 +1,24 @@
+[
+  {
+    "commit": "217ce100",
+    "bytes": 51743,
+    "productsPerAxis": 320,
+    "coldMs": 6171.605692,
+    "timerDelayMs": 6171.910201,
+    "warmMs": 484.3281359999992,
+    "status": "NEEDS PRICING",
+    "coverageRows": 102400,
+    "inputUnchanged": true
+  },
+  {
+    "commit": "9361844b",
+    "bytes": 51743,
+    "productsPerAxis": 320,
+    "coldMs": 142.6486300000006,
+    "timerDelayMs": 142.71187499999996,
+    "warmMs": 2.262920000000122,
+    "status": "NEEDS PRICING",
+    "coverageRows": 320,
+    "inputUnchanged": true
+  }
+]

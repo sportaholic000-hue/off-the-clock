@@ -1,4 +1,5 @@
-import {scopeCustomerFields,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
+import {customerQuoteFields} from '../../server/customerQuoteFields.js';
+import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
@@ -7,10 +8,7 @@ import {servicePricing,editServiceField,chooseFenceType} from './pricebookEditin
 import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 
 export function offeringPreviewFields(meta,service) {
-  const p=servicePricing(service),source=meta.offeringCustomerFields?.[p.offeringMode];
-  const extra=Object.entries(scopeCustomerFields(service.serviceType,p,service)).map(([name,field])=>({name,...field}));
-  if(!source)return [...meta.customerFields,...extra];
-  return [...extra,...source.map(field=>field.name!=='gates'?field:{...field,values:Object.keys(p.offeringDetails?.gates||{}),options:Object.fromEntries(Object.entries(p.offeringDetails?.gates||{}).map(([key,gate])=>[key,`${key.replaceAll('_',' ')} — ${gate.widthLF??'?'} ft opening; ${gate.description||''}`]))})];
+  return customerQuoteFields(service,servicePricing(service));
 }
 
 export function offeringTierFields(meta,service) {

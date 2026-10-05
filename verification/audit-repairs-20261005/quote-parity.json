@@ -1,0 +1,336 @@
+{
+  "baseline": "217ce1009cbc371c2f7fe1da1ef19dce4950ed22",
+  "repaired": "9361844bcf877a7a6c864513f0195885d5e4a1cb",
+  "ignoredFields": [
+    "quoteId",
+    "engineVersion"
+  ],
+  "fixtures": 65,
+  "results": [
+    {
+      "id": "mowing-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "mowing-unpriced-bagging",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "mowing-unpriced-edging",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "mowing-priced-extras-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "flat-repair-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "flat-repair-unpriced-ponding",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "flat-repair-priced-ponding-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-tile-200-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-tile-150-boundary",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-tile-300-boundary",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-type-tile",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-type-vinyl_plank",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-type-hardwood",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-type-laminate",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-type-carpet",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-stairs",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-flat",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-per_hour",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-per_unit",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-per_sqft",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-per_LF",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-per_square",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-fixed-fractional-rate",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-range-flat",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "custom-classification-attempt",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-base-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-trim",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-removal",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "concrete-base-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "concrete-demolition",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "concrete-exposed-aggregate",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "flat-roof-residential-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "flat-roof-commercial",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "FENCING_INSTALL-installed-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "FENCING_INSTALL-itemized-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "FENCING_REPLACEMENT-installed-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "FENCING_REPLACEMENT-itemized-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "INTERIOR_PAINTING-installed-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "INTERIOR_PAINTING-itemized-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "EXTERIOR_PAINTING-installed-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "EXTERIOR_PAINTING-itemized-control",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "painting-itemized-cost-basis",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-hardwood-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-hardwood-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-laminate-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-laminate-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-carpet-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-carpet-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "floor-vinyl-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "stairs-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "overlay-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-trim-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-removal-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "demolition-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "exposed-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "commercial-installed",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "stairs-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "overlay-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-trim-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "siding-removal-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "demolition-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "exposed-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "commercial-itemized",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "paint-cost-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    },
+    {
+      "id": "roof-underlayment-packages",
+      "internalMatch": true,
+      "customerMatch": true
+    }
+  ]
+}

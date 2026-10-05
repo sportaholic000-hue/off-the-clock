@@ -6,6 +6,7 @@ import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPr
 import { measuredOutlineVNext } from './geometry.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {
+  validationSnapshotVNext,
   SERVICE_TYPES,
   inspectionOwnerDecisionsVNext,
   repairSizeFromAffectedArea,
@@ -1065,7 +1066,7 @@ function calculateSidingRepair(c, p) {
 }
 
 function inspectedServiceRules(value) {
-  const snapshot = snapshotPlainData(value, 'serviceRules');
+  const snapshot = validationSnapshotVNext(value, 'serviceRules');
   const unsafePath = snapshot.ok ? snapshot.nonPlainPaths[0] : snapshot.errorPath;
   if (unsafePath) {
     const path = unsafePath.startsWith('serviceRules.')
@@ -1122,7 +1123,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     throw new QuoteReviewError(`Customer inputs could not be read safely: ${reason}.`, { invalidCustomerFields: [path] });
   }
   customerInputs = customerSnapshot.value;
-  const pricingSnapshot = snapshotPlainData(pricing, 'pricing');
+  const pricingSnapshot = validationSnapshotVNext(pricing, 'pricing');
   const unsafePricingPath = pricingSnapshot.ok ? pricingSnapshot.nonPlainPaths[0] : pricingSnapshot.errorPath;
   if (unsafePricingPath) {
     const path = unsafePricingPath.startsWith('pricing.')
