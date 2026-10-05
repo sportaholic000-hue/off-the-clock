@@ -1,3 +1,75 @@
+# October 5 audit decisions — scoped verification passed
+
+The nine October 4 follow-up decisions are implemented at
+`bd14bfb5ac38754abd1a054d5bdc6a6ffcec67dd` on
+`codex/quote-audit-ready-20261004` (draft PR #24).
+The earlier unpublished scope draft was discarded before these agreed rules
+were implemented. See [the approved decisions](QUOTE_AUDIT_DECISIONS_20261004.md).
+
+Final local verification: **1,392/1,392** tests across 44 non-browser quote and
+price-book files. All 156 existing price-book files retained identical content
+hashes. All 190 materialized source/test/dependency/workflow files match GitHub.
+
+Hosted verification: **1,459/1,459** strict quote/price-book tests across 56
+files, including real browser interactions; both production builds passed.
+The broader suite has 1,837 passes, the same nine existing failures and two
+skips, with no new failures. The known-failure allowance was not expanded.
+[Decisions, changes and source-bound evidence](../verification/audit-decisions-20261004/README.md).
+
+This is a scoped repair checkpoint, not a whole-product launch approval.
+The engine version changed; affected price books need fresh owner approval.
+No merge, deployment or live customer-data change is included. No sub-agents
+were used. Historical checkpoints below retain their original source bindings.
+
+# Prior quote-engine / price-book checkpoint — October 4, 2026
+
+**The earlier five-finding completion statement was too broad.** Further checks
+found catalog stalls, unselected measured-scope blockers, incomplete paint-group
+conflicts, and optional offering readiness/coverage defects at `4b6deeca`.
+These reproduced defects are repaired at `42812a71ef31604d34140ea32ecc12b0bda53552`
+on `codex/quote-audit-ready-20261004` (PR #24).
+
+Local verification: **1,056/1,056** scoped tests, including **128 new tests**;
+65 fixtures retain identical internal and customer quotes (130 comparisons).
+All 65 status comparisons are explained by optional coverage changes. The cold
+80-by-80 public readiness failures improved from 2.8–9.1 seconds to 0.15–0.38
+seconds locally. All 187 materialized source/test JSON and JavaScript-family
+files match the uploaded code checkpoint.
+
+Hosted verification: **1,234/1,234** strict quote/price-book tests and both
+builds passed. The broader suite retains the existing nine allowed failures and
+two skips, with no new failures. Detailed reproductions, outcomes and source binding are in the
+[readiness and scope follow-up](../verification/readiness-scope-followup-20261004/README.md).
+
+The PR, `main`, and a deployment remain distinct. No whole-product launch gate
+has passed, and passing the recorded regressions is not proof of zero remaining
+defects. Historical reports below retain their original scope and source.
+
+## Prior October 4 checkpoint — superseded by the follow-up above
+
+**The five original audit findings have passing acceptance checks on
+`codex/quote-audit-ready-20261004` (PR #24).** Tested code:
+`5e2ea7647d46241fc365bb2184422ae4c905cb06`, based on PR #23's `6eb6622`.
+The independent recheck found QP-05 still open in PR #23; the new checkpoint
+repairs the original missing-minimum catalog stall and gates its reproduction.
+
+Local verification: **928/928** scoped regression tests, including **35/35**
+audit acceptance cases; **195** differential comparisons without changes.
+Hosted verification: **1,106/1,106** strict quote tests and both app/widget builds
+pass; the broader suite matches its existing nine-failure baseline. Exact source
+bindings and results are in the
+[independent follow-up](../verification/independent-followup-20261004/README.md).
+Source locations are indexed in the [repository map](../README.md#repository-map).
+
+`main`, the repair branch and any deployment are distinct checkpoints. These
+scoped checks do not pass a new whole-product launch gate. Historical phase
+checkboxes and reports below are preserved for their original source versions;
+they do not supersede this current quote/price-book summary.
+
+## Preserved checkpoint history
+
+---
+
 > **October 2 quote-engine/price-book re-audit repairs:** All nine reproduced groups R01–R09 are repaired on the combined PR #16/#17 source `33605e99c834f2fa7c189626d6d6cbfc8b1d5f61`. Verified: 35 new regression tests, 409 independent arithmetic checks, 11 authenticated browser/HTTP checks, and both builds. Final full suite: 1,233 passed, the nine existing voice failures, two skipped, zero unexpected failures. [Source-bound repair report and evidence](../verification/quote-reaudit-repairs/REPORT.md). Customer rounding is unchanged. Independent Opus review remains next; no full phase or public-launch gate is marked passed.
 
 > **October 1 Opus audit repairs:** The eight quote/editor defects and reproduced provider-marker booking crash are repaired on tested source `6ea52eb10683536206ef91dde35ac88e4cdfa2bc`. Final cold regression: 937/946 pass, with the same nine pre-existing voice failures and no new failures. Independent arithmetic: 960 cases; real application: 19 cases; widget booking: 24 checks; final fencing/painting browser: 26 checks; rendered editor: 12 checks; builds and integration boundary pass. [Source-bound report, screenshots and original evidence](../docs/review/opus-repairs-20261001/README.md). Voice, live providers and public launch remain unaccepted. No full phase or launch gate is marked passed.

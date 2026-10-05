@@ -1,0 +1,125 @@
+{
+  "testedCodeCommit": "5e2ea7647d46241fc365bb2184422ae4c905cb06",
+  "baseCommit": "6eb6622d746c0f1a16a3cfdc002930409f403b05",
+  "localNode": "22.16.0",
+  "localFiles": 35,
+  "before": {
+    "tests": 13,
+    "pass": 12,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "acceptance": {
+    "tests": 35,
+    "pass": 35,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "regressions": {
+    "tests": 928,
+    "pass": 928,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "beforeMeasurements": [
+    {
+      "case": "original-missing-minimum",
+      "bytes": 14024,
+      "productsPerAxis": 80,
+      "elapsedMs": 8820.680620000001,
+      "timerDelayMs": 8826.004716000001
+    },
+    {
+      "case": "disabled-original",
+      "elapsedMs": 4.7405370000014955
+    },
+    {
+      "case": "restored-minimum",
+      "elapsedMs": 23.74409800000103
+    }
+  ],
+  "acceptanceMeasurements": [
+    {
+      "case": "original-missing-minimum",
+      "bytes": 14024,
+      "productsPerAxis": 80,
+      "elapsedMs": 7.50672499999996,
+      "timerDelayMs": 21.28447099999994
+    },
+    {
+      "case": "disabled-original",
+      "elapsedMs": 5.210563999999977
+    },
+    {
+      "case": "restored-minimum",
+      "elapsedMs": 27.22640699999988
+    }
+  ],
+  "regressionMeasurements": [
+    {
+      "case": "original-missing-minimum",
+      "bytes": 14024,
+      "productsPerAxis": 80,
+      "elapsedMs": 6.838190000000168,
+      "timerDelayMs": 19.473372000000154
+    },
+    {
+      "case": "disabled-original",
+      "elapsedMs": 9.182085000000143
+    },
+    {
+      "case": "restored-minimum",
+      "elapsedMs": 44.251622
+    }
+  ],
+  "differential": {
+    "cases": 65,
+    "comparisons": 195,
+    "normalizedOnly": [
+      "quoteId"
+    ],
+    "differences": []
+  },
+  "additionalBeforeFix": {
+    "testedCodeCommit": "b8e2e046e03b9ee360513f905a39e3d2efc759c2",
+    "node": "22.16.0",
+    "case": "shared-invalid-waste",
+    "productsPerAxis": 80,
+    "minimumJob": 0,
+    "membraneWasteFactor": -1,
+    "elapsedMs": 8656.650757,
+    "status": "NEEDS PRICING",
+    "invalidOwnerFields": [
+      "membraneWasteFactor"
+    ],
+    "result": "Shared factor blocker still causes expensive pair search; repaired and regression-tested in 5e2ea764."
+  },
+  "hosted": {
+    "runId": 37240200078,
+    "jobId": 111547228511,
+    "testedCommit": "5e2ea7647d46241fc365bb2184422ae4c905cb06",
+    "conclusion": "success",
+    "quoteFiles": 48,
+    "quoteGate": {
+      "tests": 1106,
+      "pass": 1106,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "builds": "passed",
+    "broaderSuite": {
+      "tests": 1498,
+      "pass": 1487,
+      "fail": 9,
+      "skipped": 2,
+      "cancelled": 0
+    },
+    "knownFailuresStillFailing": 9,
+    "knownFailureBaseline": 9,
+    "newUnallowedFailures": 0
+  }
+}

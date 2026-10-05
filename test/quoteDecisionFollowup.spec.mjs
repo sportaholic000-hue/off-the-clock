@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -25,9 +26,9 @@ function quote(book,id,inputs,quoteInstant='2026-10-03T12:00Z',timeZone='America
 test('G1 roof stays live throughout the year without an installed-underlayment labor share',()=>{
  const f=peak(roof(),[7]),{id}=save(f),book=approve(id);
  assert.equal(bridge.applicationStatus(book.services[0],book).status,'QUOTING LIVE');
- for(let month=1;month<=12;month++){const q=quote(book,id,f.customerInputs,`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6185.5:5990);}
- f.businessDefaults.peakMonths=[10];ready(f,618550);
- f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,620710);
+ for(let month=1;month<=12;month++){const q=quote(book,id,f.customerInputs,`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6289:5990);}
+ f.businessDefaults.peakMonths=[10];ready(f,628900);
+ f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,631060);
 });
 test('G1 peak uses explicit fence labor plus only the entered installed-gate labor share',()=>{
  const f=peak(offeringFixture('FENCING_INSTALL','itemized'));Object.assign(f.customerInputs,{cornerCount:2,gates:{walk:1}});

@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,previewFeeContext,reconcilePreviewFees,approvalMatchesDraft,mergeSavedApproval} from '../client/src/pricebookEditing.js';

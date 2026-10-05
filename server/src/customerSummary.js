@@ -5,6 +5,7 @@ const grass = {maintained:'Regularly maintained',overgrown:'Overgrown',severe:'S
 export function customerSummaryValue(field, value, fallback) {
   // Fence heights read the way they were entered ("5 ft 3.65 in"), never as a long decimal.
   if (field?.name === 'fenceHeight' && typeof value === 'number' && Number.isFinite(value) && value > 0) return formatFenceHeight(value);
+  if (typeof value === 'number' && Number.isFinite(value) && field?.unit) return fallback(value) + ' ' + field.unit;
   if (typeof value !== 'string') return fallback(value);
   if (field?.optionLabels && Object.hasOwn(field.optionLabels,value)) return field.optionLabels[value];
   if (field?.type !== 'slug' && (field?.type !== 'enum' || !field.values?.includes(value))) return fallback(value);

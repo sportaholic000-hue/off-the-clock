@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import {explicitUnderlaymentFixtureShares, fixtureIdentity, fixtureOfferings, confirmedFixtureInputs, freeFixture, includedFixture} from './quoteEngineVNextFixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -779,7 +780,7 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   });
   for(const fee of fees)lines.push({...fee});
   const months=p.peakMonths===undefined?b.peakMonths:p.peakMonths,percent=p.peakSurchargePercent===undefined?b.peakSurchargePercent:p.peakSurchargePercent;
-  const labor=lines.filter(l=>l.category==='labor').reduce((sum,l)=>sum+l.cents,0);
+  const labor=lines.filter(l=>l.category==='labor'||['Tear-off','Existing flooring removal'].includes(l.name)).reduce((sum,l)=>sum+l.cents,0);
   const seasonal=months.includes(month)?precisionPercent(labor,percent):0;
   if(seasonal)lines.push({name:'Peak season adjustment',cents:seasonal,category:'surcharge'});
   const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;

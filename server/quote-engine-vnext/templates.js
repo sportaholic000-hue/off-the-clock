@@ -1,3 +1,5 @@
+import {fixedPriceField} from '../pricePrecision.js';
+import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
@@ -68,6 +70,12 @@ function money(value, path, { allowZero = true } = {}) {
   return value;
 }
 
+function priceRate(value,path,{allowZero=true}={}){
+ const fixed=fixedPriceField(path.split('.')[0])||/^offeringRates\.(?:gate_|(?:postMaterial|footingLabor|footingMaterial)Each$)/.test(path);
+ if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>Number.MAX_SAFE_INTEGER||!allowZero&&value===0||fixed&&!Number.isSafeInteger(value))throw new QuoteReviewError('Invalid price precision.',{invalidOwnerFields:[path]});
+ return value;
+}
+
 function quantityFactor(value, path, { allowZero = false } = {}) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || (!allowZero && value === 0)) {
     throw new QuoteReviewError('A quantity factor is missing or invalid.', {
@@ -79,12 +87,12 @@ function quantityFactor(value, path, { allowZero = false } = {}) {
 
 function optionalMoney(value, path) {
   if (value === undefined || value === null || value === '') return undefined;
-  return money(value, path, { allowZero: true });
+  return priceRate(value, path, { allowZero: true });
 }
 
 function addonMoney(value, path) {
   if (value === undefined || value === null || value === '') return undefined;
-  return money(value, path, { allowZero: true });
+  return priceRate(value, path, { allowZero: true });
 }
 
 function addonPercent(value, path) {
@@ -119,8 +127,7 @@ function makeLine({
     throw new QuoteReviewError(`${name} did not receive a finite measured quantity.`);
   }
   if (!(allowZeroQuantity && numericQuantity === 0)) measured(numericQuantity, `${name} quantity`);
-  if(ratePath==='price'||ratePath==='mowingBaseRatePerSqft'||offeringRatePath(ratePath)||scopeRatePath(ratePath)) { if(typeof rateCents!=='number'||!Number.isFinite(rateCents)||rateCents<0||rateCents>Number.MAX_SAFE_INTEGER)throw new QuoteReviewError('Invalid fractional-cent unit rate.',{invalidOwnerFields:[ratePath]}); }
-  else money(rateCents, ratePath, { allowZero: allowZeroRate });
+  priceRate(rateCents,ratePath,{allowZero:allowZeroRate});
   const checkedMultipliers = multipliers.map(multiplier => {
     let exactValue;
     let numericValue;
@@ -223,7 +230,7 @@ function makeCompositeLine({ name, category, components, customerDriver }) {
       throw new QuoteReviewError(`${name} did not receive a finite measured quantity.`);
     }
     measured(numericQuantity, `${name} quantity`);
-    money(component.rateCents, component.ratePath);
+    priceRate(component.rateCents, component.ratePath);
     let multipliers;
     let exactUnroundedCents;
     let unroundedCents;
@@ -573,7 +580,6 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   const access = quantityFactor(p.accessMultiplier[c.accessDifficulty], `accessMultiplier.${c.accessDifficulty}`);
   add(out, makeLine({ name: 'Flat roof labor', category: 'labor', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `laborPerSqft.${membraneKey}`), ratePath: `laborPerSqft.${membraneKey}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `Measured flat-roof area: ${areaSqft} square feet` }));
   add(out, makeLine({ name: 'Membrane', category: 'material', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `membraneCostPerSqft.${membraneKey}`), ratePath: `membraneCostPerSqft.${membraneKey}`, customerDriver: `Membrane: ${membraneKey.replaceAll('_', ' ')}` }));
-  if (c.buildingType === 'commercial' && !p.scopeDetails?.insulation) add(out, makeLine({ name: 'Rigid insulation and coverboard', category: 'material', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: p.insulationPerSqft, ratePath: 'insulationPerSqft' }));
   add(out, makeLine({ name: 'Tear-off', category: 'removal', quantity: exactTearOffAreaSqft, unit: 'existing-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `${layers} existing membrane layer${layers === 1 ? '' : 's'}` }));
   out.feeScope.disposal = true;
   addDisposalOverride(out, p, 'disposalPerSqft', exactTearOffAreaSqft, 'existing-layer square feet', 'Flat-roof disposal');
@@ -650,48 +656,6 @@ function calculateInteriorPainting(c, p, rules={}) {
   return out;
 }
 
-function calculateExteriorPainting(c, p, rules={}) {
-  if (c.surfaceCondition === 'poor') {
-    throw new QuoteReviewError('Poor exterior surfaces require an explicitly confirmed primer pricing rule before pricing.', {
-      ownerDecisionRequired: [{
-        path: 'exteriorPrimerPricing',
-        kind: 'primer_pricing_contract',
-        message: 'Approve separate primer pricing or an explicit all-inclusive exterior rate rule.'
-      }]
-    });
-  }
-  const out = baseOutput('EXTERIOR_PAINTING');
-  const area = measured(c.exteriorAreaSqft, 'exteriorAreaSqft');
-  const finishCoats = count(c.coats, 'coats');
-  const exactFinishCoatSqft = exactMultiply(area, finishCoats);
-  const finishCoatSqft = exactToNumber(exactFinishCoatSqft);
-  recordQuantityDerivation(out, {
-    name: 'exteriorFinishCoatSqft', formula: 'exteriorAreaSqft * finishCoats',
-    inputs: { exteriorAreaSqft: area, finishCoats },
-    result: exactFinishCoatSqft, unit: 'wall square-foot finish coats',
-    usedBy: ['Exterior labor', 'Exterior materials']
-  });
-  const story = quantityFactor(p.storyMultiplier[c.stories], `storyMultiplier.${c.stories}`);
-  add(out, makeLine({ name: 'Exterior labor', category: 'labor', quantity: exactFinishCoatSqft, unit: 'measured wall square-foot finish coats', rateCents: p.exteriorLaborPerSqftPerCoat, ratePath: 'exteriorLaborPerSqftPerCoat', multipliers: [{ name: 'stories', value: story, path: `storyMultiplier.${c.stories}` }], customerDriver: `${area} measured square feet of paintable wall area` }));
-  if (c.surfaceCondition === 'fair') {
-    const prepHoursPerSqft = quantityFactor(p.prepHoursPerSqft.fair, 'prepHoursPerSqft.fair');
-    const exactPrepHours = exactMultiply(area, prepHoursPerSqft);
-    const prepHours = exactToNumber(exactPrepHours);
-    recordQuantityDerivation(out, {
-      name: 'exteriorPreparationHours', formula: 'exteriorAreaSqft * prepHoursPerSqft',
-      inputs: { exteriorAreaSqft: area, prepHoursPerSqft },
-      result: exactPrepHours, unit: 'labor hours',
-      usedBy: ['Exterior preparation']
-    });
-    add(out, makeLine({ name: 'Exterior preparation', category: 'prep', quantity: exactPrepHours, unit: 'configured preparation hours from measured wall area', rateCents: p.laborHourlyRate, ratePath: 'laborHourlyRate' }));
-  }
-  if(!scopesSuppressPrice('EXTERIOR_PAINTING',c,p,rules,'materialPerSqftPerCoat')) add(out, makeLine({ name: 'Exterior materials', category: 'material', quantity: exactFinishCoatSqft, unit: 'measured wall square-foot finish coats', rateCents: p.materialPerSqftPerCoat, ratePath: 'materialPerSqftPerCoat', customerDriver: `${finishCoats} finish coat${finishCoats === 1 ? '' : 's'}` }));
-  recordMeasurement(out, 'exteriorAreaSqft', area, 'square feet');
-  recordMeasurement(out, 'finishCoats', finishCoats, 'coats', 'customer_confirmed');
-  out.priceDrivers.push(`${area} measured square feet of paintable wall area`, `${finishCoats} finish coat${finishCoats === 1 ? '' : 's'}`);
-  return out;
-}
-
 function calculateFlooring(serviceType, c, p, ctx) {
   const out = baseOutput(serviceType);
   const sqft = measured(c.sqft, 'sqft');
@@ -743,7 +707,6 @@ function calculateFlooring(serviceType, c, p, ctx) {
   if (underlaymentApplies && !p.scopeDetails?.['floor_underlayment_'+c.newFlooringType]) {
     add(out, makeLine({ name: 'Underlayment', category: 'material', quantity: sqft, unit: 'measured installed square feet', rateCents: p.underlaymentPerSqft, ratePath: 'underlaymentPerSqft', priceBasis: installedAreaSellPriceBasis(p.underlaymentPriceBasis, 'underlaymentPriceBasis') }));
   }
-  if (c.stairSteps > 0 && !p.scopeDetails?.stairs) add(out, makeLine({ name: 'Stair installation', category: 'labor', quantity: c.stairSteps, unit: 'steps', rateCents: p.perStepPrice, ratePath: 'perStepPrice', customerDriver: `${c.stairSteps} stair step${c.stairSteps === 1 ? '' : 's'}` }));
   if (serviceType === 'FLOORING_REPLACEMENT' && c.subfloorIssues) {
     add(out, makeLine({ name: 'Subfloor repair allowance', category: 'prep', quantity: c.subfloorRepairAreaSqft, unit: 'measured affected square feet', rateCents: p.subfloorAllowancePerSqft, ratePath: 'subfloorAllowancePerSqft' }));
     out.disclosures.push('Subfloor repair allowance covers only the measured affected area and is confirmed after opening the floor.');
@@ -867,14 +830,15 @@ function calculateConcrete(serviceType, c, p) {
     ]
   }));
   add(out, makeLine({ name: 'Ready-mix concrete', category: 'material', quantity: exactYards, unit: 'waste-adjusted cubic yards', rateCents: p.concreteCostPerCubicYard, ratePath: 'concreteCostPerCubicYard' }));
-  add(out, makeLine({ name: 'Formwork', category: 'material', quantity: dimensions.exactPerimeterLF, unit: 'measured linear feet', rateCents: p.formworkPerLF, ratePath: 'formworkPerLF', customerDriver: `${dimensions.perimeterLF} measured linear feet of formwork` }));
+  const openEdges=exactSubtract(dimensions.exactPerimeterLF,c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0);
+  recordQuantityDerivation(out,{name:'formworkLF',formula:'measured perimeter minus edges adjoining foundation or existing concrete',inputs:{perimeterLF:dimensions.perimeterLF,adjoiningEdgeLF:c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0},result:openEdges,unit:'linear feet',usedBy:['Formwork']});
+  add(out, makeLine({ name: 'Formwork', category: 'material', quantity: openEdges, allowZeroQuantity:true, unit: 'measured linear feet', rateCents: p.formworkPerLF, ratePath: 'formworkPerLF', customerDriver: `${exactToNumber(openEdges)} measured linear feet of formwork` }));
   if (c.baseNeeded) add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
-  if (c.demolitionNeeded && !p.scopeDetails?.demolition) add(out, makeLine({ name: 'Concrete demolition', category: 'removal', quantity: c.demolitionAreaSqft, unit: 'measured demolition square feet', rateCents: p.demolitionPerSqft, ratePath: 'demolitionPerSqft', multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }));
   if (c.reinforcement === 'wire_mesh') add(out, makeLine({ name: 'Wire mesh reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.wireReinforcementPerSqft, ratePath: 'wireReinforcementPerSqft' }));
   if (c.reinforcement === 'rebar') add(out, makeLine({ name: 'Rebar reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.rebarReinforcementPerSqft, ratePath: 'rebarReinforcementPerSqft' }));
   if (c.finishType === 'stamped') add(out, makeLine({ name: 'Stamped finish materials', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.stampedMaterialPerSqft, ratePath: 'stampedMaterialPerSqft' }));
   out.feeScope.disposal = c.demolitionNeeded;
-  if (c.demolitionNeeded && !p.scopeDetails?.demolition?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', c.demolitionAreaSqft, 'measured demolition square feet', 'Concrete disposal');
+  if (c.demolitionNeeded && !p.scopeDetails?.[scopeKeysForRequest(serviceType,c,p).find(k=>scopeBaseKey(k)==='demolition')]?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', c.demolitionAreaSqft, 'measured demolition square feet', 'Concrete disposal');
   recordMeasurement(out, 'areaSqft', dimensions.areaSqft, 'square feet', dimensions.source);
   recordMeasurement(out, 'perimeterLF', dimensions.perimeterLF, 'linear feet', dimensions.source);
   recordMeasurement(out, 'concreteVolume', yards, 'cubic yards', 'derived_from_measured_area_thickness_and_owner_waste');
@@ -1071,9 +1035,8 @@ function calculateSidingReplacement(c, p) {
   const story = quantityFactor(p.storyMultiplier[c.stories], `storyMultiplier.${c.stories}`);
   add(out, makeLine({ name: 'Siding labor', category: 'labor', quantity: area, unit: 'measured wall square feet', rateCents: valueAtPath(p, `laborPerSqft.${c.sidingType}`), ratePath: `laborPerSqft.${c.sidingType}`, multipliers: [{ name: 'stories', value: story, path: `storyMultiplier.${c.stories}` }], customerDriver: `${area} measured square feet of siding wall area` }));
   add(out, makeLine({ name: 'Siding materials', category: 'material', quantity: exactSidingMaterialSqft, unit: 'waste-adjusted wall square feet', rateCents: valueAtPath(p, `materialPerSqft.${c.sidingType}`), ratePath: `materialPerSqft.${c.sidingType}`, customerDriver: `Siding type: ${c.sidingType.replaceAll('_', ' ')}` }));
-  if (c.oldSidingRemoval && !p.scopeDetails?.siding_removal) add(out, makeLine({ name: 'Old siding removal', category: 'removal', quantity: area, unit: 'measured wall square feet', rateCents: p.removalPerSqft, ratePath: 'removalPerSqft', multipliers: [{ name: 'stories', value: story, path: `storyMultiplier.${c.stories}` }] }));
   out.feeScope.disposal = c.oldSidingRemoval;
-  if (c.oldSidingRemoval && !p.scopeDetails?.siding_removal?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', p.scopeDetails?.siding_removal?c.sidingRemovalAreaSqft:area, 'removed square feet', 'Siding disposal');
+  if (c.oldSidingRemoval && !p.scopeDetails?.[scopeKeysForRequest('SIDING_REPLACEMENT',c,p).find(k=>scopeBaseKey(k)==='siding_removal')]?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', c.sidingRemovalAreaSqft, 'removed square feet', 'Siding disposal');
   recordMeasurement(out, 'sidingAreaSqft', area, 'square feet');
   if (c.trimIncluded) recordMeasurement(out, 'trimLengthLF', c.trimLengthLF, 'linear feet');
   out.priceDrivers.push(`${area} measured square feet of siding wall area`, `Siding type: ${c.sidingType.replaceAll('_', ' ')}`);
@@ -1272,7 +1235,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (serviceType === 'FLAT_ROOF_REPLACEMENT') return finalize(calculateFlatRoofReplacement(customerInputs, pricing, ctx));
   if (serviceType === 'FLAT_ROOF_REPAIR') return finalize(calculateFlatRoofRepair(customerInputs, pricing, addonContext));
   if (serviceType === 'INTERIOR_PAINTING') return finalize(calculateInteriorPainting(customerInputs, pricing, serviceRules));
-  if (serviceType === 'EXTERIOR_PAINTING') return finalize(calculateExteriorPainting(customerInputs, pricing, serviceRules));
+  if (serviceType === 'EXTERIOR_PAINTING') throw new QuoteReviewError('Configure an exterior painting offering before quoting.');
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') return finalize(calculateFlooring(serviceType, customerInputs, pricing, ctx));
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') return finalize(calculateFencing(serviceType, customerInputs, pricing));
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return finalize(calculateConcrete(serviceType, customerInputs, pricing));

@@ -1,16 +1,17 @@
+import {offeringMoneyKind} from '../quote-engine-vnext/configuredOfferings.js';
 import crypto from 'node:crypto';
 import {applicationQuoteMonth} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
-import { mergeCustomerFieldDefinitions } from '../scopeConfiguration.js';
+import { mergeCustomerFieldDefinitions, scopeOverlapDiagnostics } from '../scopeConfiguration.js';
 import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
-  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES,
-  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions, mergePricingVNext
+  PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES, MEASUREMENT_CONTRACTS,
+  configuredOffering, offeringContract, customerContractForVNext, scopeRateDefinitions, offeringRateDefinitions, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
@@ -49,9 +50,7 @@ export function quoteDoneMoneyKind(type,field,pricing={}) {
 // Match the current engine's cent domain; retained inactive legacy fields keep
 // their existing lossless conversion. No rate is rounded or inferred here.
 export function quoteDoneWholeCents(type,field,pricing={}) {
-  return allowedPricingFields(type).includes(field) && !!quoteDoneMoneyKind(type,field,pricing) &&
-    !['mowingBaseRatePerSqft','offeringRates','scopeRates'].includes(field) &&
-    !(type==='CUSTOM'&&['price','low','high'].includes(field));
+  return allowedPricingFields(type).includes(field) && quoteDoneMoneyKind(type,field,pricing)==='fixed_amount';
 }
 function moneyTree(value,kind,convert,location) {
   if(record(value))return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,moneyTree(item,kind,convert,location+'.'+key)]));
@@ -64,9 +63,9 @@ function convertedPricing(source,type,direction,location,effective=source) {
   const fields=new Set([...(ALL_OWNER_FIELDS[type]||[]),...allowedPricingFields(type)]);
   for(const field of fields) {
     if(!has(source,field))continue;
-    if(field==='scopeRates'&&record(source[field])){
-      const definitions=scopeRateDefinitions(type,effective,true);
-      result[field]=Object.fromEntries(Object.entries(source[field]).map(([key,value])=>[key,convert(value,{kind:definitions[key]?.moneyKind||'unit_rate',path:location+'.'+field+'.'+key})]));
+    if(['scopeRates','offeringRates'].includes(field)&&record(source[field])){
+      const definitions=field==='scopeRates'?scopeRateDefinitions(type,effective,true):offeringRateDefinitions(type,effective);
+      result[field]=Object.fromEntries(Object.entries(source[field]).map(([key,value])=>[key,convert(value,{kind:direction==='toDollars'&&!Number.isInteger(value)?'unit_rate':field==='offeringRates'?offeringMoneyKind(key):definitions[key]?.moneyKind||'unit_rate',path:location+'.'+field+'.'+key})]));
       continue;
     }
     const kind=quoteDoneMoneyKind(type,field,effective);
@@ -74,7 +73,7 @@ function convertedPricing(source,type,direction,location,effective=source) {
       // An old roof minimum can contain fractional cents because that field
       // previously bypassed conversion. Display its stored value exactly so
       // the owner can correct it. Saving and quoting still require whole cents.
-      const legacyDisplay=direction==='toDollars'&&type==='ROOFING_REPLACEMENT'&&field==='minimumJob'&&typeof source[field]==='number'&&!Number.isInteger(source[field]);
+      const legacyDisplay=direction==='toDollars'&&kind==='fixed_amount';
       // Read-back stays lossless so historical invalid rates can be corrected.
       const convertRate=direction==='toCents'&&quoteDoneWholeCents(type,field,effective)
         ? (value,options)=>{parseOwnerNumericInput(value,{...options,wholeCents:true});return convert(value,options);}
@@ -95,7 +94,7 @@ export function convertApplicationBook(input,direction) {
     const effective={...service,...(record(service.pricing)?service.pricing:{})};
     const next=convertedPricing(service,service.serviceType,direction,'services.'+index,effective);
     if(has(service,'pricing'))next.pricing=convertedPricing(service.pricing,service.serviceType,direction,'services.'+index+'.pricing',effective);
-    if(Array.isArray(service.tiers))next.tiers=service.tiers.map((tier,i)=>({...clone(tier),...(has(tier,'overrides')?{overrides:convertedPricing(tier.overrides,service.serviceType,direction,'services.'+index+'.tiers.'+i+'.overrides',{...effective,...tier.overrides})}:{})}));
+    if(Array.isArray(service.tiers))next.tiers=service.tiers.map((tier,i)=>({...clone(tier),...(has(tier,'overrides')?{overrides:convertedPricing(tier.overrides,service.serviceType,direction,'services.'+index+'.tiers.'+i+'.overrides',mergePricingVNext(effective,tier.overrides||{}))}:{})}));
     return next;
   });
   for(const field of DEFAULT_MONEY)if(has(out.defaults,field))out.defaults[field]=convert(out.defaults[field],{kind:field==='laborHourlyRate'?'unit_rate':'fixed_amount',path:'defaults.'+field});
@@ -250,6 +249,10 @@ export function saveApplicationBook(ownerId,input) {
       service.confirmedFields={};
     }
     const effective=projection(service); // detect conflicts without relocating stored fields
+    for(const [tierName,pricing] of [[null,effective.pricing],...(service.tiers||[]).map(t=>[t.name,mergePricingVNext(effective.pricing,t.overrides||{})])]){
+      const issues=scopeOverlapDiagnostics(service.serviceType,pricing);
+      if(issues.length)throw problem('Resolve overlapping scope entries before saving'+(tierName?' in '+tierName:'')+'.',400,{issues,tierName});
+    }
     // Store every default setting the quote uses (post spacing, waste, labor
     // factors) on the service, so the saved record and its approval review list
     // exactly what is applied. Entered values and retained data are untouched.
@@ -443,6 +446,6 @@ export function applicationMetadata() {
       if(meta.serviceType==='LANDSCAPING_CLEANUP'&&field.field==='debrisPricing')info.tree={depth:2,rootKeys:['light','moderate','heavy'],requiredRootKeys:['light','moderate','heavy'],leafKeys:['laborMultiplier','disposalFlat'],leafMoneyKinds:{disposalFlat:'fixed_amount'},positiveLeafKeys:['laborMultiplier']};
       return info;
     });
-    return {...old,...meta,name:meta.service,requiresOffering,fields,legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
+    return {...old,...meta,name:meta.service,requiresOffering,fields,interviewFields:Object.values(MEASUREMENT_CONTRACTS[meta.serviceType].fields).some(f=>f.type==='slug')?[{field:'knownOfferings',label:'Products you explicitly offer',type:'offering_registry'}]:[],legacyClass2Fields:(old?.class2Fields||[]).filter(field=>!meta.class2Fields.some(current=>current.name===field.field)),class2Fields:meta.class2Fields.map(field=>({...field,field:field.name})),class2Defaults:Object.fromEntries(meta.class2Fields.map(field=>[field.name,field.defaultValue])),sampleInputs:{}};
   })};
 }

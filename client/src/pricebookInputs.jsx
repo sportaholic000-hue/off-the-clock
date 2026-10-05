@@ -2,6 +2,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { parseOwnerNumericInput, scaleOwnerDecimal } from '../../server/priceBookMoney.js';
 import { fenceHeightParts, FENCE_HEIGHT_PRECISION_MESSAGE } from '../../server/quote-engine-vnext/configuredOfferings.js';
 import { TextInput, Field } from './ui.jsx';
+import { productKeyFromName } from './pricebookFormatting.js';
+
+// Owners enter ordinary product names; use the same key conversion as the
+// product registry. Keep invalid drafts visible so an earlier value cannot save.
+export function ProductNameInput({value,onChange,...props}) {
+ const [raw,setRaw]=useState(value===undefined?'':String(value).replaceAll('_',' '));
+ const emitted=useRef(value);
+ useEffect(()=>{if(!Object.is(value,emitted.current)){emitted.current=value;setRaw(value===undefined?'':String(value).replaceAll('_',' '));}},[value]);
+ const problem=raw?productKeyFromName(raw).error:null;
+ return <><TextInput {...props} value={raw} aria-invalid={Boolean(problem)} onChange={e=>{
+  const next=e.target.value;setRaw(next);const parsed=productKeyFromName(next);
+  emitted.current=next===''?undefined:parsed.error?next:parsed.key;onChange(emitted.current);
+ }}/>{problem&&<span className="field-error" role="alert">{problem}</span>}</>;
+}
 
 // Keep entered decimal text while editing. Invalid text stays in the draft,
 // so switching services cannot silently save an earlier accepted replacement.

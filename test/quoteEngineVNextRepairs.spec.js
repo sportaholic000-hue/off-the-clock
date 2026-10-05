@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import {exactToNumber as projectExact} from '../server/quote-engine-vnext/exactMath.js';
 import {ENGINE_VERSION as currentEngineVersion} from '../server/quote-engine-vnext/engine.js';
 import {editVNextService} from '../server/quote-engine-vnext/index.js';
@@ -405,7 +406,7 @@ function concreteService(pricing = {}, serviceType = 'CONCRETE_DRIVEWAY') {
 
 function concreteInputs(overrides = {}) {
   const inputs = {
-    dimensionMethod: 'exact',
+    adjoinsExistingConcrete:false, dimensionMethod: 'exact',
     length: 20,
     width: 10,
     thickness: 4,
@@ -2219,7 +2220,7 @@ test('repair 47: intrinsic range multiplication and midpoint arithmetic stay wit
 test('repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed', () => {
   const assertReadyCases = (serviceType, ownerPricing, cases, knownUnconsumed = []) => {
     for(let index=0;index<cases.length;index++)cases[index]=confirmedFixtureInputs(cases[index]);
-    const reviewScope=c=>serviceType==='EXTERIOR_PAINTING'||(serviceType==='FLAT_ROOF_REPLACEMENT'&&c.buildingType==='commercial')||(serviceType.startsWith('FLOORING_')&&c.stairSteps>0)||(serviceType.startsWith('CONCRETE_')&&c.demolitionNeeded)||(serviceType==='SIDING_REPLACEMENT'&&c.oldSidingRemoval);
+    const reviewScope=c=>serviceType==='EXTERIOR_PAINTING'||(serviceType==='FLAT_ROOF_REPLACEMENT'&&(c.insulationNeeded||c.coverboardNeeded))||(serviceType.startsWith('FLOORING_')&&c.stairSteps>0)||(serviceType.startsWith('CONCRETE_')&&c.demolitionNeeded)||(serviceType==='SIDING_REPLACEMENT'&&c.oldSidingRemoval);
     for(const c of cases.filter(reviewScope)){
       const result=run(serviceType,c,ownerPricing);assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(result));assert.ok(result.inspectionFirst);assert.ok(result.ownerDecisionRequired.length);assert.deepEqual(result.submittedCustomerInputs,c);assert.equal(sanitizeForCustomerVNext(result).lowEstimate,undefined);
     }
@@ -6450,7 +6451,7 @@ test('repair 100: exact concrete dimensions obey the same practical area bound a
   assert.deepEqual(aboveLimit.invalidCustomerFields.sort(), ['length', 'width']);
 
   const measuredAreaAtLimit = run('CONCRETE_DRIVEWAY', {
-    dimensionMethod: 'measured_area_perimeter',
+    adjoinsExistingConcrete:false, dimensionMethod: 'measured_area_perimeter',
     areaSqft: 10_000_000,
     perimeterLF: 22_000,
     thickness: 4,
@@ -6763,8 +6764,8 @@ test('repair 122: siding removal cannot reuse replacement type and installation 
  const p=service('SIDING_REPLACEMENT',{laborPerSqft:{vinyl:100},materialPerSqft:{vinyl:100},removalPerSqft:100,minimumJob:0}),c={areaInputMethod:'sqft',sidingAreaSqft:100,sidingType:'vinyl',stories:1,oldSidingRemoval:false,trimIncluded:false};assert.equal(auditRun(c,p).resultType,auditReady);const r=auditRun({...c,oldSidingRemoval:true},p);assert.equal(r.resultType,auditReview);assert.ok(r.inspectionFirst);
 });
 test('repair 123: concrete rejects impossible geometry and supports a measured closed irregular outline',()=>{
- const p=concreteService(),c=concreteInputs({dimensionMethod:'measured_area_perimeter',areaSqft:1000,perimeterLF:1});delete c.length;delete c.width;assert.equal(auditRun(c,p).resultType,auditReview);
- const points=[{x:0,y:0},{x:10,y:0},{x:10,y:5},{x:5,y:5},{x:5,y:10},{x:0,y:10},{x:0,y:0}],outline=concreteInputs({dimensionMethod:'measured_outline',outlinePoints:points});delete outline.length;delete outline.width;const r=auditRun(outline,p);assert.equal(r.resultType,auditReady,JSON.stringify(r));assert.equal(lineAmount(r,'Concrete labor'),45000);assert.equal(lineAmount(r,'Formwork'),100000);assert.equal(lineAmount(r,'Ready-mix concrete'),18333); // 75 sqft; 40 feet; 75*4/324*1.1 yards at 18000 cents.
+ const p=concreteService(),c=concreteInputs({adjoinsExistingConcrete:false, dimensionMethod:'measured_area_perimeter',areaSqft:1000,perimeterLF:1});delete c.length;delete c.width;assert.equal(auditRun(c,p).resultType,auditReview);
+ const points=[{x:0,y:0},{x:10,y:0},{x:10,y:5},{x:5,y:5},{x:5,y:10},{x:0,y:10},{x:0,y:0}],outline=concreteInputs({adjoinsExistingConcrete:false, dimensionMethod:'measured_outline',outlinePoints:points});delete outline.length;delete outline.width;const r=auditRun(outline,p);assert.equal(r.resultType,auditReady,JSON.stringify(r));assert.equal(lineAmount(r,'Concrete labor'),45000);assert.equal(lineAmount(r,'Formwork'),100000);assert.equal(lineAmount(r,'Ready-mix concrete'),18333); // 75 sqft; 40 feet; 75*4/324*1.1 yards at 18000 cents.
  for(const [height,ready] of [[0.9999999999999999,false],[1,true],[1.0000000000000002,true]]){
    const rectangle={...outline,outlinePoints:[{x:0,y:0},{x:1,y:0},{x:1,y:height},{x:0,y:height},{x:0,y:0}]};assert.equal(auditRun(rectangle,p).resultType,ready?auditReady:auditReview);
  }
@@ -6787,7 +6788,7 @@ test('repair 124: concrete demolition is review-only without existing-slab prici
  const p=concreteService({demolitionPerSqft:100});assert.equal(auditRun(concreteInputs(),p).resultType,auditReady);for(const thickness of [2,4,24])assert.equal(auditRun(concreteInputs({demolitionNeeded:true,demolitionAreaSqft:100,thickness}),p).resultType,auditReview);
 });
 test('repair 125: commercial building type does not establish insulation or coverboard scope',()=>{
- assert.equal(auditRun(auditFlatC(),auditFlatP()).resultType,auditReady);const r=auditRun({...auditFlatC(),buildingType:'commercial'},auditFlatP());assert.equal(r.resultType,auditReview);assert.ok(r.inspectionFirst);
+ assert.equal(auditRun(auditFlatC(),auditFlatP()).resultType,auditReady);const r=auditRun({...auditFlatC(),buildingType:'commercial'},auditFlatP());assert.equal(r.resultType,auditReady);assert.equal(auditRun({...auditFlatC(),insulationNeeded:true},auditFlatP()).resultType,auditReview);
 });
 test('repair 126: wall uniformity is explicit and ceiling coats are independently measured',()=>{
  const p=interiorService(),c=interiorInputs();for(const uniform of [true,false,undefined])assert.equal(auditRun({...c,wallScopeUniform:uniform},p).resultType,uniform===true?auditReady:auditReview);
@@ -7041,7 +7042,7 @@ test('repair 134: candidate metadata describes actual review-only scopes and rem
     const copy=flat.pricingFields.find(f=>f.field===field);
     assert.equal(/average/i.test(copy.help),false);
   }
-  const expected={FLOORING_INSTALL:'Stairs',SIDING_REPLACEMENT:'removal',CONCRETE_DRIVEWAY:'Demolition',FLAT_ROOF_REPLACEMENT:'Commercial',FENCING_INSTALL:'Every fence',EXTERIOR_PAINTING:'Every exterior'};
+  const expected={FLOORING_INSTALL:'Stairs',SIDING_REPLACEMENT:'removal',CONCRETE_DRIVEWAY:'Demolition',FLAT_ROOF_REPLACEMENT:'insulation',FENCING_INSTALL:'Every fence',EXTERIOR_PAINTING:'Every exterior'};
   for(const [type,word] of Object.entries(expected)){
     const m=metadata.find(m=>m.serviceType===type);
     const scope=m.reviewOnlyScopes.find(s=>s.when.toLowerCase().includes(word.toLowerCase()));
@@ -7097,7 +7098,7 @@ test('repair 138: continuing collinear measured edges preserve exact geometry an
   for(const [x,y] of [[10,20],[10.2,20.4]]){
     const p=concreteService(),simple=[{x:0,y:0},{x,y:0},{x,y},{x:0,y},{x:0,y:0}];
     const middle=[simple[0],{x:x/2,y:0},...simple.slice(1)];
-    const base={dimensionMethod:'measured_outline',outlinePoints:simple,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false};
+    const base={adjoinsExistingConcrete:false, dimensionMethod:'measured_outline',outlinePoints:simple,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false};
     const a=currentRun(base,p),b=currentRun({...base,outlinePoints:middle},p);
     const rotated=[...middle.slice(1,-1),middle[0],middle[1]];
     assert.deepEqual(currentRun({...base,outlinePoints:rotated},p).lineItems,a.lineItems);
@@ -7296,7 +7297,7 @@ test('repair 144: review-only metadata names exact supported fields and the actu
     for(const f of demo.fields)assert.equal(m.pricingFields.find(p=>p.field===f).reviewOnly,true);
     assert.equal(JSON.stringify(m).includes('finishLaborMultiplier'),false);
     for(const scope of m.reviewOnlyScopes)for(const f of scope.fields)assert.ok(m.allowedPricingFields.includes(f));
-    const p=concreteService({},type),c={dimensionMethod:'exact',length:10,width:20,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false};
+    const p=concreteService({},type),c={adjoinsExistingConcrete:false, dimensionMethod:'exact',length:10,width:20,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false};
     assert.equal(currentRun(c,p).resultType,auditReady);
     assert.equal(currentRun({...c,finishType:'exposed_aggregate'},p).resultType,auditReview);
     assert.equal(currentRun({...c,demolitionNeeded:true,demolitionAreaSqft:200},p).resultType,auditReview);

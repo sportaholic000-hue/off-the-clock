@@ -1,0 +1,765 @@
+{
+  "testedCode": "bd14bfb5ac38754abd1a054d5bdc6a6ffcec67dd",
+  "entries": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha": "b5f0d657f7856e5fb6021ac2ba8c77dc0df85f2c"
+    },
+    {
+      "path": "client/package.json",
+      "sha": "8d38de72c610767512b4b641a6b9a7dc35840b79"
+    },
+    {
+      "path": "client/src/accountRecovery.jsx",
+      "sha": "58ef15b9bc6d50409ae16671fe94d9779bf2c445"
+    },
+    {
+      "path": "client/src/api.js",
+      "sha": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982"
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "sha": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2"
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "sha": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28"
+    },
+    {
+      "path": "client/src/calendar.jsx",
+      "sha": "d28d7e533e812750a42c050dcfd84019bb6f4280"
+    },
+    {
+      "path": "client/src/calendarForm.js",
+      "sha": "4bf229e9d0d04158632335aac8193e3732b460a5"
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "sha": "7b1c708b41a516cdbb79f963f6fa1a93547927d5"
+    },
+    {
+      "path": "client/src/installedMaterialsEditor.jsx",
+      "sha": "641249d95ff9c310fd9edb2875013d9d60ec5dcd"
+    },
+    {
+      "path": "client/src/integrationDownloads.js",
+      "sha": "e90d7073d576320af02e9bec2d31a5e5096493f9"
+    },
+    {
+      "path": "client/src/interviewAssist.js",
+      "sha": "1ec06010fba75cbf3a8f5629d5f9c94b5c42085d"
+    },
+    {
+      "path": "client/src/interviewConfiguration.jsx",
+      "sha": "028ffba559f818096981a7484650d9d218e63a89"
+    },
+    {
+      "path": "client/src/interviewStructured.jsx",
+      "sha": "04a8aa48acd09aa7c774a58c8c49c376ef7b6bc2"
+    },
+    {
+      "path": "client/src/interviewStructuredValue.js",
+      "sha": "6fe58dc51a2112d9d2f8dc2698260c651ee0ba00"
+    },
+    {
+      "path": "client/src/main.jsx",
+      "sha": "e767740867f1e10dfe9e8757ab3dae0ba5cc6c5f"
+    },
+    {
+      "path": "client/src/offeringEditor.jsx",
+      "sha": "4956c21acc12ff95f70426be256fd66c7f3c67fc"
+    },
+    {
+      "path": "client/src/onboarding.jsx",
+      "sha": "842e5aa5d469aa24e8a4029681ab45ac706e5873"
+    },
+    {
+      "path": "client/src/ownerIntegrations.jsx",
+      "sha": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f"
+    },
+    {
+      "path": "client/src/pricebook.jsx",
+      "sha": "5191d62ac2b80bf52a712e55afa599148eab0e69"
+    },
+    {
+      "path": "client/src/pricebookDrafts.js",
+      "sha": "065ae1fde30f3acb876fff8a36e6cd96dcec9d21"
+    },
+    {
+      "path": "client/src/pricebookEditing.js",
+      "sha": "ae69ee3f2aa2a2e79dbe25bd267889201757eff5"
+    },
+    {
+      "path": "client/src/pricebookFormatting.js",
+      "sha": "63c12a49f9b06e8b9d54b6107cf2d4a4d1cb5e5a"
+    },
+    {
+      "path": "client/src/pricebookInputs.jsx",
+      "sha": "8afbe2ef202f212f37af51719033196189037219"
+    },
+    {
+      "path": "client/src/pricebookReview.js",
+      "sha": "cc55d113a889104cf30f3bfc55314e7ceb683998"
+    },
+    {
+      "path": "client/src/quoteDoneControls.jsx",
+      "sha": "fa6fb0ef0e7aec23ab4951900e57f2519d0c97ed"
+    },
+    {
+      "path": "client/src/quotePresentation.js",
+      "sha": "a1b271c3a03f5e24ab3bccb07da88e8ab090b3ec"
+    },
+    {
+      "path": "client/src/quoteSubmission.js",
+      "sha": "f3a818ba27f8df284e5d08f0767a3cf3bd85a3d0"
+    },
+    {
+      "path": "client/src/quoteWizard.jsx",
+      "sha": "fbb65aa6b23c2673a22edc8f776871db9a8244ef"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "sha": "64a6a91141aa07255d33346316777b7054559e8f"
+    },
+    {
+      "path": "client/src/reference.jsx",
+      "sha": "5eb63e8abc5fa0c1cf295b75b34449f19583b1bd"
+    },
+    {
+      "path": "client/src/scopeEditor.jsx",
+      "sha": "5bc945fdb54684ed232103e1c60a996b4b9e5a1f"
+    },
+    {
+      "path": "client/src/sessionIdentity.js",
+      "sha": "c1b25be2fb1eb6f15d2a36cf7c4af62ec6323369"
+    },
+    {
+      "path": "client/src/ui.jsx",
+      "sha": "2f71fdf41de64dcca2c780db54aaf8a65265a9c7"
+    },
+    {
+      "path": "client/src/widget-entry.jsx",
+      "sha": "7d59afdd4335adcfe564f619795e807749f7a351"
+    },
+    {
+      "path": "client/src/widgetBooking.jsx",
+      "sha": "08a088699117eb51256437beaf83da462b7bc093"
+    },
+    {
+      "path": "client/src/widgetInstall.jsx",
+      "sha": "7ca0520b0628b067f85d7b869a0f9f9613e40c7a"
+    },
+    {
+      "path": "client/src/widgetTransport.js",
+      "sha": "3212c586aa7fc39e4d288cb7fd631ba4ab02bd26"
+    },
+    {
+      "path": "package-lock.json",
+      "sha": "c9d5f66837c8311a2ec11400d81379efa870673b"
+    },
+    {
+      "path": "package.json",
+      "sha": "1f9e99c1977aef5ee92b2edec33a57a3ea4af1e7"
+    },
+    {
+      "path": "scripts/test-full.mjs",
+      "sha": "77ba7d60d9224b82f3c484949f19aa1311e7660c"
+    },
+    {
+      "path": "scripts/testSelection.mjs",
+      "sha": "e0c991e22d08cc94ee46cd3c6ad16c50b8486b65"
+    },
+    {
+      "path": "server/installedPriceConfiguration.js",
+      "sha": "94e2c07f80620eda1345afe5806a8cfdebbf0d0b"
+    },
+    {
+      "path": "server/interviewConfiguration.js",
+      "sha": "036c3d8cd32f2bfe071224fdb6df4d5bf904c5d4"
+    },
+    {
+      "path": "server/package.json",
+      "sha": "b7f9c19ee1dd368d43a278e767539ede1c40a4c8"
+    },
+    {
+      "path": "server/priceBookCopy.js",
+      "sha": "bef2133fa70a19c127841b20e215a106a104707e"
+    },
+    {
+      "path": "server/priceBookMetadata.js",
+      "sha": "9f5e684f6f5f56eff1101a53a9e1bbaf86b263ca"
+    },
+    {
+      "path": "server/priceBookMoney.js",
+      "sha": "d1529e8d679758a1180061e1fce1a38c9fe29c4b"
+    },
+    {
+      "path": "server/priceBookService.js",
+      "sha": "709e65598873f1b2f664319811cd252ab1362497"
+    },
+    {
+      "path": "server/priceBookTree.js",
+      "sha": "2de2a771db9deed2d224862967afd4677386f3b9"
+    },
+    {
+      "path": "server/pricePrecision.js",
+      "sha": "8c5bea7a192416b95ff4874cb29534be80df0b02"
+    },
+    {
+      "path": "server/public/otc-live-demo.js",
+      "sha": "76fcfdb99325d2a202f358b17c8e75cf4ba82c11"
+    },
+    {
+      "path": "server/quote-engine-vnext/configuredOfferings.js",
+      "sha": "a81a577efb8f8d0dd48d73534bb80482898daee4"
+    },
+    {
+      "path": "server/quote-engine-vnext/contracts.js",
+      "sha": "631f6e289bdcc7fc7fb8cbb49818bf757b7fc508"
+    },
+    {
+      "path": "server/quote-engine-vnext/engine.js",
+      "sha": "15f6ed5a64594200354c1ef48066de8b201639d1"
+    },
+    {
+      "path": "server/quote-engine-vnext/exactMath.js",
+      "sha": "56d78ed30fd10294db35a6e44f01d2e2008f531b"
+    },
+    {
+      "path": "server/quote-engine-vnext/geometry.js",
+      "sha": "925ed38777dc914a8965a0b85278ac0dc883f0c5"
+    },
+    {
+      "path": "server/quote-engine-vnext/index.js",
+      "sha": "9765a3a9cb65fa7901871bfd763f2bfa35c63491"
+    },
+    {
+      "path": "server/quote-engine-vnext/priceBook.js",
+      "sha": "ebb7291a238c539f70ea04024ec3e238948687cc"
+    },
+    {
+      "path": "server/quote-engine-vnext/safeData.js",
+      "sha": "cf183be9c29368f3bd9b6dfa1f87020b74705050"
+    },
+    {
+      "path": "server/quote-engine-vnext/scopePricing.js",
+      "sha": "b45fe63840212aae1f8cc4e78aadeca8778770ff"
+    },
+    {
+      "path": "server/quote-engine-vnext/templates.js",
+      "sha": "2cbc3226ea182b63951a8e2edae106efb8f0a308"
+    },
+    {
+      "path": "server/quote-engine-vnext/tradeAdjustments.js",
+      "sha": "7f0e127a691b3f774b527d1320feab67ce453cb2"
+    },
+    {
+      "path": "server/quoteEngine.js",
+      "sha": "ec4a05e7a2b35e12a8bde2f179d9c22761587e18"
+    },
+    {
+      "path": "server/quoteLog.js",
+      "sha": "56e2ac691408160ac532ede99fd258179e710475"
+    },
+    {
+      "path": "server/quoteTemplates.js",
+      "sha": "8c28d8b5c805017c7ce12df1e34aec25a2622c9c"
+    },
+    {
+      "path": "server/scopeConfiguration.js",
+      "sha": "6e02efc1bbdf7de5e7de9de809fdb3b614b9b52c"
+    },
+    {
+      "path": "server/scripts/quote-vnext-gate.js",
+      "sha": "18ac2f8832abcb9a0f8156f99ff9f56c1a4dbd93"
+    },
+    {
+      "path": "server/src/accountRoutes.js",
+      "sha": "681135fd8396e506883bf854ba50da81161cfe18"
+    },
+    {
+      "path": "server/src/auth.js",
+      "sha": "63c6556c5fd8a99d888ac47fdebccf72d5a40677"
+    },
+    {
+      "path": "server/src/authLinks.js",
+      "sha": "2db2c74bce1245110c38e5af5166d2e34945d620"
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "sha": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5"
+    },
+    {
+      "path": "server/src/authRateLimitService.js",
+      "sha": "4869358cec735654c77f63b371fa090257e8a37f"
+    },
+    {
+      "path": "server/src/authSessionHttp.js",
+      "sha": "b79d90a514a93465a3dc6f76fca027fcfb8b9b53"
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "sha": "06176e808b145f4d5f1c3523122b564d62fa9729"
+    },
+    {
+      "path": "server/src/authTokenService.js",
+      "sha": "a42dab7abe98467cd266d338028c591cddd16ee7"
+    },
+    {
+      "path": "server/src/backups.js",
+      "sha": "546ba15164fc32af46840374723d7edd0bc0c186"
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "sha": "760804b2be23b09d9fd1b648d1540fbe8bfe592d"
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "sha": "cd411e15a57d8003ce209da2b1e04584341db309"
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "sha": "96dac32b654d757975ba0b39883d5a76ee904742"
+    },
+    {
+      "path": "server/src/bookingAdminRoutes.js",
+      "sha": "98792bab9be179a26015b963d622361dc6349d89"
+    },
+    {
+      "path": "server/src/bookingAdminService.js",
+      "sha": "261c4d2fac8482804e6cc284264e3019e19082ff"
+    },
+    {
+      "path": "server/src/bookingCapabilities.js",
+      "sha": "e1f8a14b96179e1000888b2f1a8687d8d2cb1621"
+    },
+    {
+      "path": "server/src/bookingPreferenceService.js",
+      "sha": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4"
+    },
+    {
+      "path": "server/src/bookingRoutes.js",
+      "sha": "5e015ddc6ce94cacf6ac136e77a5ca205847be2b"
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha": "1e7f5a2a541e3d37105a925e7e2759b649f8edf2"
+    },
+    {
+      "path": "server/src/bookingTokens.js",
+      "sha": "930501e5550e32342a8616dc7e4eb3e2b6a138b4"
+    },
+    {
+      "path": "server/src/calendarCredentialMigration.js",
+      "sha": "2f5075e8428257b75a5c0ead20cea3065f7d904c"
+    },
+    {
+      "path": "server/src/calendarCredentials.js",
+      "sha": "87035db4d213ddb4d6d55f16b699c1ffb23ab926"
+    },
+    {
+      "path": "server/src/calendarOAuthState.js",
+      "sha": "439ea0f4bac871421357b28a1b81f9d2bb6111e6"
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "sha": "de4d42efaec332115fec229af2b7fe14ad7323aa"
+    },
+    {
+      "path": "server/src/clientAddress.js",
+      "sha": "f578cb0d4fa02a97ace85a6bb6b50be0281d5daa"
+    },
+    {
+      "path": "server/src/corsPolicy.js",
+      "sha": "10063b96d6b27140603f56d4202c0a219a648baa"
+    },
+    {
+      "path": "server/src/credentialEncryption.js",
+      "sha": "dce151e23a4c212e3e67783ae74f9ff4c36d12b8"
+    },
+    {
+      "path": "server/src/customerSummary.js",
+      "sha": "29e62c3fe5e0c6032579251b2e6b6fd472abe520"
+    },
+    {
+      "path": "server/src/db.js",
+      "sha": "c8d8d0d70288903ce74862199bb087c80914ecd6"
+    },
+    {
+      "path": "server/src/demo/demoInstructions.js",
+      "sha": "322e5b06f8c859cf08e9ccd49803aa00f1c61dd0"
+    },
+    {
+      "path": "server/src/demo/liveDemo.js",
+      "sha": "93dc2188b0e16857656e060c33d1507926e25156"
+    },
+    {
+      "path": "server/src/deploymentConfig.js",
+      "sha": "749686060536ed6b79cee5ed412d6523f82595ca"
+    },
+    {
+      "path": "server/src/deploymentEnvironment.js",
+      "sha": "b9b7168805825d28d1ae4e3e0ad26fdf41ddf580"
+    },
+    {
+      "path": "server/src/email.js",
+      "sha": "3a1f507936ef2d03fdaf9932aeafdf2e119b9a8d"
+    },
+    {
+      "path": "server/src/exactJson.js",
+      "sha": "260c1500b3943998e17df19e174b2ec64be7cb26"
+    },
+    {
+      "path": "server/src/googleCalendarAdapter.js",
+      "sha": "04dcd4fdfcd6c087e5cc6df8e4acff7568d0ac58"
+    },
+    {
+      "path": "server/src/integrationData.js",
+      "sha": "878f631cd765ab7373590501f84fa73483ff63ad"
+    },
+    {
+      "path": "server/src/lifecycle.js",
+      "sha": "88b6f55df496f9e9aabea290c1b299bba8e47d98"
+    },
+    {
+      "path": "server/src/migrations.js",
+      "sha": "78acc7730988a83ee13ab4bbff89e0e74222e6fa"
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "sha": "1a540b48878c3ccad6841ede9ab1c9ed8e22c839"
+    },
+    {
+      "path": "server/src/outboundWebhookSchema.js",
+      "sha": "ca804f3c2f2e1432998ce59b41a8e63527355b32"
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "sha": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "path": "server/src/outboundWebhookTransport.js",
+      "sha": "f4e13c2cb9219096cede5170068d8a1b66c8b32b"
+    },
+    {
+      "path": "server/src/ownerCalendarRoutes.js",
+      "sha": "4f8f00cd827e76fe8a67be3d924042959fcf91a5"
+    },
+    {
+      "path": "server/src/ownerCalendarService.js",
+      "sha": "b8b3331240cce15a14e8fdea59e538e6d906b68e"
+    },
+    {
+      "path": "server/src/ownerIntegrationRoutes.js",
+      "sha": "38d70812f7cfead22cbf5ad8426ea4ad61757a96"
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "sha": "c0a85d8569618fbdec8899dafe12659fb2791cd7"
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "sha": "0f41167ce68ded3b43b23fa064e5cdd72290e9de"
+    },
+    {
+      "path": "server/src/previewMode.js",
+      "sha": "4282015139d69aa1e62737a8389c3122bed0f90e"
+    },
+    {
+      "path": "server/src/priceBookAI.js",
+      "sha": "2336a01f716c59e8fdf4127cc8bb740e5b761149"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "sha": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "path": "server/src/quoteContact.js",
+      "sha": "7efd4cfacae00b6bf053c70ecfa6080b1aee2a57"
+    },
+    {
+      "path": "server/src/quoteDate.js",
+      "sha": "a739a4af564e674791e75b593df5ad12d8a6506a"
+    },
+    {
+      "path": "server/src/quoteDoneBridge.js",
+      "sha": "47da018e76da59b3966eefbc2a18183a7f766e8d"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "sha": "46bcf7717d755fe82554f921e3ca15034e1ba65c"
+    },
+    {
+      "path": "server/src/quoteIntake.js",
+      "sha": "6b581a6aff1f4051db8a4d27e6adc5d1ad2a16f3"
+    },
+    {
+      "path": "server/src/quoteRequestScope.js",
+      "sha": "73756356d800d9f4b3d8cb8294ee9a1a3a1e54ec"
+    },
+    {
+      "path": "server/src/quoteScopeDisclosure.js",
+      "sha": "c25d6f33d2d3d62e01f744a406b3ed733e37e9f1"
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "sha": "8b85216517fd711d2050d65c88ee23d91dd4e353"
+    },
+    {
+      "path": "server/src/schema.js",
+      "sha": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e"
+    },
+    {
+      "path": "server/src/server.js",
+      "sha": "6708614cf8bdfe7abf120df09dd29fb0d99f18ec"
+    },
+    {
+      "path": "server/src/serviceArea.js",
+      "sha": "4dd6b93e46fc62d825767e07f679ee1545d23cb5"
+    },
+    {
+      "path": "server/src/tenant.js",
+      "sha": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5"
+    },
+    {
+      "path": "server/taxJurisdiction.js",
+      "sha": "abdbf695ceda016be6c6a5c81d0c04039611748c"
+    },
+    {
+      "path": "test/agreedAuditFollowup.spec.mjs",
+      "sha": "8b7352beb22fe881c0a14eaa4c00bb2e6397e3a1"
+    },
+    {
+      "path": "test/astraAuditRepairs20261004.spec.mjs",
+      "sha": "e23c078a960fac342d8e9f9056b280b012ae0551"
+    },
+    {
+      "path": "test/astraQuoteScope.browser.spec.mjs",
+      "sha": "e1a0abd0fa225d03028dd49299025ba253920da6"
+    },
+    {
+      "path": "test/auditFixes20261003.spec.mjs",
+      "sha": "a77cf7a15e2b120e9f87282d63e3477f703726b6"
+    },
+    {
+      "path": "test/componentPricingRepairs.spec.mjs",
+      "sha": "d9a7d431a70051e3419041a83113a5d1666e6cbf"
+    },
+    {
+      "path": "test/configuredOfferings.spec.mjs",
+      "sha": "88c0535d9726b1e0279d018e4ef79a322a3611a8"
+    },
+    {
+      "path": "test/configuredOfferingsFixtures.mjs",
+      "sha": "5c599f734f6db41fcba9fc7929f9c97b1b9331f7"
+    },
+    {
+      "path": "test/customerExplanation.spec.mjs",
+      "sha": "dace339daf2fbcff08d11aee628dd1ef41dbe282"
+    },
+    {
+      "path": "test/customerExplanationCatalog.json",
+      "sha": "3ac124bc9353a6f0be72281c0c353658a3138f38"
+    },
+    {
+      "path": "test/customerExplanationFixtures.mjs",
+      "sha": "73f59b9fd214a498eac3c223c6aec1b02e640bb5"
+    },
+    {
+      "path": "test/fenceAnyHeight.spec.mjs",
+      "sha": "2b267379ca47f4ae041c1bcc94ffacb2367dfb4a"
+    },
+    {
+      "path": "test/fenceHeightHalfCent.spec.mjs",
+      "sha": "fa079e9d9b5f1b7bf8a5bbc335a747d5c6a80483"
+    },
+    {
+      "path": "test/interviewControls.browser.spec.mjs",
+      "sha": "d3d8ed4fe4540eced2a04f9cd643ae515d68642d"
+    },
+    {
+      "path": "test/measuredScopeFixtures.mjs",
+      "sha": "ac2b1a879cb0d1b43d25f888e303799c8be2b519"
+    },
+    {
+      "path": "test/measuredScopes.spec.mjs",
+      "sha": "0be1242337db2137b831c7b60566b11e85d04d66"
+    },
+    {
+      "path": "test/opusQuoteFixtures.mjs",
+      "sha": "e99443ad3bfe858291d999901d9f2c230d261ea4"
+    },
+    {
+      "path": "test/opusQuoteRepairs.spec.mjs",
+      "sha": "1b28be8ee0c99a7d1de3e8bdc59f9733e19c2638"
+    },
+    {
+      "path": "test/ownerStatusMessages.spec.mjs",
+      "sha": "624839e4ee7fb863a4f354e0d53af86db4f240ee"
+    },
+    {
+      "path": "test/phase2.spec.js",
+      "sha": "742d3c6d6190ebdceff60332d4fa7b089d5a9771"
+    },
+    {
+      "path": "test/phase2Terminology.spec.js",
+      "sha": "72d33073d37f69c7ebce33112b8e66abfa8dd0e3"
+    },
+    {
+      "path": "test/precisionFixtureIntegrity.spec.mjs",
+      "sha": "9996b9982c538a8ff0272901bcd709fe720ae0d8"
+    },
+    {
+      "path": "test/priceBookAI.spec.mjs",
+      "sha": "1aee72aeb5a356868773c08340bc6d58e1c3c55f"
+    },
+    {
+      "path": "test/priceBookEditor.browser.spec.mjs",
+      "sha": "38a6ecae22bcdaf36e749d32ffc593683525c9b0"
+    },
+    {
+      "path": "test/priceBookIntegrity.spec.js",
+      "sha": "4a2a3ce95cbc372f72211f66377562c8c6bcc4e1"
+    },
+    {
+      "path": "test/pricebookClarificationHttp.spec.mjs",
+      "sha": "a360580c1675e36503488b4ec3cdfe08867a0342"
+    },
+    {
+      "path": "test/pricebookDurability.spec.mjs",
+      "sha": "bd695bf5c00dc5b82ab7b38a3d8f42416cc7f571"
+    },
+    {
+      "path": "test/pricebookEditorRepairs.spec.mjs",
+      "sha": "a2ffae44fb97085627dbf6eb72cb51ae6503aa04"
+    },
+    {
+      "path": "test/pricebookInterviewSave.browser.spec.mjs",
+      "sha": "27dddbb02ddb6cfe142a483b2ebbff5b55242dbf"
+    },
+    {
+      "path": "test/pricebookPersistence.spec.mjs",
+      "sha": "b6ab83fbd8661e4f46fa337d43415b7a615695b6"
+    },
+    {
+      "path": "test/pricebookPreviewFreshness.browser.spec.mjs",
+      "sha": "1dee0596166ba7b95abe9236faf7466e4e36cc49"
+    },
+    {
+      "path": "test/pricebookTestEnv.mjs",
+      "sha": "a9e93bdbc5579f7120771dcf9849917486e04a20"
+    },
+    {
+      "path": "test/quoteApplicationBoundary.spec.mjs",
+      "sha": "f9e0172312d074631cf88b63a2093d6ac70d46c4"
+    },
+    {
+      "path": "test/quoteAuditAcceptance20261004.spec.mjs",
+      "sha": "e0af99de1cd21819d127933c999301d26c213d7a"
+    },
+    {
+      "path": "test/quoteAuditDecisions20261004.spec.mjs",
+      "sha": "0f864d205ada3fe5a1755e65f59e7ea6938fb1bc"
+    },
+    {
+      "path": "test/quoteCombinationBoundaries.spec.mjs",
+      "sha": "344620f58ddcc17fec3481fc0c14b41840f687ed"
+    },
+    {
+      "path": "test/quoteConfigurationInterview.browser.spec.mjs",
+      "sha": "c9a20a917eb56ac487dcaa0ea5a8071d3079627a"
+    },
+    {
+      "path": "test/quoteDecisionFollowup.spec.mjs",
+      "sha": "c5d63d2eb3357604dfbdd99c9fd06de99de2576d"
+    },
+    {
+      "path": "test/quoteEngine.spec.js",
+      "sha": "22e8fbd9309474a88f097dbc88a713c538693564"
+    },
+    {
+      "path": "test/quoteEngineVNext.spec.js",
+      "sha": "ee317368107f1db33504f6db1c6868a17614d181"
+    },
+    {
+      "path": "test/quoteEngineVNextAdversarial.spec.js",
+      "sha": "f343dd1aaec27fbc3c23bc6c83c93aa116f136ad"
+    },
+    {
+      "path": "test/quoteEngineVNextFixtures.mjs",
+      "sha": "fa759874799629f328f07f7e94ac1eb1f1dba0f0"
+    },
+    {
+      "path": "test/quoteEngineVNextRepairs.spec.js",
+      "sha": "b6cc635962ed609c3877125f52b67786069318f4"
+    },
+    {
+      "path": "test/quoteEngineVNextReplay.mjs",
+      "sha": "c672f18cf9770b48d3818317f92ec454de2607d0"
+    },
+    {
+      "path": "test/quoteFinalRepairs20261004.spec.mjs",
+      "sha": "0e33d499a0ebf31aefb3988897eb8dbc8114fa94"
+    },
+    {
+      "path": "test/quoteFlowRepairs.spec.mjs",
+      "sha": "bea5a84e7e880a8fa39295ebcf04cc3b0651fe99"
+    },
+    {
+      "path": "test/quoteInterviewRendering.spec.mjs",
+      "sha": "c3c20570736c037af8ade35a263fb7d254fc28ec"
+    },
+    {
+      "path": "test/quoteOfferingScopeIsolation.spec.mjs",
+      "sha": "f03d0a668144ee4a10cdfec98a2fdf77336345d3"
+    },
+    {
+      "path": "test/quoteOptionalScopeIsolation.spec.mjs",
+      "sha": "52309260cfa6fb7bbde900b7d351963d98d77b7b"
+    },
+    {
+      "path": "test/quoteOriginStorage.spec.mjs",
+      "sha": "5ea0c86dde3630cf1c0090a91a0f0d6482040506"
+    },
+    {
+      "path": "test/quotePresentation.spec.mjs",
+      "sha": "17a2e3c70bd868361947fc7d1c8bd6f116496f1b"
+    },
+    {
+      "path": "test/quoteRatePrecisionMatrix.spec.mjs",
+      "sha": "cd36d11e7f43bf4b39ded457ae6c9ae33adbe13e"
+    },
+    {
+      "path": "test/quoteReadinessExhaustive.spec.mjs",
+      "sha": "46708ad34b7d238d4bf40f2df1b32539435b3598"
+    },
+    {
+      "path": "test/quoteReadinessRepairs.spec.mjs",
+      "sha": "8485cb8079f5259897cf5ce6fa25cf64a2869b92"
+    },
+    {
+      "path": "test/quoteReauditRepairs.spec.mjs",
+      "sha": "2d70409d04b4774239871d94f3bde2e89d8e5009"
+    },
+    {
+      "path": "test/quoteReviewFixes.spec.mjs",
+      "sha": "6362b903be2780d7cf64a43800b27125520b619f"
+    },
+    {
+      "path": "test/quoteServerCorrectness.spec.mjs",
+      "sha": "3d52a85c15dca1b2599c31740426346a1dc1139d"
+    },
+    {
+      "path": "test/quoteSmallRepairs.spec.mjs",
+      "sha": "b5bbe9770807f59bcb1c2c9964f79b291062baae"
+    },
+    {
+      "path": "test/quoteTradeDecisions.spec.mjs",
+      "sha": "ecfceaca92d39750e2c36bbc00da1c6b6b55082e"
+    },
+    {
+      "path": "test/tenantAddon.spec.js",
+      "sha": "e267024fa65063f2cc7f4bfef732518da77198b8"
+    }
+  ]
+}

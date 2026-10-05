@@ -1,0 +1,103 @@
+TAP version 13
+# Subtest: QP-01 FENCING_INSTALL: the original 4 ft selection never produces the conflicting 8 ft option
+ok 1 - QP-01 FENCING_INSTALL: the original 4 ft selection never produces the conflicting 8 ft option
+  ---
+  duration_ms: 283.493329
+  type: 'test'
+  ...
+# Subtest: QP-01 FENCING_REPLACEMENT: the original 4 ft selection never produces the conflicting 8 ft option
+ok 2 - QP-01 FENCING_REPLACEMENT: the original 4 ft selection never produces the conflicting 8 ft option
+  ---
+  duration_ms: 156.858756
+  type: 'test'
+  ...
+# Subtest: QP-01 control: same-width gate upgrades retain both original expected totals
+ok 3 - QP-01 control: same-width gate upgrades retain both original expected totals
+  ---
+  duration_ms: 92.590132
+  type: 'test'
+  ...
+# Subtest: QP-02: the original tier-only hardwood package can be answered, prepared, and quoted
+ok 4 - QP-02: the original tier-only hardwood package can be answered, prepared, and quoted
+  ---
+  duration_ms: 161.642809
+  type: 'test'
+  ...
+# Subtest: QP-03 FENCING_INSTALL: confirmed baseline quotes, adjusted job without shares still reviews
+ok 5 - QP-03 FENCING_INSTALL: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 117.748883
+  type: 'test'
+  ...
+# Subtest: QP-03 FENCING_REPLACEMENT: confirmed baseline quotes, adjusted job without shares still reviews
+ok 6 - QP-03 FENCING_REPLACEMENT: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 117.148963
+  type: 'test'
+  ...
+# Subtest: QP-03 INTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+ok 7 - QP-03 INTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 120.48387
+  type: 'test'
+  ...
+# Subtest: QP-03 EXTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+ok 8 - QP-03 EXTERIOR_PAINTING: confirmed baseline quotes, adjusted job without shares still reviews
+  ---
+  duration_ms: 87.37805
+  type: 'test'
+  ...
+# Subtest: QP-04: original distinct package products display only the selected confirmation; reverse=false
+ok 9 - QP-04: original distinct package products display only the selected confirmation; reverse=false
+  ---
+  duration_ms: 114.825401
+  type: 'test'
+  ...
+# Subtest: QP-04: original distinct package products display only the selected confirmation; reverse=true
+ok 10 - QP-04: original distinct package products display only the selected confirmation; reverse=true
+  ---
+  duration_ms: 106.739044
+  type: 'test'
+  ...
+# {"case":"original-missing-minimum","bytes":14024,"productsPerAxis":80,"elapsedMs":8820.680620000001,"timerDelayMs":8826.004716000001}
+# {"case":"disabled-original","elapsedMs":4.7405370000014955}
+# {"case":"restored-minimum","elapsedMs":23.74409800000103}
+# Subtest: QP-05: ORIGINAL 80-by-80 missing-minimum public catalog returns without blocking the worker
+not ok 11 - QP-05: ORIGINAL 80-by-80 missing-minimum public catalog returns without blocking the worker
+  ---
+  duration_ms: 8827.896939
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/verification/independent-followup-20261004/verify.mjs:95:1'
+  failureType: 'testCodeFailure'
+  error: 'Global missing minimum still causes synchronous pair enumeration: 8821 ms; timer 8826 ms'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/verification/independent-followup-20261004/verify.mjs:101:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QP-05 repaired control: disabled original catalog returns promptly
+ok 12 - QP-05 repaired control: disabled original catalog returns promptly
+  ---
+  duration_ms: 5.913094
+  type: 'test'
+  ...
+# Subtest: QP-05 valid control: restored explicit zero minimum permits a fast live engine check
+ok 13 - QP-05 valid control: restored explicit zero minimum permits a fast live engine check
+  ---
+  duration_ms: 24.376251
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 12
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10328.123417

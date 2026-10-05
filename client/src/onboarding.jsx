@@ -1,3 +1,5 @@
+import InterviewConfiguration from './interviewConfiguration.jsx';
+import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
@@ -491,7 +493,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [suggesting,setSuggesting] = useState(false);
   const [error, setError] = useState(null);
   const interviewFields = useMemo(
-    () => available.flatMap(service => service.fields.filter(field=>['number','json','select','boolean'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
+    () => available.flatMap(service => [...service.fields,...(service.interviewFields||[])].filter(field=>['number','json','select','boolean','offering_configuration','scope_configuration','offering_registry'].includes(field.type)).map(field => ({ ...field, serviceType:service.serviceType, serviceName:service.name }))),
     [available]
   );
   const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
@@ -528,7 +530,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       const result=await api('/api/pricebook/interview/'+draft.id+'/assist',{method:'POST',body:{serviceType:current.serviceType,field:current.field,answer}});
       setDraft(result.draft);
       if(!sameAssistTarget(asked,assistTarget.current)){setAiNotice(STALE_ASSIST_NOTICE);return;}
-      setRawValue(current.type==='json'?result.value:String(result.value));
+      setRawValue(current.type==='json'||CONFIGURATION_FIELDS.includes(current.field)?result.value:String(result.value));
       setReadBack(null);
       setAiNotice('AI captured this as an unconfirmed draft. Check the value below before saving it.');
     } catch(nextError) {setAiError(nextError);}
@@ -541,7 +543,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       const result = await api('/api/pricebook/interview', { method:'POST', body:{ mode, serviceTypes:activeTypes } });
       setDraft(result.draft);
       setPosition(0);
-      setRawValue(interviewFields[0]?.type === 'json' ? {} : '');
+      setRawValue(interviewFields[0]?.type === 'json'||CONFIGURATION_FIELDS.includes(interviewFields[0]?.field)&&interviewFields[0]?.field!=='offeringMode' ? {} : '');
       setReadBack(null);
     } catch (nextError) { setError(nextError); }
   }
@@ -552,7 +554,7 @@ function PriceBookStep({ state, metadata, back, next }) {
     const field = interviewFields[index];
     if (!field) return '';
     const stored = loadedDraft?.fields?.[field.serviceType]?.[field.field];
-    if (field.type === 'json') {
+    if (field.type === 'json'||CONFIGURATION_FIELDS.includes(field.field)&&field.field!=='offeringMode') {
       return stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
     }
     if (stored === undefined || stored === null) return '';
@@ -575,14 +577,16 @@ function PriceBookStep({ state, metadata, back, next }) {
     if (!current) return;
     setError(null);
     try {
-      const value = current.type==='json' ? rawValue : parseInterviewScalar(rawValue,current);
+      const configured=CONFIGURATION_FIELDS.includes(current.field);
+      const value = current.type==='json'||configured ? rawValue : parseInterviewScalar(rawValue,current);
+      if(configured)validateInterviewConfiguration(current.serviceType,current.field,value,draft?.fields?.[current.serviceType]||{});
       if (current.type === 'json') {
         // Structured answers are confirmed as a human sentence. Raw serialized
         // data is never displayed or spoken.
         const problem = validateStructuredValue(value, current.shapedKeys, current.title || current.label, current);
         if (problem) throw new Error(problem);
       }
-      const spoken = current.type === 'json'
+      const spoken = configured ? describeInterviewConfiguration(current.serviceType,current.field,value,draft?.fields?.[current.serviceType]||{}) : current.type === 'json'
         ? describeStructuredValue(value, current.shapedKeys, current.title || current.label, current)
         : typeof value === 'number'
           ? `${String(rawValue).split('').join(' ')}, ${String(value)}`
@@ -619,7 +623,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       if (!sameAssistTarget(asked, assistTarget.current)) { setAiNotice(STALE_CONFIRM_NOTICE); return; }
       setAnswer('');setAiNotice('');
       const nextField = interviewFields[position + 1];
-      setRawValue(nextField?.type === 'json' ? {} : '');
+      setRawValue(nextField?.type === 'json'||CONFIGURATION_FIELDS.includes(nextField?.field)&&nextField?.field!=='offeringMode' ? {} : '');
       setReadBack(null);
       setPosition(Math.min(interviewFields.length, position + 1));
     } catch (nextError) { setError(nextError); }
@@ -688,7 +692,7 @@ function PriceBookStep({ state, metadata, back, next }) {
               <ErrorMessage error={aiError} />
               <p className="mono">{position + 1} / {interviewFields.length} · {current.serviceName}</p>
               <Field label={current.label}>
-                {current.type === 'select' ? (
+                {CONFIGURATION_FIELDS.includes(current.field) ? <InterviewConfiguration definition={current} pricing={draft?.fields?.[current.serviceType]||{}} value={rawValue} onChange={editValue}/> : current.type === 'select' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}>
                     <option value="">Choose</option>
                     {(current.options || []).map(option => <option key={option} value={option}>{current.optionLabels?.[option] || 'Pricing option'}</option>)}
@@ -711,7 +715,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
                   <div className="test-call-row">
-                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
+                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{CONFIGURATION_FIELDS.includes(current.field)?'Yes, save these settings':current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
                     <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
                   </div>
                 </div>

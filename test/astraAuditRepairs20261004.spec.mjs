@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -73,8 +74,8 @@ test('Astra 4: changing to a product with no underlayment clears its earlier con
  assert.equal(forms.clearChangedScopeConfirmations(fields,f.customerInputs,{...f.customerInputs,newFlooringType:'tile'}).underlaymentScopeConfirmed,undefined);
  assert.equal(forms.clearChangedScopeConfirmations(fields,f.customerInputs,{...f.customerInputs,sqft:300}).underlaymentScopeConfirmed,true);
 });
-function catalog(){const f=flatRoof(),p=f.ownerPricing.pricing;for(const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'])p[field]={};f.ownerPricing.knownOfferings={membraneType:{},replacementMembraneType:{}};for(let i=0;i<40;i++){const key='product_'+i;p.laborPerSqft[key]=500;p.membraneCostPerSqft[key]=700;p.tearOffPerSqft[key]=200;f.ownerPricing.knownOfferings.membraneType[key]=randomUUID();f.ownerPricing.knownOfferings.replacementMembraneType[key]=randomUUID();}return f;}
-for(const disabled of [false,true])test('Astra 5: cold 80-product '+(disabled?'disabled':'incomplete')+' catalog rejects common fee blockers promptly',async()=>{
+function catalog(){const f=flatRoof(),p=f.ownerPricing.pricing;for(const field of ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'])p[field]={};f.ownerPricing.knownOfferings={membraneType:{},replacementMembraneType:{}};for(let i=0;i<80;i++){const key='product_'+i;p.laborPerSqft[key]=500;p.membraneCostPerSqft[key]=700;p.tearOffPerSqft[key]=200;f.ownerPricing.knownOfferings.membraneType[key]=randomUUID();f.ownerPricing.knownOfferings.replacementMembraneType[key]=randomUUID();}return f;}
+for(const disabled of [false,true])test('Astra 5: cold 80-by-80 product '+(disabled?'disabled':'incomplete')+' catalog rejects common fee blockers promptly',async()=>{
  const f=catalog();f.ownerPricing.active=!disabled;f.ownerPricing.feeRules.travel='owner_selected';f.businessDefaults.travelFee=900;const book={services:[f.ownerPricing],defaults:{currency:'CAD',...f.businessDefaults}},start=performance.now(),timer=new Promise(resolve=>setTimeout(()=>resolve(performance.now()-start),20)),status=bridge.bookQuoteStatuses(book)[0],elapsed=performance.now()-start,timerMs=await timer;
  assert.equal(status.status,disabled?'DISABLED':'NEEDS PRICING');assert.ok(elapsed<1500,'cold readiness '+Math.round(elapsed)+' ms');assert.ok(timerMs<1500,'20 ms timer blocked for '+Math.round(timerMs)+' ms');console.log('Astra 5 cold '+(disabled?'disabled':'incomplete')+' milliseconds:',Math.round(elapsed));
  if(!disabled){const ownerStart=performance.now(),full=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{ownerFeeSelections:{}});assert.equal(full.status,'NEEDS PRICING');assert.ok(performance.now()-ownerStart<1500);assert.ok(full.invalidOwnerFields.includes('feeSelections.owner.travel'));}

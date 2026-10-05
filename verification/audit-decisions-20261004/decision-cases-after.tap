@@ -1,0 +1,478 @@
+TAP version 13
+# Subtest: ordinary overlay product names use the registry key and quote the matching work
+ok 1 - ordinary overlay product names use the registry key and quote the matching work
+  ---
+  duration_ms: 26.47574
+  type: 'test'
+  ...
+# Subtest: noncanonical overlay names are rejected before an interview can claim complete setup
+ok 2 - noncanonical overlay names are rejected before an interview can claim complete setup
+  ---
+  duration_ms: 30.540149
+  type: 'test'
+  ...
+# Subtest: an older free-text overlay name does not disable unrelated flooring work
+ok 3 - an older free-text overlay name does not disable unrelated flooring work
+  ---
+  duration_ms: 5.282267
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"residential","insulationNeeded":false,"coverboardNeeded":false}
+ok 4 - independent layers {"buildingType":"residential","insulationNeeded":false,"coverboardNeeded":false}
+  ---
+  duration_ms: 5.495868
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"residential","insulationNeeded":false,"coverboardNeeded":true}
+ok 5 - independent layers {"buildingType":"residential","insulationNeeded":false,"coverboardNeeded":true}
+  ---
+  duration_ms: 5.380385
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"residential","insulationNeeded":true,"coverboardNeeded":false}
+ok 6 - independent layers {"buildingType":"residential","insulationNeeded":true,"coverboardNeeded":false}
+  ---
+  duration_ms: 3.835966
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"residential","insulationNeeded":true,"coverboardNeeded":true}
+ok 7 - independent layers {"buildingType":"residential","insulationNeeded":true,"coverboardNeeded":true}
+  ---
+  duration_ms: 4.521809
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"commercial","insulationNeeded":false,"coverboardNeeded":false}
+ok 8 - independent layers {"buildingType":"commercial","insulationNeeded":false,"coverboardNeeded":false}
+  ---
+  duration_ms: 3.332647
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"commercial","insulationNeeded":false,"coverboardNeeded":true}
+ok 9 - independent layers {"buildingType":"commercial","insulationNeeded":false,"coverboardNeeded":true}
+  ---
+  duration_ms: 4.44286
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"commercial","insulationNeeded":true,"coverboardNeeded":false}
+ok 10 - independent layers {"buildingType":"commercial","insulationNeeded":true,"coverboardNeeded":false}
+  ---
+  duration_ms: 3.941995
+  type: 'test'
+  ...
+# Subtest: independent layers {"buildingType":"commercial","insulationNeeded":true,"coverboardNeeded":true}
+ok 11 - independent layers {"buildingType":"commercial","insulationNeeded":true,"coverboardNeeded":true}
+  ---
+  duration_ms: 4.262629
+  type: 'test'
+  ...
+# Subtest: missing insulationNeeded never infers No from building type
+ok 12 - missing insulationNeeded never infers No from building type
+  ---
+  duration_ms: 0.902201
+  type: 'test'
+  ...
+# Subtest: missing coverboardNeeded never infers No from building type
+ok 13 - missing coverboardNeeded never infers No from building type
+  ---
+  duration_ms: 0.733827
+  type: 'test'
+  ...
+# Subtest: commercial roof can retain all insulation without any scope configured
+ok 14 - commercial roof can retain all insulation without any scope configured
+  ---
+  duration_ms: 1.881768
+  type: 'test'
+  ...
+# Subtest: selected layer rejects insulationAreaSqft undefined
+ok 15 - selected layer rejects insulationAreaSqft undefined
+  ---
+  duration_ms: 1.72366
+  type: 'test'
+  ...
+# Subtest: selected layer rejects insulationAreaSqft 0
+ok 16 - selected layer rejects insulationAreaSqft 0
+  ---
+  duration_ms: 2.166087
+  type: 'test'
+  ...
+# Subtest: selected layer rejects insulationAreaSqft -1
+ok 17 - selected layer rejects insulationAreaSqft -1
+  ---
+  duration_ms: 1.686063
+  type: 'test'
+  ...
+# Subtest: selected layer rejects insulationAreaSqft 1001
+ok 18 - selected layer rejects insulationAreaSqft 1001
+  ---
+  duration_ms: 2.043272
+  type: 'test'
+  ...
+# Subtest: selected layer rejects coverboardAreaSqft undefined
+ok 19 - selected layer rejects coverboardAreaSqft undefined
+  ---
+  duration_ms: 1.880445
+  type: 'test'
+  ...
+# Subtest: selected layer rejects coverboardAreaSqft 0
+ok 20 - selected layer rejects coverboardAreaSqft 0
+  ---
+  duration_ms: 2.11522
+  type: 'test'
+  ...
+# Subtest: selected layer rejects coverboardAreaSqft -1
+ok 21 - selected layer rejects coverboardAreaSqft -1
+  ---
+  duration_ms: 1.905644
+  type: 'test'
+  ...
+# Subtest: selected layer rejects coverboardAreaSqft 1001
+ok 22 - selected layer rejects coverboardAreaSqft 1001
+  ---
+  duration_ms: 1.871092
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"stories":2}
+ok 23 - selects exact alternative {"stories":2}
+  ---
+  duration_ms: 18.935618
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"existingSidingType":"wood"}
+ok 24 - selects exact alternative {"existingSidingType":"wood"}
+  ---
+  duration_ms: 14.193095
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"reinforcement":"none"}
+ok 25 - selects exact alternative {"reinforcement":"none"}
+  ---
+  duration_ms: 196.196986
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"accessDifficulty":"moderate"}
+ok 26 - selects exact alternative {"accessDifficulty":"moderate"}
+  ---
+  duration_ms: 161.215348
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"existingFloorType":"tile"}
+ok 27 - selects exact alternative {"existingFloorType":"tile"}
+  ---
+  duration_ms: 21.580618
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"newFlooringType":"vinyl_plank"}
+ok 28 - selects exact alternative {"newFlooringType":"vinyl_plank"}
+  ---
+  duration_ms: 28.042602
+  type: 'test'
+  ...
+# Subtest: selects exact alternative {"flooringType":"vinyl_plank"}
+ok 29 - selects exact alternative {"flooringType":"vinyl_plank"}
+  ---
+  duration_ms: 30.726199
+  type: 'test'
+  ...
+# Subtest: demolition access matching undefined
+ok 30 - demolition access matching undefined
+  ---
+  duration_ms: 2.417376
+  type: 'test'
+  ...
+# Subtest: demolition access matching exact
+ok 31 - demolition access matching exact
+  ---
+  duration_ms: 2.105565
+  type: 'test'
+  ...
+# Subtest: demolition access matching up_to
+ok 32 - demolition access matching up_to
+  ---
+  duration_ms: 3.118554
+  type: 'test'
+  ...
+# Subtest: overlapping stairs rejected before saving base
+ok 33 - overlapping stairs rejected before saving base
+  ---
+  duration_ms: 9.631094
+  type: 'test'
+  ...
+# Subtest: overlapping stairs rejected before saving tier
+ok 34 - overlapping stairs rejected before saving tier
+  ---
+  duration_ms: 4.132312
+  type: 'test'
+  ...
+# Subtest: overlapping floor_overlay rejected before saving base
+ok 35 - overlapping floor_overlay rejected before saving base
+  ---
+  duration_ms: 2.810158
+  type: 'test'
+  ...
+# Subtest: overlapping floor_overlay rejected before saving tier
+ok 36 - overlapping floor_overlay rejected before saving tier
+  ---
+  duration_ms: 2.868687
+  type: 'test'
+  ...
+# Subtest: overlapping siding_removal rejected before saving base
+ok 37 - overlapping siding_removal rejected before saving base
+  ---
+  duration_ms: 3.697516
+  type: 'test'
+  ...
+# Subtest: overlapping siding_removal rejected before saving tier
+ok 38 - overlapping siding_removal rejected before saving tier
+  ---
+  duration_ms: 2.755616
+  type: 'test'
+  ...
+# Subtest: overlapping demolition rejected before saving base
+ok 39 - overlapping demolition rejected before saving base
+  ---
+  duration_ms: 2.454321
+  type: 'test'
+  ...
+# Subtest: overlapping demolition rejected before saving tier
+ok 40 - overlapping demolition rejected before saving tier
+  ---
+  duration_ms: 2.568504
+  type: 'test'
+  ...
+# Subtest: explicit access-up-to overlap cannot shadow an easier exact entry
+ok 41 - explicit access-up-to overlap cannot shadow an easier exact entry
+  ---
+  duration_ms: 2.137134
+  type: 'test'
+  ...
+# Subtest: 12 by 16 slab subtracts 16 adjoining feet with exact
+ok 42 - 12 by 16 slab subtracts 16 adjoining feet with exact
+  ---
+  duration_ms: 5.498803
+  type: 'test'
+  ...
+# Subtest: 12 by 16 slab subtracts 16 adjoining feet with measured_area_perimeter
+ok 43 - 12 by 16 slab subtracts 16 adjoining feet with measured_area_perimeter
+  ---
+  duration_ms: 5.798566
+  type: 'test'
+  ...
+# Subtest: 12 by 16 slab subtracts 16 adjoining feet with measured_outline
+ok 44 - 12 by 16 slab subtracts 16 adjoining feet with measured_outline
+  ---
+  duration_ms: 6.913977
+  type: 'test'
+  ...
+# Subtest: concrete requires explicit adjoining-edge choice and rejects contradictory No
+ok 45 - concrete requires explicit adjoining-edge choice and rejects contradictory No
+  ---
+  duration_ms: 1.614315
+  type: 'test'
+  ...
+# Subtest: base 3.5-cent measured rate saves and extends exactly once
+ok 46 - base 3.5-cent measured rate saves and extends exactly once
+  ---
+  duration_ms: 2.128901
+  type: 'test'
+  ...
+# Subtest: whole-cent item installed gate_walk
+ok 47 - whole-cent item installed gate_walk
+  ---
+  duration_ms: 3.297703
+  type: 'test'
+  ...
+# Subtest: whole-cent item installed postMaterialEach
+ok 48 - whole-cent item installed postMaterialEach
+  ---
+  duration_ms: 1.267492
+  type: 'test'
+  ...
+# Subtest: whole-cent item installed footingLaborEach
+ok 49 - whole-cent item installed footingLaborEach
+  ---
+  duration_ms: 1.146139
+  type: 'test'
+  ...
+# Subtest: whole-cent item installed footingMaterialEach
+ok 50 - whole-cent item installed footingMaterialEach
+  ---
+  duration_ms: 1.074691
+  type: 'test'
+  ...
+# Subtest: whole-cent item itemized gate_walk
+ok 51 - whole-cent item itemized gate_walk
+  ---
+  duration_ms: 1.27926
+  type: 'test'
+  ...
+# Subtest: whole-cent item itemized postMaterialEach
+ok 52 - whole-cent item itemized postMaterialEach
+  ---
+  duration_ms: 1.145527
+  type: 'test'
+  ...
+# Subtest: whole-cent item itemized footingLaborEach
+ok 53 - whole-cent item itemized footingLaborEach
+  ---
+  duration_ms: 1.07448
+  type: 'test'
+  ...
+# Subtest: whole-cent item itemized footingMaterialEach
+ok 54 - whole-cent item itemized footingMaterialEach
+  ---
+  duration_ms: 1.075813
+  type: 'test'
+  ...
+# Subtest: fixed stair/package prices reject fractions; measured scope prices preserve them
+ok 55 - fixed stair/package prices reject fractions; measured scope prices preserve them
+  ---
+  duration_ms: 6.640024
+  type: 'test'
+  ...
+# Subtest: peak includes declared removal labor commercial-itemized
+ok 56 - peak includes declared removal labor commercial-itemized
+  ---
+  duration_ms: 3.517495
+  type: 'test'
+  ...
+# Subtest: peak includes declared removal labor siding-removal-itemized
+ok 57 - peak includes declared removal labor siding-removal-itemized
+  ---
+  duration_ms: 2.643307
+  type: 'test'
+  ...
+# Subtest: peak includes declared removal labor demolition-itemized
+ok 58 - peak includes declared removal labor demolition-itemized
+  ---
+  duration_ms: 3.031011
+  type: 'test'
+  ...
+# Subtest: installed removal peak uses only declared labor undefined
+ok 59 - installed removal peak uses only declared labor undefined
+  ---
+  duration_ms: 3.369131
+  type: 'test'
+  ...
+# Subtest: installed removal peak uses only declared labor 0
+ok 60 - installed removal peak uses only declared labor 0
+  ---
+  duration_ms: 3.051051
+  type: 'test'
+  ...
+# Subtest: installed removal peak uses only declared labor 40
+ok 61 - installed removal peak uses only declared labor 40
+  ---
+  duration_ms: 3.289742
+  type: 'test'
+  ...
+# Subtest: installed removal peak uses only declared labor 100
+ok 62 - installed removal peak uses only declared labor 100
+  ---
+  duration_ms: 3.330073
+  type: 'test'
+  ...
+# Subtest: AI interview captures a complete FENCING_INSTALL offering without manual setup
+ok 63 - AI interview captures a complete FENCING_INSTALL offering without manual setup
+  ---
+  duration_ms: 107.413767
+  type: 'test'
+  ...
+# Subtest: AI interview captures a complete FENCING_REPLACEMENT offering without manual setup
+ok 64 - AI interview captures a complete FENCING_REPLACEMENT offering without manual setup
+  ---
+  duration_ms: 92.500135
+  type: 'test'
+  ...
+# Subtest: AI interview captures a complete EXTERIOR_PAINTING offering without manual setup
+ok 65 - AI interview captures a complete EXTERIOR_PAINTING offering without manual setup
+  ---
+  duration_ms: 86.604123
+  type: 'test'
+  ...
+# Subtest: AI interview preserves floor-hardwood-installed scope and prices
+ok 66 - AI interview preserves floor-hardwood-installed scope and prices
+  ---
+  duration_ms: 22.930713
+  type: 'test'
+  ...
+# Subtest: AI interview preserves floor-laminate-installed scope and prices
+ok 67 - AI interview preserves floor-laminate-installed scope and prices
+  ---
+  duration_ms: 21.698555
+  type: 'test'
+  ...
+# Subtest: AI interview preserves floor-carpet-installed scope and prices
+ok 68 - AI interview preserves floor-carpet-installed scope and prices
+  ---
+  duration_ms: 20.916797
+  type: 'test'
+  ...
+# Subtest: AI interview preserves stairs-installed scope and prices
+ok 69 - AI interview preserves stairs-installed scope and prices
+  ---
+  duration_ms: 19.951019
+  type: 'test'
+  ...
+# Subtest: AI interview preserves overlay-installed scope and prices
+ok 70 - AI interview preserves overlay-installed scope and prices
+  ---
+  duration_ms: 18.793343
+  type: 'test'
+  ...
+# Subtest: AI interview preserves siding-removal-installed scope and prices
+ok 71 - AI interview preserves siding-removal-installed scope and prices
+  ---
+  duration_ms: 19.32213
+  type: 'test'
+  ...
+# Subtest: AI interview preserves demolition-installed scope and prices
+ok 72 - AI interview preserves demolition-installed scope and prices
+  ---
+  duration_ms: 20.094395
+  type: 'test'
+  ...
+# Subtest: AI interview preserves commercial-installed scope and prices
+ok 73 - AI interview preserves commercial-installed scope and prices
+  ---
+  duration_ms: 20.966471
+  type: 'test'
+  ...
+# Subtest: AI rejects scope overlap, unknown properties and fractional gates
+ok 74 - AI rejects scope overlap, unknown properties and fractional gates
+  ---
+  duration_ms: 26.740439
+  type: 'test'
+  ...
+# Subtest: summary units and special fence height remain explicit
+ok 75 - summary units and special fence height remain explicit
+  ---
+  duration_ms: 0.235765
+  type: 'test'
+  ...
+# Subtest: retired calculations are absent from the active calculator
+ok 76 - retired calculations are absent from the active calculator
+  ---
+  duration_ms: 0.399482
+  type: 'test'
+  ...
+# Subtest: roof-layer coverage reports each independent product accurately
+ok 77 - roof-layer coverage reports each independent product accurately
+  ---
+  duration_ms: 8.337784
+  type: 'test'
+  ...
+# Subtest: interview product registration is explicit, separate from prices, and survives saving and approval
+ok 78 - interview product registration is explicit, separate from prices, and survives saving and approval
+  ---
+  duration_ms: 160.392614
+  type: 'test'
+  ...
+1..78
+# tests 78
+# suites 0
+# pass 78
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1455.952049

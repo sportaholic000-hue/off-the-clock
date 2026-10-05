@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -52,11 +53,11 @@ function includedFence(){const f=offeringFixture('FENCING_INSTALL','itemized');f
 test('R02 offering inclusion quotes hand-calculated 388000 cents',()=>{
  const q=generateQuoteVNext(includedFence());assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q.ownerDiagnostics));assert.equal(q.midEstimate,3880);
 });
-test('R02 scope inclusion retains fractional-cent rate and rounds line once: 225503 cents',()=>{
+test('R02 stair inclusion uses whole-cent item prices: 225505 cents',()=>{
  const f=measuredScopeCases().find(r=>r.id==='stairs-itemized').input;
- f.ownerPricing.pricing.scopeRates.stairs_material=0;f.ownerPricing.pricing.scopeRates.stairs_underlayment=1000.5;
+ f.ownerPricing.pricing.scopeRates.stairs_material=0;f.ownerPricing.pricing.scopeRates.stairs_underlayment=1001;
  f.ownerPricing=includedFixture(f.ownerPricing,{'scopeRates.stairs_material':'scopeRates.stairs_underlayment'});
- const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q.ownerDiagnostics));assert.equal(q.midEstimate,2255.03);
+ const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q.ownerDiagnostics));assert.equal(q.midEstimate,2255.05);
 });
 for(const variant of ['unknown','inactive','zero','wrong-category'])test('R02 inclusion still blocks '+variant,()=>{
  const f=includedFence(),p=f.ownerPricing.pricing,m=f.ownerPricing.zeroPricePolicy.includedPrices;
@@ -73,14 +74,14 @@ test('R03 tax none clears hidden percentage, persists and quotes 10000 cents',()
  assert.equal(bridge.applicationStatus(b.services[0],b).status,'QUOTING LIVE');assert.equal(bridge.previewApplicationQuote(id,{revision:bridge.bookRevision(b),serviceId:b.services[0].id,customerInputs:f.customerInputs}).midEstimate,100);
  assert.equal(editBusinessDefault(draft.defaults,'taxMode','TAX_ALL').taxPercent,0);
 });
-for(const [type,field,value] of [['CONCRETE_PATIO_SLAB','laborPerSqft',1.005],['INTERIOR_PAINTING','laborPerWallSqftPerCoat',1.005],['SIDING_REPLACEMENT','laborPerSqft',{vinyl:1.005}],['FLOORING_INSTALL','materialPerSqft',{tile:1.005}]])test('R04/R08 '+type+'.'+field+' rejects unsupported precision at each boundary',()=>{
- const def=meta(type,field);assert.equal(def.wholeCents,true);
- if(def.type==='number')assert.throws(()=>parseInterviewScalar(String(value),def),/whole-cent/);else assert.match(validateStructuredValue(value,def.shapedKeys,def.label,def),/whole-cent/);
- assert.throws(()=>validateInterviewValue(type,field,value),/whole-cent/);
- assert.throws(()=>bridge.convertApplicationBook({defaults:{},services:[{serviceType:type,pricing:{[field]:value}}]},'toCents'),/whole-cent/);
+for(const [type,field,value] of [['CONCRETE_PATIO_SLAB','laborPerSqft',1.005],['INTERIOR_PAINTING','laborPerWallSqftPerCoat',1.005],['SIDING_REPLACEMENT','laborPerSqft',{vinyl:1.005}],['FLOORING_INSTALL','materialPerSqft',{tile:1.005}]])test('R04/R08 '+type+'.'+field+' accepts measured fractional-cent precision at each boundary',()=>{
+ const def=meta(type,field);assert.equal(def.wholeCents,undefined);
+ if(def.type==='number')assert.equal(parseInterviewScalar(String(value),def),value);else assert.equal(validateStructuredValue(value,def.shapedKeys,def.label,def),null);
+ assert.deepEqual(validateInterviewValue(type,field,value),value);
+ const dollars={defaults:{},services:[{serviceType:type,pricing:{[field]:value}}]};assert.deepEqual(bridge.convertApplicationBook(bridge.convertApplicationBook(dollars,'toCents'),'toDollars'),dollars);
 });
 test('R04 failed exact-money save leaves prior persisted book unchanged',()=>{
- const id=saved(concrete()),before=loadPricebook(id),draft=bridge.readApplicationBook(id);draft.services[0].pricing.laborPerSqft=1.005;
+ const id=saved(concrete()),before=loadPricebook(id),draft=bridge.readApplicationBook(id);draft.services[0].pricing.minimumJob=1.005;
  assert.throws(()=>bridge.saveApplicationBook(id,draft),/whole-cent/);assert.deepEqual(loadPricebook(id),before);
 });
 for(const [type,field,p] of [['LANDSCAPING_MOWING','mowingBaseRatePerSqft',{}],['CUSTOM','price',{unit:'per_sqft'}],['CUSTOM','low',{unit:'per_hour'}],['CUSTOM','high',{unit:'per_LF'}]])test('R04 supported fractional '+type+'.'+field+' remains exact',()=>{

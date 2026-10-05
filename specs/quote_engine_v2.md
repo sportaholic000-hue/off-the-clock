@@ -1,3 +1,5 @@
+> October 4 audit follow-up: the owner-approved changes in [QUOTE_AUDIT_DECISIONS_20261004.md](QUOTE_AUDIT_DECISIONS_20261004.md) supersede conflicting scope, precision, formwork and removal-seasonality rules below.
+
 > October 3, 2026 owner amendment: [quote trade decisions](QUOTE_TRADE_DECISIONS_20261003.md) governs the listed formulas, labor-only surcharges and customer fields. All other rules below remain in force.
 
 # Owner rulings - October 1, 2026

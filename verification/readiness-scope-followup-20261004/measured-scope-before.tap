@@ -1,0 +1,876 @@
+TAP version 13
+# Subtest: Optional scope stairs-installed: missing price or description isolates only selected work
+not ok 1 - Optional scope stairs-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 31.762445
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"d658cdb7-977f-41cf-be37-fd84ca3a8669","quoteId":"2996ecc3-b056-4aff-9713-eae6da918543","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.stairs_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.stairs_installed","message":"Complete stair work complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.stairs_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.stairs_installed","message":"Complete stair work complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Complete stair work complete installed price needs an explicit owner price."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Complete stair work complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+not ok 2 - Optional scope stairs-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 133.654706
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Optional scope stairs-itemized: missing price or description isolates only selected work
+not ok 3 - Optional scope stairs-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 10.650507
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"b3a61a41-f036-4344-968f-445292c5a692","quoteId":"7e0918db-76b6-413c-b6af-8ffd88d2d8ba","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.stairs_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.stairs_labor","message":"Complete stair work labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.stairs_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.stairs_labor","message":"Complete stair work labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Complete stair work labor needs an explicit owner price."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Complete stair work labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+not ok 4 - Optional scope stairs-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 94.715763
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope overlay-installed: missing price or description isolates only selected work
+not ok 5 - Optional scope overlay-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 7.527398
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"c703fd83-3f11-472c-977d-bc89424aff2b","quoteId":"d3ed52b7-138d-4362-beef-f67eb641b8d3","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.floor_overlay_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.floor_overlay_installed","message":"Additional preparation for flooring over an existing floor complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.floor_overlay_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.floor_overlay_installed","message":"Additional preparation for flooring over an existing floor complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Additional preparation for flooring over an existing floor complete installed price needs an explicit owner price."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Additional preparation for flooring over an existing floor complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+not ok 6 - Optional scope overlay-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 82.987561
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope overlay-itemized: missing price or description isolates only selected work
+not ok 7 - Optional scope overlay-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 7.368658
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"b1ea9e69-63bb-46a6-a4d7-5e059addeac6","quoteId":"6f9aea46-a3af-427b-9a92-8a8c673c5fa3","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.floor_overlay_prep"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.floor_overlay_prep","message":"Additional preparation for flooring over an existing floor prep needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.floor_overlay_prep"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.floor_overlay_prep","message":"Additional preparation for flooring over an existing floor prep needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Additional preparation for flooring over an existing floor prep needs an explicit owner price."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0,"confirmedFacts":{}},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Additional preparation for flooring over an existing floor prep needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+not ok 8 - Optional scope overlay-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 95.867058
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-trim-installed: missing price or description isolates only selected work
+not ok 9 - Optional scope siding-trim-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 7.802333
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"5d4ba800-8319-40ed-80eb-5a54b2baded4","quoteId":"27605476-072a-4631-a2b0-cb3951942ec8","serviceType":"SIDING_REPLACEMENT","submittedCustomerInputs":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_trim_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_trim_installed","message":"Siding trim installation complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_trim_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_trim_installed","message":"Siding trim installation complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Siding trim installation complete installed price needs an explicit owner price."],"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"inspectionFirst":false}],"validationMessages":["Siding trim installation complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+not ok 10 - Optional scope siding-trim-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 49.901331
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-trim-itemized: missing price or description isolates only selected work
+not ok 11 - Optional scope siding-trim-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 6.621693
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"b26de801-51c8-49fa-832f-2376b2b6c48a","quoteId":"1c83f59c-038a-4609-a8ca-deb92c469773","serviceType":"SIDING_REPLACEMENT","submittedCustomerInputs":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_trim_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_trim_labor","message":"Siding trim installation labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_trim_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_trim_labor","message":"Siding trim installation labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Siding trim installation labor needs an explicit owner price."],"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"inspectionFirst":false}],"validationMessages":["Siding trim installation labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+not ok 12 - Optional scope siding-trim-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 53.586797
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-removal-installed: missing price or description isolates only selected work
+not ok 13 - Optional scope siding-removal-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 9.516677
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"50d94546-71c9-4335-8fbe-77cd9052087a","quoteId":"442cfe8d-9dfb-4da3-bfe2-48e3e7b0457a","serviceType":"SIDING_REPLACEMENT","submittedCustomerInputs":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_removal_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_removal_installed","message":"Existing siding removal complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_removal_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_removal_installed","message":"Existing siding removal complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Existing siding removal complete installed price needs an explicit owner price."],"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"inspectionFirst":false}],"validationMessages":["Existing siding removal complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+not ok 14 - Optional scope siding-removal-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 56.235951
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-removal-itemized: missing price or description isolates only selected work
+not ok 15 - Optional scope siding-removal-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 5.952865
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"39bc2ae0-af49-4749-9457-40fb30233015","quoteId":"f80fb742-17ca-44a2-a44f-fe8ed19d8ebe","serviceType":"SIDING_REPLACEMENT","submittedCustomerInputs":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_removal_removal"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_removal_removal","message":"Existing siding removal labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.siding_removal_removal"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.siding_removal_removal","message":"Existing siding removal labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Existing siding removal labor needs an explicit owner price."],"normalizedScope":{"areaInputMethod":"sqft","sidingAreaSqft":1000,"sidingType":"vinyl","stories":1,"oldSidingRemoval":false,"trimIncluded":false},"validatedMeasurements":[{"name":"sidingAreaSqft","value":1000,"unit":"square feet"}],"inspectionFirst":false}],"validationMessages":["Existing siding removal labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+not ok 16 - Optional scope siding-removal-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 48.510254
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope demolition-installed: missing price or description isolates only selected work
+not ok 17 - Optional scope demolition-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 8.37134
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"23b964ce-0258-48c7-9161-016bbfb113bd","quoteId":"b99adb19-cbcb-4d07-ae46-81e30f4a656d","serviceType":"CONCRETE_PATIO_SLAB","submittedCustomerInputs":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.demolition_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.demolition_installed","message":"Existing slab demolition complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.demolition_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.demolition_installed","message":"Existing slab demolition complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Existing slab demolition complete installed price needs an explicit owner price."],"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"inspectionFirst":false}],"validationMessages":["Existing slab demolition complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+not ok 18 - Optional scope demolition-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 512.070608
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope demolition-itemized: missing price or description isolates only selected work
+not ok 19 - Optional scope demolition-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 6.608703
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"1c8184b6-838a-4233-975a-2b22ff136e03","quoteId":"666ead7f-73a6-45ec-b454-a18c7bae17ce","serviceType":"CONCRETE_PATIO_SLAB","submittedCustomerInputs":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.demolition_removal"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.demolition_removal","message":"Existing slab demolition labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.demolition_removal"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.demolition_removal","message":"Existing slab demolition labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Existing slab demolition labor needs an explicit owner price."],"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"inspectionFirst":false}],"validationMessages":["Existing slab demolition labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+not ok 20 - Optional scope demolition-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 488.717821
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope exposed-installed: missing price or description isolates only selected work
+not ok 21 - Optional scope exposed-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 6.689835
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"ef7439ed-4943-4759-b62f-ebe8f35c1151","quoteId":"0029adb9-2a48-437b-92b9-b95b651e453c","serviceType":"CONCRETE_PATIO_SLAB","submittedCustomerInputs":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.exposed_aggregate_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.exposed_aggregate_installed","message":"Additional exposed-aggregate finishing complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.exposed_aggregate_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.exposed_aggregate_installed","message":"Additional exposed-aggregate finishing complete installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Additional exposed-aggregate finishing complete installed price needs an explicit owner price."],"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"inspectionFirst":false}],"validationMessages":["Additional exposed-aggregate finishing complete installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+not ok 22 - Optional scope exposed-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 456.457495
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope exposed-itemized: missing price or description isolates only selected work
+not ok 23 - Optional scope exposed-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 12.448953
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"f17b5d8c-f902-4704-9a7b-c5e115bf2c60","quoteId":"c3e4085a-102a-48d5-a3c6-b8aae66e8f6e","serviceType":"CONCRETE_PATIO_SLAB","submittedCustomerInputs":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.exposed_aggregate_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.exposed_aggregate_labor","message":"Additional exposed-aggregate finishing labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.exposed_aggregate_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.exposed_aggregate_labor","message":"Additional exposed-aggregate finishing labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["Additional exposed-aggregate finishing labor needs an explicit owner price."],"normalizedScope":{"dimensionMethod":"exact","length":20,"width":10,"thickness":4,"finishType":"broom","demolitionNeeded":false,"reinforcement":"none","accessDifficulty":"easy","baseNeeded":true},"validatedMeasurements":[{"name":"length","value":20,"unit":"feet"},{"name":"width","value":10,"unit":"feet"},{"name":"thickness","value":4,"unit":"inches"}],"inspectionFirst":false}],"validationMessages":["Additional exposed-aggregate finishing labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+not ok 24 - Optional scope exposed-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 433.131023
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope commercial-installed: missing price or description isolates only selected work
+not ok 25 - Optional scope commercial-installed: missing price or description isolates only selected work
+  ---
+  duration_ms: 7.751654
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"35def63c-d5e2-4318-b838-bdfb2a2115d0","quoteId":"1a9930d5-2bb0-4538-be94-a1846948020c","serviceType":"FLAT_ROOF_REPLACEMENT","submittedCustomerInputs":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"normalizedScope":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"validatedMeasurements":[{"name":"roofSqft","value":1000,"unit":"square feet"},{"name":"existingLayers","value":1,"unit":"layers"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.insulation_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.insulation_installed","message":"insulation installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.insulation_installed"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.insulation_installed","message":"insulation installed price needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["insulation installed price needs an explicit owner price."],"normalizedScope":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"validatedMeasurements":[{"name":"roofSqft","value":1000,"unit":"square feet"},{"name":"existingLayers","value":1,"unit":"layers"}],"inspectionFirst":false}],"validationMessages":["insulation installed price needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+not ok 26 - Optional scope commercial-installed: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 50.745995
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope commercial-itemized: missing price or description isolates only selected work
+not ok 27 - Optional scope commercial-itemized: missing price or description isolates only selected work
+  ---
+  duration_ms: 6.616913
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:35:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-trade-decisions-20261003-v3","serviceId":"0566784c-99c2-4390-a089-8f3ceadbcf1c","quoteId":"dc42611a-6eb7-4205-bb69-02a604e96fec","serviceType":"FLAT_ROOF_REPLACEMENT","submittedCustomerInputs":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"normalizedScope":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"validatedMeasurements":[{"name":"roofSqft","value":1000,"unit":"square feet"},{"name":"existingLayers","value":1,"unit":"layers"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.insulation_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.insulation_labor","message":"insulation labor needs an explicit owner price."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":["scopeRates.insulation_labor"],"invalidOwnerFields":[],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"missing","kind":"scope_configuration","path":"scopeRates.insulation_labor","message":"insulation labor needs an explicit owner price."}],"ownerDecisionRequired":[],"validationMessages":["insulation labor needs an explicit owner price."],"normalizedScope":{"roofSqft":1000,"sqftMethod":"exact","membraneType":"epdm","replacementMembraneType":"epdm","existingLayers":1,"accessDifficulty":"easy","serviceScope":"full","buildingType":"residential","confirmedFacts":{"membraneType":{"status":"identified","field":"membraneType","value":"epdm","offeringId":"8013f4ac-b828-45c6-80fa-65f82d2c1e21"},"replacementMembraneType":{"status":"identified","field":"replacementMembraneType","value":"epdm","offeringId":"13282f23-a404-4615-8a9e-c4f259c2e3fa"}}},"validatedMeasurements":[{"name":"roofSqft","value":1000,"unit":"square feet"},{"name":"existingLayers","value":1,"unit":"layers"}],"inspectionFirst":false}],"validationMessages":["insulation labor needs an explicit owner price."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:29:65)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:40:53)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+not ok 28 - Optional scope commercial-itemized: saved approval and tier completion preserve the boundary
+  ---
+  duration_ms: 56.053786
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:49:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'Good',
+        'Best'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Good'
+    1: 'Best'
+  actual:
+    0: 'Best'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteOptionalScopeIsolation.spec.mjs:61:51)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 0
+# fail 28
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2861.958385

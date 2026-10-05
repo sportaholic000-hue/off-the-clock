@@ -6,14 +6,14 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-export const QUOTE_PRICEBOOK_SOURCES = /^(server\/quote-engine-vnext\/[^/]+\.js|server\/src\/(quoteDoneBridge|quoteDoneRoutes|quoteIntake|quoteRequestScope|quoteScopeDisclosure|customerSummary|customerExplanation|priceBookAI)\.js|server\/(priceBook\w*|installedPriceConfiguration|scopeConfiguration|taxJurisdiction|quoteEngine|quoteTemplates)\.js|client\/src\/(pricebook\w*|quoteDoneControls|offeringEditor|scopeEditor|installedMaterialsEditor|interviewStructured|interviewAssist|quotePresentation|customerExplanation)\.(js|jsx))$/;
+export const QUOTE_PRICEBOOK_SOURCES = /^(server\/quote-engine-vnext\/[^/]+\.js|server\/src\/(quoteDoneBridge|quoteDoneRoutes|quoteIntake|quoteRequestScope|quoteScopeDisclosure|customerSummary|customerExplanation|priceBookAI)\.js|server\/(priceBook\w*|installedPriceConfiguration|scopeConfiguration|pricePrecision|interviewConfiguration|taxJurisdiction|quoteEngine|quoteTemplates)\.js|client\/src\/(pricebook\w*|quoteDoneControls|offeringEditor|scopeEditor|installedMaterialsEditor|interviewConfiguration|interviewStructured|interviewAssist|quotePresentation|customerExplanation)\.(js|jsx))$/;
 
 export function allSpecFiles(root) {
   const names = readdirSync(path.join(root, 'test'));
   return [...names.filter(n => n.endsWith('.spec.js')).sort(), ...names.filter(n => n.endsWith('.spec.mjs')).sort()].map(n => 'test/' + n);
 }
 
-const REPO_PATH = /['"]((?:server|client|test)\/[\w./-]+\.(?:m?js|jsx))['"]/g;
+const REPO_PATH = /['"](?:\.\/)?((?:server|client|test)\/[\w./-]+\.(?:m?js|jsx))['"]/g;
 const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)['"](\.{1,2}\/[^'"]+)['"]/g;
 export function reachedSources(root, file) {
   const seen = new Set(), queue = [file];

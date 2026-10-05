@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -188,8 +189,8 @@ test('saved approval lists a retained price only under retained settings, format
   assert.ok(mapRows.every(row => !String(row.value).includes('[object Object]') && !String(row.label).includes('[object Object]')));
 });
 
-test('changed arithmetic requires fresh approval: the engine version moved on (v3 after the billed-share and surcharge-basis changes)', () => {
-  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v3');
+test('changed arithmetic requires fresh approval: the engine version moved on (v4 after the explicit scope and removal-labor policy changes)', () => {
+  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-audit-decisions-20261004-v4');
   const live = liveService(patio);
   assert.equal(live.status.status, 'QUOTING LIVE');
   const book = store.loadPricebook(live.ownerId);

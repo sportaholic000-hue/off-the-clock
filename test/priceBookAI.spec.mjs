@@ -1,3 +1,6 @@
+import {offeringFixture} from './configuredOfferingsFixtures.mjs';
+import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -73,7 +76,7 @@ test('widget summary uses customer words and preserves original measurements',()
  const submission={customerInputs:{yardSqft:10000,sqftMethod:'exact',grassCondition:'maintained',serviceFrequency:'one_time'}};
  const before=structuredClone(submission);
  const summary=customerJobSummary({service:'Mowing'},definition,submission,'synthetic');
- assert.deepEqual(summary.facts.map(f=>f.value),['10000','Measured area','Regularly maintained','One time']);
+ assert.deepEqual(summary.facts.map(f=>f.value),['10000 square feet','Measured area','Regularly maintained','One time']);
  assert.deepEqual(submission,before);
 });
 test('every catalog enum is displayed using customer words rather than snake case',()=>{
@@ -84,7 +87,8 @@ test('every catalog enum is displayed using customer words rather than snake cas
 });
 
 for(const service of applicationMetadata().services)test('current starter schema accepts supported draft fields for '+service.serviceType,()=>{
- const numeric=def=>def.type==='number'?1:Object.fromEntries(def.shapedKeys.keys.map(key=>[key,def.shapedKeys.nested?Object.fromEntries(def.shapedKeys.nested.map(n=>[n,1])):1]));
+ const offering=['FENCING_INSTALL','FENCING_REPLACEMENT','INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)?convertApplicationBook({services:[offeringFixture(service.serviceType,'installed').ownerPricing],defaults:{}},'toDollars').services[0].pricing:{};
+ const numeric=def=>['scopeDetails','scopeRates'].includes(def.field)?{}:def.type==='offering_configuration'?offering[def.field]:def.type==='number'?1:Object.fromEntries(def.shapedKeys.keys.map(key=>[key,def.shapedKeys.nested?Object.fromEntries(def.shapedKeys.nested.map(n=>[n,1])):1]));
  const raw=service.serviceType==='CUSTOM'?[{service:'Synthetic',serviceType:'CUSTOM',low:1,high:2,unit:'flat',minimumJob:0}]:[{service:'Synthetic',serviceType:service.serviceType,fields:Object.fromEntries(starterFields(service.serviceType).map(def=>[def.field,numeric(def)]))}];
  const accepted=validateStarterOutput(raw,[service.serviceType]);assert.equal(accepted.length,1);assert.ok(Object.keys(accepted[0].fields).length);
 });

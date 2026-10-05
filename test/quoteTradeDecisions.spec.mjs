@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -125,7 +126,7 @@ test('T17 planting uses access on labor, direct mulch yards, and no waste on pla
 });
 test('T18 installed shares preserve fractional-cent allocation until tax rounding and reject impossible splits',()=>{
  const f=offeringFixture('FENCING_INSTALL','installed'),p=f.ownerPricing.pricing;
- Object.assign(p.offeringRates,{installedFencePerLF:.005,gate_walk:1.5});f.customerInputs.gates={walk:1};
+ Object.assign(p.offeringRates,{installedFencePerLF:.005,gate_walk:2});f.customerInputs.gates={walk:1};
  p.installedLaborPercent={'offeringRates.installedFencePerLF':50,'offeringRates.gate_walk':50};p.installedMaterialsPercent=structuredClone(p.installedLaborPercent);
  Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:100});cents(f,5); //billed lines 1+2=3; materials are half of the billed lines = 1.5, kept exact until tax; 100% tax = 1.5 -> 2 (half up).
  for(const value of [-1,101,NaN,Infinity,60]){p.installedMaterialsPercent['offeringRates.installedFencePerLF']=value;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}

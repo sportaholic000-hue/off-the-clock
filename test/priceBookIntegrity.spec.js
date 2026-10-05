@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import { parseOwnerNumericInput, validatePricebookNumericDraft } from '../server/priceBookMoney.js';
 import { servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices } from '../client/src/pricebookEditing.js';
 import test, { after } from 'node:test';

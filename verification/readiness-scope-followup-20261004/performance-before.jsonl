@@ -1,0 +1,3 @@
+{"reason":"unconfigured-zero-prices","n":80,"bytes":13879,"status":"NEEDS PRICING","elapsedMs":9066.111093,"timerMs":9067.139843}
+{"reason":"missing-all-registration","n":80,"bytes":5695,"status":"NEEDS PRICING","elapsedMs":2910.98977,"timerMs":2911.448051000001}
+{"reason":"only-final-pair-live","n":80,"bytes":8608,"status":"NEEDS PRICING","elapsedMs":2793.2823549999994,"timerMs":2793.642849}

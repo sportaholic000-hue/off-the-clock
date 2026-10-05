@@ -1,3 +1,4 @@
+import {scopeBaseKey,scopeEntriesFor} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
@@ -5,6 +6,7 @@ import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivation
 import {exactCompare} from './exactMath.js';
 import {
   CLASS2_DEFINITIONS,
+  createActivationValidationVNext,
   SERVICE_TYPES,
   aiConfirmationFieldsVNext,
   hasCurrentApprovalVNext,
@@ -184,8 +186,22 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit)
 // Missing optional work stays visible as lead-only coverage. Every actual
 // request still goes through validateOwnerPricing and the unchanged calculator.
 function optionalPricingRequests(service, base) {
-  const type=service.serviceType;
-  if(configuredOffering(type,pricingOf(service)))return [];
+  const type=service.serviceType,p=pricingOf(service);
+  if(configuredOffering(type,p)){
+    const d=p.offeringDetails||{},fields=offeringContract(type,p,service).fields;
+    if(type==='INTERIOR_PAINTING')return [
+      ...(d.ceilingsOffered?[{key:'ceiling_prices',label:fields.ceilingsIncluded.label,changes:{ceilingsIncluded:true,ceilingAreaSqft:100}}]:[]),
+      ...(d.trimOffered?[{key:'trim_prices',label:fields.trimIncluded.label,changes:{trimIncluded:true,trimLengthLF:100}}]:[])
+    ];
+    if(type.startsWith('FENCING_')){
+      const rates=offeringRateDefinitions(type,p);
+      return [
+        ...Object.keys(d.gates||{}).map(key=>({key:'gate_prices_'+key,label:rates['gate_'+key]?.label||fields.gates.label,changes:{gates:{[key]:1}}})),
+        ...(type==='FENCING_REPLACEMENT'&&d.removalOffered?[{key:'removal_prices',label:rates.removalPerLF.label,changes:{oldFenceRemoval:true,removalLengthLF:50}}]:[])
+      ];
+    }
+    return [];
+  }
   if(type==='INTERIOR_PAINTING')return [
     {key:'ceiling_prices',label:'Ceiling painting',changes:{ceilingsIncluded:true,ceilingAreaSqft:1_000_000,ceilingCoats:3}},
     {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
@@ -244,7 +260,7 @@ function baseActivationScenarios(service,confirmedService=service) {
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
     const configuredExistingTypes = keysOf(p.tearOffPerSqft,'epdm').filter(key=>key!=='average');
     const existingTypes = configuredExistingTypes.length ? configuredExistingTypes : membraneTypes;
-    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential'})));
+    const scenarios = membraneTypes.flatMap(replacementMembraneType=>existingTypes.map(membraneType=>({roofSqft:2_000_000,sqftMethod:'exact',membraneType,replacementMembraneType,existingLayers:10,accessDifficulty,serviceScope:'full',buildingType:'residential',insulationNeeded:false,coverboardNeeded:false})));
 
     return scenarios;
   }
@@ -306,7 +322,7 @@ function baseActivationScenarios(service,confirmedService=service) {
       ] }
     ];
     return dimensions.flatMap(dimension => {
-      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false};
+      const base={...dimension,thickness:24,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty,baseNeeded:false,adjoinsExistingConcrete:false};
       const candidates=['broom','smooth','stamped'].flatMap(finishType=>['none','wire_mesh','rebar'].flatMap(reinforcement=>[false,true].map(baseNeeded=>({...base,finishType,reinforcement,baseNeeded}))));
       return [base,...candidates.filter(input=>completeOptionalPricing(service,input))];
     });
@@ -358,23 +374,28 @@ function baseActivationScenarios(service,confirmedService=service) {
   return [];
 }
 
-function activationScenarios(service,confirmedService=service) {
- const scenarios=baseActivationScenarios(service,confirmedService),p=pricingOf(service),type=service.serviceType,extra=[];
+function activationScenarios(service,confirmedService=service,tierName=null) {
+ const p=pricingOf(service),type=service.serviceType,extra=[];
+ const scenarios=baseActivationScenarios(service,confirmedService).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
+  if(!configuredOffering(type,p))return true;
+  const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
+  return !additional||completeOptionalPricing(service,input,p,tierName);
+ });
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
- if(type.startsWith('FLOORING_')){
-  if(p.scopeDetails?.stairs){const seed=scenarios.find(c=>c.newFlooringType===p.scopeDetails.stairs.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5});}
-  if(p.scopeDetails?.floor_overlay){const d=p.scopeDetails.floor_overlay,seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+ for(const [key,d] of Object.entries(p.scopeDetails||{})){
+  const base=scopeBaseKey(key);
+  if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5,stairWidthLF:d.maximumWidthLF,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
+  if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+  if(base==='siding_removal')add({oldSidingRemoval:true,existingSidingType:d.existingSidingType,sidingRemovalStories:d.stories});
+  if(base==='demolition')add({demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:d.maximumThickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
+  if(key==='siding_trim')add({trimIncluded:true,trimLengthLF:200});
+  if(key==='exposed_aggregate')add({finishType:'exposed_aggregate'});
+  if(key==='insulation')for(const layer of ['insulation','coverboard'])add({[layer+'Needed']:true});
  }
- if(type==='SIDING_REPLACEMENT'){
-  if(p.scopeDetails?.siding_trim)add({trimIncluded:true,trimLengthLF:200});
-  if(p.scopeDetails?.siding_removal)add({oldSidingRemoval:true});
- }
- if(type.startsWith('CONCRETE_')){
-  if(p.scopeDetails?.demolition)add({demolitionNeeded:true,demolitionAreaSqft:200});
-  if(p.scopeDetails?.exposed_aggregate)add({finishType:'exposed_aggregate'});
- }
- if(type==='FLAT_ROOF_REPLACEMENT'&&p.scopeDetails?.insulation)add({buildingType:'commercial'});
- return [...scenarios,...extra];
+ // Missing optional scope prices are reported by scopeCoverage. Probe their
+ // calculations once configured, without making unfinished additions a gate
+ // on the independently priced base work.
+ return [...scenarios,...extra.filter(input=>completeOptionalPricing(service,input,p,tierName))];
 }
 
 function uniqueStatusDiagnostics(items) {
@@ -428,36 +449,43 @@ function scopeCoverageForService(service) {
         rows.get(id).variants.push({tierName:variant.name,configurationComplete:false,missingFields:['offeringDetails.gates.'+key+'.widthLF']});
       }
     }
-    for (const [key, definition] of Object.entries(definitions)) {
+    for (const [key, definition] of Object.entries(definitions).flatMap(([key,def])=>key==='insulation'?['insulation','coverboard'].map(layer=>[layer,{...def,layer,label:'Roof '+layer}]):[[key,def]])) {
+      const configurationKey=definition.layer?'insulation':key;
+      const scope=scopeBaseKey(key),detail=p.scopeDetails?.[key]||{};
       const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
       const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment' } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
-      if (key === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType: p.scopeDetails?.stairs?.flooringType });
-      if (key === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: p.scopeDetails?.floor_overlay?.existingFloorType || 'existing_floor' });
-      if (key === 'siding_removal') probe.oldSidingRemoval = true;
+      if (scope === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType:detail.flooringType,stairWidthLF:detail.maximumWidthLF,stairRemovalNeeded:detail.removalIncluded,stairDisposalNeeded:detail.disposalIncluded });
+      if (scope === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: detail.existingFloorType || 'existing_floor',newFlooringType:detail.newFlooringType });
+      if (scope === 'siding_removal') Object.assign(probe,{oldSidingRemoval:true,existingSidingType:detail.existingSidingType,sidingRemovalStories:detail.stories});
       if (key === 'siding_trim') probe.trimIncluded = true;
-      if (key === 'demolition') probe.demolitionNeeded = true;
+      if (scope === 'demolition') Object.assign(probe,{demolitionNeeded:true,demolitionThickness:detail.maximumThickness,demolitionReinforcement:detail.reinforcement,demolitionAccessDifficulty:detail.accessDifficulty});
       if (key === 'exposed_aggregate') probe.finishType = 'exposed_aggregate';
-      if (key === 'insulation') probe.buildingType = 'commercial';
+      if (definition.layer) Object.assign(probe,{insulationNeeded:false,coverboardNeeded:false,[definition.layer+'Needed']:true});
       if (key.includes('ceiling')) { if (type !== 'INTERIOR_PAINTING' || p.offeringMode && p.offeringDetails?.ceilingsOffered !== true) continue; probe.ceilingsIncluded = true; }
       if (key === 'paint_trim') { if (type !== 'INTERIOR_PAINTING') continue; probe.trimIncluded = true; }
-      if (!scopeKeysForRequest(type, probe, p, service).includes(key)) continue;
-      const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === key).map(([name]) => 'scopeRates.' + name);
-      const related = d => d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + key || d.path?.startsWith('scopeDetails.' + key + '.') || rates.includes(d.path);
+      if (!scopeKeysForRequest(type, probe, p, service).includes(configurationKey)) continue;
+      const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === configurationKey&&(!definition.layer||field.layer===definition.layer)).map(([name]) => 'scopeRates.' + name);
+      const related = d => {if(definition.layer&&d.path==='scopeDetails.insulation.'+(definition.layer==='insulation'?'coverboard':'insulation')+'System')return false;return d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + configurationKey || d.path?.startsWith('scopeDetails.' + configurationKey + '.') || rates.includes(d.path);};
       const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related);
-      const complete = isPlainRecord(p.scopeDetails?.[key]) && (rates.length > 0 || p.scopeDetails[key].mode === 'included_in_floor_price') && errors.length === 0;
+      const complete = isPlainRecord(p.scopeDetails?.[configurationKey]) && (rates.length > 0 || p.scopeDetails[configurationKey].mode === 'included_in_floor_price') && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
       const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
     }
   }
   for(const variant of variants){
-    const p=variant.pricing,configured={...service,pricing:p},base=baseActivationScenarios(configured)[0];
+    const p=variant.pricing,configured={...service,pricing:p},scenarios=baseActivationScenarios(configured);
+    // Itemized painting can price only some conditions. Optional coverage uses
+    // a priced base condition when one exists, not necessarily the first one.
+    const base=configuredOffering(type,p)?scenarios.find(input=>completeOptionalPricing(configured,input,p,variant.name))||scenarios[0]:scenarios[0];
     for(const optional of optionalPricingRequests(configured,base)){
       const inputs=scopeActivationInputs(type,{...base,...optional.changes},p,service);
-      const validation=validateOwnerPricing(type,inputs,p,service,variant.name),complete=validation.ok;
+      const validation=validateOwnerPricing(type,inputs,p,service,variant.name);
+      const gateErrors=type.startsWith('FENCING_')&&configuredOffering(type,p)?offeringContract(type,p,service).crossValidate(inputs):[];
+      const complete=validation.ok&&gateErrors.length===0;
       if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
       const row=rows.get(optional.key);row.configurationComplete ||= complete;
-      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set(validation.ownerDiagnostics.map(d=>d.path))]});
+      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>d.path),...gateErrors.map(d=>'customerInputs.'+d.field)])]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
@@ -562,6 +590,20 @@ function productAxisCoverage(list,[rField,eField],evaluate){
   return [...results.values()];
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
+  // Reject selection-independent blockers on this tier's already-merged prices
+  // before constructing/searching product pairs. A tier may repair base prices;
+  // explicit zero minima remain valid. The existing selection filter treats
+  // malformed structures as global, but scopes missing map entries to products.
+  // Keep that distinction: an incomplete sibling must not block a live pair.
+  if (PAIR_SELECTORS[service.serviceType] && !options.productScenarios) {
+    const sharedPaths = new Set(['minimumJob', 'accessoryPricingMode', 'materialAccessoryBasis']);
+    const shared = validateOwnerPricing(service.serviceType, {}, effectivePricing, service, tierName)
+      .ownerDiagnostics.filter(item => item.kind === 'class2' || sharedPaths.has(item.path) ||
+        (item.type === 'unsupported' && item.kind === 'field'));
+    const structures = validatePricingStructuresDetailed(service.serviceType, effectivePricing);
+    const diagnostics = uniqueStatusDiagnostics([...shared, ...structures.filter(item => item.type !== 'missing')]);
+    if (diagnostics.length) return { ok: false, tierName, tierIndex, diagnostics, reviewReason: diagnostics[0].message };
+  }
   // Fee decisions are shared by the entire catalog. Check them once, before
   // repeated product calculations. Disposal may be replaced by an included
   // measured scope; leave its presence to the actual scenario in that case.
@@ -575,13 +617,15 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
-    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service)){
+    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service,tierName)){
       const key=JSON.stringify(selectors.map(field=>scenario[field]));
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
     const structures=validatePricingStructuresDetailed(service.serviceType,effectivePricing);
     const list=[...groups.values()].map(scenarios=>({scenarios,selection:Object.fromEntries(selectors.map(field=>[field,scenarios[0][field]]))}));
-    const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,productScenarios:g.scenarios})});
+    const validation = createActivationValidationVNext(service.serviceType, effectivePricing, service, tierName);
+    const factors = validateClass2FactorsDetailed(service.serviceType, effectivePricing);
+    const evaluate=g=>({selection:g.selection,...evaluateActivationVariant(service,effectivePricing,tierName,tierIndex,businessDefaults,{...options,structures,factors,validation,productScenarios:g.scenarios})});
     let products=[];
     const pairSelectors=PAIR_SELECTORS[service.serviceType];
     if(pairSelectors&&!options.firstLiveProduct&&list.length>PAIR_DETAIL_LIMIT)products=productAxisCoverage(list,pairSelectors,evaluate);
@@ -589,15 +633,15 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
-  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service);
+  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service,tierName);
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
     if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'field', path: key, message: 'This pricing field is not supported for the selected service.' });
   }
   diagnostics.push(
-    ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{}),
-    ...validateClass2FactorsDetailed(service.serviceType, effectivePricing)
+    ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{},effectivePricing,service),
+    ...(options.factors || validateClass2FactorsDetailed(service.serviceType, effectivePricing))
   );
   for (const scenarioInputs of scenarios) {
     const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service), ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
@@ -605,7 +649,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     // establish no facts about a real customer project.
     const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', field, value: customerInputs[field], offeringId: values[customerInputs[field]] }]));
     if (Object.keys(confirmations).length) customerInputs.confirmedFacts = confirmations;
-    const customer = validateCustomerInputs(service.serviceType, customerInputs, effectivePricing, service);
+    const customer = options.validation ? options.validation.customer(customerInputs) : validateCustomerInputs(service.serviceType, customerInputs, effectivePricing, service);
     if (!customer.ok) {
       for (const path of customer.missingOwnerFields || []) diagnostics.push({type:'missing',kind:'known_offerings',path,message:customer.reviewReason});
       for (const path of customer.invalidOwnerFields || []) diagnostics.push({type:'invalid',kind:'known_offerings',path,message:customer.reviewReason});
@@ -614,7 +658,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       if (customer.inspectionFirst) diagnostics.push({ type: 'invalid', kind: 'pricing_policy', path: 'pricingPolicy', message: customer.reviewReason });
       continue;
     }
-    const owner = validateOwnerPricing(service.serviceType, customerInputs, effectivePricing, service, tierName);
+    const owner = options.validation ? options.validation.owner(customerInputs) : validateOwnerPricing(service.serviceType, customerInputs, effectivePricing, service, tierName);
     diagnostics.push(...owner.ownerDiagnostics);
     if (!owner.ok) continue;
     try {
@@ -1001,7 +1045,7 @@ export function reviewOnlyScopesVNext(serviceType) {
     add('Demolition selected', {demolitionNeeded:true}, ['demolitionPerSqft','disposalPerSqft']);
     add('Exposed aggregate selected', {finishType:'exposed_aggregate'}, ['finishMultiplier']);
   }
-  if (serviceType === 'FLAT_ROOF_REPLACEMENT') add('Commercial insulation scope', {buildingType:'commercial'}, ['insulationPerSqft']);
+  if (serviceType === 'FLAT_ROOF_REPLACEMENT') for(const layer of ['insulation','coverboard'])add(layer+' scope', {[layer+'Needed']:true}, ['insulationPerSqft']);
   if (serviceType.startsWith('FENCING_')) add('Every fence request', {}, [], true);
   if (serviceType === 'EXTERIOR_PAINTING') add('Every exterior painting request', {}, [], true);
   return definitions.map(({inputs, ...entry}) => ({...entry, ownerDecisions: uniqueStatusDiagnostics([
@@ -1023,7 +1067,7 @@ function fieldCopy(serviceType, field) {
     ownerDecisions: scopes.flatMap(scope => scope.ownerDecisions)
   };
   if (serviceType === 'FLAT_ROOF_REPLACEMENT' && ['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'].includes(field)) return {
-    label: {laborPerSqft:'Installation labor price per square foot by replacement membrane',membraneCostPerSqft:'Material price per square foot by replacement membrane',tearOffPerSqft:'Tear-off price per square foot by existing membrane'}[field],
+    label: {laborPerSqft:'Installation labor price per square foot by replacement membrane',membraneCostPerSqft:'Material price per square foot by replacement membrane',tearOffPerSqft:'Tear-off labor price per square foot by existing membrane'}[field],
     help:'Enter named, identified membrane rates. Unknown materials require verification; no fallback rate is used.'
   };
   if (NEW_FIELD_COPY[field]) return NEW_FIELD_COPY[field];

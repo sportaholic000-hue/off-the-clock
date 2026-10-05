@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -86,7 +87,7 @@ const defaults = { currency:'CAD', markupPercent:0, markupMode:'markup', overhea
 const patio = rate => ({ serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', source:'MANUAL', active:true, tiers:[],
   feeRules:{ travel:'not_applicable', disposal:'not_applicable', permit:'not_applicable', overhead:'not_applicable' },
   priceBasisByCategory:all('cost'), taxabilityByCategory:all(false), pricing:{ laborPerSqft:rate, concreteCostPerCubicYard:172, formworkPerLF:2.85, minimumJob:0 } });
-const inputs = { dimensionMethod:'measured_area_perimeter', areaSqft:300, perimeterLF:74, thickness:4, finishType:'broom', demolitionNeeded:false, reinforcement:'none', accessDifficulty:'easy', baseNeeded:false };
+const inputs = { adjoinsExistingConcrete:false, dimensionMethod:'measured_area_perimeter', areaSqft:300, perimeterLF:74, thickness:4, finishType:'broom', demolitionNeeded:false, reinforcement:'none', accessDifficulty:'easy', baseNeeded:false };
 function liveOwner(rate) {
   const ownerId = 'durable-' + crypto.randomUUID();
   bridge.saveApplicationBook(ownerId, { revision:bridge.readApplicationBook(ownerId).revision, services:[patio(rate)], defaults });

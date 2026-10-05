@@ -1,3 +1,4 @@
+import './pricebookTestEnv.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {generateQuoteVNext,sanitizeForCustomerVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
@@ -17,7 +18,12 @@ for(const row of measuredScopeCases())test(row.id+' rejects missing scope facts 
  }
  const f=structuredClone(row.input);delete f.ownerPricing.pricing.scopeRates[Object.keys(f.ownerPricing.pricing.scopeRates)[0]];
  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
- assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'NEEDS PRICING');
+ const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+ // October 1 ruling: an unfinished additional scope does not disable priced
+ // base work. Missing mandatory underlayment or wall materials still blocks it.
+ const optional=/^(stairs|overlay|siding-trim|siding-removal|demolition|exposed|commercial)-/.test(row.id);
+ assert.equal(status.status,optional?'QUOTING LIVE':'NEEDS PRICING');
+ assert.ok(status.scopeCoverage.some(scope=>!scope.configurationComplete));
 });
 const get=id=>structuredClone(measuredScopeCases().find(r=>r.id===id).input);
 test('Installed scope receives no second markup; fractional unit prices remain exact',()=>{
