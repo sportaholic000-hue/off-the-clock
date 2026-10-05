@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__2
+ok 1 - QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__2
+  ---
+  duration_ms: 305.828343
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__named
+ok 2 - QP-01 only named overlay FLOORING_INSTALL installed false floor_overlay__named
+  ---
+  duration_ms: 140.057606
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__2
+ok 3 - QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__2
+  ---
+  duration_ms: 117.247595
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__named
+ok 4 - QP-01 only named overlay FLOORING_INSTALL installed true floor_overlay__named
+  ---
+  duration_ms: 124.172853
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__2
+ok 5 - QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__2
+  ---
+  duration_ms: 118.520899
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__named
+ok 6 - QP-01 only named overlay FLOORING_INSTALL itemized false floor_overlay__named
+  ---
+  duration_ms: 111.121691
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__2
+ok 7 - QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__2
+  ---
+  duration_ms: 124.05804
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__named
+ok 8 - QP-01 only named overlay FLOORING_INSTALL itemized true floor_overlay__named
+  ---
+  duration_ms: 101.538897
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__2
+ok 9 - QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__2
+  ---
+  duration_ms: 109.008455
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__named
+ok 10 - QP-01 only named overlay FLOORING_REPLACEMENT installed false floor_overlay__named
+  ---
+  duration_ms: 93.239828
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__2
+ok 11 - QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__2
+  ---
+  duration_ms: 96.345198
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__named
+ok 12 - QP-01 only named overlay FLOORING_REPLACEMENT installed true floor_overlay__named
+  ---
+  duration_ms: 89.477817
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__2
+ok 13 - QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__2
+  ---
+  duration_ms: 91.730042
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__named
+ok 14 - QP-01 only named overlay FLOORING_REPLACEMENT itemized false floor_overlay__named
+  ---
+  duration_ms: 91.016156
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__2
+ok 15 - QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__2
+  ---
+  duration_ms: 92.189464
+  type: 'test'
+  ...
+# Subtest: QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__named
+ok 16 - QP-01 only named overlay FLOORING_REPLACEMENT itemized true floor_overlay__named
+  ---
+  duration_ms: 96.11335
+  type: 'test'
+  ...
+# Subtest: QP-02 owner preview includes tier-only hardwood underlayment
+ok 17 - QP-02 owner preview includes tier-only hardwood underlayment
+  ---
+  duration_ms: 103.262865
+  type: 'test'
+  ...
+# Subtest: QP-02 owner preview includes tier-only laminate underlayment
+ok 18 - QP-02 owner preview includes tier-only laminate underlayment
+  ---
+  duration_ms: 91.073112
+  type: 'test'
+  ...
+# Subtest: QP-02 owner preview includes tier-only carpet underlayment
+ok 19 - QP-02 owner preview includes tier-only carpet underlayment
+  ---
+  duration_ms: 96.931166
+  type: 'test'
+  ...
+# Subtest: QP-04 October 4 approval is stale after stair removal arithmetic; reapproval restores $2711
+ok 20 - QP-04 October 4 approval is stale after stair removal arithmetic; reapproval restores $2711
+  ---
+  duration_ms: 172.446403
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2481.596863

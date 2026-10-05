@@ -1,3 +1,30 @@
+# October 5 follow-up defects fixed — rounding decision open
+
+The four confirmed quote-engine / price-book defects at `217ce1009cbc371c2f7fe1da1ef19dce4950ed22`
+are repaired in source/test checkpoint `b01b7ddde3546bf2aed2c5f8a7b27c9d0ad56e67`,
+on `codex/quote-audit-repairs-20261005` ([draft PR #25](https://github.com/sportaholic000-hue/off-the-clock/pull/25)).
+The repairs cover named floor overlays, tier-only owner-preview questions,
+large incomplete catalog readiness, and approval invalidation after the
+October 5 stair-removal surcharge change. Production code was saved at
+`9361844b`; subsequent source/test commits only improve the two new test fixtures.
+
+Local verification: 1,499 non-browser checks passed against the same production
+source. The final 70-test financial-pipeline parity file also passed. All 65
+baseline internal results and 65 customer results remain identical apart from
+quote IDs and the intentional engine-version update. The reported public
+320-by-320 incomplete catalog improves from 6.17 seconds to 0.14 seconds cold.
+The hosted strict quote/price-book gate and both production builds passed on
+the final source/test revision. Exact hosted counts and broader-suite comparison
+are recorded in the [source-bound evidence](../verification/audit-repairs-20261005/CI_EVIDENCE.md).
+
+**Peak-surcharge rounding is still unresolved.** The existing separate-bucket
+convention is unchanged pending an explicit owner decision. This is not launch
+signoff or a claim that no further defects exist. New quotes require fresh v5
+owner approval; historical receipts retain their original amounts. No merge,
+deployment, live-data change, or subagent work is included.
+
+[Changes, acceptance checks, limitations, and source binding](../verification/audit-repairs-20261005/README.md).
+
 # October 5 audit decisions — scoped verification passed
 
 The nine October 4 follow-up decisions are implemented at
