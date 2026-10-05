@@ -9,6 +9,7 @@ import {api} from './api.js';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,approvalMatchesDraft} from './pricebookEditing.js';
 import {reviewRows,reviewLabel,priceChoices,displayAmount,retainedRows} from './pricebookReview.js';
 const human=humanPricingKey;
+const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const treeLabel=key=>/[A-Z]/.test(key)?humanPricingKey(key):human(key);
 const own=(value,key)=>Object.hasOwn(value||{},key);
 
@@ -72,6 +73,10 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  </div>)}</div>;
 }
 
+export function ServiceStatusNotices({status}) {
+ return <>{status.statusNotices?.map(notice=><Notice key={notice}>{notice}</Notice>)}</>;
+}
+
 export function ServiceRules({service,services=[],meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {
   const [offering,setOffering]=useState({}),[offeringError,setOfferingError]=useState({});
  const needsQuoteTimeZone=!defaults.quoteTimeZone&&[defaults.peakMonths,service.peakMonths,...services.map(s=>s.peakMonths)].some(months=>Array.isArray(months)&&months.length>0);
@@ -87,14 +92,16 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   <h3>Currency</h3><Field label="Currency of your prices" help="Set from your business country during onboarding. Every quote states it."><Select aria-label="Currency of your prices" value={defaults.currency||''} onChange={e=>onDefault('currency',e.target.value||undefined)}>{!defaults.currency&&<option value="">Choose a currency</option>}<option value="CAD">Canadian dollars (CAD)</option><option value="USD">US dollars (USD)</option></Select></Field>
   <h3>Business-wide fixed charges and range</h3>{['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee'].map(field=><Field key={field} label={human(field)+' ($)'}><ExactNumericInput kind="fixed_amount" value={defaults[field]} onChange={v=>onDefault(field,v)}/></Field>)}
   <Field label="Estimate range buffer (%)"><ExactNumericInput value={defaults.rangeBufferPercent} onChange={v=>onDefault('rangeBufferPercent',v)}/></Field>
+  <h3>Optional busy-season labor surcharge</h3>
+  <p>Off unless set; 0 means off; adds the entered percentage to labor in the chosen months.</p>
   <Field label="Peak surcharge (%)"><ExactNumericInput value={defaults.peakSurchargePercent} onChange={v=>onDefault('peakSurchargePercent',v)}/></Field>
   <p>The surcharge applies to labor lines and the entered labor portion of installed prices. Installed prices with no labor portion entered carry no surcharge. Select every month for a year-round labor surcharge.</p>
   <Button variant="quiet" onClick={()=>onDefault('peakMonths',Array.from({length:12},(_,i)=>i+1))}>Use business surcharge every month</Button>
   <Field label="Surcharge settings for this service"><Select aria-label="Surcharge settings for this service" value={service.peakMonths!==undefined||service.peakSurchargePercent!==undefined?'custom':'business'} onChange={event=>{const next={...service};if(event.target.value==='business'){delete next.peakMonths;delete next.peakSurchargePercent;}else{next.peakMonths=[...(defaults.peakMonths||[])];next.peakSurchargePercent=defaults.peakSurchargePercent;}onService(next);}}><option value="business">Use business settings</option><option value="custom">Custom settings for this service</option></Select></Field>
-  {(service.peakMonths!==undefined||service.peakSurchargePercent!==undefined)&&<><Field label="This service labor surcharge (%)"><ExactNumericInput aria-label="This service labor surcharge (%)" value={service.peakSurchargePercent??defaults.peakSurchargePercent} onChange={value=>onService({...service,peakSurchargePercent:value})}/></Field><fieldset><legend>This service peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" aria-label={'This service month '+month} checked={(service.peakMonths??defaults.peakMonths??[]).includes(month)} onChange={event=>{const months=service.peakMonths??defaults.peakMonths??[];onService({...service,peakMonths:event.target.checked?[...months,month].sort((a,b)=>a-b):months.filter(value=>value!==month)});}}/>{new Date(2026,month-1,1).toLocaleString('en-US',{month:'short'})} </label>)}</fieldset><Button variant="quiet" onClick={()=>onService({...service,peakMonths:Array.from({length:12},(_,i)=>i+1)})}>Apply to this service every month</Button></>}
+  {(service.peakMonths!==undefined||service.peakSurchargePercent!==undefined)&&<><Field label="This service labor surcharge (%)"><ExactNumericInput aria-label="This service labor surcharge (%)" value={service.peakSurchargePercent??defaults.peakSurchargePercent} onChange={value=>onService({...service,peakSurchargePercent:value})}/></Field><fieldset><legend>This service peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" aria-label={'This service month '+monthNames[month-1]} checked={(service.peakMonths??defaults.peakMonths??[]).includes(month)} onChange={event=>{const months=service.peakMonths??defaults.peakMonths??[];onService({...service,peakMonths:event.target.checked?[...months,month].sort((a,b)=>a-b):months.filter(value=>value!==month)});}}/>{monthNames[month-1]} </label>)}</fieldset><Button variant="quiet" onClick={()=>onService({...service,peakMonths:Array.from({length:12},(_,i)=>i+1)})}>Apply to this service every month</Button></>}
   {needsQuoteTimeZone&&<Notice tone="warning">Choose a business time zone for peak pricing. Quotes continue using the saved profile time zone, or UTC if none is available, until you choose.</Notice>}
   <Field label="Business time zone for quotes" help="Peak pricing uses today's date here, even when the job is scheduled for another month."><Select aria-label="Business time zone for quotes" value={defaults.quoteTimeZone||''} onChange={e=>onDefault('quoteTimeZone',e.target.value||undefined)}><option value="">Choose a business time zone</option>{['UTC',...Intl.supportedValuesOf('timeZone')].map(zone=><option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}</Select></Field>
-    <fieldset><legend>Peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" checked={defaults.peakMonths?.includes(month)||false} onChange={e=>onDefault('peakMonths',e.target.checked?[...(defaults.peakMonths||[]),month].sort((a,b)=>a-b):(defaults.peakMonths||[]).filter(n=>n!==month))}/>{month} </label>)}<Button variant="quiet" onClick={()=>onDefault('peakMonths',[])}>No peak months</Button></fieldset>
+    <fieldset><legend>Peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" checked={defaults.peakMonths?.includes(month)||false} onChange={e=>onDefault('peakMonths',e.target.checked?[...(defaults.peakMonths||[]),month].sort((a,b)=>a-b):(defaults.peakMonths||[]).filter(n=>n!==month))}/>{monthNames[month-1]} </label>)}<Button variant="quiet" onClick={()=>onDefault('peakMonths',[])}>No peak months</Button></fieldset>
  </section>;
 }
 

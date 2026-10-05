@@ -1,8 +1,8 @@
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { generateQuote } from '../server/quoteEngine.js';
-import { getRequiredOwnerFields } from '../server/quoteTemplates.js';
+import { generateQuote } from './legacy/quoteEngine.js';
+import { getRequiredOwnerFields } from './legacy/quoteTemplates.js';
 
 const defaults = { markupPercent: 30, markupMode: 'markup', taxMode: 'TAX_NONE', minimumJobPrice: 0, rangeBufferPercent: 10 };
 const mapLines = result => Object.fromEntries(result.lineItems.map(item => [item.name, item.amountCents]));

@@ -1,3 +1,4 @@
+import {ServiceStatusNotices} from './quoteDoneControls.jsx';
 import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import {ScopeEditor} from './scopeEditor.jsx';
@@ -874,6 +875,7 @@ export default function PriceBook() {
 
                   <Field label="Offering name" help="Use a distinct name for each height, product or scope you offer."><TextInput aria-label="Offering name" maxLength={40} value={selected.service||''} onChange={event=>replaceSelected({...selected,service:event.target.value})}/></Field>
                   {selectedMeta.offeringCustomerFields&&<OfferingEditor key={selectedType} service={selected} meta={selectedMeta} onChange={replaceSelected}/>}
+                  <ServiceStatusNotices status={selectedStatus}/>
                   {selectedStatus.productCoverage?.some(product=>!product.configurationComplete)&&<section className="scope-coverage" aria-label={selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}>
                     <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
                     <ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}>

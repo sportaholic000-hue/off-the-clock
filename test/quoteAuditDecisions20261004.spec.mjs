@@ -23,10 +23,14 @@ test('ordinary overlay product names use the registry key and quote the matching
  const f=get('overlay-installed');f.ownerPricing.pricing.scopeDetails.floor_overlay.existingFloorType=productKeyFromName('Vinyl plank').key;
  assert.equal(line(ready(f),'scopeRates.floor_overlay_installed').amountCents,40000); //200 sqft *200 cents
 });
-test('noncanonical overlay names are rejected before an interview can claim complete setup',()=>{
+test('interview normalizes overlay names; unconverted saved names still require review',()=>{
  const f=get('overlay-installed'),scopeDetails=f.ownerPricing.pricing.scopeDetails;scopeDetails.floor_overlay.existingFloorType='Vinyl plank';
- assert.throws(()=>validateInterviewValue(f.serviceType,'scopeDetails',scopeDetails,f.ownerPricing.pricing));
+ const normalized=validateInterviewValue(f.serviceType,'scopeDetails',scopeDetails,f.ownerPricing.pricing);
+ assert.equal(normalized.floor_overlay.existingFloorType,'vinyl_plank');
  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ f.ownerPricing.pricing.scopeDetails=normalized;
+ // Unchanged hand calculation: 66000 labor +112000 materials +40000 overlay.
+ assert.equal(ready(f).midEstimate,2180);
 });
 test('an older free-text overlay name does not disable unrelated flooring work',()=>{
  const f=get('overlay-installed');f.ownerPricing.pricing.scopeDetails.floor_overlay.existingFloorType='Vinyl plank';

@@ -6,7 +6,7 @@ import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 import jwt from 'jsonwebtoken';
 import {createAuthSessionService} from '../server/src/authSessionService.js';
-import { generateQuote, sanitizeForCustomer } from '../server/quoteEngine.js';
+import { generateQuote, sanitizeForCustomer } from './legacy/quoteEngine.js';
 import { requireAuth } from '../server/src/authMiddleware.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
 import { migrateDatabase, usersTableNeedsRebuild } from '../server/src/migrations.js';

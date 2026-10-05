@@ -34,10 +34,8 @@ import {
   dollarsToCents,
   loadPricebook,
   contractorValidationMessage,
-  pricebookDraftValidation,
-  pricebookStatuses,
   savePricebook,
-  saveValidatedPricebook, withPricebookLock } from '../priceBookService.js';
+  withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
 import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';

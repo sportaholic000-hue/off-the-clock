@@ -135,8 +135,9 @@ pricing contracts:
   all-inclusive owner rule.
 - Exposed aggregate needs material pricing or an explicit all-inclusive owner
   rule.
-- Flooring quotes exactly on a configured room-size threshold remain review
-  only until the owner decides whether maximum thresholds are inclusive.
+- Flooring room-size thresholds are inclusive maximums: average room area at
+  or below the small maximum is small; otherwise at or below the medium maximum
+  is medium; otherwise large (owner decision, October 5, 2026).
 
 No affected path duplicates, splits, reclassifies, or silently reuses a rate.
 

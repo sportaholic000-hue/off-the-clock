@@ -1,3 +1,4 @@
+import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
@@ -198,7 +199,7 @@ export const MEASUREMENT_CONTRACTS = {
       partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 2_000_000)
     },
     required(c) {
-      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'buildingType', 'insulationNeeded', 'coverboardNeeded'];
+      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'insulationNeeded', 'coverboardNeeded'];
       if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
       return out;
     },
@@ -262,7 +263,7 @@ export const MEASUREMENT_CONTRACTS = {
     },
     inspection(c) {
       if (c.areaInputMethod !== 'wall_sqft') return 'Measured paintable wall area is required; floor-area and room-count geometry are not used by the audit engine.';
-      if (c.surfaceCondition !== 'good') return 'Wall preparation requires a confirmed measured preparation scope before pricing.';
+      if (c.surfaceCondition !== 'good') return BASIC_PAINT_PREPARATION_NOTICE;
       return null;
     },
     crossValidate(c) {

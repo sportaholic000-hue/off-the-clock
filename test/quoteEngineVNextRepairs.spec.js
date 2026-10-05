@@ -1429,7 +1429,7 @@ test('repair 32: unresolved material cost inputs review while exact flooring thr
   for (const exactAverage of [149, 299]) {
     const result = run('FLOORING_INSTALL', flooringInputs({ sqft: exactAverage, roomCount: 1 }), thresholdOwner);
     assert.equal(result.resultType, 'INSTANT_ESTIMATE_READY', String(exactAverage));
-    assert.equal(result.options[0].calculationRecord.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, exactAverage === 149 ? 'medium' : 'large');
+    assert.equal(result.options[0].calculationRecord.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, exactAverage === 149 ? 'small' : 'medium');
   }
   for (const nonBoundary of [148, 150, 298, 300]) {
     assert.equal(run('FLOORING_INSTALL', flooringInputs({ sqft: nonBoundary, roomCount: 1 }), thresholdOwner).resultType, 'INSTANT_ESTIMATE_READY', String(nonBoundary));
@@ -3750,7 +3750,7 @@ test('repair 56: direct calculator boundaries fail closed with exact defensive d
     thresholdOwner.pricing,
     { ownerPricing: thresholdOwner }
   );
-  assert.equal(threshold.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, 'medium');
+  assert.equal(threshold.ruleApplications.find(item => item.name === 'averageRoomComplexityBand').result, 'small');
 
   const itemizedRoofOwner = roofService({
     accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories',
@@ -6707,7 +6707,7 @@ test('repair 110: exact derived areas enforce direct minimum maximum and strict 
 });
 test('repair 111: decimal flooring bands use exact division at and around the threshold',()=>{
  const p=flooringService({roomSizeThresholds:{smallMaxSqft:100.1,mediumMaxSqft:200}});
- for(const [sqft,band] of [[300.29999999999995,'small'],[300.3,'medium'],[300.30000000000007,'medium']]){const r=auditRun(flooringInputs({sqft,roomCount:3}),p);assert.equal(r.resultType,auditReady);assert.equal(r.options[0].calculationRecord.ruleApplications.find(x=>x.name==='averageRoomComplexityBand').result,band);}
+ for(const [sqft,band] of [[300.29999999999995,'small'],[300.3,'small'],[300.30000000000007,'medium']]){const r=auditRun(flooringInputs({sqft,roomCount:3}),p);assert.equal(r.resultType,auditReady);assert.equal(r.options[0].calculationRecord.ruleApplications.find(x=>x.name==='averageRoomComplexityBand').result,band);}
 });
 test('repair 112: uncertainty slugs and an unidentified leak require inspection even with matching rates',()=>{
  for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR'])for(const slug of ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average','named_patch']){

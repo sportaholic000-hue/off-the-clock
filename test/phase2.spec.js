@@ -3,10 +3,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
-import { generateQuote } from '../server/quoteEngine.js';
-import { getRequiredOwnerFields, SERVICE_TYPES } from '../server/quoteTemplates.js';
+import { generateQuote } from './legacy/quoteEngine.js';
+import { getRequiredOwnerFields, SERVICE_TYPES } from './legacy/quoteTemplates.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS } from '../server/priceBookMetadata.js';
-import { dollarsToCents, pricebookDraftStatuses, pricebookDraftValidation, pricebookServiceStatus, validatePricebookShape } from '../server/priceBookService.js';
+import { dollarsToCents, pricebookDraftStatuses, pricebookDraftValidation, pricebookServiceStatus, validatePricebookShape } from './legacy/priceBookService.js';
 import { humanPricingKey } from '../client/src/pricebookFormatting.js';
 import { CREATE_TABLE_STATEMENTS } from '../server/src/schema.js';
 
@@ -307,7 +307,7 @@ test('Class 2 defaults are stored per service on save, and money fields round-tr
   const { tmpdir } = await import('node:os');
   const { join } = await import('node:path');
   process.env.PRICEBOOK_PATH = mkdtempSync(join(tmpdir(), 'otc-pricebook-'));
-  const fresh = await import('../server/priceBookService.js?scope=class2-persistence');
+  const fresh = await import('./legacy/priceBookService.js?scope=class2-persistence');
   const saved = fresh.saveValidatedPricebook('owner-class2', {
     defaults:{},
     services:[{
@@ -967,7 +967,7 @@ test('offering consistency does not affect services without selectable products'
 });
 
 test('customer payloads are built from an allowlist, not by removing known keys', async () => {
-  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+  const { sanitizeForCustomer } = await import('./legacy/quoteEngine.js');
 
   // BEFORE THIS REPAIR: ready results spread the engine result and removed only
   // lineItems, so every other property -- including ones added later -- reached
@@ -1007,7 +1007,7 @@ test('customer payloads are built from an allowlist, not by removing known keys'
 });
 
 test('customer review outcomes never expose owner configuration', async () => {
-  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+  const { sanitizeForCustomer } = await import('./legacy/quoteEngine.js');
 
   // BEFORE THIS REPAIR: non-ready results were returned untouched, so
   // missingOwnerFields -- internal owner pricing-field identifiers -- and the
@@ -1033,7 +1033,7 @@ test('customer review outcomes never expose owner configuration', async () => {
 });
 
 test('owner results retain full diagnostics', async () => {
-  const { generateQuote } = await import('../server/quoteEngine.js');
+  const { generateQuote } = await import('./legacy/quoteEngine.js');
   const owner = generateQuote({
     serviceType: 'FLOORING_INSTALL',
     customerInputs: { areaInputMethod:'sqft', floorAreaSqft:600, newFlooringType:'hardwood',
@@ -1069,8 +1069,8 @@ test('customer eligibility is enforced before quote generation', () => {
 });
 
 test('a service that is not QUOTING LIVE cannot produce a customer estimate', async () => {
-  const { pricebookServiceStatus } = await import('../server/priceBookService.js');
-  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+  const { pricebookServiceStatus } = await import('./legacy/priceBookService.js');
+  const { sanitizeForCustomer } = await import('./legacy/quoteEngine.js');
 
   // An unconfirmed AI-suggested draft is NEEDS PRICING even though every
   // numeric value is present -- confirmation is what activates it.

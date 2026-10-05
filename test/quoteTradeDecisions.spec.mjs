@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
 process.env.PRICEBOOK_PATH=fs.mkdtempSync(path.join(os.tmpdir(),'quote-trade-'));
 process.env.JWT_SECRET='[SYNTHETIC] quote-trade-regression';
 const bridge=await import('../server/src/quoteDoneBridge.js');
-const {savePricebook,loadPricebook,validatePricebookShape}=await import('../server/priceBookService.js');
+const {savePricebook,loadPricebook,validatePricebookShape}=await import('./legacy/priceBookService.js');
 const {flooring,mowing,concrete,flatRoof,flatRepair}=await import('../verification/engine-independent/fixtures.mjs');
 const {generateQuoteVNext,vNextServiceStatus,sanitizeForCustomerVNext}=await import('../server/quote-engine-vnext/index.js');
 const {offeringFixture}=await import('./configuredOfferingsFixtures.mjs');

@@ -7,7 +7,7 @@ import { mkdtempSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, sep } from 'node:path';
 import { CLASS2_DEFAULTS_BY_SERVICE, SAMPLE_INPUTS, getServiceMetadata } from '../server/priceBookMetadata.js';
-import { generateQuote } from '../server/quoteEngine.js';
+import { generateQuote } from './legacy/quoteEngine.js';
 import { generateQuoteVNext, PRICE_BASIS_CATEGORIES, TAXABILITY_CATEGORIES } from '../server/quote-engine-vnext/index.js';
 import { fixtureIdentity, fixtureOfferings } from './quoteEngineVNextFixtures.mjs';
 
@@ -16,7 +16,7 @@ import { fixtureIdentity, fixtureOfferings } from './quoteEngineVNextFixtures.mj
 // (test files run in separate processes).
 const storeRoot = mkdtempSync(join(tmpdir(), 'otc-pricebook-integrity-'));
 process.env.PRICEBOOK_PATH = storeRoot;
-const store = await import('../server/priceBookService.js?scope=pricebook-integrity');
+const store = await import('./legacy/priceBookService.js?scope=pricebook-integrity');
 after(() => {
   const target = resolve(storeRoot);
   assert.ok(target.startsWith(resolve(tmpdir()) + sep));

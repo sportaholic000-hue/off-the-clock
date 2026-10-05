@@ -1,3 +1,6 @@
+export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review until you use itemized pricing with preparation rates.';
+export const basicInteriorPainting=(type,p={})=>type==='INTERIOR_PAINTING'&&!['itemized','installed'].includes(p.offeringMode);
+export const scopeVisibleInEditor=(type,p,key)=>!(basicInteriorPainting(type,p)&&key==='paint_prep');
 // Shared owner/customer form definitions. No prices or quantities are inferred.
 export const SCOPE_TYPES=['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','INTERIOR_PAINTING','EXTERIOR_PAINTING'];
 export const SCOPE_FIELDS=['scopeDetails','scopeRates'];

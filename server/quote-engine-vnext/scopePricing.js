@@ -77,7 +77,7 @@ export function scopeCustomerErrors(type,c,p={},rules={}){
    if(finite(c.demolitionThickness)&&finite(d.maximumThickness)&&c.demolitionThickness>d.maximumThickness)bad('demolitionThickness','The existing slab exceeds the priced thickness.');
    if(finite(c.demolitionThickness)&&finite(d.minimumThickness)&&c.demolitionThickness<=d.minimumThickness)bad('demolitionThickness','The existing slab is thinner than this priced thickness band.');
    if(c.demolitionReinforcement!==undefined&&c.demolitionReinforcement!==d.reinforcement)bad('demolitionReinforcement','The existing slab reinforcement does not match this removal scope.');
-   if(c.demolitionAccessDifficulty!==undefined&&!scopeMatchesRequest(key,d,{...c,demolitionThickness:Math.min(c.demolitionThickness||d.maximumThickness,d.maximumThickness),demolitionReinforcement:d.reinforcement}))bad('demolitionAccessDifficulty','This access is not covered by the explicitly configured matching rule.');
+   if(c.demolitionAccessDifficulty!==undefined&&!scopeMatchesRequest(key,d,{...c,demolitionThickness:d.maximumThickness,demolitionReinforcement:d.reinforcement}))bad('demolitionAccessDifficulty','This access is not covered by the explicitly configured matching rule.');
   }
   if(key==='insulation'){
    let total=c.roofSqft;if(c.serviceScope==='partial'&&finite(total))total=c.partialAreaSqft??(finite(c.partialPercent)?exactToNumber(exactDivide(exactMultiply(total,c.partialPercent),100)):undefined);
@@ -126,7 +126,7 @@ export function scopeLines(type,c,p={},rules={}){
    const ending=/[.!?…](?:["'’”\)\]])?$/.test(description)?'':'.';
    out.disclosures.push((key==='insulation'?'Roof '+['insulation','coverboard'].filter(layer=>c[layer+'Needed']===true).join(' and '):label)+': '+description+ending);
   if(key==='insulation'){
-   for(const layer of ['insulation','coverboard'].filter(layer=>c[layer+'Needed']===true))out.disclosures.push(layer+': '+d[layer+'System']+'.');
+   for(const layer of ['insulation','coverboard'].filter(layer=>c[layer+'Needed']===true))out.disclosures.push((layer==='insulation'?'Insulation':'Coverboard')+': '+d[layer+'System']+'.');
    for(const layer of ['insulation','coverboard'].filter(layer=>c[layer+'Needed']===true))for(const suffix of d.mode==='installed'?['installed']:['labor','material'])add(layer+'_'+suffix,c[layer+'AreaSqft'],suffix==='labor'?[{name:'roof access',value:p.accessMultiplier[c.accessDifficulty],path:'accessMultiplier.'+c.accessDifficulty}]:[]);
    continue;
   }

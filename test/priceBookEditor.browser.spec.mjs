@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
 import { CLASS2_DEFAULTS_BY_SERVICE, SAMPLE_INPUTS, getServiceMetadata } from '../server/priceBookMetadata.js';
-import { generateQuote } from '../server/quoteEngine.js';
+import { generateQuote } from './legacy/quoteEngine.js';
 import { getVNextPriceBookMetadata } from '../server/quote-engine-vnext/index.js';
 
 // Full, unchanged application JSX + React/ReactDOM in a real headless browser.
@@ -32,7 +32,7 @@ const storeRoot = mkdtempSync(join(tmpdir(), 'otc-editor-store-'));
 process.env.PRICEBOOK_PATH = storeRoot;
 // The price-book service reads its folder at each use, so this file keeps its
 // own folder for its whole run (test files run in separate processes).
-const store = await import('../server/priceBookService.js?editor-browser-regression');
+const store = await import('./legacy/priceBookService.js?editor-browser-regression');
 // Retain the legacy price representation fixtures, with the customer fields
 // supplied by the current application API. Missing metadata is not a quote.
 const customerMetadata = getVNextPriceBookMetadata();

@@ -43,7 +43,7 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-audit-repairs-20261005-v5';
+export const ENGINE_VERSION = 'quote-engine-vnext-launch-fixes-20261005-v6';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -519,6 +519,19 @@ function seasonalConfiguration(ownerPricing, defaults) {
   };
 }
 
+// Round the combined charge once. Floor the two shares, then distribute at
+// most one cent to each, largest labor share first (regular labor wins ties).
+// Keep this allocation in the receipt so its financial evidence is replayable.
+function allocateSeasonalSurcharge(regularLabor, installedLabor, percent) {
+  const shares = [regularLabor, installedLabor].map(basis => exactPercentOf(basis, percent));
+  const money = exactMoneyResult(exactAdd(...shares), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
+  const amounts = shares.map(value => Number(value.numerator / value.denominator));
+  let remainder = money.amountCents - amounts[0] - amounts[1];
+  const order = exactCompare(regularLabor, installedLabor) >= 0 ? [0, 1] : [1, 0];
+  for (const index of order) if (remainder > 0) { amounts[index]++; remainder--; }
+  return { shares, amounts, totalCents: money.amountCents };
+}
+
 function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
@@ -533,16 +546,16 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const otherLabor=lines.reduce((sum,line)=>!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^offeringRates\.prepLaborPerSqft(?:_|$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
-  let amountCents=0;
-  for(const [basisLabor,name,priceBasis] of [[otherLabor,'Peak season adjustment',undefined],[installedLabor,'Peak season adjustment on installed prices','sell_price']]){
-    const seasonalMoney = exactMoneyResult(active ? exactPercentOf(basisLabor, seasonal.percent) : exactDecimal(0), 'peakSurchargePercent', 'Peak-season configuration did not produce a valid charge.');
-    if (seasonalMoney.amountCents <= 0) continue;
-    amountCents += seasonalMoney.amountCents;
+  const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);
+  const amountCents = allocated.totalCents;
+  for(const [index,[basisLabor,name,priceBasis]] of [[otherLabor,'Peak season adjustment',undefined],[installedLabor,'Peak season adjustment on installed prices','sell_price']].entries()){
+    const lineCents = allocated.amounts[index];
+    if (lineCents <= 0) continue;
     lines.push({
       name,
       category: 'surcharge',
       ...(priceBasis ? { priceBasis } : {}),
-      amountCents: seasonalMoney.amountCents,
+      amountCents: lineCents,
       ownerVisible: true,
       customerVisible: false,
       calculation: {
@@ -551,9 +564,16 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
         basisAmountCents: exactToNumber(basisLabor),
         exactBasisAmountCents:exactEvidence(basisLabor),
         percent: seasonal.percent,
-        unroundedCents: seasonalMoney.unroundedCents,
-        exactUnroundedCents: seasonalMoney.exactUnroundedCents,
-        roundedAmountCents: seasonalMoney.amountCents
+        unroundedCents: exactToNumber(allocated.shares[index]),
+        exactUnroundedCents: exactEvidence(allocated.shares[index]),
+        roundedAmountCents: lineCents,
+        allocation: {
+          method: 'combined_labor_round_once',
+          part: index === 0 ? 'regular' : 'installed',
+          regularLabor: exactEvidence(otherLabor),
+          installedLabor: exactEvidence(installedLabor),
+          totalCents: amountCents
+        }
       }
     });
   }
@@ -808,10 +828,23 @@ function validPercentageEvidence(calculation, expectedAmountCents) {
           basis
         )
       : exactPercentOf(basis, calculation.percent);
+    let roundedAmountCents = exactRound(exactUnrounded);
+    if (Object.hasOwn(calculation, 'allocation')) {
+      const allocation = calculation.allocation;
+      if (!isPlainObject(allocation) || allocation.method !== 'combined_labor_round_once' ||
+          !['regular', 'installed'].includes(allocation.part) || calculation.mode !== undefined ||
+          calculation.basisCategory !== 'labor') return false;
+      const regular = exactFromEvidence(allocation.regularLabor), installed = exactFromEvidence(allocation.installedLabor);
+      if (exactCompare(regular, 0) < 0 || exactCompare(installed, 0) < 0 ||
+          exactCompare(basis, allocation.part === 'regular' ? regular : installed) !== 0) return false;
+      const allocated = allocateSeasonalSurcharge(regular, installed, calculation.percent);
+      if (allocation.totalCents !== allocated.totalCents) return false;
+      roundedAmountCents = allocated.amounts[allocation.part === 'regular' ? 0 : 1];
+    }
     return Number.isFinite(calculation.unroundedCents) &&
       Object.is(calculation.unroundedCents, exactToNumber(exactUnrounded)) &&
       exactEvidenceMatches(exactUnrounded, calculation.exactUnroundedCents) &&
-      exactRound(exactUnrounded) === expectedAmountCents &&
+      roundedAmountCents === expectedAmountCents &&
       calculation.roundedAmountCents === expectedAmountCents;
   } catch {
     return false;
@@ -1272,10 +1305,13 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (!isPlainObject(ownerPricing)) return finishReview({ reviewReason: 'Owner pricing must be an object.', invalidOwnerFields: ['ownerPricing'] });
   if (!isPlainObject(businessDefaults)) return finishReview({ reviewReason: 'Business defaults must be an object.', invalidOwnerFields: ['businessDefaults'] });
   ownerPricing = reuseActivation(prepared, 'owner', () => canonicalServiceIdentityVNext(ownerPricing));
+  const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
+  // Legacy/new saved services receive their immutable receipt on first approval.
+  // Explain that missing approval before reporting identity mismatches.
+  if (ownerPricing.origin === undefined) return finishReview({ reviewReason: 'This service has not been approved for quoting yet.', missingOwnerFields: ['origin'] });
+  if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.', invalidOwnerFields: ['active'] });
   const identityDiagnostics = reuseActivation(prepared, 'identity', () => identityDiagnosticsVNext(ownerPricing, serviceType));
   if (identityDiagnostics.length) return finishReview({reviewReason:'Service identity and type do not agree.',ownerDiagnostics:identityDiagnostics,missingOwnerFields:identityDiagnostics.filter(d=>d.type==='missing').map(d=>d.path),invalidOwnerFields:identityDiagnostics.filter(d=>d.type!=='missing').map(d=>d.path)});
-  const ownerPreview = callerType === 'owner' && allowInactiveOwnerPreview === true;
-  if (ownerPricing.active !== true && !ownerPreview) return finishReview({ reviewReason: 'This service is not active for customer quoting.', invalidOwnerFields: ['active'] });
   let basePricing;
   try {
     basePricing = reuseActivation(prepared, 'base', () => extractPricing(ownerPricing, serviceType));

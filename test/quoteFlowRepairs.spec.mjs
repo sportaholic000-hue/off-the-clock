@@ -44,13 +44,13 @@ test('malformed optional prices and missing main-job rates still require correct
  const request=mowing();request.customerInputs.bagClippings=true;delete request.ownerPricing.pricing.mowingBaseRatePerSqft;
  assert.equal(generateQuoteVNext(request).resultType,review);
 });
-test('flooring default thresholds follow the specified 150 medium / 300 large bands',()=>{
+test('flooring default thresholds follow the owner-decided inclusive 150 small / 300 medium maxima',()=>{
  // tile material = area * 1.12 * 500; labor = area * 300 * room multiplier.
- for(const [area,cents,band] of [[149,137080,'small'],[150,133500,'medium'],[151,134390,'medium'],[299,266110,'medium'],[300,258000,'large'],[301,258860,'large']]){
+ for(const [area,cents,band] of [[149,137080,'small'],[150,138000,'small'],[151,134390,'medium'],[299,266110,'medium'],[300,267000,'medium'],[301,258860,'large']]){
   const r=total(flooring('tile',area),cents);assert.equal(r.options[0].calculationRecord.ruleApplications.find(x=>x.name==='averageRoomComplexityBand').result,band);
  }
- const twoRooms=flooring('tile',300);twoRooms.customerInputs.roomCount=2;total(twoRooms,267000);
- const twoLarge=flooring('tile',600);twoLarge.customerInputs.roomCount=2;total(twoLarge,516000);
+ const twoRooms=flooring('tile',300);twoRooms.customerInputs.roomCount=2;total(twoRooms,276000);
+ const twoLarge=flooring('tile',600);twoLarge.customerInputs.roomCount=2;total(twoLarge,534000);
 });
 test('fixed custom service positive control has an explicit amount and confirmed service',()=>{total(custom(),12500);});
 test('custom price category is an editable owner setting, never a guessed allocation',()=>{

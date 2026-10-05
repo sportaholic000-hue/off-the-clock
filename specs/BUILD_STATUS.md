@@ -1,3 +1,21 @@
+# October 5 engine launch fixes — verification in progress
+
+Branch `codex/engine-launch-fixes-20261005` starts at verified
+`e830ca88ec7f2cd630c497d31b0e32322ed2feef`.
+The eight requested repairs and owner-decided arithmetic rules are implemented.
+Peak surcharge rounds once on combined eligible labor; allocated cents go to
+larger portions first, with regular labor winning ties. Room thresholds are
+inclusive maxima (<=150 small, <=300 medium under the default settings).
+Engine version is `quote-engine-vnext-launch-fixes-20261005-v6`; earlier approvals
+require fresh confirmation. Approved labels and hand calculations are recorded
+in [the launch decisions](QUOTE_LAUNCH_DECISIONS_20261005.md).
+
+Cold owner-app and widget builds passed locally. Final tests and hosted gate
+are pending; the source SHA and counts will be recorded after verification.
+No merge, deployment, live-data changes or subagents.
+
+## Historical checkpoint below — superseded rounding decision
+
 # October 5 follow-up defects fixed — rounding decision open
 
 The four confirmed quote-engine / price-book defects at `217ce1009cbc371c2f7fe1da1ef19dce4950ed22`

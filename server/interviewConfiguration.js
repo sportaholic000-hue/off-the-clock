@@ -1,3 +1,4 @@
+import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './productNames.js';
 import {MEASUREMENT_CONTRACTS} from './quote-engine-vnext/contracts.js';
 import { scopeDefinitions, scopeRateDefinitions, scopeOverlapDiagnostics, MULTI_SCOPE_KEYS } from './scopeConfiguration.js';
 import { offeringRateDefinitions } from './quote-engine-vnext/configuredOfferings.js';
@@ -44,20 +45,29 @@ export function validateInterviewConfiguration(type,field,value,pricing={}){
   if(++nodes>5000)fail('This configuration is too large.');
   if(schema.type==='object'||schema.type==='map'){
    if(!record(v))fail(path+': enter the displayed settings.');
-   for(const [key,child] of Object.entries(v)){
+   const normalized={};
+   for(const [rawKey,child] of Object.entries(v)){
+    const named=schema.type==='map'&&schema.entry;
+    const converted=named?productKeyFromName(rawKey):{key:rawKey};
+    if(converted.error)fail(path+': '+converted.error);
+    const key=converted.key;
+    if(Object.hasOwn(normalized,key))fail(path+': '+DUPLICATE_NAME_MESSAGE);
     if(['__proto__','prototype','constructor'].includes(key)||!(schema.type==='map'?/^[a-z][a-z0-9_]*$/:/^[a-zA-Z][a-zA-Z0-9_]*$/).test(key))fail(path+': unsupported entry name.');
     const def=schema.fields?.[key]||schema.entries?.[key]||schema.entry;
     if(!def)fail(path+': unsupported setting '+key+'.');
-    visit(child,def,path+'.'+key);
+    normalized[key]=visit(child,def,path+'.'+key);
    }
+   return normalized;
   }else if(schema.type==='boolean'){if(typeof v!=='boolean')fail(path+': choose Yes or No.');}
   else if(schema.type==='enum'){if(!schema.values.includes(v))fail(path+': choose a displayed option.');}
   else if(schema.type==='number'){
    if(typeof v!=='number'||!Number.isFinite(v)||v<(schema.min??0)||v>(schema.max??Number.MAX_SAFE_INTEGER)||schema.integer&&!Number.isInteger(v))fail(path+': enter a number within the displayed limits.');
    if(schema.moneyKind)parseOwnerNumericInput(v,{kind:schema.moneyKind,path});
-  }else if(typeof v!=='string'||!v.trim()||v.length>2000||schema.slug&&!/^[a-z][a-z0-9_]*$/.test(v))fail(path+': enter a supported description or product name.');
+  }else if(typeof v!=='string'||!v.trim()||v.length>2000)fail(path+': enter a supported description or product name.');
+  if(schema.slug){const converted=productKeyFromName(v);if(converted.error||['__proto__','prototype','constructor'].includes(converted.key))fail(path+': '+(converted.error||'unsupported product name.'));return converted.key;}
+  return v;
  }
- visit(value,interviewConfigurationSchema(type,field,pricing,value),field);
+ value=visit(value,interviewConfigurationSchema(type,field,pricing,value),field);
  if(field==='scopeDetails'){const errors=scopeOverlapDiagnostics(type,{...pricing,scopeDetails:value});if(errors.length)fail(errors[0].message);}
  return structuredClone(value);
 }

@@ -1,4 +1,4 @@
-import { getRequiredOwnerFields, SERVICE_TYPES } from './quoteTemplates.js';
+import { getRequiredOwnerFields, SERVICE_TYPES } from './priceBookLegacyFields.js';
 import {
   SELECT_OPTION_LABELS,
   class2FieldCopy,

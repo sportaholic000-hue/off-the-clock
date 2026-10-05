@@ -665,7 +665,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
   const averageRoom = exactToNumber(exactAverageRoom);
   const thresholds = p.roomSizeThresholds;
   if (thresholds.smallMaxSqft >= thresholds.mediumMaxSqft) throw new QuoteReviewError('Flooring room-size thresholds are inconsistent.', { invalidOwnerFields: ['roomSizeThresholds'] });
-  const roomBand = exactCompare(exactAverageRoom, thresholds.smallMaxSqft) < 0 ? 'small' : exactCompare(exactAverageRoom, thresholds.mediumMaxSqft) < 0 ? 'medium' : 'large';
+  const roomBand = exactCompare(exactAverageRoom, thresholds.smallMaxSqft) <= 0 ? 'small' : exactCompare(exactAverageRoom, thresholds.mediumMaxSqft) <= 0 ? 'medium' : 'large';
   const roomMultiplier = quantityFactor(p.roomComplexityMultiplier[roomBand], `roomComplexityMultiplier.${roomBand}`);
   const productWasteFactor = quantityFactor(p.wasteFactorByType[c.newFlooringType], `wasteFactorByType.${c.newFlooringType}`, { allowZero: true });
   const patternWasteAdder = quantityFactor(p.patternWasteAdder[c.layoutPattern], `patternWasteAdder.${c.layoutPattern}`, { allowZero: true });
@@ -687,7 +687,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
   });
   recordRuleApplication(out, {
     name: 'averageRoomComplexityBand',
-    rule: 'averageRoomSqft < smallMaxSqft => small; averageRoomSqft < mediumMaxSqft => medium; otherwise large',
+    rule: 'averageRoomSqft <= smallMaxSqft => small; averageRoomSqft <= mediumMaxSqft => medium; otherwise large',
     inputs: { averageRoomSqft: averageRoom, smallMaxSqft: thresholds.smallMaxSqft, mediumMaxSqft: thresholds.mediumMaxSqft },
     result: roomBand,
     usedBy: ['Flooring labor']

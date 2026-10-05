@@ -1,9 +1,10 @@
+// Historical calculator retained only for regression tests. Never import from production.
 import crypto from 'node:crypto';
 import { calculateService, getRequiredFields, getRequiredOwnerFields } from './quoteTemplates.js';
 
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const MARKUP_APPLIES_DEFAULT = { labor:true, material:true, removal:true, prep:true, addon:true, equipment:true, travel:true, disposal:true, permit:false, overhead:true };
-import { ALL_OWNER_FIELDS, shapedFieldKeys } from './priceBookMetadata.js';
+import { ALL_OWNER_FIELDS, shapedFieldKeys } from '../../server/priceBookMetadata.js';
 
 const ZERO_ALLOWED_OWNER_FIELDS = new Set(['minimumJob', 'repairMinimum', 'minimumServiceCharge']);
 const ADDON_DISCLOSURES = [

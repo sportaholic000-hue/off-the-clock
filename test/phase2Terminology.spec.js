@@ -189,7 +189,7 @@ test('the customer-facing quote preview never renders owner-only line items', ()
 });
 
 test('owner-only line items are flagged customerVisible false by the engine', async () => {
-  const engine = readFileSync('server/quoteEngine.js', 'utf8');
+  const engine = readFileSync('test/legacy/quoteEngine.js', 'utf8');
   for (const name of ['Markup', 'Minimum Price Adjustment', 'Peak season adjustment', 'Tax']) {
     const index = engine.indexOf(`name:'${name}'`);
     assert.equal(index >= 0, true, `${name} line item should exist`);
@@ -217,7 +217,7 @@ test('the quote preview renders customer-safe priceDrivers, not raw line items',
 });
 
 test('sanitizeForCustomer strips lineItems and exposes only safe fields', async () => {
-  const { sanitizeForCustomer } = await import('../server/quoteEngine.js');
+  const { sanitizeForCustomer } = await import('./legacy/quoteEngine.js');
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
     lineItems: [{ name: 'Markup', category: 'markup', amountCents: 40000, customerVisible: false }],

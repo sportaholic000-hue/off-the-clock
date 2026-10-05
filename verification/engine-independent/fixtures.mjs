@@ -25,8 +25,8 @@ export function cases(){
  f=flatRepair();f.customerInputs.pondingWater=true;add('flat-repair-unpriced-ponding',f,{ready:true,cents:36000,excluded:'ponding'},'Spec ADDON policy: quote main repair, disclose excluded ponding treatment.');
  f=flatRepair();f.customerInputs.pondingWater=true;f.ownerPricing.pricing.pondingWaterSurcharge=7000;add('flat-repair-priced-ponding-control',f,{ready:true,cents:43000},'36000 + 7000 = 43000.');
  add('floor-tile-200-control',flooring(),{ready:true,cents:178000},'200*300*1.10 labor + 200*1.12*500 material = 178000.');
- add('floor-tile-150-boundary',flooring('tile',150),{ready:true,cents:133500},'Spec 150 <= average <300 is medium:150*300*1.10 +150*1.12*500=133500.');
- add('floor-tile-300-boundary',flooring('tile',300),{ready:true,cents:258000},'Spec average >=300 is large:300*300+300*1.12*500=258000.');
+ add('floor-tile-150-boundary',flooring('tile',150),{ready:true,cents:138000},'Inclusive small maximum:150*300*1.20 +150*1.12*500=138000.');
+ add('floor-tile-300-boundary',flooring('tile',300),{ready:true,cents:267000},'Inclusive medium maximum:300*300*1.10+300*1.12*500=267000.');
  for(const [type,amount] of [['tile',178000],['vinyl_plank',174000],['hardwood',171000],['laminate',174000],['carpet',171000]]){
    f=flooring(type);add('floor-type-'+type,f,{ready:true,...(['tile','vinyl_plank'].includes(type)?{cents:amount}:{})},'Capability check: configured material/labor/waste + measured inputs; do not invent missing underlayment rules.');
  }
