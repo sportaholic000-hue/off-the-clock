@@ -22,6 +22,7 @@ checkout or deployment has passed. Confirm the branch and commit before auditing
 | [server/quote-engine-vnext/](server/quote-engine-vnext/) | Active measured quote engine, contracts, exact arithmetic, readiness and scope pricing. |
 | [server/src/quoteDoneBridge.js](server/src/quoteDoneBridge.js) | Application boundary for owner pricing, saved approvals, customer definitions and quote calculations. |
 | [server/src/quoteDoneRoutes.js](server/src/quoteDoneRoutes.js) | Quote/price-book HTTP routes and quote/lead submission persistence. |
+| [scopeConfiguration.js](server/scopeConfiguration.js), [pricePrecision.js](server/pricePrecision.js), [interviewConfiguration.js](server/interviewConfiguration.js) | Shared scope matching, price precision and interview configuration schemas used by the engine and owner controls. |
 | [server/](server/) | Price-book persistence, money conversion and shared pricing metadata; also retained legacy engine modules. |
 | [server/src/](server/src/) | Application services and runtime entry point. |
 | [client/src/](client/src/) | Owner app, price-book editor, quote controls and widget entry points. |
@@ -67,6 +68,13 @@ controls. See the [follow-up result](verification/independent-followup-20261004/
 for before/after evidence. No launch or deployment approval is implied.
 
 Additional catalog and optional-scope regressions are included in the same strict
-quote gate. The [latest repair evidence](verification/readiness-scope-followup-20261004/README.md)
+quote gate. The [readiness repair evidence](verification/readiness-scope-followup-20261004/README.md)
 records the further defects found after the original five-case audit, their
 reproductions, and verification at `42812a71`.
+
+The [latest agreed audit fixes](verification/audit-decisions-20261004/README.md)
+cover independent flat-roof layers, multiple scope entries, complete interview
+setup, rate precision, open-edge formwork, summary units, retired formulas,
+isolated test storage and removal-labor peak pricing at `bd14bfb5`.
+The [owner decision amendment](specs/QUOTE_AUDIT_DECISIONS_20261004.md) records
+the governing rules and fresh-approval requirement.

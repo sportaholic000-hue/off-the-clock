@@ -1,13 +1,14 @@
 # Verification index
 
-The latest repaired code checkpoint is `42812a71`. Further reproductions reopened
-the previous completion claim. Results and source bindings are recorded in the
-[readiness and scope follow-up](readiness-scope-followup-20261004/README.md).
+The latest repaired code checkpoint is `bd14bfb5`. The owner's nine agreed
+audit decisions, regression results and source binding are recorded in the
+[audit-decision fixes](audit-decisions-20261004/README.md).
 
 ## Recent checkpoints
 
 | Evidence | Source checkpoint and meaning |
 | --- | --- |
+| [Agreed audit decisions](audit-decisions-20261004/README.md) | Nine agreed fixes plus interview product registration, product-name entry and optional-scope compatibility checks at `bd14bfb5`. |
 | [Readiness and scope follow-up](readiness-scope-followup-20261004/README.md) | Reproduced additional defects at `4b6deeca`; repairs and 128 added tests at `42812a71`. |
 | [Independent follow-up](independent-followup-20261004/README.md) | Verification of `6eb6622`, subsequent repair at `5e2ea764`, and original before/after evidence. |
 | [Astra five-finding repair report](astra-five-repairs-20261004/REPORT.md) | PR #23 implementation evidence, tested code `58769d7`; the follow-up above found and then repaired the remaining original QP-05 case. |

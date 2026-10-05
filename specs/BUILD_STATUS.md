@@ -1,16 +1,27 @@
-# October 5 audit decisions — verification in progress
+# October 5 audit decisions — scoped verification passed
 
-The nine October 4 follow-up decisions are implemented in this candidate.
+The nine October 4 follow-up decisions are implemented at
+`bd14bfb5ac38754abd1a054d5bdc6a6ffcec67dd` on
+`codex/quote-audit-ready-20261004` (draft PR #24).
 The earlier unpublished scope draft was discarded before these agreed rules
 were implemented. See [the approved decisions](QUOTE_AUDIT_DECISIONS_20261004.md).
 
-Current local evidence: 1,129 scoped tests passed before the final interview
-registration and independent roof-layer coverage refinements. The added rate
-precision matrix and rendered interview checks are being included in the final
-gate. Both client builds passed. Hosted verification of this candidate is pending;
-this is a source checkpoint, not a completed release or deployment.
+Final local verification: **1,392/1,392** tests across 44 non-browser quote and
+price-book files. All 156 existing price-book files retained identical content
+hashes. All 190 materialized source/test/dependency/workflow files match GitHub.
 
-# Current quote-engine / price-book checkpoint — October 4, 2026
+Hosted verification: **1,459/1,459** strict quote/price-book tests across 56
+files, including real browser interactions; both production builds passed.
+The broader suite has 1,837 passes, the same nine existing failures and two
+skips, with no new failures. The known-failure allowance was not expanded.
+[Decisions, changes and source-bound evidence](../verification/audit-decisions-20261004/README.md).
+
+This is a scoped repair checkpoint, not a whole-product launch approval.
+The engine version changed; affected price books need fresh owner approval.
+No merge, deployment or live customer-data change is included. No sub-agents
+were used. Historical checkpoints below retain their original source bindings.
+
+# Prior quote-engine / price-book checkpoint — October 4, 2026
 
 **The earlier five-finding completion statement was too broad.** Further checks
 found catalog stalls, unselected measured-scope blockers, incomplete paint-group

@@ -1,0 +1,37 @@
+TAP version 13
+# Subtest: an older free-text overlay name does not disable unrelated flooring work
+not ok 1 - an older free-text overlay name does not disable unrelated flooring work
+  ---
+  duration_ms: 14.31095
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/verification-source/test/quoteAuditDecisions20261004.spec.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"resultType":"ESTIMATE_REQUIRES_REVIEW","engineVersion":"quote-engine-vnext-audit-decisions-20261004-v4","serviceId":"c07eb38b-7133-44d0-89a6-2a956fabde56","quoteId":"dbd695a6-9d7c-4a7c-b533-bf472f4334ad","serviceType":"FLOORING_INSTALL","submittedCustomerInputs":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"unconfirmedOwnerFields":[],"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":["scopeDetails.floor_overlay.existingFloorType"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.floor_overlay.existingFloorType","message":"Existing flooring type covered must be explicitly configured."}],"ownerDecisionRequired":[],"failedTierDiagnostics":[{"tierName":null,"reviewReason":"Pricing not fully configured for the measured scope.","missingCustomerFields":[],"invalidCustomerFields":[],"missingOwnerFields":[],"invalidOwnerFields":["scopeDetails.floor_overlay.existingFloorType"],"unsupportedOwnerFields":[],"crossFieldOwnerFields":[],"ownerDiagnostics":[{"type":"invalid","kind":"scope_configuration","path":"scopeDetails.floor_overlay.existingFloorType","message":"Existing flooring type covered must be explicitly configured."}],"ownerDecisionRequired":[],"validationMessages":["Existing flooring type covered must be explicitly configured."],"normalizedScope":{"sqft":200,"sqftMethod":"exact","newFlooringType":"tile","existingFloorType":"none","removalNeeded":false,"roomCount":1,"layoutPattern":"straight","stairSteps":0},"validatedMeasurements":[{"name":"sqft","value":200,"unit":"square feet"},{"name":"roomCount","value":1,"unit":"rooms"},{"name":"stairSteps","value":0,"unit":"steps"}],"inspectionFirst":false}],"validationMessages":["Existing flooring type covered must be explicitly configured."],"inspectionFirst":false,"appliedRules":[],"urgencyFlags":[]}
+    + actual - expected
+    
+    + 'ESTIMATE_REQUIRES_REVIEW'
+    - 'INSTANT_ESTIMATE_READY'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'INSTANT_ESTIMATE_READY'
+  actual: 'ESTIMATE_REQUIRES_REVIEW'
+  operator: 'strictEqual'
+  stack: |-
+    ready (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteAuditDecisions20261004.spec.mjs:18:54)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/verification-source/test/quoteAuditDecisions20261004.spec.mjs:34:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100.480842

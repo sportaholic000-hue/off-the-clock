@@ -1,0 +1,57 @@
+{
+  "testedCode": "bd14bfb5ac38754abd1a054d5bdc6a6ffcec67dd",
+  "engineVersion": "quote-engine-vnext-audit-decisions-20261004-v4",
+  "local": {
+    "files": 44,
+    "tests": 1392,
+    "pass": 1392,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "newTests": {
+    "decisionCases": 78,
+    "precisionMatrix": 137,
+    "renderedInterview": 4,
+    "browserInteraction": 3
+  },
+  "sourceBinding": {
+    "materializedFiles": 190,
+    "matchingBlobs": 190
+  },
+  "testStorage": {
+    "beforeFiles": 156,
+    "afterFiles": 156,
+    "contentUnchanged": true
+  },
+  "hosted": {
+    "runId": 37257286894,
+    "jobId": 111596978643,
+    "startedAt": "2026-10-05T02:55:17Z",
+    "completedAt": "2026-10-05T03:03:16Z",
+    "conclusion": "success",
+    "builds": [
+      "owner-app",
+      "widget"
+    ],
+    "strict": {
+      "files": 56,
+      "tests": 1459,
+      "pass": 1459,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "broader": {
+      "tests": 1848,
+      "pass": 1837,
+      "fail": 9,
+      "skipped": 2,
+      "cancelled": 0
+    },
+    "knownFailures": 9,
+    "newFailures": 0
+  },
+  "merged": false,
+  "deployed": false
+}
