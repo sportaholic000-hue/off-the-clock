@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button} from './ui.jsx';
-import {ExactNumericInput} from './pricebookInputs.jsx';
+import {ExactNumericInput,ProductNameInput} from './pricebookInputs.jsx';
 import {productKeyFromName} from './pricebookFormatting.js';
 import {interviewConfigurationSchema} from '../../server/interviewConfiguration.js';
 
@@ -17,6 +17,7 @@ function ConfigurationInput({schema,value,onChange}){
  </div>;
  if(schema.type==='enum'||schema.type==='boolean')return <Select aria-label={schema.label} value={value===undefined?'':String(value)} onChange={e=>onChange(e.target.value===''?undefined:(schema.type==='boolean'?[true,false]:schema.values).find(v=>String(v)===e.target.value))}><option value="">Choose</option>{(schema.type==='boolean'?[true,false]:schema.values).map(v=><option key={String(v)} value={String(v)}>{typeof v==='boolean'?(v?'Yes':'No'):String(v).replaceAll('_',' ')}</option>)}</Select>;
  if(schema.type==='number')return <ExactNumericInput aria-label={schema.label} kind={schema.moneyKind} value={value} onChange={onChange}/>;
+ if(schema.slug)return <ProductNameInput aria-label={schema.label} value={value} onChange={onChange}/>;
  return <Textarea aria-label={schema.label} value={value??''} onChange={e=>onChange(e.target.value||undefined)}/>;
 }
 export default function InterviewConfiguration({definition,pricing,value,onChange}){

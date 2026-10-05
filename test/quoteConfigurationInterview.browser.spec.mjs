@@ -6,6 +6,7 @@ import {build} from 'esbuild';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
 import {validateInterviewConfiguration} from '../server/interviewConfiguration.js';
+import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 let browser,bundle;
 before(async()=>{
  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
@@ -37,5 +38,14 @@ test('interview rate controls accept 3.5 cents per foot and reject fractional-ce
   await measured.fill('0.035');await measured.blur();assert.equal((await value()).installedFencePerLF,.035);
   await gate.fill('450.005');await gate.blur();assert.equal(await gate.getAttribute('aria-invalid'),'true');
   await gate.fill('450.01');await gate.blur();assert.equal((await value()).gate_walk,450.01);validateInterviewConfiguration(f.serviceType,'offeringRates',await value(),pricing);
+ });
+});
+test('interview accepts ordinary floor names and retains invalid drafts for correction',async()=>{
+ const f=measuredScopeCases().find(row=>row.id==='overlay-installed').input,pricing=f.ownerPricing.pricing;
+ await pageFor({serviceType:f.serviceType,field:'scopeDetails'},pricing,pricing.scopeDetails,async(page,value)=>{
+  const product=page.getByLabel('Existing flooring type covered',{exact:true});
+  await product.fill('Vinyl plank');assert.equal((await value()).floor_overlay.existingFloorType,'vinyl_plank');assert.equal(await product.inputValue(),'Vinyl plank');
+  validateInterviewConfiguration(f.serviceType,'scopeDetails',await value(),pricing);
+  await product.fill('123');const invalid=await value();assert.equal(invalid.floor_overlay.existingFloorType,'123');assert.equal(await product.getAttribute('aria-invalid'),'true');assert.throws(()=>validateInterviewConfiguration(f.serviceType,'scopeDetails',invalid,pricing));
  });
 });

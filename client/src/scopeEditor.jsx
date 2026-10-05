@@ -1,7 +1,7 @@
 import React from 'react';
 import {humanPricingKey} from './pricebookFormatting.js';
 import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
-import {ExactNumericInput} from './pricebookInputs.jsx';
+import {ExactNumericInput,ProductNameInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField} from './pricebookEditing.js';
 import {scopeDefinitions,scopeRateDefinitions,MULTI_SCOPE_KEYS,scopeBaseKey} from '../../server/scopeConfiguration.js';
 
@@ -20,7 +20,7 @@ export function ScopeEditor({service,onChange}) {
     {Object.entries(def.fields).filter(([name])=>!(name==='category'&&d.mode!=='installed')&&!(['coverage','wastePercent','productKey'].includes(name)&&d.mode!=='package_cost')).map(([name,f])=><Field key={name} label={f.label+(f.unit?' ('+f.unit+')':'')}>
      {f.type==='boolean'||f.type==='enum'?<Select aria-label={def.label+' — '+f.label} value={d[name]===undefined?'':String(d[name])} onChange={e=>detail(key,name,e.target.value===''?undefined:(f.type==='boolean'?[true,false]:f.values).find(v=>String(v)===e.target.value))}><option value="">{name==='accessMatch'?'Exact match (existing default)':'Choose'}</option>{(f.type==='boolean'?[true,false]:f.values).map(v=><option key={String(v)} value={String(v)}>{typeof v==='boolean'?(v?'Yes':'No'):humanPricingKey(v)}</option>)}</Select>:
       f.type==='number'?<ExactNumericInput aria-label={def.label+' — '+f.label} value={d[name]} onChange={v=>detail(key,name,v)}/>:
-      <Textarea aria-label={def.label+' — '+f.label} value={d[name]||''} onChange={e=>detail(key,name,e.target.value)}/>}
+      f.slug?<ProductNameInput aria-label={def.label+' — '+f.label} value={d[name]} onChange={v=>detail(key,name,v)}/>:<Textarea aria-label={def.label+' — '+f.label} value={d[name]||''} onChange={e=>detail(key,name,e.target.value)}/>}
     </Field>)}
     {d.mode==='included_in_floor_price'&&<Notice>Underlayment is included in your flooring material price. No additional underlayment charge or purchase quantity is added.{rates[key]!==undefined?' The earlier separate price ($'+rates[key]+') is retained but is not charged in this mode.':''}</Notice>}
     {activePrices.map(([name,f])=><Field key={name} label={f.label+' ($ per '+f.unit+')'} help={f.priceBasis==='sell_price'?'Final selling price; no additional markup.':f.priceBasis==='cost'?'Purchase cost; the configured material markup and tax treatment apply.':'Uses your '+f.category+' price basis, markup and tax treatment.'}><ExactNumericInput aria-label={f.label+' ($ per '+f.unit+')'} kind={f.moneyKind} value={rates[name]} onChange={v=>{const next={...rates};if(v===undefined)delete next[name];else next[name]=v;set('scopeRates',next);}}/></Field>)}

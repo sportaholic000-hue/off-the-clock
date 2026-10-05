@@ -13,11 +13,21 @@ import {savePricebook,loadPricebook} from '../server/priceBookService.js';
 import {validateInterviewValue,interpretInterviewAnswer} from '../server/src/priceBookAI.js';
 import {scopeOverlapDiagnostics,scopeKeysForRequest,scopeCustomerFields,customerFieldForInputs} from '../server/scopeConfiguration.js';
 import {customerSummaryValue} from '../server/src/customerSummary.js';
+import {productKeyFromName} from '../client/src/pricebookFormatting.js';
 const get=id=>structuredClone(measuredScopeCases().find(row=>row.id===id).input);
 const ready=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));return q;};
 const lines=q=>q.options[0].calculationRecord.scenarios.mid.lineItems;
 const cents=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 const line=(q,path)=>lines(q).find(x=>x.calculation?.ratePath===path);
+test('ordinary overlay product names use the registry key and quote the matching work',()=>{
+ const f=get('overlay-installed');f.ownerPricing.pricing.scopeDetails.floor_overlay.existingFloorType=productKeyFromName('Vinyl plank').key;
+ assert.equal(line(ready(f),'scopeRates.floor_overlay_installed').amountCents,40000); //200 sqft *200 cents
+});
+test('noncanonical overlay names are rejected before an interview can claim complete setup',()=>{
+ const f=get('overlay-installed'),scopeDetails=f.ownerPricing.pricing.scopeDetails;scopeDetails.floor_overlay.existingFloorType='Vinyl plank';
+ assert.throws(()=>validateInterviewValue(f.serviceType,'scopeDetails',scopeDetails,f.ownerPricing.pricing));
+ assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
 // Expected charges authored before execution. Base flat roof: 500000 labor +
 // 770000 waste-adjusted membrane + 200000 tear-off = 1470000 cents.
 for(const buildingType of ['residential','commercial'])for(const insulationNeeded of [false,true])for(const coverboardNeeded of [false,true])test('independent layers '+JSON.stringify({buildingType,insulationNeeded,coverboardNeeded}),()=>{
