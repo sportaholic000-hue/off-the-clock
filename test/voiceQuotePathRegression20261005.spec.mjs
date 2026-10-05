@@ -21,7 +21,7 @@ import {saveApplicationBook,readApplicationBook,approveApplicationService,applic
 const ACCOUNT='AC'+'a'.repeat(32),FROM='+19025550100',TO='+19025550101',FALLBACK='+19025550199';
 const ORIGIN='https://voice.example.test',NOW='2026-10-05T12:00:00.000Z';
 const TOKEN='synthetic-signature-secret',HANDLE='x'.repeat(43),clock=()=>new Date(NOW);
-const categories=['labor','material','removal','prep','addon','travel','disposal','permit','overhead','surcharge','equipment'];
+const categories=['labor','material','removal','prep','addon','travel','disposal','permit','overhead','surcharge','equipment','other'];
 const map=value=>Object.fromEntries(categories.map(key=>[key,value]));
 async function until(predicate,label='condition'){
   const deadline=Date.now()+10000;while(Date.now()<deadline){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,10));}throw Error('Timed out waiting for '+label);

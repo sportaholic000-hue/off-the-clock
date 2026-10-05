@@ -1,11 +1,14 @@
 import {quoteDateContext} from '../quoteDate.js';
+import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
+import {projectVoiceQuote} from './voiceQuotePresentation.js';
 import crypto from 'node:crypto';
 
 import { loadPricebook } from '../../priceBookService.js';
 import {
   applicationServiceMatches,
   applicationServiceName,
-  applicationStatus,
+  cachedApplicationStatus,
+  applicationServiceDefinition,
   bookRevision,
   calculateApplicationQuote,
   prepareApplicationIntake
@@ -170,34 +173,7 @@ function pricedScopeLines(response) {
 }
 
 function projectQuoteResult(response, quoteHandle, followUps = []) {
-  const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
-  const output = {
-    status: RELEASED_RESULTS.has(response?.resultType) ? 'quoted' : 'needs_details',
-    quoteHandle,
-    resultType: typeof response?.resultType === 'string' ? response.resultType : 'ESTIMATE_REQUIRES_REVIEW'
-  };
-  for (const key of ['lowEstimate', 'midEstimate', 'highEstimate']) {
-    if (typeof estimate?.[key] === 'number' && Number.isFinite(estimate[key]) && estimate[key] >= 0) {
-      output[key] = estimate[key];
-    }
-  }
-  const drivers = safeStringList(estimate?.priceDrivers);
-  if (drivers.length) output.priceDrivers = drivers;
-  const scope = pricedScopeLines(response);
-  if (scope.length) output.pricedScope = scope;
-  const additional = (Array.isArray(response?.additionalWork) ? response.additionalWork : [])
-    .map(item => typeof item === 'string' ? item : item?.description)
-    .filter(item => typeof item === 'string' && item.trim()).slice(0, 30);
-  if (additional.length) output.additionalWork = additional;
-  const safeFollowUps = safeStringList(followUps);
-  if (safeFollowUps.length) output.followUps = safeFollowUps;
-  for (const key of ['disclaimer', 'customerMessage', 'additionalWorkStatus']) {
-    if (typeof response?.[key] === 'string' && response[key].trim()) output[key] = response[key].trim();
-    else if (key === 'disclaimer' && typeof estimate?.disclaimer === 'string' && estimate.disclaimer.trim()) {
-      output.disclaimer = estimate.disclaimer.trim();
-    }
-  }
-  return output;
+  return projectVoiceQuote(response, quoteHandle, followUps);
 }
 
 function completeAddress(address) {
@@ -223,7 +199,8 @@ function providerStatus(value) {
 function quoteApplicationDefaults(database) {
   return {
     loadBook: loadPricebook,
-    status: applicationStatus,
+    status: (service,book)=>cachedApplicationStatus(service,book,{quick:true}),
+    definition: service=>{try{return applicationServiceDefinition(service);}catch{return {customerFields:[]};}},
     serviceName: applicationServiceName,
     serviceMatches: applicationServiceMatches,
     revision: bookRevision,
@@ -390,6 +367,7 @@ export function createVoiceToolRuntime({
       status: 'matched',
       serviceHandle,
       serviceName: selected.name,
+      questionContract: voiceQuestionContract(selected.service,quoteApp.definition(selected.service)),
       confidence: Number(selected.score.toFixed(3))
     };
   }
@@ -398,17 +376,12 @@ export function createVoiceToolRuntime({
     const args = invocation(input);
     if (args.customerConfirmed !== true) throw runtimeError('CUSTOMER_CONFIRMATION_REQUIRED');
     const selected = resolve(args.serviceHandle, 'service');
-    if (Array.isArray(args.feeSelectionHandles) && args.feeSelectionHandles.length) {
-      return {
-        status: 'needs_details',
-        resultType: 'ESTIMATE_REQUIRES_REVIEW',
-        followUps: ['Customer-selectable fee handles are not available in the current voice contract.']
-      };
-    }
     const requestFingerprint = json({
       callSid: context.callSid,
       serviceHandleHash: selected.handleHash,
       customerInputs: args.customerInputs,
+      productConfirmations: args.productConfirmations || {},
+      customerFeeSelections: args.customerFeeSelections || {},
       additionalWork: args.additionalWork || []
     });
     const requestId = stableUuid(secret, 'voice-quote-request', requestFingerprint);
@@ -441,12 +414,15 @@ export function createVoiceToolRuntime({
       throw runtimeError('SERVICE_NOT_PUBLISHED');
     }
     const service = matches[0];
+    const definition=quoteApp.definition(service);
+    const bound=bindVoiceQuoteInputs(service,definition,args);
+    if(bound.followUps.length)return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:bound.followUps,questionContract:voiceQuestionContract(service,definition)};
     const submission = {
       requestId,
       serviceId: service.id,
       serviceRequest: quoteApp.serviceName(service),
-      customerInputs: args.customerInputs,
-      customerFeeSelections: {},
+      customerInputs: bound.customerInputs,
+      customerFeeSelections: bound.customerFeeSelections,
       additionalWork: args.additionalWork || [],
       context: '',
       explicitUnknowns: '',
@@ -716,7 +692,7 @@ export function createVoiceToolRuntime({
     }
     const maximumExpiry = typeof body.validUntilUtc === 'string' ? body.validUntilUtc : undefined;
     const slotOptions = body.slots.slice(0, 10).flatMap(slot => {
-      if (!record(slot) || typeof slot.slotId !== 'string' || !slot.slotId) return [];
+      if (!record(slot) || typeof slot.slotId !== 'string' || !slot.slotId || typeof slot.label !== 'string' || !slot.label.trim() || slot.label.length > 200) return [];
       const slotHandle = issue(
         'slot',
         'slot:' + reference.intentId + ':' + sha256(slot.slotId),
@@ -736,10 +712,7 @@ export function createVoiceToolRuntime({
         },
         maximumExpiry
       );
-      const projected = { slotHandle };
-      for (const key of ['label', 'startUtc', 'endUtc', 'startLocal', 'endLocal']) {
-        if (typeof slot[key] === 'string' && slot[key]) projected[key] = slot[key];
-      }
+      const projected = { slotHandle, label: slot.label };
       return [projected];
     });
     if (!slotOptions.length) {

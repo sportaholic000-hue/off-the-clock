@@ -5,7 +5,7 @@ import test from "node:test";
 import {
   VoiceWebSocketServerError,
   createVoiceWebSocketServer,
-} from "../server/src/voiceWebSocketServer.js";
+} from "../server/src/voice/voiceWebSocketServer.js";
 
 const STREAM_PATH = "/api/twilio/voice/stream";
 const NONCE = "n".repeat(48);
