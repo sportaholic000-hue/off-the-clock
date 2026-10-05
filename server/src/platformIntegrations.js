@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { installTelephonyOperationsSchema } from './telephonyOperationsMigration.js';
+
 const JSON_HEADERS = { 'content-type': 'application/json' };
 
 function required(name) {
@@ -52,25 +55,29 @@ export function normalizePhone(value) {
   return raw.startsWith('+') ? `+${digits}` : `+${digits.length === 10 ? `1${digits}` : digits}`;
 }
 
-export async function provisionTwilioNumber({ country = 'US', existingNumber }) {
+// Select separately so the durable service can commit the exact candidate
+// before crossing the purchase boundary.
+export async function selectTwilioNumber({ country = 'US', existingNumber }) {
   const normalized = normalizePhone(existingNumber);
-  const nationalDigits = normalized.replace(/^\+1/, '');
-  const areaCode = nationalDigits.slice(0, 3);
+  const areaCode = normalized.replace(/^\+1/, '').slice(0, 3);
   const countryCode = String(country || 'US').toUpperCase() === 'CA' ? 'CA' : 'US';
   const available = await twilioRequest(`AvailablePhoneNumbers/${countryCode}/Local.json`, {
     params: { AreaCode: areaCode, VoiceEnabled: true, PageSize: 1 }
   });
   const candidate = available.available_phone_numbers?.[0]?.phone_number;
-  if (!candidate) {
-    const error = new Error('No local connection number is currently available');
-    error.statusCode = 409;
-    throw error;
-  }
+  if (!candidate) throw telephonyError('PHONE_NUMBER_UNAVAILABLE', 409);
+  return candidate;
+}
+
+export async function provisionTwilioNumber({ country = 'US', existingNumber, candidateNumber, operationId }) {
+  const normalized = normalizePhone(existingNumber);
+  const candidate = candidateNumber || await selectTwilioNumber({ country, existingNumber });
   const publicBaseUrl = required('PUBLIC_BASE_URL').replace(/\/$/, '');
   const purchased = await twilioRequest('IncomingPhoneNumbers.json', {
     method: 'POST',
     params: {
       PhoneNumber: candidate,
+      ...(operationId ? { FriendlyName: provisioningTag(operationId) } : {}),
       VoiceUrl: `${publicBaseUrl}/api/twilio/voice/incoming`,
       VoiceMethod: 'POST'
     }
@@ -78,43 +85,66 @@ export async function provisionTwilioNumber({ country = 'US', existingNumber }) 
   return { existingNumber: normalized, twilioNumber: purchased.phone_number, twilioNumberSid: purchased.sid };
 }
 
-export async function requestCarrierConnection({ ownerId, existingNumber, twilioNumber }) {
-  if (!process.env.CARRIER_CONNECTION_URL) {
-    return { status: 'platform_action_required' };
+function provisioningTag(operationId) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(operationId)) {
+    throw telephonyError('PHONE_OPERATION_INVALID', 400);
   }
-  const response = await fetchWithTimeout(process.env.CARRIER_CONNECTION_URL, {
-    method: 'POST',
-    headers: {
-      ...JSON_HEADERS,
-      authorization: `Bearer ${required('CARRIER_CONNECTION_TOKEN')}`
-    },
-    body: JSON.stringify({ ownerId, existingNumber, destinationNumber: twilioNumber })
-  });
-  if (!response.ok) throw new Error('Carrier connection request failed');
-  const result = await response.json().catch(() => ({}));
-  return { status: result.status || 'queued', reference: result.reference || null };
+  return `otc-provision-${operationId}`;
 }
 
-export async function setCarrierCoverage({ ownerId, enabled, existingNumber, twilioNumber }) {
-  if (!process.env.CARRIER_CONNECTION_URL) {
-    return { status: 'platform_action_required' };
-  }
+export async function findProvisionedTwilioNumber({ operationId, candidateNumber, existingNumber }) {
+  const tag = provisioningTag(operationId);
+  const response = await twilioRequest('IncomingPhoneNumbers.json', {
+    params: { FriendlyName: tag, PhoneNumber: candidateNumber, PageSize: 2 }
+  });
+  const matches = response.incoming_phone_numbers?.filter(number =>
+    number.friendly_name === tag && number.phone_number === candidateNumber) || [];
+  if (matches.length !== 1 || response.next_page_uri) return null;
+  return { existingNumber, twilioNumber: matches[0].phone_number, twilioNumberSid: matches[0].sid };
+}
+
+export async function requestCarrierConnection({ ownerId, existingNumber, twilioNumber, operationId }) {
+  if (!process.env.CARRIER_CONNECTION_URL) return { status: 'platform_action_required' };
   const response = await fetchWithTimeout(process.env.CARRIER_CONNECTION_URL, {
     method: 'POST',
     headers: {
       ...JSON_HEADERS,
-      authorization: `Bearer ${required('CARRIER_CONNECTION_TOKEN')}`
+      authorization: `Bearer ${required('CARRIER_CONNECTION_TOKEN')}`,
+      ...(operationId ? { 'idempotency-key': operationId } : {})
     },
-    body: JSON.stringify({
-      action: 'set_coverage',
-      ownerId,
-      enabled: Boolean(enabled),
-      existingNumber,
-      destinationNumber: twilioNumber
-    })
+    body: JSON.stringify({ ownerId, existingNumber, destinationNumber: twilioNumber, operationId })
   });
-  if (!response.ok) throw new Error('Carrier coverage update failed');
-  return response.json().catch(() => ({ status: 'updated' }));
+  if (!response.ok) throw telephonyError('CARRIER_CONNECTION_FAILED');
+  const result = await response.json().catch(() => ({}));
+  return { status: result.status || 'unknown', reference: result.reference || null };
+}
+
+async function carrierCoverageRequest(action, { ownerId, enabled, existingNumber, twilioNumber, operationId, revision }) {
+  if (!process.env.CARRIER_CONNECTION_URL) return { status: 'platform_action_required' };
+  const response = await fetchWithTimeout(process.env.CARRIER_CONNECTION_URL, {
+    method: 'POST',
+    headers: {
+      ...JSON_HEADERS,
+      authorization: `Bearer ${required('CARRIER_CONNECTION_TOKEN')}`,
+      ...(operationId && action === 'set_coverage' ? { 'idempotency-key': operationId } : {})
+    },
+    body: JSON.stringify({ action, ownerId, enabled, existingNumber,
+      destinationNumber: twilioNumber, operationId, revision })
+  });
+  if (!response.ok) throw telephonyError('CARRIER_COVERAGE_UNCONFIRMED');
+  return response.json().catch(() => ({ status: 'unknown' }));
+}
+
+export async function setCarrierCoverage(input) {
+  return carrierCoverageRequest('set_coverage', input);
+}
+
+// Carrier bridge contract: get_coverage is a READ of operationId/revision and
+// returns a terminal {status:'confirmed', enabled, operationId, revision}, a
+// terminal 'rejected', or a nonterminal status. Bridges without this capability
+// remain pending; HTTP 200, an empty body, and queued work are NOT confirmation.
+export async function getCarrierCoverage(input) {
+  return carrierCoverageRequest('get_coverage', input);
 }
 
 export async function placeTwilioTestCall({ to, from, businessName, agentName }) {
@@ -331,4 +361,334 @@ export async function exchangeGoogleCalendarCode(code) {
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || !payload.access_token) throw new Error(payload.error_description || 'Google Calendar connection failed');
   return payload;
+}
+
+// Durable telephony operations. Leases only select a worker; they never make an
+// uncertain external write safe to repeat. Expired dispatched work is read back
+// from the provider, and all worker completions are fenced by their claim token.
+export function createTelephonyOperations({
+  database, ownerQuery, getBusinessProfile, savePhoneProvisioning,
+  updateBusinessProfile, operatorEligibility,
+  provider = {
+    selectNumber: selectTwilioNumber,
+    purchaseNumber: provisionTwilioNumber,
+    findPurchasedNumber: findProvisionedTwilioNumber,
+    connectCarrier: requestCarrierConnection,
+    setCoverage: setCarrierCoverage,
+    readCoverage: getCarrierCoverage
+  },
+  now = Date.now, leaseMs = 60_000
+}) {
+  for (const method of ['selectNumber', 'purchaseNumber', 'findPurchasedNumber',
+    'connectCarrier', 'setCoverage', 'readCoverage']) {
+    if (typeof provider[method] !== 'function') throw new TypeError(`Missing telephony provider method: ${method}`);
+  }
+  if (!Number.isSafeInteger(leaseMs) || leaseMs <= 0) throw new TypeError('Invalid telephony lease');
+  installTelephonyOperationsSchema(database);
+  const phoneRow = ownerId => ownerQuery('SELECT * FROM phoneProvisioningOperations WHERE ownerId = ?').get(ownerId);
+  const coverageRow = ownerId => ownerQuery('SELECT * FROM operatorCoverageOperations WHERE ownerId = ?').get(ownerId);
+  const transaction = work => {
+    if (typeof database.transaction === 'function') return database.transaction(work).immediate();
+    database.exec('BEGIN IMMEDIATE');
+    try { const result = work(); database.exec('COMMIT'); return result; }
+    catch (error) { database.exec('ROLLBACK'); throw error; }
+  };
+  const phoneSnapshot = (ownerId, statusCode = null, reused = true) => {
+    const row = phoneRow(ownerId);
+    const pending = !row.carrierComplete;
+    return {
+      statusCode: statusCode ?? (pending ? 202 : 200),
+      profile: getBusinessProfile(ownerId), reused, pending,
+      operationId: row.operationId, purchaseState: row.purchaseState,
+      carrierStatus: row.carrierSetupStatus, carrierReference: row.carrierReference
+    };
+  };
+  const ownsPhone = (ownerId, token) => phoneRow(ownerId)?.workerToken === token;
+  const releasePhone = (ownerId, token, state, carrierStatus) => ownerQuery(`
+    UPDATE phoneProvisioningOperations SET purchaseState = CASE
+      WHEN twilioNumberSid IS NOT NULL THEN 'purchased' ELSE ? END,
+      carrierSetupStatus = COALESCE(?, carrierSetupStatus), workerToken = NULL,
+      leaseUntil = NULL, updatedAt = ? WHERE ownerId = ? AND workerToken = ?
+  `).run(state, carrierStatus ?? null, now(), ownerId, token);
+
+  async function provision(ownerId, existingNumber) {
+    const claim = transaction(() => {
+      const profile = getBusinessProfile(ownerId);
+      let row = phoneRow(ownerId);
+      const existing = phoneInput(existingNumber ?? row?.existingNumber ?? profile.existingPhoneNumber);
+      if (!row) {
+        // A previously purchased number is a receipt even when setup failed or
+        // the legacy provisioning status is inconsistent. Never buy over it.
+        if (Boolean(profile.twilioNumberSid) !== Boolean(profile.twilioNumber) ||
+            (profile.twilioNumberSid && !profile.existingPhoneNumber)) {
+          throw telephonyError('PHONE_RECEIPT_INCOMPLETE', 409);
+        }
+        if (profile.twilioNumberSid && existing !== phoneInput(profile.existingPhoneNumber)) {
+          throw telephonyError('PHONE_OPERATION_CONFLICT', 409);
+        }
+        const purchased = Boolean(profile.twilioNumberSid);
+        const complete = purchased && ['connected', 'updated', 'queued'].includes(profile.carrierSetupStatus);
+        ownerQuery(`INSERT INTO phoneProvisioningOperations (
+          ownerId, operationId, existingNumber, country, purchaseState,
+          twilioNumber, twilioNumberSid, carrierSetupStatus, carrierComplete, createdAt, updatedAt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(ownerId) DO NOTHING`).run(
+          ownerId, randomUUID(), existing, profile.country === 'CA' ? 'CA' : 'US',
+          purchased ? 'purchased' : 'ready', profile.twilioNumber || null,
+          profile.twilioNumberSid || null, profile.carrierSetupStatus || 'pending',
+          complete ? 1 : 0, now(), now()
+        );
+        row = phoneRow(ownerId);
+      }
+      if (existing !== row.existingNumber) throw telephonyError('PHONE_OPERATION_CONFLICT', 409);
+      if (row.carrierComplete || (row.workerToken && row.leaseUntil > now())) return null;
+      const token = randomUUID();
+      const action = row.twilioNumberSid ? 'connect'
+        : ['purchasing', 'unknown'].includes(row.purchaseState) ? 'reconcile' : 'select';
+      ownerQuery(`UPDATE phoneProvisioningOperations SET workerToken = ?, leaseUntil = ?,
+        purchaseState = ?, updatedAt = ? WHERE ownerId = ?`).run(
+          token, now() + leaseMs, action === 'select' ? 'selecting' : row.purchaseState, now(), ownerId
+        );
+      return { ...phoneRow(ownerId), token, action };
+    });
+    if (!claim) return phoneSnapshot(ownerId);
+    let purchased;
+    if (claim.action === 'select') {
+      let candidateNumber;
+      try {
+        candidateNumber = phoneInput(await provider.selectNumber(claim));
+      } catch {
+        releasePhone(ownerId, claim.token, 'ready');
+        return phoneSnapshot(ownerId, 502);
+      }
+      // This commit is the irreversible dispatch barrier. A stale selector may
+      // not purchase, and a restarted worker may only reconcile past it.
+      const dispatched = ownerQuery(`UPDATE phoneProvisioningOperations
+        SET purchaseState = 'purchasing', candidateNumber = ?, leaseUntil = ?, updatedAt = ?
+        WHERE ownerId = ? AND workerToken = ? AND purchaseState = 'selecting'`).run(
+          candidateNumber, now() + leaseMs, now(), ownerId, claim.token
+        ).changes;
+      if (!dispatched) return phoneSnapshot(ownerId);
+      try {
+        purchased = await provider.purchaseNumber({ ...claim, candidateNumber });
+      } catch {
+        releasePhone(ownerId, claim.token, 'unknown');
+        return phoneSnapshot(ownerId);
+      }
+    } else if (claim.action === 'reconcile') {
+      try { purchased = await provider.findPurchasedNumber(claim); }
+      catch { /* A failed read is not proof that a purchase did not happen. */ }
+      if (!purchased) {
+        releasePhone(ownerId, claim.token, 'unknown');
+        return phoneSnapshot(ownerId);
+      }
+    }
+    if (purchased) {
+      let number;
+      try {
+        number = phoneInput(purchased.twilioNumber);
+        if (!/^PN[0-9a-f]{32}$/i.test(String(purchased.twilioNumberSid || '')) ||
+            number !== phoneRow(ownerId).candidateNumber) throw new Error('Invalid purchase receipt');
+      } catch {
+        releasePhone(ownerId, claim.token, 'unknown');
+        return phoneSnapshot(ownerId);
+      }
+      // Save the receipt in its own committed statement BEFORE profile updates
+      // or forwarding. Even a stale worker may record this immutable operation's
+      // receipt, but it cannot overwrite a receipt or complete another claim.
+      ownerQuery(`UPDATE phoneProvisioningOperations SET twilioNumberSid = ?,
+        twilioNumber = ?, purchaseState = 'purchased', updatedAt = ?
+        WHERE ownerId = ? AND operationId = ? AND twilioNumberSid IS NULL`).run(
+          purchased.twilioNumberSid, number, now(), ownerId, claim.operationId
+        );
+      const receipt = phoneRow(ownerId);
+      if (receipt.twilioNumberSid !== purchased.twilioNumberSid || receipt.twilioNumber !== number) {
+        throw telephonyError('PHONE_RECEIPT_CONFLICT', 409);
+      }
+    }
+    if (!ownsPhone(ownerId, claim.token)) return phoneSnapshot(ownerId);
+    const receipt = phoneRow(ownerId);
+    try {
+      // An exception here deliberately leaves the independently saved SID intact.
+      savePhoneProvisioning(ownerId, {
+        existingNumber: receipt.existingNumber, twilioNumber: receipt.twilioNumber,
+        twilioNumberSid: receipt.twilioNumberSid, carrierSetupStatus: 'pending'
+      });
+    } catch (error) {
+      releasePhone(ownerId, claim.token, 'purchased', 'failed');
+      throw error;
+    }
+    let carrier;
+    try {
+      carrier = await provider.connectCarrier({
+        ownerId, existingNumber: receipt.existingNumber, twilioNumber: receipt.twilioNumber,
+        operationId: `${receipt.operationId}:connect`
+      });
+    } catch {
+      transaction(() => {
+        if (!ownsPhone(ownerId, claim.token)) return;
+        updateBusinessProfile(ownerId, { carrierSetupStatus: 'failed' });
+        releasePhone(ownerId, claim.token, 'purchased', 'failed');
+      });
+      return phoneSnapshot(ownerId, 502);
+    }
+    const status = ['connected', 'updated', 'queued', 'platform_action_required'].includes(carrier?.status)
+      ? carrier.status : 'unknown';
+    const complete = ['connected', 'updated', 'queued'].includes(status);
+    const completedByThisWorker = transaction(() => {
+      if (!ownsPhone(ownerId, claim.token)) return false;
+      updateBusinessProfile(ownerId, { carrierSetupStatus: status });
+      ownerQuery(`UPDATE phoneProvisioningOperations SET carrierSetupStatus = ?,
+        carrierReference = ?, carrierComplete = ?, workerToken = NULL, leaseUntil = NULL,
+        updatedAt = ? WHERE ownerId = ? AND workerToken = ?`).run(
+          status, typeof carrier?.reference === 'string' ? carrier.reference.slice(0, 256) : null,
+          complete ? 1 : 0, now(), ownerId, claim.token
+        );
+      return true;
+    });
+    if (!completedByThisWorker) return phoneSnapshot(ownerId);
+    return phoneSnapshot(ownerId, complete ? (claim.action === 'select' ? 201 : 200) : 202, claim.action !== 'select');
+  }
+
+  function assertEligible(profile, enabled) {
+    if (!enabled) return;
+    const eligibility = operatorEligibility(profile);
+    if (!eligibility.eligible) {
+      const error = telephonyError('OPERATOR_NOT_READY', 409);
+      error.details = eligibility;
+      throw error;
+    }
+  }
+  const ownsCoverage = (ownerId, claim) => {
+    const row = coverageRow(ownerId);
+    return row.activeOperationId === claim.activeOperationId && row.workerToken === claim.workerToken;
+  };
+  const coverageSnapshot = ownerId => {
+    const row = coverageRow(ownerId);
+    const failed = row.phase === 'idle' && row.failedRevision === row.desiredRevision;
+    const pending = row.phase !== 'idle' || (!failed && row.desiredEnabled !== row.confirmedEnabled);
+    return {
+      statusCode: failed ? 502 : pending ? 202 : 200,
+      confirmedEnabled: Boolean(row.confirmedEnabled), desiredEnabled: Boolean(row.desiredEnabled),
+      pending, operationId: row.activeOperationId, revision: row.desiredRevision,
+      carrierStatus: row.carrierStatus,
+      ...(failed ? { error: 'Carrier rejected the requested change.', code: 'CARRIER_COVERAGE_REJECTED', retryable: true } : {})
+    };
+  };
+  const completeCoverage = (ownerId, claim, outcome) => transaction(() => {
+    if (!ownsCoverage(ownerId, claim)) return false;
+    if (outcome === 'confirmed') {
+      const profile = getBusinessProfile(ownerId);
+      updateBusinessProfile(ownerId, {
+        operatorEnabled: claim.activeEnabled,
+        onboardingStep: claim.activeEnabled ? Math.max(7, profile.onboardingStep) : profile.onboardingStep,
+        carrierSetupStatus: 'updated'
+      });
+    }
+    ownerQuery(`UPDATE operatorCoverageOperations SET
+      confirmedEnabled = CASE WHEN ? THEN activeEnabled ELSE confirmedEnabled END,
+      confirmedRevision = CASE WHEN ? THEN activeRevision ELSE confirmedRevision END,
+      carrierStatus = CASE WHEN ? THEN 'updated' ELSE carrierStatus END,
+      failedRevision = CASE WHEN ? THEN NULL ELSE activeRevision END,
+      phase = 'idle', activeOperationId = NULL, activeEnabled = NULL, activeRevision = NULL,
+      activeExistingNumber = NULL, activeTwilioNumber = NULL,
+      workerToken = NULL, leaseUntil = NULL, updatedAt = ?
+      WHERE ownerId = ? AND activeOperationId = ? AND workerToken = ?`).run(
+        ...Array(4).fill(outcome === 'confirmed' ? 1 : 0), now(), ownerId,
+        claim.activeOperationId, claim.workerToken
+      );
+    return true;
+  });
+
+  async function setCoverage(ownerId, enabled) {
+    if (typeof enabled !== 'boolean') throw telephonyError('OPERATOR_ENABLED_INVALID', 400);
+    transaction(() => {
+      const profile = getBusinessProfile(ownerId);
+      assertEligible(profile, enabled);
+      ownerQuery(`INSERT INTO operatorCoverageOperations (
+        ownerId, desiredEnabled, confirmedEnabled, carrierStatus, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(ownerId) DO NOTHING`).run(
+        ownerId, profile.operatorEnabled ? 1 : 0, profile.operatorEnabled ? 1 : 0,
+        profile.carrierSetupStatus || 'not_connected', now(), now()
+      );
+      const row = coverageRow(ownerId);
+      if (Boolean(row.desiredEnabled) !== enabled || row.failedRevision === row.desiredRevision) {
+        ownerQuery(`UPDATE operatorCoverageOperations SET desiredEnabled = ?,
+          desiredRevision = desiredRevision + 1, failedRevision = NULL, updatedAt = ?
+          WHERE ownerId = ?`).run(enabled ? 1 : 0, now(), ownerId);
+      }
+    });
+    // Drain the latest desired state after each terminal provider result. A busy
+    // owner cannot hold this HTTP request open indefinitely; a retry resumes it.
+    for (let attempts = 0; attempts < 8; attempts++) {
+      const claim = transaction(() => {
+        const row = coverageRow(ownerId);
+        if (row.activeOperationId) {
+          if (row.workerToken && row.leaseUntil > now()) return null;
+          ownerQuery(`UPDATE operatorCoverageOperations SET workerToken = ?, leaseUntil = ?,
+            updatedAt = ? WHERE ownerId = ?`).run(randomUUID(), now() + leaseMs, now(), ownerId);
+          return { ...coverageRow(ownerId), action: 'read' };
+        }
+        if (row.desiredEnabled === row.confirmedEnabled || row.failedRevision === row.desiredRevision) return null;
+        const profile = getBusinessProfile(ownerId);
+        assertEligible(profile, Boolean(row.desiredEnabled));
+        if (!profile.existingPhoneNumber || !profile.twilioNumber) throw telephonyError('PHONE_NOT_PROVISIONED', 409);
+        ownerQuery(`UPDATE operatorCoverageOperations SET activeOperationId = ?,
+          activeEnabled = desiredEnabled, activeRevision = desiredRevision,
+          activeExistingNumber = ?, activeTwilioNumber = ?, phase = 'applying',
+          workerToken = ?, leaseUntil = ?, updatedAt = ? WHERE ownerId = ?`).run(
+            randomUUID(), profile.existingPhoneNumber, profile.twilioNumber,
+            randomUUID(), now() + leaseMs, now(), ownerId
+          );
+        return { ...coverageRow(ownerId), action: 'set' };
+      });
+      if (!claim) return coverageSnapshot(ownerId);
+      const input = {
+        ownerId, enabled: Boolean(claim.activeEnabled), operationId: claim.activeOperationId,
+        revision: claim.activeRevision, existingNumber: claim.activeExistingNumber,
+        twilioNumber: claim.activeTwilioNumber
+      };
+      let result;
+      try {
+        result = await (claim.action === 'set' ? provider.setCoverage(input) : provider.readCoverage(input));
+      } catch { /* Transport errors are ambiguous, not an instruction to invert. */ }
+      let outcome = coverageOutcome(result, input, claim.action === 'read');
+      if (outcome === 'unknown' && claim.action === 'set' && ownsCoverage(ownerId, claim)) {
+        try { result = await provider.readCoverage(input); }
+        catch { result = null; }
+        outcome = coverageOutcome(result, input, true);
+      }
+      if (outcome === 'unknown') {
+        ownerQuery(`UPDATE operatorCoverageOperations SET phase = 'unknown', workerToken = NULL,
+          leaseUntil = NULL, updatedAt = ? WHERE ownerId = ? AND activeOperationId = ? AND workerToken = ?`).run(
+            now(), ownerId, claim.activeOperationId, claim.workerToken
+          );
+        return coverageSnapshot(ownerId);
+      }
+      if (!completeCoverage(ownerId, claim, outcome)) return coverageSnapshot(ownerId);
+    }
+    return coverageSnapshot(ownerId);
+  }
+  return { provision, setCoverage };
+}
+
+function telephonyError(code, statusCode = 502) {
+  return Object.assign(new Error(code), { code, statusCode, retryable: statusCode >= 500 });
+}
+
+function phoneInput(value) {
+  try { return normalizePhone(value); }
+  catch { throw telephonyError('PHONE_NUMBER_INVALID', 400); }
+}
+
+function coverageOutcome(result, input, reading) {
+  if (!result || typeof result !== 'object') return 'unknown';
+  // A mutation response is bound to its request. A subsequent status read MUST
+  // identify that exact operation and revision; a current-state boolean alone
+  // cannot prove a timed-out older write will not still take effect later.
+  if ((reading || result.operationId !== undefined) && result.operationId !== input.operationId) return 'unknown';
+  if ((reading || result.revision !== undefined) && result.revision !== input.revision) return 'unknown';
+  if (result.ownerId !== undefined && result.ownerId !== input.ownerId) return 'unknown';
+  if (result.status === 'rejected') return 'rejected';
+  if (['confirmed', 'updated'].includes(result.status) && result.enabled === input.enabled) return 'confirmed';
+  return 'unknown';
 }

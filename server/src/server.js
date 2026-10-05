@@ -63,7 +63,7 @@ import {
   saveKnowledgeBase,
   savePhoneProvisioning,
   saveVoice,
-  setOperatorEnabled,
+  operatorEligibility,
   updateBusinessProfile,
   updateOnboardingAccount
 } from './onboardingService.js';
@@ -80,9 +80,7 @@ import {
   getTwilioCallStatus,
   googleCalendarAuthorizationUrl,
   placeTwilioTestCall,
-  provisionTwilioNumber,
-  requestCarrierConnection,
-  setCarrierCoverage,
+  createTelephonyOperations,
   suggestStarterBook
 } from './platformIntegrations.js';
 
@@ -288,28 +286,14 @@ app.post('/api/business/jurisdiction', requireAuth(['owner']), requireQuoteDoneP
   return res.json(resolved);
 }));
 
-app.post('/api/onboarding/phone/provision', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const ownerId = req.tenantOwnerId;
-  const profile = getBusinessProfile(ownerId);
-  if (profile.twilioNumberSid && profile.phoneProvisioningStatus === 'provisioned') {
-    return res.json({ profile, reused: true });
-  }
+const telephonyOperations = createTelephonyOperations({
+  database: db, ownerQuery, getBusinessProfile, savePhoneProvisioning,
+  updateBusinessProfile, operatorEligibility
+});
 
-  const provisioned = await provisionTwilioNumber({
-    country: profile.country,
-    existingNumber: req.body?.existingNumber
-  });
-  let carrierSetupStatus = 'queued';
-  let carrierReference = null;
-  try {
-    const carrier = await requestCarrierConnection({ ownerId, ...provisioned });
-    carrierSetupStatus = carrier.status;
-    carrierReference = carrier.reference || null;
-  } catch {
-    carrierSetupStatus = 'failed';
-  }
-  const next = savePhoneProvisioning(ownerId, { ...provisioned, carrierSetupStatus });
-  return res.status(201).json({ profile: next, carrierReference });
+app.post('/api/onboarding/phone/provision', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
+  const { statusCode, ...result } = await telephonyOperations.provision(req.tenantOwnerId, req.body?.existingNumber);
+  return res.status(statusCode).json(result);
 }));
 
 app.post('/api/onboarding/phone/test', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
@@ -355,25 +339,8 @@ app.post('/api/onboarding/knowledge-base', requireAuth(['owner']), asyncHandler(
 }));
 
 app.post('/api/operator/toggle', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const enabled = req.body?.enabled === true;
-  const current = getBusinessProfile(req.tenantOwnerId);
-  const profile = setOperatorEnabled(req.tenantOwnerId, enabled);
-  let carrierStatus = current.carrierSetupStatus;
-  try {
-    const carrier = await setCarrierCoverage({
-      ownerId: req.tenantOwnerId,
-      enabled,
-      existingNumber: profile.existingPhoneNumber,
-      twilioNumber: profile.twilioNumber
-    });
-    carrierStatus = carrier.status || carrierStatus;
-    updateBusinessProfile(req.tenantOwnerId, { carrierSetupStatus: carrierStatus });
-  } catch (error) {
-    setOperatorEnabled(req.tenantOwnerId, !enabled);
-    error.statusCode = 502;
-    throw error;
-  }
-  return res.json({ operator: clientOnboardingState(req.tenantOwnerId).operator, carrierStatus });
+  const { statusCode, ...result } = await telephonyOperations.setCoverage(req.tenantOwnerId, req.body?.enabled);
+  return res.status(statusCode).json({ ...result, operator: clientOnboardingState(req.tenantOwnerId).operator });
 }));
 
 app.post('/api/onboarding/calendar', requireAuth(['owner']), asyncHandler(async (req, res) => {
