@@ -124,3 +124,59 @@ at the newly inclusive room boundaries, which must be recalculated before runnin
   file, the superseded rejection of normal product names, and a v5-only version
   assertion. Replacement expectations follow this decision record; no gates or
   assertions were removed.
+
+## Follow-up: interview price maps and tier notices
+
+The earlier name fix covered registries and offering definitions, but missed
+ordinary rate maps. The new basic-paint notice incorrectly read base pricing
+when a tier supplied the complete itemized offering. Both are repair work under
+the same owner authorization, not new business-policy decisions.
+
+- Normalize product names at the interview validation boundary, including
+  nested product maps. Preserve exact closed-domain field identifiers and reject
+  collisions. Saving a draft and returning a starter draft must use the validated
+  result, not the original input. Never infer product registration from a rate.
+- Owner notices use effective tier pricing. When all available options are basic,
+  retain the approved notice verbatim. In mixed configurations, qualify that same
+  notice with the affected tier name. An itemized-only service must not show the
+  basic-mode notice. Invalid tiers retain their existing setup diagnostics.
+- These changes alter configuration capture and notices, not quote arithmetic;
+  the v6 approval boundary remains unchanged.
+
+### Handwritten expectations before follow-up tests
+
+- "EPDM rubber" becomes epdm_rubber and retains **$5.00 per sq ft**.
+  "vinyl plank" becomes vinyl_plank and retains **$2.50 per sq ft**.
+  "Ceramic tile" and "Cedar privacy" remain valid free product names in
+  applicable free-name removal maps. Closed flooring choices still reject a new
+  ceramic_tile installation category rather than silently reinterpret it as tile.
+  Collisions, invalid domains and malformed numeric answers fail without saving.
+  Configuration, UI and persistence checks produce no job dollar estimate.
+- Nested repair maps preserve small/medium/large amounts **$10/$20/$30**;
+  cleanup maps preserve laborMultiplier=1 and disposalFlat=**$12.50**.
+  Enum maps preserve their values. Names never change a price or confirm it.
+- Itemized fair walls: 500 sq ft, two coats, zero waste, fees, tax, markup or
+  minimum. Finish labor 500 x2 x$1 = **$1,000**; prep labor 500 x$1 = **$500**;
+  primer labor 500 x1 x$0.50 = **$250**. Finish materials 500 x2 x$0.30 = **$300**;
+  prep material 500 x$0.20 = **$100**; primer material 500 x$0.20 = **$100**.
+  Labor **$1,750** + materials **$500** = **$2,250**, whether supplied at base
+  or in a tier, including the saved/approved application path. No basic notice.
+- A mixed service's basic option still reviews fair walls; its complete option
+  quotes **$2,250**. Only the basic tier carries the limitation notice. An invalid
+  itemized tier cannot remove the warning for a remaining valid basic tier.
+- Basic good walls retain the already-written **$1,440 labor / $1,792 total**;
+  basic fair/poor walls remain review-only. All existing regression expectations
+  and strict-gate assertions remain in force on every follow-up execution.
+
+First follow-up reproduction run: 38/55 passed. Fifteen failures exercised the
+unrepaired paths. Two new fixtures incorrectly used retired fence map fields;
+replace them with a supported free-name removal map and a canonical-key control
+before rerunning. Dollar expectations are unchanged.
+
+Focused repaired checks: 105/105. The first full local quote run passed 1,553
+tests; 35 browser launches failed in this environment and one older test still
+expected a space-containing repair name to be rejected. Before rerunning, update
+that obsolete expectation to accept "Crack repair" as crack_repair with unchanged
+1/2/3-hour bands (no dollar quote). Keep rejection checks for unknown siding,
+missing size bands and names starting with a number, which the shared editor
+normalizer rejects. All monetary expectations above remain unchanged.

@@ -51,7 +51,9 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   else if (def.type === 'boolean') { if (typeof value !== 'boolean') reject('Choose Yes or No.'); }
   else if (def.type === 'select') { if (!def.options?.includes(value)) reject('Choose one of the displayed pricing options.'); }
   else if(def.tree) {
-    try{validatePriceBookTree(value,{...def,moneyKind:kind},{numbersOnly:true});}catch(error){reject(error.message);}
+    // Allocation maps use internal price paths, not customer product names.
+    const normalizeNames=!['installedLaborPercent','installedMaterialsPercent'].includes(field);
+    try{value=validatePriceBookTree(value,{...def,moneyKind:kind},{numbersOnly:true,normalizeNames});}catch(error){reject(error.message);}
   } else {
     const shape = def.shapedKeys, tree = def.tree;
     // Current tree metadata supersedes legacy two-level shapedKeys. Leaves
@@ -97,8 +99,8 @@ export function validateStarterOutput(raw, requested) {
       if (Object.keys(entry.fields).some(field => !allowed.includes(field))) reject('AI returned an unsupported price-book field.');
       fields = entry.fields;
     }
-    for (const [field,value] of Object.entries(fields)) validateInterviewValue(type,field,value,fields);
-    return {service:entry.service,serviceType:type,fields:structuredClone(fields)};
+    const validated=Object.fromEntries(Object.entries(fields).map(([field,value])=>[field,validateInterviewValue(type,field,value,fields)]));
+    return {service:entry.service,serviceType:type,fields:validated};
   });
 }
 export function priceBookModel(env = process.env) {

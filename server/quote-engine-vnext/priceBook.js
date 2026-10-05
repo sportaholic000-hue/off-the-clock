@@ -510,6 +510,22 @@ function laborAdjustmentCoverage(service) {
   return rows;
 }
 
+function basicPaintNotices(service, validTierNames) {
+  if(service?.serviceType!=='INTERIOR_PAINTING')return [];
+  const base=pricingOf(service);
+  // Tier definitions already have their own blocking diagnostics. Do not infer
+  // a base-only limitation from an invalid or unreadable option definition.
+  if(validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
+  const variants=service.tiers?.length
+    ? service.tiers.map(tier=>({name:tier.name,pricing:mergePricingForValidationVNext(base,tier.overrides||{})}))
+    : [{name:null,pricing:base}];
+  const available=validTierNames.length?variants.filter(v=>validTierNames.includes(v.name)):variants;
+  const basic=available.filter(v=>basicInteriorPainting(service.serviceType,v.pricing));
+  if(!basic.length)return [];
+  if(basic.length===available.length)return [BASIC_PAINT_PREPARATION_NOTICE];
+  return basic.map(v=>v.name+': '+BASIC_PAINT_PREPARATION_NOTICE);
+}
+
 function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
   const blocking = uniqueStatusDiagnostics(diagnostics);
   const live = service?.active === true && blocking.length === 0 && validTierNames.length > 0;
@@ -517,7 +533,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: basicInteriorPainting(service?.serviceType, pricingOf(service||{})) ? [BASIC_PAINT_PREPARATION_NOTICE] : [],
+    statusNotices: basicPaintNotices(service,validTierNames),
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',

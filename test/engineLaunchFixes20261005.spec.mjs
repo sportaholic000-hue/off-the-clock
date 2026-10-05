@@ -10,13 +10,14 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {build} from 'esbuild';
 import {fixture, flooring} from '../verification/engine-independent/fixtures.mjs';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
+import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {generateQuoteVNext, sanitizeForCustomerVNext, vNextServiceStatus, ENGINE_VERSION} from '../server/quote-engine-vnext/index.js';
 import {MEASUREMENT_CONTRACTS} from '../server/quote-engine-vnext/contracts.js';
 import {scopeCustomerErrors} from '../server/quote-engine-vnext/scopePricing.js';
 import {BASIC_PAINT_PREPARATION_NOTICE, scopeDefinitions} from '../server/scopeConfiguration.js';
 import {validateInterviewConfiguration, materializeInterviewFields} from '../server/interviewConfiguration.js';
-import {validateInterviewValue} from '../server/src/priceBookAI.js';
+import {validateInterviewValue, interpretInterviewAnswer, validateStarterOutput} from '../server/src/priceBookAI.js';
 import {productKeyFromName} from '../server/productNames.js';
 import {productKeyFromName as editorProductKey} from '../client/src/pricebookFormatting.js';
 import * as bridge from '../server/src/quoteDoneBridge.js';
@@ -172,4 +173,103 @@ test('launch labels equal the owner-approved wording',()=>{
   assert.equal(MEASUREMENT_CONTRACTS.CONCRETE_PATIO_SLAB.fields.adjoinsExistingConcrete.label,'Does any edge touch a house foundation, garage foundation, or existing concrete?');
   assert.equal(scopeDefinitions('CONCRETE_PATIO_SLAB').demolition.fields.minimumThickness.label,'Covers slabs thicker than (optional lower limit)');
   assert.equal(scopeDefinitions('FLOORING_INSTALL').stairs.fields.minimumWidthLF.label,'Covers treads wider than (optional lower limit)');
+});
+
+// Follow-up expectations are written in QUOTE_LAUNCH_DECISIONS_20261005.md.
+for(const [type,field,input,expected] of [
+  ['FLAT_ROOF_REPLACEMENT','laborPerSqft',{'EPDM rubber':5},{epdm_rubber:5}],
+  ['FLOORING_INSTALL','laborPerSqft',{'vinyl plank':2.5},{vinyl_plank:2.5}],
+  ['FLOORING_INSTALL','removalPerSqft',{'Ceramic tile':2.5},{ceramic_tile:2.5}],
+  ['FLOORING_INSTALL','removalPerSqft',{'Cedar privacy':5},{cedar_privacy:5}],
+  ['ROOFING_REPLACEMENT','underlaymentPriceBasis',{'Épinette roof':'installed_area_sell_price'},{epinette_roof:'installed_area_sell_price'}],
+  ['FLAT_ROOF_REPLACEMENT','laborPerSqft',{epdm_rubber:5},{epdm_rubber:5}],
+  ['ROOFING_REPAIR','repairMaterialAllowance',{'Asphalt shingle':{'Flashing repair':{small:10,medium:20,large:30}}},{asphalt_shingle:{flashing_repair:{small:10,medium:20,large:30}}}]
+])test('follow-up interview normalizes '+type+'.'+field+' without changing values',()=>{
+  const before=structuredClone(input);
+  assert.deepEqual(validateInterviewValue(type,field,input),expected);
+  assert.deepEqual(input,before);
+});
+for(const input of [
+  {'EPDM rubber':5,epdm_rubber:2.5},
+  {'Cédar privacy':5,'Cedar privacy':2.5},
+])test('follow-up rate map rejects colliding names '+Object.keys(input).join('/'),()=>{
+  assert.throws(()=>validateInterviewValue('FLAT_ROOF_REPLACEMENT','laborPerSqft',input),/already listed/);
+});
+test('follow-up nested product collisions are rejected before overwriting prices',()=>{
+  assert.throws(()=>validateInterviewValue('ROOFING_REPAIR','repairMaterialAllowance',{
+    shingle:{'Flashing repair':{small:10,medium:20,large:30},flashing_repair:{small:10,medium:20,large:30}}
+  }),/already listed/);
+});
+test('follow-up normalization retains closed domains, exact structural keys and money precision',()=>{
+  const row={laborMultiplier:1,disposalFlat:12.5},value={light:row,moderate:row,heavy:row};
+  assert.deepEqual(validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',value),value);
+  assert.throws(()=>validateInterviewValue('FLOORING_INSTALL','laborPerSqft',{'Ceramic tile':2.5}),/unsupported offering key/);
+  for(const bad of ['5',-5,Infinity])assert.throws(()=>validateInterviewValue('FLAT_ROOF_REPLACEMENT','laborPerSqft',{'EPDM rubber':bad}));
+  assert.throws(()=>validateInterviewValue('LANDSCAPING_CLEANUP','debrisPricing',{...value,light:{...row,disposalFlat:12.505}}));
+  assert.throws(()=>validateInterviewValue('FLAT_ROOF_REPLACEMENT','laborPerSqft',JSON.parse('{"__proto__":5}')));
+});
+test('follow-up actual AI response returns the normalized $5 rate and registry-compatible key',async()=>{
+  const result=await interpretInterviewAnswer({serviceType:'FLAT_ROOF_REPLACEMENT',field:'laborPerSqft',answer:'[SYNTHETIC] EPDM rubber is five dollars per square foot'},
+    {env:{GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'},fetchImpl:async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"value":{"EPDM rubber":5}}'}]}}]})})});
+  assert.deepEqual(result,{epdm_rubber:5});
+  assert.deepEqual(Object.keys(result),Object.keys(validateInterviewValue('FLAT_ROOF_REPLACEMENT','knownOfferings',{membraneType:{'EPDM rubber':true}}).membraneType));
+});
+test('follow-up starter returns normalized supported prices without changing its input',()=>{
+  const raw=[{service:'[SYNTHETIC] Flooring',serviceType:'FLOORING_INSTALL',fields:{laborPerSqft:{'vinyl plank':2.5}}}];
+  const before=structuredClone(raw),out=validateStarterOutput(raw,['FLOORING_INSTALL']);
+  assert.deepEqual(out[0].fields.laborPerSqft,{vinyl_plank:2.5});assert.deepEqual(raw,before);
+});
+
+function tierPaint() {
+  const f=offeringFixture('INTERIOR_PAINTING','itemized'),p=f.ownerPricing.pricing,overrides={};
+  Object.assign(p,{paintWasteFactor:0,primerWasteFactor:0,prepMaterialWasteFactor:0});
+  Object.assign(f.customerInputs,{ceilingsIncluded:false,trimIncluded:false});
+  delete f.customerInputs.ceilingAreaSqft;delete f.customerInputs.trimLengthLF;
+  for(const key of ['offeringMode','offeringDetails','offeringRates','installedLaborPercent','installedMaterialsPercent']){overrides[key]=p[key];delete p[key];}
+  f.ownerPricing.tiers=[{name:'Complete',overrides}];
+  return f;
+}
+test('follow-up tier-only itemized fair walls quote $2250 without a basic-mode notice',()=>{
+  const f=tierPaint(),status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.equal(status.status,'QUOTING LIVE');assert.deepEqual(status.statusNotices,[]);
+  assert.equal(render(controls.ServiceStatusNotices,{status}),'');assert.equal(ready(f).midEstimate,2250);
+});
+test('follow-up all-basic tiers retain the approved notice and $1792 good-wall quote',()=>{
+  const f=paint();f.ownerPricing.tiers=[{name:'Basic',overrides:{}}];
+  assert.deepEqual(vNextServiceStatus(f.ownerPricing,f.businessDefaults).statusNotices,[BASIC_PAINT_PREPARATION_NOTICE]);
+  assert.equal(ready(f).midEstimate,1792);
+});
+test('follow-up mixed pricing limits the warning to the basic tier; fair walls still quote $2250',()=>{
+  const f=tierPaint();Object.assign(f.ownerPricing.pricing,{laborPerWallSqftPerCoat:90,materialPerWallSqftPerCoat:20});
+  f.ownerPricing.tiers.unshift({name:'Basic',overrides:{}});
+  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.deepEqual(status.validTierNames,['Basic','Complete']);
+  assert.deepEqual(status.statusNotices,['Basic: '+BASIC_PAINT_PREPARATION_NOTICE]);
+  const q=ready(f);assert.equal(q.midEstimate,2250);assert.deepEqual(q.options.map(o=>o.tierName),['Complete']);
+});
+test('follow-up a failed itemized tier cannot hide the remaining basic limitation',()=>{
+  const f=tierPaint();Object.assign(f.ownerPricing.pricing,{laborPerWallSqftPerCoat:90,materialPerWallSqftPerCoat:20});
+  delete f.ownerPricing.tiers[0].overrides.offeringRates.wallLaborPerSqftPerCoat;
+  f.ownerPricing.tiers.unshift({name:'Basic',overrides:{}});
+  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.deepEqual(status.validTierNames,['Basic']);
+  assert.deepEqual(status.statusNotices,[BASIC_PAINT_PREPARATION_NOTICE]);
+  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+});
+test('follow-up an invalid basic tier cannot add a warning to a complete itemized option',()=>{
+  const f=tierPaint();f.ownerPricing.tiers.unshift({name:'Incomplete',overrides:{}});
+  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);
+  assert.deepEqual(status.validTierNames,['Complete']);assert.deepEqual(status.statusNotices,[]);
+  assert.equal(ready(f).midEstimate,2250);
+});
+test('follow-up saved and approved tier-only itemized pricing has no warning and quotes $2250',()=>{
+  const f=tierPaint(),owner='synthetic-tier-notice-'+randomUUID(),service=structuredClone(f.ownerPricing);delete service.origin;
+  const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'USD',quoteTimeZone:'UTC'}},'toDollars');
+  bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),...draft});
+  bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(loadPricebook(owner)),confirmConfiguration:true,confirmLegacySettings:true});
+  const book=loadPricebook(owner),status=bridge.applicationStatus(book.services[0],book);
+  assert.equal(status.status,'QUOTING LIVE');assert.equal(status.approvalCurrent,true);
+  assert.deepEqual(status.statusNotices,[]);assert.equal(render(controls.ServiceStatusNotices,{status}),'');
+  const q=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:f.customerInputs,requestId:randomUUID()},{ownerId:owner,preparingIntake:true,quoteInstant:new Date('2026-01-05T12:00:00Z')});
+  assert.equal(q.internalResult.midEstimate,2250);assert.equal(q.customerResult.midEstimate,2250);
 });

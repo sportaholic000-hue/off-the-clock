@@ -103,7 +103,8 @@ test('R05 planting metadata, starter and interview accept small/medium/large and
 });
 test('R05 repair cubes retain open middle keys, closed siding types and size leaves',()=>{
  const value={vinyl:{crack:{small:1,medium:2,large:3}}};assert.deepEqual(validateInterviewValue('SIDING_REPAIR','repairHours',value),value);
- for(const bad of [{unobtainium:value.vinyl},{vinyl:{crack:{small:1,medium:2}}},{vinyl:{'wrong key':{small:1,medium:2,large:3}}}])assert.throws(()=>validateInterviewValue('SIDING_REPAIR','repairHours',bad));
+ assert.deepEqual(validateInterviewValue('SIDING_REPAIR','repairHours',{vinyl:{'Crack repair':{small:1,medium:2,large:3}}}),{vinyl:{crack_repair:{small:1,medium:2,large:3}}});
+ for(const bad of [{unobtainium:value.vinyl},{vinyl:{crack:{small:1,medium:2}}},{vinyl:{'3 repair':{small:1,medium:2,large:3}}}])assert.throws(()=>validateInterviewValue('SIDING_REPAIR','repairHours',bad));
 });
 const debris={light:{laborMultiplier:1,disposalFlat:0},moderate:{laborMultiplier:1.5,disposalFlat:20},heavy:{laborMultiplier:2,disposalFlat:40}};
 test('R06 cleanup accepts zero disposal through readback and server',()=>{

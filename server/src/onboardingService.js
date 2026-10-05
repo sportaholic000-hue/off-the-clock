@@ -620,9 +620,9 @@ export function saveInterviewDraft(ownerId, id, input) {
     nextFields[serviceType] = { ...(nextFields[serviceType] || {}) };
     const confirmed = new Set(nextConfirmed[serviceType] || []);
     for (const [field,value] of Object.entries(incoming)) {
-      validateInterviewValue(serviceType,field,value,{...nextFields[serviceType],...incoming});
-      if (JSON.stringify(value) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
-      nextFields[serviceType][field] = structuredClone(value);
+      const validated = validateInterviewValue(serviceType,field,value,{...nextFields[serviceType],...incoming});
+      if (JSON.stringify(validated) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
+      nextFields[serviceType][field] = validated;
     }
     const explicit = input.confirmedFields?.[serviceType];
     if (explicit !== undefined) {

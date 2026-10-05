@@ -1,4 +1,28 @@
-# October 5 engine launch fixes — strict gate passed
+# October 5 follow-up repairs — hosted verification pending
+
+Branch: `codex/engine-launch-fixes-20261005`.
+Verified parent: `a809f567dbcfbfed105fce3aefefb4b249df6279`.
+
+Two gaps in the earlier checkpoint are repaired: interview product-name
+normalization now includes ordinary and nested price maps, and saving/returning
+drafts uses normalized values. The basic-painting limitation notice now follows
+effective tier pricing and identifies only affected basic options in mixed setups.
+Saved and approved itemized-only fair-wall pricing retains its **$2,250** quote
+without the incorrect warning. Arithmetic and the v6 approval version are unchanged.
+
+Twenty new regression cases cover real AI parsing, SQLite draft save/readback,
+collision rollback, confirmation behavior, tier combinations, owner rendering
+and a saved/approved application quote. Expected amounts were written before
+execution in [the launch decisions](QUOTE_LAUNCH_DECISIONS_20261005.md).
+Focused checks: **105/105 passed**. Local cold production builds passed.
+The full local rerun and hosted strict gate are pending at this source checkpoint;
+final SHA-bound results will replace this paragraph after verification.
+
+No merge, deployment, live-data changes or subagents.
+
+## Historical checkpoint — its name/notice coverage gaps are repaired above
+
+# October 5 engine launch fixes — prior strict gate passed
 
 Branch: `codex/engine-launch-fixes-20261005`.
 Verified starting SHA: `e830ca88ec7f2cd630c497d31b0e32322ed2feef`.
