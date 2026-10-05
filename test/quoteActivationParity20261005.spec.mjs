@@ -9,7 +9,11 @@ const projection=result=>Object.fromEntries(['resultType','reviewReason','missin
 for(const {id,input} of [...cases(),...measuredScopeCases()])test('Prepared full-pipeline readiness matches ordinary engine: '+id,()=>{
  for(const mode of ['normal','tax-and-markup','unsafe-total','invalid-fees']){
   const f=structuredClone(input);
-  if(mode==='tax-and-markup')Object.assign(f.businessDefaults,{markupPercent:31.5,taxMode:'TAX_ON_TOTAL',taxPercent:8.75,rangeBufferPercent:10});
+  if(mode==='tax-and-markup'){Object.assign(f.businessDefaults,{markupPercent:31.5,taxMode:'TAX_ALL',taxPercent:8.75,rangeBufferPercent:10});f.ownerPricing.taxabilityByCategory=Object.fromEntries(Object.keys(f.ownerPricing.taxabilityByCategory).map(key=>[key,true]));
+   if(id==='flat-roof-residential-control'){const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');
+    // 1,470,000 base +31.5% markup 463,050 +round(1,933,050*8.75%) tax 169,142.
+    assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,2102192);}
+  }
   if(mode==='unsafe-total')f.businessDefaults.minimumJobPrice=Number.MAX_SAFE_INTEGER;
   if(mode==='invalid-fees')f.feeSelections={owner:{unexpected:true}};
   const prepared=createActivationQuoteCheckVNext(f);
