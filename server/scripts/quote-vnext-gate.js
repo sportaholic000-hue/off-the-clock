@@ -8,8 +8,10 @@
 //    imports, so new regression files are included automatically) and requires
 //    zero failures. Voice tests are outside this gate.
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { spawn } from 'node:child_process';
+import { join, resolve } from 'node:path';
+import { run } from 'node:test';
+import { tap } from 'node:test/reporters';
+import { pipeline } from 'node:stream/promises';
 import { quotePricebookSpecFiles } from '../../scripts/testSelection.mjs';
 
 const filesUnder = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -38,10 +40,26 @@ if (failures.length) {
 console.log('PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.');
 
 const files = quotePricebookSpecFiles(process.cwd());
-console.log(`Running ${files.length} quote-engine and price-book test files; any failure fails the gate.`);
-const child = spawn(process.execPath, ['--import', './test/pricebookTestEnv.mjs', '--test', ...files], { stdio: 'inherit' });
-child.on('error', error => { console.error(`FAIL: unable to start the tests: ${error.message}`); process.exit(1); });
-child.on('exit', code => {
-  if (code !== 0) { console.error(`FAIL: quote-engine and price-book tests exited ${code}.`); process.exit(code || 1); }
-  console.log('PASS: quote engine and price book gate.');
-});
+if(!files.length){console.error('FAIL: no quote-engine or price-book test files were selected.');process.exit(1);}
+console.log(`Running ${files.length} quote-engine and price-book test files; failures, skips, TODOs and missing tests fail the gate.`);
+const expected=new Set(files.map(file=>resolve(file))),completed=new Set(),gateFailures=[];
+let summary;
+async function* inspect(events){
+  for await(const event of events){
+    if(event.type==='test:summary'){
+      const data=event.data,c=data.counts;
+      if(data.file){
+        completed.add(resolve(data.file));
+        if(!data.success||!c.tests||c.failed||c.cancelled||c.skipped||c.todo)gateFailures.push(data.file+' did not complete every test successfully.');
+      }else summary=data;
+    }
+    yield event;
+  }
+}
+try{
+  await pipeline(run({files,execArgv:['--import',resolve('test/pricebookTestEnv.mjs')]}),inspect,tap,process.stdout,{end:false});
+}catch(error){gateFailures.push('Unable to complete the test runner: '+error.message);}
+for(const file of expected)if(!completed.has(file))gateFailures.push('Missing test results: '+file);
+if(!summary||!summary.success||!summary.counts.tests||summary.counts.failed||summary.counts.cancelled||summary.counts.skipped||summary.counts.todo)gateFailures.push('The complete test summary is missing or contains unsuccessful tests.');
+if(gateFailures.length){for(const message of gateFailures)console.error('FAIL: '+message);process.exitCode=1;}
+else console.log(`PASS: quote engine and price book gate (${completed.size} files, ${summary.counts.passed}/${summary.counts.tests} tests, zero skips).`);

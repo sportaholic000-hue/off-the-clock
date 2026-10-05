@@ -154,7 +154,8 @@ export function scopeLines(type,c,p={},rules={}){
  for(const [productKey,g]of purchases){
   const required=exactMultiply(g.quantity,exactAdd(1,exactDivide(g.d.wastePercent,100))),packages=ceilExact(exactDivide(required,g.d.coverage)),key=g.keys[0];
   add(key,packages);out.lines[out.lines.length-1].name='Purchased materials: '+productKey;
-  out.rules.push({name:'purchased_'+key,rule:'ceil(sum of measured product quantities * (1 + owner waste percent / 100) / owner package coverage)',inputs:{productKey,components:g.keys,measuredQuantity:exactToNumber(g.quantity),wastePercent:g.d.wastePercent,packageCoverage:g.d.coverage},result:packages,usedBy:['Purchased materials: '+productKey]});
+  out.lines[out.lines.length-1].contributingRatePaths=g.keys.map(component=>'scopeRates.'+component);
+  out.rules.push({name:'purchased_'+key,rule:'ceil(sum of measured product quantities * (1 + owner waste percent / 100) / owner package coverage)',inputs:{productKey,components:g.keys,measuredQuantity:exactToNumber(g.quantity),quantityUnit:g.unit,wastePercent:g.d.wastePercent,packageCoverage:g.d.coverage,packageCoverageUnit:g.unit},result:packages,usedBy:['Purchased materials: '+productKey]});
  }
  return out;
 }
@@ -164,9 +165,9 @@ export function scopeActivationInputs(type,input,p,rules={}){
  const c={...input};
  for(const key of scopeKeysForRequest(type,c,p,rules)){
   const base=scopeBaseKey(key),d=p.scopeDetails?.[key],def=scopeDefinitions(type,p)[key];if(!record(d)||!def)continue;c[def.confirmation]=true;
-  if(base==='stairs')Object.assign(c,{stairWidthLF:d.maximumWidthLF,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded,floorAreaExcludesStairs:true});
+  if(base==='stairs')Object.assign(c,{stairWidthLF:c.stairWidthLF??d.maximumWidthLF,stairRemovalNeeded:c.stairRemovalNeeded??d.removalIncluded,stairDisposalNeeded:c.stairDisposalNeeded??d.disposalIncluded,floorAreaExcludesStairs:true});
   if(base==='siding_removal')Object.assign(c,{existingSidingType:d.existingSidingType,sidingRemovalAreaSqft:c.sidingAreaSqft??c.areaSqft,sidingRemovalStories:d.stories});
-  if(base==='demolition')Object.assign(c,{demolitionThickness:d.maximumThickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
+  if(base==='demolition')Object.assign(c,{demolitionThickness:c.demolitionThickness??d.maximumThickness,demolitionReinforcement:c.demolitionReinforcement??d.reinforcement,demolitionAccessDifficulty:c.demolitionAccessDifficulty??d.accessDifficulty});
   if(key==='insulation')for(const layer of ['insulation','coverboard'])if(c[layer+'Needed']===true)c[layer+'AreaSqft']=c.roofSqft;
  }
  return c;

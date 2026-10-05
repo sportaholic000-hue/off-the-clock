@@ -1,4 +1,5 @@
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
@@ -2170,7 +2171,7 @@ function includedPathDiagnosticsVNext(service, pricing) {
 function computeIncludedPathDiagnostics(service, pricing) {
   const mappings = service.zeroPricePolicy?.includedPrices;
   if (!isRecord(mappings)) return [];
-  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>({...service.pricing,...t?.overrides}))];
+  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>mergePricingForValidationVNext(service.pricing||{},t?.overrides||{}))];
   const supported=(path,p)=>supportedIncludedPricePath(service.serviceType,path,p);
   const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
   const validPrice = (path, value) => {

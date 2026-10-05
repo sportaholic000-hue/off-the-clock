@@ -1,9 +1,10 @@
-import {scopeBaseKey,scopeEntriesFor,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
-import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics} from './scopePricing.js';
+import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
+import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
 import {
   CLASS2_DEFINITIONS,
   createActivationValidationVNext,
@@ -31,6 +32,7 @@ import {
 import {
   generateQuoteVNext,
   createActivationQuoteCheckVNext,
+  installedMaterialShareDiagnosticsVNext,
   validateFeeSelectionRequest,
   ENGINE_VERSION,
   mergePricingForValidationVNext,
@@ -113,7 +115,7 @@ const NEW_FIELD_COPY = {
   trimPerLinearFoot: { label: 'Siding trim installation price per measured linear foot', help: 'Held for owner review until labor and material are separately priced or an explicit category and allocation rule is approved.' },
   subfloorAllowancePerSqft: { label: 'Subfloor repair allowance per measured affected square foot', help: 'Applied only when subfloor issues are reported and only to the measured affected area.' },
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
-  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area below the small threshold uses the small-room labor factor; at or above it uses medium, until the medium threshold. At or above the medium threshold uses large. Defaults: below 150, 150 to under 300, and 300 or more square feet.' },
+  roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area at or below the small maximum uses the small-room labor factor; above it and at or below the medium maximum uses medium. Above the medium maximum uses large. Defaults: up to and including 150, over 150 through 300, and over 300 square feet.' },
 
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
@@ -167,6 +169,7 @@ function flooringRoomBands(pricing) {
   return [
     scenarioForAverage(thresholds.smallMaxSqft / 2),
     scenarioForAverage((thresholds.smallMaxSqft + thresholds.mediumMaxSqft) / 2),
+    ...[thresholds.smallMaxSqft,thresholds.mediumMaxSqft].flatMap(boundaryMeasurements).filter(average=>average>0).map(average=>average<1?{sqft:average*2,roomCount:2}:{sqft:average,roomCount:1}),
     { sqft: 1_000_000, roomCount: 1 }
   ];
 }
@@ -179,7 +182,8 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit)
   const out = [];
   for (const first of keysOf(cube, fallbacks[0])) {
     for (const second of keysOf(cube?.[first], fallbacks[1])) {
-      for (const size of ['small', 'medium', 'large']) out.push(makeScenario(first, second, affectedAreas[size]));
+      const areas=[...new Set([...Object.values(affectedAreas),...repairBoundaryMeasurements(serviceType,largeLimit).filter(area=>typeof largeLimit!=='number'||area<=largeLimit)])];
+      for (const area of areas) out.push(makeScenario(first, second, area));
     }
   }
   return out;
@@ -227,8 +231,12 @@ function optionalPricingRequests(service, base) {
   ];
   return [];
 }
-function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tierName=null) {
-  return validateOwnerPricing(service.serviceType,scopeActivationInputs(service.serviceType,inputs,pricing,service),pricing,service,tierName).ok;
+function selectedShareDiagnostics(service, inputs, pricing, defaults) {
+  return installedMaterialShareDiagnosticsVNext(service.serviceType,pricing,defaults,ownerRequirements(service.serviceType,inputs,pricing,service).map(item=>item.path));
+}
+function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tierName=null,defaults=null) {
+  const normalized=scopeActivationInputs(service.serviceType,inputs,pricing,service);
+  return validateOwnerPricing(service.serviceType,normalized,pricing,service,tierName).ok&&!scopeCustomerErrors(service.serviceType,normalized,pricing,service).length&&!selectedShareDiagnostics(service,normalized,pricing,defaults).length;
 }
 
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
@@ -377,21 +385,21 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   return [];
 }
 
-function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true) {
+export function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true,defaults=null) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
  const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>({...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
   if(!configuredOffering(type,p))return true;
   const additional=input.ceilingsIncluded||input.trimIncluded||input.oldFenceRemoval||Object.values(input.gates||{}).some(count=>count>0);
-  return !additional||completeOptionalPricing(service,input,p,tierName);
+  return !additional||completeOptionalPricing(confirmedService,input,p,tierName,defaults);
  });
  if(!includeOptionalScopes)return scenarios;
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
  for(const [key,d] of Object.entries(p.scopeDetails||{})){
   const base=scopeBaseKey(key);
-  if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)extra.push({...seed,stairSteps:5,stairWidthLF:d.maximumWidthLF,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
+  if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)for(const width of [...new Set([d.minimumWidthLF??0,d.maximumWidthLF].flatMap(boundaryMeasurements))].filter(n=>n>=0.1))extra.push({...seed,stairSteps:5,stairWidthLF:width,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
   if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
   if(base==='siding_removal')add({oldSidingRemoval:true,existingSidingType:d.existingSidingType,sidingRemovalStories:d.stories});
-  if(base==='demolition')add({demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:d.maximumThickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
+  if(base==='demolition')for(const thickness of [...new Set([d.minimumThickness??0,d.maximumThickness].flatMap(boundaryMeasurements))].filter(n=>n>=0.1))add({demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:thickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
   if(key==='siding_trim')add({trimIncluded:true,trimLengthLF:200});
   if(key==='exposed_aggregate')add({finishType:'exposed_aggregate'});
   if(key==='insulation')for(const layer of ['insulation','coverboard'])add({[layer+'Needed']:true});
@@ -399,7 +407,28 @@ function activationScenarios(service,confirmedService=service,tierName=null,sele
  // Missing optional scope prices are reported by scopeCoverage. Probe their
  // calculations once configured, without making unfinished additions a gate
  // on the independently priced base work.
- return [...scenarios,...extra.filter(input=>completeOptionalPricing(service,input,p,tierName))];
+ return [...scenarios,...extra.filter(input=>completeOptionalPricing(confirmedService,input,p,tierName,defaults))];
+}
+
+// Unsupported sides of bands are intentional review probes. They must not
+// disable supported work, and they must never be normalized into a priced band.
+export function activationReviewScenarios(service) {
+ const type=service.serviceType,p=pricingOf(service),repair=['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(type);
+ if(!repair&&!Object.keys(p.scopeDetails||{}).some(key=>['stairs','demolition'].includes(scopeBaseKey(key))))return [];
+ const base=baseActivationScenarios(service),out=[];
+ if(repair&&Number.isFinite(p.largeRepairMaxSqft)){
+  for(const c of base.filter((c,i,a)=>a.findIndex(other=>JSON.stringify({...other,affectedArea:0})===JSON.stringify({...c,affectedArea:0}))===i))out.push({...c,affectedArea:boundaryMeasurements(p.largeRepairMaxSqft)[2]});
+ }
+ for(const [key,d] of Object.entries(p.scopeDetails||{})){
+  const scope=scopeBaseKey(key);if(!['stairs','demolition'].includes(scope))continue;
+  const seed=scope==='stairs'?base.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded):base[0];if(!seed)continue;
+  const limits=scope==='stairs'?[d.minimumWidthLF??0,d.maximumWidthLF]:[d.minimumThickness??0,d.maximumThickness];
+  for(const value of [...new Set(limits.flatMap(boundaryMeasurements))].filter(n=>n>=0.1)){
+   const c={...seed,...(scope==='stairs'?{stairSteps:5,stairWidthLF:value,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded,floorAreaExcludesStairs:true}:{demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:value,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty,adjoinsExistingConcrete:false})};
+   if(!scopeEntriesFor(p,scope).some(([entry,detail])=>scopeMatchesRequest(entry,detail,c)))out.push(c);
+  }
+ }
+ return out;
 }
 
 function uniqueStatusDiagnostics(items) {
@@ -440,7 +469,7 @@ function productStatusCoverage(variant, product) {
     ...(unpricedOwnerFields.length ? { coverageMessage: 'Not yet priced. Requests for this condition go to review.' } : {}) };
 }
 
-function scopeCoverageForService(service) {
+function scopeCoverageForService(service,defaults=null) {
   if (!service || !SERVICE_TYPES.includes(service.serviceType) || validateTierDefinitionsDetailedVNext(service, service.serviceType).length) return [];
   const type = service.serviceType, base = pricingOf(service);
   const variants = service.tiers?.length ? service.tiers.map(t => ({ name: t.name, pricing: mergePricingForValidationVNext(base, t.overrides || {}) })) : [{ name: null, pricing: base }];
@@ -473,7 +502,8 @@ function scopeCoverageForService(service) {
       if (!scopeKeysForRequest(type, probe, p, service).includes(configurationKey)) continue;
       const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === configurationKey&&(!definition.layer||field.layer===definition.layer)).map(([name]) => 'scopeRates.' + name);
       const related = d => {if(definition.layer&&d.path==='scopeDetails.insulation.'+(definition.layer==='insulation'?'coverboard':'insulation')+'System')return false;return d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + configurationKey || d.path?.startsWith('scopeDetails.' + configurationKey + '.') || rates.includes(d.path);};
-      const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related);
+      const shareErrors=selectedShareDiagnostics(service,probe,p,defaults).filter(d=>rates.some(path=>d.path==='installedMaterialsPercent.'+path));
+      const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related).concat(shareErrors);
       const complete = isPlainRecord(p.scopeDetails?.[configurationKey]) && (rates.length > 0 || p.scopeDetails[configurationKey].mode === 'included_in_floor_price') && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
       const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
@@ -488,10 +518,11 @@ function scopeCoverageForService(service) {
       const inputs=scopeActivationInputs(type,{...base,...optional.changes},p,service);
       const validation=validateOwnerPricing(type,inputs,p,service,variant.name);
       const gateErrors=type.startsWith('FENCING_')&&configuredOffering(type,p)?offeringContract(type,p,service).crossValidate(inputs):[];
-      const complete=validation.ok&&gateErrors.length===0;
+      const shareErrors=selectedShareDiagnostics(service,inputs,p,defaults);
+      const complete=validation.ok&&gateErrors.length===0&&shareErrors.length===0;
       if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
       const row=rows.get(optional.key);row.configurationComplete ||= complete;
-      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>d.path),...gateErrors.map(d=>'customerInputs.'+d.field)])]});
+      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>d.path),...gateErrors.map(d=>'customerInputs.'+d.field),...shareErrors.map(d=>d.path)])]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
@@ -618,6 +649,7 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   const type=service.serviceType,configured={...service,pricing:p},[rField,eField]=axes.fields,[R,E]=axes.values;
   const first=firstCatalogSelection(configured),prototype=baseActivationScenarios(configured,service,first)[0];
   const validation=createActivationValidationVNext(type,p,service,tierName),structures=validatePricingStructuresDetailed(type,p),factors=validateClass2FactorsDetailed(type,p);
+  const shareFailures=new Map(installedMaterialShareDiagnosticsVNext(type,p,defaults,Object.keys(installedPriceDefinitions(type,p))).map(d=>[d.path.slice('installedMaterialsPercent.'.length),d]));
   const failures=[new Map(),new Map()],dependencies=[new Map(),new Map()];
   const productAtPath=(path,axis)=>{
     if(typeof path!=='string')return null;
@@ -628,6 +660,16 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   const shared=validation.owner(prototype).ownerDiagnostics.filter(d=>sharedPaths.has(d.path)&&
     !(d.kind==='unclassified_zero_core_price'&&axes.roots.some((_,axis)=>productAtPath(service.zeroPricePolicy?.includedPrices?.[d.path],axis))));
   if(shared.length)return {ok:false,tierName,tierIndex,diagnostics:shared,reviewReason:shared[0].message};
+  // These two roof catalogs share their disposal replacement across products.
+  // Ask the real template once, so deferring disposal decisions does not turn
+  // a missing shared fee choice into another exhaustive product-pair search.
+  try{
+    const feeProbe={...prototype,confirmedFacts:Object.fromEntries(axes.fields.filter(field=>Object.hasOwn(service.knownOfferings?.[field]||{},prototype[field])).map(field=>[field,{status:'identified',field,value:prototype[field],offeringId:service.knownOfferings[field][prototype[field]]}]))};
+    const template=calculateServiceVNext(type,feeProbe,p,{ownerPricing:service,tierName,skipAddon(){}});
+    const feeCheck=validateFeeSelectionRequest(service,activationFeeSelections(service,options),template.replacedCommonFees,true);
+    const diagnostics=[...feeCheck.invalidOwnerFields,...feeCheck.invalidCustomerFields].map(path=>({type:'invalid',kind:'activation_pipeline',path,message:'Common fee selection is missing or invalid.'}));
+    if(diagnostics.length)return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
+  }catch(error){if(!(error instanceof QuoteReviewError))throw error;}
   for(let axis=0;axis<2;axis++)for(const product of axes.values[axis]){
     const field=axes.fields[axis],inputs=scopeActivationInputs(type,{...prototype,[field]:product},p,service);
     inputs.confirmedFacts=Object.fromEntries(axes.fields.filter(name=>Object.hasOwn(service.knownOfferings?.[name]||{},inputs[name])).map(name=>[name,{status:'identified',field:name,value:inputs[name],offeringId:service.knownOfferings[name][inputs[name]]}]));
@@ -649,18 +691,19 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
       return !(d.kind==='unclassified_zero_core_price'&&typeof includedIn==='string'&&axes.roots[1-axis].some(root=>includedIn.startsWith(root+'.'))&&valueAtPath(p,includedIn)>0);
     });
     const registry=(validation.customer(inputs).ownerDiagnostics||[]).filter(d=>d.path==='knownOfferings.'+field||d.path.startsWith('knownOfferings.'+field+'.'));
-    const diagnostics=uniqueStatusDiagnostics([...owner,...registry]);
+    const shares=paths.flatMap(path=>shareFailures.has(path)?[shareFailures.get(path)]:[]);
+    const diagnostics=uniqueStatusDiagnostics([...owner,...registry,...shares]);
     if(diagnostics.length)failures[axis].set(product,{selection:{[field]:product},ok:false,diagnostics,reviewReason:diagnostics[0].message,coverageMode:'product_axis'});
   }
   const candidates=axes.values.map((values,axis)=>values.filter(value=>!failures[axis].has(value)));
-  const pipelineCheck=defaults?createActivationQuoteCheckVNext(activationPipelineRequest(service,p,tierName,defaults,options)):null;
+  const pipelineCheck=defaults?createActivationQuoteCheckVNext(activationPipelineRequest(service,p,tierName,defaults,options),tierName):null;
   const cache=new Map(),representatives=[new Map(),new Map()];
   const check=(r,e)=>{
     const key=JSON.stringify([r,e]);if(cache.has(key))return cache.get(key);
     const selection={[rField]:r,[eField]:e};
     // Optional-scope probes belong to the original first pair, exactly as in
     // the former eager scenario list. A missing sibling never gains new work.
-    const scenarios=activationScenarios(configured,service,tierName,selection,r===R[0]&&e===E[0]);
+    const scenarios=activationScenarios(configured,service,tierName,selection,r===R[0]&&e===E[0],defaults);
     const result={selection,...evaluateActivationVariant(service,p,tierName,tierIndex,defaults,{...options,structures,factors,validation,pipelineCheck,productScenarios:scenarios}),coverageMode:'reference_pair'};
     if(cache.size<2*(R.length+E.length))cache.set(key,result);
     if(!result.ok){if(!representatives[0].has(r))representatives[0].set(r,result);if(!representatives[1].has(e))representatives[1].set(e,result);}
@@ -705,10 +748,7 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
 function activationPipelineRequest(service, pricing, tierName, businessDefaults, options) {
   return {
     serviceType: service.serviceType,
-    ownerPricing: { ...service, active: true, pricing, tiers: [],
-      ...(service.zeroPricePolicy ? {zeroPricePolicy:{...service.zeroPricePolicy,freeCompleteService:freeOfferingVNext(service,tierName),freeTiers:[]}} : {}),
-      ...(service.confirmedFields ? {confirmedFields:Object.fromEntries(Object.entries(service.confirmedFields).filter(([key])=>key!=='tiers'))}:{}),
-      ...(service.approvedValues ? {approvedValues:Object.fromEntries(Object.entries(service.approvedValues).filter(([key])=>key!=='tiers'))}:{}) },
+    ownerPricing: { ...service, active: true },
     businessDefaults, callerType: 'owner',
     feeSelections: activationFeeSelections(service, options),
     currentMonth: activationMonth(service, businessDefaults),
@@ -716,6 +756,16 @@ function activationPipelineRequest(service, pricing, tierName, businessDefaults,
   };
 }
 function evaluateActivationVariant(service, effectivePricing, tierName, tierIndex, businessDefaults, options) {
+  if(!options.productScenarios){
+    for(const probe of activationReviewScenarios({...service,pricing:effectivePricing})){
+      const c=scopeActivationInputs(service.serviceType,probe,effectivePricing,service);
+      c.confirmedFacts=Object.fromEntries(Object.entries(service.knownOfferings||{}).filter(([field,values])=>Object.hasOwn(values,c[field])).map(([field,values])=>[field,{status:'identified',field,value:c[field],offeringId:values[c[field]]}]));
+      if(validateCustomerInputs(service.serviceType,c,effectivePricing,service).ok&&validateOwnerPricing(service.serviceType,c,effectivePricing,service,tierName).ok){
+        const diagnostics=[{type:'invalid',kind:'activation_boundary',path:'pricingCalculation',message:'An unsupported scope boundary was accepted during activation.'}];
+        return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
+      }
+    }
+  }
   // Reject selection-independent blockers on this tier's already-merged prices
   // before constructing/searching product pairs. A tier may repair base prices;
   // explicit zero minima remain valid. The existing selection filter treats
@@ -733,8 +783,10 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   // Fee decisions are shared by the entire catalog. Check them once, before
   // repeated product calculations. Disposal may be replaced by an included
   // measured scope; leave its presence to the actual scenario in that case.
-  const disposalMayBeIncluded=Object.entries(effectivePricing.scopeDetails||{}).some(([key,d])=>['stairs','demolition','siding_removal'].includes(key)&&d?.disposalIncluded===true);
-  const fees=validateFeeSelectionRequest(service,activationFeeSelections(service,options),disposalMayBeIncluded?['disposal']:[],true);
+  // Only the calculated template knows whether disposal is replaced. Syntax
+  // and other required fee decisions remain global; disposal presence is
+  // checked against the real replacement list in each complete quote below.
+  const fees=validateFeeSelectionRequest(service,activationFeeSelections(service,options),['disposal'],true);
   if(fees.invalidOwnerFields.length||fees.invalidCustomerFields.length){
     const diagnostics=[...fees.invalidOwnerFields,...fees.invalidCustomerFields].map(path=>({type:'invalid',kind:'activation_pipeline',path,message:'Common fee selection is missing or invalid.'}));
     return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
@@ -745,7 +797,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
-    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service,tierName)){
+    for(const scenario of activationScenarios({...service,pricing:effectivePricing},service,tierName,null,true,businessDefaults)){
       const key=JSON.stringify(selectors.map(field=>scenario[field]));
       if(!groups.has(key))groups.set(key,[]);groups.get(key).push(scenario);
     }
@@ -759,7 +811,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     if(products.length)return {ok:products.some(product=>product.ok),tierName,tierIndex,diagnostics:uniqueStatusDiagnostics(products.filter(product=>!product.ok).flatMap(product=>product.diagnostics)),reviewReason:products.find(product=>!product.ok)?.reviewReason||null,products};
   }
   const diagnostics = [];
-  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service,tierName);
+  const scenarios = options.productScenarios || activationScenarios({ ...service, pricing: effectivePricing },service,tierName,null,true,businessDefaults);
+  const pipelineCheck=options.pipelineCheck||(businessDefaults?createActivationQuoteCheckVNext(activationPipelineRequest(service,effectivePricing,tierName,businessDefaults,options),tierName):null);
+  let successfulScenarios=0;
   if (!scenarios.length) diagnostics.push({ type: 'invalid', kind: 'activation_scenario', path: 'pricingPolicy', message: 'No activation scenario is available for this configured service.' });
   const allowed = new Set(allowedPricingFields(service.serviceType));
   for (const key of Object.keys(effectivePricing)) {
@@ -794,10 +848,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
         throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
       }
       if (businessDefaults) {
-        const pipelineResult = options.pipelineCheck
-          ? options.pipelineCheck(customer.normalized)
-          : generateQuoteVNext({ ...activationPipelineRequest(service,effectivePricing,tierName,businessDefaults,options), customerInputs: customer.normalized });
+        const pipelineResult = pipelineCheck(customer.normalized);
         if (pipelineResult.resultType !== 'INSTANT_ESTIMATE_READY') appendActivationReviewDiagnostics(diagnostics, pipelineResult);
+        else successfulScenarios++;
       }
     } catch (error) {
       if (!(error instanceof QuoteReviewError)) {
@@ -814,7 +867,10 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
       if (diagnostics.length === before) diagnostics.push({ type: 'invalid', kind: 'activation_calculation', path: 'pricingCalculation', message: error.reviewReason });
     }
   }
-  const unique = uniqueStatusDiagnostics(diagnostics);
+  // A priced removal scope can replace disposal even when the owner has not
+  // supplied the choice needed for other work. Keep that valid scope available;
+  // every real no-removal request still validates its own fee decisions.
+  const unique = uniqueStatusDiagnostics(diagnostics).filter(d=>!successfulScenarios||d.path!=='feeSelections.owner.disposal');
   return {
     ok: unique.length === 0,
     tierName,
@@ -913,7 +969,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
     validationMessages: variant.diagnostics.map(item => item.message)
   }));
   if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
-  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product)))};
+  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product)))};
 }
 function serviceIdentity(service) {
   if (!isPlainRecord(service)) return null;
@@ -1210,7 +1266,7 @@ export function getVNextPriceBookMetadata() {
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
       ...definition,
-      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
+      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${NEW_FIELD_COPY[definition.name]?.help || reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
     }))
   }));
 }

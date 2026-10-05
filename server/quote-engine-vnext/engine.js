@@ -919,6 +919,15 @@ function assertMoneyIntegrity(lines, finalTotalCents) {
   }
 }
 
+export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,ratePaths) {
+  if(defaults?.taxMode!=='TAX_MATERIALS')return [];
+  const definitions=installedPriceDefinitions(serviceType,pricing);
+  return [...new Set(ratePaths)].filter(path=>Object.hasOwn(definitions,path)).flatMap(path=>{
+    const share=pricing.installedMaterialsPercent?.[path];
+    return typeof share==='number'&&Number.isFinite(share)&&share>=0&&share<=100?[]:[{type:'missing',kind:'installed_material_share',path:'installedMaterialsPercent.'+path,message:'Set the materials share of this installed price before using materials-only tax.'}];
+  });
+}
+
 function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering }) {
   const lines = materializeScenarioLinesVNext(template.lineItems, variant);
   const record = {
@@ -935,6 +944,8 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
   record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
+  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath));
+  if(shareDiagnostics.length)throw new QuoteReviewError(shareDiagnostics[0].message,{missingOwnerFields:shareDiagnostics.map(d=>d.path),ownerDiagnostics:shareDiagnostics});
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
     const path=line.calculation?.ratePath;
     if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
@@ -1205,12 +1216,13 @@ export function generateQuoteVNext(input = {}) {
 // Each probe still runs customer/owner validation and optionRun's complete money,
 // fee, range and zero-policy pipeline. It returns readiness, never a quote receipt.
 // No caller-provided flag can enable these caches in the public quote entry point.
-export function createActivationQuoteCheckVNext(input) {
+export function createActivationQuoteCheckVNext(input, tierName) {
   const fixed = snapshotPlainData(input, 'quoteRequest');
   if (!fixed.ok || fixed.nonPlainPaths.length || !isPlainObject(fixed.value)) {
     return () => generateQuoteVNext(input);
   }
   const prepared = new Map();
+  if(tierName!==undefined)prepared.set('activationTierName',tierName);
   return customerInputs => {
     const customer = snapshotPlainData(customerInputs, 'quoteRequest.customerInputs');
     const request = customer.ok
@@ -1405,6 +1417,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   const options = [];
   const failed = [];
   for (const [tierIndex, tier] of tiers.entries()) {
+    if(prepared?.has('activationTierName')&&tier.name!==prepared.get('activationTierName'))continue;
     let pricing = basePricing;
     try {
       pricing = reuseActivation(prepared, 'pricing:' + tierIndex, () => mergePricingForValidationVNext(basePricing, tier.overrides || {}));

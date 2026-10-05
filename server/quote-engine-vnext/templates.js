@@ -111,6 +111,7 @@ function makeLine({
   unit,
   rateCents,
   ratePath,
+  contributingRatePaths,
   multipliers = [],
   customerDriver,
   lowRateCents,
@@ -179,6 +180,7 @@ function makeLine({
       unit,
       rateCents,
       ratePath,
+      ...(contributingRatePaths?{contributingRatePaths:[...contributingRatePaths]}:{}),
       ...(priceBasis ? { priceBasis } : {}),
       multipliers: checkedMultipliers,
       unroundedCents,
@@ -1272,7 +1274,7 @@ function recordNoChargeClassification(result, rules) {
   for(const line of result.lineItems){
     const components=line.calculation.evidenceVariant==='composite'?line.calculation.components:null;
     if(components)for(const component of components)entries.push({holder:component,calculation:component,path:component.ratePath,category:line.category,basis:component.priceBasis||line.priceBasis||rules.priceBasisByCategory?.[line.category]});
-    else entries.push({holder:line,calculation:line.calculation,path:line.calculation.ratePath,category:line.category,basis:line.priceBasis||rules.priceBasisByCategory?.[line.category]});
+    else for(const path of line.calculation.contributingRatePaths||[line.calculation.ratePath])entries.push({holder:line,calculation:line.calculation,path,category:line.category,basis:line.priceBasis||rules.priceBasisByCategory?.[line.category]});
   }
   for(const entry of entries){
     const {holder,calculation,path}=entry;
