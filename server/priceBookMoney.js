@@ -1,8 +1,14 @@
 import {fixedPriceField} from './pricePrecision.js';
-import { ALL_OWNER_FIELDS, MONEY_FIELD_NAMES, CLASS2_DEFAULTS_BY_SERVICE, getServiceMetadata, shapedFieldKeys } from './priceBookMetadata.js';
+import {ALL_OWNER_FIELDS,MONEY_FIELD_NAMES,CLASS2_DEFAULTS_BY_SERVICE,getServiceMetadata} from './priceBookMetadata.js';
+import {allowedPricingFields} from './quote-engine-vnext/contracts.js';
+import {offeringMoneyKind,offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
+import {scopeRateDefinitions} from './scopeConfiguration.js';
+import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
 
-// Existing application fields only. These declarations describe price units;
-// they do not change either quote engine's formulas or supported rate domains.
+// Monetary semantics are declared once here and consumed by every dollar/cent
+// boundary. A field that the active pricing metadata exposes cannot silently
+// fall through without either an explicit non-money classification or a money
+// conversion path.
 const UNIT_RATE_FIELDS = new Set([
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
   'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','disposalPerSquare',
@@ -18,7 +24,10 @@ const UNIT_RATE_FIELDS = new Set([
   'edgingPerLinearFoot','sodMaterialPerSqft','sodInstallLaborPerSqft',
   'groundPrepPerSqft','plantingLaborPerPlant','plantMaterialAllowance',
   'mowingBaseRatePerSqft','membraneCostPerSqft','tearOffPerSqft','insulationPerSqft',
-  'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot'
+  'disposalPerSqft','demolitionPerSqft','trimPerLinearFoot',
+  'laborPerWallSqftPerCoat','materialPerWallSqftPerCoat',
+  'ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat',
+  'exteriorLaborPerSqftPerCoat'
 ]);
 const FIXED_AMOUNT_FIELDS = new Set([
   'repairMinimum','repairMaterialAllowance','minimumJob','minimumServiceCharge',
@@ -29,10 +38,19 @@ const FIXED_AMOUNT_FIELDS = new Set([
 const DEFAULT_MONEY_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice','laborHourlyRate'
 ]);
+const NON_MONEY_PRICING_FIELDS = new Set([
+  'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
+  'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
+  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing',
+  'largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent',
+  'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule',
+  'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
+  'scopeDetails','roomSizeThresholds'
+]);
+const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
 const NUMBER_DECIMAL = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))(?:e([+-]?\d+))?$/i;
 const MONEY_KINDS = new Set(['unit_rate','fixed_amount','unresolved_unit']);
-
 
 let ownerErrorLabels;
 function ownerErrorLocation(path) {
@@ -43,8 +61,6 @@ function ownerErrorLocation(path) {
       if (!options.has(field.field)) options.set(field.field, new Set());
       options.get(field.field).add(field.title || field.label);
     }
-    // A shared identifier can have different trade-specific labels. Do not
-    // attach another service's meaning when the path alone cannot identify it.
     ownerErrorLabels = new Map([...options].map(([field, labels]) => [
       field, labels.size === 1 ? [...labels][0] : 'Price-book value'
     ]));
@@ -82,10 +98,6 @@ function cloneData(value) {
   if (isRecord(value)) return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, cloneData(child)]));
   return value;
 }
-
-// Duplicate representations remain intact. A conflicting owner field cannot
-// be silently resolved by the converter or an unrelated save. Object-key order
-// does not change a value, but absence/null/empty/numeric values stay distinct.
 function samePricingValue(left, right) {
   if (left === right) return true;
   if (left === null || right === null || typeof left !== 'object' || typeof right !== 'object') return false;
@@ -95,18 +107,22 @@ function samePricingValue(left, right) {
   if (leftKeys.length !== rightKeys.length || leftKeys.some((key, index) => key !== rightKeys[index])) return false;
   return leftKeys.every(key => samePricingValue(left[key], right[key]));
 }
+function pricingFields(serviceType) {
+  return new Set([
+    ...(ALL_OWNER_FIELDS[serviceType] || []),
+    ...allowedPricingFields(serviceType),
+    ...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {})
+  ]);
+}
 function assertUnambiguousPricing(service, location) {
   if (!isRecord(service.pricing)) return;
-  const fields = new Set([...(ALL_OWNER_FIELDS[service.serviceType] || []), ...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {})]);
-  for (const field of fields) {
+  for (const field of pricingFields(service.serviceType)) {
     if (Object.hasOwn(service, field) && Object.hasOwn(service.pricing, field) && !samePricingValue(service[field], service.pricing[field])) {
       failure(location + '.pricing.' + field, 'This price-book setting has conflicting duplicate values. Choose the intended value before saving; neither value was changed.');
     }
   }
 }
 
-// Canonical decimal coefficient and exponent avoid binary multiplication and
-// avoid constructing enormous powers of ten for an unrepresentable input.
 function decimal(text, path) {
   const match = NUMBER_DECIMAL.exec(text);
   if (!match) failure(path, 'Enter a finite decimal number.');
@@ -160,8 +176,6 @@ export function dollarAmountToCents(value, { kind = 'fixed_amount', path = '' } 
   if (original.negative) failure(path, 'The price cannot be negative.');
   const cents = decimalNumber(shifted(original, 2), path);
   assertCentDomain(cents, kind, path);
-  // Check the inverse boundary as well: a successful save must reload as the
-  // same dollar value, without cumulative drift or a hidden replacement price.
   const reloaded = decimalNumber(shifted(numberDecimal(cents, path), -2), path);
   if (!sameDecimal(numberDecimal(reloaded, path), original)) failure(path, 'The price cannot survive save and reload without changing.');
   return cents;
@@ -178,9 +192,6 @@ export function centAmountToDollars(value, { kind = 'fixed_amount', path = '' } 
   return dollars;
 }
 
-// Call this with the raw editor text BEFORE Number(raw) loses typed precision.
-// Empty input remains absent. Non-money values receive only decimal fidelity
-// validation, never dollars/cents conversion or monetary magnitude limits.
 export function parseOwnerNumericInput(raw, { kind = null, path = '', wholeCents = false } = {}) {
   if (raw === undefined || raw === null) return undefined;
   if (typeof raw !== 'string' && typeof raw !== 'number') failure(path, 'Enter a finite decimal number.');
@@ -196,8 +207,6 @@ export function parseOwnerNumericInput(raw, { kind = null, path = '', wholeCents
   return value;
 }
 
-// Exact display scaling for non-money percentages. Refuse a value that would
-// change when the owner saves and reloads the draft.
 export function scaleOwnerDecimal(value, places) {
   if (value === undefined || value === null || typeof value === 'string') return value;
   const original = numberDecimal(value, '');
@@ -207,90 +216,131 @@ export function scaleOwnerDecimal(value, places) {
   return scaled;
 }
 
-// Transport fidelity is separate from field semantics. Signed measurements and
-// ordinary decimals such as 0.1 are valid; a wire decimal which Number would
-// replace with a different decimal is rejected before any route can save it.
 export function assertJsonNumberPreserved(raw) {
   return decimalNumber(decimal(raw, ''), '');
 }
 
-// A custom amount with no confirmed unit may still use ordinary whole cents.
-// Fractional cents cannot be classified as a unit rate until the unit is known.
+export function canonicalPeakMonths(value, path = 'peakMonths') {
+  if (value === undefined) return value;
+  if (!Array.isArray(value)) failure(path, 'Peak months must be an array of unique month numbers from 1 through 12.');
+  const seen = new Set();
+  for (let index = 0; index < value.length; index += 1) {
+    const month = value[index];
+    if (!Number.isInteger(month) || month < 1 || month > 12) failure(`${path}[${index}]`, 'Each peak month must be an integer from 1 through 12.');
+    if (seen.has(month)) failure(`${path}[${index}]`, 'Peak months must be unique.');
+    seen.add(month);
+  }
+  return [...seen].sort((left, right) => left - right);
+}
+
 export function moneyKindForField(serviceType, field, pricing = {}) {
   if (serviceType === 'CUSTOM' && ['price', 'low', 'high'].includes(field)) {
     if (CUSTOM_RATE_UNITS.has(pricing.unit)) return 'unit_rate';
     return ['flat','per_unit'].includes(pricing.unit) ? 'fixed_amount' : 'unresolved_unit';
   }
-  if (!(ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return null;
-  if (fixedPriceField(field,pricing)) return 'fixed_amount';
+  if (DYNAMIC_MONEY_MAPS.has(field) || field === 'debrisPricing') return null;
+  const known = pricingFields(serviceType);
+  if (fixedPriceField(field, pricing)) return 'fixed_amount';
   if (UNIT_RATE_FIELDS.has(field)) return 'unit_rate';
   if (FIXED_AMOUNT_FIELDS.has(field)) return 'fixed_amount';
   if (MONEY_FIELD_NAMES.has(field)) failure(field, 'This monetary field has no supported price-unit classification.');
+  if (known.has(field) && !NON_MONEY_PRICING_FIELDS.has(field) && !Object.hasOwn(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}, field)) {
+    failure(field, 'This price-book field is exposed by pricing metadata but has no money conversion path.');
+  }
   return null;
 }
 
-function convertMoneyField(value, serviceType, field, kind, direction, location) {
-  const convert = direction === 'toCents' ? dollarAmountToCents : centAmountToDollars;
-  if (absentValue(value)) return value;
-  const shape = shapedFieldKeys(serviceType, field);
-  if (!shape) return convert(value, { kind, path: location });
-  if (!isRecord(value)) failure(location, 'The price map must retain its supported product keys and numeric prices.');
-  return Object.fromEntries(Object.entries(value).map(([key, row]) => {
-    const rowPath = location + '.' + key;
-    if (!shape.nested) return [key, convert(row, { kind, path: rowPath })];
-    if (!isRecord(row)) failure(rowPath, 'The price row must retain its supported size keys and numeric prices.');
-    return [key, Object.fromEntries(Object.entries(row).map(([nestedKey, amount]) => [
-      nestedKey, convert(amount, { kind, path: rowPath + '.' + nestedKey })
-    ]))];
-  }));
+export function wholeCentsForPricingField(serviceType, field, pricing = {}) {
+  return allowedPricingFields(serviceType).includes(field) && moneyKindForField(serviceType, field, pricing) === 'fixed_amount';
 }
 
+function convertedLeaf(value, kind, direction, path) {
+  const convert = direction === 'toCents' ? dollarAmountToCents : centAmountToDollars;
+  const displayKind = direction === 'toDollars' && kind === 'fixed_amount' ? 'unit_rate' : kind;
+  return convert(value, { kind: displayKind, path });
+}
+function convertMoneyTree(value, kind, direction, path) {
+  if (absentValue(value)) return value;
+  if (Array.isArray(value)) failure(path, 'Money maps must use named pricing keys, not arrays.');
+  if (isRecord(value)) return Object.fromEntries(Object.entries(value).map(([key, child]) => [
+    key, convertMoneyTree(child, kind, direction, `${path}.${key}`)
+  ]));
+  return convertedLeaf(value, kind, direction, path);
+}
+function offeringDefinitions(serviceType, pricing) {
+  const details = {
+    ...(isRecord(pricing.offeringDetails) ? pricing.offeringDetails : {}),
+    primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true
+  };
+  return {
+    ...offeringRateDefinitions(serviceType,{...pricing,offeringMode:'installed',offeringDetails:details}),
+    ...offeringRateDefinitions(serviceType,{...pricing,offeringMode:'itemized',offeringDetails:details})
+  };
+}
+function convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, path) {
+  if (absentValue(value)) return value;
+  if (!isRecord(value)) failure(path, `${field} must be a map of named prices.`);
+  const definitions = field === 'offeringRates'
+    ? offeringDefinitions(serviceType, effectivePricing)
+    : scopeRateDefinitions(serviceType, effectivePricing, true);
+  return Object.fromEntries(Object.entries(value).map(([key, amount]) => {
+    const definition = definitions[key];
+    if (!definition) failure(`${path}.${key}`, 'This money field has no supported conversion path for the configured pricing metadata.');
+    if (isRecord(amount) || Array.isArray(amount)) failure(`${path}.${key}`, 'A configured unit price must be one numeric amount.');
+    const kind = field === 'offeringRates' ? definition.moneyKind || offeringMoneyKind(key) : definition.moneyKind || 'unit_rate';
+    return [key, convertedLeaf(amount, kind, direction, `${path}.${key}`)];
+  }));
+}
+function convertDebrisPricing(value, direction, path) {
+  if (absentValue(value)) return value;
+  if (!isRecord(value)) failure(path, 'Debris pricing must be a map.');
+  return Object.fromEntries(Object.entries(value).map(([level, row]) => {
+    if (!isRecord(row)) return [level, cloneData(row)];
+    const converted = cloneData(row);
+    if (Object.hasOwn(row, 'disposalFlat')) converted.disposalFlat = convertedLeaf(row.disposalFlat, 'fixed_amount', direction, `${path}.${level}.disposalFlat`);
+    return [level, converted];
+  }));
+}
 function convertPricingContainer(container, serviceType, effectivePricing, direction, location) {
   if (!isRecord(container)) return cloneData(container);
   const output = cloneData(container);
-  for (const field of ALL_OWNER_FIELDS[serviceType] || []) {
-    if (!Object.hasOwn(container, field)) continue;
-    const value = container[field];
-    const fieldPath = location + '.' + field;
-    const kind = moneyKindForField(serviceType, field, effectivePricing);
-    if (kind) {
-      output[field] = convertMoneyField(value, serviceType, field, kind, direction, fieldPath);
-    } else if (serviceType === 'LANDSCAPING_CLEANUP' && field === 'debrisPricing' && isRecord(value)) {
-      const convert = direction === 'toCents' ? dollarAmountToCents : centAmountToDollars;
-      output[field] = Object.fromEntries(Object.entries(value).map(([level, row]) => {
-        if (!isRecord(row) || !Object.hasOwn(row, 'disposalFlat')) return [level, cloneData(row)];
-        return [level, {
-          ...cloneData(row),
-          disposalFlat: convert(row.disposalFlat, { kind: 'fixed_amount', path: fieldPath + '.' + level + '.disposalFlat' })
-        }];
-      }));
+  for (const [field, value] of Object.entries(container)) {
+    const fieldPath = `${location}.${field}`;
+    if (DYNAMIC_MONEY_MAPS.has(field)) output[field] = convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, fieldPath);
+    else if (field === 'debrisPricing') output[field] = convertDebrisPricing(value, direction, fieldPath);
+    else {
+      const kind = moneyKindForField(serviceType, field, effectivePricing);
+      if (kind) output[field] = convertMoneyTree(value, kind, direction, fieldPath);
     }
   }
   return output;
 }
-
+function rootPricing(service) {
+  const output = {};
+  for (const field of pricingFields(service.serviceType)) if (Object.hasOwn(service, field)) output[field] = cloneData(service[field]);
+  return output;
+}
+function effectiveServicePricing(service) {
+  const root = rootPricing(service);
+  return isRecord(service.pricing) ? mergePricingForValidationVNext(root, service.pricing) : root;
+}
 function convertService(service, direction, location) {
   if (!isRecord(service)) return cloneData(service);
   if (direction === 'toCents') assertUnambiguousPricing(service, location);
   const serviceType = service.serviceType;
-  const effective = { ...service, ...(isRecord(service.pricing) ? service.pricing : {}) };
+  const effective = effectiveServicePricing(service);
   const output = convertPricingContainer(service, serviceType, effective, direction, location);
-  if (Object.hasOwn(service, 'pricing')) {
-    output.pricing = convertPricingContainer(service.pricing, serviceType, effective, direction, location + '.pricing');
-  }
+  if (Object.hasOwn(service, 'peakMonths')) output.peakMonths = canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
+  if (Object.hasOwn(service, 'pricing')) output.pricing = convertPricingContainer(service.pricing, serviceType, effective, direction, `${location}.pricing`);
   if (Array.isArray(service.tiers)) {
     output.tiers = service.tiers.map((tier, index) => {
       if (!isRecord(tier)) return cloneData(tier);
       const result = cloneData(tier);
       if (Object.hasOwn(tier, 'overrides')) {
-        const tierPricing = { ...effective, ...(isRecord(tier.overrides) ? tier.overrides : {}) };
-        // A custom unit override changes the interpretation of inherited prices
-        // as well as explicit overrides. Validate those inherited values without
-        // changing or copying them into the stored overrides.
-        if (serviceType === 'CUSTOM' && isRecord(tier.overrides) && Object.hasOwn(tier.overrides, 'unit')) {
-          convertPricingContainer(tierPricing, serviceType, tierPricing, direction, location + '.tiers[' + index + '].effectivePricing');
-        }
-        result.overrides = convertPricingContainer(tier.overrides, serviceType, tierPricing, direction, location + '.tiers[' + index + '].overrides');
+        const overrides = isRecord(tier.overrides) ? tier.overrides : {};
+        const tierPricing = mergePricingForValidationVNext(effective, overrides);
+        result.overrides = convertPricingContainer(tier.overrides, serviceType, tierPricing, direction, `${location}.tiers[${index}].overrides`);
+        if (Object.hasOwn(tier.overrides || {}, 'peakMonths')) result.overrides.peakMonths = canonicalPeakMonths(tier.overrides.peakMonths, `${location}.tiers[${index}].overrides.peakMonths`);
       }
       return result;
     });
@@ -300,38 +350,26 @@ function convertService(service, direction, location) {
 function convertDefaults(defaults, direction, location) {
   if (!isRecord(defaults)) return cloneData(defaults);
   const output = cloneData(defaults);
-  const convert = direction === 'toCents' ? dollarAmountToCents : centAmountToDollars;
-  for (const field of DEFAULT_MONEY_FIELDS) {
-    if (Object.hasOwn(defaults, field)) {
-      output[field] = convert(defaults[field], {
-        kind: UNIT_RATE_FIELDS.has(field) ? 'unit_rate' : 'fixed_amount',
-        path: location + '.' + field
-      });
-    }
+  for (const field of DEFAULT_MONEY_FIELDS) if (Object.hasOwn(defaults, field)) {
+    output[field] = convertedLeaf(defaults[field], UNIT_RATE_FIELDS.has(field) ? 'unit_rate' : 'fixed_amount', direction, `${location}.${field}`);
   }
+  if (Object.hasOwn(defaults, 'peakMonths')) output.peakMonths = canonicalPeakMonths(defaults.peakMonths, `${location}.peakMonths`);
   return output;
 }
 
-// The recognized public conversion envelopes are a book, the existing preview
-// {service, defaults}, and a direct service. Unrelated nested metadata is copied
-// unchanged; incidental keys such as low/high never become money on their own.
 export function convertPricebookMoney(data, direction) {
   if (!['toCents', 'toDollars'].includes(direction)) failure('', 'Unknown price conversion direction.');
   if (!isRecord(data)) return cloneData(data);
   if (Object.hasOwn(data, 'serviceType')) return convertService(data, direction, 'service');
   const output = cloneData(data);
-  if (Array.isArray(data.services)) {
-    output.services = data.services.map((service, index) => convertService(service, direction, 'services[' + index + ']'));
-  }
+  if (Array.isArray(data.services)) output.services = data.services.map((service, index) => convertService(service, direction, `services[${index}]`));
   if (isRecord(data.service)) output.service = convertService(data.service, direction, 'service');
   if (Object.hasOwn(data, 'defaults')) output.defaults = convertDefaults(data.defaults, direction, 'defaults');
   return output;
 }
 
-
 const DEFAULT_NUMERIC_FIELDS = new Set([
-  'markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',
-  ...DEFAULT_MONEY_FIELDS
+  'markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY_FIELDS
 ]);
 const NULLABLE_DEFAULT_NUMERIC_FIELDS = new Set([
   'travelFee','disposalFee','permitFee','overheadFixed','minimumJobPrice',
@@ -350,58 +388,46 @@ function assertDraftNumber(value, location, nullable = false) {
   if (value < 0) failure(location, 'The value cannot be negative.');
 }
 function assertDraftNumericLeaves(value, location) {
-  if (typeof value === 'number' || value === undefined) {
-    assertDraftNumber(value, location);
-    return;
-  }
-  if (Array.isArray(value)) {
-    value.forEach((child, index) => assertDraftNumericLeaves(child, location + '[' + index + ']'));
-    return;
-  }
+  if (typeof value === 'number' || value === undefined) { assertDraftNumber(value, location); return; }
+  if (Array.isArray(value)) { value.forEach((child, index) => assertDraftNumericLeaves(child, `${location}[${index}]`)); return; }
   if (!isRecord(value)) failure(location, 'Enter numeric values for this rate or factor map before saving.');
-  for (const [key, child] of Object.entries(value)) assertDraftNumericLeaves(child, location + '.' + key);
+  for (const [key, child] of Object.entries(value)) assertDraftNumericLeaves(child, `${location}.${key}`);
 }
 function validateDraftPricing(container, serviceType, location) {
   if (!isRecord(container)) return;
   for (const [field, definition] of definitionsFor(serviceType) || []) {
     if (!Object.hasOwn(container, field) || container[field] === undefined) continue;
-    if (definition.type === 'number') assertDraftNumber(container[field], location + '.' + field);
+    if (definition.type === 'number') assertDraftNumber(container[field], `${location}.${field}`);
     else if (definition.type === 'json') {
-      if (!isRecord(container[field])) failure(location + '.' + field, 'Enter a supported numeric pricing map before saving.');
-      assertDraftNumericLeaves(container[field], location + '.' + field);
+      if (!isRecord(container[field])) failure(`${location}.${field}`, 'Enter a supported numeric pricing map before saving.');
+      assertDraftNumericLeaves(container[field], `${location}.${field}`);
     }
   }
-  for (const field of Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {})) {
-    if (Object.hasOwn(container, field) && container[field] !== undefined) {
-      assertDraftNumericLeaves(container[field], location + '.' + field);
-    }
+  for (const field of Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {})) if (Object.hasOwn(container, field) && container[field] !== undefined) {
+    assertDraftNumericLeaves(container[field], `${location}.${field}`);
   }
 }
 function validateDraftService(service, location) {
   if (!isRecord(service)) return;
   assertUnambiguousPricing(service, location);
   validateDraftPricing(service, service.serviceType, location);
-  if (Object.hasOwn(service, 'pricing')) validateDraftPricing(service.pricing, service.serviceType, location + '.pricing');
+  if (Object.hasOwn(service, 'pricing')) validateDraftPricing(service.pricing, service.serviceType, `${location}.pricing`);
+  if (Object.hasOwn(service, 'peakMonths')) canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
   if (Array.isArray(service.tiers)) service.tiers.forEach((tier, index) => {
-    if (isRecord(tier)) validateDraftPricing(tier.overrides, service.serviceType, location + '.tiers[' + index + '].overrides');
+    if (isRecord(tier)) validateDraftPricing(tier.overrides, service.serviceType, `${location}.tiers[${index}].overrides`);
   });
 }
 export function validatePricebookNumericDraft(data) {
   if (!isRecord(data)) failure('', 'A price-book object is required before saving.');
   if (Object.hasOwn(data, 'serviceType')) validateDraftService(data, 'service');
   else {
-    if (Array.isArray(data.services)) data.services.forEach((service, index) => validateDraftService(service, 'services[' + index + ']'));
+    if (Array.isArray(data.services)) data.services.forEach((service, index) => validateDraftService(service, `services[${index}]`));
     if (isRecord(data.service)) validateDraftService(data.service, 'service');
     if (isRecord(data.defaults)) {
-      for (const field of DEFAULT_NUMERIC_FIELDS) {
-        if (Object.hasOwn(data.defaults, field)) {
-          assertDraftNumber(data.defaults[field], 'defaults.' + field, NULLABLE_DEFAULT_NUMERIC_FIELDS.has(field));
-        }
+      for (const field of DEFAULT_NUMERIC_FIELDS) if (Object.hasOwn(data.defaults, field)) {
+        assertDraftNumber(data.defaults[field], `defaults.${field}`, NULLABLE_DEFAULT_NUMERIC_FIELDS.has(field));
       }
-      if (Object.hasOwn(data.defaults, 'peakMonths')) {
-        if (!Array.isArray(data.defaults.peakMonths)) failure('defaults.peakMonths', 'Enter the configured month numbers before saving.');
-        data.defaults.peakMonths.forEach((month, index) => assertDraftNumber(month, 'defaults.peakMonths[' + index + ']'));
-      }
+      if (Object.hasOwn(data.defaults, 'peakMonths')) canonicalPeakMonths(data.defaults.peakMonths, 'defaults.peakMonths');
     }
   }
   convertPricebookMoney(data, 'toCents');
