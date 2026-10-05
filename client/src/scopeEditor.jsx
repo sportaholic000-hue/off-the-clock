@@ -13,7 +13,7 @@ export function ScopeEditor({service,onChange}) {
   <p>Configure the work and products you offer. Enter your actual prices and inclusions. A customer selects matching work and supplies the measurements; a missing price or unresolved detail still needs correction.</p>
   <Notice>Complete installed prices include the described work and receive no additional markup. Itemized labor and materials use your category settings. Package costs use the stated coverage and waste allowance, rounded up to whole purchases. Use the same purchase group only for the exact same product and variant.</Notice>
   {MULTI_SCOPE_KEYS.filter(key=>catalog[key]).map(key=><Button key={key} variant="secondary" onClick={()=>{let index=2;while(details[key+'__'+index])index++;set('scopeDetails',{...details,[key+'__'+index]:{}});}}>Add another {catalog[key].label.toLowerCase()} entry</Button>)}
-  {Object.entries(catalog).map(([key,def])=>{
+  {Object.entries(catalog).map(([key,def],index)=>[key,def,index]).sort((x,y)=>{const order=k=>Object.keys(catalog).indexOf(scopeBaseKey(k));return order(x[0])-order(y[0])||x[2]-y[2];}).map(([key,def])=>{
    const d=details[key];
    const activePrices=Object.entries(priceFields).filter(([,field])=>field.scopeKey===key);
    return <div className="editor-section" key={key}><h3>{def.label}{MULTI_SCOPE_KEYS.includes(scopeBaseKey(key))&&d?': '+scopeEntrySummary(key,d):''}</h3>{!d?<Button variant="secondary" onClick={()=>set('scopeDetails',{...details,[key]:{}})}>Configure {def.label}</Button>:<>
