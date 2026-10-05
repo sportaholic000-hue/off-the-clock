@@ -1,7 +1,8 @@
-# October 5 follow-up repairs — hosted verification pending
+# October 5 follow-up repairs — strict gate passed
 
 Branch: `codex/engine-launch-fixes-20261005`.
 Verified parent: `a809f567dbcfbfed105fce3aefefb4b249df6279`.
+Tested source/test SHA: **`baf24c3696357dab7eff25c02ead1e465dd7b747`**.
 
 Two gaps in the earlier checkpoint are repaired: interview product-name
 normalization now includes ordinary and nested price maps, and saving/returning
@@ -15,8 +16,18 @@ collision rollback, confirmation behavior, tier combinations, owner rendering
 and a saved/approved application quote. Expected amounts were written before
 execution in [the launch decisions](QUOTE_LAUNCH_DECISIONS_20261005.md).
 Focused checks: **105/105 passed**. Local cold production builds passed.
-The full local rerun and hosted strict gate are pending at this source checkpoint;
-final SHA-bound results will replace this paragraph after verification.
+**Hosted strict quote/price-book gate: 1,623/1,623 passed, zero failures or skips,
+across 65 files**, including all 20 new cases. Fresh hosted lockfile installation
+and both builds passed. [CI run 37334504982](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37334504982)
+completed successfully at the tested SHA. No test skips, failure allowances or
+workflow changes were introduced.
+
+Local `npm run test:quote`: **1,554 non-browser tests passed**; all 35 remaining
+failures were Chromium startup failures before page creation. Those browser checks
+passed in the complete hosted gate. The automatically run broader suite retained
+its nine existing allowed failures; no additional failures were allowed.
+
+[Source-bound results and limitations](../verification/engine-launch-fixes-20261005/CI_EVIDENCE.md).
 
 No merge, deployment, live-data changes or subagents.
 

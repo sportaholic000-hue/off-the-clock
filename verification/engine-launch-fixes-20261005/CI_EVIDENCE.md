@@ -1,3 +1,67 @@
+# October 5 follow-up verification
+
+- Branch: `codex/engine-launch-fixes-20261005`
+- Verified parent: `a809f567dbcfbfed105fce3aefefb4b249df6279`
+- Tested source/test commit: **`baf24c3696357dab7eff25c02ead1e465dd7b747`**
+- Tested tree: `37786d717126a09498b9893173d814526d018940`
+- Engine: `quote-engine-vnext-launch-fixes-20261005-v6` (arithmetic unchanged)
+- [Hosted run](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37334504982)
+- [Hosted job](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37334504982/job/111845732811)
+
+## Repaired paths
+
+The prior checkpoint normalized registered/offering names but missed ordinary
+price maps. The interview now normalizes product names in flat and nested maps,
+rejects collisions, and preserves closed choices and exact structural keys.
+Starter responses and SQLite interview saves retain the normalized result.
+Equivalent manual saves retain existing confirmation; AI assistance remains an
+unconfirmed draft. Tests use a synthetic provider boundary and temporary storage.
+
+The basic-paint notice now reads each effective tier configuration. Itemized-only
+fair-wall jobs no longer show the basic restriction. Mixed pricing identifies the
+basic tier, while failed tiers retain their existing diagnostics. The saved,
+approved application quote still totals the handwritten **$2,250** and the real
+owner-notice component renders no incorrect warning.
+
+## Results
+
+| Check | Result |
+| --- | --- |
+| New follow-up regression cases | 20 passed in the hosted strict gate |
+| Focused local tests, including existing AI checks | 105/105 passed |
+| Local cold owner-app and widget builds | Both passed |
+| Local non-browser checks within `npm run test:quote` | 1,554 passed |
+| Local browser checks | 35 failures before Chromium could launch |
+| Hosted cold lockfile installation and both builds | Passed |
+| Hosted strict quote/price-book gate | **1,623 passed; 0 failed; 0 skipped; 65 files** |
+
+The hosted strict step completed successfully at **2026-10-05T15:43:23Z**.
+Its browser checks were not excluded. No gate, skip, failure allowance, dependency,
+or workflow was changed. The entire hosted job completed successfully. The
+automatically run broader suite retained its nine existing allowed failures
+(9/9), without expanding the allowance. Other features were not audited.
+
+## Source binding and expected values
+
+All nine changed source/test/specification paths matched their local Git blob
+hashes in the uploaded recursive tree. The diff from the verified parent contains
+only those paths, and the branch reference was read back at the tested source SHA.
+The final documentation checkpoint records this source SHA without changing code
+or tests. Expectations, the initial failing reproductions, and fixture corrections
+are recorded in [the decisions](../../specs/QUOTE_LAUNCH_DECISIONS_20261005.md).
+
+New coverage includes flat/nested/canonical names, accents, collisions, fixed
+field identities, closed domains, numeric and fixed-money validation, the real AI
+response, starter return values, SQLite manual/assist saves and collision rollback,
+all-basic/mixed/itemized tiers, failed-tier combinations, owner rendering, and the
+saved/approved quote path. An older test rejecting spaces was updated to the
+approved normalization rule; its invalid-name/domain/size checks remain active.
+
+No merge, deployment, live-data changes, or subagents. These results verify the
+specified repairs; they are not a whole-product launch approval.
+
+## Historical verification below — superseded coverage statement
+
 # October 5 engine launch repair verification
 
 - Repository: sportaholic000-hue/off-the-clock
