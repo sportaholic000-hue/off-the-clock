@@ -1,17 +1,36 @@
-# October 5 engine launch fixes — verification in progress
+# October 5 engine launch fixes — strict gate passed
 
-Branch `codex/engine-launch-fixes-20261005` starts at verified
-`e830ca88ec7f2cd630c497d31b0e32322ed2feef`.
-The eight requested repairs and owner-decided arithmetic rules are implemented.
-Peak surcharge rounds once on combined eligible labor; allocated cents go to
-larger portions first, with regular labor winning ties. Room thresholds are
-inclusive maxima (<=150 small, <=300 medium under the default settings).
-Engine version is `quote-engine-vnext-launch-fixes-20261005-v6`; earlier approvals
-require fresh confirmation. Approved labels and hand calculations are recorded
-in [the launch decisions](QUOTE_LAUNCH_DECISIONS_20261005.md).
+Branch: `codex/engine-launch-fixes-20261005`.
+Verified starting SHA: `e830ca88ec7f2cd630c497d31b0e32322ed2feef`.
+Tested source/test SHA: **`1066f5fe28feab678c55bc2d0ac94ff04fe3ec3d`**.
 
-Cold owner-app and widget builds passed locally. Final tests and hosted gate
-are pending; the source SHA and counts will be recorded after verification.
+All eight requested fixes are implemented: basic-painting limitation notice and
+preparation-product visibility, optional flat-roof building type, shared product
+name normalization with collision rejection, clearer optional peak controls and
+month names, never-approved-service messaging, independent demolition access
+validation, capitalized layer disclosures, and removal of legacy calculators/status
+APIs from production. Historical calculators remain only as regression fixtures;
+production retains the price-book metadata it still uses.
+
+The owner-decided arithmetic is implemented: peak surcharge rounds once on the
+combined eligible labor, with whole cents allocated to larger portions first and
+regular labor winning ties. Room thresholds are inclusive maxima (<=150 small,
+<=300 medium under the defaults). Engine version is
+`quote-engine-vnext-launch-fixes-20261005-v6`; earlier approvals require fresh
+confirmation. Approved labels and hand calculations are recorded in
+[the launch decisions](QUOTE_LAUNCH_DECISIONS_20261005.md).
+
+**Hosted strict quote/price-book gate: 1,603/1,603 passed, zero failures or skips**,
+including all 35 new regression cases. Fresh lockfile installation and both
+production builds passed. [CI run 37318343541](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37318343541)
+completed successfully at the tested SHA.
+
+Local cold `npm run build` passed. All **1,534 non-browser tests** passed during
+`npm run test:quote`; 35 local browser checks could not start because Chromium
+crashed before launching. The complete hosted gate, including browser checks,
+passed without excluding or weakening those tests.
+
+[Source binding and verification evidence](../verification/engine-launch-fixes-20261005/CI_EVIDENCE.md).
 No merge, deployment, live-data changes or subagents.
 
 ## Historical checkpoint below — superseded rounding decision
