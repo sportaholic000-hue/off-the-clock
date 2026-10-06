@@ -1,7 +1,8 @@
 # Backup/restore rehearsal — October 6, 2026
 
-**Checkpoint: all six rehearsal steps pass; three confirmed defects fixed.
-Cold full gates and hosted CI are pending at this source checkpoint.**
+**All six rehearsal steps PASS. Three confirmed defects fixed. Cold hosted gates
+PASS with zero failures/skips. Local browser execution remains blocked; production
+continuous off-site replication remains unimplemented.**
 
 Repository: `sportaholic000-hue/off-the-clock`. Branch:
 `verify/backup-restore-rehearsal-20261006`. Exact starting commit verified before
@@ -70,7 +71,7 @@ their completeness cannot be retroactively proven from absent historical records
 `.unconfirmed` marker, silently allowing quoting that the source volume paused.
 
 **Baseline source:** `server/src/backups.js:8,75–81` accepts only `.json` books;
-`server/priceBookService.js:112–116` checks `.unconfirmed`; the production bridge
+`server/priceBookService.js:106–107` checks `.unconfirmed`; the production bridge
 uses that marker to block quote readiness and calculation.
 
 **Smallest execution:** temporary saved book `a.json` plus `a.unconfirmed`.
@@ -127,8 +128,44 @@ no new receipts, unchanged historical resend, and server health.
   rehearsal; `baseline.tap.gz` includes concurrent regressions before source fixes.
   `targeted.tap.gz` records the repaired 56-test run.
 
-Cold `npm ci`, build, full suite, strict quote gate and hosted CI results will be
-recorded in the final checkpoint. No pending run is claimed green here.
+Local cold verification:
+
+- `npm ci`: exit 0; 262 packages installed from the unchanged lockfile.
+- `npm run build`: exit 0; owner and widget bundles built.
+- `npm test`: **2,460 tests; 2,423 passed, 37 failed**, zero cancellations,
+  skips or TODOs. All 37 failures contain Chromium `signal=SIGTRAP` at browser
+  launch, before any page opens. They are environment failures; no other test
+  failed. The full gate correctly exits 1; no failure allowance was added.
+- Node 22.23.3; Playwright 1.56 supplied from the existing temporary tool install.
+  The executor cannot run its Chromium binary. Hosted CI installs its own browser.
+
+- `npm run test:quote`: exit 1; 349 top-level results emitted, four Chromium
+  startup failures, then no complete summary. This is **not a complete local
+  strict-gate result** and is not counted as a pass. The full local suite above
+  did complete all 2,460 tests. Its 37 failures all concern Chromium startup.
+
+**Cold hosted verification:** source commit
+`878154d526d4e30061c22db9b97596bbca5a60c7`, tree
+`8197edba4b65fd69451155eb6d51271cebbef5bf`, verified as a direct child of the pinned
+base. [CI run 37536385130](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37536385130)
+and job `112518315120` completed successfully. The uploaded tree and report blob
+were read back and matched local Git objects.
+
+| Hosted cold gate | Result |
+|---|---|
+| `npm ci` | PASS, clean dependency install |
+| `npm run build` | PASS, owner and widget |
+| `npm run test:quote` | **2,077/2,077**, 95 files |
+| `npm test` | **2,460/2,460**, 137 files |
+| Failures / cancellations / skips / TODOs | **0 / 0 / 0 / 0** in both suites |
+| Production dependency audit | PASS, zero vulnerabilities |
+
+The actual production rehearsal ran successfully in both hosted suites. The
+strict suite is part of the full suite; do not add their counts as distinct tests.
+The final report checkpoint changes documentation/evidence only; application and
+test blobs remain exactly those of the green source commit. Its own push triggers
+the same full hosted workflow. `source-hosted.log.gz`, job metadata, machine-readable
+results and `SHA256SUMS` preserve the evidence in Git.
 
 ## Operational limits
 
@@ -146,3 +183,10 @@ existing requirement is implemented and tested. Six-hour snapshots are not
 continuous replication or one global transaction across files and SQLite.
 
 Audited starting SHA: `73c00622d6f2df31f57773b32e41355a7421f1a3`.
+Verified source SHA: `878154d526d4e30061c22db9b97596bbca5a60c7`.
+Coverage: six production lifecycle steps, three corruption variants, full-volume
+loss, both real CLIs, two price books, real quote/lead/appointment persistence,
+immutable quote and booking replay, missing inventory and two pause-marker timings.
+Counts: 14 new test results; 56/56 focused; baseline 13 pass / 8 fail;
+hosted 2,077/2,077 strict and 2,460/2,460 full, zero skips.
+Local full 2,423 pass / 37 browser-startup failures; local strict incomplete.
