@@ -1,5 +1,5 @@
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
-import {leadFollowUpView,quoteFollowUpView} from './leadFollowUp.js';
+import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {

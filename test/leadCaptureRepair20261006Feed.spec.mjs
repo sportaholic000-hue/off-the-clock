@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {startLeadCaptureFeed} from '../client/src/leadCaptureFeed.js';
+import {startLeadCaptureFeed} from '../client/src/leadCaptureRepair20261006Feed.js';
 
 class Events {
   listeners=new Map();visibilityState='visible';

@@ -6,7 +6,7 @@ import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import { declaredAdditionalWork, customerReceiptPresentation } from './quoteScopeDisclosure.js';
-import {leadFollowUpView,quoteFollowUpView} from './leadFollowUp.js';
+import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 import {createOwnerCallService} from './ownerCallService.js';
 import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';

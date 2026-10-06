@@ -1,4 +1,4 @@
-import {saveVoiceInquiry} from '../leadCapture.js';
+import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';

@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {fixture,address,at,secret} from './leadCaptureRepair20261006Fixture.mjs';
 import {csvRows} from '../server/src/integrationData.js';
 import {installOutboundWebhookSchema} from '../server/src/outboundWebhookSchema.js';
-import {leadFollowUpView} from '../server/src/leadFollowUp.js';
+import {leadFollowUpView} from '../server/src/leadCaptureRepair20261006FollowUp.js';
 import {storedQuoteView} from '../server/src/ownerRecordViews.js';
 
 const detail=row=>JSON.parse(row.collectedInputsJson),name='[SYNTHETIC] Alex',email='followup@example.invalid';

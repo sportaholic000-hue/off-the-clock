@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
 import { api, go, getSessionKey } from './api.js';
-import {startLeadCaptureFeed} from './leadCaptureFeed.js';
+import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
 
