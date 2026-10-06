@@ -36,10 +36,10 @@ test('display browser: all 15 product fields select names, invalidate confirmati
  const fields=bridge.applicationMetadata().services.flatMap(service=>service.customerFields.filter(field=>field.type==='slug'));
  assert.equal(fields.length,15);
  for(const field of fields){
-  const registered={asphalt_shingle:'00000000-0000-4000-8000-000000000001',other_product:'00000000-0000-4000-8000-000000000002'},knownOfferings={[field.name]:registered};
+  const registered={asphalt_shingle:'00000000-0000-4000-8000-000000000001',other_product:'00000000-0000-4000-8000-000000000002',asphalt_shingle_premium:'00000000-0000-4000-8000-000000000003'},knownOfferings={[field.name]:registered};
   await show('products',{fields:[field],value:{[field.name]:''},knownOfferings});
   const input=page.getByLabel(field.label,{exact:true});await input.waitFor();
-  assert.deepEqual(await page.locator('datalist option').evaluateAll(options=>options.map(option=>option.value)),['Asphalt shingle','Other product']);
+  assert.deepEqual(await page.locator('datalist option').evaluateAll(options=>options.map(option=>option.value)),['Asphalt shingle','Other product','Asphalt shingle premium']);
   await input.fill('Asphalt shingle');const confirmation=page.getByRole('checkbox');assert.equal(await confirmation.isChecked(),false);
   await confirmation.check();
   const expected=bindVoiceQuoteInputs({knownOfferings},{customerFields:[field]},{customerInputs:{[field.name]:'Asphalt shingle'},productConfirmations:{[field.name]:true}}).customerInputs;
@@ -48,6 +48,9 @@ test('display browser: all 15 product fields select names, invalidate confirmati
   let inputs=JSON.parse(await page.locator('#inputs').textContent());assert.equal(inputs.confirmedFacts?.[field.name],undefined);
   await confirmation.check();await confirmation.uncheck();inputs=JSON.parse(await page.locator('#inputs').textContent());assert.equal(inputs.confirmedFacts?.[field.name],undefined);
   await input.fill('Unregistered product');assert.equal(await page.getByRole('checkbox').count(),0);
+  await input.fill('');await input.pressSequentially('Asphalt shingle premium');
+  assert.equal(await input.inputValue(),'Asphalt shingle premium');await page.getByRole('checkbox').check();
+  assert.equal(JSON.parse(await page.locator('#inputs').textContent())[field.name],'asphalt_shingle_premium');
  }
  const f=roofingDisplayFixture(),a=savedDisplayFixture(f),value={...f.customerInputs,existingRoofType:'',replacementRoofType:''};delete value.confirmedFacts;
  await page.exposeFunction('runQuote',inputs=>a.quote(inputs).customerResult);

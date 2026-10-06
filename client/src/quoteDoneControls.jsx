@@ -63,8 +63,10 @@ function ProductMeasurement({field,value,registered,update,onChange}) {
  const keys=Object.keys(registered),key=registeredProductKey(value[field.name],keys);
  const label=k=>k.replaceAll('_',' ').replace(/^./,first=>first.toUpperCase());
  const fact=value.confirmedFacts?.[field.name];
- return <><TextInput aria-label={field.label} list={'offerings-'+field.name} value={key?label(key):value[field.name]??''}
-  onChange={event=>update(field.name,registeredProductKey(event.target.value,keys)||event.target.value||undefined)}/>
+ // Preserve typed text until confirmation, including a trailing space after a
+ // registered name that is also the beginning of a longer product name.
+ return <><TextInput aria-label={field.label} list={'offerings-'+field.name} value={key&&value[field.name]===key?label(key):value[field.name]??''}
+  onChange={event=>update(field.name,event.target.value||undefined)}/>
   <datalist id={'offerings-'+field.name}>{keys.map(k=><option key={k} value={label(k)}/>)}</datalist>
   {key&&<label><input type="checkbox" checked={fact?.status==='identified'&&fact?.value===key&&fact?.offeringId===registered[key]}
    onChange={event=>{const confirmedFacts={...(value.confirmedFacts||{})};
