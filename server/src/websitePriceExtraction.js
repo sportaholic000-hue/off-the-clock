@@ -10,6 +10,7 @@ const moneyPattern=new RegExp('(?:\\b(?:CA|US|AU|NZ|HK)|[CA])?[$€£¥]\\s*'+nu
 // text is never sent to a model; the only output is visible literal excerpts.
 const instruction=/(?:ignore|disregard|override|forget)\b.{0,80}\b(?:instructions?|prompts?|rules?|previous|above)|\b(?:system|developer|assistant)\s*(?:message|prompt|instructions?|:)|\b(?:reveal|exfiltrate)\b|\b(?:you are|act as)\b.{0,60}\b(?:assistant|chatgpt|receptionist|agent)\b|\b(?:tell|instruct)\s+(?:the\s+)?(?:assistant|model|agent)\b/i;
 const conditions=/\b(?:all prices|prices (?:include|exclude|are|subject)|tax(?:es)? (?:not )?included|plus tax|excluding tax)\b/i;
+const globalCondition=/^(?:all prices\b|prices (?:include|exclude|are|subject)\b)/i;
 const amounts=text=>[...text.matchAll(moneyPattern)].map(m=>m[0].trimEnd());
 const normalize=text=>text.replace(/[\t\r\f ]+/g,' ').split('\n').map(s=>s.trim()).filter(Boolean).join('\n');
 function hiddenStyle(style=''){
@@ -27,9 +28,20 @@ function itemNamed(text){
 export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}){
   if(Buffer.byteLength(text)>limits.pageBytes)throw new WebsiteImportError('WEBSITE_SIZE_LIMIT','The decoded website page exceeds the import size limit.');
   if(plain){
-    const lines=text.split(/\r?\n/).map(normalize).filter(Boolean);
-    const entries=lines.filter(line=>line.length<=1500&&amounts(line).length&&itemNamed(line)&&!instruction.test(line)).map(excerpt=>({excerpt,amounts:amounts(excerpt)}));
-    return {entries,links:[],conditions:lines.filter(line=>line.length<=500&&conditions.test(line)&&!instruction.test(line))};
+    const entries=[],notes=[];let extractionLimited=false;
+    for(const block of text.split(/\r?\n\s*\r?\n/)){
+      const lines=block.split(/\r?\n/).map(normalize).filter(Boolean);
+      // A standalone, explicitly page-wide note can be shared. Tax wording
+      // inside an item record belongs only to that item, even "All prices ...".
+      if(lines.length===1&&globalCondition.test(lines[0])&&!amounts(lines[0]).length&&!instruction.test(lines[0])){notes.push(lines[0]);continue;}
+      const starts=lines.flatMap((line,index)=>amounts(line).length?[index]:[]);
+      for(let i=0;i<starts.length;i++){
+        const excerpt=lines.slice(i===0?0:starts[i],starts[i+1]??lines.length).join('\n');
+        if(excerpt.length>1500||instruction.test(excerpt)||!itemNamed(excerpt)){extractionLimited=true;continue;}
+        entries.push({excerpt,amounts:amounts(excerpt)});
+      }
+    }
+    return {entries,links:[],extractionLimited,conditions:[...new Set(notes)]};
   }
   const root={name:'root',parts:[],parent:null,hidden:false};const stack=[root],nodes=[],links=[];
   const parser=new Parser({
@@ -48,30 +60,82 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}
     return node.text=normalize(node.parts.map(part=>typeof part==='string'?part:(BLOCK.has(part.name)?'\n':'')+content(part)+(BLOCK.has(part.name)?'\n':'')).join(''));
   }
   content(root);
+  function itemBoundary(node){
+    if(node.itemBoundary!==undefined)return node.itemBoundary;
+    return node.itemBoundary=['article','li','tr'].includes(node.name)||/^h[1-6]$/.test(node.name)||
+      node.parts.some(part=>typeof part!=='string'&&!part.hidden&&itemBoundary(part));
+  }
   let linksLimited=false;
   for(const node of nodes)if(!node.hidden&&node.name==='a'&&node.attrs.href){
     if(links.length<limits.links)links.push({href:node.attrs.href,label:node.text});else linksLimited=true;
   }
+  // Only explicitly page-wide notes outside item containers may be shared.
+  // A local "Tax included"/"Plus tax" is retained in its item's excerpt.
+  const pageNotes=nodes.filter(node=>{
+    if(node.hidden||!['p','small','footer'].includes(node.name)||
+      !(globalCondition.test(node.text)||node.name==='footer'&&conditions.test(node.text))||amounts(node.text).length||instruction.test(node.text))return false;
+    for(let parent=node.parent;parent&&parent!==root;parent=parent.parent){
+      if(!['body','main','footer'].includes(parent.name))return false;
+    }
+    return true;
+  });
+  const noteNodes=new Set(pageNotes);
+  const scopedNotes=new Map();
+  for(const node of nodes){
+    if(node.hidden||noteNodes.has(node)||!['p','small','footer'].includes(node.name)||
+      !(globalCondition.test(node.text)||node.name==='footer'&&conditions.test(node.text))||amounts(node.text).length||instruction.test(node.text))continue;
+    let scope=node.parent;
+    while(scope&&scope!==root&&!amounts(scope.text).length){
+      // A department without a literal price still owns its conditions. Never
+      // climb out of that item to attach its note to a priced sibling.
+      if(itemBoundary(scope)){scope=null;break;}
+      scope=scope.parent;
+    }
+    if(!scope||scope===root||['body','main'].includes(scope.name))continue;
+    if(!scopedNotes.has(scope))scopedNotes.set(scope,new Set());
+    scopedNotes.get(scope).add(node.text);
+  }
   const candidates=[];
+  let extractionLimited=false,attempted=false;
   for(const node of nodes){
     if(node.hidden||!RECORD.has(node.name)||!amounts(node.text||'').length)continue;
     // Process the deepest price blocks first; wrapping containers are handled
     // only when they supply an item name or the conditions around that price.
     if(node.parts.some(p=>typeof p!=='string'&&RECORD.has(p.name)&&amounts(p.text||'').length))continue;
-    let chosen=node;
+    attempted=true;
+    let chosen=node,unsafe=false;
     for(let parent=node.parent;parent&&parent!==root;parent=parent.parent){
+      if(['body','main'].includes(parent.name))break;
       if(!RECORD.has(parent.name))continue;
       const value=parent.text||'';
-      if(value.length>1500||instruction.test(value))break;
       const priceChildren=parent.parts.filter(p=>typeof p!=='string'&&amounts(p.text||'').length);
       if(priceChildren.length>1)break;
-      if(['li','tr','article'].includes(parent.name)||
-        parent.parts.some(p=>typeof p!=='string'&&/^h[1-6]$/.test(p.name))||!itemNamed(chosen.text))chosen=parent;
+      if(parent.parts.some(p=>typeof p!=='string'&&!p.hidden&&p.text&&RECORD.has(p.name)&&!amounts(p.text).length&&itemBoundary(p)))break;
+      // A bounded single-price container owns all its nearby context. Do not
+      // discard restrictions just because the price paragraph already names
+      // the item, and never fall back to a bare price if its context is unsafe.
+      if(value.length>1500||instruction.test(value)){unsafe=true;break;}
+      chosen=parent;
       if(['li','tr','article'].includes(parent.name))break;
     }
-    const excerpt=chosen.text;
-    if(!excerpt||excerpt.length>1500||!itemNamed(excerpt)||instruction.test(excerpt))continue;
-    candidates.push({excerpt,amounts:amounts(excerpt)});
+    let excerpt=chosen.text;
+    // Loose paragraphs also occur without a card wrapper. Following paragraphs
+    // belong to that price until the next item/heading/separator; explicit page
+    // notes are appended separately. Never cross an article or table-row edge.
+    if(!['li','tr','article'].includes(chosen.name)){
+      const siblings=chosen.parent.parts;
+      for(let i=siblings.indexOf(chosen)+1;i<siblings.length;i++){
+        const sibling=siblings[i];
+        if(typeof sibling==='string'){if(sibling.trim())excerpt+='\n'+normalize(sibling);continue;}
+        if(['hr','h1','h2','h3','h4','h5','h6'].includes(sibling.name))break;
+        if(sibling.hidden||!sibling.text)continue;
+        if(noteNodes.has(sibling))break;
+        if(!['p','small','span','dd'].includes(sibling.name)||amounts(sibling.text).length)break;
+        excerpt+='\n'+sibling.text;
+      }
+    }
+    if(unsafe||!excerpt||excerpt.length>1500||!itemNamed(excerpt)||instruction.test(excerpt)){extractionLimited=true;continue;}
+    candidates.push({excerpt,amounts:amounts(excerpt),node:chosen});
   }
   // Numeric-only table prices are eligible only under an explicit price/currency
   // column heading. Copy that heading with the row; never add a currency sign.
@@ -90,15 +154,25 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}
       const cells=row.parts.filter(p=>typeof p!=='string'&&['td','th'].includes(p.name));
       if(cells.length!==headings.length||cells.some(c=>c.attrs.colspan||c.attrs.rowspan))continue;
       const literal=cells.filter((c,i)=>/\b(?:price|cost|rate|fee|CAD|USD|EUR|GBP)\b|[$€£¥]/i.test(headings[i].text)&&new RegExp('^'+number+'$').test(c.text)).map(c=>c.text);
-      if(literal.length&&itemNamed(row.text))candidates.push({excerpt:heading.text+'\n'+row.text,amounts:literal});
+      if(literal.length&&itemNamed(row.text))candidates.push({excerpt:heading.text+'\n'+row.text,amounts:literal,node:row});
     }
   }
-  const unique=[...new Map(candidates.map(e=>[e.excerpt,e])).values()];
+  const owned=[];
+  for(const candidate of candidates){
+    let excerpt=candidate.excerpt;
+    // An explicit all-prices note can govern a group of cards without applying
+    // to a different department elsewhere on the page.
+    for(let scope=candidate.node;scope&&scope!==root;scope=scope.parent){
+      for(const note of scopedNotes.get(scope)||[])if(!excerpt.includes(note))excerpt+='\n'+note;
+    }
+    if(excerpt.length>1500){extractionLimited=true;continue;}
+    owned.push({excerpt,amounts:candidate.amounts});
+  }
+  const unique=[...new Map(owned.map(e=>[e.excerpt,e])).values()];
   // HTML fragments and text-only HTML can lack a body or block element.
-  if(!unique.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text))unique.push({excerpt:root.text,amounts:amounts(root.text)});
+  if(!attempted&&!unique.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text))unique.push({excerpt:root.text,amounts:amounts(root.text)});
   // Exact duplicates only: a shorter excerpt can be a distinct offering.
   // Avoid pairwise substring scans on large or adversarial pages.
   const entries=unique;
-  const notes=nodes.filter(n=>!n.hidden&&['p','small','footer'].includes(n.name)&&n.text?.length<=500&&conditions.test(n.text)&&!instruction.test(n.text)).map(n=>n.text);
-  return {entries,links,linksLimited,conditions:[...new Set(notes)]};
+  return {entries,links,linksLimited,extractionLimited,conditions:[...new Set(pageNotes.map(n=>n.text))]};
 }

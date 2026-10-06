@@ -1,3 +1,32 @@
+# October 6 independent-audit repairs — hosted verification pending
+
+Branch: `codex/quote-audit-repairs-20261006`, based exactly on
+`73c00622d6f2df31f57773b32e41355a7421f1a3`. The owner has authorized the GitHub
+checkpoint and hosted CI. The results below describe the completed local run;
+hosted verification is still pending. This is not a release signoff.
+
+The three independent-audit findings are repaired: adjacent website price
+restrictions are retained; tax notes keep item/department/page ownership; the
+owner's optional-price subtitle agrees with the existing exclusion policy.
+Oversized context withholds the complete item and discloses partial extraction.
+Unpriced departments cannot donate their tax notes to priced neighbors.
+No quote arithmetic, approvals, receipts or live-data migration changed.
+
+**Final cold local verification:** Node 22, fresh `npm ci` and both builds passed.
+`npm run test:quote`: **2,069/2,106**, 95 files. `npm test`: **2,447/2,484**,
+137 files. Both suites have the same **37 Chromium startup failures**, with zero
+skips, cancellations or TODOs; every non-browser test passed. Standalone Chromium
+also crashes before any application page is loaded. **38 new regression tests**
+pass in both suites. The focused run passes **124/124**. Counts overlap.
+
+[Expected amounts and scope](QUOTE_AUDIT_REPAIRS_20261006.md).
+[Source hashes, complete results and execution logs](../verification/quote-audit-repairs-20261006/README.md).
+The original audit worktree remains clean at the pinned SHA. No subagents,
+merges, deployments, provider writes or live-data changes.
+Hosted CI at the exact uploaded commit is still required.
+
+## Previous hosted checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision

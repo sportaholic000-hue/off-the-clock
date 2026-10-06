@@ -81,3 +81,25 @@ test('website legacy persisted drafts are withheld from compiled voice facts',()
   assert.doesNotMatch(voice(owner),/\$20|OWNER_FACTS_JSON[^]*"knowledge"/);
   assert.match(readFileSync('server/src/voice/productionVoiceRuntime.js','utf8'),/kb\.draft!==true/);
 });
+test('website audit repair: reviewed item restrictions survive saving and repeated voice compilation',async t=>{
+  // Literal $99/$199/$10/$20 expectations were written before execution in
+  // specs/QUOTE_AUDIT_REPAIRS_20261006.md; no tax arithmetic is permitted here.
+  const excerpts=[
+    '[SYNTHETIC] Cleaning $99\nOnly homes under 1,000 sq ft; first visit only.',
+    '[SYNTHETIC] Cleaning $199\nOnly homes under 2,000 sq ft; first visit only.',
+    '[SYNTHETIC] Item A $10\nTax included',
+    '[SYNTHETIC] Item B $20\nPlus tax'
+  ];
+  const page=excerpts.map(text=>'<div>'+text.split('\n').map(line=>'<p>'+line+'</p>').join('')+'</div>').join('');
+  const owner=seed(),before=row(owner),other=seed(),otherBefore=row(other),app=await appFor(t,{page});
+  const draft=await app.post(draftPath,{},owner);
+  assert.equal(draft.status,200);assert.equal(draft.body.knowledgeBase.prices,excerpts.join('\n\n'));
+  assert.equal(row(owner),before);assert.doesNotMatch(voice(owner),/Cleaning|Item A|Item B/);
+  const saved=await app.post(savePath,{...getBusinessProfile(owner).knowledgeBase,prices:draft.body.knowledgeBase.prices},owner);
+  assert.equal(saved.status,200);assert.equal(getBusinessProfile(owner).knowledgeBase.prices,excerpts.join('\n\n'));
+  for(let i=0;i<2;i++){
+    const facts=JSON.parse(voice(owner).split('<OWNER_FACTS_JSON>\n')[1].split('\n</OWNER_FACTS_JSON>')[0]);
+    assert.equal(facts.knowledge.prices,excerpts.join('\n\n'));
+  }
+  assert.equal(row(other),otherBefore);assert.equal(app.fetches(),1);
+});

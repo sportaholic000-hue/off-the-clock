@@ -39,10 +39,15 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       let extracted;
       try{extracted=extractWebsitePrices(page.text,{plain:page.plain,limits});remaining();}catch(error){if(!pages.length)throw error;limited=true;continue;}
       pages.push(page.url);
-      if(extracted.linksLimited)limited=true;
-      for(const entry of extracted.entries){
+      if(extracted.linksLimited||extracted.extractionLimited)limited=true;
+      // A long global restriction cannot be silently dropped, or appended in
+      // full to thousands of records before the output budget is checked.
+      const pageContextTooLong=extracted.conditions.join('\n').length>1500;
+      if(pageContextTooLong)limited=true;
+      for(const entry of pageContextTooLong?[]:extracted.entries){
         const conditions=extracted.conditions.filter(note=>!entry.excerpt.includes(note));
         const excerpt=[entry.excerpt,...conditions].join('\n');
+        if(excerpt.length>1500){limited=true;continue;}
         if(seen.has(excerpt))continue;
         if(entries.length>=limits.priceEntries||chars+excerpt.length+(entries.length?2:0)>limits.pricesChars){limited=true;continue;}
         chars+=excerpt.length+(entries.length?2:0);seen.add(excerpt);entries.push({...entry,excerpt,sourceUrl:page.url});

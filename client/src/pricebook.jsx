@@ -947,7 +947,7 @@ export default function PriceBook() {
                 {optionalFields.length > 0 && (
                   <Disclosure
                     title="Optional prices and add-on charges"
-                    subtitle="Selected scope needs its configured price; missing pricing returns review."
+                    subtitle="Missing scope prices require review. Unpriced optional extras are excluded from the estimate and disclosed to the customer; see each field for details."
                     summaryChip={`${optionalSet} OF ${optionalFields.length} SET`}
                     blockerCount={optionalMissing.length && aiSourced ? optionalMissing.length : 0}
                   >
