@@ -7,7 +7,10 @@ import { readFileSync } from 'node:fs';
 import express from 'express';
 import { demoInstructions } from './demoInstructions.js';
 
-const AGENTS = Object.freeze({ miles: { name: 'Miles', voiceEnv: 'DEMO_MILES_VOICE', voice: 'Puck' }, nova: { name: 'Nova', voiceEnv: 'DEMO_NOVA_VOICE', voice: 'Kore' } });
+const AGENTS = Object.freeze({ miles: { name: 'Miles', voiceEnv: 'DEMO_MILES_VOICE', voice: 'Charon' }, nova: { name: 'Nova', voiceEnv: 'DEMO_NOVA_VOICE', voice: 'Kore' } });
+// Owner voice audition (test link only, never production): Google's voice catalog classes
+// these as male with a low or lower-middle pitch. Puck stays listed only for comparison.
+export const MILES_AUDITION_VOICES = Object.freeze(['Charon', 'Algenib', 'Algieba', 'Orus', 'Alnilam', 'Puck']);
 export const DEMO_MESSAGES = Object.freeze({
   disabled: 'The live demo is resting right now. Please try again later.',
   origin: 'This demo can only be started from the Off The Clock website.',
@@ -29,8 +32,10 @@ export function liveDemoConfig(env = process.env) {
     maxConcurrent: intEnv(env, 'DEMO_MAX_CONCURRENT', 10, 1, 1000),
     sessionSeconds: intEnv(env, 'DEMO_SESSION_SECONDS', 180, 30, 600),
     salt: env.DEMO_IP_SALT || env.JWT_SECRET || '',
+    audition: env.DEMO_VOICE_AUDITION === 'true',
     agents: Object.fromEntries(Object.entries(AGENTS).map(([k, a]) => [k, { name: a.name, voice: env[a.voiceEnv] || a.voice }])),
   };
+  if (c.audition && env.NODE_ENV === 'production') throw new Error('DEMO_VOICE_AUDITION is for the owner test link only and cannot run in production.');
   if (!/^[a-zA-Z0-9._-]{1,120}$/.test(c.model)) throw new Error('GEMINI_LIVE_MODEL is invalid.');
   for (const o of c.origins) { const u = new URL(o); if (u.origin !== o) throw new Error(`DEMO_ALLOWED_ORIGINS entry must be a bare origin: ${o}`); }
   if (enabled && !c.key) throw new Error('DEMO_ENABLED=true requires GEMINI_API_KEY.');
@@ -39,11 +44,11 @@ export function liveDemoConfig(env = process.env) {
   return c;
 }
 
-export function lockedSetup(config, agentKey) {
+export function lockedSetup(config, agentKey, voiceOverride) {
   const a = config.agents[agentKey];
   return {
     model: `models/${config.model}`,
-    generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: a.voice } } } },
+    generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceOverride || a.voice } } } },
     systemInstruction: { parts: [{ text: demoInstructions(a.name) }] },
     inputAudioTranscription: {}, outputAudioTranscription: {},
   };
@@ -82,7 +87,10 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
     if (!cors(req, res)) return fail(res, 403, 'origin');
     if (!config.enabled) return fail(res, 503, 'disabled');
     const body = req.body;
-    if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k => k !== 'agent') || !Object.hasOwn(config.agents, body.agent)) return fail(res, 400, 'invalid');
+    const allowedKeys = config.audition ? ['agent', 'voice'] : ['agent'];
+    if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k => !allowedKeys.includes(k)) || !Object.hasOwn(config.agents, body.agent)) return fail(res, 400, 'invalid');
+    if (body.voice !== undefined && (body.agent !== 'miles' || !MILES_AUDITION_VOICES.includes(body.voice))) return fail(res, 400, 'invalid');
+    const voice = body.voice || config.agents[body.agent].voice;
     const t = now();
     prune.run(t - 2 * 86400000);
     const ipKey = crypto.createHash('sha256').update(config.salt + '|' + clientIp(req)).digest('hex');
@@ -94,7 +102,7 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
     try {
       const r = await fetchImpl('https://generativelanguage.googleapis.com/v1beta/auth_tokens', {
         method: 'POST', headers: { 'x-goog-api-key': config.key, 'content-type': 'application/json' },
-        body: JSON.stringify({ uses: 1, expireTime: new Date(expireMs).toISOString(), newSessionExpireTime: new Date(t + 60000).toISOString(), bidiGenerateContentSetup: lockedSetup(config, body.agent) }),
+        body: JSON.stringify({ uses: 1, expireTime: new Date(expireMs).toISOString(), newSessionExpireTime: new Date(t + 60000).toISOString(), bidiGenerateContentSetup: lockedSetup(config, body.agent, body.voice) }),
         signal: AbortSignal.timeout(10000),
       });
       const j = await r.json().catch(() => null);
@@ -102,7 +110,7 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
       minted = j.name;
     } catch { return fail(res, 502, 'provider'); }
     insert.run(crypto.randomUUID(), ipKey, body.agent, t);
-    return res.json({ token: minted, model: config.model, agent: { key: body.agent, name: config.agents[body.agent].name }, sessionSeconds: config.sessionSeconds, expiresAt: new Date(expireMs).toISOString() });
+    return res.json({ token: minted, model: config.model, agent: { key: body.agent, name: config.agents[body.agent].name, ...(config.audition ? { voice } : {}) }, sessionSeconds: config.sessionSeconds, expiresAt: new Date(expireMs).toISOString() });
   });
   app.use('/api/demo/session', (err, req, res, next) => { if (res.headersSent) return next(err); res.set('Cache-Control', 'no-store'); cors(req, res); return fail(res, 400, 'invalid'); });
   return config;

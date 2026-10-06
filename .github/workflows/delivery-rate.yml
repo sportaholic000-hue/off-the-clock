@@ -1,0 +1,22 @@
+name: Gemini delivery rate
+on:
+  workflow_dispatch: {}
+  push: { branches: [claude/demo-test-link], paths: ['.github/workflows/delivery-rate.yml', 'e2e/delivery-rate.mjs'] }
+permissions: { contents: write }
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Measure
+        env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
+        run: node e2e/delivery-rate.mjs
+      - name: Publish to claude/probe-results
+        if: always()
+        run: |
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
+          cp delivery-rate.json /tmp/r/delivery-rate.json || echo '{"error":"no result"}' > /tmp/r/delivery-rate.json
+          cd /tmp/r && git config user.name rate-bot && git config user.email rate-bot@users.noreply.github.com && git add -A && git commit -q -m "Delivery rate ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results

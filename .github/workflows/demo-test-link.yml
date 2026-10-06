@@ -1,0 +1,50 @@
+name: Live demo test link
+on:
+  workflow_dispatch:
+    inputs:
+      minutes: { description: 'How long the link stays up (max 300)', required: false, default: '120' }
+  push:
+    branches: [claude/demo-test-link]
+    paths: ['.github/workflows/demo-test-link.yml', 'e2e/test-link-proxy.mjs']
+permissions: { contents: write }
+concurrency: { group: demo-test-link, cancel-in-progress: true }
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 320
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+          curl -fsSL -o /tmp/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x /tmp/cloudflared
+      - name: Open a temporary public link
+        run: |
+          node e2e/test-link-proxy.mjs 3999 8899 > /tmp/proxy.log 2>&1 &
+          /tmp/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:8899 > /tmp/tunnel.log 2>&1 &
+          for i in $(seq 1 60); do URL=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/tunnel.log | head -1); [ -n "$URL" ] && break; sleep 2; done
+          echo "URL=$URL" >> "$GITHUB_ENV"; echo "link: $URL"
+      - name: Start the app with the live demo on
+        env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          mkdir -p /tmp/pb
+          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/a.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=http://localhost:3999 CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console DEMO_ENABLED=true DEMO_IP_SALT=$(openssl rand -hex 16) DEMO_ALLOWED_ORIGINS=$URL DEMO_VOICE_AUDITION=true DEMO_SESSIONS_PER_IP_PER_HOUR=60 DEMO_MAX_CONCURRENT=5 DEMO_DAILY_SESSION_CAP=200 nohup node server/src/server.js > /tmp/app.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
+      - name: Check the link end to end and publish it
+        run: |
+          page=000
+          for i in $(seq 1 30); do page=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/" || true); [ "$page" = "200" ] && break; sleep 4; done
+          widget=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/demo/otc-live-demo.js" || true)
+          token=$(curl -s -o /tmp/t.json -w '%{http_code}' --max-time 20 -X POST "$URL/api/demo/session" -H "origin: $URL" -H 'content-type: application/json' -d '{"agent":"miles"}' || true)
+          tail -5 /tmp/tunnel.log | tr -d '"\\' | tr '\n' ' ' | cut -c1-600 > /tmp/tunnel-tail.txt
+          minted=$(node -e "try{const j=require('/tmp/t.json');console.log(typeof j.token==='string'&&j.token.startsWith('auth_tokens/'))}catch{console.log(false)}")
+          until=$(date -u -d "+${{ inputs.minutes || '120' }} minutes" +%Y-%m-%dT%H:%MZ)
+          printf '{"url":"%s","pageStatus":"%s","widgetStatus":"%s","sessionStatus":"%s","tokenMinted":%s,"upUntilUtc":"%s","run":"%s","tunnelLogTail":"%s"}\n' "$URL" "$page" "$widget" "$token" "$minted" "$until" "$GITHUB_RUN_ID" "$(cat /tmp/tunnel-tail.txt)" > /tmp/test-link.json
+          cat /tmp/test-link.json
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
+          cp /tmp/test-link.json /tmp/r/test-link.json && cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
+          git add test-link.json && git commit -q -m "Demo test link run ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
+      - name: Keep the link up
+        run: sleep $(( ${{ inputs.minutes || '120' }} * 60 ))

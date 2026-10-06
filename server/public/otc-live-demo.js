@@ -14,10 +14,15 @@
   const START_TURN = '[SYSTEM] A visitor just started the demo. Greet them now.';
   const CLOSINGS = {
     time: "That's our demo time. Start your free trial to put Off The Clock to work for your business.",
-    silence: "Looks like you've stepped away. I'll be here when you're ready to talk about your business.",
+    silence: "Looks like you've stepped away. Whenever you're ready, you can start your free trial right here on the site. Talk soon!",
   };
   const SILENCE_MS = 10000, CLOSE_GRACE_MS = 15000, STALL_MS = 20000;
   const CLOSING_MARKERS = { time: 'free trial', silence: 'stepped away' };
+  // Diagnostics: a rolling log of what happened in the session, for the owner to copy after a problem.
+  // Shown only with ?debug=1 in the page address (or data-debug="true"). Contains no audio.
+  const DEBUG = (SCRIPT && SCRIPT.dataset.debug === 'true') || /[?&]debug=1(&|$)/.test(location.search);
+  let diagT0 = Date.now(); const diag = [];
+  function dlog(type, detail) { if (diag.length >= 600) diag.shift(); diag.push([+((Date.now() - diagT0) / 1000).toFixed(1), type, detail === undefined ? '' : detail]); }
   const AGENTS = [{ key: 'miles', name: 'Miles', tag: 'VOICE 01 · MALE' }, { key: 'nova', name: 'Nova', tag: 'VOICE 02 · FEMALE' }];
 
   // 16 kHz mono PCM capture. Integrates source samples over each output interval so
@@ -28,7 +33,18 @@ for(const r of x){let left=16000;const v=Math.max(-1,Math.min(1,Number.isFinite(
 while(left>0){const t=Math.min(left,this.rem);this.sum+=v*t;this.rem-=t;left-=t;
 if(this.rem===0){const s=Math.max(-1,Math.min(1,this.sum/this.span));this.buf[this.n++]=Math.round(s*(s<0?32768:32767));this.sum=0;this.rem=this.span;
 if(this.n===this.buf.length){const b=new ArrayBuffer(this.buf.length*2),d=new DataView(b);for(let k=0;k<this.buf.length;k++)d.setInt16(k*2,this.buf[k],true);this.port.postMessage(b,[b]);this.n=0;}}}}
-return true;}}registerProcessor('otc-capture',P);`;
+return true;}}registerProcessor('otc-capture',P);
+class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.g=1;this.fade=false;this.force=false;this.step=24000/sampleRate;this.tick=0;this.underruns=0;
+this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(this.len)this.fade=true;}else if(d==='go'){this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
+at(k){let c=0;while(c<this.q.length&&k>=this.q[c].length){k-=this.q[c].length;c++;}return c<this.q.length?this.q[c][k]:0;}
+process(i,o){const out=o[0]&&o[0][0];if(!out)return true;const need=this.under?2400:4800;
+const avail=this.len-this.pos;const need2=this.under?Math.min(28800,2400*(1+Math.min(this.underruns,11))):4800;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need2||(this.force&&avail>=2)))this.on=true;
+for(let n=0;n<out.length;n++){if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
+const k=Math.floor(this.pos),f=this.pos-k;let v=this.at(k)*(1-f)+this.at(k+1)*f;
+if(this.fade){v*=this.g;this.g-=1/(0.012*sampleRate);if(this.g<=0){this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.fade=false;this.force=false;this.g=1;out.fill(0,n);break;}}
+out[n]=v;this.pos+=this.step;while(this.q.length&&this.pos>=this.q[0].length){this.pos-=this.q[0].length;this.len-=this.q[0].length;this.q.shift();}}
+if(++this.tick%8===0)this.port.postMessage({buffered:Math.max(0,this.len-this.pos)/24000,playing:this.on,underruns:this.underruns});return true;}}
+registerProcessor('otc-player',Q);`;
 
   const CSS = `
 #otc-live-demo{--g:#00E676;--t:#F2F5F2;--m:#8A948A;--p:#111411;--b:#1E241E;--bg:#0A0A0A;font-family:Inter,system-ui,sans-serif;color:var(--t);position:absolute;z-index:5;margin:0;display:none}
@@ -84,6 +100,9 @@ return true;}}registerProcessor('otc-capture',P);`;
 
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
+  let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0, turnAudio = { sec: 0, firstAt: 0 };
+  let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
+  const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
@@ -119,8 +138,19 @@ return true;}}registerProcessor('otc-capture',P);`;
     if (SIGNUP) endKids.push(h('a', { class: 'otcd-link', href: SIGNUP, text: 'Start your free trial' }));
     els.ended = h('div', { class: 'otcd-end', hidden: '' }, endKids);
     els.note = h('p', { class: 'otcd-note', role: 'alert' });
-    const panel = h('div', { class: 'otcd-panel' }, [h('div', { class: 'otcd-top' }, [els.status, els.timer]), els.idle, els.convo, els.ended, els.note]);
+    els.diag = h('button', { type: 'button', class: 'otcd-link', text: 'Copy diagnostics', onclick: copyDiag });
+    els.diagOut = h('textarea', { readonly: '', rows: '6', style: 'width:100%;margin-top:8px;background:#0A0A0A;color:#8A948A;border:1px solid #1E241E;font:11px monospace', hidden: '' });
+    // Owner voice audition (test link only; the server refuses it unless DEMO_VOICE_AUDITION is on).
+    els.voicePick = h('select', { 'aria-label': 'Miles test voice', style: 'margin-left:10px;background:#0A0A0A;color:#F2F5F2;border:1px solid #1E241E;font:12px monospace;padding:4px' },
+      [h('option', { value: '', text: 'Miles voice: default' }), ...['Charon', 'Algenib', 'Algieba', 'Orus', 'Alnilam', 'Puck'].map(v => h('option', { value: v, text: 'Miles voice: ' + v }))]);
+    const diagBox = h('div', { style: 'margin-top:10px' }, [els.diag, els.voicePick, els.diagOut]); if (!DEBUG) diagBox.hidden = true;
+    const panel = h('div', { class: 'otcd-panel' }, [h('div', { class: 'otcd-top' }, [els.status, els.timer]), els.idle, els.convo, els.ended, els.note, diagBox]);
     return h('div', { id: 'otc-live-demo' }, h('div', { class: 'otcd-grid' }, [h('div', { class: 'otcd-col' }, [...cards, rules]), panel]));
+  }
+  function copyDiag() {
+    const text = JSON.stringify({ page: location.origin, userAgent: navigator.userAgent, mode, agent, phase, events: diag });
+    els.diagOut.hidden = false; els.diagOut.value = text; els.diagOut.select();
+    try { navigator.clipboard.writeText(text).then(() => { els.diag.textContent = 'Copied'; }, () => {}); } catch {}
   }
   function choose(key) {
     if (phase !== 'idle' && phase !== 'ended') return;
@@ -139,19 +169,23 @@ return true;}}registerProcessor('otc-capture',P);`;
     cur.textContent += text;
     if (near) els.log.scrollTop = els.log.scrollHeight;
   }
-  function stopPlayback() { for (const p of plays) { try { p.stop(); p.disconnect(); } catch {} } plays = []; nextPlay = 0; }
+  function stopPlayback() { if (player) player.port.postMessage('flush'); pendingByte = null; }
+  // Agent audio is PCM16 at 24 kHz. Chunks go to one continuous player with a 200 ms jitter buffer,
+  // so network timing doesn't cut words or click between chunks. Odd byte counts carry over.
   function play(b64) {
-    if (!ctx || mode !== 'voice') return;
-    const raw = atob(b64); const n = raw.length >> 1; if (!n) return;
-    const buf = ctx.createBuffer(1, n, 24000), ch = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) { let v = raw.charCodeAt(2 * i) | (raw.charCodeAt(2 * i + 1) << 8); if (v > 32767) v -= 65536; ch[i] = v / 32768; }
-    const s = ctx.createBufferSource(); s.buffer = buf; s.connect(ctx.destination);
-    const at = Math.max(ctx.currentTime + 0.02, nextPlay); nextPlay = at + buf.duration;
-    plays.push(s); s.onended = () => { plays = plays.filter(x => x !== s); try { s.disconnect(); } catch {} };
-    s.start(at);
+    if (!player || mode !== 'voice') return;
+    const raw = atob(b64); let bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    if (pendingByte !== null) { const joined = new Uint8Array(bytes.length + 1); joined[0] = pendingByte; joined.set(bytes, 1); bytes = joined; pendingByte = null; }
+    if (bytes.length % 2) { pendingByte = bytes[bytes.length - 1]; bytes = bytes.subarray(0, bytes.length - 1); }
+    const n = bytes.length >> 1; if (!n) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length); const f = new Float32Array(n);
+    for (let i = 0; i < n; i++) f[i] = dv.getInt16(2 * i, true) / 32768;
+    lastAgentAudioAt = Date.now(); if (!turnAudio.firstAt) turnAudio.firstAt = Date.now(); turnAudio.sec += n / 24000;
+    player.port.postMessage(f, [f.buffer]);
   }
   // Wall-clock time when queued agent audio finishes (0 when nothing is queued or in text mode).
-  function agentBusyUntil() { return ctx && mode === 'voice' && nextPlay > ctx.currentTime ? Date.now() + (nextPlay - ctx.currentTime) * 1000 : 0; }
+  function agentBusyUntil() { return player && mode === 'voice' && (playerPlaying || playerBuffered > 0) ? Date.now() + playerBuffered * 1000 : 0; }
   function releaseMic() {
     if (node) { node.port.onmessage = null; try { node.disconnect(); } catch {} node = null; }
     try { src && src.disconnect(); } catch {} src = null;
@@ -160,12 +194,13 @@ return true;}}registerProcessor('otc-capture',P);`;
   }
   function teardown() {
     gen++; clearInterval(tick); tick = null; clearTimeout(closeTimer); closeTimer = null;
-    releaseMic(); stopPlayback();
+    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false;
     if (ws) { const w = ws; ws = null; w.onmessage = w.onclose = w.onerror = null; try { w.close(1000, 'demo ended'); } catch {} }
     const c = ctx; ctx = null; if (c && c.state !== 'closed') c.close().catch(() => {});
   }
   function finish(message) {
     if (phase === 'ended' || phase === 'idle') return;
+    dlog('finish', message);
     teardown(); phase = 'ended'; lockCards(false);
     els.idle.hidden = true; els.convo.hidden = true; els.ended.hidden = false;
     els.endText.textContent = message; setStatus('Session ended'); els.activity.textContent = '';
@@ -175,10 +210,11 @@ return true;}}registerProcessor('otc-capture',P);`;
   function sendTurn(text) { send({ clientContent: { turns: [{ role: 'user', parts: [{ text }] }], turnComplete: true } }); }
   function beginClosing(reason) {
     if (phase !== 'live') return;
-    phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
+    dlog('closing', reason); phase = 'closing'; closingReason = reason; releaseMic(); els.form.hidden = true; setStatus('Wrapping up', true); els.activity.textContent = 'Wrapping up…';
     closingSentAt = Date.now(); closingText = ''; agentLine = null;
     sendTurn(`[SYSTEM] The demo is ending. Say exactly: "${CLOSINGS[reason]}" Then stop.`);
-    closeTimer = setTimeout(() => finish(endMessage(reason)), CLOSE_GRACE_MS);
+    const watch = () => { closeTimer = setTimeout(() => { if (Date.now() - lastServerMsg < 8000 && Date.now() - closingSentAt < 45000) return watch(); finish(endMessage(reason)); }, 2000); };
+    watch();
   }
   function endMessage(reason) { return reason === 'time' ? 'Demo time is up. Your microphone is off.' : 'The demo ended after a pause. Your microphone is off.'; }
   function sendText() {
@@ -189,6 +225,7 @@ return true;}}registerProcessor('otc-capture',P);`;
 
   async function start(which) {
     if (phase !== 'idle' && phase !== 'ended') return;
+    diag.length = 0; diagT0 = Date.now(); dlog('start', { mode: which, agent });
     const g = ++gen; mode = which; phase = 'starting'; note(''); lockCards(true); closingReason = null; greeted = false; awaitingAgent = false; closingText = '';
     els.idle.hidden = true; els.ended.hidden = true; els.convo.hidden = false; els.log.replaceChildren(); agentLine = userLine = null;
     els.form.hidden = which !== 'text'; els.meterBox.hidden = which !== 'voice'; els.send.disabled = true;
@@ -197,16 +234,19 @@ return true;}}registerProcessor('otc-capture',P);`;
       if (which === 'voice') {
         if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Voice needs a secure connection in a current browser. You can use text chat instead.');
         const AC = window.AudioContext || window.webkitAudioContext; if (!AC) throw new Error('This browser can’t play live audio. You can use text chat instead.');
-        ctx = new AC(); await ctx.resume();
+        ctx = new AC(); await ctx.resume(); dlog('audio', { state: ctx.state, rate: ctx.sampleRate }); ctx.onstatechange = () => dlog('audio', ctx && ctx.state);
         const media = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+        dlog('mic-granted');
         if (g !== gen) { media.getTracks().forEach(t => t.stop()); return; }
         stream = media; for (const t of media.getTracks()) t.onended = () => { if (g === gen) finish('The microphone was disconnected. Your session has ended.'); };
         const url = URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' }));
         try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
+        player = new AudioWorkletNode(ctx, 'otc-player', { outputChannelCount: [1] }); player.connect(ctx.destination);
+        player.port.onmessage = e => { const d = e.data || {}; playerBuffered = d.buffered || 0; playerPlaying = Boolean(d.playing); underruns = d.underruns || 0; };
         if (g !== gen) return;
       }
-      const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agent }), cache: 'no-store' });
-      const data = await readJson(r);
+      const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(DEBUG && agent === 'miles' && els.voicePick.value ? { agent, voice: els.voicePick.value } : { agent }), cache: 'no-store' });
+      const data = await readJson(r); dlog('token', { status: r.status, voice: data && data.agent && data.agent.voice });
       if (!r.ok || !data || !data.token) throw new Error((data && data.message) || 'The demo could not connect. Please try again.');
       if (g !== gen) return;
       sessionMs = data.sessionSeconds * 1000; setStatus('Connecting');
@@ -223,20 +263,28 @@ return true;}}registerProcessor('otc-capture',P);`;
       const fail = () => { if (g === gen) reject(new Error('The demo could not connect. Please try again.')); };
       const handshake = setTimeout(fail, 15000);
       sock.onerror = () => {};
-      sock.onclose = () => { clearTimeout(handshake); if (g !== gen) return; if (phase === 'starting') return fail(); finish(phase === 'closing' ? endMessage(closingReason) : 'The connection ended. Your microphone is off.'); };
-      sock.onopen = () => sock.send(JSON.stringify({ setup: { model: `models/${data.model}` } }));
+      sock.onclose = e => { dlog('socket-close', { code: e && e.code, reason: e && String(e.reason || '').slice(0, 80), phase }); clearTimeout(handshake); if (g !== gen) return; if (phase === 'starting') return fail(); finish(phase === 'closing' ? endMessage(closingReason) : 'The connection ended. Your microphone is off.'); };
+      sock.onopen = () => (dlog('socket-open'), sock.send(JSON.stringify({ setup: { model: `models/${data.model}` } })));
       sock.onmessage = async ev => {
         if (g !== gen) return;
         let m; try { m = JSON.parse(typeof ev.data === 'string' ? ev.data : await ev.data.text()); } catch { return; }
-        if (m.setupComplete) { clearTimeout(handshake); live(g); resolve(); return; }
+        lastServerMsg = Date.now();
+        if (m.setupComplete) { dlog('setup-complete'); clearTimeout(handshake); live(g); resolve(); return; }
+        if (m.goAway) dlog('go-away', m.goAway);
+        if (m.usageMetadata) dlog('usage', m.usageMetadata.totalTokenCount);
+        if (m.error) dlog('server-error', String(JSON.stringify(m.error)).slice(0, 200));
         if (m.goAway) return finish('The connection ended. Your microphone is off.');
         const s = m.serverContent; if (!s) return;
         lastServerMsg = Date.now(); lastActivity = Math.max(lastActivity, Date.now());
-        if (s.interrupted) { stopPlayback(); agentLine = null; }
+        if (s.interrupted) { dlog('interrupted'); stopPlayback(); agentLine = null; }
+        if (s.inputTranscription && s.inputTranscription.text) dlog('heard', s.inputTranscription.text.slice(0, 60));
         if (s.inputTranscription && s.inputTranscription.text) { agentLine = null; line('user', s.inputTranscription.text); awaitingAgent = true; els.activity.textContent = 'Listening…'; }
         // Gemini sometimes emits placeholders such as "<no speech detected>"; never show those to visitors.
         if (s.outputTranscription && s.outputTranscription.text && !/^\s*<[^>]*>\s*$/.test(s.outputTranscription.text)) { if (phase === 'closing') closingText += s.outputTranscription.text.toLowerCase(); userLine = null; line('agent', s.outputTranscription.text); els.activity.textContent = mode === 'voice' ? 'Speaking…' : 'Responding…'; }
         for (const p of (s.modelTurn && s.modelTurn.parts) || []) if (p.inlineData && p.inlineData.data && !p.thought) play(p.inlineData.data);
+        if (s.turnComplete) { dlog('turn-complete', { buffered: +playerBuffered.toFixed(2), underruns, audioSec: +turnAudio.sec.toFixed(1), overSec: turnAudio.firstAt ? +((Date.now() - turnAudio.firstAt) / 1000).toFixed(1) : 0 }); turnAudio = { sec: 0, firstAt: 0 }; }
+        if (s.outputTranscription && s.outputTranscription.text) dlog('said', s.outputTranscription.text.slice(0, 60));
+        if (s.turnComplete && player) player.port.postMessage('go');
         if (s.turnComplete) {
           agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
           // While closing, only the turn that actually spoke the closing line ends the session.
@@ -259,8 +307,17 @@ return true;}}registerProcessor('otc-capture',P);`;
         for (let i = 0; i < bytes.length; i += 2) peak = Math.max(peak, Math.abs(dv.getInt16(i, true)) / 32768);
         els.meter.style.width = Math.min(100, peak * 220) + '%';
         peakMax = Math.max(peakMax, peak); if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
+        // Speakers feed the agent's own voice back into the mic. While it is talking, quiet input is sent as
+        // silence so the agent doesn't interrupt itself; a caller speaking clearly still cuts in.
+        const agentTalking = playerPlaying && (playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS);
+        const gated = agentTalking && peak < ECHO_GATE; if (gated) bytes.fill(0);
+        micWin.frames++; micWin.peak = Math.max(micWin.peak, peak); if (gated) micWin.gated++;
+        if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state, sendBuf: micWin.maxBuf || 0, dropped: micWin.dropped || 0, sinceServerMs: Date.now() - lastServerMsg }); micWin = { frames: 0, peak: 0, gated: 0 }; }
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-        send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++;
+        const backlog = ws ? ws.bufferedAmount : 0; micWin.maxBuf = Math.max(micWin.maxBuf || 0, backlog);
+        if (backlog > 64000) { micWin.dropped = (micWin.dropped || 0) + 1; if (!stalledSince) stalledSince = Date.now(); }
+        else { stalledSince = 0; send({ realtimeInput: { audio: { data: btoa(bin), mimeType: 'audio/pcm;rate=16000' } } }); framesSent++; }
+        if (stalledSince && Date.now() - stalledSince > 8000) { dlog('upload-stalled', { backlog }); return finish('Your connection stopped sending audio. Please check your internet and start again.'); }
       };
     }
     tick = setInterval(() => {
@@ -268,6 +325,7 @@ return true;}}registerProcessor('otc-capture',P);`;
       const used = Date.now() - startedAt; els.timer.textContent = `${fmt(Math.min(used, sessionMs))} / ${fmt(sessionMs)}`;
       if (phase !== 'live') return;
       if (used >= sessionMs - 6000) return beginClosing('time');
+      if (awaitingAgent && Date.now() - lastServerMsg >= STALL_MS) dlog('stall', { sinceServerMs: Date.now() - lastServerMsg });
       if (awaitingAgent && Date.now() - lastServerMsg >= STALL_MS) return finish('The demo stopped responding. Your microphone is off.');
       if (greeted && !awaitingAgent && Date.now() - Math.max(lastActivity, agentBusyUntil()) >= SILENCE_MS) beginClosing('silence');
     }, 250);
@@ -311,7 +369,7 @@ return true;}}registerProcessor('otc-capture',P);`;
     window.addEventListener('pagehide', () => teardown());
     return true;
   }
-  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, get framesSent() { return framesSent; }, get peakMax() { return peakMax; }, els };
+  if (SCRIPT && SCRIPT.dataset.debug === 'true') window.__otcDemoDebug = { get root() { return root; }, get phase() { return phase; }, get framesSent() { return framesSent; }, get peakMax() { return peakMax; }, get underruns() { return underruns; }, els };
   function waitAndMount(tries) { if (mount() || tries <= 0) return; setTimeout(() => waitAndMount(tries - 1), 250); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => waitAndMount(80)); else waitAndMount(80);
 })();

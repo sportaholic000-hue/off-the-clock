@@ -96,3 +96,29 @@ test('enabling requires key, salt and origins; origins must be bare', () => {
   assert.throws(() => liveDemoConfig({ ...baseEnv, DEMO_SESSIONS_PER_IP_PER_HOUR: '0' }), /DEMO_SESSIONS_PER_IP_PER_HOUR/);
   assert.equal(liveDemoConfig({}).enabled, false);
 });
+test('Miles defaults to Charon (low-pitch male per Google catalog); env override still wins', async () => {
+  const h = harness(); await h.post({ agent: 'miles' });
+  assert.equal(h.calls[0].body.bidiGenerateContentSetup.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, 'Charon'); h.close();
+  assert.equal(liveDemoConfig({ ...baseEnv, DEMO_MILES_VOICE: 'Orus' }).agents.miles.voice, 'Orus');
+});
+test('voice audition: refused unless enabled; only listed voices, only for Miles; never in production', async () => {
+  const off = harness();
+  assert.equal((await off.post({ agent: 'miles', voice: 'Algenib' })).status, 400); assert.equal(off.calls.length, 0); off.close();
+  const on = harness({ DEMO_VOICE_AUDITION: 'true', DEMO_MAX_CONCURRENT: '50', DEMO_SESSIONS_PER_IP_PER_HOUR: '50' });
+  const r = await on.post({ agent: 'miles', voice: 'Algenib' });
+  assert.equal(r.status, 200); assert.equal(r.json.agent.voice, 'Algenib');
+  assert.equal(on.calls[0].body.bidiGenerateContentSetup.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, 'Algenib');
+  for (const b of [{ agent: 'miles', voice: 'Zephyr' }, { agent: 'nova', voice: 'Charon' }, { agent: 'miles', voice: 'algenib' }, { agent: 'miles', voice: 5 }, { agent: 'miles', voice: '' }])
+    assert.equal((await on.post(b)).status, 400, JSON.stringify(b));
+  assert.equal(on.calls.length, 1);
+  const plain = await on.post({ agent: 'miles' }); assert.equal(plain.json.agent.voice, 'Charon'); on.close();
+  assert.throws(() => liveDemoConfig({ ...baseEnv, DEMO_VOICE_AUDITION: 'true', NODE_ENV: 'production' }), /cannot run in production/);
+});
+test('owner ruling: demo tells any business that callers can get the owner\'s set prices', async () => {
+  const { demoInstructions } = await import('../server/src/demo/demoInstructions.js');
+  const t = demoInstructions('Miles');
+  assert.match(t, /any business, including every business outside those seven trades/i);
+  assert.match(t, /give callers those exact prices over the phone/);
+  assert.match(t, /Never tell a visitor their business can't get phone quotes/);
+  assert.doesNotMatch(t, /do not offer phone quotes/i);
+});
