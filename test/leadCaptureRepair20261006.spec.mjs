@@ -220,3 +220,9 @@ test('D22: an empty legacy preference does not replace an established display na
   f.db.prepare("INSERT INTO bookingPreferences(id,ownerId,intentId,preferredWindowsJson,customerJson,locationJson,status,createdAt,updatedAt) VALUES('synthetic-empty-preference',?,'synthetic-empty-intent','[]','{}','{}','REQUESTED',?,?)").run(c.ownerId,at,at);
   const view=leadFollowUpView(f.ownerQuery,f.lead(c)[0],'staff');assert.equal(view.customerName,'[SYNTHETIC] Established name');assert.equal(view.callerNumber,c.from);assert.equal(view.contact.email,email);
 });
+
+test('D03: structured voice urgency projection preserves existing web timing and excludes private fields',async t=>{
+  const {storedLeadView}=await import('../server/src/ownerRecordViews.js');
+  const legacy=storedLeadView({collectedInputsJson:JSON.stringify({originalSubmission:{urgency:'contact_requested'}})},'staff');assert.equal(legacy.urgency,'contact_requested');
+  const voice=storedLeadView({collectedInputsJson:JSON.stringify({urgency:{reason:'safety',summary:'[SYNTHETIC] Gate falls',recordedAt:at,source:'voice',privateCost:'SECRET_COST'}})},'staff');assert.equal(voice.urgency.reason,'safety');assert.doesNotMatch(JSON.stringify(voice),/SECRET_COST/);
+});

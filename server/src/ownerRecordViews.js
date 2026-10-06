@@ -13,6 +13,7 @@ export function followUpLocation(value) {
   return Object.fromEntries(['line1','line2','addressLine1','addressLine2','city','region','postalCode','country'].flatMap(key=>{const text=safeText(value?.[key],200);return text===undefined?[]:[[key,text]];}));
 }
 function followUpUrgency(value) {
+  if(typeof value==='string')return safeText(value,1000)||null;
   if(!['active_leak','flooding','safety','complaint'].includes(value?.reason))return null;
   return {reason:value.reason,summary:safeText(value.summary,1000)||null,
     recordedAt:safeText(value.recordedAt,64)||null,source:safeText(value.source,64)||null};
