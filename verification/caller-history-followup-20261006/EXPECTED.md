@@ -9,3 +9,8 @@ Base eaadeca0856f1bd7fcade8685711a19aefd786d0; synthetic accounts only.
 
 Source evidence before changes: voiceToolRuntime getCustomerContext applies tenant LIMIT 25 before JS caller filter, returns name/address absent from dispatcher, queries no leads/quotes. saveInquiry derives customer UUID from handle secret. submitQuote inserts no customer. ownerCalendarService filters all requests by requested date. productionVoiceRuntime onSessionEnd writes transport outcome without summary.
 Governing platform_spec_v2 sections 5.7, 6.6, 6.8, 12.18, 13.3, 13.7.
+
+Post-checkpoint robustness check, expected before execution: a saved receipt with
+one valid $221.23–$243.35 option alongside null/non-object options must retain the
+valid stored range and the caller's other history; malformed optional entries must
+not crash the whole returning-caller tool. Blank legacy descriptions stay unknown.

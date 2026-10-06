@@ -1,0 +1,27 @@
+TAP version 13
+# Subtest: D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+not ok 1 - D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+  ---
+  duration_ms: 14.843154
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:84:1'
+  failureType: 'testCodeFailure'
+  error: 'The voice action could not be completed safely.'
+  code: 'TOOL_EXECUTION_FAILED'
+  name: 'VoiceToolDispatchError'
+  stack: |-
+    fail (file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/voice/toolDispatcher.js:15:38)
+    file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/voice/toolDispatcher.js:115:183
+    async TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:88:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 201.77448

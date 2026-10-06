@@ -81,3 +81,9 @@ test('D16 customer write rolls back with inquiry failure and retries create one 
  await assert.rejects(f.voice(c).tool('captureLead',{notes:'[SYNTHETIC] rollback'}));assert.equal(f.db.prepare('SELECT COUNT(*) n FROM customers WHERE ownerId=?').get(c.ownerId).n,0);
  f.db.exec('DROP TRIGGER synthetic_fail');await f.voice(c).tool('captureLead',{notes:'[SYNTHETIC] rollback'});assert.equal(f.db.prepare('SELECT COUNT(*) n FROM customers WHERE ownerId=?').get(c.ownerId).n,1);
 });
+test('D15 malformed optional quote entries cannot hide valid saved ranges or other caller history',async t=>{
+ const f=fixture(t),c=f.context(),v=f.voice(c);await v.tool('captureLead',{description:'[SYNTHETIC] valid lead'});
+ // Expected before execution: retain saved $221.23–$243.35, never recalculate.
+ f.db.prepare("INSERT INTO quotes(id,ownerId,callId,resultJson,status,createdAt) VALUES('mixed-receipt',?,?,?,'INSTANT',?)").run(c.ownerId,c.callSid,JSON.stringify({customerResult:{resultType:'INSTANT_ESTIMATE_READY',options:[null,'invalid',{tierName:'Saved',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'}]}}),at);
+ const result=await v.tool('getCustomerContext',{});assert.equal(result.openLeads.length,1);assert.deepEqual(result.recentQuotes[0].options,[{tierName:'Saved',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'}]);
+});

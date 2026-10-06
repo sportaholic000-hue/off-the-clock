@@ -37,12 +37,16 @@ transcripts. No production migration/backfill performed; lost historical transcr
 content is not reconstructed. Customer identity is resolved lazily without deleting
 legacy rows or rewriting old quote receipts. Atomic failures roll back; retry recovers.
 
-Verification checkpoint: 60/60 focused checks, zero failures/skips. Includes 23 new
+Verification checkpoint: 61/61 focused checks, zero failures/skips. Includes 24 new
 regressions, real signed HTTP/WebSocket call, actual authenticated owner/staff routes,
 owner rendering, separate-process concurrency/restart, foreign links and rollback.
 Earlier focused failure exposed Node SQLite isTransaction vs better-sqlite3
 inTransaction and was fixed in source; the original regression expectation remains.
 A repeated test fixture CallSid collision was corrected without changing product expectations.
+
+A final malformed saved-option regression exposed null optional entries breaking the
+new history projection. It was reproduced against the checkpoint, repaired by
+rejecting only malformed optional entries, and retains the exact valid saved range.
 
 Cold installation/build/full/strict and hosted exact-revision results are pending
 at this checkpoint. This report will be updated after completion. No broader launch

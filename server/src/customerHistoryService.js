@@ -1,6 +1,6 @@
 import {customerQuery,findCustomer} from './customerIdentityService.js';
 const parsed=value=>{try{return JSON.parse(value)||{};}catch{return {};}};
-const text=value=>typeof value==='string'?value.slice(0,500):null;
+const text=value=>typeof value==='string'&&value.trim()?value.trim().slice(0,500):null;
 const jsonPhone=(column,path)=>`customer_phone(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
 
 export function customerHistory(database,{ownerId,from}) {
@@ -31,7 +31,7 @@ export function customerHistory(database,{ownerId,from}) {
        key==='currency'?/^[A-Z]{3}$/.test(value[key]):key==='tierName'?typeof value[key]==='string':typeof value[key]==='number'&&Number.isFinite(value[key])&&value[key]>=0
      ).map(key=>[key,typeof value[key]==='string'?value[key].slice(0,120):value[key]]));
      Object.assign(view,prices(range));
-     if(Array.isArray(range.options))view.options=range.options.slice(0,5).map(prices);
+     if(Array.isArray(range.options))view.options=range.options.filter(value=>value&&typeof value==='object'&&!Array.isArray(value)).slice(0,5).map(prices);
      return view;
    });
  const quoteRequests=query(`SELECT r.describedService,r.createdAt FROM quoteRequests r WHERE r.ownerId=? AND
