@@ -1,7 +1,9 @@
-# October 6 re-audit repairs — verification in progress
+# October 6 re-audit repairs — hosted gates passed
 
 Branch: `codex/quote-reaudit-fixes-20261006`, based on
 `73c00622d6f2df31f57773b32e41355a7421f1a3`.
+Tested source/test SHA: **`e558dfa8d991155cf57da191fc860a2da327a400`**.
+
 The five reproduced defects are repaired: flooring optional-price isolation,
 zero-included vinyl material allocations, effective tier units in approval,
 coherent gate removal, and invalid supplied service-ID rejection. Sod disposal
@@ -9,13 +11,32 @@ evidence now accurately describes the existing fee rule; amounts are unchanged.
 The engine remains v7. No main merge, deployment, subagents or live data.
 
 [Prewritten amounts, scope and policy](QUOTE_REAUDIT_REPAIRS_20261006.md).
-The initial focused run passed 194/194; the final new non-browser file passed
-27/27, including two additional controls. Cold `npm ci` and owner/widget builds
-passed. A new browser regression exercises the actual gate-removal action.
-Local strict/full suite attempts and hosted verification are recorded at the
-completed checkpoint below when available; this checkpoint is not a passing gate.
+**28 new regression tests**, including the actual gate-removal browser action.
+The old repair-48/73 readiness expectation now treats unselected flooring removal
+and subfloor allowances like other optional work; its selected-scope review,
+malformed-data and dollar assertions remain intact.
+
+**Hosted verification:** [CI run 37502475231](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37502475231)
+passed at the exact source/test SHA above: cold `npm ci`, both production builds,
+strict `npm run test:quote` **2,096/2,096 across 96 files**, full `npm test`
+**2,474/2,474**, and production dependency audit **zero vulnerabilities**.
+Both suites have **zero failures, cancellations, skips or TODOs**. The known
+failure allowance is empty (0/0); no workflow or test allowance was changed.
+
+**Local evidence and limits:** cold install and production builds passed.
+All **2,058 tests in 86 non-browser quote/price-book files** passed in isolated
+processes, with complete summaries and zero failures/skips. All 27 new
+non-browser checks passed. Both combined local gate attempts failed to produce
+complete summaries and hit Chromium startup SIGTRAP failures; they are not
+counted as passing gates. The full attempt also exposed the old flooring
+readiness assertion, which was corrected and then passed in the isolated
+matrix, complete file-by-file run and hosted suites. The completed hosted run
+supplies the full-suite/browser evidence.
+
 The repair-catalog all-or-nothing rule remains unchanged pending the owner's
 coverage decision; it was an observed limitation, not one of the five defects.
+The policy clarification offered complete-product isolation, but no selection
+was received. No new repair-catalog policy was inferred.
 
 ## Previous verified checkpoint
 
