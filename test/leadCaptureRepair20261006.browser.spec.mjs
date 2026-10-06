@@ -10,7 +10,7 @@ test('lead capture repairs: production owner app navigation, stored contacts and
   const browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});t.after(()=>browser.close());
   const f=await httpFixture(t),s=await seedViews(f),errors=[];
   const page=await browser.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.addInitScript(token=>localStorage.setItem('otc_token',token),f.tokens['synthetic-a']);
+  await page.goto(f.base+'/login');await page.evaluate(token=>localStorage.setItem('otc_token',token),f.tokens['synthetic-a']);
   await t.test('owner deep link, browser refresh and Calls Refresh retain saved request and urgency',async()=>{
     await page.goto(f.base+'/calls?record='+s.c.callSid);await page.getByRole('heading',{name:'Leads',exact:true}).waitFor();
     let text=await page.locator('main').innerText();for(const value of [s.notes,'preferred@example.invalid','+19025550199','Gate can fall.','notification has not been confirmed'])assert.ok(text.includes(value),value);
@@ -23,8 +23,8 @@ test('lead capture repairs: production owner app navigation, stored contacts and
     let text=await page.locator('main').innerText();assert.ok(text.includes('+19025550188'));assert.ok(text.includes('221.23'));assert.doesNotMatch(text,/SECRET_COST|SECRET_RATE|Owner-only/);
     await page.goto(f.base+'/leads?record='+s.row.id);await page.getByRole('heading',{name:'[SYNTHETIC] Gate follow-up',exact:true}).waitFor();text=await page.locator('main').innerText();assert.ok(text.includes('preferred@example.invalid'));assert.ok(text.includes('+19025550199'));assert.ok(text.includes('original@example.invalid'));assert.doesNotMatch(text,/SECRET_COST|SECRET_RATE|Owner-only/);
   });
-  // addInitScript is reapplied on navigation; use separate page without it for
-  // tenant switching, so refresh cannot silently revert the chosen identity.
+  // Separate browser context for feed timing and tenant switching. Session
+  // selection is a one-time write; reload must preserve the chosen identity.
   await page.close();const live=await browser.newPage();live.on('pageerror',error=>errors.push(error.message));
   await live.goto(f.base+'/login');await live.evaluate(token=>localStorage.setItem('otc_token',token),f.tokens['synthetic-a']);
   await live.clock.install();
