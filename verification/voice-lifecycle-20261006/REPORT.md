@@ -17,7 +17,7 @@ No subagents, merge, deployment, live data, real calls or texts. All provider ex
 | D08 | Tenant resolution continues to use signed To. Legitimate withheld From values are accepted through nonce, dispatcher and persistence validation. Anonymous customer identity is scoped to its call; prior anonymous customer history is never exposed. |
 | D25 | Completed/recovered calls are terminal in fallback, storage and media authorization. Replayed completed capture cannot forward again or overwrite its request. |
 | D26 | Provider text receipt has an independent queue, so slow SMS/calendar tools do not block caller-text persistence. Cleanup drains received text and buffered operator transcript before final status. Existing captured inquiries are enriched without a duplicate recovery lead. |
-| D27 | Production startup atomically recovers stranded persisted calls into idempotent owner-bound leads, including when voice configuration is disabled. |
+| D27 | Production startup atomically recovers stranded persisted calls into idempotent owner-bound leads, including when voice configuration is disabled and legacy active rows lack provider metadata. |
 | D28 | Owner eligibility checks the same inbound runtime/provider/security configuration used by production voice. Enabled state also requires current plan eligibility. |
 | D31 | Encrypted durable inbound receipts replay one nonce/TwiML response per signed call. One-use media authorization prevents parallel sessions. Completed calls cannot reopen. |
 | D32 | Session reservation checks the default five-active-call owner limit within the creation transaction. Excess callers receive request-capture fallback. Other tenants retain independent capacity. |
@@ -29,10 +29,10 @@ Production files: `server/src/voice/`, `server/src/voiceRuntimeRoutes.js`, `serv
 
 - Cold `npm ci`: passed; lockfile unchanged.
 - Cold `npm run build`: passed.
-- Targeted existing plus new voice/booking/calendar/capture tests: 271 passed, zero failures/skips at the first broad run.
+- Targeted existing plus new voice/booking/calendar/capture tests: 271 passed, zero failures/skips at the first broad run. After the legacy-row follow-up: 273 passed, zero failures/skips, including all 39 lifecycle scenarios.
 - Final focused lifecycle suite: 38 passed, zero failures/skips.
-- Local `npm test`: attempted; Chromium startup failures and no final TAP summary. Not green; incomplete output retained.
-- Local `npm run test:quote`: running at checkpoint preparation.
+- Local `npm test`: first attempt exited 1 with no final TAP summary (2,289 top-level passes and 37 Chromium SIGTRAP failures). Not green; incomplete output retained. A repeat on the final source is running.
+- Local `npm run test:quote`: exited 1 with no final summary; output contains 327 top-level passes and four Chromium SIGTRAP failures. These are incomplete counts, not a completed gate.
 - Hosted cold CI: pending. Exact branch added to the existing workflow push filter; no test gates, skips or failure allowances changed.
 
 The guarantees apply to authenticated callbacks and transcript text actually received by the application. No software can recover speech that neither transcription provider nor callback delivered, or promise persistence if the only storage volume is permanently lost. Ambiguous calendar writes are deliberately blocked for owner review; no unsupported success is reported.

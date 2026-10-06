@@ -64,6 +64,10 @@ test('D27 production startup recovers active call into one durable lead',async t
   assert.equal(h.lead(c).length,1);const store=createVoiceSessionStore({database:h.db});store.recoverActiveCalls();
   assert.equal(h.lead(c).length,1);assert.match(h.lead(c)[0].collectedInputsJson,/Restart must retain/);
 });
+test('D27 legacy active rows with incomplete provider metadata still become owner leads',async t=>{
+  const h=fixture(t),c=h.context();h.db.prepare('UPDATE calls SET callSid=NULL,accountSid=NULL,callerNumber=NULL,destinationNumber=NULL,transcriptJson=? WHERE id=?').run(JSON.stringify([{role:'user',text:'[SYNTHETIC] Legacy request must survive restart'}]),c.callSid);
+  createVoiceSessionStore({database:h.db}).recoverActiveCalls();assert.equal(h.lead(c).length,1);assert.match(h.lead(c)[0].collectedInputsJson,/Legacy request/);
+});
 test('D28 provisioned phone alone never claims eligibility when inbound runtime is disabled',()=>{
   const profile={phoneProvisioningStatus:'provisioned',twilioNumberSid:'PN'+'c'.repeat(32),twilioNumber:TO,knowledgeBase:{about:'Synthetic',hours:'Weekdays'}};
   assert.equal(operatorEligibility(profile,{env:{...env,VOICE_RUNTIME_ENABLED:'false'}}).eligible,false);

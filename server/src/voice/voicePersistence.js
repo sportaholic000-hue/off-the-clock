@@ -258,8 +258,9 @@ export function createVoiceSessionStore({
       return immediate(database,()=>{
         const rows=database.prepare("SELECT * FROM calls WHERE status IN ('CONNECTING','CONNECTED','TRANSFERRING','FAILED') OR (status='FALLBACK' AND completedAt IS NULL)").all();
         for(const call of rows){
-          const context={ownerId:call.ownerId,callSid:call.callSid,accountSid:call.accountSid,from:call.callerNumber,to:call.destinationNumber};
-          if(!validContext(context))continue;
+          // Legacy active rows may predate signed provider metadata. They are
+          // still persisted owner requests, never candidates for a new call.
+          const context={ownerId:call.ownerId,callSid:call.callSid||'legacy:'+call.id,accountSid:call.accountSid,from:call.callerNumber||'unknown',to:call.destinationNumber};
           const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
           database.prepare("UPDATE calls SET status='RECOVERED',failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
         }
