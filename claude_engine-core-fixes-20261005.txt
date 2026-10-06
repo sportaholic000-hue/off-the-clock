@@ -1,4 +1,4 @@
-run 37377772760 sha 4ff586cad88769a72a9a79f146d5702181d530b4
+run 37405553948 sha 509891e39318bee344951278dd2667e4ab1f700a
 Summary: {"tests":"2038","pass":"2027","fail":"9","cancelled":"0","skipped":"2","todo":"0"}
 Known failures still failing: 9/9
 not ok 39 - test/googleGenAiLiveAdapter.spec.mjs
