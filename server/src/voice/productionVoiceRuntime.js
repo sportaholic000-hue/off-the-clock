@@ -60,12 +60,14 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   let boundary=null;
   function publicPrompt(context){
     const owner=database.prepare('SELECT businessName FROM users WHERE id = ? AND role = ?').get(context.ownerId,'owner');
-    const profile=database.prepare('SELECT agentName FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile=database.prepare('SELECT agentName, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    // The receptionist answers from the owner's saved knowledge section, including listed prices.
+    let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb))knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[]};}catch{knowledge=null;}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     const book=canQuote?loadPricebook(context.ownerId):{services:[]};
     const statuses=canQuote?new Map(bookQuoteStatuses(book).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
-    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services});
+    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge});
   }
   async function startMediaSession(input){
     if(!enabled||!handleSecret)throw Error('Voice session is unavailable.');

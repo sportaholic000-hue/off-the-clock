@@ -9,7 +9,31 @@ import { hasQuoteDoneAccess } from './planAccess.js';
 import { applicationMetadata } from './quoteDoneBridge.js';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
-const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', neverSay: [], draft: false };
+const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
+const KB_TEXT_LIMIT = 20000;
+function knowledgeText(value, name) {
+  const text = String(value || '').trim();
+  if (text.length > KB_TEXT_LIMIT) {
+    const error = new Error(`${name} is too long (limit ${KB_TEXT_LIMIT} characters).`);
+    error.code = 'INVALID_REQUEST';
+    error.statusCode = 400;
+    throw error;
+  }
+  return text;
+}
+function knowledgeWebsite(value) {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  let url;
+  try { url = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`); } catch { url = null; }
+  if (!url || !['http:', 'https:'].includes(url.protocol) || !url.hostname.includes('.') || text.length > 2000) {
+    const error = new Error('Enter your website as a web address, for example https://example.com.');
+    error.code = 'INVALID_REQUEST';
+    error.statusCode = 400;
+    throw error;
+  }
+  return url.toString();
+}
 const EMPTY_CALENDAR = { provider: null, status: 'not_connected', calendlyUrl: null };
 const CALENDAR_INPUT_KEYS = new Set(['provider', 'calendlyUrl', 'skipped']);
 const CALENDLY_HOSTS = new Set(['calendly.com', 'www.calendly.com']);
@@ -301,6 +325,9 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     services: String(incoming.services || '').trim(),
     policies: String(incoming.policies || '').trim(),
     faqs: String(incoming.faqs || '').trim(),
+    // Owner's own fixed prices, said to callers exactly as written (owner ruling 2026-10-02).
+    prices: knowledgeText(incoming.prices, 'Your prices'),
+    website: knowledgeWebsite(Object.hasOwn(incoming, 'website') ? incoming.website : incoming.websiteUrl),
     neverSay: Array.isArray(incoming.neverSay)
       ? incoming.neverSay.map(value => String(value).trim()).filter(Boolean)
       : String(incoming.neverSay || '').split('\n').map(value => value.trim()).filter(Boolean),

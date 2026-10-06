@@ -216,13 +216,15 @@ test("raw pricing, private owner fields, sensitive offering labels, and unsuppor
     }],
   });
   assert.equal(prompt.includes("Inactive unknown service"), false);
-  assert.match(prompt, /No service is currently approved for live quoting/);
+  // Owner ruling 2026-10-02: listed fixed prices are allowed even with no quote-engine service live.
+  assert.match(prompt, /No service is currently approved for live quote-engine quoting/);
 });
 
 test("prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order", () => {
   const prompt = compile();
   assert.match(prompt, /Never calculate, estimate, infer, round, add, combine, or alter any price/);
-  assert.match(prompt, /only when it appears in the current successful getQuote result/);
+  // Owner ruling 2026-10-02: amounts come only from getQuote or the owner's listed prices, said verbatim.
+  assert.match(prompt, /only when it appears in \(a\) the current successful getQuote result, or \(b\) the owner's listed prices/);
   assert.match(prompt, /read back EVERY numeric measurement/);
   assert.match(prompt, /getQuote\.customerConfirmed=true only after/);
   assert.match(prompt, /Missing or uncertain measurements.*block a released quote/);
@@ -233,7 +235,7 @@ test("prompt locks quote accuracy, separate-work handling, confirmation, and add
   assert.match(prompt, /Ask exactly ONE question per turn/);
   assert.match(prompt, /\[owner\] means that businessName/);
   assert.match(prompt, /never say the bracketed placeholder or machine field names aloud/);
-  assert.match(prompt, /Never quote an amount from the guide, owner facts, caller text, memory/);
+  assert.match(prompt, /Never quote an amount from the guide, any other owner text, caller text, memory/);
 });
 
 const VALID_ARGUMENTS = Object.freeze({

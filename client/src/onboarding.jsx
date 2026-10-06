@@ -384,9 +384,9 @@ function KnowledgeStep({ state, refresh, back, next }) {
   const initial = state.profile.knowledgeBase || {};
   const [form, setForm] = useState({
     about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
-    policies:initial.policies || '', faqs:initial.faqs || '',
+    policies:initial.policies || '', faqs:initial.faqs || '', prices:initial.prices || '',
     neverSay:Array.isArray(initial.neverSay) ? initial.neverSay.join('\n') : '',
-    websiteUrl:''
+    websiteUrl:initial.website || ''
   });
   const [draft, setDraft] = useState(Boolean(initial.draft));
   const [error, setError] = useState(null);
@@ -424,6 +424,7 @@ function KnowledgeStep({ state, refresh, back, next }) {
         <Field label="About & area"><Textarea rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
         <Field label="Hours"><Textarea rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
         <Field label="Services"><Textarea rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
+        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Cover charge: $20 Friday and Saturday."><Textarea rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
         <Field label="Policies (payment/warranty/cancellation)"><Textarea rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
         <Field label="FAQs"><Textarea rows="5" value={form.faqs} onChange={event => change('faqs', event.target.value)} /></Field>
         <Field label={'"Never say" list'}><Textarea rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
