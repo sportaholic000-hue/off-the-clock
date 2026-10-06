@@ -1,17 +1,17 @@
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {build} from 'esbuild';
-let browser,bundle;
+import {buildKnowledgeScreen} from './websitePriceBrowserFixture.mjs';
+let browser,bundle,styles;
 before(async()=>{
+  ({script:bundle,styles}=await buildKnowledgeScreen());
   const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
   browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
-  const result=await build({stdin:{loader:'jsx',resolveDir:process.cwd(),contents:"import React from 'react';import {createRoot} from 'react-dom/client';import {KnowledgeStep} from './client/src/onboarding.jsx';const root=createRoot(document.getElementById('root'));window.mount=state=>root.render(<KnowledgeStep state={state} refresh={async()=>{window.refreshes++}} back={()=>{}} next={()=>{window.saved=true}}/>);window.refreshes=0;"},bundle:true,write:false,format:'iife',platform:'browser',define:{'process.env.NODE_ENV':'\"development\"','import.meta.env':'{}'},logLevel:'silent'});bundle=result.outputFiles[0].text;
 });
 after(async()=>browser?.close());
 async function screen(t,draft){
   const page=await browser.newPage(),writes=[];t.after(()=>page.close());
-  await page.route('http://knowledge.test/',route=>route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'}));
+  await page.route('http://knowledge.test/',route=>route.fulfill({contentType:'text/html',body:'<style>'+styles.replaceAll('</style','<\\/style')+'</style><div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'}));
   await page.route('http://knowledge.test/api/onboarding/knowledge-base**',route=>{
     const request=route.request();writes.push({url:request.url(),body:request.postDataJSON()});
     return route.fulfill({contentType:'application/json',body:JSON.stringify(request.url().endsWith('/draft')?{status:'DRAFT',knowledgeBase:draft}:{profile:{knowledgeBase:request.postDataJSON()}})});
