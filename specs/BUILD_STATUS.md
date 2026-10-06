@@ -1,7 +1,8 @@
-# October 6 website price import — implementation checkpoint
+# October 6 website price import — hosted gates passed
 
 Branch: `feat/website-price-import-20261006`.
 Verified parent: `d176fa4f828eddf2c47bfc46792125eb36b6eee2`.
+Tested source/test/CI SHA: **`8ef7eb620b7ff66a9f8bfaf00a32ca9d6d130bc9`**.
 
 The owner's website draft now fetches bounded public pages on the same host,
 validates and pins public DNS addresses at every connection and redirect, and
@@ -15,11 +16,25 @@ blocking, size/time/page limits, instruction text, owner-only routes, saved-pric
 isolation, and the owner browser flow. Existing route/CI source assertions follow
 the actual registrations and `npm test` entry point; price expectations and
 failure allowances are unchanged. The CI trigger includes this exact branch.
+The browser fixture bundles the screen's imported CSS. CI runs `npm test`
+without masking its exit status, and its summary publisher accepts a clean
+report with no failure rows while still rejecting a missing report.
 
-Pre-push verification: **187/187** focused tests passed, zero failures or skips.
-Cold `npm ci` installed 262 packages; both production builds passed. Full local
-and hosted gates are pending at this checkpoint. The local Chromium download is
-unavailable, so hosted browser execution remains required.
+**Hosted verification:** cold `npm ci` and both production builds passed.
+`npm run test:quote` passed **1,730/1,730**, zero failures, cancellations,
+skips or TODOs, across 70 selected files. `npm test` completed **2,165 tests:
+2,163 passed, zero failures, two pre-existing module-mock skips**, zero
+cancellations or TODOs. All 76 new website-import tests passed, including both
+owner-screen browser tests. The production dependency audit found zero
+vulnerabilities. [CI run 37413051308](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37413051308)
+completed successfully at the tested SHA.
+
+**Local verification limits:** 187/187 focused tests passed, zero failures or
+skips. Cold `npm ci` installed 262 packages; both production builds passed.
+Chromium could not be downloaded in this workspace: the local strict run
+completed with 1,693 passes and 37 browser-startup failures. The two local full
+suite attempts ended without a final summary, so neither is counted as a pass.
+The completed hosted runs above supply the full-suite and browser evidence.
 
 [Owner ruling, limits and handwritten expectations](WEBSITE_PRICE_IMPORT_20261006.md).
 No subagents, merge, deployment or live data.
