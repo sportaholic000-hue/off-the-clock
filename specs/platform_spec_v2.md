@@ -689,8 +689,12 @@ detected ✓" checker.
     support.
   OVERAGE: $0.35/min, stated plainly on the pricing page.
   Meter always visible; email at 80% and 100%.
-  TRIAL: 14 days, card required, full QuoteDone features,
-  hard cap 60 voice minutes (clearly shown).
+  TRIAL: 14 days, card required, features of the selected
+  plan: Operator trials receive Operator features;
+  QuoteDone trials receive QuoteDone features. Trial status
+  alone does not grant a higher tier. Hard cap 60 voice
+  minutes (clearly shown), with the mid-call rule in 12.11.
+  Owner-approved clarification: TRIAL_ENTITLEMENT_DECISION_20261006.md.
   GUARANTEE: 30-day money-back on the first month, badge at
   every CTA, honored self-serve.
   NO SETUP FEE: onboarding is fully self-serve (4.6); no
