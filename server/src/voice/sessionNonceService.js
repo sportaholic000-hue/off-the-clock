@@ -1,3 +1,4 @@
+import {isVoiceCaller} from './callerIdentity.js';
 import { createHash, randomBytes as nodeRandomBytes, timingSafeEqual } from "node:crypto";
 
 const E164 = /^\+[1-9]\d{7,14}$/;
@@ -47,7 +48,7 @@ function normalizeBinding(value) {
   if (
     !OWNER_ID.test(ownerId) ||
     !CALL_SID.test(callSid) ||
-    !E164.test(from) ||
+    !isVoiceCaller(from) ||
     !E164.test(to) ||
     !ACCOUNT_SID.test(accountSid)
   ) {

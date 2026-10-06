@@ -6,6 +6,8 @@ import { saveGoogleCalendarConnection } from './calendarCredentials.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
+import { hasOperatorAccess } from './planAccess.js';
+import {voiceRouteReadiness} from './voice/voiceReadiness.js';
 import { applicationMetadata } from './quoteDoneBridge.js';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
@@ -294,12 +296,14 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
   });
 }
 
-export function operatorEligibility(profile) {
+export function operatorEligibility(profile, options={}) {
   const kb = profile.knowledgeBase || EMPTY_KB;
   const missing = [];
   if (profile.phoneProvisioningStatus !== 'provisioned' || !profile.twilioNumberSid) missing.push('phone');
   if (!String(kb.about || '').trim()) missing.push('About & area');
   if (!String(kb.hours || '').trim()) missing.push('Hours');
+  if(!/^\+[1-9]\d{7,14}$/.test(profile.twilioNumber||''))missing.push('Inbound phone number');
+  missing.push(...voiceRouteReadiness(options).missing);
   return { eligible: missing.length === 0, missing };
 }
 
@@ -449,7 +453,9 @@ export function saveVoice(ownerId, input) {
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
-  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled, ...operatorEligibility(profile) } };
+  const eligibility=operatorEligibility(profile);
+  if(!hasOperatorAccess(account)){eligibility.eligible=false;eligibility.missing.push('Operator plan access');}
+  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled&&eligibility.eligible, configuredEnabled:profile.operatorEnabled, ...eligibility } };
 }
 
 function draftRevision(row) {

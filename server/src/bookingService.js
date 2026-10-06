@@ -1127,8 +1127,61 @@ export function createBookingService({
     return { statusCode: 200, body: pendingConfirmationBody(confirmationId, handle.appointmentId) };
   }
 
+  function ownedAppointment(ownerId,id,callerNumber){
+    const row=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,id);
+    if(!row||!/^\+[1-9]\d{7,14}$/.test(callerNumber||'')||parseJson(row.customerJson,{})?.phone!==callerNumber)throw invalid('Appointment contact does not match this caller.');
+    return row;
+  }
+  async function appointmentAvailability({ownerId,appointmentId,callerNumber,filters={}}){
+    const row=ownedAppointment(ownerId,appointmentId,callerNumber);
+    if(row.status!=='CONFIRMED'||row.providerEventStatus==='CHANGE_PENDING')throw invalid('Appointment cannot be changed right now.');
+    const source=db.prepare('SELECT * FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
+    if(!source)throw invalid('Appointment booking context is unavailable.');
+    const fresh=createIntent({ownerId,sourceType:source.sourceType,sourceId:source.sourceId,serviceId:source.serviceId,resultType:source.resultType,allowedTierNames:parseJson(source.allowedTierNamesJson,[]),expiresAtUtc:new Date(nowFrom(clock).getTime()+3600000).toISOString()});
+    const location=parseJson(row.locationJson,{});
+    const result=await availability({ownerId,intentId:fresh.intentId,filters:{...filters,location}});
+    return {...result,intentId:fresh.intentId};
+  }
+  async function modifyAppointment({ownerId,callSid,action,appointment,slotId,intentId,idempotencyKey}){
+    const call=db.prepare('SELECT callerNumber FROM calls WHERE ownerId=? AND callSid=?').get(ownerId,callSid);
+    const row=ownedAppointment(ownerId,appointment.id,call?.callerNumber);
+    if(!['cancel','reschedule'].includes(action)||row.status!=='CONFIRMED'||row.provider!=='google'||typeof calendar.changeEvent!=='function')throw invalid('Appointment change is unavailable.');
+    let held;
+    if(action==='reschedule'){
+      const replacement=db.prepare('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,intentId);
+      const original=db.prepare('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
+      if(!replacement||!original||JSON.stringify(replacement)!==JSON.stringify(original)||intentId===row.bookingIntentId)throw invalid('Replacement slot does not belong to this appointment.');
+      held=hold({ownerId,intentId,idempotencyKey,slotId}).body;
+      if(held.status!=='HELD')throw invalid('Replacement slot unavailable.');
+    }
+    immediate(()=>{
+      const claimed=db.prepare("UPDATE appointments SET providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(nowFrom(clock).toISOString(),ownerId,row.id);
+      if(claimed.changes!==1)throw invalid('An appointment change is already in progress.');
+      // Retain both the old slot and a possible new slot until the remote
+      // result is known. An ambiguous write must never free either slot.
+      if(held)db.prepare("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z' WHERE ownerId=? AND id=?").run(ownerId,held.holdId);
+    });
+    const changed=await calendar.changeEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId,action,
+      ...(held?{startAtUtc:held.slot.startUtc,endAtUtc:held.slot.endUtc}:{})});
+    if(action==='cancel'?changed.status!=='CANCELLED':changed.status!=='CONFIRMED'||changed.startAtUtc!==held.slot.startUtc||changed.endAtUtc!==held.slot.endUtc)throw providerError();
+    immediate(()=>{
+      const at=nowFrom(clock).toISOString();
+      if(action==='cancel')db.prepare("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.id);
+      else{
+        const lock=db.prepare('SELECT * FROM bookingHolds WHERE ownerId=? AND id=?').get(ownerId,held.holdId);
+        db.prepare("UPDATE appointments SET bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(intentId,held.holdId,changed.startAtUtc,changed.endAtUtc,changed.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,ownerId,row.id);
+        db.prepare("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,held.holdId);
+      }
+      if(row.holdId)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.holdId);
+      db.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'appointment.changed',?,?,'PENDING',?,?)").run(idempotencyKey+'-changed',ownerId,row.id,JSON.stringify({appointmentId:row.id,action,startAtUtc:changed.startAtUtc||null,endAtUtc:changed.endAtUtc||null}),at,at);
+    });
+    return {status:'CONFIRMED',startUtc:changed.startAtUtc,endUtc:changed.endAtUtc};
+  }
+
   return {
     createIntent,
+    appointmentAvailability,
+    modifyAppointment,
     resolveBookingToken,
     availability,
     getAvailability: availability,
@@ -1140,4 +1193,3 @@ export function createBookingService({
     getConfirmationStatus
   };
 }
-

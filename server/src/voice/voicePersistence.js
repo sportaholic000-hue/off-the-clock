@@ -1,4 +1,6 @@
+import {isVoiceCaller} from './callerIdentity.js';
 import crypto from 'node:crypto';
+import {isFinalVoiceCall,preserveVoiceRequest} from './voiceRecovery.js';
 
 const HASH = /^[0-9a-f]{64}$/;
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
@@ -42,7 +44,7 @@ function validContext(context) {
     typeof context.ownerId === 'string' && context.ownerId.length > 0 &&
     CALL_SID.test(String(context.callSid || '')) &&
     ACCOUNT_SID.test(String(context.accountSid || '')) &&
-    E164.test(String(context.from || '')) && E164.test(String(context.to || ''));
+    isVoiceCaller(String(context.from || '')) && E164.test(String(context.to || ''));
 }
 
 export function createVoiceNonceRepository({ database, randomUUID = crypto.randomUUID } = {}) {
@@ -109,6 +111,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
 export function createVoiceSessionStore({
   database,
   clock = () => new Date(),
+  maxConcurrentCalls = 5,
   randomUUID = crypto.randomUUID
 } = {}) {
   if (!database || typeof database.prepare !== 'function' || typeof database.exec !== 'function') {
@@ -126,6 +129,16 @@ export function createVoiceSessionStore({
     return database.prepare('SELECT * FROM voiceSessionNonces WHERE nonceHash = ?').get(sessionKey);
   }
 
+  if(!Number.isSafeInteger(maxConcurrentCalls)||maxConcurrentCalls<1)throw new TypeError('Invalid concurrent call ceiling.');
+  function boundCall(context){
+    const call=database.prepare('SELECT * FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
+    if(call&&(call.accountSid!==context.accountSid||call.callerNumber!==context.from||call.destinationNumber!==context.to))throw Error('Call binding mismatch.');
+    return call;
+  }
+  function preserve(context,call,reason,at=nowIso()){
+    return preserveVoiceRequest({database,context,call,reason,at});
+  }
+
   return Object.freeze({
     createSession({ sessionKey, context, expiresAt }) {
       if (!validContext(context)) throw new TypeError('Voice call context is invalid.');
@@ -141,8 +154,14 @@ export function createVoiceSessionStore({
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
             throw new Error('Voice CallSid is already bound to different call data.');
           }
-          return { status: 'created', callRecordId: existing.id };
+          if(existing.status!=='CONNECTING')return {status:'duplicate',callRecordId:existing.id};
+          // Only the original nonce can refer to this call. A second inbound
+          // delivery must replay its durable TwiML, never mint another session.
+          const first=database.prepare('SELECT nonceHash FROM voiceSessionNonces WHERE ownerId=? AND callSid=? ORDER BY rowid LIMIT 1').get(context.ownerId,context.callSid);
+          return {status:first?.nonceHash===sessionKey?'created':'duplicate',callRecordId:existing.id};
         }
+        const active=database.prepare("SELECT COUNT(*) n FROM calls WHERE ownerId=? AND status IN ('CONNECTING','CONNECTED','TRANSFERRING')").get(context.ownerId).n;
+        if(active>=maxConcurrentCalls)return {status:'capacity'};
         const id = randomUUID();
         const createdAt = nowIso();
         database.prepare(`INSERT INTO calls (
@@ -186,9 +205,11 @@ export function createVoiceSessionStore({
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
             throw new Error('Voice CallSid is already bound to different call data.');
           }
+          if(isFinalVoiceCall(existing.status))return {callRecordId:existing.id,terminal:true};
+          preserve(context,existing,safeReason,at);
           database.prepare(`UPDATE calls SET status = 'FALLBACK', outcome = ?, failureCode = ?,
-            completedAt = ?, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
-            safeReason, safeReason, at, at, existing.id, context.ownerId
+            completedAt = NULL, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
+            safeReason, safeReason, at, existing.id, context.ownerId
           );
           return { callRecordId: existing.id };
         }
@@ -197,11 +218,52 @@ export function createVoiceSessionStore({
           id, ownerId, callSid, accountSid, callerNumber, destinationNumber,
           status, outcome, transcriptJson, minutesBilled, failureCode,
           completedAt, createdAt, updatedAt
-        ) VALUES (?, ?, ?, ?, ?, ?, 'FALLBACK', ?, '[]', 0, ?, ?, ?, ?)`).run(
+        ) VALUES (?, ?, ?, ?, ?, ?, 'FALLBACK', ?, '[]', 0, ?, NULL, ?, ?)`).run(
           id, context.ownerId, context.callSid, context.accountSid, context.from,
-          context.to, safeReason, safeReason, at, at, at
+          context.to, safeReason, safeReason, at, at
         );
+        preserve(context,boundCall(context),safeReason,at);
         return { callRecordId: id };
+      });
+    },
+
+    appendFallbackText({context,text}){
+      if(typeof text!=='string'||!text.trim()||Buffer.byteLength(text)>16384)throw Error('Invalid fallback text.');
+      return immediate(database,()=>{
+        const call=boundCall(context);if(!call)throw Error('Call unavailable.');
+        if(isFinalVoiceCall(call.status))return {terminal:true};
+        const transcript=JSON.parse(call.transcriptJson||'[]'),key=crypto.createHash('sha256').update(text).digest('hex');
+        if(!transcript.some(t=>t.fallbackKey===key))transcript.push({role:'user',text,final:true,fallbackKey:key});
+        const at=nowIso();database.prepare('UPDATE calls SET transcriptJson=?,updatedAt=? WHERE id=? AND ownerId=?').run(JSON.stringify(transcript),at,call.id,context.ownerId);
+        preserve(context,{...call,transcriptJson:JSON.stringify(transcript)},'VOICE_FALLBACK',at);
+        return {saved:true};
+      });
+    },
+
+    finishCall({context,status,reason,streamSid=null,duration=0}){
+      return immediate(database,()=>{
+        const call=boundCall(context);if(!call)throw Error('Call unavailable.');
+        if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING')return;
+        const at=nowIso();
+        // Even without an explicit captureLead tool call, preserve the caller's
+        // received request. Never mark final if this transaction cannot commit.
+        if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
+        database.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+      });
+    },
+
+    recoverActiveCalls(){
+      // Startup is an explicitly cross-owner platform operation. Each recovery
+      // mutation is still bound to its persisted owner and immutable call ID.
+      return immediate(database,()=>{
+        const rows=database.prepare("SELECT * FROM calls WHERE status IN ('CONNECTING','CONNECTED','TRANSFERRING','FAILED') OR (status='FALLBACK' AND completedAt IS NULL)").all();
+        for(const call of rows){
+          const context={ownerId:call.ownerId,callSid:call.callSid,accountSid:call.accountSid,from:call.callerNumber,to:call.destinationNumber};
+          if(!validContext(context))continue;
+          const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
+          database.prepare("UPDATE calls SET status='RECOVERED',failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
+        }
+        return rows.length;
       });
     }
   });

@@ -25,32 +25,54 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     if(audio?.inputMimeType!=='audio/pcm;rate=16000'||audio?.outputMimeType!=='audio/pcm;rate=24000')fail('GOOGLE_LIVE_AUDIO_FORMAT_INVALID');
     let instruction;try{instruction=typeof systemInstruction==='function'?await systemInstruction({context,session}):systemInstruction;}catch{fail('GOOGLE_LIVE_INSTRUCTION_FAILED');}
     if(typeof instruction!=='string'||!instruction.trim()||instruction.length>200000)fail('GOOGLE_LIVE_INSTRUCTION_FAILED');
-    let provider,closed=false,failed=false,modelText='',queue=Promise.resolve(),closePromise;
+    let provider,closed=false,closing=false,failed=false,modelText='',queue=Promise.resolve(),transcriptions=Promise.resolve(),closePromise;
     function close(){
-      if(closePromise)return closePromise;closed=true;
-      closePromise=(async()=>{if(!provider)return;try{await provider.sendRealtimeInput({audioStreamEnd:true});}catch{}try{await provider.close();}catch{}})();return closePromise;
+      if(closePromise)return closePromise;closing=true;
+      closePromise=Promise.resolve().then(async()=>{
+        await transcriptions;await flush(false);await queue;closed=true;
+        if(!provider)return;
+        try{await provider.sendRealtimeInput({audioStreamEnd:true});}catch{}
+        try{await provider.close();}catch{}
+      });return closePromise;
     }
-    async function error(){if(failed||closed)return;failed=true;try{await callbacks.onError();}catch{}await close();}
+    function error(){
+      if(failed||closed)return;failed=true;
+      // Never await bridge shutdown from its own provider queue: shutdown
+      // drains this queue before persisting the final call outcome.
+      Promise.resolve(callbacks.onError()).catch(()=>{});void close();
+    }
     async function flush(final){if(!modelText)return;const text=modelText;modelText='';await callbacks.onTranscript({text,role:'model',final});}
     async function message(value){
-      if(closed||failed)return;jsonData(value);const body=value.serverContent;
+      if(closed)return;jsonData(value);const body=value.serverContent;
       if(body){
         if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        if(body.inputTranscription?.text){if(typeof body.inputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onTranscript({text:body.inputTranscription.text,role:'user',final:true});}
-        if(body.outputTranscription?.text){if(typeof body.outputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');modelText+=body.outputTranscription.text;if(modelText.length>16384)fail('INVALID_GOOGLE_LIVE_MESSAGE');}
-        for(const part of body.modelTurn?.parts||[])if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
-        if(body.interrupted){await flush(false);await callbacks.onInterruption();}else if(body.turnComplete)await flush(true);
+        for(const part of (closing||failed?[]:body.modelTurn?.parts||[]))if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
+        if(body.interrupted&&!closing&&!failed)await callbacks.onInterruption();
       }
-      if(value.toolCall){
+      if(value.toolCall&&!closing&&!failed){
         if(!Array.isArray(value.toolCall.functionCalls)||value.toolCall.functionCalls.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');
         for(const call of value.toolCall.functionCalls){if(!plain(call)||typeof call.id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(call.id)||!toolDeclarations.some(tool=>tool.name===call.name)||!plain(call.args))fail('INVALID_GOOGLE_LIVE_MESSAGE');jsonData(call.args,32768);await callbacks.onToolCall({name:call.name,args:call.args,toolCallId:call.id});}
       }
     }
-    const enqueue=work=>{queue=queue.then(work).catch(error);};
+    const enqueue=work=>{if(closing||closed)return;queue=queue.then(work).catch(error);};
+    function acceptMessage(value){
+      if(closing||closed)return;
+      try{jsonData(value);}catch{error();return;}
+      // Text receipt has its own queue. A slow SMS/calendar/tool operation must
+      // never prevent already received caller words from reaching persistence.
+      const received=transcriptions.then(async()=>{
+        const body=value.serverContent;if(!body)return;if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
+        if(body.inputTranscription?.text){if(typeof body.inputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onTranscript({text:body.inputTranscription.text,role:'user',final:true});}
+        if(body.outputTranscription?.text){if(typeof body.outputTranscription.text!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');modelText+=body.outputTranscription.text;if(modelText.length>16384)fail('INVALID_GOOGLE_LIVE_MESSAGE');}
+        if(body.interrupted)await flush(false);else if(body.turnComplete)await flush(true);
+      });
+      transcriptions=received.catch(error);
+      enqueue(async()=>{await received;await message(value);});
+    }
     const config={responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
     let timer;
     try{
-      const connecting=Promise.resolve(client.live.connect({model,config,callbacks:{onmessage:value=>enqueue(()=>message(value)),onerror:()=>enqueue(error),onclose:()=>enqueue(async()=>{if(!closed){await flush(false);closed=true;await callbacks.onClose();}})}}));
+      const connecting=Promise.resolve(client.live.connect({model,config,callbacks:{onmessage:acceptMessage,onerror:()=>enqueue(error),onclose:()=>enqueue(async()=>{if(!closed){await flush(false);Promise.resolve(callbacks.onClose()).catch(()=>{});void close();}})}}));
       connecting.then(value=>{if(closed){try{value.close();}catch{}}}).catch(()=>{});
       provider=await Promise.race([connecting,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED')),connectTimeoutMs);})]);
       if(closed||failed||['sendRealtimeInput','sendToolResponse','close'].some(key=>typeof provider?.[key]!=='function'))throw Error();
@@ -64,7 +86,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       async sendToolResponse(value){
         if(closed||failed||typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');jsonData(value.response);
         try{await provider.sendToolResponse({functionResponses:[{id:value.toolCallId,name:value.name,response:value.response}]});}catch{await error();fail('GOOGLE_LIVE_SEND_FAILED');}
-      },close,whenIdle:()=>queue
+      },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });
   };
 }

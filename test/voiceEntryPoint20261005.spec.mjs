@@ -36,7 +36,7 @@ test('actual start-script server registers signed incoming and voice WebSocket r
     const request=signature=>fetch(base+callback,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded','x-twilio-signature':signature},body:new URLSearchParams(params)});
     assert.equal((await request('invalid')).status,403);
     const response=await request(twilio.getExpectedTwilioSignature(token,origin+callback,params));assert.equal(response.status,200);
-    const xml=await response.text();assert.ok(xml.includes('<Number>'+fallback+'</Number>'),xml);assert.doesNotMatch(xml,/operator connection is ready/);
+    const xml=await response.text();assert.match(xml,/<Gather/);assert.doesNotMatch(xml,/<Dial|<Hangup/);assert.doesNotMatch(xml,/operator connection is ready/);
     const status=await new Promise((resolve,reject)=>{
       ws=new WebSocket(base.replace(/^http:/,'ws:')+'/api/twilio/voice/stream/'+'x'.repeat(43));
       ws.once('unexpected-response',(_request,res)=>{res.resume();resolve(res.statusCode);});ws.once('error',reject);ws.once('open',()=>reject(Error('Unsigned upgrade must not open.')));

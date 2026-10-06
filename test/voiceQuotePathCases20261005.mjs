@@ -110,10 +110,10 @@ test('signed provisioned callback -> real dispatcher -> two-tier quote -> availa
     const publicValues=JSON.stringify([matched,quoted,noFee,lead,slots,booked]);for(const secret of [h.owner,h.custom.id,ACCOUNT,h.callSid,'calculationRecord','lineItems','approvedValues','markupPercent','priceBasisByCategory'])assert.equal(publicValues.includes(secret),false,secret);
   }finally{await h.close();}
 });
-test('session-start failure reaches signed forwarding fallback; mismatched caller fails closed',async()=>{
+test('session-start failure captures before signed forwarding; mismatched caller fails closed',async()=>{
   const h=await harness({fail:true});try{
     const started=await h.connect();await until(()=>started.ws.readyState===WebSocket.CLOSED,'failed session close');
-    const response=await h.post(started.fallbackPath);assert.equal(response.status,200);assert.ok((await response.text()).includes('<Number>'+FALLBACK+'</Number>'));assert.equal(h.db.prepare('SELECT status FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,h.callSid).status,'FALLBACK');
+    const response=await h.post(started.fallbackPath);assert.equal(response.status,200);const captureXml=await response.text();assert.match(captureXml,/<Gather/);assert.doesNotMatch(captureXml,/<Dial|<Hangup/);assert.equal(h.db.prepare('SELECT status FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,h.callSid).status,'FALLBACK');
     assert.equal((await h.post(started.fallbackPath,{AccountSid:ACCOUNT,CallSid:h.callSid,From:'+19025550177',To:TO,Direction:'inbound'})).status,403);
   }finally{await h.close();}
 });

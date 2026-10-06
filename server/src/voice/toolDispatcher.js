@@ -1,3 +1,4 @@
+import {isVoiceCaller} from './callerIdentity.js';
 import { createHash } from 'node:crypto';
 import {projectVoiceOptions,conciseVoiceSummary,VOICE_WRITTEN_LIMIT,VOICE_RESULT_BYTES} from './voiceQuotePresentation.js';
 import {MUTATING_VOICE_TOOLS,isForbiddenVoiceField,validateVoiceToolCall} from './toolSchemas.js';
@@ -23,7 +24,7 @@ function assertClosed(value,allowed,required=[],code='INVALID_DISPATCH_OBJECT'){
 function normalizeCallContext(value){
   const keys=['ownerId','callSid','from','to','accountSid'];assertClosed(value,keys,keys,'INVALID_CALL_CONTEXT');
   const context=Object.fromEntries(keys.map(key=>[key,typeof value[key]==='string'?value[key].trim():'']));
-  if(!OWNER_ID.test(context.ownerId)||!CALL_SID.test(context.callSid)||!E164.test(context.from)||!E164.test(context.to)||!ACCOUNT_SID.test(context.accountSid))fail('INVALID_CALL_CONTEXT');
+  if(!OWNER_ID.test(context.ownerId)||!CALL_SID.test(context.callSid)||!isVoiceCaller(context.from)||!E164.test(context.to)||!ACCOUNT_SID.test(context.accountSid))fail('INVALID_CALL_CONTEXT');
   return Object.freeze(context);
 }
 function scanCustomerSafe(value,depth=0,budget={nodes:0},keyPath=''){

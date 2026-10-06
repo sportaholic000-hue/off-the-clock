@@ -60,7 +60,9 @@ function getQuote(args){
   if(args.additionalWork!==undefined)result.additionalWork=textList(args.additionalWork);return result;
 }
 function checkAvailability(args){
-  const result={quoteHandle:handle(args.quoteHandle),leadHandle:handle(args.leadHandle)};
+  if(args.appointmentHandle===undefined&&(args.quoteHandle===undefined||args.leadHandle===undefined))fail('MISSING_TOOL_FIELD');
+  if(args.appointmentHandle!==undefined&&(args.quoteHandle!==undefined||args.leadHandle!==undefined))fail('EXTRA_TOOL_FIELD');
+  const result=args.appointmentHandle!==undefined?{appointmentHandle:handle(args.appointmentHandle)}:{quoteHandle:handle(args.quoteHandle),leadHandle:handle(args.leadHandle)};
   if(args.preference!==undefined){
     assertClosed(args.preference,['fromDate','days','timeOfDay']);const value=args.preference,preference={};
     if(value.fromDate!==undefined){
@@ -113,7 +115,7 @@ const confirmation=boolean('True only after the caller affirmatively confirms th
 const declarations={
   matchService:object({query:string("The caller's requested main service, in ordinary words.")},['query']),
   getQuote:object({serviceHandle:opaque,customerInputs:{type:'OBJECT',description:'Only current question field names and caller-stated measurements or ordinary product names returned by matchService. No address, contact, identifiers, money or confirmedFacts.'},customerConfirmed:confirmation,productConfirmations:{type:'OBJECT',description:'Product question fields mapped to true only when the caller has identified and confirmed that exact named product. False or missing means unknown; never assume identification.'},customerFeeSelections:object(Object.fromEntries(['travel','disposal','permit','overhead'].map(fee=>[fee,boolean("The caller's Yes/No to this currently offered fee; no amount.")]))),additionalWork:strings('Separate requested work needing its own on-site estimate, not part of the selected-service price.')},['serviceHandle','customerInputs','customerConfirmed']),
-  checkAvailability:object({quoteHandle:opaque,leadHandle:opaque,preference:object({fromDate:string('Local date YYYY-MM-DD, never an invented slot or raw datetime.'),days:{type:'INTEGER',minimum:1,maximum:31},timeOfDay:{type:'ARRAY',items:enumeration(['morning','afternoon','evening'])}})},['quoteHandle','leadHandle']),
+  checkAvailability:object({quoteHandle:opaque,leadHandle:opaque,appointmentHandle:opaque,preference:object({fromDate:string('Local date YYYY-MM-DD, never an invented slot or raw datetime.'),days:{type:'INTEGER',minimum:1,maximum:31},timeOfDay:{type:'ARRAY',items:enumeration(['morning','afternoon','evening'])}})}),
   bookAppointment:object({slotHandle:opaque,leadHandle:opaque,customerConfirmed:confirmation},['slotHandle','leadHandle','customerConfirmed']),
   captureLead:object({name:string('Optional caller name; the verified callback phone is already bound to this call.'),email:string('Optional caller email.'),address:object({line1:string('Street address'),line2:string('Optional address line 2'),city:string('City'),region:string('Province or state'),postalCode:string('Postal or ZIP code'),country:string('Two-letter country')},['line1','city','region','postalCode']),notes:string('Caller request and non-pricing callback notes. Preserve the caller words.'),callbackRequested:boolean('True when the caller requests a callback; requires their notes. Reuse inquiryNumber for corrections and retries.'),description:string('Optional caller-described work; never invent scope.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse the number or leadHandle for corrections. Use a different number only for a genuinely separate job on this call.'}}),
   logQuoteRequest:object({description:string("The customer's request needing follow-up."),leadHandle:opaque},['description']),

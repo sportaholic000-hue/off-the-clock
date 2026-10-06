@@ -1,3 +1,4 @@
+import {isVoiceCaller,callerIdentity,isPhoneNumber} from './callerIdentity.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
@@ -104,7 +105,7 @@ function normalizeContext(value) {
     to: typeof value.to === 'string' ? value.to.trim() : ''
   };
   if (!context.ownerId || !CALL_SID.test(context.callSid) || !ACCOUNT_SID.test(context.accountSid) ||
-      !E164.test(context.from) || !E164.test(context.to)) {
+      !isVoiceCaller(context.from) || !E164.test(context.to)) {
     throw new TypeError('Voice call context is invalid.');
   }
   return Object.freeze(context);
@@ -563,7 +564,7 @@ export function createVoiceToolRuntime({
     if(fields.email!==undefined){fields.email=fields.email.toLowerCase();if(!EMAIL.test(fields.email))throw runtimeError('INVALID_EMAIL');}
     if(args.address!==undefined)fields.address=Object.fromEntries(Object.entries(args.address).map(([name,value])=>[name,['region','postalCode','country'].includes(name)?value.trim().toUpperCase():value.trim()]));
     return saveVoiceInquiry({database,context,callId:call.id,key:key||'capture:'+number,leadId,
-      customerId:stableUuid(secret,'voice-customer',context.ownerId+'\0'+context.from),
+      customerId:stableUuid(secret,'voice-customer',context.ownerId+'\0'+callerIdentity(context)),
       updates:fields,createdAt:instant().toISOString(),type,status,legacyDefault:!key&&number===1});
   }
 
@@ -586,6 +587,14 @@ export function createVoiceToolRuntime({
 
   async function checkAvailability(input) {
     const args = invocation(input);
+    if(args.appointmentHandle){
+      const {row}=callerOwnsAppointment(resolve(args.appointmentHandle,'appointment'));
+      if(typeof bookingService?.appointmentAvailability!=='function')return {status:'unavailable',message:'Appointment availability cannot be checked right now.'};
+      const result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});
+      const body=result.body;
+      if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
+      return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId},body.validUntilUtc)}))};
+    }
     const quoteResolved = resolve(args.quoteHandle, 'quote');
     const leadResolved = resolve(args.leadHandle, 'lead');
     const { row: quoteRow } = loadQuote(quoteResolved);
@@ -1026,8 +1035,11 @@ export function createVoiceToolRuntime({
         callSid: context.callSid,
         destination,
         reason,
+        notes:args.notes,
+        inquiryNumber:args.inquiryNumber,
         idempotencyKey: eventId
       });
+      if(providerStatus(result)==='PENDING')return {status:'transferring',message:'Trying to connect your call. The connection has not yet been confirmed.'};
       if (providerStatus(result) !== 'CONNECTED') {
         updateOutbox(eventId, 'FAILED');
         return unavailable('TRANSFER_NOT_CONFIRMED','The live transfer could not be confirmed.');
@@ -1058,13 +1070,14 @@ export function createVoiceToolRuntime({
 
   async function modifyAppointment(input) {
     const args = invocation(input);
+    const preserveChange=()=>immediate(database,()=>saveInquiry({}, {key:'appointment-change:'+args.appointmentHandle,type:'CALLBACK',updates:{description:'Appointment '+args.action+' requested',notes:'The caller requested an appointment '+args.action+'. Provider confirmation was not received.'}}));
     if (args.customerConfirmed !== true) throw runtimeError('CUSTOMER_CONFIRMATION_REQUIRED');
     const appointmentResolved = resolve(args.appointmentHandle, 'appointment');
     const { row } = callerOwnsAppointment(appointmentResolved);
     let slotResolved = null;
     if (args.action === 'reschedule') {
       slotResolved = resolve(args.slotHandle, 'slot');
-      if (slotResolved.reference.intentId !== row.bookingIntentId ||
+      if (slotResolved.reference.appointmentId !== row.id || !slotResolved.reference.intentId ||
           (slotResolved.reference.customerId && slotResolved.reference.customerId !== row.customerId)) {
         throw runtimeError('BOOKING_BINDING_MISMATCH');
       }
@@ -1083,7 +1096,7 @@ export function createVoiceToolRuntime({
     );
     if (prior) {
       if (prior.status !== 'CONFIRMED') {
-        return {
+        preserveChange();return {
           status: 'unavailable',
           reason: 'APPOINTMENT_PROVIDER_UNAVAILABLE',
           message: 'The appointment change could not be confirmed.'
@@ -1118,7 +1131,7 @@ export function createVoiceToolRuntime({
         : null;
     if (!modify) {
       updateOutbox(eventId, 'FAILED');
-      return {
+      preserveChange();return {
         status: 'unavailable',
         reason: 'APPOINTMENT_PROVIDER_UNAVAILABLE',
         message: 'Appointment changes are not available right now.'
@@ -1131,11 +1144,12 @@ export function createVoiceToolRuntime({
         action: args.action,
         appointment: row,
         slotId: slotResolved?.reference?.slotId || null,
+        intentId: slotResolved?.reference?.intentId || null,
         idempotencyKey: eventId
       });
       if (providerStatus(result) !== 'CONFIRMED') {
         updateOutbox(eventId, 'FAILED');
-        return {
+        preserveChange();return {
           status: 'unavailable',
           reason: 'APPOINTMENT_CHANGE_NOT_CONFIRMED',
           message: 'The appointment change could not be confirmed.'
@@ -1167,7 +1181,7 @@ export function createVoiceToolRuntime({
       };
     } catch {
       updateOutbox(eventId, 'FAILED');
-      return {
+      preserveChange();return {
         status: 'unavailable',
         reason: 'APPOINTMENT_PROVIDER_UNAVAILABLE',
         message: 'The appointment change failed.'
@@ -1177,6 +1191,7 @@ export function createVoiceToolRuntime({
 
   async function getCustomerContext(input) {
     invocation(input);
+    if(!isPhoneNumber(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
     const customer = database.prepare('SELECT * FROM customers WHERE ownerId = ? AND phoneE164 = ? ORDER BY createdAt DESC LIMIT 1').get(
       context.ownerId, context.from
     );
