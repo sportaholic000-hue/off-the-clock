@@ -5,6 +5,7 @@ import { Shield } from 'lucide-react';
 import './styles.css';
 import { getToken, getSessionKey, go } from './api.js';
 import Dashboard from './dashboard.jsx';
+import Calls from './calls.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
 import Billing from './billing.jsx';
@@ -60,6 +61,7 @@ function App() {
   if (path === '/calendar') return <Calendar key={sessionEpoch} />;
   if (path === '/pricebook') return <PriceBook key={sessionEpoch} />;
   if (path === '/dashboard') return <Dashboard key={sessionEpoch} />;
+  if (path === '/calls') return <Calls key={location.url+sessionEpoch} recordId={new URLSearchParams(window.location.search).get('record')}/>;
   go('/dashboard');
   return null;
 }
