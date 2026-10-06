@@ -7,6 +7,7 @@ import crypto from 'node:crypto';
 import { types } from 'node:util';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
+import { pricebookStructureIssue, validPricebookServiceId } from './priceBookStructure.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // Read at use, never at module load. Production sets PRICEBOOK_PATH (on the
@@ -58,8 +59,8 @@ export function loadPricebook(ownerId) {
   catch { throw unreadablePricebook(ownerId, 'the file is not valid JSON'); }
   if (!book || typeof book !== 'object' || Array.isArray(book)) throw unreadablePricebook(ownerId, 'the file is not a price book');
   if (Object.hasOwn(book, 'ownerId') && book.ownerId !== ownerId) throw unreadablePricebook(ownerId, 'the file belongs to a different business');
-  if (!Array.isArray(book.services)) throw unreadablePricebook(ownerId, 'the service list is missing');
-  if (book.defaults !== undefined && (!book.defaults || typeof book.defaults !== 'object' || Array.isArray(book.defaults))) throw unreadablePricebook(ownerId, 'the business settings are malformed');
+  const issue = pricebookStructureIssue(book);
+  if (issue) throw unreadablePricebook(ownerId, issue);
   return book;
 }
 
@@ -165,16 +166,25 @@ export function withPricebookLock(ownerId, work) {
 export function savePricebook(ownerId, data) {
   // Every write is serialized, even from a caller that did not take the lock itself.
   if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
+  const invalid = reason => Object.assign(new Error(`The price book was not saved: ${reason}.`), { code:'PRICEBOOK_INVALID', statusCode:400 });
+  const issue = pricebookStructureIssue(data);
+  if (issue) throw invalid(issue);
+  const ids = new Set();
+  const services = data.services.map(service => {
+    const missing = service.id === undefined || service.id === null || service.id === '';
+    if (missing && (service.origin || service.quoteDoneApproval)) throw invalid('an existing approval or origin requires its original service UUID');
+    const id = missing ? crypto.randomUUID() : service.id;
+    if (!validPricebookServiceId(id) || ids.has(id.toLowerCase())) throw invalid('every service must have its own valid UUID');
+    ids.add(id.toLowerCase());
+    return { ...service, id };
+  });
   const dir = pricebookDirectory();
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
     ownerId,
     updatedAt: new Date().toISOString(),
-    services: (data.services || []).map(service => ({
-      id: service.id || crypto.randomUUID(),
-      ...service
-    }))
+    services
   };
   // A failed write, rename or directory flush must never truncate the last
   // accepted owner data or report an unconfirmed save as successful.
@@ -260,4 +270,3 @@ export function contractorValidationMessage(input, pricebook = {}) {
   if (rawIdentifier.test(message)) return 'Review the highlighted pricing values and try again.';
   return message;
 }
-

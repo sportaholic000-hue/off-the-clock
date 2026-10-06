@@ -1,3 +1,33 @@
+# October 6 consolidated quote release candidate — verification in progress
+
+Branch: `codex/quote-release-candidate-20261006`.
+Pinned inputs: website `0e687907cca8b186d8b85eb285bb82c1deda6a6d`, engine core
+`509891e39318bee344951278dd2667e4ab1f700a`, voice verification
+`20f1cd3b9ef73c418bb5b6828da8031f2ba3bb59`.
+
+Use the [single audit entry point](../docs/QUOTE_ENGINE_AUDIT.md) and
+[release decisions and expectations](QUOTE_RELEASE_CANDIDATE_20261006.md).
+The candidate combines v7 with the voice and website work. Validated IDs and
+storage containers prevent corrupted saves; malformed persisted structures
+pause quoting cleanly; date diagnostics identify their actual field. Voice
+catalog/status/intake/calculation use explicit trusted profile and clock context.
+No arithmetic policy changes beyond the already approved v7 input are added.
+
+Local checks so far: 112 core baseline checks; 75 storage/date/persistence
+checks; 39 voice integration/persistence checks; 28 prior audit controls, all
+passed with zero skips. Counts overlap. All 42 existing before/after quote
+fixtures retain their outcome, line items and scenario amounts exactly. The
+45 new release tests comprise 41 storage/date cases and four voice date cases.
+Cold installation and owner/widget builds passed. Full local and hosted gates
+are still pending; this is not a completed release verification record.
+
+The full runner now enables Node 22 module mocks: the existing previously
+skipped tests passed 10/10 locally with that flag. No failure allowances were
+added. Historical engine code remains solely in `test/legacy/`; the production
+architecture gate remains mandatory. Main and deployment are untouched.
+
+## Previous website-only checkpoint
+
 # October 6 website price import — hosted gates passed
 
 Branch: `feat/website-price-import-20261006`.

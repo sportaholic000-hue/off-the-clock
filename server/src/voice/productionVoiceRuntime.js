@@ -17,6 +17,7 @@ import {createGoogleGenAiLiveSessionOpener} from './googleGenAiLiveAdapter.js';
 import {compileVoiceSystemInstruction} from './voicePromptCompiler.js';
 import {loadPricebook} from '../../priceBookService.js';
 import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
+import {quoteDateContext} from '../quoteDate.js';
 import {hasOperatorAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
 
 const E164=/^\+[1-9]\d{7,14}$/;
@@ -65,7 +66,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[]};}catch{knowledge=null;}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     const book=canQuote?loadPricebook(context.ownerId):{services:[]};
-    const statuses=canQuote?new Map(bookQuoteStatuses(book).map(status=>[status.serviceId,status])):new Map();
+    const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
     return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge});
   }

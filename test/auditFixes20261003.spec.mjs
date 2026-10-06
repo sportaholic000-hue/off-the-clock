@@ -56,9 +56,10 @@ test('D01: shares split the billed line, so a 100% materials share taxes exactly
   assert.equal(total(mat5.quote(job())), total(all5.quote(job())), 'equivalent configurations give the same cents');
   const forty = live(fenceSvc(shares(40, 60)), defaults({ taxMode:'TAX_MATERIALS', taxPercent:5 }));
   assert.equal(total(forty.quote(job())), billed + cents(mul([BigInt(billed), 1n], D('0.4'), D('0.05'))));
-  const labor = live(fenceSvc(shares(0, 100)), defaults({ peakMonths:ALL_MONTHS, peakSurchargePercent:5 }));
-  const lines = labor.quote(job()).options[0].lineItems;
+  const labor = live(fenceSvc(shares(0, 100)), defaults({ quoteTimeZone:'UTC', peakMonths:ALL_MONTHS, peakSurchargePercent:5 }));
+  const result = labor.quote(job()), lines = result.options[0].lineItems;
   assert.equal(lines.find(l => /Peak/.test(l.name)).amountCents, cents(mul([BigInt(billed), 1n], D('0.05'))), '100% labor surcharge is 5% of the billed line');
+  assert.equal(total(result), 394055, '$3,752.90 + $187.65 peak; handwritten in DATE_CONTEXT_FIX_20261006.md');
 });
 
 test('D01: with a terrain factor, the labor and materials portions still add back to the billed line', () => {
@@ -73,18 +74,20 @@ test('D01: with a terrain factor, the labor and materials portions still add bac
 });
 
 test('M04: the surcharge on installed selling-price labor is never marked up; ordinary cost labor keeps the owner setting', () => {
-  const svc = live(fenceSvc({ ...shares(0, 60), offeringRates:{ installedFencePerLF:100 } }), defaults({ markupPercent:30, peakMonths:ALL_MONTHS, peakSurchargePercent:10 }));
+  const svc = live(fenceSvc({ ...shares(0, 60), offeringRates:{ installedFencePerLF:100 } }), defaults({ quoteTimeZone:'UTC', markupPercent:30, peakMonths:ALL_MONTHS, peakSurchargePercent:10 }));
   const result = svc.quote(job({ linearFeet:1 }));
   assert.equal(total(result), 10600, '$100 + 10% of $60 labor, no markup on either');
   const surcharge = result.options[0].lineItems.find(l => /Peak/.test(l.name));
   assert.equal(surcharge.priceBasis, 'sell_price');
   const itemized = live({ serviceType:'FENCING_INSTALL', service:'Fence', knownOfferings:{ fenceType:{ wood:fid } }, pricing:{ minimumJob:0, offeringMode:'itemized',
     offeringDetails:{ description:'Fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts', gates:{} },
-    offeringRates:{ fenceLaborPerLF:10, fenceMaterialPerLF:20, postMaterialEach:20, footingLaborEach:4, footingMaterialEach:6 } } }, defaults({ markupPercent:30, peakMonths:ALL_MONTHS, peakSurchargePercent:10 }));
+    offeringRates:{ fenceLaborPerLF:10, fenceMaterialPerLF:20, postMaterialEach:20, footingLaborEach:4, footingMaterialEach:6 } } }, defaults({ quoteTimeZone:'UTC', markupPercent:30, peakMonths:ALL_MONTHS, peakSurchargePercent:10 }));
   const r = itemized.quote(job({ linearFeet:100 }));
   const peak = r.options[0].lineItems.find(l => /Peak/.test(l.name));
   assert.equal(peak.priceBasis, undefined, 'cost-labor surcharge follows the owner category setting');
   assert.equal(peak.calculation.markupEligible, true);
+  assert.equal(peak.amountCents, 10560, '10% of $1,056 regular labor');
+  assert.equal(total(r), 484328, '$3,725.60 including peak + $1,117.68 markup; handwritten in DATE_CONTEXT_FIX_20261006.md');
 });
 
 test('D04: an incomplete second flat-roof membrane does not block a complete one', () => {

@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['main', 'claude/**', 'codex/**', 'feat/website-price-import-20261006']
+    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006']
   pull_request:
 permissions:
   contents: write
@@ -15,11 +15,11 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - name: Install from lockfile (ignores committed node_modules)
-        run: rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+        run: rm -rf node_modules server/node_modules client/node_modules && npm ci
       - name: Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)
         run: npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
       - name: Build owner app and widget
-        run: npm --prefix client run build
+        run: npm run build
       - name: Strict quote engine and price book gate
         run: npm run test:quote
       - name: Full test suite

@@ -1,4 +1,5 @@
 import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
+import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import crypto from 'node:crypto';
@@ -43,11 +44,11 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-launch-fixes-20261005-v6';
+export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
-  'callerType', 'feeSelections', 'currentMonth', 'allowInactiveOwnerPreview'
+  'callerType', 'feeSelections', 'currentMonth', 'quoteDate', 'allowInactiveOwnerPreview'
 ]);
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more configured options need owner review.';
@@ -919,6 +920,15 @@ function assertMoneyIntegrity(lines, finalTotalCents) {
   }
 }
 
+export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,ratePaths) {
+  if(defaults?.taxMode!=='TAX_MATERIALS')return [];
+  const definitions=installedPriceDefinitions(serviceType,pricing);
+  return [...new Set(ratePaths)].filter(path=>Object.hasOwn(definitions,path)).flatMap(path=>{
+    const share=pricing.installedMaterialsPercent?.[path];
+    return typeof share==='number'&&Number.isFinite(share)&&share>=0&&share<=100?[]:[{type:'missing',kind:'installed_material_share',path:'installedMaterialsPercent.'+path,message:'Set the materials share of this installed price before using materials-only tax.'}];
+  });
+}
+
 function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering }) {
   const lines = materializeScenarioLinesVNext(template.lineItems, variant);
   const record = {
@@ -935,6 +945,8 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
   record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
+  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath));
+  if(shareDiagnostics.length)throw new QuoteReviewError(shareDiagnostics[0].message,{missingOwnerFields:shareDiagnostics.map(d=>d.path),ownerDiagnostics:shareDiagnostics});
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
     const path=line.calculation?.ratePath;
     if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
@@ -1205,12 +1217,13 @@ export function generateQuoteVNext(input = {}) {
 // Each probe still runs customer/owner validation and optionRun's complete money,
 // fee, range and zero-policy pipeline. It returns readiness, never a quote receipt.
 // No caller-provided flag can enable these caches in the public quote entry point.
-export function createActivationQuoteCheckVNext(input) {
+export function createActivationQuoteCheckVNext(input, tierName) {
   const fixed = snapshotPlainData(input, 'quoteRequest');
   if (!fixed.ok || fixed.nonPlainPaths.length || !isPlainObject(fixed.value)) {
     return () => generateQuoteVNext(input);
   }
   const prepared = new Map();
+  if(tierName!==undefined)prepared.set('activationTierName',tierName);
   return customerInputs => {
     const customer = snapshotPlainData(customerInputs, 'quoteRequest.customerInputs');
     const request = customer.ok
@@ -1236,6 +1249,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     callerType = 'customer',
     feeSelections = {},
     currentMonth = new Date().getMonth() + 1,
+    quoteDate,
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
   const quoteId = crypto.randomUUID();
@@ -1346,7 +1360,17 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     }
   }
 
-  const defaultValidation = reuseActivation(prepared, 'defaults', () => validateBusinessDefaults(businessDefaults));
+  if(quoteDate!==undefined){
+    const issue=recordedQuoteDateDiagnostic(ownerPricing,businessDefaults,quoteDate);
+    if(issue)return finishReview({reviewReason:issue.message,invalidOwnerFields:[issue.path],ownerDiagnostics:[issue]});
+    const localMonth=monthForRecordedQuoteDate(quoteDate);
+    if(Object.hasOwn(requestSnapshot.value,'currentMonth')&&currentMonth!==localMonth){
+      const message='Quote month does not match its recorded time zone and instant.';
+      return finishReview({reviewReason:message,invalidOwnerFields:['currentMonth'],ownerDiagnostics:[{type:'invalid',kind:'quote_date',path:'currentMonth',message}]});
+    }
+    currentMonth=localMonth;
+  }
+  const defaultValidation = reuseActivation(prepared, 'defaults', () => validateBusinessDefaults(quoteDate===undefined?businessDefaults:quoteDefaultsForTimeZone(businessDefaults,quoteDate.timeZone)));
   if (!defaultValidation.ok) {
     const ownerDiagnostics = defaultValidation.diagnostics.map(item => ({ ...item, path: `businessDefaults.${item.path}` }));
     return finishReview({
@@ -1405,6 +1429,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   const options = [];
   const failed = [];
   for (const [tierIndex, tier] of tiers.entries()) {
+    if(prepared?.has('activationTierName')&&tier.name!==prepared.get('activationTierName'))continue;
     let pricing = basePricing;
     try {
       pricing = reuseActivation(prepared, 'pricing:' + tierIndex, () => mergePricingForValidationVNext(basePricing, tier.overrides || {}));
@@ -1512,7 +1537,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       serviceType,
       options: structuredClone(options.map(option => option.calculationRecord)),
       ownerConfiguration: cloneConfigurationEvidence({ ...ownerPricing, pricing: basePricing }),
-      financialInputs: structuredClone({ businessDefaults, feeSelections, currentMonth }),
+      financialInputs: structuredClone({ businessDefaults, feeSelections, currentMonth, ...(quoteDate===undefined?{}:{quoteDate}) }),
+      ...(quoteDate===undefined?{}:{quoteDate:structuredClone(quoteDate)}),
       customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     }
   };
@@ -1749,7 +1775,10 @@ function rootCalculationRecordMatches(result) {
 // An internally consistent different price is not evidence for this price book.
 function configuredCalculationMatches(result) {
   const inputs=result.calculationRecord.financialInputs;
-  if(!isPlainObject(inputs)||Object.keys(inputs).length!==3||!['businessDefaults','feeSelections','currentMonth'].every(k=>Object.hasOwn(inputs,k)))return false;
+  if(!isPlainObject(inputs)||!['businessDefaults','feeSelections','currentMonth'].every(k=>Object.hasOwn(inputs,k)))return false;
+  const hasDate=Object.hasOwn(inputs,'quoteDate');
+  if(Object.keys(inputs).length!==(hasDate?4:3)||hasDate!==Object.hasOwn(result.calculationRecord,'quoteDate'))return false;
+  if(hasDate&&!plainDataEqual(inputs.quoteDate,result.calculationRecord.quoteDate))return false;
   const reproduced=generateQuoteVNext({serviceType:result.serviceType,customerInputs:result.submittedCustomerInputs,ownerPricing:result.calculationRecord.ownerConfiguration,...inputs,callerType:'owner'});
   if(reproduced.resultType!=='INSTANT_ESTIMATE_READY'||reproduced.customerEligible!==true)return false;
   return plainDataEqual(reproduced.options,result.options) &&

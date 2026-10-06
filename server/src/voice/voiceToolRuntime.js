@@ -196,16 +196,17 @@ function providerStatus(value) {
   return typeof value?.status === 'string' ? value.status.trim().toUpperCase() : '';
 }
 
-function quoteApplicationDefaults(database) {
+function quoteApplicationDefaults(database,clock) {
+  const dateContext=ownerId=>quoteDateContext(database,ownerId,nowDate(clock));
   return {
     loadBook: loadPricebook,
-    status: (service,book)=>cachedApplicationStatus(service,book,{quick:true}),
+    status: (service,book)=>cachedApplicationStatus(service,book,{...dateContext(book.ownerId),quick:true}),
     definition: service=>{try{return applicationServiceDefinition(service);}catch{return {customerFields:[]};}},
     serviceName: applicationServiceName,
     serviceMatches: applicationServiceMatches,
     revision: bookRevision,
-    prepare: (ownerId,submission)=>prepareApplicationIntake(ownerId,submission,quoteDateContext(database,ownerId)),
-    calculate: (book,service,submission,options)=>calculateApplicationQuote(book,service,submission,{...options,...quoteDateContext(database,options.ownerId)})
+    prepare: (ownerId,submission)=>prepareApplicationIntake(ownerId,submission,dateContext(ownerId)),
+    calculate: (book,service,submission,options)=>calculateApplicationQuote(book,service,submission,{...options,...dateContext(options.ownerId)})
   };
 }
 
@@ -229,7 +230,7 @@ export function createVoiceToolRuntime({
   }
   const context = normalizeContext(callContext);
   const secret = secretBuffer(handleSecret);
-  const quoteApp = Object.freeze({ ...quoteApplicationDefaults(database), ...quoteApplication });
+  const quoteApp = Object.freeze({ ...quoteApplicationDefaults(database,clock), ...quoteApplication });
   const handleStore = createVoiceHandleStore({ database, secret, clock });
   const idempotencyStore = createVoiceToolIdempotencyStore({
     database, clock, leaseMs: idempotencyLeaseMs

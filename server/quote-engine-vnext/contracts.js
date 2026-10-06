@@ -1,4 +1,6 @@
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
+import {validPricebookServiceId} from '../priceBookStructure.js';
+import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
@@ -2069,7 +2071,7 @@ export function inspectionOwnerDecisionsVNext(type,c={},p={}) {
 
 
 export function validServiceIdVNext(value) {
-  return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  return validPricebookServiceId(value);
 }
 const auditText = value => typeof value === 'string' && value.trim().length > 0;
 const auditTime = value => auditText(value) && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
@@ -2170,7 +2172,7 @@ function includedPathDiagnosticsVNext(service, pricing) {
 function computeIncludedPathDiagnostics(service, pricing) {
   const mappings = service.zeroPricePolicy?.includedPrices;
   if (!isRecord(mappings)) return [];
-  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>({...service.pricing,...t?.overrides}))];
+  const variants=[service.pricing,...(Array.isArray(service.tiers)?service.tiers:[]).map(t=>mergePricingForValidationVNext(service.pricing||{},t?.overrides||{}))];
   const supported=(path,p)=>supportedIncludedPricePath(service.serviceType,path,p);
   const out = [], configured = path => variants.some(p=>supported(path,p)&&valueAtPath(p,path)!==undefined);
   const validPrice = (path, value) => {

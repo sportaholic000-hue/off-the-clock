@@ -4,6 +4,10 @@ AI phone operator and QuoteDone quoting platform for home-service businesses.
 
 ## Start here
 
+For the consolidated quote engine and price book, use the
+[single audit entry point](docs/QUOTE_ENGINE_AUDIT.md). It identifies the candidate
+branch, active production paths, governing rules and required verification.
+
 1. Read [AGENTS.md](AGENTS.md) and the current summary at the top of
    [BUILD_STATUS.md](specs/BUILD_STATUS.md).
 2. Use the [repository map](#repository-map) below to locate active source and tests.
@@ -23,10 +27,11 @@ checkout or deployment has passed. Confirm the branch and commit before auditing
 | [server/src/quoteDoneBridge.js](server/src/quoteDoneBridge.js) | Application boundary for owner pricing, saved approvals, customer definitions and quote calculations. |
 | [server/src/quoteDoneRoutes.js](server/src/quoteDoneRoutes.js) | Quote/price-book HTTP routes and quote/lead submission persistence. |
 | [scopeConfiguration.js](server/scopeConfiguration.js), [pricePrecision.js](server/pricePrecision.js), [interviewConfiguration.js](server/interviewConfiguration.js) | Shared scope matching, price precision and interview configuration schemas used by the engine and owner controls. |
-| [server/](server/) | Price-book persistence, money conversion and shared pricing metadata; also retained legacy engine modules. |
+| [server/](server/) | Price-book persistence, money conversion and shared pricing metadata. |
 | [server/src/](server/src/) | Application services and runtime entry point. |
 | [client/src/](client/src/) | Owner app, price-book editor, quote controls and widget entry points. |
 | [test/](test/) | Automated regression tests. Quote gate selection is defined in [scripts/testSelection.mjs](scripts/testSelection.mjs). |
+| [test/legacy/](test/legacy/) | Historical engine fixtures used only for regression tests; never production pricing. |
 | [verification/](verification/) | Dated reports, independent reproductions, logs and immutable source bindings. |
 | [docs/](docs/) | Navigation, review handoffs and historical evidence. |
 | [design-reference/](design-reference/) | Design references; these are not the running application source. |
@@ -52,9 +57,9 @@ npm run test:quote
 npm test
 ```
 
-`test:quote` requires zero failures. `npm test` runs the broader suite and its
-existing known-failure checker; a successful checker is not a claim of zero raw
-test failures. Read the actual summary and the dated evidence.
+`test:quote` requires every selected test and file to complete with zero failures,
+skips, cancellations or TODOs. `npm test` runs the broader suite with an empty
+known-failure allowance. Read the actual summary and tested commit in BUILD_STATUS.
 
 The five original audit findings and their added boundary controls are also
 available as one focused run (these 35 cases are included in `test:quote`):
@@ -72,7 +77,7 @@ quote gate. The [readiness repair evidence](verification/readiness-scope-followu
 records the further defects found after the original five-case audit, their
 reproductions, and verification at `42812a71`.
 
-The [latest agreed audit fixes](verification/audit-decisions-20261004/README.md)
+The [October 4 agreed audit fixes](verification/audit-decisions-20261004/README.md)
 cover independent flat-roof layers, multiple scope entries, complete interview
 setup, rate precision, open-edge formwork, summary units, retired formulas,
 isolated test storage and removal-labor peak pricing at `bd14bfb5`.

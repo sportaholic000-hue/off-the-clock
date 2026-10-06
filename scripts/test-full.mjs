@@ -31,7 +31,9 @@ catch { missing.push('Playwright for the browser specs (run: npm install --no-sa
 for (const item of missing) console.error(`[npm test] Missing prerequisite: ${item}. Tests that need it will fail.`);
 
 const out = createWriteStream(tapFile);
-const run = spawn(process.execPath, ['--import', './test/pricebookTestEnv.mjs', '--test', '--test-reporter=tap', ...files], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+// Node 22 requires this flag for the existing calendar/service-area module mocks.
+// Running those tests is preferable to their fallback skipped placeholders.
+const run = spawn(process.execPath, ['--experimental-test-module-mocks', '--import', './test/pricebookTestEnv.mjs', '--test', '--test-reporter=tap', ...files], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
 for (const stream of [run.stdout, run.stderr]) stream.on('data', chunk => { out.write(chunk); process.stdout.write(chunk); });
 run.on('close', () => out.end(() => {
   const check = spawnSync(process.execPath, ['.github/scripts/check-test-results.mjs', tapFile], { cwd: root, stdio: 'inherit' });

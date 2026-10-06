@@ -6,11 +6,11 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-export const QUOTE_PRICEBOOK_SOURCES = /^(server\/quote-engine-vnext\/[^/]+\.js|server\/src\/(quoteDoneBridge|quoteDoneRoutes|quoteIntake|quoteRequestScope|quoteScopeDisclosure|customerSummary|customerExplanation|priceBookAI)\.js|server\/(priceBook\w*|installedPriceConfiguration|scopeConfiguration|pricePrecision|interviewConfiguration|taxJurisdiction|quoteEngine|quoteTemplates)\.js|client\/src\/(pricebook\w*|quoteDoneControls|offeringEditor|scopeEditor|installedMaterialsEditor|interviewConfiguration|interviewStructured|interviewAssist|quotePresentation|customerExplanation)\.(js|jsx))$/;
+export const QUOTE_PRICEBOOK_SOURCES = /^(server\/quote-engine-vnext\/[^/]+\.js|server\/src\/(quoteDoneBridge|quoteDoneRoutes|quoteIntake|quoteRequestScope|quoteScopeDisclosure|quoteDate|calendarTime|customerSummary|customerExplanation|priceBookAI)\.js|server\/(priceBook\w*|installedPriceConfiguration|scopeConfiguration|pricePrecision|productNames|customerQuoteFields|measurementGeometry|interviewConfiguration|taxJurisdiction|quoteEngine|quoteTemplates)\.js|client\/src\/(pricebook\w*|quoteDoneControls|offeringEditor|scopeEditor|installedMaterialsEditor|interviewConfiguration|interviewStructured|interviewAssist|quotePresentation|customerExplanation)\.(js|jsx))$/;
 
 export function allSpecFiles(root) {
-  const names = readdirSync(path.join(root, 'test'));
-  return [...names.filter(n => n.endsWith('.spec.js')).sort(), ...names.filter(n => n.endsWith('.spec.mjs')).sort()].map(n => 'test/' + n);
+  const collect=directory=>!existsSync(path.join(root,directory))?[]:readdirSync(path.join(root,directory),{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?collect(directory+'/'+entry.name):entry.isFile()&&/\.spec\.m?js$/.test(entry.name)?[directory+'/'+entry.name]:[]);
+  return [...collect('test'),...collect('server/quote-engine-vnext/tests')].sort();
 }
 
 const REPO_PATH = /['"](?:\.\/)?((?:server|client|test)\/[\w./-]+\.(?:m?js|jsx))['"]/g;
@@ -35,5 +35,5 @@ export function reachedSources(root, file) {
 }
 
 export function quotePricebookSpecFiles(root) {
-  return allSpecFiles(root).filter(file => !/^test\/(voice|googleGenAi)/.test(file) && [...reachedSources(root, file)].some(source => QUOTE_PRICEBOOK_SOURCES.test(source))).sort();
+  return allSpecFiles(root).filter(file => !/^test\/(voice|googleGenAi)/.test(file) && (file.startsWith('server/quote-engine-vnext/tests/') || [...reachedSources(root, file)].some(source => QUOTE_PRICEBOOK_SOURCES.test(source)))).sort();
 }

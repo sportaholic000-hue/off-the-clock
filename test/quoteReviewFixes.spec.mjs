@@ -189,8 +189,8 @@ test('saved approval lists a retained price only under retained settings, format
   assert.ok(mapRows.every(row => !String(row.value).includes('[object Object]') && !String(row.label).includes('[object Object]')));
 });
 
-test('changed arithmetic requires fresh approval: the engine version moved on (v6 after the October 5 combined-peak and inclusive-room arithmetic change)', () => {
-  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-launch-fixes-20261005-v6');
+test('changed pricing requires fresh approval: the engine version moved on (v7 after the October 6 quote-date context change)', () => {
+  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-date-context-20261006-v7');
   const live = liveService(patio);
   assert.equal(live.status.status, 'QUOTING LIVE');
   const book = store.loadPricebook(live.ownerId);

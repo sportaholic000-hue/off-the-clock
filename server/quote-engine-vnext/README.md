@@ -165,4 +165,26 @@ persists that envelope yet. Production and integration remain untouched.
 
 ## Completion checkpoint
 
+### October 6 quote-date context
+
+Application quotes resolve the book's valid IANA time zone first, then the
+current owner's valid profile zone. If neither is valid and the effective peak
+month list and surcharge percentage enable seasonal pricing, application
+readiness is false and both quotes and previews require review. No UTC fallback
+can price such a seasonal quote. An explicitly zero percentage or empty month
+list disables the surcharge, respecting service overrides of business defaults.
+
+The application captures one trusted quote instant and passes its resolved date
+context into the engine. The root calculation record and its financial inputs
+retain `quoteDate.timeZone` and the exact UTC `quoteDate.quoteInstant`; replay
+checks the month against this evidence. Missing zones are recorded as null when
+seasonal pricing is off. The profile is read by owner ID, and readiness cache
+keys include the effective time zone so profile changes cannot reuse stale
+eligibility. Existing explicit-month engine calculations and private activation
+probes remain supported; production entry points always supply date context.
+
+Engine version `quote-engine-vnext-date-context-20261006-v7` invalidates earlier
+application approvals. Handwritten controls and the two-commit disposal proof
+are in [DATE_CONTEXT_FIX_20261006.md](./DATE_CONTEXT_FIX_20261006.md).
+
 See [COMPLETION.md](./COMPLETION.md) for the 2026-09-09 continuation, regression evidence, and narrow remaining owner rulings. Inactive or unconfirmed owner previews carry `customerEligible: false` in the result and root calculation record; customer sanitization rejects those previews. Numeric quantity and multiplier fields are floating-point views; their exact fractions remain authoritative for calculation and reproduction. Scenario materialization validates regular and ranged evidence before returning any line. Both concrete services enforce the 10,000,000-square-foot area limit using exact decimal arithmetic for measured dimensions and measured orthogonal outlines; unverified area/perimeter-only geometry remains review-only.

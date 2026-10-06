@@ -1,7 +1,7 @@
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import {offeringMoneyKind} from '../quote-engine-vnext/configuredOfferings.js';
 import crypto from 'node:crypto';
-import {applicationQuoteMonth} from './quoteDate.js';
+import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -164,10 +164,11 @@ function uniqueApplicationService(book,serviceId) {
   if(matches.length>1)throw problem('Duplicate saved service IDs require owner correction before approval or preview.',409);
   return matches[0]||null;
 }
-export function applicationStatus(raw,book,{firstLiveProduct=false}={}) {
+export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContext}={}) {
+  dateContext=applicationDateContext(book.ownerId,dateContext);
   if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],approvalCurrent:false};
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
-  const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct});
+  const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const issues=[];
   // Every quote states its currency, so a price book without CAD or USD cannot quote.
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
@@ -181,25 +182,26 @@ export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
   return {...convertApplicationBook(book,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
 }
-// Readiness depends only on the saved book and the engine version, so it is
-// computed once per saved revision instead of on every quote. Any save changes
-// the revision; the selected job is still fully validated on every request.
+// Readiness also depends on the current profile zone when the book zone is
+// missing or invalid. Include the effective zone in its cache key; profile
+// changes must take effect without requiring a price-book save.
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
 // quick: customer-facing checks only need to know whether the service quotes at
 // all, so readiness stops at the first live product (same live/not-live answer).
-export function cachedApplicationStatus(raw,book,{quick=false}={}) {
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+export function cachedApplicationStatus(raw,book,{quick=false,...dateContext}={}) {
+  dateContext=applicationDateContext(book.ownerId,dateContext);
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
   if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
   statusCacheCounts.misses++;
-  const status=applicationStatus(raw,book,{firstLiveProduct:quick});
+  const status=applicationStatus(raw,book,{...dateContext,firstLiveProduct:quick});
   statusCache.set(key,clone(status));
   if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
   return status;
 }
 export function applicationStatusCacheCounts() { return {...statusCacheCounts}; }
-export function bookStatuses(book) { return (book.services||[]).map(service=>cachedApplicationStatus(service,book)); }
+export function bookStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,context)); }
 // Customer-facing catalog and scheduling: live/not-live only.
-export function bookQuoteStatuses(book) { return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{quick:true})); }
+export function bookQuoteStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{...context,quick:true})); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
 function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409); }
 function validateApplicationNumericDraft(book) {
@@ -209,7 +211,7 @@ function validateApplicationNumericDraft(book) {
  const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails','scopeDetails']);
  for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
 }
-export function validateApplicationDraft(ownerId,input) {
+export function validateApplicationDraft(ownerId,input,dateContext={}) {
   requireDraftBook(input);
  const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
  validateApplicationNumericDraft(input);
@@ -221,10 +223,10 @@ export function validateApplicationDraft(ownerId,input) {
   }
   if(old)service.serviceType=old.serviceType;
  }
- const statuses=bookStatuses({...saved,...incoming,ownerId});
+ const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
  return {statuses,validationErrors:statuses.flatMap(s=>s.validationErrors||[]),revision:bookRevision(saved)};
 }
-export function saveApplicationBook(ownerId,input) {
+export function saveApplicationBook(ownerId,input,dateContext={}) {
   // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
   return withPricebookLock(ownerId,()=>{
   requireDraftBook(input);
@@ -263,10 +265,10 @@ export function saveApplicationBook(ownerId,input) {
   }
   const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
   const result=savePricebook(ownerId,next).pricebook;
-  return {success:true,statuses:bookStatuses(result),revision:bookRevision(result)};
+  return {success:true,statuses:bookStatuses(result,dateContext),revision:bookRevision(result)};
 });
 }
-export function approveApplicationService(ownerId,serviceId,input) {
+export function approveApplicationService(ownerId,serviceId,input,dateContext={}) {
   // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
   return withPricebookLock(ownerId,()=>{
   if(!record(input))throw problem('Explicit saved-configuration approval is required.');
@@ -298,10 +300,11 @@ export function approveApplicationService(ownerId,serviceId,input) {
   if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
   raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
   book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
-  return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved)};
+  return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
 });
 }
 export function previewApplicationQuote(ownerId,input,dateContext={}) {
+  dateContext=applicationDateContext(ownerId,dateContext);
   if(!record(input))throw problem('Select a saved service and revision for preview.');
   requireApplicationPricingEnvelope(input);
   const contactFields=invalidCallbackFields(input.contact);
@@ -316,12 +319,13 @@ export function previewApplicationQuote(ownerId,input,dateContext={}) {
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
-  service.active=applicationStatus(raw,saved).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
-  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
+  service.active=applicationStatus(raw,saved,dateContext).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
+  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(raw);
   return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false,...dateContext}={}) {
+  dateContext=applicationDateContext(ownerId??book.ownerId,dateContext);
   requireApplicationPricingEnvelope(submission);
   const guidedIntake=preparingIntake||!!ownerId&&validIntakeConfirmation(ownerId,bookRevision(book),submission);
   const clarification=intakeClarification(ownerId,bookRevision(book),submission,applicationServiceName(raw));
@@ -329,12 +333,12 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
-  const eligibility=cachedApplicationStatus(raw,book,{quick:true}),current=eligibility.approvalCurrent;
+  const eligibility=cachedApplicationStatus(raw,book,{...dateContext,quick:true}),current=eligibility.approvalCurrent;
   const ready=eligibility.status==='QUOTING LIVE';
   // Active-for-customers is a trusted application eligibility decision. Preserve
   // raw owner intent separately; never change a rate or measurement to make it quote.
   service.active=raw.active===true&&ready;
-  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
+  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),quoteDate:applicationQuoteDate(service,defaultsProjection(book),dateContext),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
   const definition=applicationServiceDefinition(raw);
   const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
