@@ -6,6 +6,7 @@ import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import { declaredAdditionalWork, customerReceiptPresentation } from './quoteScopeDisclosure.js';
+import {storedQuoteView,storedLeadView,storedObject} from './ownerRecordViews.js';
 import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
@@ -197,14 +198,8 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
   }).immediate();
 }
 function leadView(row,role) {
-  const detail=JSON.parse(row.collectedInputsJson||'{}');
-  const submitted=detail.originalSubmission||{};
-  const common={id:row.id,customerName:row.customerName,callerNumber:row.callerNumber,describedService:row.describedService,status:row.status,createdAt:row.createdAt,contact:submitted.contact??null,location:submitted.location??null,customerInputs:submitted.customerInputs??null,explicitUnknowns:submitted.explicitUnknowns??null,urgency:submitted.urgency??null,context:submitted.context??null};
-  common.clarifications=detail.customerClarifications||[];
-  common.additionalWork=declaredAdditionalWork(submitted,common.clarifications.map(item=>item.field));
-  common.submittedAdditionalWork=submitted.additionalWork??null;
-  if(detail.customerResult?.resultType==='PARTIAL_ESTIMATE_READY')Object.assign(common,{linkedQuoteId:detail.linkedQuoteId,additionalWork:detail.customerResult.additionalWork,additionalWorkStatus:detail.customerResult.additionalWorkStatus,pricedScope:detail.customerResult.pricedScope});
-  return role==='owner'?{...common,internal:detail}:common;
+  const submission=row.callId?ownerQuery('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,requestId LIMIT 1').get(row.ownerId,row.id):null;
+  return storedLeadView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined);
 }
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bookingService,bookingTokenSecret}) {
   registerQuoteDateDatabase(db);
@@ -284,6 +279,6 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
     if(!result.changes)return res.status(404).json({error:'Lead not found.'});res.json({success:true});
   });
   app.get('/api/quotes',...team,(req,res)=>{
-    const quotes=ownerQuery('SELECT id,serviceType,status,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>{const internal=JSON.parse(row.resultJson||'{}');return {id:row.id,serviceType:row.serviceType,status:row.status,createdAt:row.createdAt,result:internal.customerResult,...(req.role==='owner'?{internal}:{})};});res.json({quotes});
+    const quotes=ownerQuery('SELECT id,callId,serviceType,status,tierChosen,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>storedQuoteView(row,req.role));res.json({quotes});
   });
 }

@@ -28,6 +28,8 @@ import { createGoogleCalendarAdapter } from './googleCalendarAdapter.js';
 import { createBookingAdminService } from './bookingAdminService.js';
 import { installBookingAdminRoutes } from './bookingAdminRoutes.js';
 import { createOwnerCalendarService } from './ownerCalendarService.js';
+import {createOwnerCallService} from './ownerCallService.js';
+import {installOwnerCallRoutes} from './ownerCallRoutes.js';
 import { installOwnerCalendarRoutes } from './ownerCalendarRoutes.js';
 import { bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
 import {
@@ -156,6 +158,7 @@ const bookingPreferenceService = bookingRuntimeAvailable
   : null;
 const bookingAdminService = createBookingAdminService({ db });
 const ownerCalendarService = createOwnerCalendarService({ ownerQuery, calendar: bookingCalendar });
+const ownerCallService=createOwnerCallService({ownerQuery});
 const billingConfig = runtimeConfig.stripeBilling ? loadBillingConfig() : null;
 const stripeClient = billingConfig
   ? new Stripe(billingConfig.secretKey, {
@@ -183,6 +186,7 @@ if (billingConfig) {
   });
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
+installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
 
@@ -441,6 +445,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     operator: profileState.operator,
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
+    callActivity:ownerCallService.dashboard(req.tenantOwnerId),
     pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.
     previewActivity: previewDashboardActivity(),
