@@ -1055,7 +1055,7 @@ test('customer eligibility is enforced before quote generation', () => {
   // live in verification/quotedone/{first,money,access-retry}-workflow.mjs.
   const bridge=readFileSync('server/src/quoteDoneBridge.js','utf8');
   const calculate=bridge.slice(bridge.indexOf('export function calculateApplicationQuote'),bridge.indexOf('export function applicationMetadata'));
-  const eligibility=calculate.indexOf('const eligibility=cachedApplicationStatus(raw,book,{quick:true})'); // readiness is cached per saved revision
+  const eligibility=calculate.indexOf('const eligibility=cachedApplicationStatus(raw,book,{...dateContext,quick:true})'); // readiness includes the trusted date context
   const active=calculate.indexOf('service.active=raw.active===true&&ready');
   assert.ok(eligibility>=0&&active>eligibility&&active<calculate.indexOf('generateQuoteVNext(request)'));
   assert.match(calculate,/const ready=eligibility.status==='QUOTING LIVE'/);

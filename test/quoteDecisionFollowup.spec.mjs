@@ -25,7 +25,7 @@ function quote(book,id,inputs,quoteInstant='2026-10-03T12:00Z',timeZone='America
 
 test('G1 roof stays live throughout the year without an installed-underlayment labor share',()=>{
  const f=peak(roof(),[7]),{id}=save(f),book=approve(id);
- assert.equal(bridge.applicationStatus(book.services[0],book).status,'QUOTING LIVE');
+ assert.equal(bridge.applicationStatus(book.services[0],book,{timeZone:'America/Halifax'}).status,'QUOTING LIVE');
  for(let month=1;month<=12;month++){const q=quote(book,id,f.customerInputs,`2026-${String(month).padStart(2,'0')}-15T12:00Z`);assert.equal(q.customerResult.midEstimate,month===7?6289:5990);}
  f.businessDefaults.peakMonths=[10];ready(f,628900);
  f.ownerPricing.pricing.installedLaborPercent={'underlaymentPerSquare.asphalt_shingle':60};ready(f,631060);
@@ -73,12 +73,18 @@ test('G2 baseline offerings need no migration confirmation; strings cannot count
  f.ownerPricing.pricing.offeringDetails.terrainSlope='steep';for(const flag of [false,'true',1,null]){f.ownerPricing.pricing.offeringDetails.baselinePricesConfirmed=flag;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}
 });
 
-test('G3 missing quote/profile zone keeps quoting while explicit Atlantic choice respects the local month',()=>{
+test('G3 missing quote/profile zone blocks peak quoting while explicit Atlantic choice respects the local month',()=>{
  const f=peak(mowing()),{id}=save(f),book=approve(id);
- assert.equal(quote(book,id,f.customerInputs,'2026-10-03T12:00Z',null).customerResult.midEstimate,110);
- assert.equal(applicationQuoteMonth(f.ownerPricing,f.businessDefaults,{quoteInstant:new Date('2026-10-03T12:00Z')}),10);
+ const status=bridge.applicationStatus(book.services[0],book,{timeZone:null});
+ assert.equal(status.status,'NEEDS PRICING');
+ assert.ok(status.missingOwnerFields.includes('businessDefaults.quoteTimeZone'));
+ const blocked=quote(book,id,f.customerInputs,'2026-10-03T12:00Z',null).customerResult;
+ assert.equal(blocked.resultType,'ESTIMATE_REQUIRES_REVIEW');
+ for(const field of ['lowEstimate','midEstimate','highEstimate'])assert.equal(blocked[field],undefined);
+ assert.equal(applicationQuoteMonth(f.ownerPricing,f.businessDefaults,{quoteInstant:new Date('2026-10-03T12:00Z')}),null);
  for(const timeZone of ['UTC',null,'invalid'])assert.equal(applicationQuoteMonth(f.ownerPricing,{...f.businessDefaults,quoteTimeZone:'America/Halifax'},{timeZone,quoteInstant:new Date('2026-11-01T01:30:00Z')}),10);
  const local=structuredClone(book);local.defaults.quoteTimeZone='America/Halifax';savePricebook(id,local);const approved=approve(id);
+ assert.equal(bridge.applicationStatus(approved.services[0],approved,{timeZone:null}).status,'QUOTING LIVE');
  assert.equal(quote(approved,id,f.customerInputs,'2026-11-01T01:30Z','UTC').customerResult.midEstimate,110);
  assert.equal(quote(approved,id,f.customerInputs,'2026-11-01T04:30Z','UTC').customerResult.midEstimate,100);
 });

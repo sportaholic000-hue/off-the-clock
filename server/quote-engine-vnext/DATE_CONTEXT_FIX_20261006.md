@@ -101,3 +101,58 @@ The six unchanged failures are:
 
 All six are outside the single existing test authorized for modification. Their
 presence means acceptance is unfinished; none is excluded from the strict gate.
+
+## Authorized existing-test corrections: expectations before execution
+
+The hosted run at `c09ab9ab3075c9d875d9379bf61d62c68b0c5b7d` completed
+1,846 tests: 1,839 passed, seven failed, zero skipped. The seventh failure was
+the existing assertion requiring engine version v6 after the required v7 bump.
+The owner subsequently authorized continuing with these seven test corrections.
+The checkpoint above records the earlier restriction, not the current scope.
+
+Approved rule: enabled peak pricing requires a valid book or profile time zone.
+The valid book zone wins; an invalid book zone falls back to a valid profile
+zone; neither valid zone means NEEDS PRICING and review without an estimate.
+Existing unrelated test cases and all financial rules stay unchanged.
+
+Hand calculations, written before running the corrected tests:
+
+- D01 fence: 95.01 LF x $39.50 = $3,752.895, line rounded to **$3,752.90**.
+  At 5% tax on all or a 100% materials share, tax is $187.645, rounded to
+  **$187.65**, total **$3,940.55**. A 40% materials share is $1,501.16;
+  5% tax rounds to **$75.06**, total **$3,827.96**. At 100% labor share,
+  5% peak adds **$187.65**, total **$3,940.55**. Explicit UTC makes the
+  all-month peak fixture complete and ready; it changes no expected dollars.
+- M04 installed fence: $100 selling price, 60% labor share, 10% peak = **$6**;
+  no additional markup on either line, final **$106.00**, ready.
+  Itemized control: 100 LF at $10 labor = $1,000; ceil(100/8) + 1 = 14 posts,
+  footing labor 14 x $4 = $56. Eligible labor **$1,056**, peak **$105.60**.
+  Infill 100 x 1.10 x $20 = $2,200, posts 14 x $20 = $280, footing material
+  14 x $6 = $84. Subtotal including peak = $3,725.60; 30% markup = $1,117.68;
+  final **$4,843.28**, ready. Both controls explicitly configure UTC.
+- G1 roof: 20 squares x $85 x 1.15 = $1,955 labor; 20 x $45 x 1.15 =
+  $1,035 tear-off; 22 waste-adjusted squares x $120 = $2,640 materials;
+  20 x $18 = $360 installed underlayment. Base **$5,990**. Eligible regular
+  labor $2,990 x 10% = $299: July **$6,289**, all other months **$5,990**.
+  A declared 60% underlayment labor share adds $21.60 in peak months:
+  **$6,310.60**. Valid Halifax profile context keeps the service ready.
+- G3 mowing: 5,000 sqft x $0.02 = **$100**. Missing book and profile zones:
+  **NEEDS PRICING**, review, no estimate and no computed seasonal month.
+  With valid Halifax book zone, `2026-11-01T01:30:00Z` is still October:
+  10% peak adds $10, final **$110**. At `2026-11-01T04:30:00Z`, November:
+  **$100**. A different or invalid profile zone cannot override that book zone.
+- T03 readiness: a configured March peak plus an explicit valid UTC book zone
+  remains **QUOTING LIVE**. This case has no money assertion.
+- Eligibility ordering and engine-version approval controls have no money
+  assertions. Eligibility must receive date context before activation and
+  calculation; v7 approvals are current and earlier approvals are stale.
+
+Existing regression suites retain their previously handwritten expectations.
+
+Pre-push verification of these corrections: all five affected test files plus
+the 30 date-context regressions passed **168/168**, with zero failures, skips,
+TODOs or cancellations. Cold `npm ci` installed 255 packages and both owner-app
+and widget builds passed. Only these seven existing tests and this evidence
+file changed; production code, test selection and failure policies did not.
+The local full gate encountered Chromium startup failures before page creation;
+the complete hosted strict gate at the resulting commit is the acceptance check.

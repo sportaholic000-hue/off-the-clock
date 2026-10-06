@@ -30,8 +30,8 @@ test('T02 customer output excludes owner buffer, revision and internal service i
  const f=flooring(),{book,id}=saved(f),raw=book.services[0];const out=bridge.calculateApplicationQuote(book,raw,{serviceId:raw.id,customerInputs:f.customerInputs},{ownerId:id}).customerResult;
  for(const key of ['rangeBufferUsed','bookRevision','serviceId'])assert.equal(JSON.stringify(out).includes('"'+key+'"'),false,key);
 });
-test('T03 configured peak season does not disable service',()=>{
- const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{peakMonths:[3],peakSurchargePercent:10});
+test('T03 configured peak season with a valid quote time zone does not disable service',()=>{
+ const f=mowing();delete f.ownerPricing.peakMonths;delete f.ownerPricing.peakSurchargePercent;Object.assign(f.businessDefaults,{quoteTimeZone:'UTC',peakMonths:[3],peakSurchargePercent:10});
  const {book}=saved(f);assert.equal(bridge.applicationStatus(book.services[0],book).status,'QUOTING LIVE');
 });
 test('T03 local quote month determines labor surcharge across UTC month boundary',()=>{
