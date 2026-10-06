@@ -74,3 +74,11 @@ money. The runner now sets `--test-concurrency=1`. No timing or financial
 assertion changes. The unchanged 26-case catalog suite passed locally, with
 the affected full-path probe at 705 ms. Existing handwritten dollar expectations
 remain those in `specs/CATALOG_STALL_REPAIR_20261005.md`.
+
+The existing reporter-flag source assertion is preserved by placing the
+scheduling flag before `--test`; the 28 audit controls and scheduling regression
+passed 29/29 locally. Hosted run 37419693928 at
+`46af683a358fd0a7dadf100d32ef9650fe87d6b9` passed cold installation, both builds,
+the strict gate 1,968/1,968 and the full suite 2,339/2,339, with zero failures,
+cancellations, skips or TODOs. The affected full-suite catalog probe measured
+614 ms. See BUILD_STATUS for the complete verification record and local limits.

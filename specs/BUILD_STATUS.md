@@ -1,14 +1,7 @@
-# October 6 consolidated quote release candidate — scheduling follow-up verification
+# October 6 consolidated quote release candidate — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`.
-Tested source/test/CI SHA: **`9f4a7ae2e7a38514972f7133015df6f3e4662705`**.
-The source checkpoint below passed. A later documentation-only run at
-`4ae4acee4c74c94a8223e7ee2e570620fb8d6428` passed the strict gate but failed
-one full-suite catalog timing check (2,337/2,338). Its concurrently scheduled
-test files competed for CPU. The full runner now uses sequential files, matching
-the strict gate; a new execution test fails with the old scheduling and passes
-with the fix. No timing limit or financial expectation changed. This follow-up
-awaits its hosted results; it is not represented by the earlier green run.
+Tested source/test/CI SHA: **`46af683a358fd0a7dadf100d32ef9650fe87d6b9`**.
 Pinned inputs: website `0e687907cca8b186d8b85eb285bb82c1deda6a6d`, engine core
 `509891e39318bee344951278dd2667e4ab1f700a`, voice verification
 `20f1cd3b9ef73c418bb5b6828da8031f2ba3bb59`.
@@ -23,10 +16,22 @@ No arithmetic policy changes beyond the already approved v7 input are added.
 
 **Hosted verification:** cold `npm ci` and both production builds passed.
 `npm run test:quote` passed **1,968/1,968** across 84 selected files.
-`npm test` passed **2,338/2,338**. Both completed with **zero failures,
+`npm test` passed **2,339/2,339** across 124 selected files. Both completed with **zero failures,
 cancellations, skips or TODOs**. The production dependency audit found zero
-vulnerabilities. [CI run 37417558807](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37417558807)
+vulnerabilities. [CI run 37419693928](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37419693928)
 completed successfully at the tested SHA above.
+
+**Timing follow-up:** the earlier documentation-only run at
+`4ae4acee4c74c94a8223e7ee2e570620fb8d6428` passed the strict gate but failed
+one full-suite catalog timing check (2,337/2,338). Concurrent test files competed
+for CPU. The full runner now uses sequential files, matching the strict gate;
+a synthetic execution test reproduced the overlap and passes with the fix.
+The unchanged 320-product check now measures 614 ms in the full suite, below
+its unchanged 1,500 ms limit. A first follow-up exposed a source assertion about
+adjacent reporter flags; moving the scheduling flag preserved that assertion,
+and all 29 affected local runner/audit controls passed. The hosted result above
+includes the completed scheduling repair. No timing limit or financial
+expectation was changed.
 
 Local checks: 112 core baseline checks; 75 storage/date/persistence
 checks; 39 voice integration/persistence checks; 28 prior audit controls, all
@@ -41,7 +46,7 @@ and 37 browser-startup failures because Chromium was unavailable, with zero
 skips. The local full-suite attempt ended without a final summary and is not
 counted as a pass. The completed hosted run supplies the full-suite and browser
 evidence. An earlier website-only baseline run also hit two existing catalog
-timing assertions. The later candidate timing failure and scheduling follow-up
+timing assertions. The candidate timing failure and completed scheduling repair
 are disclosed above. No timing threshold was relaxed.
 
 The full runner now enables Node 22 module mocks: the existing previously
