@@ -424,7 +424,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
         <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
         <div className="kb-grid">
           <Field label="Name"><TextInput maxLength={100} value={form.reviewContact.name} onChange={event => change('reviewContact',{...form.reviewContact,name:event.target.value})} /></Field>
-          <Field label="Role"><Select value={form.reviewContact.role} onChange={event => change('reviewContact',{...form.reviewContact,role:event.target.value})}><option value="owner">Owner</option><option value="manager">Manager</option></Select></Field>
+          <Field label="Role"><Select aria-label="Role" value={form.reviewContact.role} onChange={event => change('reviewContact',{...form.reviewContact,role:event.target.value})}><option value="owner">Owner</option><option value="manager">Manager</option></Select></Field>
         </div>
         <p><strong>Caller preview</strong></p>
         <p aria-live="polite">{form.reviewContact.name.trim() ? `“Let me check with ${form.reviewContact.name.trim()} on that. What's the best number for a callback?”` : 'Enter a name to preview the handoff.'}</p>
