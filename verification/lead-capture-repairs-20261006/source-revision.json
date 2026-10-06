@@ -1,0 +1,151 @@
+{
+  "startingSha": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+  "sourceSha": "b356fd0babee91c117d1c2973be68996b15e51bb",
+  "uploadedTreeSha": "50894e8add0ccdc4a17f4404425b14ecafb328f3",
+  "verifiedRemoteSha": "b356fd0babee91c117d1c2973be68996b15e51bb",
+  "sourceBlobs": [
+    {
+      "path": "client/src/calls.jsx",
+      "blobSha": "d80336477144b36602b88c42495ee1d21bbd5ddb"
+    },
+    {
+      "path": "client/src/dashboard.jsx",
+      "blobSha": "e32d3956bfc1ae9fd620cdb78455e48ba77434a5"
+    },
+    {
+      "path": "client/src/leadCaptureRepair20261006Feed.js",
+      "blobSha": "0ceee632278a198e85431024f61d5f94379e752a"
+    },
+    {
+      "path": "client/src/quotedone.jsx",
+      "blobSha": "21045d064264f664896b396d73e4f55d85a88afa"
+    },
+    {
+      "path": "server/src/integrationData.js",
+      "blobSha": "c2f1b04f227be3572200a4ec62b5f606b8aef892"
+    },
+    {
+      "path": "server/src/leadCaptureRepair20261006.js",
+      "blobSha": "2755a88ec060fa49d7951217cca7bed04d038f06"
+    },
+    {
+      "path": "server/src/leadCaptureRepair20261006FollowUp.js",
+      "blobSha": "210102d0a568bc81916a0d28cab874f5c93e45d8"
+    },
+    {
+      "path": "server/src/outboundWebhookSchema.js",
+      "blobSha": "25a271f22226759ee4925d20dfacb9da3f86a2bf"
+    },
+    {
+      "path": "server/src/ownerCallService.js",
+      "blobSha": "746cd72e933057faa86411b7e4f6093532ad347a"
+    },
+    {
+      "path": "server/src/ownerRecordViews.js",
+      "blobSha": "271844713c672b5ae278dc9f8defab7931e30e43"
+    },
+    {
+      "path": "server/src/productionAssets.js",
+      "blobSha": "9e37d57e5de662336df206e4affa0d65f3fae10c"
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "blobSha": "b5993470e549765208a89cdc5fffed430b70f280"
+    },
+    {
+      "path": "server/src/voice/toolSchemas.js",
+      "blobSha": "eb68b4ea8f658425aaf4b8fe5dbb0759ff1998d4"
+    },
+    {
+      "path": "server/src/voice/voiceToolRuntime.js",
+      "blobSha": "16c82af9779a69d23c514ae5ad4e07520d5b1123"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006.browser.spec.mjs",
+      "blobSha": "1d5e66a1d66d7e679a27c2f60255473acdfa4a81"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006.spec.mjs",
+      "blobSha": "97a141fce7d9c7ab1215f5541b238dbfbadcb233"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Feed.spec.mjs",
+      "blobSha": "f3fc324b058bd03e6bcc1329c7c55be9c0681779"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Fixture.mjs",
+      "blobSha": "3f28ef40ba30d5df3fe4152fa8f4ca7e2719bfc9"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006Http.spec.mjs",
+      "blobSha": "d3746cdb0777a71f7f4e2db21e10cab0792f6390"
+    },
+    {
+      "path": "test/leadCaptureRepair20261006HttpFixture.mjs",
+      "blobSha": "7ce035e5c424d45f9494570948491d0ae8b399eb"
+    }
+  ],
+  "sourceOwnershipCheck": "PASS",
+  "historicalAuditChangeCount": 0,
+  "excludedFilesChanged": [],
+  "allChangedPaths": [
+    "client/src/calls.jsx",
+    "client/src/dashboard.jsx",
+    "client/src/leadCaptureRepair20261006Feed.js",
+    "client/src/quotedone.jsx",
+    "server/src/integrationData.js",
+    "server/src/leadCaptureRepair20261006.js",
+    "server/src/leadCaptureRepair20261006FollowUp.js",
+    "server/src/outboundWebhookSchema.js",
+    "server/src/ownerCallService.js",
+    "server/src/ownerRecordViews.js",
+    "server/src/productionAssets.js",
+    "server/src/quoteDoneRoutes.js",
+    "server/src/voice/toolSchemas.js",
+    "server/src/voice/voiceToolRuntime.js",
+    "test/leadCaptureRepair20261006.browser.spec.mjs",
+    "test/leadCaptureRepair20261006.spec.mjs",
+    "test/leadCaptureRepair20261006Feed.spec.mjs",
+    "test/leadCaptureRepair20261006Fixture.mjs",
+    "test/leadCaptureRepair20261006Http.spec.mjs",
+    "test/leadCaptureRepair20261006HttpFixture.mjs",
+    "verification/lead-capture-repairs-20261006/CHECKPOINT.md",
+    "verification/lead-capture-repairs-20261006/EXPECTED.md",
+    "verification/lead-capture-repairs-20261006/REVIEW_CHECKPOINT.md",
+    "verification/lead-capture-repairs-20261006/after-experiments.log",
+    "verification/lead-capture-repairs-20261006/after-live-render-results.json",
+    "verification/lead-capture-repairs-20261006/after-live-render.log",
+    "verification/lead-capture-repairs-20261006/after-render-live.mjs",
+    "verification/lead-capture-repairs-20261006/after-rendered-call.html",
+    "verification/lead-capture-repairs-20261006/after-reproduce.mjs",
+    "verification/lead-capture-repairs-20261006/after-results.json",
+    "verification/lead-capture-repairs-20261006/baseline-build.log",
+    "verification/lead-capture-repairs-20261006/baseline-experiments.log",
+    "verification/lead-capture-repairs-20261006/baseline-live-render-results.json",
+    "verification/lead-capture-repairs-20261006/baseline-live-render.log",
+    "verification/lead-capture-repairs-20261006/baseline-render-live.mjs",
+    "verification/lead-capture-repairs-20261006/baseline-rendered-call.html",
+    "verification/lead-capture-repairs-20261006/baseline-reproduce.mjs",
+    "verification/lead-capture-repairs-20261006/baseline-results.json",
+    "verification/lead-capture-repairs-20261006/cold-npm-ci.log",
+    "verification/lead-capture-repairs-20261006/correction-refinement-after.tap",
+    "verification/lead-capture-repairs-20261006/correction-refinement-before.tap",
+    "verification/lead-capture-repairs-20261006/feed-regressions.tap",
+    "verification/lead-capture-repairs-20261006/final-cold-build.log",
+    "verification/lead-capture-repairs-20261006/final-cold-npm-ci.log",
+    "verification/lead-capture-repairs-20261006/final-contact-compatibility.tap",
+    "verification/lead-capture-repairs-20261006/final-focused.tap",
+    "verification/lead-capture-repairs-20261006/final-owned-helper-paths.tap",
+    "verification/lead-capture-repairs-20261006/first-existing-focused.tap",
+    "verification/lead-capture-repairs-20261006/first-new-regressions.tap",
+    "verification/lead-capture-repairs-20261006/first-repaired-build.log",
+    "verification/lead-capture-repairs-20261006/legacy-fallback-after.tap",
+    "verification/lead-capture-repairs-20261006/routes-browser-build.log",
+    "verification/lead-capture-repairs-20261006/routes-rendering.tap",
+    "verification/lead-capture-repairs-20261006/second-existing-focused.tap",
+    "verification/lead-capture-repairs-20261006/second-new-regressions.tap",
+    "verification/lead-capture-repairs-20261006/starting-source.json",
+    "verification/lead-capture-repairs-20261006/urgency-compatibility-before.tap"
+  ],
+  "allChangedPathsOwnershipCheck": "PASS"
+}
