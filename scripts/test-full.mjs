@@ -35,7 +35,7 @@ const out = createWriteStream(tapFile);
 // Running those tests is preferable to their fallback skipped placeholders.
 // Match the strict gate's sequential files: synchronous catalog timing assertions
 // must not compete with unrelated CPU-heavy tests in other worker processes.
-const run = spawn(process.execPath, ['--experimental-test-module-mocks', '--import', './test/pricebookTestEnv.mjs', '--test', '--test-concurrency=1', '--test-reporter=tap', ...files], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+const run = spawn(process.execPath, ['--experimental-test-module-mocks', '--import', './test/pricebookTestEnv.mjs', '--test-concurrency=1', '--test', '--test-reporter=tap', ...files], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
 for (const stream of [run.stdout, run.stderr]) stream.on('data', chunk => { out.write(chunk); process.stdout.write(chunk); });
 run.on('close', () => out.end(() => {
   const check = spawnSync(process.execPath, ['.github/scripts/check-test-results.mjs', tapFile], { cwd: root, stdio: 'inherit' });
