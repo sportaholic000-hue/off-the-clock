@@ -34,7 +34,7 @@ jobs:
           mkdir -p /tmp/ci && cd /tmp/ci
           git clone -q --depth 1 --branch claude/ci-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" . 2>/dev/null || { git init -q && git checkout -q -b claude/ci-results; }
           name="$(echo "${GITHUB_REF_NAME}" | tr '/' '_').txt"
-          { echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat "$GITHUB_WORKSPACE/test-check.txt" 2>/dev/null; grep -E '^not ok ' "$GITHUB_WORKSPACE/test-results.tap" 2>/dev/null; } > "$name"
+          { echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat "$GITHUB_WORKSPACE/test-check.txt" 2>/dev/null; awk '/^not ok /' "$GITHUB_WORKSPACE/test-results.tap"; } > "$name"
           git config user.name ci-bot && git config user.email ci-bot@users.noreply.github.com
           git add "$name" && git commit -q -m "CI ${GITHUB_REF_NAME} ${GITHUB_SHA::7}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/ci-results || true
       - name: Production dependency audit
