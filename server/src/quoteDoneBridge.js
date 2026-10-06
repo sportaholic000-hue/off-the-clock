@@ -1,5 +1,4 @@
 import {customerQuoteFields} from '../customerQuoteFields.js';
-import {offeringMoneyKind} from '../quote-engine-vnext/configuredOfferings.js';
 import crypto from 'node:crypto';
 import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
@@ -12,21 +11,18 @@ import {
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
   materializeVNextService, approveVNextValues, validateServiceRulesDetailed, CLASS2_DEFINITIONS,
   PRICE_BASIS_CATEGORIES, FEE_NAMES, FEE_RULE_MODES, SERVICE_TYPES, MEASUREMENT_CONTRACTS,
-  configuredOffering, scopeRateDefinitions, offeringRateDefinitions, mergePricingVNext
+  configuredOffering, mergePricingVNext
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
-import { dollarAmountToCents, centAmountToDollars, moneyKindForField, parseOwnerNumericInput } from '../priceBookMoney.js';
+import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','markupApplies','peakMonths','peakSurchargePercent'];
-const DEFAULT_MONEY = new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 const ROOT_FIELDS = ['id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy'];
-const NEW_RATES = new Set(['laborPerWallSqftPerCoat','materialPerWallSqftPerCoat','ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','exteriorLaborPerSqftPerCoat','offeringRates','scopeRates']);
-const NOT_MONEY = new Set(['largeRepairMaxSqft','installedMaterialsPercent','installedLaborPercent','underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','repairHours','patchRepairHours','frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','offeringMode','offeringDetails']);
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -41,65 +37,15 @@ export const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(can
 const pick = (v,keys) => Object.fromEntries(keys.filter(k=>has(v,k)).map(k=>[k,clone(v[k])]));
 
 export function quoteDoneMoneyKind(type,field,pricing={}) {
-  if(field==='minimumJob'&&allowedPricingFields(type).includes(field))return 'fixed_amount';
-  if(field==='scopeDetails')return null;
-  if(NEW_RATES.has(field))return 'unit_rate';
-  if(type==='CUSTOM'&&['price','low','high'].includes(field))return moneyKindForField(type,field,pricing);
-  if(NOT_MONEY.has(field)||has(CLASS2_DEFINITIONS[type]||{},field))return null;
   return moneyKindForField(type,field,pricing);
 }
-// Match the current engine's cent domain; retained inactive legacy fields keep
-// their existing lossless conversion. No rate is rounded or inferred here.
 export function quoteDoneWholeCents(type,field,pricing={}) {
-  return allowedPricingFields(type).includes(field) && quoteDoneMoneyKind(type,field,pricing)==='fixed_amount';
-}
-function moneyTree(value,kind,convert,location) {
-  if(record(value))return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,moneyTree(item,kind,convert,location+'.'+key)]));
-  return convert(value,{kind,path:location});
-}
-function convertedPricing(source,type,direction,location,effective=source) {
-  if(!record(source))return clone(source);
-  const convert=direction==='toCents'?dollarAmountToCents:centAmountToDollars;
-  const result=clone(source);
-  const fields=new Set([...(ALL_OWNER_FIELDS[type]||[]),...allowedPricingFields(type)]);
-  for(const field of fields) {
-    if(!has(source,field))continue;
-    if(['scopeRates','offeringRates'].includes(field)&&record(source[field])){
-      const definitions=field==='scopeRates'?scopeRateDefinitions(type,effective,true):offeringRateDefinitions(type,effective);
-      result[field]=Object.fromEntries(Object.entries(source[field]).map(([key,value])=>[key,convert(value,{kind:direction==='toDollars'&&!Number.isInteger(value)?'unit_rate':field==='offeringRates'?offeringMoneyKind(key):definitions[key]?.moneyKind||'unit_rate',path:location+'.'+field+'.'+key})]));
-      continue;
-    }
-    const kind=quoteDoneMoneyKind(type,field,effective);
-    if(kind){
-      // An old roof minimum can contain fractional cents because that field
-      // previously bypassed conversion. Display its stored value exactly so
-      // the owner can correct it. Saving and quoting still require whole cents.
-      const legacyDisplay=direction==='toDollars'&&kind==='fixed_amount';
-      // Read-back stays lossless so historical invalid rates can be corrected.
-      const convertRate=direction==='toCents'&&quoteDoneWholeCents(type,field,effective)
-        ? (value,options)=>{parseOwnerNumericInput(value,{...options,wholeCents:true});return convert(value,options);}
-        : convert;
-      result[field]=moneyTree(source[field],legacyDisplay?'unit_rate':kind,convertRate,location+'.'+field);
-    }
-    else if(field==='debrisPricing'&&record(source[field]))for(const [level,row] of Object.entries(source[field])) {
-      if(record(row)&&has(row,'disposalFlat'))result[field][level].disposalFlat=convert(row.disposalFlat,{kind:'fixed_amount',path:location+'.debrisPricing.'+level+'.disposalFlat'});
-    }
-  }
-  return result;
+  return wholeCentsForPricingField(type,field,pricing);
 }
 export function convertApplicationBook(input,direction) {
   if(!record(input)||!Array.isArray(input.services)||!record(input.defaults))throw problem('A price book with services and business defaults is required.');
-  const out=clone(input),convert=direction==='toCents'?dollarAmountToCents:centAmountToDollars;
-  out.services=input.services.map((service,index)=>{
-    if(!record(service))throw problem('Each service must be an object.');
-    const effective={...service,...(record(service.pricing)?service.pricing:{})};
-    const next=convertedPricing(service,service.serviceType,direction,'services.'+index,effective);
-    if(has(service,'pricing'))next.pricing=convertedPricing(service.pricing,service.serviceType,direction,'services.'+index+'.pricing',effective);
-    if(Array.isArray(service.tiers))next.tiers=service.tiers.map((tier,i)=>({...clone(tier),...(has(tier,'overrides')?{overrides:convertedPricing(tier.overrides,service.serviceType,direction,'services.'+index+'.tiers.'+i+'.overrides',mergePricingVNext(effective,tier.overrides||{}))}:{})}));
-    return next;
-  });
-  for(const field of DEFAULT_MONEY)if(has(out.defaults,field))out.defaults[field]=convert(out.defaults[field],{kind:field==='laborHourlyRate'?'unit_rate':'fixed_amount',path:'defaults.'+field});
-  return out;
+  for(const service of input.services)if(!record(service))throw problem('Each service must be an object.');
+  return convertPricebookMoney(input,direction);
 }
 function projection(raw) {
   if(!record(raw)||!SERVICE_TYPES.includes(raw.serviceType))throw problem('Choose a supported service type.');
@@ -170,7 +116,6 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
   const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const issues=[];
-  // Every quote states its currency, so a price book without CAD or USD cannot quote.
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
   if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
@@ -188,9 +133,14 @@ export function readApplicationBook(ownerId) {
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
 // quick: customer-facing checks only need to know whether the service quotes at
 // all, so readiness stops at the first live product (same live/not-live answer).
+function statusCacheIdentity(raw,book) {
+  if(typeof raw?.id==='string'&&raw.id.trim())return 'id:'+raw.id.toLowerCase();
+  const index=(book.services||[]).indexOf(raw);
+  return 'draft:'+(index>=0?index:'detached')+':'+digest(raw);
+}
 export function cachedApplicationStatus(raw,book,{quick=false,...dateContext}={}) {
   dateContext=applicationDateContext(book.ownerId,dateContext);
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+bookRevision(book)+'|'+raw.id+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+bookRevision(book)+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
   if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
   statusCacheCounts.misses++;
   const status=applicationStatus(raw,book,{...dateContext,firstLiveProduct:quick});
@@ -204,104 +154,95 @@ export function bookStatuses(book,dateContext={}) { const context=applicationDat
 export function bookQuoteStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{...context,quick:true})); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
 function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409); }
-function validateApplicationNumericDraft(book) {
- const numericTree=(value,path)=>{if(value===undefined||value===null||value==='')return;if(record(value)){for(const [key,child] of Object.entries(value))numericTree(child,path+'.'+key);}else if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw problem('Invalid numeric value at '+path+'. Enter the intended value before saving.');};
- const numericFields=new Set(['markupPercent','taxPercent','rangeBufferPercent','peakSurchargePercent',...DEFAULT_MONEY]);
- for(const [field,value] of Object.entries(book.defaults||{}))if(numericFields.has(field))numericTree(value,'defaults.'+field);
- const nonNumeric=new Set(['underlaymentPriceBasis','accessoryPricingMode','materialAccessoryBasis','vinylPlankUnderlaymentRule','postsIncludedInMaterial','customPricingMode','customChargeClassification','unit','offeringMode','offeringDetails','scopeDetails']);
- for(const service of book.services||[])for(const pricing of [service,service.pricing,...(service.tiers||[]).map(t=>t.overrides)])if(record(pricing))for(const field of new Set([...(ALL_OWNER_FIELDS[service.serviceType]||[]),...allowedPricingFields(service.serviceType),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType]||{})]))if(!nonNumeric.has(field)&&has(pricing,field))numericTree(pricing[field],field);
-}
+function validateApplicationNumericDraft(book) { validatePricebookNumericDraft(book); }
 export function validateApplicationDraft(ownerId,input,dateContext={}) {
   requireDraftBook(input);
- const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
- validateApplicationNumericDraft(input);
- const incoming=convertApplicationBook(input,'toCents');
- for(const service of incoming.services) {
-  const old=saved.services.find(s=>s.id===service.id);
-  for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy']) {
-   if(old&&has(old,field))service[field]=clone(old[field]);else if(field!=='source')delete service[field];
-  }
-  if(old)service.serviceType=old.serviceType;
- }
- const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
- return {statuses,validationErrors:statuses.flatMap(s=>s.validationErrors||[]),revision:bookRevision(saved)};
-}
-export function saveApplicationBook(ownerId,input,dateContext={}) {
-  // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
-  return withPricebookLock(ownerId,()=>{
-  requireDraftBook(input);
-  const previous=loadPricebook(ownerId);requireRevision(previous,input.revision);
+  const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
   validateApplicationNumericDraft(input);
   const incoming=convertApplicationBook(input,'toCents');
-  const ids=new Set();
   for(const service of incoming.services) {
-    if(!service.id)service.id=crypto.randomUUID();
-    if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
-    ids.add(service.id.toLowerCase());
-    const old=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
-    if(old) {
-      if(old.serviceType!==service.serviceType||old.source!==service.source)throw problem('Service type and source cannot change on an existing service ID.',409);
-      for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy']) {
-        if(has(service,field)&&!same(service[field],old[field]))throw problem('Use the explicit owner confirmation operation to change protected '+field+'.',409);
-        if(has(old,field))service[field]=clone(old[field]);else delete service[field];
-      }
-      service.confirmedFields=clone(old.confirmedFields||{});
-    } else {
-      if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(service.source))throw problem('Declare whether this new service was entered manually or originated from an AI draft.');
-      for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
-      service.confirmedFields={};
+    const id=typeof service.id==='string'?service.id.toLowerCase():null;
+    const old=id?saved.services.find(s=>typeof s.id==='string'&&s.id.toLowerCase()===id):undefined;
+    for(const field of ['origin','source','approvedValues','confirmedFields','quoteDoneApproval','zeroPricePolicy']) {
+      if(old&&has(old,field))service[field]=clone(old[field]);else if(field!=='source')delete service[field];
     }
-    const effective=projection(service); // detect conflicts without relocating stored fields
-    for(const [tierName,pricing] of [[null,effective.pricing],...(service.tiers||[]).map(t=>[t.name,mergePricingVNext(effective.pricing,t.overrides||{})])]){
-      const issues=scopeOverlapDiagnostics(service.serviceType,pricing);
-      if(issues.length)throw problem('Resolve overlapping scope entries before saving'+(tierName?' in '+tierName:'')+'.',400,{issues,tierName});
-    }
-    // Store every default setting the quote uses (post spacing, waste, labor
-    // factors) on the service, so the saved record and its approval review list
-    // exactly what is applied. Entered values and retained data are untouched.
-    if(!service.pricing||typeof service.pricing!=='object'||Array.isArray(service.pricing))service.pricing={};
-    for(const field of Object.keys(CLASS2_DEFINITIONS[service.serviceType]||{}))
-      if(!has(service.pricing,field)&&!has(service,field)&&has(effective.pricing||{},field))service.pricing[field]=clone(effective.pricing[field]);
+    if(old)service.serviceType=old.serviceType;
   }
-  const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
-  const result=savePricebook(ownerId,next).pricebook;
-  return {success:true,statuses:bookStatuses(result,dateContext),revision:bookRevision(result)};
-});
+  const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
+  return {statuses,validationErrors:statuses.flatMap(s=>s.validationErrors||[]),revision:bookRevision(saved)};
+}
+export function saveApplicationBook(ownerId,input,dateContext={}) {
+  return withPricebookLock(ownerId,()=>{
+    requireDraftBook(input);
+    const previous=loadPricebook(ownerId);requireRevision(previous,input.revision);
+    validateApplicationNumericDraft(input);
+    const incoming=convertApplicationBook(input,'toCents');
+    const ids=new Set();
+    for(const service of incoming.services) {
+      if(!service.id)service.id=crypto.randomUUID();
+      if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
+      ids.add(service.id.toLowerCase());
+      const old=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
+      if(old) {
+        if(old.serviceType!==service.serviceType||old.source!==service.source)throw problem('Service type and source cannot change on an existing service ID.',409);
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy']) {
+          if(has(service,field)&&!same(service[field],old[field]))throw problem('Use the explicit owner confirmation operation to change protected '+field+'.',409);
+          if(has(old,field))service[field]=clone(old[field]);else delete service[field];
+        }
+        service.confirmedFields=clone(old.confirmedFields||{});
+      } else {
+        if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(service.source))throw problem('Declare whether this new service was entered manually or originated from an AI draft.');
+        for(const field of ['origin','approvedValues','quoteDoneApproval','zeroPricePolicy'])if(has(service,field))throw problem('Creation and approval receipts are generated by the server.');
+        service.confirmedFields={};
+        // Creation identifies this saved service; customer quoting still needs
+        // a separate, explicit approval of the saved configuration.
+        service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:new Date().toISOString()};
+      }
+      const effective=projection(service);
+      for(const [tierName,pricing] of [[null,effective.pricing],...(service.tiers||[]).map(t=>[t.name,mergePricingVNext(effective.pricing,t.overrides||{})])]){
+        const issues=scopeOverlapDiagnostics(service.serviceType,pricing);
+        if(issues.length)throw problem('Resolve overlapping scope entries before saving'+(tierName?' in '+tierName:'')+'.',400,{issues,tierName});
+      }
+      if(!service.pricing||typeof service.pricing!=='object'||Array.isArray(service.pricing))service.pricing={};
+      for(const field of Object.keys(CLASS2_DEFINITIONS[service.serviceType]||{}))
+        if(!has(service.pricing,field)&&!has(service,field)&&has(effective.pricing||{},field))service.pricing[field]=clone(effective.pricing[field]);
+    }
+    const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
+    const result=savePricebook(ownerId,next).pricebook;
+    return {success:true,statuses:bookStatuses(result,dateContext),revision:bookRevision(result)};
+  });
 }
 export function approveApplicationService(ownerId,serviceId,input,dateContext={}) {
-  // The whole read-check-write runs under the per-owner save lock (cross-process compare-and-swap).
   return withPricebookLock(ownerId,()=>{
-  if(!record(input))throw problem('Explicit saved-configuration approval is required.');
-  const book=loadPricebook(ownerId);requireRevision(book,input.revision);
-  const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
-  const raw=clone(book.services[index]);
-  if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
-  if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
-  if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
-  const now=new Date().toISOString(),operationId=crypto.randomUUID();
-  if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);
-  if(!raw.source) {if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(input.source))throw problem('Confirm the original source of this legacy service.');raw.source=input.source;}
-  if(!raw.origin)raw.origin={serviceId:raw.id,serviceType:raw.serviceType,source:raw.source,ownerId,operationId,createdAt:now};
-  if(has(input,'zeroClassification')) {
-    const z=input.zeroClassification;
-    if(!record(z)||Object.keys(z).length!==3||typeof z.freeCompleteService!=='boolean'||!Array.isArray(z.freeTiers)||!record(z.includedPrices))throw problem('Explicit free service, free tier and included-price choices are required.');
-    raw.zeroPricePolicy={serviceId:raw.id,ownerId,operationId,approvedAt:now,...clone(z)};
-  }
-  let service=projection(raw);
-  if(['AI_SUGGESTED','AI_INTERVIEW'].includes(raw.source)) {
-    const fields=aiConfirmationFieldsVNext(service,service.pricing);
-    if(!Array.isArray(input.fields)||fields.some(field=>!input.fields.includes(field))||input.fields.some(field=>!fields.includes(field)))throw problem('Explicitly confirm every current AI field and tier before approval.',400,{fields});
-    service=approveVNextValues(service,{fields:input.fields,ownerId,operationId,approvedAt:now});
-    // Preserve only retained legacy metadata outside the current contract.
-    // Never merge deleted current-field receipts back into the approved result.
-    const legacy=new Set([...(ALL_OWNER_FIELDS[raw.serviceType]||[]),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[raw.serviceType]||{})].filter(field=>!allowedPricingFields(raw.serviceType).includes(field)));
-    for(const key of ['confirmedFields','approvedValues'])raw[key]={...Object.fromEntries(Object.entries(raw[key]||{}).filter(([field])=>legacy.has(field))),...service[key]};
-  }
-  if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
-  raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
-  book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
-  return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
-});
+    if(!record(input))throw problem('Explicit saved-configuration approval is required.');
+    const book=loadPricebook(ownerId);requireRevision(book,input.revision);
+    const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
+    const raw=clone(book.services[index]);
+    if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
+    if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
+    if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
+    const now=new Date().toISOString(),operationId=crypto.randomUUID();
+    if(raw.origin&&raw.origin.ownerId!==ownerId)throw problem('This service origin belongs to another owner.',409);
+    if(!raw.source) {if(!['MANUAL','AI_SUGGESTED','AI_INTERVIEW'].includes(input.source))throw problem('Confirm the original source of this legacy service.');raw.source=input.source;}
+    if(!raw.origin)raw.origin={serviceId:raw.id,serviceType:raw.serviceType,source:raw.source,ownerId,operationId,createdAt:now};
+    if(has(input,'zeroClassification')) {
+      const z=input.zeroClassification;
+      if(!record(z)||Object.keys(z).length!==3||typeof z.freeCompleteService!=='boolean'||!Array.isArray(z.freeTiers)||!record(z.includedPrices))throw problem('Explicit free service, free tier and included-price choices are required.');
+      raw.zeroPricePolicy={serviceId:raw.id,ownerId,operationId,approvedAt:now,...clone(z)};
+    }
+    let service=projection(raw);
+    if(['AI_SUGGESTED','AI_INTERVIEW'].includes(raw.source)) {
+      const fields=aiConfirmationFieldsVNext(service,service.pricing);
+      if(!Array.isArray(input.fields)||fields.some(field=>!input.fields.includes(field))||input.fields.some(field=>!fields.includes(field)))throw problem('Explicitly confirm every current AI field and tier before approval.',400,{fields});
+      service=approveVNextValues(service,{fields:input.fields,ownerId,operationId,approvedAt:now});
+      const legacy=new Set([...(ALL_OWNER_FIELDS[raw.serviceType]||[]),...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[raw.serviceType]||{})].filter(field=>!allowedPricingFields(raw.serviceType).includes(field)));
+      for(const key of ['confirmedFields','approvedValues'])raw[key]={...Object.fromEntries(Object.entries(raw[key]||{}).filter(([field])=>legacy.has(field))),...service[key]};
+    }
+    if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
+    raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
+    book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
+    return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
+  });
 }
 export function previewApplicationQuote(ownerId,input,dateContext={}) {
   dateContext=applicationDateContext(ownerId,dateContext);
@@ -311,18 +252,18 @@ export function previewApplicationQuote(ownerId,input,dateContext={}) {
   if(contactFields.length)throw problem('Correct the '+contactFields.join(' and ')+' field, or leave an unused contact channel blank. Keep any work instructions in Additional project details.',422,{fields:contactFields});
   const saved=loadPricebook(ownerId);requireRevision(saved,input.revision);
   const raw=uniqueApplicationService(saved,input.serviceId);if(!raw)throw problem('Save this service before previewing it.',409);
-  const guidedIntake=validIntakeConfirmation(ownerId,bookRevision(saved),input,{preview:true});
-  const clarification=intakeClarification(ownerId,bookRevision(saved),input,applicationServiceName(raw));
-  if(!clarification.valid||!validIntakeHistory(ownerId,input))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
-  const scopeReview=applicationScopeReview(raw,input,{preview:true,guidedIntake,clarifiedFields:clarification.fields});
-  if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
   const draft=input.service?convertApplicationBook({services:[input.service],defaults:input.defaults||readApplicationBook(ownerId).defaults},'toCents'):{services:[raw],defaults:saved.defaults};
   const draftRaw={...draft.services[0],id:raw.id,serviceType:raw.serviceType,source:raw.source,origin:raw.origin,confirmedFields:raw.confirmedFields,approvedValues:raw.approvedValues,zeroPricePolicy:raw.zeroPricePolicy};
+  const guidedIntake=validIntakeConfirmation(ownerId,bookRevision(saved),input,{preview:true});
+  const clarification=intakeClarification(ownerId,bookRevision(saved),input,applicationServiceName(draftRaw));
+  if(!clarification.valid||!validIntakeHistory(ownerId,input))throw problem('The earlier answers or clarification changed. Check the current job details again.',409);
+  const scopeReview=applicationScopeReview(draftRaw,input,{preview:true,guidedIntake,clarifiedFields:clarification.fields});
+  if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=applicationStatus(raw,saved,dateContext).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
-  const definition=applicationServiceDefinition(raw);
-  return {...discloseQuoteScope(result,raw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
+  const definition=applicationServiceDefinition(draftRaw);
+  return {...discloseQuoteScope(result,draftRaw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false,...dateContext}={}) {
   dateContext=applicationDateContext(ownerId??book.ownerId,dateContext);
@@ -335,8 +276,6 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const service=projection(raw);
   const eligibility=cachedApplicationStatus(raw,book,{...dateContext,quick:true}),current=eligibility.approvalCurrent;
   const ready=eligibility.status==='QUOTING LIVE';
-  // Active-for-customers is a trusted application eligibility decision. Preserve
-  // raw owner intent separately; never change a rate or measurement to make it quote.
   service.active=raw.active===true&&ready;
   const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),quoteDate:applicationQuoteDate(service,defaultsProjection(book),dateContext),customerInputs:submission.customerInputs??{},callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
@@ -419,18 +358,7 @@ export function applicationMetadata() {
       if(quoteDoneWholeCents(meta.serviceType,field.field))info.wholeCents=true;
       if(['offeringMode','offeringDetails','offeringRates'].includes(field.field))Object.assign(info,{type:'offering_configuration',requiredAtBase:false});
       if(['scopeDetails','scopeRates'].includes(field.field))Object.assign(info,{type:'scope_configuration',requiredAtBase:false});
-      const priceMaps={
-        ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
-        FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
-        FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft'],
-        FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft'],
-        FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
-        FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
-        SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
-        LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft'],
-        LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
-      };
-      if(priceMaps[meta.serviceType]?.includes(field.field))Object.assign(info,{type:'json',tree:{depth:1}});
+      if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
