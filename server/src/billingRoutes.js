@@ -731,6 +731,7 @@ export function installBillingRoutes(app, {
 
   app.get('/api/billing/status', ownerOnly, (req, res) => {
     const ownerId = requireOwnerContext(req);
+    billingStateService?.suspendExpiredGracePeriods?.({at:now(),ownerId,limit:1});
     const account = billingStatusByOwner.get(ownerId);
     if (!account) throw routeError('OWNER_NOT_FOUND', 404, 'Owner account not found.');
     const active = activeCheckout.get(ownerId);

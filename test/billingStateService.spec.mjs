@@ -311,21 +311,21 @@ test('unrecognized prices and ambiguous base plans are rejected without changing
   }
 });
 
-test('an older out-of-order failure is receipted but cannot regress newer active state', () => {
+test('an unpaid invoice remains a debt even when a newer active snapshot has a payment method', () => {
   const { db, service } = harness();
   try {
     service.applyVerifiedStripeEvent(subscriptionEvent({ eventId: 'evt_active_new', created: BASE_TIME + 200 }));
     const stale = service.applyVerifiedStripeEvent(invoiceEvent({
       eventId: 'evt_failed_old', created: BASE_TIME + 100, type: 'invoice.payment_failed'
     }));
-    assert.equal(stale.outcome, 'IGNORED_STALE');
-    assert.equal(stale.planStatus, 'active');
-    assert.deepEqual({ ...db.prepare('SELECT planStatus FROM users WHERE id=?').get(OWNER_A) }, { planStatus: 'active' });
+    assert.equal(stale.outcome, 'APPLIED');
+    assert.equal(stale.planStatus, 'payment_failed');
+    assert.deepEqual({ ...db.prepare('SELECT planStatus FROM users WHERE id=?').get(OWNER_A) }, { planStatus: 'payment_failed' });
     assert.deepEqual({ ...db.prepare('SELECT paymentFailedAt, graceEndsAt FROM billingAccounts WHERE ownerId=?').get(OWNER_A) }, {
-      paymentFailedAt: null,
-      graceEndsAt: null
+      paymentFailedAt: new Date((BASE_TIME + 100) * 1000).toISOString(),
+      graceEndsAt: new Date((BASE_TIME + 100 + 7 * 24 * 60 * 60) * 1000).toISOString()
     });
-    assert.equal(db.prepare("SELECT outcome FROM billingEventReceipts WHERE stripeEventId='evt_failed_old'").get().outcome, 'IGNORED_STALE');
+    assert.equal(db.prepare("SELECT outcome FROM billingEventReceipts WHERE stripeEventId='evt_failed_old'").get().outcome, 'APPLIED');
   } finally {
     db.close();
   }
@@ -349,9 +349,12 @@ test('payment failure preserves seven days of service and paid recovery restores
       graceEndsAt
     });
     assert.equal(db.prepare('SELECT paymentFailedAt FROM users WHERE id=?').get(OWNER_A).paymentFailedAt, failedAt);
-    const paid = service.applyVerifiedStripeEvent(invoiceEvent({
+    // $119 = 11900 cents; only payment of the failed invoice resolves this debt.
+    const paidEvent = invoiceEvent({
       eventId: 'evt_paid', created: BASE_TIME + 200, type: 'invoice.paid', amountPaid: 11900
-    }));
+    });
+    paidEvent.data.object.id = 'in_evt_failed';
+    const paid = service.applyVerifiedStripeEvent(paidEvent);
     assert.equal(paid.planStatus, 'active');
     assert.equal(paid.graceEndsAt, null);
     assert.deepEqual({ ...db.prepare('SELECT paymentFailedAt, graceEndsAt FROM billingAccounts WHERE ownerId=?').get(OWNER_A) }, {

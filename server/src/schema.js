@@ -134,6 +134,15 @@ export const CREATE_TABLE_STATEMENTS = [
     ownerId TEXT NOT NULL REFERENCES users(id), stripeSubscriptionId TEXT NOT NULL,
     reason TEXT NOT NULL, createdAt TEXT NOT NULL, PRIMARY KEY(ownerId,stripeSubscriptionId)
   )`,
+  `CREATE TABLE IF NOT EXISTS billingVoiceUsage (
+    callId TEXT PRIMARY KEY REFERENCES calls(id), ownerId TEXT NOT NULL REFERENCES users(id),
+    accountSid TEXT NOT NULL, callSid TEXT NOT NULL UNIQUE,
+    connectedAt TEXT NOT NULL, completedAt TEXT,
+    localDurationSeconds INTEGER, providerDurationSeconds INTEGER, providerDigest TEXT,
+    usageKind TEXT NOT NULL, periodStartAt TEXT, periodEndAt TEXT,
+    CHECK(localDurationSeconds IS NULL OR localDurationSeconds >= 0),
+    CHECK(providerDurationSeconds IS NULL OR providerDurationSeconds >= 0)
+  )`,
   `CREATE TABLE IF NOT EXISTS calls (
     id TEXT PRIMARY KEY,
     ownerId TEXT NOT NULL,

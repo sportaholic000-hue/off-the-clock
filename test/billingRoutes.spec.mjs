@@ -270,18 +270,20 @@ function billingDatabase() {
   return db;
 }
 
-function billingHarness({ checkoutCreate } = {}) {
+function billingHarness({ checkoutCreate, checkoutRetrieve, subscriptionList } = {}) {
   const app = routeApp();
   const db = billingDatabase();
-  const calls = { customer: [], checkout: [], portal: [] };
+  const calls = { customer: [], checkout: [], portal: [], retrieve: [], subscriptions: [] };
   const time = { value: new Date('2026-09-29T12:00:00.000Z') };
   let uuid = 0;
   const stripeClient = {
     customers: {
       create: async (...args) => (calls.customer.push(args), { id: 'cus_owner_a' })
     },
+    subscriptions: { list: async (...args) => { calls.subscriptions.push(args); return subscriptionList(...args); } },
     checkout: {
       sessions: {
+        retrieve: async (...args) => { calls.retrieve.push(args); return checkoutRetrieve(...args); },
         create: async (...args) => {
           calls.checkout.push(args);
           if (checkoutCreate) return checkoutCreate(...args);
@@ -416,6 +418,7 @@ test('authenticated Checkout creates and persists one provider customer, uses co
       customer: 'cus_owner_a',
       line_items: [{ price: 'price_quotedone_annual_1', quantity: 1 }],
       payment_method_collection: 'always',
+      payment_method_types: ['card'],
       subscription_data: {
         trial_period_days: 14,
         trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }
@@ -424,7 +427,7 @@ test('authenticated Checkout creates and persists one provider customer, uses co
       cancel_url: 'https://app.offtheclock.test/settings/billing/canceled',
       integration_identifier: 'off_the_clock_checkout_abcdefgh'
     });
-    assert.equal(Object.hasOwn(params, 'payment_method_types'), false);
+    assert.deepEqual(params.payment_method_types, ['card']);
     assert.equal(Object.hasOwn(params, 'metadata'), false);
     assert.equal(Object.hasOwn(params, 'client_reference_id'), false);
     assert.match(options.idempotencyKey, /^otc:billing-checkout-v1:[a-f0-9]{64}$/);
@@ -475,8 +478,11 @@ test('authenticated Checkout creates and persists one provider customer, uses co
   }
 });
 
-test('an expired open Checkout releases the owner slot while the original key still replays its sealed response', async () => {
-  const { app, db, calls, time } = billingHarness();
+test('provider-confirmed expiry and no live subscriptions release the owner slot; original key remains idempotent', async () => {
+  const { app, db, calls, time } = billingHarness({
+    checkoutRetrieve: async id => ({id,customer:'cus_owner_a',mode:'subscription',status:'expired',subscription:null}),
+    subscriptionList: async () => ({data:[],has_more:false})
+  });
   try {
     const route = routeByPath(app, '/api/billing/checkout');
     const first = await invokeOwnerRoute(route, {
@@ -489,6 +495,9 @@ test('an expired open Checkout releases the owner slot while the original key st
       idempotencyKey: 'second-checkout-key'
     });
     assert.equal(calls.checkout.length, 2);
+    assert.equal(calls.retrieve.length, 1);
+    assert.equal(calls.subscriptions.length, 1);
+    assert.equal(calls.subscriptions[0][0].customer, 'cus_owner_a');
     assert.deepEqual(first.body, second.body);
     assert.deepEqual(
       db.prepare(`SELECT status FROM billingCheckoutRequests

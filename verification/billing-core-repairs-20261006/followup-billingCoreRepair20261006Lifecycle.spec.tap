@@ -1,0 +1,138 @@
+TAP version 13
+# (node:63) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F07: boundary, bounded batches and restart produce one persisted suspension with one event/outbox
+ok 1 - F07: boundary, bounded batches and restart produce one persisted suspension with one event/outbox
+  ---
+  duration_ms: 12.870813
+  type: 'test'
+  ...
+# Subtest: F07: failure rolls back suspension/event/outbox and next worker tick retries
+ok 2 - F07: failure rolls back suspension/event/outbox and next worker tick retries
+  ---
+  duration_ms: 7.164753
+  type: 'test'
+  ...
+# Subtest: F08: UI agrees with backend at grace before
+ok 3 - F08: UI agrees with backend at grace before
+  ---
+  duration_ms: 0.700959
+  type: 'test'
+  ...
+# Subtest: F08: UI agrees with backend at grace start
+ok 4 - F08: UI agrees with backend at grace start
+  ---
+  duration_ms: 0.208098
+  type: 'test'
+  ...
+# Subtest: F08: UI agrees with backend at grace last
+ok 5 - F08: UI agrees with backend at grace last
+  ---
+  duration_ms: 0.196892
+  type: 'test'
+  ...
+# Subtest: F08: UI agrees with backend at grace end
+ok 6 - F08: UI agrees with backend at grace end
+  ---
+  duration_ms: 0.095341
+  type: 'test'
+  ...
+# Subtest: F08: UI agrees with backend at grace after
+ok 7 - F08: UI agrees with backend at grace after
+  ---
+  duration_ms: 0.210752
+  type: 'test'
+  ...
+# Subtest: F08: malformed failure timestamp cannot unlock setup null
+ok 8 - F08: malformed failure timestamp cannot unlock setup null
+  ---
+  duration_ms: 0.104675
+  type: 'test'
+  ...
+# Subtest: F08: malformed failure timestamp cannot unlock setup bad
+ok 9 - F08: malformed failure timestamp cannot unlock setup bad
+  ---
+  duration_ms: 0.468775
+  type: 'test'
+  ...
+# Subtest: F08: malformed failure timestamp cannot unlock setup 2026-02-30T00:00:00.000Z
+ok 10 - F08: malformed failure timestamp cannot unlock setup 2026-02-30T00:00:00.000Z
+  ---
+  duration_ms: 0.354205
+  type: 'test'
+  ...
+# Subtest: F08: malformed failure timestamp cannot unlock setup 2026-10-06T00:00:00Z
+ok 11 - F08: malformed failure timestamp cannot unlock setup 2026-10-06T00:00:00Z
+  ---
+  duration_ms: 0.120779
+  type: 'test'
+  ...
+# Subtest: F08: rendered billing source wires recovery copy independently of Continue setup
+ok 12 - F08: rendered billing source wires recovery copy independently of Continue setup
+  ---
+  duration_ms: 0.33689
+  type: 'test'
+  ...
+# Subtest: F09: payment_failed denies product mutations but allows reads and billing/auth recovery
+ok 13 - F09: payment_failed denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 6.398367
+  type: 'test'
+  ...
+# Subtest: F09: past_due denies product mutations but allows reads and billing/auth recovery
+ok 14 - F09: past_due denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 5.864165
+  type: 'test'
+  ...
+# Subtest: F09: suspended denies product mutations but allows reads and billing/auth recovery
+ok 15 - F09: suspended denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 5.528487
+  type: 'test'
+  ...
+# Subtest: F09: canceled denies product mutations but allows reads and billing/auth recovery
+ok 16 - F09: canceled denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 6.504574
+  type: 'test'
+  ...
+# Subtest: F09: unpaid denies product mutations but allows reads and billing/auth recovery
+ok 17 - F09: unpaid denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 6.136048
+  type: 'test'
+  ...
+# Subtest: F09: trialing denies product mutations but allows reads and billing/auth recovery
+ok 18 - F09: trialing denies product mutations but allows reads and billing/auth recovery
+  ---
+  duration_ms: 5.866097
+  type: 'test'
+  ...
+# Subtest: F09: valid grace allows writes; pending allows only initial account setup
+ok 19 - F09: valid grace allows writes; pending allows only initial account setup
+  ---
+  duration_ms: 6.422242
+  type: 'test'
+  ...
+# Subtest: F07: two expired owners drain in bounded batches and owner-specific reads stay tenant-bound
+ok 20 - F07: two expired owners drain in bounded batches and owner-specific reads stay tenant-bound
+  ---
+  duration_ms: 7.213775
+  type: 'test'
+  ...
+# Subtest: F09: actual authenticated staff mutation uses current owner state, not token claims
+ok 21 - F09: actual authenticated staff mutation uses current owner state, not token claims
+  ---
+  duration_ms: 16.522948
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 335.557262

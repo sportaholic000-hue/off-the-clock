@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
-import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup} from './billingTransport.js';
+import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup, billingRecoveryMessage} from './billingTransport.js';
 
 const PLANS = ['Operator','QuoteDone'];
 const STATUS_LABELS = {active:'Active',trialing:'Trial',pending_subscription:'Subscription pending',pending_payment:'Payment pending',past_due:'Payment overdue',payment_failed:'Payment failed',suspended:'Suspended',canceled:'Canceled'};
@@ -86,7 +86,8 @@ export default function Billing() {
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
             {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}</dl>
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
-          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
+          {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
+          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
         </section>
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}
         {state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">

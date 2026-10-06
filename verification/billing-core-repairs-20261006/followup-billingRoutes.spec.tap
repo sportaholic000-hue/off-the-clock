@@ -1,0 +1,108 @@
+TAP version 13
+# (node:12) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+ok 1 - webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+  ---
+  duration_ms: 1.452524
+  type: 'test'
+  ...
+# Subtest: verified webhook bytes are passed unchanged and supported events are acknowledged generically
+ok 2 - verified webhook bytes are passed unchanged and supported events are acknowledged generically
+  ---
+  duration_ms: 0.471319
+  type: 'test'
+  ...
+# Subtest: webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+ok 3 - webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+  ---
+  duration_ms: 0.484939
+  type: 'test'
+  ...
+# Subtest: unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+ok 4 - unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+  ---
+  duration_ms: 0.558378
+  type: 'test'
+  ...
+# Subtest: Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+ok 5 - Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+  ---
+  duration_ms: 0.298372
+  type: 'test'
+  ...
+# Subtest: authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+ok 6 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+  ---
+  duration_ms: 13.827973
+  type: 'test'
+  ...
+# Subtest: provider-confirmed expiry and no live subscriptions release the owner slot; original key remains idempotent
+ok 7 - provider-confirmed expiry and no live subscriptions release the owner slot; original key remains idempotent
+  ---
+  duration_ms: 6.922444
+  type: 'test'
+  ...
+# Subtest: an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+ok 8 - an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+  ---
+  duration_ms: 8.466423
+  type: 'test'
+  ...
+# Subtest: an unresolved claim cannot create a subscription after the owner becomes active
+ok 9 - an unresolved claim cannot create a subscription after the owner becomes active
+  ---
+  duration_ms: 5.914279
+  type: 'test'
+  ...
+# Subtest: an unrecovered claim older than Stripe idempotency retention fails closed for every key
+ok 10 - an unrecovered claim older than Stripe idempotency retention fails closed for every key
+  ---
+  duration_ms: 6.079083
+  type: 'test'
+  ...
+# Subtest: Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+ok 11 - Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+  ---
+  duration_ms: 5.219098
+  type: 'test'
+  ...
+# Subtest: billing portal uses only the stored customer mapping and rejects body-supplied ownership
+ok 12 - billing portal uses only the stored customer mapping and rejects body-supplied ownership
+  ---
+  duration_ms: 6.094796
+  type: 'test'
+  ...
+# Subtest: Checkout blocks a second subscription and portal never creates an unmapped customer
+ok 13 - Checkout blocks a second subscription and portal never creates an unmapped customer
+  ---
+  duration_ms: 9.728043
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits resubscription while the original request remains replayable after activation
+ok 14 - verified terminal deletion permits resubscription while the original request remains replayable after activation
+  ---
+  duration_ms: 5.822694
+  type: 'test'
+  ...
+# Subtest: billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+ok 15 - billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+  ---
+  duration_ms: 5.329352
+  type: 'test'
+  ...
+# Subtest: Scale Checkout is rejected before creating a customer or session
+ok 16 - Scale Checkout is rejected before creating a customer or session
+  ---
+  duration_ms: 4.752802
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 175.784851

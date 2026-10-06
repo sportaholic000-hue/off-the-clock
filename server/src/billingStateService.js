@@ -855,7 +855,8 @@ export function createBillingStateService({
     },{clock:now});
   }
 
-  function suspendExpiredGracePeriods({ at = now() } = {}) {
+  function suspendExpiredGracePeriods({ at = now(), limit = 100, ownerId = null } = {}) {
+    if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw new TypeError('Invalid grace sweep batch size.');
     const checkedAt = instant(at, 'Grace-period check time');
     const checkedAtIso = checkedAt.toISOString();
     return immediate(db, () => {
@@ -867,7 +868,9 @@ export function createBillingStateService({
         WHERE users.planStatus IN ('payment_failed', 'past_due')
           AND billing.graceEndsAt IS NOT NULL
           AND billing.graceEndsAt <= ?
-      `).all(checkedAtIso);
+        AND (? IS NULL OR billing.ownerId = ?)
+        ORDER BY billing.graceEndsAt, billing.ownerId LIMIT ?
+      `).all(checkedAtIso, ownerId, ownerId, limit);
       for (const row of rows) {
         const after = { ...row, planStatus: 'suspended', updatedAt: checkedAtIso };
         db.prepare('UPDATE billingAccounts SET updatedAt = ? WHERE ownerId = ?').run(checkedAtIso, row.ownerId);

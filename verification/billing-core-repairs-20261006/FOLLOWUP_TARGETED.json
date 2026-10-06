@@ -1,0 +1,98 @@
+[
+  {
+    "file": "test/billingRoutes.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 16",
+      "# pass 16",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingStateService.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 13",
+      "# pass 13",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "client/test/billing-transport.test.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 7",
+      "# pass 7",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingCoreRepair20261006Lifecycle.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 21",
+      "# pass 21",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingCoreRepair20261006Meter.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 11",
+      "# pass 11",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingCoreRepair20261006Capabilities.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 2",
+      "# pass 2",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingCoreRepair20261006LifecycleEntry.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 1",
+      "# pass 1",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  },
+  {
+    "file": "test/billingCoreRepair20261006VoiceEntry.spec.mjs",
+    "exit": 0,
+    "summary": [
+      "# tests 1",
+      "# pass 1",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ]
+  }
+]

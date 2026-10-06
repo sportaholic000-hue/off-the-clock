@@ -47,6 +47,7 @@ import { installLiveDemoRoutes } from './demo/liveDemo.js';
 import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
+import {startBillingLifecycleWorker} from './billingLifecycleWorker.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
@@ -478,14 +479,15 @@ app.use((err, _req, res, _next) => {
   });
 });
 
+const stopBillingWorker = billingStateService ? startBillingLifecycleWorker({service:billingStateService,onError:code=>console.error('[billing-worker]',code)}) : ()=>{};
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopWebhookWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 

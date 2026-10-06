@@ -1,0 +1,16 @@
+import {accountAccessDecision} from './planAccess.js';
+const READ_METHODS=new Set(['GET','HEAD','OPTIONS']);
+// Only billing and account authentication recovery bypass lifecycle restrictions.
+const RECOVERY_PATHS=new Set(['/api/billing/checkout','/api/billing/portal','/api/auth/account/resend-verification']);
+export function billingMutationDecision(database,req,{now=Date.now()}={}) {
+  if(READ_METHODS.has(req.method)||!req.method)return {allowed:true};
+  const path=req.route?.path || req.path;
+  if(req.method==='POST'&&RECOVERY_PATHS.has(path))return {allowed:true};
+  const owner=database.prepare("SELECT plan,planStatus,trialEndsAt,paymentFailedAt FROM users WHERE id=? AND role='owner'").get(req.tenantOwnerId);
+  const decision=accountAccessDecision(owner,{now});
+  if(decision.allowed)return decision;
+  // Platform section4 creates the account before Checkout. Permit only that
+  // initial account step; pending accounts receive no other product mutations.
+  if(req.method==='POST'&&path==='/api/onboarding/account'&&owner?.planStatus==='pending_payment'&&!owner.paymentFailedAt)return {allowed:true};
+  return decision;
+}

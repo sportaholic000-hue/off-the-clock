@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import {billingMutationDecision} from './billingMutationGuard.js';
 import {attachTenantContext} from './tenant.js';
 import {AuthSessionError,createAuthSessionService} from './authSessionService.js';
 
@@ -18,6 +19,8 @@ export function requireAuth(allowedRoles=[],{database,verifyToken=jwt.verify,ses
         delete req.tenantOwnerId;delete req.ownerId;return next();
       }
       if(!attachTenantContext(req,{id:user.id,ownerId:user.ownerId,email:user.email,role:user.role,ownerRole:user.ownerRole}))return res.status(401).json({error:'Invalid tenant context',code:'SESSION_INVALID'});
+      const access=billingMutationDecision(database,req);
+      if(!access.allowed)return res.status(403).json({error:'Your account is read-only. Manage billing to restore service.',code:'ACCOUNT_READ_ONLY',reason:access.reason});
       return next();
     }catch(error){
       if(error instanceof AuthSessionError&&error.code==='SESSION_STORE_UNAVAILABLE')return res.status(503).json({error:error.message,code:error.code});

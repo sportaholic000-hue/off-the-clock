@@ -1,0 +1,14 @@
+{
+  "expected": {
+    "backend": true,
+    "setup": true
+  },
+  "actual": {
+    "backend": {
+      "allowed": true,
+      "reason": "PAYMENT_FAILURE_GRACE",
+      "accessUntilUtc": "2026-10-08T12:00:00.000Z"
+    },
+    "setup": false
+  }
+}

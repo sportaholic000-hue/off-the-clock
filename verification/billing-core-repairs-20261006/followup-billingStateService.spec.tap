@@ -1,0 +1,90 @@
+TAP version 13
+# (node:29) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing schema stores first-class evidence and sanitized idempotent event receipts
+ok 1 - billing schema stores first-class evidence and sanitized idempotent event receipts
+  ---
+  duration_ms: 10.263607
+  type: 'test'
+  ...
+# Subtest: fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+ok 2 - fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+  ---
+  duration_ms: 7.990597
+  type: 'test'
+  ...
+# Subtest: verified event application is idempotent and never stores raw customer metadata
+ok 3 - verified event application is idempotent and never stores raw customer metadata
+  ---
+  duration_ms: 8.292976
+  type: 'test'
+  ...
+# Subtest: same event ID with changed authoritative fields is rejected
+ok 4 - same event ID with changed authoritative fields is rejected
+  ---
+  duration_ms: 6.132433
+  type: 'test'
+  ...
+# Subtest: customer and subscription IDs mapped to different owners are rejected atomically
+ok 5 - customer and subscription IDs mapped to different owners are rejected atomically
+  ---
+  duration_ms: 5.108384
+  type: 'test'
+  ...
+# Subtest: unrecognized prices and ambiguous base plans are rejected without changing access
+ok 6 - unrecognized prices and ambiguous base plans are rejected without changing access
+  ---
+  duration_ms: 5.729335
+  type: 'test'
+  ...
+# Subtest: an unpaid invoice remains a debt even when a newer active snapshot has a payment method
+ok 7 - an unpaid invoice remains a debt even when a newer active snapshot has a payment method
+  ---
+  duration_ms: 6.840973
+  type: 'test'
+  ...
+# Subtest: payment failure preserves seven days of service and paid recovery restores immediately
+ok 8 - payment failure preserves seven days of service and paid recovery restores immediately
+  ---
+  duration_ms: 5.886118
+  type: 'test'
+  ...
+# Subtest: expired grace is suspended idempotently and queues one transition
+ok 9 - expired grace is suspended idempotently and queues one transition
+  ---
+  duration_ms: 7.566788
+  type: 'test'
+  ...
+# Subtest: subscription deletion cancels immediately and a later stale active update cannot reopen it
+ok 10 - subscription deletion cancels immediately and a later stale active update cannot reopen it
+  ---
+  duration_ms: 6.759743
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+ok 11 - verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+  ---
+  duration_ms: 7.959562
+  type: 'test'
+  ...
+# Subtest: Checkout completion without paid or setup evidence cannot start a trial
+ok 12 - Checkout completion without paid or setup evidence cannot start a trial
+  ---
+  duration_ms: 6.046966
+  type: 'test'
+  ...
+# Subtest: a state-write failure rolls back identifier binding, logs, outbox, and receipt
+ok 13 - a state-write failure rolls back identifier binding, logs, outbox, and receipt
+  ---
+  duration_ms: 5.752479
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 197.217163
