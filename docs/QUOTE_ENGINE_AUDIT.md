@@ -1,12 +1,15 @@
 # Quote engine and price book: audit entry point
 
 Audit one pinned commit on `codex/quote-release-candidate-20261006`.
-The candidate combines engine core v7, the voice quote path and website price
-drafts. `main` is a separate historical branch. This document does not identify
+The candidate combines engine core v7, the voice quote path, website price
+drafts and the four approved persistence/editor, telephony, owner-call and demo
+branches. `main` is a separate historical branch. This document does not identify
 the deployed commit or authorize deployment.
 
 Start with [current verification](../specs/BUILD_STATUS.md) and the
 [pinned inputs, decisions and expected amounts](../specs/QUOTE_RELEASE_CANDIDATE_20261006.md).
+The [approved branch integration record](../specs/RELEASE_BRANCH_INTEGRATION_20261006.md)
+lists all four merge pins, every conflict resolution and release guard expectations.
 The engine version is `quote-engine-vnext-date-context-20261006-v7`.
 
 ## Production paths
@@ -20,6 +23,7 @@ The engine version is `quote-engine-vnext-date-context-20261006-v7`.
   formulas; `contracts.js` validates measurements and configuration;
   `priceBook.js` computes readiness; `exactMath.js` implements exact arithmetic.
 - `server/priceBookService.js` owns persistence and durable writes.
+  Its creation ledger refuses a missing previously saved book.
   `priceBookStructure.js` checks storage containers and service UUID syntax.
   Pricing readiness stays in the engine: incomplete drafts remain editable.
 - Shared scope/price schemas live in `server/scopeConfiguration.js`,
@@ -67,6 +71,8 @@ reports attached to other SHAs remain historical evidence.
 
 Targeted release regressions are `test/quoteReleaseStorage.spec.mjs` and
 `server/quote-engine-vnext/tests/releaseDiagnostics.spec.mjs`, plus
-`test/voiceQuoteDateIntegration.spec.mjs`. Website and voice
+`test/voiceQuoteDateIntegration.spec.mjs`. The integrated release adds
+`test/releaseProductionEngineGuard.spec.mjs`, `test/releaseQuoteGuards.spec.mjs`
+and `test/quoteArchitectureGuard.spec.mjs`. Website and voice
 acceptance tests remain in `test/websitePrice*` and
 `test/voiceQuotePathRegression20261005.spec.mjs`. No tests use live business data.

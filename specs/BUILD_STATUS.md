@@ -1,3 +1,31 @@
+# October 6 approved-branch integration — hosted verification pending
+
+Branch: `codex/quote-release-candidate-20261006`; verified starting revision
+`f049499999fd24c3e0c4ca04924a1065e2a97775`.
+All four approved pins are merged with both parent histories retained:
+`efea107`, `2b6e5c5`, `83f666c`, `68a48d1`. Each passes the actual local
+`git merge-base --is-ancestor <pin> HEAD` check.
+
+See [every conflict resolution and prewritten expectations](RELEASE_BRANCH_INTEGRATION_20261006.md).
+The strict storage validator, durable missing-file guard, common money converter,
+draft preview, interview concurrency protection, editor allocations, telephony
+purchase/coverage state, tenant-scoped owner calls and approved demo annual copy
+are retained. No parent test was deleted. Production startup pins v7; profile-only
+time-zone changes refresh catalog/status; stale approvals show the owner's exact
+re-approval message. Owner time-zone help now describes the actual fail-closed rule.
+
+Cold `npm ci`, owner/widget build and production dependency audit pass locally
+(zero vulnerabilities; known-failures list empty). Incoming integration checks:
+134/134. New release guards: 7/7. Architecture controls: 7/7. Updated stale-message
+and route checks: 12/12. All focused runs have zero failures/skips; counts overlap.
+The local strict attempt encountered Chromium startup crashes (SIGTRAP) and the
+old stale-message assertion, now aligned with the explicitly approved new copy.
+It ended without a complete summary and is not counted as a passing gate.
+The full local run and cold hosted verification are still pending at this checkpoint.
+No subagents, main merge, deployment, provider writes or live data.
+
+## Previous consolidated checkpoint
+
 # October 6 consolidated quote release candidate — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`.

@@ -1,5 +1,17 @@
 import { loadBillingConfig, stripeBillingEnabled } from './billingConfig.js';
 
+// Release pin: an older engine must never start serving production quotes.
+// Advance deliberately with an approved engine release, not through an env override.
+export const EXPECTED_QUOTE_ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';
+export function requireProductionQuoteEngineVersion(engineVersion, env = process.env) {
+  if (env.NODE_ENV !== 'production') return;
+  if (engineVersion !== EXPECTED_QUOTE_ENGINE_VERSION) {
+    throw Object.assign(new Error(`QUOTE_ENGINE_VERSION_MISMATCH: expected ${EXPECTED_QUOTE_ENGINE_VERSION}; production startup refused.`), {
+      code: 'QUOTE_ENGINE_VERSION_MISMATCH'
+    });
+  }
+}
+
 const INSECURE_JWT_SECRETS = new Set([
   'change-me', 'changeme', 'secret', 'development', 'replace-me'
 ]);

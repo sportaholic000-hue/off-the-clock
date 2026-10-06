@@ -31,7 +31,7 @@ import { createOwnerCalendarService } from './ownerCalendarService.js';
 import {createOwnerCallService} from './ownerCallService.js';
 import {installOwnerCallRoutes} from './ownerCallRoutes.js';
 import { installOwnerCalendarRoutes } from './ownerCalendarRoutes.js';
-import { bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
+import { ENGINE_VERSION, bookStatuses, previewApplicationQuote } from './quoteDoneBridge.js';
 import {
   centsToDollars,
   dollarsToCents,
@@ -41,7 +41,7 @@ import {
   withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasQuoteDoneAccess } from './planAccess.js';
-import { providerWritesEnabled, validateRuntimeConfig } from './runtimeConfig.js';
+import { providerWritesEnabled, validateRuntimeConfig, requireProductionQuoteEngineVersion } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
 import { installLiveDemoRoutes } from './demo/liveDemo.js';
 import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
@@ -88,6 +88,7 @@ import {
 } from './platformIntegrations.js';
 
 const runtimeConfig = validateRuntimeConfig();
+requireProductionQuoteEngineVersion(ENGINE_VERSION);
 
 const app = express();
 const lifecycle = createLifecycle(app,db);

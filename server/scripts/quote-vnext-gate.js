@@ -25,7 +25,9 @@ const ENGINE_IMPORTERS = new Map([
 ]);
 for (const path of filesUnder('server/src').filter(file => /\.[cm]?js$/.test(file))) {
   const source = readFileSync(path, 'utf8');
-  if (/quote-engine-vnext/.test(source) && !ENGINE_IMPORTERS.has(path)) failures.push(`${path} imports the quote engine directly; route it through quoteDoneBridge.js`);
+  // A version identifier is not a module path. Keep detecting every reference
+  // to the engine directory, including static/dynamic imports and require().
+  if (/quote-engine-vnext\//.test(source) && !ENGINE_IMPORTERS.has(path)) failures.push(`${path} imports the quote engine directly; route it through quoteDoneBridge.js`);
   if (/generateQuoteVNext\s*\(/.test(source) && path !== 'server/src/quoteDoneBridge.js') failures.push(`${path} calls generateQuoteVNext outside the bridge`);
   if (/from\s+['"]\.\.\/quoteEngine\.js['"]/.test(source)) failures.push(`${path} imports the retired legacy quote engine`);
 }

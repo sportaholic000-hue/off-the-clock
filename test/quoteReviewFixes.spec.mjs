@@ -200,5 +200,5 @@ test('changed pricing requires fresh approval: the engine version moved on (v7 a
   const stale = store.loadPricebook(live.ownerId);
   const status = bridge.applicationStatus(stale.services[0], stale);
   assert.equal(status.status, 'NEEDS PRICING');
-  assert.ok(status.applicationIssues.some(issue => /Confirm this exact saved configuration/.test(issue)));
+  assert.ok(status.applicationIssues.includes('Pricing rules changed — review and re-approve this service before customer quotes resume.'));
 });
