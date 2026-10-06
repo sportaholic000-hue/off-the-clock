@@ -387,7 +387,8 @@ export function KnowledgeStep({ state, refresh, back, next }) {
     about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
     policies:initial.policies || '', faqs:initial.faqs || '', prices:initial.prices || '',
     neverSay:Array.isArray(initial.neverSay) ? initial.neverSay.join('\n') : '',
-    websiteUrl:initial.website || ''
+    websiteUrl:initial.website || '',
+    reviewContact:initial.reviewContact || {name:state.account?.firstName || '',role:'owner'}
   });
   const [draft, setDraft] = useState(Boolean(initial.draft));
   const [websiteImport, setWebsiteImport] = useState(null);
@@ -418,6 +419,17 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your operator can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
+      <fieldset disabled={busy}>
+        <legend>Owner or manager</legend>
+        <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
+        <div className="kb-grid">
+          <Field label="Name"><TextInput maxLength={100} value={form.reviewContact.name} onChange={event => change('reviewContact',{...form.reviewContact,name:event.target.value})} /></Field>
+          <Field label="Role"><Select value={form.reviewContact.role} onChange={event => change('reviewContact',{...form.reviewContact,role:event.target.value})}><option value="owner">Owner</option><option value="manager">Manager</option></Select></Field>
+        </div>
+        <p><strong>Caller preview</strong></p>
+        <p aria-live="polite">{form.reviewContact.name.trim() ? `“Let me check with ${form.reviewContact.name.trim()} on that. What's the best number for a callback?”` : 'Enter a name to preview the handoff.'}</p>
+        <p>Your receptionist uses this contact after you review and save.</p>
+      </fieldset>
       <div className="draft-tools">
         <Field label="Business website URL"><TextInput disabled={busy} type="url" value={form.websiteUrl} onChange={event => change('websiteUrl', event.target.value)} placeholder="https://" /></Field>
         <Button icon={Sparkles} variant="secondary" onClick={buildDraft} disabled={busy}>Draft from my business</Button>
@@ -436,7 +448,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
         <Field label={'"Never say" list'}><Textarea disabled={busy} rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextLabel="Review and save" nextDisabled={busy || !form.about.trim() || !form.hours.trim()} />
+      <StepActions onBack={back} onNext={save} nextLabel="Review and save" nextDisabled={busy || !form.about.trim() || !form.hours.trim() || !form.reviewContact.name.trim()} />
     </section>
   );
 }

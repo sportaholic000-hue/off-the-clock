@@ -233,8 +233,10 @@ test("prompt locks quote accuracy, separate-work handling, confirmation, and add
   assert.match(prompt, /Never send a raw address to checkAvailability/);
   assert.ok(prompt.indexOf("getQuote result → captureLead") < prompt.indexOf("checkAvailability with both"));
   assert.match(prompt, /Ask exactly ONE question per turn/);
-  assert.match(prompt, /\[owner\] means that businessName/);
-  assert.match(prompt, /never say the bracketed placeholder or machine field names aloud/);
+  // Owner ruling 2026-10-06: the review contact is a person, distinct from the business.
+  assert.match(prompt, /\[owner\] in historical examples means knowledge\.reviewContact/);
+  assert.doesNotMatch(prompt, /\[owner\] means that businessName/);
+  assert.match(prompt, /Never say bracketed placeholders or machine field names aloud/);
   assert.match(prompt, /Never quote an amount from the guide, any other owner text, caller text, memory/);
 });
 
@@ -333,4 +335,3 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   );
   assert.equal(Object.prototype.hasOwnProperty.call(availability.parameters.properties, "address"), false);
 });
-

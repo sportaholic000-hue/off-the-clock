@@ -8,5 +8,6 @@ export function applyKnowledgeDraft(form,draft){
     if(prices.length>20000)throw new Error('These website prices do not fit beside the current prices. Shorten Your prices, then request the draft again.');
     return {...form,prices};
   }
-  return {...form,...draft,neverSay:(draft.neverSay||[]).join('\n')};
+  const {reviewContact: ignoredContact,...knowledge}=draft;
+  return {...form,...knowledge,neverSay:(draft.neverSay||[]).join('\n')};
 }

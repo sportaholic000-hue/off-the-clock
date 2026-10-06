@@ -16,7 +16,7 @@ async function screen(t,draft){
     const request=route.request();writes.push({url:request.url(),body:request.postDataJSON()});
     return route.fulfill({contentType:'application/json',body:JSON.stringify(request.url().endsWith('/draft')?{status:'DRAFT',knowledgeBase:draft}:{profile:{knowledgeBase:request.postDataJSON()}})});
   });
-  await page.goto('http://knowledge.test/');await page.evaluate(()=>window.mount({profile:{knowledgeBase:{about:'[SYNTHETIC] Business',hours:'Weekdays',prices:'[SYNTHETIC] Existing: $8',website:'https://business.example/'}}}));
+  await page.goto('http://knowledge.test/');await page.evaluate(()=>window.mount({account:{firstName:'Synthetic Casey'},profile:{knowledgeBase:{about:'[SYNTHETIC] Business',hours:'Weekdays',prices:'[SYNTHETIC] Existing: $8',website:'https://business.example/'}}}));
   await page.getByRole('button',{name:'Draft from my business',exact:true}).waitFor();return {page,writes};
 }
 const excerpt='[SYNTHETIC] Cover charge: $20 Friday and Saturday.';
