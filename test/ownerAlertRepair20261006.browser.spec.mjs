@@ -14,9 +14,13 @@ test('owner alert repairs: production dashboard, Calls, retry and staff visibili
     await p.goto(f.base+'/calls?record='+c.callSid);await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();await p.reload();await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();assert.ok((await p.locator('main').innerText()).includes(words));
   });
   await t.test('owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt',async()=>{
-    await p.getByRole('button',{name:'Retry owner alert',exact:true}).first().click();
+    // A click resolves before the asynchronous route commits. Run the fake
+    // worker only after the real retry response, matching the production worker
+    // which consumes persisted PENDING events rather than a UI click.
+    const [retryResponse]=await Promise.all([p.waitForResponse(r=>r.request().method()==='POST'&&/\/api\/owner-alerts\/[^/]+\/retry$/.test(new URL(r.url()).pathname)),p.getByRole('button',{name:'Retry owner alert',exact:true}).first().click()]);
+    assert.equal(retryResponse.status(),200);assert.equal((await retryResponse.json()).status,'PENDING');
     const accepted=new Set(),w=createOwnerAlertService({database:f.db,ownerQuery:f.ownerQuery,environment:{EMAIL_FROM:'alerts@example.invalid'},ready:()=>true,send:async m=>{accepted.add(m.idempotencyKey);return {accepted:true,id:'SYNTHETIC_'+m.idempotencyKey};}});
-    await w.dispatchOnce();await p.getByRole('button',{name:'Refresh',exact:true}).click();await p.getByText('ACCEPTED',{exact:true}).first().waitFor();const text=await p.locator('main').innerText();assert.ok(text.includes('Inbox delivery and owner reading are not confirmed'));const before=accepted.size;await w.dispatchOnce();assert.equal(accepted.size,before);
+    await w.dispatchOnce();assert.equal(accepted.size,1);assert.equal(f.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND status='ACCEPTED'").get(c.ownerId).n,1);await p.getByRole('button',{name:'Refresh',exact:true}).click();await p.getByText('ACCEPTED',{exact:true}).first().waitFor();const text=await p.locator('main').innerText();assert.ok(text.includes('Inbox delivery and owner reading are not confirmed'));const before=accepted.size;await w.dispatchOnce();assert.equal(accepted.size,before);
   });
   await t.test('staff reads callback and delivery states without mutation controls or foreign data',async()=>{
     await p.evaluate(token=>{localStorage.setItem('otc_token',token);window.dispatchEvent(new Event('otc:session'));},f.tokens['synthetic-staff']);await p.goto(f.base+'/calls?record='+c.callSid);await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();assert.ok((await p.locator('main').innerText()).includes(words));assert.equal(await p.getByRole('button',{name:'Retry owner alert',exact:true}).count(),0);

@@ -28,7 +28,8 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
     if(['callback.requested','callback.updated'].includes(row.eventType)){
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');
       const lead=query('SELECT callerNumber,customerName FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
-      return ['Callback requested',lead.customerName,lead.callerNumber,callback.notes||'No caller notes recorded',callback.reason];
+      const history=parseArray(callback.historyJson),revision=row.eventType==='callback.updated'?Number(row.eventKey.split(':').at(-1))-1:0,entry=history[revision];
+      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',lead.customerName,lead.callerNumber,entry?.notes??callback.notes??'No caller notes recorded',callback.reason];
     }
     if(row.eventType==='quote.created'){
       const quote=query('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);if(!quote)throw Error('ALERT_SOURCE_MISSING');
@@ -111,21 +112,26 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
     }).immediate();
     return true;
   }
+  let ownerCursor='',workerStopping=false,stopWorker=null;
   async function dispatchOnce(){
-    // Enumerating owner IDs is a worker-control registry read. Every request,
-    // source record, claim and mutation below is explicitly tenant-bound.
-    const owners=database.prepare("SELECT a.ownerId,MIN(a.createdAt) AS oldest FROM ownerAlerts a JOIN users u ON u.id=a.ownerId AND u.role='owner' WHERE (a.status='PENDING' AND a.nextAttemptAt<=?) OR (a.status='DELIVERING' AND a.leaseExpiresAt<=?) OR (a.status='BLOCKED' AND a.lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING') AND ?=1) GROUP BY a.ownerId ORDER BY oldest LIMIT 100").all(clock(),clock(),ready()?1:0);
+    // Owner identity enumeration is the same identity-registry read used by
+    // authentication/routing. Alert/customer queries never scan across tenants.
+    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
+    if(!owners.length){ownerCursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     let processed=0;
     for(const {ownerId}of owners){
+      if(workerStopping||processed>=20)break;ownerCursor=ownerId;
       if(ready())query("UPDATE ownerAlerts SET status='PENDING',lastErrorCode=NULL WHERE ownerId=? AND status='BLOCKED' AND lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING')").run(ownerId);
-      for(let n=0;n<10;n++){if(!await processOne(ownerId))break;processed++;}
+      for(let n=0;n<10&&!workerStopping&&processed<20;n++){if(!await processOne(ownerId))break;processed++;}
     }
     return {processed};
   }
   function start({intervalMs=1000,onError=()=>{}}={}){
+    if(!Number.isSafeInteger(intervalMs)||intervalMs<100||intervalMs>60000)throw TypeError('Invalid owner alert worker interval.');
+    if(stopWorker)return stopWorker;workerStopping=false;
     let stopped=false,timer,running;
     const tick=()=>{if(stopped)return;running=dispatchOnce().catch(()=>onError('OWNER_ALERT_WORKER_FAILED')).finally(()=>{running=null;if(!stopped){timer=setTimeout(tick,intervalMs);timer.unref?.();}});};tick();
-    return async()=>{stopped=true;clearTimeout(timer);await running;};
+    stopWorker=async()=>{stopped=true;workerStopping=true;clearTimeout(timer);await running;stopWorker=null;};return stopWorker;
   }
   return {list,retry,seen,dispatchOnce,start,processOne};
 }

@@ -11,7 +11,30 @@
   "callbackLeads": 1,
   "ownerCallLeadCount": 2,
   "ownerAlertTable": true,
-  "fakeOwnerAlertDeliveries": 0,
+  "optionalWebhookDeliveries": 0,
+  "fakeOwnerEmailAttempts": 4,
+  "ownerAlerts": [
+    {
+      "eventType": "callback.requested",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "lead.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "lead.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "quote.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    }
+  ],
   "outbox": [
     {
       "eventType": "voice.transfer_requested",

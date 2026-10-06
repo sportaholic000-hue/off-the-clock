@@ -114,3 +114,36 @@ test('email adapter: fake fetch confirms exact payload/key and disabled config n
   assert.equal((await send(message)).accepted,true);assert.equal(requests[0].options.headers['Idempotency-Key'],message.idempotencyKey);assert.deepEqual(JSON.parse(requests[0].options.body),{from:message.from,to:[message.to],subject:message.subject,text:message.text});
   await assert.rejects(createOwnerAlertEmailSender({environment:{...env,ALLOW_PROVIDER_WRITES:'false'},fetchClient:async()=>{throw Error('MUST_NOT_CALL');}})(message),e=>e.code==='EMAIL_NOT_CONFIGURED');
 });
+
+test('alerts: database failure after provider acceptance replays the frozen message after lease recovery',async t=>{
+  const f=fixture(t),c=f.context();await capture(f,c);let now=Date.parse(at),fake=sender();
+  f.db.exec("CREATE TRIGGER synthetic_acceptance_save_failure BEFORE UPDATE ON ownerAlerts WHEN NEW.status='ACCEPTED' BEGIN SELECT RAISE(ABORT,'SYNTHETIC_DB_FAILURE'); END");
+  await assert.rejects(worker(f,{clock:()=>now,send:fake.send}).dispatchOnce());assert.equal(fake.accepted.size,1);assert.equal(alerts(f)[0].status,'DELIVERING');
+  f.db.exec('DROP TRIGGER synthetic_acceptance_save_failure');now+=31000;await worker(f,{clock:()=>now,send:fake.send}).dispatchOnce();assert.equal(fake.accepted.size,1);assert.equal(fake.attempts.length,2);assert.equal(alerts(f)[0].status,'ACCEPTED');
+});
+test('alerts: preferences survive reinstall with one event and call binding; an explicit callback handle keeps its original inquiry',async t=>{
+  const f=fixture(t),c=f.context(),v=voice(f,c);const leadHandle=(await capture(f,c,{callbackRequested:true,inquiryNumber:2})).leadHandle;
+  await v.tool('captureLead',{leadHandle,callbackRequested:true,notes:'[SYNTHETIC] Corrected second inquiry.'});assert.equal(count(f,'callbackRequests'),1);const lead=f.lead(c)[0];
+  f.db.prepare("INSERT INTO bookingIntents(id,ownerId,tokenHash,sourceType,sourceId,serviceId,resultType,status,expiresAtUtc,createdAt) VALUES('synthetic-alert-pref-intent',?,'SYNTHETIC_PREF','lead',?,'synthetic-service','ESTIMATE_REQUIRES_REVIEW','OPEN','2026-10-10',?)").run(c.ownerId,lead.id,at);
+  f.db.prepare("INSERT INTO bookingPreferences(id,ownerId,intentId,preferredWindowsJson,customerJson,locationJson,note,status,createdAt,updatedAt) VALUES('synthetic-alert-preference',?,'synthetic-alert-pref-intent','[]','{}','{}','[SYNTHETIC] After six','REQUESTED',?,?)").run(c.ownerId,at,at);
+  f.db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES('synthetic-alert-pref-event',?,'booking.preference_requested','synthetic-alert-preference','{}','PENDING',?,?)").run(c.ownerId,at,at);
+  assert.equal(alerts(f).filter(a=>a.eventType==='booking.preference_requested').length,1);migrateDatabase(f.db);const preference=alerts(f).filter(a=>a.eventType==='booking.preference_requested');assert.equal(preference.length,1);assert.equal(preference[0].callId,c.callSid);
+});
+test('alerts: two independent cold processes use one durable queue and one fake provider acceptance per event',async t=>{
+  const {createServer}=await import('node:http'),{spawn}=await import('node:child_process'),{once}=await import('node:events');
+  const dir=mkdtempSync(path.join(tmpdir(),'SYNTHETIC-cold-owner-alert-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));const filename=path.join(dir,'synthetic.sqlite'),f=fixture(t,filename),c=f.context();await capture(f,c,{callbackRequested:true});
+  const accepted=new Map(),requests=[];const server=createServer(async(req,res)=>{let body='';for await(const chunk of req)body+=chunk;const message=JSON.parse(body);requests.push(message);const old=accepted.get(message.idempotencyKey);if(old)assert.deepEqual(old.message,message);else accepted.set(message.idempotencyKey,{message,result:{accepted:true,id:'SYNTHETIC_'+accepted.size}});await new Promise(resolve=>setTimeout(resolve,40));res.setHeader('content-type','application/json');res.end(JSON.stringify(accepted.get(message.idempotencyKey).result));});server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));
+  const endpoint='http://127.0.0.1:'+server.address().port;
+  async function child(){const p=spawn(process.execPath,['test/ownerAlertRepair20261006Worker.mjs',filename,endpoint,String(Date.parse(at))],{stdio:['ignore','pipe','pipe']});let text='',error='';p.stdout.on('data',c=>text+=c);p.stderr.on('data',c=>error+=c);const [code]=await once(p,'exit');assert.equal(code,0,error);return JSON.parse(text);}
+  await Promise.all([child(),child()]);await child();assert.equal(accepted.size,2);assert.equal(requests.length,2);assert.equal(count(f,'callbackRequests'),1);assert.ok(alerts(f).every(a=>a.status==='ACCEPTED'));
+});
+
+test('alerts: queued callback corrections preserve each revision words rather than substituting the latest notes',async t=>{
+  const f=fixture(t),c=f.context(),v=voice(f,c);const first=await capture(f,c,{callbackRequested:true});await v.tool('captureLead',{leadHandle:first.leadHandle,callbackRequested:true,notes:'[SYNTHETIC] Call after seven instead.'});await v.tool('captureLead',{leadHandle:first.leadHandle,callbackRequested:true,notes:'[SYNTHETIC] Make that eight.'});
+  const fake=sender();await worker(f,{send:fake.send}).dispatchOnce();const callback=fake.attempts.filter(a=>a.subject.includes('Callback'));assert.equal(callback.length,3);assert.ok(callback.some(a=>a.text.includes(words)));assert.ok(callback.some(a=>a.text.includes('Call after seven instead.')));assert.ok(callback.some(a=>a.text.includes('Make that eight.')));
+});
+
+test('alerts: lifecycle starts one timer and shutdown stops further sends without logging customer details',async t=>{
+  const f=fixture(t),c=f.context();await capture(f,c,{callbackRequested:true});let calls=0,release;const log=[];
+  const w=worker(f,{send:()=>{calls++;return new Promise(resolve=>release=resolve);}}),stop=w.start({intervalMs:100,onError:code=>log.push(code)});assert.equal(w.start(),stop);await new Promise(resolve=>setImmediate(resolve));const stopped=stop();release({accepted:true,id:'SYNTHETIC_STOPPED'});await stopped;await new Promise(resolve=>setTimeout(resolve,130));assert.equal(calls,1);assert.deepEqual(log,[]);assert.equal(alerts(f).filter(a=>a.status==='ACCEPTED').length,1);assert.equal(alerts(f).filter(a=>a.status==='PENDING').length,1);
+});
