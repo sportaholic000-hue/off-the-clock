@@ -1,0 +1,42 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "npmCi": "passed cold; 262 packages",
+  "node": "22.23.3",
+  "build": "owner and widget passed cold",
+  "existingTestRuns": {
+    "cold-existing.tap": {
+      "tests": 229,
+      "pass": 229,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "cold-additional.tap": {
+      "tests": 47,
+      "pass": 47,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "cold-support.tap": {
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "existingTestFiles": 31,
+  "independentExperiments": 45,
+  "expectedOutcomesMet": 11,
+  "expectationMismatches": 34,
+  "finalExperimentErrors": 0,
+  "confirmedDefects": 32,
+  "businessPolicyConflicts": 1,
+  "noSubagents": true,
+  "sourceChanges": false,
+  "providerWrites": false
+}

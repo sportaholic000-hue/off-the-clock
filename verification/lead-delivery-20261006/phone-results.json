@@ -1,0 +1,186 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "syntheticOnly": true,
+  "experiments": [
+    {
+      "id": "E21",
+      "expected": "Provider-start failure offers durable actionable lead and owner alert, with no audio storage.",
+      "meetsExpectation": false,
+      "actual": {
+        "http": 200,
+        "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Dial answerOnBridge=\"true\" timeout=\"20\"><Number>+19025550199</Number></Dial><Say>The business could not answer. Please try the business again shortly.</Say><Hangup/></Response>",
+        "callStatus": "FALLBACK",
+        "transcript": [],
+        "leadCount": 0,
+        "errorCodes": [],
+        "outboxCount": 0
+      }
+    },
+    {
+      "id": "E22",
+      "expected": "Production-composed voice sends transactional SMS and transfers through implemented adapters.",
+      "meetsExpectation": false,
+      "actual": {
+        "lead": {
+          "status": "captured_address_required",
+          "leadHandle": "GXS2Rvib6F2tKcLeSEzAlq0SBNxra4RvVjg6MnGY3q0",
+          "message": "Contact saved. A complete service address is required before checking availability."
+        },
+        "sms": {
+          "status": "unavailable",
+          "message": "Text messaging is not available right now."
+        },
+        "transfer": {
+          "status": "unavailable",
+          "message": "Live transfer is not available right now."
+        },
+        "outbox": [
+          {
+            "eventType": "voice.sms_requested",
+            "status": "FAILED"
+          },
+          {
+            "eventType": "voice.transfer_requested",
+            "status": "FAILED"
+          }
+        ],
+        "errors": []
+      }
+    },
+    {
+      "id": "E23",
+      "expected": "Real completed lead call has semantic LEAD outcome, summary and urgency; duplicate/resume callbacks cannot overwrite successful outcome.",
+      "meetsExpectation": false,
+      "actual": {
+        "before": {
+          "status": "COMPLETED",
+          "outcome": "TWILIO_STOP",
+          "summary": null,
+          "urgency": null,
+          "transcript": [
+            {
+              "role": "caller",
+              "text": "[SYNTHETIC] My kitchen is flooding; call me back.",
+              "final": true
+            }
+          ],
+          "leads": 1
+        },
+        "fallbackResponse": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Dial answerOnBridge=\"true\" timeout=\"20\"><Number>+19025550199</Number></Dial><Say>The business could not answer. Please try the business again shortly.</Say><Hangup/></Response>",
+        "after": {
+          "status": "FALLBACK",
+          "outcome": "VOICE_SESSION_UNAVAILABLE",
+          "failureCode": "VOICE_SESSION_UNAVAILABLE"
+        },
+        "ownerMappedCorrectly": true
+      }
+    },
+    {
+      "id": "E34",
+      "expected": "Consumed nonce cannot reopen a completed voice call from the public signed WebSocket boundary.",
+      "meetsExpectation": true,
+      "actual": {
+        "reconnectStatus": 403
+      }
+    },
+    {
+      "id": "E24",
+      "expected": "Restart reconciles stranded active calls into recoverable failed/missed-call leads.",
+      "meetsExpectation": false,
+      "actual": {
+        "persisted": {
+          "status": "CONNECTED"
+        },
+        "restarted": {
+          "status": "CONNECTED",
+          "outcome": null,
+          "failureCode": null
+        },
+        "leadCount": 0
+      }
+    },
+    {
+      "id": "E25",
+      "expected": "A queued final customer transcript is persisted before session-end telemetry.",
+      "meetsExpectation": false,
+      "actual": {
+        "stored": [],
+        "outcome": {
+          "status": "closed",
+          "reason": "TWILIO_SOCKET_CLOSED"
+        }
+      }
+    },
+    {
+      "id": "E27",
+      "expected": "Signed anonymous caller is answered with an honest contact-capture path, not rejected before tenant resolution.",
+      "meetsExpectation": false,
+      "actual": {
+        "status": 400,
+        "body": "Voice unavailable",
+        "callCount": 0
+      }
+    },
+    {
+      "id": "E26",
+      "expected": "Buffered model transcript is flushed on local transport close for an accurate written record.",
+      "meetsExpectation": false,
+      "actual": {
+        "storedTranscript": []
+      }
+    },
+    {
+      "id": "E42",
+      "expected": "Duplicate signed inbound events create one live session and never reopen a completed call.",
+      "meetsExpectation": false,
+      "actual": {
+        "oneCallRow": 1,
+        "providerOpens": 2,
+        "secondSocketOpenAfterCompleted": true,
+        "completedCallReceivesFreshStream": true
+      }
+    },
+    {
+      "id": "E43",
+      "expected": "Six simultaneous calls respect the default five-session owner ceiling and save an excess-call fallback.",
+      "meetsExpectation": false,
+      "actual": {
+        "providerOpens": 6,
+        "additionalResponses": [
+          {
+            "status": 200,
+            "stream": true
+          },
+          {
+            "status": 200,
+            "stream": true
+          },
+          {
+            "status": 200,
+            "stream": true
+          },
+          {
+            "status": 200,
+            "stream": true
+          },
+          {
+            "status": 200,
+            "stream": true
+          }
+        ],
+        "excessCaptureLeads": 0
+      }
+    },
+    {
+      "id": "E35",
+      "expected": "Voice callback promises use an explicit owner-policy precedence over fixed historical time promises.",
+      "meetsExpectation": false,
+      "actual": {
+        "ownerPolicyIncluded": true,
+        "fixedSameDayPromiseIncluded": true,
+        "fixedTextMinutePromiseIncluded": true,
+        "neverInventNotificationsIncluded": true
+      }
+    }
+  ]
+}

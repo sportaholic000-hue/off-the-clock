@@ -1,0 +1,920 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "confirmedDefects": [
+    {
+      "id": "D01",
+      "severity": "High",
+      "title": "Voice capture discards the actual request notes",
+      "experiments": [
+        "E01",
+        "E20"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 574
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 590
+        },
+        {
+          "file": "server/src/ownerRecordViews.js",
+          "line": 24
+        }
+      ],
+      "minimum": "One bound synthetic call; captureLead({name:\"[SYNTHETIC] Alex\",email:\"alex@example.invalid\",address,notes:\"[SYNTHETIC] Gate fell down; call after 5pm.\"}). No pricing or calendar needed.",
+      "expected": "build_guide captureLead: retain every collected input plus transcript pointer; platform \u00a7\u00a76.2/6.8: actionable owner follow-up information.",
+      "actual": "Returns captured. Stored notes is null, describedService is null, and neither staff lead JSON nor rendered Calls includes the supplied problem/callback instruction. The callback email survives.",
+      "rootCause": "captureLead hard-codes notes:null and NULL describedService; the normalized lead view also has no notes projection.",
+      "recommendedFix": "Persist bounded caller notes and a request description; expose them in the common owner/staff lead view and existing Calls/Leads components. Preserve their provenance and do not treat notes as pricing instructions.",
+      "impact": "A callback card can contain a name and number but none of the work or timing the customer requested; the owner must re-interview the caller or comb through any available transcript."
+    },
+    {
+      "id": "D02",
+      "severity": "High",
+      "title": "First-party owner alerts and the voice/preference outbox have no delivery consumer",
+      "experiments": [
+        "E05",
+        "E28",
+        "E21"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 948
+        },
+        {
+          "file": "server/src/bookingPreferenceService.js",
+          "line": 185
+        },
+        {
+          "file": "server/src/server.js",
+          "line": 485
+        },
+        {
+          "file": "server/src/outboundWebhookSchema.js",
+          "line": 1
+        }
+      ],
+      "minimum": "One ordinary voice capture, one flooding flag, or one valid preferred-time request. Restart the only registered delivery worker with local stubs; no first-party notification configuration exists.",
+      "expected": "platform \u00a7\u00a75.4/5.7/6.8/6.11/13.2 and build_guide post-call automation: notify the owner of leads, immediately for urgency; preserve retry/failure recovery.",
+      "actual": "Urgency and booking.preference_requested remain PENDING with zero corresponding provider attempts after worker recreation. The server starts the webhook worker, not an outbox consumer. Ordinary capture has no first-party owner alert producer. Optional webhooks process only lead.created, quote.requested and appointment.booked, and are not SMS/email owner alerts.",
+      "rootCause": "There is no owner-alert dispatcher or outbox worker wired into server lifecycle. Auth email code is not a lead-alert channel.",
+      "recommendedFix": "Implement a durable tenant-bound owner notification pipeline for the actually supported owner channels; create events atomically with capture, distinguish queued/attempted/provider-accepted/failed, retry after restart, and bypass digest delays for urgency. Require/configure an owner destination and expose readiness/failure honestly.",
+      "impact": "Owners can miss ordinary inquiries, emergencies and time requests unless they manually discover saved data. A PENDING database row alone does not contact the owner."
+    },
+    {
+      "id": "D03",
+      "severity": "High",
+      "title": "Urgency is absent from the call and lead records owners read",
+      "experiments": [
+        "E05",
+        "E23"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 958
+        },
+        {
+          "file": "server/src/ownerCallService.js",
+          "line": 29
+        },
+        {
+          "file": "server/src/ownerRecordViews.js",
+          "line": 24
+        }
+      ],
+      "minimum": "Capture a caller, then flagUrgent({reason:\"flooding\",summary:\"[SYNTHETIC] Water through kitchen ceiling.\"}).",
+      "expected": "platform \u00a7\u00a76.2/13.2: visible urgency and a complaint/urgent lead card with the transcript; urgency must remain evident independently of notification delivery.",
+      "actual": "Tool returns flagged and an events row exists, but calls.urgency and normalized lead.urgency remain null. A real completed flooding call still shows null urgency; no COMPLAINT lead type is created by the flag path.",
+      "rootCause": "The handler writes separate events/outbox rows without updating the call/lead or joining those rows into the owner read models.",
+      "recommendedFix": "Atomically mark the bound call and appropriate lead/thread urgent, preserve reason/summary, apply the complaint classification when relevant, and expose it to authorized owner/staff views.",
+      "impact": "Even an owner checking the inbox cannot identify which saved request requires immediate follow-up."
+    },
+    {
+      "id": "D04",
+      "severity": "High",
+      "title": "Production voice composition has no SMS, live-transfer or appointment-change provider adapters",
+      "experiments": [
+        "E22",
+        "E37"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 31
+        },
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 76
+        },
+        {
+          "file": "server/src/server.js",
+          "line": 462
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 905
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1030
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1143
+        }
+      ],
+      "minimum": "Valid signed local call with a synthetic Google session and provisioned owner phone; capture a lead, sendSms(callback), transferCall(caller_requested), or cancel a caller-owned confirmed synthetic appointment.",
+      "expected": "platform \u00a7\u00a75.4/5.6/5.7/13.3: implemented transactional texts, warm transfer and confirmed appointment changes.",
+      "actual": "Actual production composition returns SMS unavailable and transfer unavailable and writes FAILED outbox rows. The cancellation handler with the same default provider dependency returns unavailable and leaves the appointment CONFIRMED. None falsely reports success.",
+      "rootCause": "server.js calls installProductionVoice without providers. The default is {}; bookingService is supplied separately and does not populate these adapters.",
+      "recommendedFix": "Supply real production adapters for the approved channels and shared appointment operations through server construction, with bounded calls, provider receipts, tenant/caller checks and recovery. Do not label these capabilities available until their dependencies are ready.",
+      "impact": "Customers cannot receive the promised written follow-up or reach a human through the advertised tool, and appointment-change requests do not get applied. Source-defined injectable handlers do not establish a deployed delivery channel."
+    },
+    {
+      "id": "D05",
+      "severity": "High",
+      "title": "One failed SMS attempt permanently prevents a later retry",
+      "experiments": [
+        "E10"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 875
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 884
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 936
+        }
+      ],
+      "minimum": "Local sendSms stub throws ETIMEDOUT on attempt one, then returns SENT; retry the same lead/template under a new toolCallId and recreated runtime.",
+      "expected": "Audit retry/failure requirement and platform \u00a75.7: transient provider failure must permit safe recovery without pretending a message was sent.",
+      "actual": "First and second replies both unavailable; provider invoked once only; the event remains FAILED after recovery. New dispatcher idempotency keys do not help.",
+      "rootCause": "The application-level event identity is fixed to call+handle+template. Any prior non-SENT row immediately returns unavailable instead of claiming a retry or reconciling an uncertain provider result.",
+      "recommendedFix": "Use a leased durable delivery job with retry policy and provider idempotency/receipt reconciliation; SENT should replay, retryable failures should re-attempt, and timeouts after acceptance should remain explicitly uncertain until reconciled.",
+      "impact": "A transient outage becomes permanent lost written follow-up for the saved inquiry, even after the provider recovers. This runtime defect remains relevant when D04 is wired."
+    },
+    {
+      "id": "D06",
+      "severity": "High",
+      "title": "An unsuccessful transfer does not create its promised callback lead",
+      "experiments": [
+        "E11"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1015
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1030
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1070
+        }
+      ],
+      "minimum": "One bound caller asks for a human; local transfer provider throws a synthetic no-answer error; no pre-existing lead.",
+      "expected": "platform \u00a75.6: no answer/outside window must fall back to a lead card and authorized callback promise; transfers never dead-end.",
+      "actual": "Returns unavailable with a truthful failure message but call detail contains zero leads and no captured transfer reason in the callback queue. Caller number survives on the call row.",
+      "rootCause": "Transfer failure writes delivery state and returns; it neither creates a callback request nor invokes a shared durable fallback capture path.",
+      "recommendedFix": "Atomically preserve the caller/request/reason as an actionable callback lead on every unsuccessful transfer, notify the owner, and return only an owner-authorized callback commitment.",
+      "impact": "A customer seeking a person is told transfer failed but the owner gets no actionable lead; manual discovery of the phone number is the only recovery."
+    },
+    {
+      "id": "D07",
+      "severity": "High",
+      "title": "AI failure fallback forwards once and hangs up without request capture",
+      "experiments": [
+        "E21"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 46
+        },
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 227
+        },
+        {
+          "file": "server/src/voice/voicePersistence.js",
+          "line": 178
+        }
+      ],
+      "minimum": "Synthetic Google connect rejects; signed fallback callback is invoked for a provisioned synthetic owner with fallback number +19025550199.",
+      "expected": "platform \u00a712.4 and \u00a75.7: failure/missed-call transcript lead, AI_FALLBACK flag, owner alert and missed-call text-back; no audio storage.",
+      "actual": "HTTP 200 TwiML dials the business, then says to try again and hangs up. Saved call is FALLBACK with no transcript, no lead and no outbox event. If that business phone does not answer, no transcription/capture step exists after Dial.",
+      "rootCause": "The production fallback is exclusively forward mode; recordFallback persists call metadata only. No speech-capture or missed-call automation is attached.",
+      "recommendedFix": "Add a transcript-only capture continuation for unanswered/failed forwarding and AI startup/drop failures, with durable owner-linked lead/alert and honest callback instructions. Preserve any earlier transcript and inputs. Do not introduce call recording.",
+      "impact": "An after-hours or unavailable owner can lose the entire request during the exact provider failure the fallback is meant to cover. Forwarding that is answered can still reach the owner; this finding concerns the unanswered continuation."
+    },
+    {
+      "id": "D08",
+      "severity": "High",
+      "title": "Legitimate anonymous caller IDs are rejected before tenant resolution",
+      "experiments": [
+        "E27"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 183
+        },
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 353
+        }
+      ],
+      "minimum": "Otherwise valid locally signed inbound form, From:\"anonymous\", valid synthetic AccountSid/CallSid/To and Direction:\"inbound\".",
+      "expected": "platform \u00a75.1: ON answers inbound calls; unavailable contact details require honest capture rather than an authentication rejection. Twilio documents non-number caller IDs for withheld/unavailable callers (https://www.twilio.com/docs/voice/twiml).",
+      "actual": "HTTP 400 Voice unavailable; zero call records for the owner; no business fallback or callback-capture prompt.",
+      "rootCause": "normalizeIncomingCall requires From to be E.164 before the signed destination establishes the tenant.",
+      "recommendedFix": "Keep signature/account/destination validation strict while representing unavailable caller ID explicitly. Ask for a confirmed callback channel through the capture tool and prevent caller-memory matching until an identity is known.",
+      "impact": "Privacy-conscious prospective customers are unable to leave a request and the owner has no recoverable call record."
+    },
+    {
+      "id": "D09",
+      "severity": "High",
+      "title": "Voice lead capture rejects callers who do not supply a name",
+      "experiments": [
+        "E36"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/toolSchemas.js",
+          "line": 77
+        },
+        {
+          "file": "server/src/voice/toolSchemas.js",
+          "line": 113
+        }
+      ],
+      "minimum": "Bound call with known synthetic callback phone; captureLead({notes:\"[SYNTHETIC] Please quote repair; prefers no name.\"}).",
+      "expected": "September 30 owner direction/shared boundaries: callback contact is required for an estimate; a name is optional. build_guide capture preserves collected details.",
+      "actual": "Dispatcher rejects with MISSING_TOOL_FIELD and creates zero leads although context supplies a valid callback number. Runtime code itself can represent name:null.",
+      "rootCause": "Tool declaration and validation require a nonempty name, stricter than the approved contact requirement and the persistence handler.",
+      "recommendedFix": "Make the name optional for saving a callback request; retain verified available contact and request text. Require additional identity only for operations that truly need it, such as confirmed booking.",
+      "impact": "A usable inquiry is blocked solely because the caller declines or has not yet given a name."
+    },
+    {
+      "id": "D10",
+      "severity": "High",
+      "title": "The valid urgency-tool schema allows an input that always fails",
+      "experiments": [
+        "E06"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/toolSchemas.js",
+          "line": 84
+        },
+        {
+          "file": "server/src/voice/toolSchemas.js",
+          "line": 116
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 952
+        }
+      ],
+      "minimum": "flagUrgent({reason:\"safety\"}) on a bound synthetic call; summary is omitted as permitted by the tool declaration.",
+      "expected": "platform \u00a7\u00a75.4/13.2 and voice global urgency: immediately preserve and flag urgency; a valid declared call must not silently lose it.",
+      "actual": "TOOL_EXECUTION_FAILED, zero urgency events; production wraps it as needs_details rather than a successful urgent flag.",
+      "rootCause": "Schema marks summary optional, while the handler rejects every empty/missing summary.",
+      "recommendedFix": "Unify the contract. Prefer preserving the urgent reason immediately and enriching the summary later; any truly required field must be required and described consistently in declaration, validator and runtime.",
+      "impact": "The model can make a schema-valid emergency flag call that produces no flag or alert."
+    },
+    {
+      "id": "D11",
+      "severity": "Medium",
+      "title": "Correcting contact information creates another lead for the same call/request",
+      "experiments": [
+        "E04"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 570
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 572
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 590
+        }
+      ],
+      "minimum": "On one call capture name \"[SYNTHETIC] Alxe\", then corrected \"[SYNTHETIC] Alex\" with correct@example.invalid.",
+      "expected": "platform \u00a7\u00a76.8/12.18/13.6: coherent customer/lead thread; exact retry and contact correction should not create contradictory actionable requests.",
+      "actual": "Two CAPTURED leads persist: misspelled old contact and corrected contact. Adding/changing address likewise changes the identity input.",
+      "rootCause": "Mutable contact/address content is hashed into leadId instead of identifying the inquiry independently of its corrections.",
+      "recommendedFix": "Use a stable inquiry/thread identity tied to owner and call/request, update versioned contact facts within that identity, and link multiple actual service requests explicitly rather than using changed contact to identify a new job.",
+      "impact": "Owners may call the stale contact or pursue the same job twice; earlier lead handles and cards remain valid."
+    },
+    {
+      "id": "D12",
+      "severity": "Medium",
+      "title": "A new capture event reopens an owner-dismissed lead",
+      "experiments": [
+        "E03"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 590
+        },
+        {
+          "file": "server/src/quoteDoneRoutes.js",
+          "line": 276
+        }
+      ],
+      "minimum": "Capture one lead; owner PATCHes its status to DISMISSED; dispatch identical capture args with a different toolCallId using a recreated runtime.",
+      "expected": "Audit duplicate-event requirement and platform \u00a76.8: customer capture retries must preserve owner follow-up disposition.",
+      "actual": "Status changes back to CAPTURED. Exact replay of the same dispatcher key is safe, but a distinct provider event is not.",
+      "rootCause": "UPSERT unconditionally assigns status=excluded.status even when capture data is unchanged and the owner has already handled the lead.",
+      "recommendedFix": "Separate capture-data updates from owner workflow status. Preserve disposition unless an explicit, authorized new inquiry/reopen action changes it; use a revision check when combining updates.",
+      "impact": "Completed/dismissed requests reappear as work to do and can cause duplicate unwanted callbacks."
+    },
+    {
+      "id": "D13",
+      "severity": "Medium",
+      "title": "A returning caller omitting email erases the known customer email",
+      "experiments": [
+        "E03"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 558
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 585
+        }
+      ],
+      "minimum": "Capture returning@example.invalid for a caller; on the next call capture only the name with the same owner/phone.",
+      "expected": "platform \u00a7\u00a76.6/12.18/13.7: preserve the returning customer and accurate follow-up channels.",
+      "actual": "customers.notesJson becomes {voiceVersion:1,email:null}. The prior lead still holds historical email, but the current customer record loses it.",
+      "rootCause": "Customer UPSERT replaces notesJson wholesale with the latest invocation, including null for an omitted optional field.",
+      "recommendedFix": "Merge provided contact fields explicitly; distinguish omission from an authorized clear/change. Retain historical provenance and update canonical contact only after confirmation.",
+      "impact": "Future follow-up and caller-memory operations lose a previously usable contact channel unless the owner searches older records."
+    },
+    {
+      "id": "D14",
+      "severity": "Medium",
+      "title": "Booking lookup limits the tenant before filtering for the caller",
+      "experiments": [
+        "E38"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1215
+        }
+      ],
+      "minimum": "One stored caller-owned confirmed appointment plus 25 newer appointments for different callers under the same owner; no customer row needed.",
+      "expected": "platform \u00a7\u00a713.3/13.7: find the caller-owned booking before offering modification or fallback; tenant data must remain isolated.",
+      "actual": "getCustomerContext returns not_found even though the caller-owned appointment exists. With a customer row, it instead returns found with empty appointments.",
+      "rootCause": "SQL fetches only the owner\u2019s newest 25 appointments; caller matching happens afterwards in JavaScript.",
+      "recommendedFix": "Apply normalized caller/customer ownership filters in SQL before ordering/limiting; use a stable bounded per-caller history and preserve tenant binding.",
+      "impact": "Returning customers can be incorrectly treated as having no booking; reschedule/cancel/follow-up requests fail as the business grows."
+    },
+    {
+      "id": "D15",
+      "severity": "Medium",
+      "title": "Returning-caller tool drops identity/address and omits saved request history",
+      "experiments": [
+        "E39"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1210
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 1225
+        },
+        {
+          "file": "server/src/voice/toolDispatcher.js",
+          "line": 93
+        }
+      ],
+      "minimum": "Save a synthetic named caller, complete address, one open lead and one synthetic saved quote receipt; invoke getCustomerContext.",
+      "expected": "platform \u00a7\u00a76.6/13.7: customer-safe past quote status/ranges, bookings and open leads for the caller; no raw rates.",
+      "actual": "Handler has saved name and address but dispatched result has only found/customerHandle/recentAppointments:[]. No open lead or quote history is returned despite one of each in storage.",
+      "rootCause": "Runtime returns name/address while projector expects greetingName and has no address projection. The handler reads appointments but never loads saved leads or quotes.",
+      "recommendedFix": "Define one shared safe caller-context schema and align runtime/projector. Return allowed identity/address fields and tenant/caller-bound lead/quote statuses using stored sanitized receipts, never current recalculation or internal rates.",
+      "impact": "The agent cannot recognize the caller or explain the saved inquiry\u2019s follow-up state, making customers repeat their request or believe it was lost."
+    },
+    {
+      "id": "D16",
+      "severity": "Medium",
+      "title": "Customer identity is not unified across web/voice or credential rotation",
+      "experiments": [
+        "E15",
+        "E45"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 571
+        },
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 585
+        },
+        {
+          "file": "server/src/quoteDoneRoutes.js",
+          "line": 138
+        },
+        {
+          "file": "server/src/schema.js",
+          "line": 182
+        }
+      ],
+      "minimum": "Web review request with phone +19025550144 then voice capture of that phone; separately, two voice captures of +19025550137 with synthetic handle secrets A and B.",
+      "expected": "platform \u00a7\u00a76.6/12.18: widget/caller threads merge on normalized E.164 within the owner; credentials are not customer identity.",
+      "actual": "Web submission creates zero customer rows. Later voice creates a separate identity without linking the web request. Changing only the handle secret produces two customer IDs for the exact same owner/phone.",
+      "rootCause": "Web capture does not upsert/link customers. Voice computes customerId from a credential-derived HMAC and upserts by ID, rather than resolving a canonical owner+normalized-phone identity.",
+      "recommendedFix": "Use a shared per-owner contact-normalization/customer resolver with a durable unique phone identity where present; keep handle secrets separate from customer IDs and preserve booking/thread references during merges.",
+      "impact": "Returning-caller history splits across records and channels; routine credential rotation can orphan the relationship used to find existing bookings."
+    },
+    {
+      "id": "D17",
+      "severity": "Medium",
+      "title": "Voice lead webhook and lead CSV omit a saved email",
+      "experiments": [
+        "E12"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 577
+        },
+        {
+          "file": "server/src/outboundWebhookSchema.js",
+          "line": 29
+        },
+        {
+          "file": "server/src/integrationData.js",
+          "line": 8
+        }
+      ],
+      "minimum": "Configured local lead.created webhook; capture voice-followup@example.invalid; inspect committed event payload and owner lead CSV.",
+      "expected": "platform \u00a7\u00a76.8/6.10: exported/delivered lead information must accurately preserve available callback channels while excluding internal secrets.",
+      "actual": "Lead dashboard has the email, but webhook email is null and lead CSV email is empty. Voice stores it in contact.email, not originalSubmission.contact.email.",
+      "rootCause": "Trigger/export mappings support only the web JSON shape. Standalone voice quote-request contact omissions are separately covered by D18; ordinary web quote-request enrichment does work.",
+      "recommendedFix": "Normalize all producer shapes into one allowlisted contact representation for webhook snapshots and CSV exports, with explicit voice/web fixtures and no internal book/credential fields.",
+      "impact": "Owners using the implemented external integration or CSV lose a contact channel that the caller actually provided."
+    },
+    {
+      "id": "D18",
+      "severity": "Medium",
+      "title": "Standalone voice quote requests are missing from the actionable lead queue and contact exports",
+      "experiments": [
+        "E07",
+        "E12"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/voiceToolRuntime.js",
+          "line": 825
+        },
+        {
+          "file": "server/src/integrationData.js",
+          "line": 15
+        },
+        {
+          "file": "server/src/outboundWebhookSchema.js",
+          "line": 93
+        }
+      ],
+      "minimum": "Schema-valid logQuoteRequest({description:\"[SYNTHETIC] Replace sagging gate; callback after 5.\"}) without a leadHandle; caller number is known.",
+      "expected": "platform \u00a7\u00a75.5/6.8: unavailable quoting captures a lead plus a pricing request; all callbacks reach the unified lead inbox with the available contact.",
+      "actual": "Tool says saved for follow-up; quoteRequests and an outbox row exist, but zero lead cards. Quote-request CSV has blank name/phone/email. Its webhook has no submission receipt to enrich contact. The call-detail page can still reveal caller number and request text.",
+      "rootCause": "leadHandle is optional; handler saves only a quoteRequests row. Export/webhook enrichment relies solely on quoteSubmissions, which this logging path never writes.",
+      "recommendedFix": "Create or bind an actionable lead in the logging transaction, require/provide a stable lead reference, and project verified caller contact from the bound call/lead when no submission receipt exists.",
+      "impact": "Callback work is absent from Leads and external follow-up tools. Recovery requires manually finding the original call rather than working the request queue."
+    },
+    {
+      "id": "D19",
+      "severity": "High",
+      "title": "Owners cannot distinguish failed voice delivery from sent delivery on the saved request",
+      "experiments": [
+        "E32",
+        "E22"
+      ],
+      "sources": [
+        {
+          "file": "server/src/ownerCallService.js",
+          "line": 26
+        },
+        {
+          "file": "server/src/ownerCallService.js",
+          "line": 60
+        },
+        {
+          "file": "server/src/ownerRecordViews.js",
+          "line": 20
+        },
+        {
+          "file": "client/src/calls.jsx",
+          "line": 15
+        }
+      ],
+      "minimum": "Capture a lead; local SMS provider throws an error containing clearly synthetic private details; read owner Call/Lead routes.",
+      "expected": "Explicit audit requirement: owners can distinguish delivery failure/success and recover saved requests; platform \u00a7\u00a75.7/6.2/6.8.",
+      "actual": "Outbox is FAILED, but call.failureCode remains null and neither call nor lead response contains delivery/outbox/SMS state. Private exception text is correctly not returned. Webhook status UI only covers webhookDeliveries.",
+      "rootCause": "Owner read models and UI have no relationship/projection for voice outbox attempts. Call media failureCode is not notification failure state.",
+      "recommendedFix": "Expose tenant-bound delivery attempts/results and safe error codes per call/request, with explicit queued/uncertain/failed/sent labels and owner retry/recovery actions. Keep raw provider messages private.",
+      "impact": "A quiet delivery failure appears indistinguishable from successful follow-up to the owner, so saved requests can remain unattended."
+    },
+    {
+      "id": "D20",
+      "severity": "Medium",
+      "title": "An older failed webhook becomes undiscoverable behind the newest 20 events",
+      "experiments": [
+        "E17"
+      ],
+      "sources": [
+        {
+          "file": "server/src/outboundWebhookService.js",
+          "line": 58
+        },
+        {
+          "file": "client/src/ownerIntegrations.jsx",
+          "line": 59
+        },
+        {
+          "file": "server/src/ownerIntegrationRoutes.js",
+          "line": 7
+        }
+      ],
+      "minimum": "One old FAILED webhook delivery followed by at least 21 recent event deliveries; request integration configuration.",
+      "expected": "Audit recovery requirement and platform \u00a76.10: failed delivery must remain discoverable/retryable by its owner.",
+      "actual": "Exactly 20 recent deliveries returned; older failure is absent, with no cursor, filter, total or separate failed list. Retry accepts a known eligible ID, but that random ID cannot be discovered through another provided route.",
+      "rootCause": "Unconditional LIMIT 20 on the sole delivery list; the UI displays only that list.",
+      "recommendedFix": "Add tenant-scoped pagination and a persistent failed/needs-attention filter/count. Make older eligible failures discoverable without direct database access.",
+      "impact": "Normal later activity hides unresolved lost deliveries and removes the practical owner retry path."
+    },
+    {
+      "id": "D21",
+      "severity": "Medium",
+      "title": "Unresolved preferred-time requests disappear when their requested dates leave the calendar range",
+      "experiments": [
+        "E28"
+      ],
+      "sources": [
+        {
+          "file": "server/src/ownerCalendarService.js",
+          "line": 73
+        },
+        {
+          "file": "server/src/ownerCalendarService.js",
+          "line": 82
+        },
+        {
+          "file": "server/src/quoteDoneRoutes.js",
+          "line": 271
+        }
+      ],
+      "minimum": "Valid REQUESTED preference for 2026-10-07; advance synthetic clock ten days without resolving it.",
+      "expected": "platform \u00a76.8: unified actionable follow-up inbox and reminder for untouched leads; saving a time request is not a booking.",
+      "actual": "Preference is still REQUESTED in durable storage but absent from the default calendar requests after the date passes. There is no separate unified pending-preference inbox or Leads projection. A manually selected historical calendar range can still retrieve it.",
+      "rootCause": "Pending requests are filtered by preferred appointment date instead of workflow status, and are not projected into an independent follow-up queue.",
+      "recommendedFix": "Keep unresolved time requests in a tenant-bound actionable inbox regardless of requested date; label overdue/expired preferences, preserve history, and provide a resolution/renewal workflow.",
+      "impact": "An owner who misses the preferred day can lose sight of the callback task even though the customer was promised follow-up."
+    },
+    {
+      "id": "D22",
+      "severity": "Medium",
+      "title": "Calls/Leads show stale contact when a preferred-time request supplies corrected information",
+      "experiments": [
+        "E28"
+      ],
+      "sources": [
+        {
+          "file": "server/src/ownerCallService.js",
+          "line": 54
+        },
+        {
+          "file": "server/src/ownerRecordViews.js",
+          "line": 22
+        },
+        {
+          "file": "client/src/calls.jsx",
+          "line": 43
+        }
+      ],
+      "minimum": "Original lead old@example.invalid; valid preference supplies latest-preference@example.invalid, corrected name and a corrected job address.",
+      "expected": "platform \u00a76.2 linked booking/request information and \u00a76.8: accurate collected follow-up details must reach the owner.",
+      "actual": "Calendar schedule correctly contains latest contact/location. Call bookingRequests omit both; its linked lead and /api/leads still show old@example.invalid. The Calls request displays timing/note without the updated contact/address.",
+      "rootCause": "Call query omits bookingPreferences.customerJson/locationJson; lead projection uses only original capture and has no explicit corrected-contact provenance.",
+      "recommendedFix": "Include the preference\u2019s submitted contact/location in Calls and request cards, clearly identifying the latest confirmed follow-up channel and preserving older receipt information separately. Do not silently overwrite a historical receipt.",
+      "impact": "An owner following up from Calls/Leads can use the wrong email or site even though the correction was saved successfully."
+    },
+    {
+      "id": "D23",
+      "severity": "Medium",
+      "title": "Staff cannot recover contact for an instant web inquiry without a lead or booking",
+      "experiments": [
+        "E29"
+      ],
+      "sources": [
+        {
+          "file": "server/src/ownerRecordViews.js",
+          "line": 10
+        },
+        {
+          "file": "server/src/quoteDoneRoutes.js",
+          "line": 141
+        },
+        {
+          "file": "server/src/quoteDoneRoutes.js",
+          "line": 284
+        },
+        {
+          "file": "client/src/quotedone.jsx",
+          "line": 211
+        }
+      ],
+      "minimum": "Synthetic persisted INSTANT web quote with originalSubmission.contact.email=\"instant-followup@example.invalid\"; no review lead or appointment; read /api/quotes as the owner and their staff member.",
+      "expected": "platform \u00a76.9 gives staff calls/leads/quotes-send; \u00a76.8 requires usable follow-up information without exposing pricing internals.",
+      "actual": "Owner can find email inside owner-only internal evidence. Staff quote contains only id/service/status/result and no contact; no linked lead exists. The web quote-request webhook is correctly enriched with email, so that earlier suspicion is ruled out.",
+      "rootCause": "Safe quote projection omits customer contact and original follow-up facts, while instant requests intentionally do not create review leads. Hiding owner-only calculations also hides the only in-app contact representation.",
+      "recommendedFix": "Provide a common allowlisted quote inquiry/contact view for authorized staff and owner, sourced from the persisted submission; keep calculations/rates owner-only and show the follow-up channel in the existing quote card.",
+      "impact": "A staff member authorized to send/follow up a quote cannot contact this prospect through the application."
+    },
+    {
+      "id": "D24",
+      "severity": "Medium",
+      "title": "Completed calls retain transport outcomes and no generated summary",
+      "experiments": [
+        "E23"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 99
+        },
+        {
+          "file": "server/src/ownerCallService.js",
+          "line": 14
+        },
+        {
+          "file": "client/src/calls.jsx",
+          "line": 8
+        }
+      ],
+      "minimum": "Actual signed local call captures an inquiry and a flooding flag, receives a transcript, then sends normal Twilio stop.",
+      "expected": "platform \u00a75.7: every call has transcript, summary and semantic outcome LEAD/QUOTED/BOOKED/etc.; \u00a76.2 readable call information.",
+      "actual": "Stored status COMPLETED, outcome TWILIO_STOP, summaryText null. The transcript and lead are present. Production session-end update writes transport reason rather than the saved business result.",
+      "rootCause": "No post-call summary/semantic-outcome derivation is wired; owner views accurately display the incomplete producer record.",
+      "recommendedFix": "Derive semantic outcome from committed lead/quote/booking/transfer receipts and store a bounded, fact-grounded summary after transcript drain. Keep transport termination/failure separately.",
+      "impact": "Owners cannot scan the feed for what happened or what follow-up is needed and must open every transcript."
+    },
+    {
+      "id": "D25",
+      "severity": "High",
+      "title": "Normal fallback callback overwrites a successful completed call and forwards it again",
+      "experiments": [
+        "E23"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 449
+        },
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 470
+        },
+        {
+          "file": "server/src/voice/voicePersistence.js",
+          "line": 189
+        }
+      ],
+      "minimum": "Complete a signed synthetic lead call normally; POST its correctly signed resume-fallback URL with matching call/account/numbers.",
+      "expected": "Audit duplicate/stale-event requirement: successful saved outcomes must survive retries; platform \u00a712.4 fallback is for session failure.",
+      "actual": "Before callback: COMPLETED/TWILIO_STOP with saved lead/transcript. After: FALLBACK/VOICE_SESSION_UNAVAILABLE/failureCode, plus new Dial-to-owner TwiML. The fallback URL exists unconditionally after Connect.",
+      "rootCause": "Resume route never examines stored call status/outcome; recordFallback unconditionally overwrites any existing bound row, including completed calls.",
+      "recommendedFix": "Differentiate normal completion from failed stream termination using persisted session/business state and provider callback facts. Make fallback transition idempotent, avoid forwarding a completed conversation, and never overwrite a terminal successful outcome with a replay.",
+      "impact": "Owners see a completed request as a failed call, and the customer can be unexpectedly forwarded after finishing the conversation."
+    },
+    {
+      "id": "D26",
+      "severity": "High",
+      "title": "Call-end cleanup drops queued caller text and buffered model transcript",
+      "experiments": [
+        "E25",
+        "E26"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/geminiMediaBridge.js",
+          "line": 359
+        },
+        {
+          "file": "server/src/voice/geminiMediaBridge.js",
+          "line": 503
+        },
+        {
+          "file": "server/src/voice/googleGenAiLiveAdapter.js",
+          "line": 29
+        },
+        {
+          "file": "server/src/voice/googleGenAiLiveAdapter.js",
+          "line": 40
+        }
+      ],
+      "minimum": "Queue final caller transcription, immediately close the local socket; separately deliver a partial model outputTranscription then close the Twilio transport before turnComplete.",
+      "expected": "platform \u00a7\u00a75.7/6.2: preserve the written call record; no audio storage. Important final corrections are still collected information.",
+      "actual": "Queued caller callback correction stores zero turns. Buffered model follow-up promise also leaves storedTranscript:[]. Both cases execute the unmodified bridge/adapter; a completed earlier caller turn does persist.",
+      "rootCause": "finish sets ended before draining transcriptTail; queued transcript tasks skip when ended. Local adapter close marks closed without flushing modelText, unlike the provider-origin onclose path.",
+      "recommendedFix": "Stop accepting new media, then durably drain already accepted transcript/tool work with bounded shutdown and flush buffered transcription before finalizing call state. Preserve incomplete/interrupted flags where appropriate.",
+      "impact": "Final phone/email corrections, request details or promises can vanish from the owner\u2019s only written record of the call."
+    },
+    {
+      "id": "D27",
+      "severity": "High",
+      "title": "Cold restart leaves persisted active calls stranded without a recoverable lead",
+      "experiments": [
+        "E24"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 45
+        },
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 99
+        },
+        {
+          "file": "server/src/voice/voicePersistence.js",
+          "line": 130
+        },
+        {
+          "file": "server/src/server.js",
+          "line": 485
+        }
+      ],
+      "minimum": "Take a crash-consistent backup of a real synthetic CONNECTED voice call containing request text but no completed capture tool; cold-start the actual server against that temporary crash snapshot.",
+      "expected": "Audit restart/failure requirement and platform \u00a712.4: interrupted requests need a truthful failed/missed-call state, preserved transcript and owner follow-up recovery.",
+      "actual": "After full server startup, call remains CONNECTED, outcome/failureCode null, zero leads. No active live session exists for the snapshot. Recovery depends on a later provider callback that may never arrive.",
+      "rootCause": "Call completion is callback-only. Startup/worker lifecycle has no durable session lease/heartbeat reconciliation or orphaned-request recovery.",
+      "recommendedFix": "Introduce durable session ownership/leases and reconcile expired active sessions on restart; preserve existing transcript, create an actionable interrupted-call lead, and notify/retry without prematurely terminating another process\u2019s live session.",
+      "impact": "A process crash can leave customer requests permanently recorded as live rather than available for owner follow-up."
+    },
+    {
+      "id": "D28",
+      "severity": "High",
+      "title": "OPERATOR LIVE readiness can coexist with an unavailable inbound route",
+      "experiments": [
+        "E19"
+      ],
+      "sources": [
+        {
+          "file": "server/src/onboardingService.js",
+          "line": 297
+        },
+        {
+          "file": "client/src/dashboard.jsx",
+          "line": 30
+        },
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 34
+        }
+      ],
+      "minimum": "Persisted operator enabled/provisioned phone with about/hours; restart with voice disabled and missing signed-voice config. Evaluate the actual operatorView and production voice composition.",
+      "expected": "platform \u00a75.1 and honest readiness requirement: ON/LIVE means AI answers calls; label must reflect backend dependencies.",
+      "actual": "eligible:true, missing:[] and actual view title OPERATOR LIVE / EVERY CALL FROM HERE ON IS COVERED. Production composition configured:false; inbound POST returns 503 Voice unavailable.",
+      "rootCause": "Eligibility inspects profile setup only; the displayed live state trusts operatorEnabled and ignores runtime switches/configuration and channel readiness.",
+      "recommendedFix": "Return a computed backend readiness/coverage state that includes the signed voice runtime and required adapters; distinguish configured/connecting/available/failed, and block or visibly suspend LIVE when those dependencies fail.",
+      "impact": "The owner can believe callers are covered while their actual webhook cannot answer or capture them. This is a label/backend defect, not a request to audit carrier billing or payment gates."
+    },
+    {
+      "id": "D29",
+      "severity": "Medium",
+      "title": "Production Calls deep links and refresh return 404",
+      "experiments": [
+        "E40"
+      ],
+      "sources": [
+        {
+          "file": "server/src/productionAssets.js",
+          "line": 5
+        },
+        {
+          "file": "server/src/productionAssets.js",
+          "line": 19
+        },
+        {
+          "file": "client/src/main.jsx",
+          "line": 64
+        }
+      ],
+      "minimum": "Mount the unchanged production owner asset handler on the cold-built owner dist; GET /dashboard, /calls and /calls?record=SYNTHETIC-CALL.",
+      "expected": "platform \u00a76.2 owner Calls view and audit saved-request recovery: direct navigation/refresh must reach the owner application.",
+      "actual": "/dashboard is 200; both Calls URLs are 404. In-app history.pushState navigation can still work until the user refreshes or opens a deep link.",
+      "rootCause": "Production SPA path allowlist omits /calls although the client router and CallFeed link to it.",
+      "recommendedFix": "Include the existing Calls owner route in SPA serving and verify direct navigation/refresh with and without the record query, preserving API authentication and tenant scoping.",
+      "impact": "An owner bookmarking, refreshing or opening a call link cannot recover that request through the deployed app route."
+    },
+    {
+      "id": "D30",
+      "severity": "Medium",
+      "title": "The open dashboard does not receive newly saved calls",
+      "experiments": [
+        "E41"
+      ],
+      "sources": [
+        {
+          "file": "client/src/dashboard.jsx",
+          "line": 46
+        },
+        {
+          "file": "client/src/dashboard.jsx",
+          "line": 52
+        }
+      ],
+      "minimum": "Mount the actual Dashboard with real React hooks and real local server API; initial synthetic call exists; persist a second call while it stays mounted.",
+      "expected": "platform \u00a7\u00a75.7/6.1: calls stream to the live dashboard feed.",
+      "actual": "Initial call renders. A fresh real /api/calls read contains the new call, but the mounted dashboard never displays it and makes zero additional UI fetches during the observation. Source has no polling/subscription path; data reload occurs on mount or settings/toggle actions.",
+      "rootCause": "One mount-time useEffect loads a static snapshot; no live update mechanism updates state when calls/requests arrive.",
+      "recommendedFix": "Add tenant-authenticated event subscription or bounded polling/invalidation for actual call/lead activity; handle reconnect/session changes and show stale/offline state honestly in existing components.",
+      "impact": "An owner keeping the dashboard open can miss new requests until reloading or changing a setting, especially with D02\u2019s absent alerts."
+    },
+    {
+      "id": "D31",
+      "severity": "High",
+      "title": "Duplicate signed inbound callbacks create parallel sessions and can reopen completed calls",
+      "experiments": [
+        "E42",
+        "E09",
+        "E34"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 421
+        },
+        {
+          "file": "server/src/voice/voicePersistence.js",
+          "line": 138
+        },
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 74
+        }
+      ],
+      "minimum": "POST the same legitimate locally signed incoming CallSid twice; connect both returned stream URLs. Stop the first stream, then replay the incoming callback once more.",
+      "expected": "platform \u00a712.2: one Gemini session per inbound call; audit duplicate/stale-event requirement: retries must not change successful call ownership/state or revive completed work.",
+      "actual": "One call row but two live provider sessions. Stopping the first marks the row COMPLETED while the second socket is still open. A later duplicate incoming event supplies a fresh Stream URL for that completed CallSid. Reusing the already consumed original nonce is correctly rejected 403 (E34), which does not prevent a newly issued nonce.",
+      "rootCause": "Each callback issues a new nonce; createSession treats any existing correctly bound CallSid as newly created regardless of status or an active media session. There is no durable per-call session claim.",
+      "recommendedFix": "Make incoming callback handling idempotent by trusted CallSid and terminal state, and lease one active session per call across processes. Safe exact-retry responses must not mint another live session or revive terminal calls; retain original binding/outcome.",
+      "impact": "Duplicate provider events can mix transcripts/tools and let one session mark a still-running conversation completed. E09\u2019s permissive internal runtime call is supporting evidence, not a separately counted public vulnerability."
+    },
+    {
+      "id": "D32",
+      "severity": "Medium",
+      "title": "The specified default per-owner concurrent-call ceiling is not enforced",
+      "experiments": [
+        "E43"
+      ],
+      "sources": [
+        {
+          "file": "server/src/voiceRuntimeRoutes.js",
+          "line": 387
+        },
+        {
+          "file": "server/src/voice/productionVoiceRuntime.js",
+          "line": 51
+        },
+        {
+          "file": "server/src/voice/voicePersistence.js",
+          "line": 130
+        }
+      ],
+      "minimum": "Six distinct signed CallSids simultaneously connect to one synthetic provisioned owner; all provider sessions are local stubs held open.",
+      "expected": "platform \u00a712.2: per-owner concurrency ceiling defaults to five; excess calls use transcript capture fallback so they are still answered.",
+      "actual": "All six open Google sessions; all five additional requests return Stream TwiML; no excess-call fallback lead. No admission limit/configuration is checked by the traced production path.",
+      "rootCause": "Inbound eligibility checks profile/access but has no atomic owner/platform active-session admission control.",
+      "recommendedFix": "Add cross-process leased concurrency admission for the configured owner/platform ceilings and route excess callers into the durable transcript-only capture path; release/reconcile leases on all endings/restarts.",
+      "impact": "The required capacity guard does not work. During real provider/resource saturation this increases the risk of unhandled requests; the local stub run proves the missing guard, not a live-load failure."
+    }
+  ]
+}

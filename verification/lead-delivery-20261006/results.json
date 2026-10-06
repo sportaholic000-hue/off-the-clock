@@ -1,0 +1,741 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "syntheticOnly": true,
+  "experiments": [
+    {
+      "id": "E01",
+      "expected": "Voice notes persist and appear to staff in the saved lead.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "captured",
+          "leadHandle": "7Wzsoe9HUMRWzeGfWyHGVixeagn8JVNZeE6nHI65RtI",
+          "message": "Contact and service address saved."
+        },
+        "stored": {
+          "voiceVersion": 1,
+          "customerId": "9e4fa4d9-fe58-5662-bd0f-2a03b0e5029a",
+          "contact": {
+            "name": "[SYNTHETIC] Alex",
+            "email": "alex@example.invalid",
+            "phone": "+19025550100"
+          },
+          "address": {
+            "line1": "[SYNTHETIC] 10 Test Street",
+            "line2": "",
+            "city": "Synthetic City",
+            "region": "NS",
+            "postalCode": "B3H 1A1",
+            "country": "CA"
+          },
+          "notes": null
+        },
+        "staffLead": {
+          "id": "27b67b3f-83f5-5942-8711-c14467e603a4",
+          "callId": "CA00000000000000000000000000000001",
+          "customerName": "[SYNTHETIC] Alex",
+          "callerNumber": "+19025550100",
+          "describedService": null,
+          "type": "voice_lead",
+          "status": "CAPTURED",
+          "createdAt": "2026-10-06T12:00:00.000Z",
+          "contact": {
+            "name": "[SYNTHETIC] Alex",
+            "email": "alex@example.invalid",
+            "phone": "+19025550100"
+          },
+          "location": {
+            "line1": "[SYNTHETIC] 10 Test Street",
+            "line2": "",
+            "city": "Synthetic City",
+            "region": "NS",
+            "postalCode": "B3H 1A1",
+            "country": "CA"
+          },
+          "customerInputs": null,
+          "explicitUnknowns": null,
+          "urgency": null,
+          "context": null,
+          "reviewReason": null,
+          "clarifications": [],
+          "additionalWork": [],
+          "submittedAdditionalWork": null
+        }
+      }
+    },
+    {
+      "id": "E02",
+      "expected": "Exact duplicates replay once; failure after lead commit yields no success, and retry recovers one lead.",
+      "meetsExpectation": true,
+      "actual": {
+        "error": "TOOL_EXECUTION_FAILED",
+        "savedAfterFailure": 1,
+        "count": 1,
+        "r": {
+          "status": "captured",
+          "leadHandle": "boR67hubOOb09lqCcsJP6QYN_maWc-bwr9EWADsEb3w",
+          "message": "Contact and service address saved."
+        },
+        "replay": {
+          "status": "captured",
+          "leadHandle": "boR67hubOOb09lqCcsJP6QYN_maWc-bwr9EWADsEb3w",
+          "message": "Contact and service address saved."
+        }
+      }
+    },
+    {
+      "id": "E03",
+      "expected": "Capture updates do not erase a returning customer email or reopen a dismissed lead.",
+      "meetsExpectation": false,
+      "actual": {
+        "disposition": "CAPTURED",
+        "customerNotes": {
+          "voiceVersion": 1,
+          "email": null
+        }
+      }
+    },
+    {
+      "id": "E04",
+      "expected": "Corrected name/contact on one call preserves a single actionable lead.",
+      "meetsExpectation": false,
+      "actual": {
+        "leadCount": 2,
+        "leads": [
+          {
+            "customerName": "[SYNTHETIC] Alxe",
+            "collectedInputsJson": "{\"voiceVersion\":1,\"customerId\":\"9e4fa4d9-fe58-5662-bd0f-2a03b0e5029a\",\"contact\":{\"name\":\"[SYNTHETIC] Alxe\",\"email\":null,\"phone\":\"+19025550100\"},\"address\":null,\"notes\":null}",
+            "status": "CAPTURED"
+          },
+          {
+            "customerName": "[SYNTHETIC] Alex",
+            "collectedInputsJson": "{\"voiceVersion\":1,\"customerId\":\"9e4fa4d9-fe58-5662-bd0f-2a03b0e5029a\",\"contact\":{\"name\":\"[SYNTHETIC] Alex\",\"email\":\"correct@example.invalid\",\"phone\":\"+19025550100\"},\"address\":null,\"notes\":null}",
+            "status": "CAPTURED"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E05",
+      "expected": "Saved ordinary/urgent voice requests notify owner, expose urgent state, and pending notifications resume after restart.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "flagged",
+          "message": "The urgent request was flagged for the business."
+        },
+        "callUrgency": null,
+        "leadUrgency": null,
+        "attempts": 0,
+        "outbox": [
+          {
+            "eventType": "voice.urgent_flagged",
+            "status": "PENDING"
+          }
+        ],
+        "callFailure": null,
+        "callKeys": [
+          "id",
+          "callerNumber",
+          "destinationNumber",
+          "status",
+          "outcome",
+          "summaryText",
+          "urgency",
+          "spamFiltered",
+          "duration",
+          "failureCode",
+          "createdAt",
+          "completedAt",
+          "transcript",
+          "transcriptAvailable",
+          "quotes",
+          "leads",
+          "bookings",
+          "bookingRequests",
+          "quoteRequests"
+        ]
+      }
+    },
+    {
+      "id": "E06",
+      "expected": "Schema-optional urgency summary still flags/notifies urgency.",
+      "meetsExpectation": false,
+      "actual": {
+        "error": "TOOL_EXECUTION_FAILED",
+        "eventCount": 0
+      }
+    },
+    {
+      "id": "E07",
+      "expected": "A logged standalone quote request creates/references an actionable lead with caller contact.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "logged",
+          "requestHandle": "cBW6th-3d7s4LBLuqRQBRr3LGP-YvCmTizJY59HzyiY",
+          "message": "The quote request was saved for follow-up."
+        },
+        "leads": [],
+        "quoteRequests": [
+          {
+            "id": "8252b9d1-551c-5b60-8a3f-7b5d50da1903",
+            "describedService": "[SYNTHETIC] Replace sagging gate; callback after 5.",
+            "estimatedValue": null,
+            "createdAt": "2026-10-06T12:00:00.000Z"
+          }
+        ],
+        "csvRow": "\"8252b9d1-551c-5b60-8a3f-7b5d50da1903\",\"2026-10-06T12:00:00.000Z\",\"[SYNTHETIC] Replace sagging gate; callback after 5.\",\"\",\"\",\"\",\"\",\"\""
+      }
+    },
+    {
+      "id": "E08",
+      "expected": "Wrong-owner/call/expired handles and missing persisted lead fail closed.",
+      "meetsExpectation": true,
+      "actual": {
+        "errors": [
+          "TOOL_EXECUTION_FAILED",
+          "TOOL_EXECUTION_FAILED",
+          "TOOL_EXECUTION_FAILED",
+          "TOOL_EXECUTION_FAILED"
+        ]
+      }
+    },
+    {
+      "id": "E09",
+      "expected": "Completed call context cannot create new follow-up writes.",
+      "meetsExpectation": false,
+      "actual": {
+        "leadCount": 1
+      }
+    },
+    {
+      "id": "E10",
+      "expected": "SMS provider failures are truthful and retry successfully after restart/provider recovery.",
+      "meetsExpectation": false,
+      "actual": {
+        "first": {
+          "status": "unavailable",
+          "message": "The text message could not be sent right now."
+        },
+        "retry": {
+          "status": "unavailable",
+          "message": "The text message could not be confirmed as sent."
+        },
+        "attempts": 1,
+        "outbox": [
+          {
+            "status": "FAILED"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E11",
+      "expected": "Failed transfer captures callback lead and does not report successful transfer.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "unavailable",
+          "message": "The live transfer failed."
+        },
+        "leadCount": 0,
+        "callerNumber": "+19025550100"
+      }
+    },
+    {
+      "id": "E12",
+      "expected": "Voice webhook/CSV preserve the stored email; inquiry webhook carries follow-up contact.",
+      "meetsExpectation": false,
+      "actual": {
+        "payloads": [
+          {
+            "type": "quote.requested",
+            "data": {
+              "id": "8da05b8f-4583-51b4-ae59-e6cdf15d04e5",
+              "createdAt": "2026-10-06T12:00:00.000Z",
+              "service": "[SYNTHETIC] repair",
+              "estimatedValueCents": null
+            }
+          },
+          {
+            "type": "lead.created",
+            "data": {
+              "id": "9f5b9fcb-2ca4-5ff9-9425-040b672837b0",
+              "createdAt": "2026-10-06T12:00:00.000Z",
+              "customerName": "[SYNTHETIC] Email only followup",
+              "phone": "+19025550100",
+              "email": null,
+              "service": null,
+              "type": "voice_lead",
+              "status": "CAPTURED"
+            }
+          }
+        ],
+        "csvRow": "\"9f5b9fcb-2ca4-5ff9-9425-040b672837b0\",\"2026-10-06T12:00:00.000Z\",\"[SYNTHETIC] Email only followup\",\"'+19025550100\",\"\",\"\",\"voice_lead\",\"CAPTURED\""
+      }
+    },
+    {
+      "id": "E13",
+      "expected": "Web email-only request is committed, visible, tenant isolated and retry-stable.",
+      "meetsExpectation": true,
+      "actual": {
+        "statuses": [
+          201,
+          200
+        ],
+        "replay": 200,
+        "lead": {
+          "id": "58d5e4fc-13ed-4054-9362-3109aa1578fb",
+          "callId": null,
+          "customerName": null,
+          "callerNumber": null,
+          "describedService": "[SYNTHETIC] repair loose gate",
+          "type": "quote_review",
+          "status": "NEEDS REVIEW",
+          "createdAt": "2026-10-06T16:56:15.764Z",
+          "contact": {
+            "email": "web@example.invalid"
+          },
+          "location": null,
+          "customerInputs": {},
+          "explicitUnknowns": null,
+          "urgency": null,
+          "context": "[SYNTHETIC] call after 5pm",
+          "reviewReason": "The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.",
+          "clarifications": [],
+          "additionalWork": [],
+          "submittedAdditionalWork": null,
+          "internal": {
+            "ownerId": "synthetic-owner-a",
+            "selectedServiceId": null,
+            "requestedServiceId": "11111111-1111-4111-8111-111111111111",
+            "bookRevision": "0b30ede88cceef4b948ce664afe154b27761cb99b6aec56e532be0c47df1d925",
+            "bookSnapshot": {
+              "ownerId": "synthetic-owner-a",
+              "services": [],
+              "defaults": {
+                "markupPercent": 30,
+                "markupMode": "markup",
+                "taxMode": "TAX_NONE",
+                "taxPercent": 0,
+                "rangeBufferPercent": 10,
+                "peakMonths": [],
+                "peakSurchargePercent": 0
+              }
+            },
+            "originalSubmission": {
+              "requestId": "d9afcd06-b492-4a45-b0b0-6c0c59166dd4",
+              "serviceId": "11111111-1111-4111-8111-111111111111",
+              "serviceRequest": "[SYNTHETIC] repair loose gate",
+              "customerInputs": {},
+              "contact": {
+                "email": "web@example.invalid"
+              },
+              "reviewRequested": true,
+              "context": "[SYNTHETIC] call after 5pm"
+            },
+            "customerResult": {
+              "resultType": "ESTIMATE_REQUIRES_REVIEW",
+              "customerMessage": "We received your request. Someone will follow up to complete or verify the estimate.",
+              "quoteId": "646aebf3-9831-4798-b79d-b12af479b37b"
+            },
+            "applicationReview": {
+              "reason": "The requested saved service is missing or has a duplicate ID. Resolve its identity and verify the complete supplied service request.",
+              "quoteId": "646aebf3-9831-4798-b79d-b12af479b37b"
+            },
+            "request": null,
+            "internalResult": null,
+            "leadEnvelope": null
+          }
+        },
+        "foreign": 404,
+        "changed": 409,
+        "savedCount": 1
+      }
+    },
+    {
+      "id": "E14",
+      "expected": "Invalid/absent callback contact and wrong-origin requests fail before persistence; owner injection never redirects.",
+      "meetsExpectation": true,
+      "actual": {
+        "rejected": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "wrongOrigin": 403,
+        "injectionStatus": 201,
+        "persisted": {
+          "ownerId": "synthetic-owner-a"
+        }
+      }
+    },
+    {
+      "id": "E15",
+      "expected": "Web and voice share a per-owner normalized customer identity.",
+      "meetsExpectation": false,
+      "actual": {
+        "customersAfterWeb": [],
+        "customersAfterVoice": [
+          {
+            "id": "e52d9a12-b480-5891-8ef6-dbabc0d410e8",
+            "ownerId": "synthetic-owner-a",
+            "phoneE164": "+19025550144",
+            "name": "[SYNTHETIC] Shared customer",
+            "address": null,
+            "notesJson": "{\"voiceVersion\":1,\"email\":null}",
+            "createdAt": "2026-10-06T12:00:00.000Z"
+          }
+        ],
+        "webSubmission": "f15a78ed-2cb3-4ab9-844e-ffc0c8267a95"
+      }
+    },
+    {
+      "id": "E16",
+      "expected": "Webhook failure exhausts/retries durably; successful receiver response means delivered and tenant retry cannot steal event.",
+      "meetsExpectation": true,
+      "actual": {
+        "failed": {
+          "status": "FAILED",
+          "attemptCount": 8,
+          "lastHttpStatus": 503
+        },
+        "foreignRejected": true,
+        "recovered": {
+          "status": "DELIVERED",
+          "attemptCount": 1
+        }
+      }
+    },
+    {
+      "id": "E17",
+      "expected": "Older terminal failed deliveries remain discoverable and retryable in owner UI.",
+      "meetsExpectation": false,
+      "actual": {
+        "oldFailedId": "cdc4106e68bc4f65fac8f1e0b88492de",
+        "returnedCount": 20,
+        "oldFailureVisible": false,
+        "responseKeys": [
+          "webhook",
+          "dispatchEnabled",
+          "deliveries"
+        ]
+      }
+    },
+    {
+      "id": "E18",
+      "expected": "Webhook concurrency and expired lease restart produce one local attempt with stable ID; endpoint change cancels obsolete work.",
+      "meetsExpectation": true,
+      "actual": {
+        "concurrentAttempts": 1,
+        "restartEventIds": [
+          "7cc1dc85f6f6ab562979991befe7364d",
+          "7cc1dc85f6f6ab562979991befe7364d"
+        ],
+        "changedEndpointPending": 0
+      }
+    },
+    {
+      "id": "E19",
+      "expected": "Operator readiness reflects missing backend voice configuration.",
+      "meetsExpectation": false,
+      "actual": {
+        "eligibility": {
+          "eligible": true,
+          "missing": []
+        },
+        "displayedOperator": {
+          "live": true,
+          "simulated": false,
+          "title": "OPERATOR LIVE",
+          "sub": "EVERY CALL FROM HERE ON IS COVERED",
+          "checked": true,
+          "blocked": false,
+          "missing": []
+        },
+        "voiceConfigured": false,
+        "inboundStatus": 503,
+        "body": "Voice unavailable"
+      }
+    },
+    {
+      "id": "E28",
+      "expected": "Preference requests preserve latest callback information, notify owner and remain in an actionable inbox after preferred dates pass.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "statusCode": 201,
+          "body": {
+            "status": "REQUESTED",
+            "preferenceRequestId": "2b776f09-3e47-422d-a269-fe5d2b49d63f",
+            "message": "The business will contact you to confirm a time."
+          }
+        },
+        "callRequest": [
+          {
+            "id": "2b776f09-3e47-422d-a269-fe5d2b49d63f",
+            "status": "REQUESTED",
+            "note": "[SYNTHETIC] Use this email instead.",
+            "createdAt": "2026-10-06T12:00:00.000Z",
+            "preferredWindows": [
+              {
+                "date": "2026-10-07",
+                "timeOfDay": "morning"
+              }
+            ]
+          }
+        ],
+        "callLeadContact": {
+          "name": "[SYNTHETIC] original",
+          "email": "old@example.invalid",
+          "phone": "+19025550100"
+        },
+        "calendarBefore": {
+          "id": "2b776f09-3e47-422d-a269-fe5d2b49d63f",
+          "status": "REQUESTED",
+          "preferredWindows": [
+            {
+              "date": "2026-10-07",
+              "timeOfDay": "morning"
+            }
+          ],
+          "customer": {
+            "name": "[SYNTHETIC] corrected preference",
+            "email": "latest-preference@example.invalid",
+            "phone": null
+          },
+          "location": {
+            "addressLine1": "[SYNTHETIC] corrected site",
+            "addressLine2": "",
+            "city": "Synthetic City",
+            "region": "NS",
+            "postalCode": "B3H 1A1",
+            "country": "CA"
+          },
+          "note": "[SYNTHETIC] Use this email instead.",
+          "source": {
+            "type": "lead",
+            "id": "b5a6298a-0bf3-5c33-bd8e-e78121b05b11"
+          },
+          "createdAt": "2026-10-06T12:00:00.000Z"
+        },
+        "calendarAfter": null,
+        "outbox": {
+          "eventType": "booking.preference_requested",
+          "status": "PENDING"
+        },
+        "notificationAttempts": 0,
+        "latestContactInLeads": {
+          "name": "[SYNTHETIC] original",
+          "email": "old@example.invalid",
+          "phone": "+19025550100"
+        }
+      }
+    },
+    {
+      "id": "E29",
+      "expected": "Stored instant web inquiry exposes follow-up contact to staff and the quote-request webhook.",
+      "meetsExpectation": false,
+      "actual": {
+        "ownerCanFindEmail": true,
+        "staff": {
+          "id": "81331381-c348-4ced-9665-8688215e3aad",
+          "callId": null,
+          "serviceType": "SYNTHETIC_SERVICE",
+          "status": "INSTANT",
+          "tierChosen": null,
+          "createdAt": "2026-10-06T12:00:00.000Z",
+          "result": {
+            "resultType": "INSTANT_ESTIMATE_READY",
+            "quoteId": "c9416dc5-af48-4359-a0bb-fe6edccc5a17",
+            "customerMessage": "[SYNTHETIC] estimate receipt"
+          }
+        },
+        "leadExists": false,
+        "webhook": {
+          "id": "81331381-c348-4ced-9665-8688215e3aad",
+          "createdAt": "2026-10-06T12:00:00.000Z",
+          "service": "[SYNTHETIC] Instant inquiry",
+          "estimatedValueCents": null,
+          "customer": {
+            "name": null,
+            "phone": null,
+            "email": "instant-followup@example.invalid"
+          },
+          "resultType": "INSTANT_ESTIMATE_READY"
+        }
+      }
+    },
+    {
+      "id": "E30",
+      "expected": "Web write failure cannot return saved acknowledgement or leave partial records.",
+      "meetsExpectation": true,
+      "actual": {
+        "error": "SQLITE_CONSTRAINT_TRIGGER",
+        "before": 39,
+        "after": 39
+      }
+    },
+    {
+      "id": "E31",
+      "expected": "Cold process replays persisted web submission unchanged once.",
+      "meetsExpectation": true,
+      "actual": {
+        "firstStatus": 201,
+        "replayStatus": 200,
+        "equal": true,
+        "count": 1
+      }
+    },
+    {
+      "id": "E32",
+      "expected": "Owner can distinguish SMS failure from sent on the linked call while errors remain privacy-safe.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "unavailable",
+          "message": "The text message could not be sent right now."
+        },
+        "privateErrorExposed": false,
+        "failureCode": null,
+        "callDeliveryFields": [],
+        "leadDeliveryFields": []
+      }
+    },
+    {
+      "id": "E33",
+      "expected": "Disconnected local HTTP client after durable POST can recover exactly one immutable web receipt.",
+      "meetsExpectation": true,
+      "actual": {
+        "recoveredStatus": 200,
+        "count": 1
+      }
+    },
+    {
+      "id": "E36",
+      "expected": "Known callback phone permits capture even when caller declines to supply a name.",
+      "meetsExpectation": false,
+      "actual": {
+        "error": "MISSING_TOOL_FIELD",
+        "callbackPhone": "+19025550100",
+        "leadCount": 0
+      }
+    },
+    {
+      "id": "E37",
+      "expected": "Caller-owned cancellation reaches configured provider or durable actionable follow-up.",
+      "meetsExpectation": false,
+      "actual": {
+        "response": {
+          "status": "unavailable",
+          "message": "Appointment changes are not available right now."
+        },
+        "appointmentStatus": "CONFIRMED",
+        "outbox": [
+          {
+            "eventType": "voice.appointment_change_requested",
+            "status": "FAILED"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E38",
+      "expected": "Per-caller appointment lookup survives 25 newer appointments for other callers.",
+      "meetsExpectation": false,
+      "actual": {
+        "callerHasStoredAppointment": true,
+        "result": {
+          "status": "not_found",
+          "message": "No caller-owned customer history was found."
+        }
+      }
+    },
+    {
+      "id": "E39",
+      "expected": "Returning-caller context preserves name/address and open saved requests.",
+      "meetsExpectation": false,
+      "actual": {
+        "toolResult": {
+          "status": "found",
+          "customerHandle": "QUwsDdwkfjGVWgliEDEY6SQd-xlAM4KBQBCL_W4S8w0",
+          "recentAppointments": []
+        },
+        "handlerFields": [
+          "status",
+          "name",
+          "recentAppointments",
+          "customerHandle",
+          "address"
+        ],
+        "handlerName": "[SYNTHETIC] Remember me",
+        "handlerAddress": {
+          "line1": "[SYNTHETIC] 10 Test Street",
+          "line2": "",
+          "city": "Synthetic City",
+          "region": "NS",
+          "postalCode": "B3H 1A1",
+          "country": "CA"
+        },
+        "savedQuoteCount": 1,
+        "openLeadCount": 1
+      }
+    },
+    {
+      "id": "E40",
+      "expected": "Production owner serving supports Calls deep links and refresh.",
+      "meetsExpectation": false,
+      "actual": {
+        "statuses": {
+          "/dashboard": 200,
+          "/calls": 404,
+          "/calls?record=SYNTHETIC-CALL": 404
+        }
+      }
+    },
+    {
+      "id": "E44",
+      "expected": "Two independent web-submit processes serialize one committed request and one exact replay.",
+      "meetsExpectation": true,
+      "actual": {
+        "statuses": [
+          201,
+          200
+        ],
+        "persistedCount": 1,
+        "equal": true
+      }
+    },
+    {
+      "id": "E45",
+      "expected": "Normalized voice customer identity survives synthetic handle-secret rotation.",
+      "meetsExpectation": false,
+      "actual": {
+        "customers": [
+          {
+            "id": "5612467d-dcf1-52f7-a69f-22df899cdeca",
+            "phoneE164": "+19025550137"
+          },
+          {
+            "id": "2e645b7e-7e85-5c7f-ae5f-6997979a4251",
+            "phoneE164": "+19025550137"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E20",
+      "expected": "Owner/staff route and rendered lead preserve supplied notes, urgent status, delivery failure; tenants remain isolated.",
+      "meetsExpectation": false,
+      "actual": {
+        "staffStatus": 200,
+        "foreignStatus": 404,
+        "notesRendered": false,
+        "emailRendered": true,
+        "internalEvidenceVisible": false
+      }
+    }
+  ]
+}

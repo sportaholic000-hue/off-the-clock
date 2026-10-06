@@ -1,0 +1,292 @@
+TAP version 13
+# Subtest: versioned catalogs cannot silently mix quote formats
+ok 1 - versioned catalogs cannot silently mix quote formats
+  ---
+  duration_ms: 1.338748
+  type: 'test'
+  ...
+# Subtest: the new envelope omits only blank fields, never supplied work or unexpected shapes
+ok 2 - the new envelope omits only blank fields, never supplied work or unexpected shapes
+  ---
+  duration_ms: 1.058575
+  type: 'test'
+  ...
+# Subtest: public transport preserves decimals and sends no owner authentication
+ok 3 - public transport preserves decimals and sends no owner authentication
+  ---
+  duration_ms: 3.874019
+  type: 'test'
+  ...
+# Subtest: booking requests preserve their explicit idempotency key
+ok 4 - booking requests preserve their explicit idempotency key
+  ---
+  duration_ms: 5.970829
+  type: 'test'
+  ...
+# Subtest: public paths cannot escape into authenticated routes or insecure production origins
+ok 5 - public paths cannot escape into authenticated routes or insecure production origins
+  ---
+  duration_ms: 0.674507
+  type: 'test'
+  ...
+# Subtest: definite booking failures preserve their server code
+ok 6 - definite booking failures preserve their server code
+  ---
+  duration_ms: 0.719324
+  type: 'test'
+  ...
+# Subtest: invalid successful acknowledgements remain errors
+ok 7 - invalid successful acknowledgements remain errors
+  ---
+  duration_ms: 0.658362
+  type: 'test'
+  ...
+# Subtest: branding permits flat colors and normalized call numbers, not script destinations
+ok 8 - branding permits flat colors and normalized call numbers, not script destinations
+  ---
+  duration_ms: 0.340583
+  type: 'test'
+  ...
+# Subtest: calendar data must contain valid explicit UTC instants and a valid timezone
+ok 9 - calendar data must contain valid explicit UTC instants and a valid timezone
+  ---
+  duration_ms: 16.644868
+  type: 'test'
+  ...
+# Subtest: only a confirmed calendar appointment for the selected server slot may display booked
+ok 10 - only a confirmed calendar appointment for the selected server slot may display booked
+  ---
+  duration_ms: 0.943202
+  type: 'test'
+  ...
+# Subtest: booking token receipts round trip without exposing the public token
+ok 11 - booking token receipts round trip without exposing the public token
+  ---
+  duration_ms: 2.445496
+  type: 'test'
+  ...
+# Subtest: booking token receipts reject tampering, wrong keys, and incomplete payloads
+ok 12 - booking token receipts reject tampering, wrong keys, and incomplete payloads
+  ---
+  duration_ms: 0.90928
+  type: 'test'
+  ...
+# Subtest: release voice date: west fallback quotes $110 using the runtime clock
+ok 13 - release voice date: west fallback quotes $110 using the runtime clock
+  ---
+  duration_ms: 201.388517
+  type: 'test'
+  ...
+# Subtest: release voice date: east fallback quotes $110 using the runtime clock
+ok 14 - release voice date: east fallback quotes $110 using the runtime clock
+  ---
+  duration_ms: 119.491125
+  type: 'test'
+  ...
+# Subtest: release voice date: UTC book overrides west quotes $100 using the runtime clock
+ok 15 - release voice date: UTC book overrides west quotes $100 using the runtime clock
+  ---
+  duration_ms: 106.348646
+  type: 'test'
+  ...
+# Subtest: release voice date: profile changes immediately unpublish and restore seasonal service
+ok 16 - release voice date: profile changes immediately unpublish and restore seasonal service
+  ---
+  duration_ms: 46.258354
+  type: 'test'
+  ...
+# Subtest: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+ok 17 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+  ---
+  duration_ms: 557.491569
+  type: 'test'
+  ...
+# Subtest: session-start failure reaches signed forwarding fallback; mismatched caller fails closed
+ok 18 - session-start failure reaches signed forwarding fallback; mismatched caller fails closed
+  ---
+  duration_ms: 102.676342
+  type: 'test'
+  ...
+# Subtest: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+ok 19 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+  ---
+  duration_ms: 207.06634
+  type: 'test'
+  ...
+# Subtest: phone readiness uses cached quick statuses with the same live answer
+ok 20 - phone readiness uses cached quick statuses with the same live answer
+  ---
+  duration_ms: 170.934656
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value 0
+ok 21 - forbidden quote key __proto__ value 0
+  ---
+  duration_ms: 0.631702
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value null
+ok 22 - forbidden quote key __proto__ value null
+  ---
+  duration_ms: 0.307423
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value "x"
+ok 23 - forbidden quote key __proto__ value "x"
+  ---
+  duration_ms: 0.175735
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value {"sentinel":true}
+ok 24 - forbidden quote key __proto__ value {"sentinel":true}
+  ---
+  duration_ms: 0.088324
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value 0
+ok 25 - forbidden quote key constructor value 0
+  ---
+  duration_ms: 0.233822
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value null
+ok 26 - forbidden quote key constructor value null
+  ---
+  duration_ms: 0.368806
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value "x"
+ok 27 - forbidden quote key constructor value "x"
+  ---
+  duration_ms: 0.110186
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value {"sentinel":true}
+ok 28 - forbidden quote key constructor value {"sentinel":true}
+  ---
+  duration_ms: 0.080491
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value 0
+ok 29 - forbidden quote key prototype value 0
+  ---
+  duration_ms: 0.112069
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value null
+ok 30 - forbidden quote key prototype value null
+  ---
+  duration_ms: 0.083486
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value "x"
+ok 31 - forbidden quote key prototype value "x"
+  ---
+  duration_ms: 0.062574
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value {"sentinel":true}
+ok 32 - forbidden quote key prototype value {"sentinel":true}
+  ---
+  duration_ms: 0.059419
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value 0
+ok 33 - forbidden quote key __PrOtO__ value 0
+  ---
+  duration_ms: 0.162995
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value null
+ok 34 - forbidden quote key __PrOtO__ value null
+  ---
+  duration_ms: 0.082524
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value "x"
+ok 35 - forbidden quote key __PrOtO__ value "x"
+  ---
+  duration_ms: 0.057577
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value {"sentinel":true}
+ok 36 - forbidden quote key __PrOtO__ value {"sentinel":true}
+  ---
+  duration_ms: 0.059419
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected ownerId
+ok 37 - caller identity or money rejected ownerId
+  ---
+  duration_ms: 0.103496
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected price
+ok 38 - caller identity or money rejected price
+  ---
+  duration_ms: 0.057717
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected offeringId
+ok 39 - caller identity or money rejected offeringId
+  ---
+  duration_ms: 0.050015
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected confirmedFacts
+ok 40 - caller identity or money rejected confirmedFacts
+  ---
+  duration_ms: 0.151348
+  type: 'test'
+  ...
+# Subtest: full written disclosure survives both projections while short summary preserves both ranges and exclusions
+ok 41 - full written disclosure survives both projections while short summary preserves both ranges and exclusions
+  ---
+  duration_ms: 1.430946
+  type: 'test'
+  ...
+# Subtest: booking already owns hold then confirm; caller hold/finalize injection stays rejected
+ok 42 - booking already owns hold then confirm; caller hold/finalize injection stays rejected
+  ---
+  duration_ms: 0.355846
+  type: 'test'
+  ...
+# Subtest: actual start entry point installs the signed runtime instead of the placeholder
+ok 43 - actual start entry point installs the signed runtime instead of the placeholder
+  ---
+  duration_ms: 0.375436
+  type: 'test'
+  ...
+# Subtest: widget network failures explain how to retry without exposing browser errors
+ok 44 - widget network failures explain how to retry without exposing browser errors
+  ---
+  duration_ms: 1.629576
+  type: 'test'
+  ...
+# Subtest: widget preserves a definite validation rejection and original decimal request
+ok 45 - widget preserves a definite validation rejection and original decimal request
+  ---
+  duration_ms: 2.245635
+  type: 'test'
+  ...
+# Subtest: widget retry keeps the original booking idempotency key
+ok 46 - widget retry keeps the original booking idempotency key
+  ---
+  duration_ms: 0.508577
+  type: 'test'
+  ...
+# Subtest: unavailable public quote access shows customer wording without changing rejection metadata
+ok 47 - unavailable public quote access shows customer wording without changing rejection metadata
+  ---
+  duration_ms: 1.095732
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2313.195502

@@ -1,0 +1,1392 @@
+TAP version 13
+# Subtest: real application migration supports verification tokens and preserves consumption on restart
+ok 1 - real application migration supports verification tokens and preserves consumption on restart
+  ---
+  duration_ms: 10.684788
+  type: 'test'
+  ...
+# Subtest: booking owner routes expose the complete configuration surface
+ok 2 - booking owner routes expose the complete configuration surface
+  ---
+  duration_ms: 1.270151
+  type: 'test'
+  ...
+# Subtest: route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+ok 3 - route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+  ---
+  duration_ms: 0.534464
+  type: 'test'
+  ...
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 4 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 24.099224
+  type: 'test'
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 5 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 1.762232
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 6 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 10.478958
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 7 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 5.022968
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 8 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 7.29653
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 9 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 1.049329
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 10 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 11.289573
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 11 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 4.544809
+  type: 'test'
+  ...
+# Subtest: preference request atomically stores a callback request without claiming a booking
+ok 12 - preference request atomically stores a callback request without claiming a booking
+  ---
+  duration_ms: 21.619473
+  type: 'test'
+  ...
+# Subtest: tenant isolation and expired or inactive intent checks happen before writes
+ok 13 - tenant isolation and expired or inactive intent checks happen before writes
+  ---
+  duration_ms: 2.508635
+  type: 'test'
+  ...
+# Subtest: request validation is closed and rejects malformed nested data
+ok 14 - request validation is closed and rejects malformed nested data
+  ---
+  duration_ms: 13.067544
+  type: 'test'
+  ...
+# Subtest: future dates use settings timezone, then a valid owner timezone fallback
+ok 15 - future dates use settings timezone, then a valid owner timezone fallback
+  ---
+  duration_ms: 2.800194
+  type: 'test'
+  ...
+# Subtest: exact retry survives restart and expiry while changed payload conflicts
+ok 16 - exact retry survives restart and expiry while changed payload conflicts
+  ---
+  duration_ms: 1.42874
+  type: 'test'
+  ...
+# Subtest: outbox failure rolls back preference and idempotency receipt atomically
+ok 17 - outbox failure rolls back preference and idempotency receipt atomically
+  ---
+  duration_ms: 1.070571
+  type: 'test'
+  ...
+# Subtest: public booking context binds token tenant and exact allowed website origin
+ok 18 - public booking context binds token tenant and exact allowed website origin
+  ---
+  duration_ms: 2.165268
+  type: 'test'
+  ...
+# Subtest: availability requires unchanged scope and a strict post-quote identity envelope
+ok 19 - availability requires unchanged scope and a strict post-quote identity envelope
+  ---
+  duration_ms: 0.855217
+  type: 'test'
+  ...
+# Subtest: hold, release, confirm, and polling forward only server-bound context
+ok 20 - hold, release, confirm, and polling forward only server-bound context
+  ---
+  duration_ms: 0.945914
+  type: 'test'
+  ...
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 21 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 4.209765
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 22 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 1.409561
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 23 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 14.435342
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 24 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 21.268766
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 25 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 11.212012
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 26 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 24.213526
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 27 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 12.358196
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 28 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 11.423539
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 29 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 14.284686
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 30 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 11.229428
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 31 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 13.302938
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 32 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 13.283118
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 33 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 13.956001
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 34 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 10.715395
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 35 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 14.436333
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 36 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 13.813997
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 37 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 12.894464
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 38 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 1.356582
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-status never books or emits booked notification
+ok 39 - Provider confirmation create: missing-status never books or emits booked notification
+  ---
+  duration_ms: 16.847042
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: tentative never books or emits booked notification
+ok 40 - Provider confirmation create: tentative never books or emits booked notification
+  ---
+  duration_ms: 13.313745
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: cancelled never books or emits booked notification
+ok 41 - Provider confirmation create: cancelled never books or emits booked notification
+  ---
+  duration_ms: 13.323549
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-id never books or emits booked notification
+ok 42 - Provider confirmation create: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 19.007772
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-day never books or emits booked notification
+ok 43 - Provider confirmation create: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 14.281081
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-duration never books or emits booked notification
+ok 44 - Provider confirmation create: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 12.516715
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-start never books or emits booked notification
+ok 45 - Provider confirmation create: missing-start never books or emits booked notification
+  ---
+  duration_ms: 13.026582
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: numeric-start never books or emits booked notification
+ok 46 - Provider confirmation create: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 11.659414
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-status never books or emits booked notification
+ok 47 - Provider confirmation recovery: missing-status never books or emits booked notification
+  ---
+  duration_ms: 12.901724
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: tentative never books or emits booked notification
+ok 48 - Provider confirmation recovery: tentative never books or emits booked notification
+  ---
+  duration_ms: 12.532149
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: cancelled never books or emits booked notification
+ok 49 - Provider confirmation recovery: cancelled never books or emits booked notification
+  ---
+  duration_ms: 10.879672
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 50 - Provider confirmation recovery: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 14.115651
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 51 - Provider confirmation recovery: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 10.683356
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 52 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 11.189708
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-start never books or emits booked notification
+ok 53 - Provider confirmation recovery: missing-start never books or emits booked notification
+  ---
+  duration_ms: 10.781654
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 54 - Provider confirmation recovery: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 12.004815
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-status never books or emits booked notification
+ok 55 - Provider confirmation poll: missing-status never books or emits booked notification
+  ---
+  duration_ms: 16.056606
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: tentative never books or emits booked notification
+ok 56 - Provider confirmation poll: tentative never books or emits booked notification
+  ---
+  duration_ms: 17.156126
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: cancelled never books or emits booked notification
+ok 57 - Provider confirmation poll: cancelled never books or emits booked notification
+  ---
+  duration_ms: 15.136031
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-id never books or emits booked notification
+ok 58 - Provider confirmation poll: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 13.730552
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-day never books or emits booked notification
+ok 59 - Provider confirmation poll: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 14.073768
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 60 - Provider confirmation poll: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 14.427876
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-start never books or emits booked notification
+ok 61 - Provider confirmation poll: missing-start never books or emits booked notification
+  ---
+  duration_ms: 12.834253
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: numeric-start never books or emits booked notification
+ok 62 - Provider confirmation poll: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 14.484106
+  type: 'test'
+  ...
+# Subtest: Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 63 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+  ---
+  duration_ms: 13.622479
+  type: 'test'
+  ...
+# Subtest: One intent cannot create another appointment through a different hold or idempotency key
+ok 64 - One intent cannot create another appointment through a different hold or idempotency key
+  ---
+  duration_ms: 16.44143
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler
+ok 65 - Interrupted pre-write preparation releases its slot and fences a late handler
+  ---
+  duration_ms: 16.637786
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+ok 66 - Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+  ---
+  duration_ms: 13.957102
+  type: 'test'
+  ...
+# Subtest: A provider write already started remains pending after restart until its exact event is confirmed
+ok 67 - A provider write already started remains pending after restart until its exact event is confirmed
+  ---
+  duration_ms: 16.071024
+  type: 'test'
+  ...
+# Subtest: Opus booking: missing event after write marker retries the exact saved event and confirms once
+ok 68 - Opus booking: missing event after write marker retries the exact saved event and confirms once
+  ---
+  duration_ms: 20.546017
+  type: 'test'
+  ...
+# Subtest: Opus booking: simultaneous recovery polls create only one retry
+ok 69 - Opus booking: simultaneous recovery polls create only one retry
+  ---
+  duration_ms: 25.350546
+  type: 'test'
+  ...
+# Subtest: Opus booking control: lookup-failed never creates a new event or announces confirmation
+ok 70 - Opus booking control: lookup-failed never creates a new event or announces confirmation
+  ---
+  duration_ms: 13.672385
+  type: 'test'
+  ...
+# Subtest: Opus booking control: busy never creates a new event or announces confirmation
+ok 71 - Opus booking control: busy never creates a new event or announces confirmation
+  ---
+  duration_ms: 12.100519
+  type: 'test'
+  ...
+# Subtest: Opus booking control: policy-changed never creates a new event or announces confirmation
+ok 72 - Opus booking control: policy-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 15.515668
+  type: 'test'
+  ...
+# Subtest: Opus booking control: calendar-changed never creates a new event or announces confirmation
+ok 73 - Opus booking control: calendar-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 11.756711
+  type: 'test'
+  ...
+# Subtest: Opus booking control: no-idempotency never creates a new event or announces confirmation
+ok 74 - Opus booking control: no-idempotency never creates a new event or announces confirmation
+  ---
+  duration_ms: 15.384005
+  type: 'test'
+  ...
+# Subtest: Opus booking control: expired-time never creates a new event or announces confirmation
+ok 75 - Opus booking control: expired-time never creates a new event or announces confirmation
+  ---
+  duration_ms: 12.475904
+  type: 'test'
+  ...
+# Subtest: Opus booking: existing event is reconciled without a write
+ok 76 - Opus booking: existing event is reconciled without a write
+  ---
+  duration_ms: 12.511987
+  type: 'test'
+  ...
+# Subtest: bridge construction requires explicit transcript and tool boundaries
+ok 77 - bridge construction requires explicit transcript and tool boundaries
+  ---
+  duration_ms: 1.148438
+  type: 'test'
+  ...
+# Subtest: valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+ok 78 - valid Twilio media is identity-bound, converted to PCM16 16 kHz, and closes on stop
+  ---
+  duration_ms: 3.07689
+  type: 'test'
+  ...
+# Subtest: Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+ok 79 - Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark
+  ---
+  duration_ms: 1.629873
+  type: 'test'
+  ...
+# Subtest: Gemini interruption clears Twilio immediately and discards already queued output
+ok 80 - Gemini interruption clears Twilio immediately and discards already queued output
+  ---
+  duration_ms: 1.064642
+  type: 'test'
+  ...
+# Subtest: validated transcripts and tool calls cross only their injected callback interfaces
+ok 81 - validated transcripts and tool calls cross only their injected callback interfaces
+  ---
+  duration_ms: 1.207768
+  type: 'test'
+  ...
+# Subtest: forged call identity in the Twilio start event fails before Gemini opens
+ok 82 - forged call identity in the Twilio start event fails before Gemini opens
+  ---
+  duration_ms: 0.447763
+  type: 'test'
+  ...
+# Subtest: a socket close during Gemini connection cannot leak or resurrect the provider session
+ok 83 - a socket close during Gemini connection cannot leak or resurrect the provider session
+  ---
+  duration_ms: 8.186188
+  type: 'test'
+  ...
+# Subtest: a provider close callback during application shutdown cannot recurse or deadlock
+ok 84 - a provider close callback during application shutdown cannot recurse or deadlock
+  ---
+  duration_ms: 0.553093
+  type: 'test'
+  ...
+# Subtest: out-of-order, unknown-mark, binary, and malformed audio events fail closed
+    # Subtest: sequence gap
+    ok 1 - sequence gap
+      ---
+      duration_ms: 0.743239
+      type: 'test'
+      ...
+    # Subtest: unknown mark
+    ok 2 - unknown mark
+      ---
+      duration_ms: 0.652221
+      type: 'test'
+      ...
+    # Subtest: binary event
+    ok 3 - binary event
+      ---
+      duration_ms: 0.21242
+      type: 'test'
+      ...
+    # Subtest: non-canonical media base64
+    ok 4 - non-canonical media base64
+      ---
+      duration_ms: 0.39214
+      type: 'test'
+      ...
+    1..4
+ok 85 - out-of-order, unknown-mark, binary, and malformed audio events fail closed
+  ---
+  duration_ms: 2.892783
+  type: 'test'
+  ...
+# Subtest: payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+    # Subtest: inbound byte rate
+    ok 1 - inbound byte rate
+      ---
+      duration_ms: 0.75775
+      type: 'test'
+      ...
+    # Subtest: socket buffered amount
+    ok 2 - socket buffered amount
+      ---
+      duration_ms: 0.349176
+      type: 'test'
+      ...
+    # Subtest: queued input audio
+    ok 3 - queued input audio
+      ---
+      duration_ms: 0.886444
+      type: 'test'
+      ...
+    1..3
+ok 86 - payload rate, queue, and socket backpressure limits terminate instead of buffering unboundedly
+  ---
+  duration_ms: 2.240521
+  type: 'test'
+  ...
+# Subtest: invalid provider audio, transcript, or tool data fails closed without echoing details
+    # Subtest: wrong output format
+    ok 1 - wrong output format
+      ---
+      duration_ms: 0.270567
+      type: 'test'
+      ...
+    # Subtest: control character transcript
+    ok 2 - control character transcript
+      ---
+      duration_ms: 0.289295
+      type: 'test'
+      ...
+    # Subtest: prototype-bearing tool arguments
+    ok 3 - prototype-bearing tool arguments
+      ---
+      duration_ms: 0.370898
+      type: 'test'
+      ...
+    # Subtest: accessor-bearing provider objects
+    ok 4 - accessor-bearing provider objects
+      ---
+      duration_ms: 0.450628
+      type: 'test'
+      ...
+    1..4
+ok 87 - invalid provider audio, transcript, or tool data fails closed without echoing details
+  ---
+  duration_ms: 1.851146
+  type: 'test'
+  ...
+# Subtest: connects with audio-only transcription, tools, prompt, and configured voice
+ok 88 - connects with audio-only transcription, tools, prompt, and configured voice
+  ---
+  duration_ms: 2.474864
+  type: 'test'
+  ...
+# Subtest: maps provider audio, finalized transcripts, interruption, and tool calls
+ok 89 - maps provider audio, finalized transcripts, interruption, and tool calls
+  ---
+  duration_ms: 3.782963
+  type: 'test'
+  ...
+# Subtest: flushes interrupted operator transcript as non-final before clearing playback
+ok 90 - flushes interrupted operator transcript as non-final before clearing playback
+  ---
+  duration_ms: 2.89126
+  type: 'test'
+  ...
+# Subtest: provider protocol violations fail closed without exposing provider details
+ok 91 - provider protocol violations fail closed without exposing provider details
+  ---
+  duration_ms: 2.218578
+  type: 'test'
+  ...
+# Subtest: close sends audio-stream-end and closes exactly once
+ok 92 - close sends audio-stream-end and closes exactly once
+  ---
+  duration_ms: 0.30528
+  type: 'test'
+  ...
+# Subtest: construction and connection failures use stable local error codes
+ok 93 - construction and connection failures use stable local error codes
+  ---
+  duration_ms: 0.662858
+  type: 'test'
+  ...
+# Subtest: CSV blob request retains the current owner session and refreshes before download
+ok 94 - CSV blob request retains the current owner session and refreshes before download
+  ---
+  duration_ms: 2.092849
+  type: 'test'
+  ...
+# Subtest: a CSV arriving after account switch cannot be downloaded into the new session
+ok 95 - a CSV arriving after account switch cannot be downloaded into the new session
+  ---
+  duration_ms: 4.255594
+  type: 'test'
+  ...
+# Subtest: CSV errors still use protected JSON error/refresh handling, never an error file download
+ok 96 - CSV errors still use protected JSON error/refresh handling, never an error file download
+  ---
+  duration_ms: 0.954116
+  type: 'test'
+  ...
+# [shutdown] requests and workers drained; database closed
+# Subtest: shutdown rejects new work, drains active HTTP handlers and workers, then closes SQLite
+ok 97 - shutdown rejects new work, drains active HTTP handlers and workers, then closes SQLite
+  ---
+  duration_ms: 63.988308
+  type: 'test'
+  ...
+# [shutdown] requests and workers drained; database closed
+# Subtest: shutdown also waits for an async route after its client disconnects
+ok 98 - shutdown also waits for an async route after its client disconnects
+  ---
+  duration_ms: 48.435716
+  type: 'test'
+  ...
+# [shutdown] deadline or drain failure; exiting for recovery
+# Subtest: deadline exits for journal recovery without closing a database under unfinished work
+ok 99 - deadline exits for journal recovery without closing a database under unfinished work
+  ---
+  duration_ms: 33.197244
+  type: 'test'
+  ...
+# Subtest: health readiness checks SQLite and fails closed when it is unavailable
+ok 100 - health readiness checks SQLite and fails closed when it is unavailable
+  ---
+  duration_ms: 11.391638
+  type: 'test'
+  ...
+# Subtest: legacy knowledge-base saves preserve an existing structured service area
+ok 101 - legacy knowledge-base saves preserve an existing structured service area
+  ---
+  duration_ms: 1.982283
+  type: 'test'
+  ...
+# Subtest: supplied service areas are canonicalized and invalid shapes do not overwrite saved coverage
+ok 102 - supplied service areas are canonicalized and invalid shapes do not overwrite saved coverage
+  ---
+  duration_ms: 0.769708
+  type: 'test'
+  ...
+# Subtest: Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 103 - Calendar uses business date and correct 25-hour fall-back day boundaries
+  ---
+  duration_ms: 18.858859
+  type: 'test'
+  ...
+# Subtest: Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 104 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+  ---
+  duration_ms: 2.651229
+  type: 'test'
+  ...
+# Subtest: Calendar rejects unsupported filters, impossible dates and missing owner
+ok 105 - Calendar rejects unsupported filters, impossible dates and missing owner
+  ---
+  duration_ms: 1.901852
+  type: 'test'
+  ...
+# Subtest: Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 106 - Busy-time read is scoped and changing the connection in flight rejects the old response
+  ---
+  duration_ms: 4.189514
+  type: 'test'
+  ...
+# Subtest: Provider failure is an error, never a successful empty calendar
+ok 107 - Provider failure is an error, never a successful empty calendar
+  ---
+  duration_ms: 1.596883
+  type: 'test'
+  ...
+# Subtest: stored calls, outcomes, summary and transcript are returned without repricing
+ok 108 - stored calls, outcomes, summary and transcript are returned without repricing
+  ---
+  duration_ms: 10.816718
+  type: 'test'
+  ...
+# Subtest: list, detail, source joins and counters isolate tenants including corrupt cross-tenant links
+ok 109 - list, detail, source joins and counters isolate tenants including corrupt cross-tenant links
+  ---
+  duration_ms: 6.90412
+  type: 'test'
+  ...
+# Subtest: pagination reaches all stored calls deterministically and rejects owner overrides
+ok 110 - pagination reaches all stored calls deterministically and rejects owner overrides
+  ---
+  duration_ms: 5.664323
+  type: 'test'
+  ...
+# Subtest: review leads retain original voice measurements and the saved reason
+ok 111 - review leads retain original voice measurements and the saved reason
+  ---
+  duration_ms: 5.758896
+  type: 'test'
+  ...
+# Subtest: fallbacks, transcriptTurns, missing and malformed stored data are honest
+ok 112 - fallbacks, transcriptTurns, missing and malformed stored data are honest
+  ---
+  duration_ms: 6.20038
+  type: 'test'
+  ...
+# Subtest: real application dashboard and record routes show persisted synthetic call data
+    # Subtest: dashboard includes stored feed and real counters
+    ok 1 - dashboard includes stored feed and real counters
+      ---
+      duration_ms: 25.229597
+      type: 'test'
+      ...
+    # Subtest: call detail contains transcript, outcome, quote drivers, lead and bookings
+    ok 2 - call detail contains transcript, outcome, quote drivers, lead and bookings
+      ---
+      duration_ms: 7.703732
+      type: 'test'
+      ...
+    # Subtest: Calls list and specific record enforce session tenant
+    ok 3 - Calls list and specific record enforce session tenant
+      ---
+      duration_ms: 18.333047
+      type: 'test'
+      ...
+    # Subtest: Quotes view reads the voice receipt and includes its call link
+    ok 4 - Quotes view reads the voice receipt and includes its call link
+      ---
+      duration_ms: 3.355993
+      type: 'test'
+      ...
+    # Subtest: Leads view reads captured voice contact and review inputs
+    ok 5 - Leads view reads captured voice contact and review inputs
+      ---
+      duration_ms: 5.17514
+      type: 'test'
+      ...
+    # Subtest: staff sees only its parent tenant and no owner calculation evidence
+    ok 6 - staff sees only its parent tenant and no owner calculation evidence
+      ---
+      duration_ms: 6.615131
+      type: 'test'
+      ...
+    1..6
+ok 113 - real application dashboard and record routes show persisted synthetic call data
+  ---
+  duration_ms: 472.916038
+  type: 'test'
+  ...
+# Subtest: existing owner components render stored call and linked record views
+    # Subtest: dashboard/Calls feed shows stored summary and outcome
+    ok 1 - dashboard/Calls feed shows stored summary and outcome
+      ---
+      duration_ms: 41.145596
+      type: 'test'
+      ...
+    # Subtest: call detail shows transcript, exact saved price and why, lead and calendar records
+    ok 2 - call detail shows transcript, exact saved price and why, lead and calendar records
+      ---
+      duration_ms: 7.023315
+      type: 'test'
+      ...
+    # Subtest: review view shows the saved reason without inventing a quote
+    ok 3 - review view shows the saved reason without inventing a quote
+      ---
+      duration_ms: 2.933271
+      type: 'test'
+      ...
+    # Subtest: Quotes and Leads views render normalized voice records and call links
+    ok 4 - Quotes and Leads views render normalized voice records and call links
+      ---
+      duration_ms: 2.496012
+      type: 'test'
+      ...
+    # Subtest: fallback view reports stored failure and empty records
+    ok 5 - fallback view reports stored failure and empty records
+      ---
+      duration_ms: 1.854976
+      type: 'test'
+      ...
+    1..5
+ok 114 - existing owner components render stored call and linked record views
+  ---
+  duration_ms: 653.916918
+  type: 'test'
+  ...
+# Subtest: CSV neutralizes formula prefixes, whitespace, controls and locale variants
+ok 115 - CSV neutralizes formula prefixes, whitespace, controls and locale variants
+  ---
+  duration_ms: 1.683247
+  type: 'test'
+  ...
+# Subtest: CSV quoting preserves separators, quotes and multiline data without creating extra cells
+ok 116 - CSV quoting preserves separators, quotes and multiline data without creating extra cells
+  ---
+  duration_ms: 0.76269
+  type: 'test'
+  ...
+# Subtest: leads CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 117 - leads CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 10.259332
+  type: 'test'
+  ...
+# Subtest: quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 118 - quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 7.021353
+  type: 'test'
+  ...
+# Subtest: bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 119 - bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 6.249159
+  type: 'test'
+  ...
+# Subtest: CSV pagination includes more than 500 rows once each, without tenant bleed
+ok 120 - CSV pagination includes more than 500 rows once each, without tenant bleed
+  ---
+  duration_ms: 64.05125
+  type: 'test'
+  ...
+# Subtest: unknown export names and prototype properties are unavailable
+ok 121 - unknown export names and prototype properties are unavailable
+  ---
+  duration_ms: 0.232841
+  type: 'test'
+  ...
+# Subtest: capture is tenant-scoped and the signing secret is encrypted and shown once
+ok 122 - capture is tenant-scoped and the signing secret is encrypted and shown once
+  ---
+  duration_ms: 12.739251
+  type: 'test'
+  ...
+# Subtest: all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+ok 123 - all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+  ---
+  duration_ms: 15.181462
+  type: 'test'
+  ...
+# Subtest: bookings emit only on confirmation; repeated confirmations do not duplicate events
+ok 124 - bookings emit only on confirmation; repeated confirmations do not duplicate events
+  ---
+  duration_ms: 6.738056
+  type: 'test'
+  ...
+# Subtest: transaction rollback removes the captured event and never invokes delivery inline
+ok 125 - transaction rollback removes the captured event and never invokes delivery inline
+  ---
+  duration_ms: 6.939449
+  type: 'test'
+  ...
+# Subtest: malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+ok 126 - malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+  ---
+  duration_ms: 9.176402
+  type: 'test'
+  ...
+# Subtest: disabled event toggles capture only the selected event
+ok 127 - disabled event toggles capture only the selected event
+  ---
+  duration_ms: 5.532629
+  type: 'test'
+  ...
+# Subtest: receiver failures do not affect inserts, and retry obeys due time with stable event/body
+ok 128 - receiver failures do not affect inserts, and retry obeys due time with stable event/body
+  ---
+  duration_ms: 8.477128
+  type: 'test'
+  ...
+# Subtest: retry is durable across a real database close/reopen and encrypted key read
+ok 129 - retry is durable across a real database close/reopen and encrypted key read
+  ---
+  duration_ms: 21.165492
+  type: 'test'
+  ...
+# Subtest: exhausted retries become visible failures; only their own owner can requeue them
+ok 130 - exhausted retries become visible failures; only their own owner can requeue them
+  ---
+  duration_ms: 10.621109
+  type: 'test'
+  ...
+# Subtest: two workers cannot concurrently deliver the same leased event
+ok 131 - two workers cannot concurrently deliver the same leased event
+  ---
+  duration_ms: 6.09775
+  type: 'test'
+  ...
+# Subtest: expired worker lease is reclaimed after a crash, without changing event identity
+ok 132 - expired worker lease is reclaimed after a crash, without changing event identity
+  ---
+  duration_ms: 5.583987
+  type: 'test'
+  ...
+# Subtest: changing URL or rotating/removing a key cancels older pending events without touching other tenants
+ok 133 - changing URL or rotating/removing a key cancels older pending events without touching other tenants
+  ---
+  duration_ms: 6.918138
+  type: 'test'
+  ...
+# Subtest: an endpoint change during DNS resolution prevents sending to the old destination
+ok 134 - an endpoint change during DNS resolution prevents sending to the old destination
+  ---
+  duration_ms: 6.219173
+  type: 'test'
+  ...
+# Subtest: swapping encrypted signing records across tenants fails closed without delivering
+ok 135 - swapping encrypted signing records across tenants fails closed without delivering
+  ---
+  duration_ms: 5.341712
+  type: 'test'
+  ...
+# Subtest: platform dispatch and account entitlements pause delivery without blocking inserts
+ok 136 - platform dispatch and account entitlements pause delivery without blocking inserts
+  ---
+  duration_ms: 5.926643
+  type: 'test'
+  ...
+# Subtest: destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+ok 137 - destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+  ---
+  duration_ms: 0.691031
+  type: 'test'
+  ...
+# Subtest: mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+ok 138 - mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+  ---
+  duration_ms: 17.710184
+  type: 'test'
+  ...
+# Subtest: HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+ok 139 - HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+  ---
+  duration_ms: 0.994088
+  type: 'test'
+  ...
+# Subtest: transport deadline rejects a receiver that never responds
+ok 140 - transport deadline rejects a receiver that never responds
+  ---
+  duration_ms: 4.610359
+  type: 'test'
+  ...
+# Subtest: webhook dispatch is independently configured and stays off in preview
+ok 141 - webhook dispatch is independently configured and stays off in preview
+  ---
+  duration_ms: 0.275416
+  type: 'test'
+  ...
+# Subtest: strict webhook settings reject client tenant IDs and unsupported events
+ok 142 - strict webhook settings reject client tenant IDs and unsupported events
+  ---
+  duration_ms: 6.042908
+  type: 'test'
+  ...
+# Subtest: background worker handles store failure outside requests and stops scheduling after close
+ok 143 - background worker handles store failure outside requests and stops scheduling after close
+  ---
+  duration_ms: 55.608631
+  type: 'test'
+  ...
+# Subtest: real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+ok 144 - real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+  ---
+  duration_ms: 53.772427
+  type: 'test'
+  ...
+# Subtest: real authenticated settings expose no keys on GET and cannot mutate another tenant
+ok 145 - real authenticated settings expose no keys on GET and cannot mutate another tenant
+  ---
+  duration_ms: 42.902253
+  type: 'test'
+  ...
+# Subtest: owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+ok 146 - owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+  ---
+  duration_ms: 14.774669
+  type: 'test'
+  ...
+# Subtest: real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+ok 147 - real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+  ---
+  duration_ms: 62.540343
+  type: 'test'
+  ...
+# Subtest: event selection changes preserve the signing secret while invalidating older queue entries
+ok 148 - event selection changes preserve the signing secret while invalidating older queue entries
+  ---
+  duration_ms: 11.050926
+  type: 'test'
+  ...
+# Subtest: platform disabled during DNS pauses the leased event without an external POST
+ok 149 - platform disabled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 9.170603
+  type: 'test'
+  ...
+# Subtest: account canceled during DNS pauses the leased event without an external POST
+ok 150 - account canceled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 6.922994
+  type: 'test'
+  ...
+# Subtest: migration remains idempotent and does not replay records created before webhook registration
+ok 151 - migration remains idempotent and does not replay records created before webhook registration
+  ---
+  duration_ms: 11.041943
+  type: 'test'
+  ...
+# Subtest: a sustained backlog from the first worker batch cannot starve later owners
+ok 152 - a sustained backlog from the first worker batch cannot starve later owners
+  ---
+  duration_ms: 34.821193
+  type: 'test'
+  ...
+# Subtest: stopping the webhook worker waits for an active signed delivery and its database completion
+ok 153 - stopping the webhook worker waits for an active signed delivery and its database completion
+  ---
+  duration_ms: 74.613556
+  type: 'test'
+  ...
+# Subtest: city policies require an exact city, region, and country match
+ok 154 - city policies require an exact city, region, and country match
+  ---
+  duration_ms: 3.805575
+  type: 'test'
+  ...
+# Subtest: an explicit all-areas policy is eligible without silently inferring coverage
+ok 155 - an explicit all-areas policy is eligible without silently inferring coverage
+  ---
+  duration_ms: 0.541937
+  type: 'test'
+  ...
+# Subtest: missing or malformed configuration and address data fail closed
+ok 156 - missing or malformed configuration and address data fail closed
+  ---
+  duration_ms: 0.871444
+  type: 'test'
+  ...
+# Subtest: duplicate and ambiguous locality entries are rejected
+ok 157 - duplicate and ambiguous locality entries are rejected
+  ---
+  duration_ms: 0.268855
+  type: 'test'
+  ...
+# Subtest: knowledge-base extraction accepts only a valid structured policy
+ok 158 - knowledge-base extraction accepts only a valid structured policy
+  ---
+  duration_ms: 0.359742
+  type: 'test'
+  ...
+# Subtest: actual start-script server registers signed incoming and voice WebSocket routes
+ok 159 - actual start-script server registers signed incoming and voice WebSocket routes
+  ---
+  duration_ms: 474.160007
+  type: 'test'
+  ...
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 160 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 6.680845
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 161 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 3.908378
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 162 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 2.755351
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 163 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 2.991397
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 164 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 2.714859
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 165 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 3.435826
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+ok 166 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 41.395905
+  type: 'test'
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 167 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 5.730322
+  type: 'test'
+  ...
+# Subtest: the compiler authenticates and parses every section of the immutable 459-line guide
+ok 168 - the compiler authenticates and parses every section of the immutable 459-line guide
+  ---
+  duration_ms: 1.910738
+  type: 'test'
+  ...
+# Subtest: guide changes, unknown sections, and duplicate flow sections fail closed
+ok 169 - guide changes, unknown sections, and duplicate flow sections fail closed
+  ---
+  duration_ms: 0.720736
+  type: 'test'
+  ...
+# Subtest: compiled instructions include global rules and only quoting-live service headings
+ok 170 - compiled instructions include global rules and only quoting-live service headings
+  ---
+  duration_ms: 1.256844
+  type: 'test'
+  ...
+# Subtest: referenced shared steps are scoped under the active replacement flow, not offered independently
+ok 171 - referenced shared steps are scoped under the active replacement flow, not offered independently
+  ---
+  duration_ms: 0.340924
+  type: 'test'
+  ...
+# Subtest: owner-authored injection text remains inert JSON data and cannot break its boundary
+ok 172 - owner-authored injection text remains inert JSON data and cannot break its boundary
+  ---
+  duration_ms: 0.383718
+  type: 'test'
+  ...
+# Subtest: raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+ok 173 - raw pricing, private owner fields, sensitive offering labels, and unsupported mappings never compile
+  ---
+  duration_ms: 1.415092
+  type: 'test'
+  ...
+# Subtest: prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+ok 174 - prompt locks quote accuracy, separate-work handling, confirmation, and address-bound booking order
+  ---
+  duration_ms: 0.394875
+  type: 'test'
+  ...
+# Subtest: Gemini function declarations have exact tool coverage and validator-required fields
+ok 175 - Gemini function declarations have exact tool coverage and validator-required fields
+  ---
+  duration_ms: 2.35017
+  type: 'test'
+  ...
+# Subtest: forged inbound signatures are rejected before tenant lookup or session creation
+ok 176 - forged inbound signatures are rejected before tenant lookup or session creation
+  ---
+  duration_ms: 49.174017
+  type: 'test'
+  ...
+# Subtest: the independently enforced account allowlist rejects an otherwise signed account
+ok 177 - the independently enforced account allowlist rejects an otherwise signed account
+  ---
+  duration_ms: 8.193444
+  type: 'test'
+  ...
+# Subtest: tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+ok 178 - tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+  ---
+  duration_ms: 7.197093
+  type: 'test'
+  ...
+# Subtest: unknown and ambiguous signed destinations fail closed without choosing a tenant
+ok 179 - unknown and ambiguous signed destinations fail closed without choosing a tenant
+  ---
+  duration_ms: 6.439261
+  type: 'test'
+  ...
+# Subtest: operator-off calls deterministically forward to the configured business number
+ok 180 - operator-off calls deterministically forward to the configured business number
+  ---
+  duration_ms: 3.858804
+  type: 'test'
+  ...
+# Subtest: runtime-disabled calls never run entitlement checks or allocate an AI session
+ok 181 - runtime-disabled calls never run entitlement checks or allocate an AI session
+  ---
+  duration_ms: 3.226451
+  type: 'test'
+  ...
+# Subtest: a reached voice cap uses message fallback and escapes owner-authored XML
+ok 182 - a reached voice cap uses message fallback and escapes owner-authored XML
+  ---
+  duration_ms: 4.1216
+  type: 'test'
+  ...
+# Subtest: invalid or self-referential forwarding cannot create a dial loop
+ok 183 - invalid or self-referential forwarding cannot create a dial loop
+  ---
+  duration_ms: 10.332996
+  type: 'test'
+  ...
+# Subtest: nonce or session persistence failure falls back instead of returning a dead stream
+ok 184 - nonce or session persistence failure falls back instead of returning a dead stream
+  ---
+  duration_ms: 8.511383
+  type: 'test'
+  ...
+# Subtest: signed WebSocket authorization consumes the nonce once and starts one injected media session
+ok 185 - signed WebSocket authorization consumes the nonce once and starts one injected media session
+  ---
+  duration_ms: 6.355204
+  type: 'test'
+  ...
+# Subtest: forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+ok 186 - forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+  ---
+  duration_ms: 11.505363
+  type: 'test'
+  ...
+# Subtest: stream paths reject query data so secrets or identity cannot ride beside the nonce
+ok 187 - stream paths reject query data so secrets or identity cannot ride beside the nonce
+  ---
+  duration_ms: 3.088483
+  type: 'test'
+  ...
+# Subtest: Twilio validation fails closed without the official validator dependency
+ok 188 - Twilio validation fails closed without the official validator dependency
+  ---
+  duration_ms: 5.585696
+  type: 'test'
+  ...
+# Subtest: Twilio validation rejects missing and forged signatures
+ok 189 - Twilio validation rejects missing and forged signatures
+  ---
+  duration_ms: 0.800085
+  type: 'test'
+  ...
+# Subtest: Twilio validation uses only the configured public origin
+ok 190 - Twilio validation uses only the configured public origin
+  ---
+  duration_ms: 0.866415
+  type: 'test'
+  ...
+# Subtest: tenant resolution is by normalized To only and rejects cross-tenant selectors
+ok 191 - tenant resolution is by normalized To only and rejects cross-tenant selectors
+  ---
+  duration_ms: 0.452031
+  type: 'test'
+  ...
+# Subtest: tenant resolution fails closed for unknown and duplicate destinations
+ok 192 - tenant resolution fails closed for unknown and duplicate destinations
+  ---
+  duration_ms: 0.210146
+  type: 'test'
+  ...
+# Subtest: session nonces store only a hash, bind every call identity field, and are one-use
+ok 193 - session nonces store only a hash, bind every call identity field, and are one-use
+  ---
+  duration_ms: 1.388782
+  type: 'test'
+  ...
+# Subtest: session nonces reject expiration and every binding mismatch
+ok 194 - session nonces reject expiration and every binding mismatch
+  ---
+  duration_ms: 0.813345
+  type: 'test'
+  ...
+# Subtest: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+ok 195 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+  ---
+  duration_ms: 0.861117
+  type: 'test'
+  ...
+# Subtest: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+ok 196 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+  ---
+  duration_ms: 1.228301
+  type: 'test'
+  ...
+# Subtest: dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+ok 197 - dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+  ---
+  duration_ms: 1.131564
+  type: 'test'
+  ...
+# Subtest: dispatcher rejects handler results containing raw rates instead of exposing them
+ok 198 - dispatcher rejects handler results containing raw rates instead of exposing them
+  ---
+  duration_ms: 0.694507
+  type: 'test'
+  ...
+# Subtest: mutations are idempotent and conflicting reuse of a tool call id is rejected
+ok 199 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+  ---
+  duration_ms: 0.862359
+  type: 'test'
+  ...
+# Subtest: mutating tool calls execute sequentially within a call
+ok 200 - mutating tool calls execute sequentially within a call
+  ---
+  duration_ms: 0.50424
+  type: 'test'
+  ...
+# Subtest: constructs a no-server ws boundary and leaves unrelated upgrades untouched
+ok 201 - constructs a no-server ws boundary and leaves unrelated upgrades untouched
+  ---
+  duration_ms: 1.902016
+  type: 'test'
+  ...
+# Subtest: rejects bad route shapes and query-token attempts before authorization
+ok 202 - rejects bad route shapes and query-token attempts before authorization
+  ---
+  duration_ms: 0.49793
+  type: 'test'
+  ...
+# Subtest: authorization failures return only a generic HTTP rejection
+ok 203 - authorization failures return only a generic HTTP rejection
+  ---
+  duration_ms: 0.733906
+  type: 'test'
+  ...
+# Subtest: claims a raw upgrade once and starts one session even if callbacks race
+ok 204 - claims a raw upgrade once and starts one session even if callbacks race
+  ---
+  duration_ms: 0.390589
+  type: 'test'
+  ...
+# Subtest: shutdown detaches upgrades and closes active sessions exactly once
+ok 205 - shutdown detaches upgrades and closes active sessions exactly once
+  ---
+  duration_ms: 0.409828
+  type: 'test'
+  ...
+# Subtest: session-start failures close the WebSocket without leaking handler errors
+ok 206 - session-start failures close the WebSocket without leaking handler errors
+  ---
+  duration_ms: 0.421114
+  type: 'test'
+  ...
+# Subtest: configuration enforces bounded payloads and unambiguous ws injection
+ok 207 - configuration enforces bounded payloads and unambiguous ws injection
+  ---
+  duration_ms: 0.492622
+  type: 'test'
+  ...
+1..207
+# tests 229
+# suites 0
+# pass 229
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11567.295967

@@ -1,0 +1,22 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "syntheticOnly": true,
+  "experiments": [
+    {
+      "id": "E41",
+      "expected": "An open dashboard receives a newly persisted call without reload (§5.7/§6.1).",
+      "meetsExpectation": false,
+      "actual": {
+        "initialFirstVisible": true,
+        "newCallInBackend": true,
+        "newCallVisibleInMountedDashboard": false,
+        "additionalUiFetches": 0,
+        "initialFetches": [
+          "/api/dashboard",
+          "/api/onboarding/state",
+          "/api/integrations/webhook"
+        ]
+      }
+    }
+  ]
+}

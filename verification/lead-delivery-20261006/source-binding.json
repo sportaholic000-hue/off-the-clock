@@ -1,0 +1,225 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "baseBranch": "codex/quote-release-candidate-20261006",
+  "verifiedRemoteBaseSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "auditBranch": "codex/lead-delivery-audit-20261006",
+  "baseTree": "92ac057b1f30c09bbc285bbb2d9a3d058fd137f5",
+  "sourceFiles": [
+    {
+      "file": "AGENTS.md",
+      "gitBlob": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12",
+      "sha256": "602f72fbe1168164f7e649c607091521cc728493bd2d92c9cd4fca0b7ba936a4",
+      "bytes": 2744
+    },
+    {
+      "file": "client/src/api.js",
+      "gitBlob": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982",
+      "sha256": "841cf5fd2e08a540fc87e0fb3183e53204e41dd2ed11dba76a9f7faf478bed62",
+      "bytes": 5057
+    },
+    {
+      "file": "client/src/calls.jsx",
+      "gitBlob": "aea537fe152b375d5d07661cf040afa67088a82d",
+      "sha256": "e83355a3988560f4c04f0e91af7caf7e51f596253cc6dbf2728e859449c29249",
+      "bytes": 6574
+    },
+    {
+      "file": "client/src/dashboard.jsx",
+      "gitBlob": "9c26f5c5b5e6fa25048bcf7cae0a7c5b9abb5a44",
+      "sha256": "56ac90be61f8b3221415c67b6c7c920f4e9378fd15e49d5dbe9556845fdd002c",
+      "bytes": 19196
+    },
+    {
+      "file": "client/src/main.jsx",
+      "gitBlob": "99864456abe65629f051a727962c4102233b611c",
+      "sha256": "70329c4df9dabfec1cb91fde127132a4ba3f0d28ac5c168c2adb4178d9260f22",
+      "bytes": 3701
+    },
+    {
+      "file": "client/src/ownerIntegrations.jsx",
+      "gitBlob": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f",
+      "sha256": "854b4c4bc424ca1d9e1865a266c298b858027a4a8c0fbc6c2db5c879237aeebb",
+      "bytes": 4736
+    },
+    {
+      "file": "client/src/quotedone.jsx",
+      "gitBlob": "5fafaac3a9efb307fbe4b0c94a78498d69666c80",
+      "sha256": "c56be225b14b07a9b23416222cc1950b0e164efc34ef8ba0f93265a2ab6454a8",
+      "bytes": 25847
+    },
+    {
+      "file": "server/src/authMiddleware.js",
+      "gitBlob": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5",
+      "sha256": "3e36f462091fc6334e3ce5db016c54dfa646f5dc8256965289cdb27ecd1b38c3",
+      "bytes": 1687
+    },
+    {
+      "file": "server/src/bookingPreferenceService.js",
+      "gitBlob": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4",
+      "sha256": "0f2d9dbdec06af608d3f5c34c3dc4afb26cce5e92d7c69c33bdf5fa23b301d97",
+      "bytes": 11377
+    },
+    {
+      "file": "server/src/integrationData.js",
+      "gitBlob": "878f631cd765ab7373590501f84fa73483ff63ad",
+      "sha256": "ac9e3b04f9d9821846f5f522493a475c82f93003a7e4811fbabe729aadec9d67",
+      "bytes": 4668
+    },
+    {
+      "file": "server/src/onboardingService.js",
+      "gitBlob": "5d479f22dc11a1c05a2a0b8dbc5945f92eb14ba7",
+      "sha256": "b0ac410ca941037bd18dd2c9457512f4c4cb34f051747f905fed3622318995bd",
+      "bytes": 31552
+    },
+    {
+      "file": "server/src/outboundWebhookSchema.js",
+      "gitBlob": "ca804f3c2f2e1432998ce59b41a8e63527355b32",
+      "sha256": "ec1d8ac84a19251954969652f19ac94190456eec4ef3e53704056247650be693",
+      "bytes": 5762
+    },
+    {
+      "file": "server/src/outboundWebhookService.js",
+      "gitBlob": "9fa604729da15d089ce0180bbbed4c7bfb86803f",
+      "sha256": "1807364720aa26631ef1f5dc809b119a76fa8c4d544fb20bf1eeb3203bcc3f28",
+      "bytes": 14516
+    },
+    {
+      "file": "server/src/outboundWebhookTransport.js",
+      "gitBlob": "f4e13c2cb9219096cede5170068d8a1b66c8b32b",
+      "sha256": "b7feeae3d3305808dcaf27227ff63f573e2536356c0c2602cc4bdc1ac3ab47bb",
+      "bytes": 5147
+    },
+    {
+      "file": "server/src/ownerCalendarService.js",
+      "gitBlob": "b8b3331240cce15a14e8fdea59e538e6d906b68e",
+      "sha256": "3a81b434b45c94cbbd2363e8be88e56362f1c6a3ae084661e0c8ccec0464f183",
+      "bytes": 6159
+    },
+    {
+      "file": "server/src/ownerCallRoutes.js",
+      "gitBlob": "466de1c74912c13f720f7ba86ac5c5596fa55325",
+      "sha256": "10612c8b45eb234bba69ca9d1f022f2968d6598d0fb1d41d852e5905e375b734",
+      "bytes": 395
+    },
+    {
+      "file": "server/src/ownerCallService.js",
+      "gitBlob": "73c1274b877ca726f7029f9ef0f118e155c5c1e6",
+      "sha256": "67a7703e03c5089bdc7d245c55324784b6fe6838868f72e172331492c5d37862",
+      "bytes": 5283
+    },
+    {
+      "file": "server/src/ownerIntegrationRoutes.js",
+      "gitBlob": "38d70812f7cfead22cbf5ad8426ea4ad61757a96",
+      "sha256": "850c178123066a678faf3cf9cddec4ed02c5a2f551d4c772a5c260deacaec4f3",
+      "bytes": 1313
+    },
+    {
+      "file": "server/src/ownerRecordViews.js",
+      "gitBlob": "b19a3c49ae08e4d72f9359c3abe31d92b2c156a1",
+      "sha256": "48a00fb2b7763def3829f2781d8b8993f05deebcb47e96d006940a3bf46f8190",
+      "bytes": 2305
+    },
+    {
+      "file": "server/src/productionAssets.js",
+      "gitBlob": "f5c0d77db51a5047a260c10d3d13d9451d961309",
+      "sha256": "e83b221063205d1c5999c67da1f231abb07343d82a846f9013e9c2daf83d2072",
+      "bytes": 1430
+    },
+    {
+      "file": "server/src/quoteDoneRoutes.js",
+      "gitBlob": "fcffecbc962a857da0d0e214b4c03abb2019ae03",
+      "sha256": "ca6425a167e9046c4ae29f0cd145c398fe2cedb62fcb98ec057c3e1e484c82cd",
+      "bytes": 18700
+    },
+    {
+      "file": "server/src/schema.js",
+      "gitBlob": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e",
+      "sha256": "aed021b444e55e8f9d5ef24cb4a209463c9b6f746c2d4e7ffa395d528f71f026",
+      "bytes": 22728
+    },
+    {
+      "file": "server/src/server.js",
+      "gitBlob": "70eca3ec835af0ccd3eef6d2771fc63f5c8233ab",
+      "sha256": "8b9093811f0052ac08a2910aef4ab5c45b45fb3be6c340ebc82ede246068d64a",
+      "bytes": 22059
+    },
+    {
+      "file": "server/src/tenant.js",
+      "gitBlob": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5",
+      "sha256": "81e7f7142ff8ee783a5ecb86fce4a8f93fb2ea79fe27483325106a125f396129",
+      "bytes": 1095
+    },
+    {
+      "file": "server/src/voice/geminiMediaBridge.js",
+      "gitBlob": "c8d7d5748ad8a189d59d71c98a85f9b2be970280",
+      "sha256": "a29eab5bd76aedffb694c6f130c2e0a705333f4488f3a9eea1abb644fd52de37",
+      "bytes": 28291
+    },
+    {
+      "file": "server/src/voice/googleGenAiLiveAdapter.js",
+      "gitBlob": "6af1d3d283311662f28c8f456f4ca62c4270aa85",
+      "sha256": "2f1dbca5fec9b0d897a7a627dc1f4c36ec89d764b8634e55e3751a73f60044e0",
+      "bytes": 7432
+    },
+    {
+      "file": "server/src/voice/productionVoiceRuntime.js",
+      "gitBlob": "93b46213ed3846e79f5460db50c1412dab802aed",
+      "sha256": "75ac87d6fb6252f5442ec56baba726107ba024ff56cf590e4b2c6c48193e9da2",
+      "bytes": 10855
+    },
+    {
+      "file": "server/src/voice/toolDispatcher.js",
+      "gitBlob": "abf12f945e57b4cdb9926cf77f1f152daa3ef4b6",
+      "sha256": "500562ee9489bd0bd93698b82ec05c526d5dfdcfbdaa77fe4d5fec6ce8d0e4f4",
+      "bytes": 11646
+    },
+    {
+      "file": "server/src/voice/toolSchemas.js",
+      "gitBlob": "df2f67dbf46503d3f18d9789d81efdf5a2ad35a1",
+      "sha256": "fab4b0a8d9b7676c567136540c72668a5ea47a12f67e7644cb32055d9d5ac4fc",
+      "bytes": 13755
+    },
+    {
+      "file": "server/src/voice/voicePersistence.js",
+      "gitBlob": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f",
+      "sha256": "80b9ffb88e9ee09aeaccba523ff133d9928a73552171c2cfa2c92cef1bc84199",
+      "bytes": 21616
+    },
+    {
+      "file": "server/src/voice/voiceToolRuntime.js",
+      "gitBlob": "979240bd74823e1b831dd0c4a1d4d46731d9a89e",
+      "sha256": "5be8947efd3a15237e932dc3e3b7052fbd602b8fe8e35184c6f792e23f58fe5a",
+      "bytes": 51104
+    },
+    {
+      "file": "server/src/voiceRuntimeRoutes.js",
+      "gitBlob": "4a9026a8c0fc274ab941fe792bf4e3565f83a096",
+      "sha256": "431cdf47e1ebbf06c1b4c4da5adfd129b6a44c0bd5a015f0794ad99552c7b37e",
+      "bytes": 19774
+    },
+    {
+      "file": "specs/BUILD_STATUS.md",
+      "gitBlob": "590083116da7565aaba7b525e10e286aafa0d09d",
+      "sha256": "1d5c238205dbba2f224c5965a0bcdad774761ff6cb3099faa110f48422ee2255",
+      "bytes": 51066
+    },
+    {
+      "file": "specs/build_guide.md",
+      "gitBlob": "63d7de75309a938e854c61e6d687fd3b3e7027fb",
+      "sha256": "d580ed3a850b52775170c2e72e0f3d214e47476356adf72d530108ca5d35711d",
+      "bytes": 37328
+    },
+    {
+      "file": "specs/platform_spec_v2.md",
+      "gitBlob": "deab01d05cc6265d3b2636906d46872a6da4a518",
+      "sha256": "050c9554867abafe95691276c293d51190b791c60cdc9c1f6135da6f800663e3",
+      "bytes": 51562
+    },
+    {
+      "file": "specs/voice_quote_flows.md",
+      "gitBlob": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "sha256": "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6",
+      "bytes": 23350
+    }
+  ]
+}

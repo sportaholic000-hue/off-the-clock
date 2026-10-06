@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: booking capability fails closed through explicit, direct, handoff, and preference states
+ok 1 - booking capability fails closed through explicit, direct, handoff, and preference states
+  ---
+  duration_ms: 18.508567
+  type: 'test'
+  ...
+# Subtest: public branding validates every owner-configurable value
+ok 2 - public branding validates every owner-configurable value
+  ---
+  duration_ms: 1.18731
+  type: 'test'
+  ...
+# Subtest: New owner fields remain blank instead of becoming invented availability
+ok 3 - New owner fields remain blank instead of becoming invented availability
+  ---
+  duration_ms: 14.001774
+  type: 'test'
+  ...
+# Subtest: Saved settings round trip with zero notice and independent working-hour edits
+ok 4 - Saved settings round trip with zero notice and independent working-hour edits
+  ---
+  duration_ms: 0.912956
+  type: 'test'
+  ...
+# Subtest: Unchanged blackout keeps exact seconds and absolute instant through timezone changes
+ok 5 - Unchanged blackout keeps exact seconds and absolute instant through timezone changes
+  ---
+  duration_ms: 4.036364
+  type: 'test'
+  ...
+# Subtest: Edited blackout uses the business timezone rather than the browser timezone
+ok 6 - Edited blackout uses the business timezone rather than the browser timezone
+  ---
+  duration_ms: 1.502324
+  type: 'test'
+  ...
+# Subtest: Clock-change gaps and repeated local times require an editable correction
+ok 7 - Clock-change gaps and repeated local times require an editable correction
+  ---
+  duration_ms: 3.705356
+  type: 'test'
+  ...
+# Subtest: G.711 mu-law codec matches canonical endpoint and zero vectors
+ok 8 - G.711 mu-law codec matches canonical endpoint and zero vectors
+  ---
+  duration_ms: 1.050183
+  type: 'test'
+  ...
+# Subtest: representable mu-law levels round-trip exactly, except negative zero canonicalizes
+ok 9 - representable mu-law levels round-trip exactly, except negative zero canonicalizes
+  ---
+  duration_ms: 0.387444
+  type: 'test'
+  ...
+# Subtest: an inbound 20 ms Twilio frame keeps duration when converted from 8 kHz to 16 kHz
+ok 10 - an inbound 20 ms Twilio frame keeps duration when converted from 8 kHz to 16 kHz
+  ---
+  duration_ms: 1.035711
+  type: 'test'
+  ...
+# Subtest: 8-to-16 kHz conversion is frame-independent and duplicates each decoded sample
+ok 11 - 8-to-16 kHz conversion is frame-independent and duplicates each decoded sample
+  ---
+  duration_ms: 0.294293
+  type: 'test'
+  ...
+# Subtest: a 20 ms Gemini frame becomes exactly 20 ms of 8 kHz mu-law
+ok 12 - a 20 ms Gemini frame becomes exactly 20 ms of 8 kHz mu-law
+  ---
+  duration_ms: 0.889311
+  type: 'test'
+  ...
+# Subtest: 24-to-8 kHz streaming retains incomplete triplets across provider chunks
+ok 13 - 24-to-8 kHz streaming retains incomplete triplets across provider chunks
+  ---
+  duration_ms: 0.268254
+  type: 'test'
+  ...
+# Subtest: reset discards pre-interruption output while flush intentionally emits a final partial sample
+ok 14 - reset discards pre-interruption output while flush intentionally emits a final partial sample
+  ---
+  duration_ms: 0.252331
+  type: 'test'
+  ...
+# Subtest: canonical base64 and PCM alignment checks reject ambiguous or oversized audio
+ok 15 - canonical base64 and PCM alignment checks reject ambiguous or oversized audio
+  ---
+  duration_ms: 0.559944
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 327.623048
