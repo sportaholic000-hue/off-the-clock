@@ -39,3 +39,14 @@ sessions local stubs. This change produces no dollar amount and changes no price
 Owner-alert delivery, the broader timing conflict and other agents' billing and
 lead-capture repairs remain outside this batch. Tests must not claim actual model
 speech or human receipt from a compiled prompt/provider stub.
+
+## Verified implementation
+
+Source `4838ed2f3a12e962acfe58e542cd6f00bca31e3d` passed cold hosted
+`npm ci`, both builds, 2,099 quote-gate tests and 2,480 full-suite tests.
+There are 34 new tests, including real editor/API browser checks and signed
+production HTTP/WebSocket sessions with a fake live provider.
+See the [implementation report and retained evidence](../verification/named-review-contact-20261006/REPORT.md).
+The contact feature does not close D03 (lost callback notes), D02 (owner alerts),
+the broader P01 timing conflict, or the other agents' audit findings. This is a
+verified review branch, not a merged or deployed release.

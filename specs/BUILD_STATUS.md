@@ -1,3 +1,38 @@
+# October 6 named review contact — hosted gates passed; review delivery still incomplete
+
+Branch: `codex/named-review-contact-implementation-20261006`.
+Tested source: **`4838ed2f3a12e962acfe58e542cd6f00bca31e3d`**.
+Base `4e4b5ebaab12ef42e56149a7be35ccf1da90fbe9` was verified before work;
+the audited `73c00622d6f2df31f57773b32e41355a7421f1a3` is an ancestor.
+
+The owner can confirm an Owner/Manager name in business knowledge, preview natural
+caller wording, save and reopen it. AI/website drafts preserve the contact.
+The signed production voice composition receives that tenant's confirmed public
+name/role, with no private inbox ID, invented identity or implied sent/read status.
+The contact is tied to the existing business review inbox; no new staff account
+or notification destination is created. Legacy missing contacts remain unnamed
+until confirmed. The immutable voice guide and pricing logic are unchanged.
+
+[Cold hosted CI 37516810842](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37516810842)
+passed `npm ci`, both builds, **2,099/2,099** quote-gate tests (97 files),
+**2,480/2,480** full-suite tests (140 files), the failure-list check and a production
+dependency audit with zero vulnerabilities. Zero failures, cancellations, skips or
+TODOs. **34 new regressions** cover editor/API/storage/AI preservation/voice paths.
+The focused local checks passed **242/242**. Final cold local install/build passed;
+39 missing-Chromium setup failures affected each local full gate and are separately
+documented. Those same browser tests passed on GitHub.
+
+**Project remains NOT CLEAN.** A separate signed-session diagnostic confirms D03
+still stores callback notes as null. The lead agent owns that repair. Owner-alert
+delivery D02, the broader P01 deadline policy conflict and other audited issues
+are not closed by this contact feature. The separate quote, billing and lead repair
+branches are not combined here. The preview is a wording example, not a full agent
+chat; fake-provider tests do not prove actual model speech or human receipt.
+See the [report, reproduction, proposed UI copy and evidence](../verification/named-review-contact-20261006/REPORT.md).
+No subagents, merge, deployment or live-provider/data changes.
+
+## Previous checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision
