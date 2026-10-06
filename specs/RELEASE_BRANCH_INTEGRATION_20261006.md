@@ -14,6 +14,21 @@ No subagents, merge to main, deployment, provider writes or live business data.
 The demo branch's provider-backed workflows are retained but not dispatched;
 their push triggers do not match the release candidate branch.
 
+## Published history
+
+| Input | Published merge commit | `git merge-base --is-ancestor <input> 4ff3716` |
+| --- | --- | --- |
+| `efea107` | `3caccc7` | exit 0 |
+| `2b6e5c5` | `bc642c7` | exit 0 |
+| `83f666c` | `72b4907` | exit 0 |
+| `68a48d1` | `30404e5` | exit 0 |
+
+Each merge retains both parents. The uploaded Git tree for each merge and the
+release-guard commit matches its local resolved tree exactly. The candidate was
+fetched back from GitHub before these actual Git ancestry checks; the starting
+`f049499` is also an ancestor. GitHub's connected publisher was used because
+command-line Git has read access but no push credential in this workspace.
+
 ## Every textual conflict
 
 | File and conflict | Resolution |
@@ -79,3 +94,20 @@ The existing `quoteReviewFixes` stale-version regression expected the old generi
 confirmation copy. Its one text assertion now requires the owner's exact new
 stale-approval message; its readiness/approval assertions remain intact. No
 financial assertion was changed.
+
+## Verification
+
+Tested source/test/CI SHA: `4ff371650d2d08f50b42aa6ab8dae222ce6301cb`.
+[Hosted run 37439464336](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37439464336)
+passed cold installation, the owner/widget build, strict quote gate
+**2,068/2,068 (94 files)**, full suite **2,446/2,446 (136 files)** and
+`npm audit --omit=dev --audit-level=high` with **zero vulnerabilities**.
+Both test summaries have zero failures, cancellations, skips and TODOs.
+The known-failures list remains empty. The 14 new release and architecture
+regressions pass; the production guard launches the real server in all three cases.
+
+Local focused checks passed, but local Chromium startup crashed with SIGTRAP and
+the complete suite attempts ended without complete summaries. They are not
+claimed as passing gates. The hosted browser/full-suite results supply that
+evidence. See BUILD_STATUS for the focused counts and the initial stale-copy
+assertion correction. No financial expectation or timing threshold was relaxed.

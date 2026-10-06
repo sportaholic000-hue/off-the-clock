@@ -1,7 +1,8 @@
-# October 6 approved-branch integration — hosted verification pending
+# October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision
 `f049499999fd24c3e0c4ca04924a1065e2a97775`.
+Tested source/test/CI SHA: **`4ff371650d2d08f50b42aa6ab8dae222ce6301cb`**.
 All four approved pins are merged with both parent histories retained:
 `efea107`, `2b6e5c5`, `83f666c`, `68a48d1`. Each passes the actual local
 `git merge-base --is-ancestor <pin> HEAD` check.
@@ -14,14 +15,24 @@ are retained. No parent test was deleted. Production startup pins v7; profile-on
 time-zone changes refresh catalog/status; stale approvals show the owner's exact
 re-approval message. Owner time-zone help now describes the actual fail-closed rule.
 
-Cold `npm ci`, owner/widget build and production dependency audit pass locally
-(zero vulnerabilities; known-failures list empty). Incoming integration checks:
-134/134. New release guards: 7/7. Architecture controls: 7/7. Updated stale-message
-and route checks: 12/12. All focused runs have zero failures/skips; counts overlap.
-The local strict attempt encountered Chromium startup crashes (SIGTRAP) and the
-old stale-message assertion, now aligned with the explicitly approved new copy.
-It ended without a complete summary and is not counted as a passing gate.
-The full local run and cold hosted verification are still pending at this checkpoint.
+**Hosted verification:** [CI run 37439464336](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37439464336)
+completed successfully at that exact SHA. Cold `npm ci`, the owner/widget build,
+`npm run test:quote` (**2,068/2,068**, 94 files) and `npm test`
+(**2,446/2,446**, 136 files) passed. Both suites report **zero failures,
+cancellations, skips or TODOs**. `npm audit --omit=dev --audit-level=high`
+found **zero vulnerabilities**. The known-failures file is empty. All three
+production startup cases and the real profile-zone/catalog/stale-approval cases
+appear as passing tests in the hosted log.
+
+**Local evidence and limits:** cold install, owner/widget build and production
+dependency audit passed. Incoming integration checks: 134/134. New release guards:
+7/7. Architecture controls: 7/7. Updated stale-message and route checks: 12/12.
+All focused runs have zero failures/skips; counts overlap. Both Chromium
+executables crashed at startup with SIGTRAP. The full local suite attempts ended
+without complete summaries and are not counted as passing gates; hosted CI
+provides the complete browser and full-suite evidence. The initial strict attempt
+also caught the old stale-message assertion, subsequently aligned with the
+explicitly approved new copy and verified locally and in CI.
 No subagents, main merge, deployment, provider writes or live data.
 
 ## Previous consolidated checkpoint
