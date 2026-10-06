@@ -1,0 +1,187 @@
+{
+  "sourceSHA": "e2d5baccbc77b4e20f7fb80f642f4ba43a076e77",
+  "node": "22.23.3",
+  "coldInstallExitCode": 0,
+  "buildExitCode": 0,
+  "interpretation": "Observed browser failures are missing Chromium. Both attempts exited without a complete summary and are NOT passing gates. Hosted exact-source CI provides complete verification.",
+  "results": [
+    {
+      "command": "npm run test:quote",
+      "exitCode": 1,
+      "completeSummary": false,
+      "observedCounts": {},
+      "sha256": "f3b7938eded4d7abbe5bb95c27591f2b6f1cf4f50c96ac680342ad5ec0711fee",
+      "observedFailures": [
+        {
+          "test": "163 - Astra 2 browser: tier-only confirmation can be answered in measurement form",
+          "missingBrowser": true
+        },
+        {
+          "test": "164 - Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+          "missingBrowser": true
+        },
+        {
+          "test": "165 - Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+          "missingBrowser": true
+        }
+      ]
+    },
+    {
+      "command": "npm test",
+      "exitCode": 1,
+      "completeSummary": false,
+      "observedCounts": {},
+      "sha256": "2fdd172fd89390de7abc4cc7fa9aa490eb78a696c141a8149cf290f46671bb13",
+      "observedFailures": [
+        {
+          "test": "188 - Astra 2 browser: tier-only confirmation can be answered in measurement form",
+          "missingBrowser": true
+        },
+        {
+          "test": "189 - Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+          "missingBrowser": true
+        },
+        {
+          "test": "190 - Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+          "missingBrowser": true
+        },
+        {
+          "test": "424 - scope editor groups entries of the same kind and names them by their matching facts",
+          "missingBrowser": true
+        },
+        {
+          "test": "624 - F11 browser boolean leaves preserve No, unanswered and the exact key",
+          "missingBrowser": true
+        },
+        {
+          "test": "625 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+          "missingBrowser": true
+        },
+        {
+          "test": "626 - F13 browser legacy flat and two-level controls use the same exact parser",
+          "missingBrowser": true
+        },
+        {
+          "test": "635 - lead capture repairs: production owner app navigation, stored contacts and live feed",
+          "missingBrowser": true
+        },
+        {
+          "test": "784 - owner alert repairs: production dashboard, Calls, retry and staff visibility",
+          "missingBrowser": true
+        },
+        {
+          "test": "1013 - editor D1: root factor survives no-edit blur save reopen and same-type switches",
+          "missingBrowser": true
+        },
+        {
+          "test": "1014 - editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+          "missingBrowser": true
+        },
+        {
+          "test": "1015 - editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+          "missingBrowser": true
+        },
+        {
+          "test": "1016 - editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+          "missingBrowser": true
+        },
+        {
+          "test": "1017 - editor D1: a genuine absent default is displayed without being written by focus or blur",
+          "missingBrowser": true
+        },
+        {
+          "test": "1018 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+          "missingBrowser": true
+        },
+        {
+          "test": "1019 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+          "missingBrowser": true
+        },
+        {
+          "test": "1020 - editor locked rate: 0.0049 types blurs saves and reopens exactly",
+          "missingBrowser": true
+        },
+        {
+          "test": "1021 - editor locked rate: 0.0050 types blurs saves and reopens exactly",
+          "missingBrowser": true
+        },
+        {
+          "test": "1022 - editor locked rate: 0.0051 types blurs saves and reopens exactly",
+          "missingBrowser": true
+        },
+        {
+          "test": "1023 - editor locked invalid text: lossless rejection survives blur same-type switch and save",
+          "missingBrowser": true
+        },
+        {
+          "test": "1024 - editor locked maps tiers and explicit enablement stay separate for two same-type records",
+          "missingBrowser": true
+        },
+        {
+          "test": "1025 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+          "missingBrowser": true
+        },
+        {
+          "test": "1026 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+          "missingBrowser": true
+        },
+        {
+          "test": "1027 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+          "missingBrowser": true
+        },
+        {
+          "test": "1086 - pending manual save preserves a newer numeric edit and its question",
+          "missingBrowser": true
+        },
+        {
+          "test": "1087 - pending manual save preserves a newer structured price-map edit",
+          "missingBrowser": true
+        },
+        {
+          "test": "1088 - pending manual save prevents duplicate confirmation and premature review",
+          "missingBrowser": true
+        },
+        {
+          "test": "1089 - unchanged confirmed value saves once and advances normally",
+          "missingBrowser": true
+        },
+        {
+          "test": "1090 - failed manual save keeps the confirmed value available for retry",
+          "missingBrowser": true
+        },
+        {
+          "test": "1109 - late 200 response cannot replace a new service preview",
+          "missingBrowser": true
+        },
+        {
+          "test": "1110 - late 400 response cannot replace a new service preview",
+          "missingBrowser": true
+        },
+        {
+          "test": "1111 - old completion cannot clear current loading and invalid input cannot retain old ready",
+          "missingBrowser": true
+        },
+        {
+          "test": "1112 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+          "missingBrowser": true
+        },
+        {
+          "test": "1378 - interview owner can add separate demolition entries and explicitly choose up-to access",
+          "missingBrowser": true
+        },
+        {
+          "test": "1379 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+          "missingBrowser": true
+        },
+        {
+          "test": "1380 - interview accepts ordinary floor names and retains invalid drafts for correction",
+          "missingBrowser": true
+        },
+        {
+          "test": "1831 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+          "missingBrowser": true
+        }
+      ]
+    }
+  ]
+}

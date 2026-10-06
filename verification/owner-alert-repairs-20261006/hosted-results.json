@@ -1,0 +1,43 @@
+{
+  "startingSHA": "53d6833867dcff42a6ba652e74d26364f4fa1ff1",
+  "testedSHA": "e2d5baccbc77b4e20f7fb80f642f4ba43a076e77",
+  "verifiedTree": "a4949587bb97871d245591a4ad660b6edee52e5c",
+  "run": 37529732965,
+  "job": 112495737979,
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37529732965",
+  "conclusion": "success",
+  "coldInstall": true,
+  "build": true,
+  "strict": {
+    "tests": 2144,
+    "pass": 2144,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "files": 100
+  },
+  "full": {
+    "tests": 2527,
+    "pass": 2527,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "productionAuditVulnerabilities": 0,
+  "proofLines": [
+    "2026-10-06T20:53:42.8681328Z     ok 1 - dashboard surfaces saved failures and Calls shows caller words through deep link/reload",
+    "2026-10-06T20:56:43.3302648Z     ok 1 - dashboard surfaces saved failures and Calls shows caller words through deep link/reload",
+    "2026-10-06T20:53:43.0150204Z     ok 2 - owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt",
+    "2026-10-06T20:56:43.4602189Z     ok 2 - owner retries a stored failure, fake provider accepts once, and UI distinguishes acceptance from receipt",
+    "2026-10-06T20:53:43.0559498Z     ok 3 - staff reads callback and delivery states without mutation controls or foreign data",
+    "2026-10-06T20:56:43.5072185Z     ok 3 - staff reads callback and delivery states without mutation controls or foreign data",
+    "2026-10-06T20:53:46.9956771Z ok 599 - alerts: two independent cold processes use one durable queue and one fake provider acceptance per event",
+    "2026-10-06T20:56:44.3818842Z ok 810 - alerts: two independent cold processes use one durable queue and one fake provider acceptance per event",
+    "2026-10-06T20:53:46.9959747Z ok 600 - alerts: queued callback corrections preserve each revision words rather than substituting the latest notes",
+    "2026-10-06T20:56:44.3820878Z ok 811 - alerts: queued callback corrections preserve each revision words rather than substituting the latest notes",
+    "2026-10-06T20:53:47.1357778Z ok 602 - alerts: missing owner email blocks every event without starving later records and recovers each once",
+    "2026-10-06T20:56:44.5226053Z ok 813 - alerts: missing owner email blocks every event without starving later records and recovers each once"
+  ]
+}

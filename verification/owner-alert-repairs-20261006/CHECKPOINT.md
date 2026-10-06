@@ -1,5 +1,7 @@
 # Callback and owner-alert repair checkpoint — verification in progress
 
+Historical checkpoint. The completed source verification, remaining policy question and limitations are recorded in [REPORT.md](REPORT.md) and `hosted-results.json`.
+
 Policy question: Should callback and quote deadlines come only from owner-approved settings, with no deadline promised when none is configured? Recommended: yes. This is a business commitment; timing policy has not been implemented or changed.
 
 Starting SHA: 53d6833867dcff42a6ba652e74d26364f4fa1ff1.
