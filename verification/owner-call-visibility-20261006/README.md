@@ -43,3 +43,20 @@ npm run test:quote
 
 The complete hosted workflow is the completion gate; initial focused results do
 not assert that the full suite is green.
+
+Application source checkpoint: `bd285cedfce0503df7f0d1b3384d27d649f23e78`.
+Exact-source hosted run 37410984889 passed cold installation, both builds,
+1,672/1,672 strict quote tests (zero failures/skips), and the full suite:
+2,107 tests, 2,105 passes, zero failures/cancellations, two existing skips.
+The PR integration run 37410948660 also passed those counts and the dependency
+audit. The exact-source push run failed only its summary publisher because
+`grep` returned 1 when no failing TAP rows existed. The subsequent workflow
+change permits that empty search; the actual failure gate is unchanged. Both
+empty-failure and failure-containing synthetic TAP checks preserve the summary
+and any failing rows. Hosted verification must be repeated for that CI change.
+
+Local cold installation and both builds passed. Full `npm test`: 2,070 passes,
+35 browser-launch failures, two existing skips. Complete local `test:quote`:
+1,637 passes, 35 browser-launch failures, zero skips. Every local failure was
+Chromium startup SIGTRAP before test execution. This is an environment limitation,
+not a local zero-failure result; no tests or allowances were changed.
