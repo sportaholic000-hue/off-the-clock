@@ -1,3 +1,4 @@
+import {recordCallDeliveryActions} from './voiceDeliveryViews.js';
 import {storedObject,storedLeadView,storedQuoteView} from './ownerRecordViews.js';
 
 export function leadFollowUpView(ownerQuery,row,role) {
@@ -9,11 +10,12 @@ export function leadFollowUpView(ownerQuery,row,role) {
     ORDER BY p.createdAt DESC,p.rowid DESC LIMIT 1`).get(row.ownerId,row.id);
   const view=storedLeadView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined,preferred);
   view.callbackRequests=ownerQuery('SELECT id,source,reason,notes,historyJson,createdAt FROM callbackRequests WHERE ownerId=? AND leadId=? ORDER BY createdAt,id').all(row.ownerId,row.id).map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
+  view.deliveryActions=recordCallDeliveryActions(ownerQuery,row);
   return view;
 }
 
 export function quoteFollowUpView(ownerQuery,row,role) {
   const submission=ownerQuery(`SELECT originalSubmissionJson FROM quoteSubmissions
     WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,rowid DESC LIMIT 1`).get(row.ownerId,row.id);
-  return storedQuoteView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined);
+  return {...storedQuoteView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined),deliveryActions:recordCallDeliveryActions(ownerQuery,row)};
 }

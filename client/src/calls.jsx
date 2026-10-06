@@ -1,3 +1,4 @@
+import {DeliveryActions} from './deliveryActions.jsx';
 import {OwnerAlerts} from './ownerAlerts.jsx';
 import React,{useEffect,useState} from 'react';
 import {api,go} from './api.js';
@@ -27,7 +28,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     <h3>Transcript</h3>{call.transcript.length?<ol>{call.transcript.map((turn,index)=><li key={index}><strong>{text(turn.role)}: </strong><span style={{whiteSpace:'pre-wrap'}}>{turn.text}</span>{turn.interrupted?<span> · interrupted</span>:null}</li>)}</ol>:<Notice>{call.transcriptAvailable?'No transcript recorded.':'Stored transcript could not be read.'}</Notice>}
     {!!call.callbackRequests?.length&&<><h3>Callback requests</h3>{call.callbackRequests.map(request=><section className="editor-section" key={request.id}><p>{request.createdAt} · {request.source} · {request.reason}</p><p style={{whiteSpace:'pre-wrap'}}>{request.notes||'No caller words recorded.'}</p>{request.history?.length>1&&<details><summary>Callback note history</summary>{request.history.map((entry,index)=><p key={index} style={{whiteSpace:'pre-wrap'}}>{entry.at} · {entry.notes}</p>)}</details>}</section>)}</>}
     {call.notifications&&<OwnerAlerts alerts={call.notifications} configured={call.emailAlertsConfigured} canRetry={canRetry} onRefresh={onRefresh}/>}
-    {!!call.deliveryActions?.length&&<><h3>Delivery and transfer attempts</h3>{call.deliveryActions.map(action=><p key={action.id}>{action.eventType} · {action.status} · {action.createdAt}</p>)}</>}
+    <DeliveryActions actions={call.deliveryActions}/>
     <h3>Quotes</h3>{!call.quotes.length&&<Notice>No saved quote for this call.</Notice>}
     {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {quote.createdAt}{quote.tierChosen?' · '+quote.tierChosen:''}</p><QuoteResult result={quote.result}/>
       {!quote.result&&<Notice>The saved quote has no readable estimate.</Notice>}

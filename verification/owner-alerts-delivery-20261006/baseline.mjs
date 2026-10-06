@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import {fixture,secret,at} from '../../test/leadCaptureRepair20261006Fixture.mjs';
+import {createVoiceToolRuntime} from '../../server/src/voice/voiceToolRuntime.js';
+import {createVoiceToolDispatcher} from '../../server/src/voice/toolDispatcher.js';
+import {createOwnerAlertService} from '../../server/src/ownerAlertService.js';
+import {leadFollowUpView} from '../../server/src/leadCaptureRepair20261006FollowUp.js';
+const cleanups=[],f=fixture({after:fn=>cleanups.push(fn)}),c=f.context(),results={baseline:'eaadeca0856f1bd7fcade8685711a19aefd786d0'};
+try{
+  const captured=await f.voice(c).tool('captureLead',{notes:'[SYNTHETIC] Call about the test door.',callbackRequested:true});
+  await f.voice(c).tool('flagUrgent',{reason:'complaint',summary:'[SYNTHETIC] Urgent callback',leadHandle:captured.leadHandle});
+  const leadRow=f.lead(c)[0];
+  f.db.prepare("INSERT INTO bookingIntents(id,ownerId,tokenHash,sourceType,sourceId,serviceId,resultType,status,expiresAtUtc,createdAt) VALUES('synthetic-preference-intent',?,'SYNTHETIC','lead',?,'synthetic-service','ESTIMATE_REQUIRES_REVIEW','OPEN','2026-10-10T00:00:00Z',?)").run(c.ownerId,leadRow.id,at);
+  f.db.prepare("INSERT INTO bookingPreferences(id,ownerId,intentId,preferredWindowsJson,customerJson,locationJson,status,createdAt,updatedAt) VALUES('synthetic-preference',?,'synthetic-preference-intent','[]','{}','{}','REQUESTED',?,?)").run(c.ownerId,at,at);
+  f.db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES('synthetic-preference-outbox',?,'booking.preference_requested','synthetic-preference','{}','PENDING',?,?)").run(c.ownerId,at,at);
+  const quoteReceipt=JSON.stringify({customerResult:{lowEstimate:221.23,highEstimate:221.23,currency:'CAD'}});
+  f.db.prepare("INSERT INTO quotes(id,ownerId,callId,serviceType,resultJson,status,createdAt) VALUES('synthetic-baseline-quote',?,?,'CUSTOM',?,'INSTANT',?)").run(c.ownerId,c.callSid,quoteReceipt,at);
+  let emails=0;const email=createOwnerAlertService({database:f.db,ownerQuery:f.ownerQuery,clock:()=>Date.parse(at),ready:()=>true,environment:{EMAIL_FROM:'synthetic@example.invalid'},send:async()=>({accepted:true,id:'SYNTHETIC-'+(++emails)})});
+  await email.dispatchOnce();await email.dispatchOnce();
+  results.D02={emailSends:emails,alertStates:f.db.prepare('SELECT eventType,status FROM ownerAlerts WHERE ownerId=?').all(c.ownerId),outbox:f.db.prepare('SELECT eventType,status FROM outboxEvents WHERE ownerId=?').all(c.ownerId)};
+  assert.ok(results.D02.alertStates.every(a=>a.status==='ACCEPTED'));assert.ok(results.D02.outbox.every(o=>o.status==='PENDING'));assert.equal(emails,5);
+  let sms=0;const providers={sendSms:async()=>{if(++sms===1)throw Object.assign(Error('[SYNTHETIC] rejection'),{definitive:true,code:'SMS_REJECTED'});return {status:'SENT'};}};
+  const invoke=()=>{const runtime=createVoiceToolRuntime({database:f.db,callContext:c,handleSecret:secret,clock:()=>new Date(at),providers});return createVoiceToolDispatcher({handlers:runtime.handlers,callContext:c,idempotencyStore:runtime.idempotencyStore}).dispatch;};
+  const args={template:'callback',recordHandle:captured.leadHandle};
+  const first=await invoke()({name:'sendSms',args,toolCallId:'synthetic-sms-first'}),second=await invoke()({name:'sendSms',args,toolCallId:'synthetic-sms-retry'});
+  results.D05={providerCalls:sms,first,second,outbox:f.db.prepare("SELECT status FROM outboxEvents WHERE ownerId=? AND eventType='voice.sms_requested'").get(c.ownerId)};assert.equal(sms,1);assert.equal(results.D05.outbox.status,'FAILED');
+  results.D19={call:f.service.detail({ownerId:c.ownerId,id:c.callSid,role:'owner'}).deliveryActions,lead:leadFollowUpView(f.ownerQuery,f.lead(c)[0],'owner').deliveryActions??null};assert.equal(results.D19.call[0].status,'FAILED');assert.equal(results.D19.lead,null);
+  f.db.prepare("UPDATE outboxEvents SET status='SENT' WHERE ownerId=? AND eventType='voice.sms_requested'").run(c.ownerId);
+  results.D19.storedSuccessCall=f.service.detail({ownerId:c.ownerId,id:c.callSid,role:'staff'}).deliveryActions;assert.equal(results.D19.storedSuccessCall[0].status,'SENT');
+  const webhook=f.webhook();await webhook.save(c.ownerId,{url:'https://synthetic.example.invalid/hook',events:['lead.created']});
+  const version=f.db.prepare('SELECT version FROM webhookEndpoints WHERE ownerId=?').get(c.ownerId).version;
+  for(let n=0;n<55;n++)f.db.prepare("INSERT INTO webhookDeliveries(id,ownerId,eventType,aggregateId,endpointVersion,payloadJson,status,nextAttemptAt,createdAt,updatedAt) VALUES(?,?,'lead.created',?,?,'{}',?,0,?,?)").run('synthetic-webhook-'+String(n).padStart(2,'0'),c.ownerId,'synthetic-lead-'+n,version,n===0?'FAILED':'DELIVERED',new Date(Date.parse(at)+n*1000).toISOString(),at);
+  const page=webhook.getConfiguration(c.ownerId);results.D20={stored:55,discoverable:page.deliveries.length,oldFailureVisible:page.deliveries.some(d=>d.id==='synthetic-webhook-00'),listAvailable:typeof webhook.listDeliveries==='function'};assert.equal(results.D20.discoverable,20);assert.equal(results.D20.oldFailureVisible,false);
+  console.log(JSON.stringify(results,null,2));
+}finally{for(const fn of cleanups.reverse())fn();}

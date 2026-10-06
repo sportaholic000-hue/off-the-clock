@@ -7,6 +7,10 @@ export function installOwnerIntegrationRoutes(app, {service,ownerQuery,requireAu
   app.get('/api/exports/:kind',owner,(req,res)=>sendOwnerCsv(req,res,{ownerQuery}));
   const privateResponse = (_req,res,next) => {res.set('Cache-Control','no-store');next();};
   app.get('/api/integrations/webhook',owner,privateResponse,(req,res)=>res.json(service.getConfiguration(req.tenantOwnerId)));
+  app.get('/api/integrations/webhook/deliveries',owner,privateResponse,(req,res)=>{
+    if(Object.keys(req.query).some(key=>!['status','offset'].includes(key)))return res.status(400).json({error:'Unsupported webhook delivery page.'});
+    res.json(service.listDeliveries(req.tenantOwnerId,req.query));
+  });
   app.put('/api/integrations/webhook',owner,requireOperatorAccess,privateResponse,asyncHandler(async(req,res)=>
     res.json(await service.save(req.tenantOwnerId,req.body))));
   app.delete('/api/integrations/webhook',owner,privateResponse,(req,res)=>res.json(service.remove(req.tenantOwnerId)));

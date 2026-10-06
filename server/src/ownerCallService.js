@@ -1,3 +1,4 @@
+import {callDeliveryActions} from './voiceDeliveryViews.js';
 import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
@@ -60,7 +61,7 @@ export function createOwnerCallService({ownerQuery}) {
     const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
       .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
     const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
-    const deliveryActions=ownerQuery(`SELECT id,eventType,status,createdAt,updatedAt FROM outboxEvents WHERE ownerId=? AND json_valid(payloadJson) AND json_extract(payloadJson,'$.callSid')=? AND eventType IN ('voice.sms_requested','voice.transfer_requested','voice.appointment_change_requested') ORDER BY createdAt,id`).all(ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
+    const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
     return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
 

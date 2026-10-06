@@ -1,5 +1,6 @@
 // Durable first-party owner notifications. Triggers run in the same transaction
 // as capture; no provider operation runs inside a database transaction.
+import {installVoiceSmsSchema} from './voiceSmsSchema.js';
 export function installOwnerAlertSchema(db) {
   db.exec(`CREATE TABLE IF NOT EXISTS callbackRequests (
     id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, callId TEXT NOT NULL, leadId TEXT NOT NULL,
@@ -46,4 +47,5 @@ export function installOwnerAlertSchema(db) {
     CASE WHEN o.eventType='booking.preference_requested' THEN o.aggregateId ELSE o.id END,
     CASE WHEN json_valid(o.payloadJson) THEN (SELECT c.id FROM calls c WHERE c.ownerId=o.ownerId AND c.callSid=json_extract(o.payloadJson,'$.callSid')) END,
     o.createdAt,o.updatedAt FROM outboxEvents o WHERE o.status='PENDING' AND o.eventType IN ('voice.urgent_flagged','booking.preference_requested');`);
+  installVoiceSmsSchema(db);
 }
