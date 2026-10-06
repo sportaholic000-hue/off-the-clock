@@ -1,0 +1,31 @@
+TAP version 13
+# Subtest: owner alert repairs: production dashboard, Calls, retry and staff visibility
+not ok 1 - owner alert repairs: production dashboard, Calls, retry and staff visibility
+  ---
+  duration_ms: 221.77622
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerAlertRepair20261006.browser.spec.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerAlertRepair20261006.browser.spec.mjs:8:132)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 418.500098

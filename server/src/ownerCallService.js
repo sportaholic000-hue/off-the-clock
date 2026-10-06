@@ -1,3 +1,4 @@
+import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 
@@ -56,7 +57,11 @@ export function createOwnerCallService({ownerQuery}) {
         customer:followUpContact(storedObject(customerJson)),location:followUpLocation(storedObject(locationJson))}));
     const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
-    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests};
+    const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
+      .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
+    const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
+    const deliveryActions=ownerQuery(`SELECT id,eventType,status,createdAt,updatedAt FROM outboxEvents WHERE ownerId=? AND json_valid(payloadJson) AND json_extract(payloadJson,'$.callSid')=? AND eventType IN ('voice.sms_requested','voice.transfer_requested','voice.appointment_change_requested') ORDER BY createdAt,id`).all(ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
+    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
 
   function dashboard(ownerId) {
@@ -66,7 +71,9 @@ export function createOwnerCallService({ownerQuery}) {
       FROM calls WHERE ownerId=?`).get(ownerId);
     const quotes=ownerQuery('SELECT COUNT(*) AS count FROM quotes WHERE ownerId=?').get(ownerId).count;
     const bookings=ownerQuery("SELECT COUNT(*) AS count FROM appointments WHERE ownerId=? AND status='CONFIRMED'").get(ownerId).count;
-    return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5})};
+    const notifications=ownerQuery(`SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status<>'ACCEPTED' OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED') THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId);
+    const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status<>'ACCEPTED'").get(ownerId).n;
+    return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5}),notifications,unresolvedNotifications,emailAlertsConfigured:ownerAlertEmailReady()};
   }
   return {list,detail,dashboard};
 }

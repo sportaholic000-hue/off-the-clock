@@ -1,3 +1,4 @@
+import {saveCallbackRequest} from '../callbackRequestService.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
@@ -568,7 +569,14 @@ export function createVoiceToolRuntime({
 
   async function captureLead(input) {
     const args=invocation(input);
-    const saved=immediate(database,()=>saveInquiry(args));
+    const saved=immediate(database,()=>{
+      const lead=saveInquiry(args);
+      if(args.callbackRequested===true){
+        if(typeof args.notes!=='string'||!args.notes.trim())throw runtimeError('CALLBACK_NOTES_REQUIRED');
+        saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:'capture-lead:'+lead.row.id,source:'caller_requested',reason:null,notes:args.notes,at:instant().toISOString()});
+      }
+      return lead;
+    });
     const stored=loadLead({reference:{leadId:saved.row.id,customerId:saved.details.customerId}});
     const leadHandle=issue('lead','lead:'+stored.row.id,{leadId:stored.row.id,customerId:stored.details.customerId});
     const hasAddress=completeAddress(stored.details.address);
@@ -949,14 +957,35 @@ export function createVoiceToolRuntime({
     if (args.customerConfirmed !== true) throw runtimeError('CUSTOMER_CONFIRMATION_REQUIRED');
     const reason = typeof args.reason === 'string' ? args.reason.trim() : '';
     if (!reason) throw runtimeError('TRANSFER_REASON_REQUIRED');
+    if(args.leadHandle)loadLead(resolve(args.leadHandle,'lead'));
     const profile = database.prepare('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId = ?').get(
       context.ownerId
     );
     const destination = typeof profile?.existingPhoneNumber === 'string'
       ? profile.existingPhoneNumber.trim()
       : '';
-    const identity = json({ callSid: context.callSid, reason, destination });
+    const identity = json({ callSid: context.callSid, reason, destination,...(args.inquiryNumber>1?{inquiryNumber:args.inquiryNumber}:{}) });
     const eventId = stableUuid(secret, 'voice-transfer-event', identity);
+    // A failed transfer must never strand the caller. Persist the follow-up
+    // before returning a saved acknowledgement, including on replay/restart.
+    function unavailable(code,message){
+      const callback=immediate(database,()=>{
+        const key='transfer:'+reason+':'+(args.inquiryNumber??1);
+        const prior=database.prepare('SELECT leadId,notes FROM callbackRequests WHERE ownerId=? AND callId=? AND requestKey=?').get(context.ownerId,callRow().id,key);
+        let words=args.notes??prior?.notes;
+        if(words===undefined){
+          const call=callRow();
+          const turns=database.prepare('SELECT role,text FROM transcriptTurns WHERE ownerId=? AND callId=? ORDER BY sequence DESC,id DESC').all(context.ownerId,call.id);
+          const raw=database.prepare('SELECT transcriptJson FROM calls WHERE ownerId=? AND id=?').get(context.ownerId,call.id);
+          const recent=turns.find(turn=>['caller','user'].includes(turn.role))||[...(parseJson(raw?.transcriptJson,[])||[])].reverse().find(turn=>['caller','user'].includes(turn?.role));
+          words=typeof recent?.text==='string'&&recent.text.trim()?recent.text.slice(0,1000):null;
+        }
+        const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{},{leadId:prior?.leadId,key,type:'CALLBACK',updates:{...(words?{notes:words}:{}),description:'Callback requested after an unsuccessful transfer'}});
+        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString()});
+      });
+      return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
+    }
+
     if (!E164.test(destination)) {
       writeOutbox({
         id: eventId,
@@ -965,11 +994,7 @@ export function createVoiceToolRuntime({
         payload: { callSid: context.callSid, reason },
         status: 'FAILED'
       });
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_DESTINATION_UNAVAILABLE',
-        message: 'A live transfer destination is not configured.'
-      };
+      return unavailable('TRANSFER_DESTINATION_UNAVAILABLE','A live transfer destination is not configured.');
     }
     const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
@@ -977,11 +1002,7 @@ export function createVoiceToolRuntime({
     if (prior) {
       return prior.status === 'CONNECTED'
         ? { status: 'transferred', message: 'The call was connected.' }
-        : {
-            status: 'unavailable',
-            reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-            message: 'The live transfer could not be confirmed.'
-          };
+        : unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer could not be confirmed.');
     }
     writeOutbox({
       id: eventId,
@@ -996,11 +1017,7 @@ export function createVoiceToolRuntime({
         : null;
     if (!transfer) {
       updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-        message: 'Live transfer is not available right now.'
-      };
+      return unavailable('TRANSFER_PROVIDER_UNAVAILABLE','Live transfer is not available right now.');
     }
     try {
       const result = await transfer({
@@ -1013,21 +1030,13 @@ export function createVoiceToolRuntime({
       });
       if (providerStatus(result) !== 'CONNECTED') {
         updateOutbox(eventId, 'FAILED');
-        return {
-          status: 'unavailable',
-          reason: 'TRANSFER_NOT_CONFIRMED',
-          message: 'The live transfer could not be confirmed.'
-        };
+        return unavailable('TRANSFER_NOT_CONFIRMED','The live transfer could not be confirmed.');
       }
       updateOutbox(eventId, 'CONNECTED');
       return { status: 'transferred', message: 'The call was connected.' };
     } catch {
       updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-        message: 'The live transfer failed.'
-      };
+      return unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer failed.');
     }
   }
 

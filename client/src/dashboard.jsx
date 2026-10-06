@@ -1,3 +1,4 @@
+import {OwnerAlerts} from './ownerAlerts.jsx';
 import OwnerIntegrations from './ownerIntegrations.jsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
@@ -127,6 +128,7 @@ export default function Dashboard() {
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator}>
       <main className="dashboard-page">
+        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh}/>}
         {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 

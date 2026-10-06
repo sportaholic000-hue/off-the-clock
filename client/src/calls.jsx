@@ -1,3 +1,4 @@
+import {OwnerAlerts} from './ownerAlerts.jsx';
 import React,{useEffect,useState} from 'react';
 import {api,go} from './api.js';
 import {AppShell,Button,PageHeader,Notice,Loading,ErrorMessage,StatusChip} from './ui.jsx';
@@ -14,7 +15,7 @@ export function CallFeed({calls}) {
   </button>)}</div>;
 }
 
-export function CallDetail({call}) {
+export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===true}) {
   return <section className="editor-section" aria-label="Call details">
     <h2>{call.callerNumber||'Call'}</h2><StatusChip status={call.outcome||call.status||'Not recorded'}/>
     <dl><dt>Created</dt><dd>{text(call.createdAt)}</dd><dt>Status</dt><dd>{text(call.status)}</dd>
@@ -22,8 +23,11 @@ export function CallDetail({call}) {
       <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{call.failureCode}</dd></>}
       {!!call.spamFiltered&&<><dt>Spam</dt><dd>Filtered</dd></>}</dl>
     <h3>Summary</h3><p>{call.summaryText||'No summary recorded.'}</p>
-    {call.urgency&&<Notice title="Urgency">Recorded on this call. Owner notification has not been confirmed.</Notice>}
+    {call.urgency&&<Notice title="Urgency">Recorded on this call. Owner notification has not been confirmed as received. See the delivery status below.</Notice>}
     <h3>Transcript</h3>{call.transcript.length?<ol>{call.transcript.map((turn,index)=><li key={index}><strong>{text(turn.role)}: </strong><span style={{whiteSpace:'pre-wrap'}}>{turn.text}</span>{turn.interrupted?<span> · interrupted</span>:null}</li>)}</ol>:<Notice>{call.transcriptAvailable?'No transcript recorded.':'Stored transcript could not be read.'}</Notice>}
+    {!!call.callbackRequests?.length&&<><h3>Callback requests</h3>{call.callbackRequests.map(request=><section className="editor-section" key={request.id}><p>{request.createdAt} · {request.source} · {request.reason}</p><p style={{whiteSpace:'pre-wrap'}}>{request.notes||'No caller words recorded.'}</p>{request.history?.length>1&&<details><summary>Callback note history</summary>{request.history.map((entry,index)=><p key={index} style={{whiteSpace:'pre-wrap'}}>{entry.at} · {entry.notes}</p>)}</details>}</section>)}</>}
+    {call.notifications&&<OwnerAlerts alerts={call.notifications} configured={call.emailAlertsConfigured} canRetry={canRetry} onRefresh={onRefresh}/>}
+    {!!call.deliveryActions?.length&&<><h3>Delivery and transfer attempts</h3>{call.deliveryActions.map(action=><p key={action.id}>{action.eventType} · {action.status} · {action.createdAt}</p>)}</>}
     <h3>Quotes</h3>{!call.quotes.length&&<Notice>No saved quote for this call.</Notice>}
     {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {quote.createdAt}{quote.tierChosen?' · '+quote.tierChosen:''}</p><QuoteResult result={quote.result}/>
       {!quote.result&&<Notice>The saved quote has no readable estimate.</Notice>}
@@ -62,7 +66,7 @@ export default function Calls({recordId=null}) {
     <Button variant="secondary" onClick={()=>setRefresh(value=>value+1)}>Refresh</Button>
     {recordId&&<Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>}
     {!error&&!page&&!call&&<Loading label="LOADING CALLS"/>}<ErrorMessage error={error}/>
-    {call&&<CallDetail call={call}/>} {page&&<><p className="mono band-count">{page.total} calls</p>
+    {call&&<CallDetail call={call} onRefresh={()=>setRefresh(value=>value+1)}/>} {page&&<><p className="mono band-count">{page.total} calls</p>
       {page.calls.length?<CallFeed calls={page.calls}/>:<Notice>No calls yet.</Notice>}
       {offset>0&&<Button variant="secondary" onClick={()=>setOffset(Math.max(0,offset-50))}>Previous</Button>}
       {page.nextOffset!==null&&<Button variant="secondary" onClick={()=>setOffset(page.nextOffset)}>Next</Button>}</>}

@@ -1,3 +1,5 @@
+import {createOwnerAlertService} from './ownerAlertService.js';
+import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
 import 'dotenv/config';
 import {deploymentConfig} from './deploymentEnvironment.js';
@@ -146,6 +148,7 @@ function requireOperatorAccess(req, res, next) {
 migrate();
 migrateLegacyGoogleCalendarCredentials();
 const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
+const ownerAlerts=createOwnerAlertService({database:db,ownerQuery});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
@@ -188,6 +191,7 @@ if (billingConfig) {
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
+installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
 
@@ -483,9 +487,10 @@ const httpServer = app.listen(port, () => {
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
+const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopOwnerAlertWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{void stopWebhookWorker();void stopOwnerAlertWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 
