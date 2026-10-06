@@ -14,13 +14,36 @@ function regularFile(root,name) {
   assertRealContainment(root,file);
   return file;
 }
-function checkSqlite(file,{normalize=false}={}) {
+function checkSqlite(file,{normalize=false,files}={}) {
   const db = new Database(file,{readonly:!normalize,fileMustExist:true});
   try {
     if(normalize) db.pragma('journal_mode = DELETE');
     const rows = db.pragma('integrity_check');
     if(rows.length !== 1 || Object.values(rows[0])[0] !== 'ok' || db.pragma('foreign_key_check').length) throw new Error('BACKUP_DATABASE_INVALID');
+    // Platform-wide recovery inventory, not a tenant-facing query. Check the
+    // copied database's ledger, so a missing source file cannot disappear from
+    // the manifest and make an incomplete snapshot look verified.
+    if(files && db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='priceBookCreationRecords'").get()) {
+      const names=new Set(files.map(file=>file.name));
+      for(const {ownerId} of db.prepare('SELECT ownerId FROM priceBookCreationRecords').all()) {
+        if(!names.has('pricebooks/'+ownerId+'.json')) throw new Error('BACKUP_PRICEBOOK_MISSING');
+      }
+    }
   } finally {db.close();}
+}
+function readSourceBooks(root,directory) {
+  assertRealContainment(root,directory);
+  if(!fs.existsSync(directory)) return [];
+  const names=fs.readdirSync(directory);
+  // A marker means the last save has not been confirmed durable. Omitting it
+  // would silently re-enable quoting on restore, so keep the last good backup
+  // and retry only after the owner has completed a confirmed save.
+  if(names.some(name=>name.endsWith('.unconfirmed'))) throw new Error('BACKUP_PRICEBOOK_UNCONFIRMED');
+  return names.filter(name=>bookName.test(name)).sort().map(name=>{
+    const bytes=fs.readFileSync(regularFile(directory,name));
+    JSON.parse(bytes.toString('utf8'));
+    return {name:'pricebooks/'+name,bytes};
+  });
 }
 function readManifest(bundle) {
   if(!fs.lstatSync(bundle).isDirectory() || fs.lstatSync(bundle).isSymbolicLink()) throw new Error('BACKUP_UNSAFE_DIRECTORY');
@@ -43,7 +66,7 @@ export function verifyBackup(bundle) {
     if(bytes.length !== entry.bytes || hash(bytes) !== entry.sha256) throw new Error('BACKUP_CHECKSUM_MISMATCH');
     if(entry.name.startsWith('pricebooks/')) JSON.parse(bytes.toString('utf8'));
   }
-  checkSqlite(path.join(root,'off-the-clock.sqlite'));
+  checkSqlite(path.join(root,'off-the-clock.sqlite'),{files:manifest.files});
   return manifest;
 }
 export function listSnapshots(backupPath) {
@@ -73,17 +96,17 @@ export async function createSnapshot(database, config, {now = Date.now, sourceCo
   const stage=path.join(backupPath,'.partial-'+id), bundle=path.join(backupPath,id);
   fs.mkdirSync(stage,{mode:0o700});
   try {
-    const books = [];
-    assertRealContainment(root,config.pricebookPath);
-    if(fs.existsSync(config.pricebookPath)) for(const name of fs.readdirSync(config.pricebookPath).filter(name=>bookName.test(name))) {
-      const bytes=fs.readFileSync(regularFile(config.pricebookPath,name));
-      JSON.parse(bytes.toString('utf8'));
-      books.push({name:'pricebooks/'+name,bytes});
-    }
+    const books = readSourceBooks(root,config.pricebookPath);
     // Online SQLite backup includes committed WAL pages. Never copy the live
     // main database file; that can omit recent commits or capture half a write.
     const sqliteFile=path.join(stage,'off-the-clock.sqlite');
     await database.backup(sqliteFile);
+    // The online copy yields. A concurrent save may have added a book or a
+    // pause marker in the meantime. Never publish a mixed inventory silently.
+    const currentBooks=readSourceBooks(root,config.pricebookPath);
+    if(currentBooks.length!==books.length || books.some((book,index)=>book.name!==currentBooks[index].name || !book.bytes.equals(currentBooks[index].bytes))) {
+      throw new Error('BACKUP_PRICEBOOK_CHANGED');
+    }
     checkSqlite(sqliteFile,{normalize:true});
     fs.chmodSync(sqliteFile,0o600);
     const fd=fs.openSync(sqliteFile,'r+');try{fs.fsyncSync(fd);}finally{fs.closeSync(fd);}
@@ -121,7 +144,7 @@ export function restoreBackup(bundle, target, {volume} = {}) {
       const file=path.join(stage,entry.name);fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o700});
       fs.writeFileSync(file,bytes,{flag:'wx',mode:0o600,flush:true});
     }
-    checkSqlite(path.join(stage,'off-the-clock.sqlite'));
+    checkSqlite(path.join(stage,'off-the-clock.sqlite'),{files:manifest.files});
     fs.renameSync(stage,destination);
     return {destination,createdAt:manifest.createdAt,sourceCommit:manifest.sourceCommit};
   } catch(error) {if(fs.existsSync(stage))removeOwnedDirectory(parent,stage);throw error;}
