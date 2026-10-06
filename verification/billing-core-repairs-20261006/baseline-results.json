@@ -1,0 +1,377 @@
+{
+  "auditedSha": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+  "syntheticOnly": true,
+  "experimentCount": 12,
+  "rows": [
+    {
+      "id": "E01-default-method-does-not-settle-renewal",
+      "expected": "failure time retained; denied after seven days",
+      "actual": {
+        "status": "active",
+        "failedAt": null,
+        "accessAfterGrace": {
+          "allowed": true,
+          "reason": "ACTIVE",
+          "accessUntilUtc": null
+        }
+      }
+    },
+    {
+      "id": "E02-zero-invoice-before-trial",
+      "expected": "trial must activate regardless of delivery order",
+      "actual": {
+        "trialOutcome": "IGNORED_STALE",
+        "status": "pending_payment",
+        "verifiedMethodAt": null
+      }
+    },
+    {
+      "id": "E03-same-second-zero-invoice-blocks-conversion",
+      "expected": "invoice paid and subscription trial snapshots converge; trial remains bounded",
+      "actual": {
+        "outcome": "IGNORED_STALE",
+        "status": "pending_payment"
+      }
+    },
+    {
+      "id": "E04-delayed-unpaid-checkout-overwrites-upgrade",
+      "expected": "current QuoteDone plan survives delayed Operator completion",
+      "actual": {
+        "plan": "Operator",
+        "quoteAccess": false
+      }
+    },
+    {
+      "id": "E05-old-plan-invoice-overwrites-current-plan",
+      "expected": "current QuoteDone subscription plan survives payment of old Operator invoice",
+      "actual": {
+        "plan": "Operator",
+        "quoteAccess": false
+      }
+    },
+    {
+      "id": "E06-mixed-proration-lines-rejected",
+      "expected": "invoice reconciliation supports old/new base-price lines without treating them as two subscriptions",
+      "actual": {
+        "error": "AMBIGUOUS_PRICE",
+        "receipted": 0
+      }
+    },
+    {
+      "id": "E07-invoice-clears-cancel-schedule",
+      "expected": "scheduled cancellation flag remains true after renewal invoice",
+      "actual": {
+        "cancelAtPeriodEnd": 0
+      }
+    },
+    {
+      "id": "E08-paid-checkout-recovery-inconsistent",
+      "expected": "paid completion restores active state with a consistent failure timestamp",
+      "actual": {
+        "status": "payment_failed",
+        "failedAt": null,
+        "access": {
+          "allowed": false,
+          "reason": "PAYMENT_FAILURE_TIME_REQUIRED",
+          "accessUntilUtc": null
+        }
+      }
+    },
+    {
+      "id": "E09-old-debt-payment-restores-current-unpaid-service",
+      "expected": "a settled historical invoice cannot clear a newer failed invoice",
+      "actual": {
+        "status": "active",
+        "failedAt": null
+      }
+    },
+    {
+      "id": "E15-trial-delivery-permutations",
+      "expected": "all 24 delivery orders converge on bounded trialing",
+      "actual": {
+        "counts": {
+          "trialing": 8,
+          "pending_payment": 16,
+          "active": 0
+        },
+        "results": [
+          {
+            "order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              1,
+              3,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              2,
+              1,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              2,
+              3,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              3,
+              1,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              3,
+              2,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              0,
+              2,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              0,
+              3,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              2,
+              0,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              2,
+              3,
+              0
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              3,
+              0,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              3,
+              2,
+              0
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              2,
+              0,
+              1,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              0,
+              3,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              1,
+              0,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              1,
+              3,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              3,
+              0,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              3,
+              1,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              0,
+              1,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              0,
+              2,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              1,
+              0,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              1,
+              2,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              2,
+              0,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              2,
+              1,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E18-expiry-delayed-webhook-duplicate-subscriptions",
+      "expected": "reconcile completed old session before issuing another checkout",
+      "actual": {
+        "sessionsCreated": 2,
+        "retrievalsBeforeReplacement": 0,
+        "syntheticProviderSubscriptions": [
+          "sub_A",
+          "sub_B"
+        ],
+        "completionResponses": [
+          200,
+          500
+        ],
+        "ledger": [
+          {
+            "stripeSessionId": "cs_1",
+            "status": "EXPIRED"
+          },
+          {
+            "stripeSessionId": "cs_2",
+            "status": "OPEN"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E21-current-sdk-period-shape",
+      "expected": "subscription item period end is persisted",
+      "actual": {
+        "expected": "2026-11-05T12:00:00.000Z",
+        "stored": null,
+        "returned": null
+      }
+    }
+  ]
+}

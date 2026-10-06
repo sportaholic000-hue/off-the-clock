@@ -1,3 +1,4 @@
+import {migrateBillingCheckoutRecovery} from './billingCoreMigration.js';
 import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
@@ -14,6 +15,8 @@ const USERS_COLUMNS = [
 const USERS_ROLE_NULLABILITY_CHECK = /CHECK\s*\(\s*\(\s*role\s*=\s*'staff'\s+AND\s+ownerId\s+IS\s+NOT\s+NULL\s*\)\s+OR\s+\(\s*role\s+IN\s*\(\s*'owner'\s*,\s*'admin'\s*\)\s+AND\s+ownerId\s+IS\s+NULL\s*\)\s*\)/i;
 
 const ADDITIVE_COLUMNS = {
+  billingAccounts: { currentPeriodStartAt: 'TEXT' },
+  billingCheckoutRequests: { providerExpiredVerifiedAt: 'TEXT', reconciliationError: 'TEXT' },
   users: {
     paymentFailedAt: 'TEXT',
     emailVerifiedAt: 'TEXT'
@@ -220,10 +223,18 @@ export function migrateDatabase(database) {
     database.exec(statement);
   }
   addMissingColumns(database);
+  migrateBillingCheckoutRecovery(database,CREATE_TABLE_STATEMENTS.find(sql=>sql.startsWith('CREATE TABLE IF NOT EXISTS billingCheckoutRequests')));
   const rebuilt = rebuildUsersTableForOwnerConstraint(database);
   if (!rebuilt) assertMigrationIntegrity(database);
   enforceFailClosedTrialEvidence(database);
   backfillBillingSubscriptionHistory(database);
+  // Old receipts omit subscription identity. Never guess which invoice settled
+  // an existing legacy failure. Retain it until tenant-bound provider recovery.
+  database.prepare(`INSERT OR IGNORE INTO billingRecoveryHolds(ownerId,stripeSubscriptionId,reason,createdAt)
+    SELECT ownerId,stripeSubscriptionId,'LEGACY_DEBT_REQUIRES_RECONCILIATION',updatedAt FROM billingAccounts b
+    WHERE paymentFailedAt IS NOT NULL AND stripeSubscriptionId IS NOT NULL
+      AND NOT EXISTS (SELECT 1 FROM billingInvoiceEvidence i WHERE i.ownerId=b.ownerId AND i.stripeSubscriptionId=b.stripeSubscriptionId)`
+  ).run();
   for (const statement of CREATE_TRIGGER_STATEMENTS) {
     database.exec(statement);
   }

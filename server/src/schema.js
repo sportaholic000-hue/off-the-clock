@@ -29,6 +29,7 @@ export const CREATE_TABLE_STATEMENTS = [
     paymentFailedAt TEXT,
     graceEndsAt TEXT,
     currentPeriodEndAt TEXT,
+    currentPeriodStartAt TEXT,
     cancelAtPeriodEnd INTEGER NOT NULL DEFAULT 0 CHECK (cancelAtPeriodEnd IN (0, 1)),
     canceledAt TEXT,
     lastStripeEventCreatedAt INTEGER,
@@ -92,6 +93,8 @@ export const CREATE_TABLE_STATEMENTS = [
     leaseExpiresAt TEXT NOT NULL,
     expiresAt TEXT,
     providerCreatedAt TEXT,
+    providerExpiredVerifiedAt TEXT,
+    reconciliationError TEXT,
     consumedAt TEXT,
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
@@ -101,16 +104,35 @@ export const CREATE_TABLE_STATEMENTS = [
         sessionUrlCiphertext IS NULL AND sessionUrlIv IS NULL AND sessionUrlTag IS NULL AND
         sessionUrlKeyVersion IS NULL AND expiresAt IS NULL AND providerCreatedAt IS NULL AND
         consumedAt IS NULL) OR
-      (status IN ('OPEN', 'EXPIRED') AND stripeSessionId IS NOT NULL AND
+      (status = 'OPEN' AND stripeSessionId IS NOT NULL AND
         sessionUrlCiphertext IS NOT NULL AND sessionUrlIv IS NOT NULL AND sessionUrlTag IS NOT NULL AND
         sessionUrlKeyVersion IS NOT NULL AND expiresAt IS NOT NULL AND providerCreatedAt IS NOT NULL AND
         consumedAt IS NULL) OR
+      (status = 'EXPIRED' AND stripeSessionId IS NOT NULL AND stripeSubscriptionId IS NULL AND
+        expiresAt IS NOT NULL AND providerCreatedAt IS NOT NULL AND consumedAt IS NULL) OR
       (status IN ('COMPLETED', 'FAILED') AND stripeSessionId IS NOT NULL AND
-        stripeSubscriptionId IS NOT NULL AND sessionUrlCiphertext IS NOT NULL AND sessionUrlIv IS NOT NULL AND
-        sessionUrlTag IS NOT NULL AND sessionUrlKeyVersion IS NOT NULL AND expiresAt IS NOT NULL AND
+        stripeSubscriptionId IS NOT NULL AND expiresAt IS NOT NULL AND
         providerCreatedAt IS NOT NULL AND consumedAt IS NOT NULL)
     ),
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS billingSubscriptionEvidence (
+    stripeSubscriptionId TEXT PRIMARY KEY, ownerId TEXT NOT NULL REFERENCES users(id),
+    stripeCustomerId TEXT NOT NULL, eventCreatedAt INTEGER NOT NULL,
+    stateJson TEXT NOT NULL, ambiguous INTEGER NOT NULL DEFAULT 0 CHECK(ambiguous IN (0,1))
+  )`,
+  `CREATE TABLE IF NOT EXISTS billingInvoiceEvidence (
+    stripeInvoiceId TEXT PRIMARY KEY, ownerId TEXT NOT NULL REFERENCES users(id),
+    stripeCustomerId TEXT NOT NULL, stripeSubscriptionId TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('FAILED','PAID')), failedAt INTEGER, paidAt INTEGER,
+    amountPaid INTEGER, periodStart INTEGER, periodEnd INTEGER
+  )`,
+  `CREATE TABLE IF NOT EXISTS billingOperationLeases (
+    ownerId TEXT PRIMARY KEY REFERENCES users(id), token TEXT NOT NULL, expiresAt TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS billingRecoveryHolds (
+    ownerId TEXT NOT NULL REFERENCES users(id), stripeSubscriptionId TEXT NOT NULL,
+    reason TEXT NOT NULL, createdAt TEXT NOT NULL, PRIMARY KEY(ownerId,stripeSubscriptionId)
   )`,
   `CREATE TABLE IF NOT EXISTS calls (
     id TEXT PRIMARY KEY,
@@ -265,7 +287,8 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
-  )`,
+  )`
+,
   `CREATE TABLE IF NOT EXISTS quoteAccessKeys (
     ownerId TEXT PRIMARY KEY,
     publicKey TEXT NOT NULL UNIQUE,

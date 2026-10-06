@@ -1,0 +1,764 @@
+TAP version 13
+# (node:13) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,1,2,3
+ok 1 - F01 selected-plan trial price_op_month sameSecond=false order=0,1,2,3
+  ---
+  duration_ms: 12.518863
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,1,3,2
+ok 2 - F01 selected-plan trial price_op_month sameSecond=false order=0,1,3,2
+  ---
+  duration_ms: 6.493429
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,2,1,3
+ok 3 - F01 selected-plan trial price_op_month sameSecond=false order=0,2,1,3
+  ---
+  duration_ms: 6.37989
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,2,3,1
+ok 4 - F01 selected-plan trial price_op_month sameSecond=false order=0,2,3,1
+  ---
+  duration_ms: 6.532166
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,3,1,2
+ok 5 - F01 selected-plan trial price_op_month sameSecond=false order=0,3,1,2
+  ---
+  duration_ms: 6.6227
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=0,3,2,1
+ok 6 - F01 selected-plan trial price_op_month sameSecond=false order=0,3,2,1
+  ---
+  duration_ms: 5.926098
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,0,2,3
+ok 7 - F01 selected-plan trial price_op_month sameSecond=false order=1,0,2,3
+  ---
+  duration_ms: 5.530321
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,0,3,2
+ok 8 - F01 selected-plan trial price_op_month sameSecond=false order=1,0,3,2
+  ---
+  duration_ms: 5.810816
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,2,0,3
+ok 9 - F01 selected-plan trial price_op_month sameSecond=false order=1,2,0,3
+  ---
+  duration_ms: 11.130935
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,2,3,0
+ok 10 - F01 selected-plan trial price_op_month sameSecond=false order=1,2,3,0
+  ---
+  duration_ms: 6.643281
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,3,0,2
+ok 11 - F01 selected-plan trial price_op_month sameSecond=false order=1,3,0,2
+  ---
+  duration_ms: 7.227357
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=1,3,2,0
+ok 12 - F01 selected-plan trial price_op_month sameSecond=false order=1,3,2,0
+  ---
+  duration_ms: 5.673963
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,0,1,3
+ok 13 - F01 selected-plan trial price_op_month sameSecond=false order=2,0,1,3
+  ---
+  duration_ms: 5.949132
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,0,3,1
+ok 14 - F01 selected-plan trial price_op_month sameSecond=false order=2,0,3,1
+  ---
+  duration_ms: 6.088317
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,1,0,3
+ok 15 - F01 selected-plan trial price_op_month sameSecond=false order=2,1,0,3
+  ---
+  duration_ms: 5.734974
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,1,3,0
+ok 16 - F01 selected-plan trial price_op_month sameSecond=false order=2,1,3,0
+  ---
+  duration_ms: 8.00128
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,3,0,1
+ok 17 - F01 selected-plan trial price_op_month sameSecond=false order=2,3,0,1
+  ---
+  duration_ms: 7.366033
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=2,3,1,0
+ok 18 - F01 selected-plan trial price_op_month sameSecond=false order=2,3,1,0
+  ---
+  duration_ms: 6.68996
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,0,1,2
+ok 19 - F01 selected-plan trial price_op_month sameSecond=false order=3,0,1,2
+  ---
+  duration_ms: 6.289796
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,0,2,1
+ok 20 - F01 selected-plan trial price_op_month sameSecond=false order=3,0,2,1
+  ---
+  duration_ms: 5.27342
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,1,0,2
+ok 21 - F01 selected-plan trial price_op_month sameSecond=false order=3,1,0,2
+  ---
+  duration_ms: 6.58897
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,1,2,0
+ok 22 - F01 selected-plan trial price_op_month sameSecond=false order=3,1,2,0
+  ---
+  duration_ms: 5.775795
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,2,0,1
+ok 23 - F01 selected-plan trial price_op_month sameSecond=false order=3,2,0,1
+  ---
+  duration_ms: 5.701765
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=false order=3,2,1,0
+ok 24 - F01 selected-plan trial price_op_month sameSecond=false order=3,2,1,0
+  ---
+  duration_ms: 5.421579
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,1,2,3
+ok 25 - F01 selected-plan trial price_op_month sameSecond=true order=0,1,2,3
+  ---
+  duration_ms: 5.35452
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,1,3,2
+ok 26 - F01 selected-plan trial price_op_month sameSecond=true order=0,1,3,2
+  ---
+  duration_ms: 6.442994
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,2,1,3
+ok 27 - F01 selected-plan trial price_op_month sameSecond=true order=0,2,1,3
+  ---
+  duration_ms: 6.75734
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,2,3,1
+ok 28 - F01 selected-plan trial price_op_month sameSecond=true order=0,2,3,1
+  ---
+  duration_ms: 5.626794
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,3,1,2
+ok 29 - F01 selected-plan trial price_op_month sameSecond=true order=0,3,1,2
+  ---
+  duration_ms: 5.898586
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=0,3,2,1
+ok 30 - F01 selected-plan trial price_op_month sameSecond=true order=0,3,2,1
+  ---
+  duration_ms: 5.87462
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,0,2,3
+ok 31 - F01 selected-plan trial price_op_month sameSecond=true order=1,0,2,3
+  ---
+  duration_ms: 5.868462
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,0,3,2
+ok 32 - F01 selected-plan trial price_op_month sameSecond=true order=1,0,3,2
+  ---
+  duration_ms: 6.228816
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,2,0,3
+ok 33 - F01 selected-plan trial price_op_month sameSecond=true order=1,2,0,3
+  ---
+  duration_ms: 6.641559
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,2,3,0
+ok 34 - F01 selected-plan trial price_op_month sameSecond=true order=1,2,3,0
+  ---
+  duration_ms: 5.899238
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,3,0,2
+ok 35 - F01 selected-plan trial price_op_month sameSecond=true order=1,3,0,2
+  ---
+  duration_ms: 5.646492
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=1,3,2,0
+ok 36 - F01 selected-plan trial price_op_month sameSecond=true order=1,3,2,0
+  ---
+  duration_ms: 5.724508
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,0,1,3
+ok 37 - F01 selected-plan trial price_op_month sameSecond=true order=2,0,1,3
+  ---
+  duration_ms: 5.577751
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,0,3,1
+ok 38 - F01 selected-plan trial price_op_month sameSecond=true order=2,0,3,1
+  ---
+  duration_ms: 6.735187
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,1,0,3
+ok 39 - F01 selected-plan trial price_op_month sameSecond=true order=2,1,0,3
+  ---
+  duration_ms: 5.397534
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,1,3,0
+ok 40 - F01 selected-plan trial price_op_month sameSecond=true order=2,1,3,0
+  ---
+  duration_ms: 5.889283
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,3,0,1
+ok 41 - F01 selected-plan trial price_op_month sameSecond=true order=2,3,0,1
+  ---
+  duration_ms: 5.553003
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=2,3,1,0
+ok 42 - F01 selected-plan trial price_op_month sameSecond=true order=2,3,1,0
+  ---
+  duration_ms: 5.385205
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,0,1,2
+ok 43 - F01 selected-plan trial price_op_month sameSecond=true order=3,0,1,2
+  ---
+  duration_ms: 5.532974
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,0,2,1
+ok 44 - F01 selected-plan trial price_op_month sameSecond=true order=3,0,2,1
+  ---
+  duration_ms: 5.595177
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,1,0,2
+ok 45 - F01 selected-plan trial price_op_month sameSecond=true order=3,1,0,2
+  ---
+  duration_ms: 5.646984
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,1,2,0
+ok 46 - F01 selected-plan trial price_op_month sameSecond=true order=3,1,2,0
+  ---
+  duration_ms: 5.679802
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,2,0,1
+ok 47 - F01 selected-plan trial price_op_month sameSecond=true order=3,2,0,1
+  ---
+  duration_ms: 5.764457
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_op_month sameSecond=true order=3,2,1,0
+ok 48 - F01 selected-plan trial price_op_month sameSecond=true order=3,2,1,0
+  ---
+  duration_ms: 6.178832
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,1,2,3
+ok 49 - F01 selected-plan trial price_qd_month sameSecond=false order=0,1,2,3
+  ---
+  duration_ms: 6.101307
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,1,3,2
+ok 50 - F01 selected-plan trial price_qd_month sameSecond=false order=0,1,3,2
+  ---
+  duration_ms: 5.65764
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,2,1,3
+ok 51 - F01 selected-plan trial price_qd_month sameSecond=false order=0,2,1,3
+  ---
+  duration_ms: 5.978906
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,2,3,1
+ok 52 - F01 selected-plan trial price_qd_month sameSecond=false order=0,2,3,1
+  ---
+  duration_ms: 5.653943
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,3,1,2
+ok 53 - F01 selected-plan trial price_qd_month sameSecond=false order=0,3,1,2
+  ---
+  duration_ms: 5.824176
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=0,3,2,1
+ok 54 - F01 selected-plan trial price_qd_month sameSecond=false order=0,3,2,1
+  ---
+  duration_ms: 5.746181
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,0,2,3
+ok 55 - F01 selected-plan trial price_qd_month sameSecond=false order=1,0,2,3
+  ---
+  duration_ms: 5.588837
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,0,3,2
+ok 56 - F01 selected-plan trial price_qd_month sameSecond=false order=1,0,3,2
+  ---
+  duration_ms: 6.327193
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,2,0,3
+ok 57 - F01 selected-plan trial price_qd_month sameSecond=false order=1,2,0,3
+  ---
+  duration_ms: 5.979616
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,2,3,0
+ok 58 - F01 selected-plan trial price_qd_month sameSecond=false order=1,2,3,0
+  ---
+  duration_ms: 6.329365
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,3,0,2
+ok 59 - F01 selected-plan trial price_qd_month sameSecond=false order=1,3,0,2
+  ---
+  duration_ms: 5.480928
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=1,3,2,0
+ok 60 - F01 selected-plan trial price_qd_month sameSecond=false order=1,3,2,0
+  ---
+  duration_ms: 5.693423
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,0,1,3
+ok 61 - F01 selected-plan trial price_qd_month sameSecond=false order=2,0,1,3
+  ---
+  duration_ms: 5.967558
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,0,3,1
+ok 62 - F01 selected-plan trial price_qd_month sameSecond=false order=2,0,3,1
+  ---
+  duration_ms: 6.496544
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,1,0,3
+ok 63 - F01 selected-plan trial price_qd_month sameSecond=false order=2,1,0,3
+  ---
+  duration_ms: 6.04982
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,1,3,0
+ok 64 - F01 selected-plan trial price_qd_month sameSecond=false order=2,1,3,0
+  ---
+  duration_ms: 6.767916
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,3,0,1
+ok 65 - F01 selected-plan trial price_qd_month sameSecond=false order=2,3,0,1
+  ---
+  duration_ms: 7.161399
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=2,3,1,0
+ok 66 - F01 selected-plan trial price_qd_month sameSecond=false order=2,3,1,0
+  ---
+  duration_ms: 5.672311
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,0,1,2
+ok 67 - F01 selected-plan trial price_qd_month sameSecond=false order=3,0,1,2
+  ---
+  duration_ms: 6.065724
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,0,2,1
+ok 68 - F01 selected-plan trial price_qd_month sameSecond=false order=3,0,2,1
+  ---
+  duration_ms: 5.42908
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,1,0,2
+ok 69 - F01 selected-plan trial price_qd_month sameSecond=false order=3,1,0,2
+  ---
+  duration_ms: 5.484262
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,1,2,0
+ok 70 - F01 selected-plan trial price_qd_month sameSecond=false order=3,1,2,0
+  ---
+  duration_ms: 5.472075
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,2,0,1
+ok 71 - F01 selected-plan trial price_qd_month sameSecond=false order=3,2,0,1
+  ---
+  duration_ms: 5.527766
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=false order=3,2,1,0
+ok 72 - F01 selected-plan trial price_qd_month sameSecond=false order=3,2,1,0
+  ---
+  duration_ms: 5.290415
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,1,2,3
+ok 73 - F01 selected-plan trial price_qd_month sameSecond=true order=0,1,2,3
+  ---
+  duration_ms: 5.650238
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,1,3,2
+ok 74 - F01 selected-plan trial price_qd_month sameSecond=true order=0,1,3,2
+  ---
+  duration_ms: 5.535638
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,2,1,3
+ok 75 - F01 selected-plan trial price_qd_month sameSecond=true order=0,2,1,3
+  ---
+  duration_ms: 5.568396
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,2,3,1
+ok 76 - F01 selected-plan trial price_qd_month sameSecond=true order=0,2,3,1
+  ---
+  duration_ms: 6.00876
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,3,1,2
+ok 77 - F01 selected-plan trial price_qd_month sameSecond=true order=0,3,1,2
+  ---
+  duration_ms: 5.724869
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=0,3,2,1
+ok 78 - F01 selected-plan trial price_qd_month sameSecond=true order=0,3,2,1
+  ---
+  duration_ms: 5.345998
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,0,2,3
+ok 79 - F01 selected-plan trial price_qd_month sameSecond=true order=1,0,2,3
+  ---
+  duration_ms: 5.191969
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,0,3,2
+ok 80 - F01 selected-plan trial price_qd_month sameSecond=true order=1,0,3,2
+  ---
+  duration_ms: 5.365305
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,2,0,3
+ok 81 - F01 selected-plan trial price_qd_month sameSecond=true order=1,2,0,3
+  ---
+  duration_ms: 5.36154
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,2,3,0
+ok 82 - F01 selected-plan trial price_qd_month sameSecond=true order=1,2,3,0
+  ---
+  duration_ms: 5.594626
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,3,0,2
+ok 83 - F01 selected-plan trial price_qd_month sameSecond=true order=1,3,0,2
+  ---
+  duration_ms: 5.370594
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=1,3,2,0
+ok 84 - F01 selected-plan trial price_qd_month sameSecond=true order=1,3,2,0
+  ---
+  duration_ms: 5.338236
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,0,1,3
+ok 85 - F01 selected-plan trial price_qd_month sameSecond=true order=2,0,1,3
+  ---
+  duration_ms: 5.320349
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,0,3,1
+ok 86 - F01 selected-plan trial price_qd_month sameSecond=true order=2,0,3,1
+  ---
+  duration_ms: 5.538792
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,1,0,3
+ok 87 - F01 selected-plan trial price_qd_month sameSecond=true order=2,1,0,3
+  ---
+  duration_ms: 5.695435
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,1,3,0
+ok 88 - F01 selected-plan trial price_qd_month sameSecond=true order=2,1,3,0
+  ---
+  duration_ms: 5.834321
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,3,0,1
+ok 89 - F01 selected-plan trial price_qd_month sameSecond=true order=2,3,0,1
+  ---
+  duration_ms: 5.262644
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=2,3,1,0
+ok 90 - F01 selected-plan trial price_qd_month sameSecond=true order=2,3,1,0
+  ---
+  duration_ms: 5.379226
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,0,1,2
+ok 91 - F01 selected-plan trial price_qd_month sameSecond=true order=3,0,1,2
+  ---
+  duration_ms: 5.646502
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,0,2,1
+ok 92 - F01 selected-plan trial price_qd_month sameSecond=true order=3,0,2,1
+  ---
+  duration_ms: 5.364364
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,1,0,2
+ok 93 - F01 selected-plan trial price_qd_month sameSecond=true order=3,1,0,2
+  ---
+  duration_ms: 6.602851
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,1,2,0
+ok 94 - F01 selected-plan trial price_qd_month sameSecond=true order=3,1,2,0
+  ---
+  duration_ms: 5.291066
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,2,0,1
+ok 95 - F01 selected-plan trial price_qd_month sameSecond=true order=3,2,0,1
+  ---
+  duration_ms: 5.163487
+  type: 'test'
+  ...
+# Subtest: F01 selected-plan trial price_qd_month sameSecond=true order=3,2,1,0
+ok 96 - F01 selected-plan trial price_qd_month sameSecond=true order=3,2,1,0
+  ---
+  duration_ms: 5.324455
+  type: 'test'
+  ...
+# Subtest: F02/F06 card retains unpaid $119 obligation and original grace
+ok 97 - F02/F06 card retains unpaid $119 obligation and original grace
+  ---
+  duration_ms: 5.889333
+  type: 'test'
+  ...
+# Subtest: F02/F06 historical retains unpaid $119 obligation and original grace
+ok 98 - F02/F06 historical retains unpaid $119 obligation and original grace
+  ---
+  duration_ms: 5.53699
+  type: 'test'
+  ...
+# Subtest: F02/F06 checkout retains unpaid $119 obligation and original grace
+ok 99 - F02/F06 checkout retains unpaid $119 obligation and original grace
+  ---
+  duration_ms: 5.453817
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 0,1,2
+ok 100 - F02 invoice identity all settlement orders 0,1,2
+  ---
+  duration_ms: 5.622347
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 0,2,1
+ok 101 - F02 invoice identity all settlement orders 0,2,1
+  ---
+  duration_ms: 5.28732
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 1,0,2
+ok 102 - F02 invoice identity all settlement orders 1,0,2
+  ---
+  duration_ms: 5.160292
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 1,2,0
+ok 103 - F02 invoice identity all settlement orders 1,2,0
+  ---
+  duration_ms: 5.439376
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 2,0,1
+ok 104 - F02 invoice identity all settlement orders 2,0,1
+  ---
+  duration_ms: 5.465664
+  type: 'test'
+  ...
+# Subtest: F02 invoice identity all settlement orders 2,1,0
+ok 105 - F02 invoice identity all settlement orders 2,1,0
+  ---
+  duration_ms: 5.238027
+  type: 'test'
+  ...
+# Subtest: F02 multiple unresolved invoices all require settlement ($119 each)
+ok 106 - F02 multiple unresolved invoices all require settlement ($119 each)
+  ---
+  duration_ms: 5.675656
+  type: 'test'
+  ...
+# Subtest: F04 invoice and Checkout history cannot overwrite current QuoteDone or scheduled cancellation
+ok 107 - F04 invoice and Checkout history cannot overwrite current QuoteDone or scheduled cancellation
+  ---
+  duration_ms: 5.7722
+  type: 'test'
+  ...
+# Subtest: F11 configured base item modern periods persist and both affect receipt integrity
+ok 108 - F11 configured base item modern periods persist and both affect receipt integrity
+  ---
+  duration_ms: 5.467467
+  type: 'test'
+  ...
+# Subtest: atomic rollback includes new subscription and invoice facts
+ok 109 - atomic rollback includes new subscription and invoice facts
+  ---
+  duration_ms: 5.325176
+  type: 'test'
+  ...
+# Subtest: F03 completed provider Checkout binds before delayed webhook; only one $0 trial session
+ok 110 - F03 completed provider Checkout binds before delayed webhook; only one $0 trial session
+  ---
+  duration_ms: 76.451102
+  type: 'test'
+  ...
+# Subtest: F03 expiry reconciliation open
+ok 111 - F03 expiry reconciliation open
+  ---
+  duration_ms: 20.371387
+  type: 'test'
+  ...
+# Subtest: F03 expiry reconciliation expired
+ok 112 - F03 expiry reconciliation expired
+  ---
+  duration_ms: 18.214969
+  type: 'test'
+  ...
+# Subtest: F03 expiry reconciliation timeout
+ok 113 - F03 expiry reconciliation timeout
+  ---
+  duration_ms: 15.226258
+  type: 'test'
+  ...
+# Subtest: F03 expiry reconciliation wrongCustomer
+ok 114 - F03 expiry reconciliation wrongCustomer
+  ---
+  duration_ms: 17.325631
+  type: 'test'
+  ...
+# Subtest: F03 expiry reconciliation activeSubscription
+ok 115 - F03 expiry reconciliation activeSubscription
+  ---
+  duration_ms: 11.884623
+  type: 'test'
+  ...
+# Subtest: provider read resolves contradictory same-second subscription snapshots without event priority
+ok 116 - provider read resolves contradictory same-second subscription snapshots without event priority
+  ---
+  duration_ms: 10.094628
+  type: 'test'
+  ...
+# (node:14) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: fresh/migrated stores preserve unrelated schema and legacy debt; migration is repeatable
+ok 117 - fresh/migrated stores preserve unrelated schema and legacy debt; migration is repeatable
+  ---
+  duration_ms: 12.765699
+  type: 'test'
+  ...
+# Subtest: billing-only table rebuild rolls back copy/drop failure
+ok 118 - billing-only table rebuild rolls back copy/drop failure
+  ---
+  duration_ms: 1.233689
+  type: 'test'
+  ...
+# Subtest: actual process restart retains invoice obligation, receipt conflicts and idempotency
+ok 119 - actual process restart retains invoice obligation, receipt conflicts and idempotency
+  ---
+  duration_ms: 233.393239
+  type: 'test'
+  ...
+# Subtest: response lost after provider completion, restart recovers the same key without another subscription
+ok 120 - response lost after provider completion, restart recovers the same key without another subscription
+  ---
+  duration_ms: 98.382638
+  type: 'test'
+  ...
+# Subtest: provider response received but local receipt failed: rollback and exact-key retry
+ok 121 - provider response received but local receipt failed: rollback and exact-key retry
+  ---
+  duration_ms: 26.369882
+  type: 'test'
+  ...
+# Subtest: durable owner lease rejects concurrent workers and fences a late response after takeover
+ok 122 - durable owner lease rejects concurrent workers and fences a late response after takeover
+  ---
+  duration_ms: 7.032688
+  type: 'test'
+  ...
+# Subtest: same-second conflicting signed states fail closed until provider resolution
+ok 123 - same-second conflicting signed states fail closed until provider resolution
+  ---
+  duration_ms: 17.764622
+  type: 'test'
+  ...
+# Subtest: F02 migrated failure is retained on card edit, resolved only by tenant-bound invoice retrieval
+ok 124 - F02 migrated failure is retained on card edit, resolved only by tenant-bound invoice retrieval
+  ---
+  duration_ms: 17.969195
+  type: 'test'
+  ...
+# Subtest: wrong-tenant provider hydration and write failure leave no receipt or evidence
+ok 125 - wrong-tenant provider hydration and write failure leave no receipt or evidence
+  ---
+  duration_ms: 28.422586
+  type: 'test'
+  ...
+1..125
+# tests 125
+# suites 0
+# pass 125
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1043.224265

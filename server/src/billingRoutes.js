@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 
 const PLANS = Object.freeze(['Operator', 'QuoteDone']);
 const BILLING_INTERVALS = Object.freeze(['monthly', 'annual']);
@@ -301,7 +302,9 @@ export function installBillingWebhookRoute(app, {
       const verifiedEvent = CHECKOUT_EVENT_TYPES.has(event.type)
         ? await hydrateCheckoutLineItems(event, stripeClient)
         : event;
-      await billingStateService.applyVerifiedStripeEvent(verifiedEvent);
+      if (typeof billingStateService.reconcileVerifiedStripeEvent==='function') {
+        await billingStateService.reconcileVerifiedStripeEvent(verifiedEvent,stripeClient);
+      } else await billingStateService.applyVerifiedStripeEvent(verifiedEvent);
       return res.status(200).json({ received: true, status: 'PROCESSED' });
     } catch {
       return failedWebhook(res);
@@ -411,11 +414,6 @@ export function installBillingRoutes(app, {
     WHERE ownerId = ? AND status IN ('CREATING', 'OPEN')
     ORDER BY createdAt ASC LIMIT 1
   `);
-  const expireOpenCheckouts = database.prepare(`
-    UPDATE billingCheckoutRequests
-    SET status = 'EXPIRED', updatedAt = ?
-    WHERE ownerId = ? AND status = 'OPEN' AND expiresAt <= ?
-  `);
   const insertCheckoutClaim = database.prepare(`
     INSERT INTO billingCheckoutRequests (
       id, ownerId, idempotencyKeyHash, requestDigest, plan, billingInterval,
@@ -507,7 +505,7 @@ export function installBillingRoutes(app, {
     const providerKey = providerIdempotencyKey('billing-checkout-v1', ownerId, requestKey);
 
     return immediate(database, () => {
-      expireOpenCheckouts.run(nowIso, ownerId, nowIso);
+
       const existing = checkoutByKey.get(ownerId, idempotencyKeyHash);
       if (existing) {
         if (existing.requestDigest !== requestDigest ||
@@ -520,7 +518,10 @@ export function installBillingRoutes(app, {
             existing.providerIdempotencyKey !== providerKey) {
           throw routeError('CHECKOUT_LEDGER_CONFLICT', 500, 'Stored Checkout ownership is inconsistent.');
         }
-        if (existing.stripeSessionId) return replayCheckout(existing);
+        if (existing.stripeSessionId) {
+          if (!existing.sessionUrlCiphertext) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'The earlier Checkout is no longer open.');
+          return replayCheckout(existing);
+        }
         const latestAccount = billingByOwner.get(ownerId);
         assertCheckoutAllowed(latestAccount);
         if (latestAccount?.stripeCustomerId !== account.stripeCustomerId) {
@@ -576,6 +577,51 @@ export function installBillingRoutes(app, {
     });
   }
 
+  async function reconcilePriorCheckouts(ownerId,account,requestKey,assertLease) {
+    const rows=database.prepare(`SELECT * FROM billingCheckoutRequests WHERE ownerId=?
+      AND ((status='OPEN' AND expiresAt<=?) OR (status='EXPIRED' AND providerExpiredVerifiedAt IS NULL))
+      ORDER BY createdAt LIMIT 101`).all(ownerId,now().toISOString());
+    if (rows.length>100) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'Earlier Checkout sessions require review.');
+    for (const row of rows) {
+      const session=await billingProviderRead(()=>stripeClient.checkout.sessions.retrieve(row.stripeSessionId,{expand:['line_items']},BILLING_PROVIDER_OPTIONS));
+      assertLease();
+      if (session?.id!==row.stripeSessionId || providerReference(session.customer)!==account.stripeCustomerId || session.mode!=='subscription') throw providerFailure();
+      if (session.status==='complete' && providerReference(session.subscription)) {
+        // Persist completion even if local expiry happened in a previous build.
+        // This is a provider read, never a fabricated webhook or payment receipt.
+        immediate(database,()=>{
+          const latest=billingByOwner.get(ownerId);
+          const subscriptionId=providerReference(session.subscription);
+          const priorTerminal=latest.planStatus==='canceled' && latest.canceledAt && terminalDeletionReceipt.get(ownerId,latest.stripeSubscriptionId);
+          const authorizedReplacement=priorTerminal && Date.parse(row.providerCreatedAt)>=priorTerminal.eventCreatedAt*1000;
+          const conflict=latest.stripeSubscriptionId && latest.stripeSubscriptionId!==subscriptionId && !authorizedReplacement;
+          database.prepare(`UPDATE billingCheckoutRequests SET status='COMPLETED',stripeSubscriptionId=?,consumedAt=?,updatedAt=?,reconciliationError=?
+            WHERE ownerId=? AND id=? AND status IN ('OPEN','EXPIRED')`).run(subscriptionId,now().toISOString(),now().toISOString(),conflict?'DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW':null,ownerId,row.id);
+          // Keep the owner slot bound without granting access. Verified subscription
+          // evidence and its own webhook will establish plan/trial/payment state.
+          if (!latest.stripeSubscriptionId) database.prepare('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),ownerId,account.stripeCustomerId);
+        });
+        throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
+      }
+      if (session.status!=='expired' || providerReference(session.subscription)) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'The earlier Checkout has not been confirmed expired.');
+      const subscriptions=await billingProviderRead(()=>stripeClient.subscriptions.list({customer:account.stripeCustomerId,status:'all',limit:100},BILLING_PROVIDER_OPTIONS));
+      assertLease();
+      if (!Array.isArray(subscriptions?.data) || subscriptions.has_more!==false) throw providerFailure();
+      if (subscriptions.data.some(sub=>providerReference(sub.customer)!==account.stripeCustomerId)) throw providerFailure();
+      if (subscriptions.data.some(sub=>!['canceled','incomplete_expired'].includes(sub.status))) throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
+      database.prepare(`UPDATE billingCheckoutRequests SET status='EXPIRED',providerExpiredVerifiedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status IN ('OPEN','EXPIRED')`).run(now().toISOString(),now().toISOString(),ownerId,row.id);
+    }
+    const quarantined=database.prepare('SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND reconciliationError IS NOT NULL LIMIT 1').get(ownerId);
+    if (quarantined) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'Conflicting subscriptions require review.');
+    // A consumed session that has not yet acquired an authoritative subscription
+    // is still an unresolved provider obligation, not a free creation slot.
+    const completed=database.prepare("SELECT stripeSubscriptionId FROM billingCheckoutRequests WHERE ownerId=? AND status IN ('COMPLETED','FAILED')").all(ownerId);
+    for (const row of completed) {
+      const terminal=database.prepare("SELECT status FROM billingSubscriptionHistory WHERE ownerId=? AND stripeSubscriptionId=?").get(ownerId,row.stripeSubscriptionId);
+      if (terminal?.status!=='TERMINAL' && row.stripeSubscriptionId!==account.stripeSubscriptionId) throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
+    }
+  }
+
   function markCheckoutAttemptAmbiguous(row) {
     const nowIso = now().toISOString();
     try {
@@ -584,6 +630,20 @@ export function installBillingRoutes(app, {
       // The durable CREATING claim intentionally remains fail-closed if the
       // database is unavailable after an ambiguous provider result.
     }
+  }
+
+  function saveRecoveredCheckout(row,session) {
+    const subscriptionId=providerReference(session.subscription);
+    if (session.id==null || providerReference(session.customer)!==row.stripeCustomerId || session.mode!=='subscription' ||
+        !Number.isInteger(session.created) || !Number.isInteger(session.expires_at) ||
+        (session.status==='complete' ? !subscriptionId : subscriptionId!==null)) throw providerFailure();
+    immediate(database,()=>{
+      const latest=billingByOwner.get(row.ownerId);
+      const conflict=subscriptionId && latest.stripeSubscriptionId && latest.stripeSubscriptionId!==subscriptionId;
+      database.prepare(`UPDATE billingCheckoutRequests SET stripeSessionId=?,stripeSubscriptionId=?,status=?,expiresAt=?,providerCreatedAt=?,consumedAt=?,updatedAt=?,reconciliationError=?
+        WHERE ownerId=? AND id=? AND status='CREATING'`).run(session.id,subscriptionId,session.status==='complete'?'COMPLETED':'EXPIRED',new Date(session.expires_at*1000).toISOString(),new Date(session.created*1000).toISOString(),subscriptionId?now().toISOString():null,now().toISOString(),conflict?'DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW':null,row.ownerId,row.id);
+      if (subscriptionId && !latest.stripeSubscriptionId) database.prepare('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),row.ownerId,row.stripeCustomerId);
+    });
   }
 
   function providerSessionReceipt(session, expectedCustomerId) {
@@ -713,20 +773,28 @@ export function installBillingRoutes(app, {
     const requestKey = clientIdempotencyKey(req);
     const existing = billingByOwner.get(ownerId);
     const account = existing?.stripeCustomerId ? existing : await ensureCustomer(ownerId);
+    return withBillingLease(database,ownerId,async assertLease=>{
+    await reconcilePriorCheckouts(ownerId,account,requestKey,assertLease);
+    assertLease();
     const claim = claimCheckout({ ownerId, account, selection, requestKey });
     if (claim.kind === 'REPLAY') return res.status(201).json({ url: claim.url });
 
     let session;
     try {
-      session = await stripeClient.checkout.sessions.create(checkoutParameters(claim.row), {
-        idempotencyKey: claim.providerKey
-      });
+      session = await billingProviderRead(()=>stripeClient.checkout.sessions.create(checkoutParameters(claim.row), {
+        ...BILLING_PROVIDER_OPTIONS, idempotencyKey: claim.providerKey
+      }));
     } catch {
       markCheckoutAttemptAmbiguous(claim.row);
       throw providerFailure();
     }
     let saved;
     try {
+      assertLease();
+      if (session?.status==='complete' || session?.status==='expired') {
+        saveRecoveredCheckout(claim.row,session);
+        throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'The earlier Checkout is no longer open.');
+      }
       saved = saveCheckoutReceipt(
         claim.row,
         providerSessionReceipt(session, account.stripeCustomerId)
@@ -736,6 +804,7 @@ export function installBillingRoutes(app, {
       throw error instanceof BillingRouteError ? error : providerFailure();
     }
     return res.status(201).json({ url: saved.url });
+    },{clock:now});
   }));
 
   app.post('/api/billing/portal', ownerOnly, requireProviderWrites, asyncHandler(async (req, res) => {
