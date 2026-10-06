@@ -1,0 +1,29 @@
+{
+  "sha": "e9590d46e95d6ad44e16201d720c43e3d7fc2505",
+  "tree": "771ba8295223ec186efd1a0540dbc29b34daa5a7",
+  "runId": 37541872461,
+  "jobId": 112536557538,
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37541872461",
+  "status": "completed",
+  "conclusion": "success",
+  "coldInstall": true,
+  "coldBuild": true,
+  "strict": {
+    "tests": 2168,
+    "passed": 2168,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "full": {
+    "tests": 2551,
+    "passed": 2551,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "newRegressionTests": 24,
+  "productionVulnerabilities": 0
+}

@@ -1,0 +1,53 @@
+[
+  {
+    "name": "cold-install",
+    "command": [
+      "npm",
+      "ci"
+    ],
+    "exitCode": 0,
+    "seconds": 23.36
+  },
+  {
+    "name": "browser-test-dependency",
+    "command": [
+      "npm",
+      "install",
+      "--no-save",
+      "--no-audit",
+      "--no-fund",
+      "playwright@1.56.0"
+    ],
+    "exitCode": 0,
+    "seconds": 8.99
+  },
+  {
+    "name": "cold-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0,
+    "seconds": 6.09
+  },
+  {
+    "name": "cold-full",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exitCode": 1,
+    "seconds": 165.08
+  },
+  {
+    "name": "cold-quote",
+    "command": [
+      "npm",
+      "run",
+      "test:quote"
+    ],
+    "exitCode": 1,
+    "seconds": 144.6
+  }
+]

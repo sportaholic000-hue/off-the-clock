@@ -1,0 +1,62 @@
+2026-10-06T22:38:52.5054398Z found 0 vulnerabilities
+2026-10-06T22:39:46.2911171Z ok 284 - D14 caller filter precedes limit with tenant and malformed-record controls
+2026-10-06T22:39:46.2921905Z ok 285 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+2026-10-06T22:39:46.2926928Z ok 286 - D16 handle credential rotation preserves one owner-phone customer and historical references
+2026-10-06T22:39:46.2931284Z ok 287 - D21 unresolved preferences survive calendar range changes until resolved
+2026-10-06T22:39:46.2936668Z ok 288 - D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+2026-10-06T22:39:46.2941219Z ok 289 - D14 normalized appointment phone and per-caller limit do not mix callers
+2026-10-06T22:39:46.2946462Z ok 290 - D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+2026-10-06T22:39:46.2951125Z ok 291 - D15 quote and request joins reject foreign-call and foreign-submission links
+2026-10-06T22:39:46.2955183Z ok 292 - D16 same names and emails do not join different phones or different tenants
+2026-10-06T22:39:46.2959688Z ok 293 - D16 legacy formatted phone reuses identity and preserves omitted contact fields
+2026-10-06T22:39:46.2963519Z ok 294 - D16 customer write rolls back with inquiry failure and retries create one identity
+2026-10-06T22:39:46.3008049Z ok 295 - D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+2026-10-06T22:39:48.9089540Z ok 296 - D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+2026-10-06T22:39:49.7539059Z ok 297 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+2026-10-06T22:39:50.0031026Z ok 298 - D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+2026-10-06T22:39:50.0044365Z ok 299 - D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+2026-10-06T22:39:50.0052297Z ok 300 - D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+2026-10-06T22:39:50.0065277Z ok 301 - D24 completion rejects foreign call binding without changing any stored call
+2026-10-06T22:39:50.0068672Z ok 302 - D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+2026-10-06T22:39:50.4279658Z ok 303 - D16 web review and voice share exact normalized owner-phone identity
+2026-10-06T22:39:50.4283426Z ok 304 - D16 email-only and ambiguous local phones never deduplicate on name or email
+2026-10-06T22:39:50.4286515Z ok 305 - D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+2026-10-06T22:39:50.4289571Z ok 306 - D16 web identity and all related records roll back when receipt persistence fails
+2026-10-06T22:39:50.8319613Z ok 307 - D16 independent concurrent processes and restarted retry resolve one persistent identity
+2026-10-06T22:43:25.8918200Z # tests 2168
+2026-10-06T22:43:25.8919877Z # pass 2168
+2026-10-06T22:43:25.8920306Z # fail 0
+2026-10-06T22:43:25.8920728Z # cancelled 0
+2026-10-06T22:43:25.8921170Z # skipped 0
+2026-10-06T22:43:25.8921589Z # todo 0
+2026-10-06T22:43:51.4721188Z ok 416 - D14 caller filter precedes limit with tenant and malformed-record controls
+2026-10-06T22:43:51.4726767Z ok 417 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+2026-10-06T22:43:51.4732893Z ok 418 - D16 handle credential rotation preserves one owner-phone customer and historical references
+2026-10-06T22:43:51.4737188Z ok 419 - D21 unresolved preferences survive calendar range changes until resolved
+2026-10-06T22:43:51.4795301Z ok 420 - D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+2026-10-06T22:43:51.4815722Z ok 421 - D14 normalized appointment phone and per-caller limit do not mix callers
+2026-10-06T22:43:51.4818347Z ok 422 - D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+2026-10-06T22:43:51.4821550Z ok 423 - D15 quote and request joins reject foreign-call and foreign-submission links
+2026-10-06T22:43:51.4823664Z ok 424 - D16 same names and emails do not join different phones or different tenants
+2026-10-06T22:43:51.4825823Z ok 425 - D16 legacy formatted phone reuses identity and preserves omitted contact fields
+2026-10-06T22:43:51.4827988Z ok 426 - D16 customer write rolls back with inquiry failure and retries create one identity
+2026-10-06T22:43:51.4832122Z ok 427 - D15 malformed optional quote entries cannot hide valid saved ranges or other caller history
+2026-10-06T22:43:53.2273769Z ok 428 - D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+2026-10-06T22:43:54.0816506Z ok 429 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+2026-10-06T22:43:54.3212975Z ok 430 - D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+2026-10-06T22:43:54.3228073Z ok 431 - D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+2026-10-06T22:43:54.3232852Z ok 432 - D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+2026-10-06T22:43:54.3235219Z ok 433 - D24 completion rejects foreign call binding without changing any stored call
+2026-10-06T22:43:54.3237662Z ok 434 - D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+2026-10-06T22:43:54.7380485Z ok 435 - D16 web review and voice share exact normalized owner-phone identity
+2026-10-06T22:43:54.7386875Z ok 436 - D16 email-only and ambiguous local phones never deduplicate on name or email
+2026-10-06T22:43:54.7392154Z ok 437 - D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+2026-10-06T22:43:54.7414095Z ok 438 - D16 web identity and all related records roll back when receipt persistence fails
+2026-10-06T22:43:55.1507029Z ok 439 - D16 independent concurrent processes and restarted retry resolve one persistent identity
+2026-10-06T22:47:41.2314330Z # tests 2551
+2026-10-06T22:47:41.2315147Z # pass 2551
+2026-10-06T22:47:41.2315527Z # fail 0
+2026-10-06T22:47:41.2315908Z # cancelled 0
+2026-10-06T22:47:41.2316319Z # skipped 0
+2026-10-06T22:47:41.2316703Z # todo 0
+2026-10-06T22:47:43.0096345Z found 0 vulnerabilities

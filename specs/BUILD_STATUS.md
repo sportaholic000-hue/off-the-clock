@@ -1,3 +1,29 @@
+# October 6 caller history and follow-up — assigned hosted gates passed
+
+Branch: `fix/caller-history-followup-20261006`, pinned parent
+`eaadeca0856f1bd7fcade8685711a19aefd786d0`. Tested source/test/CI:
+**`e9590d46e95d6ad44e16201d720c43e3d7fc2505`**.
+
+D14/D15/D16/D21/D24 are repaired: caller filtering precedes history limits;
+returning-caller context retains safe identity/address/request history; exact
+normalized international phone identity survives web/voice and credential rotation;
+unresolved preferred times remain visible; completed calls store attributed
+transcript excerpts and separate semantic/transport outcomes. Tenant joins remain
+bound to the owner. The additive transportOutcome migration preserves prior rows.
+No name/email guessing, historical destructive merge, quote recalculation or
+production backfill is performed.
+
+[Hosted run 37541872461](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37541872461)
+passed cold install/build, strict quote **2,168/2,168** and full **2,551/2,551**,
+zero failures, cancellations, skips or TODOs; production audit zero vulnerabilities.
+There are 24 new regression tests; focused local checks pass 61/61 (overlapping).
+Local Chromium launch failures and the incomplete final local strict summary are
+preserved in the [complete repair report](../verification/caller-history-followup-20261006/REPORT.md).
+No subagents, main merge, deployment, live data or provider writes. This scoped gate
+does not establish broader platform/voice lifecycle or launch readiness.
+
+## Previous checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision
