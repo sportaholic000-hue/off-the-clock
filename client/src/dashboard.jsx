@@ -1,6 +1,7 @@
 import OwnerIntegrations from './ownerIntegrations.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
+import {CallFeed} from './calls.jsx';
 import { api, go } from './api.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
@@ -102,7 +103,9 @@ export default function Dashboard() {
   if (!dashboard || !state) return <Loading label="LOADING DASHBOARD" />;
 
   const view = operatorView(dashboard.operator);
-  const activity = dashboard.previewActivity || null;
+  const activity = dashboard.callActivity?.total>0 ? null : dashboard.previewActivity || null;
+  const storedActivity=dashboard.callActivity;
+  const showStored=storedActivity&&(storedActivity.total>0||!activity);
   const statuses = dashboard.pricebookStatuses || [];
   const ready = statuses.filter(service => service.status === 'QUOTING LIVE');
   const needs = statuses.filter(service => service.status !== 'QUOTING LIVE');
@@ -184,7 +187,7 @@ export default function Dashboard() {
               <span className="mono priority-cta">SET PRICES ▸</span>
             </span>
           </button>
-        ) : activity ? (
+        ) : activity?.priorityAction ? (
           <button type="button" className="priority-action" onClick={() => go('/pricebook')}>
             <span className="priority-copy">
               <span className="mono priority-eyebrow">{activity.priorityAction.eyebrow}</span>
@@ -206,7 +209,14 @@ export default function Dashboard() {
 
         {/* COUNTERS */}
         <div className="counter-grid">
-          {activity ? (
+          {showStored ? (
+            <>
+              <CounterCard label="CALLS ANSWERED" value={storedActivity.counts.answered} detail="ALL STORED CALLS · SPAM EXCLUDED" />
+              <CounterCard label="QUOTES" value={storedActivity.counts.quotes} detail="ALL SAVED QUOTES" accent />
+              <CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />
+              <CounterCard label="TIME OFF THE CLOCK · EST." value={'≈ '+(storedActivity.counts.seconds/3600).toFixed(1)} unit="hrs" detail="SUM OF STORED NON-SPAM CALL DURATIONS" />
+            </>
+          ) : activity ? (
             <>
               <CounterCard label="CALLS ANSWERED" value={activity.counters.callsAnswered.value}
                 unit={activity.counters.callsAnswered.unit} detail={activity.counters.callsAnswered.detail} />
@@ -324,8 +334,9 @@ export default function Dashboard() {
               <p className="eyebrow">ACTIVITY</p>
               <h2>Call feed</h2>
             </div>
+            <Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>
           </div>
-          {activity ? (
+          {showStored&&storedActivity.calls.length ? <CallFeed calls={storedActivity.calls}/> : activity&&!showStored ? (
             <div className="feed-rows">
               {activity.liveCall && view.checked && (
                 <div className="feed-row live">
