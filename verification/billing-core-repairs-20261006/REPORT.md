@@ -1,6 +1,6 @@
 # Billing core repairs — October 6, 2026
 
-**Implementation checkpoint; acceptance remains incomplete.** All seven assigned defects have repairs and new regression coverage. Four assertions in existing tests outside the assigned ownership conflict with these repairs. They remain unchanged. The exact proposed test-only patch is [UNAPPLIED-test-integration.patch](UNAPPLIED-test-integration.patch); a private-index validation passes **29/29**, with no working-tree changes. Full CI cannot be represented as green while those assertions remain.
+**Implementation checkpoint; acceptance remains incomplete.** All seven assigned defects have repairs and new regression coverage. Four existing tests outside the assigned ownership conflict with these repairs. They remain unchanged. The exact proposed test-only patch is [UNAPPLIED-test-integration.patch](UNAPPLIED-test-integration.patch); a private-index validation passes **29/29**, with no working-tree changes. Full CI cannot be represented as green while those assertions remain.
 
 Start verified: `b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3`, tree `5329a9547c8b9364346a738663996b6d2d0e88e9`. Separate clone, branch `codex/billing-core-repairs-20261006`. No subagents, merges, deployment, live provider operations or production data. Governing trial decision retained: selected-plan features, 14 days, card required, 60 voice minutes. The unapproved callback/deadline policy is untouched.
 
@@ -20,15 +20,15 @@ All seven reproduced on the pinned source **before source edits**: 12 assigned e
 
 ## Source and regression evidence
 
-- `server/src/billingStateService.js`: normalization/digest, transactional evidence reducer, provider reconciliation, current-plan authority, terminal protection and debt recovery.
-- `server/src/billingEvidence.js`: subscription facts and identity-checked invoice obligations.
-- `server/src/billingProvider.js`: durable owner lease, fencing, bounded provider operations.
-- `server/src/billingRoutes.js`: card-required Checkout, provider reconciliation before expiry replacement, closed-session response-loss recovery, webhook integration.
+- [billingStateService.js](../../server/src/billingStateService.js): normalization/digest, transactional evidence reducer, provider reconciliation, current-plan authority, terminal protection and debt recovery.
+- [billingEvidence.js](../../server/src/billingEvidence.js): subscription facts and identity-checked invoice obligations.
+- [billingProvider.js](../../server/src/billingProvider.js): durable owner lease, fencing, bounded provider operations.
+- [billingRoutes.js](../../server/src/billingRoutes.js): card-required Checkout, provider reconciliation before expiry replacement, closed-session response-loss recovery, webhook integration.
 - `server/src/billingCoreMigration.js`, billing-only schema/migrations: closed-session persistence and legacy debt holds.
-- `test/billingCoreRepair20261006.spec.mjs`: **116** core cases.
-- `test/billingCoreRepair20261006Permutations.spec.mjs`: **288** further delivery-order cases.
-- `test/billingCoreRepair20261006Provider.spec.mjs`: **11** SDK/provider/concurrency cases.
-- `test/billingCoreRepair20261006Recovery.spec.mjs`: **10** migration/rollback/restart cases.
+- [core regressions](../../test/billingCoreRepair20261006.spec.mjs): **116** core cases.
+- [delivery permutations](../../test/billingCoreRepair20261006Permutations.spec.mjs): **288** further delivery-order cases.
+- [provider contracts](../../test/billingCoreRepair20261006Provider.spec.mjs): **11** SDK/provider/concurrency cases.
+- [migration and recovery](../../test/billingCoreRepair20261006Recovery.spec.mjs): **10** migration/rollback/restart cases.
 
 **425 distinct new tests pass in complete local per-file runs**, zero failures/skips/cancellations/TODOs. The proposed integration validation's 29 tests overlap existing repository tests and are not added to that distinct-new-test count. An earlier combined local attempt exited without a final summary and is not counted as a passing combined gate.
 
@@ -42,9 +42,24 @@ Unattributable legacy debt stays held for explicit recovery. A known old failure
 
 ## Gates and publication
 
-Cold npm ci and owner/widget build passed. Local browser startup encounters SIGTRAP; local broad attempts and their incomplete summaries are retained, not counted as passes. No skipped tests, weakened gates or known-failure allowances were introduced.
+Cold npm ci and owner/widget build passed. Final local strict quote run: **2031 passed / 37 failed / 0 skipped** (2068 total); all failures are browser startup SIGTRAP. Earlier incomplete local broad attempts are retained and are not counted as passes. The final local full-suite attempt exited 1 without a complete summary; it is not counted as a passing or complete run. Full raw snapshots and [LOCAL_RUNS.json](LOCAL_RUNS.json) preserve the failures and commands. No skipped tests, weakened gates or known-failure allowances were introduced.
 
-First verified checkpoint: `43a71dec195d3d29506f91f5c97c5741868b6809`, exact uploaded tree `f95df52bbb45fef9f9f5466565cf1f1892d7490e`. [Hosted run 37512559114](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37512559114): strict quote **2068/2068**; full **2568 passed / 3 failed / 0 skipped** (2571 total). Failures are precisely the three old unsafe expectations above. This was before the explicit card-only control and expanded final tests. Final source revision/gate results will be recorded separately after publication; this checkpoint does not claim them in advance.
+First verified checkpoint: `43a71dec195d3d29506f91f5c97c5741868b6809`, exact uploaded tree `f95df52bbb45fef9f9f5466565cf1f1892d7490e`. [Hosted run 37512559114](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37512559114): strict quote **2068/2068**; full **2568 passed / 3 failed / 0 skipped** (2571 total). Failures are precisely the three old unsafe expectations above. This was before the explicit card-only control and expanded final tests.
+
+**Final tested application/test source: `9e93cf51030667136a1c69e3698ade980c962d81`, tree `71511e807acc5dc3c0788f4a08b76427b600cc26`.** [Hosted run 37514745759](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37514745759) completed:
+
+| Gate | Exact result |
+|---|---|
+| Cold npm ci | Passed |
+| npm run build | Passed, owner + widget |
+| npm run test:quote | **2068 passed / 0 failed / 0 skipped**, zero cancelled/TODO |
+| npm test | **2867 passed / 4 failed / 0 skipped**, 2871 total, zero cancelled/TODO |
+| New billing regressions within full suite | **425/425 passed** |
+| Full repository acceptance | **FAILED**; existing gates remain strict and known-failures list unchanged/empty |
+
+The four hosted failures are exactly the four existing tests addressed by the unapplied test-only patch: card-only Checkout parameters; provider-confirmed expiry; unpaid invoice surviving an active snapshot; correlated paid recovery. See [full failure blocks](hosted-source-failures.txt), [hosted summaries](hosted-source-results.txt), and [job/step results](HOSTED_RUN.json). The downstream summary-publishing step also exited 1; the dependency-audit/check steps were skipped by the unchanged workflow after full-suite failure. No tests were skipped. Shared CI is outside ownership and was not modified.
+
+This is **not** a green hosted release. F01/F02/F03/F06 remain open at the integration/acceptance boundary until the supplied test changes are authorized and the unchanged full gate passes. F04/F05/F11 pass their assigned product checks, but do not independently establish whole-batch acceptance. [Source bindings](SOURCE_BINDINGS.json) and [upload verification](UPLOAD_VERIFICATION.md) tie all 13 changed source/test files to the exact hosted revision. Later commits in this branch contain evidence only and retain those same blobs.
 
 ## Still open
 

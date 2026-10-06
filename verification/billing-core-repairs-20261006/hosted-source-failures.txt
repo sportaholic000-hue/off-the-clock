@@ -1,0 +1,146 @@
+2026-10-06T18:58:16.0939160Z not ok 718 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+2026-10-06T18:58:16.0939805Z   ---
+2026-10-06T18:58:16.0940187Z   duration_ms: 15.00664
+2026-10-06T18:58:16.0940606Z   type: 'test'
+2026-10-06T18:58:16.0941371Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/billingRoutes.spec.mjs:369:1'
+2026-10-06T18:58:16.0941965Z   failureType: 'testCodeFailure'
+2026-10-06T18:58:16.0942458Z   error: |-
+2026-10-06T18:58:16.0942940Z     Expected values to be strictly deep-equal:
+2026-10-06T18:58:16.0943526Z     + actual - expected
+2026-10-06T18:58:16.0944177Z     ... Skipped lines
+2026-10-06T18:58:16.0944481Z     
+2026-10-06T18:58:16.0944797Z       {
+2026-10-06T18:58:16.0945411Z         cancel_url: 'https://app.offtheclock.test/settings/billing/canceled',
+2026-10-06T18:58:16.0946202Z         customer: 'cus_owner_a',
+2026-10-06T18:58:16.0946573Z         integration_identifier: 'off_the_clock_checkout_abcdefgh',
+2026-10-06T18:58:16.0946912Z         line_items: [
+2026-10-06T18:58:16.0947110Z     ...
+2026-10-06T18:58:16.0947341Z         payment_method_collection: 'always',
+2026-10-06T18:58:16.0947646Z     +   payment_method_types: [
+2026-10-06T18:58:16.0947997Z     +     'card'
+2026-10-06T18:58:16.0948331Z     +   ],
+2026-10-06T18:58:16.0948677Z         subscription_data: {
+2026-10-06T18:58:16.0949160Z           trial_period_days: 14,
+2026-10-06T18:58:16.0949607Z           trial_settings: {
+2026-10-06T18:58:16.0950026Z             end_behavior: {
+2026-10-06T18:58:16.0950501Z               missing_payment_method: 'cancel'
+2026-10-06T18:58:16.0950989Z     
+2026-10-06T18:58:16.0951313Z   code: 'ERR_ASSERTION'
+2026-10-06T18:58:16.0951707Z   name: 'AssertionError'
+2026-10-06T18:58:16.0952098Z   expected:
+2026-10-06T18:58:16.0952449Z     mode: 'subscription'
+2026-10-06T18:58:16.0952879Z     customer: 'cus_owner_a'
+2026-10-06T18:58:16.0953278Z     line_items:
+2026-10-06T18:58:16.0953627Z       0:
+2026-10-06T18:58:16.0954526Z         price: 'price_quotedone_annual_1'
+2026-10-06T18:58:16.0955051Z         quantity: 1
+2026-10-06T18:58:16.0955505Z     payment_method_collection: 'always'
+2026-10-06T18:58:16.0955996Z     subscription_data:
+2026-10-06T18:58:16.0956586Z       trial_period_days: 14
+2026-10-06T18:58:16.0957034Z       trial_settings:
+2026-10-06T18:58:16.0957403Z         end_behavior:
+2026-10-06T18:58:16.0957853Z           missing_payment_method: 'cancel'
+2026-10-06T18:58:16.0958856Z     success_url: 'https://app.offtheclock.test/settings/billing/success?session_id={CHECKOUT_SESSION_ID}'
+2026-10-06T18:58:16.0960025Z     cancel_url: 'https://app.offtheclock.test/settings/billing/canceled'
+2026-10-06T18:58:16.0960902Z     integration_identifier: 'off_the_clock_checkout_abcdefgh'
+2026-10-06T18:58:16.0961489Z   actual:
+2026-10-06T18:58:16.0961832Z     mode: 'subscription'
+2026-10-06T18:58:16.0962263Z     customer: 'cus_owner_a'
+2026-10-06T18:58:16.0962668Z     line_items:
+2026-10-06T18:58:16.0962995Z       0:
+2026-10-06T18:58:16.0963395Z         price: 'price_quotedone_annual_1'
+2026-10-06T18:58:16.0964115Z         quantity: 1
+2026-10-06T18:58:16.0964548Z     payment_method_collection: 'always'
+2026-10-06T18:58:16.0965035Z     payment_method_types:
+2026-10-06T18:58:16.0965448Z       0: 'card'
+2026-10-06T18:58:16.0965801Z     subscription_data:
+2026-10-06T18:58:16.0966195Z       trial_period_days: 14
+2026-10-06T18:58:16.0966597Z       trial_settings:
+2026-10-06T18:58:16.0966965Z         end_behavior:
+2026-10-06T18:58:16.0967411Z           missing_payment_method: 'cancel'
+2026-10-06T18:58:16.0968416Z     success_url: 'https://app.offtheclock.test/settings/billing/success?session_id={CHECKOUT_SESSION_ID}'
+2026-10-06T18:58:16.0969593Z     cancel_url: 'https://app.offtheclock.test/settings/billing/canceled'
+2026-10-06T18:58:16.0970475Z     integration_identifier: 'off_the_clock_checkout_abcdefgh'
+2026-10-06T18:58:16.0971129Z   operator: 'deepStrictEqual'
+2026-10-06T18:58:16.0971554Z   stack: |-
+2026-10-06T18:58:16.0972541Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/billingRoutes.spec.mjs:414:12)
+2026-10-06T18:58:16.0973956Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T18:58:16.0974921Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T18:58:16.0975634Z   ...
+
+2026-10-06T18:58:16.0978314Z not ok 719 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+2026-10-06T18:58:16.0979241Z   ---
+2026-10-06T18:58:16.0979609Z   duration_ms: 8.133318
+2026-10-06T18:58:16.0979867Z   type: 'test'
+2026-10-06T18:58:16.0980312Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/billingRoutes.spec.mjs:478:1'
+2026-10-06T18:58:16.0981017Z   failureType: 'testCodeFailure'
+2026-10-06T18:58:16.0981342Z   error: 'Billing evidence could not be reconciled.'
+2026-10-06T18:58:16.0981670Z   code: 'BILLING_PROVIDER_ERROR'
+2026-10-06T18:58:16.0981907Z   stack: |-
+2026-10-06T18:58:16.0982431Z     billingProviderError (file:///home/runner/work/off-the-clock/off-the-clock/server/src/billingProvider.js:5:24)
+2026-10-06T18:58:16.0983271Z     billingProviderRead (file:///home/runner/work/off-the-clock/off-the-clock/server/src/billingProvider.js:30:11)
+2026-10-06T18:58:16.0984405Z     async reconcilePriorCheckouts (file:///home/runner/work/off-the-clock/off-the-clock/server/src/billingRoutes.js:586:21)
+2026-10-06T18:58:16.0985314Z     async withBillingLease.clock (file:///home/runner/work/off-the-clock/off-the-clock/server/src/billingRoutes.js:783:5)
+2026-10-06T18:58:16.0986165Z     async withBillingLease (file:///home/runner/work/off-the-clock/off-the-clock/server/src/billingProvider.js:21:15)
+2026-10-06T18:58:16.0986998Z     async invokeOwnerRoute (file:///home/runner/work/off-the-clock/off-the-clock/test/billingRoutes.spec.mjs:365:3)
+2026-10-06T18:58:16.0987845Z     async TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/billingRoutes.spec.mjs:487:20)
+2026-10-06T18:58:16.0988475Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T18:58:16.0989084Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T18:58:16.0989473Z   ...
+
+2026-10-06T18:58:16.2918697Z not ok 735 - an older out-of-order failure is receipted but cannot regress newer active state
+2026-10-06T18:58:16.2920054Z   ---
+2026-10-06T18:58:16.2920564Z   duration_ms: 7.981315
+2026-10-06T18:58:16.2921135Z   type: 'test'
+2026-10-06T18:58:16.2922174Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/billingStateService.spec.mjs:314:1'
+2026-10-06T18:58:16.2923350Z   failureType: 'testCodeFailure'
+2026-10-06T18:58:16.2924280Z   error: |-
+2026-10-06T18:58:16.2924863Z     Expected values to be strictly equal:
+2026-10-06T18:58:16.2925530Z     + actual - expected
+2026-10-06T18:58:16.2926020Z     
+2026-10-06T18:58:16.2926434Z     + 'APPLIED'
+2026-10-06T18:58:16.2926933Z     - 'IGNORED_STALE'
+2026-10-06T18:58:16.2927431Z     
+2026-10-06T18:58:16.2927880Z   code: 'ERR_ASSERTION'
+2026-10-06T18:58:16.2928401Z   name: 'AssertionError'
+2026-10-06T18:58:16.2928870Z   expected: 'IGNORED_STALE'
+2026-10-06T18:58:16.2929323Z   actual: 'APPLIED'
+2026-10-06T18:58:16.2929920Z   operator: 'strictEqual'
+2026-10-06T18:58:16.2930371Z   stack: |-
+2026-10-06T18:58:16.2931606Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/billingStateService.spec.mjs:321:12)
+2026-10-06T18:58:16.2933027Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-06T18:58:16.2934133Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-10-06T18:58:16.2935450Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-10-06T18:58:16.2936607Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-10-06T18:58:16.2937533Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-10-06T18:58:16.2938593Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T18:58:16.2939485Z   ...
+
+2026-10-06T18:58:16.2942192Z not ok 736 - payment failure preserves seven days of service and paid recovery restores immediately
+2026-10-06T18:58:16.2943109Z   ---
+2026-10-06T18:58:16.2943487Z   duration_ms: 7.70664
+2026-10-06T18:58:16.2944128Z   type: 'test'
+2026-10-06T18:58:16.2945023Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/billingStateService.spec.mjs:334:1'
+2026-10-06T18:58:16.2946015Z   failureType: 'testCodeFailure'
+2026-10-06T18:58:16.2946486Z   error: |-
+2026-10-06T18:58:16.2946951Z     Expected values to be strictly equal:
+2026-10-06T18:58:16.2947488Z     + actual - expected
+2026-10-06T18:58:16.2947881Z     
+2026-10-06T18:58:16.2948223Z     + 'payment_failed'
+2026-10-06T18:58:16.2948631Z     - 'active'
+2026-10-06T18:58:16.2948977Z     
+2026-10-06T18:58:16.2949320Z   code: 'ERR_ASSERTION'
+2026-10-06T18:58:16.2949767Z   name: 'AssertionError'
+2026-10-06T18:58:16.2950195Z   expected: 'active'
+2026-10-06T18:58:16.2950604Z   actual: 'payment_failed'
+2026-10-06T18:58:16.2951064Z   operator: 'strictEqual'
+2026-10-06T18:58:16.2951486Z   stack: |-
+2026-10-06T18:58:16.2952546Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/billingStateService.spec.mjs:355:12)
+2026-10-06T18:58:16.2954038Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-10-06T18:58:16.2954794Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-10-06T18:58:16.2955693Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-10-06T18:58:16.2956632Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-10-06T18:58:16.2957390Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-10-06T18:58:16.2958319Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T18:58:16.2959080Z   ...
+
