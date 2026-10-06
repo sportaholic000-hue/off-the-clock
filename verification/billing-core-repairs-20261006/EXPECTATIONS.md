@@ -17,3 +17,7 @@ All exact repeats: one receipt/transition/outbox. Changed authoritative input wi
 The baseline runner is copied from the historical audit and executes only assigned finding reproductions. Its assertions intentionally prove the OLD failures; it is evidence, not a passing product suite. New billingCoreRepair20261006 tests assert the corrected behavior.
 
 F07/F08/F09/F10, refunds, metered overage, notifications and offboarding remain open. No launch-readiness claim.
+
+Migration edge expectation written before its experiment: an old F06 account with payment_failed but missing failure/grace timestamps must not receive a newly invented seven-day grace. Keep a recovery hold and suspend access. A verified unpaid in_CURRENT recovered from its old failure receipt at T+10 restores that original boundary (T+10+7 days); at T+8 days it remains suspended. A verified paid in_CURRENT ($119=11900 cents) with an active current subscription restores active and null failure/grace together.
+
+Concurrent provider observation expectation, before execution: a stalled current-subscription read cannot overwrite a newer signed subscription update. The owner lease must block the overlapping update (retryable webhook 500), then its retry must persist QuoteDone after the first observation completes. Expected amounts unchanged: old Operator $119=11900, new QuoteDone $279=27900. No invoices are calculated or charged.

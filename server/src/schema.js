@@ -287,8 +287,7 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
-  )`
-,
+  )`,
   `CREATE TABLE IF NOT EXISTS quoteAccessKeys (
     ownerId TEXT PRIMARY KEY,
     publicKey TEXT NOT NULL UNIQUE,

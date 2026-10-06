@@ -1,0 +1,1740 @@
+TAP version 13
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,2,3,4
+ok 1 - F02/F06 five-fact convergence resolved=false order=0,1,2,3,4
+  ---
+  duration_ms: 21.616912
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,2,4,3
+ok 2 - F02/F06 five-fact convergence resolved=false order=0,1,2,4,3
+  ---
+  duration_ms: 10.032305
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,3,2,4
+ok 3 - F02/F06 five-fact convergence resolved=false order=0,1,3,2,4
+  ---
+  duration_ms: 6.746703
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,3,4,2
+ok 4 - F02/F06 five-fact convergence resolved=false order=0,1,3,4,2
+  ---
+  duration_ms: 5.904555
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,4,2,3
+ok 5 - F02/F06 five-fact convergence resolved=false order=0,1,4,2,3
+  ---
+  duration_ms: 6.160895
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,1,4,3,2
+ok 6 - F02/F06 five-fact convergence resolved=false order=0,1,4,3,2
+  ---
+  duration_ms: 6.217969
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,1,3,4
+ok 7 - F02/F06 five-fact convergence resolved=false order=0,2,1,3,4
+  ---
+  duration_ms: 5.698218
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,1,4,3
+ok 8 - F02/F06 five-fact convergence resolved=false order=0,2,1,4,3
+  ---
+  duration_ms: 5.79377
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,3,1,4
+ok 9 - F02/F06 five-fact convergence resolved=false order=0,2,3,1,4
+  ---
+  duration_ms: 6.17069
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,3,4,1
+ok 10 - F02/F06 five-fact convergence resolved=false order=0,2,3,4,1
+  ---
+  duration_ms: 6.154555
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,4,1,3
+ok 11 - F02/F06 five-fact convergence resolved=false order=0,2,4,1,3
+  ---
+  duration_ms: 5.882753
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,2,4,3,1
+ok 12 - F02/F06 five-fact convergence resolved=false order=0,2,4,3,1
+  ---
+  duration_ms: 5.90151
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,1,2,4
+ok 13 - F02/F06 five-fact convergence resolved=false order=0,3,1,2,4
+  ---
+  duration_ms: 5.730386
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,1,4,2
+ok 14 - F02/F06 five-fact convergence resolved=false order=0,3,1,4,2
+  ---
+  duration_ms: 6.027096
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,2,1,4
+ok 15 - F02/F06 five-fact convergence resolved=false order=0,3,2,1,4
+  ---
+  duration_ms: 6.42008
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,2,4,1
+ok 16 - F02/F06 five-fact convergence resolved=false order=0,3,2,4,1
+  ---
+  duration_ms: 6.418787
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,4,1,2
+ok 17 - F02/F06 five-fact convergence resolved=false order=0,3,4,1,2
+  ---
+  duration_ms: 5.57115
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,3,4,2,1
+ok 18 - F02/F06 five-fact convergence resolved=false order=0,3,4,2,1
+  ---
+  duration_ms: 5.683677
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,1,2,3
+ok 19 - F02/F06 five-fact convergence resolved=false order=0,4,1,2,3
+  ---
+  duration_ms: 6.10368
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,1,3,2
+ok 20 - F02/F06 five-fact convergence resolved=false order=0,4,1,3,2
+  ---
+  duration_ms: 6.104721
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,2,1,3
+ok 21 - F02/F06 five-fact convergence resolved=false order=0,4,2,1,3
+  ---
+  duration_ms: 5.663888
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,2,3,1
+ok 22 - F02/F06 five-fact convergence resolved=false order=0,4,2,3,1
+  ---
+  duration_ms: 5.903843
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,3,1,2
+ok 23 - F02/F06 five-fact convergence resolved=false order=0,4,3,1,2
+  ---
+  duration_ms: 5.961229
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=0,4,3,2,1
+ok 24 - F02/F06 five-fact convergence resolved=false order=0,4,3,2,1
+  ---
+  duration_ms: 5.717748
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,2,3,4
+ok 25 - F02/F06 five-fact convergence resolved=false order=1,0,2,3,4
+  ---
+  duration_ms: 6.248124
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,2,4,3
+ok 26 - F02/F06 five-fact convergence resolved=false order=1,0,2,4,3
+  ---
+  duration_ms: 5.88739
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,3,2,4
+ok 27 - F02/F06 five-fact convergence resolved=false order=1,0,3,2,4
+  ---
+  duration_ms: 7.285693
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,3,4,2
+ok 28 - F02/F06 five-fact convergence resolved=false order=1,0,3,4,2
+  ---
+  duration_ms: 6.163889
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,4,2,3
+ok 29 - F02/F06 five-fact convergence resolved=false order=1,0,4,2,3
+  ---
+  duration_ms: 6.120435
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,0,4,3,2
+ok 30 - F02/F06 five-fact convergence resolved=false order=1,0,4,3,2
+  ---
+  duration_ms: 5.98927
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,0,3,4
+ok 31 - F02/F06 five-fact convergence resolved=false order=1,2,0,3,4
+  ---
+  duration_ms: 6.557162
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,0,4,3
+ok 32 - F02/F06 five-fact convergence resolved=false order=1,2,0,4,3
+  ---
+  duration_ms: 6.148927
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,3,0,4
+ok 33 - F02/F06 five-fact convergence resolved=false order=1,2,3,0,4
+  ---
+  duration_ms: 6.200604
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,3,4,0
+ok 34 - F02/F06 five-fact convergence resolved=false order=1,2,3,4,0
+  ---
+  duration_ms: 5.930853
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,4,0,3
+ok 35 - F02/F06 five-fact convergence resolved=false order=1,2,4,0,3
+  ---
+  duration_ms: 6.108868
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,2,4,3,0
+ok 36 - F02/F06 five-fact convergence resolved=false order=1,2,4,3,0
+  ---
+  duration_ms: 6.609811
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,0,2,4
+ok 37 - F02/F06 five-fact convergence resolved=false order=1,3,0,2,4
+  ---
+  duration_ms: 6.391607
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,0,4,2
+ok 38 - F02/F06 five-fact convergence resolved=false order=1,3,0,4,2
+  ---
+  duration_ms: 6.485405
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,2,0,4
+ok 39 - F02/F06 five-fact convergence resolved=false order=1,3,2,0,4
+  ---
+  duration_ms: 6.456624
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,2,4,0
+ok 40 - F02/F06 five-fact convergence resolved=false order=1,3,2,4,0
+  ---
+  duration_ms: 6.25201
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,4,0,2
+ok 41 - F02/F06 five-fact convergence resolved=false order=1,3,4,0,2
+  ---
+  duration_ms: 6.429242
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,3,4,2,0
+ok 42 - F02/F06 five-fact convergence resolved=false order=1,3,4,2,0
+  ---
+  duration_ms: 6.222636
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,0,2,3
+ok 43 - F02/F06 five-fact convergence resolved=false order=1,4,0,2,3
+  ---
+  duration_ms: 5.826449
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,0,3,2
+ok 44 - F02/F06 five-fact convergence resolved=false order=1,4,0,3,2
+  ---
+  duration_ms: 6.342404
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,2,0,3
+ok 45 - F02/F06 five-fact convergence resolved=false order=1,4,2,0,3
+  ---
+  duration_ms: 6.700354
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,2,3,0
+ok 46 - F02/F06 five-fact convergence resolved=false order=1,4,2,3,0
+  ---
+  duration_ms: 6.540037
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,3,0,2
+ok 47 - F02/F06 five-fact convergence resolved=false order=1,4,3,0,2
+  ---
+  duration_ms: 6.683389
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=1,4,3,2,0
+ok 48 - F02/F06 five-fact convergence resolved=false order=1,4,3,2,0
+  ---
+  duration_ms: 7.386892
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,1,3,4
+ok 49 - F02/F06 five-fact convergence resolved=false order=2,0,1,3,4
+  ---
+  duration_ms: 6.08334
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,1,4,3
+ok 50 - F02/F06 five-fact convergence resolved=false order=2,0,1,4,3
+  ---
+  duration_ms: 6.651191
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,3,1,4
+ok 51 - F02/F06 five-fact convergence resolved=false order=2,0,3,1,4
+  ---
+  duration_ms: 7.591516
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,3,4,1
+ok 52 - F02/F06 five-fact convergence resolved=false order=2,0,3,4,1
+  ---
+  duration_ms: 5.96212
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,4,1,3
+ok 53 - F02/F06 five-fact convergence resolved=false order=2,0,4,1,3
+  ---
+  duration_ms: 5.730937
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,0,4,3,1
+ok 54 - F02/F06 five-fact convergence resolved=false order=2,0,4,3,1
+  ---
+  duration_ms: 6.209036
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,0,3,4
+ok 55 - F02/F06 five-fact convergence resolved=false order=2,1,0,3,4
+  ---
+  duration_ms: 5.709295
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,0,4,3
+ok 56 - F02/F06 five-fact convergence resolved=false order=2,1,0,4,3
+  ---
+  duration_ms: 5.960387
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,3,0,4
+ok 57 - F02/F06 five-fact convergence resolved=false order=2,1,3,0,4
+  ---
+  duration_ms: 5.821021
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,3,4,0
+ok 58 - F02/F06 five-fact convergence resolved=false order=2,1,3,4,0
+  ---
+  duration_ms: 5.688174
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,4,0,3
+ok 59 - F02/F06 five-fact convergence resolved=false order=2,1,4,0,3
+  ---
+  duration_ms: 5.607404
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,1,4,3,0
+ok 60 - F02/F06 five-fact convergence resolved=false order=2,1,4,3,0
+  ---
+  duration_ms: 5.644849
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,0,1,4
+ok 61 - F02/F06 five-fact convergence resolved=false order=2,3,0,1,4
+  ---
+  duration_ms: 5.645911
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,0,4,1
+ok 62 - F02/F06 five-fact convergence resolved=false order=2,3,0,4,1
+  ---
+  duration_ms: 5.473426
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,1,0,4
+ok 63 - F02/F06 five-fact convergence resolved=false order=2,3,1,0,4
+  ---
+  duration_ms: 5.652341
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,1,4,0
+ok 64 - F02/F06 five-fact convergence resolved=false order=2,3,1,4,0
+  ---
+  duration_ms: 5.945356
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,4,0,1
+ok 65 - F02/F06 five-fact convergence resolved=false order=2,3,4,0,1
+  ---
+  duration_ms: 5.690658
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,3,4,1,0
+ok 66 - F02/F06 five-fact convergence resolved=false order=2,3,4,1,0
+  ---
+  duration_ms: 5.558822
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,0,1,3
+ok 67 - F02/F06 five-fact convergence resolved=false order=2,4,0,1,3
+  ---
+  duration_ms: 5.847361
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,0,3,1
+ok 68 - F02/F06 five-fact convergence resolved=false order=2,4,0,3,1
+  ---
+  duration_ms: 5.927399
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,1,0,3
+ok 69 - F02/F06 five-fact convergence resolved=false order=2,4,1,0,3
+  ---
+  duration_ms: 6.133223
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,1,3,0
+ok 70 - F02/F06 five-fact convergence resolved=false order=2,4,1,3,0
+  ---
+  duration_ms: 5.634034
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,3,0,1
+ok 71 - F02/F06 five-fact convergence resolved=false order=2,4,3,0,1
+  ---
+  duration_ms: 5.862983
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=2,4,3,1,0
+ok 72 - F02/F06 five-fact convergence resolved=false order=2,4,3,1,0
+  ---
+  duration_ms: 5.830745
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,1,2,4
+ok 73 - F02/F06 five-fact convergence resolved=false order=3,0,1,2,4
+  ---
+  duration_ms: 5.960898
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,1,4,2
+ok 74 - F02/F06 five-fact convergence resolved=false order=3,0,1,4,2
+  ---
+  duration_ms: 6.048739
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,2,1,4
+ok 75 - F02/F06 five-fact convergence resolved=false order=3,0,2,1,4
+  ---
+  duration_ms: 7.118395
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,2,4,1
+ok 76 - F02/F06 five-fact convergence resolved=false order=3,0,2,4,1
+  ---
+  duration_ms: 6.631032
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,4,1,2
+ok 77 - F02/F06 five-fact convergence resolved=false order=3,0,4,1,2
+  ---
+  duration_ms: 5.871996
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,0,4,2,1
+ok 78 - F02/F06 five-fact convergence resolved=false order=3,0,4,2,1
+  ---
+  duration_ms: 5.748083
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,0,2,4
+ok 79 - F02/F06 five-fact convergence resolved=false order=3,1,0,2,4
+  ---
+  duration_ms: 5.710547
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,0,4,2
+ok 80 - F02/F06 five-fact convergence resolved=false order=3,1,0,4,2
+  ---
+  duration_ms: 5.608897
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,2,0,4
+ok 81 - F02/F06 five-fact convergence resolved=false order=3,1,2,0,4
+  ---
+  duration_ms: 6.119844
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,2,4,0
+ok 82 - F02/F06 five-fact convergence resolved=false order=3,1,2,4,0
+  ---
+  duration_ms: 5.978754
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,4,0,2
+ok 83 - F02/F06 five-fact convergence resolved=false order=3,1,4,0,2
+  ---
+  duration_ms: 6.223949
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,1,4,2,0
+ok 84 - F02/F06 five-fact convergence resolved=false order=3,1,4,2,0
+  ---
+  duration_ms: 6.109018
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,0,1,4
+ok 85 - F02/F06 five-fact convergence resolved=false order=3,2,0,1,4
+  ---
+  duration_ms: 6.87935
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,0,4,1
+ok 86 - F02/F06 five-fact convergence resolved=false order=3,2,0,4,1
+  ---
+  duration_ms: 5.90856
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,1,0,4
+ok 87 - F02/F06 five-fact convergence resolved=false order=3,2,1,0,4
+  ---
+  duration_ms: 5.990162
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,1,4,0
+ok 88 - F02/F06 five-fact convergence resolved=false order=3,2,1,4,0
+  ---
+  duration_ms: 5.674704
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,4,0,1
+ok 89 - F02/F06 five-fact convergence resolved=false order=3,2,4,0,1
+  ---
+  duration_ms: 5.540544
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,2,4,1,0
+ok 90 - F02/F06 five-fact convergence resolved=false order=3,2,4,1,0
+  ---
+  duration_ms: 5.560745
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,0,1,2
+ok 91 - F02/F06 five-fact convergence resolved=false order=3,4,0,1,2
+  ---
+  duration_ms: 5.496089
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,0,2,1
+ok 92 - F02/F06 five-fact convergence resolved=false order=3,4,0,2,1
+  ---
+  duration_ms: 5.687042
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,1,0,2
+ok 93 - F02/F06 five-fact convergence resolved=false order=3,4,1,0,2
+  ---
+  duration_ms: 5.494116
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,1,2,0
+ok 94 - F02/F06 five-fact convergence resolved=false order=3,4,1,2,0
+  ---
+  duration_ms: 5.73264
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,2,0,1
+ok 95 - F02/F06 five-fact convergence resolved=false order=3,4,2,0,1
+  ---
+  duration_ms: 6.604653
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=3,4,2,1,0
+ok 96 - F02/F06 five-fact convergence resolved=false order=3,4,2,1,0
+  ---
+  duration_ms: 7.113027
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,1,2,3
+ok 97 - F02/F06 five-fact convergence resolved=false order=4,0,1,2,3
+  ---
+  duration_ms: 7.34424
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,1,3,2
+ok 98 - F02/F06 five-fact convergence resolved=false order=4,0,1,3,2
+  ---
+  duration_ms: 6.821204
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,2,1,3
+ok 99 - F02/F06 five-fact convergence resolved=false order=4,0,2,1,3
+  ---
+  duration_ms: 6.247443
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,2,3,1
+ok 100 - F02/F06 five-fact convergence resolved=false order=4,0,2,3,1
+  ---
+  duration_ms: 7.935306
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,3,1,2
+ok 101 - F02/F06 five-fact convergence resolved=false order=4,0,3,1,2
+  ---
+  duration_ms: 6.702328
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,0,3,2,1
+ok 102 - F02/F06 five-fact convergence resolved=false order=4,0,3,2,1
+  ---
+  duration_ms: 6.173173
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,0,2,3
+ok 103 - F02/F06 five-fact convergence resolved=false order=4,1,0,2,3
+  ---
+  duration_ms: 5.803535
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,0,3,2
+ok 104 - F02/F06 five-fact convergence resolved=false order=4,1,0,3,2
+  ---
+  duration_ms: 5.612101
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,2,0,3
+ok 105 - F02/F06 five-fact convergence resolved=false order=4,1,2,0,3
+  ---
+  duration_ms: 5.517741
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,2,3,0
+ok 106 - F02/F06 five-fact convergence resolved=false order=4,1,2,3,0
+  ---
+  duration_ms: 6.055418
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,3,0,2
+ok 107 - F02/F06 five-fact convergence resolved=false order=4,1,3,0,2
+  ---
+  duration_ms: 6.086294
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,1,3,2,0
+ok 108 - F02/F06 five-fact convergence resolved=false order=4,1,3,2,0
+  ---
+  duration_ms: 6.206202
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,0,1,3
+ok 109 - F02/F06 five-fact convergence resolved=false order=4,2,0,1,3
+  ---
+  duration_ms: 6.292029
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,0,3,1
+ok 110 - F02/F06 five-fact convergence resolved=false order=4,2,0,3,1
+  ---
+  duration_ms: 6.125122
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,1,0,3
+ok 111 - F02/F06 five-fact convergence resolved=false order=4,2,1,0,3
+  ---
+  duration_ms: 6.241896
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,1,3,0
+ok 112 - F02/F06 five-fact convergence resolved=false order=4,2,1,3,0
+  ---
+  duration_ms: 6.46109
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,3,0,1
+ok 113 - F02/F06 five-fact convergence resolved=false order=4,2,3,0,1
+  ---
+  duration_ms: 5.475118
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,2,3,1,0
+ok 114 - F02/F06 five-fact convergence resolved=false order=4,2,3,1,0
+  ---
+  duration_ms: 6.091963
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,0,1,2
+ok 115 - F02/F06 five-fact convergence resolved=false order=4,3,0,1,2
+  ---
+  duration_ms: 5.53055
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,0,2,1
+ok 116 - F02/F06 five-fact convergence resolved=false order=4,3,0,2,1
+  ---
+  duration_ms: 5.462559
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,1,0,2
+ok 117 - F02/F06 five-fact convergence resolved=false order=4,3,1,0,2
+  ---
+  duration_ms: 5.775282
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,1,2,0
+ok 118 - F02/F06 five-fact convergence resolved=false order=4,3,1,2,0
+  ---
+  duration_ms: 5.594615
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,2,0,1
+ok 119 - F02/F06 five-fact convergence resolved=false order=4,3,2,0,1
+  ---
+  duration_ms: 5.499554
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=false order=4,3,2,1,0
+ok 120 - F02/F06 five-fact convergence resolved=false order=4,3,2,1,0
+  ---
+  duration_ms: 5.751077
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,2,3,4
+ok 121 - F02/F06 five-fact convergence resolved=true order=0,1,2,3,4
+  ---
+  duration_ms: 5.831416
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,2,4,3
+ok 122 - F02/F06 five-fact convergence resolved=true order=0,1,2,4,3
+  ---
+  duration_ms: 5.638571
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,3,2,4
+ok 123 - F02/F06 five-fact convergence resolved=true order=0,1,3,2,4
+  ---
+  duration_ms: 5.662546
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,3,4,2
+ok 124 - F02/F06 five-fact convergence resolved=true order=0,1,3,4,2
+  ---
+  duration_ms: 5.764567
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,4,2,3
+ok 125 - F02/F06 five-fact convergence resolved=true order=0,1,4,2,3
+  ---
+  duration_ms: 7.038807
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,1,4,3,2
+ok 126 - F02/F06 five-fact convergence resolved=true order=0,1,4,3,2
+  ---
+  duration_ms: 6.012445
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,1,3,4
+ok 127 - F02/F06 five-fact convergence resolved=true order=0,2,1,3,4
+  ---
+  duration_ms: 5.567415
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,1,4,3
+ok 128 - F02/F06 five-fact convergence resolved=true order=0,2,1,4,3
+  ---
+  duration_ms: 5.526374
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,3,1,4
+ok 129 - F02/F06 five-fact convergence resolved=true order=0,2,3,1,4
+  ---
+  duration_ms: 5.529418
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,3,4,1
+ok 130 - F02/F06 five-fact convergence resolved=true order=0,2,3,4,1
+  ---
+  duration_ms: 5.521327
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,4,1,3
+ok 131 - F02/F06 five-fact convergence resolved=true order=0,2,4,1,3
+  ---
+  duration_ms: 6.745902
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,2,4,3,1
+ok 132 - F02/F06 five-fact convergence resolved=true order=0,2,4,3,1
+  ---
+  duration_ms: 6.089219
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,1,2,4
+ok 133 - F02/F06 five-fact convergence resolved=true order=0,3,1,2,4
+  ---
+  duration_ms: 5.794381
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,1,4,2
+ok 134 - F02/F06 five-fact convergence resolved=true order=0,3,1,4,2
+  ---
+  duration_ms: 6.102929
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,2,1,4
+ok 135 - F02/F06 five-fact convergence resolved=true order=0,3,2,1,4
+  ---
+  duration_ms: 6.555349
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,2,4,1
+ok 136 - F02/F06 five-fact convergence resolved=true order=0,3,2,4,1
+  ---
+  duration_ms: 5.955541
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,4,1,2
+ok 137 - F02/F06 five-fact convergence resolved=true order=0,3,4,1,2
+  ---
+  duration_ms: 6.032765
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,3,4,2,1
+ok 138 - F02/F06 five-fact convergence resolved=true order=0,3,4,2,1
+  ---
+  duration_ms: 6.141846
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,1,2,3
+ok 139 - F02/F06 five-fact convergence resolved=true order=0,4,1,2,3
+  ---
+  duration_ms: 5.93502
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,1,3,2
+ok 140 - F02/F06 five-fact convergence resolved=true order=0,4,1,3,2
+  ---
+  duration_ms: 5.991994
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,2,1,3
+ok 141 - F02/F06 five-fact convergence resolved=true order=0,4,2,1,3
+  ---
+  duration_ms: 5.883734
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,2,3,1
+ok 142 - F02/F06 five-fact convergence resolved=true order=0,4,2,3,1
+  ---
+  duration_ms: 6.45425
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,3,1,2
+ok 143 - F02/F06 five-fact convergence resolved=true order=0,4,3,1,2
+  ---
+  duration_ms: 6.12345
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=0,4,3,2,1
+ok 144 - F02/F06 five-fact convergence resolved=true order=0,4,3,2,1
+  ---
+  duration_ms: 9.180091
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,2,3,4
+ok 145 - F02/F06 five-fact convergence resolved=true order=1,0,2,3,4
+  ---
+  duration_ms: 6.248866
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,2,4,3
+ok 146 - F02/F06 five-fact convergence resolved=true order=1,0,2,4,3
+  ---
+  duration_ms: 5.663317
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,3,2,4
+ok 147 - F02/F06 five-fact convergence resolved=true order=1,0,3,2,4
+  ---
+  duration_ms: 6.071282
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,3,4,2
+ok 148 - F02/F06 five-fact convergence resolved=true order=1,0,3,4,2
+  ---
+  duration_ms: 5.82084
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,4,2,3
+ok 149 - F02/F06 five-fact convergence resolved=true order=1,0,4,2,3
+  ---
+  duration_ms: 5.912887
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,0,4,3,2
+ok 150 - F02/F06 five-fact convergence resolved=true order=1,0,4,3,2
+  ---
+  duration_ms: 7.350098
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,0,3,4
+ok 151 - F02/F06 five-fact convergence resolved=true order=1,2,0,3,4
+  ---
+  duration_ms: 6.080415
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,0,4,3
+ok 152 - F02/F06 five-fact convergence resolved=true order=1,2,0,4,3
+  ---
+  duration_ms: 5.633663
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,3,0,4
+ok 153 - F02/F06 five-fact convergence resolved=true order=1,2,3,0,4
+  ---
+  duration_ms: 5.865487
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,3,4,0
+ok 154 - F02/F06 five-fact convergence resolved=true order=1,2,3,4,0
+  ---
+  duration_ms: 5.595376
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,4,0,3
+ok 155 - F02/F06 five-fact convergence resolved=true order=1,2,4,0,3
+  ---
+  duration_ms: 5.688334
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,2,4,3,0
+ok 156 - F02/F06 five-fact convergence resolved=true order=1,2,4,3,0
+  ---
+  duration_ms: 5.704779
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,0,2,4
+ok 157 - F02/F06 five-fact convergence resolved=true order=1,3,0,2,4
+  ---
+  duration_ms: 5.842603
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,0,4,2
+ok 158 - F02/F06 five-fact convergence resolved=true order=1,3,0,4,2
+  ---
+  duration_ms: 6.194164
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,2,0,4
+ok 159 - F02/F06 five-fact convergence resolved=true order=1,3,2,0,4
+  ---
+  duration_ms: 5.984694
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,2,4,0
+ok 160 - F02/F06 five-fact convergence resolved=true order=1,3,2,4,0
+  ---
+  duration_ms: 5.702015
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,4,0,2
+ok 161 - F02/F06 five-fact convergence resolved=true order=1,3,4,0,2
+  ---
+  duration_ms: 5.651409
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,3,4,2,0
+ok 162 - F02/F06 five-fact convergence resolved=true order=1,3,4,2,0
+  ---
+  duration_ms: 6.127025
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,0,2,3
+ok 163 - F02/F06 five-fact convergence resolved=true order=1,4,0,2,3
+  ---
+  duration_ms: 5.624109
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,0,3,2
+ok 164 - F02/F06 five-fact convergence resolved=true order=1,4,0,3,2
+  ---
+  duration_ms: 6.22475
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,2,0,3
+ok 165 - F02/F06 five-fact convergence resolved=true order=1,4,2,0,3
+  ---
+  duration_ms: 5.629116
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,2,3,0
+ok 166 - F02/F06 five-fact convergence resolved=true order=1,4,2,3,0
+  ---
+  duration_ms: 5.920318
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,3,0,2
+ok 167 - F02/F06 five-fact convergence resolved=true order=1,4,3,0,2
+  ---
+  duration_ms: 5.513615
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=1,4,3,2,0
+ok 168 - F02/F06 five-fact convergence resolved=true order=1,4,3,2,0
+  ---
+  duration_ms: 5.594374
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,1,3,4
+ok 169 - F02/F06 five-fact convergence resolved=true order=2,0,1,3,4
+  ---
+  duration_ms: 5.853999
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,1,4,3
+ok 170 - F02/F06 five-fact convergence resolved=true order=2,0,1,4,3
+  ---
+  duration_ms: 5.760101
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,3,1,4
+ok 171 - F02/F06 five-fact convergence resolved=true order=2,0,3,1,4
+  ---
+  duration_ms: 5.679391
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,3,4,1
+ok 172 - F02/F06 five-fact convergence resolved=true order=2,0,3,4,1
+  ---
+  duration_ms: 5.884575
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,4,1,3
+ok 173 - F02/F06 five-fact convergence resolved=true order=2,0,4,1,3
+  ---
+  duration_ms: 5.67863
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,0,4,3,1
+ok 174 - F02/F06 five-fact convergence resolved=true order=2,0,4,3,1
+  ---
+  duration_ms: 5.61782
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,0,3,4
+ok 175 - F02/F06 five-fact convergence resolved=true order=2,1,0,3,4
+  ---
+  duration_ms: 6.952348
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,0,4,3
+ok 176 - F02/F06 five-fact convergence resolved=true order=2,1,0,4,3
+  ---
+  duration_ms: 5.863443
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,3,0,4
+ok 177 - F02/F06 five-fact convergence resolved=true order=2,1,3,0,4
+  ---
+  duration_ms: 5.650747
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,3,4,0
+ok 178 - F02/F06 five-fact convergence resolved=true order=2,1,3,4,0
+  ---
+  duration_ms: 5.532563
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,4,0,3
+ok 179 - F02/F06 five-fact convergence resolved=true order=2,1,4,0,3
+  ---
+  duration_ms: 6.073545
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,1,4,3,0
+ok 180 - F02/F06 five-fact convergence resolved=true order=2,1,4,3,0
+  ---
+  duration_ms: 6.024923
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,0,1,4
+ok 181 - F02/F06 five-fact convergence resolved=true order=2,3,0,1,4
+  ---
+  duration_ms: 6.712483
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,0,4,1
+ok 182 - F02/F06 five-fact convergence resolved=true order=2,3,0,4,1
+  ---
+  duration_ms: 6.375883
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,1,0,4
+ok 183 - F02/F06 five-fact convergence resolved=true order=2,3,1,0,4
+  ---
+  duration_ms: 5.959957
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,1,4,0
+ok 184 - F02/F06 five-fact convergence resolved=true order=2,3,1,4,0
+  ---
+  duration_ms: 6.025844
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,4,0,1
+ok 185 - F02/F06 five-fact convergence resolved=true order=2,3,4,0,1
+  ---
+  duration_ms: 5.606623
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,3,4,1,0
+ok 186 - F02/F06 five-fact convergence resolved=true order=2,3,4,1,0
+  ---
+  duration_ms: 5.730777
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,0,1,3
+ok 187 - F02/F06 five-fact convergence resolved=true order=2,4,0,1,3
+  ---
+  duration_ms: 5.76021
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,0,3,1
+ok 188 - F02/F06 five-fact convergence resolved=true order=2,4,0,3,1
+  ---
+  duration_ms: 5.76041
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,1,0,3
+ok 189 - F02/F06 five-fact convergence resolved=true order=2,4,1,0,3
+  ---
+  duration_ms: 5.566914
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,1,3,0
+ok 190 - F02/F06 five-fact convergence resolved=true order=2,4,1,3,0
+  ---
+  duration_ms: 5.7532
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,3,0,1
+ok 191 - F02/F06 five-fact convergence resolved=true order=2,4,3,0,1
+  ---
+  duration_ms: 5.949832
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=2,4,3,1,0
+ok 192 - F02/F06 five-fact convergence resolved=true order=2,4,3,1,0
+  ---
+  duration_ms: 5.529629
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,1,2,4
+ok 193 - F02/F06 five-fact convergence resolved=true order=3,0,1,2,4
+  ---
+  duration_ms: 5.985384
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,1,4,2
+ok 194 - F02/F06 five-fact convergence resolved=true order=3,0,1,4,2
+  ---
+  duration_ms: 6.015328
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,2,1,4
+ok 195 - F02/F06 five-fact convergence resolved=true order=3,0,2,1,4
+  ---
+  duration_ms: 5.728614
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,2,4,1
+ok 196 - F02/F06 five-fact convergence resolved=true order=3,0,2,4,1
+  ---
+  duration_ms: 5.558732
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,4,1,2
+ok 197 - F02/F06 five-fact convergence resolved=true order=3,0,4,1,2
+  ---
+  duration_ms: 5.852287
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,0,4,2,1
+ok 198 - F02/F06 five-fact convergence resolved=true order=3,0,4,2,1
+  ---
+  duration_ms: 6.78456
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,0,2,4
+ok 199 - F02/F06 five-fact convergence resolved=true order=3,1,0,2,4
+  ---
+  duration_ms: 6.094566
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,0,4,2
+ok 200 - F02/F06 five-fact convergence resolved=true order=3,1,0,4,2
+  ---
+  duration_ms: 7.081269
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,2,0,4
+ok 201 - F02/F06 five-fact convergence resolved=true order=3,1,2,0,4
+  ---
+  duration_ms: 5.599001
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,2,4,0
+ok 202 - F02/F06 five-fact convergence resolved=true order=3,1,2,4,0
+  ---
+  duration_ms: 5.927739
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,4,0,2
+ok 203 - F02/F06 five-fact convergence resolved=true order=3,1,4,0,2
+  ---
+  duration_ms: 5.760882
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,1,4,2,0
+ok 204 - F02/F06 five-fact convergence resolved=true order=3,1,4,2,0
+  ---
+  duration_ms: 5.904124
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,0,1,4
+ok 205 - F02/F06 five-fact convergence resolved=true order=3,2,0,1,4
+  ---
+  duration_ms: 6.209928
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,0,4,1
+ok 206 - F02/F06 five-fact convergence resolved=true order=3,2,0,4,1
+  ---
+  duration_ms: 6.556701
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,1,0,4
+ok 207 - F02/F06 five-fact convergence resolved=true order=3,2,1,0,4
+  ---
+  duration_ms: 6.383605
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,1,4,0
+ok 208 - F02/F06 five-fact convergence resolved=true order=3,2,1,4,0
+  ---
+  duration_ms: 8.301659
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,4,0,1
+ok 209 - F02/F06 five-fact convergence resolved=true order=3,2,4,0,1
+  ---
+  duration_ms: 6.338467
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,2,4,1,0
+ok 210 - F02/F06 five-fact convergence resolved=true order=3,2,4,1,0
+  ---
+  duration_ms: 5.733041
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,0,1,2
+ok 211 - F02/F06 five-fact convergence resolved=true order=3,4,0,1,2
+  ---
+  duration_ms: 5.627524
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,0,2,1
+ok 212 - F02/F06 five-fact convergence resolved=true order=3,4,0,2,1
+  ---
+  duration_ms: 6.215475
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,1,0,2
+ok 213 - F02/F06 five-fact convergence resolved=true order=3,4,1,0,2
+  ---
+  duration_ms: 6.288704
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,1,2,0
+ok 214 - F02/F06 five-fact convergence resolved=true order=3,4,1,2,0
+  ---
+  duration_ms: 6.305039
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,2,0,1
+ok 215 - F02/F06 five-fact convergence resolved=true order=3,4,2,0,1
+  ---
+  duration_ms: 5.702776
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=3,4,2,1,0
+ok 216 - F02/F06 five-fact convergence resolved=true order=3,4,2,1,0
+  ---
+  duration_ms: 6.493798
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,1,2,3
+ok 217 - F02/F06 five-fact convergence resolved=true order=4,0,1,2,3
+  ---
+  duration_ms: 6.010962
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,1,3,2
+ok 218 - F02/F06 five-fact convergence resolved=true order=4,0,1,3,2
+  ---
+  duration_ms: 5.898466
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,2,1,3
+ok 219 - F02/F06 five-fact convergence resolved=true order=4,0,2,1,3
+  ---
+  duration_ms: 6.139914
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,2,3,1
+ok 220 - F02/F06 five-fact convergence resolved=true order=4,0,2,3,1
+  ---
+  duration_ms: 6.194805
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,3,1,2
+ok 221 - F02/F06 five-fact convergence resolved=true order=4,0,3,1,2
+  ---
+  duration_ms: 5.655425
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,0,3,2,1
+ok 222 - F02/F06 five-fact convergence resolved=true order=4,0,3,2,1
+  ---
+  duration_ms: 5.777416
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,0,2,3
+ok 223 - F02/F06 five-fact convergence resolved=true order=4,1,0,2,3
+  ---
+  duration_ms: 6.087716
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,0,3,2
+ok 224 - F02/F06 five-fact convergence resolved=true order=4,1,0,3,2
+  ---
+  duration_ms: 5.791608
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,2,0,3
+ok 225 - F02/F06 five-fact convergence resolved=true order=4,1,2,0,3
+  ---
+  duration_ms: 6.261073
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,2,3,0
+ok 226 - F02/F06 five-fact convergence resolved=true order=4,1,2,3,0
+  ---
+  duration_ms: 11.81668
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,3,0,2
+ok 227 - F02/F06 five-fact convergence resolved=true order=4,1,3,0,2
+  ---
+  duration_ms: 6.121005
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,1,3,2,0
+ok 228 - F02/F06 five-fact convergence resolved=true order=4,1,3,2,0
+  ---
+  duration_ms: 11.559169
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,0,1,3
+ok 229 - F02/F06 five-fact convergence resolved=true order=4,2,0,1,3
+  ---
+  duration_ms: 11.972581
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,0,3,1
+ok 230 - F02/F06 five-fact convergence resolved=true order=4,2,0,3,1
+  ---
+  duration_ms: 11.321751
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,1,0,3
+ok 231 - F02/F06 five-fact convergence resolved=true order=4,2,1,0,3
+  ---
+  duration_ms: 6.858909
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,1,3,0
+ok 232 - F02/F06 five-fact convergence resolved=true order=4,2,1,3,0
+  ---
+  duration_ms: 5.90822
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,3,0,1
+ok 233 - F02/F06 five-fact convergence resolved=true order=4,2,3,0,1
+  ---
+  duration_ms: 6.208115
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,2,3,1,0
+ok 234 - F02/F06 five-fact convergence resolved=true order=4,2,3,1,0
+  ---
+  duration_ms: 5.917563
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,0,1,2
+ok 235 - F02/F06 five-fact convergence resolved=true order=4,3,0,1,2
+  ---
+  duration_ms: 5.88115
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,0,2,1
+ok 236 - F02/F06 five-fact convergence resolved=true order=4,3,0,2,1
+  ---
+  duration_ms: 6.361883
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,1,0,2
+ok 237 - F02/F06 five-fact convergence resolved=true order=4,3,1,0,2
+  ---
+  duration_ms: 6.079134
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,1,2,0
+ok 238 - F02/F06 five-fact convergence resolved=true order=4,3,1,2,0
+  ---
+  duration_ms: 5.87455
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,2,0,1
+ok 239 - F02/F06 five-fact convergence resolved=true order=4,3,2,0,1
+  ---
+  duration_ms: 6.485415
+  type: 'test'
+  ...
+# Subtest: F02/F06 five-fact convergence resolved=true order=4,3,2,1,0
+ok 240 - F02/F06 five-fact convergence resolved=true order=4,3,2,1,0
+  ---
+  duration_ms: 5.892136
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,1,2,3
+ok 241 - F04/F05 current plan and cancellation convergence upgrade=false order=0,1,2,3
+  ---
+  duration_ms: 5.863043
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,1,3,2
+ok 242 - F04/F05 current plan and cancellation convergence upgrade=false order=0,1,3,2
+  ---
+  duration_ms: 5.710747
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,2,1,3
+ok 243 - F04/F05 current plan and cancellation convergence upgrade=false order=0,2,1,3
+  ---
+  duration_ms: 6.007838
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,2,3,1
+ok 244 - F04/F05 current plan and cancellation convergence upgrade=false order=0,2,3,1
+  ---
+  duration_ms: 5.606403
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,3,1,2
+ok 245 - F04/F05 current plan and cancellation convergence upgrade=false order=0,3,1,2
+  ---
+  duration_ms: 5.521857
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=0,3,2,1
+ok 246 - F04/F05 current plan and cancellation convergence upgrade=false order=0,3,2,1
+  ---
+  duration_ms: 6.236947
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,0,2,3
+ok 247 - F04/F05 current plan and cancellation convergence upgrade=false order=1,0,2,3
+  ---
+  duration_ms: 6.089468
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,0,3,2
+ok 248 - F04/F05 current plan and cancellation convergence upgrade=false order=1,0,3,2
+  ---
+  duration_ms: 5.550109
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,2,0,3
+ok 249 - F04/F05 current plan and cancellation convergence upgrade=false order=1,2,0,3
+  ---
+  duration_ms: 6.207904
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,2,3,0
+ok 250 - F04/F05 current plan and cancellation convergence upgrade=false order=1,2,3,0
+  ---
+  duration_ms: 6.019936
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,3,0,2
+ok 251 - F04/F05 current plan and cancellation convergence upgrade=false order=1,3,0,2
+  ---
+  duration_ms: 5.866268
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=1,3,2,0
+ok 252 - F04/F05 current plan and cancellation convergence upgrade=false order=1,3,2,0
+  ---
+  duration_ms: 6.1239
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,0,1,3
+ok 253 - F04/F05 current plan and cancellation convergence upgrade=false order=2,0,1,3
+  ---
+  duration_ms: 6.735496
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,0,3,1
+ok 254 - F04/F05 current plan and cancellation convergence upgrade=false order=2,0,3,1
+  ---
+  duration_ms: 7.448274
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,1,0,3
+ok 255 - F04/F05 current plan and cancellation convergence upgrade=false order=2,1,0,3
+  ---
+  duration_ms: 7.127146
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,1,3,0
+ok 256 - F04/F05 current plan and cancellation convergence upgrade=false order=2,1,3,0
+  ---
+  duration_ms: 7.300765
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,3,0,1
+ok 257 - F04/F05 current plan and cancellation convergence upgrade=false order=2,3,0,1
+  ---
+  duration_ms: 6.33966
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=2,3,1,0
+ok 258 - F04/F05 current plan and cancellation convergence upgrade=false order=2,3,1,0
+  ---
+  duration_ms: 6.308854
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,0,1,2
+ok 259 - F04/F05 current plan and cancellation convergence upgrade=false order=3,0,1,2
+  ---
+  duration_ms: 6.743018
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,0,2,1
+ok 260 - F04/F05 current plan and cancellation convergence upgrade=false order=3,0,2,1
+  ---
+  duration_ms: 6.706894
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,1,0,2
+ok 261 - F04/F05 current plan and cancellation convergence upgrade=false order=3,1,0,2
+  ---
+  duration_ms: 8.538199
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,1,2,0
+ok 262 - F04/F05 current plan and cancellation convergence upgrade=false order=3,1,2,0
+  ---
+  duration_ms: 6.862585
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,2,0,1
+ok 263 - F04/F05 current plan and cancellation convergence upgrade=false order=3,2,0,1
+  ---
+  duration_ms: 6.354471
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=false order=3,2,1,0
+ok 264 - F04/F05 current plan and cancellation convergence upgrade=false order=3,2,1,0
+  ---
+  duration_ms: 5.824486
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,1,2,3
+ok 265 - F04/F05 current plan and cancellation convergence upgrade=true order=0,1,2,3
+  ---
+  duration_ms: 6.028428
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,1,3,2
+ok 266 - F04/F05 current plan and cancellation convergence upgrade=true order=0,1,3,2
+  ---
+  duration_ms: 7.062501
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,2,1,3
+ok 267 - F04/F05 current plan and cancellation convergence upgrade=true order=0,2,1,3
+  ---
+  duration_ms: 6.678812
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,2,3,1
+ok 268 - F04/F05 current plan and cancellation convergence upgrade=true order=0,2,3,1
+  ---
+  duration_ms: 6.55566
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,3,1,2
+ok 269 - F04/F05 current plan and cancellation convergence upgrade=true order=0,3,1,2
+  ---
+  duration_ms: 6.223597
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=0,3,2,1
+ok 270 - F04/F05 current plan and cancellation convergence upgrade=true order=0,3,2,1
+  ---
+  duration_ms: 8.187403
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,0,2,3
+ok 271 - F04/F05 current plan and cancellation convergence upgrade=true order=1,0,2,3
+  ---
+  duration_ms: 7.406001
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,0,3,2
+ok 272 - F04/F05 current plan and cancellation convergence upgrade=true order=1,0,3,2
+  ---
+  duration_ms: 6.073565
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,2,0,3
+ok 273 - F04/F05 current plan and cancellation convergence upgrade=true order=1,2,0,3
+  ---
+  duration_ms: 5.985495
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,2,3,0
+ok 274 - F04/F05 current plan and cancellation convergence upgrade=true order=1,2,3,0
+  ---
+  duration_ms: 6.229256
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,3,0,2
+ok 275 - F04/F05 current plan and cancellation convergence upgrade=true order=1,3,0,2
+  ---
+  duration_ms: 6.043681
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=1,3,2,0
+ok 276 - F04/F05 current plan and cancellation convergence upgrade=true order=1,3,2,0
+  ---
+  duration_ms: 6.341182
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,0,1,3
+ok 277 - F04/F05 current plan and cancellation convergence upgrade=true order=2,0,1,3
+  ---
+  duration_ms: 6.517434
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,0,3,1
+ok 278 - F04/F05 current plan and cancellation convergence upgrade=true order=2,0,3,1
+  ---
+  duration_ms: 6.660345
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,1,0,3
+ok 279 - F04/F05 current plan and cancellation convergence upgrade=true order=2,1,0,3
+  ---
+  duration_ms: 8.719028
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,1,3,0
+ok 280 - F04/F05 current plan and cancellation convergence upgrade=true order=2,1,3,0
+  ---
+  duration_ms: 9.221633
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,3,0,1
+ok 281 - F04/F05 current plan and cancellation convergence upgrade=true order=2,3,0,1
+  ---
+  duration_ms: 9.663478
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=2,3,1,0
+ok 282 - F04/F05 current plan and cancellation convergence upgrade=true order=2,3,1,0
+  ---
+  duration_ms: 9.248843
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,0,1,2
+ok 283 - F04/F05 current plan and cancellation convergence upgrade=true order=3,0,1,2
+  ---
+  duration_ms: 9.4492
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,0,2,1
+ok 284 - F04/F05 current plan and cancellation convergence upgrade=true order=3,0,2,1
+  ---
+  duration_ms: 12.45113
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,1,0,2
+ok 285 - F04/F05 current plan and cancellation convergence upgrade=true order=3,1,0,2
+  ---
+  duration_ms: 9.027975
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,1,2,0
+ok 286 - F04/F05 current plan and cancellation convergence upgrade=true order=3,1,2,0
+  ---
+  duration_ms: 8.745246
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,2,0,1
+ok 287 - F04/F05 current plan and cancellation convergence upgrade=true order=3,2,0,1
+  ---
+  duration_ms: 8.718807
+  type: 'test'
+  ...
+# Subtest: F04/F05 current plan and cancellation convergence upgrade=true order=3,2,1,0
+ok 288 - F04/F05 current plan and cancellation convergence upgrade=true order=3,2,1,0
+  ---
+  duration_ms: 8.398532
+  type: 'test'
+  ...
+1..288
+# tests 288
+# suites 0
+# pass 288
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2221.634796

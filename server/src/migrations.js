@@ -231,9 +231,16 @@ export function migrateDatabase(database) {
   // Old receipts omit subscription identity. Never guess which invoice settled
   // an existing legacy failure. Retain it until tenant-bound provider recovery.
   database.prepare(`INSERT OR IGNORE INTO billingRecoveryHolds(ownerId,stripeSubscriptionId,reason,createdAt)
-    SELECT ownerId,stripeSubscriptionId,'LEGACY_DEBT_REQUIRES_RECONCILIATION',updatedAt FROM billingAccounts b
-    WHERE paymentFailedAt IS NOT NULL AND stripeSubscriptionId IS NOT NULL
+    SELECT b.ownerId,b.stripeSubscriptionId,'LEGACY_DEBT_REQUIRES_RECONCILIATION',b.updatedAt FROM billingAccounts b
+    JOIN users u ON u.id=b.ownerId
+    WHERE (b.paymentFailedAt IS NOT NULL OR u.planStatus IN ('payment_failed','past_due')) AND b.stripeSubscriptionId IS NOT NULL
       AND NOT EXISTS (SELECT 1 FROM billingInvoiceEvidence i WHERE i.ownerId=b.ownerId AND i.stripeSubscriptionId=b.stripeSubscriptionId)`
+  ).run();
+  // Repair the legacy impossible failure-without-time state without inventing a
+  // new grace window. A verified invoice can later recover its actual timestamp.
+  database.prepare(`UPDATE users SET planStatus='suspended'
+    WHERE role='owner' AND planStatus IN ('payment_failed','past_due')
+      AND EXISTS (SELECT 1 FROM billingAccounts b WHERE b.ownerId=users.id AND b.paymentFailedAt IS NULL)`
   ).run();
   for (const statement of CREATE_TRIGGER_STATEMENTS) {
     database.exec(statement);

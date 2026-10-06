@@ -121,3 +121,20 @@ test('wrong-tenant provider hydration and write failure leave no receipt or evid
   h.db.exec('DROP TRIGGER synthetic_outbox');assert.equal((await f.send(invoice)).status,200);assert.equal(h.get().planStatus,'active');
  }finally{await f.close();h.db.close();}
 });
+
+test('F06 legacy missing failure time stays suspended; provider recovery uses original invoice time',async()=>{
+ const db=legacyStore();db.exec("UPDATE billingAccounts SET paymentFailedAt=NULL,graceEndsAt=NULL; UPDATE users SET paymentFailedAt=NULL;");migrateDatabase(db);
+ const {createBillingStateService}=await import('../server/src/billingStateService.js');
+ const service=createBillingStateService({db,pricePlanMap:{price_op_month:'Operator'},clock:()=>new Date((T+8*day)*1000)});
+ const h=harness();try{
+  assert.equal(db.prepare('SELECT planStatus FROM users').get().planStatus,'suspended');
+  service.applyVerifiedStripeEvent(h.sub('evt_card',20));assert.equal(db.prepare('SELECT planStatus FROM users').get().planStatus,'suspended');assert.equal(db.prepare('SELECT paymentFailedAt FROM users').get().paymentFailedAt,null);
+  db.prepare(`INSERT INTO billingEventReceipts(stripeEventId,ownerId,eventType,objectId,eventCreatedAt,eventDigest,outcome,sanitizedReceiptJson,resultJson,processedAt) VALUES('evt_legacy','SYNTHETIC-A','invoice.payment_failed','in_CURRENT',?,'legacy','APPLIED','{}','{}',?)`).run(T+10,iso(T+10));
+  const unpaid=h.inv('evt_current',8*day,{id:'in_CURRENT',status:'open',amount_paid:0});unpaid.type='invoice.payment_failed';
+  const provider={subscriptions:{retrieve:async()=>h.sub('evt_latest',8*day).data.object},invoices:{retrieve:async()=>unpaid.data.object}};
+  await service.reconcileVerifiedStripeEvent(unpaid,provider);
+  assert.equal(db.prepare('SELECT planStatus FROM users').get().planStatus,'suspended');assert.equal(db.prepare('SELECT paymentFailedAt FROM users').get().paymentFailedAt,iso(T+10));
+  await service.reconcileVerifiedStripeEvent(h.inv('evt_settled',8*day+1,{id:'in_CURRENT',amount_paid:11900}),provider);
+  assert.equal(db.prepare('SELECT planStatus FROM users').get().planStatus,'active');assert.equal(db.prepare('SELECT paymentFailedAt FROM users').get().paymentFailedAt,null);
+ }finally{h.db.close();db.close();}
+});

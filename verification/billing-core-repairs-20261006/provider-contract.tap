@@ -1,0 +1,79 @@
+TAP version 13
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: installed Stripe SDK contract: modern item fields, subscription retrieve/list and invoice retrieve use only local HTTP
+ok 1 - installed Stripe SDK contract: modern item fields, subscription retrieve/list and invoice retrieve use only local HTTP
+  ---
+  duration_ms: 41.200499
+  type: 'test'
+  ...
+# Subtest: modern base item periods win over different supplemental periods; legacy periods remain supported
+ok 2 - modern base item periods win over different supplemental periods; legacy periods remain supported
+  ---
+  duration_ms: 8.800088
+  type: 'test'
+  ...
+# Subtest: complete subscription lists reject two configured base items, including the same price twice
+ok 3 - complete subscription lists reject two configured base items, including the same price twice
+  ---
+  duration_ms: 6.385968
+  type: 'test'
+  ...
+# Subtest: provider read timeout preserves debt and permits later exact retry with one receipt
+ok 4 - provider read timeout preserves debt and permits later exact retry with one receipt
+  ---
+  duration_ms: 10.002871
+  type: 'test'
+  ...
+# Subtest: all four Checkout selections require a card and 14 days, with no setup charge
+ok 5 - all four Checkout selections require a card and 14 days, with no setup charge
+  ---
+  duration_ms: 95.456219
+  type: 'test'
+  ...
+# Subtest: F05 cancellation survives zero, paid, mixed and failed invoice evidence plus Checkout
+ok 6 - F05 cancellation survives zero, paid, mixed and failed invoice evidence plus Checkout
+  ---
+  duration_ms: 8.51182
+  type: 'test'
+  ...
+# (node:11) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: F03 old locally EXPIRED row accepts delayed completion; conflicting ledger subscription is quarantined
+ok 7 - F03 old locally EXPIRED row accepts delayed completion; conflicting ledger subscription is quarantined
+  ---
+  duration_ms: 19.148792
+  type: 'test'
+  ...
+# Subtest: deletion is terminal even after newer invoices, and canceled snapshots cannot be reopened
+ok 8 - deletion is terminal even after newer invoices, and canceled snapshots cannot be reopened
+  ---
+  duration_ms: 9.23348
+  type: 'test'
+  ...
+# Subtest: bounded provider timeout does not await a hung adapter indefinitely
+ok 9 - bounded provider timeout does not await a hung adapter indefinitely
+  ---
+  duration_ms: 1.433175
+  type: 'test'
+  ...
+# Subtest: changed expired Checkout request conflicts before reconciliation or new create
+ok 10 - changed expired Checkout request conflicts before reconciliation or new create
+  ---
+  duration_ms: 17.866821
+  type: 'test'
+  ...
+# Subtest: F04 concurrent provider read cannot overwrite a newer signed subscription update
+ok 11 - F04 concurrent provider read cannot overwrite a newer signed subscription update
+  ---
+  duration_ms: 22.078586
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 486.198632

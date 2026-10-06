@@ -647,7 +647,10 @@ export function createBillingStateService({
     }
     const debt=evidence.debt(account.ownerId,event.subscriptionId);
     const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(account.ownerId,event.subscriptionId);
-    if (debt.count || hold) {
+    if (hold && !debt.count && !account.paymentFailedAt) {
+      if (next.planStatus!=='canceled') next.planStatus='suspended';
+      next.paymentFailedAt=null; next.graceEndsAt=null;
+    } else if (debt.count || hold) {
       const failedAt=debt.count?eventInstant(debt.failedAt):account.paymentFailedAt || eventIso;
       const first=[failedAt,account.paymentFailedAt].filter(Boolean).sort()[0];
       const failure=paymentFailureState({...account,paymentFailedAt:first,graceEndsAt:null},new Date(Math.max(now().getTime(),event.created*1000)).toISOString());
@@ -726,12 +729,13 @@ export function createBillingStateService({
     });
   }
 
-  function applyVerifiedStripeEvent(rawEvent, {providerSubscription, providerInvoices = [], recoveredLegacy = false} = {}) {
+  function applyVerifiedStripeEvent(rawEvent, {providerSubscription, providerInvoices = [], providerInvoiceTimes = {}, recoveredLegacy = false, assertLease = () => {}} = {}) {
     // The HTTP integration must verify Stripe's raw-body signature before it
     // calls this state core. A redirect or client-provided session ID is never
     // payment evidence and must not reach this function as an event.
     const event = normalizeEvent(rawEvent);
     return immediate(db, () => {
+      assertLease();
       const existing = receiptById.get(event.id);
       if (existing) {
         if (existing.eventDigest !== event.digest && existing.eventDigest !== event.legacyDigest) {
@@ -778,7 +782,7 @@ export function createBillingStateService({
         transitionAccount=replacementBase(account);
       }
       ensureCurrentHistory(transitionAccount,event,processedAt);
-      for (const invoice of providerInvoices) evidence.recordInvoice({ownerId:account.ownerId,customerId:event.customerId,subscriptionId:event.subscriptionId,object:invoice,paid:invoice.status==='paid',created:event.created});
+      for (const invoice of providerInvoices) evidence.recordInvoice({ownerId:account.ownerId,customerId:event.customerId,subscriptionId:event.subscriptionId,object:invoice,paid:invoice.status==='paid',created:providerInvoiceTimes[invoice.id] ?? event.created});
       if (recoveredLegacy) db.prepare("DELETE FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=? AND reason='LEGACY_DEBT_REQUIRES_RECONCILIATION'").run(account.ownerId,event.subscriptionId);
       // Replacement creation cannot predate the server-created Checkout.
       const activation=completedCheckoutBySubscription.get(account.ownerId,event.customerId,event.subscriptionId);
@@ -805,23 +809,25 @@ export function createBillingStateService({
     const event=normalizeEvent(rawEvent);
     const prior=receiptById.get(event.id);
     if (prior) return applyVerifiedStripeEvent(rawEvent); // also detects changed-ID retries
-    const context=resolveAccountContext(event);
+    let context=resolveAccountContext(event);
     if (context.relationship==='TERMINAL' || event.type==='customer.subscription.deleted') return applyVerifiedStripeEvent(rawEvent);
-    const known=evidence.readSubscription(context.account.ownerId,event.subscriptionId);
-    const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
-    // Checkout supplies session/payment evidence only, so it can safely wait for
-    // the independent subscription event. A strictly newer signed subscription
-    // snapshot already carries authoritative items. Equal-second conflicting
-    // snapshots require a current provider read, never a type/ID tie breaker.
-    const stored=db.prepare('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
-    if (!hold && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
-        (event.type.startsWith('customer.subscription.') && (!known || event.created>stored.eventCreatedAt)))) return applyVerifiedStripeEvent(rawEvent);
     return withBillingLease(db,context.account.ownerId,async assertLease=>{
-      if (receiptById.get(event.id)) return applyVerifiedStripeEvent(rawEvent);
+      if (receiptById.get(event.id)) return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      context=resolveAccountContext(event);
+      if (context.relationship==='TERMINAL') return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      const known=evidence.readSubscription(context.account.ownerId,event.subscriptionId);
+      const recoveryHold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      // Checkout supplies session/payment evidence only. A strictly newer signed
+      // subscription already carries authoritative items. Equal-second conflicts
+      // require retrieval, never a type/ID tie breaker. Read this decision under
+      // the lease as well, so another worker cannot race the fast path.
+      const stored=db.prepare('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      if (!recoveryHold && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
+          (event.type.startsWith('customer.subscription.') && (!known || event.created>stored.eventCreatedAt)))) return applyVerifiedStripeEvent(rawEvent,{assertLease});
       const subscription=await billingProviderRead(()=>stripeClient.subscriptions.retrieve(event.subscriptionId,{expand:['latest_invoice']},BILLING_PROVIDER_OPTIONS));
       assertLease();
       if (subscription?.id!==event.subscriptionId || billingReference(subscription.customer)!==event.customerId) throw billingError('CROSS_ACCOUNT_IDS','Retrieved subscription does not match the event.');
-      const invoices=[];
+      const invoices=[], providerInvoiceTimes={};
       if (event.type==='invoice.payment_failed') {
         const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(event.objectId,{},BILLING_PROVIDER_OPTIONS));
         assertLease();
@@ -831,21 +837,21 @@ export function createBillingStateService({
       let recoveredLegacy=false;
       const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
       if (hold?.reason==='LEGACY_DEBT_REQUIRES_RECONCILIATION') {
-        const failures=db.prepare(`SELECT DISTINCT objectId FROM billingEventReceipts WHERE ownerId=? AND eventType='invoice.payment_failed'
-          AND eventCreatedAt>=? AND outcome='APPLIED' LIMIT 101`).all(context.account.ownerId,Math.floor(Date.parse(context.account.paymentFailedAt)/1000));
+        const failures=db.prepare(`SELECT objectId,MIN(eventCreatedAt) AS failedAt FROM billingEventReceipts WHERE ownerId=? AND eventType='invoice.payment_failed'
+          AND eventCreatedAt>=? AND outcome='APPLIED' GROUP BY objectId LIMIT 101`).all(context.account.ownerId,(context.account.paymentFailedAt ? Math.floor(Date.parse(context.account.paymentFailedAt)/1000) : 0));
         if (failures.length && failures.length<=100) {
           for (const failure of failures) {
             const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(failure.objectId,{},BILLING_PROVIDER_OPTIONS));
             assertLease();
             if (billingReference(invoice?.customer)!==event.customerId) throw billingError('CROSS_ACCOUNT_IDS','Legacy invoice customer mismatch.');
-            if (billingInvoiceSubscription(invoice)===event.subscriptionId && ['open','paid'].includes(invoice.status)) invoices.push(invoice);
+            if (billingInvoiceSubscription(invoice)===event.subscriptionId && ['open','paid'].includes(invoice.status)) {invoices.push(invoice);providerInvoiceTimes[invoice.id]=failure.failedAt;}
             else throw billingError('BILLING_RECOVERY_REQUIRED','Legacy debt cannot be attributed safely.');
           }
           recoveredLegacy=true;
         }
       }
       assertLease();
-      return applyVerifiedStripeEvent(rawEvent,{providerSubscription:subscription,providerInvoices:invoices,recoveredLegacy});
+      return applyVerifiedStripeEvent(rawEvent,{providerSubscription:subscription,providerInvoices:invoices,providerInvoiceTimes,recoveredLegacy,assertLease});
     },{clock:now});
   }
 

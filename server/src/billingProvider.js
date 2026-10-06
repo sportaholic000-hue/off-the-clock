@@ -25,5 +25,8 @@ export async function billingProviderRead(call) {
   let timer;
   try {
     return await Promise.race([Promise.resolve().then(call),new Promise((_,reject)=>{timer=setTimeout(()=>reject(billingProviderError()),BILLING_PROVIDER_OPTIONS.timeout);})]);
+  } catch(error) {
+    if (error?.code?.startsWith('BILLING_')) throw error;
+    throw billingProviderError();
   } finally {clearTimeout(timer);}
 }
