@@ -1,6 +1,7 @@
-# October 6 consolidated quote release candidate — verification in progress
+# October 6 consolidated quote release candidate — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`.
+Tested source/test/CI SHA: **`9f4a7ae2e7a38514972f7133015df6f3e4662705`**.
 Pinned inputs: website `0e687907cca8b186d8b85eb285bb82c1deda6a6d`, engine core
 `509891e39318bee344951278dd2667e4ab1f700a`, voice verification
 `20f1cd3b9ef73c418bb5b6828da8031f2ba3bb59`.
@@ -13,13 +14,27 @@ pause quoting cleanly; date diagnostics identify their actual field. Voice
 catalog/status/intake/calculation use explicit trusted profile and clock context.
 No arithmetic policy changes beyond the already approved v7 input are added.
 
-Local checks so far: 112 core baseline checks; 75 storage/date/persistence
+**Hosted verification:** cold `npm ci` and both production builds passed.
+`npm run test:quote` passed **1,968/1,968** across 84 selected files.
+`npm test` passed **2,338/2,338**. Both completed with **zero failures,
+cancellations, skips or TODOs**. The production dependency audit found zero
+vulnerabilities. [CI run 37417558807](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37417558807)
+completed successfully at the tested SHA above.
+
+Local checks: 112 core baseline checks; 75 storage/date/persistence
 checks; 39 voice integration/persistence checks; 28 prior audit controls, all
 passed with zero skips. Counts overlap. All 42 existing before/after quote
 fixtures retain their outcome, line items and scenario amounts exactly. The
 45 new release tests comprise 41 storage/date cases and four voice date cases.
-Cold installation and owner/widget builds passed. Full local and hosted gates
-are still pending; this is not a completed release verification record.
+Cold installation and owner/widget builds passed.
+
+**Local verification limits:** the local strict run completed with 1,931 passes
+and 37 browser-startup failures because Chromium was unavailable, with zero
+skips. The local full-suite attempt ended without a final summary and is not
+counted as a pass. The completed hosted run supplies the full-suite and browser
+evidence. An earlier website-only baseline run also hit two existing catalog
+timing assertions; both pass on this combined candidate. No timing threshold
+was relaxed.
 
 The full runner now enables Node 22 module mocks: the existing previously
 skipped tests passed 10/10 locally with that flag. No failure allowances were

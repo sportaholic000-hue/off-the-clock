@@ -66,6 +66,7 @@ known-failure allowance. Read the actual counts and tested SHA in BUILD_STATUS;
 reports attached to other SHAs remain historical evidence.
 
 Targeted release regressions are `test/quoteReleaseStorage.spec.mjs` and
-`server/quote-engine-vnext/tests/releaseDiagnostics.spec.mjs`. Website and voice
+`server/quote-engine-vnext/tests/releaseDiagnostics.spec.mjs`, plus
+`test/voiceQuoteDateIntegration.spec.mjs`. Website and voice
 acceptance tests remain in `test/websitePrice*` and
 `test/voiceQuotePathRegression20261005.spec.mjs`. No tests use live business data.
