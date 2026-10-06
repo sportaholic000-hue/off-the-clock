@@ -1155,7 +1155,7 @@ export function createBookingService({
       if(held.status!=='HELD')throw invalid('Replacement slot unavailable.');
     }
     immediate(()=>{
-      const claimed=db.prepare("UPDATE appointments SET providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(nowFrom(clock).toISOString(),ownerId,row.id);
+      const claimed=db.prepare("UPDATE appointments SET status='PENDING_CONFIRMATION',providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(nowFrom(clock).toISOString(),ownerId,row.id);
       if(claimed.changes!==1)throw invalid('An appointment change is already in progress.');
       // Retain both the old slot and a possible new slot until the remote
       // result is known. An ambiguous write must never free either slot.
@@ -1171,7 +1171,7 @@ export function createBookingService({
         // can safely be released. The existing appointment is untouched.
         immediate(()=>{
           db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(nowFrom(clock).toISOString(),ownerId,held.holdId);
-          db.prepare('UPDATE appointments SET providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?').run(row.providerEventStatus,nowFrom(clock).toISOString(),ownerId,row.id);
+          db.prepare("UPDATE appointments SET status='CONFIRMED',providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?").run(row.providerEventStatus,nowFrom(clock).toISOString(),ownerId,row.id);
         });throw error;
       }
     }
@@ -1183,7 +1183,7 @@ export function createBookingService({
       if(action==='cancel')db.prepare("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.id);
       else{
         const lock=db.prepare('SELECT * FROM bookingHolds WHERE ownerId=? AND id=?').get(ownerId,held.holdId);
-        db.prepare("UPDATE appointments SET bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(intentId,held.holdId,changed.startAtUtc,changed.endAtUtc,changed.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,ownerId,row.id);
+        db.prepare("UPDATE appointments SET status='CONFIRMED',bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(intentId,held.holdId,changed.startAtUtc,changed.endAtUtc,changed.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,ownerId,row.id);
         db.prepare("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,held.holdId);
       }
       if(row.holdId)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.holdId);

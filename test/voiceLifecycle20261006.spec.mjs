@@ -224,6 +224,7 @@ test('D04 ambiguous calendar change preserves both reservations and request evid
   const h=calendarFixture(t,{failChange:true}),row=await seedAppointment(h),slots=await h.service.appointmentAvailability({ownerId:h.ownerId,appointmentId:row.id,callerNumber:FROM,filters:{fromDate:'2026-10-08',days:1}});
   await assert.rejects(h.service.modifyAppointment({ownerId:h.ownerId,callSid:h.context.callSid,appointment:row,action:'reschedule',idempotencyKey:randomUUID(),slotId:slots.body.slots[0].slotId,intentId:slots.intentId}));
   assert.equal(h.db.prepare('SELECT startAtUtc FROM appointments WHERE id=?').get(row.id).startAtUtc,row.startAtUtc);
+  assert.equal(h.db.prepare('SELECT status FROM appointments WHERE id=?').get(row.id).status,'PENDING_CONFIRMATION');
   assert.equal(h.db.prepare("SELECT COUNT(*) n FROM bookingHolds WHERE status='CONFIRMING' AND expiresAtUtc>'2099'").get().n,1);
 });
 test('D04 rescheduling rechecks remote availability before writing a stale offered slot',async t=>{
