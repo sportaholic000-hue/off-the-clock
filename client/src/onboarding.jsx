@@ -419,7 +419,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your operator can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
-      <fieldset disabled={busy}>
+      <fieldset className="review-contact" disabled={busy}>
         <legend>Owner or manager</legend>
         <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
         <div className="kb-grid">
