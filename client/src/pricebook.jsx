@@ -517,10 +517,10 @@ function Preview({ preview, loading, status }) {
               ) : (
                 <p className="quote-driver-empty">Labor and materials for the job as described.</p>
               )}
-              <div className="quote-midpoint-row">
+              {active.lowEstimate!==active.highEstimate&&<div className="quote-midpoint-row">
                 <span>Midpoint estimate</span>
                 <span className="mono quote-midpoint-value">{money.amount(active.midEstimate)}{active.priceUnit ? ` ${active.priceUnit}` : ''}</span>
-              </div>
+              </div>}
             </div>
 
             {active.skippedAddons?.length > 0 && (

@@ -40,7 +40,10 @@ test('display: minimum-bound taxed mowing is a single $172.50 on all four surfac
  assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[172.5,172.5,172.5]);
  for(const [surface,data] of [['customer',{result}],['records',{rows:[{id:'synthetic-mowing',result}],kind:'quotes'}],['preview',{preview}]]){
   const html=await renderDisplay(surface,data);assert.ok(html.includes('$172.50'),surface);assert.ok(!html.includes('$172.5<')&&!html.includes('$172.5 '),surface);
-  if(surface==='preview')assert.ok(!html.includes('quote-dash')&&!html.includes('quote-high'),'equal endpoints have one price');
+  if(surface==='preview'){
+   assert.ok(!html.includes('quote-dash')&&!html.includes('quote-high'),'equal endpoints have one price');
+   assert.equal((html.match(/\$172\.50/g)||[]).length,1,'an exact total also hides the redundant midpoint');
+  }
  }
  const phone=conciseVoiceSummary(result);assert.ok(phone.includes('$172.50 CAD per visit. Includes applicable tax.'));assert.ok(!phone.includes('..'));
 });

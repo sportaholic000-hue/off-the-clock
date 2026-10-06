@@ -80,7 +80,8 @@ test('display browser: $172.50 minimum appears on all four surfaces and equal pr
  await show('surfaces',{result,preview,phone});await page.locator('#customer strong').waitFor();
  for(const id of ['customer','records'])assert.equal(await page.locator('#'+id+' strong').textContent(),'$172.50 per visit');
  assert.equal(await page.locator('#preview .quote-low').textContent(),'$172.50');
- assert.equal(await page.locator('#preview .quote-high, #preview .quote-dash').count(),0);
+ assert.equal(await page.locator('#preview .quote-high, #preview .quote-dash, #preview .quote-midpoint-row').count(),0);
+ assert.equal(((await page.locator('#preview').textContent()).match(/\$172\.50/g)||[]).length,1);
  assert.ok((await page.locator('#phone').textContent()).includes('$172.50 CAD per visit. Includes applicable tax.'));
  assert.ok(!(await page.locator('#phone').textContent()).includes('..'));
 }));
