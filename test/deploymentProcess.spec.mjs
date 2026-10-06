@@ -67,8 +67,9 @@ test('production app writes to persistent storage, survives two process restarts
   assert.deepEqual(persisted.rows,written.rows);assert.deepEqual(persisted.books,written.books);assert.ok(persisted.snapshots>=1);await second.stop();
   const target=path.join(volume,'restores','drill');
   const restore=spawn(process.execPath,['server/scripts/restore.js','--backup',snapshot.bundle,'--target',target],{cwd:project,env:second.env,windowsHide:true,stdio:['ignore','pipe','pipe']});
-  let log='';restore.stdout.on('data',chunk=>{log+=chunk;});restore.stderr.on('data',chunk=>{log+=chunk;});
-  const [code]=await once(restore,'exit');assert.equal(code,0,log);assert.equal(JSON.parse(log.trim()).destination,target);
+  let stdout='',stderr='';restore.stdout.on('data',chunk=>{stdout+=chunk;});restore.stderr.on('data',chunk=>{stderr+=chunk;});
+  // Runtime warnings on stderr must not corrupt the CLI's JSON response.
+  const [code]=await once(restore,'exit');assert.equal(code,0,stdout+stderr);assert.equal(JSON.parse(stdout.trim()).destination,target);
   const third=await child(t,{...env,APP_DATA_DIR:target},processes),restored=await third.rpc('read');
   assert.deepEqual(restored.rows,written.rows);assert.deepEqual(restored.books,written.books);
   assert.ok(fs.existsSync(path.join(target,'pricebooks','a.json')),'restored price book is in the restored data folder');
