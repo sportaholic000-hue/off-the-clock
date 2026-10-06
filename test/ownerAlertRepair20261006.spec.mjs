@@ -147,3 +147,9 @@ test('alerts: lifecycle starts one timer and shutdown stops further sends withou
   const f=fixture(t),c=f.context();await capture(f,c,{callbackRequested:true});let calls=0,release;const log=[];
   const w=worker(f,{send:()=>{calls++;return new Promise(resolve=>release=resolve);}}),stop=w.start({intervalMs:100,onError:code=>log.push(code)});assert.equal(w.start(),stop);await new Promise(resolve=>setImmediate(resolve));const stopped=stop();release({accepted:true,id:'SYNTHETIC_STOPPED'});await stopped;await new Promise(resolve=>setTimeout(resolve,130));assert.equal(calls,1);assert.deepEqual(log,[]);assert.equal(alerts(f).filter(a=>a.status==='ACCEPTED').length,1);assert.equal(alerts(f).filter(a=>a.status==='PENDING').length,1);
 });
+
+test('alerts: missing owner email blocks every event without starving later records and recovers each once',async t=>{
+  const f=fixture(t),c=f.context();await capture(f,c,{callbackRequested:true});f.db.prepare('UPDATE users SET email=? WHERE id=?').run('SYNTHETIC_INVALID_EMAIL',c.ownerId);
+  const fake=sender(),w=worker(f,{send:fake.send});for(let n=0;n<3;n++)await w.dispatchOnce();assert.equal(fake.attempts.length,0);assert.deepEqual(alerts(f).map(a=>a.status),['BLOCKED','BLOCKED']);assert.ok(alerts(f).every(a=>a.lastErrorCode==='OWNER_EMAIL_MISSING'));
+  f.db.prepare('UPDATE users SET email=? WHERE id=?').run('synthetic-a@example.invalid',c.ownerId);await w.dispatchOnce();assert.equal(fake.accepted.size,2);assert.ok(alerts(f).every(a=>a.status==='ACCEPTED'));
+});

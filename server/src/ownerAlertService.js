@@ -121,7 +121,10 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
     let processed=0;
     for(const {ownerId}of owners){
       if(workerStopping||processed>=20)break;ownerCursor=ownerId;
-      if(ready())query("UPDATE ownerAlerts SET status='PENDING',lastErrorCode=NULL WHERE ownerId=? AND status='BLOCKED' AND lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING')").run(ownerId);
+      // A valid provider alone does not resolve a missing recipient. Requeue
+      // only after both are usable, so one blocked event cannot starve the rest.
+      const owner=query("SELECT email FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
+      if(ready()&&email(owner?.email))query("UPDATE ownerAlerts SET status='PENDING',lastErrorCode=NULL WHERE ownerId=? AND status='BLOCKED' AND lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING')").run(ownerId);
       for(let n=0;n<10&&!workerStopping&&processed<20;n++){if(!await processOne(ownerId))break;processed++;}
     }
     return {processed};

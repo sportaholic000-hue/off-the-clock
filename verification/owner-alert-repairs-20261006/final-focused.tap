@@ -1,0 +1,221 @@
+TAP version 13
+# Subtest: callback: no_destination persists caller words once and owner/staff see them
+ok 1 - callback: no_destination persists caller words once and owner/staff see them
+  ---
+  duration_ms: 17.649178
+  type: 'test'
+  ...
+# Subtest: callback: no_provider persists caller words once and owner/staff see them
+ok 2 - callback: no_provider persists caller words once and owner/staff see them
+  ---
+  duration_ms: 9.453356
+  type: 'test'
+  ...
+# Subtest: callback: no_answer persists caller words once and owner/staff see them
+ok 3 - callback: no_answer persists caller words once and owner/staff see them
+  ---
+  duration_ms: 9.86052
+  type: 'test'
+  ...
+# Subtest: callback: throws persists caller words once and owner/staff see them
+ok 4 - callback: throws persists caller words once and owner/staff see them
+  ---
+  duration_ms: 8.470869
+  type: 'test'
+  ...
+# Subtest: callback: successful transfer does not invent a callback
+ok 5 - callback: successful transfer does not invent a callback
+  ---
+  duration_ms: 6.603671
+  type: 'test'
+  ...
+# Subtest: callback: explicit requests, corrections, omitted contact, dismissal and genuine separate requests
+ok 6 - callback: explicit requests, corrections, omitted contact, dismissal and genuine separate requests
+  ---
+  duration_ms: 11.045326
+  type: 'test'
+  ...
+# Subtest: callback: transcript fallback preserves the original retry request and separates numbered requests
+ok 7 - callback: transcript fallback preserves the original retry request and separates numbered requests
+  ---
+  duration_ms: 16.201426
+  type: 'test'
+  ...
+# Subtest: callback: missing notes reject explicit requests; foreign handles and caller bindings fail closed
+ok 8 - callback: missing notes reject explicit requests; foreign handles and caller bindings fail closed
+  ---
+  duration_ms: 9.225678
+  type: 'test'
+  ...
+# Subtest: callback: database failure rolls back callback/lead/alert and prevents saved acknowledgement
+ok 9 - callback: database failure rolls back callback/lead/alert and prevents saved acknowledgement
+  ---
+  duration_ms: 12.731361
+  type: 'test'
+  ...
+# Subtest: alerts: new lead, saved quote and callback enqueue atomically and each accepts once
+ok 10 - alerts: new lead, saved quote and callback enqueue atomically and each accepts once
+  ---
+  duration_ms: 10.205251
+  type: 'test'
+  ...
+# Subtest: alerts: an alert insert failure rolls back capture instead of silently saving without its event
+ok 11 - alerts: an alert insert failure rolls back capture instead of silently saving without its event
+  ---
+  duration_ms: 5.522798
+  type: 'test'
+  ...
+# Subtest: alerts: timeout after provider acceptance reuses identical key and message without a duplicate
+ok 12 - alerts: timeout after provider acceptance reuses identical key and message without a duplicate
+  ---
+  duration_ms: 9.94838
+  type: 'test'
+  ...
+# Subtest: alerts: missing configuration blocks without a provider call and recovers after configuration
+ok 13 - alerts: missing configuration blocks without a provider call and recovers after configuration
+  ---
+  duration_ms: 6.988731
+  type: 'test'
+  ...
+# Subtest: alerts: definitive provider failures exhaust bounded retries and can be retried without duplicates
+ok 14 - alerts: definitive provider failures exhaust bounded retries and can be retried without duplicates
+  ---
+  duration_ms: 11.719576
+  type: 'test'
+  ...
+# Subtest: alerts: two workers cannot claim the same live lease
+ok 15 - alerts: two workers cannot claim the same live lease
+  ---
+  duration_ms: 7.541261
+  type: 'test'
+  ...
+# Subtest: alerts: ambiguous expired lease replays once, and stale completion cannot overwrite the new result
+ok 16 - alerts: ambiguous expired lease replays once, and stale completion cannot overwrite the new result
+  ---
+  duration_ms: 21.031282
+  type: 'test'
+  ...
+# Subtest: alerts: unknown outcomes beyond retention stay visible and do not resend
+ok 17 - alerts: unknown outcomes beyond retention stay visible and do not resend
+  ---
+  duration_ms: 8.225335
+  type: 'test'
+  ...
+# Subtest: alerts: changed owner email cannot silently mutate a historical retry payload
+ok 18 - alerts: changed owner email cannot silently mutate a historical retry payload
+  ---
+  duration_ms: 17.097705
+  type: 'test'
+  ...
+# Subtest: alerts: finite timeout bounds stalled provider and does not claim sent
+ok 19 - alerts: finite timeout bounds stalled provider and does not claim sent
+  ---
+  duration_ms: 19.451029
+  type: 'test'
+  ...
+# Subtest: alerts: urgency, preferred times and completed calls have durable records; upgrade does not double preference alerts
+ok 20 - alerts: urgency, preferred times and completed calls have durable records; upgrade does not double preference alerts
+  ---
+  duration_ms: 12.031108
+  type: 'test'
+  ...
+# Subtest: alerts: tenant-bound list/retry/seen omit message bodies, addresses and private pricing
+ok 21 - alerts: tenant-bound list/retry/seen omit message bodies, addresses and private pricing
+  ---
+  duration_ms: 9.782394
+  type: 'test'
+  ...
+# Subtest: alerts: on-disk callback and failed attempts survive a cold worker restart
+ok 22 - alerts: on-disk callback and failed attempts survive a cold worker restart
+  ---
+  duration_ms: 28.992995
+  type: 'test'
+  ...
+# Subtest: email adapter: fake fetch confirms exact payload/key and disabled config never makes a request
+ok 23 - email adapter: fake fetch confirms exact payload/key and disabled config never makes a request
+  ---
+  duration_ms: 0.766276
+  type: 'test'
+  ...
+# Subtest: alerts: database failure after provider acceptance replays the frozen message after lease recovery
+ok 24 - alerts: database failure after provider acceptance replays the frozen message after lease recovery
+  ---
+  duration_ms: 8.696353
+  type: 'test'
+  ...
+# Subtest: alerts: preferences survive reinstall with one event and call binding; an explicit callback handle keeps its original inquiry
+ok 25 - alerts: preferences survive reinstall with one event and call binding; an explicit callback handle keeps its original inquiry
+  ---
+  duration_ms: 9.692741
+  type: 'test'
+  ...
+# Subtest: alerts: two independent cold processes use one durable queue and one fake provider acceptance per event
+ok 26 - alerts: two independent cold processes use one durable queue and one fake provider acceptance per event
+  ---
+  duration_ms: 242.432351
+  type: 'test'
+  ...
+# Subtest: alerts: queued callback corrections preserve each revision words rather than substituting the latest notes
+ok 27 - alerts: queued callback corrections preserve each revision words rather than substituting the latest notes
+  ---
+  duration_ms: 12.331924
+  type: 'test'
+  ...
+# Subtest: alerts: lifecycle starts one timer and shutdown stops further sends without logging customer details
+ok 28 - alerts: lifecycle starts one timer and shutdown stops further sends without logging customer details
+  ---
+  duration_ms: 139.528278
+  type: 'test'
+  ...
+# Subtest: alerts: missing owner email blocks every event without starving later records and recovers each once
+ok 29 - alerts: missing owner email blocks every event without starving later records and recovers each once
+  ---
+  duration_ms: 10.104761
+  type: 'test'
+  ...
+# Subtest: owner alert repairs: actual routes and rendered callback/delivery visibility
+    # Subtest: owner and staff see exact callback notes, stored delivery failures and honest acceptance wording
+    ok 1 - owner and staff see exact callback notes, stored delivery failures and honest acceptance wording
+      ---
+      duration_ms: 44.276375
+      type: 'test'
+      ...
+    # Subtest: foreign owners cannot read, mark seen or retry alerts; staff cannot mutate alerts
+    ok 2 - foreign owners cannot read, mark seen or retry alerts; staff cannot mutate alerts
+      ---
+      duration_ms: 30.604114
+      type: 'test'
+      ...
+    # Subtest: owner retry route plus fake worker recovers once and accepted alerts do not resend
+    ok 3 - owner retry route plus fake worker recovers once and accepted alerts do not resend
+      ---
+      duration_ms: 16.584819
+      type: 'test'
+      ...
+    # Subtest: failure inbox remains paginated beyond the dashboard limit and belongs to the current tenant
+    ok 4 - failure inbox remains paginated beyond the dashboard limit and belongs to the current tenant
+      ---
+      duration_ms: 10.821945
+      type: 'test'
+      ...
+    # Subtest: actual route data renders caller words, failed and accepted email state, and staff-safe views
+    ok 5 - actual route data renders caller words, failed and accepted email state, and staff-safe views
+      ---
+      duration_ms: 713.312321
+      type: 'test'
+      ...
+    1..5
+ok 30 - owner alert repairs: actual routes and rendered callback/delivery visibility
+  ---
+  duration_ms: 1297.370577
+  type: 'test'
+  ...
+1..30
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1728.253265
