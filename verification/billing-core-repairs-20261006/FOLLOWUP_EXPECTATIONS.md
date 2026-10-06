@@ -21,3 +21,5 @@ F09: at expired grace or suspended, GET data and billing/auth recovery remain av
 F10: connected3,601seconds =>61minutes, trial overrun $0, next call fallback. 0/1/59/60/61seconds=>0/1/1/1/2minutes. Each call rounded separately: two31second calls=>2minutes. Duplicates/restart never add again. Spam/fallback=>0. Trial usage excludes calls outside the exact persisted trial start/end; paid usage uses persisted subscription period. No Stripe usage submission or charges.
 
 Refund/overage/notifications/offboarding: inspect current handlers and execute available local paths. Missing implementations stay missing; no feature creation. Unsupported refund must not mutate billing or call provider. No policy about refund access/proration/repeat trials is invented.
+
+Additional existing-policy control before correction: docs/operator-integrations.md:23 explicitly retains endpoint removal after cancellation. DELETE /api/integrations/webhook for canceled/cancelled owners must remain200; adding/rotating/retrying still denies. This is cancellation security cleanup, not an exception for unresolved payment-failure suspension. GET CSV export remains available.

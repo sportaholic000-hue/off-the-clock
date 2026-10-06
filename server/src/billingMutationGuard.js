@@ -9,6 +9,9 @@ export function billingMutationDecision(database,req,{now=Date.now()}={}) {
   const path=req.route?.path || req.path;
   if(req.method==='POST'&&(RECOVERY_PATHS.has(path)||READ_ONLY_POSTS.has(path)))return {allowed:true};
   const owner=database.prepare("SELECT plan,planStatus,trialEndsAt,paymentFailedAt FROM users WHERE id=? AND role='owner'").get(req.tenantOwnerId);
+  // Existing cancellation cleanup contract: docs/operator-integrations.md:23.
+  // This removes delivery authority; it cannot configure or send a webhook.
+  if(req.method==='DELETE'&&path==='/api/integrations/webhook'&&['canceled','cancelled'].includes(owner?.planStatus))return {allowed:true};
   const decision=accountAccessDecision(owner,{now});
   if(decision.allowed)return decision;
   // Platform section4 creates the account before Checkout. Permit only that
