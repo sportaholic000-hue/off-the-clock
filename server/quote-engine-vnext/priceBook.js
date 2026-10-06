@@ -1,5 +1,6 @@
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
+import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,peakSurchargeConfigured,MISSING_PEAK_TIME_ZONE} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
@@ -905,6 +906,10 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   service = canonicalServiceIdentityVNext(service);
   if (!SERVICE_TYPES.includes(service.serviceType)) return statusFromDiagnostics(service, [{ type: 'invalid', kind: 'service', path: 'serviceType', message: 'Service type is unsupported.' }]);
   const pricing = pricingOf(service);
+  const hasDateContext=Object.hasOwn(options,'dateContext');
+  const timeZone=hasDateContext?resolvedQuoteTimeZone(businessDefaults||{},options.dateContext?.timeZone):null;
+  const missingPeakZone=hasDateContext&&timeZone===null&&peakSurchargeConfigured(service,businessDefaults||{});
+  if(hasDateContext&&businessDefaults!==null&&businessDefaults!==undefined)businessDefaults=quoteDefaultsForTimeZone(businessDefaults,timeZone);
   const defaultValidation = businessDefaults === null || businessDefaults === undefined
     ? {
         ok: false,
@@ -918,6 +923,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
       : `businessDefaults.${item.path}`
   }));
   const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType), ...defaultDiagnostics];
+  if(missingPeakZone)diagnostics.push({type:'missing',kind:'quote_date',path:'businessDefaults.quoteTimeZone',message:MISSING_PEAK_TIME_ZONE});
   if (service.active !== true) diagnostics.push({ type: 'invalid', kind: 'activation', path: 'active', message: 'Service is not enabled for customer quoting.' });
   if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) diagnostics.push({ type: 'invalid', kind: 'service', path: 'service', message: 'Custom service requires a specific configured offering name.' });
 

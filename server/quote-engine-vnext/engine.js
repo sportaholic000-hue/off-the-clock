@@ -1,4 +1,5 @@
 import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
+import {recordedQuoteDateIssue,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import crypto from 'node:crypto';
@@ -43,11 +44,11 @@ import {
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-launch-fixes-20261005-v6';
+export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
-  'callerType', 'feeSelections', 'currentMonth', 'allowInactiveOwnerPreview'
+  'callerType', 'feeSelections', 'currentMonth', 'quoteDate', 'allowInactiveOwnerPreview'
 ]);
 const DEFAULT_DISCLAIMER = 'This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price.';
 const FEWER_OPTIONS_NOTICE = 'Fewer options are available because one or more configured options need owner review.';
@@ -1248,6 +1249,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     callerType = 'customer',
     feeSelections = {},
     currentMonth = new Date().getMonth() + 1,
+    quoteDate,
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
   const quoteId = crypto.randomUUID();
@@ -1358,7 +1360,14 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     }
   }
 
-  const defaultValidation = reuseActivation(prepared, 'defaults', () => validateBusinessDefaults(businessDefaults));
+  if(quoteDate!==undefined){
+    const issue=recordedQuoteDateIssue(ownerPricing,businessDefaults,quoteDate);
+    if(issue)return finishReview({reviewReason:issue,invalidOwnerFields:['businessDefaults.quoteTimeZone'],ownerDiagnostics:[{type:'invalid',kind:'quote_date',path:'businessDefaults.quoteTimeZone',message:issue}]});
+    const localMonth=monthForRecordedQuoteDate(quoteDate);
+    if(Object.hasOwn(requestSnapshot.value,'currentMonth')&&currentMonth!==localMonth)return finishReview({reviewReason:'Quote month does not match its recorded time zone and instant.',invalidOwnerFields:['quoteDate']});
+    currentMonth=localMonth;
+  }
+  const defaultValidation = reuseActivation(prepared, 'defaults', () => validateBusinessDefaults(quoteDate===undefined?businessDefaults:quoteDefaultsForTimeZone(businessDefaults,quoteDate.timeZone)));
   if (!defaultValidation.ok) {
     const ownerDiagnostics = defaultValidation.diagnostics.map(item => ({ ...item, path: `businessDefaults.${item.path}` }));
     return finishReview({
@@ -1525,7 +1534,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       serviceType,
       options: structuredClone(options.map(option => option.calculationRecord)),
       ownerConfiguration: cloneConfigurationEvidence({ ...ownerPricing, pricing: basePricing }),
-      financialInputs: structuredClone({ businessDefaults, feeSelections, currentMonth }),
+      financialInputs: structuredClone({ businessDefaults, feeSelections, currentMonth, ...(quoteDate===undefined?{}:{quoteDate}) }),
+      ...(quoteDate===undefined?{}:{quoteDate:structuredClone(quoteDate)}),
       customerEligible: ownerPricing.active === true && unconfirmedOwnerFields.length === 0,
     }
   };
@@ -1762,7 +1772,10 @@ function rootCalculationRecordMatches(result) {
 // An internally consistent different price is not evidence for this price book.
 function configuredCalculationMatches(result) {
   const inputs=result.calculationRecord.financialInputs;
-  if(!isPlainObject(inputs)||Object.keys(inputs).length!==3||!['businessDefaults','feeSelections','currentMonth'].every(k=>Object.hasOwn(inputs,k)))return false;
+  if(!isPlainObject(inputs)||!['businessDefaults','feeSelections','currentMonth'].every(k=>Object.hasOwn(inputs,k)))return false;
+  const hasDate=Object.hasOwn(inputs,'quoteDate');
+  if(Object.keys(inputs).length!==(hasDate?4:3)||hasDate!==Object.hasOwn(result.calculationRecord,'quoteDate'))return false;
+  if(hasDate&&!plainDataEqual(inputs.quoteDate,result.calculationRecord.quoteDate))return false;
   const reproduced=generateQuoteVNext({serviceType:result.serviceType,customerInputs:result.submittedCustomerInputs,ownerPricing:result.calculationRecord.ownerConfiguration,...inputs,callerType:'owner'});
   if(reproduced.resultType!=='INSTANT_ESTIMATE_READY'||reproduced.customerEligible!==true)return false;
   return plainDataEqual(reproduced.options,result.options) &&

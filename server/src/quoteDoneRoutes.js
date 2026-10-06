@@ -1,4 +1,4 @@
-import {quoteDateContext} from './quoteDate.js';
+import {quoteDateContext,registerQuoteDateDatabase} from './quoteDate.js';
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { requireAuth } from './auth.js';
@@ -207,6 +207,7 @@ function leadView(row,role) {
   return role==='owner'?{...common,internal:detail}:common;
 }
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bookingService,bookingTokenSecret}) {
+  registerQuoteDateDatabase(db);
   const owner=[requireAuth(['owner']),requireQuoteDonePlan];
   const team=[requireAuth(['owner','staff']),requireQuoteDonePlan];
   const leadTeam=[requireAuth(['owner','staff'])]; // CRM is included on Operator.
@@ -215,10 +216,10 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
     if(req.params.ownerId!==req.tenantOwnerId)return res.status(403).json({error:'Forbidden'});
     res.json(readApplicationBook(req.tenantOwnerId));
   });
-  app.post('/api/pricebook/save',...owner,asyncHandler(async(req,res)=>res.json(saveApplicationBook(req.tenantOwnerId,req.body))));
-  app.post('/api/pricebook/validate',...owner,asyncHandler(async(req,res)=>res.json(validateApplicationDraft(req.tenantOwnerId,req.body))));
+  app.post('/api/pricebook/save',...owner,asyncHandler(async(req,res)=>res.json(saveApplicationBook(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
+  app.post('/api/pricebook/validate',...owner,asyncHandler(async(req,res)=>res.json(validateApplicationDraft(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/pricebook/preview',...owner,asyncHandler(async(req,res)=>res.json(previewApplicationQuote(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
-  app.post('/api/pricebook/services/:serviceId/approve',...owner,asyncHandler(async(req,res)=>res.json(approveApplicationService(req.tenantOwnerId,req.params.serviceId,req.body))));
+  app.post('/api/pricebook/services/:serviceId/approve',...owner,asyncHandler(async(req,res)=>res.json(approveApplicationService(req.tenantOwnerId,req.params.serviceId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/quotedone/access',...owner,asyncHandler(async(req,res)=>{
     const origins=req.body?.allowedOrigins;
     if(!Array.isArray(origins)||!origins.length||origins.length>20)throw problem('Choose the website origins allowed to use this quote link.');
@@ -240,7 +241,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   });
   app.get('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,(req,res)=>{
     const book=loadPricebook(req.tenantOwnerId),meta=applicationMetadata();
-    const statuses=new Map(bookQuoteStatuses(book).map(status=>[status.serviceId,status]));
+    const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,req.tenantOwnerId)).map(status=>[status.serviceId,status]));
     const services=book.services
       .filter(service=>uuid(service.id)&&meta.services.some(m=>m.serviceType===service.serviceType)&&statuses.get(service.id)?.status==='QUOTING LIVE')
       .map(service=>customerCatalogService(

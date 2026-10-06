@@ -84,7 +84,15 @@ test('Astra 5 control: selected owner fee still quotes exactly and included disp
  const f=catalog();f.ownerPricing.feeRules.travel='owner_selected';f.businessDefaults.travelFee=900;const start=performance.now(),status=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{ownerFeeSelections:{travel:true},firstLiveProduct:true});assert.equal(status.status,'QUOTING LIVE');assert.ok(performance.now()-start<1500);
  const q=structuredClone(f);Object.assign(q.customerInputs,{replacementMembraneType:'product_0',membraneType:'product_0'});q.customerInputs.confirmedFacts=Object.fromEntries(['replacementMembraneType','membraneType'].map(field=>[field,{status:'identified',field,value:'product_0',offeringId:q.ownerPricing.knownOfferings[field].product_0}]));q.feeSelections={owner:{travel:true},customer:{}};assert.equal(cents(generateQuoteVNext(q)),1470900);
  const d=get('demolition-installed');d.ownerPricing.feeRules.disposal='owner_selected';d.businessDefaults.disposalFee=900;
- // The baseline without demolition still needs its fee choice; selected
- // demolition already includes disposal and must not require or charge it again.
- assert.equal(vNextServiceStatus(d.ownerPricing,d.businessDefaults,{ownerFeeSelections:{},firstLiveProduct:true}).status,'NEEDS PRICING');assert.equal(cents(generateQuoteVNext({...d,feeSelections:{owner:{},customer:{}}})),453889);
+ // Handwritten before execution: $3538.89 slab + $1000 demolition = $4538.89.
+ // Approved rule: readiness uses real fee replacements. Included demolition
+ // disposal keeps that work live; an uncovered base job still needs its choice.
+ assert.equal(vNextServiceStatus(d.ownerPricing,d.businessDefaults,{ownerFeeSelections:{},firstLiveProduct:true}).status,'QUOTING LIVE');assert.equal(cents(generateQuoteVNext({...d,feeSelections:{owner:{},customer:{}}})),453889);
+ const base=structuredClone(d);base.customerInputs.demolitionNeeded=false;
+ for(const key of Object.keys(base.customerInputs))if(key.startsWith('demolition')&&key!=='demolitionNeeded')delete base.customerInputs[key];
+ const missingChoice=generateQuoteVNext({...base,feeSelections:{owner:{},customer:{}}});
+ assert.equal(missingChoice.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(missingChoice.midEstimate,undefined);
+ assert.ok(missingChoice.invalidOwnerFields.includes('feeSelections.owner.disposal'));
+ // Handwritten: $3538.89 slab + explicitly selected $9 disposal = $3547.89.
+ assert.equal(cents(generateQuoteVNext({...base,feeSelections:{owner:{disposal:true},customer:{}}})),354789);
 });

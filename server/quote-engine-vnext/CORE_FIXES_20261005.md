@@ -1,5 +1,9 @@
 # Engine core repair acceptance — October 5, 2026
 
+Historical checkpoint. The authorized date-context continuation and the
+independent proof for updating the Astra disposal assertion are recorded in
+[DATE_CONTEXT_FIX_20261006.md](./DATE_CONTEXT_FIX_20261006.md).
+
 Start: `4ff586cad88769a72a9a79f146d5702181d530b4`.
 Branch: `claude/engine-core-fixes-20261005`. Synthetic data only.
 
