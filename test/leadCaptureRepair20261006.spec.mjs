@@ -212,3 +212,11 @@ test('D17/D18: existing webhook worker delivers only allowlisted saved voice con
   assert.equal(requests.length,2);const text=JSON.stringify(requests);assert.match(text,/followup@example.invalid/);assert.match(text,/19025550100/);assert.doesNotMatch(text,/captureHistory|customerId|leadHandle|privateCost/);
   assert.equal(f.db.prepare("SELECT COUNT(*) n FROM webhookDeliveries WHERE ownerId=? AND status='DELIVERED'").get(c.ownerId).n,2);
 });
+
+test('D22: an empty legacy preference does not replace an established display name or callback number',async t=>{
+  const f=fixture(t),c=f.context();await f.voice(c).tool('captureLead',{name,email});const row=f.lead(c)[0];
+  f.db.prepare('UPDATE leads SET customerName=? WHERE ownerId=? AND id=?').run('[SYNTHETIC] Established name',c.ownerId,row.id);
+  f.db.prepare("INSERT INTO bookingIntents(id,ownerId,tokenHash,sourceType,sourceId,serviceId,resultType,status,expiresAtUtc,createdAt) VALUES('synthetic-empty-intent',?,'SYNTHETIC_EMPTY','lead',?,'synthetic-service','ESTIMATE_REQUIRES_REVIEW','OPEN','2026-10-10T00:00:00Z',?)").run(c.ownerId,row.id,at);
+  f.db.prepare("INSERT INTO bookingPreferences(id,ownerId,intentId,preferredWindowsJson,customerJson,locationJson,status,createdAt,updatedAt) VALUES('synthetic-empty-preference',?,'synthetic-empty-intent','[]','{}','{}','REQUESTED',?,?)").run(c.ownerId,at,at);
+  const view=leadFollowUpView(f.ownerQuery,f.lead(c)[0],'staff');assert.equal(view.customerName,'[SYNTHETIC] Established name');assert.equal(view.callerNumber,c.from);assert.equal(view.contact.email,email);
+});

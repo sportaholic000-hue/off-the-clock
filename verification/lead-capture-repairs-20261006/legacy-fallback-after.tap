@@ -1,0 +1,307 @@
+TAP version 13
+# Subtest: D01/D09: usable nameless request retains notes/description in owner and staff views
+ok 1 - D01/D09: usable nameless request retains notes/description in owner and staff views
+  ---
+  duration_ms: 15.953416
+  type: 'test'
+  ...
+# Subtest: D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+ok 2 - D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+  ---
+  duration_ms: 6.566337
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+ok 3 - D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+  ---
+  duration_ms: 8.732629
+  type: 'test'
+  ...
+# Subtest: D13: new call retains known customer email/address without inventing the new job site
+ok 4 - D13: new call retains known customer email/address without inventing the new job site
+  ---
+  duration_ms: 6.617933
+  type: 'test'
+  ...
+# Subtest: D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+ok 5 - D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+  ---
+  duration_ms: 7.794147
+  type: 'test'
+  ...
+# Subtest: D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+ok 6 - D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+  ---
+  duration_ms: 15.849842
+  type: 'test'
+  ...
+# Subtest: D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+ok 7 - D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+  ---
+  duration_ms: 6.454832
+  type: 'test'
+  ...
+# Subtest: capture and urgency database failures roll back without a successful acknowledgement
+ok 8 - capture and urgency database failures roll back without a successful acknowledgement
+  ---
+  duration_ms: 6.78394
+  type: 'test'
+  ...
+# Subtest: capture persisted before handle failure recovers the same inquiry once
+ok 9 - capture persisted before handle failure recovers the same inquiry once
+  ---
+  duration_ms: 6.511165
+  type: 'test'
+  ...
+# Subtest: cold process replay preserves dismissed inquiry and original contact receipt
+ok 10 - cold process replay preserves dismissed inquiry and original contact receipt
+  ---
+  duration_ms: 226.632169
+  type: 'test'
+  ...
+# Subtest: wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+ok 11 - wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+  ---
+  duration_ms: 15.050758
+  type: 'test'
+  ...
+# Subtest: D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+ok 12 - D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+  ---
+  duration_ms: 12.603008
+  type: 'test'
+  ...
+# Subtest: D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+ok 13 - D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+  ---
+  duration_ms: 11.014433
+  type: 'test'
+  ...
+# Subtest: D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+ok 14 - D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+  ---
+  duration_ms: 14.380443
+  type: 'test'
+  ...
+# Subtest: D18: bound quote-review exports preserve saved name/email and dismissed disposition
+ok 15 - D18: bound quote-review exports preserve saved name/email and dismissed disposition
+  ---
+  duration_ms: 11.117696
+  type: 'test'
+  ...
+# Subtest: D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+ok 16 - D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+  ---
+  duration_ms: 10.710562
+  type: 'test'
+  ...
+# Subtest: D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+ok 17 - D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+  ---
+  duration_ms: 11.176102
+  type: 'test'
+  ...
+# Subtest: D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+ok 18 - D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+  ---
+  duration_ms: 14.961476
+  type: 'test'
+  ...
+# Subtest: D11/D18: standalone review retry cannot undo a later description correction
+ok 19 - D11/D18: standalone review retry cannot undo a later description correction
+  ---
+  duration_ms: 8.121232
+  type: 'test'
+  ...
+# Subtest: D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+ok 20 - D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+  ---
+  duration_ms: 6.280953
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: simultaneous duplicate corrections serialize and an update failure preserves prior contact
+ok 21 - D11/D12/D13: simultaneous duplicate corrections serialize and an update failure preserves prior contact
+  ---
+  duration_ms: 8.637608
+  type: 'test'
+  ...
+# Subtest: D17/D18: existing webhook worker delivers only allowlisted saved voice contact to local stub
+ok 22 - D17/D18: existing webhook worker delivers only allowlisted saved voice contact to local stub
+  ---
+  duration_ms: 8.466023
+  type: 'test'
+  ...
+# Subtest: D22: an empty legacy preference does not replace an established display name or callback number
+ok 23 - D22: an empty legacy preference does not replace an established display name or callback number
+  ---
+  duration_ms: 5.220731
+  type: 'test'
+  ...
+# Subtest: D30 feed: one bounded timer/read, delayed reads show stale state without overlapping requests
+ok 24 - D30 feed: one bounded timer/read, delayed reads show stale state without overlapping requests
+  ---
+  duration_ms: 1.639141
+  type: 'test'
+  ...
+# Subtest: D30 feed: repeated failures back off and pause after three attempts; explicit restart can recover
+ok 25 - D30 feed: repeated failures back off and pause after three attempts; explicit restart can recover
+  ---
+  duration_ms: 0.725746
+  type: 'test'
+  ...
+# Subtest: D30 feed: hidden tabs pause, visible events do not create duplicate timers or reads
+ok 26 - D30 feed: hidden tabs pause, visible events do not create duplicate timers or reads
+  ---
+  duration_ms: 0.390469
+  type: 'test'
+  ...
+# Subtest: D30 feed: changed tenant/session discards an old response and clears the snapshot once
+ok 27 - D30 feed: changed tenant/session discards an old response and clears the snapshot once
+  ---
+  duration_ms: 0.399042
+  type: 'test'
+  ...
+# Subtest: D30 feed: unmount cleans timer/subscriptions and ignores both late success and errors
+ok 28 - D30 feed: unmount cleans timer/subscriptions and ignores both late success and errors
+  ---
+  duration_ms: 0.427484
+  type: 'test'
+  ...
+# Subtest: lead capture repairs: real routes, tenant authorization, stored receipts and rendered contact
+    # Subtest: owner/staff call and lead routes preserve notes, urgency and corrected preferred contact
+    ok 1 - owner/staff call and lead routes preserve notes, urgency and corrected preferred contact
+      ---
+      duration_ms: 33.502939
+      type: 'test'
+      ...
+    # Subtest: owner disposition through actual PATCH survives capture correction and exact replay
+    ok 2 - owner disposition through actual PATCH survives capture correction and exact replay
+      ---
+      duration_ms: 16.362252
+      type: 'test'
+      ...
+    # Subtest: wrong owners, staff and missing sessions cannot read or change other tenant records
+    ok 3 - wrong owners, staff and missing sessions cannot read or change other tenant records
+      ---
+      duration_ms: 21.584346
+      type: 'test'
+      ...
+    # Subtest: instant quote list exposes safe saved contact from separate submission without recalculation
+    ok 4 - instant quote list exposes safe saved contact from separate submission without recalculation
+      ---
+      duration_ms: 2.793101
+      type: 'test'
+      ...
+    # Subtest: activity route updates saved calls, is bounded, tenant-bound and staff-safe
+    ok 5 - activity route updates saved calls, is bounded, tenant-bound and staff-safe
+      ---
+      duration_ms: 4.110576
+      type: 'test'
+      ...
+    # Subtest: production Calls direct link and query refresh serve owner app without caching or API fallback
+    ok 6 - production Calls direct link and query refresh serve owner app without caching or API fallback
+      ---
+      duration_ms: 14.726387
+      type: 'test'
+      ...
+    # Subtest: actual route responses render contact, notes, urgency, provenance and exact saved quote for staff
+    ok 7 - actual route responses render contact, notes, urgency, provenance and exact saved quote for staff
+      ---
+      duration_ms: 577.770081
+      type: 'test'
+      ...
+    1..7
+ok 29 - lead capture repairs: real routes, tenant authorization, stored receipts and rendered contact
+  ---
+  duration_ms: 1068.004429
+  type: 'test'
+  ...
+# Subtest: real application dashboard and record routes show persisted synthetic call data
+    # Subtest: dashboard includes stored feed and real counters
+    ok 1 - dashboard includes stored feed and real counters
+      ---
+      duration_ms: 26.693431
+      type: 'test'
+      ...
+    # Subtest: call detail contains transcript, outcome, quote drivers, lead and bookings
+    ok 2 - call detail contains transcript, outcome, quote drivers, lead and bookings
+      ---
+      duration_ms: 10.355305
+      type: 'test'
+      ...
+    # Subtest: Calls list and specific record enforce session tenant
+    ok 3 - Calls list and specific record enforce session tenant
+      ---
+      duration_ms: 27.166127
+      type: 'test'
+      ...
+    # Subtest: Quotes view reads the voice receipt and includes its call link
+    ok 4 - Quotes view reads the voice receipt and includes its call link
+      ---
+      duration_ms: 4.606169
+      type: 'test'
+      ...
+    # Subtest: Leads view reads captured voice contact and review inputs
+    ok 5 - Leads view reads captured voice contact and review inputs
+      ---
+      duration_ms: 7.321828
+      type: 'test'
+      ...
+    # Subtest: staff sees only its parent tenant and no owner calculation evidence
+    ok 6 - staff sees only its parent tenant and no owner calculation evidence
+      ---
+      duration_ms: 10.659702
+      type: 'test'
+      ...
+    1..6
+ok 30 - real application dashboard and record routes show persisted synthetic call data
+  ---
+  duration_ms: 516.272111
+  type: 'test'
+  ...
+# Subtest: existing owner components render stored call and linked record views
+    # Subtest: dashboard/Calls feed shows stored summary and outcome
+    ok 1 - dashboard/Calls feed shows stored summary and outcome
+      ---
+      duration_ms: 7.709712
+      type: 'test'
+      ...
+    # Subtest: call detail shows transcript, exact saved price and why, lead and calendar records
+    ok 2 - call detail shows transcript, exact saved price and why, lead and calendar records
+      ---
+      duration_ms: 4.294408
+      type: 'test'
+      ...
+    # Subtest: review view shows the saved reason without inventing a quote
+    ok 3 - review view shows the saved reason without inventing a quote
+      ---
+      duration_ms: 1.642045
+      type: 'test'
+      ...
+    # Subtest: Quotes and Leads views render normalized voice records and call links
+    ok 4 - Quotes and Leads views render normalized voice records and call links
+      ---
+      duration_ms: 1.941098
+      type: 'test'
+      ...
+    # Subtest: fallback view reports stored failure and empty records
+    ok 5 - fallback view reports stored failure and empty records
+      ---
+      duration_ms: 1.547485
+      type: 'test'
+      ...
+    1..5
+ok 31 - existing owner components render stored call and linked record views
+  ---
+  duration_ms: 632.308551
+  type: 'test'
+  ...
+1..31
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3674.403417

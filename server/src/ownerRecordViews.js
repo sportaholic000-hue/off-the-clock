@@ -65,8 +65,8 @@ export function storedLeadView(row, role, originalSubmission, preferredRequest) 
       if(corrected)common.followUpSource={kind:'voice_capture',createdAt:safeText(capture.at,64)};
     }
   }
-  common.customerName=preferredRequest?common.contact.name:row.customerName??common.contact.name;
-  common.callerNumber=preferredRequest?common.contact.phone:row.callerNumber??common.contact.phone;
+  common.customerName=common.preferredRequest?.contact.name?common.contact.name:row.customerName??common.contact.name;
+  common.callerNumber=common.preferredRequest?.contact.phone?common.contact.phone:row.callerNumber??common.contact.phone;
   if(calculation.customerResult?.resultType==='PARTIAL_ESTIMATE_READY')Object.assign(common,{
     linkedQuoteId:detail.linkedQuoteId || row.id,additionalWork:calculation.customerResult.additionalWork,
     additionalWorkStatus:calculation.customerResult.additionalWorkStatus,pricedScope:calculation.customerResult.pricedScope});
