@@ -14,3 +14,14 @@ export function productKeyFromName(name) {
 }
 export const DUPLICATE_NAME_MESSAGE = 'That name is already listed.';
 
+
+export function registeredProductKey(value, keys) {
+  if (typeof value !== 'string') return null;
+  // Normalization, not fuzzy guessing: different named products never become
+  // interchangeable and prices do not constitute product registration.
+  const converted = productKeyFromName(value);
+  if (converted.error) return null;
+  const matches = keys.filter(key => key === converted.key);
+  return matches.length === 1 ? matches[0] : null;
+}
+

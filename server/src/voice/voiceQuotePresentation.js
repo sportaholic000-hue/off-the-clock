@@ -1,3 +1,4 @@
+import {quoteMoneyFormatter} from '../../quoteMoneyFormat.js';
 // Customer-safe phone projection. Full written disclosures remain intact and
 // separate from the short spoken summary; no price is recalculated or rounded.
 export const VOICE_WRITTEN_LIMIT = 65_536;
@@ -35,12 +36,15 @@ function optionProjection(option, index, parent = {}) {
 export function conciseVoiceSummary(result) {
   const options = result.options?.length ? result.options : money(result.lowEstimate) && money(result.highEstimate) ? [result] : [];
   if (!options.length) return text(result.customerMessage, VOICE_SUMMARY_LIMIT) || 'The business needs to check the job details before giving an estimate.';
+  const format=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate]));
+  const clean=value=>String(value||'').trim().replace(/[.!?]+$/, '');
+  const sentence=value=>clean(value)?clean(value)+'.':'';
   const parts = options.map((option, index) => {
     const name = options.length > 1 ? (option.tierName || 'Option ' + (index + 1)) + ': ' : '';
-    const range = option.lowEstimate === option.highEstimate ? String(option.lowEstimate) : `${option.lowEstimate} to ${option.highEstimate}`;
-    const context = [option.currency || result.currency, option.priceUnit || result.priceUnit, option.taxTreatment || result.taxTreatment].filter(Boolean).join('. ');
-    const exclusions = option.skippedAddons?.length ? ' Not included: ' + option.skippedAddons.join('; ') + '.' : '';
-    return name + range + (context ? ' ' + context : '') + '.' + exclusions;
+    const price=[name+format.range(option.lowEstimate,option.highEstimate,' to '),clean(option.currency||result.currency),clean(option.priceUnit||result.priceUnit)].filter(Boolean).join(' ');
+    const tax=sentence(option.taxTreatment||result.taxTreatment);
+    const exclusions=option.skippedAddons?.length?sentence('Not included: '+option.skippedAddons.map(clean).join('; ')):'';
+    return [sentence(price),tax,exclusions].filter(Boolean).join(' ');
   });
   parts.push('This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it.');
   if (result.resultType === 'PARTIAL_ESTIMATE_READY' || result.additionalWork?.length) parts.push('Separate additional work is excluded and needs its own on-site estimate. A total for all requested work is not available.');

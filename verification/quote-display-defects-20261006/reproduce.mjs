@@ -1,0 +1,14 @@
+import '../../test/pricebookTestEnv.mjs';
+import {writeFileSync} from 'node:fs';
+import {roofingDisplayFixture,mowingDisplayFixture,missingFloorDisplayFixture,savedDisplayFixture} from '../../test/quoteDisplayFixtures20261006.mjs';
+import {renderDisplay} from '../../test/quoteDisplayRender20261006.mjs';
+import {bindVoiceQuoteInputs} from '../../server/src/voice/voiceQuoteContract.js';
+import {conciseVoiceSummary} from '../../server/src/voice/voiceQuotePresentation.js';
+const roof=roofingDisplayFixture(),r=savedDisplayFixture(roof),inputs={...roof.customerInputs,existingRoofType:'Asphalt shingle',replacementRoofType:'Asphalt shingle'};delete inputs.confirmedFacts;
+const binding=bindVoiceQuoteInputs(r.service,r.definition,{customerInputs:inputs,productConfirmations:{existingRoofType:true,replacementRoofType:true}});
+const productHTML=await renderDisplay('products',{fields:r.definition.customerFields.filter(f=>f.type==='slug'),value:inputs,knownOfferings:r.service.knownOfferings,onChange:()=>{}});
+const missing=missingFloorDisplayFixture(),m=savedDisplayFixture(missing,{approve:false}),previewMissing=m.preview(missing.customerInputs);
+const mow=mowingDisplayFixture(),a=savedDisplayFixture(mow),customer=a.quote(mow.customerInputs).customerResult,preview=a.preview(mow.customerInputs);
+const output={base:'6e6cd5b10e0558477cfe32d255a6ad58907988c2',expectations:'specs/QUOTE_DISPLAY_DEFECTS_20261006.md',products:{productHTML,phoneBinding:binding,phoneBoundQuote:r.quote(binding.customerInputs).customerResult},labels:{status:m.status,preview:previewMissing},money:{customer,customerHTML:await renderDisplay('customer',{result:customer}),recordsHTML:await renderDisplay('records',{rows:[{id:'synthetic-mowing',result:customer}],kind:'quotes'}),previewHTML:await renderDisplay('preview',{preview}),phone:conciseVoiceSummary(customer)}};
+writeFileSync(process.argv[2]||'verification/quote-display-defects-20261006/before.json',JSON.stringify(output,null,2)+'\n');
+console.log(JSON.stringify({products:{rawKeyOption:productHTML.includes('value="asphalt_shingle"'),confirmationVisible:productHTML.includes('I have identified this exact offering.'),phoneBoundTotal:output.products.phoneBoundQuote.midEstimate},labels:{missingFields:m.status.missingOwnerFields,missingLabels:m.status.missingOwnerLabels??null,previewLabels:previewMissing.missingOwnerLabels??null},money:{expected:172.50,actual:customer.midEstimate,customer:output.money.customerHTML.match(/<strong>.*?<\/strong>/g),preview:output.money.previewHTML.match(/<span class="quote-(?:low|high)">.*?<\/span>/g),phone:output.money.phone}},null,2));

@@ -1,24 +1,14 @@
 import {scaleOwnerDecimal,moneyKindForField} from '../../server/priceBookMoney.js';
 import {humanPricingKey} from './pricebookFormatting.js';
-import {scopeDefinitions,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
-import {offeringRateDefinitions,formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {reviewLabel as ownerPricingLabel} from '../../server/priceBookLabels.js';
+import {formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import {servicePricing} from './pricebookEditing.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs']);
 const defaultMoney=new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 export const displayAmount=value=>'$'+String(value);
-export function reviewLabel(path,service,meta={}) {
- const parts=path.replace(/^pricing\./,'').split('.'),root=parts.shift(),p=servicePricing(service);
- const definitions=root==='scopeRates'?scopeRateDefinitions(service.serviceType,p,true):root==='offeringRates'?offeringRateDefinitions(service.serviceType,{...p,offeringDetails:{...p.offeringDetails,primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}}):{};
- if(['installedLaborPercent','installedMaterialsPercent'].includes(root))return humanPricingKey(root)+' — '+reviewLabel(parts.join('.'),service,meta);
- if(definitions[parts.join('.')]){const field=definitions[parts.join('.')];return field.label+' (per '+field.unit+')';}
- if(root==='scopeDetails') {
-  const def=scopeDefinitions(service.serviceType,p)[parts[0]];
-  return [def?.label||humanPricingKey(parts[0]),...parts.slice(1).map(key=>def?.fields[key]?(def.fields[key].label+(def.fields[key].unit?' ('+def.fields[key].unit+')':'')):humanPricingKey(key))].join(' · ');
- }
- return [meta.fields?.find(f=>f.field===root)?.title||meta.fields?.find(f=>f.field===root)?.label||meta.class2Fields?.find(f=>f.name===root)?.label||humanPricingKey(root),...parts.map(humanPricingKey)].join(' · ');
-}
+export const reviewLabel=(path,service,meta={})=>ownerPricingLabel(path,service,meta,servicePricing(service));
 // Prices that can take part in an "included" mapping: every money path in the
 // base offering and in each price option (an option's own override shows with
 // its name). Minimums can never be included or cover another price, so they are

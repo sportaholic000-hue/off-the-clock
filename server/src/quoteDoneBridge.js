@@ -1,3 +1,4 @@
+import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
 import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone} from './quoteDate.js';
@@ -111,6 +112,25 @@ function uniqueApplicationService(book,serviceId) {
   if(matches.length>1)throw problem('Duplicate saved service IDs require owner correction before approval or preview.',409);
   return matches[0]||null;
 }
+// Owner diagnostics and the editor share one label source. Keep engine paths
+// intact for navigation and validation; attach a parallel presentation array.
+let ownerLabelMetadata;
+function withOwnerLabels(result,service) {
+ ownerLabelMetadata??=new Map(applicationMetadata().services.map(meta=>[meta.serviceType,meta]));
+ const meta=ownerLabelMetadata.get(service.serviceType)||{};
+ const annotate=(row,pricing=service.pricing||service)=>{
+  const tier=service.tiers?.find(t=>t.name===row.tierName);
+  const effective=tier?mergePricingVNext(pricing,tier.overrides||{}):pricing;
+  const label=path=>reviewLabel(path,service,meta,effective);
+  const out={...row,missingOwnerLabels:(row.missingOwnerFields||[]).map(label)};
+  for(const key of ['failedTierDiagnostics','productCoverage','scopeCoverage'])if(Array.isArray(row[key]))out[key]=row[key].map(child=>{
+   const fields=child.missingOwnerFields||[...new Set((child.ownerDiagnostics||[]).filter(d=>d.type==='missing').map(d=>d.path))];
+   return annotate({...child,missingOwnerFields:fields},pricing);
+  });
+  return out;
+ };
+ return annotate(result);
+}
 export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContext}={}) {
   dateContext=applicationDateContext(book.ownerId,dateContext);
   if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],approvalCurrent:false};
@@ -123,7 +143,7 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approvalCurrent(raw,book)&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
-  return {...status,serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
+  return {...withOwnerLabels(status,service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approvalCurrent(raw,book),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 export function readApplicationBook(ownerId) {
@@ -266,7 +286,7 @@ export function previewApplicationQuote(ownerId,input,dateContext={}) {
   service.active=applicationStatus(raw,saved,dateContext).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:input.customerInputs||{},feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(draftRaw);
-  return {...discloseQuoteScope(result,draftRaw,definition,input,bookRevision(saved),clarification.fields),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
+  return {...withOwnerLabels(discloseQuoteScope(result,draftRaw,definition,input,bookRevision(saved),clarification.fields),service),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
 export function calculateApplicationQuote(book,raw,submission,{ownerId,preparingIntake=false,...dateContext}={}) {
   dateContext=applicationDateContext(ownerId??book.ownerId,dateContext);

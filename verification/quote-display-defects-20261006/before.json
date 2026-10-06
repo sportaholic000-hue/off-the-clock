@@ -1,0 +1,561 @@
+{
+  "base": "6e6cd5b10e0558477cfe32d255a6ad58907988c2",
+  "expectations": "specs/QUOTE_DISPLAY_DEFECTS_20261006.md",
+  "products": {
+    "productHTML": "<div class=\"field-stack\"><div class=\"field\"><span class=\"field-label\">Existing roofing material</span><input class=\"input\" aria-label=\"Existing roofing material\" list=\"offerings-existingRoofType\" value=\"Asphalt shingle\"/><datalist id=\"offerings-existingRoofType\"><option value=\"asphalt_shingle\"></option><option value=\"metal\"></option><option value=\"standing_seam\"></option><option value=\"cedar_shake\"></option></datalist></div><div class=\"field\"><span class=\"field-label\">Replacement roofing material</span><input class=\"input\" aria-label=\"Replacement roofing material\" list=\"offerings-replacementRoofType\" value=\"Asphalt shingle\"/><datalist id=\"offerings-replacementRoofType\"><option value=\"asphalt_shingle\"></option><option value=\"metal\"></option><option value=\"standing_seam\"></option><option value=\"cedar_shake\"></option></datalist></div></div>",
+    "phoneBinding": {
+      "customerInputs": {
+        "roofSizeMethod": "roof_measured",
+        "roofSizeInput": 1000,
+        "existingRoofType": "asphalt_shingle",
+        "replacementRoofType": "asphalt_shingle",
+        "pitch": "low",
+        "stories": 1,
+        "existingLayers": 1,
+        "roofComplexity": "simple",
+        "serviceScope": "full",
+        "confirmedFacts": {
+          "existingRoofType": {
+            "status": "identified",
+            "field": "existingRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b"
+          },
+          "replacementRoofType": {
+            "status": "identified",
+            "field": "replacementRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445"
+          }
+        }
+      },
+      "customerFeeSelections": {},
+      "followUps": []
+    },
+    "phoneBoundQuote": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 2520,
+      "midEstimate": 2520,
+      "highEstimate": 2520,
+      "priceDrivers": [
+        "Replacement material: asphalt shingle",
+        "Measured roof area: 10.00 roofing squares",
+        "1 existing layer"
+      ],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added. Prices are in Canadian dollars (CAD).",
+      "quoteId": "f064de48-c634-4f42-a59f-aa5481752eba",
+      "priceUnit": null,
+      "taxTreatment": "No tax added.",
+      "currency": "CAD",
+      "options": [
+        {
+          "tierName": null,
+          "lowEstimate": 2520,
+          "midEstimate": 2520,
+          "highEstimate": 2520,
+          "priceDrivers": [
+            "Replacement material: asphalt shingle",
+            "Measured roof area: 10.00 roofing squares",
+            "1 existing layer"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added. Prices are in Canadian dollars (CAD).",
+          "priceUnit": null,
+          "taxTreatment": "No tax added."
+        }
+      ],
+      "pricedScope": {
+        "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+        "facts": [
+          {
+            "label": "Roof measurement method",
+            "value": "Measured roof area"
+          },
+          {
+            "label": "Measured roof surface area",
+            "value": "1000 square feet"
+          },
+          {
+            "label": "Existing roofing material",
+            "value": "Asphalt shingle"
+          },
+          {
+            "label": "Replacement roofing material",
+            "value": "Asphalt shingle"
+          },
+          {
+            "label": "Roof pitch",
+            "value": "Low"
+          },
+          {
+            "label": "Building stories",
+            "value": "1"
+          },
+          {
+            "label": "Measured existing roof layers",
+            "value": "1 layers"
+          },
+          {
+            "label": "Roof complexity",
+            "value": "Simple"
+          },
+          {
+            "label": "Replacement scope",
+            "value": "Full"
+          }
+        ],
+        "fees": []
+      },
+      "submittedDetails": {
+        "requestedWork": "[SYNTHETIC] ROOFING_REPLACEMENT",
+        "contact": {},
+        "location": {},
+        "timing": "Not supplied",
+        "additionalDetails": "",
+        "unknowns": "",
+        "clarifications": []
+      },
+      "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+      "fullJobTotal": null
+    }
+  },
+  "labels": {
+    "status": {
+      "serviceType": "FLOORING_INSTALL",
+      "service": "[SYNTHETIC] FLOORING_INSTALL",
+      "statusNotices": [],
+      "scopeCoverage": [
+        {
+          "key": "floor_underlayment_hardwood",
+          "label": "hardwood underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "hardwood underlayment requests arrive as leads until you configure this scope and its prices."
+        },
+        {
+          "key": "floor_underlayment_laminate",
+          "label": "laminate underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "laminate underlayment requests arrive as leads until you configure this scope and its prices."
+        },
+        {
+          "key": "floor_underlayment_carpet",
+          "label": "carpet underlayment",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "carpet underlayment requests arrive as leads until you configure this scope and its prices."
+        },
+        {
+          "key": "stairs",
+          "label": "Complete stair work",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Complete stair work requests arrive as leads until you configure this scope and its prices."
+        },
+        {
+          "key": "floor_overlay",
+          "label": "Additional preparation for flooring over an existing floor",
+          "configurationComplete": false,
+          "variants": [
+            {
+              "tierName": null,
+              "configurationComplete": false,
+              "missingFields": []
+            }
+          ],
+          "message": "Additional preparation for flooring over an existing floor requests arrive as leads until you configure this scope and its prices."
+        }
+      ],
+      "laborAdjustmentCoverage": [],
+      "status": "NEEDS PRICING",
+      "missingOwnerFields": [
+        "materialPerSqft.tile"
+      ],
+      "invalidOwnerFields": [
+        "materialPerSqft"
+      ],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDecisionRequired": [],
+      "ownerDiagnostics": [
+        {
+          "type": "invalid",
+          "kind": "structure",
+          "path": "materialPerSqft",
+          "message": "materialPerSqft must be a non-empty price map."
+        },
+        {
+          "type": "missing",
+          "kind": "relationship",
+          "path": "materialPerSqft.tile",
+          "message": "Flooring labor and material maps must contain matching keys."
+        },
+        {
+          "type": "missing",
+          "kind": "non_negative_number",
+          "path": "materialPerSqft.tile",
+          "message": "Flooring material price for the selected flooring type is required."
+        }
+      ],
+      "validationErrors": [
+        "materialPerSqft must be a non-empty price map.",
+        "Flooring labor and material maps must contain matching keys.",
+        "Flooring material price for the selected flooring type is required.",
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "failedTierDiagnostics": [
+        {
+          "tierName": null,
+          "reviewReason": "materialPerSqft must be a non-empty price map.",
+          "missingOwnerFields": [
+            "materialPerSqft.tile"
+          ],
+          "invalidOwnerFields": [
+            "materialPerSqft"
+          ],
+          "unsupportedOwnerFields": [],
+          "crossFieldOwnerFields": [],
+          "ownerDiagnostics": [
+            {
+              "type": "invalid",
+              "kind": "structure",
+              "path": "materialPerSqft",
+              "message": "materialPerSqft must be a non-empty price map."
+            },
+            {
+              "type": "missing",
+              "kind": "relationship",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring labor and material maps must contain matching keys."
+            },
+            {
+              "type": "missing",
+              "kind": "non_negative_number",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring material price for the selected flooring type is required."
+            }
+          ],
+          "ownerDecisionRequired": [],
+          "validationMessages": [
+            "materialPerSqft must be a non-empty price map.",
+            "Flooring labor and material maps must contain matching keys.",
+            "Flooring material price for the selected flooring type is required."
+          ]
+        }
+      ],
+      "validTierNames": [],
+      "productCoverage": [
+        {
+          "tierName": null,
+          "selection": {
+            "newFlooringType": "tile"
+          },
+          "configurationComplete": false,
+          "ownerDiagnostics": [
+            {
+              "type": "invalid",
+              "kind": "structure",
+              "path": "materialPerSqft",
+              "message": "materialPerSqft must be a non-empty price map."
+            },
+            {
+              "type": "missing",
+              "kind": "relationship",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring labor and material maps must contain matching keys."
+            },
+            {
+              "type": "missing",
+              "kind": "non_negative_number",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring material price for the selected flooring type is required."
+            }
+          ]
+        }
+      ],
+      "serviceId": "1b83dd6f-b14e-4e3a-a3cc-82bd91c5b906",
+      "applicationIssues": [
+        "Confirm this exact saved configuration before enabling customer quotes."
+      ],
+      "legacySettings": [],
+      "approvalCurrent": false,
+      "confirmationFields": [
+        "laborPerSqft",
+        "materialPerSqft",
+        "minimumJob",
+        "vinylPlankUnderlaymentRule",
+        "wasteFactorByType",
+        "patternWasteAdder",
+        "roomComplexityMultiplier",
+        "roomSizeThresholds",
+        "layoutLaborMultiplier",
+        "feeRules",
+        "priceBasisByCategory",
+        "taxabilityByCategory",
+        "peakMonths",
+        "peakSurchargePercent",
+        "knownOfferings"
+      ]
+    },
+    "preview": {
+      "resultType": "ESTIMATE_REQUIRES_REVIEW",
+      "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
+      "serviceId": "1b83dd6f-b14e-4e3a-a3cc-82bd91c5b906",
+      "quoteId": "e7be9ec3-8fe5-4995-8b5f-15291306dffb",
+      "serviceType": "FLOORING_INSTALL",
+      "submittedCustomerInputs": {
+        "sqft": 200,
+        "sqftMethod": "exact",
+        "newFlooringType": "tile",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      },
+      "normalizedScope": {
+        "sqft": 200,
+        "sqftMethod": "exact",
+        "newFlooringType": "tile",
+        "existingFloorType": "none",
+        "removalNeeded": false,
+        "roomCount": 1,
+        "layoutPattern": "straight",
+        "stairSteps": 0
+      },
+      "validatedMeasurements": [
+        {
+          "name": "sqft",
+          "value": 200,
+          "unit": "square feet"
+        },
+        {
+          "name": "roomCount",
+          "value": 1,
+          "unit": "rooms"
+        },
+        {
+          "name": "stairSteps",
+          "value": 0,
+          "unit": "steps"
+        }
+      ],
+      "unconfirmedOwnerFields": [],
+      "reviewReason": "Pricing not fully configured for the measured scope.",
+      "missingCustomerFields": [],
+      "invalidCustomerFields": [],
+      "missingOwnerFields": [
+        "materialPerSqft.tile"
+      ],
+      "invalidOwnerFields": [
+        "materialPerSqft"
+      ],
+      "unsupportedOwnerFields": [],
+      "crossFieldOwnerFields": [],
+      "ownerDiagnostics": [
+        {
+          "type": "invalid",
+          "kind": "structure",
+          "path": "materialPerSqft",
+          "message": "materialPerSqft must be a non-empty price map."
+        },
+        {
+          "type": "missing",
+          "kind": "relationship",
+          "path": "materialPerSqft.tile",
+          "message": "Flooring labor and material maps must contain matching keys."
+        },
+        {
+          "type": "missing",
+          "kind": "non_negative_number",
+          "path": "materialPerSqft.tile",
+          "message": "Flooring material price for the selected flooring type is required."
+        }
+      ],
+      "ownerDecisionRequired": [],
+      "failedTierDiagnostics": [
+        {
+          "tierName": null,
+          "reviewReason": "Pricing not fully configured for the measured scope.",
+          "missingCustomerFields": [],
+          "invalidCustomerFields": [],
+          "missingOwnerFields": [
+            "materialPerSqft.tile"
+          ],
+          "invalidOwnerFields": [
+            "materialPerSqft"
+          ],
+          "unsupportedOwnerFields": [],
+          "crossFieldOwnerFields": [],
+          "ownerDiagnostics": [
+            {
+              "type": "invalid",
+              "kind": "structure",
+              "path": "materialPerSqft",
+              "message": "materialPerSqft must be a non-empty price map."
+            },
+            {
+              "type": "missing",
+              "kind": "relationship",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring labor and material maps must contain matching keys."
+            },
+            {
+              "type": "missing",
+              "kind": "non_negative_number",
+              "path": "materialPerSqft.tile",
+              "message": "Flooring material price for the selected flooring type is required."
+            }
+          ],
+          "ownerDecisionRequired": [],
+          "validationMessages": [
+            "materialPerSqft must be a non-empty price map.",
+            "Flooring labor and material maps must contain matching keys.",
+            "Flooring material price for the selected flooring type is required."
+          ],
+          "normalizedScope": {
+            "sqft": 200,
+            "sqftMethod": "exact",
+            "newFlooringType": "tile",
+            "existingFloorType": "none",
+            "removalNeeded": false,
+            "roomCount": 1,
+            "layoutPattern": "straight",
+            "stairSteps": 0
+          },
+          "validatedMeasurements": [
+            {
+              "name": "sqft",
+              "value": 200,
+              "unit": "square feet"
+            },
+            {
+              "name": "roomCount",
+              "value": 1,
+              "unit": "rooms"
+            },
+            {
+              "name": "stairSteps",
+              "value": 0,
+              "unit": "steps"
+            }
+          ],
+          "inspectionFirst": false
+        }
+      ],
+      "validationMessages": [
+        "materialPerSqft must be a non-empty price map.",
+        "Flooring labor and material maps must contain matching keys.",
+        "Flooring material price for the selected flooring type is required."
+      ],
+      "inspectionFirst": false,
+      "appliedRules": [],
+      "urgencyFlags": [],
+      "bookRevision": "194dab0a808e74d5868c058e15fdae8e0597c967a90c57fbcc44bc504926ecdd",
+      "selectedServiceId": "1b83dd6f-b14e-4e3a-a3cc-82bd91c5b906"
+    }
+  },
+  "money": {
+    "customer": {
+      "resultType": "INSTANT_ESTIMATE_READY",
+      "lowEstimate": 172.5,
+      "midEstimate": 172.5,
+      "highEstimate": 172.5,
+      "priceDrivers": [
+        "5000 measured mowable square feet",
+        "weekly service"
+      ],
+      "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Price is per visit. Includes applicable tax. Prices are in Canadian dollars (CAD).",
+      "quoteId": "b68fd29f-9773-4dfa-8ad7-6f95bcc58f2c",
+      "priceUnit": "per visit",
+      "taxTreatment": "Includes applicable tax.",
+      "currency": "CAD",
+      "options": [
+        {
+          "tierName": null,
+          "lowEstimate": 172.5,
+          "midEstimate": 172.5,
+          "highEstimate": 172.5,
+          "priceDrivers": [
+            "5000 measured mowable square feet",
+            "weekly service"
+          ],
+          "skippedAddons": [],
+          "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Price is per visit. Includes applicable tax. Prices are in Canadian dollars (CAD).",
+          "priceUnit": "per visit",
+          "taxTreatment": "Includes applicable tax."
+        }
+      ],
+      "pricedScope": {
+        "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+        "facts": [
+          {
+            "label": "Measured mowable lawn area",
+            "value": "5000 square feet"
+          },
+          {
+            "label": "Lawn area method",
+            "value": "Measured area"
+          },
+          {
+            "label": "Service frequency",
+            "value": "Weekly"
+          },
+          {
+            "label": "Grass condition",
+            "value": "Regularly maintained"
+          },
+          {
+            "label": "Clipping bagging selected",
+            "value": "No"
+          },
+          {
+            "label": "Lawn edging selected",
+            "value": "No"
+          }
+        ],
+        "fees": []
+      },
+      "submittedDetails": {
+        "requestedWork": "[SYNTHETIC] LANDSCAPING_MOWING",
+        "contact": {},
+        "location": {},
+        "timing": "Not supplied",
+        "additionalDetails": "",
+        "unknowns": "",
+        "clarifications": []
+      },
+      "scopeNotice": "This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.",
+      "fullJobTotal": null
+    },
+    "customerHTML": "<section class=\"editor-section\"><h2>Estimate</h2><h3>[SYNTHETIC] LANDSCAPING_MOWING</h3><dl><dt>Measured mowable lawn area</dt><dd>5000 square feet</dd><dt>Lawn area method</dt><dd>Measured area</dd><dt>Service frequency</dt><dd>Weekly</dd><dt>Grass condition</dt><dd>Regularly maintained</dd><dt>Clipping bagging selected</dt><dd>No</dd><dt>Lawn edging selected</dt><dd>No</dd></dl><article><strong>$172.5 per visit</strong><p class=\"quote-tax-treatment\">Includes applicable tax.</p><ul><li>5000 measured mowable square feet</li><li>weekly service</li></ul><p>This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></article><p>This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.</p><section aria-label=\"Original submitted details\"><h3>Details shared with the business</h3><dl><dt>Requested work</dt><dd>[SYNTHETIC] LANDSCAPING_MOWING</dd><dt>Urgency</dt><dd>Not supplied</dd></dl></section></section>",
+    "recordsHTML": "<section class=\"editor-section\"><h2></h2><p> · </p><section class=\"editor-section\"><h2>Estimate</h2><h3>[SYNTHETIC] LANDSCAPING_MOWING</h3><dl><dt>Measured mowable lawn area</dt><dd>5000 square feet</dd><dt>Lawn area method</dt><dd>Measured area</dd><dt>Service frequency</dt><dd>Weekly</dd><dt>Grass condition</dt><dd>Regularly maintained</dd><dt>Clipping bagging selected</dt><dd>No</dd><dt>Lawn edging selected</dt><dd>No</dd></dl><article><strong>$172.5 per visit</strong><p class=\"quote-tax-treatment\">Includes applicable tax.</p><ul><li>5000 measured mowable square feet</li><li>weekly service</li></ul><p>This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></article><p>This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.</p><section aria-label=\"Original submitted details\"><h3>Details shared with the business</h3><dl><dt>Requested work</dt><dd>[SYNTHETIC] LANDSCAPING_MOWING</dd><dt>Urgency</dt><dd>Not supplied</dd></dl></section></section> </section>",
+    "previewHTML": "<aside class=\"preview-column\"><section class=\"quote-preview ready\"><div class=\"quote-preview-head\"><span class=\"quote-preview-eyebrow\"><span class=\"live-dot\" aria-hidden=\"true\"></span><span class=\"eyebrow\">What your customer hears</span></span><span class=\"mono quote-preview-note\">UPDATES AS YOU TYPE</span></div><p class=\"quote-preview-sub\">This is what the estimate will sound like on a call. Nothing saves until you save.</p><div class=\"quote-range\"><div class=\"mono quote-range-label\">RANGE YOUR CUSTOMER HEARS</div><div class=\"quote-range-values\"><span class=\"quote-low\">$172.5</span><span class=\"mono quote-dash\">–</span><span class=\"quote-high\">$172.5</span><span class=\"quote-price-unit\">per visit</span></div><p class=\"quote-tax-treatment\">Includes applicable tax.</p></div><div class=\"quote-drivers\"><span class=\"mono quote-drivers-label\">WHAT GOES INTO THIS ESTIMATE</span><ul class=\"quote-driver-list\"><li>5000 measured mowable square feet</li><li>weekly service</li></ul><div class=\"quote-midpoint-row\"><span>Midpoint estimate</span><span class=\"mono quote-midpoint-value\">$172.5 per visit</span></div></div><p class=\"quote-disclaimer\">This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></section></aside>",
+    "phone": "172.5 CAD. per visit. Includes applicable tax.. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option."
+  }
+}

@@ -1,3 +1,4 @@
+import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {api,go} from './api.js';
@@ -180,13 +181,14 @@ export function QuoteResult({result}){
  if(!result)return null;
  if(result.resultType==='ESTIMATE_REQUIRES_REVIEW')return <Notice title="Request saved for review">{result.customerMessage}</Notice>;
  const partial=result.resultType==='PARTIAL_ESTIMATE_READY',estimate=partial?result.pricedEstimate:result,scope=result.pricedScope,details=result.submittedDetails;
+ const options=estimate.options?.length?estimate.options:[estimate],money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate]));
  const locationLabels={addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
  const show=value=>value===null||value===undefined?'':typeof value==='object'?JSON.stringify(value):String(value);
  return <section className="editor-section">
   <h2>{partial?'Estimate for selected work':'Estimate'}</h2>
   {scope&&<><h3>{scope.service}</h3><dl>{scope.facts.map((fact,index)=><React.Fragment key={index}><dt>{fact.label}</dt><dd>{fact.value}</dd></React.Fragment>)}</dl></>}
   {estimate.optionAvailabilityNotice&&<Notice>{estimate.optionAvailabilityNotice}</Notice>}
-  {(estimate.options?.length?estimate.options:[estimate]).map((option,index)=><article key={index}>{option.tierName&&<h3>{option.tierName}</h3>}<strong>{option.lowEstimate===option.highEstimate?'$'+option.lowEstimate:'$'+option.lowEstimate+' – $'+option.highEstimate}{(option.priceUnit||estimate.priceUnit)?` ${option.priceUnit||estimate.priceUnit}`:''}</strong>{(option.taxTreatment||estimate.taxTreatment)&&<p className="quote-tax-treatment">{option.taxTreatment||estimate.taxTreatment}</p>}<ul>{(option.priceDrivers||[]).map((driver,i)=><li key={i}>{driver}</li>)}</ul><p>{quoteDisplayDisclaimer(option.disclaimer||estimate.disclaimer,{priceUnit:option.priceUnit||estimate.priceUnit,taxTreatment:option.taxTreatment||estimate.taxTreatment})}</p></article>)}
+  {options.map((option,index)=><article key={index}>{option.tierName&&<h3>{option.tierName}</h3>}<strong>{money.range(option.lowEstimate,option.highEstimate)}{(option.priceUnit||estimate.priceUnit)?` ${option.priceUnit||estimate.priceUnit}`:''}</strong>{(option.taxTreatment||estimate.taxTreatment)&&<p className="quote-tax-treatment">{option.taxTreatment||estimate.taxTreatment}</p>}<ul>{(option.priceDrivers||[]).map((driver,i)=><li key={i}>{driver}</li>)}</ul><p>{quoteDisplayDisclaimer(option.disclaimer||estimate.disclaimer,{priceUnit:option.priceUnit||estimate.priceUnit,taxTreatment:option.taxTreatment||estimate.taxTreatment})}</p></article>)}
   {partial&&<Notice title="Additional work for on-site estimate"><ul>{result.additionalWork.map((item,index)=><li key={index}>{item.description}</li>)}</ul><p>{result.customerMessage}</p><p>Total for all requested work: not yet available.</p></Notice>}
   {result.scopeNotice&&<p>{result.scopeNotice}</p>}
   {details&&<section aria-label="Original submitted details"><h3>Details shared with the business</h3><dl>

@@ -1,3 +1,4 @@
+import {registeredProductKey} from '../../server/productNames.js';
 import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
@@ -55,6 +56,23 @@ function MeasuredOutline({field,value,onChange}) {
  <Button variant="secondary" onClick={()=>onChange([...points,{}])}>Add measured point</Button></div>;
 }
 
+// A native choice list supports both selecting and typing a product name. The
+// same exact (non-fuzzy) matcher binds phone answers; only the checkbox issues
+// the product confirmation receipt, and every edit clears it in update().
+function ProductMeasurement({field,value,registered,update,onChange}) {
+ const keys=Object.keys(registered),key=registeredProductKey(value[field.name],keys);
+ const label=k=>k.replaceAll('_',' ').replace(/^./,first=>first.toUpperCase());
+ const fact=value.confirmedFacts?.[field.name];
+ return <><TextInput aria-label={field.label} list={'offerings-'+field.name} value={key?label(key):value[field.name]??''}
+  onChange={event=>update(field.name,registeredProductKey(event.target.value,keys)||event.target.value||undefined)}/>
+  <datalist id={'offerings-'+field.name}>{keys.map(k=><option key={k} value={label(k)}/>)}</datalist>
+  {key&&<label><input type="checkbox" checked={fact?.status==='identified'&&fact?.value===key&&fact?.offeringId===registered[key]}
+   onChange={event=>{const confirmedFacts={...(value.confirmedFacts||{})};
+    if(event.target.checked)confirmedFacts[field.name]={field:field.name,value:key,status:'identified',offeringId:registered[key]};else delete confirmedFacts[field.name];
+    onChange({...value,[field.name]:key,confirmedFacts});}}/> I have identified this exact offering.</label>}
+ </>;
+}
+
 export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
@@ -68,7 +86,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
    f.type==='string'?<TextInput aria-label={f.label} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/>:
    f.type==='offering_counts'?<>{(f.values||[]).map(key=><Field key={key} label={f.options?.[key]||human(key)}><ExactNumericInput aria-label={'Gate count '+key} value={value[f.name]?.[key]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[key];else next[key]=v;update(f.name,next);}}/></Field>)}<Button variant="secondary" onClick={()=>update(f.name,{})}>No gates</Button>{value[f.name]&&Object.values(value[f.name]).every(n=>n===0)&&<span>No gates selected</span>}</>:
    f.type==='plant_counts'?<>{['small','medium','large'].map(size=><Field key={size} label={human(size)}><ExactNumericInput aria-label={f.label+' '+human(size)} value={value[f.name]?.[size]} onChange={v=>{const next={...(value[f.name]||{})};if(v===undefined)delete next[size];else next[size]=v;update(f.name,next);}}/></Field>)}</>:
-   f.type==='slug'?<><TextInput aria-label={f.label} list={'offerings-'+f.name} value={value[f.name]??''} onChange={e=>update(f.name,e.target.value||undefined)}/><datalist id={'offerings-'+f.name}>{Object.keys(knownOfferings[f.name]||{}).map(key=><option key={key} value={key}/>)}</datalist>{knownOfferings[f.name]?.[value[f.name]]&&<label><input type="checkbox" checked={value.confirmedFacts?.[f.name]?.value===value[f.name]} onChange={e=>{const confirmedFacts={...(value.confirmedFacts||{})};if(e.target.checked)confirmedFacts[f.name]={field:f.name,value:value[f.name],status:'identified',offeringId:knownOfferings[f.name][value[f.name]]};else delete confirmedFacts[f.name];onChange({...value,confirmedFacts});}}/> I have identified this exact offering.</label>}</>:
+   f.type==='slug'?<ProductMeasurement field={f} value={value} registered={knownOfferings[f.name]||{}} update={update} onChange={onChange}/>:
    f.name==='fenceHeight'?<FenceHeightInput label={f.label} value={value[f.name]} onChange={v=>update(f.name,v)}/>:f.type==='number'?<ExactNumericInput aria-label={f.label} value={value[f.name]} onChange={v=>update(f.name,v)}/>:<Notice>This measurement requires owner review.</Notice>}
  </div>)}</div>;
 }
