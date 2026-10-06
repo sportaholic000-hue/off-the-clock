@@ -97,8 +97,13 @@ test('D31 duplicate signed inbound delivery replays one durable session and neve
   assert.doesNotMatch((await h.incoming()).xml,/<Stream|<Dial/);
 });
 test('D32 default ceiling reserves five sessions atomically; sixth captures its request',async t=>{
-  const h=await harness(t),calls=await Promise.all(Array.from({length:6},(_,i)=>h.incoming(i+1)));
+  let now=new Date('2026-10-06T12:00:00.000Z');const h=await harness(t,{install:{clock:()=>now}}),calls=await Promise.all(Array.from({length:6},(_,i)=>h.incoming(i+1)));
   assert.equal(calls.filter(c=>c.xml.includes('<Stream')).length,5);assert.equal(calls.filter(c=>c.xml.includes('<Gather')).length,1);
+  h.db.prepare("UPDATE calls SET status='CONNECTED' WHERE callSid=?").run(calls[0].params.CallSid);
+  now=new Date(now.getTime()+300000);
+  const later=await Promise.all(Array.from({length:5},(_,i)=>h.incoming(i+7)));
+  assert.equal(later.filter(c=>c.xml.includes('<Stream')).length,4,'expired, never-connected reservations must not permanently consume capacity');
+  assert.equal(later.filter(c=>c.xml.includes('<Gather')).length,1,'a connected session still consumes capacity after its nonce expires');
 });
 test('P01 no default callback or quote deadline; only explicit owner policy authorizes one',()=>{
   const guideText=readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8');

@@ -160,7 +160,13 @@ export function createVoiceSessionStore({
           const first=database.prepare('SELECT nonceHash FROM voiceSessionNonces WHERE ownerId=? AND callSid=? ORDER BY rowid LIMIT 1').get(context.ownerId,context.callSid);
           return {status:first?.nonceHash===sessionKey?'created':'duplicate',callRecordId:existing.id};
         }
-        const active=database.prepare("SELECT COUNT(*) n FROM calls WHERE ownerId=? AND status IN ('CONNECTING','CONNECTED','TRANSFERRING')").get(context.ownerId).n;
+        // An unused connection reservation stops consuming capacity when its
+        // nonce expires. Keep the call row available for late fallback capture
+        // and restart recovery; connected calls remain active regardless of age.
+        const active=database.prepare(`SELECT COUNT(*) n FROM calls c WHERE c.ownerId=? AND (
+          c.status IN ('CONNECTED','TRANSFERRING') OR (c.status='CONNECTING' AND EXISTS (
+            SELECT 1 FROM voiceSessionNonces n WHERE n.ownerId=c.ownerId AND n.callSid=c.callSid AND n.expiresAtUtc>?
+          )))`).get(context.ownerId,nowIso()).n;
         if(active>=maxConcurrentCalls)return {status:'capacity'};
         const id = randomUUID();
         const createdAt = nowIso();

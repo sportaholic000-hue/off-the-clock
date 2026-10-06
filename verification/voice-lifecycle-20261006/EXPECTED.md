@@ -20,3 +20,5 @@ Source inspection before fixes:
 | P01 | voice guide promises quote today, compiler injects it | No deadline without explicit owner-authored policy |
 
 All owners, numbers, messages, provider clients and stores are synthetic. No real calls/texts/provider writes or deployments.
+
+Capacity follow-up: source counted every CONNECTING row indefinitely. Before repair, an execution with one connected call and four expired unused reservations admitted zero of the expected four new sessions. The fifth new call must still use capture fallback. The failing execution is archived as `expired-reservation-before.tap.gz`; the repaired transaction counts unused reservations only while their matching nonce is unexpired.
