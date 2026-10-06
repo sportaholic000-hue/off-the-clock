@@ -1,0 +1,16 @@
+run 37406061652 sha a21e7041c12c3723b28b2f14a0c90383a1110230
+Summary: {"tests":"2089","pass":"2085","fail":"2","cancelled":"0","skipped":"2","todo":"0"}
+Known failures still failing: 0/9
+::notice::Known failure now passes, remove it from the list: dispatcher rejects handler results containing raw rates instead of exposing them
+::notice::Known failure now passes, remove it from the list: mutations are idempotent and conflicting reuse of a tool call id is rejected
+::notice::Known failure now passes, remove it from the list: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+::notice::Known failure now passes, remove it from the list: test/googleGenAiLiveAdapter.spec.mjs
+::notice::Known failure now passes, remove it from the list: test/voicePromptCompiler.spec.mjs
+::notice::Known failure now passes, remove it from the list: test/voiceWebSocketServer.spec.mjs
+::notice::Known failure now passes, remove it from the list: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+::notice::Known failure now passes, remove it from the list: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+::notice::Known failure now passes, remove it from the list: voice tool runtime persists a safe review quote and lead without exposing internal identities
+::error::New test failure: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+::error::New test failure: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+not ok 2016 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+not ok 2018 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
