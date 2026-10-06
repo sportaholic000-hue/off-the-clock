@@ -1,0 +1,42 @@
+{
+  "baseSha": "eaadeca0856f1bd7fcade8685711a19aefd786d0",
+  "coldInstall": "passed",
+  "coldBuild": "passed",
+  "relevantRegressions": {
+    "tests": 102,
+    "pass": 102,
+    "fail": 0,
+    "skipped": 0
+  },
+  "startupAndProviderFinal": {
+    "tests": 36,
+    "pass": 36,
+    "fail": 0,
+    "skipped": 0
+  },
+  "localStrict": {
+    "tests": 2164,
+    "pass": 2124,
+    "fail": 40,
+    "skipped": 0,
+    "environmentFailures": 40,
+    "productFailures": 0
+  },
+  "localFullBeforeStartupAssertionUpdate": {
+    "tests": 2549,
+    "pass": 2508,
+    "fail": 41,
+    "skipped": 0,
+    "environmentFailures": 40,
+    "startupLiteralAssertionFailure": 1
+  },
+  "startupAssertionAfterUpdate": {
+    "tests": 27,
+    "pass": 27,
+    "fail": 0,
+    "skipped": 0
+  },
+  "localBrowserFailure": "Chromium exits SIGTRAP before executing browser assertions",
+  "independentExperiments": 2,
+  "hosted": "pending"
+}

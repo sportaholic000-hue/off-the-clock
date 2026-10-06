@@ -1,0 +1,19 @@
+{
+  "experiment": "two concurrent processes plus a separate restarted process",
+  "providerSends": 1,
+  "concurrent": [
+    {
+      "processed": 0
+    },
+    {
+      "processed": 1
+    }
+  ],
+  "restart": {
+    "processed": 0
+  },
+  "stored": {
+    "status": "SENT",
+    "attemptCount": 1
+  }
+}

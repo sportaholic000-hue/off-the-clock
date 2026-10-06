@@ -1,3 +1,4 @@
+import {createVoiceSmsService} from '../voiceSmsService.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
@@ -833,81 +834,44 @@ export function createVoiceToolRuntime({
   }
 
   async function sendSms(input) {
-    const args = invocation(input);
-    const resolved = resolve(args.recordHandle, ['quote', 'appointment', 'quote_request', 'lead']);
-    const template = typeof args.template === 'string' ? args.template.trim() : '';
-    if (!template) throw runtimeError('SMS_TEMPLATE_REQUIRED');
-    const identity = json({
-      callSid: context.callSid,
-      recordHandleHash: resolved.handleHash,
-      template
-    });
-    const eventId = stableUuid(secret, 'voice-sms-event', identity);
-    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
-      eventId, context.ownerId
-    );
-    if (prior) {
-      return prior.status === 'SENT'
-        ? { status: 'sent', message: 'The text message was sent.' }
-        : {
-            status: 'unavailable',
-            reason: 'SMS_PROVIDER_UNAVAILABLE',
-            message: 'The text message could not be confirmed as sent.'
-          };
-    }
-    writeOutbox({
-      id: eventId,
-      eventType: 'voice.sms_requested',
-      aggregateId: resolved.resourceKeyDigest,
-      payload: {
-        callSid: context.callSid,
-        recipient: context.from,
-        template,
-        recordType: resolved.type,
-        recordDigest: resolved.resourceKeyDigest
-      }
-    });
-    const send = typeof providers.sendSms === 'function'
-      ? providers.sendSms
-      : typeof providers.sms?.send === 'function'
-        ? providers.sms.send.bind(providers.sms)
-        : null;
-    if (!send) {
-      updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'SMS_PROVIDER_UNAVAILABLE',
-        message: 'Text messaging is not available right now.'
-      };
-    }
-    try {
-      const result = await send({
-        ownerId: context.ownerId,
-        callSid: context.callSid,
-        to: context.from,
-        template,
-        recordType: resolved.type,
-        record: resolved.reference,
-        idempotencyKey: eventId
-      });
-      if (providerStatus(result) !== 'SENT') {
-        updateOutbox(eventId, 'FAILED');
-        return {
-          status: 'unavailable',
-          reason: 'SMS_NOT_CONFIRMED',
-          message: 'The text message could not be confirmed as sent.'
-        };
-      }
-      updateOutbox(eventId, 'SENT');
-      return { status: 'sent', message: 'The text message was sent.' };
-    } catch {
-      updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'SMS_PROVIDER_UNAVAILABLE',
-        message: 'The text message could not be sent right now.'
-      };
-    }
+    const args=invocation(input),resolved=resolve(args.recordHandle,['quote','appointment','quote_request','lead']);
+    const template=typeof args.template==='string'?args.template.trim():'';
+    if(!['quote','booking','callback','reminder'].includes(template))throw runtimeError('SMS_TEMPLATE_REQUIRED');
+    let recordId,body;
+    if(resolved.type==='lead'&&template==='callback'){
+      const lead=loadLead(resolved);recordId=lead.row.id;
+      body='Your request has been saved for the business to review. A callback has not been confirmed.';
+    }else if(resolved.type==='quote_request'&&template==='callback'){
+      recordId=resolved.reference.requestId;
+      if(!database.prepare('SELECT id FROM quoteRequests WHERE ownerId=? AND id=? AND callId=?').get(context.ownerId,recordId,callRow().id))throw runtimeError('INVALID_QUOTE_REQUEST_HANDLE');
+      body='Your quote-review request has been saved. A price or callback time has not been confirmed.';
+    }else if(resolved.type==='quote'&&template==='quote'){
+      const quote=loadQuote(resolved);recordId=quote.row.recordId;
+      const customer=quote.response?.pricedEstimate||quote.response;
+      // Use the frozen customer receipt only. No fresh arithmetic or raw book.
+      const options=Array.isArray(customer?.options)?customer.options:[customer];
+      const prices=options.filter(o=>Number.isFinite(o?.lowEstimate)&&Number.isFinite(o?.highEstimate)).map(o=>[o.tierName,[o.lowEstimate,o.highEstimate].map(v=>Number(v).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2})).join(' to '),o.currency,o.priceUnit,o.taxTreatment].filter(Boolean).join(' '));
+      body=prices.length?'Your saved estimate: '+prices.join('; ')+'. The business will confirm the job details.':'Your pricing request has been saved for review. No price has been confirmed.';
+    }else if(resolved.type==='appointment'&&['booking','reminder'].includes(template)){
+      recordId=resolved.reference.appointmentId;
+      const appointment=database.prepare('SELECT status,startAtUtc,timezone,customerJson FROM appointments WHERE ownerId=? AND id=? AND customerId=?').get(context.ownerId,recordId,resolved.reference.customerId);
+      if(!appointment||parseJson(appointment.customerJson,{})?.phone!==context.from)throw runtimeError('INVALID_APPOINTMENT_HANDLE');
+      if(appointment.status==='CONFIRMED')body='Your appointment is confirmed for '+appointment.startAtUtc+' ('+appointment.timezone+').';
+      else body='Your appointment request is saved with status '+appointment.status+'. It is not a confirmed booking.';
+    }else throw runtimeError('SMS_RECORD_TEMPLATE_MISMATCH');
+    const owner=database.prepare("SELECT businessName FROM users WHERE id=? AND role='owner'").get(context.ownerId);
+    body=String(owner?.businessName||'The business').slice(0,100)+': '+body+' Reply STOP to opt out.';
+    if(body.length>1600)throw runtimeError('SMS_MESSAGE_TOO_LONG');
+    const eventId=stableUuid(secret,'voice-sms-event',json({callSid:context.callSid,recordHandleHash:resolved.handleHash,template}));
+    const provider=typeof providers.sendSms==='function'?{send:providers.sendSms}:providers.sms||{};
+    const service=providers.smsDelivery||createVoiceSmsService({database,provider,clock:()=>instant().getTime()});
+    service.enqueue({ownerId:context.ownerId,id:eventId,callSid:context.callSid,recordType:resolved.type,recordId,
+      request:{accountSid:context.accountSid,from:context.to,to:context.from,template,recordType:resolved.type,record:resolved.reference,body}});
+    await service.processOne(context.ownerId,eventId);
+    const state=service.state(context.ownerId,eventId);
+    if(['SENT','DELIVERED'].includes(state.status))return {status:'sent',message:'The text message was sent.'};
+    if(['PENDING','DELIVERING','QUEUED','ACCEPTED'].includes(state.status))return {status:'pending',message:'The text request is saved. It has not been confirmed as sent.'};
+    return {status:'unavailable',message:'The text message could not be confirmed as sent. The request remains saved for review.'};
   }
 
   async function flagUrgent(input) {

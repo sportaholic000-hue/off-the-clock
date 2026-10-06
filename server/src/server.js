@@ -1,3 +1,5 @@
+import {createVoiceSmsService} from './voiceSmsService.js';
+import {createVoiceSmsProvider,installVoiceSmsStatusRoute} from './voiceSmsProvider.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
@@ -149,6 +151,7 @@ migrate();
 migrateLegacyGoogleCalendarCredentials();
 const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
 const ownerAlerts=createOwnerAlertService({database:db,ownerQuery});
+const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:createVoiceSmsProvider({database:db,ownerQuery})});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
@@ -463,7 +466,8 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
-installProductionVoice({app,database:db,bookingService,runtimeConfig});
+installVoiceSmsStatusRoute(app,{service:smsDelivery,asyncHandler});
+installProductionVoice({app,database:db,bookingService,runtimeConfig,providers:{smsDelivery}});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
@@ -487,10 +491,11 @@ const httpServer = app.listen(port, () => {
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
+const stopSmsWorker=smsDelivery.start({onError:code=>console.error(`[sms-worker] ${code}`)});
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopOwnerAlertWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void stopOwnerAlertWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopOwnerAlertWorker,stopSmsWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 
