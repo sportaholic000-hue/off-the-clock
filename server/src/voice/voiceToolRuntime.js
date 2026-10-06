@@ -800,15 +800,24 @@ export function createVoiceToolRuntime({
     immediate(database,()=>{
       // Separate described requests have separate identities; exact retries
       // recover the same standalone inquiry even after a process restart.
-      lead=saveInquiry({}, {leadId:supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
-        updates:{description:supplied?.row.describedService||description}});
+      const priorEvent=database.prepare('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND aggregateId=?').get(context.ownerId,eventId,requestId);
+      let priorLeadId;try{priorLeadId=JSON.parse(priorEvent?.payloadJson||'{}').leadId;}catch{}
+      const boundId=supplied?.row.id||priorLeadId||requestId;
+      let existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND id=?
+        AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
+        AND json_extract(collectedInputsJson,'$.contact.phone')=?`).get(context.ownerId,call.id,boundId,context.from);
+      if(!existing&&!priorEvent&&!supplied)existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND describedService=?
+        AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
+        AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid LIMIT 1`).get(context.ownerId,call.id,description,context.from);
+      lead=saveInquiry({}, {leadId:existing?.id||supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
+        updates:{description:existing?.describedService||description}});
       database.prepare('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
       writeOutbox({id:eventId,eventType:'voice.quote_request_logged',aggregateId:requestId,
         payload:{callSid:context.callSid,description,callerNumber:context.from,leadId:lead.row.id,contact:lead.details.contact}});
       // Enrich only an unattempted snapshot inside the producer transaction.
       // Delivered historical events and quote/submission receipts stay intact.
       if(database.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='webhookDeliveries'").get())
-        database.prepare("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING'").run(
+        database.prepare("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING' AND attemptCount=0").run(
           JSON.stringify(lead.details.contact),lead.row.id,context.ownerId,requestId);
     });
     const requestHandle=issue('quote_request','quote-request:'+requestId,{requestId,leadId:lead.row.id});

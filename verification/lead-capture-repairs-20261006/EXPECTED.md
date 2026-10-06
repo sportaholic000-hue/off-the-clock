@@ -29,3 +29,10 @@ Additional regression expectations, written before their runs:
 - Contact projections/CSV/webhooks allow only contact and bounded request facts, never raw rates/costs/private outcome/credentials. Current and upgraded SQLite producer installs use the repaired mapping.
 - Browser tests use actual routes/components and synthetic stored data for contact, navigation and new feed arrival; stale results are dropped on tenant/session change and unmount.
 - Cold npm ci/build/test:quote/npm test are run unmodified; environment/browser failures are distinguished and hosted results verified at the uploaded source tree. Existing quote outcomes and amounts stay unchanged.
+# Additional correction/replay expectations
+
+Before execution: a review logged after capture with exactly the same request description must bind that inquiry. A new provider event retry of an old review must retain subsequent corrected description and dismissed disposition, without rewriting the historical quote-request description or an already-attempted webhook snapshot. Different descriptions without an explicit inquiry handle must remain separate requests.
+
+Before execution: a preferred-time address replaces the current follow-up location as a complete address; incompatible address aliases from the original request must not appear alongside it. A later voice correction must take precedence for the contact fields it explicitly corrects, with both the preferred request and capture history retained as provenance.
+
+After-fix historical experiment rerun: only the twelve assigned capture/contact/navigation experiments are selected. E05 also requires unimplemented notification delivery, and E28 also requires notification delivery and an older-request inbox: those combined original expectations must remain mismatches, with the assigned urgency/contact clauses verified separately. Mounted E41 waits 6.5 seconds for the documented five-second feed cadence; the baseline remains unchanged at its original one-second observation.

@@ -166,3 +166,49 @@ test('D22/D23: preferred contact is projected with provenance while stored insta
   assert.equal(f.db.prepare('SELECT resultJson FROM quotes WHERE ownerId=?').get(c.ownerId).resultJson,receipt);assert.equal(f.db.prepare('SELECT customerJson FROM bookingPreferences WHERE ownerId=?').get(c.ownerId).customerJson,customer);assert.equal(f.lead(c)[0].collectedInputsJson,row.collectedInputsJson);
   assert.equal(storedQuoteView({resultJson:receipt},'staff').contact.email,email);
 });
+
+test('D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts',async t=>{
+  const f=fixture(t);await f.webhook().save('synthetic-a',{url:'https://synthetic.example.invalid/hooks',events:['quote.requested']});
+  const c=f.context(),v=f.voice(c),description='[SYNTHETIC] Repair gate';const captured=await v.tool('captureLead',{name,email,description});const id=f.lead(c)[0].id;
+  await v.tool('logQuoteRequest',{description},'initial-review');assert.equal(f.lead(c).length,1);assert.equal(f.lead(c)[0].id,id);
+  const delivery=f.db.prepare("SELECT * FROM webhookDeliveries WHERE ownerId=? AND eventType='quote.requested'").get(c.ownerId);f.db.prepare('UPDATE webhookDeliveries SET attemptCount=1 WHERE ownerId=? AND id=?').run(c.ownerId,delivery.id);
+  f.db.prepare("UPDATE leads SET status='DISMISSED' WHERE ownerId=? AND id=?").run(c.ownerId,id);f.advance(1000);
+  await v.tool('captureLead',{leadHandle:captured.leadHandle,description:'[SYNTHETIC] Replace gate',email:'corrected@example.invalid'});
+  await f.voice(c).tool('logQuoteRequest',{description},'new-provider-review-retry');
+  assert.equal(f.lead(c).length,1);assert.equal(f.lead(c)[0].describedService,'[SYNTHETIC] Replace gate');assert.equal(f.lead(c)[0].status,'DISMISSED');
+  assert.equal(f.db.prepare('SELECT describedService FROM quoteRequests WHERE ownerId=?').get(c.ownerId).describedService,description);
+  assert.equal(f.db.prepare('SELECT payloadJson FROM webhookDeliveries WHERE ownerId=? AND id=?').get(c.ownerId,delivery.id).payloadJson,delivery.payloadJson);
+});
+
+test('D11/D18: standalone review retry cannot undo a later description correction',async t=>{
+  const f=fixture(t),c=f.context(),v=f.voice(c),description='[SYNTHETIC] Repair gate';await v.tool('logQuoteRequest',{description});
+  await v.tool('captureLead',{description:'[SYNTHETIC] Replace gate'});await f.voice(c).tool('logQuoteRequest',{description});
+  assert.equal(f.lead(c).length,1);assert.equal(f.lead(c)[0].describedService,'[SYNTHETIC] Replace gate');
+});
+
+test('D22: preferred address is coherent and later explicit voice correction takes precedence with provenance',async t=>{
+  const f=fixture(t),c=f.context(),v=f.voice(c);await v.tool('captureLead',{name,email,address});const row=f.lead(c)[0];f.advance(1000);
+  const prefAt='2026-10-06T12:00:01.000Z';f.db.prepare("INSERT INTO bookingIntents(id,ownerId,tokenHash,sourceType,sourceId,serviceId,resultType,status,expiresAtUtc,createdAt) VALUES('synthetic-intent',?,'SYNTHETIC','lead',?,'synthetic-service','ESTIMATE_REQUIRES_REVIEW','OPEN','2026-10-10T00:00:00Z',?)").run(c.ownerId,row.id,at);
+  f.db.prepare("INSERT INTO bookingPreferences(id,ownerId,intentId,preferredWindowsJson,customerJson,locationJson,status,createdAt,updatedAt) VALUES('synthetic-preference',?,'synthetic-intent','[]',?,?,'REQUESTED',?,?)").run(c.ownerId,JSON.stringify({name:'[SYNTHETIC] Preferred Alex',email:'preferred@example.invalid',phone:'+19025550199'}),JSON.stringify({addressLine1:'[SYNTHETIC] Preferred site',city:'Synthetic City'}),prefAt,prefAt);
+  let view=leadFollowUpView(f.ownerQuery,row,'staff');assert.equal(view.location.line1,undefined);assert.equal(view.location.addressLine1,'[SYNTHETIC] Preferred site');assert.equal(view.submittedLocation.line1,address.line1);
+  f.advance(1000);await v.tool('captureLead',{email:'latest@example.invalid'});view=leadFollowUpView(f.ownerQuery,f.lead(c)[0],'staff');
+  assert.equal(view.contact.email,'latest@example.invalid');assert.equal(view.contact.phone,'+19025550199');assert.equal(view.contact.name,'[SYNTHETIC] Preferred Alex');assert.equal(view.preferredRequest.contact.email,'preferred@example.invalid');assert.equal(view.followUpSource.kind,'voice_capture');assert.equal(view.captureHistory.length,2);
+});
+
+test('D11/D12/D13: simultaneous duplicate corrections serialize and an update failure preserves prior contact',async t=>{
+  const f=fixture(t),c=f.context(),v=f.voice(c);await v.tool('captureLead',{name,email,description:'[SYNTHETIC] Gate'});
+  f.db.prepare("UPDATE leads SET status='DISMISSED' WHERE ownerId=? AND callId=?").run(c.ownerId,c.callSid);
+  await Promise.all([v.tool('captureLead',{email:'corrected@example.invalid'},'duplicate-one'),f.voice(c).tool('captureLead',{email:'corrected@example.invalid'},'duplicate-two')]);
+  let row=f.lead(c)[0];assert.equal(f.lead(c).length,1);assert.equal(row.status,'DISMISSED');assert.equal(detail(row).captureHistory.length,2);
+  const before=row.collectedInputsJson,customer=f.db.prepare('SELECT notesJson FROM customers WHERE ownerId=?').get(c.ownerId).notesJson;
+  f.db.exec("CREATE TRIGGER synthetic_fail_update BEFORE UPDATE ON leads BEGIN SELECT RAISE(ABORT,'[SYNTHETIC] update failure'); END");
+  await assert.rejects(v.tool('captureLead',{email:'newest@example.invalid'}));row=f.lead(c)[0];assert.equal(row.collectedInputsJson,before);assert.equal(f.db.prepare('SELECT notesJson FROM customers WHERE ownerId=?').get(c.ownerId).notesJson,customer);f.db.exec('DROP TRIGGER synthetic_fail_update');
+});
+
+test('D17/D18: existing webhook worker delivers only allowlisted saved voice contact to local stub',async t=>{
+  const f=fixture(t),requests=[];const worker=f.webhook({enabled:()=>true,deliver:async(_,request)=>{requests.push(JSON.parse(request.body));return 204;}});
+  await worker.save('synthetic-a',{url:'https://synthetic.example.invalid/hooks',events:['lead.created','quote.requested']});const c=f.context(),v=f.voice(c),lead=await v.tool('captureLead',{name,email,description:'[SYNTHETIC] Gate quote'});
+  await v.tool('logQuoteRequest',{description:'[SYNTHETIC] Gate quote',leadHandle:lead.leadHandle});await worker.dispatchOnce();await worker.dispatchOnce();
+  assert.equal(requests.length,2);const text=JSON.stringify(requests);assert.match(text,/followup@example.invalid/);assert.match(text,/19025550100/);assert.doesNotMatch(text,/captureHistory|customerId|leadHandle|privateCost/);
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM webhookDeliveries WHERE ownerId=? AND status='DELIVERED'").get(c.ownerId).n,2);
+});

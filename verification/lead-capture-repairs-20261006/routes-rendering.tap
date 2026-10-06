@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: lead capture repairs: real routes, tenant authorization, stored receipts and rendered contact
+    # Subtest: owner/staff call and lead routes preserve notes, urgency and corrected preferred contact
+    ok 1 - owner/staff call and lead routes preserve notes, urgency and corrected preferred contact
+      ---
+      duration_ms: 38.25516
+      type: 'test'
+      ...
+    # Subtest: owner disposition through actual PATCH survives capture correction and exact replay
+    ok 2 - owner disposition through actual PATCH survives capture correction and exact replay
+      ---
+      duration_ms: 18.816099
+      type: 'test'
+      ...
+    # Subtest: wrong owners, staff and missing sessions cannot read or change other tenant records
+    ok 3 - wrong owners, staff and missing sessions cannot read or change other tenant records
+      ---
+      duration_ms: 26.37441
+      type: 'test'
+      ...
+    # Subtest: instant quote list exposes safe saved contact from separate submission without recalculation
+    ok 4 - instant quote list exposes safe saved contact from separate submission without recalculation
+      ---
+      duration_ms: 2.759622
+      type: 'test'
+      ...
+    # Subtest: activity route updates saved calls, is bounded, tenant-bound and staff-safe
+    ok 5 - activity route updates saved calls, is bounded, tenant-bound and staff-safe
+      ---
+      duration_ms: 5.393322
+      type: 'test'
+      ...
+    # Subtest: production Calls direct link and query refresh serve owner app without caching or API fallback
+    ok 6 - production Calls direct link and query refresh serve owner app without caching or API fallback
+      ---
+      duration_ms: 19.42386
+      type: 'test'
+      ...
+    # Subtest: actual route responses render contact, notes, urgency, provenance and exact saved quote for staff
+    ok 7 - actual route responses render contact, notes, urgency, provenance and exact saved quote for staff
+      ---
+      duration_ms: 917.985989
+      type: 'test'
+      ...
+    1..7
+ok 1 - lead capture repairs: real routes, tenant authorization, stored receipts and rendered contact
+  ---
+  duration_ms: 1500.409181
+  type: 'test'
+  ...
+1..1
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1927.877615

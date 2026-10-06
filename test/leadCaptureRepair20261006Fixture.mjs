@@ -25,7 +25,7 @@ export function fixture(t,filename=':memory:'){
     const dispatch=createVoiceToolDispatcher({handlers:runtime.handlers,callContext:c,idempotencyStore:runtime.idempotencyStore}).dispatch;
     return {runtime,tool:(name,args,key='synthetic-event-'+serial++)=>dispatch({name,args,toolCallId:key})};}
   function lead(c){return db.prepare('SELECT * FROM leads WHERE ownerId=? AND callId=? ORDER BY rowid').all(c.ownerId,c.callSid);}
-  function webhook(){return createOutboundWebhookService({database:db,ownerQuery,encryptionOptions:{key:'37'.repeat(32)},
-    resolveDestination:async url=>({url:new URL(url)}),deliver:async()=>204,enabled:()=>false});}
+  function webhook(options={}){return createOutboundWebhookService({database:db,ownerQuery,encryptionOptions:{key:'37'.repeat(32)},
+    resolveDestination:async url=>({url:new URL(url)}),deliver:async()=>204,enabled:()=>false,...options});}
   return {db,ownerQuery,context,voice,lead,webhook,service:createOwnerCallService({ownerQuery}),advance:ms=>{now+=ms;}};
 }

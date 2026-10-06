@@ -1,0 +1,25 @@
+{
+  "startingSha": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+  "repairedWorkingTree": true,
+  "waitBoundMs": 6500,
+  "syntheticOnly": true,
+  "experiments": [
+    {
+      "id": "E41",
+      "expected": "An open dashboard receives a newly persisted call without reload (§5.7/§6.1).",
+      "meetsExpectation": true,
+      "actual": {
+        "initialFirstVisible": true,
+        "newCallInBackend": true,
+        "newCallVisibleInMountedDashboard": true,
+        "additionalUiFetches": 1,
+        "initialFetches": [
+          "/api/dashboard",
+          "/api/onboarding/state",
+          "/api/integrations/webhook",
+          "/api/leads/activity"
+        ]
+      }
+    }
+  ]
+}
