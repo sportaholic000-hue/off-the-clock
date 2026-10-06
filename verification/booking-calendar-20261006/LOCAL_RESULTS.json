@@ -1,0 +1,338 @@
+{
+  "quote": {
+    "rawFile": "cold-quote.log",
+    "rawBytes": 643274,
+    "rawSha256": "2c4add88ecebc6f7ce9a2a1321d58004bd2a12628e5279adb1818d792829198f",
+    "archive": "cold-quote.log.gz",
+    "summary": [
+      "# tests 2095",
+      "# pass 2057",
+      "# fail 38",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ],
+    "failures": [
+      {
+        "name": "not ok 163 - Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 164 - Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 165 - Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 212 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 319 - scope editor groups entries of the same kind and names them by their matching facts",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 472 - F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 473 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 474 - F13 browser legacy flat and two-level controls use the same exact parser",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 717 - editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 718 - editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 719 - editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 720 - editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 721 - editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 722 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 723 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 724 - editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 725 - editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 726 - editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 727 - editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 728 - editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 729 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 730 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 731 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 790 - pending manual save preserves a newer numeric edit and its question",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 791 - pending manual save preserves a newer structured price-map edit",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 792 - pending manual save prevents duplicate confirmation and premature review",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 793 - unchanged confirmed value saves once and advances normally",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 794 - failed manual save keeps the confirmed value available for retry",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 813 - late 200 response cannot replace a new service preview",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 814 - late 400 response cannot replace a new service preview",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 815 - old completion cannot clear current loading and invalid input cannot retain old ready",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 816 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1082 - interview owner can add separate demolition entries and explicitly choose up-to access",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1083 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1084 - interview accepts ordinary floor names and retains invalid drafts for correction",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1535 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 2009 - website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 2010 - website owner screen says no prices found and preserves the current prices",
+        "browserStartup": true
+      }
+    ]
+  },
+  "full": {
+    "rawFile": "cold-full.log",
+    "rawBytes": 732538,
+    "rawSha256": "38717284bb1fe6dcf29e035db025ec5e0963635e6c2e37010d1a18124cc054e4",
+    "archive": "cold-full.log.gz",
+    "summary": [
+      "# tests 2473",
+      "# pass 2435",
+      "# fail 38",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0"
+    ],
+    "failures": [
+      {
+        "name": "not ok 188 - Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 189 - Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 190 - Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 327 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 451 - scope editor groups entries of the same kind and names them by their matching facts",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 651 - F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 652 - F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 653 - F13 browser legacy flat and two-level controls use the same exact parser",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 978 - editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 979 - editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 980 - editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 981 - editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 982 - editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 983 - editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 984 - editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 985 - editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 986 - editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 987 - editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 988 - editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 989 - editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 990 - editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 991 - editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 992 - editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1051 - pending manual save preserves a newer numeric edit and its question",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1052 - pending manual save preserves a newer structured price-map edit",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1053 - pending manual save prevents duplicate confirmation and premature review",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1054 - unchanged confirmed value saves once and advances normally",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1055 - failed manual save keeps the confirmed value available for retry",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1074 - late 200 response cannot replace a new service preview",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1075 - late 400 response cannot replace a new service preview",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1076 - old completion cannot clear current loading and invalid input cannot retain old ready",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1077 - invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1343 - interview owner can add separate demolition entries and explicitly choose up-to access",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1344 - interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1345 - interview accepts ordinary floor names and retains invalid drafts for correction",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 1796 - QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 2372 - website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "browserStartup": true
+      },
+      {
+        "name": "not ok 2373 - website owner screen says no prices found and preserves the current prices",
+        "browserStartup": true
+      }
+    ]
+  }
+}

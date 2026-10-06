@@ -56,15 +56,46 @@ https://developers.google.com/workspace/calendar/api/guides/create-events .
 The production adapter is exercised through fake fetch, not replaced in the
 real-server tests. No provider network fallback exists in that fixture.
 
-## Verification status at source checkpoint
+## Final verification
 
 - Targeted existing/new booking, calendar, adapter, route and preference checks:
   **122/122**, zero failures/skips.
 - New actual-server acceptance tests: **2/2**, zero failures/skips.
 - Local browser acceptance: Chromium fails during launch with SIGTRAP; retained
   in [browser-local.tap](browser-local.tap). No skip or gate relaxation added.
-- Cold build, full suite, strict quote suite and hosted result: pending at this
-  checkpoint. This report will be updated with final counts and exact revision.
+- **Hosted source ba1e0c3e4131b4f940367845f6c11bcfd58fafd8 is fully green:**
+  [run37537016739](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37537016739).
+  Cold `npm ci`, owner/widget build, **2,095/2,095 strict quote tests** and
+  **2,473/2,473 full-suite tests** passed, with zero failures, skips,
+  cancellations or TODOs. Known failures:0/0. Production audit:0 vulnerabilities.
+- **27 new regressions**:24 core scenarios,2 actual-server/adapter scenarios and
+  1 actual-browser scenario. The targeted counts overlap the full/strict suites;
+  they must not be summed into the full-suite count.
+- Local cold install/build passed. Local strict:2,057 passed/38 failed;
+  local full:2,435 passed/38 failed. Every failure is Chromium startup, with
+  zero skips. Local runs are not represented as passing. Completed hosted
+  browser runs provide acceptance, including the actual customer widget,
+  dashboard and Calendar in a Los Angeles browser.
+- [HOSTED.json](HOSTED.json) binds the successful run to the exact source SHA;
+  [hosted-accepted.txt](hosted-accepted.txt) preserves counts and all new passing
+  scenarios. [COLD_RUNS.json](COLD_RUNS.json) records local commands/exits;
+  [LOCAL_RESULTS.json](LOCAL_RESULTS.json) records each local failure and the
+  compressed raw-log SHA-256 bindings. Raw cold logs are archived as
+  [cold-quote.log.gz](cold-quote.log.gz) and [cold-full.log.gz](cold-full.log.gz).
+- [SOURCE_BINDINGS.json](SOURCE_BINDINGS.json) binds all10 changed source,
+  test and CI files to the tested source/tree. GitHub's uploaded tree matched
+  the local staged tree; the fetched source has the requested base as ancestor.
+  The subsequent documentation/evidence commit changes none of those bytes.
+
+## Unfinished / boundaries
+
+The local Chromium startup problem remains; hosted browser acceptance is green.
+No confirmed defect from this booking repair batch is left open. These are
+synthetic-provider guarantees for the tested application paths, not a claim of
+live Google-account acceptance or protection against unrelated external tools
+writing events directly to a shared calendar. No real account or deployment was
+used, as requested. No new notification, deposit, reschedule or cancellation
+feature was built.
 
 CI only adds this exact branch to its push triggers; checks are unchanged.
 No schema migration or pricing arithmetic change is required.

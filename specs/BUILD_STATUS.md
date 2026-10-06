@@ -1,3 +1,28 @@
+# October 6 booking/calendar repair — hosted gates passed
+
+Branch `fix/booking-calendar-20261006`; verified base
+`73c00622d6f2df31f57773b32e41355a7421f1a3`.
+Tested source **`ba1e0c3e4131b4f940367845f6c11bcfd58fafd8`**.
+[Complete source/execution evidence and limits](../verification/booking-calendar-20261006/REPORT.md).
+
+Fixed DST working-window arithmetic, stale provider completion races, confirming
+past/insufficient-notice slots and owner-setting changes during provider reads.
+27 new synthetic regressions include independent SQLite contention, exact hold
+expiry, retry/restart recovery, provider/storage failures, tenant isolation,
+Moncton DST and a real Los Angeles-browser booking through the actual server.
+Owner dashboard, calendar, call detail and fake provider events agree.
+
+[Hosted run37537016739](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37537016739):
+cold install/build passed; strict **2,095/2,095**; full **2,473/2,473**;
+zero failures/skips/cancellations/TODOs; empty known-failures list;
+production dependency audit zero vulnerabilities.
+Local cold install/build passed; strict2,057/2,095 and full2,435/2,473,
+with38 Chromium-startup failures in each and zero skips. Hosted browser
+acceptance passed. No gate weakened. No subagents, main merge, deployment,
+real calendar account or live data. No full platform/launch gate is asserted.
+
+## Previous release checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision

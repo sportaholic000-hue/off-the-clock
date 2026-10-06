@@ -1,0 +1,72 @@
+2026-10-06T21:53:47.4808005Z found 0 vulnerabilities
+2026-10-06T21:54:13.1988500Z PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.
+2026-10-06T21:54:37.1628836Z ok 212 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+2026-10-06T21:54:37.5764726Z ok 213 - booking B01 spring-forward duration cannot extend past owner closing time
+2026-10-06T21:54:37.5786662Z ok 214 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+2026-10-06T21:54:37.5824252Z ok 215 - DST control: a skipped closing wall time does not discard an earlier valid short appointment
+2026-10-06T21:54:37.5827915Z ok 216 - DST control: a narrow repeated-hours window cannot span intervening closed clock times
+2026-10-06T21:54:37.5830528Z ok 217 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+2026-10-06T21:54:37.5832669Z ok 218 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+2026-10-06T21:54:37.5836539Z ok 219 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+2026-10-06T21:54:37.5840361Z ok 220 - booking B03 confirmation rechecks a slot start that passed during hold
+2026-10-06T21:54:37.5844253Z ok 221 - booking B03 confirmation rechecks a slot start that passed during provider read
+2026-10-06T21:54:37.5847893Z ok 222 - booking B04 changed owner availability during busy read prevents stale provider write
+2026-10-06T21:54:38.1547173Z ok 223 - two independent SQLite workers racing for one slot yield exactly one hold and one booking
+2026-10-06T21:54:38.1569838Z ok 224 - hold expiry releases overlap exactly at five minutes: 299999
+2026-10-06T21:54:38.1573238Z ok 225 - hold expiry releases overlap exactly at five minutes: 300000
+2026-10-06T21:54:38.1576280Z ok 226 - hold expiry releases overlap exactly at five minutes: 300001
+2026-10-06T21:54:38.1580046Z ok 227 - hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+2026-10-06T21:54:38.1642263Z ok 228 - provider/storage failure keeps visible durable outcome: busy-rejection
+2026-10-06T21:54:38.1644747Z ok 229 - provider/storage failure keeps visible durable outcome: create-rejection
+2026-10-06T21:54:38.1647217Z ok 230 - provider/storage failure keeps visible durable outcome: lost-response
+2026-10-06T21:54:38.1649548Z ok 231 - provider/storage failure keeps visible durable outcome: sqlite-finalization
+2026-10-06T21:54:38.1651921Z ok 232 - tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+2026-10-06T21:54:38.1654292Z ok 233 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+2026-10-06T21:54:38.1656343Z ok 234 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+2026-10-06T21:54:38.1658337Z ok 235 - Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+2026-10-06T21:54:38.1660321Z ok 236 - Moncton DST gap and repeated times have exact unambiguous instants
+2026-10-06T21:54:39.0086018Z ok 237 - production server booking routes, adapter and owner views agree under concurrent HTTP requests
+2026-10-06T21:54:39.9936268Z ok 238 - production provider response loss stays visible and reconciles after lookup recovery
+2026-10-06T21:57:53.5726907Z # tests 2095
+2026-10-06T21:57:53.5727537Z # pass 2095
+2026-10-06T21:57:53.5727828Z # fail 0
+2026-10-06T21:57:53.5728127Z # cancelled 0
+2026-10-06T21:57:53.5728427Z # skipped 0
+2026-10-06T21:57:53.5729191Z # todo 0
+2026-10-06T21:57:53.5730270Z PASS: quote engine and price book gate (97 files, 2095/2095 tests, zero skips).
+2026-10-06T21:58:18.2015043Z ok 327 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+2026-10-06T21:58:18.6216521Z ok 328 - booking B01 spring-forward duration cannot extend past owner closing time
+2026-10-06T21:58:18.6220253Z ok 329 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+2026-10-06T21:58:18.6224450Z ok 330 - DST control: a skipped closing wall time does not discard an earlier valid short appointment
+2026-10-06T21:58:18.6228085Z ok 331 - DST control: a narrow repeated-hours window cannot span intervening closed clock times
+2026-10-06T21:58:18.6231501Z ok 332 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+2026-10-06T21:58:18.6234984Z ok 333 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+2026-10-06T21:58:18.6238670Z ok 334 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+2026-10-06T21:58:18.6242090Z ok 335 - booking B03 confirmation rechecks a slot start that passed during hold
+2026-10-06T21:58:18.6261267Z ok 336 - booking B03 confirmation rechecks a slot start that passed during provider read
+2026-10-06T21:58:18.6265173Z ok 337 - booking B04 changed owner availability during busy read prevents stale provider write
+2026-10-06T21:58:19.2296647Z ok 338 - two independent SQLite workers racing for one slot yield exactly one hold and one booking
+2026-10-06T21:58:19.2302126Z ok 339 - hold expiry releases overlap exactly at five minutes: 299999
+2026-10-06T21:58:19.2310653Z ok 340 - hold expiry releases overlap exactly at five minutes: 300000
+2026-10-06T21:58:19.2315307Z ok 341 - hold expiry releases overlap exactly at five minutes: 300001
+2026-10-06T21:58:19.2363275Z ok 342 - hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+2026-10-06T21:58:19.2366854Z ok 343 - provider/storage failure keeps visible durable outcome: busy-rejection
+2026-10-06T21:58:19.2370830Z ok 344 - provider/storage failure keeps visible durable outcome: create-rejection
+2026-10-06T21:58:19.2375068Z ok 345 - provider/storage failure keeps visible durable outcome: lost-response
+2026-10-06T21:58:19.2379474Z ok 346 - provider/storage failure keeps visible durable outcome: sqlite-finalization
+2026-10-06T21:58:19.2384470Z ok 347 - tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+2026-10-06T21:58:19.2388813Z ok 348 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+2026-10-06T21:58:19.2394125Z ok 349 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+2026-10-06T21:58:19.2399200Z ok 350 - Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+2026-10-06T21:58:19.2403858Z ok 351 - Moncton DST gap and repeated times have exact unambiguous instants
+2026-10-06T21:58:20.1395660Z ok 352 - production server booking routes, adapter and owner views agree under concurrent HTTP requests
+2026-10-06T21:58:21.1731686Z ok 353 - production provider response loss stays visible and reconciles after lookup recovery
+2026-10-06T22:01:52.4015661Z # tests 2473
+2026-10-06T22:01:52.4016190Z # pass 2473
+2026-10-06T22:01:52.4016482Z # fail 0
+2026-10-06T22:01:52.4016781Z # cancelled 0
+2026-10-06T22:01:52.4017089Z # skipped 0
+2026-10-06T22:01:52.4017359Z # todo 0
+2026-10-06T22:01:52.4527708Z Known failures still failing: 0/0
+2026-10-06T22:01:52.5272604Z Known failures still failing: 0/0
+2026-10-06T22:01:54.3395662Z found 0 vulnerabilities
