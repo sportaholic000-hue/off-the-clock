@@ -1,6 +1,6 @@
 # Voice lifecycle repairs — 2026-10-06
 
-Implementation checkpoint. The first cold hosted checkpoint passed; the follow-up source and owner readiness control changes require the final branch-head hosted run. No merge or deployment is authorized by this report.
+All requested lifecycle repairs are implemented or independently verified. Final source `e49ea59118fc1c442b8ee44a807b15149405136c` passed the cold hosted gates: install, build, full tests and strict quote tests. Local browser startup remains an environment limitation, detailed below. No merge or deployment was performed.
 
 Branch: `fix/voice-lifecycle-20261006`, created from verified `eaadeca0856f1bd7fcade8685711a19aefd786d0` on `codex/lead-capture-repairs-20261006`.
 No subagents, merge, deployment, live data, real calls or texts. All provider executions use synthetic fakes and disposable SQLite stores.
@@ -25,14 +25,24 @@ No subagents, merge, deployment, live data, real calls or texts. All provider ex
 
 Production files: `server/src/voice/`, `server/src/voiceRuntimeRoutes.js`, `server/src/onboardingService.js`, `server/src/bookingService.js`, `server/src/googleCalendarAdapter.js`. Regression suite: `test/voiceLifecycle20261006.spec.mjs`, using the real production HTTP/WS/SQLite composition and fake external providers; existing entry-point, prompt and fallback tests updated to the repaired contracts.
 
-## Verification at this checkpoint
+## Final verification
 
-- Cold `npm ci` and `npm run build`: passed; lockfile unchanged.
-- Final broad voice/booking/calendar/capture/owner-control regression run: **325 passed, zero failures/skips**, including **43 lifecycle scenarios**.
-- First complete hosted cold run: [37542643635](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37542643635), source `c17a01e1da77b6286046da6d7977cefca45c5f75`: **2,144/2,144 strict quote tests, 2,565/2,565 full tests**, zero failures/skips. Clean install, build and production dependency audit also passed. Raw log archived.
-- Legacy-recovery follow-up `d62abc9dd84d044bc9bedf6a4c3f16551f466524`: [37542953505](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37542953505) also completed successfully. Final readiness-control and closing-transcript follow-ups are independently covered in the 325-test run and will receive their own cold hosted gate.
-- Completed local full run before the final small follow-ups: **2,520 passed / 39 failed / zero skipped**, all 39 failures from Chromium startup, separate from application defects. The first attempt lacked a summary; both logs are retained. Local strict attempt exited 1 without a final summary after four Chromium failures. The repeated four-command cold run completed: install/build passed, full suite 2,524 passed / 39 Chromium-startup failures / zero skips; strict quote suite 2,098 passed / 39 Chromium-startup failures / zero skips. These local counts precede the final confirmation-state assertion; the 325-test targeted run includes it. Full raw logs and command exit codes are archived.
-- Existing CI gates and failure/skip allowances were not weakened. Only this exact branch was added to the workflow push filter.
+Cold hosted run [37545433595](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37545433595), job `112548185081`, tested exact source **`e49ea59118fc1c442b8ee44a807b15149405136c`**. Its tree was compared with the uploaded tree and the branch was verified as a direct descendant of the requested base.
+
+| Gate | Result |
+|---|---|
+| `npm ci` after deleting installed dependencies | PASS |
+| `npm run build` | PASS |
+| `npm test` | **2,570 / 2,570 PASS** |
+| `npm run test:quote` | **2,144 / 2,144 PASS**, 100 selected files |
+| Production dependency audit | PASS, zero vulnerabilities |
+| Targeted voice/booking/calendar/capture/owner-control tests | **325 / 325 PASS**, including **43 lifecycle scenarios** |
+
+Both hosted suites and the targeted run have **zero failures, cancellations, skips or TODOs**. Counts overlap and are not additive. The full hosted log, per-step result metadata, failed reproductions, local command exit codes and passing targeted output are stored under `evidence/`, with SHA-256 checksums. Existing CI gates and failure/skip allowances were not weakened; only this exact branch was added to the workflow push filter. The lockfile is unchanged.
+
+Local cold `npm ci` and build passed. The completed local four-command run recorded full suite **2,524 passed / 39 failed / zero skipped** and strict quote suite **2,098 passed / 39 failed / zero skipped**. All 39 failures in each suite were Chromium startup failures (SIGTRAP). These runs precede the final small confirmation-state/capacity follow-ups, which pass in the final targeted and hosted runs above. The seven extra hosted tests are nested browser cases that cannot run after local browser launch fails. Earlier incomplete attempts are archived but are not claimed as passing gates.
+
+No requested application work remains unfinished. Local Chromium startup was not repaired; the complete cold hosted execution supplies the browser evidence. Real provider calls/texts and deployment were deliberately excluded by the task. Historical checkpoint logs remain archived and are not substituted for the final-source result.
 
 The guarantees apply to authenticated callbacks and transcript text actually received by the application. Speech not delivered by a transcription provider cannot be reconstructed; permanent loss of the only storage volume cannot be repaired by application logic. Ambiguous calendar writes retain both reservations and a follow-up request for review, with no unsupported success claim.
 
