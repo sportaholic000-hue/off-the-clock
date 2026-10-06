@@ -1,3 +1,4 @@
+import {resolveCustomer} from './customerIdentityService.js';
 import {quoteDateContext,registerQuoteDateDatabase} from './quoteDate.js';
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
@@ -135,7 +136,8 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
     }
     const response=calculated.customerResult;
     const recordId=crypto.randomUUID(),createdAt=new Date().toISOString();
-    const internal={ownerId,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
+    const customer=resolveCustomer(db,{ownerId,phone:body.contact?.phone,createdAt});
+    const internal={ownerId,customerId:customer?.id??null,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
     const contact=object(body.contact)?body.contact:{};
     const describedService=limitedText(body.serviceRequest)||service?.service||'Customer service request';
     const partial=response.resultType==='PARTIAL_ESTIMATE_READY';

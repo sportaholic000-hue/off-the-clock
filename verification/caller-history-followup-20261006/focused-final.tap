@@ -1,0 +1,374 @@
+TAP version 13
+# Subtest: D14 caller filter precedes limit with tenant and malformed-record controls
+ok 1 - D14 caller filter precedes limit with tenant and malformed-record controls
+  ---
+  duration_ms: 15.662773
+  type: 'test'
+  ...
+# Subtest: D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+ok 2 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+  ---
+  duration_ms: 10.985909
+  type: 'test'
+  ...
+# Subtest: D16 handle credential rotation preserves one owner-phone customer and historical references
+ok 3 - D16 handle credential rotation preserves one owner-phone customer and historical references
+  ---
+  duration_ms: 8.095133
+  type: 'test'
+  ...
+# Subtest: D21 unresolved preferences survive calendar range changes until resolved
+ok 4 - D21 unresolved preferences survive calendar range changes until resolved
+  ---
+  duration_ms: 24.184118
+  type: 'test'
+  ...
+# Subtest: D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+ok 5 - D14 legacy duplicate IDs preserve caller bookings; contradictory and foreign customer links are rejected
+  ---
+  duration_ms: 11.16843
+  type: 'test'
+  ...
+# Subtest: D14 normalized appointment phone and per-caller limit do not mix callers
+ok 6 - D14 normalized appointment phone and per-caller limit do not mix callers
+  ---
+  duration_ms: 11.740537
+  type: 'test'
+  ...
+# Subtest: D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+ok 7 - D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely
+  ---
+  duration_ms: 9.748875
+  type: 'test'
+  ...
+# Subtest: D15 quote and request joins reject foreign-call and foreign-submission links
+ok 8 - D15 quote and request joins reject foreign-call and foreign-submission links
+  ---
+  duration_ms: 10.172142
+  type: 'test'
+  ...
+# Subtest: D16 same names and emails do not join different phones or different tenants
+ok 9 - D16 same names and emails do not join different phones or different tenants
+  ---
+  duration_ms: 16.736646
+  type: 'test'
+  ...
+# Subtest: D16 legacy formatted phone reuses identity and preserves omitted contact fields
+ok 10 - D16 legacy formatted phone reuses identity and preserves omitted contact fields
+  ---
+  duration_ms: 11.266955
+  type: 'test'
+  ...
+# Subtest: D16 customer write rolls back with inquiry failure and retries create one identity
+ok 11 - D16 customer write rolls back with inquiry failure and retries create one identity
+  ---
+  duration_ms: 12.277685
+  type: 'test'
+  ...
+# Subtest: D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+ok 12 - D21/D24 actual owner routes expose old unresolved preferences and factual summaries without tenant leakage
+  ---
+  duration_ms: 1177.800725
+  type: 'test'
+  ...
+# Subtest: D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+ok 13 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+  ---
+  duration_ms: 295.916472
+  type: 'test'
+  ...
+# Subtest: D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+ok 14 - D24 summary quotes only attributed transcript content; ignores unfinished and tool/system turns
+  ---
+  duration_ms: 0.7352
+  type: 'test'
+  ...
+# Subtest: D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+ok 15 - D24 summary is bounded; omitted text is marked as an excerpt without generating claims
+  ---
+  duration_ms: 0.412492
+  type: 'test'
+  ...
+# Subtest: D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+ok 16 - D24 existing-store additive migration is repeatable and preserves transcript/customer rows
+  ---
+  duration_ms: 22.396337
+  type: 'test'
+  ...
+# Subtest: D24 completion rejects foreign call binding without changing any stored call
+ok 17 - D24 completion rejects foreign call binding without changing any stored call
+  ---
+  duration_ms: 6.386259
+  type: 'test'
+  ...
+# Subtest: D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+ok 18 - D24 saved business outcome and summary commit together; failure rolls back, retry is stable
+  ---
+  duration_ms: 12.595375
+  type: 'test'
+  ...
+# Subtest: D16 web review and voice share exact normalized owner-phone identity
+ok 19 - D16 web review and voice share exact normalized owner-phone identity
+  ---
+  duration_ms: 46.872918
+  type: 'test'
+  ...
+# Subtest: D16 email-only and ambiguous local phones never deduplicate on name or email
+ok 20 - D16 email-only and ambiguous local phones never deduplicate on name or email
+  ---
+  duration_ms: 10.806893
+  type: 'test'
+  ...
+# Subtest: D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+ok 21 - D16 public web input cannot overwrite established voice identity and web history reaches returning caller
+  ---
+  duration_ms: 17.271669
+  type: 'test'
+  ...
+# Subtest: D16 web identity and all related records roll back when receipt persistence fails
+ok 22 - D16 web identity and all related records roll back when receipt persistence fails
+  ---
+  duration_ms: 10.092854
+  type: 'test'
+  ...
+# Subtest: D16 independent concurrent processes and restarted retry resolve one persistent identity
+ok 23 - D16 independent concurrent processes and restarted retry resolve one persistent identity
+  ---
+  duration_ms: 420.063901
+  type: 'test'
+  ...
+# Subtest: D01/D09: usable nameless request retains notes/description in owner and staff views
+ok 24 - D01/D09: usable nameless request retains notes/description in owner and staff views
+  ---
+  duration_ms: 25.496634
+  type: 'test'
+  ...
+# Subtest: D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+ok 25 - D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+  ---
+  duration_ms: 11.260025
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+ok 26 - D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+  ---
+  duration_ms: 15.564528
+  type: 'test'
+  ...
+# Subtest: D13: new call retains known customer email/address without inventing the new job site
+ok 27 - D13: new call retains known customer email/address without inventing the new job site
+  ---
+  duration_ms: 12.191176
+  type: 'test'
+  ...
+# Subtest: D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+ok 28 - D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+  ---
+  duration_ms: 15.441635
+  type: 'test'
+  ...
+# Subtest: D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+ok 29 - D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+  ---
+  duration_ms: 27.557539
+  type: 'test'
+  ...
+# Subtest: D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+ok 30 - D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+  ---
+  duration_ms: 8.284143
+  type: 'test'
+  ...
+# Subtest: capture and urgency database failures roll back without a successful acknowledgement
+ok 31 - capture and urgency database failures roll back without a successful acknowledgement
+  ---
+  duration_ms: 9.307862
+  type: 'test'
+  ...
+# Subtest: capture persisted before handle failure recovers the same inquiry once
+ok 32 - capture persisted before handle failure recovers the same inquiry once
+  ---
+  duration_ms: 7.8097
+  type: 'test'
+  ...
+# Subtest: cold process replay preserves dismissed inquiry and original contact receipt
+ok 33 - cold process replay preserves dismissed inquiry and original contact receipt
+  ---
+  duration_ms: 221.60508
+  type: 'test'
+  ...
+# Subtest: wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+ok 34 - wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+  ---
+  duration_ms: 12.516098
+  type: 'test'
+  ...
+# Subtest: D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+ok 35 - D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+  ---
+  duration_ms: 9.834872
+  type: 'test'
+  ...
+# Subtest: D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+ok 36 - D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+  ---
+  duration_ms: 8.937792
+  type: 'test'
+  ...
+# Subtest: D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+ok 37 - D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+  ---
+  duration_ms: 10.896146
+  type: 'test'
+  ...
+# Subtest: D18: bound quote-review exports preserve saved name/email and dismissed disposition
+ok 38 - D18: bound quote-review exports preserve saved name/email and dismissed disposition
+  ---
+  duration_ms: 7.882126
+  type: 'test'
+  ...
+# Subtest: D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+ok 39 - D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+  ---
+  duration_ms: 7.576083
+  type: 'test'
+  ...
+# Subtest: D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+ok 40 - D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+  ---
+  duration_ms: 8.171326
+  type: 'test'
+  ...
+# Subtest: D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+ok 41 - D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+  ---
+  duration_ms: 11.599197
+  type: 'test'
+  ...
+# Subtest: D11/D18: standalone review retry cannot undo a later description correction
+ok 42 - D11/D18: standalone review retry cannot undo a later description correction
+  ---
+  duration_ms: 7.191954
+  type: 'test'
+  ...
+# Subtest: D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+ok 43 - D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+  ---
+  duration_ms: 8.565004
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: simultaneous duplicate corrections serialize and an update failure preserves prior contact
+ok 44 - D11/D12/D13: simultaneous duplicate corrections serialize and an update failure preserves prior contact
+  ---
+  duration_ms: 8.537839
+  type: 'test'
+  ...
+# Subtest: D17/D18: existing webhook worker delivers only allowlisted saved voice contact to local stub
+ok 45 - D17/D18: existing webhook worker delivers only allowlisted saved voice contact to local stub
+  ---
+  duration_ms: 9.119972
+  type: 'test'
+  ...
+# Subtest: D22: an empty legacy preference does not replace an established display name or callback number
+ok 46 - D22: an empty legacy preference does not replace an established display name or callback number
+  ---
+  duration_ms: 6.324387
+  type: 'test'
+  ...
+# Subtest: D03: structured voice urgency projection preserves existing web timing and excludes private fields
+ok 47 - D03: structured voice urgency projection preserves existing web timing and excludes private fields
+  ---
+  duration_ms: 0.316189
+  type: 'test'
+  ...
+# (node:37) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 48 - Calendar uses business date and correct 25-hour fall-back day boundaries
+  ---
+  duration_ms: 20.975
+  type: 'test'
+  ...
+# Subtest: Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 49 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+  ---
+  duration_ms: 3.059066
+  type: 'test'
+  ...
+# Subtest: Calendar rejects unsupported filters, impossible dates and missing owner
+ok 50 - Calendar rejects unsupported filters, impossible dates and missing owner
+  ---
+  duration_ms: 1.935269
+  type: 'test'
+  ...
+# Subtest: Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 51 - Busy-time read is scoped and changing the connection in flight rejects the old response
+  ---
+  duration_ms: 11.542364
+  type: 'test'
+  ...
+# Subtest: Provider failure is an error, never a successful empty calendar
+ok 52 - Provider failure is an error, never a successful empty calendar
+  ---
+  duration_ms: 2.270927
+  type: 'test'
+  ...
+# (node:43) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 53 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 6.946139
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 54 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 2.848193
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 55 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 2.331016
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 56 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 2.679583
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 57 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 3.090082
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 58 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 3.828957
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+ok 59 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 40.2509
+  type: 'test'
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 60 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 5.822142
+  type: 'test'
+  ...
+1..60
+# tests 60
+# suites 0
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1656.111383

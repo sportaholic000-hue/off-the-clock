@@ -24,6 +24,7 @@ const ADDITIVE_COLUMNS = {
     bookingTokenReceipt: 'TEXT'
   },
   calls: {
+    transportOutcome: 'TEXT',
     accountSid: 'TEXT',
     streamSid: 'TEXT',
     destinationNumber: 'TEXT',

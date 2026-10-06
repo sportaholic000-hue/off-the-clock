@@ -1,3 +1,5 @@
+import {customerPhone,resolveCustomer} from '../customerIdentityService.js';
+import {customerHistory} from '../customerHistoryService.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
@@ -485,7 +487,9 @@ export function createVoiceToolRuntime({
         return projectQuoteResult(existingResponse, existingHandle, existingInternal.voiceFollowUps || []);
       }
 
+      const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt});
       const internal = {
+        customerId:customer.id,
         voiceVersion: 1,
         voiceFollowUps: followUps,
         applicationOutcome: calculated
@@ -563,7 +567,6 @@ export function createVoiceToolRuntime({
     if(fields.email!==undefined){fields.email=fields.email.toLowerCase();if(!EMAIL.test(fields.email))throw runtimeError('INVALID_EMAIL');}
     if(args.address!==undefined)fields.address=Object.fromEntries(Object.entries(args.address).map(([name,value])=>[name,['region','postalCode','country'].includes(name)?value.trim().toUpperCase():value.trim()]));
     return saveVoiceInquiry({database,context,callId:call.id,key:key||'capture:'+number,leadId,
-      customerId:stableUuid(secret,'voice-customer',context.ownerId+'\0'+context.from),
       updates:fields,createdAt:instant().toISOString(),type,status,legacyDefault:!key&&number===1});
   }
 
@@ -1047,7 +1050,7 @@ export function createVoiceToolRuntime({
       appointmentId, context.ownerId
     );
     const customer = parseJson(row?.customerJson);
-    if (!row || !record(customer) || customer.phone !== context.from) {
+    if (!row || !record(customer) || customerPhone(customer.phone) !== context.from) {
       throw runtimeError('INVALID_APPOINTMENT_HANDLE');
     }
     if (resolved.reference.customerId && row.customerId !== resolved.reference.customerId) {
@@ -1177,46 +1180,20 @@ export function createVoiceToolRuntime({
 
   async function getCustomerContext(input) {
     invocation(input);
-    const customer = database.prepare('SELECT * FROM customers WHERE ownerId = ? AND phoneE164 = ? ORDER BY createdAt DESC LIMIT 1').get(
-      context.ownerId, context.from
-    );
-    const appointments = database.prepare('SELECT * FROM appointments WHERE ownerId = ? ORDER BY COALESCE(startAtUtc, datetime, createdAt) DESC LIMIT 25').all(
-      context.ownerId
-    ).filter(row => {
-      const appointmentCustomer = parseJson(row.customerJson);
-      return record(appointmentCustomer) && appointmentCustomer.phone === context.from &&
-        (!customer || !row.customerId || row.customerId === customer.id);
-    }).slice(0, 5);
-    if (!customer && !appointments.length) {
-      return { status: 'not_found', message: 'No caller-owned customer history was found.' };
+    const {customer,appointments,openLeads,recentQuotes,quoteRequests}=customerHistory(database,context);
+    if (!customer && !appointments.length && !openLeads.length && !recentQuotes.length && !quoteRequests.length) {
+      return {status:'not_found',message:'No caller-owned customer history was found.'};
     }
-    const output = {
-      status: 'found',
-      name: typeof customer?.name === 'string' && customer.name.trim() ? customer.name.trim() : null,
-      recentAppointments: appointments.map(row => {
-        const appointmentHandle = issue('appointment', 'appointment:' + row.id, {
-          appointmentId: row.id,
-          intentId: row.bookingIntentId || null,
-          customerId: row.customerId || null
-        });
-        const status = typeof row.status === 'string' ? row.status.toLowerCase() : 'unknown';
-        const when = row.startAtUtc || row.datetime || 'time unavailable';
-        return appointmentHandle + ' — ' + status + ' — ' + when;
-      })
-    };
-    if (customer) {
-      output.customerHandle = issue('customer', 'customer:' + customer.id, { customerId: customer.id });
-      const storedAddress = parseJson(customer.address);
-      if (completeAddress(storedAddress)) {
-        output.address = {
-          line1: storedAddress.line1,
-          line2: storedAddress.line2 || '',
-          city: storedAddress.city,
-          region: storedAddress.region,
-          postalCode: storedAddress.postalCode,
-          country: storedAddress.country
-        };
-      }
+    const output={status:'found',openLeads,recentQuotes,quoteRequests,
+      recentAppointments:appointments.map(row=>{
+        const handle=issue('appointment','appointment:'+row.id,{appointmentId:row.id,intentId:row.bookingIntentId||null,customerId:row.customerId||null});
+        return handle+' — '+String(row.status||'unknown').toLowerCase()+' — '+(row.startAtUtc||row.datetime||'time unavailable');
+      })};
+    if(customer){
+      output.customerHandle=issue('customer','customer:'+customer.id,{customerId:customer.id});
+      if(typeof customer.name==='string'&&customer.name.trim())output.greetingName=customer.name.trim().slice(0,120);
+      const storedAddress=parseJson(customer.address);
+      if(completeAddress(storedAddress))output.address=Object.fromEntries(['line1','line2','city','region','postalCode','country'].map(key=>[key,storedAddress[key]||'']));
     }
     return output;
   }

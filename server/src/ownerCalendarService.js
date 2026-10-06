@@ -79,7 +79,7 @@ export function createOwnerCalendarService({ownerQuery, calendar, clock = () => 
         customer: contact(row.customerJson), location: location(row.locationJson), note: row.note,
         source: sourceLink(row), createdAt: row.createdAt
       }))
-      .filter(row => row.preferredWindows.some(window => window.date >= selected.fromDate && window.date < selected.endDate));
+      .filter(row => row.status === 'REQUESTED' || row.preferredWindows.some(window => window.date >= selected.fromDate && window.date < selected.endDate));
     return {timezone, connection, range: selected, appointments, requests, checkedAt: clock().toISOString()};
   }
 

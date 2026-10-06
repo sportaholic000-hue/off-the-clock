@@ -1,3 +1,4 @@
+import {resolveCustomer} from './customerIdentityService.js';
 import {randomUUID} from 'node:crypto';
 
 const object=value=>value&&typeof value==='object'&&!Array.isArray(value)?value:{};
@@ -25,8 +26,8 @@ export function saveVoiceInquiry({database,context,callId,key,leadId,customerId,
   const before=parsed(row?.collectedInputsJson);
   if(row&&(before.voiceVersion!==1||before.contact?.phone!==context.from))throw Error('Invalid inquiry binding.');
   const id=row?.id||leadId||randomUUID();
-  customerId=before.customerId||customerId;
-  const customer=database.prepare('SELECT * FROM customers WHERE ownerId=? AND id=? AND phoneE164=?').get(context.ownerId,customerId,context.from);
+  customerId=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt}).id;
+  const customer=database.prepare('SELECT * FROM customers WHERE ownerId=? AND id=? AND customer_phone(phoneE164)=?').get(context.ownerId,customerId,context.from);
   const customerNotes=parsed(customer?.notesJson);
   const contact={name:before.contact?.name??customer?.name??null,email:before.contact?.email??customerNotes.email??null,phone:context.from};
   for(const field of ['name','email'])if(updates[field]!==undefined)contact[field]=updates[field];
@@ -44,7 +45,7 @@ export function saveVoiceInquiry({database,context,callId,key,leadId,customerId,
   if(!row||!same(snapshot,previous))history.push({source:'voice_capture',at:createdAt,providedFields:Object.keys(updates),...snapshot});
   const details={...before,voiceVersion:1,inquiryKey:legacyDefault?key:before.inquiryKey||key,customerId,...snapshot,captureHistory:history};
   const nextCustomerNotes={...customerNotes,voiceVersion:1,email:updates.email!==undefined?updates.email:customerNotes.email??contact.email};
-  if(customer)database.prepare('UPDATE customers SET name=?,address=?,notesJson=? WHERE ownerId=? AND id=? AND phoneE164=?').run(
+  if(customer)database.prepare('UPDATE customers SET name=?,address=?,notesJson=? WHERE ownerId=? AND id=? AND customer_phone(phoneE164)=?').run(
     updates.name??customer.name,updates.address!==undefined?JSON.stringify(updates.address):customer.address,JSON.stringify(nextCustomerNotes),context.ownerId,customerId,context.from);
   else database.prepare('INSERT INTO customers(id,ownerId,phoneE164,name,address,notesJson,createdAt) VALUES(?,?,?,?,?,?,?)').run(
     customerId,context.ownerId,context.from,contact.name,address?JSON.stringify(address):null,JSON.stringify(nextCustomerNotes),createdAt);

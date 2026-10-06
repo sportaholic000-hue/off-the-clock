@@ -1,3 +1,4 @@
+import {completeVoiceCall} from '../callSummaryService.js';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import twilio from 'twilio';
@@ -98,7 +99,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
       },
       onSessionEnd:({outcome,streamSid})=>{
         const at=iso(clock),duration=started===null?0:Math.max(0,Math.ceil((new Date(clock()).getTime()-started)/1000));
-        database.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=?,duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(outcome.status==='failed'?'FAILED':'COMPLETED',outcome.reason,outcome.status==='failed'?outcome.reason:null,streamSid,duration,at,at,session.callRecordId,context.ownerId,context.callSid);
+        completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at});
       }
     });return bridge.startMediaSession(input);
   }

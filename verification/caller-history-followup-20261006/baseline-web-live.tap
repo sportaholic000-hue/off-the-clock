@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+not ok 1 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+  ---
+  duration_ms: 244.277235
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Live.spec.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + null
+    - 'Caller: [SYNTHETIC] My gate fell down. Please call after five.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Caller: [SYNTHETIC] My gate fell down. Please call after five.'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Live.spec.mjs:13:47)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: D16 web review and voice share exact normalized owner-phone identity
+not ok 2 - D16 web review and voice share exact normalized owner-phone identity
+  ---
+  duration_ms: 25.077552
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Web.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: 'Customer name and project address are collected after the quote or review outcome. Remove them from this pricing request.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    problem (file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/quoteDoneBridge.js:29:67)
+    requireApplicationPricingEnvelope (file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/quoteDoneBridge.js:32:26)
+    Function.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/quoteDoneRoutes.js:120:5)
+    Function.sqliteTransaction (/workspace/scratch/e34515a96b93/caller-history-followup/node_modules/better-sqlite3/lib/methods/transaction.js:65:24)
+    submitQuote (file:///workspace/scratch/e34515a96b93/caller-history-followup/server/src/quoteDoneRoutes.js:199:6)
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Web.spec.mjs:12:2)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 603.408683
