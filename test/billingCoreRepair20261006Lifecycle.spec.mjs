@@ -43,7 +43,7 @@ for(const status of ['payment_failed','past_due','suspended','canceled','unpaid'
  const h=harness();try{h.service.applyVerifiedStripeEvent(h.sub('evt_active'));h.db.prepare('UPDATE users SET planStatus=?,paymentFailedAt=?,trialEndsAt=? WHERE id=?').run(status,iso(T-8*day),iso(T-1),owner);
  for(const method of ['POST','PUT','PATCH','DELETE'])for(const path of ['/api/leads/synthetic','/api/onboarding/account','/api/onboarding/voice','/api/onboarding/calendar','/api/onboarding/business-types','/api/onboarding/knowledge-base','/api/pricebook/save','/api/booking/settings','/api/integrations/webhook'])assert.equal(billingMutationDecision(h.db,{tenantOwnerId:owner,method,path},{now:T*1000}).allowed,false,path);
  for(const method of ['GET','HEAD','OPTIONS'])assert.equal(billingMutationDecision(h.db,{tenantOwnerId:owner,method,path:'/api/leads'},{now:T*1000}).allowed,true);
- for(const path of ['/api/billing/checkout','/api/billing/portal','/api/auth/account/resend-verification'])assert.equal(billingMutationDecision(h.db,{tenantOwnerId:owner,method:'POST',path},{now:T*1000}).allowed,true);
+ for(const path of ['/api/billing/checkout','/api/billing/portal','/api/auth/account/resend-verification','/api/pricebook/validate'])assert.equal(billingMutationDecision(h.db,{tenantOwnerId:owner,method:'POST',path},{now:T*1000}).allowed,true);
  assert.equal(billingMutationDecision(h.db,{tenantOwnerId:owner,method:'POST',path:'/api/billing/portal/evil'},{now:T*1000}).allowed,false);
  }finally{h.db.close();}
 });

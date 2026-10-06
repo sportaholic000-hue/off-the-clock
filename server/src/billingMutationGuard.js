@@ -1,11 +1,13 @@
 import {accountAccessDecision} from './planAccess.js';
 const READ_METHODS=new Set(['GET','HEAD','OPTIONS']);
 // Only billing and account authentication recovery bypass lifecycle restrictions.
+// This POST validates a supplied draft without saving, approving or quoting it.
+const READ_ONLY_POSTS=new Set(['/api/pricebook/validate']);
 const RECOVERY_PATHS=new Set(['/api/billing/checkout','/api/billing/portal','/api/auth/account/resend-verification']);
 export function billingMutationDecision(database,req,{now=Date.now()}={}) {
   if(READ_METHODS.has(req.method)||!req.method)return {allowed:true};
   const path=req.route?.path || req.path;
-  if(req.method==='POST'&&RECOVERY_PATHS.has(path))return {allowed:true};
+  if(req.method==='POST'&&(RECOVERY_PATHS.has(path)||READ_ONLY_POSTS.has(path)))return {allowed:true};
   const owner=database.prepare("SELECT plan,planStatus,trialEndsAt,paymentFailedAt FROM users WHERE id=? AND role='owner'").get(req.tenantOwnerId);
   const decision=accountAccessDecision(owner,{now});
   if(decision.allowed)return decision;
