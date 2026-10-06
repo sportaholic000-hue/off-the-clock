@@ -1,3 +1,24 @@
+# October 6 re-audit repairs — verification in progress
+
+Branch: `codex/quote-reaudit-fixes-20261006`, based on
+`73c00622d6f2df31f57773b32e41355a7421f1a3`.
+The five reproduced defects are repaired: flooring optional-price isolation,
+zero-included vinyl material allocations, effective tier units in approval,
+coherent gate removal, and invalid supplied service-ID rejection. Sod disposal
+evidence now accurately describes the existing fee rule; amounts are unchanged.
+The engine remains v7. No main merge, deployment, subagents or live data.
+
+[Prewritten amounts, scope and policy](QUOTE_REAUDIT_REPAIRS_20261006.md).
+The initial focused run passed 194/194; the final new non-browser file passed
+27/27, including two additional controls. Cold `npm ci` and owner/widget builds
+passed. A new browser regression exercises the actual gate-removal action.
+Local strict/full suite attempts and hosted verification are recorded at the
+completed checkpoint below when available; this checkpoint is not a passing gate.
+The repair-catalog all-or-nothing rule remains unchanged pending the owner's
+coverage decision; it was an observed limitation, not one of the five defects.
+
+## Previous verified checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision

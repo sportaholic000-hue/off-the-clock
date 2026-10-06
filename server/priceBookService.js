@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import { types } from 'node:util';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
-import { pricebookStructureIssue, validPricebookServiceId } from './priceBookStructure.js';
+import { pricebookStructureIssue, validPricebookServiceId, missingPricebookServiceId } from './priceBookStructure.js';
 import {db as applicationDb} from './src/db.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -164,7 +164,7 @@ export function savePricebook(ownerId, data) {
   if (issue) throw invalid(issue);
   const ids = new Set();
   const services = data.services.map(service => {
-    const missing = service.id === undefined || service.id === null || service.id === '';
+    const missing = missingPricebookServiceId(service.id);
     if (missing && (service.origin || service.quoteDoneApproval)) throw invalid('an existing approval or origin requires its original service UUID');
     const id = missing ? crypto.randomUUID() : service.id;
     if (!validPricebookServiceId(id) || ids.has(id.toLowerCase())) throw invalid('every service must have its own valid UUID');

@@ -3,6 +3,7 @@ import {humanPricingKey} from './pricebookFormatting.js';
 import {scopeDefinitions,scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {offeringRateDefinitions,formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import {servicePricing} from './pricebookEditing.js';
+import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs']);
 const defaultMoney=new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
@@ -25,9 +26,9 @@ export function reviewLabel(path,service,meta={}) {
 const MINIMUM_FIELDS=new Set(['minimumJob','repairMinimum','minimumServiceCharge']);
 export function priceChoices(service,meta={}) {
  const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');
- const out=[];function visit(value,path,option){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key,option);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,service,meta)+(option?' — '+option+' option':''),value,option:option||null});}
+ const out=[];function visit(value,path,option,context=service){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key,option,context);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,context,meta)+(option?' — '+option+' option':''),value,option:option||null});}
  for(const field of fields)if(p[field]!==undefined)visit(p[field],field,null);
- for(const tier of service.tiers||[])for(const field of fields)if(tier?.overrides?.[field]!==undefined)visit(tier.overrides[field],field,tier.name);
+ for(const tier of service.tiers||[]){const context={...service,pricing:mergePricingVNext(servicePricing(service),tier.overrides||{})};for(const field of fields)if(tier?.overrides?.[field]!==undefined)visit(tier.overrides[field],field,tier.name,context);}
  return out;
 }
 // One value formatter for the approval table and the retained-settings list,
@@ -72,15 +73,15 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
  const rows=[],prices=new Map(priceChoices(service,meta).map(row=>[row.path,row]));
  const retained=new Set(retainedPaths);
  const add=(label,value)=>rows.push({label,value});
- const walk=(value,path,group)=>{
+ const walk=(value,path,group,context=service)=>{
   const root=path.replace(/^pricing\./,'').split('.')[0];
   if(group==='Prices and factors'&&(retained.has(root)||retained.has('pricing.'+root)))return;
   if(group==='Offering'&&retained.has(root))return;
   if(group==='Business settings'&&retained.has('defaults.'+root))return;
-  if(record(value)){for(const [key,v]of Object.entries(value))walk(v,path?path+'.'+key:key,group);return;}
-  const label=(group?group+' · ':'')+reviewLabel(path,service,meta);
+  if(record(value)){for(const [key,v]of Object.entries(value))walk(v,path?path+'.'+key:key,group,context);return;}
+  const label=(group?group+' · ':'')+reviewLabel(path,context,meta);
   if(root==='knownOfferings'){add(label,'Registered');return;}
-  add(label,shownValue(path,value,service,meta,group,prices));
+  add(label,shownValue(path,value,context,meta,group,prices));
  };
  for(const [key,value]of Object.entries(service)){
   if(omitted.has(key)||key==='tiers'||key==='zeroPricePolicy')continue;
@@ -90,7 +91,7 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
  // Default settings the quote uses but the saved record does not list yet.
  const pricing=servicePricing(service);
  for(const field of meta.class2Fields||[]){const name=field.name||field.field;if(name&&field.defaultValue!==undefined&&!Object.hasOwn(pricing,name)&&!Object.hasOwn(service,name)&&!retained.has(name))walk(field.defaultValue,name,'Prices and factors (default)');}
- for(const tier of service.tiers||[])for(const [key,value]of Object.entries(tier.overrides||{}))walk(value,key,'Price option: '+tier.name);
+ for(const tier of service.tiers||[]){const context={...service,pricing:mergePricingVNext(pricing,tier.overrides||{})};for(const [key,value]of Object.entries(tier.overrides||{}))walk(value,key,'Price option: '+tier.name,context);}
  for(const [key,value]of Object.entries(defaults||{}))walk(value,key,'Business settings');
  if(service.zeroPricePolicy){const zero=service.zeroPricePolicy;add('Entire base offering explicitly free',zero.freeCompleteService?'Yes':'No');add('Explicitly free price options',(zero.freeTiers||[]).join(', ')||'None');for(const [from,to]of Object.entries(zero.includedPrices||{}))add('Included price: '+reviewLabel(from,service,meta),reviewLabel(to,service,meta));}
  return rows;

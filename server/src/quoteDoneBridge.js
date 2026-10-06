@@ -15,6 +15,7 @@ import {
 } from '../quote-engine-vnext/index.js';
 import { allowedPricingFields, aiConfirmationFieldsVNext, pricingMapDomainVNext, validServiceIdVNext } from '../quote-engine-vnext/contracts.js';
 import { loadPricebook, savePricebook, pricebookSaveUnconfirmed, withPricebookLock } from '../priceBookService.js';
+import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
@@ -181,7 +182,7 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
     const incoming=convertApplicationBook(input,'toCents');
     const ids=new Set();
     for(const service of incoming.services) {
-      if(!service.id)service.id=crypto.randomUUID();
+      if(missingPricebookServiceId(service.id))service.id=crypto.randomUUID();
       if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
       ids.add(service.id.toLowerCase());
       const old=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
