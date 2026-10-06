@@ -250,7 +250,8 @@ test('Audit 2 #3 and #6 (C03): currency is an active, required setting and is ne
 test('Audit 2 #4 and #5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers', async () => {
   const runner = fs.readFileSync(new URL('../scripts/test-full.mjs', import.meta.url), 'utf8');
   assert.match(runner, /'--test', '--test-reporter=tap'/);
-  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /node --import \.\/test\/pricebookTestEnv\.mjs --test --test-reporter=tap test\/\*\.spec\.js test\/\*\.spec\.mjs/);
+  assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /name: Full test suite\s+run: npm test/);
+  assert.equal(JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')).scripts.test, 'node scripts/test-full.mjs');
   const { quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
   const files = quotePricebookSpecFiles(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..'));
   for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);

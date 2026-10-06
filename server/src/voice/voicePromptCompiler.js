@@ -31,6 +31,7 @@ const KNOWLEDGE_TEXT_FIELDS=['about','hours','services','policies','faqs','price
 function knowledgeFacts(knowledge){
   if(knowledge===undefined||knowledge===null)return null;
   if(!plain(knowledge))fail('INVALID_BUSINESS_KNOWLEDGE');
+  if(knowledge.draft===true)return null;
   const text=value=>{if(value===undefined||value===null)return '';if(typeof value!=='string'||value.length>20000)fail('INVALID_BUSINESS_KNOWLEDGE');return value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').trim();};
   const out=Object.fromEntries(KNOWLEDGE_TEXT_FIELDS.map(key=>[key,text(knowledge[key])]));
   const never=knowledge.neverSay;if(never!==undefined&&(!Array.isArray(never)||never.length>200))fail('INVALID_BUSINESS_KNOWLEDGE');

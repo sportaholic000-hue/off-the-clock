@@ -285,7 +285,13 @@ export function validateStarterServices(raw, serviceTypes) {
 // These are AI-suggested placeholder prices. Review and confirm each value before going live.
 export { suggestStarterBook } from './priceBookAI.js';
 
-export async function draftKnowledgeBase({ businessName, businessTypes, websiteUrl }) {
+import {importWebsitePrices} from './websitePriceImport.js';
+
+export async function draftKnowledgeBase({ businessName, businessTypes, websiteUrl }, {importPrices=importWebsitePrices}={}) {
+  if(websiteUrl!=null&&typeof websiteUrl!=='string')throw Object.assign(new Error('Enter a public business website URL.'),{statusCode:400});
+  // Website text never enters the generative prompt. Prices are copied from
+  // bounded, visible excerpts and remain an unsaved owner-review draft.
+  if(websiteUrl?.trim())return importPrices(websiteUrl.trim());
   const systemInstruction = 'Draft a business knowledge base as strict JSON with exactly these keys: about, hours, services, policies, faqs, neverSay. Use only facts supplied by the owner. Leave unknown values empty. neverSay must be an array. Do not add markdown or explanations.';
   const userMessage = `Business name: ${businessName || ''}\nBusiness types: ${(businessTypes || []).join(', ')}\nWebsite URL supplied by owner: ${websiteUrl || 'none'}\nCreate a DRAFT for owner review. Do not invent facts from the URL.`;
   const draft = await geminiJson({ systemInstruction, userMessage });

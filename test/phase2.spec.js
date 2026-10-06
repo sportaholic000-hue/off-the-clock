@@ -173,7 +173,8 @@ test('owner-facing Phase 2 source has no gradients or forwarding mechanics', () 
 });
 
 test('server exposes the complete Phase 2 route surface', () => {
-  const source = readFileSync('server/src/server.js', 'utf8') + readFileSync('server/src/quoteDoneRoutes.js', 'utf8');
+  const source = readFileSync('server/src/server.js', 'utf8') + readFileSync('server/src/quoteDoneRoutes.js', 'utf8') + readFileSync('server/src/knowledgeDraftRoutes.js', 'utf8');
+  assert.match(readFileSync('server/src/server.js', 'utf8'), /installKnowledgeDraftRoutes\(app,/);
   for (const route of [
     '/api/onboarding/state','/api/onboarding/account','/api/onboarding/business-types',
     '/api/business/jurisdiction','/api/onboarding/phone/provision',

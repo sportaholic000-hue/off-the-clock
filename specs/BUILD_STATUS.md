@@ -1,3 +1,31 @@
+# October 6 website price import — implementation checkpoint
+
+Branch: `feat/website-price-import-20261006`.
+Verified parent: `d176fa4f828eddf2c47bfc46792125eb36b6eee2`.
+
+The owner's website draft now fetches bounded public pages on the same host,
+validates and pins public DNS addresses at every connection and redirect, and
+copies literal price excerpts with their item names, conditions and sources.
+Website text never enters a generative prompt. Drafting does not persist any
+knowledge; only **Review and save** updates the facts used by calls. Existing
+persisted drafts are withheld from voice facts, and calls never fetch websites.
+
+Seventy-six new tests cover the synthetic HTTP importer, address/redirect/DNS
+blocking, size/time/page limits, instruction text, owner-only routes, saved-price
+isolation, and the owner browser flow. Existing route/CI source assertions follow
+the actual registrations and `npm test` entry point; price expectations and
+failure allowances are unchanged. The CI trigger includes this exact branch.
+
+Pre-push verification: **187/187** focused tests passed, zero failures or skips.
+Cold `npm ci` installed 262 packages; both production builds passed. Full local
+and hosted gates are pending at this checkpoint. The local Chromium download is
+unavailable, so hosted browser execution remains required.
+
+[Owner ruling, limits and handwritten expectations](WEBSITE_PRICE_IMPORT_20261006.md).
+No subagents, merge, deployment or live data.
+
+## Prior quote-engine checkpoint
+
 # October 5 included-price catalog repair — strict gate passed
 
 Branch: `codex/engine-launch-fixes-20261005`.

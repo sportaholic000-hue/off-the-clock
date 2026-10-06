@@ -1,4 +1,5 @@
 import InterviewConfiguration from './interviewConfiguration.jsx';
+import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
@@ -380,7 +381,7 @@ function PhoneStep({ state, refresh, back, next }) {
   );
 }
 
-function KnowledgeStep({ state, refresh, back, next }) {
+export function KnowledgeStep({ state, refresh, back, next }) {
   const initial = state.profile.knowledgeBase || {};
   const [form, setForm] = useState({
     about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
@@ -389,17 +390,18 @@ function KnowledgeStep({ state, refresh, back, next }) {
     websiteUrl:initial.website || ''
   });
   const [draft, setDraft] = useState(Boolean(initial.draft));
+  const [websiteImport, setWebsiteImport] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   function change(field, value) { setForm({ ...form, [field]:value }); }
   async function buildDraft() {
-    setBusy(true); setError(null);
+    setBusy(true); setError(null); setWebsiteImport(null);
     try {
       const result = await api('/api/onboarding/knowledge-base/draft', { method:'POST', body:{ websiteUrl:form.websiteUrl } });
       const kb = result.knowledgeBase;
-      setForm({ ...form, ...kb, neverSay:(kb.neverSay || []).join('\n') });
+      setForm(applyKnowledgeDraft(form,kb));
+      setWebsiteImport(kb.websiteImport||null);
       setDraft(true);
-      await refresh();
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
@@ -417,17 +419,21 @@ function KnowledgeStep({ state, refresh, back, next }) {
     <section className="step-panel">
       <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your operator can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
       <div className="draft-tools">
-        <Field label="Business website URL"><TextInput type="url" value={form.websiteUrl} onChange={event => change('websiteUrl', event.target.value)} placeholder="https://" /></Field>
+        <Field label="Business website URL"><TextInput disabled={busy} type="url" value={form.websiteUrl} onChange={event => change('websiteUrl', event.target.value)} placeholder="https://" /></Field>
         <Button icon={Sparkles} variant="secondary" onClick={buildDraft} disabled={busy}>Draft from my business</Button>
       </div>
+      {websiteImport&&<div role="status">
+        <p>{websiteImport.message}</p>
+        {websiteImport.entries.length>0&&<ul>{[...new Set(websiteImport.entries.map(entry=>entry.sourceUrl))].map(url=><li key={url}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>)}</ul>}
+      </div>}
       <div className="kb-grid">
-        <Field label="About & area"><Textarea rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
-        <Field label="Hours"><Textarea rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
-        <Field label="Services"><Textarea rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
-        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Cover charge: $20 Friday and Saturday."><Textarea rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
-        <Field label="Policies (payment/warranty/cancellation)"><Textarea rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
-        <Field label="FAQs"><Textarea rows="5" value={form.faqs} onChange={event => change('faqs', event.target.value)} /></Field>
-        <Field label={'"Never say" list'}><Textarea rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
+        <Field label="About & area"><Textarea disabled={busy} rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
+        <Field label="Hours"><Textarea disabled={busy} rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
+        <Field label="Services"><Textarea disabled={busy} rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
+        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Cover charge: $20 Friday and Saturday."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
+        <Field label="Policies (payment/warranty/cancellation)"><Textarea disabled={busy} rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
+        <Field label="FAQs"><Textarea disabled={busy} rows="5" value={form.faqs} onChange={event => change('faqs', event.target.value)} /></Field>
+        <Field label={'"Never say" list'}><Textarea disabled={busy} rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
       </div>
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={save} nextLabel="Review and save" nextDisabled={busy || !form.about.trim() || !form.hours.trim()} />

@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['main', 'claude/**', 'codex/**']
+    branches: ['main', 'claude/**', 'codex/**', 'feat/website-price-import-20261006']
   pull_request:
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
       - name: Strict quote engine and price book gate
         run: npm run test:quote
       - name: Full test suite
-        run: node --import ./test/pricebookTestEnv.mjs --test --test-reporter=tap test/*.spec.js test/*.spec.mjs > test-results.tap 2>&1 || true
+        run: npm test
       - name: No failures beyond the known list
         run: node .github/scripts/check-test-results.mjs test-results.tap | tee test-check.txt; exit ${PIPESTATUS[0]}
         shell: bash

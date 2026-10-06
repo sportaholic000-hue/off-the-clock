@@ -62,7 +62,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const owner=database.prepare('SELECT businessName FROM users WHERE id = ? AND role = ?').get(context.ownerId,'owner');
     const profile=database.prepare('SELECT agentName, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
-    let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb))knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[]};}catch{knowledge=null;}
+    let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[]};}catch{knowledge=null;}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     const book=canQuote?loadPricebook(context.ownerId):{services:[]};
     const statuses=canQuote?new Map(bookQuoteStatuses(book).map(status=>[status.serviceId,status])):new Map();

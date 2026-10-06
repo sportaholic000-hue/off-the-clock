@@ -6,6 +6,7 @@ import {PriceBookAIError} from './priceBookAI.js';
 import {configureClientAddress} from './clientAddress.js';
 import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
+import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
 import {startBackupScheduler} from './backups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
 import { installOwnerIntegrationRoutes } from './ownerIntegrationRoutes.js';
@@ -338,21 +339,7 @@ app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), requirePr
   return res.json({ status:call.status });
 }));
 
-app.post('/api/onboarding/knowledge-base/draft', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
-  const state = onboardingState(req.tenantOwnerId);
-  const knowledgeBase = await draftKnowledgeBase({
-    businessName: state.account.businessName,
-    businessTypes: state.profile.businessTypes,
-    websiteUrl: req.body?.websiteUrl
-  });
-  const profile = saveKnowledgeBase(req.tenantOwnerId, knowledgeBase);
-  return res.json({ knowledgeBase: profile.knowledgeBase, status: 'DRAFT' });
-}));
-
-app.post('/api/onboarding/knowledge-base', requireAuth(['owner']), asyncHandler(async (req, res) => {
-  const profile = saveKnowledgeBase(req.tenantOwnerId, { ...(req.body || {}), draft: false });
-  return res.json({ profile });
-}));
+installKnowledgeDraftRoutes(app,{requireAuth,requireProviderWrites,asyncHandler,onboardingState,draftKnowledgeBase,saveKnowledgeBase});
 
 app.post('/api/operator/toggle', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const enabled = req.body?.enabled === true;
