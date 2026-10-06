@@ -1,14 +1,15 @@
-NOT CLEAN — the three audited defects are repaired locally; browser verification remains blocked by Chromium startup failures.
+CLEAN — scoped verification of the three audit repairs: all cold hosted gates passed, with no unresolved defect or policy conflict in this repair scope.
 
 # October 6 scoped repair verification
 
 Branch: `codex/quote-audit-repairs-20261006`.
 Base commit: `73c00622d6f2df31f57773b32e41355a7421f1a3`.
-The owner has authorized a GitHub checkpoint and hosted CI. This document and
-the manifest record the completed local verification before that upload; the
-hosted result is pending. The original audit worktree remains clean at the base
-commit. No subagents, merges, deployments, provider writes or live-data changes
-were used.
+Published and tested source/test/CI commit: **`fceba2937056d3e4c48042dfaea8259222c10389`**.
+[Hosted CI run 37493206529](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37493206529) completed successfully. The original audit
+remains unchanged and NOT CLEAN at the base SHA; this report verifies its three
+repairs and does not replace the original audit or assert whole-product readiness.
+The original audit worktree remains clean. No subagents, merges, deployments,
+provider writes or live-data changes were used.
 
 ## Repairs
 
@@ -61,7 +62,7 @@ their own department. The boundary check briefly omitted a card's heading; the
 existing Haircut test caught that regression, and the final repair preserves the
 unchanged **$30.50** excerpt with its item name and conditions.
 
-## Verification
+## Local verification (preserved)
 
 Node **22.23.3**, npm **11.9.0**, fresh `npm ci` (262 packages), committed lockfile.
 Playwright **1.56.0** and its Chromium revision **1194** were provided separately;
@@ -94,13 +95,26 @@ directory; it failed opening that output path before a test summary. The correct
 invocation uses a relative output path. That setup error is not a product
 finding and is not counted as a completed test run.
 
-## Remaining release work
+## Hosted verification
 
-The local evidence does not establish a green release. The owner authorized
-committing and pushing this repair branch and verifying the existing GitHub CI
-at the resulting exact SHA. Its `codex/**` trigger already
-runs fresh installation, both builds, the strict quote gate and the full suite.
-No CI workflow, test allowance or dependency change is needed.
+Cold GitHub CI at **`fceba2937056d3e4c48042dfaea8259222c10389`** passed installation, both builds, strict quote
+gate **2,106/2,106** (95 files), full suite **2,484/2,484** (137 files), known-failure
+check and production dependency audit (**zero vulnerabilities**). Both suites have
+zero failures, cancellations, skips or TODOs. All 37 locally blocked browser test
+names occur as passing tests in both hosted suites. No tests were skipped or
+weakened and no CI, allowance or dependency file changed.
+
+The [hosted manifest](hosted-ci.json) records the exact run, steps, counts,
+per-test browser results and source hashes. The complete
+[compressed hosted job log](hosted-job.log.gz) preserves execution evidence.
+Run `python verification/quote-audit-repairs-20261006/verify-hosted-ci.py`
+from a checkout to independently check the preserved log, hashes, counts and
+browser results without network access or writes.
+All 18 source-checkpoint uploads matched their local Git blob hashes and the
+complete published tree matched `b272bd370964f0d2996717a3a93e1e4b82cc4530`.
+The original `manifest.json` intentionally remains the pre-upload local snapshot.
+
+## Operational limits
 
 Any previously saved website imports need owner re-review if they were affected:
 the code repair protects new drafts and deliberately performs no live-data
@@ -118,6 +132,8 @@ Audited base SHA: **73c00622d6f2df31f57773b32e41355a7421f1a3**. Repair coverage:
 HTML/plain-text imports, item/group/page conditions, size and instruction limits,
 repeated imports, owner review/save, stored knowledge and repeated voice facts,
 plus owner optional-extra guidance and blank/zero calculation disclosures.
-Tests: fresh install and two builds passed; **124 focused checks passed**,
-**38 new regressions passed**, quote **2,069 passed / 37 failed**, full
-**2,447 passed / 37 failed**. No unresolved pricing-policy decision was introduced.
+Tests: cold hosted install and both builds passed; **124 local focused checks**,
+**38 new regressions**, hosted quote **2,106/2,106**, hosted full **2,484/2,484**;
+zero failures/skips/cancellations/TODOs. Counts overlap. All 37 environment-blocked
+browser cases passed in each hosted gate. No unresolved pricing-policy decision
+was introduced. Original local failures remain preserved above and in the archive.

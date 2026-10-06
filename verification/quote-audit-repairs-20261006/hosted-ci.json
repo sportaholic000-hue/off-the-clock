@@ -1,0 +1,449 @@
+{
+  "captureStage": "Completed hosted cold verification of the exact published source/test commit.",
+  "testedSha": "fceba2937056d3e4c48042dfaea8259222c10389",
+  "testedTree": "b272bd370964f0d2996717a3a93e1e4b82cc4530",
+  "run": {
+    "id": 37493206529,
+    "html_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37493206529",
+    "head_sha": "fceba2937056d3e4c48042dfaea8259222c10389",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-06T16:07:35Z",
+    "updated_at": "2026-10-06T16:16:13Z"
+  },
+  "job": {
+    "id": 112370973169,
+    "name": "test",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 37493206529,
+    "logs_url": null,
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Install from lockfile (ignores committed node_modules)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "Build owner app and widget",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "Strict quote engine and price book gate",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7
+      },
+      {
+        "name": "Full test suite",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8
+      },
+      {
+        "name": "No failures beyond the known list",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9
+      },
+      {
+        "name": "Publish test summary to claude/ci-results (push events only)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10
+      },
+      {
+        "name": "Production dependency audit",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 11
+      },
+      {
+        "name": "Post Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 22
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 23
+      }
+    ]
+  },
+  "counts": {
+    "quote": {
+      "tests": 2106,
+      "pass": 2106,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "full": {
+      "tests": 2484,
+      "pass": 2484,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "selectedFiles": {
+    "quote": 95,
+    "full": 137
+  },
+  "previouslyEnvironmentBlockedBrowserTests": {
+    "quote": [
+      {
+        "test": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "result": "pass"
+      },
+      {
+        "test": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "result": "pass"
+      },
+      {
+        "test": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "result": "pass"
+      },
+      {
+        "test": "scope editor groups entries of the same kind and names them by their matching facts",
+        "result": "pass"
+      },
+      {
+        "test": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "result": "pass"
+      },
+      {
+        "test": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "result": "pass"
+      },
+      {
+        "test": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "result": "pass"
+      },
+      {
+        "test": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save preserves a newer numeric edit and its question",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save preserves a newer structured price-map edit",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save prevents duplicate confirmation and premature review",
+        "result": "pass"
+      },
+      {
+        "test": "unchanged confirmed value saves once and advances normally",
+        "result": "pass"
+      },
+      {
+        "test": "failed manual save keeps the confirmed value available for retry",
+        "result": "pass"
+      },
+      {
+        "test": "late 200 response cannot replace a new service preview",
+        "result": "pass"
+      },
+      {
+        "test": "late 400 response cannot replace a new service preview",
+        "result": "pass"
+      },
+      {
+        "test": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "result": "pass"
+      },
+      {
+        "test": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "result": "pass"
+      },
+      {
+        "test": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "result": "pass"
+      },
+      {
+        "test": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "result": "pass"
+      },
+      {
+        "test": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "result": "pass"
+      },
+      {
+        "test": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "result": "pass"
+      },
+      {
+        "test": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "result": "pass"
+      },
+      {
+        "test": "website owner screen says no prices found and preserves the current prices",
+        "result": "pass"
+      }
+    ],
+    "full": [
+      {
+        "test": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+        "result": "pass"
+      },
+      {
+        "test": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+        "result": "pass"
+      },
+      {
+        "test": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+        "result": "pass"
+      },
+      {
+        "test": "scope editor groups entries of the same kind and names them by their matching facts",
+        "result": "pass"
+      },
+      {
+        "test": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+        "result": "pass"
+      },
+      {
+        "test": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+        "result": "pass"
+      },
+      {
+        "test": "F13 browser legacy flat and two-level controls use the same exact parser",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+        "result": "pass"
+      },
+      {
+        "test": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+        "result": "pass"
+      },
+      {
+        "test": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+        "result": "pass"
+      },
+      {
+        "test": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+        "result": "pass"
+      },
+      {
+        "test": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save preserves a newer numeric edit and its question",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save preserves a newer structured price-map edit",
+        "result": "pass"
+      },
+      {
+        "test": "pending manual save prevents duplicate confirmation and premature review",
+        "result": "pass"
+      },
+      {
+        "test": "unchanged confirmed value saves once and advances normally",
+        "result": "pass"
+      },
+      {
+        "test": "failed manual save keeps the confirmed value available for retry",
+        "result": "pass"
+      },
+      {
+        "test": "late 200 response cannot replace a new service preview",
+        "result": "pass"
+      },
+      {
+        "test": "late 400 response cannot replace a new service preview",
+        "result": "pass"
+      },
+      {
+        "test": "old completion cannot clear current loading and invalid input cannot retain old ready",
+        "result": "pass"
+      },
+      {
+        "test": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+        "result": "pass"
+      },
+      {
+        "test": "interview owner can add separate demolition entries and explicitly choose up-to access",
+        "result": "pass"
+      },
+      {
+        "test": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+        "result": "pass"
+      },
+      {
+        "test": "interview accepts ordinary floor names and retains invalid drafts for correction",
+        "result": "pass"
+      },
+      {
+        "test": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+        "result": "pass"
+      },
+      {
+        "test": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+        "result": "pass"
+      },
+      {
+        "test": "website owner screen says no prices found and preserves the current prices",
+        "result": "pass"
+      }
+    ]
+  },
+  "sourceAndTestsSha256": {
+    "client/src/pricebook.jsx": "9049a5816b5253ec78a8a33a44c341916f3212531eedf15f4145f0a54f4f4371",
+    "server/src/websitePriceExtraction.js": "33cc9368d00d8a9300fb969cd260e8f8ca3738d07b9301c61a69cfddb09cd711",
+    "server/src/websitePriceImport.js": "5aa08ce4f53b75ee7c4d36e6499c81afb7935af82534f94ce36ffd0c7d37cd02",
+    "test/websitePriceImport.spec.mjs": "3d6dc6711e171bc6bad45b39ad27087870a728ffa189401dbe63018e7f4b3a81",
+    "test/websitePriceDraftRoutes.spec.mjs": "df905e86748a72af60ceb355d49025787c91c10a5e13c38116dd5a536d6d939e",
+    "test/priceBookAddonGuidance.spec.mjs": "8b8db7cc2b0b95a105bb473b104de69be395e138b099a1d174153f91367bf828"
+  },
+  "logSha256": "261dc77d0187c1f7b0981e26a7d2cc367b2923677185f24776284ec90075913b",
+  "compressedLogSha256": "e6656fe1c8bda702a742476443466d965d734048f830adf9115036015f0b6997",
+  "productionDependencyVulnerabilities": 0,
+  "sourceCheckpointUploadedFiles": 18,
+  "sourceCheckpointAllBlobHashesMatched": true,
+  "originalAuditWorktreeCleanAtBase": true,
+  "merged": false,
+  "deployed": false,
+  "liveDataChanged": false
+}

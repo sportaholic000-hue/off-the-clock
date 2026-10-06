@@ -1,29 +1,36 @@
-# October 6 independent-audit repairs — hosted verification pending
+# October 6 independent-audit repairs — hosted gates passed
 
 Branch: `codex/quote-audit-repairs-20261006`, based exactly on
-`73c00622d6f2df31f57773b32e41355a7421f1a3`. The owner has authorized the GitHub
-checkpoint and hosted CI. The results below describe the completed local run;
-hosted verification is still pending. This is not a release signoff.
+`73c00622d6f2df31f57773b32e41355a7421f1a3`.
+Tested source/test/CI SHA: **`fceba2937056d3e4c48042dfaea8259222c10389`**.
 
-The three independent-audit findings are repaired: adjacent website price
+All three independent-audit findings are repaired: adjacent website price
 restrictions are retained; tax notes keep item/department/page ownership; the
 owner's optional-price subtitle agrees with the existing exclusion policy.
 Oversized context withholds the complete item and discloses partial extraction.
-Unpriced departments cannot donate their tax notes to priced neighbors.
 No quote arithmetic, approvals, receipts or live-data migration changed.
 
-**Final cold local verification:** Node 22, fresh `npm ci` and both builds passed.
-`npm run test:quote`: **2,069/2,106**, 95 files. `npm test`: **2,447/2,484**,
-137 files. Both suites have the same **37 Chromium startup failures**, with zero
-skips, cancellations or TODOs; every non-browser test passed. Standalone Chromium
-also crashes before any application page is loaded. **38 new regression tests**
-pass in both suites. The focused run passes **124/124**. Counts overlap.
+**Hosted verification:** [CI run 37493206529](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37493206529) completed successfully
+at the exact SHA above. Cold `npm ci`, owner/widget builds, `npm run test:quote`
+(**2,106/2,106**, 95 files), and `npm test` (**2,484/2,484**, 137 files) passed.
+Both suites report **zero failures, cancellations, skips or TODOs**.
+All **37 browser tests** blocked by local Chromium startup crashes appear as
+passing in each hosted suite. Production dependency audit: **zero vulnerabilities**.
+The known-failures list and CI workflow were not changed.
+
+**Local evidence:** fresh install and builds passed; focused checks **124/124**;
+**38 new regression tests** passed. Local quote **2,069 passed / 37 failed** and
+full **2,447 passed / 37 failed** remain preserved as environment failures, not
+rewritten as green. Counts overlap. Hosted execution closes that verification gap.
 
 [Expected amounts and scope](QUOTE_AUDIT_REPAIRS_20261006.md).
-[Source hashes, complete results and execution logs](../verification/quote-audit-repairs-20261006/README.md).
-The original audit worktree remains clean at the pinned SHA. No subagents,
-merges, deployments, provider writes or live-data changes.
-Hosted CI at the exact uploaded commit is still required.
+[Complete local and hosted evidence](../verification/quote-audit-repairs-20261006/README.md).
+The source checkpoint, original audit, synthetic evidence and two independent
+agent handoffs are on GitHub; all 18 uploaded blob hashes matched the local tree.
+The original audit remains unchanged and NOT CLEAN at its audited base SHA.
+The original audit worktree remains clean at that pin. No subagents, merges,
+deployments, provider writes or live-data changes. This scoped repair verification
+does not establish paid-pilot readiness for billing or lead delivery.
 
 ## Previous hosted checkpoint
 
