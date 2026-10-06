@@ -147,5 +147,5 @@ test('booking already owns hold then confirm; caller hold/finalize injection sta
   const valid={slotHandle:HANDLE,leadHandle:HANDLE,customerConfirmed:true};assert.deepEqual(validateVoiceToolCall('bookAppointment',valid),valid);for(const extra of [{holdId:'x'},{holdHandle:HANDLE},{action:'hold'},{finalize:true}])assert.throws(()=>validateVoiceToolCall('bookAppointment',{...valid,...extra}));
 });
 test('actual start entry point installs the signed runtime instead of the placeholder',()=>{
-  const source=readFileSync(new URL('../server/src/server.js',import.meta.url),'utf8');assert.match(source,/installProductionVoice\(\{app,database:db,bookingService,runtimeConfig\}\)/);assert.doesNotMatch(source,/Your Off The Clock operator connection is ready/);assert.equal(JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).scripts.start,'node server/src/server.js');
+  const source=readFileSync(new URL('../server/src/server.js',import.meta.url),'utf8');assert.match(source,/installProductionVoice\(\{app,database:db,bookingService,runtimeConfig,providers:\{smsDelivery\}\}\)/);assert.doesNotMatch(source,/Your Off The Clock operator connection is ready/);assert.equal(JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).scripts.start,'node server/src/server.js');
 });

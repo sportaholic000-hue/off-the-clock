@@ -22,6 +22,7 @@ Expected outcomes were written in `EXPECTED.md` before baseline execution. `base
 
 - Cold `npm ci` and build pass locally using Node 22.23.3.
 - Relevant existing/new service, provider, HTTP and rendered regression run: 100/100, zero failures/skips (before the final two additional template/outbox tests; those also pass in the focused run).
+- The full run exposed an older literal startup-call assertion that disallowed adding the production SMS dependency. It now explicitly requires `providers:{smsDelivery}`; the assertion is stronger and the production wiring remains tested. No behavioral test or gate was weakened.
 - Local Chromium launches fail with SIGTRAP before test execution (`browser-local.tap`). Browser tests fail rather than skip. Cold full/strict and hosted verification are pending; no green-gate claim at this checkpoint.
 - Twilio API/status receipt behavior follows the official Message resource and status callback documentation: https://www.twilio.com/docs/messaging/api/message-resource . No Messages-create idempotency capability is assumed.
 
