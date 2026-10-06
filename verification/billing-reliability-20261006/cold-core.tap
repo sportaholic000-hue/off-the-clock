@@ -1,0 +1,328 @@
+TAP version 13
+# Subtest: pending and canceled state remains server data, never implied by a chosen plan
+ok 1 - pending and canceled state remains server data, never implied by a chosen plan
+  ---
+  duration_ms: 1.430881
+  type: 'test'
+  ...
+# Subtest: request recovery uses an account-session namespace without retaining the authentication token
+ok 2 - request recovery uses an account-session namespace without retaining the authentication token
+  ---
+  duration_ms: 7.006155
+  type: 'test'
+  ...
+# Subtest: saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+ok 3 - saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+  ---
+  duration_ms: 1.672661
+  type: 'test'
+  ...
+# Subtest: only explicit pre-mutation rejection clears an uncertain billing request
+ok 4 - only explicit pre-mutation rejection clears an uncertain billing request
+  ---
+  duration_ms: 0.529438
+  type: 'test'
+  ...
+# Subtest: billing navigation rejects scripts, credentials and insecure destinations
+ok 5 - billing navigation rejects scripts, credentials and insecure destinations
+  ---
+  duration_ms: 0.27196
+  type: 'test'
+  ...
+# Subtest: setup continuation requires confirmed active or unexpired trial status
+ok 6 - setup continuation requires confirmed active or unexpired trial status
+  ---
+  duration_ms: 0.230868
+  type: 'test'
+  ...
+# Subtest: saved Scale Checkout cannot be resumed as a launch offer
+ok 7 - saved Scale Checkout cannot be resumed as a launch offer
+  ---
+  duration_ms: 0.176356
+  type: 'test'
+  ...
+# Subtest: billing stays fully disabled unless explicitly enabled
+ok 8 - billing stays fully disabled unless explicitly enabled
+  ---
+  duration_ms: 2.060716
+  type: 'test'
+  ...
+# Subtest: one validated configuration drives Checkout and webhook price authority
+ok 9 - one validated configuration drives Checkout and webhook price authority
+  ---
+  duration_ms: 0.896671
+  type: 'test'
+  ...
+# Subtest: billing rejects test credentials in production and malformed signing secrets
+ok 10 - billing rejects test credentials in production and malformed signing secrets
+  ---
+  duration_ms: 0.835018
+  type: 'test'
+  ...
+# Subtest: billing rejects missing, duplicate, or unsafe price and redirect configuration
+ok 11 - billing rejects missing, duplicate, or unsafe price and redirect configuration
+  ---
+  duration_ms: 0.45726
+  type: 'test'
+  ...
+# Subtest: loopback HTTP billing URLs are development-only
+ok 12 - loopback HTTP billing URLs are development-only
+  ---
+  duration_ms: 0.559313
+  type: 'test'
+  ...
+# Subtest: launch configuration requires only the two offered plans; legacy Scale prices are not offered
+ok 13 - launch configuration requires only the two offered plans; legacy Scale prices are not offered
+  ---
+  duration_ms: 0.413984
+  type: 'test'
+  ...
+# Subtest: webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+ok 14 - webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+  ---
+  duration_ms: 1.654754
+  type: 'test'
+  ...
+# Subtest: verified webhook bytes are passed unchanged and supported events are acknowledged generically
+ok 15 - verified webhook bytes are passed unchanged and supported events are acknowledged generically
+  ---
+  duration_ms: 0.741658
+  type: 'test'
+  ...
+# Subtest: webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+ok 16 - webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+  ---
+  duration_ms: 0.625172
+  type: 'test'
+  ...
+# Subtest: unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+ok 17 - unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+  ---
+  duration_ms: 0.751894
+  type: 'test'
+  ...
+# Subtest: Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+ok 18 - Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+  ---
+  duration_ms: 0.396578
+  type: 'test'
+  ...
+# Subtest: authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+ok 19 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+  ---
+  duration_ms: 13.460128
+  type: 'test'
+  ...
+# Subtest: an expired open Checkout releases the owner slot while the original key still replays its sealed response
+ok 20 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+  ---
+  duration_ms: 6.568802
+  type: 'test'
+  ...
+# Subtest: an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+ok 21 - an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+  ---
+  duration_ms: 7.303198
+  type: 'test'
+  ...
+# Subtest: an unresolved claim cannot create a subscription after the owner becomes active
+ok 22 - an unresolved claim cannot create a subscription after the owner becomes active
+  ---
+  duration_ms: 6.278103
+  type: 'test'
+  ...
+# Subtest: an unrecovered claim older than Stripe idempotency retention fails closed for every key
+ok 23 - an unrecovered claim older than Stripe idempotency retention fails closed for every key
+  ---
+  duration_ms: 7.555949
+  type: 'test'
+  ...
+# Subtest: Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+ok 24 - Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+  ---
+  duration_ms: 5.60603
+  type: 'test'
+  ...
+# Subtest: billing portal uses only the stored customer mapping and rejects body-supplied ownership
+ok 25 - billing portal uses only the stored customer mapping and rejects body-supplied ownership
+  ---
+  duration_ms: 4.67039
+  type: 'test'
+  ...
+# Subtest: Checkout blocks a second subscription and portal never creates an unmapped customer
+ok 26 - Checkout blocks a second subscription and portal never creates an unmapped customer
+  ---
+  duration_ms: 9.996788
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits resubscription while the original request remains replayable after activation
+ok 27 - verified terminal deletion permits resubscription while the original request remains replayable after activation
+  ---
+  duration_ms: 5.597457
+  type: 'test'
+  ...
+# Subtest: billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+ok 28 - billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+  ---
+  duration_ms: 4.988599
+  type: 'test'
+  ...
+# Subtest: Scale Checkout is rejected before creating a customer or session
+ok 29 - Scale Checkout is rejected before creating a customer or session
+  ---
+  duration_ms: 5.322163
+  type: 'test'
+  ...
+# Subtest: billing schema stores first-class evidence and sanitized idempotent event receipts
+ok 30 - billing schema stores first-class evidence and sanitized idempotent event receipts
+  ---
+  duration_ms: 11.292771
+  type: 'test'
+  ...
+# Subtest: fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+ok 31 - fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+  ---
+  duration_ms: 5.986673
+  type: 'test'
+  ...
+# Subtest: verified event application is idempotent and never stores raw customer metadata
+ok 32 - verified event application is idempotent and never stores raw customer metadata
+  ---
+  duration_ms: 7.623331
+  type: 'test'
+  ...
+# Subtest: same event ID with changed authoritative fields is rejected
+ok 33 - same event ID with changed authoritative fields is rejected
+  ---
+  duration_ms: 5.374861
+  type: 'test'
+  ...
+# Subtest: customer and subscription IDs mapped to different owners are rejected atomically
+ok 34 - customer and subscription IDs mapped to different owners are rejected atomically
+  ---
+  duration_ms: 4.767977
+  type: 'test'
+  ...
+# Subtest: unrecognized prices and ambiguous base plans are rejected without changing access
+ok 35 - unrecognized prices and ambiguous base plans are rejected without changing access
+  ---
+  duration_ms: 4.870021
+  type: 'test'
+  ...
+# Subtest: an older out-of-order failure is receipted but cannot regress newer active state
+ok 36 - an older out-of-order failure is receipted but cannot regress newer active state
+  ---
+  duration_ms: 4.529477
+  type: 'test'
+  ...
+# Subtest: payment failure preserves seven days of service and paid recovery restores immediately
+ok 37 - payment failure preserves seven days of service and paid recovery restores immediately
+  ---
+  duration_ms: 5.314901
+  type: 'test'
+  ...
+# Subtest: expired grace is suspended idempotently and queues one transition
+ok 38 - expired grace is suspended idempotently and queues one transition
+  ---
+  duration_ms: 5.157373
+  type: 'test'
+  ...
+# Subtest: subscription deletion cancels immediately and a later stale active update cannot reopen it
+ok 39 - subscription deletion cancels immediately and a later stale active update cannot reopen it
+  ---
+  duration_ms: 5.003862
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+ok 40 - verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+  ---
+  duration_ms: 6.194888
+  type: 'test'
+  ...
+# Subtest: Checkout completion without paid or setup evidence cannot start a trial
+ok 41 - Checkout completion without paid or setup evidence cannot start a trial
+  ---
+  duration_ms: 4.753274
+  type: 'test'
+  ...
+# Subtest: a state-write failure rolls back identifier binding, logs, outbox, and receipt
+ok 42 - a state-write failure rolls back identifier binding, logs, outbox, and receipt
+  ---
+  duration_ms: 6.26954
+  type: 'test'
+  ...
+# Subtest: active lifecycle grants Operator/provider writes while plan controls QuoteDone
+ok 43 - active lifecycle grants Operator/provider writes while plan controls QuoteDone
+  ---
+  duration_ms: 2.22941
+  type: 'test'
+  ...
+# Subtest: unknown or missing plan/status fails closed
+ok 44 - unknown or missing plan/status fails closed
+  ---
+  duration_ms: 0.416518
+  type: 'test'
+  ...
+# Subtest: trial expiry uses an exclusive exact UTC boundary
+ok 45 - trial expiry uses an exclusive exact UTC boundary
+  ---
+  duration_ms: 0.376638
+  type: 'test'
+  ...
+# Subtest: missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+ok 46 - missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+  ---
+  duration_ms: 0.342386
+  type: 'test'
+  ...
+# Subtest: payment failure keeps full service until, but not at, the seven-day UTC boundary
+ok 47 - payment failure keeps full service until, but not at, the seven-day UTC boundary
+  ---
+  duration_ms: 1.162923
+  type: 'test'
+  ...
+# Subtest: payment failure without a trustworthy failure timestamp fails closed
+ok 48 - payment failure without a trustworthy failure timestamp fails closed
+  ---
+  duration_ms: 0.311089
+  type: 'test'
+  ...
+# Subtest: suspended and cancellation lifecycle states deny all normal/provider access
+ok 49 - suspended and cancellation lifecycle states deny all normal/provider access
+  ---
+  duration_ms: 0.34512
+  type: 'test'
+  ...
+# Subtest: trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+ok 50 - trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+  ---
+  duration_ms: 0.374635
+  type: 'test'
+  ...
+# Subtest: a trial call already in progress finishes after the cap, but the next call cannot start
+ok 51 - a trial call already in progress finishes after the cap, but the next call cannot start
+  ---
+  duration_ms: 0.274363
+  type: 'test'
+  ...
+# Subtest: unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+ok 52 - unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+  ---
+  duration_ms: 0.615698
+  type: 'test'
+  ...
+# Subtest: the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+ok 53 - the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+  ---
+  duration_ms: 0.249316
+  type: 'test'
+  ...
+1..53
+# tests 53
+# suites 0
+# pass 53
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 243.924013

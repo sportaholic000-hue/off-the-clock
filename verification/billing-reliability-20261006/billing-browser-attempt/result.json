@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "fixtureOnly": true,
+  "realBillingVerified": false,
+  "mode": "final",
+  "rows": [
+    {
+      "scenario": "before",
+      "passed": false,
+      "error": "browserType.launch: Executable doesn't exist at /workspace/scratch/8c1b946f3b16/audit-browsers/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝\n    at /workspace/scratch/8c1b946f3b16/billing-audit/client/test/billing-browser.mjs:57:25"
+    }
+  ],
+  "wire": [],
+  "errors": [],
+  "buildFiles": {
+    "assets/index-BH11q4YO.js": "5497df3f90e6c6bec5068c023a06fd88427c96224cde125fba5fcd9a2b0c875c",
+    "assets/index-ByKtU51H.js": "a48d628ac0ade6151a0946efd68f39ca6c63e9af3df49562a5513f30961c5067",
+    "assets/index-CkgdoNy-.css": "a39e76af4047e66ce349980d8d68cdea5faa11bf7562686a20af996abc2e772c",
+    "assets/index-ok7dnGb7.css": "3d41ed15650beb44bdad3940e976fab94a452af6c567e391c23b2a1d0a7c57ea",
+    "index.html": "aca1ff4cf5f4291bff53b98481d526a2f293366429bbc3815e3b9e7d61de064d",
+    "widget-app.js": "def95204e7d0921ecac8bbf298db18251a0c4b4d2fbde711d35996983096b3bd",
+    "widget.js": "f73790f71c8c0961d54875d7473c276cff132787310e530b73b39f1d59463376"
+  }
+}

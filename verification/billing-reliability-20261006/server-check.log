@@ -1,0 +1,54 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[
+  {
+    "id": "S01-real-entry-grace-expired-not-swept",
+    "expected": "suspended persisted status",
+    "actual": {
+      "status": "payment_failed",
+      "graceEndsAt": "2026-10-05T16:33:22.000Z"
+    }
+  },
+  {
+    "id": "S02-private-and-public-current-state-gates",
+    "expected": "403 both without using client plan claims",
+    "actual": {
+      "private": 403,
+      "public": 403
+    }
+  },
+  {
+    "id": "S03-expired-grace-can-mutate",
+    "expected": "read-only dashboard except billing",
+    "actual": {
+      "leadWriteStatus": 200,
+      "leadPersisted": "DISMISSED",
+      "accountWriteStatus": 200,
+      "accountPersisted": "Changed while unpaid"
+    }
+  },
+  {
+    "id": "S04-unsettled-debt-real-signed-webhook",
+    "expected": "remains denied without resolution of failed invoice",
+    "actual": {
+      "webhookStatus": 200,
+      "status": "active",
+      "paymentFailedAt": null,
+      "quoteGateStatus": 422
+    }
+  },
+  {
+    "id": "S05-no-self-serve-refund-endpoint",
+    "expected": "unsupported facility identified, no invented refund entitlement rule",
+    "actual": {
+      "status": 404
+    }
+  },
+  {
+    "id": "S06-provider-write-switch",
+    "expected": "provider operations disabled; no Stripe calls",
+    "actual": {
+      "status": 503
+    }
+  }
+]

@@ -1,0 +1,571 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "syntheticOnly": true,
+  "experimentCount": 27,
+  "rows": [
+    {
+      "id": "E01-default-method-does-not-settle-renewal",
+      "expected": "failure time retained; denied after seven days",
+      "actual": {
+        "status": "active",
+        "failedAt": null,
+        "accessAfterGrace": {
+          "allowed": true,
+          "reason": "ACTIVE",
+          "accessUntilUtc": null
+        }
+      }
+    },
+    {
+      "id": "E02-zero-invoice-before-trial",
+      "expected": "trial must activate regardless of delivery order",
+      "actual": {
+        "trialOutcome": "IGNORED_STALE",
+        "status": "pending_payment",
+        "verifiedMethodAt": null
+      }
+    },
+    {
+      "id": "E03-same-second-zero-invoice-blocks-conversion",
+      "expected": "invoice paid and subscription trial snapshots converge; trial remains bounded",
+      "actual": {
+        "outcome": "IGNORED_STALE",
+        "status": "pending_payment"
+      }
+    },
+    {
+      "id": "E04-delayed-unpaid-checkout-overwrites-upgrade",
+      "expected": "current QuoteDone plan survives delayed Operator completion",
+      "actual": {
+        "plan": "Operator",
+        "quoteAccess": false
+      }
+    },
+    {
+      "id": "E05-old-plan-invoice-overwrites-current-plan",
+      "expected": "current QuoteDone subscription plan survives payment of old Operator invoice",
+      "actual": {
+        "plan": "Operator",
+        "quoteAccess": false
+      }
+    },
+    {
+      "id": "E06-mixed-proration-lines-rejected",
+      "expected": "invoice reconciliation supports old/new base-price lines without treating them as two subscriptions",
+      "actual": {
+        "error": "AMBIGUOUS_PRICE",
+        "receipted": 0
+      }
+    },
+    {
+      "id": "E07-invoice-clears-cancel-schedule",
+      "expected": "scheduled cancellation flag remains true after renewal invoice",
+      "actual": {
+        "cancelAtPeriodEnd": 0
+      }
+    },
+    {
+      "id": "E08-paid-checkout-recovery-inconsistent",
+      "expected": "paid completion restores active state with a consistent failure timestamp",
+      "actual": {
+        "status": "payment_failed",
+        "failedAt": null,
+        "access": {
+          "allowed": false,
+          "reason": "PAYMENT_FAILURE_TIME_REQUIRED",
+          "accessUntilUtc": null
+        }
+      }
+    },
+    {
+      "id": "E09-old-debt-payment-restores-current-unpaid-service",
+      "expected": "a settled historical invoice cannot clear a newer failed invoice",
+      "actual": {
+        "status": "active",
+        "failedAt": null
+      }
+    },
+    {
+      "id": "E10-partial-write-and-retry",
+      "expected": "outbox failure rolls back all state and retry commits once",
+      "actual": {
+        "status": "active",
+        "receipts": 1,
+        "outbox": 1
+      }
+    },
+    {
+      "id": "E11-owner-customer-mismatch",
+      "expected": "reject cross-account IDs and preserve both accounts",
+      "actual": {
+        "receipts": 2,
+        "currentSubscription": "sub_A"
+      }
+    },
+    {
+      "id": "E12-repeat-failures-do-not-extend-grace",
+      "expected": "original T+10 failure timestamp retained",
+      "actual": {
+        "status": "suspended",
+        "failedAt": "2026-10-06T12:00:10.000Z"
+      }
+    },
+    {
+      "id": "E13-terminal-deletion-prevents-revival",
+      "expected": "old subscription is terminal even with newer active events",
+      "actual": {
+        "outcome": "IGNORED_TERMINAL_SUBSCRIPTION",
+        "status": "canceled"
+      }
+    },
+    {
+      "id": "E14-grace-ui-backend-agreement",
+      "expected": "seven-day full service includes continuing setup",
+      "actual": {
+        "backend": {
+          "allowed": true,
+          "reason": "PAYMENT_FAILURE_GRACE",
+          "accessUntilUtc": "2026-10-13T12:00:10.000Z"
+        },
+        "continueSetup": false
+      }
+    },
+    {
+      "id": "E15-trial-delivery-permutations",
+      "expected": "all 24 delivery orders converge on bounded trialing",
+      "actual": {
+        "counts": {
+          "trialing": 8,
+          "pending_payment": 16,
+          "active": 0
+        },
+        "results": [
+          {
+            "order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              1,
+              3,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              2,
+              1,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              2,
+              3,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              3,
+              1,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              0,
+              3,
+              2,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              0,
+              2,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              0,
+              3,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              2,
+              0,
+              3
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              2,
+              3,
+              0
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              3,
+              0,
+              2
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              1,
+              3,
+              2,
+              0
+            ],
+            "status": "trialing",
+            "trialEndsAt": "2026-10-20T12:00:00.000Z"
+          },
+          {
+            "order": [
+              2,
+              0,
+              1,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              0,
+              3,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              1,
+              0,
+              3
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              1,
+              3,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              3,
+              0,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              2,
+              3,
+              1,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              0,
+              1,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              0,
+              2,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              1,
+              0,
+              2
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              1,
+              2,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              2,
+              0,
+              1
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          },
+          {
+            "order": [
+              3,
+              2,
+              1,
+              0
+            ],
+            "status": "pending_payment",
+            "trialEndsAt": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E16-signed-http-authentication",
+      "expected": "invalid, tampered and expired signatures rejected without activation",
+      "actual": {
+        "statuses": [
+          400,
+          400,
+          400,
+          200
+        ],
+        "status": "active"
+      }
+    },
+    {
+      "id": "E17-checkout-selections-money-and-repeats",
+      "expected": "each selection uses exact configured synthetic recurring amount; retries do not create a second session; no entitlement from redirect",
+      "actual": [
+        {
+          "plan": "Operator",
+          "billingInterval": "monthly",
+          "price": "price_op_month",
+          "recurringCents": 11900,
+          "initialChargeCents": 0,
+          "providerCreateCount": 1,
+          "status": "pending_payment",
+          "changedKeyResult": "IDEMPOTENCY_KEY_CONFLICT"
+        },
+        {
+          "plan": "Operator",
+          "billingInterval": "annual",
+          "price": "price_op_year",
+          "recurringCents": 119000,
+          "initialChargeCents": 0,
+          "providerCreateCount": 1,
+          "status": "pending_payment",
+          "changedKeyResult": "IDEMPOTENCY_KEY_CONFLICT"
+        },
+        {
+          "plan": "QuoteDone",
+          "billingInterval": "monthly",
+          "price": "price_qd_month",
+          "recurringCents": 27900,
+          "initialChargeCents": 0,
+          "providerCreateCount": 1,
+          "status": "pending_payment",
+          "changedKeyResult": "IDEMPOTENCY_KEY_CONFLICT"
+        },
+        {
+          "plan": "QuoteDone",
+          "billingInterval": "annual",
+          "price": "price_qd_year",
+          "recurringCents": 279000,
+          "initialChargeCents": 0,
+          "providerCreateCount": 1,
+          "status": "pending_payment",
+          "changedKeyResult": "IDEMPOTENCY_KEY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "id": "E18-expiry-delayed-webhook-duplicate-subscriptions",
+      "expected": "reconcile completed old session before issuing another checkout",
+      "actual": {
+        "sessionsCreated": 2,
+        "retrievalsBeforeReplacement": 0,
+        "syntheticProviderSubscriptions": [
+          "sub_A",
+          "sub_B"
+        ],
+        "completionResponses": [
+          200,
+          500
+        ],
+        "ledger": [
+          {
+            "stripeSessionId": "cs_1",
+            "status": "EXPIRED"
+          },
+          {
+            "stripeSessionId": "cs_2",
+            "status": "OPEN"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E19-receipt-write-failure-same-provider-key-recovery",
+      "expected": "lost local receipt causes exact-key provider retry, one remote session",
+      "actual": {
+        "responses": [
+          502,
+          201
+        ],
+        "providerAttempts": 2,
+        "distinctProviderSessions": 1,
+        "ledgerStatus": "OPEN"
+      }
+    },
+    {
+      "id": "E20-stale-billing-status-and-grace-ui",
+      "expected": "clock passage persists suspension; displayed state agrees with denied access",
+      "actual": {
+        "status": "payment_failed",
+        "graceEndsAt": "2026-10-13T12:00:10.000Z",
+        "access": {
+          "allowed": false,
+          "reason": "PAYMENT_FAILURE_GRACE_EXPIRED",
+          "accessUntilUtc": null
+        },
+        "manualSweep": {
+          "suspendedCount": 1
+        },
+        "afterManualSweep": "suspended"
+      }
+    },
+    {
+      "id": "E21-current-sdk-period-shape",
+      "expected": "subscription item period end is persisted",
+      "actual": {
+        "expected": "2026-11-05T12:00:00.000Z",
+        "stored": null,
+        "returned": null
+      }
+    },
+    {
+      "id": "E22-unsupported-refund-capability",
+      "expected": "refund events are unsupported; no refund-access policy inferred",
+      "actual": {
+        "response": {
+          "status": 200,
+          "body": {
+            "received": true,
+            "status": "IGNORED"
+          }
+        },
+        "status": "active",
+        "conclusion": "unsupported capability; cancellation after refund is an unspecified policy, not a confirmed refund-state defect"
+      }
+    },
+    {
+      "id": "E23-new-invoice-shape-supported",
+      "expected": "parent.subscription_details + pricing.price_details reconcile a current paid invoice",
+      "actual": {
+        "plan": "QuoteDone",
+        "status": "active"
+      }
+    },
+    {
+      "id": "E24-older-failure-cannot-regress-newer-recovery",
+      "expected": "late delivery of an older failure does not undo current paid recovery",
+      "actual": {
+        "outcome": "IGNORED_STALE",
+        "status": "active"
+      }
+    },
+    {
+      "id": "E25-concurrent-checkout-requests",
+      "expected": "one provider session across overlapping same/different request keys",
+      "actual": {
+        "responses": [
+          201,
+          201,
+          409
+        ],
+        "providerSessions": 1
+      }
+    },
+    {
+      "id": "E26-concurrent-duplicate-webhooks",
+      "expected": "duplicate verified HTTP deliveries commit one receipt/state event/outbox row",
+      "actual": {
+        "billingEventReceipts": 1,
+        "events": 1,
+        "outboxEvents": 1
+      }
+    },
+    {
+      "id": "E27-hydration-wrong-customer",
+      "expected": "signed session cannot borrow retrieved line items from another customer",
+      "actual": {
+        "status": 500,
+        "accountStatus": "pending_payment"
+      }
+    }
+  ]
+}
