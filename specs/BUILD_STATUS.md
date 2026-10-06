@@ -1,7 +1,14 @@
-# October 6 consolidated quote release candidate — hosted gates passed
+# October 6 consolidated quote release candidate — scheduling follow-up verification
 
 Branch: `codex/quote-release-candidate-20261006`.
 Tested source/test/CI SHA: **`9f4a7ae2e7a38514972f7133015df6f3e4662705`**.
+The source checkpoint below passed. A later documentation-only run at
+`4ae4acee4c74c94a8223e7ee2e570620fb8d6428` passed the strict gate but failed
+one full-suite catalog timing check (2,337/2,338). Its concurrently scheduled
+test files competed for CPU. The full runner now uses sequential files, matching
+the strict gate; a new execution test fails with the old scheduling and passes
+with the fix. No timing limit or financial expectation changed. This follow-up
+awaits its hosted results; it is not represented by the earlier green run.
 Pinned inputs: website `0e687907cca8b186d8b85eb285bb82c1deda6a6d`, engine core
 `509891e39318bee344951278dd2667e4ab1f700a`, voice verification
 `20f1cd3b9ef73c418bb5b6828da8031f2ba3bb59`.
@@ -25,7 +32,8 @@ Local checks: 112 core baseline checks; 75 storage/date/persistence
 checks; 39 voice integration/persistence checks; 28 prior audit controls, all
 passed with zero skips. Counts overlap. All 42 existing before/after quote
 fixtures retain their outcome, line items and scenario amounts exactly. The
-45 new release tests comprise 41 storage/date cases and four voice date cases.
+46 new release tests comprise 41 storage/date cases, four voice date cases and
+one full-runner scheduling case.
 Cold installation and owner/widget builds passed.
 
 **Local verification limits:** the local strict run completed with 1,931 passes
@@ -33,8 +41,8 @@ and 37 browser-startup failures because Chromium was unavailable, with zero
 skips. The local full-suite attempt ended without a final summary and is not
 counted as a pass. The completed hosted run supplies the full-suite and browser
 evidence. An earlier website-only baseline run also hit two existing catalog
-timing assertions; both pass on this combined candidate. No timing threshold
-was relaxed.
+timing assertions. The later candidate timing failure and scheduling follow-up
+are disclosed above. No timing threshold was relaxed.
 
 The full runner now enables Node 22 module mocks: the existing previously
 skipped tests passed 10/10 locally with that flag. No failure allowances were

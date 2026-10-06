@@ -60,3 +60,17 @@ The existing module-mock tests passed 10/10 under Node 22's explicit test flag.
 The full-suite runner enables that flag so these tests run instead of the two
 previous skipped placeholders. The strict quote gate remains zero-skip and the
 broader failure allowance remains empty.
+
+## Full-runner scheduling regression
+
+The documentation-only final-head run 37418389759 passed the strict gate
+1,968/1,968 but the full suite passed 2,337/2,338: the 320-product
+`different_basis` check took 1,576 ms with a 1,578 ms timer delay, exceeding
+its unchanged 1,500 ms limit. Unlike the strict runner, the CLI full runner
+started multiple test files concurrently. A synthetic two-file lock probe
+reproduced overlapping workers before the repair. Its expected result is two
+completed files, each once, no overlap, zero failures/skips; it calculates no
+money. The runner now sets `--test-concurrency=1`. No timing or financial
+assertion changes. The unchanged 26-case catalog suite passed locally, with
+the affected full-path probe at 705 ms. Existing handwritten dollar expectations
+remain those in `specs/CATALOG_STALL_REPAIR_20261005.md`.
