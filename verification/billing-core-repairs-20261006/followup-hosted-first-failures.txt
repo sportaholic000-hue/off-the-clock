@@ -1,0 +1,147 @@
+Run 37526820008, source e9e0cd00326d45f0365d34249332432c27d22af4
+2026-10-06T20:30:09.3445469Z not ok 180 - Audit 2 \#4 and \#5: the runner asks for the report format its checker reads; the quote gate follows imports through helpers
+2026-10-06T20:30:09.3445860Z   ---
+2026-10-06T20:30:09.3446069Z   duration_ms: 254.052274
+2026-10-06T20:30:09.3446292Z   type: 'test'
+2026-10-06T20:30:09.3446658Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/auditFixes20261003.spec.mjs:253:1'
+2026-10-06T20:30:09.3447050Z   failureType: 'testCodeFailure'
+2026-10-06T20:30:09.3447321Z   error: |-
+2026-10-06T20:30:09.3447564Z     The expression evaluated to a falsy value:
+2026-10-06T20:30:09.3448269Z     
+2026-10-06T20:30:09.3448518Z       assert.ok(!files.some(file => /voice/i.test(file)))
+2026-10-06T20:30:09.3448783Z     
+2026-10-06T20:30:09.3448950Z   code: 'ERR_ASSERTION'
+2026-10-06T20:30:09.3449156Z   name: 'AssertionError'
+2026-10-06T20:30:09.3449357Z   expected: true
+2026-10-06T20:30:09.3449546Z   actual: false
+2026-10-06T20:30:09.3449727Z   operator: '=='
+2026-10-06T20:30:09.3449904Z   stack: |-
+2026-10-06T20:30:09.3450412Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/auditFixes20261003.spec.mjs:261:10)
+2026-10-06T20:30:09.3450998Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T20:30:09.3451435Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T20:30:09.3451777Z   ...
+2026-10-06T20:30:09.3452567Z # Subtest: F01: a save whose durability cannot be confirmed pauses quoting until a confirmed save
+2026-10-06T20:30:09.3453110Z ok 181 - F01: a save whose durability cannot be confirmed pauses quoting until a confirmed save
+2026-10-06T20:30:09.3453347Z   ---
+2026-10-06T20:30:09.3453457Z   duration_ms: 40.827494
+2026-10-06T20:30:09.3453582Z   type: 'test'
+2026-10-06T20:30:09.3453691Z   ...
+2026-10-06T20:30:09.3454011Z # Subtest: F01: if anything fails before the saved book is replaced, the previous book stays current and quoting is not paused
+2026-10-06T20:32:05.7841576Z not ok 1283 - repair 28: ordinary tests include every VNext suite and keep the dedicated gate
+2026-10-06T20:32:05.7841797Z   ---
+2026-10-06T20:32:05.7841973Z   duration_ms: 239.897167
+2026-10-06T20:32:05.7842160Z   type: 'test'
+2026-10-06T20:32:05.7842928Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/quoteEngineVNextRepairs.spec.js:1163:1'
+2026-10-06T20:32:05.7843390Z   failureType: 'testCodeFailure'
+2026-10-06T20:32:05.7843605Z   error: |-
+2026-10-06T20:32:05.7843830Z     Expected values to be strictly equal:
+2026-10-06T20:32:05.7844059Z     
+2026-10-06T20:32:05.7844218Z     true !== false
+2026-10-06T20:32:05.7844390Z     
+2026-10-06T20:32:05.7844550Z   code: 'ERR_ASSERTION'
+2026-10-06T20:32:05.7844752Z   name: 'AssertionError'
+2026-10-06T20:32:05.7844951Z   expected: false
+2026-10-06T20:32:05.7845123Z   actual: true
+2026-10-06T20:32:05.7845295Z   operator: 'strictEqual'
+2026-10-06T20:32:05.7845483Z   stack: |-
+2026-10-06T20:32:05.7845967Z     TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/quoteEngineVNextRepairs.spec.js:1177:10)
+2026-10-06T20:32:05.7846528Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T20:32:05.7846956Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T20:32:05.7847296Z   ...
+2026-10-06T20:32:05.7847899Z # Subtest: repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+2026-10-06T20:32:05.7848632Z ok 1284 - repair 29: the real price-book preview can calculate an unconfirmed AI draft without confirming it
+2026-10-06T20:32:05.7849038Z   ---
+2026-10-06T20:32:05.7849206Z   duration_ms: 11.898159
+2026-10-06T20:32:05.7849401Z   type: 'test'
+2026-10-06T20:32:05.7849559Z   ...
+2026-10-06T20:32:05.7850051Z # Subtest: repair 30: permitted zero disposal and explicit included scope stay distinct from unclassified core zero
+2026-10-06T20:32:20.6689169Z not ok 1921 - release guard: west profile changes refresh public catalog/status without saving prices
+2026-10-06T20:32:20.6689583Z   ---
+2026-10-06T20:32:20.6689767Z   duration_ms: 93.891449
+2026-10-06T20:32:20.6689970Z   type: 'test'
+2026-10-06T20:32:20.6690367Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:60:3'
+2026-10-06T20:32:20.6690642Z   failureType: 'testCodeFailure'
+2026-10-06T20:32:20.6690779Z   error: |-
+2026-10-06T20:32:20.6691087Z     {"error":"Your account is read-only. Manage billing to restore service.","code":"ACCOUNT_READ_ONLY","reason":"INVALID_STATUS"}
+2026-10-06T20:32:20.6691366Z     
+2026-10-06T20:32:20.6691465Z     403 !== 200
+2026-10-06T20:32:20.6691571Z     
+2026-10-06T20:32:20.6691674Z   code: 'ERR_ASSERTION'
+2026-10-06T20:32:20.6691803Z   name: 'AssertionError'
+2026-10-06T20:32:20.6691926Z   expected: 200
+2026-10-06T20:32:20.6692254Z   actual: 403
+2026-10-06T20:32:20.6692479Z   operator: 'strictEqual'
+2026-10-06T20:32:20.6692602Z   stack: |-
+2026-10-06T20:32:20.6692865Z     request (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:47:123)
+2026-10-06T20:32:20.6693226Z     process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-10-06T20:32:20.6693617Z     async Object.status (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:50:22)
+2026-10-06T20:32:20.6694079Z     async TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:62:17)
+2026-10-06T20:32:20.6694440Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T20:32:20.6694703Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-10-06T20:32:20.6694909Z   ...
+2026-10-06T20:32:20.7243630Z # Subtest: release guard: east profile changes refresh public catalog/status without saving prices
+2026-10-06T20:32:20.7246075Z not ok 1922 - release guard: east profile changes refresh public catalog/status without saving prices
+2026-10-06T20:32:20.7246474Z   ---
+2026-10-06T20:32:20.7246662Z   duration_ms: 104.48398
+2026-10-06T20:32:20.7246075Z not ok 1922 - release guard: east profile changes refresh public catalog/status without saving prices
+2026-10-06T20:32:20.7246474Z   ---
+2026-10-06T20:32:20.7246662Z   duration_ms: 104.48398
+2026-10-06T20:32:20.7246849Z   type: 'test'
+2026-10-06T20:32:20.7247129Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:60:3'
+2026-10-06T20:32:20.7247396Z   failureType: 'testCodeFailure'
+2026-10-06T20:32:20.7247530Z   error: |-
+2026-10-06T20:32:20.7247956Z     {"error":"Your account is read-only. Manage billing to restore service.","code":"ACCOUNT_READ_ONLY","reason":"INVALID_STATUS"}
+2026-10-06T20:32:20.7248225Z     
+2026-10-06T20:32:20.7248324Z     403 !== 200
+2026-10-06T20:32:20.7248425Z     
+2026-10-06T20:32:20.7248525Z   code: 'ERR_ASSERTION'
+2026-10-06T20:32:20.7248646Z   name: 'AssertionError'
+2026-10-06T20:32:20.7248767Z   expected: 200
+2026-10-06T20:32:20.7248872Z   actual: 403
+2026-10-06T20:32:20.7248981Z   operator: 'strictEqual'
+2026-10-06T20:32:20.7249103Z   stack: |-
+2026-10-06T20:32:20.7249357Z     request (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:47:123)
+2026-10-06T20:32:20.7249705Z     process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-10-06T20:32:20.7250075Z     async Object.status (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:50:22)
+2026-10-06T20:32:20.7250517Z     async TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:62:17)
+2026-10-06T20:32:20.7250846Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T20:32:20.7251094Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T20:32:20.7251291Z   ...
+2026-10-06T20:32:20.7373495Z # Subtest: release guard: stale approval explains re-approval, blocks quotes and restores exactly $100
+2026-10-06T20:32:20.7374390Z not ok 1923 - release guard: stale approval explains re-approval, blocks quotes and restores exactly $100
+2026-10-06T20:32:20.7374896Z   ---
+2026-10-06T20:32:20.7375127Z   duration_ms: 54.08121
+2026-10-06T20:32:20.7374390Z not ok 1923 - release guard: stale approval explains re-approval, blocks quotes and restores exactly $100
+2026-10-06T20:32:20.7374896Z   ---
+2026-10-06T20:32:20.7375127Z   duration_ms: 54.08121
+2026-10-06T20:32:20.7375314Z   type: 'test'
+2026-10-06T20:32:20.7375690Z   location: '/home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:74:1'
+2026-10-06T20:32:20.7376101Z   failureType: 'testCodeFailure'
+2026-10-06T20:32:20.7376308Z   error: |-
+2026-10-06T20:32:20.7376750Z     {"error":"Your account is read-only. Manage billing to restore service.","code":"ACCOUNT_READ_ONLY","reason":"INVALID_STATUS"}
+2026-10-06T20:32:20.7377177Z     
+2026-10-06T20:32:20.7377323Z     403 !== 200
+2026-10-06T20:32:20.7377477Z     
+2026-10-06T20:32:20.7377751Z   code: 'ERR_ASSERTION'
+2026-10-06T20:32:20.7377940Z   name: 'AssertionError'
+2026-10-06T20:32:20.7378112Z   expected: 200
+2026-10-06T20:32:20.7378218Z   actual: 403
+2026-10-06T20:32:20.7378328Z   operator: 'strictEqual'
+2026-10-06T20:32:20.7378448Z   stack: |-
+2026-10-06T20:32:20.7378912Z     request (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:47:123)
+2026-10-06T20:32:20.7379370Z     process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-10-06T20:32:20.7379739Z     async Object.status (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:50:22)
+2026-10-06T20:32:20.7380179Z     async TestContext.<anonymous> (file:///home/runner/work/off-the-clock/off-the-clock/test/releaseQuoteGuards.spec.mjs:77:16)
+2026-10-06T20:32:20.7380506Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-10-06T20:32:20.7380753Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-10-06T20:32:20.7380950Z   ...
+2026-10-06T20:32:21.1269735Z # Subtest: release guard: owner notice does not promise silent UTC fallback
+2026-10-06T20:32:21.1271662Z ok 1924 - release guard: owner notice does not promise silent UTC fallback
+2026-10-06T20:32:21.1272219Z   ---
+2026-10-06T20:32:21.1272455Z   duration_ms: 398.848349
+2026-10-06T20:32:23.9479007Z # tests 2072
+2026-10-06T20:32:23.9479329Z # pass 2067
+2026-10-06T20:32:23.9479434Z # fail 5
+2026-10-06T20:32:23.9479535Z # cancelled 0
+2026-10-06T20:32:23.9479642Z # skipped 0
+

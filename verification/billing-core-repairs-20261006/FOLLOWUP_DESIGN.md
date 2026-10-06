@@ -32,3 +32,5 @@ No live provider configuration changed. Existing numbers require attaching /api/
 
 ## First hosted checkpoint corrections
 Run37526820008 at e9e0cd0 passed2067/2072 strict checks, failing5. Two existing naming checks forbid a selected filename containing voice; the new metering entry regression was renamed CallEntry, with identical contents and execution retained in both gates. Three existing release-guard tests showed that POST draft validation is read-only and must not be classified as a mutation. The guard now explicitly recognizes this existing read operation; saving/approval/edit routes remain blocked and their existing feature gates remain unchanged. No existing test or gate was weakened.
+
+F10 callback-order follow-up: an explicit regression wrote FALLBACK before a delayed media completion. Before the correction it returned2minutes instead of0 (followup-fallback-race-before.tap). Finalization now preserves terminal/fallback outcomes; all12 metering regressions pass. This closes a race introduced during this repair, without changing old tests.

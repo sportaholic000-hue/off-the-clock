@@ -38,7 +38,9 @@ export function createBillingVoiceUsage({database:db,clock=()=>new Date()}={}){
     start(context,callId){return transaction(db,()=>begin(bound(context,callId),iso(clock())));},
     finish(context,callId,completion=null){return transaction(db,()=>{
       const row=bound(context,callId),usage=db.prepare('SELECT * FROM billingVoiceUsage WHERE ownerId=? AND callId=?').get(row.ownerId,row.id);
-      if(completion){
+      // A late asynchronous media close cannot turn a recorded fallback into
+      // a billable call or overwrite an already completed lifecycle outcome.
+      if(completion&&!['COMPLETED','FAILED','FALLBACK','AI_FALLBACK'].includes(row.status)&&row.outcome!=='AI_FALLBACK'){
         db.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=?').run(completion.status,completion.outcome,completion.failureCode,completion.streamSid,iso(clock()),iso(clock()),row.ownerId,row.id);
       }
       if(!usage)return 0;

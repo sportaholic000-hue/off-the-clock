@@ -52,3 +52,12 @@ test('F10: signed duration HTTP rejects forgery and wrong tenant; unknown provid
  async function send(extra={},bad=false){const body={AccountSid:account,CallSid:c.context.callSid,From:from,To:to,CallStatus:'completed',CallDuration:'61',...extra};return fetch(base+path,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded','x-twilio-signature':bad?'forged':twilio.getExpectedTwilioSignature(secret,origin+path,body)},body:new URLSearchParams(body)});}
  try{assert.equal((await send({},true)).status,403);assert.equal(h.meter.minutesUsed(owner),0);assert.equal((await send()).status,204);assert.equal((await send()).status,204);assert.equal(h.meter.minutesUsed(owner),2);assert.equal((await send({To:'+19025550999'})).status,409);assert.equal((await send({CallDuration:'62'})).status,409);}finally{server.closeAllConnections();await new Promise(r=>server.close(r));h.db.close();}
 });
+// Expected before execution: fallback is excluded ($0,0minutes), even if an
+// asynchronous media close arrives later with61seconds of local elapsed time.
+test('F10: late media finalization cannot undo fallback exclusion',()=>{
+ const h=setup();try{const c=h.call();h.meter.start(c.context,c.id);h.setTime(T+61);
+ h.db.prepare("UPDATE calls SET status='FALLBACK',outcome='VOICE_SESSION_UNAVAILABLE',minutesBilled=0 WHERE id=?").run(c.id);
+ assert.equal(h.meter.finish(c.context,c.id,{status:'COMPLETED',outcome:'STOP',failureCode:null,streamSid:null}),0);
+ assert.equal(h.db.prepare('SELECT status FROM calls WHERE id=?').get(c.id).status,'FALLBACK');assert.equal(h.meter.minutesUsed(owner),0);
+ }finally{h.db.close();}
+});
