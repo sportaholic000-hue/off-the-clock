@@ -1,0 +1,38 @@
+[
+  {
+    "rawFile": "followup-cold-quote.log",
+    "rawBytes": 638064,
+    "rawSha256": "d71e801e0910eea397c3f88083c768c747cfb3da9b61a3ecb00094c6b2196e45",
+    "archive": "followup-cold-quote.log.gz"
+  },
+  {
+    "rawFile": "followup-final-full.log",
+    "rawBytes": 821142,
+    "rawSha256": "81a0afacf39c19cfccdcb623d2f353026dce5f90492da49b1579fb39c8f21e3f",
+    "archive": "followup-final-full.log.gz"
+  },
+  {
+    "rawFile": "followup-final-full.tap",
+    "rawBytes": 816603,
+    "rawSha256": "e95d80b9bbe8668ff3e5d21d4c09e4741ef6ceb93125ed39492b58f7bcd6d2e4",
+    "archive": "followup-final-full.tap.gz"
+  },
+  {
+    "rawFile": "followup-accepted-quote.log",
+    "rawBytes": 636541,
+    "rawSha256": "91b683ccca9bdd617aba0e94df529628de765cdfede0522f3c4fbacaecff0664",
+    "archive": "followup-accepted-quote.log.gz"
+  },
+  {
+    "rawFile": "followup-accepted-full.log",
+    "rawBytes": 28787,
+    "rawSha256": "90900b4bac827729db8265e9b7d3422271c09ef69a3d6dc840deb294def13979",
+    "archive": "followup-accepted-full.log.gz"
+  },
+  {
+    "rawFile": "followup-accepted-full.tap",
+    "rawBytes": 28650,
+    "rawSha256": "92b2a25a6dbc705d0578b335532e41fa3d719aac65dfc49163fdbd154c597bdf",
+    "archive": "followup-accepted-full.tap.gz"
+  }
+]

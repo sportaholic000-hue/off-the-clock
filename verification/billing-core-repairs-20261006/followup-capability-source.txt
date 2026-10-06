@@ -1,0 +1,64 @@
+server/src/server.js:335:  const { statusCode, ...result } = await telephonyOperations.setCoverage(req.tenantOwnerId, req.body?.enabled);
+server/src/billingStateService.js:354:    VALUES (?, ?, 'billing.state_changed', ?, ?)
+server/src/billingStateService.js:357:    INSERT INTO outboxEvents (
+server/src/billingStateService.js:359:    ) VALUES (?, ?, 'billing.state_changed', ?, ?, 'PENDING', ?, ?)
+server/src/planAccess.js:10:  'wind_down',
+server/src/telephonyOperationsMigration.js:26:    CREATE TABLE IF NOT EXISTS operatorCoverageOperations (
+server/src/bookingService.js:446:    const coverage = serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), filters.location);
+server/src/bookingService.js:447:    if (!coverage.eligible) {
+server/src/bookingService.js:450:        body: { status: 'PREFERRED_TIME_ONLY', reason: coverage.reason, timezone: policy.timezone }
+server/src/bookingService.js:777:      db.prepare(`INSERT OR IGNORE INTO outboxEvents (
+server/src/bookingService.js:811:        const coverage = serviceAreaDecision(
+server/src/bookingService.js:814:        if (!coverage.eligible) {
+server/src/bookingService.js:817:            { details: { reason: coverage.reason, recoveryAction: 'REQUEST_PREFERRED_TIME' } });
+server/src/bookingService.js:1111:        db.prepare(`INSERT OR IGNORE INTO outboxEvents (
+server/src/platformIntegrations.js:124:async function carrierCoverageRequest(action, { ownerId, enabled, existingNumber, twilioNumber, operationId, revision }) {
+server/src/platformIntegrations.js:131:      ...(operationId && action === 'set_coverage' ? { 'idempotency-key': operationId } : {})
+server/src/platformIntegrations.js:140:export async function setCarrierCoverage(input) {
+server/src/platformIntegrations.js:141:  return carrierCoverageRequest('set_coverage', input);
+server/src/platformIntegrations.js:144:// Carrier bridge contract: get_coverage is a READ of operationId/revision and
+server/src/platformIntegrations.js:148:export async function getCarrierCoverage(input) {
+server/src/platformIntegrations.js:149:  return carrierCoverageRequest('get_coverage', input);
+server/src/platformIntegrations.js:385:    setCoverage: setCarrierCoverage,
+server/src/platformIntegrations.js:386:    readCoverage: getCarrierCoverage
+server/src/platformIntegrations.js:391:    'connectCarrier', 'setCoverage', 'readCoverage']) {
+server/src/platformIntegrations.js:397:  const coverageRow = ownerId => ownerQuery('SELECT * FROM operatorCoverageOperations WHERE ownerId = ?').get(ownerId);
+server/src/platformIntegrations.js:569:  const ownsCoverage = (ownerId, claim) => {
+server/src/platformIntegrations.js:570:    const row = coverageRow(ownerId);
+server/src/platformIntegrations.js:573:  const coverageSnapshot = ownerId => {
+server/src/platformIntegrations.js:574:    const row = coverageRow(ownerId);
+server/src/platformIntegrations.js:585:  const completeCoverage = (ownerId, claim, outcome) => transaction(() => {
+server/src/platformIntegrations.js:586:    if (!ownsCoverage(ownerId, claim)) return false;
+server/src/platformIntegrations.js:595:    ownerQuery(`UPDATE operatorCoverageOperations SET
+server/src/platformIntegrations.js:610:  async function setCoverage(ownerId, enabled) {
+server/src/platformIntegrations.js:615:      ownerQuery(`INSERT INTO operatorCoverageOperations (
+server/src/platformIntegrations.js:621:      const row = coverageRow(ownerId);
+server/src/platformIntegrations.js:623:        ownerQuery(`UPDATE operatorCoverageOperations SET desiredEnabled = ?,
+server/src/platformIntegrations.js:632:        const row = coverageRow(ownerId);
+server/src/platformIntegrations.js:635:          ownerQuery(`UPDATE operatorCoverageOperations SET workerToken = ?, leaseUntil = ?,
+server/src/platformIntegrations.js:637:          return { ...coverageRow(ownerId), action: 'read' };
+server/src/platformIntegrations.js:643:        ownerQuery(`UPDATE operatorCoverageOperations SET activeOperationId = ?,
+server/src/platformIntegrations.js:650:        return { ...coverageRow(ownerId), action: 'set' };
+server/src/platformIntegrations.js:652:      if (!claim) return coverageSnapshot(ownerId);
+server/src/platformIntegrations.js:660:        result = await (claim.action === 'set' ? provider.setCoverage(input) : provider.readCoverage(input));
+server/src/platformIntegrations.js:662:      let outcome = coverageOutcome(result, input, claim.action === 'read');
+server/src/platformIntegrations.js:663:      if (outcome === 'unknown' && claim.action === 'set' && ownsCoverage(ownerId, claim)) {
+server/src/platformIntegrations.js:664:        try { result = await provider.readCoverage(input); }
+server/src/platformIntegrations.js:666:        outcome = coverageOutcome(result, input, true);
+server/src/platformIntegrations.js:669:        ownerQuery(`UPDATE operatorCoverageOperations SET phase = 'unknown', workerToken = NULL,
+server/src/platformIntegrations.js:673:        return coverageSnapshot(ownerId);
+server/src/platformIntegrations.js:675:      if (!completeCoverage(ownerId, claim, outcome)) return coverageSnapshot(ownerId);
+server/src/platformIntegrations.js:677:    return coverageSnapshot(ownerId);
+server/src/platformIntegrations.js:679:  return { provision, setCoverage };
+server/src/platformIntegrations.js:691:function coverageOutcome(result, input, reading) {
+server/src/voice/voiceToolRuntime.js:144:  const queryCoverage = overlap / queryWords.length;
+server/src/voice/voiceToolRuntime.js:145:  const nameCoverage = overlap / Math.max(1, nameWords.length);
+server/src/voice/voiceToolRuntime.js:146:  return Math.min(0.94, queryCoverage * 0.65 + nameCoverage * 0.35);
+server/src/voice/voiceToolRuntime.js:330:    database.prepare(`INSERT OR IGNORE INTO outboxEvents (
+server/src/voice/voiceToolRuntime.js:339:    database.prepare(`UPDATE outboxEvents SET status = ?, updatedAt = ?
+server/src/voice/voiceToolRuntime.js:881:    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+server/src/voice/voiceToolRuntime.js:1015:    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+server/src/voice/voiceToolRuntime.js:1113:    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+server/src/schema.js:448:  `CREATE TABLE IF NOT EXISTS outboxEvents (
+server/src/schema.js:566:    ON outboxEvents(status, createdAt)`
+server/src/bookingPreferenceService.js:186:    'INSERT INTO outboxEvents (',

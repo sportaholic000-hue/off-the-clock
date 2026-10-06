@@ -1,0 +1,63 @@
+{
+  "sourceSha": "d654f1edcc0ce62963bc8ae9369bd56bd31aac40",
+  "runs": [
+    {
+      "step": "install",
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "exit": 0,
+      "summary": []
+    },
+    {
+      "step": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0,
+      "summary": []
+    },
+    {
+      "step": "browser-dependency",
+      "command": [
+        "npm",
+        "install",
+        "--no-save",
+        "--no-audit",
+        "--no-fund",
+        "playwright@1.56.0"
+      ],
+      "exit": 0,
+      "summary": []
+    },
+    {
+      "step": "quote",
+      "command": [
+        "npm",
+        "run",
+        "test:quote"
+      ],
+      "exit": 1,
+      "summary": [
+        "# tests 2072",
+        "# pass 2035",
+        "# fail 37",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    },
+    {
+      "step": "full",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exit": 1,
+      "summary": []
+    }
+  ]
+}
