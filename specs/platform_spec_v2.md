@@ -611,6 +611,17 @@ excluded and shown as savings: "[n] spam calls blocked —
   Policies (payment/warranty/cancellation), FAQs, "Never
   say" list. "Test my agent" chat panel to interrogate the
   KB before go-live.
+  Agent knowledge must also include the owner-confirmed
+  review contact's name and role (owner or manager). Reuse
+  the signup owner's first name when confirmed; allow the
+  owner to designate a manager. Keep this person distinct
+  from the business name and the receptionist's own name.
+  Use the configured person's name naturally when a
+  question or request needs their review. Never invent a
+  person, title, answer or response commitment. Unknown
+  business answers become captured, flagged questions for
+  the designated contact; delivery claims require evidence.
+  See NAMED_REVIEW_CONTACT_DECISION_20261006.md.
 
 6.6 CUSTOMERS (caller memory)
   Auto-created from calls; every conversation, quote,
