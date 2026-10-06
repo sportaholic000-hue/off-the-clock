@@ -1,0 +1,539 @@
+TAP version 13
+# Subtest: stored calls, outcomes, summary and transcript are returned without repricing
+ok 1 - stored calls, outcomes, summary and transcript are returned without repricing
+  ---
+  duration_ms: 11.981425
+  type: 'test'
+  ...
+# Subtest: list, detail, source joins and counters isolate tenants including corrupt cross-tenant links
+ok 2 - list, detail, source joins and counters isolate tenants including corrupt cross-tenant links
+  ---
+  duration_ms: 6.947532
+  type: 'test'
+  ...
+# Subtest: pagination reaches all stored calls deterministically and rejects owner overrides
+ok 3 - pagination reaches all stored calls deterministically and rejects owner overrides
+  ---
+  duration_ms: 5.632121
+  type: 'test'
+  ...
+# Subtest: review leads retain original voice measurements and the saved reason
+ok 4 - review leads retain original voice measurements and the saved reason
+  ---
+  duration_ms: 5.790496
+  type: 'test'
+  ...
+# Subtest: fallbacks, transcriptTurns, missing and malformed stored data are honest
+ok 5 - fallbacks, transcriptTurns, missing and malformed stored data are honest
+  ---
+  duration_ms: 6.401141
+  type: 'test'
+  ...
+# Subtest: real application dashboard and record routes show persisted synthetic call data
+    # Subtest: dashboard includes stored feed and real counters
+    ok 1 - dashboard includes stored feed and real counters
+      ---
+      duration_ms: 28.03108
+      type: 'test'
+      ...
+    # Subtest: call detail contains transcript, outcome, quote drivers, lead and bookings
+    not ok 2 - call detail contains transcript, outcome, quote drivers, lead and bookings
+      ---
+      duration_ms: 8.484719
+      type: 'test'
+      location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityHttp.spec.mjs:25:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + '[SYNTHETIC] Alex'
+        - '[SYNTHETIC] synthetic-a Alex'
+                       ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '[SYNTHETIC] synthetic-a Alex'
+      actual: '[SYNTHETIC] Alex'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityHttp.spec.mjs:25:423)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityHttp.spec.mjs:25:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Calls list and specific record enforce session tenant
+    ok 3 - Calls list and specific record enforce session tenant
+      ---
+      duration_ms: 14.066165
+      type: 'test'
+      ...
+    # Subtest: Quotes view reads the voice receipt and includes its call link
+    ok 4 - Quotes view reads the voice receipt and includes its call link
+      ---
+      duration_ms: 2.565243
+      type: 'test'
+      ...
+    # Subtest: Leads view reads captured voice contact and review inputs
+    ok 5 - Leads view reads captured voice contact and review inputs
+      ---
+      duration_ms: 3.835036
+      type: 'test'
+      ...
+    # Subtest: staff sees only its parent tenant and no owner calculation evidence
+    ok 6 - staff sees only its parent tenant and no owner calculation evidence
+      ---
+      duration_ms: 5.07872
+      type: 'test'
+      ...
+    1..6
+not ok 6 - real application dashboard and record routes show persisted synthetic call data
+  ---
+  duration_ms: 433.505379
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityHttp.spec.mjs:12:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# 2:32:20 PM [vite] (client) Re-optimizing dependencies because vite config has changed
+# Subtest: existing owner components render stored call and linked record views
+    # Subtest: dashboard/Calls feed shows stored summary and outcome
+    ok 1 - dashboard/Calls feed shows stored summary and outcome
+      ---
+      duration_ms: 9.652031
+      type: 'test'
+      ...
+    # Subtest: call detail shows transcript, exact saved price and why, lead and calendar records
+    not ok 2 - call detail shows transcript, exact saved price and why, lead and calendar records
+      ---
+      duration_ms: 7.129781
+      type: 'test'
+      location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityRendering.spec.mjs:16:13'
+      failureType: 'testCodeFailure'
+      error: 'synthetic-a Alex'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityRendering.spec.mjs:16:317)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityRendering.spec.mjs:16:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: review view shows the saved reason without inventing a quote
+    ok 3 - review view shows the saved reason without inventing a quote
+      ---
+      duration_ms: 1.880999
+      type: 'test'
+      ...
+    # Subtest: Quotes and Leads views render normalized voice records and call links
+    ok 4 - Quotes and Leads views render normalized voice records and call links
+      ---
+      duration_ms: 1.777976
+      type: 'test'
+      ...
+    # Subtest: fallback view reports stored failure and empty records
+    ok 5 - fallback view reports stored failure and empty records
+      ---
+      duration_ms: 1.308349
+      type: 'test'
+      ...
+    1..5
+not ok 7 - existing owner components render stored call and linked record views
+  ---
+  duration_ms: 613.824851
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerCallVisibilityRendering.spec.mjs:8:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: CSV neutralizes formula prefixes, whitespace, controls and locale variants
+ok 8 - CSV neutralizes formula prefixes, whitespace, controls and locale variants
+  ---
+  duration_ms: 1.504791
+  type: 'test'
+  ...
+# Subtest: CSV quoting preserves separators, quotes and multiline data without creating extra cells
+ok 9 - CSV quoting preserves separators, quotes and multiline data without creating extra cells
+  ---
+  duration_ms: 0.686117
+  type: 'test'
+  ...
+# Subtest: leads CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 10 - leads CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 8.24937
+  type: 'test'
+  ...
+# Subtest: quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 11 - quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 5.399336
+  type: 'test'
+  ...
+# Subtest: bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 12 - bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 4.622864
+  type: 'test'
+  ...
+# Subtest: CSV pagination includes more than 500 rows once each, without tenant bleed
+ok 13 - CSV pagination includes more than 500 rows once each, without tenant bleed
+  ---
+  duration_ms: 32.522989
+  type: 'test'
+  ...
+# Subtest: unknown export names and prototype properties are unavailable
+ok 14 - unknown export names and prototype properties are unavailable
+  ---
+  duration_ms: 0.192576
+  type: 'test'
+  ...
+# Subtest: capture is tenant-scoped and the signing secret is encrypted and shown once
+ok 15 - capture is tenant-scoped and the signing secret is encrypted and shown once
+  ---
+  duration_ms: 9.008417
+  type: 'test'
+  ...
+# Subtest: all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+ok 16 - all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+  ---
+  duration_ms: 11.861817
+  type: 'test'
+  ...
+# Subtest: bookings emit only on confirmation; repeated confirmations do not duplicate events
+ok 17 - bookings emit only on confirmation; repeated confirmations do not duplicate events
+  ---
+  duration_ms: 5.61155
+  type: 'test'
+  ...
+# Subtest: transaction rollback removes the captured event and never invokes delivery inline
+ok 18 - transaction rollback removes the captured event and never invokes delivery inline
+  ---
+  duration_ms: 5.149885
+  type: 'test'
+  ...
+# Subtest: malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+ok 19 - malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+  ---
+  duration_ms: 7.589843
+  type: 'test'
+  ...
+# Subtest: disabled event toggles capture only the selected event
+ok 20 - disabled event toggles capture only the selected event
+  ---
+  duration_ms: 4.762261
+  type: 'test'
+  ...
+# Subtest: receiver failures do not affect inserts, and retry obeys due time with stable event/body
+ok 21 - receiver failures do not affect inserts, and retry obeys due time with stable event/body
+  ---
+  duration_ms: 5.864054
+  type: 'test'
+  ...
+# Subtest: retry is durable across a real database close/reopen and encrypted key read
+ok 22 - retry is durable across a real database close/reopen and encrypted key read
+  ---
+  duration_ms: 18.072405
+  type: 'test'
+  ...
+# Subtest: exhausted retries become visible failures; only their own owner can requeue them
+ok 23 - exhausted retries become visible failures; only their own owner can requeue them
+  ---
+  duration_ms: 10.483663
+  type: 'test'
+  ...
+# Subtest: two workers cannot concurrently deliver the same leased event
+ok 24 - two workers cannot concurrently deliver the same leased event
+  ---
+  duration_ms: 6.213312
+  type: 'test'
+  ...
+# Subtest: expired worker lease is reclaimed after a crash, without changing event identity
+ok 25 - expired worker lease is reclaimed after a crash, without changing event identity
+  ---
+  duration_ms: 5.063387
+  type: 'test'
+  ...
+# Subtest: changing URL or rotating/removing a key cancels older pending events without touching other tenants
+ok 26 - changing URL or rotating/removing a key cancels older pending events without touching other tenants
+  ---
+  duration_ms: 6.648708
+  type: 'test'
+  ...
+# Subtest: an endpoint change during DNS resolution prevents sending to the old destination
+ok 27 - an endpoint change during DNS resolution prevents sending to the old destination
+  ---
+  duration_ms: 5.193019
+  type: 'test'
+  ...
+# Subtest: swapping encrypted signing records across tenants fails closed without delivering
+ok 28 - swapping encrypted signing records across tenants fails closed without delivering
+  ---
+  duration_ms: 5.297925
+  type: 'test'
+  ...
+# Subtest: platform dispatch and account entitlements pause delivery without blocking inserts
+ok 29 - platform dispatch and account entitlements pause delivery without blocking inserts
+  ---
+  duration_ms: 5.372286
+  type: 'test'
+  ...
+# Subtest: destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+ok 30 - destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+  ---
+  duration_ms: 0.769771
+  type: 'test'
+  ...
+# Subtest: mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+ok 31 - mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+  ---
+  duration_ms: 20.763894
+  type: 'test'
+  ...
+# Subtest: HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+ok 32 - HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+  ---
+  duration_ms: 0.551457
+  type: 'test'
+  ...
+# Subtest: transport deadline rejects a receiver that never responds
+ok 33 - transport deadline rejects a receiver that never responds
+  ---
+  duration_ms: 4.64039
+  type: 'test'
+  ...
+# Subtest: webhook dispatch is independently configured and stays off in preview
+ok 34 - webhook dispatch is independently configured and stays off in preview
+  ---
+  duration_ms: 0.191944
+  type: 'test'
+  ...
+# Subtest: strict webhook settings reject client tenant IDs and unsupported events
+ok 35 - strict webhook settings reject client tenant IDs and unsupported events
+  ---
+  duration_ms: 4.752186
+  type: 'test'
+  ...
+# Subtest: background worker handles store failure outside requests and stops scheduling after close
+ok 36 - background worker handles store failure outside requests and stops scheduling after close
+  ---
+  duration_ms: 55.798229
+  type: 'test'
+  ...
+# Subtest: real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+ok 37 - real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+  ---
+  duration_ms: 53.440482
+  type: 'test'
+  ...
+# Subtest: real authenticated settings expose no keys on GET and cannot mutate another tenant
+ok 38 - real authenticated settings expose no keys on GET and cannot mutate another tenant
+  ---
+  duration_ms: 38.552479
+  type: 'test'
+  ...
+# Subtest: owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+ok 39 - owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+  ---
+  duration_ms: 15.856299
+  type: 'test'
+  ...
+# Subtest: real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+ok 40 - real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+  ---
+  duration_ms: 67.081338
+  type: 'test'
+  ...
+# Subtest: event selection changes preserve the signing secret while invalidating older queue entries
+ok 41 - event selection changes preserve the signing secret while invalidating older queue entries
+  ---
+  duration_ms: 5.655986
+  type: 'test'
+  ...
+# Subtest: platform disabled during DNS pauses the leased event without an external POST
+ok 42 - platform disabled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 5.079371
+  type: 'test'
+  ...
+# Subtest: account canceled during DNS pauses the leased event without an external POST
+ok 43 - account canceled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 5.053472
+  type: 'test'
+  ...
+# Subtest: migration remains idempotent and does not replay records created before webhook registration
+ok 44 - migration remains idempotent and does not replay records created before webhook registration
+  ---
+  duration_ms: 7.220636
+  type: 'test'
+  ...
+# Subtest: a sustained backlog from the first worker batch cannot starve later owners
+ok 45 - a sustained backlog from the first worker batch cannot starve later owners
+  ---
+  duration_ms: 24.817976
+  type: 'test'
+  ...
+# Subtest: stopping the webhook worker waits for an active signed delivery and its database completion
+ok 46 - stopping the webhook worker waits for an active signed delivery and its database completion
+  ---
+  duration_ms: 71.763349
+  type: 'test'
+  ...
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 47 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 6.284597
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 48 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 3.088529
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 49 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 2.361371
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 50 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 3.223469
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 51 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 3.252963
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 52 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 3.404468
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+not ok 53 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 33.465667
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/voicePersistence.spec.mjs:224:1'
+  failureType: 'testCodeFailure'
+  error: 'The voice action could not be completed safely.'
+  code: 'TOOL_EXECUTION_FAILED'
+  name: 'VoiceToolDispatchError'
+  stack: |-
+    fail (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/server/src/voice/toolDispatcher.js:15:38)
+    file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/server/src/voice/toolDispatcher.js:107:183
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Object.run (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/server/src/voice/voicePersistence.js:381:45)
+    async file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/server/src/voice/toolDispatcher.js:115:31
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 54 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 5.032942
+  type: 'test'
+  ...
+# Subtest: Twilio validation fails closed without the official validator dependency
+ok 55 - Twilio validation fails closed without the official validator dependency
+  ---
+  duration_ms: 1.03167
+  type: 'test'
+  ...
+# Subtest: Twilio validation rejects missing and forged signatures
+ok 56 - Twilio validation rejects missing and forged signatures
+  ---
+  duration_ms: 0.678135
+  type: 'test'
+  ...
+# Subtest: Twilio validation uses only the configured public origin
+ok 57 - Twilio validation uses only the configured public origin
+  ---
+  duration_ms: 0.773426
+  type: 'test'
+  ...
+# Subtest: tenant resolution is by normalized To only and rejects cross-tenant selectors
+ok 58 - tenant resolution is by normalized To only and rejects cross-tenant selectors
+  ---
+  duration_ms: 0.539129
+  type: 'test'
+  ...
+# Subtest: tenant resolution fails closed for unknown and duplicate destinations
+ok 59 - tenant resolution fails closed for unknown and duplicate destinations
+  ---
+  duration_ms: 0.251192
+  type: 'test'
+  ...
+# Subtest: session nonces store only a hash, bind every call identity field, and are one-use
+ok 60 - session nonces store only a hash, bind every call identity field, and are one-use
+  ---
+  duration_ms: 1.69922
+  type: 'test'
+  ...
+# Subtest: session nonces reject expiration and every binding mismatch
+ok 61 - session nonces reject expiration and every binding mismatch
+  ---
+  duration_ms: 0.783422
+  type: 'test'
+  ...
+# Subtest: tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+ok 62 - tool schemas are closed and reject owner, rate, raw datetime, and raw identifier fields
+  ---
+  duration_ms: 0.881126
+  type: 'test'
+  ...
+# Subtest: quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+ok 63 - quote release requires an affirmative recap confirmation and availability requires an address-bound lead
+  ---
+  duration_ms: 1.117577
+  type: 'test'
+  ...
+# Subtest: dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+ok 64 - dispatcher passes immutable server tenant context and never accepts model tenant identifiers
+  ---
+  duration_ms: 1.191336
+  type: 'test'
+  ...
+# Subtest: dispatcher rejects handler results containing raw rates instead of exposing them
+ok 65 - dispatcher rejects handler results containing raw rates instead of exposing them
+  ---
+  duration_ms: 1.008335
+  type: 'test'
+  ...
+# Subtest: mutations are idempotent and conflicting reuse of a tool call id is rejected
+ok 66 - mutations are idempotent and conflicting reuse of a tool call id is rejected
+  ---
+  duration_ms: 0.911612
+  type: 'test'
+  ...
+# Subtest: mutating tool calls execute sequentially within a call
+ok 67 - mutating tool calls execute sequentially within a call
+  ---
+  duration_ms: 0.514422
+  type: 'test'
+  ...
+1..67
+# tests 78
+# suites 0
+# pass 73
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2548.037672

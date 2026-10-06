@@ -1,8 +1,9 @@
 import OwnerIntegrations from './ownerIntegrations.jsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
-import { api, go } from './api.js';
+import { api, go, getSessionKey } from './api.js';
+import {startLeadCaptureFeed} from './leadCaptureFeed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
 
@@ -42,14 +43,27 @@ export default function Dashboard() {
   const [state, setState] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [feedError,setFeedError]=useState(null);
+  const feed=useRef(null),generation=useRef(0),mounted=useRef(false);
 
   async function load() {
+    const version=++generation.current,identity=getSessionKey();
+    feed.current?.stop();feed.current=null;
     const [dash, onboarding] = await Promise.all([api('/api/dashboard'), api('/api/onboarding/state')]);
+    if(!mounted.current||version!==generation.current||identity!==getSessionKey())return;
     setDashboard(dash);
     setState(onboarding);
+    setFeedError(null);
+    feed.current=startLeadCaptureFeed({read:()=>api('/api/leads/activity'),session:getSessionKey,
+      onData:activity=>{if(mounted.current&&version===generation.current){setDashboard(current=>current?{...current,callActivity:activity}:current);setFeedError(null);}},
+      onError:nextError=>{if(mounted.current&&version===generation.current)setFeedError(nextError);},
+      onSessionChange:()=>{generation.current++;setDashboard(null);setState(null);setError(new Error('The signed-in account changed. Reload the dashboard.'));}});
   }
 
-  useEffect(() => { load().catch(setError); }, []);
+  useEffect(() => { mounted.current=true;load().catch(nextError=>{if(mounted.current)setError(nextError);});
+    return()=>{mounted.current=false;generation.current++;feed.current?.stop();};}, []);
+
+  async function refresh(){setBusy(true);try{await load();}catch(nextError){if(mounted.current)setFeedError(nextError);}finally{if(mounted.current)setBusy(false);}}
 
   async function toggle(enabled) {
     setBusy(true); setError(null);
@@ -113,6 +127,8 @@ export default function Dashboard() {
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator}>
       <main className="dashboard-page">
+        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
         {/* HERO: operator state. Reference top-bar master toggle. */}
         <section className={`operator-hero${view.live ? ' live' : ''}${view.simulated ? ' simulated' : ''}`}>

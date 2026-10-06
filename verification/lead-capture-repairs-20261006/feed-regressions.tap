@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: D30 feed: one bounded timer/read, delayed reads show stale state without overlapping requests
+ok 1 - D30 feed: one bounded timer/read, delayed reads show stale state without overlapping requests
+  ---
+  duration_ms: 2.000977
+  type: 'test'
+  ...
+# Subtest: D30 feed: repeated failures back off and pause after three attempts; explicit restart can recover
+ok 2 - D30 feed: repeated failures back off and pause after three attempts; explicit restart can recover
+  ---
+  duration_ms: 0.933965
+  type: 'test'
+  ...
+# Subtest: D30 feed: hidden tabs pause, visible events do not create duplicate timers or reads
+ok 3 - D30 feed: hidden tabs pause, visible events do not create duplicate timers or reads
+  ---
+  duration_ms: 0.527221
+  type: 'test'
+  ...
+# Subtest: D30 feed: changed tenant/session discards an old response and clears the snapshot once
+ok 4 - D30 feed: changed tenant/session discards an old response and clears the snapshot once
+  ---
+  duration_ms: 0.650645
+  type: 'test'
+  ...
+# Subtest: D30 feed: unmount cleans timer/subscriptions and ignores both late success and errors
+ok 5 - D30 feed: unmount cleans timer/subscriptions and ignores both late success and errors
+  ---
+  duration_ms: 0.656213
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 96.99009

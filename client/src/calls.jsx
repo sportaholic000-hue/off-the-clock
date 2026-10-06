@@ -10,6 +10,7 @@ export function CallFeed({calls}) {
     <span className="feed-copy"><span className="mono feed-time">{call.createdAt} · {call.duration===null?'Duration not recorded':call.duration+' sec'}</span>
     <span className="feed-summary">{call.summaryText||call.callerNumber||'Call'}</span></span>
     <StatusChip status={call.outcome||call.status||'Not recorded'}/>
+    {call.urgency&&<span className="mono">Urgency: {text(call.urgency)}</span>}
   </button>)}</div>;
 }
 
@@ -21,6 +22,7 @@ export function CallDetail({call}) {
       <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{call.failureCode}</dd></>}
       {!!call.spamFiltered&&<><dt>Spam</dt><dd>Filtered</dd></>}</dl>
     <h3>Summary</h3><p>{call.summaryText||'No summary recorded.'}</p>
+    {call.urgency&&<Notice title="Urgency">Recorded on this call. Owner notification has not been confirmed.</Notice>}
     <h3>Transcript</h3>{call.transcript.length?<ol>{call.transcript.map((turn,index)=><li key={index}><strong>{text(turn.role)}: </strong><span style={{whiteSpace:'pre-wrap'}}>{turn.text}</span>{turn.interrupted?<span> · interrupted</span>:null}</li>)}</ol>:<Notice>{call.transcriptAvailable?'No transcript recorded.':'Stored transcript could not be read.'}</Notice>}
     <h3>Quotes</h3>{!call.quotes.length&&<Notice>No saved quote for this call.</Notice>}
     {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {quote.createdAt}{quote.tierChosen?' · '+quote.tierChosen:''}</p><QuoteResult result={quote.result}/>
@@ -32,7 +34,8 @@ export function CallDetail({call}) {
     {call.leads.map(lead=><section className="editor-section" key={lead.id}><h3>{lead.customerName||lead.describedService||'Lead'}</h3><p>{lead.status} · {lead.type}</p>
       {lead.reviewReason&&<Notice title="Request saved for review">{lead.reviewReason}</Notice>}
       <dl><dt>Customer</dt><dd>{text(lead.customerName||lead.contact?.name)}</dd><dt>Phone</dt><dd>{text(lead.callerNumber)}</dd><dt>Requested work</dt><dd>{text(lead.describedService)}</dd></dl>
-      <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({contact:lead.contact,location:lead.location,measurementsAndScope:lead.customerInputs,unknowns:lead.explicitUnknowns,urgency:lead.urgency,context:lead.context},null,2)}</pre>
+      <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({contact:lead.contact,location:lead.location,notes:lead.notes,measurementsAndScope:lead.customerInputs,unknowns:lead.explicitUnknowns,urgency:lead.urgency,context:lead.context,followUpSource:lead.followUpSource,submittedContact:lead.submittedContact,submittedLocation:lead.submittedLocation},null,2)}</pre>
+      {!!lead.captureHistory?.length&&<details><summary>Contact and request history</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(lead.captureHistory,null,2)}</pre></details>}
       <Button variant="secondary" onClick={()=>go('/leads?record='+encodeURIComponent(lead.id))}>Leads</Button>
       {lead.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(lead.internal,null,2)}</pre></details>}
     </section>)}
@@ -42,7 +45,7 @@ export function CallDetail({call}) {
       <dt>Start</dt><dd>{text(booking.startAtUtc||booking.datetime)}</dd><dt>End</dt><dd>{text(booking.endAtUtc)}</dd><dt>Timezone</dt><dd>{text(booking.timezone)}</dd>
       <dt>Booking mode</dt><dd>{text(booking.bookingMode)}</dd><dt>Tier chosen</dt><dd>{text(booking.tierChosen)}</dd>
       <dt>Customer</dt><dd>{text(booking.customer)}</dd><dt>Project location</dt><dd>{text(booking.location)}</dd></dl></section>)}
-    {call.bookingRequests.map(request=><section className="editor-section" key={request.id}><StatusChip status={request.status}/><p>{text(request.preferredWindows)}</p>{request.note&&<p>{request.note}</p>}</section>)}
+    {call.bookingRequests.map(request=><section className="editor-section" key={request.id}><StatusChip status={request.status}/><p>{text(request.preferredWindows)}</p>{request.note&&<p>{request.note}</p>}<dl><dt>Customer</dt><dd>{text(request.customer)}</dd><dt>Project location</dt><dd>{text(request.location)}</dd></dl></section>)}
     {(call.bookings.length>0||call.bookingRequests.length>0)&&<Button variant="secondary" onClick={()=>go('/calendar')}>Calendar</Button>}
   </section>;
 }

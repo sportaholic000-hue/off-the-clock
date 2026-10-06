@@ -1,4 +1,5 @@
-import {storedObject,storedQuoteView,storedLeadView} from './ownerRecordViews.js';
+import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
+import {leadFollowUpView,quoteFollowUpView} from './leadFollowUp.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {
@@ -35,12 +36,9 @@ export function createOwnerCallService({ownerQuery}) {
       if(stored.length)turns=stored;
     }
     const quotes=ownerQuery('SELECT * FROM quotes WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(quote=>storedQuoteView(quote,role));
+      .map(quote=>quoteFollowUpView(ownerQuery,quote,role));
     const leads=ownerQuery('SELECT * FROM leads WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(lead=>{
-        const submission=ownerQuery('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,requestId LIMIT 1').get(ownerId,lead.id);
-        return storedLeadView(lead,role,submission?storedObject(submission.originalSubmissionJson):undefined);
-      });
+      .map(lead=>leadFollowUpView(ownerQuery,lead,role));
     // Both the source and the linked record must belong to this owner. A bad
     // cross-tenant foreign key must never reveal the other tenant's booking.
     const source=`((i.sourceType='quote' AND EXISTS(SELECT 1 FROM quotes q WHERE q.ownerId=? AND q.id=i.sourceId AND q.callId=?))
@@ -51,10 +49,11 @@ export function createOwnerCallService({ownerQuery}) {
       WHERE a.ownerId=? AND (EXISTS(SELECT 1 FROM quotes q WHERE q.ownerId=? AND q.id=a.quoteId AND q.callId=?)
         OR ${source}) ORDER BY a.createdAt,a.id`).all(ownerId,ownerId,id,ownerId,id,ownerId,id)
       .map(({customerJson,locationJson,...booking})=>({...booking,customer:storedObject(customerJson),location:storedObject(locationJson)}));
-    const bookingRequests=ownerQuery(`SELECT p.id,p.status,p.preferredWindowsJson,p.note,p.createdAt
+    const bookingRequests=ownerQuery(`SELECT p.id,p.status,p.preferredWindowsJson,p.note,p.createdAt,p.customerJson,p.locationJson
       FROM bookingPreferences p JOIN bookingIntents i ON i.id=p.intentId AND i.ownerId=p.ownerId
       WHERE p.ownerId=? AND ${source} ORDER BY p.createdAt,p.id`).all(ownerId,ownerId,id,ownerId,id)
-      .map(({preferredWindowsJson,...request})=>({...request,preferredWindows:transcriptWindows(preferredWindowsJson)}));
+      .map(({preferredWindowsJson,customerJson,locationJson,...request})=>({...request,preferredWindows:transcriptWindows(preferredWindowsJson),
+        customer:followUpContact(storedObject(customerJson)),location:followUpLocation(storedObject(locationJson))}));
     const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
     return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests};

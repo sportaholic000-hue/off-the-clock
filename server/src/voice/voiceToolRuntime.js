@@ -1,3 +1,4 @@
+import {saveVoiceInquiry} from '../leadCapture.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
@@ -552,63 +553,27 @@ export function createVoiceToolRuntime({
     });
   }
 
+  function saveInquiry(args,{leadId,key,type,status,updates={}}={}) {
+    const call=callRow();
+    if(args.leadHandle)leadId=loadLead(resolve(args.leadHandle,'lead')).row.id;
+    const number=args.inquiryNumber??1;
+    const fields={...updates};
+    for(const field of ['name','email','notes','description'])if(args[field]!==undefined)fields[field]=args[field].trim();
+    if(fields.email!==undefined){fields.email=fields.email.toLowerCase();if(!EMAIL.test(fields.email))throw runtimeError('INVALID_EMAIL');}
+    if(args.address!==undefined)fields.address=Object.fromEntries(Object.entries(args.address).map(([name,value])=>[name,['region','postalCode','country'].includes(name)?value.trim().toUpperCase():value.trim()]));
+    return saveVoiceInquiry({database,context,callId:call.id,key:key||'capture:'+number,leadId,
+      customerId:stableUuid(secret,'voice-customer',context.ownerId+'\0'+context.from),
+      updates:fields,createdAt:instant().toISOString(),type,status,legacyDefault:!key&&number===1});
+  }
+
   async function captureLead(input) {
-    const args = invocation(input);
-    const name = typeof args.name === 'string' && args.name.trim() ? args.name.trim() : null;
-    const email = typeof args.email === 'string' && args.email.trim()
-      ? args.email.trim().toLowerCase()
-      : null;
-    if (email && !EMAIL.test(email)) throw runtimeError('INVALID_EMAIL');
-    const address = record(args.address) ? {
-      line1: typeof args.address.line1 === 'string' ? args.address.line1.trim() : '',
-      line2: typeof args.address.line2 === 'string' ? args.address.line2.trim() : '',
-      city: typeof args.address.city === 'string' ? args.address.city.trim() : '',
-      region: typeof args.address.region === 'string' ? args.address.region.trim().toUpperCase() : '',
-      postalCode: typeof args.address.postalCode === 'string' ? args.address.postalCode.trim().toUpperCase() : '',
-      country: typeof args.address.country === 'string' ? args.address.country.trim().toUpperCase() : ''
-    } : null;
-    const contact = { name, email, phone: context.from };
-    const customerId = stableUuid(secret, 'voice-customer', context.ownerId + '\0' + context.from);
-    const leadIdentity = json({ callSid: context.callSid, contact, address });
-    const leadId = stableUuid(secret, 'voice-lead', leadIdentity);
-    const details = {
-      voiceVersion: 1,
-      customerId,
-      contact,
-      address,
-      notes: null
-    };
-    const createdAt = instant().toISOString();
-    const call = callRow();
-
-    immediate(database, () => {
-      database.prepare('INSERT INTO customers (id, ownerId, phoneE164, name, address, notesJson, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET name = COALESCE(excluded.name, customers.name), address = COALESCE(excluded.address, customers.address), notesJson = excluded.notesJson').run(
-        customerId, context.ownerId, context.from, name,
-        address ? JSON.stringify(address) : null,
-        JSON.stringify({ voiceVersion: 1, email }), createdAt
-      );
-      database.prepare('INSERT INTO leads (id, ownerId, callId, customerName, callerNumber, describedService, collectedInputsJson, type, status, createdAt) VALUES (?, ?, ?, ?, ?, NULL, ?, \'voice_lead\', \'CAPTURED\', ?) ON CONFLICT(id) DO UPDATE SET customerName = excluded.customerName, collectedInputsJson = excluded.collectedInputsJson, status = excluded.status').run(
-        leadId, context.ownerId, call.id, name, context.from, JSON.stringify(details), createdAt
-      );
-    });
-
-    const stored = database.prepare('SELECT collectedInputsJson, callerNumber FROM leads WHERE id = ? AND ownerId = ? AND callId = ?').get(
-      leadId, context.ownerId, call.id
-    );
-    const storedDetails = parseJson(stored?.collectedInputsJson);
-    if (!stored || stored.callerNumber !== context.from || !record(storedDetails) ||
-        storedDetails.customerId !== customerId || storedDetails.contact?.phone !== context.from) {
-      throw runtimeError('LEAD_PERSISTENCE_FAILED');
-    }
-    const leadHandle = issue('lead', 'lead:' + leadId, { leadId, customerId });
-    const hasAddress = completeAddress(address);
-    return {
-      status: hasAddress ? 'captured' : 'captured_address_required',
-      leadHandle,
-      message: hasAddress
-        ? 'Contact and service address saved.'
-        : 'Contact saved. A complete service address is required before checking availability.'
-    };
+    const args=invocation(input);
+    const saved=immediate(database,()=>saveInquiry(args));
+    const stored=loadLead({reference:{leadId:saved.row.id,customerId:saved.details.customerId}});
+    const leadHandle=issue('lead','lead:'+stored.row.id,{leadId:stored.row.id,customerId:stored.details.customerId});
+    const hasAddress=completeAddress(stored.details.address);
+    return {status:hasAddress?'captured':'captured_address_required',leadHandle,
+      message:hasAddress?'Contact and service address saved.':'Contact saved. A complete service address is required before checking availability.'};
   }
 
   async function checkAvailability(input) {
@@ -823,48 +788,31 @@ export function createVoiceToolRuntime({
   }
 
   async function logQuoteRequest(input) {
-    const args = invocation(input);
-    let lead = null;
-    if (args.leadHandle) {
-      const resolved = resolve(args.leadHandle, 'lead');
-      lead = loadLead(resolved);
-    }
-    const description = typeof args.description === 'string' ? args.description.trim() : '';
-    if (!description) throw runtimeError('QUOTE_REQUEST_DESCRIPTION_REQUIRED');
-    const identity = json({
-      callSid: context.callSid,
-      description,
-      leadId: lead?.row?.id || null
+    const args=invocation(input);
+    const supplied=args.leadHandle?loadLead(resolve(args.leadHandle,'lead')):null;
+    const description=typeof args.description==='string'?args.description.trim():'';
+    if(!description)throw runtimeError('QUOTE_REQUEST_DESCRIPTION_REQUIRED');
+    const identity=json({callSid:context.callSid,description,leadId:supplied?.row.id||null});
+    const requestId=stableUuid(secret,'voice-quote-request-log',identity);
+    const eventId=stableUuid(secret,'voice-quote-request-event',identity);
+    const call=callRow(),createdAt=instant().toISOString();
+    let lead;
+    immediate(database,()=>{
+      // Separate described requests have separate identities; exact retries
+      // recover the same standalone inquiry even after a process restart.
+      lead=saveInquiry({}, {leadId:supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
+        updates:{description:supplied?.row.describedService||description}});
+      database.prepare('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
+      writeOutbox({id:eventId,eventType:'voice.quote_request_logged',aggregateId:requestId,
+        payload:{callSid:context.callSid,description,callerNumber:context.from,leadId:lead.row.id,contact:lead.details.contact}});
+      // Enrich only an unattempted snapshot inside the producer transaction.
+      // Delivered historical events and quote/submission receipts stay intact.
+      if(database.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='webhookDeliveries'").get())
+        database.prepare("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING'").run(
+          JSON.stringify(lead.details.contact),lead.row.id,context.ownerId,requestId);
     });
-    const requestId = stableUuid(secret, 'voice-quote-request-log', identity);
-    const eventId = stableUuid(secret, 'voice-quote-request-event', identity);
-    const call = callRow();
-    const createdAt = instant().toISOString();
-    immediate(database, () => {
-      database.prepare('INSERT OR IGNORE INTO quoteRequests (id, ownerId, callId, describedService, estimatedValue, createdAt) VALUES (?, ?, ?, ?, NULL, ?)').run(
-        requestId, context.ownerId, call.id, description, createdAt
-      );
-      writeOutbox({
-        id: eventId,
-        eventType: 'voice.quote_request_logged',
-        aggregateId: requestId,
-        payload: {
-          callSid: context.callSid,
-          description,
-          callerNumber: context.from,
-          leadId: lead?.row?.id || null
-        }
-      });
-    });
-    const requestHandle = issue('quote_request', 'quote-request:' + requestId, {
-      requestId,
-      leadId: lead?.row?.id || null
-    });
-    return {
-      status: 'logged',
-      requestHandle,
-      message: 'The quote request was saved for follow-up.'
-    };
+    const requestHandle=issue('quote_request','quote-request:'+requestId,{requestId,leadId:lead.row.id});
+    return {status:'logged',requestHandle,message:'The quote request was saved for follow-up.'};
   }
 
   async function sendSms(input) {
@@ -949,12 +897,14 @@ export function createVoiceToolRuntime({
     const args = invocation(input);
     const reason = typeof args.reason === 'string' ? args.reason.trim() : '';
     const summary = typeof args.summary === 'string' ? args.summary.trim() : '';
-    if (!reason || !summary) throw runtimeError('URGENT_DETAILS_REQUIRED');
+    if (!['active_leak','flooding','safety','complaint'].includes(reason)) throw runtimeError('URGENT_DETAILS_REQUIRED');
     const identity = json({ callSid: context.callSid, reason, summary });
     const urgentId = stableUuid(secret, 'voice-urgent-event', identity);
     const outboxId = stableUuid(secret, 'voice-urgent-outbox', identity);
     const createdAt = instant().toISOString();
     immediate(database, () => {
+      const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{}, {updates:{urgency:{reason,summary:summary||null,recordedAt:createdAt,source:'voice'}}});
+      database.prepare('UPDATE calls SET urgency=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?').run(reason,createdAt,context.ownerId,lead.row.callId,context.callSid);
       database.prepare('INSERT OR IGNORE INTO events (id, ownerId, eventType, payloadJson, createdAt) VALUES (?, ?, \'voice.urgent_flagged\', ?, ?)').run(
         urgentId, context.ownerId,
         JSON.stringify({
@@ -981,7 +931,7 @@ export function createVoiceToolRuntime({
     return {
       status: 'flagged',
       urgentHandle,
-      message: 'The urgent request was flagged for the business.'
+      message: 'Urgency saved for the business. Owner notification has not been confirmed.'
     };
   }
 
