@@ -43,7 +43,7 @@
         "1 existing layer"
       ],
       "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. No tax added. Prices are in Canadian dollars (CAD).",
-      "quoteId": "098a3d06-d9e7-4645-a8d3-f5c1e5d39111",
+      "quoteId": "dd01a2d1-c113-455c-aaa6-62649b0cdb08",
       "priceUnit": null,
       "taxTreatment": "No tax added.",
       "currency": "CAD",
@@ -320,7 +320,7 @@
       "missingOwnerLabels": [
         "Material price per square foot by flooring type. · Tile"
       ],
-      "serviceId": "e5819018-7171-4124-93de-2b4d91bd712f",
+      "serviceId": "3cfe5d38-5b1e-4d7d-9172-1cab4b739a72",
       "applicationIssues": [
         "Confirm this exact saved configuration before enabling customer quotes."
       ],
@@ -347,8 +347,8 @@
     "preview": {
       "resultType": "ESTIMATE_REQUIRES_REVIEW",
       "engineVersion": "quote-engine-vnext-date-context-20261006-v7",
-      "serviceId": "e5819018-7171-4124-93de-2b4d91bd712f",
-      "quoteId": "afbbfa52-99b1-4d2c-9546-0a78ff3ccbfa",
+      "serviceId": "3cfe5d38-5b1e-4d7d-9172-1cab4b739a72",
+      "quoteId": "d09e6cee-9c63-4269-967e-a7f9f9960ad9",
       "serviceType": "FLOORING_INSTALL",
       "submittedCustomerInputs": {
         "sqft": 200,
@@ -504,8 +504,8 @@
       "missingOwnerLabels": [
         "Material price per square foot by flooring type. · Tile"
       ],
-      "bookRevision": "07e4fc3f7c2f333e4e9a87325fbf6c701c16d96bed41772dbda8c02b1c370547",
-      "selectedServiceId": "e5819018-7171-4124-93de-2b4d91bd712f"
+      "bookRevision": "a9f5b12ad755dc5fa51b0bbce780cf78a1e53683b99798d66f487697dac6347b",
+      "selectedServiceId": "3cfe5d38-5b1e-4d7d-9172-1cab4b739a72"
     }
   },
   "money": {
@@ -519,7 +519,7 @@
         "weekly service"
       ],
       "disclaimer": "This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Price is per visit. Includes applicable tax. Prices are in Canadian dollars (CAD).",
-      "quoteId": "6122e94b-0889-4218-8aaf-437ccf79a88a",
+      "quoteId": "2ac35427-a293-4dec-96df-c2b35905879a",
       "priceUnit": "per visit",
       "taxTreatment": "Includes applicable tax.",
       "currency": "CAD",
@@ -583,7 +583,7 @@
     },
     "customerHTML": "<section class=\"editor-section\"><h2>Estimate</h2><h3>[SYNTHETIC] LANDSCAPING_MOWING</h3><dl><dt>Measured mowable lawn area</dt><dd>5000 square feet</dd><dt>Lawn area method</dt><dd>Measured area</dd><dt>Service frequency</dt><dd>Weekly</dd><dt>Grass condition</dt><dd>Regularly maintained</dd><dt>Clipping bagging selected</dt><dd>No</dd><dt>Lawn edging selected</dt><dd>No</dd></dl><article><strong>$172.50 per visit</strong><p class=\"quote-tax-treatment\">Includes applicable tax.</p><ul><li>5000 measured mowable square feet</li><li>weekly service</li></ul><p>This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></article><p>This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.</p><section aria-label=\"Original submitted details\"><h3>Details shared with the business</h3><dl><dt>Requested work</dt><dd>[SYNTHETIC] LANDSCAPING_MOWING</dd><dt>Urgency</dt><dd>Not supplied</dd></dl></section></section>",
     "recordsHTML": "<section class=\"editor-section\"><h2></h2><p> · </p><section class=\"editor-section\"><h2>Estimate</h2><h3>[SYNTHETIC] LANDSCAPING_MOWING</h3><dl><dt>Measured mowable lawn area</dt><dd>5000 square feet</dd><dt>Lawn area method</dt><dd>Measured area</dd><dt>Service frequency</dt><dd>Weekly</dd><dt>Grass condition</dt><dd>Regularly maintained</dd><dt>Clipping bagging selected</dt><dd>No</dd><dt>Lawn edging selected</dt><dd>No</dd></dl><article><strong>$172.50 per visit</strong><p class=\"quote-tax-treatment\">Includes applicable tax.</p><ul><li>5000 measured mowable square feet</li><li>weekly service</li></ul><p>This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></article><p>This estimate covers only the selected service and job details listed here. Any additional work described in your submitted details needs a separate on-site estimate from the business owner.</p><section aria-label=\"Original submitted details\"><h3>Details shared with the business</h3><dl><dt>Requested work</dt><dd>[SYNTHETIC] LANDSCAPING_MOWING</dd><dt>Urgency</dt><dd>Not supplied</dd></dl></section></section> </section>",
-    "previewHTML": "<aside class=\"preview-column\"><section class=\"quote-preview ready\"><div class=\"quote-preview-head\"><span class=\"quote-preview-eyebrow\"><span class=\"live-dot\" aria-hidden=\"true\"></span><span class=\"eyebrow\">What your customer hears</span></span><span class=\"mono quote-preview-note\">UPDATES AS YOU TYPE</span></div><p class=\"quote-preview-sub\">This is what the estimate will sound like on a call. Nothing saves until you save.</p><div class=\"quote-range\"><div class=\"mono quote-range-label\">RANGE YOUR CUSTOMER HEARS</div><div class=\"quote-range-values\"><span class=\"quote-low\">$172.50</span><span class=\"quote-price-unit\">per visit</span></div><p class=\"quote-tax-treatment\">Includes applicable tax.</p></div><div class=\"quote-drivers\"><span class=\"mono quote-drivers-label\">WHAT GOES INTO THIS ESTIMATE</span><ul class=\"quote-driver-list\"><li>5000 measured mowable square feet</li><li>weekly service</li></ul><div class=\"quote-midpoint-row\"><span>Midpoint estimate</span><span class=\"mono quote-midpoint-value\">$172.50 per visit</span></div></div><p class=\"quote-disclaimer\">This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></section></aside>",
+    "previewHTML": "<aside class=\"preview-column\"><section class=\"quote-preview ready\"><div class=\"quote-preview-head\"><span class=\"quote-preview-eyebrow\"><span class=\"live-dot\" aria-hidden=\"true\"></span><span class=\"eyebrow\">What your customer hears</span></span><span class=\"mono quote-preview-note\">UPDATES AS YOU TYPE</span></div><p class=\"quote-preview-sub\">This is what the estimate will sound like on a call. Nothing saves until you save.</p><div class=\"quote-range\"><div class=\"mono quote-range-label\">RANGE YOUR CUSTOMER HEARS</div><div class=\"quote-range-values\"><span class=\"quote-low\">$172.50</span><span class=\"quote-price-unit\">per visit</span></div><p class=\"quote-tax-treatment\">Includes applicable tax.</p></div><div class=\"quote-drivers\"><span class=\"mono quote-drivers-label\">WHAT GOES INTO THIS ESTIMATE</span><ul class=\"quote-driver-list\"><li>5000 measured mowable square feet</li><li>weekly service</li></ul></div><p class=\"quote-disclaimer\">This preliminary estimate is based on the measured project details provided and covers the described scope only. Final pricing is confirmed after review and, when needed, in-person verification. Additional scope, unforeseen conditions, or changes to project details may affect the final price. Prices are in Canadian dollars (CAD).</p></section></aside>",
     "phone": "$172.50 CAD per visit. Includes applicable tax. This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it. The full written estimate retains the scope qualifications and allowances for each option."
   }
 }

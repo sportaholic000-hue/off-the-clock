@@ -1,3 +1,35 @@
+# October 6 quote display defects — hosted gates passed
+
+Branch: `fix/quote-display-defects-20261006`, based on verified
+`6e6cd5b10e0558477cfe32d255a6ad58907988c2` from
+`codex/quote-reaudit-fixes-20261006`.
+Tested source/test SHA: **`4ac36b44bf27c3e2a67d39fde86c24f0a6c44021`**.
+
+All three requested display fixes are complete: human product choices with the
+phone path's exact name binding and explicit confirmation, production missing-price
+labels shared with the editor, and one shared money formatter for widget, owner
+records, preview and phone. Exact previews show one total; phone punctuation is
+correct. The engine and all pricing formulas remain unchanged.
+
+**24 new regressions** cover all 15 registered-product fields, typed-name edits,
+production labels, all four money surfaces and display boundaries. Expected
+amounts were written before reproduction: roofing $2,520.00 (display $2,520),
+minimum-bound taxed mowing $172.50.
+
+**Hosted cold verification:** [CI run 37525141520](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37525141520)
+passed `npm ci`, both production builds, strict quote **2,120/2,120** (98 files),
+full suite **2,498/2,498** (140 files), with **zero failures, skips, cancellations
+or TODOs**; production audit found zero vulnerabilities. The full count includes
+the quote tests. Separate focused phone regressions: 27/27.
+
+[Report and evidence](../verification/quote-display-defects-20261006/REPORT.md).
+[Prewritten expected amounts](QUOTE_DISPLAY_DEFECTS_20261006.md).
+Local Chromium cannot launch in this environment; incomplete local suite attempts
+are documented separately from the successful hosted cold gates. No subagents,
+main merge, deployment or live data. No application work remains in this scope.
+
+---
+
 # October 6 re-audit repairs — hosted gates passed
 
 Branch: `codex/quote-reaudit-fixes-20261006`, based on

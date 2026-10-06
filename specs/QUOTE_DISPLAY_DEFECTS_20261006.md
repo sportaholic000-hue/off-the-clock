@@ -25,8 +25,16 @@ from `codex/quote-reaudit-fixes-20261006`. Work branch:
 4. Display boundaries: 4621.5 becomes **$4,621.50**; 172.5–200 becomes
    **$172.50 – $200.00**; 2520–3000 becomes **$2,520 – $3,000**;
    0–0.5 becomes **$0.00 – $0.50**. In a group with a $172.50 option,
-   a $200 option displays **$200.00**. Equal $172.50 endpoints display once.
+   a $200 option displays **$200.00**. Equal $172.50 endpoints display once; the redundant midpoint row is hidden.
 
 These are display changes. No pricing formula, price-book values, approval,
 scope or trade-policy rules are changed. The shared formatter applies to
 quoted amounts, not owner unit rates that may legitimately have fractional cents.
+
+## Completed verification
+
+All three defects were reproduced before source edits. Hosted cold run
+37525141520 passed at `4ac36b44bf27c3e2a67d39fde86c24f0a6c44021`:
+2,120 quote tests and 2,498 full-suite tests, zero failures/skips. The 24 new
+regressions and full evidence are in
+`verification/quote-display-defects-20261006/REPORT.md`.
