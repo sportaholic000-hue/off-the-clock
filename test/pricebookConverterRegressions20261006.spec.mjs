@@ -5,6 +5,8 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {CLASS2_DEFINITIONS} from '../server/quote-engine-vnext/contracts.js';
 import {convertPricebookMoney,validatePricebookNumericDraft} from '../server/priceBookMoney.js';
 import {servicePricing} from '../client/src/pricebookEditing.js';
@@ -24,6 +26,28 @@ const bridge=await import('../server/src/quoteDoneBridge.js');
 const database=await import('../server/src/db.js');
 database.migrate();
 test.after(()=>{database.db.close();rmSync(directory,{recursive:true,force:true});});
+
+test('separate test processes recreate synthetic owners while each still refuses a lost saved book',()=>{
+  const owner='synthetic-repeat-'+randomUUID();
+  const script=`
+    import assert from 'node:assert/strict';
+    import {unlinkSync} from 'node:fs';
+    import {join} from 'node:path';
+    import {loadPricebook,savePricebook,pricebookDirectory} from './server/priceBookService.js';
+    const owner=process.env.OTC_REPEATED_SYNTHETIC_OWNER;
+    assert.deepEqual(loadPricebook(owner).services,[]);
+    savePricebook(owner,{services:[],defaults:{}});
+    unlinkSync(join(pricebookDirectory(),owner+'.json'));
+    assert.throws(()=>loadPricebook(owner),error=>error.code==='PRICEBOOK_UNREADABLE');
+  `;
+  for(let attempt=0;attempt<2;attempt++) {
+    const result=spawnSync(process.execPath,['--import','./test/pricebookTestEnv.mjs','--input-type=module','-e',script],{
+      cwd:fileURLToPath(new URL('../',import.meta.url)),encoding:'utf8',
+      env:{...process.env,DATABASE_PATH:'',OTC_PRICEBOOK_TEST_DATABASE:'',OTC_REPEATED_SYNTHETIC_OWNER:owner}
+    });
+    assert.equal(result.status,0,'attempt '+attempt+'\n'+result.stdout+'\n'+result.stderr);
+  }
+});
 
 test('every current Class 2 factor survives root, nested and tier money boundaries without scaling',()=>{
   for(const [serviceType,definitions] of Object.entries(CLASS2_DEFINITIONS)) {
