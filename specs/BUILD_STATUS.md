@@ -1,6 +1,7 @@
-# Voice lifecycle repair checkpoint — 2026-10-06
+# Voice lifecycle repairs — 2026-10-06
 
-Branch `fix/voice-lifecycle-20261006` is based on verified `eaadeca0856f1bd7fcade8685711a19aefd786d0`. D04/D06/D07/D08/D25–D28/D31/D32 and owner ruling P01 are implemented or independently verified, with synthetic fake-provider regressions. Focused lifecycle gate: 39/39; broad targeted gate: 273/273, no failures/skips. Cold install/build passed; local browser execution is blocked and the local full run has no final summary. Hosted cold gates are pending; this is not a release approval. See `verification/voice-lifecycle-20261006/REPORT.md`.
+Branch `fix/voice-lifecycle-20261006` starts at verified `eaadeca0856f1bd7fcade8685711a19aefd786d0`. D04/D06/D07/D08/D25–D28/D31/D32 and P01 are implemented or independently verified with synthetic fake providers. Final targeted gate: **325/325**, including **43 lifecycle scenarios**, zero failures/skips. First hosted cold gate [37542643635](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37542643635) passed **2,144 strict / 2,565 full tests**; the legacy-recovery follow-up run also passed. Final closing-transcript and owner-control follow-ups await their branch-head cold hosted run. Local Chromium startup remains environment-blocked. See `verification/voice-lifecycle-20261006/REPORT.md`. No merge/deployment performed.
+
 
 # October 6 approved-branch integration — hosted gates passed
 

@@ -10,6 +10,7 @@ import {operatorEligibility} from '../server/src/onboardingService.js';
 import {createBookingService} from '../server/src/bookingService.js';
 import {createGoogleCalendarAdapter} from '../server/src/googleCalendarAdapter.js';
 import {randomUUID} from 'node:crypto';
+import {voiceOperatorControl} from '../client/src/voiceOperatorControl.js';
 
 // Expectations written before execution: no prices are calculated here. Exactly
 // five active calls per owner; sixth captures a request. One call/session per
@@ -59,6 +60,17 @@ test('D26 caller text and unfinished model transcript survive immediate call cle
   const text=h.db.prepare('SELECT transcriptJson FROM calls WHERE callSid=?').get(c.params.CallSid).transcriptJson;
   assert.match(text,/Last request before hangup/);assert.match(text,/I have your gate request/);
 });
+test('D26 final provider text received during close is persisted before cleanup',async t=>{
+  const h=await harness(t,{closeText:'[SYNTHETIC] Last words received during provider close'}),c=await h.connect();await h.runtime.close();
+  const text=h.db.prepare('SELECT transcriptJson FROM calls WHERE callSid=?').get(c.params.CallSid).transcriptJson;assert.match(text,/Last words received during provider close/);assert.match(text,/Final provider transcript/);
+});
+test('D07 transient transcript write failure retries received words before ending the call',async t=>{
+  const h=await harness(t),c=await h.connect(),prepare=h.db.prepare;let failed=false;
+  h.db.prepare=function(sql){if(!failed&&sql.startsWith('UPDATE calls SET transcriptJson='))return {run(){failed=true;throw Error('Synthetic transient write fault');}};return prepare.call(this,sql);};
+  c.callback.onmessage({serverContent:{inputTranscription:{text:'[SYNTHETIC] Retry these caller words'}}});
+  await until(()=>h.db.prepare('SELECT status FROM calls WHERE callSid=?').get(c.params.CallSid).status==='FAILED');
+  assert.equal(failed,true);assert.match(h.db.prepare('SELECT transcriptJson FROM calls WHERE callSid=?').get(c.params.CallSid).transcriptJson,/Retry these caller words/);
+});
 test('D27 production startup recovers active call into one durable lead',async t=>{
   let c;const h=await harness(t,{beforeInstall:f=>{c=f.context();f.db.prepare('UPDATE calls SET transcriptJson=? WHERE callSid=?').run(JSON.stringify([{role:'user',text:'[SYNTHETIC] Restart must retain the gate request'}]),c.callSid);}});
   assert.equal(h.lead(c).length,1);const store=createVoiceSessionStore({database:h.db});store.recoverActiveCalls();
@@ -71,6 +83,12 @@ test('D27 legacy active rows with incomplete provider metadata still become owne
 test('D28 provisioned phone alone never claims eligibility when inbound runtime is disabled',()=>{
   const profile={phoneProvisioningStatus:'provisioned',twilioNumberSid:'PN'+'c'.repeat(32),twilioNumber:TO,knowledgeBase:{about:'Synthetic',hours:'Weekdays'}};
   assert.equal(operatorEligibility(profile,{env:{...env,VOICE_RUNTIME_ENABLED:'false'}}).eligible,false);
+});
+test('D28 both owner controls preserve the off switch while accurately showing unavailable routing',()=>{
+  const offline=voiceOperatorControl({configuredEnabled:true,enabled:false,eligible:false});
+  assert.equal(offline.live,false);assert.equal(offline.checked,true);assert.equal(offline.blocked,false);assert.equal(offline.title,'OPERATOR OFF');assert.doesNotMatch(offline.sub,/RING YOUR PHONE|COVERED/);
+  assert.equal(voiceOperatorControl({configuredEnabled:false,enabled:false,eligible:false}).blocked,true);
+  const live=voiceOperatorControl({configuredEnabled:true,enabled:true,eligible:true});assert.equal(live.live,true);assert.equal(live.title,'OPERATOR LIVE');
 });
 test('D31 duplicate signed inbound delivery replays one durable session and never reopens final calls',async t=>{
   const h=await harness(t),results=await Promise.all([h.incoming(),h.incoming(),h.incoming()]);assert.equal(new Set(results.map(r=>r.xml)).size,1);
@@ -181,8 +199,8 @@ function calendarFixture(t,{failChange=false}={}){
   h.db.prepare("UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?").run(JSON.stringify({serviceArea:{mode:'all',cities:[]}}),ownerId);
   h.db.prepare("INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'v1','UTC','google','synthetic-calendar',?,'[]',30,0,30,0,0,1,?)").run(ownerId,JSON.stringify(weekly),clock().toISOString());
   h.db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,'synthetic-service','v1','site_visit_first',30,1,?)").run(ownerId,clock().toISOString());
-  const calendar={listBusy:async()=>[],createEvent:async input=>({status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc}),changeEvent:async input=>{writes.push(input);if(failChange)throw Error('Synthetic ambiguous calendar failure');return {status:input.action==='cancel'?'CANCELLED':'CONFIRMED',startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
-  return {...h,context,ownerId,clock,writes,service:createBookingService({db:h.db,calendar,clock,slotTokenSecret:'synthetic-calendar-secret'.padEnd(64,'x')})};
+  let busy=[];const calendar={listBusy:async()=>busy,createEvent:async input=>({status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc}),changeEvent:async input=>{writes.push(input);if(failChange)throw Error('Synthetic ambiguous calendar failure');return {status:input.action==='cancel'?'CANCELLED':'CONFIRMED',startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
+  return {...h,context,ownerId,clock,writes,setBusy:rows=>{busy=rows;},service:createBookingService({db:h.db,calendar,clock,slotTokenSecret:'synthetic-calendar-secret'.padEnd(64,'x')})};
 }
 async function seedAppointment(h){
   const {db,context,ownerId,service,clock}=h,id=randomUUID();
@@ -207,6 +225,12 @@ test('D04 ambiguous calendar change preserves both reservations and request evid
   await assert.rejects(h.service.modifyAppointment({ownerId:h.ownerId,callSid:h.context.callSid,appointment:row,action:'reschedule',idempotencyKey:randomUUID(),slotId:slots.body.slots[0].slotId,intentId:slots.intentId}));
   assert.equal(h.db.prepare('SELECT startAtUtc FROM appointments WHERE id=?').get(row.id).startAtUtc,row.startAtUtc);
   assert.equal(h.db.prepare("SELECT COUNT(*) n FROM bookingHolds WHERE status='CONFIRMING' AND expiresAtUtc>'2099'").get().n,1);
+});
+test('D04 rescheduling rechecks remote availability before writing a stale offered slot',async t=>{
+  const h=calendarFixture(t),row=await seedAppointment(h),slots=await h.service.appointmentAvailability({ownerId:h.ownerId,appointmentId:row.id,callerNumber:FROM,filters:{fromDate:'2026-10-08',days:1}}),slot=slots.body.slots[0];
+  h.setBusy([{startAtUtc:slot.startUtc,endAtUtc:slot.endUtc}]);
+  await assert.rejects(h.service.modifyAppointment({ownerId:h.ownerId,callSid:h.context.callSid,appointment:row,action:'reschedule',idempotencyKey:randomUUID(),slotId:slot.slotId,intentId:slots.intentId}));
+  assert.equal(h.writes.length,0);assert.equal(h.db.prepare("SELECT COUNT(*) n FROM bookingHolds WHERE status IN ('HELD','CONFIRMING')").get().n,0);
 });
 for(const action of ['cancel','reschedule'])test('D04 Google calendar '+action+' adapter uses authenticated PATCH and validates response',async()=>{
   const requests=[],start='2026-10-08T10:00:00.000Z',end='2026-10-08T10:30:00.000Z';

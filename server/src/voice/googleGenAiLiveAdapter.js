@@ -29,10 +29,12 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     function close(){
       if(closePromise)return closePromise;closing=true;
       closePromise=Promise.resolve().then(async()=>{
-        await transcriptions;await flush(false);await queue;closed=true;
-        if(!provider)return;
-        try{await provider.sendRealtimeInput({audioStreamEnd:true});}catch{}
-        try{await provider.close();}catch{}
+        if(provider)try{await provider.sendRealtimeInput({audioStreamEnd:true});}catch{}
+        await transcriptions;await flush(false);await queue;
+        if(provider)try{await provider.close();}catch{}
+        // A provider may deliver its final transcription as it acknowledges
+        // close. Text remains accepted until that acknowledgement is drained.
+        await transcriptions;await flush(false);closed=true;
       });return closePromise;
     }
     function error(){
@@ -56,7 +58,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     }
     const enqueue=work=>{if(closing||closed)return;queue=queue.then(work).catch(error);};
     function acceptMessage(value){
-      if(closing||closed)return;
+      if(closed)return;
       try{jsonData(value);}catch{error();return;}
       // Text receipt has its own queue. A slow SMS/calendar/tool operation must
       // never prevent already received caller words from reaching persistence.

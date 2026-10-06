@@ -86,15 +86,22 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const opener=createGoogleGenAiLiveSessionOpener({client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
     let started=null;
+    const pendingTranscripts=[];
+    function flushTranscripts(){
+      if(!pendingTranscripts.length)return;
+      const row=database.prepare('SELECT transcriptJson FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
+      if(!row)throw Error('Call binding lost.');
+      const prior=JSON.parse(row.transcriptJson||'[]');prior.push(...pendingTranscripts.map(item=>item.transcript));
+      database.prepare('UPDATE calls SET transcriptJson=?,streamSid=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(JSON.stringify(prior),pendingTranscripts.at(-1).streamSid,iso(clock),session.callRecordId,context.ownerId,context.callSid);
+      pendingTranscripts.length=0;
+    }
     const bridge=createGeminiMediaBridge({
       openGeminiSession:async options=>{
         const opened=await opener(options);started=new Date(clock()).getTime();
         try{database.prepare("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
-        const row=database.prepare('SELECT transcriptJson FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
-        if(!row)throw Error('Call binding lost.');const prior=JSON.parse(row.transcriptJson||'[]');prior.push(transcript);
-        database.prepare('UPDATE calls SET transcriptJson=?,streamSid=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(JSON.stringify(prior),streamSid,iso(clock),session.callRecordId,context.ownerId,context.callSid);
+        pendingTranscripts.push({transcript,streamSid});flushTranscripts();
       },
       onToolCall:async({toolCall})=>{
         try{return await dispatcher.dispatch(toolCall);}catch{
@@ -104,7 +111,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
       },
       onSessionEnd:({outcome,streamSid})=>{
         const at=iso(clock),duration=started===null?0:Math.max(0,Math.ceil((new Date(clock()).getTime()-started)/1000));
-        try{store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration});}catch(error){onError('VOICE_FINAL_CAPTURE_FAILED');throw error;}
+        try{flushTranscripts();store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration});}catch(error){onError('VOICE_FINAL_CAPTURE_FAILED');throw error;}
       }
     });return bridge.startMediaSession(input);
   }

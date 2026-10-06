@@ -1,3 +1,4 @@
+import {voiceOperatorControl} from './voiceOperatorControl.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
@@ -446,7 +447,8 @@ function GoLiveStep({ state, refresh, back, next }) {
   const [busy, setBusy] = useState(false);
   const operator = state.operator;
   const simulated = operator.simulated === true;
-  const enabled = simulated ? operator.simulatedEnabled : operator.enabled;
+  const control=voiceOperatorControl(operator);
+  const enabled = simulated ? operator.simulatedEnabled : control.checked;
   const eligible = simulated ? operator.simulatedEligible : operator.eligible;
   const missing = simulated ? operator.simulatedMissing : operator.missing;
   async function toggle(enabled) {
@@ -460,18 +462,18 @@ function GoLiveStep({ state, refresh, back, next }) {
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 6 of 9" title={simulated ? 'Review the operator control' : 'Put your operator on the line'} description={simulated ? 'This control is simulated for visual review. No calls are answered or routed.' : 'Answering is ready before pricing. QuoteDone activates separately as each service gets its prices.'} />
-      <div className={!simulated && enabled ? 'go-live-control live' : 'go-live-control'}>
+      <div className={!simulated && control.live ? 'go-live-control live' : 'go-live-control'}>
         <Toggle
           checked={enabled}
           disabled={busy || (!eligible && !enabled)}
           onChange={toggle}
-          label={simulated ? (enabled ? 'SIMULATED ON' : 'SIMULATED OFF') : (enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF')}
-          sublabel={simulated ? 'VISUAL REVIEW ONLY · NO CALLS ARE ROUTED' : (enabled ? 'EVERY CALL FROM HERE ON IS COVERED' : 'CALLS RING YOUR PHONE')}
+          label={simulated ? (enabled ? 'SIMULATED ON' : 'SIMULATED OFF') : control.title}
+          sublabel={simulated ? 'VISUAL REVIEW ONLY · NO CALLS ARE ROUTED' : control.sub}
         />
       </div>
       {!eligible && <Notice tone="warning">Still needed: {missing.join(', ')}</Notice>}
       {simulated && <Notice tone="warning">SIMULATED FOR VISUAL REVIEW. Production phone eligibility is unchanged and no telephony action has occurred.</Notice>}
-      {!simulated && enabled && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
+      {!simulated && control.live && <Notice tone="success">OPERATOR LIVE — every call from here on is covered.</Notice>}
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={next} />
     </section>

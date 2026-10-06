@@ -1161,6 +1161,20 @@ export function createBookingService({
       // result is known. An ambiguous write must never free either slot.
       if(held)db.prepare("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z' WHERE ownerId=? AND id=?").run(ownerId,held.holdId);
     });
+    if(held){
+      const lock=db.prepare('SELECT * FROM bookingHolds WHERE ownerId=? AND id=?').get(ownerId,held.holdId);
+      try{
+        const busy=normalizeBusy(await calendar.listBusy({ownerId,calendarId:row.providerCalendarId,timeMinUtc:lock.lockStartAtUtc,timeMaxUtc:lock.lockEndAtUtc}));
+        if(busy.some(item=>intervalsOverlap(lock.lockStartAtUtc,lock.lockEndAtUtc,item.startAtUtc,item.endAtUtc)))throw bookingError('SLOT_UNAVAILABLE',409,'That replacement time is no longer available.');
+      }catch(error){
+        // No remote write has started, so both the change claim and new hold
+        // can safely be released. The existing appointment is untouched.
+        immediate(()=>{
+          db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(nowFrom(clock).toISOString(),ownerId,held.holdId);
+          db.prepare('UPDATE appointments SET providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?').run(row.providerEventStatus,nowFrom(clock).toISOString(),ownerId,row.id);
+        });throw error;
+      }
+    }
     const changed=await calendar.changeEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId,action,
       ...(held?{startAtUtc:held.slot.startUtc,endAtUtc:held.slot.endUtc}:{})});
     if(action==='cancel'?changed.status!=='CANCELLED':changed.status!=='CONFIRMED'||changed.startAtUtc!==held.slot.startUtc||changed.endAtUtc!==held.slot.endUtc)throw providerError();
