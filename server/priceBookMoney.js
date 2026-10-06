@@ -1,6 +1,6 @@
 import {fixedPriceField} from './pricePrecision.js';
 import {ALL_OWNER_FIELDS,MONEY_FIELD_NAMES,CLASS2_DEFAULTS_BY_SERVICE,getServiceMetadata} from './priceBookMetadata.js';
-import {allowedPricingFields} from './quote-engine-vnext/contracts.js';
+import {allowedPricingFields,CLASS2_DEFINITIONS} from './quote-engine-vnext/contracts.js';
 import {offeringMoneyKind,offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {mergePricingForValidationVNext} from './quote-engine-vnext/pricingMerge.js';
@@ -49,6 +49,22 @@ const NON_MONEY_PRICING_FIELDS = new Set([
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates']);
 const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square']);
+// Current product-price maps supplement the retained legacy field definitions.
+// The editor and draft validator must use the same shapes.
+const PRICING_MAP_FIELDS = {
+  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
+  FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
+  FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft'],
+  FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft'],
+  FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
+  FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
+  SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
+  LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft'],
+  LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
+};
+export function pricingMapField(serviceType, field) {
+  return PRICING_MAP_FIELDS[serviceType]?.includes(field) === true;
+}
 const NUMBER_DECIMAL = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))(?:e([+-]?\d+))?$/i;
 const MONEY_KINDS = new Set(['unit_rate','fixed_amount','unresolved_unit']);
 
@@ -244,7 +260,9 @@ export function moneyKindForField(serviceType, field, pricing = {}) {
   if (UNIT_RATE_FIELDS.has(field)) return 'unit_rate';
   if (FIXED_AMOUNT_FIELDS.has(field)) return 'fixed_amount';
   if (MONEY_FIELD_NAMES.has(field)) failure(field, 'This monetary field has no supported price-unit classification.');
-  if (known.has(field) && !NON_MONEY_PRICING_FIELDS.has(field) && !Object.hasOwn(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}, field)) {
+  if (known.has(field) && !NON_MONEY_PRICING_FIELDS.has(field)
+      && !Object.hasOwn(CLASS2_DEFINITIONS[serviceType] || {}, field)
+      && !Object.hasOwn(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}, field)) {
     failure(field, 'This price-book field is exposed by pricing metadata but has no money conversion path.');
   }
   return null;
@@ -339,6 +357,9 @@ function convertService(service, direction, location) {
       if (Object.hasOwn(tier, 'overrides')) {
         const overrides = isRecord(tier.overrides) ? tier.overrides : {};
         const tierPricing = mergePricingForValidationVNext(effective, overrides);
+        // A tier can change the unit or price basis of inherited amounts. Check
+        // its effective prices without copying inherited values into overrides.
+        if (direction === 'toCents') convertPricingContainer(tierPricing, serviceType, tierPricing, direction, `${location}.tiers[${index}].effectivePricing`);
         result.overrides = convertPricingContainer(tier.overrides, serviceType, tierPricing, direction, `${location}.tiers[${index}].overrides`);
         if (Object.hasOwn(tier.overrides || {}, 'peakMonths')) result.overrides.peakMonths = canonicalPeakMonths(tier.overrides.peakMonths, `${location}.tiers[${index}].overrides.peakMonths`);
       }
@@ -397,13 +418,15 @@ function validateDraftPricing(container, serviceType, location) {
   if (!isRecord(container)) return;
   for (const [field, definition] of definitionsFor(serviceType) || []) {
     if (!Object.hasOwn(container, field) || container[field] === undefined) continue;
-    if (definition.type === 'number') assertDraftNumber(container[field], `${location}.${field}`);
+    if (definition.type === 'number' && pricingMapField(serviceType, field) && isRecord(container[field])) {
+      assertDraftNumericLeaves(container[field], `${location}.${field}`);
+    } else if (definition.type === 'number') assertDraftNumber(container[field], `${location}.${field}`);
     else if (definition.type === 'json') {
       if (!isRecord(container[field])) failure(`${location}.${field}`, 'Enter a supported numeric pricing map before saving.');
       assertDraftNumericLeaves(container[field], `${location}.${field}`);
     }
   }
-  for (const field of Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {})) if (Object.hasOwn(container, field) && container[field] !== undefined) {
+  for (const field of new Set([...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {})])) if (Object.hasOwn(container, field) && container[field] !== undefined) {
     assertDraftNumericLeaves(container[field], `${location}.${field}`);
   }
 }

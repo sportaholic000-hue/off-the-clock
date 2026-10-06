@@ -1,5 +1,6 @@
 import { productKeyFromName } from './pricebookFormatting.js';
-import { ALL_OWNER_FIELDS } from '../../server/priceBookMetadata.js';
+import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../../server/priceBookMetadata.js';
+import { allowedPricingFields } from '../../server/quote-engine-vnext/contracts.js';
 
 function sameValue(left, right) {
   if (Object.is(left, right)) return true;
@@ -17,7 +18,15 @@ function nestedPricing(service) {
 // settings remain visible and are never discarded merely because pricing exists.
 export function servicePricing(service) {
   const nested = nestedPricing(service);
-  return nested ? { ...service, ...nested } : service;
+  if (!nested) return service;
+  const fields = new Set([...(ALL_OWNER_FIELDS[service.serviceType] || []),
+    ...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[service.serviceType] || {}),
+    ...allowedPricingFields(service.serviceType),
+    'offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates']);
+  const inherited = Object.fromEntries([...fields]
+    .filter(field => Object.hasOwn(service, field) && !Object.hasOwn(nested, field))
+    .map(field => [field, service[field]]));
+  return Object.keys(inherited).length ? { ...inherited, ...nested } : nested;
 }
 
 export function serviceFieldValue(service, field) {
