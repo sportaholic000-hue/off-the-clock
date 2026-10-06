@@ -2,612 +2,624 @@ TAP version 13
 # Subtest: callback: no_destination persists caller words once and owner/staff see them
 ok 1 - callback: no_destination persists caller words once and owner/staff see them
   ---
-  duration_ms: 20.776687
+  duration_ms: 28.459177
   type: 'test'
   ...
 # Subtest: callback: no_provider persists caller words once and owner/staff see them
 ok 2 - callback: no_provider persists caller words once and owner/staff see them
   ---
-  duration_ms: 10.881234
+  duration_ms: 16.430081
   type: 'test'
   ...
 # Subtest: callback: no_answer persists caller words once and owner/staff see them
 ok 3 - callback: no_answer persists caller words once and owner/staff see them
   ---
-  duration_ms: 12.137347
+  duration_ms: 15.043105
   type: 'test'
   ...
 # Subtest: callback: throws persists caller words once and owner/staff see them
 ok 4 - callback: throws persists caller words once and owner/staff see them
   ---
-  duration_ms: 14.712174
+  duration_ms: 16.193952
   type: 'test'
   ...
 # Subtest: callback: successful transfer does not invent a callback
 ok 5 - callback: successful transfer does not invent a callback
   ---
-  duration_ms: 11.503797
+  duration_ms: 11.909179
   type: 'test'
   ...
 # Subtest: callback: explicit requests, corrections, omitted contact, dismissal and genuine separate requests
 ok 6 - callback: explicit requests, corrections, omitted contact, dismissal and genuine separate requests
   ---
-  duration_ms: 18.838853
+  duration_ms: 19.616366
   type: 'test'
   ...
 # Subtest: callback: transcript fallback preserves the original retry request and separates numbered requests
 ok 7 - callback: transcript fallback preserves the original retry request and separates numbered requests
   ---
-  duration_ms: 16.063097
+  duration_ms: 15.792867
   type: 'test'
   ...
 # Subtest: callback: missing notes reject explicit requests; foreign handles and caller bindings fail closed
 ok 8 - callback: missing notes reject explicit requests; foreign handles and caller bindings fail closed
   ---
-  duration_ms: 19.60549
+  duration_ms: 14.05542
   type: 'test'
   ...
 # Subtest: callback: database failure rolls back callback/lead/alert and prevents saved acknowledgement
 ok 9 - callback: database failure rolls back callback/lead/alert and prevents saved acknowledgement
   ---
-  duration_ms: 18.556815
+  duration_ms: 13.285739
   type: 'test'
   ...
 # Subtest: alerts: new lead, saved quote and callback enqueue atomically and each accepts once
 ok 10 - alerts: new lead, saved quote and callback enqueue atomically and each accepts once
   ---
-  duration_ms: 18.781177
+  duration_ms: 14.378019
   type: 'test'
   ...
 # Subtest: alerts: an alert insert failure rolls back capture instead of silently saving without its event
 ok 11 - alerts: an alert insert failure rolls back capture instead of silently saving without its event
   ---
-  duration_ms: 11.318684
+  duration_ms: 8.800168
   type: 'test'
   ...
 # Subtest: alerts: timeout after provider acceptance reuses identical key and message without a duplicate
 ok 12 - alerts: timeout after provider acceptance reuses identical key and message without a duplicate
   ---
-  duration_ms: 30.815362
+  duration_ms: 11.393102
   type: 'test'
   ...
 # Subtest: alerts: missing configuration blocks without a provider call and recovers after configuration
 ok 13 - alerts: missing configuration blocks without a provider call and recovers after configuration
   ---
-  duration_ms: 25.057243
+  duration_ms: 11.332493
   type: 'test'
   ...
 # Subtest: alerts: definitive provider failures exhaust bounded retries and can be retried without duplicates
 ok 14 - alerts: definitive provider failures exhaust bounded retries and can be retried without duplicates
   ---
-  duration_ms: 21.261936
+  duration_ms: 20.693633
   type: 'test'
   ...
 # Subtest: alerts: two workers cannot claim the same live lease
 ok 15 - alerts: two workers cannot claim the same live lease
   ---
-  duration_ms: 13.515049
+  duration_ms: 12.411137
   type: 'test'
   ...
 # Subtest: alerts: ambiguous expired lease replays once, and stale completion cannot overwrite the new result
 ok 16 - alerts: ambiguous expired lease replays once, and stale completion cannot overwrite the new result
   ---
-  duration_ms: 38.134179
+  duration_ms: 21.312161
   type: 'test'
   ...
 # Subtest: alerts: unknown outcomes beyond retention stay visible and do not resend
 ok 17 - alerts: unknown outcomes beyond retention stay visible and do not resend
   ---
-  duration_ms: 16.194548
+  duration_ms: 9.890615
   type: 'test'
   ...
 # Subtest: alerts: changed owner email cannot silently mutate a historical retry payload
 ok 18 - alerts: changed owner email cannot silently mutate a historical retry payload
   ---
-  duration_ms: 13.179031
+  duration_ms: 9.770317
   type: 'test'
   ...
 # Subtest: alerts: finite timeout bounds stalled provider and does not claim sent
 ok 19 - alerts: finite timeout bounds stalled provider and does not claim sent
   ---
-  duration_ms: 21.782088
+  duration_ms: 19.429874
   type: 'test'
   ...
 # Subtest: alerts: urgency, preferred times and completed calls have durable records; upgrade does not double preference alerts
 ok 20 - alerts: urgency, preferred times and completed calls have durable records; upgrade does not double preference alerts
   ---
-  duration_ms: 14.541291
+  duration_ms: 14.228577
   type: 'test'
   ...
 # Subtest: alerts: tenant-bound list/retry/seen omit message bodies, addresses and private pricing
 ok 21 - alerts: tenant-bound list/retry/seen omit message bodies, addresses and private pricing
   ---
-  duration_ms: 9.11822
+  duration_ms: 8.297293
   type: 'test'
   ...
 # Subtest: alerts: on-disk callback and failed attempts survive a cold worker restart
 ok 22 - alerts: on-disk callback and failed attempts survive a cold worker restart
   ---
-  duration_ms: 28.535571
+  duration_ms: 25.133005
   type: 'test'
   ...
 # Subtest: email adapter: fake fetch confirms exact payload/key and disabled config never makes a request
 ok 23 - email adapter: fake fetch confirms exact payload/key and disabled config never makes a request
   ---
-  duration_ms: 0.883349
+  duration_ms: 0.786016
   type: 'test'
   ...
 # Subtest: alerts: database failure after provider acceptance replays the frozen message after lease recovery
 ok 24 - alerts: database failure after provider acceptance replays the frozen message after lease recovery
   ---
-  duration_ms: 12.7938
+  duration_ms: 8.293927
   type: 'test'
   ...
 # Subtest: alerts: preferences survive reinstall with one event and call binding; an explicit callback handle keeps its original inquiry
 ok 25 - alerts: preferences survive reinstall with one event and call binding; an explicit callback handle keeps its original inquiry
   ---
-  duration_ms: 16.068666
+  duration_ms: 15.878994
   type: 'test'
   ...
 # Subtest: alerts: two independent cold processes use one durable queue and one fake provider acceptance per event
 ok 26 - alerts: two independent cold processes use one durable queue and one fake provider acceptance per event
   ---
-  duration_ms: 307.51024
+  duration_ms: 270.447744
   type: 'test'
   ...
 # Subtest: alerts: queued callback corrections preserve each revision words rather than substituting the latest notes
 ok 27 - alerts: queued callback corrections preserve each revision words rather than substituting the latest notes
   ---
-  duration_ms: 11.718205
+  duration_ms: 17.714696
   type: 'test'
   ...
 # Subtest: alerts: lifecycle starts one timer and shutdown stops further sends without logging customer details
 ok 28 - alerts: lifecycle starts one timer and shutdown stops further sends without logging customer details
   ---
-  duration_ms: 140.142662
+  duration_ms: 152.345656
   type: 'test'
   ...
 # Subtest: alerts: missing owner email blocks every event without starving later records and recovers each once
 ok 29 - alerts: missing owner email blocks every event without starving later records and recovers each once
   ---
-  duration_ms: 13.143198
+  duration_ms: 9.447958
   type: 'test'
   ...
 # Subtest: owner alert repairs: actual routes and rendered callback/delivery visibility
     # Subtest: owner and staff see exact callback notes, stored delivery failures and honest acceptance wording
     ok 1 - owner and staff see exact callback notes, stored delivery failures and honest acceptance wording
       ---
-      duration_ms: 83.546794
+      duration_ms: 60.728514
       type: 'test'
       ...
     # Subtest: foreign owners cannot read, mark seen or retry alerts; staff cannot mutate alerts
     ok 2 - foreign owners cannot read, mark seen or retry alerts; staff cannot mutate alerts
       ---
-      duration_ms: 50.357768
+      duration_ms: 37.509236
       type: 'test'
       ...
     # Subtest: owner retry route plus fake worker recovers once and accepted alerts do not resend
     ok 3 - owner retry route plus fake worker recovers once and accepted alerts do not resend
       ---
-      duration_ms: 28.277118
+      duration_ms: 16.813159
       type: 'test'
       ...
     # Subtest: failure inbox remains paginated beyond the dashboard limit and belongs to the current tenant
     ok 4 - failure inbox remains paginated beyond the dashboard limit and belongs to the current tenant
       ---
-      duration_ms: 31.042223
+      duration_ms: 10.56859
       type: 'test'
       ...
 # WebSocket server error: Port 24678 is already in use
     # Subtest: actual route data renders caller words, failed and accepted email state, and staff-safe views
     ok 5 - actual route data renders caller words, failed and accepted email state, and staff-safe views
       ---
-      duration_ms: 1138.917812
+      duration_ms: 699.430625
       type: 'test'
       ...
     1..5
 ok 30 - owner alert repairs: actual routes and rendered callback/delivery visibility
   ---
-  duration_ms: 1964.656108
+  duration_ms: 1365.686342
   type: 'test'
   ...
 # Subtest: D02: durable SMS accepts once, survives worker restart, and preserves exact message
 ok 31 - D02: durable SMS accepts once, survives worker restart, and preserves exact message
   ---
-  duration_ms: 27.722255
+  duration_ms: 22.638647
   type: 'test'
   ...
 # Subtest: D05: definite rejection can retry after backoff with same event and no repeated accepted send
 ok 32 - D05: definite rejection can retry after backoff with same event and no repeated accepted send
   ---
-  duration_ms: 19.654232
+  duration_ms: 14.900193
   type: 'test'
   ...
 # Subtest: D05: permanent definitive errors stop at five attempts
 ok 33 - D05: permanent definitive errors stop at five attempts
   ---
-  duration_ms: 14.976807
+  duration_ms: 13.25964
   type: 'test'
   ...
 # Subtest: D05: uncertain timeout is visible UNKNOWN without duplicate; verified callback reconciles
 ok 34 - D05: uncertain timeout is visible UNKNOWN without duplicate; verified callback reconciles
   ---
-  duration_ms: 28.835556
+  duration_ms: 24.210738
   type: 'test'
   ...
 # Subtest: D05: expired worker lease is UNKNOWN; process restart never re-POSTs possibly accepted SMS
 ok 35 - D05: expired worker lease is UNKNOWN; process restart never re-POSTs possibly accepted SMS
   ---
-  duration_ms: 16.193981
+  duration_ms: 12.728723
   type: 'test'
   ...
 # Subtest: D02/D05: concurrent workers claim one SMS and callbacks cannot downgrade final receipts
 ok 36 - D02/D05: concurrent workers claim one SMS and callbacks cannot downgrade final receipts
   ---
-  duration_ms: 17.871058
+  duration_ms: 14.498247
   type: 'test'
   ...
 # Subtest: D02: not configured is BLOCKED with zero attempts and recovers when configured
 ok 37 - D02: not configured is BLOCKED with zero attempts and recovers when configured
   ---
-  duration_ms: 15.170965
+  duration_ms: 10.177391
   type: 'test'
   ...
 # Subtest: D02: provider opt-out is durable, final, and blocks subsequent distinct inquiry SMS
 ok 38 - D02: provider opt-out is durable, final, and blocks subsequent distinct inquiry SMS
   ---
-  duration_ms: 15.929059
+  duration_ms: 12.890153
   type: 'test'
   ...
 # Subtest: D02: SMS insert failure rolls back outbox and prevents a sent acknowledgement
 ok 39 - D02: SMS insert failure rolls back outbox and prevents a sent acknowledgement
   ---
-  duration_ms: 11.149853
+  duration_ms: 10.510565
   type: 'test'
   ...
 # Subtest: D02: definitive retry is recoverable after real SQLite close/reopen without a voice handle
 ok 40 - D02: definitive retry is recoverable after real SQLite close/reopen without a voice handle
   ---
-  duration_ms: 30.586312
+  duration_ms: 37.406834
   type: 'test'
   ...
 # Subtest: D19: saved request and call expose actual state and safe error, for owner/staff only
 ok 41 - D19: saved request and call expose actual state and safe error, for owner/staff only
   ---
-  duration_ms: 16.938085
+  duration_ms: 15.865674
   type: 'test'
   ...
 # Subtest: D02: notification outbox mirrors email acceptance/failure without a duplicate historical resend
 ok 42 - D02: notification outbox mirrors email acceptance/failure without a duplicate historical resend
   ---
-  duration_ms: 18.537257
+  duration_ms: 12.549798
+  type: 'test'
+  ...
+# Subtest: D02: quote-review, quote, booking and reminder messages use bound historical customer records
+ok 43 - D02: quote-review, quote, booking and reminder messages use bound historical customer records
+  ---
+  duration_ms: 24.999157
+  type: 'test'
+  ...
+# Subtest: D02: quote-review and preference outboxes preserve failure and acceptance state by tenant
+ok 44 - D02: quote-review and preference outboxes preserve failure and acceptance state by tenant
+  ---
+  duration_ms: 12.708093
   type: 'test'
   ...
 # Subtest: D20: older unresolved webhooks remain discoverable, paginated, safe and tenant-bound
-ok 43 - D20: older unresolved webhooks remain discoverable, paginated, safe and tenant-bound
+ok 45 - D20: older unresolved webhooks remain discoverable, paginated, safe and tenant-bound
   ---
-  duration_ms: 19.230544
+  duration_ms: 12.583789
   type: 'test'
   ...
 # Subtest: D19/D20: actual owner routes and rendered views retain delivery information beyond recent limits
     # Subtest: owner/staff see safe voice failure on call and saved request; foreign tenant cannot
     ok 1 - owner/staff see safe voice failure on call and saved request; foreign tenant cannot
       ---
-      duration_ms: 58.637305
+      duration_ms: 54.515136
       type: 'test'
       ...
     # Subtest: all/unresolved pagination reaches oldest failure; foreign tenant, staff and extra owner parameters rejected
     ok 2 - all/unresolved pagination reaches oldest failure; foreign tenant, staff and extra owner parameters rejected
       ---
-      duration_ms: 50.294044
+      duration_ms: 27.124464
       type: 'test'
       ...
     # Subtest: rendered actual route data exposes safe delivery errors and old webhook failures
     ok 3 - rendered actual route data exposes safe delivery errors and old webhook failures
       ---
-      duration_ms: 1001.870529
+      duration_ms: 731.657064
       type: 'test'
       ...
     1..3
-ok 44 - D19/D20: actual owner routes and rendered views retain delivery information beyond recent limits
+ok 46 - D19/D20: actual owner routes and rendered views retain delivery information beyond recent limits
   ---
-  duration_ms: 1716.104651
+  duration_ms: 1344.924438
   type: 'test'
   ...
 # Subtest: SMS adapter uses frozen caller content, tenant sender, receipt callbacks and no unproven POST idempotency
-ok 45 - SMS adapter uses frozen caller content, tenant sender, receipt callbacks and no unproven POST idempotency
+ok 47 - SMS adapter uses frozen caller content, tenant sender, receipt callbacks and no unproven POST idempotency
   ---
-  duration_ms: 13.723218
+  duration_ms: 16.212619
   type: 'test'
   ...
 # Subtest: SMS adapter classifies 429 safely
-ok 46 - SMS adapter classifies 429 safely
+ok 48 - SMS adapter classifies 429 safely
   ---
-  duration_ms: 7.606539
+  duration_ms: 8.154801
   type: 'test'
   ...
 # Subtest: SMS adapter classifies 500 safely
-ok 47 - SMS adapter classifies 500 safely
+ok 49 - SMS adapter classifies 500 safely
   ---
-  duration_ms: 7.386472
+  duration_ms: 6.81879
   type: 'test'
   ...
 # Subtest: SMS adapter classifies 21610 safely
-ok 48 - SMS adapter classifies 21610 safely
+ok 50 - SMS adapter classifies 21610 safely
   ---
-  duration_ms: 9.140683
+  duration_ms: 7.075291
   type: 'test'
   ...
 # Subtest: SMS adapter classifies wrong-recipient safely
-ok 49 - SMS adapter classifies wrong-recipient safely
+ok 51 - SMS adapter classifies wrong-recipient safely
   ---
-  duration_ms: 7.314125
+  duration_ms: 9.082176
   type: 'test'
   ...
 # Subtest: SMS adapter classifies missing-id safely
-ok 50 - SMS adapter classifies missing-id safely
+ok 52 - SMS adapter classifies missing-id safely
   ---
-  duration_ms: 7.764553
+  duration_ms: 8.014098
   type: 'test'
   ...
 # Subtest: D02/D19: actual signed SMS status route rejects wrong signatures/tenants and reconciles once
-ok 51 - D02/D19: actual signed SMS status route rejects wrong signatures/tenants and reconciles once
+ok 53 - D02/D19: actual signed SMS status route rejects wrong signatures/tenants and reconciles once
   ---
-  duration_ms: 102.879615
+  duration_ms: 79.818293
   type: 'test'
   ...
 # Subtest: D02: missing status callback is reconciled by bounded provider GETs, never another SMS POST
-ok 52 - D02: missing status callback is reconciled by bounded provider GETs, never another SMS POST
+ok 54 - D02: missing status callback is reconciled by bounded provider GETs, never another SMS POST
   ---
-  duration_ms: 12.376932
+  duration_ms: 12.313438
   type: 'test'
   ...
 # Subtest: D02: exhausted receipt lookups become discoverable UNKNOWN without resending
-ok 53 - D02: exhausted receipt lookups become discoverable UNKNOWN without resending
+ok 55 - D02: exhausted receipt lookups become discoverable UNKNOWN without resending
   ---
-  duration_ms: 14.616172
+  duration_ms: 11.54614
   type: 'test'
   ...
 # Subtest: CSV neutralizes formula prefixes, whitespace, controls and locale variants
-ok 54 - CSV neutralizes formula prefixes, whitespace, controls and locale variants
+ok 56 - CSV neutralizes formula prefixes, whitespace, controls and locale variants
   ---
-  duration_ms: 1.985594
+  duration_ms: 1.804856
   type: 'test'
   ...
 # Subtest: CSV quoting preserves separators, quotes and multiline data without creating extra cells
-ok 55 - CSV quoting preserves separators, quotes and multiline data without creating extra cells
+ok 57 - CSV quoting preserves separators, quotes and multiline data without creating extra cells
   ---
-  duration_ms: 2.297361
+  duration_ms: 0.882178
   type: 'test'
   ...
 # Subtest: leads CSV exports only the authenticated tenant and no internal JSON/credentials
-ok 56 - leads CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 58 - leads CSV exports only the authenticated tenant and no internal JSON/credentials
   ---
-  duration_ms: 12.852087
+  duration_ms: 13.949903
   type: 'test'
   ...
 # Subtest: quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
-ok 57 - quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 59 - quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
   ---
-  duration_ms: 7.123543
+  duration_ms: 10.212482
   type: 'test'
   ...
 # Subtest: bookings CSV exports only the authenticated tenant and no internal JSON/credentials
-ok 58 - bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 60 - bookings CSV exports only the authenticated tenant and no internal JSON/credentials
   ---
-  duration_ms: 7.355787
+  duration_ms: 10.098774
   type: 'test'
   ...
 # Subtest: CSV pagination includes more than 500 rows once each, without tenant bleed
-ok 59 - CSV pagination includes more than 500 rows once each, without tenant bleed
+ok 61 - CSV pagination includes more than 500 rows once each, without tenant bleed
   ---
-  duration_ms: 90.593698
+  duration_ms: 87.321774
   type: 'test'
   ...
 # Subtest: unknown export names and prototype properties are unavailable
-ok 60 - unknown export names and prototype properties are unavailable
+ok 62 - unknown export names and prototype properties are unavailable
   ---
-  duration_ms: 0.298373
+  duration_ms: 0.258624
   type: 'test'
   ...
 # Subtest: capture is tenant-scoped and the signing secret is encrypted and shown once
-ok 61 - capture is tenant-scoped and the signing secret is encrypted and shown once
+ok 63 - capture is tenant-scoped and the signing secret is encrypted and shown once
   ---
-  duration_ms: 21.768688
+  duration_ms: 16.792408
   type: 'test'
   ...
 # Subtest: all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
-ok 62 - all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+ok 64 - all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
   ---
-  duration_ms: 21.321404
+  duration_ms: 21.240233
   type: 'test'
   ...
 # Subtest: bookings emit only on confirmation; repeated confirmations do not duplicate events
-ok 63 - bookings emit only on confirmation; repeated confirmations do not duplicate events
+ok 65 - bookings emit only on confirmation; repeated confirmations do not duplicate events
   ---
-  duration_ms: 10.484466
+  duration_ms: 10.490895
   type: 'test'
   ...
 # Subtest: transaction rollback removes the captured event and never invokes delivery inline
-ok 64 - transaction rollback removes the captured event and never invokes delivery inline
+ok 66 - transaction rollback removes the captured event and never invokes delivery inline
   ---
-  duration_ms: 14.944549
+  duration_ms: 10.008109
   type: 'test'
   ...
 # Subtest: malformed or credential-shaped nested JSON never breaks capture or leaks credentials
-ok 65 - malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+ok 67 - malformed or credential-shaped nested JSON never breaks capture or leaks credentials
   ---
-  duration_ms: 16.468188
+  duration_ms: 11.426382
   type: 'test'
   ...
 # Subtest: disabled event toggles capture only the selected event
-ok 66 - disabled event toggles capture only the selected event
+ok 68 - disabled event toggles capture only the selected event
   ---
-  duration_ms: 11.641782
+  duration_ms: 7.889138
   type: 'test'
   ...
 # Subtest: receiver failures do not affect inserts, and retry obeys due time with stable event/body
-ok 67 - receiver failures do not affect inserts, and retry obeys due time with stable event/body
+ok 69 - receiver failures do not affect inserts, and retry obeys due time with stable event/body
   ---
-  duration_ms: 12.815242
+  duration_ms: 8.230283
   type: 'test'
   ...
 # Subtest: retry is durable across a real database close/reopen and encrypted key read
-ok 68 - retry is durable across a real database close/reopen and encrypted key read
+ok 70 - retry is durable across a real database close/reopen and encrypted key read
   ---
-  duration_ms: 37.366595
+  duration_ms: 25.255066
   type: 'test'
   ...
 # Subtest: exhausted retries become visible failures; only their own owner can requeue them
-ok 69 - exhausted retries become visible failures; only their own owner can requeue them
+ok 71 - exhausted retries become visible failures; only their own owner can requeue them
   ---
-  duration_ms: 23.899988
+  duration_ms: 14.063873
   type: 'test'
   ...
 # Subtest: two workers cannot concurrently deliver the same leased event
-ok 70 - two workers cannot concurrently deliver the same leased event
+ok 72 - two workers cannot concurrently deliver the same leased event
   ---
-  duration_ms: 11.491699
+  duration_ms: 8.92288
   type: 'test'
   ...
 # Subtest: expired worker lease is reclaimed after a crash, without changing event identity
-ok 71 - expired worker lease is reclaimed after a crash, without changing event identity
+ok 73 - expired worker lease is reclaimed after a crash, without changing event identity
   ---
-  duration_ms: 10.880713
+  duration_ms: 10.191601
   type: 'test'
   ...
 # Subtest: changing URL or rotating/removing a key cancels older pending events without touching other tenants
-ok 72 - changing URL or rotating/removing a key cancels older pending events without touching other tenants
+ok 74 - changing URL or rotating/removing a key cancels older pending events without touching other tenants
   ---
-  duration_ms: 13.456382
+  duration_ms: 18.640278
   type: 'test'
   ...
 # Subtest: an endpoint change during DNS resolution prevents sending to the old destination
-ok 73 - an endpoint change during DNS resolution prevents sending to the old destination
+ok 75 - an endpoint change during DNS resolution prevents sending to the old destination
   ---
-  duration_ms: 11.326695
+  duration_ms: 11.103193
   type: 'test'
   ...
 # Subtest: swapping encrypted signing records across tenants fails closed without delivering
-ok 74 - swapping encrypted signing records across tenants fails closed without delivering
+ok 76 - swapping encrypted signing records across tenants fails closed without delivering
   ---
-  duration_ms: 10.906351
+  duration_ms: 8.021033
   type: 'test'
   ...
 # Subtest: platform dispatch and account entitlements pause delivery without blocking inserts
-ok 75 - platform dispatch and account entitlements pause delivery without blocking inserts
+ok 77 - platform dispatch and account entitlements pause delivery without blocking inserts
   ---
-  duration_ms: 9.591451
+  duration_ms: 14.334654
   type: 'test'
   ...
 # Subtest: destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
-ok 76 - destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+ok 78 - destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
   ---
-  duration_ms: 0.896619
+  duration_ms: 0.830552
   type: 'test'
   ...
 # Subtest: mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
-ok 77 - mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+ok 79 - mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
   ---
-  duration_ms: 28.515421
+  duration_ms: 24.513748
   type: 'test'
   ...
 # Subtest: HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
-ok 78 - HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+ok 80 - HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
   ---
-  duration_ms: 0.908758
+  duration_ms: 0.824843
   type: 'test'
   ...
 # Subtest: transport deadline rejects a receiver that never responds
-ok 79 - transport deadline rejects a receiver that never responds
+ok 81 - transport deadline rejects a receiver that never responds
   ---
-  duration_ms: 5.558312
+  duration_ms: 4.846155
   type: 'test'
   ...
 # Subtest: webhook dispatch is independently configured and stays off in preview
-ok 80 - webhook dispatch is independently configured and stays off in preview
+ok 82 - webhook dispatch is independently configured and stays off in preview
   ---
-  duration_ms: 0.345212
+  duration_ms: 0.285524
   type: 'test'
   ...
 # Subtest: strict webhook settings reject client tenant IDs and unsupported events
-ok 81 - strict webhook settings reject client tenant IDs and unsupported events
+ok 83 - strict webhook settings reject client tenant IDs and unsupported events
   ---
-  duration_ms: 9.408671
+  duration_ms: 6.449263
   type: 'test'
   ...
 # Subtest: background worker handles store failure outside requests and stops scheduling after close
-ok 82 - background worker handles store failure outside requests and stops scheduling after close
+ok 84 - background worker handles store failure outside requests and stops scheduling after close
   ---
-  duration_ms: 58.37847
+  duration_ms: 56.120151
   type: 'test'
   ...
 # Subtest: real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
-ok 83 - real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+ok 85 - real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
   ---
-  duration_ms: 67.25338
+  duration_ms: 51.073738
   type: 'test'
   ...
 # Subtest: real authenticated settings expose no keys on GET and cannot mutate another tenant
-ok 84 - real authenticated settings expose no keys on GET and cannot mutate another tenant
+ok 86 - real authenticated settings expose no keys on GET and cannot mutate another tenant
   ---
-  duration_ms: 44.15447
+  duration_ms: 44.592338
   type: 'test'
   ...
 # Subtest: owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
-ok 85 - owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+ok 87 - owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
   ---
-  duration_ms: 22.070034
+  duration_ms: 19.822551
   type: 'test'
   ...
 # Subtest: real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
-ok 86 - real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+ok 88 - real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
   ---
-  duration_ms: 68.505757
+  duration_ms: 72.720855
   type: 'test'
   ...
 # Subtest: event selection changes preserve the signing secret while invalidating older queue entries
-ok 87 - event selection changes preserve the signing secret while invalidating older queue entries
+ok 89 - event selection changes preserve the signing secret while invalidating older queue entries
   ---
-  duration_ms: 10.070492
+  duration_ms: 7.18969
   type: 'test'
   ...
 # Subtest: platform disabled during DNS pauses the leased event without an external POST
-ok 88 - platform disabled during DNS pauses the leased event without an external POST
+ok 90 - platform disabled during DNS pauses the leased event without an external POST
   ---
-  duration_ms: 9.335672
+  duration_ms: 6.763789
   type: 'test'
   ...
 # Subtest: account canceled during DNS pauses the leased event without an external POST
-ok 89 - account canceled during DNS pauses the leased event without an external POST
+ok 91 - account canceled during DNS pauses the leased event without an external POST
   ---
-  duration_ms: 8.91583
+  duration_ms: 6.470244
   type: 'test'
   ...
 # Subtest: migration remains idempotent and does not replay records created before webhook registration
-ok 90 - migration remains idempotent and does not replay records created before webhook registration
+ok 92 - migration remains idempotent and does not replay records created before webhook registration
   ---
-  duration_ms: 13.102738
+  duration_ms: 9.287441
   type: 'test'
   ...
 # Subtest: a sustained backlog from the first worker batch cannot starve later owners
-ok 91 - a sustained backlog from the first worker batch cannot starve later owners
+ok 93 - a sustained backlog from the first worker batch cannot starve later owners
   ---
-  duration_ms: 29.474904
+  duration_ms: 29.711864
   type: 'test'
   ...
 # Subtest: stopping the webhook worker waits for an active signed delivery and its database completion
-ok 92 - stopping the webhook worker waits for an active signed delivery and its database completion
+ok 94 - stopping the webhook worker waits for an active signed delivery and its database completion
   ---
-  duration_ms: 76.221778
+  duration_ms: 78.693882
   type: 'test'
   ...
-1..92
-# tests 100
+1..94
+# tests 102
 # suites 0
-# pass 100
+# pass 102
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 2454.335702
+# duration_ms 1825.488967

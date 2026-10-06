@@ -21,9 +21,10 @@ Expected outcomes were written in `EXPECTED.md` before baseline execution. `base
 ## Verification at this checkpoint
 
 - Cold `npm ci` and build pass locally using Node 22.23.3.
-- Relevant existing/new service, provider, HTTP and rendered regression run: 100/100, zero failures/skips (before the final two additional template/outbox tests; those also pass in the focused run).
+- Relevant existing/new service, provider, HTTP and rendered regression run: 102/102, zero failures/skips. Final provider/startup verification: 36/36, zero failures/skips.
 - The full run exposed an older literal startup-call assertion that disallowed adding the production SMS dependency. It now explicitly requires `providers:{smsDelivery}`; the assertion is stronger and the production wiring remains tested. No behavioral test or gate was weakened.
-- Local Chromium launches fail with SIGTRAP before test execution (`browser-local.tap`). Browser tests fail rather than skip. Cold full/strict and hosted verification are pending; no green-gate claim at this checkpoint.
+- Local Chromium launches fail with SIGTRAP before test execution (`browser-local.tap`). Browser tests fail rather than skip. Local strict completed 2,164 tests: 2,124 passed and 40 browser-launch failures; zero skips. Local full completed 2,549 tests: 2,508 passed, 40 browser-launch failures and the now-corrected literal startup assertion. Its focused rerun passes 27/27. Hosted verification remains pending; no green-gate claim at this checkpoint.
+- `concurrent-restart.json`: two independent worker processes compete for one persisted SMS; a third restarted process dispatches nothing. Exactly one provider send, one durable attempt, SENT state.
 - Twilio API/status receipt behavior follows the official Message resource and status callback documentation: https://www.twilio.com/docs/messaging/api/message-resource . No Messages-create idempotency capability is assumed.
 
 ## Unfinished and limits

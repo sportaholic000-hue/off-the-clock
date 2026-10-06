@@ -151,7 +151,7 @@ migrate();
 migrateLegacyGoogleCalendarCredentials();
 const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
 const ownerAlerts=createOwnerAlertService({database:db,ownerQuery});
-const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:createVoiceSmsProvider({database:db})});
+const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:createVoiceSmsProvider({database:db,ownerQuery})});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');

@@ -3,12 +3,12 @@ import express from 'express';
 import {createTwilioRequestValidator} from './voice/twilioValidation.js';
 const E164=/^\+[1-9]\d{7,14}$/;
 const origin=environment=>{try{const u=new URL(environment.PUBLIC_BASE_URL);return u.protocol==='https:'&&u.pathname==='/'&&!u.username&&!u.password&&!u.search&&!u.hash?u.origin:null;}catch{return null;}};
-export function createVoiceSmsProvider({database,environment=process.env,fetchImplementation=fetch}={}){
+export function createVoiceSmsProvider({database,ownerQuery=sql=>database.prepare(sql),environment=process.env,fetchImplementation=fetch}={}){
   const configured=()=>environment.ALLOW_PROVIDER_WRITES==='true'&&environment.SMS_DELIVERY_ENABLED==='true'&&environment.TWILIO_SMS_REGISTRATION_APPROVED==='true'&&/^AC[0-9a-f]{32}$/i.test(environment.TWILIO_ACCOUNT_SID||'')&&Boolean(environment.TWILIO_AUTH_TOKEN)&&Boolean(origin(environment));
   return {
     ready(request,ownerId){
       if(!configured()||request.accountSid!==environment.TWILIO_ACCOUNT_SID||!E164.test(request.to)||!E164.test(request.from))return false;
-      const profile=database.prepare('SELECT twilioNumber,phoneProvisioningStatus FROM businessProfiles WHERE ownerId=?').get(ownerId);
+      const profile=ownerQuery('SELECT twilioNumber,phoneProvisioningStatus FROM businessProfiles WHERE ownerId=?').get(ownerId);
       return profile?.phoneProvisioningStatus==='provisioned'&&profile.twilioNumber===request.from;
     },
     async send(request,{signal}={}){
