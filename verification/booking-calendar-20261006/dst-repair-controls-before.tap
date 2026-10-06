@@ -1,0 +1,84 @@
+TAP version 13
+# Subtest: DST control: a skipped closing wall time does not discard an earlier valid short appointment
+not ok 1 - DST control: a skipped closing wall time does not discard an earlier valid short appointment
+  ---
+  duration_ms: 16.254863
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     '2026-03-08T05:00:00.000Z',
+    -     '2026-03-08T05:30:00.000Z'
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: '2026-03-08T05:00:00.000Z'
+      1: '2026-03-08T05:30:00.000Z'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:19:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: DST control: a narrow repeated-hours window cannot span intervening closed clock times
+not ok 2 - DST control: a narrow repeated-hours window cannot span intervening closed clock times
+  ---
+  duration_ms: 2.327902
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     endAtUtc: '2026-11-01T05:45:00.000Z',
+    +     endLocal: '2026-11-01T01:45:00-04:00',
+    +     startAtUtc: '2026-11-01T04:30:00.000Z',
+    +     startLocal: '2026-11-01T01:30:00-03:00'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      startAtUtc: '2026-11-01T04:30:00.000Z'
+      endAtUtc: '2026-11-01T05:45:00.000Z'
+      startLocal: '2026-11-01T01:30:00-03:00'
+      endLocal: '2026-11-01T01:45:00-04:00'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:22:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128.430354

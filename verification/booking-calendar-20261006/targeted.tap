@@ -1,0 +1,738 @@
+TAP version 13
+# (node:10) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: owner settings and per-service policy become direct-ready only from owner-scoped saved state
+ok 1 - owner settings and per-service policy become direct-ready only from owner-scoped saved state
+  ---
+  duration_ms: 26.549638
+  type: 'test'
+  ...
+# Subtest: tenant isolation prevents reading or writing another owner service policy
+ok 2 - tenant isolation prevents reading or writing another owner service policy
+  ---
+  duration_ms: 2.218901
+  type: 'test'
+  ...
+# Subtest: settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+ok 3 - settings validation is closed and rejects invalid timezone, hours, overlaps, and bounds without writes
+  ---
+  duration_ms: 12.877325
+  type: 'test'
+  ...
+# Subtest: policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+ok 4 - policy validation rejects invalid modes, durations, fields, unknown services, and ambiguous tiers
+  ---
+  duration_ms: 5.657499
+  type: 'test'
+  ...
+# Subtest: widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+ok 5 - widget branding and origin allowlist are strict, tenant-scoped, and preserve the public key
+  ---
+  duration_ms: 8.357724
+  type: 'test'
+  ...
+# Subtest: widget settings and access-key creation roll back together on key collision
+ok 6 - widget settings and access-key creation roll back together on key collision
+  ---
+  duration_ms: 1.201562
+  type: 'test'
+  ...
+# Subtest: readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+ok 7 - readiness fails closed for missing credentials and empty hours, while Calendly is only an external handoff
+  ---
+  duration_ms: 6.547058
+  type: 'test'
+  ...
+# Subtest: structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+ok 8 - structured service-area readiness distinguishes missing, invalid, and valid policies without exposing city data
+  ---
+  duration_ms: 4.324492
+  type: 'test'
+  ...
+# Subtest: booking B01 spring-forward duration cannot extend past owner closing time
+ok 9 - booking B01 spring-forward duration cannot extend past owner closing time
+  ---
+  duration_ms: 21.844156
+  type: 'test'
+  ...
+# Subtest: booking B01 fall-back elapsed duration includes the valid extra-hour slot
+ok 10 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+  ---
+  duration_ms: 7.177814
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+ok 11 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+  ---
+  duration_ms: 50.811695
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+ok 12 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+  ---
+  duration_ms: 38.325479
+  type: 'test'
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+ok 13 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+  ---
+  duration_ms: 38.219502
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during hold
+ok 14 - booking B03 confirmation rechecks a slot start that passed during hold
+  ---
+  duration_ms: 35.071635
+  type: 'test'
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during provider read
+ok 15 - booking B03 confirmation rechecks a slot start that passed during provider read
+  ---
+  duration_ms: 23.440538
+  type: 'test'
+  ...
+# Subtest: booking B04 changed owner availability during busy read prevents stale provider write
+ok 16 - booking B04 changed owner availability during busy read prevents stale provider write
+  ---
+  duration_ms: 19.46319
+  type: 'test'
+  ...
+# Subtest: two independent SQLite workers racing for one slot yield exactly one hold and one booking
+ok 17 - two independent SQLite workers racing for one slot yield exactly one hold and one booking
+  ---
+  duration_ms: 137.659384
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 299999
+ok 18 - hold expiry releases overlap exactly at five minutes: 299999
+  ---
+  duration_ms: 36.809142
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300000
+ok 19 - hold expiry releases overlap exactly at five minutes: 300000
+  ---
+  duration_ms: 32.429858
+  type: 'test'
+  ...
+# Subtest: hold expiry releases overlap exactly at five minutes: 300001
+ok 20 - hold expiry releases overlap exactly at five minutes: 300001
+  ---
+  duration_ms: 34.112232
+  type: 'test'
+  ...
+# Subtest: hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+ok 21 - hold and booking receipts survive restart; changed payload and alternate key cannot duplicate
+  ---
+  duration_ms: 25.452532
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: busy-rejection
+ok 22 - provider/storage failure keeps visible durable outcome: busy-rejection
+  ---
+  duration_ms: 24.963256
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: create-rejection
+ok 23 - provider/storage failure keeps visible durable outcome: create-rejection
+  ---
+  duration_ms: 23.359178
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: lost-response
+ok 24 - provider/storage failure keeps visible durable outcome: lost-response
+  ---
+  duration_ms: 28.016935
+  type: 'test'
+  ...
+# Subtest: provider/storage failure keeps visible durable outcome: sqlite-finalization
+ok 25 - provider/storage failure keeps visible durable outcome: sqlite-finalization
+  ---
+  duration_ms: 25.949227
+  type: 'test'
+  ...
+# Subtest: tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+ok 26 - tenant contexts, holds, slots, confirmations, dashboard and provider reads never cross owners
+  ---
+  duration_ms: 39.830141
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+ok 27 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-07
+  ---
+  duration_ms: 26.386387
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+ok 28 - Moncton booking, owner views and Los Angeles instant agree on 2026-03-08
+  ---
+  duration_ms: 26.157697
+  type: 'test'
+  ...
+# Subtest: Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+ok 29 - Moncton booking, owner views and Los Angeles instant agree on 2026-11-01
+  ---
+  duration_ms: 24.0895
+  type: 'test'
+  ...
+# Subtest: Moncton DST gap and repeated times have exact unambiguous instants
+ok 30 - Moncton DST gap and repeated times have exact unambiguous instants
+  ---
+  duration_ms: 1.312456
+  type: 'test'
+  ...
+# (node:12) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: preference request atomically stores a callback request without claiming a booking
+ok 31 - preference request atomically stores a callback request without claiming a booking
+  ---
+  duration_ms: 25.588163
+  type: 'test'
+  ...
+# Subtest: tenant isolation and expired or inactive intent checks happen before writes
+ok 32 - tenant isolation and expired or inactive intent checks happen before writes
+  ---
+  duration_ms: 2.908082
+  type: 'test'
+  ...
+# Subtest: request validation is closed and rejects malformed nested data
+ok 33 - request validation is closed and rejects malformed nested data
+  ---
+  duration_ms: 15.044568
+  type: 'test'
+  ...
+# Subtest: future dates use settings timezone, then a valid owner timezone fallback
+ok 34 - future dates use settings timezone, then a valid owner timezone fallback
+  ---
+  duration_ms: 2.803787
+  type: 'test'
+  ...
+# Subtest: exact retry survives restart and expiry while changed payload conflicts
+ok 35 - exact retry survives restart and expiry while changed payload conflicts
+  ---
+  duration_ms: 1.704678
+  type: 'test'
+  ...
+# Subtest: outbox failure rolls back preference and idempotency receipt atomically
+ok 36 - outbox failure rolls back preference and idempotency receipt atomically
+  ---
+  duration_ms: 1.198538
+  type: 'test'
+  ...
+# Subtest: public booking context binds token tenant and exact allowed website origin
+ok 37 - public booking context binds token tenant and exact allowed website origin
+  ---
+  duration_ms: 2.336395
+  type: 'test'
+  ...
+# Subtest: availability requires unchanged scope and a strict post-quote identity envelope
+ok 38 - availability requires unchanged scope and a strict post-quote identity envelope
+  ---
+  duration_ms: 1.627964
+  type: 'test'
+  ...
+# Subtest: hold, release, confirm, and polling forward only server-bound context
+ok 39 - hold, release, confirm, and polling forward only server-bound context
+  ---
+  duration_ms: 2.45507
+  type: 'test'
+  ...
+# (node:24) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking tokens resolve tenant context without accepting a body ownerId
+ok 40 - booking tokens resolve tenant context without accepting a body ownerId
+  ---
+  duration_ms: 5.850445
+  type: 'test'
+  ...
+# Subtest: tenant-scoped availability does not reveal another owner intent
+ok 41 - tenant-scoped availability does not reveal another owner intent
+  ---
+  duration_ms: 5.047315
+  type: 'test'
+  ...
+# Subtest: unconfigured and out-of-area requests fall back before any calendar read
+ok 42 - unconfigured and out-of-area requests fall back before any calendar read
+  ---
+  duration_ms: 25.133538
+  type: 'test'
+  ...
+# Subtest: confirmation rechecks current service-area policy before provider work
+ok 43 - confirmation rechecks current service-area policy before provider work
+  ---
+  duration_ms: 32.600064
+  type: 'test'
+  ...
+# Subtest: slot IDs are opaque and tampering is rejected without creating a hold
+ok 44 - slot IDs are opaque and tampering is rejected without creating a hold
+  ---
+  duration_ms: 15.387407
+  type: 'test'
+  ...
+# Subtest: holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+ok 45 - holds last exactly five minutes, retry exactly, block overlap, and release after expiry
+  ---
+  duration_ms: 40.285406
+  type: 'test'
+  ...
+# Subtest: hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+ok 46 - hold release is tenant-scoped, exact-replay idempotent, and stable after expiry
+  ---
+  duration_ms: 15.084307
+  type: 'test'
+  ...
+# Subtest: idempotency key reuse with a changed hold payload is rejected
+ok 47 - idempotency key reuse with a changed hold payload is rejected
+  ---
+  duration_ms: 12.695435
+  type: 'test'
+  ...
+# Subtest: a policy revision change invalidates a held slot before provider work
+ok 48 - a policy revision change invalidates a held slot before provider work
+  ---
+  duration_ms: 13.676059
+  type: 'test'
+  ...
+# Subtest: review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+ok 49 - review outcomes cannot book a job directly, and released multi-tier jobs require a valid tier
+  ---
+  duration_ms: 14.54625
+  type: 'test'
+  ...
+# Subtest: confirmed provider result commits one appointment and one outbox event, with exact retry
+ok 50 - confirmed provider result commits one appointment and one outbox event, with exact retry
+  ---
+  duration_ms: 14.264943
+  type: 'test'
+  ...
+# Subtest: pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+ok 51 - pending confirmation is customer-safe, opaque, pollable, and exact-replay idempotent
+  ---
+  duration_ms: 16.447117
+  type: 'test'
+  ...
+# Subtest: confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+ok 52 - confirmation polling reconciles pending to the full confirmed public shape without changing the confirm receipt
+  ---
+  duration_ms: 20.192062
+  type: 'test'
+  ...
+# Subtest: confirmation polling returns an exact customer-safe failure shape
+ok 53 - confirmation polling returns an exact customer-safe failure shape
+  ---
+  duration_ms: 16.590711
+  type: 'test'
+  ...
+# Subtest: a provider conflict discovered after the hold releases it without creating an event
+ok 54 - a provider conflict discovered after the hold releases it without creating an event
+  ---
+  duration_ms: 12.277014
+  type: 'test'
+  ...
+# Subtest: known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+ok 55 - known provider failure returns 503, preserves the unexpired hold, and retries from receipt
+  ---
+  duration_ms: 14.692066
+  type: 'test'
+  ...
+# Subtest: ambiguous provider timeout reconciles by deterministic event lookup
+ok 56 - ambiguous provider timeout reconciles by deterministic event lookup
+  ---
+  duration_ms: 17.813624
+  type: 'test'
+  ...
+# Subtest: calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+ok 57 - calendar conversion rejects a spring-forward wall time and preserves both fall-back instants
+  ---
+  duration_ms: 1.380297
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-status never books or emits booked notification
+ok 58 - Provider confirmation create: missing-status never books or emits booked notification
+  ---
+  duration_ms: 22.262321
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: tentative never books or emits booked notification
+ok 59 - Provider confirmation create: tentative never books or emits booked notification
+  ---
+  duration_ms: 23.090629
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: cancelled never books or emits booked notification
+ok 60 - Provider confirmation create: cancelled never books or emits booked notification
+  ---
+  duration_ms: 23.661686
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-id never books or emits booked notification
+ok 61 - Provider confirmation create: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 26.762404
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-day never books or emits booked notification
+ok 62 - Provider confirmation create: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 15.717356
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: wrong-duration never books or emits booked notification
+ok 63 - Provider confirmation create: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 12.225388
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: missing-start never books or emits booked notification
+ok 64 - Provider confirmation create: missing-start never books or emits booked notification
+  ---
+  duration_ms: 12.475479
+  type: 'test'
+  ...
+# Subtest: Provider confirmation create: numeric-start never books or emits booked notification
+ok 65 - Provider confirmation create: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 12.29387
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-status never books or emits booked notification
+ok 66 - Provider confirmation recovery: missing-status never books or emits booked notification
+  ---
+  duration_ms: 12.447738
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: tentative never books or emits booked notification
+ok 67 - Provider confirmation recovery: tentative never books or emits booked notification
+  ---
+  duration_ms: 12.98899
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: cancelled never books or emits booked notification
+ok 68 - Provider confirmation recovery: cancelled never books or emits booked notification
+  ---
+  duration_ms: 13.456273
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-id never books or emits booked notification
+ok 69 - Provider confirmation recovery: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 12.852859
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-day never books or emits booked notification
+ok 70 - Provider confirmation recovery: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 13.320132
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: wrong-duration never books or emits booked notification
+ok 71 - Provider confirmation recovery: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 13.369053
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: missing-start never books or emits booked notification
+ok 72 - Provider confirmation recovery: missing-start never books or emits booked notification
+  ---
+  duration_ms: 12.917945
+  type: 'test'
+  ...
+# Subtest: Provider confirmation recovery: numeric-start never books or emits booked notification
+ok 73 - Provider confirmation recovery: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 12.535428
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-status never books or emits booked notification
+ok 74 - Provider confirmation poll: missing-status never books or emits booked notification
+  ---
+  duration_ms: 14.150863
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: tentative never books or emits booked notification
+ok 75 - Provider confirmation poll: tentative never books or emits booked notification
+  ---
+  duration_ms: 12.794191
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: cancelled never books or emits booked notification
+ok 76 - Provider confirmation poll: cancelled never books or emits booked notification
+  ---
+  duration_ms: 12.899809
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-id never books or emits booked notification
+ok 77 - Provider confirmation poll: wrong-id never books or emits booked notification
+  ---
+  duration_ms: 12.506425
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-day never books or emits booked notification
+ok 78 - Provider confirmation poll: wrong-day never books or emits booked notification
+  ---
+  duration_ms: 12.120211
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: wrong-duration never books or emits booked notification
+ok 79 - Provider confirmation poll: wrong-duration never books or emits booked notification
+  ---
+  duration_ms: 13.781015
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: missing-start never books or emits booked notification
+ok 80 - Provider confirmation poll: missing-start never books or emits booked notification
+  ---
+  duration_ms: 13.522632
+  type: 'test'
+  ...
+# Subtest: Provider confirmation poll: numeric-start never books or emits booked notification
+ok 81 - Provider confirmation poll: numeric-start never books or emits booked notification
+  ---
+  duration_ms: 13.439057
+  type: 'test'
+  ...
+# Subtest: Provider confirmation accepts the same exact instants expressed with another timezone offset
+ok 82 - Provider confirmation accepts the same exact instants expressed with another timezone offset
+  ---
+  duration_ms: 13.070591
+  type: 'test'
+  ...
+# Subtest: One intent cannot create another appointment through a different hold or idempotency key
+ok 83 - One intent cannot create another appointment through a different hold or idempotency key
+  ---
+  duration_ms: 13.72324
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler
+ok 84 - Interrupted pre-write preparation releases its slot and fences a late handler
+  ---
+  duration_ms: 15.558812
+  type: 'test'
+  ...
+# Subtest: Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+ok 85 - Interrupted pre-write preparation releases its slot and fences a late handler with a late read failure
+  ---
+  duration_ms: 16.199881
+  type: 'test'
+  ...
+# Subtest: A provider write already started remains pending after restart until its exact event is confirmed
+ok 86 - A provider write already started remains pending after restart until its exact event is confirmed
+  ---
+  duration_ms: 14.803802
+  type: 'test'
+  ...
+# Subtest: Opus booking: missing event after write marker retries the exact saved event and confirms once
+ok 87 - Opus booking: missing event after write marker retries the exact saved event and confirms once
+  ---
+  duration_ms: 15.173399
+  type: 'test'
+  ...
+# Subtest: Opus booking: simultaneous recovery polls create only one retry
+ok 88 - Opus booking: simultaneous recovery polls create only one retry
+  ---
+  duration_ms: 14.250541
+  type: 'test'
+  ...
+# Subtest: Opus booking control: lookup-failed never creates a new event or announces confirmation
+ok 89 - Opus booking control: lookup-failed never creates a new event or announces confirmation
+  ---
+  duration_ms: 13.507669
+  type: 'test'
+  ...
+# Subtest: Opus booking control: busy never creates a new event or announces confirmation
+ok 90 - Opus booking control: busy never creates a new event or announces confirmation
+  ---
+  duration_ms: 13.923566
+  type: 'test'
+  ...
+# Subtest: Opus booking control: policy-changed never creates a new event or announces confirmation
+ok 91 - Opus booking control: policy-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 14.767307
+  type: 'test'
+  ...
+# Subtest: Opus booking control: calendar-changed never creates a new event or announces confirmation
+ok 92 - Opus booking control: calendar-changed never creates a new event or announces confirmation
+  ---
+  duration_ms: 13.523132
+  type: 'test'
+  ...
+# Subtest: Opus booking control: no-idempotency never creates a new event or announces confirmation
+ok 93 - Opus booking control: no-idempotency never creates a new event or announces confirmation
+  ---
+  duration_ms: 14.692867
+  type: 'test'
+  ...
+# Subtest: Opus booking control: expired-time never creates a new event or announces confirmation
+ok 94 - Opus booking control: expired-time never creates a new event or announces confirmation
+  ---
+  duration_ms: 13.64348
+  type: 'test'
+  ...
+# Subtest: Opus booking: existing event is reconciled without a write
+ok 95 - Opus booking: existing event is reconciled without a write
+  ---
+  duration_ms: 13.250919
+  type: 'test'
+  ...
+# Subtest: New owner fields remain blank instead of becoming invented availability
+ok 96 - New owner fields remain blank instead of becoming invented availability
+  ---
+  duration_ms: 26.601275
+  type: 'test'
+  ...
+# Subtest: Saved settings round trip with zero notice and independent working-hour edits
+ok 97 - Saved settings round trip with zero notice and independent working-hour edits
+  ---
+  duration_ms: 1.122925
+  type: 'test'
+  ...
+# Subtest: Unchanged blackout keeps exact seconds and absolute instant through timezone changes
+ok 98 - Unchanged blackout keeps exact seconds and absolute instant through timezone changes
+  ---
+  duration_ms: 5.824407
+  type: 'test'
+  ...
+# Subtest: Edited blackout uses the business timezone rather than the browser timezone
+ok 99 - Edited blackout uses the business timezone rather than the browser timezone
+  ---
+  duration_ms: 2.659874
+  type: 'test'
+  ...
+# Subtest: Clock-change gaps and repeated local times require an editable correction
+ok 100 - Clock-change gaps and repeated local times require an editable correction
+  ---
+  duration_ms: 3.481202
+  type: 'test'
+  ...
+# Subtest: listBusy is owner scoped and maps the Google freebusy request and response
+ok 101 - listBusy is owner scoped and maps the Google freebusy request and response
+  ---
+  duration_ms: 37.758129
+  type: 'test'
+  ...
+# Subtest: UTC request bounds and freebusy response bounds fail closed before use
+ok 102 - UTC request bounds and freebusy response bounds fail closed before use
+  ---
+  duration_ms: 1.821341
+  type: 'test'
+  ...
+# Subtest: createEvent uses the deterministic BookingService event ID and getEvent validates it
+ok 103 - createEvent uses the deterministic BookingService event ID and getEvent validates it
+  ---
+  duration_ms: 25.826006
+  type: 'test'
+  ...
+# Subtest: getEvent preserves cancelled provider status for BookingService reconciliation
+ok 104 - getEvent preserves cancelled provider status for BookingService reconciliation
+  ---
+  duration_ms: 0.69467
+  type: 'test'
+  ...
+# Subtest: an expired access token is refreshed, persisted with its refresh token, and never returned
+ok 105 - an expired access token is refreshed, persisted with its refresh token, and never returned
+  ---
+  duration_ms: 1.806889
+  type: 'test'
+  ...
+# Subtest: concurrent expired-token requests coalesce one owner-scoped refresh
+ok 106 - concurrent expired-token requests coalesce one owner-scoped refresh
+  ---
+  duration_ms: 14.827476
+  type: 'test'
+  ...
+# Subtest: a 401 refreshes and retries the Calendar request once
+ok 107 - a 401 refreshes and retries the Calendar request once
+  ---
+  duration_ms: 1.91561
+  type: 'test'
+  ...
+# Subtest: a staggered concurrent 401 reloads a token another request already rotated
+ok 108 - a staggered concurrent 401 reloads a token another request already rotated
+  ---
+  duration_ms: 2.146684
+  type: 'test'
+  ...
+# Subtest: a repeated 401 is not retried or refreshed more than once
+ok 109 - a repeated 401 is not retried or refreshed more than once
+  ---
+  duration_ms: 3.222899
+  type: 'test'
+  ...
+# Subtest: create network and timeout failures are ambiguous without exposing underlying errors
+ok 110 - create network and timeout failures are ambiguous without exposing underlying errors
+  ---
+  duration_ms: 2.38062
+  type: 'test'
+  ...
+# Subtest: the request deadline covers a stalled create response body
+ok 111 - the request deadline covers a stalled create response body
+  ---
+  duration_ms: 21.179266
+  type: 'test'
+  ...
+# Subtest: a known Google 4xx write failure is non-ambiguous and sanitized
+ok 112 - a known Google 4xx write failure is non-ambiguous and sanitized
+  ---
+  duration_ms: 1.293899
+  type: 'test'
+  ...
+# Subtest: tenant and credential failures fail closed before a provider call
+ok 113 - tenant and credential failures fail closed before a provider call
+  ---
+  duration_ms: 0.974545
+  type: 'test'
+  ...
+# Subtest: refresh rejection and persistence failures expose no OAuth or credential material
+ok 114 - refresh rejection and persistence failures expose no OAuth or credential material
+  ---
+  duration_ms: 1.354619
+  type: 'test'
+  ...
+# Subtest: malformed Google response shapes fail closed and create parse failures remain ambiguous
+ok 115 - malformed Google response shapes fail closed and create parse failures remain ambiguous
+  ---
+  duration_ms: 1.114713
+  type: 'test'
+  ...
+# (node:47) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Calendar uses business date and correct 25-hour fall-back day boundaries
+ok 116 - Calendar uses business date and correct 25-hour fall-back day boundaries
+  ---
+  duration_ms: 26.481298
+  type: 'test'
+  ...
+# Subtest: Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+ok 117 - Owner schedule includes overlapping appointments, preserves states and excludes other tenants
+  ---
+  duration_ms: 3.548601
+  type: 'test'
+  ...
+# Subtest: Calendar rejects unsupported filters, impossible dates and missing owner
+ok 118 - Calendar rejects unsupported filters, impossible dates and missing owner
+  ---
+  duration_ms: 2.498245
+  type: 'test'
+  ...
+# Subtest: Busy-time read is scoped and changing the connection in flight rejects the old response
+ok 119 - Busy-time read is scoped and changing the connection in flight rejects the old response
+  ---
+  duration_ms: 7.685777
+  type: 'test'
+  ...
+# Subtest: Provider failure is an error, never a successful empty calendar
+ok 120 - Provider failure is an error, never a successful empty calendar
+  ---
+  duration_ms: 2.572424
+  type: 'test'
+  ...
+1..120
+# tests 120
+# suites 0
+# pass 120
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1062.926987

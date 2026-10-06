@@ -1,0 +1,201 @@
+BASE 73c0062 server/src/calendarTime.js:252-277
+252:   const slots = [];
+253:   for (let dayOffset = 0; dayOffset < days; dayOffset += 1) {
+254:     const localDate = addLocalDays(firstDate, dayOffset);
+255:     if (compareLocalDates(localDate, finalDate) > 0) break;
+256:     for (const window of weekly[weekdayKey(localDate)]) {
+257:       for (let minute = window.startMinute; minute + durationMinutes <= window.endMinute; minute += slotIncrementMinutes) {
+258:         const hour = Math.floor(minute / 60);
+259:         if (requestedPeriods.size && !requestedPeriods.has(timeOfDayFor(hour))) continue;
+260:         const localTime = `${pad(hour)}:${pad(minute % 60)}`;
+261:         for (const startAtUtc of localDateTimeCandidates(localDate, localTime, timeZone)) {
+262:           const startMs = new Date(startAtUtc).getTime();
+263:           if (startMs < noticeBoundary) continue;
+264:           const endAtUtc = new Date(startMs + durationMinutes * 60000).toISOString();
+265:           if (closed.some(item => intervalsOverlap(startAtUtc, endAtUtc, item.startAtUtc, item.endAtUtc))) continue;
+266:           slots.push({
+267:             startAtUtc,
+268:             endAtUtc,
+269:             startLocal: formatLocalIso(startAtUtc, timeZone),
+270:             endLocal: formatLocalIso(endAtUtc, timeZone)
+271:           });
+272:         }
+273:       }
+274:     }
+275:   }
+276:   return slots.sort((left, right) => left.startAtUtc.localeCompare(right.startAtUtc));
+277: }
+
+BASE 73c0062 server/src/bookingService.js:642-675
+642:       const nowIso = now.toISOString();
+643:       try {
+644:         context(ownerId, intentId, now);
+645:         const holdRow = db.prepare(`SELECT id, status, expiresAtUtc FROM bookingHolds
+646:           WHERE id = ? AND ownerId = ? AND intentId = ?`).get(holdId, ownerId, intentId);
+647:         if (!holdRow) throw bookingError('HOLD_NOT_FOUND', 404, 'The held time was not found.');
+648:         if (holdRow.status === 'CONFIRMING' || holdRow.status === 'CONFIRMED') {
+649:           throw bookingError('HOLD_NOT_RELEASABLE', 409, 'This hold cannot be released after confirmation has started.');
+650:         }
+651:         if (!['HELD', 'EXPIRED', 'RELEASED'].includes(holdRow.status)) {
+652:           throw bookingError('HOLD_NOT_RELEASABLE', 409, 'This hold cannot be released.');
+653:         }
+654:         if (holdRow.status !== 'RELEASED') {
+655:           db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+656:             WHERE id = ? AND ownerId = ? AND intentId = ?`).run(nowIso, holdId, ownerId, intentId);
+657:         }
+658:         const body = { status: 'RELEASED', holdId };
+659:         insertReceipt(ownerId, operation, idempotencyKey, intentId, digest, 200, body, nowIso);
+660:         return { response: { statusCode: 200, body } };
+661:       } catch (error) {
+662:         return storedErrorResult(error, ownerId, operation, idempotencyKey, intentId, digest, nowIso);
+663:       }
+664:     });
+665:     if (transactionResult.existing) return transactionResult.existing;
+666:     if (transactionResult.error) throwStored(transactionResult.error, transactionResult.body);
+667:     return transactionResult.response;
+668:   }
+669: 
+670:   function validateConfirmation(row, holdRow, slotId, body, now) {
+671:     if (!record(body) || body.explicitConfirmation !== true || body.addressConfirmation !== true) {
+672:       throw invalid('Explicit date, time, and address confirmation is required.');
+673:     }
+674:     if (requestDigest(slotId) !== holdRow.slotIdDigest) throw invalid('The confirmed time does not match the held time.');
+675:     const { payload, policy } = validateSlot(slotId, row.ownerId, row.intentId, row, now, { checkExpiry: false });
+
+BASE 73c0062 server/src/bookingService.js:713-783
+713: 
+714:   function openConfirmationId(confirmationId, expected, now) {
+715:     let payload;
+716:     try { payload = openSlotToken(confirmationId, slotTokenSecret); }
+717:     catch { throw confirmationNotFound(); }
+718:     if (!record(payload) || payload.kind !== CONFIRMATION_HANDLE_KIND ||
+719:         payload.ownerId !== expected.ownerId || payload.intentId !== expected.intentId ||
+720:         !uuid(payload.appointmentId) || typeof payload.expiresAtUtc !== 'string') {
+721:       throw confirmationNotFound();
+722:     }
+723:     try {
+724:       if (instant(payload.expiresAtUtc, 'Confirmation expiry') <= now) throw confirmationNotFound();
+725:     } catch (error) {
+726:       if (error instanceof BookingServiceError) throw error;
+727:       throw confirmationNotFound();
+728:     }
+729:     return payload;
+730:   }
+731: 
+732:   function finalizeError({ ownerId, intentId, idempotencyKey, appointmentId, holdId, error, releaseHold }) {
+733:     const now = nowFrom(clock);
+734:     const nowIso = now.toISOString();
+735:     const body = errorBody(error);
+736:     const interrupted = immediate(() => {
+737:       const current = db.prepare('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+738:       if (current?.providerEventStatus === 'CONFIRMATION_INTERRUPTED') return true;
+739:       db.prepare(`UPDATE appointments SET status = ?, providerEventStatus = ?, updatedAt = ?
+740:         WHERE id = ? AND ownerId = ?`).run(
+741:         error.code === 'SLOT_UNAVAILABLE' ? 'CONFLICTED' : 'PROVIDER_FAILED',
+742:         error.code, nowIso, appointmentId, ownerId
+743:       );
+744:       const holdRow = db.prepare('SELECT expiresAtUtc FROM bookingHolds WHERE id = ? AND ownerId = ?').get(holdId, ownerId);
+745:       const holdStatus = releaseHold ? 'RELEASED' : holdRow && instant(holdRow.expiresAtUtc, 'Hold expiry') > now ? 'HELD' : 'EXPIRED';
+746:       db.prepare('UPDATE bookingHolds SET status = ?, updatedAt = ? WHERE id = ? AND ownerId = ?')
+747:         .run(holdStatus, nowIso, holdId, ownerId);
+748:       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, error.statusCode, body, nowIso);
+749:     });
+750:     if (interrupted) return responseFromReceipt(receiptStatement.get(ownerId, 'confirm', idempotencyKey));
+751:     throwStored(error, body);
+752:   }
+753: 
+754:   function finalizePending({ ownerId, intentId, idempotencyKey, appointmentId, confirmationId, holdId, providerEventId: eventId }) {
+755:     const nowIso = nowFrom(clock).toISOString();
+756:     const body = pendingConfirmationBody(confirmationId, appointmentId);
+757:     immediate(() => {
+758:       db.prepare(`UPDATE appointments SET status = 'PENDING_CONFIRMATION',
+759:         providerEventId = ?, providerEventStatus = 'PENDING_CONFIRMATION', updatedAt = ?
+760:         WHERE id = ? AND ownerId = ?`).run(eventId, nowIso, appointmentId, ownerId);
+761:       db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMING', updatedAt = ?
+762:         WHERE id = ? AND ownerId = ?`).run(nowIso, holdId, ownerId);
+763:       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, 202, body, nowIso);
+764:     });
+765:     return { statusCode: 202, body };
+766:   }
+767: 
+768:   function finalizeConfirmed({ ownerId, intentId, idempotencyKey, appointmentId, holdId, providerEventId: eventId, result }) {
+769:     const nowIso = nowFrom(clock).toISOString();
+770:     const body = confirmedAppointmentBody({ id: appointmentId, ...result });
+771:     immediate(() => {
+772:       db.prepare(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
+773:         providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
+774:         WHERE id = ? AND ownerId = ?`).run(eventId, nowIso, nowIso, appointmentId, ownerId);
+775:       db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
+776:         WHERE id = ? AND ownerId = ?`).run(nowIso, holdId, ownerId);
+777:       db.prepare(`INSERT OR IGNORE INTO outboxEvents (
+778:         id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
+779:       ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
+780:         `${appointmentId}:booked`, ownerId, appointmentId, JSON.stringify(body), nowIso, nowIso
+781:       );
+782:       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, 201, body, nowIso);
+783:     });
+
+BASE 73c0062 server/src/bookingService.js:900-962
+900:         releaseHold: true
+901:       });
+902:     }
+903: 
+904:     const providerRequest = {
+905:       ownerId,
+906:       provider: phase.policy.provider,
+907:       calendarId: phase.policy.calendarId,
+908:       eventId: phase.providerEventId,
+909:       appointmentId: phase.appointmentId,
+910:       startAtUtc: phase.holdRow.startAtUtc,
+911:       endAtUtc: phase.holdRow.endAtUtc,
+912:       timezone: phase.policy.timezone,
+913:       bookingMode: phase.policy.bookingMode,
+914:       customer: phase.customer,
+915:       location: phase.location,
+916:       sourceType: phase.row.sourceType,
+917:       sourceId: phase.row.sourceId,
+918:       tierName: phase.tierName
+919:     };
+920:     const claimed = db.prepare(`UPDATE appointments SET providerEventStatus = 'PENDING_PROVIDER', updatedAt = ?
+921:       WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+922:         AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
+923:       nowFrom(clock).toISOString(), phase.appointmentId, ownerId, intentId
+924:     );
+925:     if (claimed.changes !== 1) return currentReceipt(ownerId, 'confirm', idempotencyKey, intentId, digest);
+926:     let providerResult;
+927:     try {
+928:       providerResult = await calendar.createEvent(providerRequest);
+929:     } catch (error) {
+930:       if (!error?.ambiguous) {
+931:         return finalizeError({
+932:           ownerId, intentId, idempotencyKey,
+933:           appointmentId: phase.appointmentId, holdId: phase.holdRow.id,
+934:           error: providerError(), releaseHold: false
+935:         });
+936:       }
+937:       try {
+938:         const recovered = typeof calendar.getEvent === 'function'
+939:           ? await calendar.getEvent({
+940:               ownerId, provider: phase.policy.provider, calendarId: phase.policy.calendarId,
+941:               eventId: phase.providerEventId
+942:             })
+943:           : null;
+944:         providerResult = recovered || { status: 'PENDING_CONFIRMATION' };
+945:       } catch {
+946:         providerResult = { status: 'PENDING_CONFIRMATION' };
+947:       }
+948:     }
+949:     const status = confirmationStatus(providerResult, providerRequest);
+950:     if (['FAILED', 'CANCELLED', 'CANCELED'].includes(status)) {
+951:       return finalizeError({
+952:         ownerId, intentId, idempotencyKey,
+953:         appointmentId: phase.appointmentId, holdId: phase.holdRow.id,
+954:         error: providerError(), releaseHold: status !== 'FAILED'
+955:       });
+956:     }
+957:     const result = {
+958:       provider: phase.policy.provider,
+959:       bookingMode: phase.policy.bookingMode,
+960:       timezone: phase.policy.timezone,
+961:       startAtUtc: phase.holdRow.startAtUtc,
+962:       endAtUtc: phase.holdRow.endAtUtc

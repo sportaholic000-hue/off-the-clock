@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {build} from 'esbuild';
+import {application} from './fixtures/bookingCalendarApplication20261006.mjs';
+
+test('real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar',{timeout:60000},async t=>{
+  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
+  const browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});
+  t.after(()=>browser.close());
+  const s=await application(t),i=s.intent();
+  const output=await build({absWorkingDir:process.cwd(),stdin:{resolveDir:process.cwd(),loader:'jsx',contents:`
+    import React from 'react';import{createRoot}from'react-dom/client';
+    import Dashboard from './client/src/dashboard.jsx';import Calendar from './client/src/calendar.jsx';
+    import{WidgetBooking}from'./client/src/widgetBooking.jsx';import{api}from'./client/src/api.js';
+    const root=createRoot(document.getElementById('root'));let sequence=0;
+    window.mount=(kind,props={})=>root.render(kind==='dashboard'?<Dashboard key={++sequence}/>:kind==='calendar'?<Calendar key={++sequence}/>:<WidgetBooking key={++sequence} {...props} request={api} cachePrefix="synthetic-booking-"/>);
+  `},bundle:true,write:false,outfile:'synthetic-booking.js',format:'iife',platform:'browser',define:{'import.meta.env.VITE_API_URL':JSON.stringify(s.base),'process.env.NODE_ENV':'"development"'},logLevel:'silent'});
+  const script=output.outputFiles.find(f=>f.path.endsWith('.js')).text,styles=output.outputFiles.find(f=>f.path.endsWith('.css'))?.text||'';
+  const context=await browser.newContext({timezoneId:'America/Los_Angeles',locale:'en-US'}),page=await context.newPage(),errors=[];
+  await page.clock.setFixedTime(s.clock());page.on('pageerror',e=>errors.push(e.message));
+  await page.route('**/*',route=>new URL(route.request().url()).origin===s.base?route.continue():route.abort());
+  await page.route(s.base+'/synthetic-ui',route=>route.fulfill({contentType:'text/html',body:'<style>'+styles.replaceAll('</style','<\\/style')+'</style><div id="root"></div><script>'+script.replaceAll('</script','<\\/script')+'</script>'}));
+  await page.goto(s.base+'/synthetic-ui');
+  await page.evaluate(props=>window.mount('widget',props),{result:{bookingToken:i.bookingToken,quoteId:i.intentId,resultType:'INSTANT_ESTIMATE_READY'},initialDraft:{customer:s.filters.customer,location:s.filters.location}});
+  await page.getByLabel('Have the work or measurements changed since this estimate?').selectOption('UNCHANGED');
+  await page.getByRole('button',{name:'Book it',exact:true}).click();
+  await page.getByText('Times shown in America/Moncton.',{exact:true}).waitFor();
+  const slot=page.getByRole('radio',{name:/Sunday, November 1 at 9:00 AM AST/});await slot.check();
+  await page.getByRole('button',{name:'Review appointment',exact:true}).click();
+  await page.getByLabel('I confirm this appointment, contact information and job site.').check();
+  await page.getByRole('button',{name:'Confirm appointment',exact:true}).click();
+  await page.getByText('Site visit booked',{exact:true}).waitFor();
+  const row=s.db.prepare("SELECT * FROM appointments WHERE ownerId='synthetic-a'").get();assert.equal(row.status,'CONFIRMED');assert.equal(row.startAtUtc,'2026-11-01T13:00:00.000Z');
+  assert.equal(await page.evaluate(at=>new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit'}).format(new Date(at)),row.startAtUtc),'5:00 AM');
+  await page.evaluate(token=>{localStorage.setItem('otc_token',token);window.mount('dashboard');},s.tokens['synthetic-a']);
+  const counter=page.locator('.counter-card').filter({hasText:'BOOKED ON CALENDAR'});await counter.waitFor();assert.equal(await counter.locator('.counter-value').innerText(),'1');
+  await page.evaluate(()=>window.mount('calendar'));
+  const article=page.getByRole('article',{name:'Confirmed: [SYNTHETIC] Caller'});await article.waitFor();assert.match(await article.innerText(),/Nov 1, 2026.*9:00 AM/);
+  await page.evaluate(token=>{localStorage.setItem('otc_token',token);window.mount('calendar');},s.tokens['synthetic-b']);
+  await page.getByText('No appointments in this week.',{exact:true}).waitFor();assert.equal(await page.getByRole('article').count(),0);
+  assert.equal(Object.keys(s.provider().events).length,1);assert.deepEqual(errors,[]);
+});
