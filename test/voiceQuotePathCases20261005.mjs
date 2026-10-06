@@ -17,11 +17,13 @@ import {validateVoiceToolCall,getVoiceToolDeclarations} from '../server/src/voic
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
 import {projectVoiceQuote} from '../server/src/voice/voiceQuotePresentation.js';
 import {saveApplicationBook,readApplicationBook,approveApplicationService,applicationStatus,bookQuoteStatuses,applicationStatusCacheCounts} from '../server/src/quoteDoneBridge.js';
+import {PRICE_BASIS_CATEGORIES} from '../server/quote-engine-vnext/index.js';
 
 const ACCOUNT='AC'+'a'.repeat(32),FROM='+19025550100',TO='+19025550101',FALLBACK='+19025550199';
 const ORIGIN='https://voice.example.test',NOW='2026-10-05T12:00:00.000Z';
 const TOKEN='synthetic-signature-secret',HANDLE='x'.repeat(43),clock=()=>new Date(NOW);
-const categories=['labor','material','removal','prep','addon','travel','disposal','permit','overhead','surcharge','equipment','other'];
+// Use the engine's own category list so synthetic services cannot drift from the current contract.
+const categories=[...PRICE_BASIS_CATEGORIES];
 const map=value=>Object.fromEntries(categories.map(key=>[key,value]));
 async function until(predicate,label='condition'){
   const deadline=Date.now()+10000;while(Date.now()<deadline){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,10));}throw Error('Timed out waiting for '+label);

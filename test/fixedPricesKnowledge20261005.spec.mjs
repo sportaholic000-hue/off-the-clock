@@ -42,7 +42,9 @@ test('the call instructions carry the knowledge section and allow listed prices 
   assert.match(prompt, /owner's listed prices in knowledge\.prices/);
   assert.match(prompt, /This works for any kind of business/);
   assert.match(prompt, /Listed prices from the owner may still be given exactly as written/);
-  assert.match(prompt, /never calculate, total, combine, discount, convert or estimate/);
+  // Owner ruling 2026-10-06: multiply one listed unit price by the caller's quantity; no other arithmetic.
+  assert.match(prompt, /multiply that one listed unit price by the caller's stated quantity/);
+  assert.match(prompt, /That is the only arithmetic allowed: never total different items, add tax, apply discounts or bulk pricing, convert units, or estimate/);
   assert.match(prompt, /never say "price book"/);
   assert.match(prompt, /Sorry, I didn't catch that/);
   assert.match(prompt, /discount codes/);

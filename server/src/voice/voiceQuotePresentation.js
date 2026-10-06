@@ -16,12 +16,14 @@ const list = (value, maximum = 30) => {
 };
 const money = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
 
-function optionProjection(option, index) {
+function optionProjection(option, index, parent = {}) {
   if (!record(option) || !money(option.lowEstimate) || !money(option.highEstimate) || option.lowEstimate > option.highEstimate) throw new TypeError('Invalid voice quote range.');
   const output = { tierName: text(option.tierName, 200) || 'Option ' + (index + 1), lowEstimate: option.lowEstimate, highEstimate: option.highEstimate };
   if (money(option.midEstimate)) output.midEstimate = option.midEstimate;
+  // Each spoken option carries its own currency, tax and unit context; inherit
+  // the quote-level value when the engine states it once for all options.
   for (const key of ['currency', 'taxTreatment', 'priceUnit']) {
-    const value = text(option[key], 200);
+    const value = text(option[key], 200) || text(parent?.[key], 200);
     if (value) output[key] = value;
   }
   output.skippedAddons = list(option.skippedAddons);
@@ -57,7 +59,7 @@ export function projectVoiceQuote(response, quoteHandle, followUps = []) {
     for (const key of ['currency', 'taxTreatment', 'priceUnit']) if (text(estimate?.[key], 200)) output[key] = estimate[key];
     if (Array.isArray(estimate?.options) && estimate.options.length) {
       if (estimate.options.length > 3) throw new TypeError('At most three quote options are supported.');
-      output.options = estimate.options.map(optionProjection);
+      output.options = estimate.options.map((option, index) => optionProjection(option, index, estimate));
     }
     output.priceDrivers = list(estimate?.priceDrivers);
     output.skippedAddons = list(estimate?.skippedAddons);
