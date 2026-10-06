@@ -1,5 +1,6 @@
 import {customerQuoteFields} from '../../server/customerQuoteFields.js';
 import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
+import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitions} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
@@ -17,15 +18,24 @@ export function offeringTierFields(meta,service) {
   const scopeFields=Object.keys(scopeRates).length?[{field:'scopeRates',label:'Additional scope prices',type:'json',tree:{depth:1,leafKeys:Object.keys(scopeRates),leafMoneyKinds:Object.fromEntries(Object.entries(scopeRates).map(([key,f])=>[key,f.moneyKind]))}}]:[];
   const fields=!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration'].includes(field.type)):
     [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{}),leafMoneyKinds:Object.fromEntries(Object.entries(offeringRateDefinitions(service.serviceType,p)).map(([key,f])=>[key,f.moneyKind]))}}].filter(Boolean);
-  return [...fields,...scopeFields];
+  const installedPaths=[...new Set([
+    ...Object.keys(installedPriceDefinitions(service.serviceType,p)),
+    ...Object.keys(p.installedLaborPercent||{}),
+    ...Object.keys(p.installedMaterialsPercent||{})
+  ])].sort();
+  const shareFields=installedPaths.length?['installedLaborPercent','installedMaterialsPercent'].map(field=>{
+    const existing=meta.fields.find(item=>item.field===field)||{};
+    return {...existing,field,type:'json',requiredAtBase:false,
+      label:existing.label||(field==='installedLaborPercent'?'Labor portion of installed prices':'Materials share of installed prices'),
+      tree:{...(existing.tree||{}),depth:1,leafKeys:installedPaths}};
+  }):[];
+  return [...fields,...shareFields,...scopeFields];
 }
 
 export function OfferingEditor({service,meta,onChange}) {
   const p=servicePricing(service),mode=p.offeringMode,d=p.offeringDetails||{},rates=p.offeringRates||{},fence=service.serviceType.startsWith('FENCING_'),interior=service.serviceType==='INTERIOR_PAINTING';
   const [gateName,setGateName]=useState(''),[gateError,setGateError]=useState(''),[typeName,setTypeName]=useState(''),[typeError,setTypeError]=useState('');
   const fenceTypes=service.knownOfferings?.fenceType||{};
-  // The fence type is a registered product: choose one, or name a new one, which
-  // registers it through the same conversion as every other product name.
   const useFenceType=name=>{const chosen=chooseFenceType(service,name);if(chosen.error){setTypeError(chosen.error);return;}onChange(chosen.service);setTypeName('');setTypeError('');};
   const baseline=offeringPriceBaseline(service.serviceType),confirmation=offeringBaselineConfirmation(service.serviceType,p);
   const legacyCondition=d[baseline.field]!==undefined&&d[baseline.field]!==baseline.value;

@@ -1,17 +1,15 @@
 import Database from 'better-sqlite3';
-import { mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync, existsSync } from 'node:fs';
-import { convertPricebookMoney } from './priceBookMoney.js';
-import { dirname, isAbsolute, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {mkdirSync,readFileSync,writeFileSync,renameSync,unlinkSync,openSync,fsyncSync,closeSync,existsSync} from 'node:fs';
+import {convertPricebookMoney} from './priceBookMoney.js';
+import {dirname,isAbsolute,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
-import { types } from 'node:util';
-import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel } from './priceBookMetadata.js';
-import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
+import {types} from 'node:util';
+import {ALL_OWNER_FIELDS,CLASS2_DEFAULTS_BY_SERVICE,SERVICE_NAMES,ownerFieldLabel} from './priceBookMetadata.js';
+import {class2FieldCopy,displayPricingValue} from './priceBookCopy.js';
+import {db as applicationDb} from './src/db.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-// Read at use, never at module load. Production sets PRICEBOOK_PATH (on the
-// persistent volume) during startup; a module that loads earlier must not
-// freeze the default container folder as the storage location.
 export function pricebookDirectory() {
   const configuredDir = process.env.PRICEBOOK_PATH;
   return configuredDir
@@ -19,37 +17,65 @@ export function pricebookDirectory() {
     : resolve(projectRoot, 'data', 'pricebooks');
 }
 
-// A saved book that cannot be read, or that is not this owner's book, stops
-// quoting for that owner. It is never replaced by defaults, a temporary file or
-// any earlier copy, because that would quote outdated prices without anyone
-// noticing. The owner sees an error until the file is restored on purpose.
-export function unreadablePricebook(ownerId, reason) {
-  const error = new Error(`The saved price book for ${ownerId} cannot be used (${reason}). Quoting is paused until it is restored.`);
+export function unreadablePricebook(ownerId, reason, {ownerRecovery=false}={}) {
+  const recovery = ownerRecovery
+    ? ' Restore the saved price-book file from backup or contact support; do not create a replacement book.'
+    : '';
+  const error = new Error(`The saved price book for ${ownerId} cannot be used (${reason}). Quoting is paused until it is restored.${recovery}`);
   error.code = 'PRICEBOOK_UNREADABLE';
-  error.statusCode = 503;
+  // Recovery conflicts must be visible to the authenticated owner. Other
+  // unreadable storage failures remain service-unavailable responses.
+  error.statusCode = ownerRecovery ? 409 : 503;
   error.retryable = false;
   return error;
 }
 
+let creationRecordsReady = false;
+function ensureCreationRecords() {
+  if (creationRecordsReady) return;
+  applicationDb.exec(`CREATE TABLE IF NOT EXISTS priceBookCreationRecords (
+    ownerId TEXT PRIMARY KEY,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL
+  )`);
+  creationRecordsReady = true;
+}
+export function pricebookCreationRecorded(ownerId) {
+  ensureCreationRecords();
+  return Boolean(applicationDb.prepare('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
+}
+function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
+  ensureCreationRecords();
+  applicationDb.prepare(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
+    VALUES(?,?,?) ON CONFLICT(ownerId) DO UPDATE SET updatedAt=excluded.updatedAt`).run(String(ownerId),timestamp,timestamp);
+}
+function missingCreatedPricebook(ownerId) {
+  return unreadablePricebook(ownerId, 'a durable creation record exists but the saved file is missing', {ownerRecovery:true});
+}
+function blankPricebook(ownerId) {
+  return {
+    ownerId,
+    services: [],
+    defaults: {
+      markupPercent: 30,
+      markupMode: 'markup',
+      taxMode: 'TAX_NONE',
+      taxPercent: 0,
+      rangeBufferPercent: 10,
+      peakMonths: [],
+      peakSurchargePercent: 0
+    }
+  };
+}
+
 export function loadPricebook(ownerId) {
+  const target = resolve(pricebookDirectory(), `${ownerId}.json`);
   let text;
-  try { text = readFileSync(resolve(pricebookDirectory(), `${ownerId}.json`), 'utf8'); }
+  try { text = readFileSync(target, 'utf8'); }
   catch (err) {
     if (err.code === 'ENOENT') {
-      return {
-        ownerId,
-        services: [],
-        defaults: {
-          markupPercent: 30,
-          markupMode: 'markup',
-          taxMode: 'TAX_NONE',
-          taxPercent: 0,
-          rangeBufferPercent: 10,
-          // Optional seasonal labor surcharge: off unless the owner turns it on.
-          peakMonths: [],
-          peakSurchargePercent: 0
-        }
-      };
+      if (pricebookCreationRecorded(ownerId)) throw missingCreatedPricebook(ownerId);
+      return blankPricebook(ownerId);
     }
     throw err;
   }
@@ -60,16 +86,11 @@ export function loadPricebook(ownerId) {
   if (Object.hasOwn(book, 'ownerId') && book.ownerId !== ownerId) throw unreadablePricebook(ownerId, 'the file belongs to a different business');
   if (!Array.isArray(book.services)) throw unreadablePricebook(ownerId, 'the service list is missing');
   if (book.defaults !== undefined && (!book.defaults || typeof book.defaults !== 'object' || Array.isArray(book.defaults))) throw unreadablePricebook(ownerId, 'the business settings are malformed');
+  // Backfill the durable record for books created before this guard existed.
+  recordPricebookCreation(ownerId, typeof book.updatedAt === 'string' ? book.updatedAt : undefined);
   return book;
 }
 
-// The replacement below is atomic (rename over the old file) but only durable
-// once the directory entry itself is flushed. Without that flush a power loss
-// can bring back the previous file after the owner was told the save
-// succeeded. Windows cannot open a directory for flushing, so it is skipped
-// there; deployment is Linux.
-// Each operation calls the current node:fs binding, so tooling that replaces an
-// fs function (and syncs ESM exports) is honoured.
 const defaultFileOps = {
   writeFileSync: (...args) => writeFileSync(...args), renameSync: (...args) => renameSync(...args), unlinkSync: (...args) => unlinkSync(...args),
   openSync: (...args) => openSync(...args), fsyncSync: (...args) => fsyncSync(...args), closeSync: (...args) => closeSync(...args), platform: process.platform
@@ -81,26 +102,10 @@ export function flushDirectory(path, ops = defaultFileOps) {
   finally { ops.closeSync(descriptor); }
 }
 
-// A replacement whose durability is not confirmed pauses quoting for that owner.
-// The marker file is written and flushed BEFORE the saved book is replaced and
-// removed only after the replacement is confirmed on disk, so a failed flush, a
-// crash or a restart can never leave quoting running on an unconfirmed save. The
-// owner can still open the book; the next fully confirmed save clears the marker.
 const unconfirmedMarker = (directory, ownerId) => resolve(directory, `${ownerId}.unconfirmed`);
 export function pricebookSaveUnconfirmed(ownerId) { return existsSync(unconfirmedMarker(pricebookDirectory(), ownerId)); }
 const notDurable = cause => Object.assign(new Error('The price book change could not be confirmed on disk. Quoting is paused for this business until a save is confirmed. Save again.'), { code:'PRICEBOOK_NOT_DURABLE', statusCode:503, retryable:true, cause });
 
-// Writes a complete sibling file and the unconfirmed marker (both flushed),
-// renames the file over the saved book, flushes the directory, then removes the
-// marker. Rules:
-// - A marker left by an earlier unconfirmed save is never removed by a save that
-//   fails before replacing the book: quoting stays paused on the unconfirmed book.
-// - Once the replacement is confirmed on disk the save has succeeded. If removing
-//   the marker fails, quoting stays paused and the save reports that truthfully;
-//   if only the flush after removing it fails, the save is durable and quoting
-//   resumes (after a crash the marker could reappear, which pauses quoting again:
-//   the safe direction).
-// Exported with replaceable file operations so each failure can be tested.
 export function writePricebookFile(directory, ownerId, serialized, ops = defaultFileOps, beforeReplace = null) {
   const target = resolve(directory, `${ownerId}.json`);
   const temporary = resolve(directory, `${ownerId}.${crypto.randomUUID()}.tmp`);
@@ -111,24 +116,15 @@ export function writePricebookFile(directory, ownerId, serialized, ops = default
   try { ops.writeFileSync(temporary, serialized, { flag: 'wx', flush: true }); }
   catch (error) { if (error.code !== 'EEXIST') cleanup(error, [temporary]); throw error; }
   try { ops.writeFileSync(marker, 'unconfirmed price-book replacement\n', { flush: true }); flushDirectory(directory, ops); }
-  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }   // nothing replaced
-  // Last check before replacing: the caller still holds its save lock.
+  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }
   try { beforeReplace?.(); ops.renameSync(temporary, target); }
-  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }    // nothing replaced
-  try { flushDirectory(directory, ops); } catch (cause) { throw notDurable(cause); }   // marker stays: quoting paused
+  catch (error) { cleanup(error, [temporary, ...ownMarker]); throw error; }
+  try { flushDirectory(directory, ops); } catch (cause) { throw notDurable(cause); }
   try { ops.unlinkSync(marker); }
   catch (cause) { throw Object.assign(new Error('The price book was saved, but quoting could not be resumed. Quoting stays paused for this business until the next successful save.'), { code:'PRICEBOOK_PAUSE_NOT_CLEARED', statusCode:503, retryable:true, cause }); }
-  try { flushDirectory(directory, ops); } catch { /* the replacement is durable; see the rules above */ }
+  try { flushDirectory(directory, ops); } catch { /* durable replacement; a reappearing marker fails closed */ }
 }
 
-// A per-owner SQLite transaction locks the whole read-check-write sequence.
-// SQLite releases its OS lock on close or process death; no stale lock record is
-// recovered or unlinked. Different owners use different files and do not wait
-// for each other's saves. The files live beside the price-book directory.
-// The transaction writes no SQLite data: the JSON replacement is the durable
-// save, so there is no auxiliary COMMIT after the book has already been saved.
-// Lock files from older implementations are ignored. All writer processes must
-// run this protocol on a local filesystem, as used by the deployment.
 const SAVE_WAIT_MS = 2000;
 const heldSaves = new Set();
 function runSaveWork(work) {
@@ -137,13 +133,11 @@ function runSaveWork(work) {
   if (result && typeof result.then === 'function') throw new Error('Price-book saves must run synchronously inside the save lock.');
   return result;
 }
-function closeSaveMutex(db) {
-  try { db.close(); }
+function closeSaveMutex(database) {
+  try { database.close(); }
   catch {
-    // Cleanup cannot undo a confirmed JSON replacement or change its result.
-    // Retry a still-open handle, and surface an operational warning if needed.
-    try { if (db.open) db.close(); } catch {}
-    if (db.open) process.emitWarning('The price-book save lock could not be closed; restart this worker before retrying saves.', { code:'PRICEBOOK_LOCK_RELEASE_FAILED' });
+    try { if (database.open) database.close(); } catch {}
+    if (database.open) process.emitWarning('The price-book save lock could not be closed; restart this worker before retrying saves.', { code:'PRICEBOOK_LOCK_RELEASE_FAILED' });
   }
 }
 const busySave = cause => Object.assign(new Error('Another save for this price book is in progress. Reload and try again; nothing was changed.'), { code:'PRICEBOOK_BUSY', statusCode:409, cause });
@@ -153,32 +147,46 @@ export function withPricebookLock(ownerId, work) {
   const directory = resolve(pricebookDirectory()) + '.saves';
   mkdirSync(directory, { recursive: true });
   const filename = crypto.createHash('sha256').update(ownerKey).digest('hex') + '.sqlite';
-  const db = new Database(resolve(directory, filename), { timeout: SAVE_WAIT_MS });
+  const mutex = new Database(resolve(directory, filename), { timeout: SAVE_WAIT_MS });
   try {
-    try { db.exec('BEGIN IMMEDIATE'); }
+    try { mutex.exec('BEGIN IMMEDIATE'); }
     catch (error) { if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') throw busySave(error); throw error; }
     heldSaves.add(ownerKey);
     return runSaveWork(work);
-  } finally { heldSaves.delete(ownerKey); closeSaveMutex(db); }
+  } finally { heldSaves.delete(ownerKey); closeSaveMutex(mutex); }
+}
+
+const SERVICE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+function normalizedServices(services) {
+  const seen = new Set();
+  return (services || []).map((service, index) => {
+    if (!service || typeof service !== 'object' || Array.isArray(service)) {
+      const error = new Error(`Service ${index + 1} must be an object.`); error.statusCode = 400; throw error;
+    }
+    const supplied = typeof service.id === 'string' ? service.id.trim() : '';
+    const id = supplied || crypto.randomUUID();
+    if (!SERVICE_ID.test(id)) { const error = new Error('Every service must have its own valid UUID.'); error.statusCode = 400; throw error; }
+    const key = id.toLowerCase();
+    if (seen.has(key)) { const error = new Error('Every service must have its own unique UUID.'); error.statusCode = 400; throw error; }
+    seen.add(key);
+    return { ...service, id };
+  });
 }
 
 export function savePricebook(ownerId, data) {
-  // Every write is serialized, even from a caller that did not take the lock itself.
   if (!heldSaves.has(String(ownerId))) return withPricebookLock(ownerId, () => savePricebook(ownerId, data));
   const dir = pricebookDirectory();
+  const target = resolve(dir, `${ownerId}.json`);
+  if (pricebookCreationRecorded(ownerId) && !existsSync(target)) throw missingCreatedPricebook(ownerId);
   mkdirSync(dir, { recursive: true });
   const next = {
     ...data,
     ownerId,
     updatedAt: new Date().toISOString(),
-    services: (data.services || []).map(service => ({
-      id: service.id || crypto.randomUUID(),
-      ...service
-    }))
+    services: normalizedServices(data.services)
   };
-  // A failed write, rename or directory flush must never truncate the last
-  // accepted owner data or report an unconfirmed save as successful.
   writePricebookFile(dir, ownerId, JSON.stringify(next, null, 2));
+  recordPricebookCreation(ownerId, next.updatedAt);
   return { success: true, pricebook: next };
 }
 
@@ -186,7 +194,6 @@ export function hasPricing(ownerId) {
   return loadPricebook(ownerId).services.filter(service => service.active).length > 0;
 }
 
-// Unit-aware conversion occurs only at the application's dollar/cent boundary.
 export const dollarsToCents = data => convertPricebookMoney(data, 'toCents');
 export const centsToDollars = data => convertPricebookMoney(data, 'toDollars');
 
@@ -248,16 +255,11 @@ export function contractorValidationMessage(input, pricebook = {}) {
     /defaults\.([A-Za-z][A-Za-z0-9]*)(?:\.([A-Za-z0-9_]+))?/g,
     (matched, field, category) => `${DEFAULT_DISPLAY_NAMES[field] || 'Business-wide pricing setting'}${category ? `: ${displayPricingValue(category)}` : ''}`
   );
-  for (const [field, label] of Object.entries(DEFAULT_DISPLAY_NAMES)) {
-    message = message.replace(new RegExp(`\\b${field}\\b`, 'g'), label);
-  }
-  for (const [serviceType, label] of Object.entries(SERVICE_NAMES)) {
-    message = message.replace(new RegExp(`\\b${serviceType}\\b`, 'g'), label);
-  }
+  for (const [field, label] of Object.entries(DEFAULT_DISPLAY_NAMES)) message = message.replace(new RegExp(`\\b${field}\\b`, 'g'), label);
+  for (const [serviceType, label] of Object.entries(SERVICE_NAMES)) message = message.replace(new RegExp(`\\b${serviceType}\\b`, 'g'), label);
   message = message.replace(/\b(?:per_[A-Za-z0-9_]+|[a-z]+_[a-z0-9_]+)\b/g, value => displayPricingValue(value));
 
   const rawIdentifier = /\b[a-z][a-z0-9]*(?:[A-Z][A-Za-z0-9]*)+\b|\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b|\b[a-z]+(?:_[A-Za-z0-9]+)+\b/;
   if (rawIdentifier.test(message)) return 'Review the highlighted pricing values and try again.';
   return message;
 }
-

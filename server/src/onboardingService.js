@@ -73,9 +73,7 @@ function requireCalendarOwner(ownerId) {
   const owner = ownerQuery(`SELECT id, timezone FROM users
     WHERE id = ? AND (ownerId = ? OR id = ?) AND role = 'owner'`)
     .get(ownerId, ownerId, ownerId);
-  if (!owner) {
-    throw onboardingError('Owner account not found', { code: 'OWNER_NOT_FOUND', statusCode: 404 });
-  }
+  if (!owner) throw onboardingError('Owner account not found', { code: 'OWNER_NOT_FOUND', statusCode: 404 });
   return { owner, timezone: normalizedOwnerTimezone(owner) };
 }
 
@@ -85,11 +83,8 @@ function normalizedCalendlyUrl(value) {
     throw onboardingError('Enter a valid Calendly link');
   }
   let url;
-  try {
-    url = new URL(value);
-  } catch {
-    throw onboardingError('Enter a valid Calendly link');
-  }
+  try { url = new URL(value); }
+  catch { throw onboardingError('Enter a valid Calendly link'); }
   if (url.protocol !== 'https:' || !CALENDLY_HOSTS.has(url.hostname.toLowerCase()) ||
       url.username || url.password || url.port || url.search || url.hash ||
       url.pathname === '/' || /\s/.test(url.pathname)) {
@@ -100,9 +95,7 @@ function normalizedCalendlyUrl(value) {
 
 function normalizedCalendarInput(input) {
   rejectUnknownKeys(input, CALENDAR_INPUT_KEYS, 'Calendar selection');
-  if (Object.hasOwn(input, 'skipped') && typeof input.skipped !== 'boolean') {
-    throw onboardingError('Calendar skipped must be true or false');
-  }
+  if (Object.hasOwn(input, 'skipped') && typeof input.skipped !== 'boolean') throw onboardingError('Calendar skipped must be true or false');
   if (Object.hasOwn(input, 'provider') &&
       (typeof input.provider !== 'string' || input.provider !== input.provider.trim() ||
        input.provider.length > 32 || CONTROL_CHARACTERS.test(input.provider))) {
@@ -113,24 +106,14 @@ function normalizedCalendarInput(input) {
        input.calendlyUrl.length > 2048 || CONTROL_CHARACTERS.test(input.calendlyUrl))) {
     throw onboardingError('Enter a valid Calendly link');
   }
-  if (Object.hasOwn(input, 'provider') && !['google', 'calendly'].includes(input.provider)) {
-    throw onboardingError('Choose Google Calendar, Calendly, or skip for now');
-  }
+  if (Object.hasOwn(input, 'provider') && !['google', 'calendly'].includes(input.provider)) throw onboardingError('Choose Google Calendar, Calendly, or skip for now');
   if (input.skipped === true) return { provider: null, externalUrl: null, skipped: true };
-  if (!Object.hasOwn(input, 'provider')) {
-    throw onboardingError('Choose Google Calendar, Calendly, or skip for now');
-  }
+  if (!Object.hasOwn(input, 'provider')) throw onboardingError('Choose Google Calendar, Calendly, or skip for now');
   if (input.provider === 'google') {
-    if (input.calendlyUrl !== undefined && input.calendlyUrl !== null && input.calendlyUrl !== '') {
-      throw onboardingError('A Calendly link cannot be saved for Google Calendar');
-    }
+    if (input.calendlyUrl !== undefined && input.calendlyUrl !== null && input.calendlyUrl !== '') throw onboardingError('A Calendly link cannot be saved for Google Calendar');
     return { provider: 'google', externalUrl: null, skipped: false };
   }
-  return {
-    provider: 'calendly',
-    externalUrl: normalizedCalendlyUrl(input.calendlyUrl),
-    skipped: false
-  };
+  return { provider: 'calendly', externalUrl: normalizedCalendlyUrl(input.calendlyUrl), skipped: false };
 }
 
 function calendarScopesSupportBooking(scopes) {
@@ -159,30 +142,20 @@ function normalizedGoogleTokens(tokens) {
   };
   const accessToken = token(tokens.access_token, 'access token');
   const refreshToken = token(tokens.refresh_token, 'refresh token');
-  const tokenType = tokens.token_type === undefined
-    ? 'Bearer'
-    : token(tokens.token_type, 'token type');
-  if (tokenType.toLowerCase() !== 'bearer') {
-    throw onboardingError('Google Calendar returned an unsupported token type');
-  }
+  const tokenType = tokens.token_type === undefined ? 'Bearer' : token(tokens.token_type, 'token type');
+  if (tokenType.toLowerCase() !== 'bearer') throw onboardingError('Google Calendar returned an unsupported token type');
   const scope = token(tokens.scope, 'permission scope', { allowWhitespace: true });
   const scopes = [...new Set(scope.split(/\s+/).filter(Boolean))];
   if (!calendarScopesSupportBooking(scopes)) {
     throw onboardingError('Google Calendar did not grant availability-read and event-write access', {
-      code: 'CALENDAR_SCOPES_INSUFFICIENT',
-      statusCode: 409
+      code: 'CALENDAR_SCOPES_INSUFFICIENT', statusCode: 409
     });
   }
-  if (!Number.isInteger(tokens.expires_in) || tokens.expires_in < 60 || tokens.expires_in > 86400) {
-    throw onboardingError('Google Calendar returned an invalid token expiry');
-  }
+  if (!Number.isInteger(tokens.expires_in) || tokens.expires_in < 60 || tokens.expires_in > 86400) throw onboardingError('Google Calendar returned an invalid token expiry');
   const calendarId = normalizedCalendarId(tokens.calendarId === undefined ? 'primary' : tokens.calendarId);
   return {
-    access_token: accessToken,
-    refresh_token: refreshToken,
-    token_type: 'Bearer',
-    scope: scopes.join(' '),
-    calendarId,
+    access_token: accessToken, refresh_token: refreshToken, token_type: 'Bearer',
+    scope: scopes.join(' '), calendarId,
     expiresAtUtc: new Date(Date.now() + tokens.expires_in * 1000).toISOString()
   };
 }
@@ -203,12 +176,7 @@ export function ensureBusinessProfile(ownerId) {
   ownerQuery(`INSERT OR IGNORE INTO businessProfiles (
     ownerId, businessTypesJson, knowledgeBaseJson, calendarJson,
     agentName, greeting, updatedAt
-  ) VALUES (?, '[]', ?, ?, 'Nova', '', ?)`).run(
-    ownerId,
-    JSON.stringify(EMPTY_KB),
-    JSON.stringify(EMPTY_CALENDAR),
-    now
-  );
+  ) VALUES (?, '[]', ?, ?, 'Nova', '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), now);
   return getBusinessProfile(ownerId);
 }
 
@@ -245,13 +213,7 @@ export function updateOnboardingAccount(ownerId, values) {
   const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
   const firstName = String(input.firstName || '').trim();
   const businessName = String(input.businessName || '').trim();
-  if (!firstName || !businessName) {
-    const error = new Error('First name and business name are required');
-    error.statusCode = 400;
-    throw error;
-  }
-  // users.plan is authoritative billing state. Onboarding may update profile
-  // identity only; requested tiers are selected later through server-created Checkout.
+  if (!firstName || !businessName) { const error = new Error('First name and business name are required'); error.statusCode = 400; throw error; }
   ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
     WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
   updateBusinessProfile(ownerId, { onboardingStep: Math.max(2, getBusinessProfile(ownerId).onboardingStep) });
@@ -260,11 +222,7 @@ export function updateOnboardingAccount(ownerId, values) {
 
 export function saveBusinessTypes(ownerId, businessTypes) {
   const values = [...new Set((businessTypes || []).map(String))].filter(type => Object.hasOwn(SERVICE_NAMES, type));
-  if (!values.length) {
-    const error = new Error('Select at least one business type');
-    error.statusCode = 400;
-    throw error;
-  }
+  if (!values.length) { const error = new Error('Select at least one business type'); error.statusCode = 400; throw error; }
   return updateBusinessProfile(ownerId, {
     businessTypesJson: JSON.stringify(values),
     onboardingStep: Math.max(3, getBusinessProfile(ownerId).onboardingStep)
@@ -273,33 +231,26 @@ export function saveBusinessTypes(ownerId, businessTypes) {
 
 export function saveJurisdictionProfile(ownerId, { country, region }) {
   return updateBusinessProfile(ownerId, {
-    country: String(country || '').toUpperCase(),
-    region: String(region || '').toUpperCase(),
+    country: String(country || '').toUpperCase(), region: String(region || '').toUpperCase(),
     onboardingStep: Math.max(4, getBusinessProfile(ownerId).onboardingStep)
   });
 }
 
 export function savePhoneProvisioning(ownerId, values) {
   return updateBusinessProfile(ownerId, {
-    existingPhoneNumber: values.existingNumber,
-    twilioNumber: values.twilioNumber,
-    twilioNumberSid: values.twilioNumberSid,
-    phoneProvisioningStatus: 'provisioned',
+    existingPhoneNumber: values.existingNumber, twilioNumber: values.twilioNumber,
+    twilioNumberSid: values.twilioNumberSid, phoneProvisioningStatus: 'provisioned',
     carrierSetupStatus: values.carrierSetupStatus || 'queued',
     onboardingStep: Math.max(5, getBusinessProfile(ownerId).onboardingStep)
   });
 }
 
 export function saveKnowledgeBase(ownerId, knowledgeBase) {
-  const incoming = knowledgeBase && typeof knowledgeBase === 'object' && !Array.isArray(knowledgeBase)
-    ? knowledgeBase
-    : {};
+  const incoming = knowledgeBase && typeof knowledgeBase === 'object' && !Array.isArray(knowledgeBase) ? knowledgeBase : {};
   const existing = getBusinessProfile(ownerId).knowledgeBase || EMPTY_KB;
   const clean = {
-    about: String(incoming.about || '').trim(),
-    hours: String(incoming.hours || '').trim(),
-    services: String(incoming.services || '').trim(),
-    policies: String(incoming.policies || '').trim(),
+    about: String(incoming.about || '').trim(), hours: String(incoming.hours || '').trim(),
+    services: String(incoming.services || '').trim(), policies: String(incoming.policies || '').trim(),
     faqs: String(incoming.faqs || '').trim(),
     neverSay: Array.isArray(incoming.neverSay)
       ? incoming.neverSay.map(value => String(value).trim()).filter(Boolean)
@@ -307,17 +258,9 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     draft: Boolean(incoming.draft)
   };
   if (Object.hasOwn(incoming, 'serviceArea')) {
-    try {
-      clean.serviceArea = normalizeServiceArea(incoming.serviceArea);
-    } catch (cause) {
-      const error = new Error(cause.message);
-      error.code = 'INVALID_REQUEST';
-      error.statusCode = 400;
-      throw error;
-    }
-  } else if (Object.hasOwn(existing, 'serviceArea')) {
-    clean.serviceArea = existing.serviceArea;
-  }
+    try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
+    catch (cause) { const error = new Error(cause.message); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
+  } else if (Object.hasOwn(existing, 'serviceArea')) clean.serviceArea = existing.serviceArea;
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
@@ -338,9 +281,7 @@ export function setOperatorEnabled(ownerId, enabled) {
   const eligibility = operatorEligibility(profile);
   if (enabled && !eligibility.eligible) {
     const error = new Error(`Operator cannot go live until these are ready: ${eligibility.missing.join(', ')}`);
-    error.statusCode = 409;
-    error.details = eligibility;
-    throw error;
+    error.statusCode = 409; error.details = eligibility; throw error;
   }
   return updateBusinessProfile(ownerId, {
     operatorEnabled: enabled ? 1 : 0,
@@ -358,38 +299,18 @@ function readCalendarConnection(ownerId) {
 function storedGoogleConnectionIsUsable(connection) {
   const scopes = parseJson(connection?.scopesJson, null);
   let calendarIdIsValid = false;
-  try {
-    calendarIdIsValid = normalizedCalendarId(connection?.calendarId) === connection.calendarId;
-  } catch {
-    calendarIdIsValid = false;
-  }
-  return connection?.provider === 'google' && connection.status === 'connected' &&
-    calendarIdIsValid &&
-    [connection.credentialsCiphertext, connection.credentialsIv,
-      connection.credentialsTag, connection.keyVersion]
+  try { calendarIdIsValid = normalizedCalendarId(connection?.calendarId) === connection.calendarId; }
+  catch { calendarIdIsValid = false; }
+  return connection?.provider === 'google' && connection.status === 'connected' && calendarIdIsValid &&
+    [connection.credentialsCiphertext, connection.credentialsIv, connection.credentialsTag, connection.keyVersion]
       .every(value => typeof value === 'string' && Boolean(value)) &&
-    Array.isArray(scopes) && scopes.every(scope => typeof scope === 'string') &&
-    calendarScopesSupportBooking(scopes);
+    Array.isArray(scopes) && scopes.every(scope => typeof scope === 'string') && calendarScopesSupportBooking(scopes);
 }
 
 function calendarProfileFromConnection(connection, disconnectedStatus = 'skipped') {
-  if (!connection) {
-    return { provider: null, status: disconnectedStatus, calendlyUrl: null };
-  }
-  if (connection.provider === 'calendly') {
-    return {
-      provider: 'calendly',
-      status: connection.status,
-      calendlyUrl: connection.externalUrl || null
-    };
-  }
-  return {
-    provider: 'google',
-    status: connection.status,
-    calendlyUrl: null,
-    calendarId: connection.calendarId || null,
-    expiresAtUtc: connection.expiresAtUtc || null
-  };
+  if (!connection) return { provider: null, status: disconnectedStatus, calendlyUrl: null };
+  if (connection.provider === 'calendly') return { provider: 'calendly', status: connection.status, calendlyUrl: connection.externalUrl || null };
+  return { provider: 'google', status: connection.status, calendlyUrl: null, calendarId: connection.calendarId || null, expiresAtUtc: connection.expiresAtUtc || null };
 }
 
 function replaceCalendarConnection(ownerId, connection) {
@@ -404,34 +325,17 @@ function replaceCalendarConnection(ownerId, connection) {
       credentialsTag=excluded.credentialsTag, keyVersion=excluded.keyVersion,
       externalUrl=excluded.externalUrl, expiresAtUtc=excluded.expiresAtUtc,
       scopesJson=excluded.scopesJson, updatedAt=excluded.updatedAt`)
-    .run(
-      ownerId, connection.provider, connection.status, connection.calendarId || null,
-      null, null, null, null, connection.externalUrl || null, null, '[]', now, now
-    );
+    .run(ownerId, connection.provider, connection.status, connection.calendarId || null,
+      null, null, null, null, connection.externalUrl || null, null, '[]', now, now);
   return readCalendarConnection(ownerId);
 }
 
 function usableBookingCalendarMetadata(connection) {
-  if (connection?.status !== 'connected') {
-    return { provider: null, calendarId: null, externalUrl: null };
-  }
-  if (connection.provider === 'google' && storedGoogleConnectionIsUsable(connection)) {
-    return {
-      provider: 'google',
-      calendarId: connection.calendarId.trim(),
-      externalUrl: null
-    };
-  }
+  if (connection?.status !== 'connected') return { provider: null, calendarId: null, externalUrl: null };
+  if (connection.provider === 'google' && storedGoogleConnectionIsUsable(connection)) return { provider: 'google', calendarId: connection.calendarId.trim(), externalUrl: null };
   if (connection.provider === 'calendly') {
-    try {
-      return {
-        provider: 'calendly',
-        calendarId: null,
-        externalUrl: normalizedCalendlyUrl(connection.externalUrl)
-      };
-    } catch {
-      return { provider: null, calendarId: null, externalUrl: null };
-    }
+    try { return { provider: 'calendly', calendarId: null, externalUrl: normalizedCalendlyUrl(connection.externalUrl) }; }
+    catch { return { provider: null, calendarId: null, externalUrl: null }; }
   }
   return { provider: null, calendarId: null, externalUrl: null };
 }
@@ -440,13 +344,10 @@ function synchronizeBookingCalendar(ownerId, timezone, connection) {
   const metadata = usableBookingCalendarMetadata(connection);
   const current = ownerQuery(`SELECT revision, timezone, provider, calendarId, externalUrl
     FROM bookingSettings WHERE ownerId = ?`).get(ownerId);
-  const unchanged = current && current.timezone === timezone &&
-    current.provider === metadata.provider &&
-    current.calendarId === metadata.calendarId &&
-    current.externalUrl === metadata.externalUrl;
+  const unchanged = current && current.timezone === timezone && current.provider === metadata.provider &&
+    current.calendarId === metadata.calendarId && current.externalUrl === metadata.externalUrl;
   ownerQuery(`UPDATE users SET timezone = ?
-    WHERE id = ? AND (ownerId = ? OR id = ?) AND role = 'owner'`)
-    .run(timezone, ownerId, ownerId, ownerId);
+    WHERE id = ? AND (ownerId = ? OR id = ?) AND role = 'owner'`).run(timezone, ownerId, ownerId, ownerId);
   if (unchanged) return current.revision;
   const revision = crypto.randomUUID();
   const now = new Date().toISOString();
@@ -460,10 +361,7 @@ function synchronizeBookingCalendar(ownerId, timezone, connection) {
       revision=excluded.revision, timezone=excluded.timezone, provider=excluded.provider,
       calendarId=excluded.calendarId, externalUrl=excluded.externalUrl,
       updatedAt=excluded.updatedAt`)
-    .run(
-      ownerId, revision, timezone, metadata.provider,
-      metadata.calendarId, metadata.externalUrl, now
-    );
+    .run(ownerId, revision, timezone, metadata.provider, metadata.calendarId, metadata.externalUrl, now);
   return revision;
 }
 
@@ -474,48 +372,28 @@ const saveCalendarTransaction = db.transaction((ownerId, selection) => {
     ownerQuery('DELETE FROM calendarConnections WHERE ownerId = ?').run(ownerId);
     connection = null;
   } else if (selection.provider === 'calendly') {
-    connection = replaceCalendarConnection(ownerId, {
-      provider: 'calendly',
-      status: 'connected',
-      calendarId: null,
-      externalUrl: selection.externalUrl
-    });
+    connection = replaceCalendarConnection(ownerId, { provider: 'calendly', status: 'connected', calendarId: null, externalUrl: selection.externalUrl });
   } else {
     const current = readCalendarConnection(ownerId);
     connection = storedGoogleConnectionIsUsable(current)
       ? current
-      : replaceCalendarConnection(ownerId, {
-        provider: 'google',
-        status: 'pending_oauth',
-        calendarId: null,
-        externalUrl: null
-      });
+      : replaceCalendarConnection(ownerId, { provider: 'google', status: 'pending_oauth', calendarId: null, externalUrl: null });
   }
   synchronizeBookingCalendar(ownerId, timezone, connection);
   const profile = getBusinessProfile(ownerId);
   return updateBusinessProfile(ownerId, {
-    calendarJson: JSON.stringify(calendarProfileFromConnection(
-      connection,
-      selection.skipped ? 'skipped' : 'not_connected'
-    )),
+    calendarJson: JSON.stringify(calendarProfileFromConnection(connection, selection.skipped ? 'skipped' : 'not_connected')),
     onboardingStep: Math.max(9, profile.onboardingStep)
   });
 });
 
-export function saveCalendar(ownerId, input) {
-  return saveCalendarTransaction(ownerId, normalizedCalendarInput(input));
-}
+export function saveCalendar(ownerId, input) { return saveCalendarTransaction(ownerId, normalizedCalendarInput(input)); }
 
 const saveGoogleCalendarTokensTransaction = db.transaction((ownerId, tokens) => {
   const { timezone } = requireCalendarOwner(ownerId);
   saveGoogleCalendarConnection(ownerId, tokens);
   const connection = readCalendarConnection(ownerId);
-  if (!storedGoogleConnectionIsUsable(connection)) {
-    throw onboardingError('Google Calendar connection could not be verified', {
-      code: 'CALENDAR_CONNECTION_INVALID',
-      statusCode: 409
-    });
-  }
+  if (!storedGoogleConnectionIsUsable(connection)) throw onboardingError('Google Calendar connection could not be verified', { code: 'CALENDAR_CONNECTION_INVALID', statusCode: 409 });
   synchronizeBookingCalendar(ownerId, timezone, connection);
   const profile = getBusinessProfile(ownerId);
   return updateBusinessProfile(ownerId, {
@@ -533,14 +411,10 @@ export function saveVoice(ownerId, input) {
   const agentName = String(input.agentName || '').trim();
   const greeting = String(input.greeting || '').trim();
   if (!['male','female'].includes(voiceId) || !agentName || !greeting) {
-    const error = new Error('Choose a voice, enter an agent name, and enter a greeting');
-    error.statusCode = 400;
-    throw error;
+    const error = new Error('Choose a voice, enter an agent name, and enter a greeting'); error.statusCode = 400; throw error;
   }
   return updateBusinessProfile(ownerId, {
-    voiceId,
-    agentName,
-    greeting,
+    voiceId, agentName, greeting,
     onboardingStep: Math.max(10, getBusinessProfile(ownerId).onboardingStep)
   });
 }
@@ -548,27 +422,32 @@ export function saveVoice(ownerId, input) {
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
-  return {
-    account,
-    quoteDoneAccess: hasQuoteDoneAccess(account),
-    profile,
-    operator: {
-      enabled: profile.operatorEnabled,
-      ...operatorEligibility(profile)
-    }
-  };
+  return { account, quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: profile.operatorEnabled, ...operatorEligibility(profile) } };
 }
+
+function draftRevision(row) {
+  return crypto.createHash('sha256').update([
+    row.id,row.ownerId,row.fieldsJson,row.confirmedFieldsJson,row.currentField ?? '',row.updatedAt
+  ].join('\u0000')).digest('hex');
+}
+function nextDraftTimestamp(previous) {
+  const now = new Date().toISOString();
+  if (now !== previous) return now;
+  const parsed = Date.parse(previous);
+  return Number.isFinite(parsed) ? new Date(parsed + 1).toISOString() : now + '.1';
+}
+const dependencyPriority = field => {
+  if (['offeringRates','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field)) return 3;
+  if (['offeringDetails','scopeDetails','knownOfferings'].includes(field)) return 2;
+  if (['offeringMode','unit','customPricingMode','customChargeClassification','accessoryPricingMode','underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule'].includes(field)) return 1;
+  return 0;
+};
 
 export function createInterviewDraft(ownerId, input) {
   const mode = ['phone','browser'].includes(input.mode) ? input.mode : 'browser';
   const definitions=applicationMetadata().services;
-  const serviceTypes = [...new Set((input.serviceTypes || []).map(String))]
-    .filter(type => definitions.some(service=>service.serviceType===type));
-  if (!serviceTypes.length) {
-    const error = new Error('Select at least one service for the interview');
-    error.statusCode = 400;
-    throw error;
-  }
+  const serviceTypes = [...new Set((input.serviceTypes || []).map(String))].filter(type => definitions.some(service=>service.serviceType===type));
+  if (!serviceTypes.length) { const error = new Error('Select at least one service for the interview'); error.statusCode = 400; throw error; }
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
   ownerQuery(`INSERT INTO priceBookDrafts (
@@ -587,6 +466,7 @@ export function getInterviewDraft(ownerId, id) {
   if (!row) return null;
   return {
     ...row,
+    revision:draftRevision(row),
     serviceTypes: parseJson(row.serviceTypesJson, []),
     fields: parseJson(row.fieldsJson, {}),
     confirmedFields: parseJson(row.confirmedFieldsJson, {})
@@ -601,14 +481,11 @@ export function listInterviewDrafts(ownerId) {
 
 export function saveInterviewDraft(ownerId, id, input) {
   const draft = getInterviewDraft(ownerId, id);
-  if (!draft) {
-    const error = new Error('Draft not found');
-    error.statusCode = 404;
-    throw error;
-  }
+  if (!draft) { const error = new Error('Draft not found'); error.statusCode = 404; throw error; }
   const fail = message => { throw Object.assign(new Error(message), {statusCode:422}); };
-  const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-  if (!record(input) || Object.keys(input).some(key=>!['fields','confirmedFields','currentField'].includes(key))) fail('Unsupported interview update. Your saved draft was not changed.');
+  const conflict = () => { throw Object.assign(new Error('This interview draft changed. Review the newest saved answers before trying again.'), {statusCode:409}); };
+  if (!record(input) || Object.keys(input).some(key=>!['fields','confirmedFields','currentField','revision'].includes(key))) fail('Unsupported interview update. Your saved draft was not changed.');
+  if (input.revision !== undefined && input.revision !== draft.revision) conflict();
   for (const map of [input.fields,input.confirmedFields]) {
     if (map !== undefined && (!record(map) || Object.keys(map).some(type=>!draft.serviceTypes.includes(type)))) fail('Choose a service in this interview.');
   }
@@ -619,8 +496,10 @@ export function saveInterviewDraft(ownerId, id, input) {
     if (!record(incoming)) fail('Enter supported price-book fields.');
     nextFields[serviceType] = { ...(nextFields[serviceType] || {}) };
     const confirmed = new Set(nextConfirmed[serviceType] || []);
-    for (const [field,value] of Object.entries(incoming)) {
-      const validated = validateInterviewValue(serviceType,field,value,{...nextFields[serviceType],...incoming});
+    const ordered = Object.entries(incoming).map(([field,value],index)=>({field,value,index}))
+      .sort((left,right)=>dependencyPriority(left.field)-dependencyPriority(right.field)||left.index-right.index);
+    for (const {field,value} of ordered) {
+      const validated = validateInterviewValue(serviceType,field,value,nextFields[serviceType]);
       if (JSON.stringify(validated) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
       nextFields[serviceType][field] = validated;
     }
@@ -637,36 +516,29 @@ export function saveInterviewDraft(ownerId, id, input) {
     if (extra.length || !draft.serviceTypes.includes(type)) fail('Choose a supported interview question.');
     interviewField(type,field);
   }
-  ownerQuery(`UPDATE priceBookDrafts SET fieldsJson = ?, confirmedFieldsJson = ?,
-    currentField = ?, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
-    JSON.stringify(nextFields),
-    JSON.stringify(nextConfirmed),
-    Object.hasOwn(input,'currentField') ? input.currentField : draft.currentField,
-    new Date().toISOString(),
-    id,
-    ownerId
+  const currentField=Object.hasOwn(input,'currentField') ? input.currentField : draft.currentField;
+  const result=ownerQuery(`UPDATE priceBookDrafts SET fieldsJson = ?, confirmedFieldsJson = ?,
+    currentField = ?, updatedAt = ?
+    WHERE id = ? AND ownerId = ? AND fieldsJson = ? AND confirmedFieldsJson = ?
+      AND currentField IS ? AND updatedAt = ?`).run(
+    JSON.stringify(nextFields), JSON.stringify(nextConfirmed), currentField, nextDraftTimestamp(draft.updatedAt),
+    id, ownerId, draft.fieldsJson, draft.confirmedFieldsJson, draft.currentField, draft.updatedAt
   );
+  if (result.changes !== 1) conflict();
   return getInterviewDraft(ownerId, id);
 }
 
 export function draftReviewPayload(ownerId, id) {
   const draft = getInterviewDraft(ownerId, id);
-  if (!draft) {
-    const error = new Error('Draft not found');
-    error.statusCode = 404;
-    throw error;
-  }
+  if (!draft) { const error = new Error('Draft not found'); error.statusCode = 404; throw error; }
   const services = draft.serviceTypes.map(serviceType => {
     const fields = draft.fields[serviceType] || {};
     const confirmed = new Set(draft.confirmedFields[serviceType] || []);
     const unconfirmedFields = Object.keys(fields).filter(field => !confirmed.has(field));
     const captured=materializeInterviewFields(serviceType,fields,()=>crypto.randomUUID());
     return {
-      serviceType,
-      service: SERVICE_NAMES[serviceType],
-      fields:captured.pricing,knownOfferings:captured.knownOfferings,
-      source: 'AI_INTERVIEW', active: false, confirmedFields: {},
-      unconfirmedFields: Object.keys(fields)
+      serviceType, service: SERVICE_NAMES[serviceType], fields:captured.pricing,knownOfferings:captured.knownOfferings,
+      source: 'AI_INTERVIEW', active: false, confirmedFields: {}, unconfirmedFields: Object.keys(fields)
     };
   });
   return { status: 'DRAFT', services };
@@ -680,10 +552,9 @@ export async function assistInterviewDraft(ownerId, id, input) {
   }
   const value = await interpretInterviewAnswer({...input,pricing:before.fields[input.serviceType]||{}});
   const current = getInterviewDraft(ownerId,id);
-  if (!current || current.updatedAt!==before.updatedAt || current.fieldsJson!==before.fieldsJson || current.confirmedFieldsJson!==before.confirmedFieldsJson || current.currentField!==before.currentField) {
-    throw Object.assign(new Error('This draft changed while AI was working. Review it and try again.'),{statusCode:409});
-  }
+  if (!current || current.revision!==before.revision) throw Object.assign(new Error('This draft changed while AI was working. Review it and try again.'),{statusCode:409});
   const draft = saveInterviewDraft(ownerId,id,{
+    revision:current.revision,
     fields:{[input.serviceType]:{[input.field]:value}},
     confirmedFields:{[input.serviceType]:(current.confirmedFields[input.serviceType]||[]).filter(field=>field!==input.field)}
   });
