@@ -46,9 +46,16 @@ test('D02/D05: concurrent workers claim one SMS and callbacks cannot downgrade f
 test('D02: not configured is BLOCKED with zero attempts and recovers when configured',async t=>{
   let ready=false,calls=0;const f=smsFixture(t,{provider:{ready:()=>ready,send:async()=>({status:'QUEUED',id:'SM'+(++calls).toString(16).padStart(32,'0')})}}),s=await sms(f);assert.equal((await s.send()).status,'unavailable');assert.equal(f.rows()[0].status,'BLOCKED');assert.equal(f.rows()[0].attemptCount,0);ready=true;f.advance(5000);f.restart();await f.smsService().dispatchOnce();assert.equal(f.rows()[0].status,'QUEUED');assert.equal(calls,1);await s.send();assert.equal(calls,1);
 });
-test('D02: provider opt-out is durable, final, and blocks subsequent distinct inquiry SMS',async t=>{
-  let calls=0;const f=smsFixture(t,{provider:{send:async()=>{calls++;throw Object.assign(Error('SYNTHETIC opt out'),{definitive:true,code:'SMS_RECIPIENT_OPTED_OUT'});}}}),first=await sms(f);await first.send();assert.equal(f.rows()[0].status,'OPTED_OUT');const second=await sms(f,{inquiryNumber:2});await second.send();assert.equal(f.rows()[1].status,'OPTED_OUT');assert.equal(calls,1);
+test('D02: carrier opt-out stays final per message and carrier resubscription permits a new inquiry',async t=>{
+  let calls=0,optedOut=true;const f=smsFixture(t,{provider:{send:async()=>{calls++;if(optedOut)throw Object.assign(Error('SYNTHETIC opt out'),{definitive:true,code:'SMS_RECIPIENT_OPTED_OUT'});return {status:'SENT',id:'SM'+'6'.repeat(32)};}}}),first=await sms(f);
+  await first.send();assert.equal(f.rows()[0].status,'OPTED_OUT');await first.send();assert.equal(calls,1);
+  const second=await sms(f,{inquiryNumber:2});await second.send();assert.equal(f.rows()[1].status,'OPTED_OUT');
+  // Only the authoritative provider knows that the caller sent START. A local
+  // sticky block must not silently veto that consent on a genuine new inquiry.
+  optedOut=false;const third=await sms(f,{inquiryNumber:3});await third.send();assert.equal(f.rows()[2].status,'SENT');assert.equal(calls,3);
+  await first.send();assert.equal(f.rows()[0].status,'OPTED_OUT');assert.equal(calls,3);
 });
+
 test('D02: SMS insert failure rolls back outbox and prevents a sent acknowledgement',async t=>{
   const f=smsFixture(t),s=await sms(f);f.db.exec("CREATE TRIGGER synthetic_sms_failure BEFORE INSERT ON voiceSmsDeliveries BEGIN SELECT RAISE(ABORT,'SYNTHETIC_DB_FAILURE'); END");await assert.rejects(s.send());assert.equal(f.sends(),0);assert.equal(f.db.prepare("SELECT COUNT(*) n FROM outboxEvents WHERE ownerId=? AND eventType='voice.sms_requested'").get(f.c.ownerId).n,0);
 });

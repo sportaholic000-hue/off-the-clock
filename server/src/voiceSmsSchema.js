@@ -11,9 +11,6 @@ export function installVoiceSmsSchema(db){
     status TEXT NOT NULL,providerId TEXT,errorCode TEXT,startedAt TEXT NOT NULL,completedAt TEXT,
     UNIQUE(ownerId,deliveryId,attemptNumber),FOREIGN KEY(ownerId) REFERENCES users(id),
     FOREIGN KEY(deliveryId) REFERENCES voiceSmsDeliveries(id));
-    CREATE TABLE IF NOT EXISTS voiceSmsOptOuts(
-    ownerId TEXT NOT NULL,recipient TEXT NOT NULL,createdAt TEXT NOT NULL,
-    PRIMARY KEY(ownerId,recipient),FOREIGN KEY(ownerId) REFERENCES users(id));
     CREATE INDEX IF NOT EXISTS voice_sms_due ON voiceSmsDeliveries(ownerId,status,nextAttemptAt);
     CREATE INDEX IF NOT EXISTS voice_sms_record ON voiceSmsDeliveries(ownerId,recordType,recordId);
     CREATE TRIGGER IF NOT EXISTS voice_sms_state AFTER UPDATE OF status ON voiceSmsDeliveries

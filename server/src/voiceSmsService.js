@@ -36,7 +36,6 @@ export function createVoiceSmsService({database,ownerQuery=sql=>database.prepare
     if(!['PENDING','BLOCKED'].includes(r.status)||r.nextAttemptAt>clock())return null;
     const request=parse(r.requestJson);
     if(!r.requestJson){set(r,'UNKNOWN','LEGACY_SMS_NOT_REPLAYABLE');return null;}
-    if(q('SELECT 1 FROM voiceSmsOptOuts WHERE ownerId=? AND recipient=?').get(ownerId,request.to)){set(r,'OPTED_OUT','SMS_RECIPIENT_OPTED_OUT');return null;}
     const available=typeof provider.send==='function'&&(typeof provider.ready!=='function'||provider.ready(request,ownerId)===true);
     if(!available){set(r,'BLOCKED','SMS_NOT_CONFIGURED');q('UPDATE voiceSmsDeliveries SET nextAttemptAt=? WHERE ownerId=? AND id=?').run(clock()+5000,ownerId,r.id);return null;}
     if(r.attemptCount>=5){set(r,'FAILED','SMS_RETRIES_EXHAUSTED');return null;}
@@ -68,7 +67,6 @@ export function createVoiceSmsService({database,ownerQuery=sql=>database.prepare
       const retry=status==='FAILED'&&!providerId&&r.attemptCount<5;
       set(r,retry?'PENDING':status,code,providerId);
       q('UPDATE voiceSmsDeliveries SET nextAttemptAt=? WHERE ownerId=? AND id=?').run(retry?clock()+SMS_RETRY_MS[r.attemptCount-1]:['QUEUED','ACCEPTED'].includes(status)?clock()+5000:0,ownerId,r.id);
-      if(status==='OPTED_OUT')q('INSERT OR IGNORE INTO voiceSmsOptOuts(ownerId,recipient,createdAt) VALUES(?,?,?)').run(ownerId,r.request.to,iso());
     }).immediate();return true;
   }
   async function reconcileOne(ownerId,id){
@@ -100,7 +98,6 @@ export function createVoiceSmsService({database,ownerQuery=sql=>database.prepare
       const failure=['FAILED','UNDELIVERED'].includes(next),opted=failure&&String(errorCode)==='21610';
       set(r,opted?'OPTED_OUT':next,failure?opted?'SMS_RECIPIENT_OPTED_OUT':'SMS_DELIVERY_FAILED':null,providerId);
       q("UPDATE voiceSmsAttempts SET status=?,providerId=?,errorCode=?,completedAt=? WHERE ownerId=? AND deliveryId=? AND attemptNumber=?").run(opted?'OPTED_OUT':next,providerId,failure?'SMS_DELIVERY_FAILED':null,iso(),ownerId,id,r.attemptCount);
-      if(opted)q('INSERT OR IGNORE INTO voiceSmsOptOuts(ownerId,recipient,createdAt) VALUES(?,?,?)').run(ownerId,to,iso());
       return state(ownerId,id);
     }).immediate();
   }
