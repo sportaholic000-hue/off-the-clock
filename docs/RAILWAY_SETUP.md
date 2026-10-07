@@ -80,6 +80,15 @@ The process schedules an online SQLite backup every six hours and takes an overd
 
 The database snapshot is transactionally consistent and includes committed WAL pages. Each price book is a complete JSON file; the bundle is not one global transaction spanning the database and all price books. No runtime keys or .env files are included. The database contains customer information, password hashes and encrypted provider credentials; keep the whole bundle private.
 
+Snapshot verification cross-checks every durable price-book creation record in
+the copied database against the bundle inventory. Missing recorded books fail
+both backup verification and restore. An unconfirmed price-book save also blocks
+new snapshots: its pause marker must never be dropped and silently resume quoting
+after recovery. A changed price-book inventory during the online database copy
+fails the attempt and preserves the last accepted snapshot. Finish the save or
+recover the missing book, then rerun backup. Do not delete a pause marker to force
+a backup through.
+
 In the running container at /app:
 
 ```sh
@@ -97,6 +106,16 @@ node server/scripts/restore.js --backup /data/app/backups/snapshot-EXACT_BUNDLE_
 Use a real complete bundle name printed by backup. The target must be a **new** direct child of /data/restores. Restore refuses an existing target, corrupted checksums, unsafe paths or invalid SQLite. After success, change **APP_DATA_DIR=/data/restores/drill-20261001** in Railway and redeploy with the same encryption key, key version and signing secrets. Confirm health and exact test data. Leave DATABASE_PATH/PRICEBOOK_PATH unset; they are derived again. The original /data/app remains intact. Backups then run under the restored root; older snapshots remain under the previous root until you intentionally manage them.
 
 For an independently stored bundle returned from an off-site destination, download it privately into the mounted volume first, then run the same command. Review the schema/source-commit compatibility before restoring an older application's data; the automated drill covers this implementation and its baseline schema.
+
+The synthetic production rehearsal is `test/backupRestoreRehearsal.spec.mjs`,
+included in both normal test gates. It registers synthetic owners, saves and
+approves pricing through HTTP, creates an actual quote, review lead and confirmed
+booking (local calendar stub), restarts, runs both real CLIs, and wipes the entire
+temporary volume before restoring from a separate temporary archive. It compares
+book bytes, approval, database rows and repeated quote/booking receipts, then
+checks missing and corrupt price books without crashing. Its provider and billing
+fixtures are not live integration acceptance. See
+`verification/backup-restore-20261006/REPORT.md` for evidence and limits.
 
 ## 6. Choose an independent off-site destination
 

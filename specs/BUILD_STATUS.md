@@ -1,3 +1,48 @@
+# October 6 synthetic production backup/restore rehearsal — hosted gates passed
+
+Branch: `verify/backup-restore-rehearsal-20261006`. Starting revision verified:
+`73c00622d6f2df31f57773b32e41355a7421f1a3` from the quote release candidate.
+Verified source/test/CI SHA: **`878154d526d4e30061c22db9b97596bbca5a60c7`**.
+No subagents, merge, real deployment, provider operation or live-data change.
+
+All six requested rehearsal steps pass in production mode on temporary storage:
+real synthetic owner signup, book save/approval, $100.00 quote, review lead,
+confirmed booking through HTTP with a local calendar stub; graceful restart;
+actual backup CLI with both owners' books; entire-volume wipe and actual restore
+CLI; exact book/approval/receipt/lead/appointment retention and idempotent replay;
+missing, invalid-JSON and invalid-structure books pause new quotes without a crash.
+
+Three confirmed defects repaired: incomplete backup inventories were accepted;
+unconfirmed-save pause markers were omitted; corrupt saved pricing returned only
+an internal error to owners. Backups now check the copied creation ledger, reject
+uncertain/changed source books, and preserve the last accepted bundle on failure.
+Authenticated owners get fixed recovery instructions. No arithmetic, approval,
+booking or billing policy changed.
+
+[Complete report and raw evidence](../verification/backup-restore-20261006/REPORT.md).
+Expected $100.00 was handwritten before execution. Corrected baseline: 21 results,
+13 pass / 8 fail (seven reproduced assertions plus parent). Repaired focused run:
+**56/56**, zero skips. **14 new test results** in the normal gates.
+
+[Cold hosted CI 37536385130](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37536385130):
+`npm ci`, both builds, **2,077/2,077** strict tests (95 files), **2,460/2,460**
+full tests (137 files), zero failures/cancellations/skips/TODOs; dependency audit
+zero vulnerabilities. Remote commit parent/tree and report readback verified.
+This final report checkpoint changes only documentation and evidence.
+
+Local install/build pass. Local full suite: 2,423 pass / 37 Chromium startup
+`SIGTRAP` failures, zero skips and no other failures. Local strict runner exited
+without a complete summary after browser startup failures; no local all-green
+claim. Hosted cold gates ran successfully with their installed Chromium.
+
+**Launch limit remains:** continuous off-site replication in platform §12.19 is
+not implemented. A separate temporary archive exercises recovery logic only;
+it does not supply a real off-site backup destination or protect a real lost
+volume. No real Railway mount/power-loss/provider acceptance is claimed.
+
+---
+
+
 # October 6 booking/calendar repair — hosted gates passed
 
 Branch `fix/booking-calendar-20261006`; verified base

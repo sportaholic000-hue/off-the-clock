@@ -480,15 +480,21 @@ installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:own
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, _next) => {
   console.error('[error]', err.message);
   if (res.headersSent) return;
   const status = Number(err.statusCode) || 500;
   const code = typeof err.code === 'string' && /^[A-Z][A-Z0-9_]{2,63}$/.test(err.code)
     ? err.code
     : undefined;
+  // The authenticated owner needs actionable recovery instructions even when
+  // unusable saved storage returns 503. Expose only this fixed, safe copy;
+  // arbitrary server errors and filesystem details remain private.
+  const ownerPricebookRecovery = req.role === 'owner' && code === 'PRICEBOOK_UNREADABLE'
+    ? 'The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or contact support; do not create a replacement book.'
+    : null;
   res.status(status).json({
-    error: status >= 500 ? 'Internal server error' : err.message,
+    error: ownerPricebookRecovery || (status >= 500 ? 'Internal server error' : err.message),
     ...(code ? { code } : {}),
     ...(typeof err.retryable === 'boolean' ? { retryable: err.retryable } : {}),
     ...(err.details ? { details: err.details } : {})

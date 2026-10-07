@@ -22,6 +22,53 @@ function fixture(t) {
   return {root,config,db};
 }
 const restoredTarget=root=>path.join(root,'restores','verified');
+function recordCreatedBook(db,ownerId='a') {
+  db.exec('CREATE TABLE IF NOT EXISTS priceBookCreationRecords(ownerId TEXT PRIMARY KEY,createdAt TEXT NOT NULL,updatedAt TEXT NOT NULL)');
+  db.prepare('INSERT INTO priceBookCreationRecords VALUES(?,?,?)').run(ownerId,new Date(AT).toISOString(),new Date(AT).toISOString());
+}
+test('backup refuses a missing book recorded in the durable creation ledger',async t=>{
+  const {config,db}=fixture(t);recordCreatedBook(db);
+  const accepted=await createSnapshot(db,config,{now:()=>AT});
+  fs.unlinkSync(path.join(config.pricebookPath,'a.json'));
+  await assert.rejects(()=>createSnapshot(db,config,{now:()=>AT+1000}),/PRICEBOOK_MISSING/);
+  assert.deepEqual(listSnapshots(config.backupPath).map(row=>row.bundle),[accepted]);
+});
+test('restore refuses a checksum-valid legacy bundle whose database records an omitted price book',async t=>{
+  const {root,config,db}=fixture(t);recordCreatedBook(db);
+  const bundle=await createSnapshot(db,config,{now:()=>AT});
+  const manifest=JSON.parse(fs.readFileSync(path.join(bundle,'manifest.json'),'utf8'));
+  manifest.files=manifest.files.filter(file=>file.name==='off-the-clock.sqlite');
+  fs.writeFileSync(path.join(bundle,'manifest.json'),JSON.stringify(manifest));
+  fs.unlinkSync(path.join(bundle,'pricebooks/a.json'));
+  assert.throws(()=>verifyBackup(bundle),/PRICEBOOK_MISSING/);
+  assert.throws(()=>restoreBackup(bundle,restoredTarget(root),{volume:root}),/PRICEBOOK_MISSING/);
+  assert.equal(fs.existsSync(restoredTarget(root)),false);
+});
+test('backup cannot discard an unconfirmed save marker and resume quoting after restore',async t=>{
+  const {config,db}=fixture(t);recordCreatedBook(db);
+  const accepted=await createSnapshot(db,config,{now:()=>AT});
+  fs.writeFileSync(path.join(config.pricebookPath,'a.unconfirmed'),'synthetic unconfirmed replacement');
+  await assert.rejects(()=>createSnapshot(db,config,{now:()=>AT+1000}),/PRICEBOOK_UNCONFIRMED/);
+  assert.deepEqual(listSnapshots(config.backupPath).map(row=>row.bundle),[accepted]);
+});
+test('backup refuses a price book created while the online database snapshot is in progress',async t=>{
+  const {config,db}=fixture(t);recordCreatedBook(db);
+  const racing={async backup(file){
+    fs.writeFileSync(path.join(config.pricebookPath,'b.json'),JSON.stringify({ownerId:'b',price:119}));
+    recordCreatedBook(db,'b');return db.backup(file);
+  }};
+  await assert.rejects(()=>createSnapshot(racing,config,{now:()=>AT}),/PRICEBOOK_MISSING|PRICEBOOK_CHANGED/);
+  assert.equal(listSnapshots(config.backupPath).length,0);
+});
+test('backup refuses a pause marker that appears during the online database snapshot',async t=>{
+  const {config,db}=fixture(t);recordCreatedBook(db);
+  const racing={async backup(file){
+    fs.writeFileSync(path.join(config.pricebookPath,'a.unconfirmed'),'synthetic uncertain replacement');
+    return db.backup(file);
+  }};
+  await assert.rejects(()=>createSnapshot(racing,config,{now:()=>AT}),/PRICEBOOK_UNCONFIRMED/);
+  assert.equal(listSnapshots(config.backupPath).length,0);
+});
 test('online backup includes committed WAL rows and price books; restore publishes a verified new directory',async t=>{
   const {root,config,db}=fixture(t),bundle=await createSnapshot(db,config,{now:()=>AT});
   const manifest=verifyBackup(bundle);assert.equal(manifest.version,1);

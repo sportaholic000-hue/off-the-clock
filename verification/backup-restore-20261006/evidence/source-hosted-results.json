@@ -1,0 +1,31 @@
+{
+  "sha": "878154d526d4e30061c22db9b97596bbca5a60c7",
+  "tree": "8197edba4b65fd69451155eb6d51271cebbef5bf",
+  "parent": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "run_id": 37536385130,
+  "job_id": 112518315120,
+  "conclusion": "success",
+  "cold_install": "success",
+  "build": "success",
+  "quote": {
+    "files": 95,
+    "tests": 2077,
+    "passed": 2077,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "full": {
+    "files": 137,
+    "tests": 2460,
+    "passed": 2460,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "audit_vulnerabilities": 0,
+  "new_test_results": 14,
+  "note": "The strict suite is a subset of the full suite; counts are not added as distinct tests."
+}
