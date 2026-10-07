@@ -54,7 +54,11 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const meter=createBillingVoiceUsage({database,clock,onUsage});
   installBillingVoiceRoutes(app,{validator,meter});
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
-  const fallback=()=>captureChoice(publicBaseUrl);
+  const fallback=({context})=>{
+    const state=account(context.ownerId);
+    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
+    return captureChoice(publicBaseUrl);
+  };
   const configuredSecret=env.VOICE_HANDLE_SECRET||env.BOOKING_SLOT_TOKEN_SECRET||env.JWT_SECRET;
   const handleSecret=typeof configuredSecret==='string'&&Buffer.byteLength(configuredSecret)>=32?createHash('sha256').update('voice-handles-v1\0'+configuredSecret).digest():null;
   const routeIncoming=handleSecret?createVoiceInboundReceipt({database,secret:handleSecret,clock}):undefined;

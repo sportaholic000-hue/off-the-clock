@@ -96,7 +96,14 @@ export function accountAccessDecision(account, { now = Date.now() } = {}) {
   if (current === null) return denied(ACCESS_REASON.INVALID_NOW);
 
   const status = statusOf(account);
-  if(status==='canceled'&&utcEpoch(account.annualPaidThroughAt)>current){
+  if(account.serviceEndsAt!=null){
+    const end=utcEpoch(account.serviceEndsAt);
+    if(end===null||current>=end)return denied(ACCESS_REASON.SUSPENDED_OR_CANCELED);
+  }
+  if(status==='canceled'&&utcEpoch(account.paidThroughAt)>current&&!account.paymentFailedAt){
+    return allowed(ACCESS_REASON.ACTIVE,account.paidThroughAt);
+  }
+  if(status==='canceled'&&utcEpoch(account.annualPaidThroughAt)>current&&!account.paymentFailedAt){
     return allowed(ACCESS_REASON.ACTIVE,account.annualPaidThroughAt);
   }
   if (isSuspendedOrCanceled(account)) return denied(ACCESS_REASON.SUSPENDED_OR_CANCELED);

@@ -1,3 +1,32 @@
+# October 7 billing lifecycle — hosted gates passed
+
+Branch `feat/billing-lifecycle-20261007` begins at requested, verified base
+`130db2148de05cb8b62f5a2595b98b635ce863cb`.
+Verified source/test SHA: `0862c78bafd6b96bf5f62edca524d75a1d9907f8`.
+[Hosted run 37563765418](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37563765418)
+passed cold `npm ci`, owner/widget build, strict quote **2,081/2,081** (101 files),
+full suite **3,024/3,024** (153 files), and dependency audit (zero vulnerabilities).
+Both suites have zero failures, cancellations, skips and TODOs. **50 new tests**;
+local focused 120/120 and final lifecycle 45/45 overlap these hosted counts.
+
+Durable owner email/dashboard notices now cover trial ending, annual renewal,
+subscription/overage receipts and failed payments. Owners cancel through Billing;
+verified paid service continues until term end with no partial refund. AI,
+forwarding fallback, quoting/widget and new overage charges stop at service end;
+pending overage collection is disabled. Phone release is due at day 30; leads,
+quotes and calls CSV remains available until day 90, when retained customer
+records/copies are erased. Reactivation restores resources within their own
+retention windows, including recovery after a delayed worker.
+
+See [the explicit owner-rule amendment](BILLING_LIFECYCLE_20261007.md) and
+[implementation and verification evidence](../verification/billing-lifecycle-20261007/REPORT.md).
+Local Node 24/native cleanup and Chromium SIGTRAP prevent a local broad-suite
+claim. Hosted Node 22 verified all gates cold, including browser and production
+HTTP/signed-voice tests. No subagents, main merge, deployment, live data, real
+charges, refunds, email or SMS. Exact uploaded source was fetched back and checked.
+
+---
+
 # October 6 synthetic production backup/restore rehearsal — hosted gates passed
 
 Branch: `verify/backup-restore-rehearsal-20261006`. Starting revision verified:

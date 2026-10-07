@@ -16,7 +16,7 @@ export function installBillingUsageSchema(db) {
     amountCents INTEGER NOT NULL CHECK(amountCents>0), minutesUsed INTEGER NOT NULL, usageDigest TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'PENDING' CHECK(status IN ('PENDING','SUBMITTED','PAID','REVIEW')),
     providerInvoiceId TEXT, providerItemId TEXT, currency TEXT,
-    operationsJson TEXT NOT NULL DEFAULT '{}', lastError TEXT, nextAttemptAt TEXT NOT NULL,
+    operationsJson TEXT NOT NULL DEFAULT '{}', collectionStoppedAt TEXT, lastError TEXT, nextAttemptAt TEXT NOT NULL,
     createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL
   );
   CREATE TABLE IF NOT EXISTS billingMinuteAlerts (
@@ -33,4 +33,5 @@ export function installBillingUsageSchema(db) {
   CREATE INDEX IF NOT EXISTS billing_usage_period_owner ON billingUsagePeriods(ownerId,startAt,endAt);
   CREATE INDEX IF NOT EXISTS owner_email_due ON ownerEmailDeliveries(ownerId,nextAttemptAt);
   CREATE INDEX IF NOT EXISTS billing_usage_charge_due ON billingUsageCharges(ownerId,nextAttemptAt);`);
+  if(!db.prepare('PRAGMA table_info(billingUsageCharges)').all().some(column=>column.name==='collectionStoppedAt'))db.exec('ALTER TABLE billingUsageCharges ADD COLUMN collectionStoppedAt TEXT');
 }

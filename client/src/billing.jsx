@@ -10,6 +10,7 @@ export default function Billing() {
   const [session] = useState(getToken);
   const [state,setState] = useState(null),[storageKey,setStorageKey] = useState(null);
   const [jobs,setJobs] = useState({}),[plan,setPlan] = useState(''),[interval,setInterval] = useState('');
+  const [lifecycle,setLifecycle]=useState(null);
   const [busy,setBusy] = useState('status'),[error,setError] = useState('');
   const currentJobs = useRef({}), inFlight = useRef(false), mounted = useRef(true);
   const sameSession = () => mounted.current && getSessionKey() === getSessionKey(session);
@@ -24,14 +25,14 @@ export default function Billing() {
     if (inFlight.current) return;
     inFlight.current=true;setBusy('status');setError('');
     try {
-      const [response,key] = await Promise.all([api('/api/billing/status'),billingStorageKey(session)]);
+      const [response,key,events] = await Promise.all([api('/api/billing/status'),billingStorageKey(session),api('/api/billing/lifecycle')]);
       if (!sameSession()) return;
       const next=billingState(response),saved=readBillingJobs(sessionStorage,key);
       // Returning from a portal is not evidence of any subscription change.
       // Its acknowledged request can finish; account state comes from the GET.
       if (saved.portal?.state === 'opened') delete saved.portal;
       if (saved.checkout && (next.checkoutState === 'EXPIRED' || (next.checkoutState === 'NONE' && canContinueSetup(next) && !next.canCheckout))) delete saved.checkout;
-      setStorageKey(key);saveJobs(saved,key);setState(next);
+      setStorageKey(key);saveJobs(saved,key);setState(next);setLifecycle(events);
       if (saved.checkout) {setPlan(saved.checkout.body.plan);setInterval(saved.checkout.body.billingInterval);}
       else {setPlan(PLANS.includes(next.plan)?next.plan:'');setInterval(next.billingInterval||'monthly');}
     } catch (err) {if(sameSession()){setState(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
@@ -69,6 +70,19 @@ export default function Billing() {
     } finally {inFlight.current=false;if(sameSession())setBusy('');}
   }
 
+  async function lifecycleAction(action) {
+    if(inFlight.current||!sameSession())return;
+    inFlight.current=true;setBusy(action);setError('');
+    try {await api('/api/billing/'+action,{method:'POST',body:{}});}
+    catch(err){if(sameSession())setError(err.code==='BILLING_NEW_SUBSCRIPTION_REQUIRED'?'Start a new subscription below to reactivate retained data.':'The change is awaiting confirmation. Refresh or retry; your request is saved.');}
+    finally{inFlight.current=false;if(sameSession()){setBusy('');await refresh();}}
+  }
+  async function exportRecords(kind) {
+    try {const blob=await api('/api/billing/export/'+kind,{format:'blob'});if(!sameSession())return;
+      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=kind+'.csv';a.click();URL.revokeObjectURL(url);
+    }catch{setError('Records could not be exported. Check the retention date and refresh.');}
+  }
+  const deepAction=new URLSearchParams(window.location.search).get('billingAction');
   const checkout=jobs.checkout,portal=jobs.portal;
   return <AppShell activePath="/settings">
     <main className="billing-page">
@@ -85,6 +99,7 @@ export default function Billing() {
           <h2>Current subscription</h2>
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
             {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}</dl>
+          {state.serviceEndsAt?<p>Service ends {state.serviceEndsAt}. No partial refunds.</p>:null}
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
           {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly, and extra minutes are billed monthly at $0.35/min.</p>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
@@ -104,9 +119,25 @@ export default function Billing() {
           </form>
         </section>:null}
         {state.billingEnabled&&(state.canManageBilling||portal)?<section className="billing-panel" aria-label="Manage subscription">
-          <h2>Manage subscription</h2><p>Manage payment details, your plan, or cancellation in the billing portal.</p>
+          <h2>Manage subscription</h2><p>Manage payment details or change your plan in the billing portal.</p>
           <Button disabled={!!busy||!state.providerAvailable} onClick={()=>open('portal')}>{busy==='portal'?'Opening billing':portal?'Retry opening billing':'Manage billing'}</Button>
         </section>:null}
+        {state.billingEnabled?<section className="billing-panel" aria-label="Plan lifecycle">
+          <h2>Plan lifecycle</h2>
+          {deepAction==='cancel'?<p>Cancel before your next charge using Cancel plan below.</p>:null}
+          {deepAction==='change'?<Button disabled={!!busy||!state.canManageBilling} onClick={()=>open('portal')}>Change plan</Button>:null}
+          {!state.serviceEndsAt&&state.canManageBilling?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
+          {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)>Date.now()?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('reactivate')}>Reactivate</Button>:null}
+          {lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'?<>
+            <p>Phone release: {lifecycle.cancellation.phoneReleaseAt}. Export deadline: {lifecycle.cancellation.exportUntilAt}.</p>
+            {lifecycle.cancellation.lastError?<Notice tone="error">A lifecycle action is pending confirmation. Refresh to check progress.</Notice>:null}
+            {lifecycle.cancellation.forwardingOffAt?<p>Forwarding shutdown confirmed.</p>:state.serviceEndsAt&&Date.parse(state.serviceEndsAt)<=Date.now()?<p>Carrier forwarding shutdown is pending confirmation. Turn off forwarding on your business line.</p>:null}
+          </>:null}
+          {['leads','quotes','calls'].map(kind=><Button key={kind} variant="secondary" disabled={!!busy||!!(lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'&&Date.parse(lifecycle.cancellation.exportUntilAt)<=Date.now())} onClick={()=>exportRecords(kind)}>Export {kind} (CSV)</Button>)}
+        </section>:null}
+        <section className="billing-panel" aria-label="Billing notices"><h2>Billing notices</h2>
+          {!lifecycle?.notices?.length?<p>No billing notices yet.</p>:lifecycle.notices.map(item=><article key={item.id}><p>{item.message}</p><small>Email: {item.emailStatus||'PENDING'}{item.deliveryError?' — confirmation pending':''}</small></article>)}
+        </section>
       </>:null}
       <Button variant="secondary" disabled={!!busy} onClick={refresh}>{busy==='status'?'Refreshing billing status':'Refresh billing status'}</Button>
     </main>

@@ -53,6 +53,7 @@ import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
 import {startBillingLifecycleWorker} from './billingLifecycleWorker.js';
 import {createBillingMinuteService} from './billingMinuteService.js';
+import {createBillingCustomerLifecycle,installBillingCustomerLifecycleRoutes} from './billingCustomerLifecycle.js';
 import {createStripeOverageProvider} from './billingOverageProvider.js';
 import {createOwnerEmailProvider} from './ownerEmailDelivery.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
@@ -92,6 +93,7 @@ import {
   googleCalendarAuthorizationUrl,
   placeTwilioTestCall,
   createTelephonyOperations,
+  releaseTwilioNumber,
   suggestStarterBook
 } from './platformIntegrations.js';
 
@@ -115,7 +117,7 @@ const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
 
 function accessAccount(ownerId) {
-  return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt FROM users
+  return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, paidThroughAt, serviceEndsAt FROM users
     WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 
@@ -139,6 +141,7 @@ function requireProviderWrites(req, res, next) {
 function requireQuoteDonePlan(req, res, next) {
   const account = accessAccount(req.tenantOwnerId);
   if (!hasQuoteDoneAccess(account)) {
+    if(account?.serviceEndsAt&&Date.parse(account.serviceEndsAt)<=Date.now())return res.status(403).json({error:'This business is currently unavailable.',code:'BUSINESS_UNAVAILABLE'});
     return res.status(403).json({ error:'QuoteDone or Scale is required' });
   }
   return next();
@@ -311,6 +314,12 @@ const telephonyOperations = createTelephonyOperations({
   database: db, ownerQuery, getBusinessProfile, savePhoneProvisioning,
   updateBusinessProfile, operatorEligibility
 });
+const customerLifecycle=createBillingCustomerLifecycle({database:db,ownerQuery,
+  priceIds:billingConfig?.priceIds||{},stripeClient,emailProvider:createOwnerEmailProvider(),
+  enabled:providerWritesEnabled,telephony:telephonyOperations,releaseNumber:releaseTwilioNumber,
+  dashboardUrl:billingConfig?.portalReturnUrl});
+installBillingCustomerLifecycleRoutes(app,{service:customerLifecycle,requireAuth,
+  requireProviderWrites:requireProviderOperationsEnabled,asyncHandler});
 
 app.post('/api/onboarding/phone/provision', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const { statusCode, ...result } = await telephonyOperations.provision(req.tenantOwnerId, req.body?.existingNumber);
@@ -503,6 +512,7 @@ app.use((err, req, res, _next) => {
 
 const stopBillingWorker = billingStateService ? startBillingLifecycleWorker({service:billingStateService,onError:code=>console.error('[billing-worker]',code)}) : ()=>{};
 const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute-worker]',code)});
+const stopCustomerLifecycle=customerLifecycle.start();
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
@@ -511,8 +521,8 @@ const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[
 const stopSmsWorker=smsDelivery.start({onError:code=>console.error(`[sms-worker] ${code}`)});
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopOwnerAlertWorker,stopSmsWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopSmsWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 

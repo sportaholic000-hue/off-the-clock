@@ -73,8 +73,9 @@ export function createBillingEvidence({db, fail}) {
       WHERE billingInvoiceEvidence.ownerId=excluded.ownerId AND billingInvoiceEvidence.stripeSubscriptionId=excluded.stripeSubscriptionId`)
       .run(object.id,ownerId,customerId,subscriptionId,settled?'PAID':'FAILED',firstFailed,paid ? (prior?.paidAt ?? created) : prior?.paidAt ?? null,
         paid?object.amount_paid:prior?.amountPaid ?? null,object.period_start ?? prior?.periodStart ?? null,object.period_end ?? prior?.periodEnd ?? null);
+    db.prepare('UPDATE billingInvoiceEvidence SET currency=COALESCE(?,currency) WHERE ownerId=? AND stripeInvoiceId=?').run(object.currency||null,ownerId,object.id);
     if(paid)db.prepare('UPDATE billingInvoiceEvidence SET invoiceJson=? WHERE ownerId=? AND stripeInvoiceId=?').run(JSON.stringify({
-      id:object.id,customer:customerId,subscription:subscriptionId,status:'paid',amount_paid:object.amount_paid,
+      id:object.id,customer:customerId,subscription:subscriptionId,status:'paid',amount_paid:object.amount_paid,currency:object.currency,
       lines:{has_more:object.lines?.has_more===true,data:(object.lines?.data||[]).map(l=>({price:billingPrice(l),amount:l.amount,quantity:l.quantity,period:l.period}))}
     }),ownerId,object.id);
     return {stale:!paid && settled};

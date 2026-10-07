@@ -66,6 +66,8 @@ export function canContinueSetup(state, now = Date.now()) {
   if(!Number.isFinite(at)||!state)return false;
   if(state.plan!==undefined&&!ACCOUNT_PLANS.includes(state.plan))return false;
   const status=typeof state.planStatus==='string'?state.planStatus.trim().toLowerCase():'';
+  if(state.serviceEndsAt!=null&&(utcTime(state.serviceEndsAt)===null||at>=utcTime(state.serviceEndsAt)))return false;
+  if(status==='canceled'&&utcTime(state.paidThroughAt)!==null&&utcTime(state.paidThroughAt)>at&&!state.paymentFailedAt)return true;
   if(status==='canceled'&&utcTime(state.annualPaidThroughAt)!==null&&utcTime(state.annualPaidThroughAt)>at)return true;
   if(status==='active')return true;
   if(status==='trialing'){const end=typeof state.trialEndsAt==='string'?Date.parse(state.trialEndsAt):NaN;return Number.isFinite(end)&&at<end;}

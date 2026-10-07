@@ -236,7 +236,7 @@ export function updateBusinessProfile(ownerId, patch) {
 }
 
 function ownerAccount(ownerId) {
-  return ownerQuery(`SELECT id, email, firstName, businessName, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, timezone
+  return ownerQuery(`SELECT id, email, firstName, businessName, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, paidThroughAt, serviceEndsAt, timezone
     FROM users WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 

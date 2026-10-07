@@ -168,7 +168,7 @@ export function createOutboundWebhookService({
       if (!record || record.version !== row.endpointVersion || record[flagFor(row.eventType)] !== 1) {
         complete(row,'CANCELED'); return;
       }
-      const account = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt FROM users
+      const account = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
         WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
       if (!hasOperatorAccess(account,{now:now()})) {
         // Keep queued data for the owner; billing pauses external dispatch.
@@ -194,7 +194,7 @@ export function createOutboundWebhookService({
           current?.status !== 'DELIVERING' || current.leaseId !== row.leaseId) {
         complete(row,'CANCELED'); return;
       }
-      const currentAccount = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt FROM users
+      const currentAccount = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
         WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
       if (!hasOperatorAccess(currentAccount,{now:now()})) {
         query(`UPDATE webhookDeliveries SET status='PENDING',attemptCount=attemptCount-1,

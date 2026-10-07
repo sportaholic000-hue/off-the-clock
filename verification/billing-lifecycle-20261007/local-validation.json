@@ -1,0 +1,43 @@
+{
+  "node": "24.19.0",
+  "coldInstall": {
+    "command": "npm ci --nodedir=/workspace/scratch/8c1b946f3b16/node-headers/node-v24.19.0",
+    "passed": true
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true
+  },
+  "focused": {
+    "tests": 120,
+    "pass": 120,
+    "fail": 0,
+    "skip": 0,
+    "revision": "5e85d92f5fbfa71d4705fb7a06d041dec6c27ffd"
+  },
+  "full": {
+    "command": "npm test",
+    "passed": false,
+    "summaryPresent": false,
+    "environmentFailures": [
+      "Node native RemoveEnvironmentCleanupHook assertion",
+      "Chromium startup SIGTRAP"
+    ]
+  },
+  "quote": {
+    "command": "npm run test:quote",
+    "passed": false,
+    "environmentFailures": [
+      "Chromium SIGTRAP",
+      "native worker process exit / missing summaries"
+    ]
+  },
+  "noLiveProviderOperations": true,
+  "finalLifecycle": {
+    "tests": 45,
+    "pass": 45,
+    "fail": 0,
+    "skip": 0,
+    "command": "node --test --test-reporter=tap test/billingCustomerLifecycle20261007.spec.mjs"
+  }
+}
