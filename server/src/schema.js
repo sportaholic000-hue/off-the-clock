@@ -10,6 +10,7 @@ export const CREATE_TABLE_STATEMENTS = [
     planStatus TEXT NOT NULL DEFAULT 'pending_payment',
     trialEndsAt TEXT,
     paymentFailedAt TEXT,
+    annualPaidThroughAt TEXT,
     emailVerifiedAt TEXT,
     timezone TEXT NOT NULL DEFAULT 'UTC',
     role TEXT NOT NULL CHECK (role IN ('owner', 'staff', 'admin')),

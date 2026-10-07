@@ -1,4 +1,6 @@
 import crypto from 'node:crypto';
+import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
+import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 import {createBillingEvidence, subscriptionFacts, billingReference, billingInvoiceSubscription} from './billingEvidence.js';
 
@@ -238,6 +240,7 @@ function billingError(code, message) {
 export function createBillingStateService({
   db,
   pricePlanMap,
+  priceIds = {},
   supplementalPriceIds = [],
   clock = () => new Date(),
   randomUUID = crypto.randomUUID
@@ -246,6 +249,9 @@ export function createBillingStateService({
     throw new TypeError('BillingStateService requires a SQLite-compatible database.');
   }
   const priceConfiguration = normalizePriceConfiguration(pricePlanMap, supplementalPriceIds);
+  for(const intervals of Object.values(priceIds))for(const [interval,id] of Object.entries(intervals)){
+    if(priceConfiguration.prices.has(id)&&['monthly','annual'].includes(interval))priceConfiguration.prices.get(id).interval=interval;
+  }
 
   const evidence = createBillingEvidence({db, fail:billingError});
 
@@ -589,6 +595,7 @@ export function createBillingStateService({
     }
     if (event.type.startsWith('invoice.')) {
       const invoice = evidence.recordInvoice({...identity,object,paid:event.type==='invoice.paid',created:event.created});
+      if(event.type==='invoice.paid')recordAnnualPaidTerm({database:db,ownerId:account.ownerId,subscriptionId:event.subscriptionId,facts:subscription?.facts,invoice:object});
       stale = invoice.stale;
       if (event.type==='invoice.paid' && object.amount_paid>0) next.paymentMethodVerifiedAt ||= eventIso;
     }
@@ -596,6 +603,7 @@ export function createBillingStateService({
       const invoice=providerSubscription.latest_invoice;
       if (invoice.status==='paid') {
         evidence.recordInvoice({...identity,object:invoice,paid:true,created:event.created});
+        recordAnnualPaidTerm({database:db,ownerId:account.ownerId,subscriptionId:event.subscriptionId,facts:subscription?.facts,invoice});
         if (invoice.amount_paid>0) next.paymentMethodVerifiedAt ||= eventIso;
       } else if (['past_due','unpaid'].includes(providerSubscription.status)) {
         evidence.recordInvoice({...identity,object:invoice,paid:false,created:event.created});
@@ -700,6 +708,13 @@ export function createBillingStateService({
       after.plan, after.planStatus, after.trialEndsAt ?? null,
       after.paymentFailedAt ?? null, after.ownerId
     );
+    const facts=evidence.readSubscription(after.ownerId,after.stripeSubscriptionId)?.facts;
+    if(facts?.billingInterval==='annual')for(const invoice of db.prepare("SELECT invoiceJson FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND invoiceJson IS NOT NULL").all(after.ownerId,after.stripeSubscriptionId)){
+      recordAnnualPaidTerm({database:db,ownerId:after.ownerId,subscriptionId:after.stripeSubscriptionId,facts,invoice:JSON.parse(invoice.invoiceJson)});
+    }
+    const paid=db.prepare('SELECT MAX(endAt) endAt FROM billingAnnualTerms WHERE ownerId=? AND stripeSubscriptionId=? AND plan=? AND startAt<=?').get(after.ownerId,after.stripeSubscriptionId,after.plan,processedAt);
+    db.prepare('UPDATE users SET annualPaidThroughAt=? WHERE id=? AND role=\'owner\'').run(paid?.endAt||null,after.ownerId);
+    recordOwnerUsagePeriods({database:db,ownerId:after.ownerId,priceIds,at:processedAt});
     if (changed) logTransition(before, after, event.type, eventInstant(event.created));
   }
 

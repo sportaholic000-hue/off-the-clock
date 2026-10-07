@@ -1,4 +1,5 @@
 import OwnerIntegrations from './ownerIntegrations.jsx';
+import MinuteUsage from './minuteUsage.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
@@ -50,6 +51,13 @@ export default function Dashboard() {
   }
 
   useEffect(() => { load().catch(setError); }, []);
+  useEffect(()=>{
+    let stopped=false,inFlight=false;
+    const refresh=async()=>{if(stopped||inFlight||document.visibilityState==='hidden')return;inFlight=true;
+      try{const dash=await api('/api/dashboard');if(!stopped)setDashboard(dash);}catch(nextError){if(!stopped)setError(nextError);}finally{inFlight=false;}};
+    const timer=setInterval(refresh,30000);window.addEventListener('focus',refresh);
+    return()=>{stopped=true;clearInterval(timer);window.removeEventListener('focus',refresh);};
+  },[]);
 
   async function toggle(enabled) {
     setBusy(true); setError(null);
@@ -150,6 +158,8 @@ export default function Dashboard() {
             </span>
           </div>
         </section>
+
+        <MinuteUsage usage={dashboard.minuteUsage}/>
 
         {view.simulated && (
           <SimulatedBanner>

@@ -18,7 +18,12 @@ export function subscriptionFacts(object, priceConfiguration, fail) {
   const start = item.current_period_start ?? object.current_period_start ?? null;
   const end = item.current_period_end ?? object.current_period_end ?? null;
   if ((start !== null && !billingIso(start)) || (end !== null && !billingIso(end)) || (start !== null && end !== null && end <= start)) throw fail('INVALID_PERIOD', 'Subscription period boundaries are invalid.');
-  return {priceId, plan, status:object.status, trialStart:object.trial_start ?? object.created ?? null,
+  const recurring=item.price?.recurring;
+  const billingInterval=priceConfiguration.prices.get(priceId)?.interval||
+    (recurring?.interval_count===1||recurring?.interval_count===undefined ? ({month:'monthly',year:'annual'}[recurring?.interval]||null):null);
+  const billingAnchor=object.billing_cycle_anchor ?? object.trial_end ?? start;
+  if(billingAnchor!==null&&!billingIso(billingAnchor))throw fail('INVALID_PERIOD','Subscription anniversary is invalid.');
+  return {priceId, plan, billingInterval, billingAnchor, status:object.status, trialStart:object.trial_start ?? object.created ?? null,
     trialEnd:object.trial_end ?? null, periodStart:start, periodEnd:end,
     cancelAtPeriodEnd:typeof object.cancel_at_period_end === 'boolean' ? object.cancel_at_period_end : null,
     paymentMethodId:billingReference(object.default_payment_method), latestInvoiceId:billingReference(object.latest_invoice)};
@@ -68,6 +73,10 @@ export function createBillingEvidence({db, fail}) {
       WHERE billingInvoiceEvidence.ownerId=excluded.ownerId AND billingInvoiceEvidence.stripeSubscriptionId=excluded.stripeSubscriptionId`)
       .run(object.id,ownerId,customerId,subscriptionId,settled?'PAID':'FAILED',firstFailed,paid ? (prior?.paidAt ?? created) : prior?.paidAt ?? null,
         paid?object.amount_paid:prior?.amountPaid ?? null,object.period_start ?? prior?.periodStart ?? null,object.period_end ?? prior?.periodEnd ?? null);
+    if(paid)db.prepare('UPDATE billingInvoiceEvidence SET invoiceJson=? WHERE ownerId=? AND stripeInvoiceId=?').run(JSON.stringify({
+      id:object.id,customer:customerId,subscription:subscriptionId,status:'paid',amount_paid:object.amount_paid,
+      lines:{has_more:object.lines?.has_more===true,data:(object.lines?.data||[]).map(l=>({price:billingPrice(l),amount:l.amount,quantity:l.quantity,period:l.period}))}
+    }),ownerId,object.id);
     return {stale:!paid && settled};
   }
   function debt(ownerId,subscriptionId) {

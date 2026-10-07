@@ -272,6 +272,7 @@ export function installBillingWebhookRoute(app, {
   webhookSecret,
   billingStateService,
   stripeClient,
+  minuteBilling,
   path = '/api/stripe/webhook'
 }) {
   if (!app || typeof app.post !== 'function' || typeof rawBodyMiddleware !== 'function' ||
@@ -299,6 +300,7 @@ export function installBillingWebhookRoute(app, {
     }
 
     try {
+      if(minuteBilling?.applyInvoiceEvent(event))return res.status(200).json({received:true,status:'PROCESSED'});
       const verifiedEvent = CHECKOUT_EVENT_TYPES.has(event.type)
         ? await hydrateCheckoutLineItems(event, stripeClient)
         : event;
@@ -376,7 +378,7 @@ export function installBillingRoutes(app, {
 
   const billingByOwner = database.prepare(`
     SELECT billing.ownerId, billing.stripeCustomerId, billing.stripeSubscriptionId,
-      billing.canceledAt, users.planStatus
+      billing.canceledAt, users.planStatus, users.annualPaidThroughAt
     FROM billingAccounts AS billing
     JOIN users ON users.id = billing.ownerId
     WHERE billing.ownerId = ?
@@ -386,7 +388,7 @@ export function installBillingRoutes(app, {
     FROM users WHERE id = ? AND role = 'owner'
   `);
   const billingStatusByOwner = database.prepare(`
-    SELECT users.plan, users.planStatus, users.trialEndsAt,
+    SELECT users.plan, users.planStatus, users.trialEndsAt, users.annualPaidThroughAt,
       users.paymentFailedAt AS userPaymentFailedAt,
       billing.stripeCustomerId, billing.stripeSubscriptionId, billing.stripePriceId,
       billing.graceEndsAt, billing.currentPeriodEndAt, billing.cancelAtPeriodEnd,
@@ -475,6 +477,7 @@ export function installBillingRoutes(app, {
   }
 
   function assertCheckoutAllowed(account) {
+    if(account?.annualPaidThroughAt&&account.annualPaidThroughAt>now().toISOString())throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Your prepaid annual service continues until the paid term ends.');
     if (!account?.stripeSubscriptionId) return;
     const terminal = account.planStatus === 'canceled' && account.canceledAt
       ? terminalDeletionReceipt.get(account.ownerId, account.stripeSubscriptionId)
@@ -745,7 +748,7 @@ export function installBillingRoutes(app, {
       account.planStatus === 'canceled' && account.canceledAt
       ? terminalDeletionReceipt.get(ownerId, account.stripeSubscriptionId)
       : null;
-    const structurallyEligibleForCheckout = !account.stripeSubscriptionId || Boolean(terminalDeletion);
+    const structurallyEligibleForCheckout = (!account.stripeSubscriptionId || Boolean(terminalDeletion))&&!(account.annualPaidThroughAt>now().toISOString());
     let billingInterval = null;
     if (account.stripePriceId) {
       for (const [selection, priceId] of prices) {
@@ -761,6 +764,7 @@ export function installBillingRoutes(app, {
       plan: account.plan,
       planStatus: account.planStatus,
       billingInterval,
+      ...(account.annualPaidThroughAt?{annualPaidThroughAt:account.annualPaidThroughAt}:{}),
       trialEndsAt: account.trialEndsAt ?? null,
       paymentFailedAt: account.userPaymentFailedAt ?? null,
       graceEndsAt: account.graceEndsAt ?? null,
@@ -839,5 +843,3 @@ export function installBillingRoutes(app, {
     return res.status(201).json({ url });
   }));
 }
-
-

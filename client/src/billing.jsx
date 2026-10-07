@@ -86,6 +86,7 @@ export default function Billing() {
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
             {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}</dl>
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
+          {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly, and extra minutes are billed monthly at $0.35/min.</p>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
           {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
         </section>
@@ -97,7 +98,7 @@ export default function Billing() {
               <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
               <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
             </fieldset>
-            <p>You will review the configured price and payment details at checkout.</p>
+            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end: Operator $119 monthly or $1,190 for 12 months; QuoteDone $279 monthly or $2,790 for 12 months. Annual plans receive monthly minutes and monthly overage bills.</p>
             {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
             <Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>
           </form>

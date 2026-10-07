@@ -29,7 +29,7 @@ const iso=clock=>new Date(clock()).toISOString();
 
 // Dependencies are supplied only by server construction, never request data or
 // an environment-selected test module. Tests use real HTTP/WS/SQLite and fake providers.
-export function installProductionVoice({app,database,bookingService,runtimeConfig={},env=process.env,googleClient,WebSocketServerClass=WebSocketServer,clock=()=>new Date(),providers={},onError=code=>console.error('[voice]',code)}={}){
+export function installProductionVoice({app,database,bookingService,runtimeConfig={},env=process.env,googleClient,WebSocketServerClass=WebSocketServer,clock=()=>new Date(),providers={},onUsage=()=>{},onError=code=>console.error('[voice]',code)}={}){
   if(!app||typeof app.post!=='function'||typeof app.listen!=='function'||!database?.prepare)throw new TypeError('Voice application dependencies are required.');
   const accountSid=String(env.TWILIO_ACCOUNT_SID||''),authToken=String(env.TWILIO_AUTH_TOKEN||''),publicBaseUrl=String(env.PUBLIC_BASE_URL||'');
   let base;try{base=new URL(publicBaseUrl);}catch{}
@@ -44,7 +44,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const validator=createTwilioRequestValidator({validateRequest:twilio.validateRequest,authToken,publicBaseUrl,allowedAccountSids:[accountSid]});
   const tenantResolver=createVoiceTenantResolver({findByTwilioNumber:number=>findVoiceTenantsByNumber(database,number)});
   const nonceService=createVoiceSessionNonceService({repository:createVoiceNonceRepository({database}),now:()=>new Date(clock()).getTime()});
-  const meter=createBillingVoiceUsage({database,clock});
+  const meter=createBillingVoiceUsage({database,clock,onUsage});
   installBillingVoiceRoutes(app,{validator,meter});
   const store=createVoiceSessionStore({database,clock}),account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
   const fallback=({context})=>{

@@ -214,7 +214,7 @@ export function findVoiceTenantsByNumber(database, twilioNumber) {
 }
 
 export function loadVoiceAccountContext(database, ownerId) {
-  const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt
+  const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt
     FROM users WHERE id = ? AND role = 'owner'`).get(ownerId);
   const profile = database.prepare(`SELECT ownerId, operatorEnabled, existingPhoneNumber,
     phoneProvisioningStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson

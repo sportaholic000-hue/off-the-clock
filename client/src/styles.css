@@ -1166,6 +1166,10 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .billing-fields { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(2,minmax(0,1fr)); }
 .billing-panel dl { display: grid; grid-template-columns: minmax(90px,1fr) minmax(0,2fr); gap: 8px 16px; margin: 0; }
 .billing-panel dd { margin: 0; overflow-wrap: anywhere; }
+.minute-usage { margin: 24px 0; }
+.minute-usage .minute-usage-totals { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.minute-usage-totals dd { font-size: 1.5rem; font-weight: 700; margin-top: 6px; }
+@media(max-width:540px) { .minute-usage .minute-usage-totals { grid-template-columns: 1fr; } }
 .billing-page > .loading { min-height: 100px; }
 @media(max-width:860px) { .billing-page { padding: 24px 16px; } .billing-panel { padding: 18px; } .billing-fields { grid-template-columns: 1fr; } }
 /* Keep required prices and scope readiness visible without expanding every setup form. */
