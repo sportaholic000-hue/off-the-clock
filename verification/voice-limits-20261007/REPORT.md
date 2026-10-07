@@ -111,3 +111,14 @@ seconds). This documentation-only checkpoint records the local limits and
 triggers a fresh cold hosted run. Application, test and workflow files are
 identical to that first uploaded source. The final task response reports the
 exact final-head hosted result, not a passing claim for these local attempts.
+
+## Browser setup recovery
+
+The first two hosted attempts stalled in the combined browser-install step.
+Browser setup is now split into package installation, Chromium download and
+an actual launch check, with five-minute limits on each setup operation. Existing
+runner libraries are used only when Chromium successfully launches; otherwise
+Playwright installs its system dependencies and the launch check runs again.
+The Playwright version, browser version, cold application install, builds,
+full/quote commands, zero-failure/skip check and audit are unchanged. No browser
+test is omitted or made optional. Application and test source is unchanged.
