@@ -1,0 +1,137 @@
+{
+  "sourceSha": "ba1e0c3e4131b4f940367845f6c11bcfd58fafd8",
+  "sourceTree": "ccbf83b886705f15c5bcbd2dada7329b54334ef0",
+  "runId": 37537016739,
+  "jobId": 112520498222,
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37537016739",
+  "quote": {
+    "tests": 2095,
+    "pass": 2095,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "full": {
+    "tests": 2473,
+    "pass": 2473,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 1,
+      "started_at": "2026-10-06T21:53:36Z",
+      "completed_at": "2026-10-06T21:53:37Z"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 2,
+      "started_at": "2026-10-06T21:53:37Z",
+      "completed_at": "2026-10-06T21:53:41Z"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 3,
+      "started_at": "2026-10-06T21:53:41Z",
+      "completed_at": "2026-10-06T21:53:42Z"
+    },
+    {
+      "name": "Install from lockfile (ignores committed node_modules)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4,
+      "started_at": "2026-10-06T21:53:42Z",
+      "completed_at": "2026-10-06T21:53:47Z"
+    },
+    {
+      "name": "Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 5,
+      "started_at": "2026-10-06T21:53:47Z",
+      "completed_at": "2026-10-06T21:54:07Z"
+    },
+    {
+      "name": "Build owner app and widget",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6,
+      "started_at": "2026-10-06T21:54:07Z",
+      "completed_at": "2026-10-06T21:54:13Z"
+    },
+    {
+      "name": "Strict quote engine and price book gate",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 7,
+      "started_at": "2026-10-06T21:54:13Z",
+      "completed_at": "2026-10-06T21:57:53Z"
+    },
+    {
+      "name": "Full test suite",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 8,
+      "started_at": "2026-10-06T21:57:53Z",
+      "completed_at": "2026-10-06T22:01:52Z"
+    },
+    {
+      "name": "No failures beyond the known list",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 9,
+      "started_at": "2026-10-06T22:01:52Z",
+      "completed_at": "2026-10-06T22:01:52Z"
+    },
+    {
+      "name": "Publish test summary to claude/ci-results (push events only)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 10,
+      "started_at": "2026-10-06T22:01:52Z",
+      "completed_at": "2026-10-06T22:01:53Z"
+    },
+    {
+      "name": "Production dependency audit",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 11,
+      "started_at": "2026-10-06T22:01:53Z",
+      "completed_at": "2026-10-06T22:01:54Z"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 21,
+      "started_at": "2026-10-06T22:01:54Z",
+      "completed_at": "2026-10-06T22:01:54Z"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 22,
+      "started_at": "2026-10-06T22:01:54Z",
+      "completed_at": "2026-10-06T22:01:54Z"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 23,
+      "started_at": "2026-10-06T22:01:54Z",
+      "completed_at": "2026-10-06T22:01:54Z"
+    }
+  ]
+}

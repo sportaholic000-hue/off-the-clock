@@ -1,0 +1,56 @@
+TAP version 13
+# Subtest: production server booking routes, adapter and owner views agree under concurrent HTTP requests
+not ok 1 - production server booking routes, adapter and owner views agree under concurrent HTTP requests
+  ---
+  duration_ms: 589.211525
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendarApplication20261006.spec.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"schedule":{"status":403,"body":{"error":"This account does not currently have Operator access."}},"user":{"plan":"QuoteDone","planStatus":"pending_payment"}}
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendarApplication20261006.spec.mjs:19:95)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: production provider response loss stays visible and reconciles after lookup recovery
+not ok 2 - production provider response loss stays visible and reconciles after lookup recovery
+  ---
+  duration_ms: 529.485361
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendarApplication20261006.spec.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"status":403,"body":{"error":"This account does not currently have Operator access."}}
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendarApplication20261006.spec.mjs:36:94)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1224.806478

@@ -1,0 +1,57 @@
+{
+  "sha": "ba1e0c3e4131b4f940367845f6c11bcfd58fafd8",
+  "tree": "ccbf83b886705f15c5bcbd2dada7329b54334ef0",
+  "base": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "9120953d3bb1b1a5473c5c86d3ff387748cc79cb4413664e5a4866d47619e09a",
+      "bytes": 2330
+    },
+    {
+      "path": "server/src/bookingService.js",
+      "sha256": "c999191f8ebd9e1ae185407d4ce850ba39c306e96863f3737bd5bea2f68f75e6",
+      "bytes": 58256
+    },
+    {
+      "path": "server/src/calendarTime.js",
+      "sha256": "b4e9095cb4909afe9a8c44edfc94f947fe76dbc4cee1025fd361565214f478d9",
+      "bytes": 13033
+    },
+    {
+      "path": "test/bookingCalendar20261006.browser.spec.mjs",
+      "sha256": "478028e35cc36a3f0dd342d2ad840b70003bded1d51547a776224ad701b6ee23",
+      "bytes": 4512
+    },
+    {
+      "path": "test/bookingCalendar20261006.spec.mjs",
+      "sha256": "888c0cd776e4a182720d71391c52734b0f2940dac7d93d2a8577764b8c4dfa15",
+      "bytes": 11962
+    },
+    {
+      "path": "test/bookingCalendarApplication20261006.spec.mjs",
+      "sha256": "7a0afaf0ec2796537fb197804a745ae39038264038a551f714ff6cfbea4d8901",
+      "bytes": 4843
+    },
+    {
+      "path": "test/fixtures/bookingCalendar20261006.mjs",
+      "sha256": "324c784e613a8e63f4856e300fe6977c953d5471bf9fc22a035171f47fba9f14",
+      "bytes": 5635
+    },
+    {
+      "path": "test/fixtures/bookingCalendarApplication20261006.mjs",
+      "sha256": "406d4b5d232b8241735058450464d749610eb37d143d6968c088982be15b1728",
+      "bytes": 4824
+    },
+    {
+      "path": "test/fixtures/bookingCalendarProvider20261006.mjs",
+      "sha256": "1a8c5bb240db1e670566139a1e7bcf3e0e9c1c82e07d168e33e6206fbff3c660",
+      "bytes": 2558
+    },
+    {
+      "path": "test/fixtures/bookingCalendarRace20261006.mjs",
+      "sha256": "927cce138c0ef1d2d4b0651e2b21a2784836450b400c0f1c38ac8e6b4fe746ca",
+      "bytes": 788
+    }
+  ]
+}

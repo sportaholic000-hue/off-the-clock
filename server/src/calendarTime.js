@@ -215,6 +215,30 @@ function timeOfDayFor(hour) {
   return 'evening';
 }
 
+function withinWorkingWindow(startMs, endMs, localDate, window, timeZone) {
+  const inside = at => {
+    const parts = utcToLocalParts(at, timeZone);
+    const date = `${parts.year}-${pad(parts.month)}-${pad(parts.day)}`;
+    const minute = parts.hour * 60 + parts.minute;
+    return date === localDate && minute >= window.startMinute && minute < window.endMinute;
+  };
+  // End is exclusive. Inspect the last occupied millisecond, so an appointment
+  // ending exactly at closing remains valid even at a clock transition.
+  const lastMs = endMs - 1;
+  if (!inside(startMs) || !inside(lastMs)) return false;
+  const startingOffset = offsetMinutesAt(startMs, timeZone);
+  if (startingOffset === offsetMinutesAt(lastMs, timeZone)) return true;
+  // Within a same-day window, inspect both sides of its offset transition.
+  // A repeated-hour appointment must not cross clock times outside the window.
+  let before = startMs, after = lastMs;
+  while (after - before > 1) {
+    const middle = Math.floor((before + after) / 2);
+    if (offsetMinutesAt(middle, timeZone) === startingOffset) before = middle;
+    else after = middle;
+  }
+  return inside(before) && inside(after);
+}
+
 export function generateCandidateSlots({
   now,
   timeZone,
@@ -254,14 +278,18 @@ export function generateCandidateSlots({
     const localDate = addLocalDays(firstDate, dayOffset);
     if (compareLocalDates(localDate, finalDate) > 0) break;
     for (const window of weekly[weekdayKey(localDate)]) {
-      for (let minute = window.startMinute; minute + durationMinutes <= window.endMinute; minute += slotIncrementMinutes) {
+      // Duration is elapsed time, not wall-clock subtraction. DST can make a
+      // local working window shorter or longer than its displayed clock span.
+      for (let minute = window.startMinute; minute < window.endMinute; minute += slotIncrementMinutes) {
         const hour = Math.floor(minute / 60);
         if (requestedPeriods.size && !requestedPeriods.has(timeOfDayFor(hour))) continue;
         const localTime = `${pad(hour)}:${pad(minute % 60)}`;
         for (const startAtUtc of localDateTimeCandidates(localDate, localTime, timeZone)) {
           const startMs = new Date(startAtUtc).getTime();
           if (startMs < noticeBoundary) continue;
-          const endAtUtc = new Date(startMs + durationMinutes * 60000).toISOString();
+          const endMs = startMs + durationMinutes * 60000;
+          if (!withinWorkingWindow(startMs, endMs, localDate, window, timeZone)) continue;
+          const endAtUtc = new Date(endMs).toISOString();
           if (closed.some(item => intervalsOverlap(startAtUtc, endAtUtc, item.startAtUtc, item.endAtUtc))) continue;
           slots.push({
             startAtUtc,
@@ -275,4 +303,3 @@ export function generateCandidateSlots({
   }
   return slots.sort((left, right) => left.startAtUtc.localeCompare(right.startAtUtc));
 }
-

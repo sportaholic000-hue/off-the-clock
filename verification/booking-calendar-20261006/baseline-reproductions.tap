@@ -1,0 +1,195 @@
+TAP version 13
+# Subtest: booking B01 spring-forward duration cannot extend past owner closing time
+not ok 1 - booking B01 spring-forward duration cannot extend past owner closing time
+  ---
+  duration_ms: 19.561103
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     endAtUtc: '2026-03-08T07:00:00.000Z',
+    +     endLocal: '2026-03-08T04:00:00-03:00',
+    +     startAtUtc: '2026-03-08T05:00:00.000Z',
+    +     startLocal: '2026-03-08T01:00:00-04:00'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      startAtUtc: '2026-03-08T05:00:00.000Z'
+      endAtUtc: '2026-03-08T07:00:00.000Z'
+      startLocal: '2026-03-08T01:00:00-04:00'
+      endLocal: '2026-03-08T04:00:00-03:00'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:8:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: booking B01 fall-back elapsed duration includes the valid extra-hour slot
+not ok 2 - booking B01 fall-back elapsed duration includes the valid extra-hour slot
+  ---
+  duration_ms: 1.965304
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:10:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        [
+          '2026-11-01T03:00:00.000Z',
+          '2026-11-01T05:00:00.000Z'
+        ],
+    -   [
+    -     '2026-11-01T04:00:00.000Z',
+    -     '2026-11-01T06:00:00.000Z'
+    -   ]
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: '2026-11-01T03:00:00.000Z'
+      1: '2026-11-01T05:00:00.000Z'
+    1:
+      0: '2026-11-01T04:00:00.000Z'
+      1: '2026-11-01T06:00:00.000Z'
+  actual:
+    0:
+      0: '2026-11-01T03:00:00.000Z'
+      1: '2026-11-01T05:00:00.000Z'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+not ok 3 - booking B02 finalizer cannot overwrite newer provider reconciliation: pending
+  ---
+  duration_ms: 54.295602
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:14:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PENDING_CONFIRMATION'
+    - 'CONFIRMED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'CONFIRMED'
+  actual: 'PENDING_CONFIRMATION'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:24:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+not ok 4 - booking B02 finalizer cannot overwrite newer provider reconciliation: failure
+  ---
+  duration_ms: 23.792817
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:14:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'PROVIDER_FAILED'
+    - 'CONFIRMED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'CONFIRMED'
+  actual: 'PROVIDER_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:24:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+not ok 5 - booking B02 finalizer cannot overwrite newer provider reconciliation: confirmed-after-cancel
+  ---
+  duration_ms: 24.831857
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:14:66'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'CONFIRMED'
+    - 'PROVIDER_FAILED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'PROVIDER_FAILED'
+  actual: 'CONFIRMED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:24:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during hold
+not ok 6 - booking B03 confirmation rechecks a slot start that passed during hold
+  ---
+  duration_ms: 19.45818
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:27:39'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:30:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: booking B03 confirmation rechecks a slot start that passed during provider read
+not ok 7 - booking B03 confirmation rechecks a slot start that passed during provider read
+  ---
+  duration_ms: 19.30294
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:27:39'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.spec.mjs:30:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 279.21834

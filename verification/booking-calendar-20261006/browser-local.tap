@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+not ok 1 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
+  ---
+  duration_ms: 331.532852
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.browser.spec.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+    
+    <launching> /workspace/scratch/e34515a96b93/integration-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/workspace/scratch/e34515a96b93/website-temp/playwright_chromiumdev_profile-oc7k4B --remote-debugging-pipe --no-startup-window
+    <launched> pid=21
+    Call log:
+    [2m  - <launching> /workspace/scratch/e34515a96b93/integration-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/workspace/scratch/e34515a96b93/website-temp/playwright_chromiumdev_profile-oc7k4B --remote-debugging-pipe --no-startup-window[22m
+    [2m  - <launched> pid=21[22m
+    [2m  - [pid=21] <gracefully close start>[22m
+    [2m  - [pid=21] <kill>[22m
+    [2m  - [pid=21] <will force kill>[22m
+    [2m  - [pid=21] <process did exit: exitCode=null, signal=SIGTRAP>[22m
+    [2m  - [pid=21] starting temporary directories cleanup[22m
+    [2m  - [pid=21] finished temporary directories cleanup[22m
+    [2m  - [pid=21] <gracefully close end>[22m
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/e34515a96b93/booking-calendar/test/bookingCalendar20261006.browser.spec.mjs:9:32)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 466.91671
