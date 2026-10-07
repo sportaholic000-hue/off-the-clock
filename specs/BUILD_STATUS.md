@@ -1,13 +1,20 @@
-# Voice core hosted strict gate passed — final full suite verification underway
+# October 7 voice core repairs — hosted gates passed
 
-Hosted [run 37684697212](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37684697212)
-at source commit `fae13492fa07f36aaae4fee5553d421f09191f92` passed cold
-installation, owner/widget builds and the strict quote gate. The full suite
-is checked again after strengthening the voice review-lead contact assertion;
-this checkpoint does not claim a complete hosted result. Runtime/callback tests
-passed **40/40**, with zero failures/skips. The final reply and sendable report
-record the final pushed-head results. Application code is unchanged in this
-assertion checkpoint.
+Branch `fix/voice-core`; verified application/test/CI revision
+`696e949ccdf976dd6db555de8bdaefa91348e0ac`.
+[Hosted run 37687001198](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37687001198)
+passed cold `npm ci`, owner/widget builds, **2,597/2,597** strict quote checks,
+**3,655/3,655** full-suite tests, the failure checker and **zero production
+dependency vulnerabilities**. Both summaries contain zero failures/skips/
+cancellations/TODOs. All eight defects have source and execution evidence;
+31 added regressions cover their repairs. The browser retry test now waits
+for the persisted retry and refreshed API/UI state rather than a loading render.
+
+Local cold installation/build passed. Local Chromium independently crashes
+with `SIGTRAP` before rendering; enabled browser checks therefore fail locally.
+This documentation checkpoint does not change application, tests or CI source.
+The final sendable report records the pushed-head hosted result. No subagents,
+main merge, deployment, real calls or live application data.
 
 # October 7 voice core repairs — functional gate passed
 
