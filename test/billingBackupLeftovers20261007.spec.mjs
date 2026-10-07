@@ -71,8 +71,15 @@ test('a collection outage cannot release or erase before their independent exact
   assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
   f.setTime(Date.parse(DELETE)-1);await f.lifecycle.tick();assert.equal(f.lifecycle.snapshot(A).cancellation.dataDeletedAt,null);
 });
-test('all due owners are cleaned before the first owner’s delayed billing reconciliation',async t=>{
+test('all due owners beyond a 32-owner batch are cleaned before delayed billing reconciliation',async t=>{
   const f=await setup(t);f.setTime(DELETE);
+  // A is first, followed by 32 inert synthetic accounts, then B. Retention
+  // must cover B before A's provider request settles, despite the page limit.
+  for(let i=0;i<32;i++){
+    const id=A+'-'+String(i).padStart(2,'0');
+    f.db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic inert account','Operator','pending_payment','UTC','owner',?)").run(id,id+'@example.invalid',START);
+    f.db.prepare("INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,endedAt,phoneReleasedAt,dataDeletedAt,updatedAt) VALUES(?,?,'SYNTHETIC-inert','ENDED',?,?,?,?,?,?)").run(id,'sub_'+id,END,START,END,DELETE,DELETE,DELETE);
+  }
   f.db.prepare(`INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,confirmedAt,operatorWasEnabled,updatedAt)
     VALUES(?,?,'SYNTHETIC-cancellation-b','CONFIRMED',?,?,?,1,?)`).run(B,'sub_'+B,END,START,START,START);
   f.db.prepare('UPDATE users SET serviceEndsAt=? WHERE id=?').run(END,B);
@@ -81,4 +88,26 @@ test('all due owners are cleaned before the first owner’s delayed billing reco
   const processing=f.lifecycle.tick();
   try{await entered;assert.equal(f.db.prepare('SELECT count(*) n FROM leads').get().n,0);assert.equal(f.writes.release.length,2);}
   finally{finish();await processing;}
+});
+test('a new retention deadline is processed while an earlier financial sweep is still waiting',async t=>{
+  const f=await setup(t);f.setTime(Date.parse(DELETE)-1000);
+  let enter,finish;const entered=new Promise(resolve=>{enter=resolve;}),held=new Promise(resolve=>{finish=resolve;});
+  f.fakes.stripe.invoices.retrieve=async()=>{enter();await held;throw Error('[SYNTHETIC] held at retention deadline');};
+  const first=f.lifecycle.tick();let second;
+  try{
+    await entered;assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
+    f.setTime(DELETE);second=f.lifecycle.tick();await new Promise(setImmediate);
+    assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,0);
+  }finally{finish();await first;if(second)await second;}
+});
+test('a number-release deadline is processed while that owner’s billing lease awaits Stripe',async t=>{
+  const f=await setup(t);f.setTime(Date.parse(RELEASE)-1000);
+  let enter,finish;const entered=new Promise(resolve=>{enter=resolve;}),held=new Promise(resolve=>{finish=resolve;});
+  f.fakes.stripe.invoices.retrieve=async()=>{enter();await held;throw Error('[SYNTHETIC] held at number deadline');};
+  const first=f.lifecycle.tick();let second;
+  try{
+    await entered;assert.equal(f.writes.release.length,0);
+    f.setTime(RELEASE);second=f.lifecycle.tick();await new Promise(setImmediate);
+    assert.equal(f.writes.release.length,1);assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
+  }finally{finish();await first;if(second)await second;}
 });

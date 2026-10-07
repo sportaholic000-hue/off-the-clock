@@ -292,7 +292,7 @@ test('crossing service end while reading an overage period cannot finalize or ch
 test('lease loss during phone release cannot clear the saved phone receipt',async t=>{
   const f=setup(t);f.activate();f.profile();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);f.setTime('2026-12-20T12:00:00.000Z');
   const service=createBillingCustomerLifecycle({database:f.db,clock:f.clock,enabled:()=>true,releaseNumber:async()=>{
-    f.db.prepare("UPDATE billingOperationLeases SET token='SYNTHETIC-reclaimed' WHERE ownerId=?").run(A);return {released:true};
+    f.db.prepare("UPDATE billingRetentionLeases SET token='SYNTHETIC-reclaimed' WHERE ownerId=?").run(A);return {released:true};
   }});
   await assert.rejects(service.processOwner(A),{code:'BILLING_LEASE_LOST'});assert.equal(f.lifecycle.snapshot(A).cancellation.phoneReleasedAt,null);assert.ok(f.db.prepare('SELECT twilioNumberSid FROM businessProfiles WHERE ownerId=?').get(A).twilioNumberSid);
 });

@@ -30,8 +30,9 @@ checked against `AGENTS.md`, the current build status, the repository audit repo
 
 ## Changes
 
-- Local retention cleanup runs before billing reconciliation. The sweep completes
-  due work for all selected owners before Stripe reads. Failed collection-stop
+- Local retention cleanup runs before billing reconciliation. Its separate fenced
+  lease and independently coalesced sweep cover every cancellation page and keep
+  progressing on later worker ticks while a financial sweep awaits Stripe. Failed collection-stop
   reconciliation remains durable on the charge and cancellation for retry; amounts
   and financial evidence survive. Exact deadlines and tenant isolation remain.
 - A continuously running worker detects SQLite/WAL and price-book changes using
@@ -56,10 +57,11 @@ checked against `AGENTS.md`, the current build status, the repository audit repo
 
 ## Verification checkpoint
 
-The latest focused diagnostic run passed **330/330**, zero failures, skips,
+The latest focused diagnostic run passed **342/342**, zero failures, skips,
 cancellations or TODOs: both billing files, continuous/daily off-site files,
-shutdown lifecycle and both actual-server tenant-isolation matrices. This includes
-**22 new regressions**: five billing, sixteen continuous backup and one shutdown.
+financial recovery/fencing, shutdown lifecycle and both actual-server
+tenant-isolation matrices. This includes **24 new regressions**: seven billing,
+sixteen continuous backup and one shutdown.
 The standalone focused run before the matrix review passed 94/94.
 
 The first hosted run at `76735577a14358aa69de5327c06050690c8c26ff`
@@ -75,8 +77,28 @@ no route, assertion, middleware expectation or failure allowance was removed.
 Retention's original implementation also read every retained completion record
 and HEAD: an independent 100-point experiment measured 100 of each. The bounded
 implementation and new regression require one marker and one HEAD for the newest
-complete point, with zero deletions for the all-retained fixture. Full cold hosted
-acceptance of this corrected revision remains pending.
+complete point, with zero deletions for the all-retained fixture.
+
+[Hosted run 37684612961](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37684612961)
+at `2ca1c5660728221933dbad3c09c16f60622fe8fa` passed cold `npm ci`, both builds,
+**2,613/2,613** strict tests (132 files), **3,646/3,646** full tests and the
+dependency audit (zero vulnerabilities). Both suites have zero failures, skips,
+cancellations or TODOs. Further billing stress checks exposed two residual
+couplings before final acceptance:
+
+- The first 32-owner batch excluded a later cancellation page. A 34-owner fixture
+  retained one overdue lead while the first provider request was held, rather
+  than the expected zero. Its regression failed before the full retention scan.
+- A new deadline arriving during an active financial sweep skipped cleanup;
+  the same financial lease also excluded cleanup for that owner. Independent
+  held-read executions retained the day-90 lead and day-30 number (five passes,
+  two failures, zero skips). Separate scheduling and retention fencing now let
+  both deadlines progress before that provider response settles. The existing
+  phone lease-loss test now reclaims the retention lease and retains every
+  original receipt assertion; financial fencing tests remain unchanged.
+
+The final code and two additional regressions require their own cold hosted gate;
+the preliminary green revision does not prove that later work passed.
 
 Local verification uses available Node 24.19.0. Ordinary cold installation first
 failed on native header extraction (`fchown`); a downloaded Node 22 executable
@@ -85,6 +107,13 @@ headers and an external native-object retention preload for the managed runtime'
 cleanup assertion. These workarounds are not hosted cold acceptance. Playwright's
 local browser installation also failed. No such workaround is committed to source
 or CI. Fixture setup errors and interrupted install attempts are not green gates.
+
+The final local install with downloaded native headers and both builds passed.
+The local full-suite attempt was interrupted without a complete summary. The
+local strict attempt exited 1: 2,546/2,604 results passed, 58 failed, zero skips,
+and one file lacked complete results. Chromium was unavailable; a catalog timing
+assertion and a native SIGABRT also failed locally. This is not local all-green
+evidence; ordinary hosted Node 22 supplies complete cold acceptance.
 
 Unfinished at this checkpoint: final local command results and hosted cold
 acceptance. Real storage/provider provisioning and deployment are excluded by the
