@@ -14,7 +14,7 @@ export async function until(predicate){
 }
 export async function voiceHarness(t){
   const owner=seed(),to='+1902555'+String(++sequence).padStart(4,'0');
-  db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,stripeSubscriptionId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,'2026-10-06T12:00:00.000Z','2026-10-06T12:00:00.000Z','2026-10-06T12:00:00.000Z')").run(owner.id,'cus_SYNTHETIC_'+sequence,'sub_SYNTHETIC_'+sequence);
+  db.prepare('UPDATE billingAccounts SET stripeCustomerId=?,stripeSubscriptionId=? WHERE ownerId=?').run('cus_SYNTHETIC_'+sequence,'sub_SYNTHETIC_'+sequence,owner.id);
   db.prepare("UPDATE users SET planStatus='active' WHERE id=? AND role='owner'").run(owner.id);
   db.prepare("UPDATE businessProfiles SET twilioNumber=?,twilioNumberSid=?,existingPhoneNumber='+19025550199',phoneProvisioningStatus='provisioned',operatorEnabled=1,agentName='Synthetic Ava' WHERE ownerId=?").run(to,'PN_SYNTHETIC_'+sequence,owner.id);
   const connections=[],responses=new Map(),sockets=[];let callbacks;

@@ -17,6 +17,15 @@ test('named review contact owner-only route rejects staff, absent and invalid se
   for(const endpoint of [save,draft])for(const [token,status] of [[undefined,401],['SYNTHETIC-invalid-token',401],[staff.token,403]])assert.equal((await h.request(endpoint,input,token)).status,status);
   assert.deepEqual(getBusinessProfile(a.id),before);
 });
+test('named review contact cannot bypass billing read-only status',async t=>{
+  const a=seed(),h=await knowledgeApp(t),before=getBusinessProfile(a.id);
+  db.prepare("UPDATE users SET planStatus='pending_payment' WHERE id=? AND role='owner'").run(a.id);
+  for(const endpoint of [save,draft]){
+    const response=await h.request(endpoint,input,a.token);
+    assert.equal(response.status,403);assert.equal(response.body.code,'ACCOUNT_READ_ONLY');
+  }
+  assert.deepEqual(getBusinessProfile(a.id),before);
+});
 test('named review contact API rejects invalid and foreign bindings without partial changes',async t=>{
   const a=seed(),b=seed(),h=await knowledgeApp(t);await h.request(save,input,a.token);const before=getBusinessProfile(a.id);
   for(const reviewContact of [{...contact,ownerId:b.id},{name:'',role:'owner'},{...contact,role:'admin'}]){

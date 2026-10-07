@@ -14,6 +14,12 @@ export {db,getBusinessProfile,saveKnowledgeBase};
 export function seed(role='owner',ownerId=null){
   const id='SYNTHETIC-contact-'+(++sequence);
   db.prepare("INSERT INTO users(id,ownerId,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,?,'SYNTHETIC','Synthetic Casey','Synthetic Review Co','Operator','active','UTC',?,'2026-10-06T12:00:00.000Z')").run(id,ownerId,id+'@example.invalid',role);
+  if(role==='owner'){
+    // The combined billing policy correctly rejects an active label without
+    // verified payment evidence. Seed that evidence for this synthetic owner.
+    db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,'2026-10-06T12:00:00.000Z','2026-10-06T12:00:00.000Z','2026-10-06T12:00:00.000Z')").run(id,'cus_SYNTHETIC_contact_'+sequence);
+    db.prepare("UPDATE users SET planStatus='active' WHERE id=? AND role='owner'").run(id);
+  }
   const user=db.prepare('SELECT * FROM users WHERE id=?').get(id);
   const token=createAuthSessionService(db).create(user).token;
   if(role==='owner')saveKnowledgeBase(id,{about:'[SYNTHETIC] Test business',hours:'Weekdays'});
