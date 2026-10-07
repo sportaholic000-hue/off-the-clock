@@ -1,7 +1,7 @@
 import {randomUUID,createHash} from 'node:crypto';
 import {billingReference,billingPrice,billingIso,createBillingEvidence} from './billingEvidence.js';
 import {billingUsageId,billingMoney,MINUTE_PLANS,monthlyAnniversary,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
-import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
+import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 
 const DAY=86400000;
@@ -44,7 +44,9 @@ export function installBillingLifecycleSchema(database){
     state TEXT NOT NULL CHECK(state IN ('PENDING','CONFIRMED','ENDED','RESTORING','RESTORED')),
     endAt TEXT NOT NULL,requestedAt TEXT NOT NULL,confirmedAt TEXT,endedAt TEXT,
     operatorWasEnabled INTEGER NOT NULL DEFAULT 0,forwardingOffAt TEXT,phoneReleasedAt TEXT,dataDeletedAt TEXT,
-    restoredForwardingAt TEXT,lastError TEXT,updatedAt TEXT NOT NULL);`);
+    restoredForwardingAt TEXT,lastError TEXT,updatedAt TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS billingRetentionLeases (
+    ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
 }
 
@@ -249,6 +251,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
       AND c.status!='PAID' AND c.collectionStoppedAt IS NULL`).all(ownerId);
     for(const charge of charges){
+      try{
       const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
       assertLease();
       const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest;
@@ -262,8 +265,17 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         assertLease();
         if(!bound(receipt)||receipt.auto_advance!==false)throw error('BILLING_COLLECTION_STOP_PENDING',502);
       }
-      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+      }catch{
+        assertLease();
+        // Provider uncertainty is durable financial evidence, not permission to
+        // keep customer records or a carrier number past their own deadlines.
+        query("UPDATE billingUsageCharges SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND periodId=? AND collectionStoppedAt IS NULL").run(now(),ownerId,charge.periodId);
+      }
     }
+    const pending=query("SELECT 1 FROM billingUsageCharges WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING' AND collectionStoppedAt IS NULL").get(ownerId);
+    if(pending)query("UPDATE billingCancellations SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND lastError IS NULL").run(now(),ownerId);
+    else query("UPDATE billingCancellations SET lastError=NULL,updatedAt=? WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING'").run(now(),ownerId);
   }
   async function cleanup(ownerId,{deadlineAt=now(),assertLease}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
@@ -273,7 +285,6 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Carrier shutdown is tracked in Billing. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    await stopUsageCollection(ownerId,assertLease);
     if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
@@ -296,11 +307,11 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       }
     }
   }
-  async function processOwner(ownerId){
+  async function processOwner(ownerId,{localOnly=false}={}){
     let row=cancellation(ownerId);
-    if(row?.state==='PENDING')try{await cancel(ownerId);}catch{/* Durable intent retried; dashboard reports ambiguity. */}
-    if(row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
-    await withBillingLease(database,ownerId,async assertLease=>{
+    if(!localOnly&&row?.state==='PENDING')try{await cancel(ownerId);}catch{/* Durable intent retried; dashboard reports ambiguity. */}
+    if(!localOnly&&row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
+    await withBillingRetentionLease(database,ownerId,async assertLease=>{
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
       const restoring=row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
       const payment=restoring?query("SELECT MIN(paidAt) paidAt FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND amountPaid>0").get(ownerId,account.stripeSubscriptionId):null;
@@ -314,6 +325,11 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         if(result.confirmedEnabled===true&&!result.pending)query('UPDATE billingCancellations SET restoredForwardingAt=?,lastError=NULL,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
         else query("UPDATE billingCancellations SET lastError='REACTIVATION_FORWARDING_PENDING',updatedAt=? WHERE ownerId=?").run(now(),ownerId);
       }
+    },{clock});
+    if(localOnly)return;
+    await withBillingLease(database,ownerId,async assertLease=>{
+      row=cancellation(ownerId);
+      if(row&&['CONFIRMED','ENDED'].includes(row.state)&&row.endAt<=now())await stopUsageCollection(ownerId,assertLease);
     },{clock});
     await recoverReceiptCurrencies(ownerId);syncNotices(ownerId);await reminders(ownerId);
     for(let i=0;i<12;i++)if(!await emails.deliverOne(ownerId))break;
@@ -330,14 +346,36 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     const cell=value=>'"'+String(value??'').replace(/^[=+@\-\t\r]/,"'$&").replaceAll('"','""')+'"';
     return columns.map(cell).join(',')+'\r\n'+rows.map(r=>columns.map(c=>cell(r[c])).join(',')).join('\r\n')+'\r\n';
   }
-  let running=null,cursor='';
-  async function tick(){if(running)return running;running=(async()=>{
-    // Platform inventory only. Every following operation binds the owner.
-    let owners=database.prepare("SELECT id FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 32").all(cursor);
-    if(!owners.length){cursor='';owners=database.prepare("SELECT id FROM users WHERE role='owner' ORDER BY id LIMIT 32").all();}
-    for(const {id} of owners){try{await processOwner(id);}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}finally{cursor=id;}}
-  })();try{await running;}finally{running=null;}}
-  function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{clearInterval(timer);if(running)await running;};}
+  let running=null,retentionRunning=null,cursor='',stopping=false;
+  async function retentionTick(){
+    if(retentionRunning)return retentionRunning;
+    retentionRunning=(async()=>{
+      // Retention has its own complete, paginated inventory. The financial work
+      // remains bounded to 32 owners; a slow provider for that batch must not
+      // postpone an overdue cancellation on a later page.
+      let retentionCursor='';
+      while(true){
+        const due=database.prepare(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
+          WHERE u.role='owner' AND u.id>? AND c.state IN ('CONFIRMED','ENDED','RESTORED') ORDER BY u.id LIMIT 32`).all(retentionCursor);
+        if(!due.length)break;
+        for(const {id} of due)try{await processOwner(id,{localOnly:true});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}
+        retentionCursor=due.at(-1).id;
+      }
+    })();try{await retentionRunning;}finally{retentionRunning=null;}
+  }
+  async function tick(){
+    if(stopping)return;
+    await retentionTick();
+    if(stopping)return;
+    if(running)return running;
+    running=(async()=>{
+      // Platform inventory only. Every following operation binds the owner.
+      let owners=database.prepare("SELECT id FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 32").all(cursor);
+      if(!owners.length){cursor='';owners=database.prepare("SELECT id FROM users WHERE role='owner' ORDER BY id LIMIT 32").all();}
+      for(const {id} of owners){if(stopping)break;try{await processOwner(id);}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}finally{cursor=id;}}
+    })();try{await running;}finally{running=null;}
+  }
+  function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{stopping=true;clearInterval(timer);if(retentionRunning)await retentionRunning;if(running)await running;};}
   return {notice,syncNotices,reminders,cancel,reactivate,processOwner,snapshot,exportCsv,tick,start,emails};
 }
 

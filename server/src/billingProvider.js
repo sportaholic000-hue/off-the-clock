@@ -7,19 +7,27 @@ export function billingProviderError(code='BILLING_PROVIDER_ERROR') {
 // The provider call is outside SQLite's transaction. A durable owner lease and
 // fencing token prevent a late response from committing after another process
 // has reclaimed the operation. Local timeout never proves provider failure.
-export async function withBillingLease(db,ownerId,work,{clock=()=>new Date(),leaseMs=120000}={}) {
+export function withBillingLease(db,ownerId,work,options={}) {
+  return withOwnerLease(db,ownerId,work,'billingOperationLeases',options);
+}
+// Retention deadlines must progress while a financial-provider read holds its
+// own lease. Keep independent fencing for phone/data cleanup across processes.
+export function withBillingRetentionLease(db,ownerId,work,options={}) {
+  return withOwnerLease(db,ownerId,work,'billingRetentionLeases',options);
+}
+async function withOwnerLease(db,ownerId,work,table,{clock=()=>new Date(),leaseMs=120000}={}) {
   const token=crypto.randomUUID(),at=clock().toISOString();
   const expiresAt=new Date(clock().getTime()+leaseMs).toISOString();
-  const result=db.prepare(`INSERT INTO billingOperationLeases(ownerId,token,expiresAt) VALUES(?,?,?)
+  const result=db.prepare(`INSERT INTO ${table}(ownerId,token,expiresAt) VALUES(?,?,?)
     ON CONFLICT(ownerId) DO UPDATE SET token=excluded.token,expiresAt=excluded.expiresAt
-    WHERE billingOperationLeases.expiresAt<=?`).run(ownerId,token,expiresAt,at);
+    WHERE ${table}.expiresAt<=?`).run(ownerId,token,expiresAt,at);
   if (!Number(result.changes)) throw billingProviderError('BILLING_OPERATION_IN_PROGRESS');
   const assertLease=()=>{
-    const current=db.prepare('SELECT token,expiresAt FROM billingOperationLeases WHERE ownerId=?').get(ownerId);
+    const current=db.prepare(`SELECT token,expiresAt FROM ${table} WHERE ownerId=?`).get(ownerId);
     if (current?.token!==token || current.expiresAt<=clock().toISOString()) throw billingProviderError('BILLING_LEASE_LOST');
   };
   try {return await work(assertLease);}
-  finally {db.prepare('DELETE FROM billingOperationLeases WHERE ownerId=? AND token=?').run(ownerId,token);}
+  finally {db.prepare(`DELETE FROM ${table} WHERE ownerId=? AND token=?`).run(ownerId,token);}
 }
 export async function billingProviderRead(call) {
   let timer;

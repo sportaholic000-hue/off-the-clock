@@ -37,11 +37,11 @@
   },
   {
     "file": "src/lifecycle.js",
-    "sha256": "eb16dddf8d8b0b0611bb1cbbe4805fe96f2516bbcd6ec8efe7300d8c910f4b98"
+    "sha256": "bcfa23417952beb27464a6ca2f319b022695478855d54d80b74510f36734f1ef"
   },
   {
     "file": "src/offsiteBackups.js",
-    "sha256": "b2b465db35e04b14083854d8e22c9604eecd0e326d44942ba52919adf72ece5a"
+    "sha256": "2d18ca1ba879ba01b012837dd990fc6a0e281bb22ae407d098c2dabc6d7b27d2"
   },
   {
     "file": "src/ownerAlertRoutes.js",

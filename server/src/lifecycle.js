@@ -2,7 +2,7 @@
 // must not cause shutdown to close SQLite while its handler is still running.
 export function createLifecycle(app, database) {
   let draining = false, server, shutdownPromise;
-  const pending = new Set(), stops = [];
+  const pending = new Set(), stops = [], finalizers = [];
   function observe(result, next) {
     if (!result || typeof result.then !== 'function') return result;
     const task = Promise.resolve(result);
@@ -54,7 +54,11 @@ export function createLifecycle(app, database) {
           server.closeIdleConnections?.();
         });
         await Promise.race([
-          Promise.all([httpDone,...stops.map(stop=>Promise.resolve().then(stop))]).then(settleRoutes),
+          Promise.all([httpDone,...stops.map(stop=>Promise.resolve().then(stop))]).then(settleRoutes).then(async()=>{
+            // Recovery checkpoints must include the last route/worker commits.
+            // SQLite remains open until these final durable copies finish.
+            for(const finish of finalizers)await finish();
+          }),
           timeout
         ]);
         database.close();
@@ -72,8 +76,8 @@ export function createLifecycle(app, database) {
     })();
     return shutdownPromise;
   }
-  function attach(httpServer,{stopWorkers=[],timeoutMs=110000,signals=true}={}) {
-    server=httpServer;stops.push(...stopWorkers);
+  function attach(httpServer,{stopWorkers=[],finalWorkers=[],timeoutMs=110000,signals=true}={}) {
+    server=httpServer;stops.push(...stopWorkers);finalizers.push(...finalWorkers);
     if(signals) for(const signal of ['SIGTERM','SIGINT']) process.on(signal,()=>{void shutdown({timeoutMs});});
   }
   return {health,attach,shutdown,isDraining:()=>draining};

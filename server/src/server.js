@@ -535,8 +535,8 @@ const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopQuoteEmailWorker,offsiteBackups.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

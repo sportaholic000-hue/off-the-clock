@@ -53,3 +53,15 @@ test('health readiness checks SQLite and fails closed when it is unavailable',as
   assert.equal((await fetch(f.url+'/api/health')).status,200);f.db.close();
   const response=await fetch(f.url+'/api/health');assert.equal(response.status,503);assert.deepEqual(await response.json(),{ok:false,error:'SERVICE_NOT_READY'});
 });
+test('final backup waits for disconnected route and worker commits while SQLite remains open',async t=>{
+  const f=await fixture(t);let enter,releaseRoute,releaseWorker,captured,exitCode;
+  const entered=new Promise(resolve=>{enter=resolve;});
+  f.app.get('/final-write',async(_req,res)=>{enter();await new Promise(resolve=>{releaseRoute=resolve;});f.db.prepare('INSERT INTO work VALUES(?)').run('last-route');res.end();});
+  f.lifecycle.attach(f.server,{signals:false,stopWorkers:[async()=>{await new Promise(resolve=>{releaseWorker=resolve;});f.db.prepare('INSERT INTO work VALUES(?)').run('last-worker');}],finalWorkers:[async()=>{
+    assert.equal(f.db.open,true);captured=f.db.prepare('SELECT kind FROM work ORDER BY kind').all().map(row=>row.kind);
+  }]});
+  const request=http.get(f.url+'/final-write');request.on('error',()=>{});await entered;request.destroy();
+  const stopped=f.lifecycle.shutdown({timeoutMs:3000,exit:code=>{exitCode=code;}});await new Promise(resolve=>setTimeout(resolve,20));assert.equal(captured,undefined);
+  releaseWorker();await new Promise(resolve=>setTimeout(resolve,20));assert.equal(captured,undefined);
+  releaseRoute();await stopped;assert.deepEqual(captured,['last-route','last-worker']);assert.equal(exitCode,0);assert.equal(f.db.open,false);
+});
