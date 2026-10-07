@@ -1,0 +1,28 @@
+{
+  "node": "22.23.3",
+  "coldInstallExitCode": 0,
+  "coldBuildExitCode": 0,
+  "focusedFinal": {
+    "tests": 63,
+    "pass": 63,
+    "fail": 0,
+    "skipped": 0
+  },
+  "developmentColdAttempts": {
+    "quote": {
+      "tests": 2076,
+      "pass": 2036,
+      "fail": 40,
+      "skipped": 0,
+      "reason": "Chromium launch SIGTRAP in ten browser files"
+    },
+    "full": {
+      "tests": 2971,
+      "pass": 2930,
+      "fail": 41,
+      "skipped": 0,
+      "reason": "40 Chromium failures and one obsolete production wiring assertion, corrected and verified by subsequent hosted runs"
+    }
+  },
+  "followupLocalAttempt": "Install and build passed; full test stream ended without a summary and the execution session was no longer available. It is not counted as a passed gate. Current-source authoritative cold verification is the linked hosted workflow."
+}
