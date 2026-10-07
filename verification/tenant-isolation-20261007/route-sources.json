@@ -5,7 +5,7 @@
   },
   {
     "file": "src/billingCustomerLifecycle.js",
-    "sha256": "5193e0e2ef4d5c2da85cbdc1a96e38b0a0eb6bb71402092bd73033e7a3dd2953"
+    "sha256": "0da3804c4965b9cea06b1e61db4533db75f1884707ec8b05ed7f1a68625857c1"
   },
   {
     "file": "src/billingRoutes.js",
@@ -68,8 +68,12 @@
     "sha256": "544033527a0a41f6de0dd4dadbc6f5e656246bbe10622310bc646648a305a0b6"
   },
   {
+    "file": "src/quoteEmailRoutes.js",
+    "sha256": "8950b9ac7c824ba3221b1caefad32f8237cd3068244a6fcd565ef56f3d8e27a2"
+  },
+  {
     "file": "src/server.js",
-    "sha256": "411bd33cdba4a611ab819b8d374533c5b033f6fc368d9295af0cc7c08b257d79"
+    "sha256": "99bc1ff9ac2c3790ace376696b0ece513925a1b8916ce159c1b1430b6a2c2f8a"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
@@ -81,7 +85,7 @@
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
-    "sha256": "594d731fb54104e18b6b7388c5c046b963fef7a2791f8e7b6c19e5b774092d5c"
+    "sha256": "8b9c00377648098592e2a4956c9613783db6276e059e82305def2d9bc64a325b"
   },
   {
     "file": "src/voice/voiceWebSocketServer.js",
@@ -90,9 +94,5 @@
   {
     "file": "src/voiceRuntimeRoutes.js",
     "sha256": "30a46836e4d155aff662cd39c401acbe39b110e695be0c2a694d7f60a6ff0691"
-  },
-  {
-    "file": "src/voiceSmsProvider.js",
-    "sha256": "2839be94ec917ef99ec26c9ec656fd6040f05033ea9b32ffd62d35c54c185d3a"
   }
 ]

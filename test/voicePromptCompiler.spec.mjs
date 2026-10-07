@@ -103,7 +103,9 @@ test("compiled instructions include global rules and only quoting-live service h
     ],
   });
   const parsed = parseVoiceGuide(GUIDE);
-  assert.equal(prompt.includes(parsed.globalRules), true);
+  assert.equal(prompt.includes(parsed.globalRules), false);
+  assert.match(prompt,/Your booking is confirmed/);
+  assert.doesNotMatch(prompt,/\b(?:sms|texts|texting|text (?:confirmation|message))\b/i);
   assert.deepEqual(
     [...prompt.matchAll(/^## ACTIVE SERVICE FLOW: ([A-Z0-9_]+)$/gm)].map((match) => match[1]),
     ["ROOFING_REPAIR"],
@@ -266,7 +268,8 @@ const VALID_ARGUMENTS = Object.freeze({
     },
   },
   logQuoteRequest: { description: "Needs an exact roof measurement.", leadHandle: HANDLE_B },
-  sendSms: { template: "quote", recordHandle: HANDLE_C },
+  prepareQuoteEmail: { quoteHandle: HANDLE_C, email: "synthetic@example.invalid" },
+  sendQuoteEmail: { emailConfirmationHandle: HANDLE_C, customerConfirmed: true },
   flagUrgent: { reason: "active_leak", summary: "Water is entering the kitchen." },
   transferCall: { reason: "caller_requested", customerConfirmed: true },
   modifyAppointment: {
@@ -336,4 +339,12 @@ test("Gemini function declarations have exact tool coverage and validator-requir
     ["morning", "afternoon", "evening"],
   );
   assert.equal(Object.prototype.hasOwnProperty.call(availability.parameters.properties, "address"), false);
+});
+
+for(const type of VOICE_GUIDE_SERVICE_TYPES)test('Owner ruling: '+type+' offers only caller-requested quote email',()=>{
+  const prompt=compile({services:[service(type,'Synthetic service')],knowledge:{policies:'We send text confirmations.\nHours: 9 to 5.',faqs:'Automatic SMS reminders available.'}});
+  assert.doesNotMatch(prompt,/\b(?:sms|texts|texting|text (?:confirmation|message))\b/i);
+  assert.match(prompt,/Read quoteNarration exactly/);assert.match(prompt,/Only when the caller asks for a written copy/);
+  assert.match(prompt,/If corrected, call prepareQuoteEmail again/);assert.match(prompt,/affirmative confirmation of the current email read-back/);
+  assert.match(prompt,/Do not offer later booking confirmations or reminders by any channel/);assert.match(prompt,/Hours: 9 to 5/);
 });

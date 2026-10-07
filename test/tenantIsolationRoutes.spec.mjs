@@ -160,15 +160,10 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
           assert.deepEqual(sanitized(r),sanitized(unknown),route+' reveals whether the other number exists');
         }
       }
-    }else if(policy==='sms') {
+    }else if(policy==='quote-copy') {
       for(const [source,target] of [[A,B],[B,A]]) {
-        const params={AccountSid:f.env.TWILIO_ACCOUNT_SID,MessageSid:target.smsProvider,MessageStatus:'delivered',To:'+19025550000',From:target.phone};
-        const path=pathFor(route,source);
-        const mismatch=await signedVoice(f,path,params);assert.equal(mismatch.status,403);noLeak(mismatch,target,route+' mismatched provider binding');
-        const bad=await signedVoice(f,path,params,'invalid');assert.equal(bad.status,403);
-        const foreign=await signedVoice(f,pathFor(route,source,{other:target}),params);assert.equal(foreign.status,403);noLeak(foreign,target,route+' foreign receipt with own capability');
-        const guessed=await signedVoice(f,path.replace(source.sms,genericId),params);assert.equal(guessed.status,403);
-        assert.deepEqual(sanitized(mismatch),sanitized(guessed));
+        const routePath=pathFor(route,source,{other:target});
+        const r=await f.request(routePath,{token:source.auth.owner.token});assert.equal(r.status,404);noLeak(r,target,route+' foreign capability');
       }
     }else if(policy==='oauth-capability') {
       for(const state of [genericId,'x'.repeat(43)]) {

@@ -1,6 +1,7 @@
 // Durable first-party owner notifications. Triggers run in the same transaction
 // as capture; no provider operation runs inside a database transaction.
-import {installVoiceSmsSchema} from './voiceSmsSchema.js';
+import {installNotificationHistorySchema} from './notificationHistorySchema.js';
+import {installQuoteEmailSchema} from './quoteEmailSchema.js';
 export function installOwnerAlertSchema(db) {
   db.exec(`CREATE TABLE IF NOT EXISTS callbackRequests (
     id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, callId TEXT NOT NULL, leadId TEXT NOT NULL,
@@ -31,6 +32,9 @@ export function installOwnerAlertSchema(db) {
   trigger('lead','leads','lead.created');
   trigger('quote','quotes','quote.created');
   trigger('quote_request','quoteRequests','quote.requested');
+  for(const type of ['appointment.booked','appointment.changed']){
+    trigger(type.replace('.','_'),'outboxEvents',type,{when:`NEW.eventType='${type}'`,call:`(SELECT COALESCE(l.callId,q.callId) FROM appointments a JOIN bookingIntents i ON i.ownerId=a.ownerId AND i.id=a.bookingIntentId LEFT JOIN leads l ON l.ownerId=i.ownerId AND l.id=i.sourceId AND i.sourceType='lead' LEFT JOIN quotes q ON q.ownerId=i.ownerId AND q.id=i.sourceId AND i.sourceType='quote' WHERE a.ownerId=NEW.ownerId AND a.id=NEW.aggregateId)`});
+  }
   trigger('callback','callbackRequests','callback.requested');
   db.exec(`CREATE TRIGGER IF NOT EXISTS owner_alert_callback_correction AFTER UPDATE OF notes ON callbackRequests WHEN NEW.notes IS NOT OLD.notes
     BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)
@@ -47,5 +51,6 @@ export function installOwnerAlertSchema(db) {
     CASE WHEN o.eventType='booking.preference_requested' THEN o.aggregateId ELSE o.id END,
     CASE WHEN json_valid(o.payloadJson) THEN (SELECT c.id FROM calls c WHERE c.ownerId=o.ownerId AND c.callSid=json_extract(o.payloadJson,'$.callSid')) END,
     o.createdAt,o.updatedAt FROM outboxEvents o WHERE o.status='PENDING' AND o.eventType IN ('voice.urgent_flagged','booking.preference_requested');`);
-  installVoiceSmsSchema(db);
+  installNotificationHistorySchema(db);
+  installQuoteEmailSchema(db);
 }

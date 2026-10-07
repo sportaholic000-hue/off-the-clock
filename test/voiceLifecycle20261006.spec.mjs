@@ -15,14 +15,20 @@ import {voiceOperatorControl} from '../client/src/voiceOperatorControl.js';
 // Expectations written before execution: no prices are calculated here. Exactly
 // five active calls per owner; sixth captures a request. One call/session per
 // signed CallSid. No deadline unless supplied by the owner. No audio is stored.
-test('D04 production SMS provider is wired through the real tool interface',async t=>{
-  const h=await harness(t),c=await h.connect();
-  const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Please call about a broken gate',callbackRequested:true});
-  const sent=await h.tool(c.callback,'sendSms',{template:'callback',recordHandle:lead.leadHandle});
-  assert.equal(sent.status,'pending');assert.equal(h.writes.filter(x=>x[0]==='sms').length,1);
-  const delivery=h.db.prepare('SELECT status,providerId FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner);
-  assert.equal(delivery.status,'QUEUED');assert.match(delivery.providerId,/^SM/);
-  assert.match(h.writes.find(x=>x[0]==='sms')[1].statusCallback,/\/api\/voice\/sms-status\//);
+test('Owner ruling: removed SMS tool cannot reach the production provider',async t=>{
+  for(const template of ['quote','booking','callback','reminder']){
+    const h=await harness(t),c=await h.connect();
+    const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Gate callback',callbackRequested:true});
+    const id='SYNTHETIC-rejected-'+template;
+    c.callback.onmessage({toolCall:{functionCalls:[{id,name:'sendSms',args:{template,recordHandle:lead.leadHandle}}]}});
+    // Removed tools fail at the provider declaration boundary, before dispatch.
+    // That closes the invalid session; there must be no successful tool reply.
+    await until(()=>c.ws.readyState===3);
+    assert.equal(h.responses.has(id),false);
+    assert.deepEqual(h.db.prepare('SELECT status,failureCode FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid),{status:'FAILED',failureCode:'GEMINI_SESSION_ERROR'});
+    assert.equal(h.writes.filter(x=>x[0]==='sms').length,0);
+    assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner).n,0);
+  }
 });
 test('D06 failed transfer persists the promised callback with caller words and replay identity',async t=>{
   const h=fixture(t),c=h.context(),v=h.voice(c),args={reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Gate fell on driveway'};
@@ -157,9 +163,9 @@ for(const ending of ['error','provider_close','socket_close'])test('D26 pending 
 });
 test('D26 received caller text persists while a provider tool is still waiting',async t=>{
   let release,entered=false;const pending=new Promise(r=>{release=r;});
-  const h=await harness(t,{install:{twilioClient:{messages:{create:async()=>{entered=true;await pending;return {sid:'SM'+'e'.repeat(32),status:'queued'};}}}}}),c=await h.connect();
+  const h=await harness(t,{install:{twilioClient:{calls:()=>({update:async()=>{entered=true;await pending;return {sid:'CA'+'e'.repeat(32),status:'in-progress'};}})}}}),c=await h.connect();
   const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Initial callback',callbackRequested:true});
-  c.callback.onmessage({toolCall:{functionCalls:[{id:'blocked-sms',name:'sendSms',args:{template:'callback',recordHandle:lead.leadHandle}}]}});
+  c.callback.onmessage({toolCall:{functionCalls:[{id:'blocked-transfer',name:'transferCall',args:{reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Additional help'}}]}});
   try{await until(()=>entered);c.callback.onmessage({serverContent:{inputTranscription:{text:'[SYNTHETIC] Additional urgent gate detail'}}});
     await until(()=>h.db.prepare('SELECT transcriptJson FROM calls WHERE callSid=?').get(c.params.CallSid).transcriptJson.includes('Additional urgent gate detail'));
   }finally{release();}
