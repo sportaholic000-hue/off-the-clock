@@ -56,6 +56,10 @@
     "sha256": "10612c8b45eb234bba69ca9d1f022f2968d6598d0fb1d41d852e5905e375b734"
   },
   {
+    "file": "src/ownerDashboardRoutes.js",
+    "sha256": "0a79fc7443a19d16448035cacccf630531bd7dec919359b9361fe6a4432aea4a"
+  },
+  {
     "file": "src/ownerIntegrationRoutes.js",
     "sha256": "5b593335bb89d1bd03309f240ea71f7601ea50d492bfbb92efe31e75e4b69943"
   },
@@ -65,15 +69,15 @@
   },
   {
     "file": "src/quoteDoneRoutes.js",
-    "sha256": "544033527a0a41f6de0dd4dadbc6f5e656246bbe10622310bc646648a305a0b6"
+    "sha256": "f0bfcc5b9fd0c2976dda51edd257fead07bf363083cddcfca229bdd97818ff65"
   },
   {
     "file": "src/server.js",
-    "sha256": "411bd33cdba4a611ab819b8d374533c5b033f6fc368d9295af0cc7c08b257d79"
+    "sha256": "a65db15779267b4008d32236d270d99b17dfdb03a42346fc4c625a0f7fb2cd44"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "38f073eca23b4ba05ace524f41c2c81a670874c6fba89afd0494e11a0abffbfd"
+    "sha256": "ddfec4d098be50155c875076cda92551836d27476b986e1e01c9581614a593dc"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",

@@ -2,6 +2,7 @@ import {callDeliveryActions} from './voiceDeliveryViews.js';
 import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
+import {ownerTimezone,localReportRange} from './ownerReportTime.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {
@@ -16,18 +17,39 @@ function transcript(value) {
 export function createOwnerCallService({ownerQuery}) {
   if(typeof ownerQuery!=='function')throw new TypeError('Call reads require tenant-scoped queries.');
   function list({ownerId,query={},limit=50}) {
-    if(Object.keys(query).some(key=>key!=='offset'))throw invalid('Unsupported call filter.');
+    if(Object.keys(query).some(key=>!['offset','search','status','outcome','spam','service','fromDate','toDate'].includes(key)))throw invalid('Unsupported call filter.');
+    if(!Number.isSafeInteger(limit)||limit<1||limit>100)throw invalid('Choose a valid page size.');
     const offset=query.offset??'0';
     if(typeof offset!=='string'||!/^\d{1,8}$/.test(offset))throw invalid('Choose a valid call page.');
-    const calls=ownerQuery(`SELECT id,callerNumber,status,outcome,summaryText,urgency,spamFiltered,
-      duration,failureCode,createdAt,completedAt FROM calls WHERE ownerId=?
-      ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?`).all(ownerId,limit,Number(offset));
-    const total=ownerQuery('SELECT COUNT(*) AS count FROM calls WHERE ownerId=?').get(ownerId).count;
-    return {calls,total,offset:Number(offset),nextOffset:Number(offset)+calls.length<total?Number(offset)+calls.length:null};
+    const where=['c.ownerId=?'],parameters=[ownerId];
+    for(const field of ['search','status','outcome','service'])if(query[field]!==undefined&&(typeof query[field]!=='string'||query[field].length>200))throw invalid('Choose valid call filters.');
+    if(query.search?.trim()){
+      where.push(`(instr(lower(COALESCE(c.callerNumber,'')||' '||COALESCE(c.summaryText,'')||' '||COALESCE(c.transcriptJson,'')||' '||COALESCE(c.callSid,'')),lower(?))>0
+        OR EXISTS(SELECT 1 FROM transcriptTurns t WHERE t.ownerId=c.ownerId AND t.callId=c.id AND instr(lower(t.text),lower(?))>0))`);
+      parameters.push(query.search.trim(),query.search.trim());
+    }
+    for(const field of ['status','outcome'])if(query[field]){where.push(`c.${field}=?`);parameters.push(query[field]);}
+    const spam=query.spam??'exclude';if(!['all','only','exclude'].includes(spam))throw invalid('Choose a valid spam filter.');
+    if(spam!=='all'){where.push('c.spamFiltered=?');parameters.push(spam==='only'?1:0);}
+    if(query.service){where.push(`(EXISTS(SELECT 1 FROM quotes q WHERE q.ownerId=c.ownerId AND q.callId=c.id AND q.serviceType=?)
+      OR EXISTS(SELECT 1 FROM leads l WHERE l.ownerId=c.ownerId AND l.callId=c.id AND l.describedService=?))`);parameters.push(query.service,query.service);}
+    let range=null;
+    if(query.fromDate!==undefined||query.toDate!==undefined){range=localReportRange({period:'custom',fromDate:query.fromDate,toDate:query.toDate},ownerTimezone(ownerQuery,ownerId));
+      where.push('julianday(c.createdAt)>=julianday(?) AND julianday(c.createdAt)<julianday(?)');parameters.push(range.startAtUtc,range.endAtUtc);}
+    const predicate=where.join(' AND ');
+    const calls=ownerQuery(`SELECT c.id,c.callerNumber,c.destinationNumber,c.callSid,c.streamSid,c.status,c.outcome,c.transportOutcome,c.minutesBilled,c.summaryText,c.urgency,c.spamFiltered,
+      c.duration,c.failureCode,c.createdAt,c.completedAt FROM calls c WHERE ${predicate}
+      ORDER BY c.createdAt DESC,c.id DESC LIMIT ? OFFSET ?`).all(...parameters,limit,Number(offset));
+    const total=ownerQuery(`SELECT COUNT(*) AS count FROM calls c WHERE ${predicate}`).get(...parameters).count;
+    const choices=ownerQuery('SELECT DISTINCT status,outcome FROM calls WHERE ownerId=? ORDER BY status,outcome').all(ownerId);
+    const services=ownerQuery(`SELECT DISTINCT serviceType AS service FROM quotes WHERE ownerId=? AND serviceType IS NOT NULL
+      UNION SELECT DISTINCT describedService AS service FROM leads WHERE ownerId=? AND describedService IS NOT NULL ORDER BY service`).all(ownerId,ownerId).map(row=>row.service);
+    const spamCount=ownerQuery('SELECT COUNT(*) AS n FROM calls WHERE ownerId=? AND spamFiltered=1').get(ownerId).n;
+    return {calls,total,spamCount,range,filters:{statuses:[...new Set(choices.map(row=>row.status).filter(Boolean))],outcomes:[...new Set(choices.map(row=>row.outcome).filter(Boolean))],services},offset:Number(offset),nextOffset:Number(offset)+calls.length<total?Number(offset)+calls.length:null};
   }
 
   function detail({ownerId,id,role='owner'}) {
-    const row=ownerQuery(`SELECT id,callerNumber,destinationNumber,status,outcome,summaryText,urgency,
+    const row=ownerQuery(`SELECT id,callerNumber,destinationNumber,callSid,streamSid,minutesBilled,transportOutcome,status,outcome,summaryText,urgency,
       spamFiltered,duration,failureCode,createdAt,completedAt,transcriptJson FROM calls
       WHERE ownerId=? AND id=?`).get(ownerId,id);
     if(!row)throw invalid('Call not found.',404);
@@ -60,7 +82,7 @@ export function createOwnerCallService({ownerQuery}) {
     const {transcriptJson,...call}=row;
     const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
       .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
-    const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
+    const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
     return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
@@ -72,7 +94,7 @@ export function createOwnerCallService({ownerQuery}) {
       FROM calls WHERE ownerId=?`).get(ownerId);
     const quotes=ownerQuery('SELECT COUNT(*) AS count FROM quotes WHERE ownerId=?').get(ownerId).count;
     const bookings=ownerQuery("SELECT COUNT(*) AS count FROM appointments WHERE ownerId=? AND status='CONFIRMED'").get(ownerId).count;
-    const notifications=ownerQuery(`SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status<>'ACCEPTED' OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED') THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId);
+    const notifications=ownerQuery(`SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status<>'ACCEPTED' OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED') THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId);
     const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status<>'ACCEPTED'").get(ownerId).n;
     return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5}),notifications,unresolvedNotifications,emailAlertsConfigured:ownerAlertEmailReady()};
   }

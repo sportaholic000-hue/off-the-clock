@@ -10,6 +10,7 @@ import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import { declaredAdditionalWork, customerReceiptPresentation } from './quoteScopeDisclosure.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 import {createOwnerCallService} from './ownerCallService.js';
+import {createOwnerWorkflowService} from './ownerWorkflowService.js';
 import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
@@ -290,8 +291,10 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   });
   app.patch('/api/leads/:id',...leadTeam,(req,res)=>{
     if(!['NEEDS REVIEW','DISMISSED'].includes(req.body?.status))throw problem('Choose a supported lead status.');
-    const result=ownerQuery('UPDATE leads SET status = ? WHERE ownerId = ? AND id = ?').run(req.body.status,req.tenantOwnerId,req.params.id);
-    if(!result.changes)return res.status(404).json({error:'Lead not found.'});res.json({success:true});
+    const workflow=createOwnerWorkflowService({database:db,ownerQuery}),current=workflow.view(req.tenantOwnerId,'leads',req.params.id,req.role);
+    if(current.status!==req.body.status)workflow.act({ownerId:req.tenantOwnerId,actorId:req.userId,role:req.role,kind:'leads',id:req.params.id,
+      body:{action:req.body.status==='DISMISSED'?'DISMISS':'REOPEN',version:current.workflow.version,idempotencyKey:crypto.randomUUID(),note:'Owner team changed the lead status.'}});
+    res.json({success:true});
   });
   app.get('/api/quotes',...team,(req,res)=>{
     const quotes=ownerQuery('SELECT id,ownerId,callId,serviceType,status,tierChosen,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>quoteFollowUpView(ownerQuery,row,req.role));res.json({quotes});

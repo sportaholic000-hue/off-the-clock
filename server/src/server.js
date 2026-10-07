@@ -1,5 +1,9 @@
 import {createVoiceSmsService} from './voiceSmsService.js';
-import {createVoiceSmsProvider,installVoiceSmsStatusRoute} from './voiceSmsProvider.js';
+import {createOwnerReportService} from './ownerReportService.js';
+import {createOwnerWorkflowService} from './ownerWorkflowService.js';
+import {installOwnerDashboardRoutes} from './ownerDashboardRoutes.js';
+import {installVoiceSmsStatusRoute} from './voiceSmsProvider.js';
+import {disabledCallerMessageProvider} from './callerCommunicationPolicy.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
@@ -159,7 +163,7 @@ migrate();
 migrateLegacyGoogleCalendarCredentials();
 const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
 const ownerAlerts=createOwnerAlertService({database:db,ownerQuery});
-const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:createVoiceSmsProvider({database:db,ownerQuery})});
+const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:disabledCallerMessageProvider()});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
@@ -206,6 +210,7 @@ if (billingConfig) {
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
+installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requireQuoteDonePlan,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);

@@ -37,7 +37,7 @@ export function createVoiceSmsService({database,ownerQuery=sql=>database.prepare
     const request=parse(r.requestJson);
     if(!r.requestJson){set(r,'UNKNOWN','LEGACY_SMS_NOT_REPLAYABLE');return null;}
     const available=typeof provider.send==='function'&&(typeof provider.ready!=='function'||provider.ready(request,ownerId)===true);
-    if(!available){set(r,'BLOCKED','SMS_NOT_CONFIGURED');q('UPDATE voiceSmsDeliveries SET nextAttemptAt=? WHERE ownerId=? AND id=?').run(clock()+5000,ownerId,r.id);return null;}
+    if(!available){set(r,'BLOCKED',provider.unavailableCode==='CALLER_MESSAGES_DISABLED'?'CALLER_MESSAGES_DISABLED':'SMS_NOT_CONFIGURED');q('UPDATE voiceSmsDeliveries SET nextAttemptAt=? WHERE ownerId=? AND id=?').run(clock()+5000,ownerId,r.id);return null;}
     if(r.attemptCount>=5){set(r,'FAILED','SMS_RETRIES_EXHAUSTED');return null;}
     const leaseId=randomUUID(),attempt=r.attemptCount+1;
     q("UPDATE voiceSmsDeliveries SET status='DELIVERING',attemptCount=?,leaseId=?,leaseExpiresAt=?,updatedAt=? WHERE ownerId=? AND id=?").run(attempt,leaseId,clock()+30000,iso(),ownerId,r.id);

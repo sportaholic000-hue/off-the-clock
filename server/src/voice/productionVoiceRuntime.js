@@ -1,4 +1,5 @@
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
+import {CALLER_COMMUNICATION_RULE,ownerOnlyVoiceTools} from '../callerCommunicationPolicy.js';
 import {installBillingVoiceRoutes} from '../billingVoiceRoutes.js';
 import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
 import {createVoiceInboundReceipt} from './voiceInboundReceipt.js';
@@ -66,7 +67,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const providerClient=enabled?(twilioClient||twilio(env.TWILIO_API_KEY_SID||accountSid,env.TWILIO_API_KEY_SECRET||authToken,{accountSid,autoRetry:false,timeout:10000})):null;
   const productionProviders=createVoiceProviderAdapters({app,database,twilioClient:providerClient,bookingService,validator,publicBaseUrl,clock,
     onTransferFailed:({context,reason,notes,inquiryNumber})=>createVoiceToolRuntime({database,callContext:context,handleSecret,bookingService,clock}).handlers.transferCall({context,args:{reason,notes,inquiryNumber,customerConfirmed:true}})});
-  providers={...productionProviders,...providers};
+  providers={...productionProviders,...providers,callerMessagesEnabled:false};
   const paths=installVoiceRuntimeRoutes(app,{
     twilioValidator:validator,tenantResolver,nonceService,allowedAccountSids:[accountSid],publicBaseUrl,runtimeEnabled:enabled,
     checkOperatorEligibility:({context})=>{const state=account(context.ownerId);return hasOperatorAccess(state.account,{now:new Date(clock())})&&state.profile?.operatorEnabled===1&&state.profile.phoneProvisioningStatus==='provisioned'&&state.profile.twilioNumber===context.to;},
@@ -87,7 +88,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const book=canQuote?loadPricebook(context.ownerId):{services:[]};
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
-    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge});
+    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge})+'\n\n'+CALLER_COMMUNICATION_RULE;
   }
   async function startMediaSession(input){
     if(!enabled||!handleSecret)throw Error('Voice session is unavailable.');
@@ -96,7 +97,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     for(const name of ['matchService','getQuote']){const original=handlers[name];handlers[name]=invocation=>{if(!hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())}))return {status:'needs_details',customerMessage:'The business will review this pricing request.'};return original(invocation);};}
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
-    const opener=createGoogleGenAiLiveSessionOpener({client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
+    const opener=createGoogleGenAiLiveSessionOpener({client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:ownerOnlyVoiceTools(getVoiceToolDeclarations()),greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){

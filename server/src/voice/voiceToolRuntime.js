@@ -847,6 +847,7 @@ export function createVoiceToolRuntime({
   }
 
   async function sendSms(input) {
+    if(providers.callerMessagesEnabled===false)return {status:'unavailable',message:'Caller messages are disabled. The owner can follow up on the saved request.'};
     const args=invocation(input),resolved=resolve(args.recordHandle,['quote','appointment','quote_request','lead']);
     const template=typeof args.template==='string'?args.template.trim():'';
     if(!['quote','booking','callback','reminder'].includes(template))throw runtimeError('SMS_TEMPLATE_REQUIRED');

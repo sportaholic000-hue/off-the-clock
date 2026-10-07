@@ -8,6 +8,7 @@ import { go, logout } from './api.js';
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Calls', path: '/calls', icon: PhoneCall },
+  { label: 'Reports', path: '/reports', icon: LayoutDashboard },
   { label: 'Leads', path: '/leads', icon: BookOpen },
   { label: 'Quotes', path: '/quotes', icon: BookOpen },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },

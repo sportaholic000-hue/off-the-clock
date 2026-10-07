@@ -1,6 +1,7 @@
 import {migrateBillingCheckoutRecovery} from './billingCoreMigration.js';
 import {installBillingUsageSchema} from './billingUsageSchema.js';
 import {installOwnerAlertSchema} from './ownerAlertSchema.js';
+import {installOwnerDashboardSchema} from './ownerDashboardSchema.js';
 import {installBillingLifecycleSchema} from './billingCustomerLifecycle.js';
 import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
@@ -262,6 +263,7 @@ export function migrateDatabase(database) {
   installOutboundWebhookSchema(database);
   installBillingUsageSchema(database);
   installOwnerAlertSchema(database);
+  installOwnerDashboardSchema(database);
   installBillingLifecycleSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

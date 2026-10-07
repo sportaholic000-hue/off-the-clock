@@ -1,3 +1,15 @@
+# Owner dashboard repair — 2026-10-07
+
+Branch `fix/owner-dashboard` starts at verified base `4db13a2945193762bbc4b85f9ab616a00e1dd067`.
+Implements confirmed-booking owner alerts, call billing/transport/search/transcripts,
+owner review and follow-up progression, and period/value/service-funnel reports.
+Current owner ruling disables caller texts, confirmations, invites and reminders.
+See `specs/OWNER_DASHBOARD_20261007.md` and `verification/owner-dashboard-20261007/REPORT.md`.
+Synthetic source/service/HTTP/render reproductions failed before fixes. The expanded
+regressions and explicit tenant route matrix passed 292/292; cold install and build passed.
+Final cold full/quote and hosted gates are pending; this entry does not claim release approval.
+No merge, deployment, real calendar or real email operation was performed.
+
 # October 7 audit repairs — hosted gates passed
 
 Branch `codex/audit-small-repairs-20261007`; verified source/test commit
