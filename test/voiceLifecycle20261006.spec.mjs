@@ -16,14 +16,19 @@ import {voiceOperatorControl} from '../client/src/voiceOperatorControl.js';
 // five active calls per owner; sixth captures a request. One call/session per
 // signed CallSid. No deadline unless supplied by the owner. No audio is stored.
 test('Owner ruling: removed SMS tool cannot reach the production provider',async t=>{
-  const h=await harness(t),c=await h.connect();
-  const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Gate callback',callbackRequested:true});
   for(const template of ['quote','booking','callback','reminder']){
-    const result=await h.tool(c.callback,'sendSms',{template,recordHandle:lead.leadHandle});
-    assert.notEqual(result.status,'sent');
+    const h=await harness(t),c=await h.connect();
+    const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Gate callback',callbackRequested:true});
+    const id='SYNTHETIC-rejected-'+template;
+    c.callback.onmessage({toolCall:{functionCalls:[{id,name:'sendSms',args:{template,recordHandle:lead.leadHandle}}]}});
+    // Removed tools fail at the provider declaration boundary, before dispatch.
+    // That closes the invalid session; there must be no successful tool reply.
+    await until(()=>c.ws.readyState===3);
+    assert.equal(h.responses.has(id),false);
+    assert.deepEqual(h.db.prepare('SELECT status,failureCode FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid),{status:'FAILED',failureCode:'GEMINI_SESSION_ERROR'});
+    assert.equal(h.writes.filter(x=>x[0]==='sms').length,0);
+    assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner).n,0);
   }
-  assert.equal(h.writes.filter(x=>x[0]==='sms').length,0);
-  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner).n,0);
 });
 test('D06 failed transfer persists the promised callback with caller words and replay identity',async t=>{
   const h=fixture(t),c=h.context(),v=h.voice(c),args={reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Gate fell on driveway'};
