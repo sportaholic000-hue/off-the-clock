@@ -1,4 +1,4 @@
-import { productKeyFromName } from '../../productNames.js';
+import { registeredProductKey } from '../../productNames.js';
 
 const own = (value, key) => Object.hasOwn(value || {}, key);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value) &&
@@ -51,16 +51,6 @@ export function voiceQuestionContract(service, definition) {
   return { fields: questions, customerFees };
 }
 
-function namedKey(value, keys) {
-  if (typeof value !== 'string') return null;
-  // Normalization, not fuzzy guessing: different named products never become
-  // interchangeable and prices do not constitute product registration.
-  const converted = productKeyFromName(value);
-  if (converted.error) return null;
-  const matches = keys.filter(key => key === converted.key);
-  return matches.length === 1 ? matches[0] : null;
-}
-
 export function bindVoiceQuoteInputs(service, definition, args) {
   if (!record(args.customerInputs) || own(args.customerInputs, 'confirmedFacts')) {
     return { followUps: ['Supply the current job measurements and confirm the named products; product identities are resolved by the business.'] };
@@ -77,7 +67,7 @@ export function bindVoiceQuoteInputs(service, definition, args) {
     if (!own(customerInputs, field.name) || customerInputs[field.name] === null || customerInputs[field.name] === '') continue;
     if (field.type === 'slug') {
       const registered = service.knownOfferings?.[field.name] || {};
-      const key = namedKey(customerInputs[field.name], Object.keys(registered));
+      const key = registeredProductKey(customerInputs[field.name], Object.keys(registered));
       if (!key || confirmations[field.name] !== true) {
         followUps.push('Identify and confirm the exact ' + (safeText(field.label) || human(field.name)) + '.');
         continue;
@@ -87,13 +77,13 @@ export function bindVoiceQuoteInputs(service, definition, args) {
     } else if (field.type === 'offering_counts' && record(customerInputs[field.name])) {
       const normalized = {};
       for (const [name, count] of Object.entries(customerInputs[field.name])) {
-        const key = namedKey(name, field.values || []);
+        const key = registeredProductKey(name, field.values || []);
         if (!key || own(normalized, key)) { followUps.push('Confirm each distinct gate offering and its count.'); continue; }
         normalized[key] = count;
       }
       customerInputs[field.name] = normalized;
     } else if (field.type === 'enum' && typeof customerInputs[field.name] === 'string') {
-      const key = namedKey(customerInputs[field.name], (field.values || []).filter(value => typeof value === 'string'));
+      const key = registeredProductKey(customerInputs[field.name], (field.values || []).filter(value => typeof value === 'string'));
       if (key) customerInputs[field.name] = key;
     }
   }

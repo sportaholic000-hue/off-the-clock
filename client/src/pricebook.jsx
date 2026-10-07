@@ -1,3 +1,4 @@
+import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices} from './quoteDoneControls.jsx';
 import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
@@ -424,6 +425,7 @@ function Preview({ preview, loading, status }) {
   const review = !loading && preview?.resultType === 'ESTIMATE_REQUIRES_REVIEW';
   const [tierIndex, setTierIndex] = useState(0);
   const options = ready ? (estimate.options || []) : [];
+  const money=quoteMoneyFormatter(options.flatMap(option=>[option.lowEstimate,option.highEstimate,option.midEstimate]));
   const active = options[Math.min(tierIndex, Math.max(0, options.length - 1))] || null;
 
   // The quote engine's canonical customer view is sanitizeForCustomer(), which
@@ -492,9 +494,9 @@ function Preview({ preview, loading, status }) {
             <div className="quote-range">
               <div className="mono quote-range-label">RANGE YOUR CUSTOMER HEARS</div>
               <div className="quote-range-values">
-                <span className="quote-low">${active.lowEstimate.toLocaleString()}</span>
-                <span className="mono quote-dash">–</span>
-                <span className="quote-high">${active.highEstimate.toLocaleString()}</span>
+                <span className="quote-low">{money.amount(active.lowEstimate)}</span>
+                {active.lowEstimate!==active.highEstimate&&<><span className="mono quote-dash">–</span>
+                <span className="quote-high">{money.amount(active.highEstimate)}</span></>}
                 {active.priceUnit&&<span className="quote-price-unit">{active.priceUnit}</span>}
               </div>
               {active.taxTreatment&&<p className="quote-tax-treatment">{active.taxTreatment}</p>}
@@ -515,10 +517,10 @@ function Preview({ preview, loading, status }) {
               ) : (
                 <p className="quote-driver-empty">Labor and materials for the job as described.</p>
               )}
-              <div className="quote-midpoint-row">
+              {active.lowEstimate!==active.highEstimate&&<div className="quote-midpoint-row">
                 <span>Midpoint estimate</span>
-                <span className="mono quote-midpoint-value">${active.midEstimate.toLocaleString()}{active.priceUnit ? ` ${active.priceUnit}` : ''}</span>
-              </div>
+                <span className="mono quote-midpoint-value">{money.amount(active.midEstimate)}{active.priceUnit ? ` ${active.priceUnit}` : ''}</span>
+              </div>}
             </div>
 
             {active.skippedAddons?.length > 0 && (
@@ -880,7 +882,7 @@ export default function PriceBook() {
                     <h3>{selectedStatus.productCoverage.some(product=>product.selection.surfaceCondition)?'Surface condition pricing':'Product pricing coverage'}</h3>
                     <ul>{selectedStatus.productCoverage.map((product,index)=><li key={index}>
                       <strong>{[product.tierName,...Object.values(product.selection).map(humanPricingKey)].filter(Boolean).join(' · ')}</strong>
-                      <span>{product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' '))}</span>
+                      <span>{!product.configurationComplete&&product.missingOwnerLabels?.length?'Prices needed: '+product.missingOwnerLabels.join('; '):product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+product.ownerDiagnostics.map(item=>item.message).join(' '))}</span>
                     </li>)}</ul>
                   </section>}
                   {!!selectedStatus.laborAdjustmentCoverage?.length&&<section className="scope-coverage" aria-label="Labor adjustment coverage"><h3>Conditions that still need a labor portion</h3><ul>{selectedStatus.laborAdjustmentCoverage.map((row,index)=><li key={index}><strong>{[row.tierName,...Object.entries(row.selection).map(([key,value])=>key==='stories'?value+'-story building':humanPricingKey(value)+' '+(key==='terrainSlope'?'ground':'walls'))].filter(Boolean).join(' · ')}</strong><span>{row.message} {row.components.map(humanPricingKey).join('; ')}.</span></li>)}</ul><p>Enter the percentages under Labor and materials in installed prices. Supported jobs remain available to quote.</p></section>}

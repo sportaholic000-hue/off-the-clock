@@ -158,3 +158,31 @@ export function chooseFenceType(service, name) {
   const next = editServiceField(service, 'offeringDetails', { terrainSlope:'flat', ...details, fenceType:key });
   return { service:{ ...next, knownOfferings:{ ...(service.knownOfferings || {}), fenceType:{ ...known, ...(Object.hasOwn(known, key) ? {} : { [key]:crypto.randomUUID() }) } } } };
 }
+
+// A gate definition, its price and its allocations form one editable offering.
+// Remove the same gate from tier overrides so recursive merging cannot restore
+// an orphan rate. Owner approval receipts remain untouched and become stale in
+// the normal save/re-approval flow.
+export function removeGateOffering(service, key) {
+  const rate='gate_'+key, ratePath='offeringRates.'+rate;
+  const without=(map,entry)=>Object.fromEntries(Object.entries(map).filter(([name])=>name!==entry));
+  const clean=p=>{
+    const next={...p};
+    if(p.offeringDetails?.gates&&Object.hasOwn(p.offeringDetails.gates,key))next.offeringDetails={...p.offeringDetails,gates:without(p.offeringDetails.gates,key)};
+    if(p.offeringRates&&Object.hasOwn(p.offeringRates,rate))next.offeringRates=without(p.offeringRates,rate);
+    for(const field of ['installedLaborPercent','installedMaterialsPercent'])if(p[field]&&Object.hasOwn(p[field],ratePath))next[field]=without(p[field],ratePath);
+    return next;
+  };
+  let next=service;
+  // Clean each stored placement independently; unrelated retained root values
+  // must not be overwritten with their effective nested counterparts.
+  const root=clean(service),nested=service.pricing?clean(service.pricing):null;
+  for(const field of ['offeringDetails','offeringRates','installedLaborPercent','installedMaterialsPercent']){
+    const changedRoot=root[field]!==service[field],changedNested=nested&&nested[field]!==service.pricing[field];
+    if(!changedRoot&&!changedNested)continue;
+    next={...next,...(changedRoot?{[field]:root[field]}:{}),...(changedNested?{pricing:{...next.pricing,[field]:nested[field]}}:{})};
+    if(['AI_SUGGESTED','AI_INTERVIEW'].includes(service.source)&&service.confirmedFields?.[field]===true)next.confirmedFields={...next.confirmedFields,[field]:false};
+  }
+  if(service.tiers)next=editServiceTiers(next,service.tiers.map(tier=>({...tier,overrides:clean(tier.overrides||{})})));
+  return next;
+}

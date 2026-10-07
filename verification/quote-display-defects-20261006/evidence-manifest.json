@@ -1,0 +1,83 @@
+{
+  "base": "6e6cd5b10e0558477cfe32d255a6ad58907988c2",
+  "testedSource": "4ac36b44bf27c3e2a67d39fde86c24f0a6c44021",
+  "hostedRun": 37525141520,
+  "hostedJob": 112480116611,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 5455,
+      "sha256": "349bb1e2e3c2a7e883ac966744b408734c7f3ae80f837090e5465cf86a11e7f4"
+    },
+    {
+      "path": "after.json",
+      "bytes": 25740,
+      "sha256": "2a25f5e1f51f067c1ac6bcaefe92e7d814e82f622e221b8e9ebbfc1d36a739da"
+    },
+    {
+      "path": "before-tests.tap.gz",
+      "bytes": 1080,
+      "sha256": "923ef56671c622d828c5fa767ce8dbe79ccbc2ff174551efb8cf089561d10edc"
+    },
+    {
+      "path": "before.json",
+      "bytes": 24786,
+      "sha256": "ff3acf93f189880c5c23b615f3d5d2b9594724395ea7fc324e825b7623496c74"
+    },
+    {
+      "path": "focused-final.tap.gz",
+      "bytes": 1082,
+      "sha256": "186193209b38cc505aa2908a370d9bc7aae1b99f80b2a85c79b7169cdde13d90"
+    },
+    {
+      "path": "focused.tap.gz",
+      "bytes": 1086,
+      "sha256": "0de55db82fe0e683e339cd21b64ae9de601e1592b9db5b93654da8e0bcff0d67"
+    },
+    {
+      "path": "hosted-cold-gates.log.gz",
+      "bytes": 327319,
+      "sha256": "94101505ad79608dbd7b25125298fb8532cd6cf2b72dfa43cf8de0ee4faa276e"
+    },
+    {
+      "path": "hosted-timeout-excerpt.log.gz",
+      "bytes": 631,
+      "sha256": "df33cde34d50a70b2a1bf76582da51ab34f117b5a2b6dec5cd788c1fa0e51e2d"
+    },
+    {
+      "path": "local-browser-launch.log.gz",
+      "bytes": 1481,
+      "sha256": "89b7e195c140526972361db17fdf3379db04cd736943c772dfa68571cf8ababf"
+    },
+    {
+      "path": "local-build.log.gz",
+      "bytes": 714,
+      "sha256": "c94e35db74575d332bcd6b5105b84f4e96c27f65bc8aa2ab69ca21f0aa0fd0a0"
+    },
+    {
+      "path": "local-full-incomplete.log.gz",
+      "bytes": 53371,
+      "sha256": "79df0d7b446c62ffd847b4b0340f977415aaf76d2c5f7194ab2dd84aebcfb56c"
+    },
+    {
+      "path": "local-npm-ci.log.gz",
+      "bytes": 508,
+      "sha256": "e2613b611044d39f3f473762c8442f54f5852393ec2a404e4e3485f71b38557f"
+    },
+    {
+      "path": "local-quote-incomplete.log.gz",
+      "bytes": 89595,
+      "sha256": "1aae090c0925c71c1c6e9a323f7c26672130a11097ec8e6b45e073a34c9cdf84"
+    },
+    {
+      "path": "phone-regressions.tap.gz",
+      "bytes": 1188,
+      "sha256": "3a3558773afb26dcdaaef54e4a9e1ac83b753dcbcfa3eb5ec192edd2dba3e693"
+    },
+    {
+      "path": "reproduce.mjs",
+      "bytes": 2615,
+      "sha256": "5411c34556a08508ee024bd4f4fcb1a57395794a56503bd3ffe746cb8c6522c0"
+    }
+  ]
+}

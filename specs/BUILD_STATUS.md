@@ -1,3 +1,77 @@
+# October 6 quote display defects — hosted gates passed
+
+Branch: `fix/quote-display-defects-20261006`, based on verified
+`6e6cd5b10e0558477cfe32d255a6ad58907988c2` from
+`codex/quote-reaudit-fixes-20261006`.
+Tested source/test SHA: **`4ac36b44bf27c3e2a67d39fde86c24f0a6c44021`**.
+
+All three requested display fixes are complete: human product choices with the
+phone path's exact name binding and explicit confirmation, production missing-price
+labels shared with the editor, and one shared money formatter for widget, owner
+records, preview and phone. Exact previews show one total; phone punctuation is
+correct. The engine and all pricing formulas remain unchanged.
+
+**24 new regressions** cover all 15 registered-product fields, typed-name edits,
+production labels, all four money surfaces and display boundaries. Expected
+amounts were written before reproduction: roofing $2,520.00 (display $2,520),
+minimum-bound taxed mowing $172.50.
+
+**Hosted cold verification:** [CI run 37525141520](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37525141520)
+passed `npm ci`, both production builds, strict quote **2,120/2,120** (98 files),
+full suite **2,498/2,498** (140 files), with **zero failures, skips, cancellations
+or TODOs**; production audit found zero vulnerabilities. The full count includes
+the quote tests. Separate focused phone regressions: 27/27.
+
+[Report and evidence](../verification/quote-display-defects-20261006/REPORT.md).
+[Prewritten expected amounts](QUOTE_DISPLAY_DEFECTS_20261006.md).
+Local Chromium cannot launch in this environment; incomplete local suite attempts
+are documented separately from the successful hosted cold gates. No subagents,
+main merge, deployment or live data. No application work remains in this scope.
+
+---
+
+# October 6 re-audit repairs — hosted gates passed
+
+Branch: `codex/quote-reaudit-fixes-20261006`, based on
+`73c00622d6f2df31f57773b32e41355a7421f1a3`.
+Tested source/test SHA: **`e558dfa8d991155cf57da191fc860a2da327a400`**.
+
+The five reproduced defects are repaired: flooring optional-price isolation,
+zero-included vinyl material allocations, effective tier units in approval,
+coherent gate removal, and invalid supplied service-ID rejection. Sod disposal
+evidence now accurately describes the existing fee rule; amounts are unchanged.
+The engine remains v7. No main merge, deployment, subagents or live data.
+
+[Prewritten amounts, scope and policy](QUOTE_REAUDIT_REPAIRS_20261006.md).
+**28 new regression tests**, including the actual gate-removal browser action.
+The old repair-48/73 readiness expectation now treats unselected flooring removal
+and subfloor allowances like other optional work; its selected-scope review,
+malformed-data and dollar assertions remain intact.
+
+**Hosted verification:** [CI run 37502475231](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37502475231)
+passed at the exact source/test SHA above: cold `npm ci`, both production builds,
+strict `npm run test:quote` **2,096/2,096 across 96 files**, full `npm test`
+**2,474/2,474**, and production dependency audit **zero vulnerabilities**.
+Both suites have **zero failures, cancellations, skips or TODOs**. The known
+failure allowance is empty (0/0); no workflow or test allowance was changed.
+
+**Local evidence and limits:** cold install and production builds passed.
+All **2,058 tests in 86 non-browser quote/price-book files** passed in isolated
+processes, with complete summaries and zero failures/skips. All 27 new
+non-browser checks passed. Both combined local gate attempts failed to produce
+complete summaries and hit Chromium startup SIGTRAP failures; they are not
+counted as passing gates. The full attempt also exposed the old flooring
+readiness assertion, which was corrected and then passed in the isolated
+matrix, complete file-by-file run and hosted suites. The completed hosted run
+supplies the full-suite/browser evidence.
+
+The repair-catalog all-or-nothing rule remains unchanged pending the owner's
+coverage decision; it was an observed limitation, not one of the five defects.
+The policy clarification offered complete-product isolation, but no selection
+was received. No new repair-catalog policy was inferred.
+
+## Previous verified checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision

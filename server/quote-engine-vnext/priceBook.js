@@ -214,6 +214,11 @@ function optionalPricingRequests(service, base) {
     {key:'ceiling_prices',label:'Ceiling painting',changes:{ceilingsIncluded:true,ceilingAreaSqft:1_000_000,ceilingCoats:3}},
     {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
   ];
+  if(type.startsWith('FLOORING_'))return [
+    ...Object.keys(p.removalPerSqft||{}).map(existingFloorType=>({key:'floor_removal_'+existingFloorType,label:'Floor removal: '+existingFloorType.replaceAll('_',' '),changes:{existingFloorType,removalNeeded:true,removalAreaSqft:base?.sqft}})),
+    ...(Object.hasOwn(p.laborPerSqft||{},'vinyl_plank')&&['customer_selectable_addon','subfloor_condition'].includes(p.vinylPlankUnderlaymentRule)?[{key:'vinyl_underlayment_prices',label:'Installed vinyl-plank underlayment',changes:{newFlooringType:'vinyl_plank',...(p.vinylPlankUnderlaymentRule==='customer_selectable_addon'?{underlaymentSelected:true}:{subfloorCondition:'requires_underlayment'})}}]:[]),
+    ...(type==='FLOORING_REPLACEMENT'&&p.subfloorAllowancePerSqft!==undefined?[{key:'subfloor_repair_prices',label:'Subfloor repair allowance',changes:{subfloorIssues:true,subfloorRepairAreaSqft:base?.sqft}}]:[])
+  ];
   if(type.startsWith('CONCRETE_'))return [
     {key:'base_prices',label:'Concrete base preparation',changes:{baseNeeded:true}},
     {key:'wire_prices',label:'Wire mesh reinforcement',changes:{reinforcement:'wire_mesh'}},
@@ -297,7 +302,6 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
   }
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') {
     const flooringTypes = keysOf(p.laborPerSqft, 'tile');
-    const removalTypes = isPlainRecord(p.removalPerSqft) ? Object.keys(p.removalPerSqft) : [];
     const replacement = serviceType === 'FLOORING_REPLACEMENT';
     const layoutPattern = greatestConfiguredKey(p.patternWasteAdder, ['straight', 'diagonal_or_pattern'], 'diagonal_or_pattern');
     const roomBands = flooringRoomBands(p);
@@ -305,13 +309,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
       sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
       existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
       roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
-      ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: true } : {}),
-      ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'requires_underlayment' } : {}),
-      ...(replacement ? { subfloorIssues: p.subfloorAllowancePerSqft !== undefined, ...(p.subfloorAllowancePerSqft !== undefined ? { subfloorRepairAreaSqft: roomBand.sqft } : {}) } : {})
+      ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: false } : {}),
+      ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'does_not_require_underlayment' } : {}),
+      ...(replacement ? { subfloorIssues: false } : {})
     });
     return flooringTypes.flatMap(flooringType => roomBands.flatMap(roomBand => [
-      scenario(flooringType, 'none', false, roomBand),
-      ...removalTypes.map(existingFloorType => scenario(flooringType, existingFloorType, true, roomBand))
+      scenario(flooringType, 'none', false, roomBand)
     ]));
   }
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') {
@@ -394,6 +397,12 @@ export function activationScenarios(service,confirmedService=service,tierName=nu
   return !additional||completeOptionalPricing(confirmedService,input,p,tierName,defaults);
  });
  if(!includeOptionalScopes)return scenarios;
+ if(type.startsWith('FLOORING_'))for(const input of scenarios){
+  // Preserve every room boundary for configured optional work, without making
+  // an unfinished extra a prerequisite for the base product. Do not turn a
+  // different flooring product into a vinyl scenario during this pass.
+  for(const optional of optionalPricingRequests(service,input))if(!optional.changes.newFlooringType||optional.changes.newFlooringType===input.newFlooringType)extra.push({...input,...optional.changes});
+ }
  const add=changes=>{if(scenarios[0])extra.push({...scenarios[0],...changes});};
  for(const [key,d] of Object.entries(p.scopeDetails||{})){
   const base=scopeBaseKey(key);

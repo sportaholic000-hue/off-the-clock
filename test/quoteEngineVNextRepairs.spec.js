@@ -2511,6 +2511,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         // Optional work that has not been priced does not disable complete
         // base work. The selected-scope assertion below still requires review.
         const optionalPrices={
+          FLOORING_INSTALL:['removalPerSqft'],
+          FLOORING_REPLACEMENT:['removalPerSqft','subfloorAllowancePerSqft'],
           INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF'],
           CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],
           CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft'],

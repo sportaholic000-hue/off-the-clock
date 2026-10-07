@@ -5,7 +5,7 @@ import {offeringPriceBaseline,offeringBaselineConfirmation,offeringRateDefinitio
 import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField,chooseFenceType} from './pricebookEditing.js';
+import {servicePricing,editServiceField,chooseFenceType,removeGateOffering} from './pricebookEditing.js';
 import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 
 export function offeringPreviewFields(meta,service) {
@@ -78,7 +78,7 @@ export function OfferingEditor({service,meta,onChange}) {
             <Field label="Gate opening width (ft)"><ExactNumericInput aria-label={'Gate opening width '+key} value={gate.widthLF} onChange={value=>change('widthLF',value)}/></Field>
             <Field label="Gate, hardware and installation included"><Textarea aria-label={'Gate description '+key} value={gate.description||''} onChange={e=>change('description',e.target.value)}/></Field>
             <Field label="Gate price includes gate posts and footings"><Select aria-label={'Gate posts included '+key} value={gate.postsAndFootingsIncluded===undefined?'':String(gate.postsAndFootingsIncluded)} onChange={e=>change('postsAndFootingsIncluded',e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false" disabled={mode==='installed'}>No — counted and priced separately</option></Select></Field>
-            <Button variant="quiet" onClick={()=>{const next={...d.gates};delete next[key];detail('gates',next);}}>Remove gate offering</Button>
+            <Button variant="quiet" onClick={()=>onChange(removeGateOffering(service,key))}>Remove gate offering</Button>
           </div>;
         })}
         <Field label="New gate name"><TextInput aria-label="New gate name" value={gateName} onChange={e=>{setGateName(e.target.value);setGateError('');}}/></Field>
