@@ -1,13 +1,15 @@
-# October 7 tenant isolation — focused gate passed; hosted gate pending
+# October 7 tenant isolation — hosted gates passed
 
-Branch: `fix/tenant-isolation-20261007`, starting at `73c0062` on the approved release-candidate branch.
+Branch: `fix/tenant-isolation-20261007`, starting at `73c0062` on the approved release-candidate branch. Tested source/test/CI SHA: **`552585bcc964e9d4bdf4f35f9a1080c300217f48`**.
 [Complete route inventory, source/execution reproductions and matrix](../verification/tenant-isolation-20261007/REPORT.md).
 
 Three disclosures fixed: signed CallSid collision returned another tenant's forwarding number; phone-test errors disclosed foreign CallSid existence; signup disclosed existing account emails. Contradictory selectors and foreign saved quote-service IDs now fail uniformly. Signup requires email verification before owner login.
 
-Actual final focused result: **287/287**, including **199 matrix tests** covering a union of **98 registrations**, zero failures/cancellations/skips/TODOs. The real-server route inventory guard catches new routes and anonymously mounted routers; full-suite checks also reject skips and allowlisted failures. Local cold Node 22 install and owner/widget builds passed. Chromium/headless shell crashes locally; no complete local browser gate is claimed. The first hosted source SHA `ea4c21b` passed cold install/build and **2,267/2,267** strict quote tests. Its full suite found two old owner-integration expectations for ignored foreign selectors; corrected refusal and positive own-read checks now pass with the refined matrix (**238/238**). Final full CI is being checked at the latest pushed source SHA; no complete hosted full-suite pass is claimed at this checkpoint.
+[Hosted CI run 37566309857](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37566309857) passed cold `npm ci`, owner/widget build, **2,267/2,267** strict quote tests and **2,649/2,649** full-suite tests, with **zero failures/cancellations/skips/TODOs** and zero production dependency vulnerabilities. Both gates include the **199-test** actual-server isolation matrix over a union of **98 registrations**. New routes, anonymous router mounts, changed middleware and new route declarations hidden behind unconfigured flags require explicit coverage review.
 
-No subagents, main merge, deployment, provider writes or live data.
+Local evidence: focused **287/287** and refined matrix/integration **238/238**, zero failures/skips (counts overlap). Local cold install/build passed; both local full/strict attempts failed with **37 Chromium SIGTRAP startup failures**, zero skips. No complete local browser gate is claimed; hosted cold execution provides the complete suite evidence.
+
+The final checkpoint changes documentation only after the tested source SHA; its own CI is checked before delivery. No subagents, main merge, deployment, provider writes or live data.
 
 ## Previous checkpoint
 

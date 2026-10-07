@@ -55,9 +55,11 @@ The refined existing-ID matrix and owner-integration contract checks also passed
 
 Cold Node 22.22.0 `npm ci` and both production builds passed locally. The latest local cold strict run reported **2,230/2,267**, and the full run **2,612/2,649**: each has **37 failures**, all Chromium startup crashes (SIGTRAP), and zero cancellations/skips/TODOs. All other tests pass. These are failed local gates, not passing browser evidence. No tests have been skipped, removed, allowlisted or changed to hide that failure. The full-suite result checker now rejects all failures, skips, cancellations and TODOs, including known failures.
 
-The first hosted attempt at `ea4c21b6ee058a0fa83ce3a8bbb13563e5ab5e39` passed cold install/build and **2,267/2,267** strict quote tests. The full suite reached **2,647/2,649**, with two old owner-integration assertions expecting ignored foreign selectors; those assertions have since been corrected and passed in the 238-test execution above. No failed test is exempted.
+**Hosted cold verification passed at source/test/CI SHA `552585bcc964e9d4bdf4f35f9a1080c300217f48`.** [CI run 37566309857](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37566309857) completed successfully. It removed all installed dependencies, ran `npm ci`, installed Chromium, built owner/widget assets, ran `npm run test:quote` (**2,267/2,267**, 95 files) and `npm test` (**2,649/2,649**, 137 files). Both suites report **zero failures, cancellations, skips and TODOs**. The production dependency audit found zero vulnerabilities. The 199-test synthetic matrix and added-route/anonymous-router/source guards pass inside both hosted gates.
 
-Final hosted verification must be read at the exact pushed source SHA in [the fix branch CI runs](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Afix%2Ftenant-isolation-20261007). A green hosted run supplies cold install/build and complete browser/full/strict evidence. This checkpoint was written before that run; no unobserved hosted result is claimed here.
+The pushed code is verified. The final documentation checkpoint changes only this report and `specs/BUILD_STATUS.md`; no application, tests or CI code changes after the tested source SHA. Its own hosted CI run is also checked before delivery.
+
+**Unfinished environment constraint:** the same local cold gates remain failed because Chromium cannot start (37 SIGTRAP failures in each suite). Hosted cold execution supplies the complete browser and zero-failure suite evidence. No live tenant/provider validation, main merge or deployment was performed or requested as part of this isolated task.
 
 ## Every registered route
 
