@@ -491,8 +491,13 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
 
 MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
   fields: {
-    inputMethod: enumField('Mulch quantity method', ['sqft', 'yards']),
-    mulchArea: numberField('Measured bed area or mulch volume', 'square feet or cubic yards', 0.01, 10_000_000),
+    inputMethod: {...enumField('Mulch quantity method', ['sqft', 'yards']), optionLabels:{sqft:'Bed area and depth',yards:'Cubic yards of mulch'}},
+    mulchArea: {...numberField('Mulch quantity', 'square feet for bed area; cubic yards for mulch volume', 0.01, 10_000_000),
+      visibleWhen:[[['inputMethod','in',['sqft','yards']]]],
+      presentationVariants:[
+        {label:'Measured bed area',unit:'square feet',visibleWhen:[[['inputMethod','eq','sqft']]]},
+        {label:'Mulch volume',unit:'cubic yards',visibleWhen:[[['inputMethod','eq','yards']]]}
+      ]},
     mulchDepth: numberField('Mulch depth', 'inches', 0.5, 24),
     mulchType: slugField('Mulch type'),
     bedCondition: enumField('Planting-bed condition', ['clean', 'needs_weeding', 'overgrown']),

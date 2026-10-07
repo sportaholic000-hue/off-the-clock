@@ -46,7 +46,7 @@ test('ambiguous AI answer returns clarification over HTTP without changing the s
     assert.ok(applicationMetadata().services.some(s=>s.serviceType==='CUSTOM'));
     const created=await request('/api/pricebook/interview','POST',{mode:'browser',serviceTypes:['CUSTOM']});assert.equal(created.status,201,JSON.stringify(created.body));
     const route='/api/pricebook/interview/'+created.body.draft.id;
-    const seeded=await request(route,'PUT',{fields:{CUSTOM:{unit:'flat',customPricingMode:'fixed'}},confirmedFields:{CUSTOM:['unit','customPricingMode']},currentField:'CUSTOM.price'});assert.equal(seeded.status,200);
+    const seeded=await request(route,'PUT',{revision:created.body.draft.revision,fields:{CUSTOM:{unit:'flat',customPricingMode:'fixed'}},confirmedFields:{CUSTOM:['unit','customPricingMode']},currentField:'CUSTOM.price'});assert.equal(seeded.status,200);
     const before=(await request(route)).body.draft;
     const ambiguous=await request(route+'/assist','POST',{serviceType:'CUSTOM',field:'price',answer:'[SYNTHETIC] I am unsure of the price'});
     assert.equal(ambiguous.status,422);assert.equal(ambiguous.body.code,'PRICEBOOK_AI_CLARIFICATION_REQUIRED');assert.equal(ambiguous.body.retryable,false);
@@ -56,8 +56,12 @@ test('ambiguous AI answer returns clarification over HTTP without changing the s
     const valid=await request(route+'/assist','POST',{serviceType:'CUSTOM',field:'price',answer:'[SYNTHETIC] charge 25.50'});
     assert.equal(valid.status,200);assert.equal(providerCalls,2);assert.equal(valid.body.value,25.5);
     assert.equal(valid.body.draft.fields.CUSTOM.price,25.5);assert.ok(!valid.body.draft.confirmedFields.CUSTOM.includes('price'));
-    const confirmed=await request(route,'PUT',{fields:{CUSTOM:{price:25.5}},confirmedFields:{CUSTOM:['unit','customPricingMode','price']},currentField:'CUSTOM.minimumJob'});
+    const confirmed=await request(route,'PUT',{revision:valid.body.draft.revision,fields:{CUSTOM:{price:25.5}},confirmedFields:{CUSTOM:['unit','customPricingMode','price']},currentField:'CUSTOM.minimumJob'});
     assert.equal(confirmed.status,200);assert.equal(confirmed.body.draft.fields.CUSTOM.price,25.5);assert.ok(confirmed.body.draft.confirmedFields.CUSTOM.includes('price'));
+    for(const revision of [undefined,seeded.body.draft.revision]){
+      const stale=await request(route,'PUT',{...(revision?{revision}:{}),fields:{CUSTOM:{price:99}},confirmedFields:{CUSTOM:['price']}});
+      assert.equal(stale.status,409);assert.deepEqual((await request(route)).body.draft,confirmed.body.draft);
+    }
   }finally{
     if(lifecycle)await lifecycle.shutdown({timeoutMs:5000,exit:code=>assert.equal(code,0)});
     globalThis.fetch=originalFetch;

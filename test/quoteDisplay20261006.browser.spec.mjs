@@ -8,6 +8,7 @@ import {roofingDisplayFixture,mowingDisplayFixture,missingFloorDisplayFixture,sa
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {bindVoiceQuoteInputs} from '../server/src/voice/voiceQuoteContract.js';
 import {conciseVoiceSummary} from '../server/src/voice/voiceQuotePresentation.js';
+import {fixture} from '../verification/engine-independent/fixtures.mjs';
 
 let browser,script;
 before(async()=>{
@@ -31,6 +32,23 @@ async function pageFor(run){
  const show=async(kind,props)=>{await page.evaluate(({kind,props})=>window.showDisplay(kind,props),{kind,props});};
  try{await run(page,show);assert.deepEqual(errors,[]);}finally{await page.close();}
 }
+
+test('display browser: changing mulch quantity method requires a fresh quantity in its new unit',async()=>pageFor(async(page,show)=>{
+ const f=fixture('LANDSCAPING_MULCH',{mulchMaterialPerYard:{brown:4500},mulchInstallLaborPerYard:3000,minimumServiceCharge:0},{inputMethod:'sqft',mulchArea:300,mulchDepth:3,mulchType:'brown',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'});
+ const a=savedDisplayFixture(f);
+ await show('products',{fields:a.definition.customerFields,value:f.customerInputs,knownOfferings:a.service.knownOfferings});
+ assert.equal(await page.getByLabel('Measured bed area',{exact:true}).inputValue(),'300');
+ const method=page.getByLabel('Mulch quantity method',{exact:true});
+ await method.selectOption({label:'Cubic yards of mulch'});
+ const volume=page.getByLabel('Mulch volume',{exact:true});
+ assert.equal(await volume.inputValue(),'');
+ assert.equal(JSON.parse(await page.locator('#inputs').textContent()).mulchArea,undefined);
+ assert.ok((await volume.locator('..').textContent()).includes('cubic yards'));
+ await volume.fill('2');
+ await method.selectOption({label:'Bed area and depth'});
+ assert.equal(await page.getByLabel('Measured bed area',{exact:true}).inputValue(),'');
+ assert.equal(JSON.parse(await page.locator('#inputs').textContent()).mulchDepth,3);
+}));
 
 test('display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520',async()=>pageFor(async(page,show)=>{
  const fields=bridge.applicationMetadata().services.flatMap(service=>service.customerFields.filter(field=>field.type==='slug').map(field=>({...field,serviceType:service.serviceType})));

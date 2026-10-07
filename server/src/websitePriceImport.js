@@ -39,7 +39,7 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       let extracted;
       try{extracted=extractWebsitePrices(page.text,{plain:page.plain,limits});remaining();}catch(error){if(!pages.length)throw error;limited=true;continue;}
       pages.push(page.url);
-      if(extracted.linksLimited)limited=true;
+      if(extracted.linksLimited||extracted.limited)limited=true;
       for(const entry of extracted.entries){
         const conditions=extracted.conditions.filter(note=>!entry.excerpt.includes(note));
         const excerpt=[entry.excerpt,...conditions].join('\n');

@@ -509,6 +509,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   const [aiError,setAiError] = useState(null);
   const [suggestionError,setSuggestionError] = useState(null);
   const [draft, setDraft] = useState(null);
+  const [draftConflict, setDraftConflict] = useState(null);
   const [position, setPosition] = useState(0);
   // Exact numeric controls retain rejected text; accepted numbers and maps keep their types.
   const [rawValue, setRawValue] = useState('');
@@ -548,7 +549,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   async function assistAnswer() {
-    if (!draft || !current || aiBusy || confirmFlight.current) return;
+    if (!draft || !current || aiBusy || confirmFlight.current || draftConflict) return;
     const asked={serviceType:current.serviceType,field:current.field,rawValue};
     setAiBusy(true);setError(null);setAiError(null);setAiNotice('');
     try {
@@ -599,7 +600,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   function readItBack() {
-    if (!current) return;
+    if (!current || draftConflict) return;
     setError(null);
     try {
       const configured=CONFIGURATION_FIELDS.includes(current.field);
@@ -626,7 +627,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   }
 
   async function confirmField() {
-    if (!draft || !current || !readBack || confirmFlight.current) return;
+    if (!draft || !current || !readBack || confirmFlight.current || draftConflict) return;
     const asked = { ...assistTarget.current };
     confirmFlight.current = true;
     setConfirmBusy(true);
@@ -637,6 +638,7 @@ function PriceBookStep({ state, metadata, back, next }) {
       const result = await api(`/api/pricebook/interview/${draft.id}`, {
         method:'PUT',
         body:{
+          revision:draft.revision,
           fields:{ [current.serviceType]:{ [current.field]:value } },
           confirmedFields:{ [current.serviceType]:[...new Set([...existingConfirmed, current.field])] },
           currentField:interviewFields[position + 1] ? `${interviewFields[position + 1].serviceType}.${interviewFields[position + 1].field}` : null
@@ -651,12 +653,37 @@ function PriceBookStep({ state, metadata, back, next }) {
       setRawValue(nextField?.type === 'json'||CONFIGURATION_FIELDS.includes(nextField?.field)&&nextField?.field!=='offeringMode' ? {} : '');
       setReadBack(null);
       setPosition(Math.min(interviewFields.length, position + 1));
-    } catch (nextError) { setError(nextError); }
+    } catch (nextError) {
+      if (assistTarget.current?.draftId !== asked.draftId) return;
+      setError(nextError);
+      if (nextError.status === 409) {
+        setReadBack(null);
+        setDraftConflict({latest:null});
+        await loadLatestInterview(asked.draftId);
+      }
+    }
     finally { confirmFlight.current = false; setConfirmBusy(false); }
   }
 
+  async function loadLatestInterview(draftId) {
+    try {
+      const result = await api(`/api/pricebook/interview/${draftId}`);
+      if (assistTarget.current?.draftId === draftId) setDraftConflict({latest:result.draft});
+    } catch (nextError) { setError(nextError); }
+  }
+
+  function reconcileInterview(useSaved) {
+    if (!draftConflict?.latest) return;
+    if (useSaved) setRawValue(savedValueFor(draftConflict.latest,position));
+    setDraft(draftConflict.latest);
+    setDraftConflict(null);
+    setReadBack(null);
+    setError(null);
+    setAiNotice('Review this answer and read it back before confirming.');
+  }
+
   async function reviewDraft() {
-    if (confirmFlight.current) return;
+    if (confirmFlight.current || draftConflict) return;
     try {
       const review = await api(`/api/pricebook/interview/${draft.id}/review`);
       writePricebookTransfer('draft',state.account.id,review);
@@ -708,10 +735,17 @@ function PriceBookStep({ state, metadata, back, next }) {
           {draft && current && (
             <div className="interview-field">
               <StatusChip status="DRAFT" />
+              {draftConflict && <Notice tone="warning">
+                This draft changed in another screen. Your unsaved answer is still here. Choose which answer to review before saving again.
+                {draftConflict.latest ? <div className="path-actions">
+                  <Button variant="secondary" onClick={()=>reconcileInterview(true)}>Use latest saved answer</Button>
+                  <Button variant="secondary" onClick={()=>reconcileInterview(false)}>Keep my answer and review it again</Button>
+                </div> : <Button variant="secondary" disabled={confirmBusy} onClick={()=>loadLatestInterview(draft.id)}>Load latest saved answers</Button>}
+              </Notice>}
               <Field label="Describe this price in your own words">
                 <Textarea value={answer} disabled={aiBusy} maxLength={4000} onChange={event=>{setAnswer(event.target.value);setAiError(null);}} />
               </Field>
-              <Button icon={Sparkles} disabled={aiBusy||confirmBusy||!answer.trim()} onClick={assistAnswer}>{aiBusy?'Reading your answer…':'Use AI to capture this answer'}</Button>
+              <Button icon={Sparkles} disabled={aiBusy||confirmBusy||!!draftConflict||!answer.trim()} onClick={assistAnswer}>{aiBusy?'Reading your answer…':'Use AI to capture this answer'}</Button>
               {aiBusy&&<p role="status">AI is working. You can still open the manual editor below.</p>}
               {aiNotice&&<p role="status">{aiNotice}</p>}
               <ErrorMessage error={aiError} />
@@ -735,7 +769,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                   <ExactNumericInput key={current.serviceType+'.'+current.field} value={rawValue} kind={current.moneyKind} wholeCents={current.wholeCents} onChange={editValue} />
                 )}
               </Field>
-              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || confirmBusy || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : rawValue === '' || rawValue === undefined || rawValue === null)}>Read it back</Button>}
+              {!readBack && <Button icon={Volume2} onClick={readItBack} disabled={aiBusy || confirmBusy || !!draftConflict || (current.type === 'json' ? !rawValue || Object.keys(rawValue).length === 0 : rawValue === '' || rawValue === undefined || rawValue === null)}>Read it back</Button>}
               {readBack && (
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
@@ -747,7 +781,7 @@ function PriceBookStep({ state, metadata, back, next }) {
               )}
             </div>
           )}
-          {draft && current && <Button variant="secondary" disabled={aiBusy||confirmBusy} onClick={reviewDraft}>Review captured values in editor</Button>}
+          {draft && current && <Button variant="secondary" disabled={aiBusy||confirmBusy||!!draftConflict} onClick={reviewDraft}>Review captured values in editor</Button>}
           {draft && !current && (
             <div className="interview-complete">
               <Notice tone="success">Every captured field is confirmed. The result is still DRAFT until you review and save it in the editor.</Notice>

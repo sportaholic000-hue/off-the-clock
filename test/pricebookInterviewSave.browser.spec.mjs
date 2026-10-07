@@ -25,11 +25,11 @@ before(async()=>{
 });
 after(async()=>{await browser?.close();});
 
-async function interview({structured=false,failure=false}={},run){
+async function interview({structured=false,failure=false,conflict=false}={},run){
   const type=structured?'LANDSCAPING_MOWING':'CUSTOM',service=applicationMetadata().services.find(s=>s.serviceType===type);
   const first=service.fields.find(f=>f.field===(structured?'frequencyMultipliers':'price'));
   const second=service.fields.find(f=>f.field===(structured?'minimumServiceCharge':'minimumJob'));
-  let draft={id:'[SYNTHETIC]-draft',fields:{[type]:structured?{frequencyMultipliers:{weekly:1,biweekly:1.2,monthly:1.5,one_time:1.8}}:{unit:'flat',customPricingMode:'fixed'}},confirmedFields:{[type]:[]}};
+  let draft={id:'[SYNTHETIC]-draft',revision:'revision-1',fields:{[type]:structured?{frequencyMultipliers:{weekly:1,biweekly:1.2,monthly:1.5,one_time:1.8}}:{unit:'flat',customPricingMode:'fixed'}},confirmedFields:{[type]:[]}};
   const requests=[];let release,started;const pending=new Promise(resolve=>{release=resolve;}),waiting=new Promise(resolve=>{started=resolve;});
   const page=await browser.newPage();
   try{
@@ -41,8 +41,10 @@ async function interview({structured=false,failure=false}={},run){
       if(request.method()==='POST')return json({draft});
       if(request.method()==='PUT'){
         const body=request.postDataJSON();requests.push(body);if(requests.length===1){started();await pending;}
-        if(failure&&requests.length===1)return json({error:'[SYNTHETIC] save was not accepted'},409);
-        draft={...draft,fields:{...draft.fields,[type]:{...draft.fields[type],...body.fields[type]}},confirmedFields:body.confirmedFields,currentField:body.currentField};
+        if(failure&&requests.length===1)return json({error:'[SYNTHETIC] save was not accepted'},500);
+        if(conflict&&requests.length===1){draft={...draft,revision:'revision-2',fields:{...draft.fields,[type]:{...draft.fields[type],price:30,minimumJob:10}},confirmedFields:{[type]:['minimumJob']}};return json({error:'[SYNTHETIC] a newer draft was saved'},409);}
+        assert.equal(body.revision,draft.revision);
+        draft={...draft,revision:'revision-'+(Number(draft.revision.split('-')[1])+1),fields:{...draft.fields,[type]:{...draft.fields[type],...body.fields[type]}},confirmedFields:body.confirmedFields,currentField:body.currentField};
         return json({draft});
       }
       throw Error('Unexpected request '+request.method()+' '+url.pathname);
@@ -99,5 +101,25 @@ test('failed manual save keeps the confirmed value available for retry',async()=
     release();await page.getByText('[SYNTHETIC] save was not accepted',{exact:true}).waitFor();
     assert.equal(await input.inputValue(),'25');assert.equal(await confirm.isDisabled(),false);
     await confirm.click();await page.getByLabel(second.label,{exact:true}).waitFor();assert.equal(requests.length,2);
+  });
+});
+for(const useSaved of [false,true])test('stale interview preserves the unsaved answer and requires explicit reconciliation: '+(useSaved?'saved answer':'keep answer'),async()=>{
+  await interview({conflict:true},async({page,input,release,requests,second,type,draft})=>{
+    release();
+    const keep=page.getByRole('button',{name:'Keep my answer and review it again',exact:true});await keep.waitFor();
+    assert.equal(await input.inputValue(),'25');assert.equal(draft().fields[type].price,30);
+    assert.equal(await page.getByRole('button',{name:'Read it back',exact:true}).isDisabled(),true);
+    assert.equal(await page.getByRole('button',{name:'Review captured values in editor',exact:true}).isDisabled(),true);
+    assert.equal(requests.length,1);assert.equal(requests[0].revision,'revision-1');
+    await page.getByRole('button',{name:useSaved?'Use latest saved answer':'Keep my answer and review it again',exact:true}).click();
+    assert.equal(await input.inputValue(),useSaved?'30':'25');
+    assert.equal(await page.getByRole('button',{name:'Yes, save this number',exact:true}).count(),0);
+    await page.getByRole('button',{name:'Read it back',exact:true}).click();
+    await page.getByRole('button',{name:'Yes, save this number',exact:true}).click();
+    await page.getByLabel(second.label,{exact:true}).waitFor();
+    assert.equal(requests.length,2);assert.equal(requests[1].revision,'revision-2');
+    assert.equal(draft().fields[type].price,useSaved?30:25);
+    assert.equal(draft().fields[type].minimumJob,10);
+    assert.deepEqual(draft().confirmedFields[type],['minimumJob','price']);
   });
 });

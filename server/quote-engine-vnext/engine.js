@@ -2,6 +2,7 @@ import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVN
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
+import {customerFieldForInputs} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
@@ -1074,7 +1075,7 @@ function validatedMeasurementsFor(serviceType, normalized = {}) {
     .map(([name, value]) => ({
       name,
       value: structuredClone(value),
-      unit: fields[name].unit
+      unit: customerFieldForInputs(fields[name],normalized).unit
     }));
 }
 

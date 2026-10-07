@@ -156,7 +156,7 @@ test('batch interview normalization resolves structural names before dependent o
     offeringRates:{fenceLaborPerLF:10,fenceMaterialPerLF:20,postMaterialEach:30,
       footingLaborEach:40,footingMaterialEach:50,gate_double_drive:600}
   };
-  const saved = onboarding.saveInterviewDraft(ownerId,draft.id,{fields:{FENCING_INSTALL:fields}});
+  const saved = onboarding.saveInterviewDraft(ownerId,draft.id,{revision:draft.revision,fields:{FENCING_INSTALL:fields}});
   assert.equal(saved.fields.FENCING_INSTALL.offeringDetails.fenceType, 'wood_privacy');
   assert.deepEqual(Object.keys(saved.fields.FENCING_INSTALL.offeringDetails.gates), ['double_drive']);
   assert.equal(saved.fields.FENCING_INSTALL.offeringRates.gate_double_drive, 600);

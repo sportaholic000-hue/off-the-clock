@@ -14,6 +14,12 @@ The application is not certified clean or ready to launch. This checkpoint repai
 
 ## Verification
 
+Hosted verification subsequently passed at source SHA
+`9720aaef7677b7d864363a417cd823c816477dde` in
+[run 37592728250](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37592728250):
+2,585/2,585 strict quote tests and 3,612/3,612 full-suite tests, with zero failures,
+skips, cancellations or TODOs; both builds and the production dependency audit pass.
+
 Node 22.23.3; fresh `npm ci`: 288 packages installed. Owner and widget production builds pass.
 
 The final new regression file was run against a separate unchanged worktree at the audited SHA: **9 tests, 1 pass, 8 expected failures**, zero skips/cancellations/TODOs. The failures cover the reproduced defects; the passing case preserves ordinary product confirmation. The first fixture draft used an unsupported roof waste field and a missing test signing key; those fixture errors were corrected before the retained baseline execution. A save-path fixture was corrected to obtain its inclusion receipt from the actual approval operation.
