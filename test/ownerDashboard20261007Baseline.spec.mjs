@@ -6,6 +6,28 @@ import {createOwnerAlertService} from '../server/src/ownerAlertService.js';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
+import express from 'express';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {once} from 'node:events';
+import {installOwnerAssets} from '../server/src/productionAssets.js';
+
+test('dashboard repair: direct Reports links load the production owner shell',async t=>{
+  const directory=await mkdtemp(path.join(tmpdir(),'SYNTHETIC-reports-assets-'));
+  t.after(()=>rm(directory,{recursive:true,force:true}));
+  await writeFile(path.join(directory,'index.html'),'<!doctype html><title>SYNTHETIC owner shell</title>');
+  const app=express();installOwnerAssets(app,directory);
+  const server=app.listen(0,'127.0.0.1');await once(server,'listening');
+  t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));
+  const base='http://127.0.0.1:'+server.address().port;
+  for(const route of ['/reports','/reports?period=all']){
+    const response=await fetch(base+route);assert.equal(response.status,200);
+    assert.equal(response.headers.get('cache-control'),'no-store');
+    assert.match(await response.text(),/SYNTHETIC owner shell/);
+  }
+  assert.equal((await fetch(base+'/not-an-owner-page')).status,404);
+});
 
 // Expected figures were recorded in verification/owner-dashboard-20261007/EXPECTATIONS.md before execution.
 test('dashboard repair: confirmed booking creates a durable owner event and an owner-only email',async t=>{

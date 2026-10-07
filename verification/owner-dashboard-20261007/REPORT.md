@@ -62,4 +62,39 @@ zero failures, cancellations, skips or TODOs, before the final cold gates.
 - Four new authenticated routes added to the explicit adversarial tenant matrix
   and source inventory. Branch included in the cold CI allowlist.
 
-Final cold and hosted gate evidence will be recorded after execution.
+## Validation and integration repairs
+
+Local cold `npm ci` and `npm run build` passed. Local Chromium exits with
+SIGTRAP before opening a page, so local browser failures are recorded as an
+environment limitation, never skipped or counted as passing. The initial cold
+strict run reported 2,646 tests / 2,574 passes / 72 failures / zero skips; the
+full run reported 3,675 tests / 3,615 passes / 60 failures / zero skips.
+The runs exposed the voice-guide digest update and three older production
+voice tests that assumed caller SMS was enabled. The guide remains hash-pinned
+with an explicit assertion for the new owner ruling. Voice tests now assert
+that production refuses SMS without invoking a provider; the slow-provider
+transcript test uses an injected fake call transfer instead. Focused voice and
+owner checks subsequently passed 86/86 and 27/27, with zero failures/skips.
+An isolated backup check passed after its initial transient failure; no backup
+code or timing assertions were changed. Local catalog timing failures remain
+part of the initial cold evidence and require the hosted cold gate.
+
+The first hosted run, 37684455471 at `20d4ef1`, completed cold installation and
+build, then exposed an owner-control browser regression: implicit select labels
+included their option text, so exact label lookup failed. Explicit accessible
+names were added to the owner action, review and period controls, with a
+component assertion and the original end-to-end test retained. Its strict
+summary was 2,662 tests / 2,657 passes / 4 failures / 1 cancellation / zero skips.
+The full step did not run after this failed strict gate. No passing claim is
+made for that run. The corrected focused component suite passed 4/4.
+
+The second hosted strict run, 37685694728 at `b57496e`, passed call discovery,
+owner review and full quote progression. Reports direct navigation failed:
+`productionAssets.js` omitted `/reports` from its HTML page allowlist. An
+independent loopback HTTP reproduction returned 404 instead of the owner shell.
+The allowlist and its reviewed source digest were corrected; the new HTTP
+regression also checks query strings, no-store caching and unknown-page 404s.
+That strict run reported 2,662 tests / 2,659 passes / 3 failures / zero skips or
+cancellations. The full step did not run after the failed strict gate.
+
+Final cold hosted evidence is pending at this checkpoint.
