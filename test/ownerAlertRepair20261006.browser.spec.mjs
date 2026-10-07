@@ -19,6 +19,7 @@ test('owner alert repairs: production dashboard, Calls, retry and staff visibili
     // which consumes persisted PENDING events rather than a UI click.
     const [retryResponse]=await Promise.all([p.waitForResponse(r=>r.request().method()==='POST'&&/\/api\/owner-alerts\/[^/]+\/retry$/.test(new URL(r.url()).pathname)),p.getByRole('button',{name:'Retry owner alert',exact:true}).first().click()]);
     assert.equal(retryResponse.status(),200);assert.equal((await retryResponse.json()).status,'PENDING');
+    await p.locator('[aria-label="Owner notification status"]').getByText('PENDING',{exact:true}).waitFor();
     const accepted=new Set(),w=createOwnerAlertService({database:f.db,ownerQuery:f.ownerQuery,environment:{EMAIL_FROM:'alerts@example.invalid'},ready:()=>true,send:async m=>{accepted.add(m.idempotencyKey);return {accepted:true,id:'SYNTHETIC_'+m.idempotencyKey};}});
     await w.dispatchOnce();assert.equal(accepted.size,1);assert.equal(f.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND status='ACCEPTED'").get(c.ownerId).n,1);
     // Refresh briefly unmounts CallDetail. A status locator can observe the old
