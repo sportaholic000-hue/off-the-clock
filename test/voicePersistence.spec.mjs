@@ -279,7 +279,16 @@ test('voice tool runtime persists a safe review quote and lead without exposing 
     assert.equal(lead.status, 'captured');
     assert.match(lead.leadHandle, /^[A-Za-z0-9_-]{43}$/);
     assert.equal(db.prepare('SELECT COUNT(*) AS count FROM quoteSubmissions').get().count, 1);
-    assert.equal(db.prepare(`SELECT callerNumber FROM leads WHERE type = 'voice_lead'`).get().callerNumber, FROM);
+    // Caller identity is now bound by the immutable callerNumber, so capture
+    // enriches the existing review inquiry instead of creating a second lead.
+    const captured = db.prepare('SELECT * FROM leads WHERE ownerId=? AND callId=?').all(OWNER,'runtime-call');
+    assert.equal(captured.length,1);
+    assert.equal(captured[0].callerNumber,FROM);
+    assert.equal(captured[0].type,'quote_review');
+    assert.equal(captured[0].status,'NEEDS REVIEW');
+    const capturedDetails=JSON.parse(captured[0].collectedInputsJson);
+    assert.equal(capturedDetails.contact.name,'Alex Smith');
+    assert.equal(capturedDetails.applicationOutcome.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
     assert.deepEqual(Object.keys(runtime.handlers).sort(), [
       'bookAppointment', 'captureLead', 'checkAvailability', 'flagUrgent',
       'getCustomerContext', 'getQuote', 'logQuoteRequest', 'matchService',
