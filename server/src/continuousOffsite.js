@@ -22,16 +22,19 @@ async function checkedDownload(store,record,file){
   if(await fileChecksum(file)!==record.sha256)throw Error('OFFSITE_CHECKSUM_MISMATCH');
 }
 export async function pruneContinuousBackups(store,config,{now=Date.now()}={}){
-  const prefix=config.prefix+'/continuous/',keys=await store.list(prefix),complete=[];
-  for(const key of keys){
+  const prefix=config.prefix+'/continuous/',keys=await store.list(prefix);
+  let newest;
+  // Time-based retention needs only the newest complete recovery point. Reading
+  // every retained object's marker/HEAD on each prune would stall replication
+  // as thirty days of frequent checkpoints accumulate.
+  for(const key of [...keys].sort().reverse()){
     const id=key.slice(prefix.length,-9);
     if(!idValid(id)||key!==keyFor(config,id)+'.json')continue;
     const record=validateRecord(await store.record(key),config,id),head=await store.head(record.key);
-    if(head?.ContentLength===record.bytes&&head.Metadata?.sha256===record.sha256)complete.push(record);
+    if(head?.ContentLength===record.bytes&&head.Metadata?.sha256===record.sha256){newest=record.checkpointId;break;}
   }
-  complete.sort((a,b)=>b.capturedAtMs-a.capturedAtMs||b.checkpointId.localeCompare(a.checkpointId));
-  if(!complete.length)return;
-  const newest=complete[0].checkpointId,expired=new Set();
+  if(!newest)return;
+  const expired=new Set();
   for(const key of keys){
     const suffix=key.endsWith('.enc.json')?9:key.endsWith('.enc')?4:0;
     if(!suffix)continue;

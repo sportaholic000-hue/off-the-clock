@@ -88,7 +88,8 @@ and restarts, and newer changes wait for that immutable receipt before catch-up.
 Retain continuous checkpoints for thirty elapsed days, preserving the exact
 thirty-day boundary and always the newest complete checkpoint during a prolonged
 outage. Pruning runs at most daily after a verified checkpoint; failed publication
-does not prune. Nightly backup retention remains thirty complete daily copies.
+does not prune. It verifies the newest complete point without downloading every
+retained checkpoint's metadata. Nightly backup retention remains thirty complete daily copies.
 No storage account, bucket or lifecycle policy is created by either worker.
 
 ## Operator status

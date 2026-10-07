@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {randomBytes} from 'node:crypto';
+import {randomBytes,randomUUID} from 'node:crypto';
 import {spawn,fork} from 'node:child_process';
 import {once} from 'node:events';
 import {createServer} from 'node:net';
@@ -158,6 +158,17 @@ test('interrupted continuous retention retries without losing its newest complet
   f.fake.controls.failDeleteKey=old+'.json';await assert.rejects(()=>replicate(s));assert.equal(f.fake.objects.has(old),false);assert.equal(f.fake.objects.has(old+'.json'),true);
   const pending=JSON.parse(fs.readFileSync(path.join(f.deployment.backupPath,'.offsite-continuous/state.json'))).pending;assert.ok(f.fake.objects.has(pending.key+'.json'));
   f.fake.controls.failDeleteKey=null;await replicate(f.service());assert.equal(f.fake.objects.has(old+'.json'),false);assert.equal(f.fake.objects.has(pending.key),true);
+});
+test('large retained history requires only one marker and HEAD read for the newest complete copy',async()=>{
+  const config={prefix:'SYNTHETIC'},rows=new Map();
+  for(let i=0;i<100;i++){
+    const checkpointId=String(AT-i).padStart(13,'0')+'-'+randomUUID(),key=config.prefix+'/continuous/'+checkpointId+'.enc';
+    rows.set(key+'.json',{version:1,checkpointId,capturedAtMs:AT-i,key,sha256:'a'.repeat(64),keyId:'b'.repeat(64),sourceToken:'c'.repeat(64),bytes:40});
+  }
+  // Hand expectation: 100 retained checkpoints, zero expired, one newest
+  // complete checkpoint to verify = one marker read, one HEAD, zero deletions.
+  let reads=0,heads=0;const store={list:async()=>[...rows.keys()],record:async key=>{reads++;return rows.get(key);},head:async()=>{heads++;return {ContentLength:40,Metadata:{sha256:'a'.repeat(64)}};},remove:async()=>{throw Error('Unexpected synthetic deletion');}};
+  await backups.pruneContinuousBackups(store,config,{now:AT});assert.equal(reads,1);assert.equal(heads,1);
 });
 test('actual production server starts continuous replication and gates health through the admin route', {timeout:30000},async t=>{
   const fake=await fakeS3(t),volume=fs.mkdtempSync(path.join(os.tmpdir(),'otc-production-SYNTHETIC-'));

@@ -56,10 +56,27 @@ checked against `AGENTS.md`, the current build status, the repository audit repo
 
 ## Verification checkpoint
 
-The first completed focused diagnostic run passed **86/86**, zero failures,
-skips, cancellations or TODOs. Further production composition, locking, interrupted
-retention and final shutdown regressions are included in final verification.
-Final acceptance results are recorded after checking the pushed revision's CI.
+The latest focused diagnostic run passed **330/330**, zero failures, skips,
+cancellations or TODOs: both billing files, continuous/daily off-site files,
+shutdown lifecycle and both actual-server tenant-isolation matrices. This includes
+**22 new regressions**: five billing, sixteen continuous backup and one shutdown.
+The standalone focused run before the matrix review passed 94/94.
+
+The first hosted run at `76735577a14358aa69de5327c06050690c8c26ff`
+([37682555248](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37682555248))
+passed cold installation, browser setup and both builds, but strict tests had
+2,608 passes and four failures (two source-review assertions and their parent
+matrices). The full suite did not run. Changed files' source fingerprints had not
+been updated. The four files were explicitly compared with the pinned base:
+route declarations, authorization, tenant binding and global middleware remain
+unchanged. Only those reviewed fingerprints were updated. The matrices now pass;
+no route, assertion, middleware expectation or failure allowance was removed.
+
+Retention's original implementation also read every retained completion record
+and HEAD: an independent 100-point experiment measured 100 of each. The bounded
+implementation and new regression require one marker and one HEAD for the newest
+complete point, with zero deletions for the all-retained fixture. Full cold hosted
+acceptance of this corrected revision remains pending.
 
 Local verification uses available Node 24.19.0. Ordinary cold installation first
 failed on native header extraction (`fchown`); a downloaded Node 22 executable
