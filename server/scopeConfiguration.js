@@ -141,21 +141,26 @@ export function customerFieldForInputs(field,values={}){
  const selected=(field.presentationVariants||[]).filter(v=>matchesConditions(v.visibleWhen,values));
  if(!selected.length)return field;
  const labels=[...new Set(selected.map(v=>v.label))],details=[...new Set(selected.flatMap(v=>(v.details||[]).map(detail=>v.tierName?v.tierName+': '+detail:detail)))];
- return {...field,label:labels.join('; '),...(details.length?{details}:{})};
+ const units=[...new Set(selected.map(v=>v.unit).filter(Boolean))];
+ return {...field,label:labels.join('; '),...(details.length?{details}:{}),...(units.length===1?{unit:units[0]}:{})};
 }
 export function clearChangedScopeConfirmations(fields,before,after){
  const next={...after};
- for(const field of fields)if(field.type==='boolean'&&field.presentationVariants?.some(v=>v.details?.length)&&own(before,field.name)&&own(after,field.name)){
+ for(const field of fields)if((field.type==='boolean'&&field.presentationVariants?.some(v=>v.details?.length)||field.type==='number'&&field.presentationVariants?.some(v=>v.unit))&&own(before,field.name)&&own(after,field.name)){
   const oldView=customerFieldForInputs(field,before),newView=customerFieldForInputs(field,after);
+  if(field.type==='number'){
+   if(oldView.unit!==newView.unit)delete next[field.name];
+   continue;
+  }
   const wasApplicable=field.presentationVariants.some(v=>matchesConditions(v.visibleWhen,before)),isApplicable=field.presentationVariants.some(v=>matchesConditions(v.visibleWhen,after));
-  if(wasApplicable!==isApplicable||JSON.stringify([oldView.label,oldView.details])!==JSON.stringify([newView.label,newView.details]))delete next[field.name];
+  if(wasApplicable!==isApplicable||JSON.stringify([oldView.label,oldView.details,oldView.unit])!==JSON.stringify([newView.label,newView.details,newView.unit]))delete next[field.name];
  }
  return next;
 }
 export function mergeCustomerFieldDefinitions(variants){
  const out={};
  for(const {tierName,fields} of variants)for(const [name,field] of Object.entries(fields)){
-  const prior=out[name],presentations=(field.presentationVariants||[{label:field.label,details:field.details,visibleWhen:field.visibleWhen}]).map(v=>({...v,...(tierName?{tierName}:{})}));
+  const prior=out[name],presentations=(field.presentationVariants||[{label:field.label,details:field.details,unit:field.unit,visibleWhen:field.visibleWhen}]).map(v=>({...v,...(tierName?{tierName}:{})}));
   out[name]={...(prior||field),presentationVariants:[...(prior?.presentationVariants||[]),...presentations]};
   if(prior){
    if(field.values)out[name].values=[...new Set([...(prior.values||[]),...field.values])];

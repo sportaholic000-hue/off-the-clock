@@ -7,6 +7,7 @@ import {createAuthRateLimiter, AuthLimitError} from './authRateLimitService.js';
 import {createSessionHttp} from './authSessionHttp.js';
 import { sendTransactionalEmail } from './email.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
+import { passwordHashCost } from './passwordHashConfig.js';
 import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
 import {
   AUTH_TOKEN_PURPOSES,
@@ -131,8 +132,7 @@ export function createAuthHandlers({
   }
 
   function hashingReady(res) {
-    const cost=Number(environment.BCRYPT_COST || 12);
-    if(Number.isInteger(cost)&&cost>=12&&cost<=31)return true;
+    try { passwordHashCost(environment); return true; } catch {}
     res.status(503).json({error:'Authentication service is temporarily unavailable.'});return false;
   }
 
@@ -216,7 +216,7 @@ export function createAuthHandlers({
 
     const createdAt = now().toISOString();
     const id = randomUUID();
-    const cost = Number(environment.BCRYPT_COST || 12);
+    const cost = passwordHashCost(environment);
     const passwordHash = await hashPassword(password, cost);
     // A public signup response must not disclose whether this email exists.
     // Hash every valid request; only email possession can unlock a new owner.
@@ -307,7 +307,7 @@ export function createAuthHandlers({
     }
     const passwordHash = await hashPassword(
       req.body.password,
-      Number(environment.BCRYPT_COST || 12)
+      passwordHashCost(environment)
     );
     try {
       durableTokens.consume({

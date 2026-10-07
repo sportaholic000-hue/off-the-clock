@@ -1,5 +1,6 @@
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
+import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
@@ -490,8 +491,13 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
 
 MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
   fields: {
-    inputMethod: enumField('Mulch quantity method', ['sqft', 'yards']),
-    mulchArea: numberField('Measured bed area or mulch volume', 'square feet or cubic yards', 0.01, 10_000_000),
+    inputMethod: {...enumField('Mulch quantity method', ['sqft', 'yards']), optionLabels:{sqft:'Bed area and depth',yards:'Cubic yards of mulch'}},
+    mulchArea: {...numberField('Mulch quantity', 'square feet for bed area; cubic yards for mulch volume', 0.01, 10_000_000),
+      visibleWhen:[[['inputMethod','in',['sqft','yards']]]],
+      presentationVariants:[
+        {label:'Measured bed area',unit:'square feet',visibleWhen:[[['inputMethod','eq','sqft']]]},
+        {label:'Mulch volume',unit:'cubic yards',visibleWhen:[[['inputMethod','eq','yards']]]}
+      ]},
     mulchDepth: numberField('Mulch depth', 'inches', 0.5, 24),
     mulchType: slugField('Mulch type'),
     bedCondition: enumField('Planting-bed condition', ['clean', 'needs_weeding', 'overgrown']),
@@ -942,7 +948,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       validationMessages.push(`${contract.fields[name].label} ${message}.`);
     }
   }
-  const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && !(name === 'existingFloorType' && customerInputs[name] === 'none')).map(([name]) => name);
+  const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && productIdentityRequired(name, customerInputs[name])).map(([name]) => name);
   const facts = customerInputs.confirmedFacts;
   const missingOfferingMaps = [], offeringOwnerDiagnostics = [], unsupportedOfferingFields = [];
   if (facts !== undefined && isRecord(facts)) for (const name of Object.keys(facts)) {

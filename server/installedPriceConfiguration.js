@@ -11,7 +11,7 @@ export function installedPriceDefinitions(type,p={}) {
       ||p.offeringMode==='installed'&&(key==='installedFencePerLF'||key==='installedWallPerSqft'||key==='installedCeilingPerSqft'&&p.offeringDetails?.ceilingsOffered);
     if(active)fields['offeringRates.'+key]=offeringRateDefinitions(type,p)[key]?.label||key.replaceAll('_',' ');
   }
-  if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price')fields['underlaymentPerSquare.'+key]=key.replaceAll('_',' ')+' installed roof underlayment';
+  if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price'&&p.underlaymentPerSquare?.[key]!==0)fields['underlaymentPerSquare.'+key]=key.replaceAll('_',' ')+' installed roof underlayment';
   // Zero rates still need valid free/included classification at the pricing
   // boundary. They carry no separate installed amount to allocate for tax.
   if(type.startsWith('FLOORING_')&&p.underlaymentPriceBasis==='installed_area_sell_price'&&p.underlaymentPerSqft!==0)fields.underlaymentPerSqft='Installed vinyl-plank underlayment';

@@ -27,9 +27,17 @@ function itemNamed(text){
 export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}){
   if(Buffer.byteLength(text)>limits.pageBytes)throw new WebsiteImportError('WEBSITE_SIZE_LIMIT','The decoded website page exceeds the import size limit.');
   if(plain){
-    const lines=text.split(/\r?\n/).map(normalize).filter(Boolean);
-    const entries=lines.filter(line=>line.length<=1500&&amounts(line).length&&itemNamed(line)&&!instruction.test(line)).map(excerpt=>({excerpt,amounts:amounts(excerpt)}));
-    return {entries,links:[],conditions:lines.filter(line=>line.length<=500&&conditions.test(line)&&!instruction.test(line))};
+    const lines=text.split(/\r?\n/).map(normalize),entries=[];let limited=false;
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i];
+      if(!amounts(line).length||!itemNamed(line)||instruction.test(line))continue;
+      const parts=[line];
+      while(i+1<lines.length&&lines[i+1]&&!amounts(lines[i+1]).length&&!instruction.test(lines[i+1]))parts.push(lines[++i]);
+      const excerpt=parts.join('\n');
+      if(excerpt.length>1500){limited=true;continue;}
+      entries.push({excerpt,amounts:amounts(excerpt)});
+    }
+    return {entries,limited,links:[],conditions:lines.filter(line=>line.length<=500&&conditions.test(line)&&!instruction.test(line))};
   }
   const root={name:'root',parts:[],parent:null,hidden:false};const stack=[root],nodes=[],links=[];
   const parser=new Parser({
@@ -52,23 +60,28 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}
   for(const node of nodes)if(!node.hidden&&node.name==='a'&&node.attrs.href){
     if(links.length<limits.links)links.push({href:node.attrs.href,label:node.text});else linksLimited=true;
   }
-  const candidates=[];
+  const candidates=[];let limited=false;
   for(const node of nodes){
     if(node.hidden||!RECORD.has(node.name)||!amounts(node.text||'').length)continue;
     // Process the deepest price blocks first; wrapping containers are handled
     // only when they supply an item name or the conditions around that price.
     if(node.parts.some(p=>typeof p!=='string'&&RECORD.has(p.name)&&amounts(p.text||'').length))continue;
-    let chosen=node;
+    let chosen=node,omitted=false;
     for(let parent=node.parent;parent&&parent!==root;parent=parent.parent){
       if(!RECORD.has(parent.name))continue;
       const value=parent.text||'';
-      if(value.length>1500||instruction.test(value))break;
       const priceChildren=parent.parts.filter(p=>typeof p!=='string'&&amounts(p.text||'').length);
       if(priceChildren.length>1)break;
+      const ordinaryContainer=['div','section'].includes(parent.name)&&value!==chosen.text&&amounts(value).length===amounts(chosen.text).length;
+      if(value.length>1500||instruction.test(value)){
+        if(ordinaryContainer){omitted=true;limited=true;}
+        break;
+      }
       if(['li','tr','article'].includes(parent.name)||
-        parent.parts.some(p=>typeof p!=='string'&&/^h[1-6]$/.test(p.name))||!itemNamed(chosen.text))chosen=parent;
-      if(['li','tr','article'].includes(parent.name))break;
+        ordinaryContainer||parent.parts.some(p=>typeof p!=='string'&&/^h[1-6]$/.test(p.name))||!itemNamed(chosen.text))chosen=parent;
+      if(['li','tr','article'].includes(parent.name)||ordinaryContainer)break;
     }
+    if(omitted)continue;
     const excerpt=chosen.text;
     if(!excerpt||excerpt.length>1500||!itemNamed(excerpt)||instruction.test(excerpt))continue;
     candidates.push({excerpt,amounts:amounts(excerpt)});
@@ -95,10 +108,10 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}
   }
   const unique=[...new Map(candidates.map(e=>[e.excerpt,e])).values()];
   // HTML fragments and text-only HTML can lack a body or block element.
-  if(!unique.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text))unique.push({excerpt:root.text,amounts:amounts(root.text)});
+  if(!limited&&!unique.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text))unique.push({excerpt:root.text,amounts:amounts(root.text)});
   // Exact duplicates only: a shorter excerpt can be a distinct offering.
   // Avoid pairwise substring scans on large or adversarial pages.
   const entries=unique;
   const notes=nodes.filter(n=>!n.hidden&&['p','small','footer'].includes(n.name)&&n.text?.length<=500&&conditions.test(n.text)&&!instruction.test(n.text)).map(n=>n.text);
-  return {entries,links,linksLimited,conditions:[...new Set(notes)]};
+  return {entries,limited,links,linksLimited,conditions:[...new Set(notes)]};
 }

@@ -1,0 +1,21 @@
+Source/test SHA: 2879f2560e3ae2ee2d4a38c41c401c1da49487f3
+Run: https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37596037228
+Job: 112708785754
+Conclusion: success
+Selected original log lines:
+2026-10-07T08:46:51.8663658Z found 0 vulnerabilities
+2026-10-07T08:47:22.0374654Z PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.
+2026-10-07T08:52:21.2101188Z # tests 2597
+2026-10-07T08:52:21.2101664Z # pass 2597
+2026-10-07T08:52:21.2102158Z # fail 0
+2026-10-07T08:52:21.2102399Z # cancelled 0
+2026-10-07T08:52:21.2102635Z # skipped 0
+2026-10-07T08:52:21.2102853Z # todo 0
+2026-10-07T08:52:21.2109331Z PASS: quote engine and price book gate (131 files, 2597/2597 tests, zero skips).
+2026-10-07T08:57:58.9303685Z # tests 3624
+2026-10-07T08:57:58.9304676Z # pass 3624
+2026-10-07T08:57:58.9305149Z # fail 0
+2026-10-07T08:57:58.9305614Z # cancelled 0
+2026-10-07T08:57:58.9306342Z # skipped 0
+2026-10-07T08:57:58.9306819Z # todo 0
+2026-10-07T08:58:00.7598309Z found 0 vulnerabilities

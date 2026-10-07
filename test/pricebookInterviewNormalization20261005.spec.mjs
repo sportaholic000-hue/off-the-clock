@@ -24,14 +24,14 @@ test('interview stores normalized maps through manual and actual assist paths wi
       .run(owner,owner+'@example.invalid','[SYNTHETIC]','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active','UTC','owner',now);
     const type='FLAT_ROOF_REPLACEMENT',draft=createInterviewDraft(owner,{serviceTypes:[type]});
     const fields={laborPerSqft:{'EPDM rubber':5},knownOfferings:{membraneType:{'EPDM rubber':true}}};
-    const saved=saveInterviewDraft(owner,draft.id,{fields:{[type]:fields},confirmedFields:{[type]:Object.keys(fields)}});
+    const saved=saveInterviewDraft(owner,draft.id,{revision:draft.revision,fields:{[type]:fields},confirmedFields:{[type]:Object.keys(fields)}});
     assert.deepEqual(saved.fields[type].laborPerSqft,{epdm_rubber:5});
     assert.deepEqual(saved.fields[type].knownOfferings,{membraneType:{epdm_rubber:true}});
-    const same=saveInterviewDraft(owner,draft.id,{fields:{[type]:fields}});
+    const same=saveInterviewDraft(owner,draft.id,{revision:saved.revision,fields:{[type]:fields}});
     assert.deepEqual(same.confirmedFields[type],Object.keys(fields));
     assert.deepEqual(getInterviewDraft(owner,draft.id).fields,same.fields);
     const before=getInterviewDraft(owner,draft.id);
-    assert.throws(()=>saveInterviewDraft(owner,draft.id,{fields:{[type]:{laborPerSqft:{'EPDM rubber':5,epdm_rubber:2.5}}}}),/already listed/);
+    assert.throws(()=>saveInterviewDraft(owner,draft.id,{revision:before.revision,fields:{[type]:{laborPerSqft:{'EPDM rubber':5,epdm_rubber:2.5}}}}),/already listed/);
     assert.deepEqual(getInterviewDraft(owner,draft.id),before);
     let calls=0;
     globalThis.fetch=async url=>{

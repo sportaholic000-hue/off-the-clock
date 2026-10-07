@@ -1,4 +1,4 @@
-import { registeredProductKey } from '../../productNames.js';
+import { registeredProductKey, productIdentityRequired } from '../../productNames.js';
 
 const own = (value, key) => Object.hasOwn(value || {}, key);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value) &&
@@ -37,13 +37,15 @@ export function voiceQuestionContract(service, definition) {
       const condition = publicCondition(field[name]);
       if (condition !== undefined) question[name] = condition;
     }
-    const values = field.type === 'slug' ? Object.keys(service.knownOfferings?.[field.name] || {}) : field.values;
+    const exemptValues = field.type === 'slug' && !productIdentityRequired(field.name, 'none') ? ['none'] : [];
+    const values = field.type === 'slug' ? [...new Set([...exemptValues, ...Object.keys(service.knownOfferings?.[field.name] || {})])] : field.values;
     if (Array.isArray(values)) {
       question.choices = values.slice(0, 32).filter(value => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
         .map(value => ({ value, label: safeText(field.options?.[value]) || safeText(field.optionLabels?.[value]) || human(value) }));
       if (values.length > 32) question.moreChoicesAvailable = true;
     }
     if (field.type === 'slug') question.productConfirmationRequired = true;
+    if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;
   });
   const customerFees = FEES.filter(fee => service.feeRules?.[fee] === 'customer_selected')
@@ -66,6 +68,7 @@ export function bindVoiceQuoteInputs(service, definition, args) {
   for (const field of fields) {
     if (!own(customerInputs, field.name) || customerInputs[field.name] === null || customerInputs[field.name] === '') continue;
     if (field.type === 'slug') {
+      if (!productIdentityRequired(field.name, customerInputs[field.name])) continue;
       const registered = service.knownOfferings?.[field.name] || {};
       const key = registeredProductKey(customerInputs[field.name], Object.keys(registered));
       if (!key || confirmations[field.name] !== true) {

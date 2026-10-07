@@ -526,7 +526,7 @@ export function saveInterviewDraft(ownerId, id, input) {
   const fail = message => { throw Object.assign(new Error(message), {statusCode:422}); };
   const conflict = () => { throw Object.assign(new Error('This interview draft changed. Review the newest saved answers before trying again.'), {statusCode:409}); };
   if (!record(input) || Object.keys(input).some(key=>!['fields','confirmedFields','currentField','revision'].includes(key))) fail('Unsupported interview update. Your saved draft was not changed.');
-  if (input.revision !== undefined && input.revision !== draft.revision) conflict();
+  if (input.revision !== draft.revision) conflict();
   for (const map of [input.fields,input.confirmedFields]) {
     if (map !== undefined && (!record(map) || Object.keys(map).some(type=>!draft.serviceTypes.includes(type)))) fail('Choose a service in this interview.');
   }
