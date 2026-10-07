@@ -1,20 +1,29 @@
-# October 7 engine leftovers — implementation checkpoint
+# October 7 engine leftovers — hosted gates passed
 
 Branch `fix/engine-leftovers`, exact requested base
-`4db13a2945193762bbc4b85f9ab616a00e1dd067`.
+`4db13a2945193762bbc4b85f9ab616a00e1dd067`. Verified source/test/CI commit:
+`c724e6264796c9b11a00c8ac3b4401515f305273`.
 [Repair and reproduction record](../verification/engine-leftovers/REPORT.md).
+[Hosted run 37670520645](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37670520645)
+passed cold installation, both builds, **2,653/2,653** strict quote tests (132
+files), **3,681/3,681** full-suite tests, the zero-failure checker and production
+dependency audit (zero vulnerabilities). Both suites contain zero failures,
+skips, cancellations and TODOs.
 
 All four requested defects were reproduced twice before implementation: eight
-failing baseline checks. Scope confirmations now bind the selected description;
-historical voice receipts preserve material qualifications; website drafts omit
-CSS-hidden or unresolved prices; listed-unit multiplication runs exactly on the
-server and the receptionist speaks its returned result without doing arithmetic.
+failing baseline checks, followed by **57 new regressions**. Phone scope answers
+bind the selected descriptions, call and book revision; historical voice receipts
+retain material qualifications; website drafts omit CSS-hidden or unresolved
+prices; the server alone multiplies one saved listed unit price exactly and the
+receptionist speaks its returned result. No engine formula changed.
 
-The expanded focused run passed **179/179**, zero failures/skips. Cold installation
-passed. Browser startup in this workspace fails with Chromium SIGTRAP; hosted
-cold gates are required and their pending result is not represented as passing.
-Additional CSS boundary checks and the updated prior multiplication assertion
-are included in the final gates. No main merge, deployment, subagents or live data.
+Final focused verification passed **189/189**; persistence/original-fixture
+controls passed **11/11**. Local full/strict gates are not claimed green: Chromium
+startup fails with SIGTRAP, and local timing/checkout limitations are documented
+in the report. Hosted cold runs include all browser tests and unchanged timing
+limits. This checkpoint changes documentation/evidence only; its exact final
+pushed-head CI is checked separately. No main merge, deployment, subagents or
+live data.
 
 ## Previous checkpoint
 

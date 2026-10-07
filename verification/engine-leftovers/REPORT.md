@@ -1,4 +1,4 @@
-# Four engine leftovers — verification record
+# Four engine leftovers — hosted gates passed
 
 Branch: `fix/engine-leftovers`. Exact parent:
 `4db13a2945193762bbc4b85f9ab616a00e1dd067`, verified against
@@ -56,16 +56,47 @@ the requested branch; no test, browser gate or failure checker is disabled.
 
 ## Verification
 
+Verified source/test/CI commit: `c724e6264796c9b11a00c8ac3b4401515f305273`.
+[Hosted run 37670520645](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37670520645)
+passed cold `npm ci`, both owner/widget builds, **2,653/2,653** strict quote
+checks across **132 files**, **3,681/3,681** full-suite tests, the empty-failure
+checker and production dependency audit (**zero vulnerabilities**). Both test
+summaries report **zero failures, skips, cancellations and TODOs**. The exact
+log excerpt is retained in `hosted-summary.txt`.
+
+There are **57 new regression tests**: 56 in the leftovers regression file and
+one signed production voice/tool delivery test. All existing monetary assertions,
+browser tests and timing thresholds remain enabled. Existing prompt/tool inventory
+assertions were updated to the owner's new server-only arithmetic contract.
+The final focused run passed **189/189**; persistence and restored original-fixture
+checks passed **11/11**. These focused counts overlap the complete hosted suites.
+
+
 The first expanded focused run passed **179/179**, zero failures, skips,
 cancellations or TODOs. It exercised the actual saved/approved quote runtime,
 history dispatcher, local HTTP importer, schema validation, exact arithmetic and
 signed production voice callback/provider-tool delivery. Additional CSS boundary
 checks cover transparent text, zero font size and unresolved styling.
 
-The cold install passed. Local Chromium crashes with SIGTRAP before browser
-assertions execute, as independently reproduced with both Chromium builds.
-Local full gates are still run and their failures are not converted to skips.
-An older regression asserted the superseded permission for model multiplication;
-it now asserts the server operation and the explicit ban on receptionist math.
-Hosted cold gates and their exact source revision are checked before delivery.
-This source checkpoint makes no claim that a pending hosted run has passed.
+Local cold installation and both builds passed. Local Chromium crashes with
+SIGTRAP before browser assertions execute, independently reproduced with both
+Chromium builds; no browser failures were converted to skips. Local gate attempts
+also exposed one missing historical compressed fixture in the partial checkout,
+which was restored byte-for-byte from the exact base, and two obsolete prompt/tool
+inventory assertions, corrected before the passing hosted run. No application
+change was needed for the fixture or the inventory assertion.
+
+The final local strict attempt reported 2,644 tests: 2,586 passed, 58 failed,
+zero skips/cancellations/TODOs. Fifty-six failures were browser startup; the
+others were a 1.53-second unchanged catalog check against its 1.5-second limit,
+and a short website deadline check. Isolated controls passed 96/97: the website
+deadline passed, while the same catalog threshold remained narrowly exceeded.
+None of the catalog test's 64 reachable files differs from the base. The complete
+hosted run passes those unchanged timing limits and all browser assertions.
+Earlier local attempts and focused checks are not substituted for the green
+hosted gates. Browser setup stalled on the superseded first hosted runner; the
+successful run above used a fresh cold runner and the corrected source head.
+
+This result-recording checkpoint changes only documentation/evidence. The final
+pushed-head CI is checked independently before delivery. No main merge,
+deployment, subagents or live data.

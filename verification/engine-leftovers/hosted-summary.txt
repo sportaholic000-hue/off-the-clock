@@ -1,0 +1,28 @@
+Run 37670520645
+https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37670520645
+Exact source/test/CI SHA c724e6264796c9b11a00c8ac3b4401515f305273
+Job 112960795527: success
+Cold npm ci, Playwright setup, npm run build, npm run test:quote, npm test,
+zero-failure checker, and production dependency audit all succeeded.
+
+2026-10-07T18:55:34.4684630Z added 288 packages, and audited 291 packages in 6s
+2026-10-07T18:55:34.4692844Z found 0 vulnerabilities
+2026-10-07T18:55:36.3955821Z added 2 packages in 2s
+2026-10-07T18:56:06.9549668Z ✓ built in 2.11s
+2026-10-07T18:56:08.7921184Z ✓ built in 1.67s
+2026-10-07T19:00:19.4150900Z # tests 2653
+2026-10-07T19:00:19.4151781Z # pass 2653
+2026-10-07T19:00:19.4151996Z # fail 0
+2026-10-07T19:00:19.4152217Z # cancelled 0
+2026-10-07T19:00:19.4152442Z # skipped 0
+2026-10-07T19:00:19.4152641Z # todo 0
+2026-10-07T19:00:19.4157357Z PASS: quote engine and price book gate (132 files, 2653/2653 tests, zero skips).
+2026-10-07T19:05:04.5170246Z # tests 3681
+2026-10-07T19:05:04.5171004Z # pass 3681
+2026-10-07T19:05:04.5171301Z # fail 0
+2026-10-07T19:05:04.5171722Z # cancelled 0
+2026-10-07T19:05:04.5172044Z # skipped 0
+2026-10-07T19:05:04.5172341Z # todo 0
+2026-10-07T19:05:04.5662742Z Summary: {"tests":"3681","pass":"3681","fail":"0","cancelled":"0","skipped":"0","todo":"0"}
+2026-10-07T19:05:04.6271325Z Summary: {"tests":"3681","pass":"3681","fail":"0","cancelled":"0","skipped":"0","todo":"0"}
+2026-10-07T19:05:06.5403162Z found 0 vulnerabilities
