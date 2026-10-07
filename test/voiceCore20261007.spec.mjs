@@ -135,3 +135,15 @@ test('voice-core production Operator completes quote-free booking through signed
  const lead=await h.tool(c.callback,'captureLead',{name:'Synthetic Caller',address});const slots=await h.tool(c.callback,'checkAvailability',{leadHandle:lead.leadHandle,preference:{fromDate:'2026-10-07',days:1}});assert.equal(slots.status,'available');
  const booked=await h.tool(c.callback,'bookAppointment',{leadHandle:lead.leadHandle,slotHandle:slots.slotOptions[0].slotHandle,customerConfirmed:true});assert.equal(booked.status,'confirmed');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM appointments WHERE ownerId=?').get(h.owner).n,1);
 });
+
+test('voice-core a callback number supplied after an earlier owner email produces a new usable alert',async t=>{
+ const h=fixture(t),c=h.context(),dispatch=runtime(h,c),messages=[];
+ const alerts=createOwnerAlertService({database:h.db,ownerQuery:h.ownerQuery,clock:()=>Date.parse(at),ready:()=>true,environment:{PUBLIC_BASE_URL:'https://synthetic.example.invalid'},send:async message=>{messages.push(message);return {id:'SYNTHETIC_EMAIL',status:'ACCEPTED'};}});
+ const lead=await invoke(dispatch,'captureLead',{name:'Synthetic Caller',notes:'Synthetic request'});await alerts.dispatchOnce();const first=messages.length;
+ await invoke(dispatch,'captureLead',{leadHandle:lead.leadHandle,phone:'+19025550223'},'synthetic-late-phone');await alerts.dispatchOnce();assert.equal(messages.length,first+1);assert.match(JSON.stringify(messages.at(-1)),/19025550223/);
+ assert.equal(h.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND eventType='lead.contact_updated'").get('synthetic-b').n,0);
+});
+
+for(const planStatus of ['inactive','payment_failed'])test('voice-core OFF human routing remains independent of '+planStatus+' subscription',async t=>{
+ const h=await harness(t,{beforeInstall:f=>{f.db.prepare("UPDATE businessProfiles SET operatorEnabled=0,carrierSetupStatus='updated' WHERE ownerId=?").run('synthetic-a');f.db.prepare('UPDATE users SET planStatus=? WHERE id=?').run(planStatus,'synthetic-a');}});const result=await h.incoming();assert.equal(result.status,200);assert.match(result.xml,/<Dial/);assert.doesNotMatch(result.xml,/<Gather|<Stream/);assert.equal(h.callbacks.length,0);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM leads').get().n,0);
+});

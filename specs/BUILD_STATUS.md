@@ -6,7 +6,8 @@ Branch `fix/voice-core`, starting at verified audit-repair revision
 [Repair evidence](../verification/voice-core/REPORT.md) records all eight source
 and execution reproductions before repair. The original nine regression cases
 failed as expected; the latest expanded regression/release check passed
-**37/37**, with zero failures/skips/cancellations/TODOs. Cold installation and
+**40/40**; reviewed terminology, tenant isolation and voice checks passed
+**291/291**, all with zero failures/skips/cancellations/TODOs. Cold installation and
 owner/widget build passed. Complete cold suites and hosted CI are checked before
 final delivery; local Chromium startup `SIGTRAP` is an environment limitation,
 and browser tests remain enabled. No subagents, main merge, deployment or live

@@ -69,11 +69,11 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "411bd33cdba4a611ab819b8d374533c5b033f6fc368d9295af0cc7c08b257d79"
+    "sha256": "584b6eee7077b81af8136f5da90221420a0872fcee44db85bd8864f5390b6403"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "38f073eca23b4ba05ace524f41c2c81a670874c6fba89afd0494e11a0abffbfd"
+    "sha256": "e8b073f6f28422416d7d718904a02fd35aa18e644986146783dd4f551e464e0a"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
@@ -81,7 +81,7 @@
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
-    "sha256": "594d731fb54104e18b6b7388c5c046b963fef7a2791f8e7b6c19e5b774092d5c"
+    "sha256": "c2fcc50472bc4747d7552bb87e1f50becd3baca8c13a503ea37a35ef51ea256b"
   },
   {
     "file": "src/voice/voiceWebSocketServer.js",

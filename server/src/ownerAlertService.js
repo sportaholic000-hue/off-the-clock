@@ -20,10 +20,10 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
   const iso=()=>new Date(clock()).toISOString();
   function source(row){
     const id=row.aggregateId,owner=row.ownerId;
-    if(row.eventType==='lead.created'){
+    if(['lead.created','lead.contact_updated'].includes(row.eventType)){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};
-      return ['New lead',lead.customerName||d.contact?.name||submission.contact?.name,d.contact?.phone||submission.contact?.phone||lead.callerNumber,d.contact?.email||submission.contact?.email,lead.describedService,d.notes,submission.context];
+      return [row.eventType==='lead.contact_updated'?'Callback contact updated':'New lead',lead.customerName||d.contact?.name||submission.contact?.name,d.contact?.phone||submission.contact?.phone||lead.callerNumber,d.contact?.email||submission.contact?.email,lead.describedService,d.notes,submission.context];
     }
     if(['callback.requested','callback.updated'].includes(row.eventType)){
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');

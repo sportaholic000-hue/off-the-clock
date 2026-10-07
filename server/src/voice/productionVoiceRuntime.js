@@ -58,16 +58,17 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
   function offRouting(context){
     const state=account(context.ownerId);
-    if(state.profile?.operatorEnabled!==0||!hasOperatorAccess(state.account,{now:new Date(clock())}))return null;
+    if(state.profile?.operatorEnabled!==0)return null;
     const coverage=database.prepare('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
     const number=state.profile.existingPhoneNumber;
     const confirmed=state.profile.carrierSetupStatus==='updated'&&(!coverage||coverage.confirmedEnabled===0&&coverage.phase==='idle');
     return {mode:confirmed&&E164.test(number||'')&&number!==context.to?'forward':'message',number,message:'The operator is off. Please call the business directly.'};
   }
   const fallback=({context})=>{
-    const state=account(context.ownerId);
+    const state=account(context.ownerId),off=offRouting(context);
+    if(off)return off;
     if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
-    return offRouting(context)||captureChoice(publicBaseUrl);
+    return captureChoice(publicBaseUrl);
   };
   const configuredSecret=env.VOICE_HANDLE_SECRET||env.BOOKING_SLOT_TOKEN_SECRET||env.JWT_SECRET;
   const handleSecret=typeof configuredSecret==='string'&&Buffer.byteLength(configuredSecret)>=32?createHash('sha256').update('voice-handles-v1\0'+configuredSecret).digest():null;

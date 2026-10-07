@@ -29,6 +29,14 @@ export function installOwnerAlertSchema(db) {
     BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)
     VALUES(lower(hex(randomblob(16))),NEW.ownerId,'${type}:'||NEW.id,'${type}',NEW.id,${call},${time},${time}) ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('lead','leads','lead.created');
+  db.exec(`CREATE TRIGGER IF NOT EXISTS owner_alert_callback_contact_correction AFTER UPDATE OF collectedInputsJson ON leads
+    WHEN json_valid(NEW.collectedInputsJson) AND json_valid(OLD.collectedInputsJson)
+      AND json_extract(NEW.collectedInputsJson,'$.voiceVersion')=1
+      AND json_extract(NEW.collectedInputsJson,'$.contact.phone') IS NOT json_extract(OLD.collectedInputsJson,'$.contact.phone')
+    BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)
+      VALUES(lower(hex(randomblob(16))),NEW.ownerId,'lead.contact_updated:'||NEW.id||':'||json_array_length(NEW.collectedInputsJson,'$.captureHistory'),'lead.contact_updated',NEW.id,NEW.callId,
+      json_extract(NEW.collectedInputsJson,'$.captureHistory[#-1].at'),json_extract(NEW.collectedInputsJson,'$.captureHistory[#-1].at'))
+      ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('quote','quotes','quote.created');
   trigger('quote_request','quoteRequests','quote.requested');
   trigger('callback','callbackRequests','callback.requested');
