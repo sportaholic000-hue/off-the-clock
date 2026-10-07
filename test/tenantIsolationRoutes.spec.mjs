@@ -31,7 +31,7 @@ function bodyFor(route,tenant,other=tenant) {
   if(route.endsWith('/confirm'))return {holdId:other.booking,confirmedSlotId:'synthetic-invalid-slot',explicitConfirmation:true,addressConfirmation:true,customer:{name:'[SYNTHETIC] Customer',email:'synthetic@example.invalid',phone:''},location:{addressLine1:'[SYNTHETIC] Address',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'}};
   if(route.endsWith('/preference'))return {scopeConfirmation:'UNCHANGED',preferredWindows:[{date:new Date(Date.now()+86400000).toISOString().slice(0,10),time:'09:00'}],customer:{name:'[SYNTHETIC] Customer',email:'synthetic@example.invalid',phone:''},location:{addressLine1:'[SYNTHETIC] Address',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'},note:''};
   if(route.includes('/booking/policies/'))return {bookingMode:'book_job',durationMinutes:60,enabled:true};
-  if(route.includes('/services/')&&route.endsWith('/approve'))return {confirmConfiguration:true};
+  if(route.includes('/services/')&&route.endsWith('/approve'))return {revision:other.bookRevision,confirmConfiguration:true,confirmLegacySettings:true};
   if(route==='POST /api/onboarding/knowledge-base')return {about:'[SYNTHETIC] Attack',hours:'Synthetic hours'};
   if(route==='POST /api/onboarding/voice')return {voiceId:'miles',agentName:'[SYNTHETIC] Agent',greeting:'[SYNTHETIC] Hello'};
   if(route==='POST /api/onboarding/calendar')return {skipped:true};
@@ -46,7 +46,7 @@ function bodyFor(route,tenant,other=tenant) {
 }
 function noLeak(response,other,label) {
   const visible=response.text+JSON.stringify(response.headers||{});
-  for(const forbidden of [other.owner,other.staff,other.email,other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.hold,other.delivery,other.confirmationId,other.bookingIntentId,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
+  for(const forbidden of [other.owner,other.staff,other.password,other.passwordHash,other.callSid,other.email,'synthetic-'+other.label.toLowerCase()+'-staff@example.invalid','cus_synthetic_'+other.label,'sub_synthetic_'+other.label,'https://synthetic-'+other.label.toLowerCase()+'.example.invalid/hooks',...['owner','staff'].flatMap(role=>[other.auth[role].token,other.auth[role].cookie.split('=').at(-1)]),other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.hold,other.delivery,other.confirmationId,other.bookingIntentId,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
 }
 function refused(response,label) {assert.ok(response.status>=400&&response.status<500,label+' was not refused: '+response.status+' '+response.text.slice(0,1200));}
 const sanitized=r=>({status:r.status,text:r.text});
@@ -56,13 +56,15 @@ async function signedVoice(f,path,params,signature) {
 async function wsDenied(f,tenant,other,{guessed=false,unsigned=false}={}) {
   const path='/api/twilio/voice/stream/'+(guessed?'x'.repeat(43):tenant.nonce);
   const signature=twilio.getExpectedTwilioSignature(f.env.TWILIO_AUTH_TOKEN,f.origin.replace('https:','wss:')+path,{});
-  const ws=new WebSocket('ws://127.0.0.1:'+f.port+path,{headers:{...(unsigned?{}:{'x-twilio-signature':signature}),authorization:'Bearer '+other.auth.owner.token}});
+  const ws=new WebSocket('ws://127.0.0.1:'+f.port+path,{headers:{...(unsigned?{}:{'x-twilio-signature':signature}),authorization:'Bearer '+tenant.auth.owner.token}});
+  let handshakeHeaders={};
+  ws.on('upgrade',response=>{handshakeHeaders=response.headers;});
   return new Promise((resolve,reject)=>{
     const timer=setTimeout(()=>{ws.terminate();reject(Error('WS denial timed out'));},5000);
-    ws.on('unexpected-response',(_req,res)=>{let text='';res.on('data',chunk=>text+=chunk);res.on('end',()=>{clearTimeout(timer);resolve({status:res.statusCode,text});});});
+    ws.on('unexpected-response',(_req,res)=>{let text='';res.on('data',chunk=>text+=chunk);res.on('end',()=>{clearTimeout(timer);resolve({status:res.statusCode,text,headers:res.headers});});});
     ws.on('open',()=>{ // Upgrade alone never establishes call authorization; hostile start must close.
       ws.send(JSON.stringify({event:'start',sequenceNumber:'1',start:{accountSid:f.env.TWILIO_ACCOUNT_SID,callSid:other.callSid,streamSid:'MZ'+'c'.repeat(32),customParameters:{ownerId:other.owner,from:'+19025550000',to:other.phone},mediaFormat:{encoding:'audio/x-mulaw',sampleRate:8000,channels:1}}}));
-      ws.on('close',code=>{clearTimeout(timer);resolve({status:code===1000?200:403,text:''});});
+      ws.on('close',(code,reason)=>{clearTimeout(timer);resolve({status:code===1000?200:403,text:reason.toString(),headers:handshakeHeaders});});
       ws.on('message',data=>{clearTimeout(timer);ws.terminate();reject(Error('WS leaked '+data));});
     });
     ws.on('error',error=>{clearTimeout(timer);reject(error);});
@@ -80,16 +82,20 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     const method=route.split(' ')[0],httpMethod=method==='USE'?'GET':method;
     const before=await f.rpc('snapshot',{owner:B.owner});
     if(['owner','team','admin'].includes(policy)) {
-      for(const [source,target] of [[A,B],[B,A]]) {
+      if(httpMethod==='GET') {
+        const ownRead=await f.request(pathFor(route,A),{token:A.auth.owner.token});
+        noLeak(ownRead,B,route+' own read must never include B');
+      }
+      for(const [source,target] of [[A,B],[B,A]]) for(const role of ['owner','staff']) {
         const path=pathFor(route,source,{other:target});
-        const r=await f.request(path+(path.includes('?')?'&':'?')+'ownerId='+target.owner,{method:httpMethod,token:source.auth.owner.token,body:['GET','HEAD'].includes(httpMethod)?undefined:{...bodyFor(route,source,target),ownerId:target.owner},headers:{'Idempotency-Key':crypto.randomUUID()}});
+        const r=await f.request(path+(path.includes('?')?'&':'?')+'ownerId='+target.owner,{method:httpMethod,token:source.auth[role].token,body:['GET','HEAD'].includes(httpMethod)?undefined:{...bodyFor(route,source,target),ownerId:target.owner},headers:{'Idempotency-Key':crypto.randomUUID()}});
         refused(r,route);noLeak(r,target,route);
         for(const selector of ['x-owner-id','x-tenant-id','x-business-id']) {
-          const headerAttempt=await f.request(pathFor(route,source),{method:httpMethod,token:source.auth.owner.token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,source),headers:{[selector]:target.owner,'Idempotency-Key':crypto.randomUUID()}});
+          const headerAttempt=await f.request(pathFor(route,source),{method:httpMethod,token:source.auth[role].token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,source),headers:{[selector]:target.owner,'Idempotency-Key':crypto.randomUUID()}});
           refused(headerAttempt,route+' forged '+selector);noLeak(headerAttempt,target,route);
         }
         if(!['GET','HEAD'].includes(httpMethod))for(const selector of ['ownerId','tenantOwnerId','businessId']) {
-          const bodyAttempt=await f.request(pathFor(route,source),{method:httpMethod,token:source.auth.owner.token,body:{...bodyFor(route,source),[selector]:target.owner},headers:{'Idempotency-Key':crypto.randomUUID()}});
+          const bodyAttempt=await f.request(pathFor(route,source),{method:httpMethod,token:source.auth[role].token,body:{...bodyFor(route,source),[selector]:target.owner},headers:{'Idempotency-Key':crypto.randomUUID()}});
           refused(bodyAttempt,route+' forged body '+selector);noLeak(bodyAttempt,target,route);
         }
       }
@@ -99,14 +105,14 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
       }
       const staff=await f.request(pathFor(route,A),{method:httpMethod,token:A.auth.staff.token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,A)});
       if(policy==='owner'||policy==='admin')assert.equal(staff.status,403,route+' staff');
-      else {assert.notEqual(staff.status,401,route+' staff credential rejected');assert.ok(!staff.text.includes('PRIVATE_B_'),route+' staff leak');}
+      else {assert.notEqual(staff.status,401,route+' staff credential rejected');noLeak(staff,B,route+' own staff response');}
       if(policy==='owner'||policy==='admin') {
         const staffB=await f.request(pathFor(route,B),{method:httpMethod,token:B.auth.staff.token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,B)});
         assert.equal(staffB.status,403,route+' B staff');
       }
-      if(/:(?:id|draftId|callSid|ownerId|serviceId|bookingIntentId)\b/.test(route)) {
-        const real=await f.request(pathFor(route,A,{other:B}),{method:httpMethod,token:A.auth.owner.token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,A,B),headers:{'Idempotency-Key':crypto.randomUUID()}});
-        const guessed=await f.request(pathFor(route,A,{other:B,guess:true}),{method:httpMethod,token:A.auth.owner.token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,A,B),headers:{'Idempotency-Key':crypto.randomUUID()}});
+      if(/:(?:id|draftId|callSid|ownerId|serviceId|bookingIntentId)\b/.test(route)) for(const role of ['owner','staff']) {
+        const real=await f.request(pathFor(route,A,{other:B}),{method:httpMethod,token:A.auth[role].token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,A,B),headers:{'Idempotency-Key':crypto.randomUUID()}});
+        const guessed=await f.request(pathFor(route,A,{other:B,guess:true}),{method:httpMethod,token:A.auth[role].token,body:['GET','HEAD'].includes(httpMethod)?undefined:bodyFor(route,A,B),headers:{'Idempotency-Key':crypto.randomUUID()}});
         refused(real,route+' foreign ID');refused(guessed,route+' sequential guessed ID');noLeak(real,B,route);
         assert.deepEqual(sanitized(real),sanitized(guessed),route+' distinguishes a foreign ID from an absent ID');
       }
@@ -181,7 +187,12 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
       if(route==='POST /api/demo/session')assert.equal(r.status,400,route+' arbitrary tenant data');
     }
     const after=await f.rpc('snapshot',{owner:B.owner});
-    if(!['POST /api/auth/forgot-password','POST /api/auth/resend-verification'].includes(route))assert.deepEqual(after,before,route+' changed B');
+    if(['POST /api/auth/forgot-password','POST /api/auth/resend-verification'].includes(route)) {
+      // Only the intended email-link receipt may change. Passwords, sessions,
+      // billing and every business table still have to remain byte-identical.
+      delete before.rows.authTokens;delete after.rows.authTokens;
+    }
+    assert.deepEqual(after,before,route+' changed B');
   });
   await t.test('own reads work; counts do not include newly added B rows',async()=>{
     const ownRows=(await f.rpc('snapshot',{owner:A.owner})).rows;

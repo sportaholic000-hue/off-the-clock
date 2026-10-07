@@ -28,7 +28,7 @@ The fixture replaces only provider transports with explicit synthetic responses.
 
 | Policy | Executed applicable threats |
 | --- | --- |
-| owner / team / admin | A→B and B→A credentials and explicit selectors; independent forged headers and mutation-body selectors; unsigned access; staff on owner/admin actions in both tenants; foreign path IDs versus absent/sequential guesses with byte-identical errors; foreign tenant snapshots unchanged. |
+| owner / team / admin | A→B and B→A owner and staff credentials and explicit selectors; independent forged headers and mutation-body selectors; unsigned access; staff on owner/admin actions in both tenants; foreign path IDs versus absent/sequential guesses with byte-identical errors; foreign tenant snapshots unchanged. |
 | widget | A key plus B business selector/service ID and the reverse; foreign Origin; guessed key; foreign versus absent service IDs; no foreign data in response or headers. |
 | booking-capability | A opaque token plus B selector/record; B token from A origin; guessed token and foreign hold/confirmation IDs; no foreign reads/writes. |
 | stripe | Real SDK signatures with A customer/B subscription and reverse, plus misleading owner/phone metadata; invalid signature; mismatched stored billing bindings fail generically and leave tenant records unchanged. |
@@ -39,7 +39,7 @@ The fixture replaces only provider transports with explicit synthetic responses.
 
 Public health, assets, CORS, generic signup/recovery and idempotent malformed logout have no tenant resource to authorize and may correctly return a neutral 2xx. Valid secret booking/OAuth capabilities and provider signatures are independent authority, not owner credentials; the matrix tests mismatched bindings, not compromise of a global signing secret. The gate does not claim that genuine signed inbound calls for B, holding B's secret bearer capability, or full account credentials should be refused.
 
-Own-tenant reads remain available. Adding B calls cannot change A's owner/staff dashboard counters. Canary identifiers, emails, phone numbers, private strings, booking tokens and widget keys must not appear in foreign response bodies or headers. Existing versus absent resource errors are compared byte for byte.
+Own-tenant reads remain available. Adding B calls cannot change A's owner/staff dashboard counters. Canary identifiers, owner/staff emails, phone numbers, billing identifiers, webhook URLs, password/hash/session secrets, WebSocket close reasons/headers, private strings, booking tokens and widget keys must not appear in foreign response bodies or headers. Existing versus absent resource errors are compared byte for byte. Ordinary A reads without a foreign selector are also checked for B data, so rejecting contradictory selectors cannot mask an unscoped read.
 
 ## Verification checkpoint
 
@@ -57,7 +57,7 @@ Cold Node 22.22.0 `npm ci` and both production builds passed locally. The latest
 
 **Hosted cold verification passed at source/test/CI SHA `552585bcc964e9d4bdf4f35f9a1080c300217f48`.** [CI run 37566309857](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37566309857) completed successfully. It removed all installed dependencies, ran `npm ci`, installed Chromium, built owner/widget assets, ran `npm run test:quote` (**2,267/2,267**, 95 files) and `npm test` (**2,649/2,649**, 137 files). Both suites report **zero failures, cancellations, skips and TODOs**. The production dependency audit found zero vulnerabilities. The 199-test synthetic matrix and added-route/anonymous-router/source guards pass inside both hosted gates.
 
-The pushed code is verified. The final documentation checkpoint changes only this report and `specs/BUILD_STATUS.md`; no application, tests or CI code changes after the tested source SHA. Its own hosted CI run is also checked before delivery.
+The application and CI code are unchanged after that tested source SHA. The final matrix exercises both owner and staff foreign credentials, checks ordinary A reads and WebSocket close reasons/headers, uses B’s current revision for approval attacks, and additionally restricts the public-recovery snapshot exception to `authTokens` only: passwords, sessions and all business/billing rows must still remain identical. The final pushed source/test/CI run is checked independently before delivery; see [latest branch CI](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Afix%2Ftenant-isolation-20261007).
 
 **Unfinished environment constraint:** the same local cold gates remain failed because Chromium cannot start (37 SIGTRAP failures in each suite). Hosted cold execution supplies the complete browser and zero-failure suite evidence. No live tenant/provider validation, main merge or deployment was performed or requested as part of this isolated task.
 

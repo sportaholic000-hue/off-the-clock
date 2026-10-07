@@ -101,7 +101,7 @@ for(const [label,n] of [['A',1],['B',2]]) {
     const receipt=sessions.create(db.prepare('SELECT * FROM users WHERE id=?').get(id));
     auth[role]={token:receipt.token,cookie:(process.env.NODE_ENV==='production'?'__Host-':'')+'otc_refresh_'+receipt.sessionId+'='+receipt.refreshToken};
   }
-  tenants[label]={label,owner,staff,password,email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,hold,delivery,confirmationId,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
+  tenants[label]={label,owner,staff,password,passwordHash,bookRevision:bridge.bookRevision(book),email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,hold,delivery,confirmationId,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
   // Unequal counters catch aggregate leaks that contain no identifying strings.
   if(label==='B')for(let index=0;index<3;index++)db.prepare('INSERT INTO calls(id,ownerId,status,summaryText,createdAt) VALUES(?,?,?,?,?)').run(uuid(800+index),owner,'COMPLETED','PRIVATE_B_EXTRA_CALL',at);
 }

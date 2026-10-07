@@ -9,7 +9,7 @@ Three disclosures fixed: signed CallSid collision returned another tenant's forw
 
 Local evidence: focused **287/287** and refined matrix/integration **238/238**, zero failures/skips (counts overlap). Local cold install/build passed; both local full/strict attempts failed with **37 Chromium SIGTRAP startup failures**, zero skips. No complete local browser gate is claimed; hosted cold execution provides the complete suite evidence.
 
-The final checkpoint changes documentation only after the tested source SHA; its own CI is checked before delivery. No subagents, main merge, deployment, provider writes or live data.
+The final matrix tightens public recovery so only `authTokens` receipts can change; every password/session/business/billing row still has to match its snapshot. Application and CI code are unchanged after the tested source SHA. Final pushed-source CI is checked independently before delivery. No subagents, main merge, deployment, provider writes or live data.
 
 ## Previous checkpoint
 
