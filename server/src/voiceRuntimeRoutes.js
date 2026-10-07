@@ -212,6 +212,7 @@ function safeMessage(value) {
 
 function fallbackTwiml(value, calledNumber) {
   const fallback = isPlainObject(value) ? value : {};
+  if(fallback.mode==='reject')return '<Response><Reject reason="rejected"/></Response>';
   const message = safeMessage(fallback.message);
   if(fallback.mode==='capture') {
     const action=new URL(fallback.action),partial=new URL(fallback.partial);
@@ -303,6 +304,7 @@ export function installVoiceRuntimeRoutes(app, {
   runtimeEnabled = false,
   checkOperatorEligibility,
   checkVoiceCap,
+  checkCaller,
   createSession,
   routeIncoming,
   resolveFallback = async () => ({ mode: "message", message: DEFAULT_FALLBACK_MESSAGE }),
@@ -378,6 +380,10 @@ export function installVoiceRuntimeRoutes(app, {
       context=resolvedContext;
 
       const build = async()=>{
+      if(checkCaller){
+        const decision=await runGate(checkCaller,{context,tenant},'VOICE_CALLER_CHECK_UNAVAILABLE');
+        if(!decision.allowed)return resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:decision.reason});
+      }
       const runtimeDecision =
         typeof runtimeEnabled === "function"
           ? await runGate(runtimeEnabled, { context, tenant }, "VOICE_RUNTIME_DISABLED")
@@ -439,6 +445,7 @@ export function installVoiceRuntimeRoutes(app, {
           expiresAt: issued.expiresAt,
         });
         if(result?.status==='capacity')return resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:'VOICE_CONCURRENCY_LIMIT'});
+        if(result?.status==='denied')return resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:safeReason(result.reason,'VOICE_ADMISSION_UNAVAILABLE')});
         if (!isPlainObject(result) || result.status !== "created") {
           fail("VOICE_SESSION_NOT_PERSISTED");
         }

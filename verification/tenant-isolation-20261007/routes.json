@@ -4,6 +4,10 @@
     "policy": "team"
   },
   {
+    "route": "DELETE /api/call-blocklist",
+    "policy": "owner"
+  },
+  {
     "route": "DELETE /api/integrations/webhook",
     "policy": "owner"
   },
@@ -58,6 +62,10 @@
   {
     "route": "GET /api/calendar/schedule",
     "policy": "team"
+  },
+  {
+    "route": "GET /api/call-blocklist",
+    "policy": "owner"
   },
   {
     "route": "GET /api/calls",
@@ -253,6 +261,14 @@
   },
   {
     "route": "POST /api/business/jurisdiction",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/call-blocklist",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/calls/:id/spam",
     "policy": "owner"
   },
   {

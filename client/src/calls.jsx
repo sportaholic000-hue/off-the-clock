@@ -1,13 +1,16 @@
 import {DeliveryActions} from './deliveryActions.jsx';
 import {OwnerAlerts} from './ownerAlerts.jsx';
 import React,{useEffect,useState} from 'react';
-import {api,go} from './api.js';
+import {api,go,getToken} from './api.js';
+import {sessionClaims} from './sessionIdentity.js';
 import {AppShell,Button,PageHeader,Notice,Loading,ErrorMessage,StatusChip} from './ui.jsx';
 import {QuoteResult} from './quotedone.jsx';
 
 const text=value=>value===null||value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value):String(value);
 
-export function CallFeed({calls}) {
+export function CallFeed({calls,showFiltered=false}) {
+  const filtered=calls.filter(c=>c.spamFiltered);
+  if(!showFiltered&&filtered.length)return <><CallFeed calls={calls.filter(c=>!c.spamFiltered)} showFiltered/><details><summary>Filtered ({filtered.length})</summary><CallFeed calls={filtered} showFiltered/></details></>;
   return <div className="feed-rows">{calls.map(call=><button type="button" className="service-row feed-row" key={call.id} onClick={()=>go('/calls?record='+encodeURIComponent(call.id))}>
     <span className="feed-copy"><span className="mono feed-time">{call.createdAt} · {call.duration===null?'Duration not recorded':call.duration+' sec'}</span>
     <span className="feed-summary">{call.summaryText||call.callerNumber||'Call'}</span></span>
@@ -16,9 +19,35 @@ export function CallFeed({calls}) {
   </button>)}</div>;
 }
 
+export function CallSpamControls({call,onRefresh}){
+  const [busy,setBusy]=useState(false),[error,setError]=useState(null);
+  if(!call.canManageSpam)return null;
+  async function change(){setBusy(true);setError(null);try{
+    if(call.blocked)await api('/api/call-blocklist',{method:'DELETE',body:{phoneNumber:call.callerNumber}});
+    else await api('/api/calls/'+encodeURIComponent(call.id)+'/spam',{method:'POST',body:{}});
+    await onRefresh?.();
+  }catch(e){setError(e);}finally{setBusy(false);}}
+  return <section aria-label="Spam controls"><Button variant="secondary" disabled={busy} onClick={change}>{call.blocked?'Unblock number':'Mark as spam'}</Button><p>{call.blocked?'Future calls from this number are blocked for your business.':'Marking this call as spam excludes its minutes and blocks future calls from this number for your business.'}</p><ErrorMessage error={error}/></section>;
+}
+
+export function CallBlocklist(){
+  const [page,setPage]=useState(null),[phone,setPhone]=useState(''),[error,setError]=useState(null),[busy,setBusy]=useState(false),[offset,setOffset]=useState(0);
+  async function load(next=offset){setPage(await api('/api/call-blocklist?offset='+next));setOffset(next);}
+  useEffect(()=>{let active=true;api('/api/call-blocklist?offset=0').then(p=>{if(active)setPage(p);}).catch(e=>{if(active)setError(e);});return ()=>{active=false;};},[]);
+  async function change(method,number){setBusy(true);setError(null);try{await api('/api/call-blocklist',{method,body:{phoneNumber:number}});setPhone('');await load(0);}catch(e){setError(e);}finally{setBusy(false);}}
+  return <details className="editor-section"><summary>Blocked numbers{page?' ('+page.total+')':''}</summary><ErrorMessage error={error}/>
+    <form onSubmit={e=>{e.preventDefault();void change('POST',phone);}}><label>Phone number<input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} required autoComplete="off"/></label><p>Include the country code, beginning with +.</p><Button type="submit" disabled={busy}>Block number</Button></form>
+    {page?.numbers.map(row=><div className="field-stack" key={row.phoneNumber}><p>{row.phoneNumber}</p><Button variant="secondary" disabled={busy} onClick={()=>change('DELETE',row.phoneNumber)}>Unblock number</Button></div>)}
+    {offset>0&&<Button variant="secondary" onClick={()=>load(Math.max(0,offset-50)).catch(setError)}>Previous blocked numbers</Button>}
+    {page?.nextOffset!==null&&page&&<Button variant="secondary" onClick={()=>load(page.nextOffset).catch(setError)}>Next blocked numbers</Button>}
+  </details>;
+}
+
 export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===true}) {
   return <section className="editor-section" aria-label="Call details">
     <h2>{call.callerNumber||'Call'}</h2><StatusChip status={call.outcome||call.status||'Not recorded'}/>
+    <CallSpamControls call={call} onRefresh={onRefresh}/>
+    {call.failureCode==='VOICE_CALLER_THROTTLED'&&<Notice title="Repeated caller — review requested">The caller reached the daily answering limit. Their request is saved for review.</Notice>}
     <dl><dt>Created</dt><dd>{text(call.createdAt)}</dd><dt>Status</dt><dd>{text(call.status)}</dd>
       <dt>Outcome</dt><dd>{text(call.outcome)}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
       <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{call.failureCode}</dd></>}
@@ -65,6 +94,7 @@ export default function Calls({recordId=null}) {
   },[recordId,offset,refresh]);
   return <AppShell activePath="/calls"><main className="pricebook-page"><PageHeader eyebrow="ACTIVITY" title="Calls"/>
     <Button variant="secondary" onClick={()=>setRefresh(value=>value+1)}>Refresh</Button>
+    {typeof localStorage!=='undefined'&&sessionClaims(getToken())?.role==='owner'&&<CallBlocklist key={refresh}/>}
     {recordId&&<Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>}
     {!error&&!page&&!call&&<Loading label="LOADING CALLS"/>}<ErrorMessage error={error}/>
     {call&&<CallDetail call={call} onRefresh={()=>setRefresh(value=>value+1)}/>} {page&&<><p className="mono band-count">{page.total} calls</p>

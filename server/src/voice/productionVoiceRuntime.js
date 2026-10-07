@@ -1,4 +1,5 @@
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
+import {createVoiceAdmission} from './voiceAdmission.js';
 import {installBillingVoiceRoutes} from '../billingVoiceRoutes.js';
 import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
 import {createVoiceInboundReceipt} from './voiceInboundReceipt.js';
@@ -37,7 +38,8 @@ const iso=clock=>new Date(clock()).toISOString();
 // an environment-selected test module. Tests use real HTTP/WS/SQLite and fake providers.
 export function installProductionVoice({app,database,bookingService,runtimeConfig={},env=process.env,googleClient,twilioClient,WebSocketServerClass=WebSocketServer,clock=()=>new Date(),providers={},onUsage=()=>{},onError=code=>console.error('[voice]',code)}={}){
   if(!app||typeof app.post!=='function'||typeof app.listen!=='function'||!database?.prepare)throw new TypeError('Voice application dependencies are required.');
-  const store=createVoiceSessionStore({database,clock});store.recoverActiveCalls();
+  const admission=createVoiceAdmission({database,clock,env});
+  const store=createVoiceSessionStore({database,clock,admission,maxConcurrentCalls:admission.config.maxOwnerConcurrent});store.recoverActiveCalls();
   const accountSid=String(env.TWILIO_ACCOUNT_SID||''),authToken=String(env.TWILIO_AUTH_TOKEN||''),publicBaseUrl=String(env.PUBLIC_BASE_URL||'');
   let base;try{base=new URL(publicBaseUrl);}catch{}
   const configured=SID.test(accountSid)&&authToken.length>0&&base?.protocol==='https:'&&base.origin===publicBaseUrl.replace(/\/$/,'')&&!base.username&&!base.password&&base.pathname==='/'&&!base.search&&!base.hash;
@@ -54,10 +56,13 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const meter=createBillingVoiceUsage({database,clock,onUsage});
   installBillingVoiceRoutes(app,{validator,meter});
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
-  const fallback=({context})=>{
+  const fallback=({context,reason})=>{
+    if(reason==='VOICE_SPAM_BLOCKED')return {mode:'reject'};
     const state=account(context.ownerId);
     if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
-    return captureChoice(publicBaseUrl);
+    const choice=captureChoice(publicBaseUrl);
+    if(reason==='VOICE_CALLER_THROTTLED')choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";
+    return choice;
   };
   const configuredSecret=env.VOICE_HANDLE_SECRET||env.BOOKING_SLOT_TOKEN_SECRET||env.JWT_SECRET;
   const handleSecret=typeof configuredSecret==='string'&&Buffer.byteLength(configuredSecret)>=32?createHash('sha256').update('voice-handles-v1\0'+configuredSecret).digest():null;
@@ -73,7 +78,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     checkVoiceCap:({context})=>{const state=account(context.ownerId);return trialVoiceCapDecision(state.account,{now:new Date(clock()),minutesUsed:state.minutesUsed});},
     validateCallBinding:store.validateCallBinding,
     validateIncomingCall:store.validateIncomingCall,
-    createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:store.recordFallback,incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
+    checkCaller:admission.checkCaller,createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:store.recordFallback,incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
   });
   const guide=enabled?readFileSync(new URL('../../../specs/voice_quote_flows.md',import.meta.url),'utf8'):null;
   const client=enabled?(googleClient||new GoogleGenAI({apiKey:String(env.GEMINI_API_KEY||'')})):null;
@@ -109,9 +114,11 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     }
     const bridge=createGeminiMediaBridge({
       openGeminiSession:async options=>{
+        const denied=admission.beforeOpen(context);
+        if(denied){store.recordFallback({context,reason:denied});throw Error('Voice admission closed.');}
         meter.start(context,session.callRecordId);
-        const opened=await opener(options);started=new Date(clock()).getTime();
-        try{database.prepare("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
+        let opened;try{opened=await opener(options);}catch(error){if(error.code==='GEMINI_CONNECT_FAILED')admission.failed(context);throw error;}
+        try{admission.connected(context);started=new Date(clock()).getTime();database.prepare("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
         pendingTranscripts.push({transcript,streamSid});flushTranscripts();
@@ -123,6 +130,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
         }
       },
       onSessionEnd:({outcome,streamSid})=>{
+        if(['GEMINI_SESSION_ERROR','GEMINI_SESSION_CLOSED'].includes(outcome.reason))admission.failed(context);
         const duration=started===null?0:Math.max(0,Math.ceil((new Date(clock()).getTime()-started)/1000));
         try{
           flushTranscripts();

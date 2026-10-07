@@ -12,12 +12,13 @@ import Billing from './billing.jsx';
 import Calendar from './calendar.jsx';
 import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
+import VoiceAdmin from './voiceAdmin.jsx';
 
 function AdminShell() {
   return (
     <main className="admin-shell">
       <Brand />
-      <div><Shield size={24} /><p className="eyebrow">ADMIN</p><h1>Platform cockpit</h1><p>Admin surfaces are scheduled for a later phase.</p></div>
+      <div><Shield size={24} /><p className="eyebrow">ADMIN</p><h1>Platform cockpit</h1></div><VoiceAdmin/>
     </main>
   );
 }

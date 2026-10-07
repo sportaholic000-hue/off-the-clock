@@ -162,6 +162,7 @@ export const CREATE_TABLE_STATEMENTS = [
     transportOutcome TEXT,
     urgency TEXT,
     spamFiltered INTEGER NOT NULL DEFAULT 0,
+    voiceAnsweredAt TEXT,
     minutesBilled INTEGER NOT NULL DEFAULT 0,
     aiInputTokens INTEGER NOT NULL DEFAULT 0,
     aiOutputTokens INTEGER NOT NULL DEFAULT 0,
@@ -171,6 +172,21 @@ export const CREATE_TABLE_STATEMENTS = [
     updatedAt TEXT,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS callerBlocklist (
+    ownerId TEXT NOT NULL REFERENCES users(id), phoneNumber TEXT NOT NULL,
+    createdAt TEXT NOT NULL, PRIMARY KEY(ownerId,phoneNumber)
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceCircuitState (
+    id INTEGER PRIMARY KEY CHECK(id=1), openUntil INTEGER NOT NULL DEFAULT 0,
+    probeCallSid TEXT, probeUntil INTEGER NOT NULL DEFAULT 0
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceModelFailures (
+    callKey TEXT PRIMARY KEY, failedAt INTEGER NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS voicePlatformAlerts (
+    eventKey TEXT PRIMARY KEY, code TEXT NOT NULL, detailsJson TEXT NOT NULL,
+    createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL, resolvedAt TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS leads (
     id TEXT PRIMARY KEY,
@@ -530,6 +546,8 @@ export const CREATE_TABLE_STATEMENTS = [
 ];
 
 export const CREATE_INDEX_STATEMENTS = [
+  `CREATE INDEX IF NOT EXISTS calls_owner_admission ON calls(ownerId,createdAt,callerNumber)`,
+  `CREATE INDEX IF NOT EXISTS voice_failures_time ON voiceModelFailures(failedAt)`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_unconsumedExpiry ON calendarOAuthStates(expiresAt) WHERE consumedAt IS NULL`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_ownerCreated ON calendarOAuthStates(ownerId, createdAt DESC)`,
   `CREATE INDEX IF NOT EXISTS billing_event_receipts_owner

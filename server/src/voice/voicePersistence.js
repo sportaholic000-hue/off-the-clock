@@ -118,6 +118,7 @@ export function createVoiceSessionStore({
   database,
   clock = () => new Date(),
   maxConcurrentCalls = 5,
+  admission,
   randomUUID = crypto.randomUUID
 } = {}) {
   if (!database || typeof database.prepare !== 'function' || typeof database.exec !== 'function') {
@@ -184,6 +185,8 @@ export function createVoiceSessionStore({
             SELECT 1 FROM voiceSessionNonces n WHERE n.ownerId=c.ownerId AND n.callSid=c.callSid AND n.expiresAtUtc>?
           )))`).get(context.ownerId,nowIso()).n;
         if(active>=maxConcurrentCalls)return {status:'capacity'};
+        const denied=admission?.reserve(context);
+        if(denied)return {status:'denied',reason:denied};
         const id = randomUUID();
         const createdAt = nowIso();
         database.prepare(`INSERT INTO calls (
@@ -222,6 +225,16 @@ export function createVoiceSessionStore({
       return immediate(database, () => {
         const existing = database.prepare('SELECT * FROM calls WHERE callSid = ?').get(context.callSid);
         const at = nowIso();
+        if(safeReason==='VOICE_SPAM_BLOCKED'){
+          if(existing){
+            if(existing.ownerId!==context.ownerId||existing.accountSid!==context.accountSid||existing.callerNumber!==context.from||existing.destinationNumber!==context.to)throw callBindingMismatch();
+            database.prepare("UPDATE calls SET spamFiltered=1,minutesBilled=0,status='COMPLETED',outcome='SPAM_FILTERED',failureCode=?,completedAt=COALESCE(completedAt,?),updatedAt=? WHERE ownerId=? AND id=?").run(safeReason,at,at,context.ownerId,existing.id);
+            return {callRecordId:existing.id};
+          }
+          const id=randomUUID();
+          database.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,outcome,spamFiltered,minutesBilled,failureCode,completedAt,createdAt,updatedAt) VALUES(?,?,?,?,?,?,'COMPLETED','SPAM_FILTERED',1,0,?,?,?,?)").run(id,context.ownerId,context.callSid,context.accountSid,context.from,context.to,safeReason,at,at,at);
+          return {callRecordId:id};
+        }
         if (existing) {
           if (existing.ownerId !== context.ownerId || existing.accountSid !== context.accountSid ||
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
@@ -233,6 +246,7 @@ export function createVoiceSessionStore({
             completedAt = NULL, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
             safeReason, safeReason, at, existing.id, context.ownerId
           );
+          admission?.fallback(context,existing.id,safeReason);
           return { callRecordId: existing.id };
         }
         const id = randomUUID();
@@ -245,6 +259,7 @@ export function createVoiceSessionStore({
           context.to, safeReason, safeReason, at, at
         );
         preserve(context,boundCall(context),safeReason,at);
+        admission?.fallback(context,id,safeReason);
         return { callRecordId: id };
       });
     },

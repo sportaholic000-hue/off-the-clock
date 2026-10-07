@@ -1,4 +1,5 @@
 import {callDeliveryActions} from './voiceDeliveryViews.js';
+import {customerPhone} from './customerIdentityService.js';
 import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
@@ -13,7 +14,7 @@ function transcript(value) {
   } catch { return null; }
 }
 
-export function createOwnerCallService({ownerQuery}) {
+export function createOwnerCallService({ownerQuery,database}) {
   if(typeof ownerQuery!=='function')throw new TypeError('Call reads require tenant-scoped queries.');
   function list({ownerId,query={},limit=50}) {
     if(Object.keys(query).some(key=>key!=='offset'))throw invalid('Unsupported call filter.');
@@ -62,7 +63,9 @@ export function createOwnerCallService({ownerQuery}) {
       .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
     const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
-    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
+    const phone=customerPhone(call.callerNumber);
+    const blocked=!!phone&&!!ownerQuery('SELECT 1 FROM callerBlocklist WHERE ownerId=? AND phoneNumber=?').get(ownerId,phone);
+    return {...call,blocked,canManageSpam:role==='owner'&&!!phone,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
 
   function dashboard(ownerId) {
@@ -76,7 +79,33 @@ export function createOwnerCallService({ownerQuery}) {
     const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status<>'ACCEPTED'").get(ownerId).n;
     return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5}),notifications,unresolvedNotifications,emailAlertsConfigured:ownerAlertEmailReady()};
   }
-  return {list,detail,dashboard};
+  function blocklist({ownerId,query={}}){
+    if(Object.keys(query).some(k=>k!=='offset')||!/^\d{1,8}$/.test(query.offset??'0'))throw invalid('Unsupported blocklist page.');
+    const offset=Number(query.offset||0),numbers=ownerQuery('SELECT phoneNumber,createdAt FROM callerBlocklist WHERE ownerId=? ORDER BY createdAt DESC,phoneNumber LIMIT 50 OFFSET ?').all(ownerId,offset);
+    const total=ownerQuery('SELECT COUNT(*) n FROM callerBlocklist WHERE ownerId=?').get(ownerId).n;
+    return {numbers,total,nextOffset:offset+numbers.length<total?offset+numbers.length:null};
+  }
+  function block({ownerId,phoneNumber}){
+    const phone=customerPhone(phoneNumber);if(!phone)throw invalid('Enter an international phone number beginning with +.');
+    ownerQuery('INSERT OR IGNORE INTO callerBlocklist(ownerId,phoneNumber,createdAt) VALUES(?,?,?)').run(ownerId,phone,new Date().toISOString());
+    return {phoneNumber:phone,blocked:true};
+  }
+  function unblock({ownerId,phoneNumber}){
+    const phone=customerPhone(phoneNumber);if(!phone)throw invalid('Enter an international phone number beginning with +.');
+    ownerQuery('DELETE FROM callerBlocklist WHERE ownerId=? AND phoneNumber=?').run(ownerId,phone);
+    return {phoneNumber:phone,blocked:false};
+  }
+  function markSpam({ownerId,id}){
+    if(!database)throw new TypeError('Spam changes require transactional storage.');
+    return database.transaction(()=>{
+      const call=ownerQuery('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(ownerId,id);
+      if(!call)throw invalid('Call not found.',404);
+      const result=block({ownerId,phoneNumber:call.callerNumber});
+      ownerQuery('UPDATE calls SET spamFiltered=1,minutesBilled=0 WHERE ownerId=? AND id=?').run(ownerId,id);
+      return result;
+    }).immediate();
+  }
+  return {list,detail,dashboard,blocklist,block,unblock,markSpam};
 }
 
 function transcriptWindows(value) {

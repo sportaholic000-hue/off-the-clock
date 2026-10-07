@@ -34,7 +34,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,stor
       // A received request is committed before returning any Dial or Hangup.
       const number=database.prepare('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.existingPhoneNumber;
       store.finishCall({context,status:'COMPLETED',reason:'FALLBACK_REQUEST_CAPTURED'});
-      const dial=isPhoneNumber(number)&&number!==context.to?'<Dial answerOnBridge="true" timeout="20"><Number>'+xml(number)+'</Number></Dial>':'';
+      const dial=call.failureCode!=='VOICE_CALLER_THROTTLED'&&isPhoneNumber(number)&&number!==context.to?'<Dial answerOnBridge="true" timeout="20"><Number>'+xml(number)+'</Number></Dial>':'';
       return res.type('text/xml').send('<Response><Say>Thank you. The business will follow up.</Say>'+dial+'<Hangup/></Response>');
     }catch{return res.status(503).send('Request capture unavailable; retry this callback.');}
   });

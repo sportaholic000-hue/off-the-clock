@@ -20,6 +20,10 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
   const iso=()=>new Date(clock()).toISOString();
   function source(row){
     const id=row.aggregateId,owner=row.ownerId;
+    if(row.eventType==='voice.caller_throttled'){
+      const call=query('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
+      return ['Repeated caller — review requested',call.callerNumber,'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
+    }
     if(row.eventType==='lead.created'){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};

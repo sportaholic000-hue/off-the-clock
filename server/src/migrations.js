@@ -33,6 +33,7 @@ const ADDITIVE_COLUMNS = {
     bookingTokenReceipt: 'TEXT'
   },
   calls: {
+    voiceAnsweredAt: 'TEXT',
     transportOutcome: 'TEXT',
     accountSid: 'TEXT',
     streamSid: 'TEXT',

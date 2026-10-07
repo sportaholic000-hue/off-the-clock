@@ -32,5 +32,5 @@ export function ownerCallFixture(filename=':memory:') {
   db.prepare('INSERT INTO appointments(id,ownerId,quoteId,status,createdAt) VALUES(?,?,?,?,?)').run('wrong-source-booking','synthetic-a','synthetic-b-quote','CONFIRMED',at);
   db.prepare('INSERT INTO appointments(id,ownerId,bookingIntentId,status,createdAt) VALUES(?,?,?,?,?)').run('wrong-intent-booking','synthetic-a','synthetic-b-intent','CONFIRMED',at);
   const ownerQuery=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Unscoped query');return db.prepare(sql);};
-  return {db,service:createOwnerCallService({ownerQuery})};
+  return {db,service:createOwnerCallService({ownerQuery,database:db})};
 }

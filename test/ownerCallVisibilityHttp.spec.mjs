@@ -27,6 +27,17 @@ test('real application dashboard and record routes show persisted synthetic call
     await t.test('Quotes view reads the voice receipt and includes its call link',async()=>{const {status,body}=await request('/api/quotes');assert.equal(status,200);assert.equal(body.quotes.length,1);assert.equal(body.quotes[0].callId,'synthetic-a-call');assert.equal(body.quotes[0].result.lowEstimate,221.23);assert.doesNotMatch(JSON.stringify(body),/synthetic-b/);});
     await t.test('Leads view reads captured voice contact and review inputs',async()=>{const {status,body}=await request('/api/leads');assert.equal(status,200);assert.equal(body.leads.find(row=>row.id==='synthetic-a-lead').contact.email,'synthetic-a@example.invalid');assert.equal(body.leads.find(row=>row.id==='synthetic-a-review').customerInputs.height,4);assert.doesNotMatch(JSON.stringify(body),/synthetic-b/);});
     await t.test('staff sees only its parent tenant and no owner calculation evidence',async()=>{const {status,body}=await request('/api/calls/synthetic-a-call','synthetic-staff');assert.equal(status,200);assert.equal(body.quotes[0].internal,undefined);assert.equal(body.leads[0].internal,undefined);assert.equal((await request('/api/calls/synthetic-b-call','synthetic-staff')).status,404);});
+    await t.test('owner spam controls work through the real authenticated application',async()=>{
+      const mutate=async(route,method,body,owner='synthetic-a')=>fetch('http://127.0.0.1:'+port+route,{method,headers:{authorization:'Bearer '+tokens[owner],'content-type':'application/json'},body:JSON.stringify(body)});
+      assert.equal((await mutate('/api/calls/synthetic-a-call/spam','POST',{})).status,200);
+      assert.equal((await request('/api/calls/synthetic-a-call')).body.blocked,true);
+      assert.equal((await request('/api/call-blocklist')).body.total,1);
+      assert.equal((await request('/api/call-blocklist','synthetic-b')).body.total,0);
+      assert.equal((await mutate('/api/call-blocklist','DELETE',{phoneNumber:'+19025550100'},'synthetic-staff')).status,403);
+      assert.equal((await mutate('/api/call-blocklist','DELETE',{phoneNumber:'+19025550100'})).status,200);
+      assert.equal((await request('/api/calls/synthetic-a-call')).body.blocked,false);
+      assert.equal((await request('/api/dashboard')).body.callActivity.counts.answered,0);
+    });
   } finally {
     if(child.exitCode===null){child.kill('SIGTERM');await Promise.race([once(child,'exit'),new Promise(resolve=>{const timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},5000);timer.unref();})]);}
     rmSync(directory,{recursive:true,force:true});

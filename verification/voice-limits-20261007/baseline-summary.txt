@@ -1,0 +1,24 @@
+not ok 1 - repeat callers A: six persisted answered calls route the next signed inbound to capture
+not ok 2 - repeat callers B: repeated real signed HTTP/WebSocket sessions exhaust the allowance
+not ok 3 - spam controls A: owner can mark a stored call and retain its number in the blocklist
+not ok 4 - spam controls B: the actual call component exposes the owner spam action
+    not ok 1 - DEMO_SESSIONS_PER_IP_PER_HOUR
+    not ok 2 - DEMO_DAILY_SESSION_CAP
+    not ok 3 - DEMO_MAX_CONCURRENT
+not ok 5 - demo admission A: one HTTP server cannot race any ceiling
+    not ok 1 - DEMO_SESSIONS_PER_IP_PER_HOUR
+    not ok 2 - DEMO_DAILY_SESSION_CAP
+    not ok 3 - DEMO_MAX_CONCURRENT
+not ok 6 - demo admission B: separate database connections cannot race any ceiling
+not ok 7 - demo facts A: generated instructions match the current owner ruling
+not ok 8 - demo facts B: the token provider receives those same corrected locked instructions
+not ok 9 - platform ceiling A: configured capacity applies across owners
+not ok 10 - platform ceiling B: simultaneous signed inbound requests share the same reservation limit
+not ok 11 - circuit breaker A: repeated model-open failures stop subsequent model admissions
+not ok 12 - circuit breaker B: repeated mid-call provider failures stop subsequent model admissions
+# tests 18
+# pass 0
+# fail 18
+# cancelled 0
+# skipped 0
+# todo 0

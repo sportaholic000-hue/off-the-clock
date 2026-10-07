@@ -68,6 +68,15 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
   const countSince = db.prepare('SELECT COUNT(*) AS n FROM demoSessions WHERE createdAt > ?');
   const insert = db.prepare('INSERT INTO demoSessions (id, ipKey, agent, createdAt) VALUES (?, ?, ?, ?)');
   const prune = db.prepare('DELETE FROM demoSessions WHERE createdAt < ?');
+  // Reserve before any await. BEGIN IMMEDIATE serializes independent processes
+  // using the same database, including requests still waiting on token minting.
+  const reserve=db.transaction((id,ipKey,agent,t)=>{
+    prune.run(t-2*86400000);
+    if(countIp.get(ipKey,t-3600000).n>=config.perIpPerHour)return 'hourly';
+    if(countSince.get(t-86400000).n>=config.dailyCap)return 'daily';
+    if(countSince.get(t-(config.sessionSeconds+30)*1000).n>=config.maxConcurrent)return 'busy';
+    insert.run(id,ipKey,agent,t);return null;
+  });
   const origins = new Set(config.origins);
   const cors = (req, res) => { const o = req.headers.origin; if (o && origins.has(o)) { res.set('Access-Control-Allow-Origin', o); res.set('Vary', 'Origin'); } return Boolean(o && origins.has(o)); };
   const fail = (res, status, code) => res.status(status).json({ error: code, message: DEMO_MESSAGES[code] });
@@ -92,11 +101,9 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
     if (body.voice !== undefined && (body.agent !== 'miles' || !MILES_AUDITION_VOICES.includes(body.voice))) return fail(res, 400, 'invalid');
     const voice = body.voice || config.agents[body.agent].voice;
     const t = now();
-    prune.run(t - 2 * 86400000);
     const ipKey = crypto.createHash('sha256').update(config.salt + '|' + clientIp(req)).digest('hex');
-    if (countIp.get(ipKey, t - 3600000).n >= config.perIpPerHour) return fail(res, 429, 'hourly');
-    if (countSince.get(t - 86400000).n >= config.dailyCap) return fail(res, 429, 'daily');
-    if (countSince.get(t - (config.sessionSeconds + 30) * 1000).n >= config.maxConcurrent) return fail(res, 429, 'busy');
+    const reservation=crypto.randomUUID(),denied=reserve.immediate(reservation,ipKey,body.agent,t);
+    if(denied)return fail(res,429,denied);
     const expireMs = t + (config.sessionSeconds + 30) * 1000;
     let minted;
     try {
@@ -106,10 +113,14 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
         signal: AbortSignal.timeout(10000),
       });
       const j = await r.json().catch(() => null);
-      if (!r.ok || typeof j?.name !== 'string' || !j.name) return fail(res, 502, 'provider');
+      if (!r.ok || typeof j?.name !== 'string' || !j.name) {
+        // Explicit provider refusal is safe to release. An ambiguous timeout or
+        // malformed success retains its short-lived reservation conservatively.
+        if(!r.ok)db.prepare('DELETE FROM demoSessions WHERE id=?').run(reservation);
+        return fail(res, 502, 'provider');
+      }
       minted = j.name;
     } catch { return fail(res, 502, 'provider'); }
-    insert.run(crypto.randomUUID(), ipKey, body.agent, t);
     return res.json({ token: minted, model: config.model, agent: { key: body.agent, name: config.agents[body.agent].name, ...(config.audition ? { voice } : {}) }, sessionSeconds: config.sessionSeconds, expiresAt: new Date(expireMs).toISOString() });
   });
   app.use('/api/demo/session', (err, req, res, next) => { if (res.headersSent) return next(err); res.set('Cache-Control', 'no-store'); cors(req, res); return fail(res, 400, 'invalid'); });

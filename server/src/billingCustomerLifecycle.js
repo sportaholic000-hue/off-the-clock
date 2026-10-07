@@ -90,7 +90,7 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
   query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
 }
 
-const DATA_TABLES=['callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
+const DATA_TABLES=['callerBlocklist','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
   'appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
   'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
   'billingVoiceUsage','webhookDeliveries','leads','quoteRequests','quotes','calls','customers'];
@@ -238,6 +238,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         scopeHash:createHash('sha256').update(`${prefix}${ownerId}\0${call.callSid}`,'utf8').digest('hex')});
     }
     for(const table of DATA_TABLES)query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
+    query("DELETE FROM voicePlatformAlerts WHERE json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
     query("DELETE FROM outboxEvents WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
     query("DELETE FROM events WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
     query("UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
