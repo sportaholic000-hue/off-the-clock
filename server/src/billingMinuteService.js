@@ -20,7 +20,10 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
     for(const row of rows){
       if(!Number.isSafeInteger(row.minutesBilled)||row.minutesBilled<0)throw Error('Invalid stored minute count.');
       minutes+=row.minutesBilled;
-      const verified=row.usageKind==='paid'&&row.completedAt&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
+      // A signed receipt can precede subscription-period metadata. Membership
+      // in this verified paid period reconciles that formerly unknown kind;
+      // explicit trial usage is excluded by the query and cannot be rebilled.
+      const verified=['paid','unknown'].includes(row.usageKind)&&row.completedAt&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
         Number.isSafeInteger(row.providerDurationSeconds)&&row.providerDurationSeconds>=0&&Math.ceil(row.providerDurationSeconds/60)===row.minutesBilled;
       if(!verified)pending++;else confirmedMinutes+=row.minutesBilled;
       proof.push([row.id,row.providerDigest,row.providerDurationSeconds,row.minutesBilled]);

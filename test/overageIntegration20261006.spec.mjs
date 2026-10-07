@@ -8,6 +8,11 @@ import {createOwnerEmailProvider} from '../server/src/ownerEmailDelivery.js';
 import {harness,httpHarness} from './billingCoreRepair20261006.helpers.mjs';
 
 const END=monthlyAnniversary(START,1);
+test('a delayed verified paid period reconciles an already signed 301-minute call to $0.35',async t=>{
+  const h=fixture(t);h.subscription(A,{current_period_start:null,current_period_end:null});h.paid();h.call(301*60);
+  assert.equal(h.db.prepare('SELECT usageKind FROM billingVoiceUsage WHERE ownerId=?').get(A).usageKind,'unknown');
+  h.subscription();assert.equal(h.service.snapshot(A).unconfirmedCalls,0);h.setTime(END);await h.service.processOwner(A);assert.equal([...h.fakes.items.values()][0].amount,35);
+});
 test('provisional duration cannot send a false threshold warning or savings claim',t=>{
   const h=fixture(t);h.activate();h.call(239*60);const uncertain=h.call(0,{localSeconds:61,provider:false});
   assert.equal(h.service.snapshot(A).warnings.length,0);h.meter.providerComplete(uncertain.receipt);assert.equal(h.service.snapshot(A).minutesUsed,239);assert.equal(h.service.snapshot(A).minutesLeft,61);
