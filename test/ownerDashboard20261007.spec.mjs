@@ -8,11 +8,10 @@ import {createOwnerReportService,savedQuoteValue} from '../server/src/ownerRepor
 import {localReportRange} from '../server/src/ownerReportTime.js';
 import {createOwnerAlertService} from '../server/src/ownerAlertService.js';
 import {migrateDatabase} from '../server/src/migrations.js';
-import {disabledCallerMessageProvider,ownerOnlyVoiceTools,CALLER_COMMUNICATION_RULE} from '../server/src/callerCommunicationPolicy.js';
-import {getVoiceToolDeclarations} from '../server/src/voice/toolSchemas.js';
+import {getVoiceToolDeclarations,validateVoiceToolCall} from '../server/src/voice/toolSchemas.js';
 import {fixture as voiceFixture,secret as voiceSecret} from './leadCaptureRepair20261006Fixture.mjs';
 import {createVoiceToolRuntime} from '../server/src/voice/voiceToolRuntime.js';
-import {createVoiceSmsService} from '../server/src/voiceSmsService.js';
+import {existsSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
@@ -168,17 +167,20 @@ test('confirmed booking transaction rolls back when durable owner alert cannot b
   assert.throws(()=>f.db.prepare("UPDATE appointments SET status='CONFIRMED' WHERE ownerId=? AND id=?").run(owner,owner+'-lead-booking'),/SYNTHETIC_ALERT_FAILURE/);
   assert.equal(f.db.prepare('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(owner,owner+'-lead-booking').status,'PENDING_CONFIRMATION');
 });
-test('production policy exposes no SMS tool and the disabled provider cannot send even with credentials',async()=>{
-  assert.ok(getVoiceToolDeclarations().some(tool=>tool.name==='sendSms'));assert.equal(ownerOnlyVoiceTools(getVoiceToolDeclarations()).some(tool=>tool.name==='sendSms'),false);
-  const provider=disabledCallerMessageProvider();assert.equal(provider.ready(),false);await assert.rejects(provider.send({}),{code:'CALLER_MESSAGES_DISABLED'});assert.match(CALLER_COMMUNICATION_RULE,/No caller messaging tool/);
+test('production policy exposes no SMS tool and no provider exists to send even with credentials',async()=>{
+  assert.equal(getVoiceToolDeclarations().some(tool=>tool.name==='sendSms'),false);
+  for(const template of ['quote','booking','callback','reminder'])assert.throws(()=>validateVoiceToolCall('sendSms',{template,recordHandle:'a'.repeat(40)}),{code:'UNKNOWN_VOICE_TOOL'});
+  for(const file of ['voiceSmsService.js','voiceSmsProvider.js'])assert.equal(existsSync(new URL('../server/src/'+file,import.meta.url)),false);
 });
-test('caller message policy rejects an attempted tool and blocks old queued work without calling a provider',async t=>{
+test('caller message policy rejects an attempted tool and cancels old queued work without calling a provider',async t=>{
   const f=voiceFixture(t),context=f.context();let attempts=0;
-  const runtime=createVoiceToolRuntime({database:f.db,callContext:context,handleSecret:voiceSecret,providers:{callerMessagesEnabled:false,sendSms:async()=>{attempts++;throw Error('MUST_NOT_SEND');}}});
-  assert.equal((await runtime.handlers.sendSms({context,args:{template:'callback',recordHandle:'synthetic-invalid-handle'}})).status,'unavailable');assert.equal(attempts,0);
-  const queue=createVoiceSmsService({database:f.db,provider:{...disabledCallerMessageProvider(),send:async()=>{attempts++;throw Error('MUST_NOT_SEND');}}});
-  queue.enqueue({ownerId:context.ownerId,id:'synthetic-queued-sms',callSid:context.callSid,recordType:'lead',recordId:'synthetic-lead',request:{accountSid:context.accountSid,to:context.from,from:context.to,body:'[SYNTHETIC] Old queued caller text'}});
-  await queue.processOne(context.ownerId,'synthetic-queued-sms');assert.equal(attempts,0);assert.equal(queue.state(context.ownerId,'synthetic-queued-sms').lastErrorCode,'CALLER_MESSAGES_DISABLED');
+  const runtime=createVoiceToolRuntime({database:f.db,callContext:context,handleSecret:voiceSecret,providers:{sendSms:async()=>{attempts++;throw Error('MUST_NOT_SEND');}}});
+  assert.equal(runtime.handlers.sendSms,undefined);assert.equal(attempts,0);
+  f.db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES('synthetic-queued-sms',?,'voice.sms_requested','synthetic-lead',?,'PENDING',?,?)").run(context.ownerId,JSON.stringify({callSid:context.callSid,recordType:'lead'}),at,at);
+  migrateDatabase(f.db);
+  assert.equal(attempts,0);
+  const row=f.db.prepare('SELECT status,lastErrorCode FROM voiceSmsDeliveries WHERE ownerId=? AND id=?').get(context.ownerId,'synthetic-queued-sms');
+  assert.deepEqual(row,{status:'CANCELLED',lastErrorCode:'CHANNEL_REMOVED'});
 });
 test('owner report, filters and action UI render actual saved data, qualified money and safe transcripts',async t=>{
   const f=fixture(t);setQuote(f,owner+'-quote');action(f,'leads',owner+'-lead',{action:'CALL_BACK'});

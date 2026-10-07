@@ -50,7 +50,7 @@ The baseline log is retained as `before.tap.gz`.
   discounting, unit conversion or other arithmetic.
 
 The owner's requested behavior and the narrow same-host CSS transport amendment
-are recorded in `specs/ENGINE_LEFTOVERS_20261007.md`. Engine formulas and the
+are recorded in [the preserved branch evidence](../release-seven-branches-20261007/ENGINE_LEFTOVERS_20261007.md). Engine formulas and the
 immutable voice guide are unchanged. CI's existing push allowlist now includes
 the requested branch; no test, browser gate or failure checker is disabled.
 

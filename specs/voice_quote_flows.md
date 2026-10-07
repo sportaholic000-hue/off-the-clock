@@ -9,10 +9,6 @@
 =======================================================
 GLOBAL CONVERSATION RULES (apply to every flow)
 =======================================================
-Owner ruling 2026-10-07: no caller texts, email confirmations, calendar
-invitations or reminders. Save requests for owner follow-up. Confirm a booking
-verbally only after the booking tool confirms it. Historical SMS examples below
-are superseded by this ruling. Owner email alerts remain enabled.
 Callback and quote deadlines: promise a time only when the owner has explicitly
 set that deadline in saved business policies. Otherwise say the business will
 follow up, with no time. Never supply a default deadline (owner ruling 2026-10-06).

@@ -1,0 +1,69 @@
+[
+  {
+    "step": 3,
+    "sha": "87ce8b7",
+    "files": [
+      ".github/workflows/ci.yml",
+      "server/src/voice/toolDispatcher.js",
+      "server/src/voice/toolSchemas.js",
+      "server/src/voice/voicePromptCompiler.js",
+      "server/src/voice/voiceQuotePresentation.js",
+      "server/src/voice/voiceToolRuntime.js"
+    ]
+  },
+  {
+    "step": 4,
+    "sha": "4891365",
+    "files": [
+      ".github/workflows/ci.yml",
+      "client/src/deliveryActions.jsx",
+      "server/src/ownerAlertService.js",
+      "server/src/voice/voicePromptCompiler.js",
+      "specs/BUILD_STATUS.md",
+      "verification/tenant-isolation-20261007/route-sources.json"
+    ]
+  },
+  {
+    "step": 5,
+    "sha": "5a2a80f",
+    "files": [
+      ".github/workflows/ci.yml",
+      "client/src/calls.jsx",
+      "server/src/billingCustomerLifecycle.js",
+      "server/src/demo/demoInstructions.js",
+      "server/src/ownerAlertService.js",
+      "server/src/ownerCallService.js",
+      "server/src/server.js",
+      "server/src/voice/productionVoiceRuntime.js",
+      "verification/tenant-isolation-20261007/route-sources.json"
+    ]
+  },
+  {
+    "step": 6,
+    "sha": "d699f4c",
+    "files": [
+      ".github/workflows/ci.yml",
+      "client/src/calls.jsx",
+      "client/src/ownerAlerts.jsx",
+      "server/src/ownerAlertService.js",
+      "server/src/ownerCallService.js",
+      "server/src/server.js",
+      "server/src/voice/productionVoiceRuntime.js",
+      "server/src/voice/voiceToolRuntime.js",
+      "server/src/voiceSmsService.js",
+      "specs/BUILD_STATUS.md",
+      "test/voiceLifecycle20261006.spec.mjs",
+      "verification/tenant-isolation-20261007/route-sources.json"
+    ]
+  },
+  {
+    "step": 7,
+    "sha": "ad951a4",
+    "files": [
+      ".github/workflows/ci.yml",
+      "server/src/server.js",
+      "specs/BUILD_STATUS.md",
+      "verification/tenant-isolation-20261007/route-sources.json"
+    ]
+  }
+]

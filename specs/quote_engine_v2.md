@@ -448,11 +448,7 @@ STEP 9 — RANGE AND CUSTOMER DISPLAY (active QuoteDone/VNext)
     TAX_MATERIALS retains the configured category taxability and markup
     allocation. The minimum adjustment contributes no taxable amount.
 
-    Minimum-bound standard quote (October 3 owner amendment):
-      When M > 0 and T equals F, lowCents = midCents = highCents = T.
-      Publish one exact price including applicable tax, regardless of B.
-
-    Otherwise, for a positive, valid total:
+    For a positive, valid total:
       midCents  = T
       lowCents  = min(T, max(roundCent(T * (1 - B / 100)), F, 1))
       highCents = max(roundCent(T * (1 + B / 100)), T, lowCents, 1)
@@ -467,8 +463,6 @@ STEP 9 — RANGE AND CUSTOMER DISPLAY (active QuoteDone/VNext)
     Apply the same customer-display rules and minimum/integrity checks.
 
   CUSTOMER DISPLAY, independently for each valid option:
-    - A minimum-bound standard quote keeps its exact cents and displays
-      one amount, under the October 3 owner amendment.
     - A standard quote with B = 0 and equal endpoints keeps its exact
       cents for all three displayed amounts.
     - Otherwise, round the low DOWN to a whole dollar, the high UP to
@@ -491,9 +485,9 @@ STEP 9 — RANGE AND CUSTOMER DISPLAY (active QuoteDone/VNext)
       Internal range is 9,044 / 10,049 / 11,054 cents.
     T=$100.49, B=0%, no minimum:        $100.49 / $100.49 / $100.49
     $100 before minimum, M=$402.50, B=10%:
-      TAX_NONE:                       $402.50 (one exact price)
-      TAX_MATERIALS, $10 actual tax:   $412.50 (one exact price)
-      TAX_ALL, taxPercent=10:          $442.75 (one exact price)
+      TAX_NONE:                       $402.50 / $402.50 / $442.75
+      TAX_MATERIALS, $10 actual tax:   $412.50 / $412.50 / $453.75
+      TAX_ALL, taxPercent=10:          $442.75 / $442.75 / $487.03
     T=$0.49, B=10%, no minimum:        $0.44 / $0.49 / $0.54
     Custom final scenarios $100.49 / $150.50 / $200.51, no minimum:
                                       $100 / $151 / $201

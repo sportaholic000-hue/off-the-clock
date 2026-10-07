@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import http from 'node:http';
 import {flooring} from '../verification/engine-independent/fixtures.mjs';
 import {savedDisplayFixture} from './quoteDisplayFixtures20261006.mjs';
-import {smsFixture} from './ownerAlertsDelivery20261006Fixture.mjs';
+import {quoteEmailFixture} from './quoteEmailFixture.mjs';
 import {fixture,at,secret} from './leadCaptureRepair20261006Fixture.mjs';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from '../server/src/voice/voiceQuoteContract.js';
 import {createVoiceToolRuntime} from '../server/src/voice/voiceToolRuntime.js';
@@ -35,7 +35,7 @@ test('leftovers scope: resolved phone question identifies selected laminate, not
  assert.match(q.label,/laminate foam/);assert.doesNotMatch(q.label,/hardwood plywood/);
 });
 test('leftovers scope: approved phone calculation refuses an unbound scope boolean',async t=>{
- const h=smsFixture(t),f=laminate();delete f.ownerPricing.origin;
+ const h=quoteEmailFixture(t),f=laminate();delete f.ownerPricing.origin;
  savePricebook(h.c.ownerId,{services:[f.ownerPricing],defaults:{...f.businessDefaults,currency:'CAD'}});
  const book=loadPricebook(h.c.ownerId);approveApplicationService(h.c.ownerId,book.services[0].id,{revision:bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true},{timeZone:'UTC',quoteInstant:at});
  const runtime=createVoiceToolRuntime({database:h.db,callContext:h.c,handleSecret:secret,clock:()=>new Date(at)});

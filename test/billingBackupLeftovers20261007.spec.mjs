@@ -111,3 +111,16 @@ test('a number-release deadline is processed while that owner’s billing lease 
     assert.equal(f.writes.release.length,1);assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
   }finally{finish();await first;if(second)await second;}
 });
+
+test('integrated day-90 cleanup erases owner workflow evidence without touching another tenant',async t=>{
+  const f=await setup(t);
+  for(const id of [A,B]){
+    f.db.prepare("INSERT INTO ownerRecordWorkflows(ownerId,kind,recordId,note,updatedAt) VALUES(?,'leads',?,'[SYNTHETIC] Private callback detail',?)").run(id,'SYNTHETIC-lead-'+id,START);
+    f.db.prepare("INSERT INTO ownerRecordEvents(id,ownerId,kind,recordId,idempotencyKey,requestJson,action,actorId,payloadJson,responseJson,createdAt) VALUES(?,?,'leads',?,'SYNTHETIC','{}','CALL_BACK',?,'{}','{}',?)").run('SYNTHETIC-event-'+id,id,'SYNTHETIC-lead-'+id,id,START);
+  }
+  f.setTime(DELETE);f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] outage');};await f.lifecycle.tick();
+  for(const table of ['ownerRecordWorkflows','ownerRecordEvents']){
+    assert.equal(f.db.prepare('SELECT COUNT(*) n FROM '+table+' WHERE ownerId=?').get(A).n,0);
+    assert.equal(f.db.prepare('SELECT COUNT(*) n FROM '+table+' WHERE ownerId=?').get(B).n,1);
+  }
+});

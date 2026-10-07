@@ -56,4 +56,4 @@ repairs. No engine formula, main merge, deployment or live data is authorized.
 
 All verification uses synthetic data and temporary storage. Dollar expectations
 were written before execution in
-[`verification/engine-leftovers/EXPECTATIONS.md`](../verification/engine-leftovers/EXPECTATIONS.md).
+[`verification/engine-leftovers/EXPECTATIONS.md`](../engine-leftovers/EXPECTATIONS.md).

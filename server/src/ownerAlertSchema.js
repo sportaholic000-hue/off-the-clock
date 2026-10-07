@@ -57,7 +57,10 @@ export function installOwnerAlertSchema(db) {
       ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('quote','quotes','quote.created');
   trigger('quote_request','quoteRequests','quote.requested');
-  for(const type of ['appointment.booked','appointment.changed']){
+  // Confirmation is snapshotted on the appointment transaction above.
+  // Remove the older outbox trigger so one booking cannot email the owner twice.
+  db.exec('DROP TRIGGER IF EXISTS owner_alert_appointment_booked');
+  for(const type of ['appointment.changed']){
     trigger(type.replace('.','_'),'outboxEvents',type,{when:`NEW.eventType='${type}'`,call:`(SELECT COALESCE(l.callId,q.callId) FROM appointments a JOIN bookingIntents i ON i.ownerId=a.ownerId AND i.id=a.bookingIntentId LEFT JOIN leads l ON l.ownerId=i.ownerId AND l.id=i.sourceId AND i.sourceType='lead' LEFT JOIN quotes q ON q.ownerId=i.ownerId AND q.id=i.sourceId AND i.sourceType='quote' WHERE a.ownerId=NEW.ownerId AND a.id=NEW.aggregateId)`});
   }
   trigger('callback','callbackRequests','callback.requested');

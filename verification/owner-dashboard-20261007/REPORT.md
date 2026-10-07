@@ -5,7 +5,7 @@ Pinned base verified: `codex/audit-small-repairs-20261007` at
 No subagents, deployments, merges, real calendars, real email or caller messages
 were used for this work. All reproductions use temporary/in-memory synthetic
 databases and injected fake providers. The governing amendment is
-`specs/OWNER_DASHBOARD_20261007.md`.
+[the preserved branch evidence](../release-seven-branches-20261007/OWNER_DASHBOARD_20261007.md).
 
 ## Before edits: source and execution
 
