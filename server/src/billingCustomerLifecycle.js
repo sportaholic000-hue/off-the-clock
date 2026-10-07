@@ -151,7 +151,8 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       !preview.lines.data.some(line=>billingPrice(line)===account.stripePriceId&&billingIso(line.period?.start)===dueAt))throw error('BILLING_AMOUNT_CONFIRMATION_REQUIRED',502);
     const amount=preview.amount_due;
     // Recheck after the read; cancellation or selection changes can race it.
-    const current=owner(ownerId);if(current.serviceEndsAt||current.cancelAtPeriodEnd||current.stripePriceId!==account.stripePriceId)return;
+    const current=owner(ownerId);if(now()>=dueAt||current.planStatus!==account.planStatus||current.serviceEndsAt||current.cancelAtPeriodEnd||current.stripePriceId!==account.stripePriceId||
+      (trial?current.trialEndsAt:current.currentPeriodEndAt)!==dueAt)return;
     notice(ownerId,kind,referenceId,`${trial?'Your fourteen-day free trial ends':'Your annual plan renews'} on ${dueAt}. Plan: ${account.plan} ${interval}. ${billingMoney(amount)} ${price.currency.toUpperCase()} will be charged on ${dueAt}${interval==='annual'?' for twelve months paid up front':''}. Cancel before that charge: ${link('cancel')}. Change plan: ${link('change')}.`,{amountCents:amount,currency:price.currency,dueAt});
   }
   async function recoverReceiptCurrencies(ownerId){
@@ -240,13 +241,14 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     query("DELETE FROM events WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
     query("UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
   });}
-  async function stopUsageCollection(ownerId){
+  async function stopUsageCollection(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
     const charges=query(`SELECT c.*,p.stripeCustomerId,p.stripeSubscriptionId FROM billingUsageCharges c JOIN billingUsagePeriods p
       ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
       AND c.status!='PAID' AND c.collectionStoppedAt IS NULL`).all(ownerId);
     for(const charge of charges){
       const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
+      assertLease();
       const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest;
       if(!bound(invoice))throw error('BILLING_PROVIDER_MISMATCH',502);
       if(invoice.status==='paid'){
@@ -255,12 +257,13 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         recordUsageInvoicePayment(database,{ownerId,period,charge,invoice,at:now()});
       }else{
         const receipt=invoice.auto_advance===false?invoice:await billingProviderRead(()=>stripeClient.invoices.update(invoice.id,{auto_advance:false},BILLING_PROVIDER_OPTIONS));
+        assertLease();
         if(!bound(receipt)||receipt.auto_advance!==false)throw error('BILLING_COLLECTION_STOP_PENDING',502);
       }
       query('UPDATE billingUsageCharges SET collectionStoppedAt=?,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
     }
   }
-  async function cleanup(ownerId,{deadlineAt=now()}={}){
+  async function cleanup(ownerId,{deadlineAt=now(),assertLease}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
     if(!row.endedAt)usageTransaction(database,()=>{
       query("UPDATE billingCancellations SET state='ENDED',endedAt=?,updatedAt=? WHERE ownerId=?").run(row.endAt,now(),ownerId);
@@ -268,18 +271,20 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Carrier shutdown is tracked in Billing. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    await stopUsageCollection(ownerId);
+    await stopUsageCollection(ownerId,assertLease);
     if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
       if(!row.forwardingOffAt&&profile?.twilioNumber&&telephony){
         const result=await telephony.setCoverage(ownerId,false);
+        assertLease();
         if(result.confirmedEnabled===false&&!result.pending)query('UPDATE billingCancellations SET forwardingOffAt=?,lastError=NULL,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
         else query("UPDATE billingCancellations SET lastError='FORWARDING_SHUTDOWN_PENDING',updatedAt=? WHERE ownerId=?").run(now(),ownerId);
       }
       if(!row.phoneReleasedAt&&deadlineAt>=addDays(row.endAt,30)&&releaseNumber){
         // Release the saved SID, never a number discovered by a broad search.
         const result=profile?.twilioNumberSid?await releaseNumber({ownerId,sid:profile.twilioNumberSid}):{released:true};
+        assertLease();
         if(result?.released===true)usageTransaction(database,()=>{
           query("UPDATE businessProfiles SET twilioNumber=NULL,twilioNumberSid=NULL,operatorEnabled=0,phoneProvisioningStatus='not_started' WHERE ownerId=?").run(ownerId);
           query('DELETE FROM phoneProvisioningOperations WHERE ownerId=?').run(ownerId);
@@ -297,7 +302,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
       const restoring=row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
       const payment=restoring?query("SELECT MIN(paidAt) paidAt FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND amountPaid>0").get(ownerId,account.stripeSubscriptionId):null;
-      await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now()});assertLease();row=cancellation(ownerId);
+      await cleanup(ownerId,{deadlineAt:payment?.paidAt!=null?billingIso(payment.paidAt):now(),assertLease});assertLease();row=cancellation(ownerId);
       if(restoring){
         restoreLocal(ownerId,row);
       }
