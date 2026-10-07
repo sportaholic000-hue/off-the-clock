@@ -23,7 +23,7 @@ test('production server booking routes, adapter and owner views agree under conc
   assert.equal((await req('/api/calls/synthetic-a-call',{owner:'synthetic-b'})).status,404);
   assert.equal((await req('/api/calendar/schedule',{owner:null})).status,401);
   assert.equal((await req('/api/booking/configuration')).status,200);
-  assert.equal((await req('/api/calendar/schedule?ownerId=synthetic-b')).status,400);
+  const foreignSchedule=await req('/api/calendar/schedule?ownerId=synthetic-b');assert.equal(foreignSchedule.status,403);assert.deepEqual(foreignSchedule.body,{error:'Forbidden'});
   assert.equal((await req(prefix(i)+'/confirm',{method:'POST',body:{...confirmation,customer:{...confirmation.customer,name:'Changed'}},idempotencyKey:key,publicRequest:true})).status,409);
 });
 

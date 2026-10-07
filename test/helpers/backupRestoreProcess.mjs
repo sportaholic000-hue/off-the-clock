@@ -21,6 +21,13 @@ mock.module('../../server/src/googleCalendarAdapter.js', {namedExports: {
     async getEvent({eventId}) { return read().find(row => row.eventId === eventId) || null; }
   })
 }});
+// Capture only synthetic email transport; registration, token consumption and login stay real.
+const sendSyntheticEmail=async message=>{
+  if(!message.to.endsWith('@example.invalid'))throw Error('SYNTHETIC_EMAIL_ONLY');
+  const filename=events+'.emails.json';const prior=fs.existsSync(filename)?JSON.parse(fs.readFileSync(filename,'utf8')):[];
+  fs.writeFileSync(filename,JSON.stringify([...prior,message]));return {accepted:true,id:'synthetic-email-'+prior.length};
+};
+mock.module('../../server/src/email.js',{namedExports:{sendTransactionalEmail:sendSyntheticEmail,createTransactionalEmailSender:()=>sendSyntheticEmail}});
 // The server must not make any real external HTTP request during this drill.
 globalThis.fetch = async () => { throw Error('SYNTHETIC_REHEARSAL_EXTERNAL_HTTP_FORBIDDEN'); };
 const {httpServer} = await import('../../server/src/server.js');

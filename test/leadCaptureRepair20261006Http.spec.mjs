@@ -22,7 +22,7 @@ test('lead capture repairs: real routes, tenant authorization, stored receipts a
   });
   await t.test('wrong owners, staff and missing sessions cannot read or change other tenant records',async()=>{
     for(const id of ['synthetic-a','synthetic-staff']){assert.equal((await f.request('/api/calls/'+s.foreign.callSid,id)).status,404);assert.equal((await f.request('/api/leads/'+f.lead(s.foreign)[0].id,id,{method:'PATCH',body:{status:'DISMISSED'}})).status,404);assert.doesNotMatch(JSON.stringify((await f.request('/api/leads',id)).body),/foreign@example.invalid|OTHER TENANT/);}
-    assert.equal((await f.request('/api/calls/'+s.c.callSid,'synthetic-b')).status,404);assert.equal((await f.request('/api/leads/activity',null)).status,401);assert.equal((await f.request('/api/calls?ownerId=synthetic-b')).status,400);
+    assert.equal((await f.request('/api/calls/'+s.c.callSid,'synthetic-b')).status,404);assert.equal((await f.request('/api/leads/activity',null)).status,401);const foreignSelector=await f.request('/api/calls?ownerId=synthetic-b');assert.equal(foreignSelector.status,403);assert.deepEqual(foreignSelector.body,{error:'Forbidden'});
   });
   await t.test('instant quote list exposes safe saved contact from separate submission without recalculation',async()=>{
     const {status,body}=await f.request('/api/quotes','synthetic-staff');assert.equal(status,200);assert.equal(body.quotes[0].contact.email,'instant@example.invalid');assert.equal(body.quotes[0].context,'[SYNTHETIC] After 6');assert.equal(body.quotes[0].result.highEstimate,221.23);assert.doesNotMatch(JSON.stringify(body),/SECRET_COST|SECRET_RATE|internal/);

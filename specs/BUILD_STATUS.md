@@ -1,3 +1,13 @@
+# October 7 release integration — three ordered merges
+
+Target `codex/quote-release-candidate-20261006`, starting at `5c1050dce191e9b97f20234b2747554bbbf3a20c`. Billing lifecycle `852caa9`, off-site backups `0062c43`, then tenant isolation `1189372` are preserved as ordered merge parents. [Complete integration and conflict report](../verification/release-three-branches-20261007/REPORT.md).
+
+The route matrix now covers all **115** merged registrations. Additional integration regressions repair day-90 callback/alert/SMS erasure, service-end fallback callbacks and saved-quote replay during corrupt-book recovery; anonymous callers retain strict saved bindings. Existing tests and the empty known-failures list remain. No quote arithmetic change; engine stays v7.
+
+Cold local install, owner/widget build and production audit passed. Final focused verification: **349/349**, zero failures/skips/cancellations/TODOs. Full local browser execution is not yet a passing gate; the exact pushed-head hosted cold run is checked before task completion and its counts reported there. No subagents, main merge, deployment or live data.
+
+## Previous checkpoint
+
 # October 7 tenant isolation — hosted gates passed
 
 Branch: `fix/tenant-isolation-20261007`, starting at `73c0062` on the approved release-candidate branch. Tested source/test/CI SHA: **`552585bcc964e9d4bdf4f35f9a1080c300217f48`**.

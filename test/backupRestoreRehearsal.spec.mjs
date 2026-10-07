@@ -107,11 +107,23 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     const result=await response.json();
     assert.equal(response.status,expected,method+' '+url+' '+JSON.stringify(result));return result;
   }
+  async function registerVerified(body) {
+    const accepted=await requestJson('/api/auth/register',{method:'POST',auth:false,expected:202,body});
+    assert.deepEqual(accepted,{ok:true});
+    await requestJson('/api/auth/login',{method:'POST',auth:false,expected:401,body:{email:body.email,password:body.password}});
+    const messages=JSON.parse(fs.readFileSync(events+'.emails.json','utf8'));
+    const message=messages.findLast(message=>message.to===body.email);
+    const link=new URL(message.text.match(/https:\/\/\S+/)[0]);
+    await requestJson('/api/auth/verify-email',{method:'POST',auth:false,body:{token:new URLSearchParams(link.hash.slice(1)).get('token')||link.searchParams.get('token')}});
+    const account=await requestJson('/api/auth/login',{method:'POST',auth:false,body:{email:body.email,password:body.password}});
+    assert.ok(account.token);const identity=await requestJson('/api/auth/account',{auth:false,headers:{authorization:'Bearer '+account.token}});assert.equal(identity.email,body.email);assert.ok(identity.emailVerifiedAt);return {...account,account:{id:JSON.parse(Buffer.from(account.token.split('.')[1],'base64url')).sub}};
+  }
   async function verifyState() {
     assert.deepEqual(await requestJson('/api/pricebook/'+ownerId),book);
     assert.deepEqual(fs.readFileSync(path.join(root,'pricebooks',ownerId+'.json')),bookBytes);
     assert.deepEqual(fs.readFileSync(path.join(root,'pricebooks',secondOwnerId+'.json')),secondBookBytes);
     assert.deepEqual(await requestJson(publicPath,{method:'POST',body:request,auth:false}),receipt);
+    await requestJson(publicPath,{method:'POST',body:{...request,serviceId:randomUUID()},auth:false,expected:409});
     assert.deepEqual(await requestJson(publicPath,{method:'POST',body:reviewRequest,auth:false}),leadReceipt);
     assert.deepEqual(await requestJson(bookingPath+'/confirm',{method:'POST',body:confirmationBody,auth:false,expected:201,headers:{'Idempotency-Key':confirmationKey}}),booking);
     const leads=await requestJson('/api/leads');assert.equal(leads.leads.length,1);
@@ -125,8 +137,8 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     assert.ok(fs.existsSync(path.join(root,'off-the-clock.sqlite')));
   });
   await t.test('2. register synthetic owners; save and approve; create $100 quote, review lead and confirmed booking over HTTP',async()=>{
-    const registered=await requestJson('/api/auth/register',{method:'POST',auth:false,expected:201,body:{
-      email:'synthetic-restore-owner@example.invalid',password:'Synthetic!Restore2026-Only',firstName:'[SYNTHETIC]',businessName:'[SYNTHETIC] Recovery Rehearsal',plan:'QuoteDone'}});
+    const registered=await registerVerified({
+      email:'synthetic-restore-owner@example.invalid',password:'Synthetic!Restore2026-Only',firstName:'[SYNTHETIC]',businessName:'[SYNTHETIC] Recovery Rehearsal',plan:'QuoteDone'});
     token=registered.token;ownerId=registered.account.id;assert.ok(token);fixtureConfiguration(root,ownerId);
     const f=mowing();delete f.ownerPricing.origin;
     // Fixture cents -> owner editor dollars; the expected $100 is handwritten.
@@ -155,7 +167,7 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     confirmationBody={holdId:held.holdId,confirmedSlotId:held.slot.slotId,explicitConfirmation:true,addressConfirmation:true,customer,location};confirmationKey=randomUUID();
     booking=await requestJson(bookingPath+'/confirm',{method:'POST',auth:false,expected:201,headers:{'Idempotency-Key':confirmationKey},body:confirmationBody});
     assert.equal(booking.status,'CONFIRMED');
-    const second=await requestJson('/api/auth/register',{method:'POST',auth:false,expected:201,body:{email:'synthetic-second-owner@example.invalid',password:'Synthetic!Second2026-Only',firstName:'[SYNTHETIC]',businessName:'[SYNTHETIC] Second Recovery Owner',plan:'QuoteDone'}});
+    const second=await registerVerified({email:'synthetic-second-owner@example.invalid',password:'Synthetic!Second2026-Only',firstName:'[SYNTHETIC]',businessName:'[SYNTHETIC] Second Recovery Owner',plan:'QuoteDone'});
     secondOwnerId=second.account.id;fixtureConfiguration(root,secondOwnerId);
     const secondInitial=await requestJson('/api/pricebook/'+secondOwnerId,{headers:{authorization:'Bearer '+second.token}});
     await requestJson('/api/pricebook/save',{method:'POST',headers:{authorization:'Bearer '+second.token},body:{services:[],defaults:{},revision:secondInitial.revision}});
@@ -189,6 +201,7 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     const denied=await fetch(server.url+publicPath,{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({...request,requestId:randomUUID()})});
     assert.ok([409,503].includes(denied.status));const denial=await denied.json();assert.equal(denial.midEstimate,undefined);assert.equal(denial.lowEstimate,undefined);
     assert.deepEqual(await requestJson(publicPath,{method:'POST',body:request,auth:false}),receipt);
+    await requestJson(publicPath,{method:'POST',body:{...request,serviceId:randomUUID()},auth:false,expected:409});
     assert.equal((await requestJson('/api/health',{auth:false})).ok,true);
     assert.equal(database(root,db=>db.prepare('SELECT count(*) n FROM quoteSubmissions WHERE ownerId=?').get(ownerId).n),2);
     // Restore the file even on a baseline failure so each corruption is independently exercised.

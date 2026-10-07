@@ -1,0 +1,68 @@
+[
+  {
+    "branch": "feat/billing-lifecycle-20261007",
+    "sha": "852caa913d44d5b7e3b3cec6d90d9dd02ba1679e",
+    "resolutions": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "resolution": "Union of release and billing branch triggers; retained cold install, builds, both strict gates, empty-failure check and production audit."
+      },
+      {
+        "file": "server/src/migrations.js",
+        "resolution": "Retained both owner-alert schema installation and billing-lifecycle schema installation."
+      },
+      {
+        "file": "server/src/server.js",
+        "resolution": "Retained existing metering, billing, webhook, owner-alert, SMS and local-backup workers; added customer-lifecycle startup and shutdown in both lifecycle drain and server close."
+      },
+      {
+        "file": "server/src/voice/productionVoiceRuntime.js",
+        "resolution": "Preserved durable incoming receipts, capture-first fallback, actual providers, metering and recovery; added service-end refusal before fallback. Did not restore the older immediate-forward fallback."
+      },
+      {
+        "file": "specs/BUILD_STATUS.md",
+        "resolution": "Kept the complete billing checkpoint and the complete existing release history."
+      }
+    ]
+  },
+  {
+    "branch": "feat/offsite-backups-20261007",
+    "sha": "0062c4307f54f5a4839ead1f912d2d4c889889b4",
+    "resolutions": [
+      {
+        "file": "server/src/server.js",
+        "resolution": "Kept all merged workers and added production off-site backup startup plus shutdown in lifecycle drain and server close."
+      }
+    ]
+  },
+  {
+    "branch": "fix/tenant-isolation-20261007",
+    "sha": "1189372bd5872d8c9d719cf7248e4d5ec3636da2",
+    "resolutions": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "resolution": "Union of all existing and incoming branch triggers; kept every verification gate."
+      },
+      {
+        "file": "server/src/authMiddleware.js",
+        "resolution": "Run tenant selector guard before billing mutation guard; retained both authorization and service-end restrictions."
+      },
+      {
+        "file": "server/src/server.js",
+        "resolution": "Kept SMS status route, minute-alert usage callback and SMS provider wiring; retained and exported voiceRuntime for full runtime route inspection."
+      },
+      {
+        "file": "server/src/voice/productionVoiceRuntime.js",
+        "resolution": "Retained durable routeIncoming and both incoming-call and saved-call binding validation."
+      },
+      {
+        "file": "server/src/voiceRuntimeRoutes.js",
+        "resolution": "Binding mismatch returns generic 403 before fallback; capture storage failures still propagate as retryable 503; terminal callbacks hang up. Rejected the weaker swallowed-persistence-error path."
+      },
+      {
+        "file": "specs/BUILD_STATUS.md",
+        "resolution": "Kept the complete tenant-isolation checkpoint and the complete accumulated release/billing history."
+      }
+    ]
+  }
+]

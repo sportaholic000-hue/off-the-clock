@@ -76,6 +76,14 @@ test('release: canonical customer lookup preserves isolated anonymous capture',a
   }
   assert.equal(new Set(ids).size,2);
 });
+test('merged tenant binding accepts an anonymous caller and rejects changed caller, owner or destination',t=>{
+  const h=setup(t),context={...h.context,from:'anonymous'};
+  h.db.prepare('UPDATE calls SET callerNumber=? WHERE ownerId=? AND callSid=?').run(context.from,context.ownerId,context.callSid);
+  assert.equal(h.store.validateIncomingCall({call:context}),true);
+  assert.equal(h.store.validateCallBinding({context}),true);
+  for(const patch of [{from:'+19025550999'},{to:'+19025550999'}])assert.equal(h.store.validateIncomingCall({call:{...context,...patch}}),false);
+  for(const patch of [{from:'+19025550999'},{to:'+19025550999'},{ownerId:'SYNTHETIC-other-owner'}])assert.equal(h.store.validateCallBinding({context:{...context,...patch}}),false);
+});
 test('release: named contact and owner-only deadlines coexist once in prompt authority',()=>{
   const prompt=compileVoiceSystemInstruction({guideText:readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8'),
     business:{businessName:'Synthetic Business',agentName:'Assistant'},services:[],

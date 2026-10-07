@@ -20,12 +20,24 @@
     "policy": "admin"
   },
   {
+    "route": "GET /api/admin/backups/offsite",
+    "policy": "admin"
+  },
+  {
     "route": "GET /api/auth/account",
     "policy": "team"
   },
   {
     "route": "GET /api/auth/verify-email",
     "policy": "auth"
+  },
+  {
+    "route": "GET /api/billing/export/:kind",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/billing/lifecycle",
+    "policy": "owner"
   },
   {
     "route": "GET /api/billing/status",
@@ -72,11 +84,19 @@
     "policy": "owner"
   },
   {
+    "route": "GET /api/integrations/webhook/deliveries",
+    "policy": "owner"
+  },
+  {
     "route": "GET /api/leads",
     "policy": "team"
   },
   {
     "route": "GET /api/leads/:id",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/leads/activity",
     "policy": "team"
   },
   {
@@ -94,6 +114,10 @@
   {
     "route": "GET /api/onboarding/state",
     "policy": "owner"
+  },
+  {
+    "route": "GET /api/owner-alerts",
+    "policy": "team"
   },
   {
     "route": "GET /api/pricebook/:ownerId",
@@ -196,11 +220,19 @@
     "policy": "auth"
   },
   {
+    "route": "POST /api/billing/cancel",
+    "policy": "owner"
+  },
+  {
     "route": "POST /api/billing/checkout",
     "policy": "owner"
   },
   {
     "route": "POST /api/billing/portal",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/billing/reactivate",
     "policy": "owner"
   },
   {
@@ -280,6 +312,14 @@
     "policy": "owner"
   },
   {
+    "route": "POST /api/owner-alerts/:id/retry",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/owner-alerts/:id/seen",
+    "policy": "owner"
+  },
+  {
     "route": "POST /api/pricebook/interview",
     "policy": "owner"
   },
@@ -352,12 +392,40 @@
     "policy": "stripe"
   },
   {
+    "route": "POST /api/twilio/voice/capture",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/capture/again",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/capture/partial",
+    "policy": "voice"
+  },
+  {
     "route": "POST /api/twilio/voice/fallback/:nonce",
     "policy": "voice"
   },
   {
     "route": "POST /api/twilio/voice/incoming",
     "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/status",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/transfer/:id/accept",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/transfer/:id/result",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/voice/sms-status/:ownerId/:id/:token",
+    "policy": "sms"
   },
   {
     "route": "PUT /api/booking/policies/:serviceId",

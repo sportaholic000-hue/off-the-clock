@@ -74,6 +74,10 @@ function serviceFor(book,body) {
   const matches=applicationServiceMatches(book,body.serviceId);return matches.length===1?matches[0]:null;
 }
 function requireSavedQuoteService(req,res,next) {
+  // Existing owner-bound submissions are immutable receipts. submitQuote checks
+  // their exact content digest before returning anything, even during recovery.
+  if(['/api/public/quote/:publicKey','/api/quote/calculate'].includes(req.route?.path)&&uuid(req.body?.requestId)&&
+    ownerQuery('SELECT requestId FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(req.tenantOwnerId,req.body.requestId))return next();
   if(!serviceFor(loadPricebook(req.tenantOwnerId),req.body||{}))return res.status(404).json({error:'Service not found.'});
   next();
 }

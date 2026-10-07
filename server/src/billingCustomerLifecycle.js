@@ -90,7 +90,8 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
   query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
 }
 
-const DATA_TABLES=['appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
+const DATA_TABLES=['callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
+  'appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
   'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
   'billingVoiceUsage','webhookDeliveries','leads','quoteRequests','quotes','calls','customers'];
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,telephony,
@@ -232,9 +233,9 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     // Child-first, explicitly enumerated record tables. Billing evidence and
     // the account survive. No FK bypass, provider calls or unscoped DELETEs.
     for(const call of query('SELECT callSid FROM calls WHERE ownerId=? AND callSid IS NOT NULL').all(ownerId)){
-      query(`DELETE FROM voiceToolIdempotencyReceipts WHERE scopeHash=@scopeHash
+      for(const prefix of ['', 'inbound\0'])query(`DELETE FROM voiceToolIdempotencyReceipts WHERE scopeHash=@scopeHash
         AND EXISTS(SELECT 1 FROM calls WHERE ownerId=@ownerId AND callSid=@callSid)`).run({ownerId,callSid:call.callSid,
-        scopeHash:createHash('sha256').update(`${ownerId}\0${call.callSid}`,'utf8').digest('hex')});
+        scopeHash:createHash('sha256').update(`${prefix}${ownerId}\0${call.callSid}`,'utf8').digest('hex')});
     }
     for(const table of DATA_TABLES)query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
     query("DELETE FROM outboxEvents WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);

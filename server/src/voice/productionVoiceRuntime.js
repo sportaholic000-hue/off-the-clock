@@ -62,7 +62,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const configuredSecret=env.VOICE_HANDLE_SECRET||env.BOOKING_SLOT_TOKEN_SECRET||env.JWT_SECRET;
   const handleSecret=typeof configuredSecret==='string'&&Buffer.byteLength(configuredSecret)>=32?createHash('sha256').update('voice-handles-v1\0'+configuredSecret).digest():null;
   const routeIncoming=handleSecret?createVoiceInboundReceipt({database,secret:handleSecret,clock}):undefined;
-  installVoiceFallbackRoutes({app,validator,resolver:tenantResolver,database,store,publicBaseUrl});
+  installVoiceFallbackRoutes({app,validator,resolver:tenantResolver,database,store,publicBaseUrl,clock});
   const providerClient=enabled?(twilioClient||twilio(env.TWILIO_API_KEY_SID||accountSid,env.TWILIO_API_KEY_SECRET||authToken,{accountSid,autoRetry:false,timeout:10000})):null;
   const productionProviders=createVoiceProviderAdapters({app,database,twilioClient:providerClient,bookingService,validator,publicBaseUrl,clock,
     onTransferFailed:({context,reason,notes,inquiryNumber})=>createVoiceToolRuntime({database,callContext:context,handleSecret,bookingService,clock}).handlers.transferCall({context,args:{reason,notes,inquiryNumber,customerConfirmed:true}})});

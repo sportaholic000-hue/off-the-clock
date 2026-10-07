@@ -19,7 +19,7 @@ const serverRoot=fileURLToPath(new URL('../server/',import.meta.url));
 const uuid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
 const genericId=uuid(999999);
 function pathFor(route,tenant,{other=tenant,guess=false}={}) {
-  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('calls')?other.call:route.includes('deliveries')?other.delivery:other.lead,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.hold,confirmationId:other.confirmationId,nonce:tenant.nonce,kind:'leads'};
+  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('sms-status')?other.sms:route.includes('/transfer/')?other.transfer:route.includes('owner-alerts')?other.alert:route.includes('calls')?other.call:route.includes('deliveries')?other.delivery:other.lead,token:tenant.smsToken,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.hold,confirmationId:other.confirmationId,nonce:tenant.nonce,kind:'leads'};
   return route.split(' ').slice(1).join(' ').replace(/:([A-Za-z]+)/g,(_,key)=>encodeURIComponent(guess&&!['publicKey','bookingToken','nonce','kind'].includes(key)?genericId:values[key])).replace(/^\*$/,'/dashboard').replace('/assets/*','/assets/tenant-isolation-missing.js');
 }
 function bodyFor(route,tenant,other=tenant) {
@@ -46,7 +46,7 @@ function bodyFor(route,tenant,other=tenant) {
 }
 function noLeak(response,other,label) {
   const visible=response.text+JSON.stringify(response.headers||{});
-  for(const forbidden of [other.owner,other.staff,other.password,other.passwordHash,other.callSid,other.email,'synthetic-'+other.label.toLowerCase()+'-staff@example.invalid','cus_synthetic_'+other.label,'sub_synthetic_'+other.label,'https://synthetic-'+other.label.toLowerCase()+'.example.invalid/hooks',...['owner','staff'].flatMap(role=>[other.auth[role].token,other.auth[role].cookie.split('=').at(-1)]),other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.hold,other.delivery,other.confirmationId,other.bookingIntentId,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
+  for(const forbidden of [other.owner,other.staff,other.password,other.passwordHash,other.callSid,other.email,'synthetic-'+other.label.toLowerCase()+'-staff@example.invalid','cus_synthetic_'+other.label,'sub_synthetic_'+other.label,'https://synthetic-'+other.label.toLowerCase()+'.example.invalid/hooks',...['owner','staff'].flatMap(role=>[other.auth[role].token,other.auth[role].cookie.split('=').at(-1)]),other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.hold,other.delivery,other.confirmationId,other.bookingIntentId,other.transfer,other.sms,other.smsToken,other.smsProvider,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
 }
 function refused(response,label) {assert.ok(response.status>=400&&response.status<500,label+' was not refused: '+response.status+' '+response.text.slice(0,1200));}
 const sanitized=r=>({status:r.status,text:r.text});
@@ -152,13 +152,23 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     }else if(policy==='voice') {
       if(method==='WS') {for(const args of [{},{guessed:true},{unsigned:true}]){const r=await wsDenied(f,A,B,args);refused(r,route);noLeak(r,B,route);}}
       else {
-        const path=pathFor(route,A),params={AccountSid:f.env.TWILIO_ACCOUNT_SID,CallSid:A.callSid,From:'+19025550000',To:B.phone,Direction:'inbound'};
+        const path=pathFor(route,A),params={AccountSid:f.env.TWILIO_ACCOUNT_SID,CallSid:A.callSid,From:'+19025550000',To:B.phone,Direction:'inbound',CallStatus:'completed',CallDuration:'61',ParentCallSid:B.callSid,SpeechResult:'SYNTHETIC foreign capture',UnstableSpeechResult:'SYNTHETIC foreign capture'};
         const r=await signedVoice(f,path,params);refused(r,route+' signed A call naming B number');noLeak(r,B,route);
         const bad=await signedVoice(f,path,params,'invalid');assert.equal(bad.status,403,route+' bad signature');
         if(route.includes('/incoming')) {
           const unknown=await signedVoice(f,path,{...params,To:'+19025550999'});refused(unknown,route+' unknown number');noLeak(unknown,B,route);
           assert.deepEqual(sanitized(r),sanitized(unknown),route+' reveals whether the other number exists');
         }
+      }
+    }else if(policy==='sms') {
+      for(const [source,target] of [[A,B],[B,A]]) {
+        const params={AccountSid:f.env.TWILIO_ACCOUNT_SID,MessageSid:target.smsProvider,MessageStatus:'delivered',To:'+19025550000',From:target.phone};
+        const path=pathFor(route,source);
+        const mismatch=await signedVoice(f,path,params);assert.equal(mismatch.status,403);noLeak(mismatch,target,route+' mismatched provider binding');
+        const bad=await signedVoice(f,path,params,'invalid');assert.equal(bad.status,403);
+        const foreign=await signedVoice(f,pathFor(route,source,{other:target}),params);assert.equal(foreign.status,403);noLeak(foreign,target,route+' foreign receipt with own capability');
+        const guessed=await signedVoice(f,path.replace(source.sms,genericId),params);assert.equal(guessed.status,403);
+        assert.deepEqual(sanitized(mismatch),sanitized(guessed));
       }
     }else if(policy==='oauth-capability') {
       for(const state of [genericId,'x'.repeat(43)]) {
@@ -207,6 +217,19 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
       const hooks=await f.request('/api/integrations/webhook',{token:tenant.auth.owner.token});assert.equal(hooks.status,200);assert.ok(hooks.text.includes(tenant.delivery));
       const rows=(await f.rpc('snapshot',{owner:tenant.owner})).rows;assert.ok(rows.bookingHolds.some(row=>row.id===tenant.hold));assert.ok(rows.webhookDeliveries.some(row=>row.id===tenant.delivery));
     }
+  });
+  await t.test('merged billing reads and exports remain tenant-scoped; only admin can read backup status',async()=>{
+    for(const tenant of [A,B]) {
+      const other=tenant===A?B:A;
+      const state=await f.request('/api/billing/lifecycle',{token:tenant.auth.owner.token});assert.equal(state.status,200);noLeak(state,other,'own lifecycle');
+      for(const kind of ['leads','quotes','calls']) {
+        const own=await f.request('/api/billing/export/'+kind,{token:tenant.auth.owner.token});assert.equal(own.status,200);noLeak(own,other,'own '+kind+' export');
+        const forged=await f.request('/api/billing/export/'+kind+'?ownerId='+other.owner,{token:tenant.auth.owner.token});assert.equal(forged.status,403);
+      }
+      assert.equal((await f.request('/api/admin/backups/offsite',{token:tenant.auth.owner.token})).status,403);
+    }
+    const login=await f.request('/api/admin/login',{method:'POST',body:{email:'synthetic-admin@example.invalid',password:'SYNTHETIC-admin-password'}});assert.equal(login.status,200);
+    const status=await f.request('/api/admin/backups/offsite',{token:JSON.parse(login.text).token});assert.equal(status.status,503);assert.equal(JSON.parse(status.text).state,'NOT_CONFIGURED');assert.equal(status.headers['cache-control'],'no-store');
   });
   await t.test('attacks never reached an external provider',async()=>{const result=await f.rpc('network');assert.equal(result.blockedNetwork,0);assert.deepEqual(result.providerCalls,[]);});
   await t.test('coverage guard fails for an added route and an anonymously mounted router',async()=>{

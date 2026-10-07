@@ -22,7 +22,8 @@ test('D19/D20: actual owner routes and rendered views retain delivery informatio
   await t.test('all/unresolved pagination reaches oldest failure; foreign tenant, staff and extra owner parameters rejected',async()=>{
     const recent=await f.request('/api/integrations/webhook');assert.equal(recent.body.deliveries.length,20);const first=await f.request('/api/integrations/webhook/deliveries?status=unresolved'),last=await f.request('/api/integrations/webhook/deliveries?status=all&offset=100');assert.equal(first.body.total,105);assert.equal(first.body.nextOffset,50);assert.ok(last.body.deliveries.some(d=>d.id==='SYNTHETIC-archive-000'&&d.status==='FAILED'));assert.doesNotMatch(JSON.stringify(last),/signingSecret|payloadJson|credentials|SYNTHETIC_PRIVATE_ERROR/);
     assert.equal((await f.request('/api/integrations/webhook/deliveries','synthetic-b')).body.total,0);assert.equal((await f.request('/api/integrations/webhook/deliveries','synthetic-staff')).status,403);assert.equal((await f.request('/api/integrations/webhook/deliveries',null)).status,401);
-    for(const query of ['ownerId=synthetic-b','offset=-1','status=bad','offset=0&offset=1'])assert.equal((await f.request('/api/integrations/webhook/deliveries?'+query)).status,400);
+    const foreignSelector=await f.request('/api/integrations/webhook/deliveries?ownerId=synthetic-b');assert.equal(foreignSelector.status,403);assert.deepEqual(foreignSelector.body,{error:'Forbidden'});
+    for(const query of ['offset=-1','status=bad','offset=0&offset=1'])assert.equal((await f.request('/api/integrations/webhook/deliveries?'+query)).status,400);
   });
   await t.test('rendered actual route data exposes safe delivery errors and old webhook failures',async()=>{
     const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});

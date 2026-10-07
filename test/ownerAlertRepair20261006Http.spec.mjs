@@ -18,7 +18,7 @@ test('owner alert repairs: actual routes and rendered callback/delivery visibili
   await t.test('foreign owners cannot read, mark seen or retry alerts; staff cannot mutate alerts',async()=>{
     assert.equal((await f.request('/api/calls/'+c.callSid,'synthetic-b')).status,404);assert.equal((await f.request('/api/owner-alerts','synthetic-b')).body.total,0);
     for(const op of ['retry','seen']){assert.equal((await f.request('/api/owner-alerts/'+alerts[0].id+'/'+op,'synthetic-b',{method:'POST',body:{}})).status,404);assert.equal((await f.request('/api/owner-alerts/'+alerts[0].id+'/'+op,'synthetic-staff',{method:'POST',body:{}})).status,403);}
-    assert.equal((await f.request('/api/owner-alerts',null)).status,401);assert.equal((await f.request('/api/owner-alerts?ownerId=synthetic-b')).status,400);
+    assert.equal((await f.request('/api/owner-alerts',null)).status,401);const foreignSelector=await f.request('/api/owner-alerts?ownerId=synthetic-b');assert.equal(foreignSelector.status,403);assert.deepEqual(foreignSelector.body,{error:'Forbidden'});
   });
   await t.test('owner retry route plus fake worker recovers once and accepted alerts do not resend',async()=>{
     const accepted=new Map(),worker=createOwnerAlertService({database:f.db,ownerQuery:f.ownerQuery,ready:()=>true,environment:{EMAIL_FROM:'alerts@example.invalid'},send:async m=>{const old=accepted.get(m.idempotencyKey);if(old){assert.deepEqual(old.message,m);return old.result;}const result={accepted:true,id:'SYNTHETIC_'+accepted.size};accepted.set(m.idempotencyKey,{message:m,result});return result;}});

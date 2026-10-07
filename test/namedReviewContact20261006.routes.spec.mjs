@@ -5,9 +5,11 @@ test.after(()=>db.close());
 const save='/api/onboarding/knowledge-base',draft=save+'/draft';
 const contact={name:'Synthetic Morgan',role:'manager'};
 const input={about:'[SYNTHETIC] Test business',hours:'Weekdays',reviewContact:contact};
-test('named review contact authenticated save ignores body tenant IDs and returns only public contact facts',async t=>{
+test('named review contact authenticated save rejects foreign body tenant IDs and returns only public contact facts',async t=>{
   const a=seed(),b=seed(),h=await knowledgeApp(t),before=getBusinessProfile(b.id);
-  const saved=await h.request(save,{...input,ownerId:b.id,tenantOwnerId:b.id,draft:true},a.token);
+  const original=getBusinessProfile(a.id),foreign=await h.request(save,{...input,ownerId:b.id,tenantOwnerId:b.id,draft:true},a.token);
+  assert.equal(foreign.status,403);assert.deepEqual(foreign.body,{error:'Forbidden'});assert.deepEqual(getBusinessProfile(a.id),original);assert.deepEqual(getBusinessProfile(b.id),before);
+  const saved=await h.request(save,{...input,ownerId:a.id,tenantOwnerId:a.id,draft:true},a.token);
   assert.equal(saved.status,200);assert.deepEqual(saved.body.profile.knowledgeBase.reviewContact,contact);
   assert.equal(saved.body.profile.knowledgeBase.draft,false);assert.deepEqual(getBusinessProfile(b.id),before);
   assert.deepEqual((await h.request('/synthetic/state',undefined,a.token)).body.profile.knowledgeBase.reviewContact,contact);

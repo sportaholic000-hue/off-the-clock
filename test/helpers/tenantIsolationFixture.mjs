@@ -95,16 +95,24 @@ for(const [label,n] of [['A',1],['B',2]]) {
   db.prepare(`INSERT INTO webhookDeliveries(id,ownerId,endpointVersion,eventType,aggregateId,payloadJson,status,nextAttemptAt,createdAt,updatedAt) VALUES(?,?,?,'lead.created',?,?,'FAILED',0,?,?)`).run(delivery,owner,endpoint.version,lead,JSON.stringify({id:lead,customerName:'PRIVATE_'+label+'_WEBHOOK'}),at,at);
   db.prepare('INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,?,?,\'book_job\',60,1,?)').run(owner,service,'synthetic-policy-'+label,at);
   db.prepare('INSERT INTO bookingSettings(ownerId,revision,timezone,directBookingEnabled,updatedAt) VALUES(?,?,\'UTC\',0,?)').run(owner,'synthetic-settings-'+label,at);
+  const transfer=uuid(n+1200),sms=uuid(n+1300),smsToken=String(n).repeat(48),smsProvider='SM'+String(n).repeat(32);
+  db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.transfer_requested',?,?,'PENDING',?,?)").run(transfer,owner,callSid,JSON.stringify({callSid,destination:fallback,notes:'PRIVATE_'+label+'_TRANSFER'}),at,at);
+  db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.sms_requested',?,?,'SENT',?,?)").run(sms,owner,callSid,JSON.stringify({callSid,private:'PRIVATE_'+label+'_SMS'}),at,at);
+  db.prepare("INSERT INTO voiceSmsDeliveries(id,ownerId,callSid,recordType,recordId,requestJson,callbackToken,status,attemptCount,providerId,createdAt,updatedAt) VALUES(?,?,?,'lead',?,?,?,'SENT',1,?,?,?)").run(sms,owner,callSid,lead,JSON.stringify({accountSid:context.accountSid,to:context.from,from:phone,body:'PRIVATE_'+label+'_SMS'}),smsToken,smsProvider,at,at);
+  const alert=db.prepare("SELECT id FROM ownerAlerts WHERE ownerId=? AND eventType='lead.created' AND aggregateId=?").get(owner,lead).id;
+  db.prepare("UPDATE ownerAlerts SET status='FAILED' WHERE ownerId=? AND id=?").run(owner,alert);
   const nonce=await createVoiceSessionNonceService({repository:createVoiceNonceRepository({database:db})}).issue(context);
   const voiceStore=createVoiceSessionStore({database:db});voiceStore.createSession({sessionKey:crypto.createHash('sha256').update(nonce.nonce).digest('hex'),context,expiresAt:nonce.expiresAt});
   const auth={};for(const [role,id] of [['owner',owner],['staff',staff]]) {
     const receipt=sessions.create(db.prepare('SELECT * FROM users WHERE id=?').get(id));
     auth[role]={token:receipt.token,cookie:(process.env.NODE_ENV==='production'?'__Host-':'')+'otc_refresh_'+receipt.sessionId+'='+receipt.refreshToken};
   }
-  tenants[label]={label,owner,staff,password,passwordHash,bookRevision:bridge.bookRevision(book),email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,hold,delivery,confirmationId,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
+  tenants[label]={label,owner,staff,transfer,sms,smsToken,smsProvider,alert,password,passwordHash,bookRevision:bridge.bookRevision(book),email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,hold,delivery,confirmationId,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
   // Unequal counters catch aggregate leaks that contain no identifying strings.
   if(label==='B')for(let index=0;index<3;index++)db.prepare('INSERT INTO calls(id,ownerId,status,summaryText,createdAt) VALUES(?,?,?,?,?)').run(uuid(800+index),owner,'COMPLETED','PRIVATE_B_EXTRA_CALL',at);
 }
+// Keep seeded notification work outside this authorization-only observation window.
+db.prepare('UPDATE ownerAlerts SET nextAttemptAt=? WHERE ownerId IN (?,?)').run(Date.now()+86400000,tenants.A.owner,tenants.B.owner);
 function snapshot(owner) {
   const rows={};
   for(const {name} of db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all()) {
