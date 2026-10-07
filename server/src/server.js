@@ -12,6 +12,7 @@ import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
 import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
 import {startBackupScheduler} from './backups.js';
+import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from './offsiteBackups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
 import { installOwnerIntegrationRoutes } from './ownerIntegrationRoutes.js';
 import express from 'express';
@@ -208,6 +209,8 @@ installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
+const offsiteBackups = createOffsiteBackupService(db,deploymentConfig);
+installOffsiteBackupStatusRoute(app,{service:offsiteBackups,requireAuth});
 
 if (process.env.NODE_ENV !== 'production') {
   app.get('/api/schema', (_req, res) => res.json({ createTableStatements: CREATE_TABLE_STATEMENTS }));
@@ -521,8 +524,9 @@ const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[
 const stopSmsWorker=smsDelivery.start({onError:code=>console.error(`[sms-worker] ${code}`)});
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopSmsWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();});
+if(deploymentConfig.production) offsiteBackups.start();
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopSmsWorker,offsiteBackups.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();void offsiteBackups.stop();});
 
 export {httpServer,lifecycle};
 

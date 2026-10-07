@@ -11,7 +11,7 @@ This deploys the existing owner app, widget assets and Express API as one Docker
 5. Set the variables below before deploying. Set **RAILWAY_DEPLOYMENT_DRAINING_SECONDS=120** and **SHUTDOWN_TIMEOUT_SECONDS=110**. Railway sends SIGTERM and eventually SIGKILL; the longer platform window allows the app to finish HTTP handlers, webhook delivery and backups before closing SQLite. Leave overlap at 0 for this single-volume setup. [Deployment teardown](https://docs.railway.com/deployments/deployment-teardown).
 6. Deploy. Confirm health returns 200 and logs show the API listening. A missing mount, unwritable storage or invalid production configuration must stop startup, rather than quietly create a fresh database inside the image.
 
-Railway bills compute and storage separately. Choose the plan in your own account; this work purchases nothing. Volume storage currently lists $0.15/GB-month. Size it for the live database, price books, temporary backup staging and at least 120 full snapshots at the default four per day for 30 days, plus headroom. Set a usage budget and watch free space. [Railway pricing](https://docs.railway.com/pricing).
+Railway bills compute and storage separately. Choose the plan in your own account; this work purchases nothing. Volume storage currently lists $0.15/GB-month. Size it for the live database, price books, temporary backup staging and at least 150 full snapshots at the default four local plus one off-site staging snapshot per day for 30 days, plus headroom. Set a usage budget and watch free space. [Railway pricing](https://docs.railway.com/pricing).
 
 ## 2. Set environment variables
 
@@ -119,7 +119,7 @@ fixtures are not live integration acceptance. See
 
 ## 6. Choose an independent off-site destination
 
-Snapshots on /data can recover from application mistakes but not loss of that entire volume. No upload destination has been selected or connected. The earlier platform spec's continuous replication/point-in-time recovery is also not implemented by these six-hour snapshots.
+Snapshots on /data alone cannot recover from loss of the entire volume. The application now supports encrypted daily uploads to a separately configured private S3-compatible bucket; see [off-site variables, status and restore](OFFSITE_BACKUPS.md). No real destination has been provisioned or connected by this implementation. Daily full snapshots do not implement the platform spec's separate continuous-replication/point-in-time-recovery requirement.
 
 These storage-only USD estimates use an average **50 GB stored**, not a promise of your final bill. API operations, transfers and taxes may add cost.
 
@@ -128,7 +128,7 @@ These storage-only USD estimates use an average **50 GB stored**, not a promise 
 | Cloudflare R2 Standard | $0.015/GB-month, with 10 GB-month free allowance | $0.75 before the free allowance; $0.60 if the allowance is unused |
 | Backblaze B2 | $6.95/TB-month | approximately $0.35 before applicable credits |
 
-Sources checked 2026-10-01: [R2 pricing and operation charges](https://developers.cloudflare.com/r2/pricing/), [B2 pricing](https://www.backblaze.com/cloud-storage/pricing). R2 lists free internet egress; B2 includes egress up to its published allowance. Choose the destination, region, access policy and budget before an uploader is added. Preserve secrets separately; never make the bucket or DB public.
+Sources checked 2026-10-01: [R2 pricing and operation charges](https://developers.cloudflare.com/r2/pricing/), [B2 pricing](https://www.backblaze.com/cloud-storage/pricing). R2 lists free internet egress; B2 includes egress up to its published allowance. Choose the destination, region, access policy and budget before enabling the uploader. Preserve secrets separately; never make the bucket or DB public.
 
 Railway's own volume backup schedules are an additional account-level option with its own storage charges, not this app's independent off-site destination. [Railway volume backups](https://docs.railway.com/volumes/backups).
 
