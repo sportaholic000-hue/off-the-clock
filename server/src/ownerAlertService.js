@@ -47,6 +47,13 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
       const request=query('SELECT * FROM bookingPreferences WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(request.customerJson);return ['Preferred-time request (not booked)',c.name,c.phone,c.email,request.note,...parseArray(request.preferredWindowsJson).map(w=>JSON.stringify(w))];
     }
+    if(['appointment.booked','appointment.changed'].includes(row.eventType)){
+      const event=query('SELECT aggregateId,payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND eventType=?').get(owner,id,row.eventType);
+      const appointment=event&&query('SELECT customerJson,status,startAtUtc,endAtUtc,timezone,locationJson FROM appointments WHERE ownerId=? AND id=?').get(owner,event.aggregateId);
+      if(!appointment)throw Error('ALERT_SOURCE_MISSING');
+      const c=storedObject(appointment.customerJson),d=storedObject(event.payloadJson);
+      return [row.eventType==='appointment.booked'?'Booking confirmed':'Booking changed',c.name,c.phone,c.email,d.action==='cancel'?'CANCELLED':d.status||appointment.status,d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,d.timezone||appointment.timezone,JSON.stringify(storedObject(appointment.locationJson))];
+    }
     if(row.eventType==='voice.urgent_flagged'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(outbox.payloadJson);return ['Urgent caller request',d.reason,d.summary,d.callerNumber];

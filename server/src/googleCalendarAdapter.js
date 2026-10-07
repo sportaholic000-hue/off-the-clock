@@ -332,6 +332,7 @@ function createEventPayload(request, bounds) {
     visibility: 'private',
     guestsCanInviteOthers: false,
     guestsCanModify: false,
+    reminders: {useDefault:false,overrides:[]},
     extendedProperties: {
       private: { appointmentId: request.appointmentId, bookingMode: request.bookingMode }
     }
@@ -627,7 +628,7 @@ export function createGoogleCalendarAdapter({
     if(!GOOGLE_EVENT_ID.test(input.eventId)||!['cancel','reschedule'].includes(input.action))throw invalidRequest();
     const bounds=input.action==='reschedule'?orderedUtcBounds(input.startAtUtc,input.endAtUtc):null;
     const payload=await apiRequest({ownerId,calendarId,path:`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(input.eventId)}?sendUpdates=none`,method:'PATCH',write:true,
-      body:bounds?{start:{dateTime:bounds.start,timeZone:'UTC'},end:{dateTime:bounds.end,timeZone:'UTC'}}:{status:'cancelled'}});
+      body:bounds?{reminders:{useDefault:false,overrides:[]},attendees:[],start:{dateTime:bounds.start,timeZone:'UTC'},end:{dateTime:bounds.end,timeZone:'UTC'}}:{status:'cancelled',reminders:{useDefault:false,overrides:[]},attendees:[]}});
     const event=normalizeEvent(payload,input.eventId,{ambiguous:true});
     if(bounds?(event.status!=='CONFIRMED'||event.startAtUtc!==bounds.start||event.endAtUtc!==bounds.end):event.status!=='CANCELLED')throw invalidResponse({ambiguous:true});
     return event;

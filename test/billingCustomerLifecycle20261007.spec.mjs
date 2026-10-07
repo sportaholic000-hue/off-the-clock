@@ -220,16 +220,21 @@ test('merged 90-day erasure removes callback, alert, SMS and inbound receipt cop
     f.db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.sms_requested',?,'{}','SENT',?,?)").run(sms,owner,sid,START,START);
     f.db.prepare("INSERT INTO voiceSmsDeliveries(id,ownerId,callSid,recordType,recordId,requestJson,callbackToken,status,createdAt,updatedAt) VALUES(?,?,?,'lead',?,'SYNTHETIC_PRIVATE',?,'SENT',?,?)").run(sms,owner,sid,lead,n.repeat(48),START,START);
     f.db.prepare("INSERT INTO voiceSmsAttempts(id,ownerId,deliveryId,attemptNumber,status,startedAt) VALUES(?,?,?,1,'SENT',?)").run('SYNTHETIC-sms-attempt-'+n,owner,sms,START);
+    const email='SYNTHETIC-email-'+n;
+    f.db.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'quote.email_requested',?,'{}','DELIVERED',?,?)").run(email,owner,lead,START,START);
+    f.db.prepare('INSERT INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)').run(owner,email,sid,'SYNTHETIC_PRIVATE',START);
+    f.db.prepare('INSERT INTO quoteEmailRecipients(ownerId,requestId,callSid,email,version,updatedAt) VALUES(?,?,?,?,?,?)').run(owner,email,sid,'caller@example.invalid','SYNTHETIC',START);
+    f.db.prepare("INSERT INTO quoteEmailDeliveries(id,ownerId,requestId,recordId,callSid,recipient,businessName,narration,messageJson,tokenHash,expiresAt,status,createdAt,updatedAt) VALUES(?,?,?,?,?,'caller@example.invalid','SYNTHETIC','SYNTHETIC_PRIVATE','{}',?,0,'DELIVERED',?,?)").run(email,owner,email,lead,sid,n.repeat(64),START,START);
     scopes[owner]=createHash('sha256').update('inbound\0'+owner+'\0'+sid).digest('hex');
     f.db.prepare("INSERT INTO voiceToolIdempotencyReceipts(scopeHash,idempotencyKey,requestDigest,status,responseJson,leaseExpiresAtUtc,createdAt,updatedAt) VALUES(?,'inbound',?,'COMPLETED','SYNTHETIC_PRIVATE',?,?,?)").run(scopes[owner],'a'.repeat(64),START,START,START);
   }
-  const tables=['callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries','calls','leads'];
-  const before=Object.fromEntries(tables.map(table=>[table,f.db.prepare('SELECT * FROM '+table+' WHERE ownerId=? ORDER BY id').all(B)]));
+  const tables=['quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries','calls','leads'];
+  const before=Object.fromEntries(tables.map(table=>[table,f.db.prepare('SELECT * FROM '+table+' WHERE ownerId=? ORDER BY rowid').all(B)]));
   const financial=f.db.prepare('SELECT id FROM billingLifecycleNotices WHERE ownerId=?').all(A);
   f.setTime('2027-02-18T11:59:59.999Z');await f.lifecycle.processOwner(A);
   assert.equal(f.db.prepare('SELECT count(*) n FROM callbackRequests WHERE ownerId=?').get(A).n,1);
   f.setTime('2027-02-18T12:00:00.000Z');await f.lifecycle.processOwner(A);
-  for(const table of tables){assert.equal(f.db.prepare('SELECT count(*) n FROM '+table+' WHERE ownerId=?').get(A).n,0,table);assert.deepEqual(f.db.prepare('SELECT * FROM '+table+' WHERE ownerId=? ORDER BY id').all(B),before[table],table+' B');}
+  for(const table of tables){assert.equal(f.db.prepare('SELECT count(*) n FROM '+table+' WHERE ownerId=?').get(A).n,0,table);assert.deepEqual(f.db.prepare('SELECT * FROM '+table+' WHERE ownerId=? ORDER BY rowid').all(B),before[table],table+' B');}
   assert.equal(f.db.prepare('SELECT count(*) n FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(scopes[A]).n,0);
   assert.equal(f.db.prepare('SELECT count(*) n FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(scopes[B]).n,1);
   for(const {id} of financial)assert.ok(f.db.prepare('SELECT id FROM billingLifecycleNotices WHERE ownerId=? AND id=?').get(A,id));

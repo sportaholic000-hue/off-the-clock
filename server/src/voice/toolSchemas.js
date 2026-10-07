@@ -3,7 +3,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FORBIDDEN_KEYS = new Set(['ownerpricing','price','amount','total','offeringid','proto','ownerid','tenantid','tenantownerid','accountsid','callsid','from','to','phonenumber','twilionumber','twilionumbersid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','pricebook','bookversion','ownerspricing','pricing','rate','rates','unitrate','baserate','cost','internalcost','markup','margin','datetime','rawdatetime','startdatetime','enddatetime','starttime','endtime','durationminutes','prototype','constructor']);
 const FORBIDDEN_DERIVED_KEYS = new Set(['hourlyrate','laborrate','materialrate','ownerrate','rawrate','unitprice','unitcost','laborcost','materialcost','estimatedcost','estimatedprice','customerprice','ownerprice','requestedatetime','requesteddatetime','scheduleddatetime']);
 const FORBIDDEN_ID_SUFFIXES = ['ownerid','tenantid','accountsid','callsid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','offeringid'];
-export const VOICE_TOOL_NAMES = Object.freeze(['matchService','getQuote','checkAvailability','bookAppointment','captureLead','logQuoteRequest','sendSms','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
+export const VOICE_TOOL_NAMES = Object.freeze(['matchService','getQuote','checkAvailability','bookAppointment','captureLead','logQuoteRequest','prepareQuoteEmail','sendQuoteEmail','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
 export const MUTATING_VOICE_TOOLS = Object.freeze(VOICE_TOOL_NAMES.filter(name => !['matchService','getCustomerContext'].includes(name)));
 export class VoiceToolValidationError extends Error {
   constructor(code) { super('The requested voice action was not valid.'); this.name='VoiceToolValidationError'; this.code=code; this.statusCode=400; }
@@ -87,14 +87,15 @@ function captureLead(args){
   return result;
 }
 function logQuoteRequest(args){const result={description:text(args.description,{max:1000})};if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);return result;}
-function sendSms(args){return {template:oneOf(args.template,['quote','booking','callback','reminder']),recordHandle:handle(args.recordHandle)};}
+function prepareQuoteEmail(args){const email=text(args.email,{max:254}).toLowerCase();if(!EMAIL.test(email)||/[<>\r\n]/.test(email))fail('INVALID_TOOL_EMAIL');return {quoteHandle:handle(args.quoteHandle),email};}
+function sendQuoteEmail(args){return {emailConfirmationHandle:handle(args.emailConfirmationHandle),customerConfirmed:confirmed(args.customerConfirmed)};}
 function flagUrgent(args){const result={reason:oneOf(args.reason,['active_leak','flooding','safety','complaint'])};if(args.summary!==undefined)result.summary=text(args.summary,{max:500});if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);return result;}
 function transferCall(args){const result={reason:oneOf(args.reason,['caller_requested','urgent','escalation']),customerConfirmed:confirmed(args.customerConfirmed)};if(args.notes!==undefined)result.notes=text(args.notes,{max:1000});if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);if(args.inquiryNumber!==undefined){if(!Number.isSafeInteger(args.inquiryNumber)||args.inquiryNumber<1||args.inquiryNumber>100)fail('INVALID_TOOL_NUMBER');result.inquiryNumber=args.inquiryNumber;}return result;}
 function modifyAppointment(args){
   const action=oneOf(args.action,['reschedule','cancel']);if(action==='reschedule'&&args.slotHandle===undefined)fail('MISSING_TOOL_FIELD');if(action==='cancel'&&args.slotHandle!==undefined)fail('EXTRA_TOOL_FIELD');
   const result={appointmentHandle:handle(args.appointmentHandle),action,customerConfirmed:confirmed(args.customerConfirmed)};if(args.slotHandle!==undefined)result.slotHandle=handle(args.slotHandle);return result;
 }
-const VALIDATORS=Object.freeze({matchService,getQuote,checkAvailability,bookAppointment,captureLead,logQuoteRequest,sendSms,flagUrgent,transferCall,modifyAppointment,getCustomerContext:()=>({})});
+const VALIDATORS=Object.freeze({matchService,getQuote,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext:()=>({})});
 function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;}
 export function validateVoiceToolCall(name,args){
   if(typeof name!=='string'||!Object.hasOwn(VALIDATORS,name))fail('UNKNOWN_VOICE_TOOL');
@@ -119,7 +120,8 @@ const declarations={
   bookAppointment:object({slotHandle:opaque,leadHandle:opaque,customerConfirmed:confirmation},['slotHandle','leadHandle','customerConfirmed']),
   captureLead:object({name:string('Optional caller name; the verified callback phone is already bound to this call.'),email:string('Optional caller email.'),address:object({line1:string('Street address'),line2:string('Optional address line 2'),city:string('City'),region:string('Province or state'),postalCode:string('Postal or ZIP code'),country:string('Two-letter country')},['line1','city','region','postalCode']),notes:string('Caller request and non-pricing callback notes. Preserve the caller words.'),callbackRequested:boolean('True when the caller requests a callback; requires their notes. Reuse inquiryNumber for corrections and retries.'),description:string('Optional caller-described work; never invent scope.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse the number or leadHandle for corrections. Use a different number only for a genuinely separate job on this call.'}}),
   logQuoteRequest:object({description:string("The customer's request needing follow-up."),leadHandle:opaque},['description']),
-  sendSms:object({template:enumeration(['quote','booking','callback','reminder']),recordHandle:opaque},['template','recordHandle']),
+  prepareQuoteEmail:object({quoteHandle:opaque,email:string('Only after the caller asks for a written quote: their stated email address. Returns a read-back; never send before confirmation.')},['quoteHandle','email']),
+  sendQuoteEmail:object({emailConfirmationHandle:opaque,customerConfirmed:confirmation},['emailConfirmationHandle','customerConfirmed']),
   flagUrgent:object({reason:enumeration(['active_leak','flooding','safety','complaint']),summary:string('Optional caller-reported urgency, not an invented diagnosis.'),leadHandle:opaque},['reason']),
   transferCall:object({reason:enumeration(['caller_requested','urgent','escalation']),customerConfirmed:confirmation,notes:string('The caller exact request words. Preserved in a callback if transfer fails.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse for retries; a different number marks a genuinely separate callback request.'}},['reason','customerConfirmed']),
   modifyAppointment:object({appointmentHandle:opaque,action:enumeration(['reschedule','cancel']),slotHandle:opaque,customerConfirmed:confirmation},['appointmentHandle','action','customerConfirmed']),

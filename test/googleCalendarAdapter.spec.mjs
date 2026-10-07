@@ -223,6 +223,9 @@ test('createEvent uses the deterministic BookingService event ID and getEvent va
   assert.deepEqual(body.start, { dateTime: '2026-09-30T10:00:00.000Z', timeZone: 'UTC' });
   assert.deepEqual(body.end, { dateTime: '2026-09-30T10:45:00.000Z', timeZone: 'UTC' });
   assert.equal(body.visibility, 'private');
+  assert.deepEqual(body.reminders,{useDefault:false,overrides:[]});
+  assert.equal(body.attendees,undefined);
+  assert.equal(body.guestsCanInviteOthers,false);
   assert.equal(body.extendedProperties.private.appointmentId, APPOINTMENT_ID);
 });
 
@@ -542,4 +545,11 @@ test('malformed Google response shapes fail closed and create parse failures rem
     assert.equal(error.ambiguous, true);
     return true;
   });
+});
+
+for(const action of ['cancel','reschedule'])test('Owner ruling: '+action+' suppresses all calendar messages and reminders',async()=>{
+  let request;const {adapter}=makeAdapter(async(url,options)=>{request={url,options};return jsonResponse(eventResource(action==='cancel'?'cancelled':'confirmed'));});
+  await adapter.changeEvent({...eventRequest(),action});
+  assert.match(request.url,/sendUpdates=none$/);assert.equal(request.options.method,'PATCH');const body=JSON.parse(request.options.body);
+  assert.deepEqual(body.reminders,{useDefault:false,overrides:[]});assert.deepEqual(body.attendees,[]);
 });

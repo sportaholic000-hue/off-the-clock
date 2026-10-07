@@ -1,3 +1,4 @@
+import {installQuoteEmailSchema} from '../server/src/quoteEmailSchema.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -27,7 +28,7 @@ function database() {
   const db = new DatabaseSync(':memory:');
   db.exec('PRAGMA foreign_keys = ON');
   for (const statement of CREATE_TABLE_STATEMENTS) db.exec(statement);
-  for (const statement of CREATE_INDEX_STATEMENTS) db.exec(statement);
+  for (const statement of CREATE_INDEX_STATEMENTS) db.exec(statement);installQuoteEmailSchema(db);
   db.prepare(`INSERT INTO users (
     id, ownerId, email, passwordHash, firstName, businessName, plan, planStatus,
     trialEndsAt, timezone, role, createdAt
@@ -283,7 +284,7 @@ test('voice tool runtime persists a safe review quote and lead without exposing 
     assert.deepEqual(Object.keys(runtime.handlers).sort(), [
       'bookAppointment', 'captureLead', 'checkAvailability', 'flagUrgent',
       'getCustomerContext', 'getQuote', 'logQuoteRequest', 'matchService',
-      'modifyAppointment', 'sendSms', 'transferCall'
+      'modifyAppointment', 'prepareQuoteEmail', 'sendQuoteEmail', 'transferCall'
     ]);
   } finally { db.close(); }
 });

@@ -1,3 +1,5 @@
+import {createQuoteEmailService} from '../server/src/quoteEmailService.js';
+import {installQuoteEmailSchema} from '../server/src/quoteEmailSchema.js';
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -37,7 +39,7 @@ function provider({fail=false}={}){
   };
 }
 function seedDb(db,owner){
-  db.pragma('foreign_keys = ON');for(const sql of CREATE_TABLE_STATEMENTS)db.exec(sql);for(const sql of CREATE_INDEX_STATEMENTS)db.exec(sql);
+  db.pragma('foreign_keys = ON');for(const sql of CREATE_TABLE_STATEMENTS)db.exec(sql);for(const sql of CREATE_INDEX_STATEMENTS)db.exec(sql);installQuoteEmailSchema(db);
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'synthetic','Synthetic','Synthetic Voice Co','QuoteDone','active','UTC','owner',?)").run(owner,owner+'@example.invalid',NOW);
   db.prepare("INSERT INTO businessProfiles(ownerId,existingPhoneNumber,twilioNumber,twilioNumberSid,phoneProvisioningStatus,operatorEnabled,agentName,knowledgeBaseJson,updatedAt) VALUES(?,?,?,'PN_SYNTHETIC','provisioned',1,'Synthetic Assistant',?,?)").run(owner,FALLBACK,TO,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),NOW);
 }
@@ -62,7 +64,8 @@ async function harness({fail=false}={}){
   const calendar={listBusy:async()=>[],createEvent:async input=>{calendarCreates++;assert.equal(input.ownerId,owner);return {status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
   const booking=createBookingService({db,calendar,clock,slotTokenSecret:'synthetic-booking-secret'.padEnd(64,'x')});
   const fake=provider({fail}),errors=[],app=express();
-  const voice=installProductionVoice({app,database:db,bookingService:booking,runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:ACCOUNT,TWILIO_AUTH_TOKEN:TOKEN,PUBLIC_BASE_URL:ORIGIN,GEMINI_MODEL:'synthetic-live-model',JWT_SECRET:'synthetic-jwt-secret'.padEnd(64,'x')},googleClient:fake.client,clock,onError:code=>errors.push(code)});
+  const emailMessages=[];const quoteEmailDelivery=createQuoteEmailService({database:db,clock:()=>Date.parse(NOW),environment:{PUBLIC_BASE_URL:ORIGIN,EMAIL_FROM:'quotes@example.invalid'},provider:{send:async message=>{emailMessages.push(message);return {accepted:true,id:'SYNTHETIC-email'};}}});
+  const voice=installProductionVoice({app,database:db,bookingService:booking,runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:ACCOUNT,TWILIO_AUTH_TOKEN:TOKEN,PUBLIC_BASE_URL:ORIGIN,GEMINI_MODEL:'synthetic-live-model',JWT_SECRET:'synthetic-jwt-secret'.padEnd(64,'x')},googleClient:fake.client,providers:{quoteEmailDelivery},clock,onError:code=>errors.push(code)});
   const httpServer=app.listen(0,'127.0.0.1');await once(httpServer,'listening');
   const local='http://127.0.0.1:'+httpServer.address().port,callSid='CA'+crypto.randomBytes(16).toString('hex');
   const parameters={AccountSid:ACCOUNT,CallSid:callSid,From:FROM,To:TO,Direction:'inbound'};let ws;
@@ -78,7 +81,7 @@ async function harness({fail=false}={}){
     await until(()=>fake.connects.length>0,'provider startup; '+errors.join(','));return {xml,fallbackPath:new URL(fallback[1]).pathname,ws};
   }
   async function close(){ws?.terminate();await voice.close();httpServer.closeAllConnections?.();await new Promise(resolve=>httpServer.close(resolve));db.close();rmSync(temporary,{recursive:true,force:true});}
-  return {db,owner,custom,mulch,fake,voice,errors,callSid,post,connect,close,get calendarCreates(){return calendarCreates;}};
+  return {db,owner,custom,mulch,fake,voice,errors,callSid,post,connect,close,emailMessages,quoteEmailDelivery,get calendarCreates(){return calendarCreates;}};
 }
 
 // Written before execution: $100/$150, travel $10 for Yes only, 15% tax.
@@ -97,6 +100,14 @@ test('signed provisioned callback -> real dispatcher -> two-tier quote -> availa
     const quoted=await h.fake.tool('getQuote',args,'confirmed-yes');assert.equal(quoted.status,'quoted',JSON.stringify(quoted));
     assert.deepEqual(quoted.options.map(o=>[o.tierName,o.lowEstimate,o.highEstimate,o.currency]),[['Basic',126.5,126.5,'CAD'],['Premium',184,184,'CAD']]);assert.ok(quoted.options.every(o=>o.taxTreatment==='Includes applicable tax.'));
     assert.deepEqual(await h.fake.tool('getQuote',args,'confirmed-yes'),quoted);
+    const prepare=await h.fake.tool('prepareQuoteEmail',{quoteHandle:quoted.quoteHandle,email:'wrong@example.invalid'});
+    const corrected=await h.fake.tool('prepareQuoteEmail',{quoteHandle:quoted.quoteHandle,email:'correct@example.invalid'});assert.match(corrected.readBack,/correct@example.invalid/);
+    assert.notEqual((await h.fake.tool('sendQuoteEmail',{emailConfirmationHandle:prepare.emailConfirmationHandle,customerConfirmed:true})).status,'saved');
+    await h.fake.speak('Yes, correct at example dot invalid is right. Please email the written quote.');
+    assert.equal((await h.fake.tool('sendQuoteEmail',{emailConfirmationHandle:corrected.emailConfirmationHandle,customerConfirmed:true})).status,'saved');
+    await h.quoteEmailDelivery.processOne(h.owner);assert.equal(h.emailMessages.length,1);assert.equal(h.emailMessages[0].to,'correct@example.invalid');
+    assert.equal(h.emailMessages[0].text.split('\n\nView your saved quote: ')[0],quoted.quoteNarration);
+    assert.equal(h.db.prepare('SELECT narration FROM voiceQuoteNarrations WHERE ownerId=?').get(h.owner).narration,quoted.quoteNarration);
     const noFee=await h.fake.tool('getQuote',{...args,customerFeeSelections:{travel:false}},'confirmed-no');assert.deepEqual(noFee.options.map(o=>o.lowEstimate),[115,172.5]);
     assert.equal((await h.fake.tool('getQuote',{...args,customerFeeSelections:{travel:false}},'confirmed-yes')).status,'needs_details');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quoteSubmissions').get().n,2);
     const lead=await h.fake.tool('captureLead',{name:'Synthetic Caller',email:'caller@example.invalid',address:{line1:'10 Test Street',city:'Halifax',region:'NS',postalCode:'B3H 1A1',country:'CA'}});
@@ -147,5 +158,5 @@ test('booking already owns hold then confirm; caller hold/finalize injection sta
   const valid={slotHandle:HANDLE,leadHandle:HANDLE,customerConfirmed:true};assert.deepEqual(validateVoiceToolCall('bookAppointment',valid),valid);for(const extra of [{holdId:'x'},{holdHandle:HANDLE},{action:'hold'},{finalize:true}])assert.throws(()=>validateVoiceToolCall('bookAppointment',{...valid,...extra}));
 });
 test('actual start entry point installs the signed runtime instead of the placeholder',()=>{
-  const source=readFileSync(new URL('../server/src/server.js',import.meta.url),'utf8');assert.match(source,/installProductionVoice\(\{app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling\.syncOwner\(ownerId\),providers:\{smsDelivery\}\}\)/);assert.doesNotMatch(source,/Your Off The Clock operator connection is ready/);assert.equal(JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).scripts.start,'node server/src/server.js');
+  const source=readFileSync(new URL('../server/src/server.js',import.meta.url),'utf8');assert.match(source,/installProductionVoice\(\{app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling\.syncOwner\(ownerId\),providers:\{quoteEmailDelivery\}\}\)/);assert.doesNotMatch(source,/Your Off The Clock operator connection is ready/);assert.equal(JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).scripts.start,'node server/src/server.js');
 });

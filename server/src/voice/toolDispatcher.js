@@ -30,7 +30,7 @@ function normalizeCallContext(value){
 function scanCustomerSafe(value,depth=0,budget={nodes:0},keyPath=''){
   if(++budget.nodes>20000||depth>12)fail('UNSAFE_TOOL_RESULT',502);
   if(value===null||typeof value==='boolean')return;
-  if(typeof value==='string'){const limit=/(?:^|\.)(?:writtenDisclosure|disclaimer)$/.test(keyPath)?VOICE_WRITTEN_LIMIT:4000;if(value.length>limit)fail('UNSAFE_TOOL_RESULT',502);return;}
+  if(typeof value==='string'){const limit=/(?:^|\.)(?:writtenDisclosure|disclaimer|quoteNarration)$/.test(keyPath)?VOICE_WRITTEN_LIMIT:4000;if(value.length>limit)fail('UNSAFE_TOOL_RESULT',502);return;}
   if(typeof value==='number'){if(!Number.isFinite(value))fail('UNSAFE_TOOL_RESULT',502);return;}
   if(Array.isArray(value)){if(value.length>100)fail('UNSAFE_TOOL_RESULT',502);value.forEach((item,index)=>scanCustomerSafe(item,depth+1,budget,keyPath+'.'+index));return;}
   assertPlainObject(value,'UNSAFE_TOOL_RESULT');if(Object.keys(value).length>100)fail('UNSAFE_TOOL_RESULT',502);
@@ -72,6 +72,7 @@ const PROJECTORS=Object.freeze({
     for(const key of ['priceDrivers','pricedScope','additionalWork','followUps','skippedAddons'])copyIf(result,output,key,resultTextList);
     for(const key of ['customerMessage','additionalWorkStatus','currency','taxTreatment','priceUnit'])copyIf(result,output,key,value=>resultText(value,2000));
     copyIf(result,output,'questionContract',publicQuestionContract);
+    copyIf(result,output,'quoteNarration',value=>resultText(value,VOICE_WRITTEN_LIMIT));
     try{
       if(result.options!==undefined)output.options=projectVoiceOptions(result.options);
       const written=result.writtenDisclosure??result.disclaimer;if(written!==undefined){resultText(written,VOICE_WRITTEN_LIMIT);output.writtenDisclosure=written;}
@@ -88,7 +89,8 @@ const PROJECTORS=Object.freeze({
   bookAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   captureLead(result){const output=baseResult(result);copyIf(result,output,'leadHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   logQuoteRequest(result){const output=baseResult(result);copyIf(result,output,'requestHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
-  sendSms(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
+  prepareQuoteEmail(result){const output=baseResult(result);copyIf(result,output,'emailConfirmationHandle',resultHandle);copyIf(result,output,'readBack',value=>resultText(value,2000));return output;},
+  sendQuoteEmail(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'deliveryStatus',value=>resultText(value,80));return output;},
   flagUrgent(result){const output=baseResult(result);copyIf(result,output,'caseHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   transferCall(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'callbackSaved',value=>{if(typeof value!=='boolean')fail('INVALID_TOOL_RESULT',502);return value;});return output;},
   modifyAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},

@@ -76,10 +76,12 @@ export function projectVoiceQuote(response, quoteHandle, followUps = []) {
   if (followUps.length) output.followUps = list(followUps);
   if (record(response?.pricedScope)) {
     const facts = response.pricedScope.facts || [];
+    if(facts.length>29)throw new TypeError('Quote scope exceeds its bounded contract.');
     output.pricedScope = [response.pricedScope.service, ...facts.map(fact => `${fact.label}: ${String(fact.value ?? 'Not supplied')}`)].filter(Boolean).slice(0, 30).map(item => text(item, 1000));
   }
   output.voiceSummary = conciseVoiceSummary(output);
   output.disclaimer = output.voiceSummary;
+  if(released)output.quoteNarration=quoteNarration(output,response);
   if (Buffer.byteLength(JSON.stringify(output), 'utf8') > VOICE_RESULT_BYTES) throw new TypeError('Voice result exceeds its transport limit.');
   return output;
 }
@@ -89,13 +91,10 @@ export function projectVoiceOptions(options) {
   return options.map(optionProjection);
 }
 
-// Written delivery must carry the frozen receipt's qualifications as well as
-// its prices. The caller enforces the SMS budget by refusing, never truncating.
-export function quoteSmsBody(response) {
-  if (Array.isArray(response?.pricedScope?.facts) && response.pricedScope.facts.length > 29) throw new TypeError('SMS scope exceeds its bounded contract.');
-  const projected = projectVoiceQuote(response);
+// One complete script is presented on the call and frozen for email delivery.
+function quoteNarration(projected,response) {
   if (projected.status !== 'quoted') return 'Your pricing request has been saved for review. No price has been confirmed.';
-  const parts = ['Your saved estimate: ' + projected.voiceSummary];
+  const parts = [projected.voiceSummary];
   if (projected.pricedScope?.length) parts.push('Priced scope: ' + projected.pricedScope.join('; ') + '.');
   if (projected.additionalWork?.length) parts.push('Separately unpriced work: ' + projected.additionalWork.join('; ') + '.');
   if (projected.customerMessage) parts.push(projected.customerMessage);
@@ -106,5 +105,7 @@ export function quoteSmsBody(response) {
       parts.push((projected.options.length > 1 ? option.tierName + ': ' : '') + option.writtenDisclosure);
     }
   }
-  return parts.join(' ');
+  const narration=parts.join(' ');
+  if(narration.length>VOICE_WRITTEN_LIMIT)throw new TypeError('Quote narration exceeds its bounded contract.');
+  return narration;
 }

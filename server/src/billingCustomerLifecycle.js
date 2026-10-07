@@ -90,7 +90,7 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
   query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
 }
 
-const DATA_TABLES=['callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
+const DATA_TABLES=['quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
   'appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
   'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
   'billingVoiceUsage','webhookDeliveries','leads','quoteRequests','quotes','calls','customers'];

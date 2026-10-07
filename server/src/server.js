@@ -1,5 +1,5 @@
-import {createVoiceSmsService} from './voiceSmsService.js';
-import {createVoiceSmsProvider,installVoiceSmsStatusRoute} from './voiceSmsProvider.js';
+import {createQuoteEmailService} from './quoteEmailService.js';
+import {installQuoteEmailRoutes} from './quoteEmailRoutes.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
@@ -159,7 +159,7 @@ migrate();
 migrateLegacyGoogleCalendarCredentials();
 const outboundWebhooks = createOutboundWebhookService({database:db,ownerQuery});
 const ownerAlerts=createOwnerAlertService({database:db,ownerQuery});
-const smsDelivery=createVoiceSmsService({database:db,ownerQuery,provider:createVoiceSmsProvider({database:db,ownerQuery})});
+const quoteEmailDelivery=createQuoteEmailService({database:db,ownerQuery});
 const calendarOAuthState = createCalendarOAuthStateService({ database: db });
 
 const bookingTokenSecret = String(process.env.BOOKING_SLOT_TOKEN_SECRET || '');
@@ -488,12 +488,12 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
 });
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
-  res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'A2P status', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
+  res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
-installVoiceSmsStatusRoute(app,{service:smsDelivery,asyncHandler});
-const voiceRuntime=installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling.syncOwner(ownerId),providers:{smsDelivery}});
+installQuoteEmailRoutes(app,{service:quoteEmailDelivery});
+const voiceRuntime=installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling.syncOwner(ownerId),providers:{quoteEmailDelivery}});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
@@ -526,12 +526,12 @@ const httpServer = app.listen(port, () => {
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
-const stopSmsWorker=smsDelivery.start({onError:code=>console.error(`[sms-worker] ${code}`)});
+const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error(`[quote-email-worker] ${code}`)});
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopSmsWorker,offsiteBackups.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopSmsWorker();void backupWorker?.stop();void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopQuoteEmailWorker,offsiteBackups.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

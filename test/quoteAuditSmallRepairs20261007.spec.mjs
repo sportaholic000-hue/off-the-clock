@@ -7,7 +7,7 @@ import {includedFixture} from './quoteEngineVNextFixtures.mjs';
 import {generateQuoteVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
 import {bindVoiceQuoteInputs,voiceQuestionContract} from '../server/src/voice/voiceQuoteContract.js';
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
-import {smsFixture} from './ownerAlertsDelivery20261006Fixture.mjs';
+import {quoteEmailFixture} from './quoteEmailFixture.mjs';
 import {at,secret} from './leadCaptureRepair20261006Fixture.mjs';
 import {createVoiceHandleStore} from '../server/src/voice/voicePersistence.js';
 import {validateDeploymentConfig} from '../server/src/deploymentConfig.js';
@@ -42,7 +42,7 @@ test('audit repair: bare-floor binding quotes $668 without a fictitious product 
   assert.equal(a.quote(contradictory).customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 test('audit repair: real phone match and quote accept a confirmed bare-floor job',async t=>{
-  const h=smsFixture(t),f=bareFloor();delete f.ownerPricing.origin;
+  const h=quoteEmailFixture(t),f=bareFloor();delete f.ownerPricing.origin;
   savePricebook(h.c.ownerId,{services:[f.ownerPricing],defaults:{...f.businessDefaults,currency:'CAD'}});
   let book=loadPricebook(h.c.ownerId);
   approveApplicationService(h.c.ownerId,book.services[0].id,{revision:bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true},{timeZone:'UTC',quoteInstant:at});
@@ -89,32 +89,25 @@ test('audit repair: positive roof tier retains allocation gate and unclassified 
   const invalid=includedRoof();delete invalid.ownerPricing.zeroPricePolicy;
   assert.equal(generateQuoteVNext(invalid).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
-function savedSms(h,receipt){
-  const recordId='SYNTHETIC-audit-sms',requestId='SYNTHETIC-audit-submission';
-  h.db.prepare("INSERT INTO quotes(id,ownerId,callId,serviceType,resultJson,status,createdAt) VALUES(?,?,?,'CUSTOM',?,'INSTANT',?)").run(recordId,h.c.ownerId,h.c.callSid,JSON.stringify({customerResult:receipt,privateRate:'PRIVATE_RATE_MUST_NOT_LEAK'}),at);
-  h.db.prepare("INSERT INTO quoteSubmissions(ownerId,requestId,contentDigest,recordId,resultType,bookRevision,originalSubmissionJson,internalOutcomeJson,customerResponseJson,createdAt) VALUES(?,?,'SYNTHETIC',?,?,'SYNTHETIC','{}','{}',?,?)").run(h.c.ownerId,requestId,recordId,receipt.resultType,JSON.stringify(receipt),at);
-  const store=createVoiceHandleStore({database:h.db,secret,clock:()=>new Date(at)});
-  return store.issue({context:h.c,type:'quote',resourceKey:recordId,reference:{recordId,requestId,resultType:receipt.resultType},expiresAt:new Date(Date.parse(at)+3600000)});
-}
 const fixedReceipt=()=>({resultType:'INSTANT_ESTIMATE_READY',currency:'CAD',taxTreatment:'No tax added.',priceUnit:'per visit',options:[{tierName:'Base',lowEstimate:100,midEstimate:100,highEstimate:100,skippedAddons:['Clipping bagging and disposal'],disclaimer:'[SYNTHETIC] Measured mowing only. Access must be clear.'}]});
-test('audit repair: outgoing frozen partial SMS retains currency, exclusions, scope and separate work',async t=>{
-  const h=smsFixture(t),receipt={resultType:'PARTIAL_ESTIMATE_READY',pricedEstimate:fixedReceipt(),pricedScope:{service:'[SYNTHETIC] Mowing',facts:[{label:'Measured area',value:'5,000 square feet'}]},additionalWork:[{description:'[SYNTHETIC] Remove stump'}],fullJobTotal:null};
-  const recordHandle=savedSms(h,receipt);await h.tool('sendSms',{template:'quote',recordHandle});
-  assert.equal(h.sends(),1);const body=JSON.parse(h.rows()[0].requestJson).body;
+test('audit repair: outgoing frozen partial email retains currency, exclusions, scope and separate work',async t=>{
+  const h=quoteEmailFixture(t),receipt={resultType:'PARTIAL_ESTIMATE_READY',pricedEstimate:fixedReceipt(),pricedScope:{service:'[SYNTHETIC] Mowing',facts:[{label:'Measured area',value:'5,000 square feet'}]},additionalWork:[{description:'[SYNTHETIC] Remove stump'}],fullJobTotal:null};
+  await h.queue(h.savedQuote(receipt));await h.emailService().dispatchOnce();
+  assert.equal(h.sends(),1);const body=JSON.parse(h.rows()[0].messageJson).text;
   for(const text of ['$100 CAD per visit','No tax added.','Clipping bagging and disposal','Remove stump','Access must be clear.','5,000 square feet','A total for all requested work is not available.'])assert.ok(body.includes(text),body);
   assert.ok(!body.includes('100.00 to 100.00')&&!body.includes('..')&&!body.includes('PRIVATE_RATE'));
   assert.deepEqual(JSON.parse(h.db.prepare('SELECT customerResponseJson FROM quoteSubmissions WHERE ownerId=?').get(h.c.ownerId).customerResponseJson),receipt);
 });
-test('audit repair: SMS retains true ranges and each option disclosure',async t=>{
-  const h=smsFixture(t),receipt=fixedReceipt();receipt.currency='USD';receipt.options.push({tierName:'Premium',lowEstimate:125.5,midEstimate:130,highEstimate:150,skippedAddons:[],disclaimer:'[SYNTHETIC] Premium includes bagging.'});
-  await h.tool('sendSms',{template:'quote',recordHandle:savedSms(h,receipt)});
-  const body=JSON.parse(h.rows()[0].requestJson).body;
+test('audit repair: Email retains true ranges and each option disclosure',async t=>{
+  const h=quoteEmailFixture(t),receipt=fixedReceipt();receipt.currency='USD';receipt.options.push({tierName:'Premium',lowEstimate:125.5,midEstimate:130,highEstimate:150,skippedAddons:[],disclaimer:'[SYNTHETIC] Premium includes bagging.'});
+  await h.queue(h.savedQuote(receipt));await h.emailService().dispatchOnce();
+  const body=JSON.parse(h.rows()[0].messageJson).text;
   for(const text of ['Base: $100.00 USD per visit','Premium: $125.50 to $150.00 USD per visit','Premium includes bagging.','Access must be clear.'])assert.ok(body.includes(text),body);
 });
-test('audit repair: SMS refuses an oversized receipt rather than dropping qualifications',async t=>{
-  const h=smsFixture(t),receipt=fixedReceipt();receipt.options[0].disclaimer='[SYNTHETIC] '+ 'Scope restriction. '.repeat(110);
-  await assert.rejects(h.tool('sendSms',{template:'quote',recordHandle:savedSms(h,receipt)}));
-  assert.equal(h.sends(),0);assert.equal(h.rows().length,0);
+test('audit repair: Email preserves long qualifications beyond the former channel limit',async t=>{
+  const h=quoteEmailFixture(t),receipt=fixedReceipt();receipt.options[0].disclaimer='[SYNTHETIC] '+ 'Scope restriction. '.repeat(110);
+  await h.queue(h.savedQuote(receipt));await h.emailService().dispatchOnce();
+  assert.equal(h.sends(),1);assert.ok(JSON.parse(h.rows()[0].messageJson).text.includes(receipt.options[0].disclaimer));
 });
 test('audit repair: startup rejects bcrypt costs that authentication cannot use',()=>{
   for(const cost of [10,11,17,31,'invalid'])assert.throws(()=>validateDeploymentConfig(productionEnv('/tmp/synthetic-audit-volume',{BCRYPT_COST:String(cost)})),/BCRYPT_COST/);

@@ -1,4 +1,4 @@
-export function installVoiceSmsSchema(db){
+export function installNotificationHistorySchema(db){
   db.exec(`CREATE TABLE IF NOT EXISTS voiceSmsDeliveries(
     id TEXT PRIMARY KEY,ownerId TEXT NOT NULL,callSid TEXT NOT NULL,recordType TEXT NOT NULL,recordId TEXT,
     requestJson TEXT,callbackToken TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'PENDING',
@@ -27,6 +27,8 @@ export function installVoiceSmsSchema(db){
        (a.eventType='booking.preference_requested' AND a.aggregateId=NEW.aggregateId AND NEW.eventType=a.eventType) OR
        (a.eventType='quote.requested' AND a.aggregateId=NEW.aggregateId AND NEW.eventType='voice.quote_request_logged'))),NEW.status)
       WHERE ownerId=NEW.ownerId AND id=NEW.id; END;`);
+  // Historical tables are inert: the product no longer has a sender for this channel.
+  db.exec("UPDATE voiceSmsDeliveries SET status='CANCELLED',lastErrorCode='CHANNEL_REMOVED',leaseId=NULL,leaseExpiresAt=NULL WHERE status NOT IN ('SENT','DELIVERED','CANCELLED');");
   // Migration-only repair of historical notification state. Never resend email
   // merely because its old outbox still says PENDING.
   db.exec(`UPDATE outboxEvents AS o SET status=(SELECT a.status FROM ownerAlerts a WHERE a.ownerId=o.ownerId AND
@@ -40,8 +42,8 @@ export function installVoiceSmsSchema(db){
      (a.eventType='quote.requested' AND a.aggregateId=o.aggregateId AND o.eventType='voice.quote_request_logged')));
     INSERT OR IGNORE INTO voiceSmsDeliveries(id,ownerId,callSid,recordType,callbackToken,status,lastErrorCode,createdAt,updatedAt)
     SELECT id,ownerId,COALESCE(json_extract(payloadJson,'$.callSid'),''),COALESCE(json_extract(payloadJson,'$.recordType'),''),lower(hex(randomblob(24))),
-    CASE WHEN status IN ('SENT','DELIVERED') THEN status ELSE 'UNKNOWN' END,
-    CASE WHEN status IN ('SENT','DELIVERED') THEN NULL ELSE 'LEGACY_SMS_NOT_REPLAYABLE' END,createdAt,updatedAt
+    CASE WHEN status IN ('SENT','DELIVERED') THEN status ELSE 'CANCELLED' END,
+    CASE WHEN status IN ('SENT','DELIVERED') THEN NULL ELSE 'CHANNEL_REMOVED' END,createdAt,updatedAt
     FROM outboxEvents WHERE eventType='voice.sms_requested' AND json_valid(payloadJson);
     UPDATE outboxEvents AS o SET status=(SELECT s.status FROM voiceSmsDeliveries s WHERE s.ownerId=o.ownerId AND s.id=o.id)
     WHERE o.eventType='voice.sms_requested' AND EXISTS(SELECT 1 FROM voiceSmsDeliveries s WHERE s.ownerId=o.ownerId AND s.id=o.id);`);

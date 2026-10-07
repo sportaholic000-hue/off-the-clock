@@ -60,7 +60,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     function acceptMessage(value){
       if(closed)return;
       try{jsonData(value);}catch{error();return;}
-      // Text receipt has its own queue. A slow SMS/calendar/tool operation must
+      // Text receipt has its own queue. A slow email/calendar/tool operation must
       // never prevent already received caller words from reaching persistence.
       const received=transcriptions.then(async()=>{
         const body=value.serverContent;if(!body)return;if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');

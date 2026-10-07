@@ -1,3 +1,4 @@
+import {installQuoteEmailSchema} from '../server/src/quoteEmailSchema.js';
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,7 @@ process.env.JWT_SECRET='synthetic-release-date-signing-key-not-for-production';
 const west='2026-11-01T06:30:00.000Z',east='2026-09-30T15:30:00.000Z';
 function setup(t,profile,instant,bookZone='Invalid/Book'){
  const database=new DatabaseSync(':memory:');t.after(()=>database.close());
- for(const sql of [...CREATE_TABLE_STATEMENTS,...CREATE_INDEX_STATEMENTS])database.exec(sql);
+ for(const sql of [...CREATE_TABLE_STATEMENTS,...CREATE_INDEX_STATEMENTS])database.exec(sql);installQuoteEmailSchema(database);
  const ownerId='[SYNTHETIC]-voice-date-'+randomUUID(),accountSid='AC'+'a'.repeat(32),callSid='CA'+'b'.repeat(32),from='+19025550100',to='+19025550101';
  database.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'synthetic','Synthetic','Synthetic Date Co','QuoteDone','active',?,'owner',?)").run(ownerId,ownerId+'@example.invalid',profile,instant);
  database.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,transcriptJson,minutesBilled,createdAt,updatedAt) VALUES(?,?,?,?,?,?,'CONNECTED','[]',0,?,?)").run(randomUUID(),ownerId,callSid,accountSid,from,to,instant,instant);
