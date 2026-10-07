@@ -4,8 +4,8 @@
 //    (CI's command), writing stdout and stderr to test-results.tap while
 //    echoing them.
 // 2. Runs .github/scripts/check-test-results.mjs on that file. It fails on any
-//    failure not listed in .github/known-test-failures.txt, on cancelled tests,
-//    and when the run produced no test summary.
+//    failure, skip, cancelled test or TODO, and when the run produced no
+//    test summary. Historical known failures are diagnostic only.
 //
 // Like CI, the full suite needs the client build (npm --prefix client run build)
 // and Playwright with Chromium for the browser specs:

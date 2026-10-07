@@ -47,6 +47,12 @@ function validContext(context) {
     isVoiceCaller(String(context.from || '')) && E164.test(String(context.to || ''));
 }
 
+function callBindingMismatch() {
+  return Object.assign(new Error('The voice call could not be routed safely.'),{
+    code:'VOICE_CALL_BINDING_MISMATCH',statusCode:403
+  });
+}
+
 export function createVoiceNonceRepository({ database, randomUUID = crypto.randomUUID } = {}) {
   if (!database || typeof database.prepare !== 'function' || typeof database.exec !== 'function') {
     throw new TypeError('Voice nonce persistence requires a synchronous SQLite database.');
@@ -140,6 +146,16 @@ export function createVoiceSessionStore({
   }
 
   return Object.freeze({
+    validateIncomingCall({call}) {
+      if(!call||!CALL_SID.test(String(call.callSid||''))||!ACCOUNT_SID.test(String(call.accountSid||''))||!isVoiceCaller(String(call.from||''))||!E164.test(String(call.to||'')))return false;
+      const existing=database.prepare('SELECT accountSid,callerNumber,destinationNumber FROM calls WHERE callSid=?').get(call.callSid);
+      return !existing||(existing.accountSid===call.accountSid&&existing.callerNumber===call.from&&existing.destinationNumber===call.to);
+    },
+    validateCallBinding({context}) {
+      if(!validContext(context))return false;
+      const existing=database.prepare('SELECT ownerId,accountSid,callerNumber,destinationNumber FROM calls WHERE callSid=?').get(context.callSid);
+      return !existing||(existing.ownerId===context.ownerId&&existing.accountSid===context.accountSid&&existing.callerNumber===context.from&&existing.destinationNumber===context.to);
+    },
     createSession({ sessionKey, context, expiresAt }) {
       if (!validContext(context)) throw new TypeError('Voice call context is invalid.');
       const expectedExpiry = isoFromEpoch(expiresAt, 'Voice session expiry');
@@ -152,7 +168,7 @@ export function createVoiceSessionStore({
         if (existing) {
           if (existing.ownerId !== context.ownerId || existing.accountSid !== context.accountSid ||
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
-            throw new Error('Voice CallSid is already bound to different call data.');
+            throw callBindingMismatch();
           }
           if(existing.status!=='CONNECTING')return {status:'duplicate',callRecordId:existing.id};
           // Only the original nonce can refer to this call. A second inbound
@@ -209,7 +225,7 @@ export function createVoiceSessionStore({
         if (existing) {
           if (existing.ownerId !== context.ownerId || existing.accountSid !== context.accountSid ||
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
-            throw new Error('Voice CallSid is already bound to different call data.');
+            throw callBindingMismatch();
           }
           if(isFinalVoiceCall(existing.status))return {callRecordId:existing.id,terminal:true};
           preserve(context,existing,safeReason,at);

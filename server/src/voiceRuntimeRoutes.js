@@ -295,6 +295,8 @@ async function resolveFallbackTwiml({ resolveFallback, recordFallback, context, 
 export function installVoiceRuntimeRoutes(app, {
   twilioValidator,
   tenantResolver,
+  validateIncomingCall,
+  validateCallBinding,
   nonceService,
   allowedAccountSids,
   publicBaseUrl,
@@ -322,6 +324,8 @@ export function installVoiceRuntimeRoutes(app, {
   if (typeof checkVoiceCap !== "function") fail("VOICE_CAP_CHECK_REQUIRED");
   if (typeof createSession !== "function") fail("VOICE_SESSION_STORE_REQUIRED");
   if (typeof resolveFallback !== "function") fail("VOICE_FALLBACK_RESOLVER_REQUIRED");
+  if (typeof validateCallBinding !== 'function') fail('VOICE_CALL_BINDING_VALIDATOR_REQUIRED');
+  if (typeof validateIncomingCall !== 'function') fail('VOICE_CALL_BINDING_VALIDATOR_REQUIRED');
   if (recordFallback !== undefined && typeof recordFallback !== "function") {
     fail("VOICE_FALLBACK_RECORDER_INVALID");
   }
@@ -350,20 +354,28 @@ export function installVoiceRuntimeRoutes(app, {
         params: signedParameters,
       });
       const call = normalizeIncomingCall(signedParameters, validation?.accountSid, accountAllowlist);
+      // Reject a changed destination before looking it up, so a reused CallSid
+      // cannot distinguish another tenant's number from an unknown number.
+      if(await validateIncomingCall({call})!==true)fail('VOICE_CALL_BINDING_MISMATCH',403);
 
       // Only the signed destination number is ever supplied to the tenant
       // resolver. Body/query owner selectors are intentionally ignored.
-      tenant = await tenantResolver.resolveByCalledNumber({ To: call.to });
-      if (!isPlainObject(tenant) || tenant.calledNumber !== call.to) {
+      const resolvedTenant = await tenantResolver.resolveByCalledNumber({ To: call.to });
+      if (!isPlainObject(resolvedTenant) || resolvedTenant.calledNumber !== call.to) {
         fail("INVALID_TENANT_RESOLUTION", 500);
       }
-      context = Object.freeze({
-        ownerId: tenant.ownerId,
+      const resolvedContext = Object.freeze({
+        ownerId: resolvedTenant.ownerId,
         callSid: call.callSid,
         from: call.from,
-        to: tenant.calledNumber,
+        to: resolvedTenant.calledNumber,
         accountSid: call.accountSid,
       });
+      // Do not expose any tenant fallback or mint a nonce for a CallSid that
+      // already belongs to a different tenant, caller or destination.
+      if(await validateCallBinding({context:resolvedContext})!==true)fail('VOICE_CALL_BINDING_MISMATCH',403);
+      tenant=resolvedTenant;
+      context=resolvedContext;
 
       const build = async()=>{
       const runtimeDecision =
@@ -430,7 +442,8 @@ export function installVoiceRuntimeRoutes(app, {
         if (!isPlainObject(result) || result.status !== "created") {
           fail("VOICE_SESSION_NOT_PERSISTED");
         }
-      } catch {
+      } catch (error) {
+        if(error?.code==='VOICE_CALL_BINDING_MISMATCH')throw error;
         return await resolveFallbackTwiml({
             resolveFallback,
             recordFallback,
@@ -444,6 +457,7 @@ export function installVoiceRuntimeRoutes(app, {
       };
       return sendXml(response,routeIncoming?await routeIncoming({context,build}):await build());
     } catch (error) {
+      if(error?.code==='VOICE_CALL_BINDING_MISMATCH')return sendBoundaryFailure(response,error);
       if(tenant&&context)return response.status(503).type('text/plain').send('Request capture temporarily unavailable. Retry this callback.');
       return sendBoundaryFailure(response, error);
     }
@@ -556,4 +570,3 @@ export function createVoiceWebSocketSessionCoordinator({
     },
   });
 }
-

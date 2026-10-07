@@ -63,7 +63,7 @@ export async function createLaunchPlanFixture({dist, port=0}={}) {
   const handlers=createAuthHandlers({database:db,environment:{NODE_ENV:'test',JWT_SECRET:process.env.JWT_SECRET,
     CLIENT_URL:origin,BCRYPT_COST:12},sendEmail:async message=>{mail.push(message);return {accepted:true};}});
   for(const [route,handler] of [['register',handlers.register],['login',handlers.login],
-    ['forgot-password',handlers.forgotPassword],['reset-password',handlers.resetPassword]]) {
+    ['verify-email',handlers.verifyEmail],['forgot-password',handlers.forgotPassword],['reset-password',handlers.resetPassword]]) {
     app.post('/api/auth/'+route,asyncHandler(handler));
   }
   app.get('/api/auth/account',requireAuth(['owner']),handlers.accountStatus);

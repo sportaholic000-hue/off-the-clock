@@ -71,6 +71,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     twilioValidator:validator,tenantResolver,nonceService,allowedAccountSids:[accountSid],publicBaseUrl,runtimeEnabled:enabled,
     checkOperatorEligibility:({context})=>{const state=account(context.ownerId);return hasOperatorAccess(state.account,{now:new Date(clock())})&&state.profile?.operatorEnabled===1&&state.profile.phoneProvisioningStatus==='provisioned'&&state.profile.twilioNumber===context.to;},
     checkVoiceCap:({context})=>{const state=account(context.ownerId);return trialVoiceCapDecision(state.account,{now:new Date(clock()),minutesUsed:state.minutesUsed});},
+    validateCallBinding:store.validateCallBinding,
+    validateIncomingCall:store.validateIncomingCall,
     createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:store.recordFallback,incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
   });
   const guide=enabled?readFileSync(new URL('../../../specs/voice_quote_flows.md',import.meta.url),'utf8'):null;

@@ -1,4 +1,5 @@
 import { BookingServiceError } from './bookingService.js';
+import {guardTenantRequest} from './tenantRequest.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LOCATION_FIELDS = ['addressLine1', 'addressLine2', 'city', 'region', 'postalCode', 'country'];
@@ -172,6 +173,7 @@ export function installBookingRoutes(app, {
       return res.status(403).json({ error: 'This website is not authorized for this booking link.', code: 'ORIGIN_NOT_ALLOWED' });
     }
     req.tenantOwnerId = resolved.ownerId;
+    if(!guardTenantRequest(req,res,req.tenantOwnerId))return;
     req.bookingContext = resolved;
     return next();
   }

@@ -44,17 +44,35 @@ test('unsafe production link configuration rejects before account creation',asyn
   assert.equal(f.database.prepare('SELECT COUNT(*) AS n FROM users').get().n,0);
 });
 
-test('failed signup delivery leaves a recoverable account and preserves payment gating',async t=>{
+test('failed signup delivery stays generic and recovers only after email verification',async t=>{
   const f=fixture(t);f.state.fail=true;
-  const r=await call(f.handlers.register,signup);assert.equal(r.status,201);assert.equal(r.body.verificationDelivery.status,'retry_needed');
-  assert.equal(r.body.account.plan,'QuoteDone');assert.equal(r.body.account.planStatus,'pending_payment');assert.equal(r.body.account.requestedPlan,'QuoteDone');
-  assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
-  assert.equal((await call(f.handlers.register,signup)).status,409);
+  const r=await call(f.handlers.register,signup);assert.deepEqual(r,{status:202,body:{ok:true}});
+  const account=f.database.prepare('SELECT * FROM users WHERE email=?').get(signup.email);
+  assert.equal(account.plan,'QuoteDone');assert.equal(account.planStatus,'pending_payment');
+  assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,401);
+  assert.deepEqual(await call(f.handlers.register,signup),r);
+  assert.equal(f.database.prepare('SELECT COUNT(*) n FROM authSessions').get().n,0);
   const failed=mailToken(f.mail[0]);assert.equal((await call(f.handlers.verifyEmail,{token:failed})).status,400);
   f.state.fail=false;
-  assert.equal((await call(f.handlers.resendVerification,{}, {userId:r.body.account.id})).status,200);
+  assert.equal((await call(f.handlers.resendVerificationPublic,{email:signup.email})).status,200);
   assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail[1])})).status,200);
+  assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
   assert.equal(f.database.prepare('SELECT planStatus FROM users').get().planStatus,'pending_payment');
+});
+
+test('signup cannot enumerate known emails, obtain a session or replace another account password',async t=>{
+  const f=fixture(t),id=f.user('owner-b');
+  const before=f.database.prepare('SELECT * FROM users WHERE id=?').get(id);
+  const known=await call(f.handlers.register,{...signup,email:before.email});
+  const fresh=await call(f.handlers.register,signup);
+  assert.deepEqual(known,{status:202,body:{ok:true}});assert.deepEqual(fresh,known);
+  assert.deepEqual(f.database.prepare('SELECT * FROM users WHERE id=?').get(id),before);
+  assert.equal(f.database.prepare('SELECT COUNT(*) n FROM authSessions').get().n,0);
+  const unknownLogin=await call(f.handlers.login,{email:'unknown@example.invalid',password:signup.password});
+  assert.deepEqual(await call(f.handlers.login,{email:signup.email,password:signup.password}),unknownLogin);
+  assert.equal(unknownLogin.status,401);
+  assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail[0])})).status,200);
+  assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
 });
 
 test('account status and authenticated resend derive identity from authenticated user',async t=>{
@@ -111,7 +129,9 @@ test('verification accepts legacy GET while rejecting expired or malformed links
 });
 
 test('reset changes the password, consumes all reset links and does not grant paid access',async t=>{
-  const f=fixture(t);const registered=await call(f.handlers.register,signup),id=registered.body.account.id;
+  const f=fixture(t);await call(f.handlers.register,signup);
+  const id=f.database.prepare('SELECT id FROM users WHERE email=?').get(signup.email).id;
+  assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail[0])})).status,200);
   const a=f.tokenService.issue({userId:id,purpose:P.RESET_PASSWORD,replaceOutstanding:false}),b=f.tokenService.issue({userId:id,purpose:P.RESET_PASSWORD,replaceOutstanding:false});
   assert.equal((await call(f.handlers.resetPassword,{token:a.token,password:'new-password'})).status,200);
   for(const token of [a.token,b.token])assert.equal((await call(f.handlers.resetPassword,{token,password:'another-password'})).status,400);

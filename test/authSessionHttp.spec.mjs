@@ -20,7 +20,7 @@ function fixture(t,{env=environment,sessionService,comparePassword,filename=':me
   t.after(()=>database.open&&database.close());
   database.exec('CREATE TABLE users(id TEXT PRIMARY KEY,ownerId TEXT,email TEXT UNIQUE,passwordHash TEXT,firstName TEXT,businessName TEXT,plan TEXT,planStatus TEXT,trialEndsAt TEXT,timezone TEXT,role TEXT,createdAt TEXT,emailVerifiedAt TEXT)');
   installAuthTokenSchema(database);installAuthSessionSchema(database);installAuthLimitSchema(database);
-  for(const id of ['a','b'])database.prepare("INSERT INTO users(id,email,passwordHash,role) VALUES(?,?,'hash:original-pass','owner')").run(id,id+'@example.invalid');
+  for(const id of ['a','b'])database.prepare("INSERT INTO users(id,email,passwordHash,role,emailVerifiedAt) VALUES(?,?,'hash:original-pass','owner','2026-09-29T12:00:00Z')").run(id,id+'@example.invalid');
   let at=Date.now();
   const now=()=>new Date(at),sessions=sessionService??createAuthSessionService(database,{environment:env,clock:now});
   const tokens=createAuthTokenService(database,{clock:now});

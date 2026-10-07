@@ -1,3 +1,21 @@
+# October 7 tenant isolation — hosted gates passed
+
+Branch: `fix/tenant-isolation-20261007`, starting at `73c0062` on the approved release-candidate branch. Tested source/test/CI SHA: **`552585bcc964e9d4bdf4f35f9a1080c300217f48`**.
+[Complete route inventory, source/execution reproductions and matrix](../verification/tenant-isolation-20261007/REPORT.md).
+
+Three disclosures fixed: signed CallSid collision returned another tenant's forwarding number; phone-test errors disclosed foreign CallSid existence; signup disclosed existing account emails. Contradictory selectors and foreign saved quote-service IDs now fail uniformly. Signup requires email verification before owner login.
+
+[Hosted CI run 37566309857](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37566309857) passed cold `npm ci`, owner/widget build, **2,267/2,267** strict quote tests and **2,649/2,649** full-suite tests, with **zero failures/cancellations/skips/TODOs** and zero production dependency vulnerabilities. Both gates include the **199-test** actual-server isolation matrix over a union of **98 registrations**. New routes, anonymous router mounts, changed middleware and new route declarations hidden behind unconfigured flags require explicit coverage review.
+
+Local evidence: focused **287/287** and refined matrix/integration **238/238**, zero failures/skips (counts overlap). Local cold install/build passed; both local full/strict attempts failed with **37 Chromium SIGTRAP startup failures**, zero skips. No complete local browser gate is claimed; hosted cold execution provides the complete suite evidence.
+
+The final matrix tightens public recovery so only `authTokens` receipts can change; every password/session/business/billing row still has to match its snapshot. Application and CI code are unchanged after the tested source SHA. Final pushed-source CI is checked independently before delivery. No subagents, main merge, deployment, provider writes or live data.
+
+## Previous checkpoint
+
+
+---
+
 # October 7 billing lifecycle — hosted gates passed
 
 Branch `feat/billing-lifecycle-20261007` begins at requested, verified base

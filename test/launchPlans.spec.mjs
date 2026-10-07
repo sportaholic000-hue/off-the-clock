@@ -7,11 +7,21 @@ after(closeLaunchPlanDatabase);
 const signup=plan=>({plan,email:plan.toLowerCase()+'-'+crypto.randomUUID()+'@example.invalid',
  password:'launch-plan-password',firstName:'Owner',businessName:'Synthetic launch business'});
 
+async function verifiedSignup(f,input) {
+ const registration=await f.request('/api/auth/register',{body:input});
+ assert.deepEqual(registration,{status:202,body:{ok:true}});
+ const verification=new URL(f.mail.at(-1).text.match(/https?:\/\/\S+/)[0]).hash.slice('#token='.length);
+ assert.equal((await f.request('/api/auth/verify-email',{body:{token:verification}})).status,200);
+ const login=await f.request('/api/auth/login',{body:{email:input.email,password:input.password}});
+ assert.equal(login.status,200);
+ const account=f.db.prepare('SELECT id,plan,planStatus FROM users WHERE email=?').get(input.email);
+ return {token:login.body.token,account};
+}
+
 for(const plan of ['Operator','QuoteDone']) for(const status of ['trialing','active']) {
  test(plan+' signup → verified '+status+' → correct onboarding access',async t=>{
   const f=await createLaunchPlanFixture();t.after(f.close);
-  const registration=await f.request('/api/auth/register',{body:signup(plan)});
-  assert.equal(registration.status,201);const {token,account}=registration.body;
+  const {token,account}=await verifiedSignup(f,signup(plan));
   assert.equal(account.plan,plan);assert.equal(account.planStatus,'pending_payment');
   const stored=()=>f.db.prepare('SELECT plan,planStatus,trialEndsAt FROM users WHERE id=?').get(account.id);
   assert.deepEqual(stored(),{plan,planStatus:'pending_payment',trialEndsAt:null});
@@ -43,7 +53,7 @@ for(const plan of ['Operator','QuoteDone']) for(const status of ['trialing','act
 }
 for(const plan of ['Operator','QuoteDone']) test(plan+' cannot unlock a trial without verified payment evidence',async t=>{
  const f=await createLaunchPlanFixture();t.after(f.close);
- const {body:{token,account}}=await f.request('/api/auth/register',{body:signup(plan)});
+ const {token,account}=await verifiedSignup(f,signup(plan));
  // Locked database guard remains effective against direct status edits.
  f.db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(account.id);
  assert.equal(f.db.prepare('SELECT planStatus FROM users WHERE id=?').get(account.id).planStatus,'pending_payment');
@@ -65,7 +75,7 @@ test('Scale signup is rejected without creating an account',async t=>{
 });
 test('bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session',async t=>{
  const f=await createLaunchPlanFixture();t.after(f.close);const input=signup('QuoteDone');
- const {body:{account}}=await f.request('/api/auth/register',{body:input});
+ const {account}=await verifiedSignup(f,input);
  assert.match(f.db.prepare('SELECT passwordHash FROM users WHERE id=?').get(account.id).passwordHash,/^\$2b\$12\$/);
  // Generated using bcrypt 5.1.1 and cost 12; no existing owner is forced to reset.
  const legacy='$2b$12$julaDaLqmg5.NZuQa57mhOpp5Kv9G7vl8CqB40hr4Dug4AzpQ8g4O';

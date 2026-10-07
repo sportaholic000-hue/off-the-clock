@@ -380,3 +380,24 @@ test('voice runtime binds availability to quote plus lead and sequences one hold
     assert.deepEqual(sequence.map(item => item[0]), ['availability', 'hold', 'confirm']);
   } finally { db.close(); }
 });
+
+
+test('a reused signed CallSid cannot change its tenant, caller, account or destination',()=>{
+  const db=database();
+  try {
+    const store=createVoiceSessionStore({database:db,clock:()=>new Date(NOW),randomUUID:()=> 'synthetic-bound-call'});
+    store.recordFallback({context,reason:'OPERATOR_TOGGLE_OFF'});
+    const before=db.prepare('SELECT * FROM calls WHERE callSid=?').get(CALL);
+    assert.equal(store.validateIncomingCall({call:context}),true);
+    assert.equal(store.validateCallBinding({context}),true);
+    for(const changed of [{ownerId:'synthetic-other'},{accountSid:'AC'+'c'.repeat(32)},{from:'+19025550200'},{to:'+19025550201'}]) {
+      const foreign={...context,...changed};
+      assert.equal(store.validateCallBinding({context:foreign}),false);
+      if(!changed.ownerId)assert.equal(store.validateIncomingCall({call:foreign}),false);
+      assert.throws(()=>store.recordFallback({context:foreign,reason:'VOICE_RUNTIME_DISABLED'}),{code:'VOICE_CALL_BINDING_MISMATCH'});
+      assert.deepEqual(db.prepare('SELECT * FROM calls WHERE callSid=?').get(CALL),before);
+    }
+    assert.equal(store.validateIncomingCall({call:{...context,callSid:'CA'+'e'.repeat(32)}}),true);
+    assert.equal(store.validateIncomingCall({call:{}}),false);
+  }finally{db.close();}
+});

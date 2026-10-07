@@ -282,7 +282,8 @@ async function httpFixture(t) {
 test('real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV',async t=>{
   const f=await httpFixture(t);f.lead('a');f.lead('b',{name:'OTHER_TENANT_NAME'});f.quote('a');f.quote('b');f.booking('a');f.booking('b');
   for(const kind of ['leads','quote-requests','bookings']) {
-    const response=await f.request('/api/exports/'+kind+'?ownerId=b');assert.equal(response.status,200);
+    const denied=await f.request('/api/exports/'+kind+'?ownerId=b');assert.equal(denied.status,403);assert.deepEqual(await denied.json(),{error:'Forbidden'});
+    const response=await f.request('/api/exports/'+kind);assert.equal(response.status,200);
     assert.match(response.headers.get('content-type'),/text\/csv/);assert.match(response.headers.get('content-disposition'),/attachment/);
     assert.equal(response.headers.get('cache-control'),'no-store');assert.doesNotMatch(await response.text(),/OTHER_TENANT_NAME/);
     assert.equal((await f.request('/api/exports/'+kind,{token:null})).status,401);
@@ -294,9 +295,10 @@ test('real authenticated settings expose no keys on GET and cannot mutate anothe
   const f=await httpFixture(t);
   const response=await f.request('/api/integrations/webhook',{method:'PUT',body:{url:'https://a.example.invalid/hooks',events:WEBHOOK_EVENTS}});
   assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');const saved=await response.json();assert.match(saved.signingSecret,/^[a-f0-9]{64}$/);
-  const own=await (await f.request('/api/integrations/webhook?ownerId=b')).json();assert.equal(own.signingSecret,undefined);assert.equal(own.webhook.url,'https://a.example.invalid/hooks');
+  const denied=await f.request('/api/integrations/webhook?ownerId=b');assert.equal(denied.status,403);assert.deepEqual(await denied.json(),{error:'Forbidden'});
+  const own=await (await f.request('/api/integrations/webhook')).json();assert.equal(own.signingSecret,undefined);assert.equal(own.webhook.url,'https://a.example.invalid/hooks');
   const other=await (await f.request('/api/integrations/webhook',{token:f.tokens.b})).json();assert.equal(other.webhook,null);
-  const invalid=await f.request('/api/integrations/webhook',{method:'PUT',body:{url:'https://b.example.invalid',events:WEBHOOK_EVENTS,ownerId:'b'}});assert.equal(invalid.status,400);
+  const invalid=await f.request('/api/integrations/webhook',{method:'PUT',body:{url:'https://b.example.invalid',events:WEBHOOK_EVENTS,ownerId:'b'}});assert.equal(invalid.status,403);assert.deepEqual(await invalid.json(),{error:'Forbidden'});
   await f.request('/api/integrations/webhook',{token:f.tokens.b,method:'DELETE'});assert.ok(f.service.getConfiguration('a').webhook);
 });
 test('owners retain CSV access and can remove a webhook after account cancellation, but cannot add one',async t=>{

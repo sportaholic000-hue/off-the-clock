@@ -1,5 +1,5 @@
-// Fails CI on any test failure not listed in .github/known-test-failures.txt.
-// Known failures that start passing are reported so the list can shrink.
+// Fails CI on any failure, skip, cancellation, TODO or missing summary.
+// Historical known failures are reported but never exempt a failed test.
 import { readFileSync } from 'node:fs';
 const tap = readFileSync(process.argv[2], 'utf8').split('\n');
 const known = new Set(readFileSync('.github/known-test-failures.txt', 'utf8').split('\n').map(s => s.trim()).filter(Boolean));
@@ -14,4 +14,5 @@ for (const n of unexpected) console.log(`::error::New test failure: ${n}`);
 if (Number(summary.cancelled || 0) > 0) { console.log('::error::Tests were cancelled'); process.exit(1); }
 // A run that crashed or never started has no summary; that must fail, not pass.
 if (!(Number(summary.tests) > 0)) { console.log('::error::No test summary found; the test run did not complete'); process.exit(1); }
+if (['fail','skipped','cancelled','todo'].some(key => Number(summary[key] || 0) > 0)) { console.log('::error::The full suite requires zero failures, skips, cancellations and TODOs'); process.exit(1); }
 process.exit(unexpected.length ? 1 : 0);
