@@ -1,0 +1,68 @@
+{
+  "head": "ddaf0cc4e0e9efaa6f6686ce780015065803fd3a",
+  "inputs": [
+    {
+      "branch": "fix/quote-display-defects-20261006",
+      "sha": "26f704b9b8e9f4d3837127716997366f7f899baa",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "feat/overage-and-minute-alerts-20261006",
+      "sha": "130db2148de05cb8b62f5a2595b98b635ce863cb",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "codex/trial-entitlement-policy-20261006",
+      "sha": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "codex/named-review-contact-implementation-20261006",
+      "sha": "17101b0bde43d1ac4bb6506022070a7b1cb93535",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "fix/owner-alerts-delivery-20261006",
+      "sha": "a41c4de565d1beea14745335d96d5b0ae6c3b9cf",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "fix/voice-lifecycle-20261006",
+      "sha": "f2410f259a6361643bc490e6f127fc77ad426316",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "fix/caller-history-followup-20261006",
+      "sha": "46e7f3e19592a8d511a14a34e010e485fb68cbf3",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "fix/booking-calendar-20261006",
+      "sha": "4b6da1d767501847da1bf4aab81d0ed8368d7496",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    },
+    {
+      "branch": "verify/backup-restore-rehearsal-20261006",
+      "sha": "fb7ae652d71610dfe940ed0678449c05c7a8fd1d",
+      "ancestorExit": 0,
+      "engineVersion": "export const ENGINE_VERSION = 'quote-engine-vnext-date-context-20261006-v7';",
+      "missingTests": []
+    }
+  ]
+}

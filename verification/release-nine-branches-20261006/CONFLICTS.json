@@ -1,0 +1,70 @@
+[
+  {
+    "branch": "feat/overage-and-minute-alerts-20261006",
+    "sha": "130db21",
+    "files": {
+      ".github/workflows/ci.yml": "Union of both explicit branch triggers; retain all original gates.",
+      "specs/BUILD_STATUS.md": "Retain both complete historical verification records."
+    }
+  },
+  {
+    "branch": "codex/named-review-contact-implementation-20261006",
+    "sha": "17101b0",
+    "files": {
+      "specs/BUILD_STATUS.md": "Retain named-review-contact record plus all prior branch records."
+    }
+  },
+  {
+    "branch": "fix/owner-alerts-delivery-20261006",
+    "sha": "a41c4de",
+    "files": {
+      "client/src/dashboard.jsx": "Keep MinuteUsage, OwnerAlerts, lead feed, manual refresh, and 30-second/focus usage refresh; apply mounted, generation and session identity guards to usage refresh.",
+      "client/src/quotedone.jsx": "Keep shared quote money formatter and DeliveryActions imports.",
+      "server/src/migrations.js": "Install both billing usage and owner-alert schemas; retain billing checkout recovery migration.",
+      "server/src/server.js": "One production voice installation receives both minute onUsage and SMS provider; register SMS status route and stop all five workers plus backups.",
+      "test/voiceQuotePathCases20261005.mjs": "Combined startup assertion requires both billing onUsage callback and SMS provider, retaining placeholder/start command checks."
+    }
+  },
+  {
+    "branch": "fix/voice-lifecycle-20261006",
+    "sha": "f2410f2",
+    "files": {
+      ".github/workflows/ci.yml": "Union of all explicit branch triggers.",
+      "specs/BUILD_STATUS.md": "Retain complete lifecycle and all existing historical records.",
+      "server/src/voice/productionVoiceRuntime.js": "Combine billing meter/status routes/onUsage with lifecycle readiness, receipts, capture routes, real provider adapters, late prompt compilation, transcript flushing and recovery. Finish lifecycle before meter reconciliation; media close cannot finalize fallback capture.",
+      "server/src/voice/voicePersistence.js": "Retain terminal guard, durable recovery and open fallback capture; zero fallback minutes, preserve AI_FALLBACK exclusion when capture completes or restart recovers.",
+      "server/src/voice/voicePromptCompiler.js": "Use updated guide digest; retain confirmed named contact instead of business-name substitution, plus owner-set deadline rule once.",
+      "server/src/voice/voiceToolRuntime.js": "Keep durable SMS service and anonymous caller identity helpers."
+    }
+  },
+  {
+    "branch": "fix/caller-history-followup-20261006",
+    "sha": "46e7f3e",
+    "files": {
+      ".github/workflows/ci.yml": "Union all explicit branch triggers.",
+      "specs/BUILD_STATUS.md": "Retain caller-history and all prior verification records.",
+      "server/src/voice/productionVoiceRuntime.js": "Complete transcript/lifecycle capture, enrich with caller summary without overwriting lifecycle state, then reconcile metered usage.",
+      "server/src/voice/voiceToolRuntime.js": "Keep SMS and anonymous guards, add canonical customer/history helpers and bounded caller-filtered history; retain call-scoped anonymous customer fallback."
+    },
+    "integration": [
+      "callSummaryService supports metadata-only completion preserving terminal/fallback/transfer state and native SQLite transactions.",
+      "saveVoiceInquiry handles null canonical identity for anonymous callers without sharing their histories."
+    ]
+  },
+  {
+    "branch": "fix/booking-calendar-20261006",
+    "sha": "4b6da1d",
+    "files": {
+      ".github/workflows/ci.yml": "Union all explicit branch triggers.",
+      "specs/BUILD_STATUS.md": "Retain booking/calendar and all prior historical records."
+    }
+  },
+  {
+    "branch": "verify/backup-restore-rehearsal-20261006",
+    "sha": "fb7ae65",
+    "files": {
+      ".github/workflows/ci.yml": "Union all explicit branch triggers.",
+      "specs/BUILD_STATUS.md": "Retain backup/restore and all prior historical records."
+    }
+  }
+]

@@ -19,7 +19,10 @@ test('D04 production SMS provider is wired through the real tool interface',asyn
   const h=await harness(t),c=await h.connect();
   const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Please call about a broken gate',callbackRequested:true});
   const sent=await h.tool(c.callback,'sendSms',{template:'callback',recordHandle:lead.leadHandle});
-  assert.equal(sent.status,'sent');assert.equal(h.writes.filter(x=>x[0]==='sms').length,1);
+  assert.equal(sent.status,'pending');assert.equal(h.writes.filter(x=>x[0]==='sms').length,1);
+  const delivery=h.db.prepare('SELECT status,providerId FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner);
+  assert.equal(delivery.status,'QUEUED');assert.match(delivery.providerId,/^SM/);
+  assert.match(h.writes.find(x=>x[0]==='sms')[1].statusCallback,/\/api\/voice\/sms-status\//);
 });
 test('D06 failed transfer persists the promised callback with caller words and replay identity',async t=>{
   const h=fixture(t),c=h.context(),v=h.voice(c),args={reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Gate fell on driveway'};

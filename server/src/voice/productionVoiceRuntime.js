@@ -123,8 +123,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
           const call=database.prepare('SELECT status FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
           // The signed capture callback owns finalizing a fallback. Media close
           // must neither cut it off nor turn excluded fallback into paid usage.
-          if(!['FALLBACK','AI_FALLBACK'].includes(call?.status))store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration});
-          completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true});
+          const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true});
+          if(!['FALLBACK','AI_FALLBACK'].includes(call?.status))store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration,finalizeMetadata});
+          else finalizeMetadata();
           meter.finish(context,session.callRecordId);
         }catch(error){onError('VOICE_FINAL_CAPTURE_FAILED');throw error;}
       }

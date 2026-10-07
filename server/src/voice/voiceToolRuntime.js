@@ -491,7 +491,7 @@ export function createVoiceToolRuntime({
 
       const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt});
       const internal = {
-        customerId:customer.id,
+        customerId:customer?.id||null,
         voiceVersion: 1,
         voiceFollowUps: followUps,
         applicationOutcome: calculated

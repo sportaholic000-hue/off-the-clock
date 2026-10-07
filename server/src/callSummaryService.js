@@ -38,6 +38,7 @@ export function completeVoiceCall({database,ownerId,callId,callSid,outcome,strea
     query(`UPDATE calls SET status=?,outcome=?,transportOutcome=?,summaryText=?,failureCode=?,streamSid=?,duration=?,completedAt=?,updatedAt=?
       WHERE ownerId=? AND id=? AND callSid=?`).run(outcome.status==='failed'?'FAILED':'COMPLETED',semantic,outcome.reason,transcriptSummary(call.transcriptJson),outcome.status==='failed'?outcome.reason:null,streamSid,duration,at,at,ownerId,callId,callSid);
   };
+  if(database.inTransaction===true||database.isTransaction===true)return work();
   database.exec('BEGIN IMMEDIATE');
   try{const result=work();database.exec('COMMIT');return result;}catch(error){database.exec('ROLLBACK');throw error;}
 }

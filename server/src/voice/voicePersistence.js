@@ -246,15 +246,16 @@ export function createVoiceSessionStore({
       });
     },
 
-    finishCall({context,status,reason,streamSid=null,duration=0}){
+    finishCall({context,status,reason,streamSid=null,duration=0,finalizeMetadata}){
       return immediate(database,()=>{
         const call=boundCall(context);if(!call)throw Error('Call unavailable.');
-        if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING')return;
+        if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING'){finalizeMetadata?.();return;}
         const at=nowIso();
         // Even without an explicit captureLead tool call, preserve the caller's
         // received request. Never mark final if this transaction cannot commit.
         if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
         database.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.status==='FALLBACK'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+        finalizeMetadata?.();
       });
     },
 

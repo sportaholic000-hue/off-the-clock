@@ -1,4 +1,4 @@
-import {resolveCustomer} from './customerIdentityService.js';
+import {resolveCustomer,customerQuery} from './customerIdentityService.js';
 import {randomUUID} from 'node:crypto';
 
 const object=value=>value&&typeof value==='object'&&!Array.isArray(value)?value:{};
@@ -23,6 +23,7 @@ export function saveVoiceInquiry({database,context,callId,key,leadId,customerId,
       AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid`).all(context.ownerId,callId,context.from);
     if(pending.length===1&&String(parsed(pending[0].collectedInputsJson).inquiryKey||'').startsWith('review:'))row=pending[0];
   }
+  customerQuery(database);
   const before=parsed(row?.collectedInputsJson);
   if(row&&(before.voiceVersion!==1||before.contact?.phone!==context.from))throw Error('Invalid inquiry binding.');
   const id=row?.id||leadId||randomUUID();

@@ -39,7 +39,7 @@ try{
  await until(()=>db.prepare('SELECT status FROM calls WHERE callSid=?').get(call).status==='COMPLETED');
  const stored=db.prepare('SELECT duration,minutesBilled,status FROM calls WHERE callSid=?').get(call);assert.equal(stored.duration,3601);assert.equal(stored.minutesBilled,61);
  const context=loadVoiceAccountContext(db,owner);assert.equal(context.minutesUsed,61);
- const next=await incoming('CA'+crypto.randomBytes(16).toString('hex'));assert.doesNotMatch(next,/<Stream /);assert.match(next,/<Dial/);
+ const next=await incoming('CA'+crypto.randomBytes(16).toString('hex'));assert.doesNotMatch(next,/<Stream /);assert.match(next,/<Gather/);assert.doesNotMatch(next,/<Dial/);
  const result={syntheticOnly:true,experimentCount:1,rows:[{id:'V01-trial-cap-does-not-meter-real-call',expected:{durationSeconds:3601,minutesUsed:61,nextCall:'fallback'},actual:{stored,minutesUsed:context.minutesUsed,nextCallStartsAI:next.includes('<Stream '),errors}}]};
  console.log(JSON.stringify(result,null,2));
 }finally{ws?.terminate();await voice.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));db.close();}
