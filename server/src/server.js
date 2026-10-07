@@ -1,5 +1,6 @@
 import {createQuoteEmailService} from './quoteEmailService.js';
 import {installQuoteEmailRoutes} from './quoteEmailRoutes.js';
+import {voiceAdmissionStatus} from './voice/voiceAdmission.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
@@ -173,7 +174,7 @@ const bookingPreferenceService = bookingRuntimeAvailable
   : null;
 const bookingAdminService = createBookingAdminService({ db });
 const ownerCalendarService = createOwnerCalendarService({ ownerQuery, calendar: bookingCalendar });
-const ownerCallService=createOwnerCallService({ownerQuery});
+const ownerCallService=createOwnerCallService({ownerQuery,database:db});
 const billingConfig = runtimeConfig.stripeBilling ? loadBillingConfig() : null;
 const stripeClient = billingConfig
   ? new Stripe(billingConfig.secretKey, {
@@ -488,7 +489,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
 });
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
-  res.json({ shell: 'admin', sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
+  res.set('Cache-Control','no-store').json({ shell: 'admin', voice:voiceAdmissionStatus(db), sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');

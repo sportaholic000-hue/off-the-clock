@@ -29,7 +29,7 @@
   },
   {
     "file": "src/demo/liveDemo.js",
-    "sha256": "9f9f54e5faaaea711cb20dbe8b60069466ee345eba9db54985b1f41335cee543"
+    "sha256": "4a0fe5f2842a92ebb623f4e1afd58480a7c504c25111bb933adf3015531c057e"
   },
   {
     "file": "src/knowledgeDraftRoutes.js",
@@ -53,7 +53,7 @@
   },
   {
     "file": "src/ownerCallRoutes.js",
-    "sha256": "10612c8b45eb234bba69ca9d1f022f2968d6598d0fb1d41d852e5905e375b734"
+    "sha256": "1f8813021a2c4d1f18d615c9696f582d1893f6aba5aa64aef81d701f63b5957f"
   },
   {
     "file": "src/ownerIntegrationRoutes.js",
@@ -81,7 +81,7 @@
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "292a1ea622f289f1566c2d0edd02bf364615b00b2e877bacec73444100912a04"
+    "sha256": "9b5d4dd7b05530f7c341d1b315d018574ab2a06cf86632e3d4da309f2bfd5085"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",

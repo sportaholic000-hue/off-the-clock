@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'feat/no-sms-email-quotes', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006', 'fix/caller-history-followup-20261006', 'fix/booking-calendar-20261006', 'verify/backup-restore-rehearsal-20261006', 'feat/billing-lifecycle-20261007', 'fix/tenant-isolation-20261007', 'fix/engine-leftovers', 'fix/voice-core']
+    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'feat/no-sms-email-quotes', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006', 'fix/caller-history-followup-20261006', 'fix/booking-calendar-20261006', 'verify/backup-restore-rehearsal-20261006', 'feat/billing-lifecycle-20261007', 'fix/tenant-isolation-20261007', 'fix/engine-leftovers', 'fix/voice-core', 'fix/voice-limits']
   pull_request:
 permissions:
   contents: write
@@ -16,8 +16,21 @@ jobs:
         with: { node-version: '22' }
       - name: Install from lockfile (ignores committed node_modules)
         run: rm -rf node_modules server/node_modules client/node_modules && npm ci
-      - name: Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)
-        run: npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
+      - name: Install Playwright test dependency without changing the lockfile
+        timeout-minutes: 5
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.0
+      - name: Install Chromium for the browser tests
+        timeout-minutes: 5
+        run: npx playwright install chromium
+      - name: Verify Chromium can launch; install system libraries if needed
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          probe='import {chromium} from "playwright"; const browser=await chromium.launch({headless:true,args:["--no-sandbox"]}); await browser.close();'
+          if ! node --input-type=module -e "$probe"; then
+            npx playwright install-deps chromium
+            node --input-type=module -e "$probe"
+          fi
       - name: Build owner app and widget
         run: npm run build
       - name: Strict quote engine and price book gate
