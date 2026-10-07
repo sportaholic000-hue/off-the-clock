@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: D01/D09: usable nameless request retains notes/description in owner and staff views
+ok 1 - D01/D09: usable nameless request retains notes/description in owner and staff views
+  ---
+  duration_ms: 14.3384
+  type: 'test'
+  ...
+# Subtest: D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+ok 2 - D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+  ---
+  duration_ms: 6.872601
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+ok 3 - D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+  ---
+  duration_ms: 9.438776
+  type: 'test'
+  ...
+# Subtest: D13: new call retains known customer email/address without inventing the new job site
+ok 4 - D13: new call retains known customer email/address without inventing the new job site
+  ---
+  duration_ms: 7.711153
+  type: 'test'
+  ...
+# Subtest: D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+ok 5 - D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+  ---
+  duration_ms: 7.781999
+  type: 'test'
+  ...
+# Subtest: D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+ok 6 - D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+  ---
+  duration_ms: 15.636205
+  type: 'test'
+  ...
+# Subtest: D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+ok 7 - D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+  ---
+  duration_ms: 6.694286
+  type: 'test'
+  ...
+# Subtest: capture and urgency database failures roll back without a successful acknowledgement
+ok 8 - capture and urgency database failures roll back without a successful acknowledgement
+  ---
+  duration_ms: 6.445157
+  type: 'test'
+  ...
+# Subtest: capture persisted before handle failure recovers the same inquiry once
+ok 9 - capture persisted before handle failure recovers the same inquiry once
+  ---
+  duration_ms: 7.359052
+  type: 'test'
+  ...
+# Subtest: cold process replay preserves dismissed inquiry and original contact receipt
+ok 10 - cold process replay preserves dismissed inquiry and original contact receipt
+  ---
+  duration_ms: 170.908426
+  type: 'test'
+  ...
+# Subtest: wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+ok 11 - wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+  ---
+  duration_ms: 9.489321
+  type: 'test'
+  ...
+# Subtest: D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+not ok 12 - D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+  ---
+  duration_ms: 17.6348
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:118:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'id')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:121:291)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+not ok 13 - D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+  ---
+  duration_ms: 7.770011
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:127:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'payloadJson')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:129:182)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+not ok 14 - D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+  ---
+  duration_ms: 7.620595
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:134:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'payloadJson')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:138:148)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D18: bound quote-review exports preserve saved name/email and dismissed disposition
+not ok 15 - D18: bound quote-review exports preserve saved name/email and dismissed disposition
+  ---
+  duration_ms: 6.951488
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:144:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'payloadJson')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.spec.mjs:148:251)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+ok 16 - D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+  ---
+  duration_ms: 6.436895
+  type: 'test'
+  ...
+# Subtest: D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+ok 17 - D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+  ---
+  duration_ms: 7.284762
+  type: 'test'
+  ...
+# Error: Test "D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries" at test/leadCaptureRepair20261006.spec.mjs:118:1 generated asynchronous activity after the test ended. This activity created the error "Error: Use an HTTPS webhook on a public internet address, without URL credentials or redirects." and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "D17: corrections refresh only an unattempted pending snapshot, not a historical attempt" at test/leadCaptureRepair20261006.spec.mjs:127:1 generated asynchronous activity after the test ended. This activity created the error "Error: Use an HTTPS webhook on a public internet address, without URL credentials or redirects." and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct" at test/leadCaptureRepair20261006.spec.mjs:134:1 generated asynchronous activity after the test ended. This activity created the error "Error: Use an HTTPS webhook on a public internet address, without URL credentials or redirects." and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "D18: bound quote-review exports preserve saved name/email and dismissed disposition" at test/leadCaptureRepair20261006.spec.mjs:144:1 generated asynchronous activity after the test ended. This activity created the error "Error: Use an HTTPS webhook on a public internet address, without URL credentials or redirects." and would have caused the test to fail, but instead triggered an unhandledRejection event.
+1..17
+# tests 17
+# suites 0
+# pass 13
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 524.00605

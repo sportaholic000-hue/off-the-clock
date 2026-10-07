@@ -1,0 +1,350 @@
+{
+  "strict": {
+    "command": "npm run test:quote",
+    "exitCode": 1,
+    "summary": {
+      "tests": 2131,
+      "pass": 2092,
+      "fail": 39,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failureClassification": "39 Chromium executable startup failures; no product assertion failures in completed local run",
+    "log": "local-strict.log.gz",
+    "rawBytes": 548537,
+    "sha256": "a9c2084b020e9f1ff4006a49f96510417f44386d93bf164bcfea86002a53a68e",
+    "failedTests": [
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:26:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:26:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:33:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/claudeScopeEditorOrder.browser.spec.mjs:32:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:27:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:36:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:48:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.browser.spec.mjs:8:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerAlertRepair20261006.browser.spec.mjs:7:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:215:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:227:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:249:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:294:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:310:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:336:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:351:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:366:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:62:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:74:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:83:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:90:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:97:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:62:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:62:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:68:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:75:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:20:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:34:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:43:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quotePreviewTier20261005.browser.spec.mjs:10:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/websitePriceDraft.browser.spec.mjs:24:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/websitePriceDraft.browser.spec.mjs:34:1"
+      }
+    ]
+  },
+  "full": {
+    "command": "npm test",
+    "exitCode": 1,
+    "summary": {
+      "tests": 2517,
+      "pass": 2478,
+      "fail": 39,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failureClassification": "39 Chromium executable startup failures; no product assertion failures in completed local run",
+    "log": "local-full.log.gz",
+    "rawBytes": 637923,
+    "sha256": "61cb2ad37c9ab38657666fa06d078f9316ea03fbf84eed1234f6dfdf6129efec",
+    "failedTests": [
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:26:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:26:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/astraQuoteScope.browser.spec.mjs:33:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/claudeScopeEditorOrder.browser.spec.mjs:32:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:27:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:36:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/interviewControls.browser.spec.mjs:48:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/leadCaptureRepair20261006.browser.spec.mjs:8:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/ownerAlertRepair20261006.browser.spec.mjs:7:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:192:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:215:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:227:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:249:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:273:3"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:294:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:310:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:336:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:351:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/priceBookEditor.browser.spec.mjs:366:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:62:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:74:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:83:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:90:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookInterviewSave.browser.spec.mjs:97:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:62:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:62:34"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:68:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/pricebookPreviewFreshness.browser.spec.mjs:75:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:20:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:34:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quoteConfigurationInterview.browser.spec.mjs:43:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/quotePreviewTier20261005.browser.spec.mjs:10:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/websitePriceDraft.browser.spec.mjs:24:1"
+      },
+      {
+        "browser_startup_failure": true,
+        "location": "/workspace/scratch/e04cbf0ad2ad/lead-capture-repairs-20261006/test/websitePriceDraft.browser.spec.mjs:34:1"
+      }
+    ]
+  }
+}

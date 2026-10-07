@@ -1,3 +1,6 @@
+import {createVoiceSmsService} from '../voiceSmsService.js';
+import {saveCallbackRequest} from '../callbackRequestService.js';
+import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
@@ -552,63 +555,34 @@ export function createVoiceToolRuntime({
     });
   }
 
+  function saveInquiry(args,{leadId,key,type,status,updates={}}={}) {
+    const call=callRow();
+    if(args.leadHandle)leadId=loadLead(resolve(args.leadHandle,'lead')).row.id;
+    const number=args.inquiryNumber??1;
+    const fields={...updates};
+    for(const field of ['name','email','notes','description'])if(args[field]!==undefined)fields[field]=args[field].trim();
+    if(fields.email!==undefined){fields.email=fields.email.toLowerCase();if(!EMAIL.test(fields.email))throw runtimeError('INVALID_EMAIL');}
+    if(args.address!==undefined)fields.address=Object.fromEntries(Object.entries(args.address).map(([name,value])=>[name,['region','postalCode','country'].includes(name)?value.trim().toUpperCase():value.trim()]));
+    return saveVoiceInquiry({database,context,callId:call.id,key:key||'capture:'+number,leadId,
+      customerId:stableUuid(secret,'voice-customer',context.ownerId+'\0'+context.from),
+      updates:fields,createdAt:instant().toISOString(),type,status,legacyDefault:!key&&number===1});
+  }
+
   async function captureLead(input) {
-    const args = invocation(input);
-    const name = typeof args.name === 'string' && args.name.trim() ? args.name.trim() : null;
-    const email = typeof args.email === 'string' && args.email.trim()
-      ? args.email.trim().toLowerCase()
-      : null;
-    if (email && !EMAIL.test(email)) throw runtimeError('INVALID_EMAIL');
-    const address = record(args.address) ? {
-      line1: typeof args.address.line1 === 'string' ? args.address.line1.trim() : '',
-      line2: typeof args.address.line2 === 'string' ? args.address.line2.trim() : '',
-      city: typeof args.address.city === 'string' ? args.address.city.trim() : '',
-      region: typeof args.address.region === 'string' ? args.address.region.trim().toUpperCase() : '',
-      postalCode: typeof args.address.postalCode === 'string' ? args.address.postalCode.trim().toUpperCase() : '',
-      country: typeof args.address.country === 'string' ? args.address.country.trim().toUpperCase() : ''
-    } : null;
-    const contact = { name, email, phone: context.from };
-    const customerId = stableUuid(secret, 'voice-customer', context.ownerId + '\0' + context.from);
-    const leadIdentity = json({ callSid: context.callSid, contact, address });
-    const leadId = stableUuid(secret, 'voice-lead', leadIdentity);
-    const details = {
-      voiceVersion: 1,
-      customerId,
-      contact,
-      address,
-      notes: null
-    };
-    const createdAt = instant().toISOString();
-    const call = callRow();
-
-    immediate(database, () => {
-      database.prepare('INSERT INTO customers (id, ownerId, phoneE164, name, address, notesJson, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET name = COALESCE(excluded.name, customers.name), address = COALESCE(excluded.address, customers.address), notesJson = excluded.notesJson').run(
-        customerId, context.ownerId, context.from, name,
-        address ? JSON.stringify(address) : null,
-        JSON.stringify({ voiceVersion: 1, email }), createdAt
-      );
-      database.prepare('INSERT INTO leads (id, ownerId, callId, customerName, callerNumber, describedService, collectedInputsJson, type, status, createdAt) VALUES (?, ?, ?, ?, ?, NULL, ?, \'voice_lead\', \'CAPTURED\', ?) ON CONFLICT(id) DO UPDATE SET customerName = excluded.customerName, collectedInputsJson = excluded.collectedInputsJson, status = excluded.status').run(
-        leadId, context.ownerId, call.id, name, context.from, JSON.stringify(details), createdAt
-      );
+    const args=invocation(input);
+    const saved=immediate(database,()=>{
+      const lead=saveInquiry(args);
+      if(args.callbackRequested===true){
+        if(typeof args.notes!=='string'||!args.notes.trim())throw runtimeError('CALLBACK_NOTES_REQUIRED');
+        saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:'capture-lead:'+lead.row.id,source:'caller_requested',reason:null,notes:args.notes,at:instant().toISOString()});
+      }
+      return lead;
     });
-
-    const stored = database.prepare('SELECT collectedInputsJson, callerNumber FROM leads WHERE id = ? AND ownerId = ? AND callId = ?').get(
-      leadId, context.ownerId, call.id
-    );
-    const storedDetails = parseJson(stored?.collectedInputsJson);
-    if (!stored || stored.callerNumber !== context.from || !record(storedDetails) ||
-        storedDetails.customerId !== customerId || storedDetails.contact?.phone !== context.from) {
-      throw runtimeError('LEAD_PERSISTENCE_FAILED');
-    }
-    const leadHandle = issue('lead', 'lead:' + leadId, { leadId, customerId });
-    const hasAddress = completeAddress(address);
-    return {
-      status: hasAddress ? 'captured' : 'captured_address_required',
-      leadHandle,
-      message: hasAddress
-        ? 'Contact and service address saved.'
-        : 'Contact saved. A complete service address is required before checking availability.'
-    };
+    const stored=loadLead({reference:{leadId:saved.row.id,customerId:saved.details.customerId}});
+    const leadHandle=issue('lead','lead:'+stored.row.id,{leadId:stored.row.id,customerId:stored.details.customerId});
+    const hasAddress=completeAddress(stored.details.address);
+    return {status:hasAddress?'captured':'captured_address_required',leadHandle,
+      message:hasAddress?'Contact and service address saved.':'Contact saved. A complete service address is required before checking availability.'};
   }
 
   async function checkAvailability(input) {
@@ -823,138 +797,95 @@ export function createVoiceToolRuntime({
   }
 
   async function logQuoteRequest(input) {
-    const args = invocation(input);
-    let lead = null;
-    if (args.leadHandle) {
-      const resolved = resolve(args.leadHandle, 'lead');
-      lead = loadLead(resolved);
-    }
-    const description = typeof args.description === 'string' ? args.description.trim() : '';
-    if (!description) throw runtimeError('QUOTE_REQUEST_DESCRIPTION_REQUIRED');
-    const identity = json({
-      callSid: context.callSid,
-      description,
-      leadId: lead?.row?.id || null
+    const args=invocation(input);
+    const supplied=args.leadHandle?loadLead(resolve(args.leadHandle,'lead')):null;
+    const description=typeof args.description==='string'?args.description.trim():'';
+    if(!description)throw runtimeError('QUOTE_REQUEST_DESCRIPTION_REQUIRED');
+    const identity=json({callSid:context.callSid,description,leadId:supplied?.row.id||null});
+    const requestId=stableUuid(secret,'voice-quote-request-log',identity);
+    const eventId=stableUuid(secret,'voice-quote-request-event',identity);
+    const call=callRow(),createdAt=instant().toISOString();
+    let lead;
+    immediate(database,()=>{
+      // Separate described requests have separate identities; exact retries
+      // recover the same standalone inquiry even after a process restart.
+      const priorEvent=database.prepare('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND aggregateId=?').get(context.ownerId,eventId,requestId);
+      let priorLeadId;try{priorLeadId=JSON.parse(priorEvent?.payloadJson||'{}').leadId;}catch{}
+      const boundId=supplied?.row.id||priorLeadId||requestId;
+      let existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND id=?
+        AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
+        AND json_extract(collectedInputsJson,'$.contact.phone')=?`).get(context.ownerId,call.id,boundId,context.from);
+      if(!existing&&!priorEvent&&!supplied)existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND describedService=?
+        AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
+        AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid LIMIT 1`).get(context.ownerId,call.id,description,context.from);
+      lead=saveInquiry({}, {leadId:existing?.id||supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
+        updates:{description:existing?.describedService||description}});
+      database.prepare('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
+      writeOutbox({id:eventId,eventType:'voice.quote_request_logged',aggregateId:requestId,
+        payload:{callSid:context.callSid,description,callerNumber:context.from,leadId:lead.row.id,contact:lead.details.contact}});
+      // Enrich only an unattempted snapshot inside the producer transaction.
+      // Delivered historical events and quote/submission receipts stay intact.
+      if(database.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='webhookDeliveries'").get())
+        database.prepare("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING' AND attemptCount=0").run(
+          JSON.stringify(lead.details.contact),lead.row.id,context.ownerId,requestId);
     });
-    const requestId = stableUuid(secret, 'voice-quote-request-log', identity);
-    const eventId = stableUuid(secret, 'voice-quote-request-event', identity);
-    const call = callRow();
-    const createdAt = instant().toISOString();
-    immediate(database, () => {
-      database.prepare('INSERT OR IGNORE INTO quoteRequests (id, ownerId, callId, describedService, estimatedValue, createdAt) VALUES (?, ?, ?, ?, NULL, ?)').run(
-        requestId, context.ownerId, call.id, description, createdAt
-      );
-      writeOutbox({
-        id: eventId,
-        eventType: 'voice.quote_request_logged',
-        aggregateId: requestId,
-        payload: {
-          callSid: context.callSid,
-          description,
-          callerNumber: context.from,
-          leadId: lead?.row?.id || null
-        }
-      });
-    });
-    const requestHandle = issue('quote_request', 'quote-request:' + requestId, {
-      requestId,
-      leadId: lead?.row?.id || null
-    });
-    return {
-      status: 'logged',
-      requestHandle,
-      message: 'The quote request was saved for follow-up.'
-    };
+    const requestHandle=issue('quote_request','quote-request:'+requestId,{requestId,leadId:lead.row.id});
+    return {status:'logged',requestHandle,message:'The quote request was saved for follow-up.'};
   }
 
   async function sendSms(input) {
-    const args = invocation(input);
-    const resolved = resolve(args.recordHandle, ['quote', 'appointment', 'quote_request', 'lead']);
-    const template = typeof args.template === 'string' ? args.template.trim() : '';
-    if (!template) throw runtimeError('SMS_TEMPLATE_REQUIRED');
-    const identity = json({
-      callSid: context.callSid,
-      recordHandleHash: resolved.handleHash,
-      template
-    });
-    const eventId = stableUuid(secret, 'voice-sms-event', identity);
-    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
-      eventId, context.ownerId
-    );
-    if (prior) {
-      return prior.status === 'SENT'
-        ? { status: 'sent', message: 'The text message was sent.' }
-        : {
-            status: 'unavailable',
-            reason: 'SMS_PROVIDER_UNAVAILABLE',
-            message: 'The text message could not be confirmed as sent.'
-          };
-    }
-    writeOutbox({
-      id: eventId,
-      eventType: 'voice.sms_requested',
-      aggregateId: resolved.resourceKeyDigest,
-      payload: {
-        callSid: context.callSid,
-        recipient: context.from,
-        template,
-        recordType: resolved.type,
-        recordDigest: resolved.resourceKeyDigest
-      }
-    });
-    const send = typeof providers.sendSms === 'function'
-      ? providers.sendSms
-      : typeof providers.sms?.send === 'function'
-        ? providers.sms.send.bind(providers.sms)
-        : null;
-    if (!send) {
-      updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'SMS_PROVIDER_UNAVAILABLE',
-        message: 'Text messaging is not available right now.'
-      };
-    }
-    try {
-      const result = await send({
-        ownerId: context.ownerId,
-        callSid: context.callSid,
-        to: context.from,
-        template,
-        recordType: resolved.type,
-        record: resolved.reference,
-        idempotencyKey: eventId
-      });
-      if (providerStatus(result) !== 'SENT') {
-        updateOutbox(eventId, 'FAILED');
-        return {
-          status: 'unavailable',
-          reason: 'SMS_NOT_CONFIRMED',
-          message: 'The text message could not be confirmed as sent.'
-        };
-      }
-      updateOutbox(eventId, 'SENT');
-      return { status: 'sent', message: 'The text message was sent.' };
-    } catch {
-      updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'SMS_PROVIDER_UNAVAILABLE',
-        message: 'The text message could not be sent right now.'
-      };
-    }
+    const args=invocation(input),resolved=resolve(args.recordHandle,['quote','appointment','quote_request','lead']);
+    const template=typeof args.template==='string'?args.template.trim():'';
+    if(!['quote','booking','callback','reminder'].includes(template))throw runtimeError('SMS_TEMPLATE_REQUIRED');
+    let recordId,body;
+    if(resolved.type==='lead'&&template==='callback'){
+      const lead=loadLead(resolved);recordId=lead.row.id;
+      body='Your request has been saved for the business to review. A callback has not been confirmed.';
+    }else if(resolved.type==='quote_request'&&template==='callback'){
+      recordId=resolved.reference.requestId;
+      if(!database.prepare('SELECT id FROM quoteRequests WHERE ownerId=? AND id=? AND callId=?').get(context.ownerId,recordId,callRow().id))throw runtimeError('INVALID_QUOTE_REQUEST_HANDLE');
+      body='Your quote-review request has been saved. A price or callback time has not been confirmed.';
+    }else if(resolved.type==='quote'&&template==='quote'){
+      const quote=loadQuote(resolved);recordId=quote.row.recordId;
+      const customer=quote.response?.pricedEstimate||quote.response;
+      // Use the frozen customer receipt only. No fresh arithmetic or raw book.
+      const options=Array.isArray(customer?.options)?customer.options:[customer];
+      const prices=options.filter(o=>Number.isFinite(o?.lowEstimate)&&Number.isFinite(o?.highEstimate)).map(o=>[o.tierName,[o.lowEstimate,o.highEstimate].map(v=>Number(v).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2})).join(' to '),o.currency,o.priceUnit,o.taxTreatment].filter(Boolean).join(' '));
+      body=prices.length?'Your saved estimate: '+prices.join('; ')+'. The business will confirm the job details.':'Your pricing request has been saved for review. No price has been confirmed.';
+    }else if(resolved.type==='appointment'&&['booking','reminder'].includes(template)){
+      recordId=resolved.reference.appointmentId;
+      const appointment=database.prepare('SELECT status,startAtUtc,timezone,customerJson FROM appointments WHERE ownerId=? AND id=? AND customerId=?').get(context.ownerId,recordId,resolved.reference.customerId);
+      if(!appointment||parseJson(appointment.customerJson,{})?.phone!==context.from)throw runtimeError('INVALID_APPOINTMENT_HANDLE');
+      if(appointment.status==='CONFIRMED')body='Your appointment is confirmed for '+appointment.startAtUtc+' ('+appointment.timezone+').';
+      else body='Your appointment request is saved with status '+appointment.status+'. It is not a confirmed booking.';
+    }else throw runtimeError('SMS_RECORD_TEMPLATE_MISMATCH');
+    const owner=database.prepare("SELECT businessName FROM users WHERE id=? AND role='owner'").get(context.ownerId);
+    body=String(owner?.businessName||'The business').slice(0,100)+': '+body+' Reply STOP to opt out.';
+    if(body.length>1600)throw runtimeError('SMS_MESSAGE_TOO_LONG');
+    const eventId=stableUuid(secret,'voice-sms-event',json({callSid:context.callSid,recordHandleHash:resolved.handleHash,template}));
+    const provider=typeof providers.sendSms==='function'?{send:providers.sendSms}:providers.sms||{};
+    const service=providers.smsDelivery||createVoiceSmsService({database,provider,clock:()=>instant().getTime()});
+    service.enqueue({ownerId:context.ownerId,id:eventId,callSid:context.callSid,recordType:resolved.type,recordId,
+      request:{accountSid:context.accountSid,from:context.to,to:context.from,template,recordType:resolved.type,record:resolved.reference,body}});
+    await service.processOne(context.ownerId,eventId);
+    const state=service.state(context.ownerId,eventId);
+    if(['SENT','DELIVERED'].includes(state.status))return {status:'sent',message:'The text message was sent.'};
+    if(['PENDING','DELIVERING','QUEUED','ACCEPTED'].includes(state.status))return {status:'pending',message:'The text request is saved. It has not been confirmed as sent.'};
+    return {status:'unavailable',message:'The text message could not be confirmed as sent. The request remains saved for review.'};
   }
 
   async function flagUrgent(input) {
     const args = invocation(input);
     const reason = typeof args.reason === 'string' ? args.reason.trim() : '';
     const summary = typeof args.summary === 'string' ? args.summary.trim() : '';
-    if (!reason || !summary) throw runtimeError('URGENT_DETAILS_REQUIRED');
+    if (!['active_leak','flooding','safety','complaint'].includes(reason)) throw runtimeError('URGENT_DETAILS_REQUIRED');
     const identity = json({ callSid: context.callSid, reason, summary });
     const urgentId = stableUuid(secret, 'voice-urgent-event', identity);
     const outboxId = stableUuid(secret, 'voice-urgent-outbox', identity);
     const createdAt = instant().toISOString();
     immediate(database, () => {
+      const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{}, {updates:{urgency:{reason,summary:summary||null,recordedAt:createdAt,source:'voice'}}});
+      database.prepare('UPDATE calls SET urgency=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?').run(reason,createdAt,context.ownerId,lead.row.callId,context.callSid);
       database.prepare('INSERT OR IGNORE INTO events (id, ownerId, eventType, payloadJson, createdAt) VALUES (?, ?, \'voice.urgent_flagged\', ?, ?)').run(
         urgentId, context.ownerId,
         JSON.stringify({
@@ -981,7 +912,7 @@ export function createVoiceToolRuntime({
     return {
       status: 'flagged',
       urgentHandle,
-      message: 'The urgent request was flagged for the business.'
+      message: 'Urgency saved for the business. Owner notification has not been confirmed.'
     };
   }
 
@@ -990,14 +921,35 @@ export function createVoiceToolRuntime({
     if (args.customerConfirmed !== true) throw runtimeError('CUSTOMER_CONFIRMATION_REQUIRED');
     const reason = typeof args.reason === 'string' ? args.reason.trim() : '';
     if (!reason) throw runtimeError('TRANSFER_REASON_REQUIRED');
+    if(args.leadHandle)loadLead(resolve(args.leadHandle,'lead'));
     const profile = database.prepare('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId = ?').get(
       context.ownerId
     );
     const destination = typeof profile?.existingPhoneNumber === 'string'
       ? profile.existingPhoneNumber.trim()
       : '';
-    const identity = json({ callSid: context.callSid, reason, destination });
+    const identity = json({ callSid: context.callSid, reason, destination,...(args.inquiryNumber>1?{inquiryNumber:args.inquiryNumber}:{}) });
     const eventId = stableUuid(secret, 'voice-transfer-event', identity);
+    // A failed transfer must never strand the caller. Persist the follow-up
+    // before returning a saved acknowledgement, including on replay/restart.
+    function unavailable(code,message){
+      const callback=immediate(database,()=>{
+        const key='transfer:'+reason+':'+(args.inquiryNumber??1);
+        const prior=database.prepare('SELECT leadId,notes FROM callbackRequests WHERE ownerId=? AND callId=? AND requestKey=?').get(context.ownerId,callRow().id,key);
+        let words=args.notes??prior?.notes;
+        if(words===undefined){
+          const call=callRow();
+          const turns=database.prepare('SELECT role,text FROM transcriptTurns WHERE ownerId=? AND callId=? ORDER BY sequence DESC,id DESC').all(context.ownerId,call.id);
+          const raw=database.prepare('SELECT transcriptJson FROM calls WHERE ownerId=? AND id=?').get(context.ownerId,call.id);
+          const recent=turns.find(turn=>['caller','user'].includes(turn.role))||[...(parseJson(raw?.transcriptJson,[])||[])].reverse().find(turn=>['caller','user'].includes(turn?.role));
+          words=typeof recent?.text==='string'&&recent.text.trim()?recent.text.slice(0,1000):null;
+        }
+        const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{},{leadId:prior?.leadId,key,type:'CALLBACK',updates:{...(words?{notes:words}:{}),description:'Callback requested after an unsuccessful transfer'}});
+        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString()});
+      });
+      return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
+    }
+
     if (!E164.test(destination)) {
       writeOutbox({
         id: eventId,
@@ -1006,11 +958,7 @@ export function createVoiceToolRuntime({
         payload: { callSid: context.callSid, reason },
         status: 'FAILED'
       });
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_DESTINATION_UNAVAILABLE',
-        message: 'A live transfer destination is not configured.'
-      };
+      return unavailable('TRANSFER_DESTINATION_UNAVAILABLE','A live transfer destination is not configured.');
     }
     const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
@@ -1018,11 +966,7 @@ export function createVoiceToolRuntime({
     if (prior) {
       return prior.status === 'CONNECTED'
         ? { status: 'transferred', message: 'The call was connected.' }
-        : {
-            status: 'unavailable',
-            reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-            message: 'The live transfer could not be confirmed.'
-          };
+        : unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer could not be confirmed.');
     }
     writeOutbox({
       id: eventId,
@@ -1037,11 +981,7 @@ export function createVoiceToolRuntime({
         : null;
     if (!transfer) {
       updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-        message: 'Live transfer is not available right now.'
-      };
+      return unavailable('TRANSFER_PROVIDER_UNAVAILABLE','Live transfer is not available right now.');
     }
     try {
       const result = await transfer({
@@ -1054,21 +994,13 @@ export function createVoiceToolRuntime({
       });
       if (providerStatus(result) !== 'CONNECTED') {
         updateOutbox(eventId, 'FAILED');
-        return {
-          status: 'unavailable',
-          reason: 'TRANSFER_NOT_CONFIRMED',
-          message: 'The live transfer could not be confirmed.'
-        };
+        return unavailable('TRANSFER_NOT_CONFIRMED','The live transfer could not be confirmed.');
       }
       updateOutbox(eventId, 'CONNECTED');
       return { status: 'transferred', message: 'The call was connected.' };
     } catch {
       updateOutbox(eventId, 'FAILED');
-      return {
-        status: 'unavailable',
-        reason: 'TRANSFER_PROVIDER_UNAVAILABLE',
-        message: 'The live transfer failed.'
-      };
+      return unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer failed.');
     }
   }
 

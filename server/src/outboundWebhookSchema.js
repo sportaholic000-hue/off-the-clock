@@ -26,7 +26,7 @@ function capture(table, eventType, payload, { suffix = 'insert', when = '', oper
 
 const leadPayload = `json_object('id', NEW.id, 'createdAt', NEW.createdAt,
   'customerName', substr(NEW.customerName,1,200), 'phone', substr(NEW.callerNumber,1,64),
-  'email', ${jsonText('NEW.collectedInputsJson', '$.originalSubmission.contact.email', 320)},
+  'email', COALESCE(${jsonText('NEW.collectedInputsJson', '$.contact.email', 320)},${jsonText('NEW.collectedInputsJson', '$.originalSubmission.contact.email', 320)}),
   'service', substr(NEW.describedService,1,4000), 'type', NEW.type, 'status', NEW.status)`;
 const requestPayload = `json_object('id', NEW.id, 'createdAt', NEW.createdAt,
   'service', substr(NEW.describedService,1,4000), 'estimatedValueCents', NEW.estimatedValue)`;
@@ -79,7 +79,16 @@ export function installOutboundWebhookSchema(database) {
   database.exec('CREATE INDEX IF NOT EXISTS export_bookings_owner ON appointments(ownerId,createdAt,id)');
   database.exec('CREATE INDEX IF NOT EXISTS export_submissions_record ON quoteSubmissions(ownerId,recordId)');
   database.exec('CREATE INDEX IF NOT EXISTS webhook_delivery_owner ON webhookDeliveries(ownerId,createdAt DESC,id)');
-  database.exec(capture('leads', 'lead.created', leadPayload));
+  // Upgrade the installed producer as well as fresh stores. Keep historical
+  // deliveries unchanged; replacement is atomic even inside a migration txn.
+  database.exec('SAVEPOINT lead_capture_producer');
+  try {
+    database.exec('DROP TRIGGER IF EXISTS webhook_leads_insert');
+    database.exec(capture('leads', 'lead.created', leadPayload));
+    database.exec('RELEASE lead_capture_producer');
+  } catch(error) {
+    database.exec('ROLLBACK TO lead_capture_producer');database.exec('RELEASE lead_capture_producer');throw error;
+  }
   database.exec(capture('quoteRequests', 'quote.requested', requestPayload));
   database.exec(capture('appointments', 'appointment.booked', bookingPayload, {
     when: "NEW.status = 'CONFIRMED'", time: 'COALESCE(NEW.confirmedAt,NEW.createdAt)'

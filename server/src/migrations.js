@@ -1,5 +1,6 @@
 import {migrateBillingCheckoutRecovery} from './billingCoreMigration.js';
 import {installBillingUsageSchema} from './billingUsageSchema.js';
+import {installOwnerAlertSchema} from './ownerAlertSchema.js';
 import { installOutboundWebhookSchema } from './outboundWebhookSchema.js';
 import { CREATE_INDEX_STATEMENTS, CREATE_TABLE_STATEMENTS, CREATE_TRIGGER_STATEMENTS } from './schema.js';
 import { findInvalidStaffOwnerLinks } from './tenant.js';
@@ -256,5 +257,6 @@ export function migrateDatabase(database) {
   installAuthLimitSchema(database);
   installOutboundWebhookSchema(database);
   installBillingUsageSchema(database);
+  installOwnerAlertSchema(database);
   return CREATE_TABLE_STATEMENTS;
 }

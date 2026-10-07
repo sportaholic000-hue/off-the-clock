@@ -11,15 +11,17 @@ export default function OwnerIntegrations() {
   const [configuration,setConfiguration]=useState(null),[url,setUrl]=useState('');
   const [events,setEvents]=useState(EVENTS.map(([type])=>type));
   const [secret,setSecret]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(null);
+  const [history,setHistory]=useState(null),[historyStatus,setHistoryStatus]=useState('unresolved'),[offset,setOffset]=useState(0),[refresh,setRefresh]=useState(0);
   function apply(result) {
     setConfiguration(result);setUrl(result.webhook?.url||'');
     setEvents(result.webhook?.events||EVENTS.map(([type])=>type));
     setSecret(result.signingSecret||'');
   }
   useEffect(()=>{let alive=true;api('/api/integrations/webhook').then(result=>{if(alive)apply(result);}).catch(error=>{if(alive)setError(error);});return()=>{alive=false;};},[]);
-  async function run(operation) {
+  useEffect(()=>{let alive=true;setHistory(null);api('/api/integrations/webhook/deliveries?status='+historyStatus+'&offset='+offset).then(result=>{if(alive)setHistory(result);}).catch(error=>{if(alive)setError(error);});return()=>{alive=false;};},[historyStatus,offset,refresh]);
+  async function run(operation,settings=true) {
     setBusy(true);setError(null);
-    try {const result=await operation();if(result)apply(result);}
+    try {const result=await operation();if(result){if(settings)apply(result);else setConfiguration(result);}setRefresh(value=>value+1);}
     catch(error){setError(error);}
     finally{setBusy(false);}
   }
@@ -45,7 +47,7 @@ export default function OwnerIntegrations() {
           <Button variant="secondary" disabled={busy} onClick={()=>run(()=>api('/api/integrations/webhook/rotate-secret',{method:'POST'}))}>Rotate signing secret</Button>
           <Button variant="secondary" disabled={busy} onClick={()=>run(()=>api('/api/integrations/webhook',{method:'DELETE'}))}>Remove webhook</Button>
         </>}
-        <Button variant="secondary" disabled={busy} onClick={()=>run(()=>api('/api/integrations/webhook'))}>Refresh delivery status</Button>
+        <Button variant="secondary" disabled={busy} onClick={()=>run(()=>api('/api/integrations/webhook'),false)}>Refresh delivery status</Button>
       </div>
     </form>
     {secret&&<Notice title="Signing secret — shown once">
@@ -62,9 +64,22 @@ export default function OwnerIntegrations() {
         {delivery.lastHttpStatus&&<span> · HTTP {delivery.lastHttpStatus}</span>}
         {delivery.status==='PENDING'&&delivery.lastErrorCode==='ACCOUNT_ACCESS_PAUSED'&&<span> · Waiting for account access</span>}
         {delivery.status==='FAILED'&&<Button variant="secondary" disabled={busy}
-          onClick={()=>run(()=>api('/api/integrations/webhook/deliveries/'+encodeURIComponent(delivery.id)+'/retry',{method:'POST'}))}>Retry delivery</Button>}
+          onClick={()=>run(()=>api('/api/integrations/webhook/deliveries/'+encodeURIComponent(delivery.id)+'/retry',{method:'POST'}),false)}>Retry delivery</Button>}
       </li>)}</ul>
     </>}
+    <div className="header-actions"><Button variant="secondary" disabled={busy} onClick={()=>{setHistoryStatus('unresolved');setOffset(0);}}>Unresolved deliveries</Button>
+      <Button variant="secondary" disabled={busy} onClick={()=>{setHistoryStatus('all');setOffset(0);}}>All deliveries</Button></div>
+    {history&&<><p>{history.total} {historyStatus==='unresolved'?'unresolved deliveries':'deliveries'}</p>
+      <WebhookDeliveryHistory deliveries={history.deliveries} busy={busy} onRetry={id=>run(()=>api('/api/integrations/webhook/deliveries/'+encodeURIComponent(id)+'/retry',{method:'POST'}),false)}/>
+      {offset>0&&<Button variant="secondary" disabled={busy} onClick={()=>setOffset(Math.max(0,offset-50))}>Previous deliveries</Button>}
+      {history.nextOffset!==null&&<Button variant="secondary" disabled={busy} onClick={()=>setOffset(history.nextOffset)}>Next deliveries</Button>}</>}
     <ErrorMessage error={error}/>
   </section>;
+}
+
+export function WebhookDeliveryHistory({deliveries,busy=false,onRetry}){
+  return <ul>{deliveries.map(delivery=><li key={delivery.id}>{delivery.id} · {delivery.eventType} · {delivery.status} · {delivery.attemptCount} attempts
+    {delivery.lastErrorCode&&<> · {delivery.lastErrorCode}</>}
+    {delivery.status==='FAILED'&&<Button variant="secondary" disabled={busy} onClick={()=>onRetry(delivery.id)}>Retry delivery</Button>}
+    </li>)}</ul>;
 }

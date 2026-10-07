@@ -1,0 +1,137 @@
+{
+  "startingSha": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+  "auditCommit": "1de55bebfd6f916404df7493a8b3d7dbd3ba38f2",
+  "auditApplicationSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "matchedApplicationFiles": [
+    {
+      "file": "client/src/api.js",
+      "gitBlob": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982"
+    },
+    {
+      "file": "client/src/calls.jsx",
+      "gitBlob": "aea537fe152b375d5d07661cf040afa67088a82d"
+    },
+    {
+      "file": "client/src/dashboard.jsx",
+      "gitBlob": "9c26f5c5b5e6fa25048bcf7cae0a7c5b9abb5a44"
+    },
+    {
+      "file": "client/src/main.jsx",
+      "gitBlob": "99864456abe65629f051a727962c4102233b611c"
+    },
+    {
+      "file": "client/src/ownerIntegrations.jsx",
+      "gitBlob": "bfadc2dcae15dbdc9de9e1af3055c8342100ad5f"
+    },
+    {
+      "file": "client/src/quotedone.jsx",
+      "gitBlob": "5fafaac3a9efb307fbe4b0c94a78498d69666c80"
+    },
+    {
+      "file": "server/src/authMiddleware.js",
+      "gitBlob": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5"
+    },
+    {
+      "file": "server/src/bookingPreferenceService.js",
+      "gitBlob": "d9858ef3b28ce1744174b5e1c3ae25c3a39cd0a4"
+    },
+    {
+      "file": "server/src/integrationData.js",
+      "gitBlob": "878f631cd765ab7373590501f84fa73483ff63ad"
+    },
+    {
+      "file": "server/src/onboardingService.js",
+      "gitBlob": "5d479f22dc11a1c05a2a0b8dbc5945f92eb14ba7"
+    },
+    {
+      "file": "server/src/outboundWebhookSchema.js",
+      "gitBlob": "ca804f3c2f2e1432998ce59b41a8e63527355b32"
+    },
+    {
+      "file": "server/src/outboundWebhookService.js",
+      "gitBlob": "9fa604729da15d089ce0180bbbed4c7bfb86803f"
+    },
+    {
+      "file": "server/src/outboundWebhookTransport.js",
+      "gitBlob": "f4e13c2cb9219096cede5170068d8a1b66c8b32b"
+    },
+    {
+      "file": "server/src/ownerCalendarService.js",
+      "gitBlob": "b8b3331240cce15a14e8fdea59e538e6d906b68e"
+    },
+    {
+      "file": "server/src/ownerCallRoutes.js",
+      "gitBlob": "466de1c74912c13f720f7ba86ac5c5596fa55325"
+    },
+    {
+      "file": "server/src/ownerCallService.js",
+      "gitBlob": "73c1274b877ca726f7029f9ef0f118e155c5c1e6"
+    },
+    {
+      "file": "server/src/ownerIntegrationRoutes.js",
+      "gitBlob": "38d70812f7cfead22cbf5ad8426ea4ad61757a96"
+    },
+    {
+      "file": "server/src/ownerRecordViews.js",
+      "gitBlob": "b19a3c49ae08e4d72f9359c3abe31d92b2c156a1"
+    },
+    {
+      "file": "server/src/productionAssets.js",
+      "gitBlob": "f5c0d77db51a5047a260c10d3d13d9451d961309"
+    },
+    {
+      "file": "server/src/quoteDoneRoutes.js",
+      "gitBlob": "fcffecbc962a857da0d0e214b4c03abb2019ae03"
+    },
+    {
+      "file": "server/src/schema.js",
+      "gitBlob": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e"
+    },
+    {
+      "file": "server/src/server.js",
+      "gitBlob": "70eca3ec835af0ccd3eef6d2771fc63f5c8233ab"
+    },
+    {
+      "file": "server/src/tenant.js",
+      "gitBlob": "d6cde2e6a42734ce602f6b4be3be3136433a0ac5"
+    },
+    {
+      "file": "server/src/voice/geminiMediaBridge.js",
+      "gitBlob": "c8d7d5748ad8a189d59d71c98a85f9b2be970280"
+    },
+    {
+      "file": "server/src/voice/googleGenAiLiveAdapter.js",
+      "gitBlob": "6af1d3d283311662f28c8f456f4ca62c4270aa85"
+    },
+    {
+      "file": "server/src/voice/productionVoiceRuntime.js",
+      "gitBlob": "93b46213ed3846e79f5460db50c1412dab802aed"
+    },
+    {
+      "file": "server/src/voice/toolDispatcher.js",
+      "gitBlob": "abf12f945e57b4cdb9926cf77f1f152daa3ef4b6"
+    },
+    {
+      "file": "server/src/voice/toolSchemas.js",
+      "gitBlob": "df2f67dbf46503d3f18d9789d81efdf5a2ad35a1"
+    },
+    {
+      "file": "server/src/voice/voicePersistence.js",
+      "gitBlob": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f"
+    },
+    {
+      "file": "server/src/voice/voiceToolRuntime.js",
+      "gitBlob": "979240bd74823e1b831dd0c4a1d4d46731d9a89e"
+    },
+    {
+      "file": "server/src/voiceRuntimeRoutes.js",
+      "gitBlob": "4a9026a8c0fc274ab941fe792bf4e3565f83a096"
+    }
+  ],
+  "auditInputHashes": {
+    "REPORT.md": "c107165625502489e864cb9f614e059dd15460d0314cbf89abb059335f79e5b8",
+    "EXPECTED.md": "b42977b2627ad1f470906cc90b5f2eb6ec7f13bbec9bcd40b755ca9df942d5a7",
+    "reproduce.mjs": "cb81b6ebe0591a98f588577301d1314fce74d6ef0d309fab99befc181e80863b",
+    "render-live.mjs": "36f9e16bb4a7d90d5e88c836760785e928146e11b3bfa5949a8f80d0c0937b3d"
+  }
+}

@@ -1,9 +1,11 @@
+import {OwnerAlerts} from './ownerAlerts.jsx';
 import OwnerIntegrations from './ownerIntegrations.jsx';
 import MinuteUsage from './minuteUsage.jsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
-import { api, go } from './api.js';
+import { api, go, getSessionKey } from './api.js';
+import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
 
@@ -43,21 +45,39 @@ export default function Dashboard() {
   const [state, setState] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [feedError,setFeedError]=useState(null);
+  const feed=useRef(null),generation=useRef(0),mounted=useRef(false);
 
   async function load() {
+    const version=++generation.current,identity=getSessionKey();
+    feed.current?.stop();feed.current=null;
     const [dash, onboarding] = await Promise.all([api('/api/dashboard'), api('/api/onboarding/state')]);
+    if(!mounted.current||version!==generation.current||identity!==getSessionKey())return;
     setDashboard(dash);
     setState(onboarding);
+    setFeedError(null);
+    feed.current=startLeadCaptureFeed({read:()=>api('/api/leads/activity'),session:getSessionKey,
+      onData:activity=>{if(mounted.current&&version===generation.current){setDashboard(current=>current?{...current,callActivity:activity}:current);setFeedError(null);}},
+      onError:nextError=>{if(mounted.current&&version===generation.current)setFeedError(nextError);},
+      onSessionChange:()=>{generation.current++;setDashboard(null);setState(null);setError(new Error('The signed-in account changed. Reload the dashboard.'));}});
   }
 
-  useEffect(() => { load().catch(setError); }, []);
+  useEffect(() => { mounted.current=true;load().catch(nextError=>{if(mounted.current)setError(nextError);});
+    return()=>{mounted.current=false;generation.current++;feed.current?.stop();};}, []);
   useEffect(()=>{
     let stopped=false,inFlight=false;
-    const refresh=async()=>{if(stopped||inFlight||document.visibilityState==='hidden')return;inFlight=true;
-      try{const dash=await api('/api/dashboard');if(!stopped)setDashboard(dash);}catch(nextError){if(!stopped)setError(nextError);}finally{inFlight=false;}};
-    const timer=setInterval(refresh,30000);window.addEventListener('focus',refresh);
-    return()=>{stopped=true;clearInterval(timer);window.removeEventListener('focus',refresh);};
+    const refreshUsage=async()=>{
+      if(stopped||inFlight||document.visibilityState==='hidden')return;
+      const version=generation.current,identity=getSessionKey();inFlight=true;
+      const current=()=>!stopped&&mounted.current&&version===generation.current&&identity===getSessionKey();
+      try{const dash=await api('/api/dashboard');if(current())setDashboard(dash);}
+      catch(nextError){if(current())setError(nextError);}finally{inFlight=false;}
+    };
+    const timer=setInterval(refreshUsage,30000);window.addEventListener('focus',refreshUsage);
+    return()=>{stopped=true;clearInterval(timer);window.removeEventListener('focus',refreshUsage);};
   },[]);
+
+  async function refresh(){setBusy(true);try{await load();}catch(nextError){if(mounted.current)setFeedError(nextError);}finally{if(mounted.current)setBusy(false);}}
 
   async function toggle(enabled) {
     setBusy(true); setError(null);
@@ -121,6 +141,9 @@ export default function Dashboard() {
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator}>
       <main className="dashboard-page">
+        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh}/>}
+        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
         {/* HERO: operator state. Reference top-bar master toggle. */}
         <section className={`operator-hero${view.live ? ' live' : ''}${view.simulated ? ' simulated' : ''}`}>

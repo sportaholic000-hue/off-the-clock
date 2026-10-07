@@ -1,0 +1,79 @@
+{
+  "baseline": "eaadeca0856f1bd7fcade8685711a19aefd786d0",
+  "D02": {
+    "emailSends": 5,
+    "alertStates": [
+      {
+        "eventType": "booking.preference_requested",
+        "status": "ACCEPTED"
+      },
+      {
+        "eventType": "callback.requested",
+        "status": "ACCEPTED"
+      },
+      {
+        "eventType": "lead.created",
+        "status": "ACCEPTED"
+      },
+      {
+        "eventType": "quote.created",
+        "status": "ACCEPTED"
+      },
+      {
+        "eventType": "voice.urgent_flagged",
+        "status": "ACCEPTED"
+      }
+    ],
+    "outbox": [
+      {
+        "eventType": "voice.urgent_flagged",
+        "status": "PENDING"
+      },
+      {
+        "eventType": "booking.preference_requested",
+        "status": "PENDING"
+      }
+    ]
+  },
+  "D05": {
+    "providerCalls": 1,
+    "first": {
+      "status": "unavailable",
+      "message": "The text message could not be sent right now."
+    },
+    "second": {
+      "status": "unavailable",
+      "message": "The text message could not be confirmed as sent."
+    },
+    "outbox": {
+      "status": "FAILED"
+    }
+  },
+  "D19": {
+    "call": [
+      {
+        "id": "f7c8234f-e307-5130-ae83-3ddbe2415116",
+        "eventType": "voice.sms_requested",
+        "status": "FAILED",
+        "createdAt": "2026-10-06T12:00:00.000Z",
+        "updatedAt": "2026-10-06T12:00:00.000Z"
+      }
+    ],
+    "lead": null,
+    "storedSuccessCall": [
+      {
+        "id": "f7c8234f-e307-5130-ae83-3ddbe2415116",
+        "eventType": "voice.sms_requested",
+        "status": "SENT",
+        "createdAt": "2026-10-06T12:00:00.000Z",
+        "updatedAt": "2026-10-06T12:00:00.000Z"
+      }
+    ]
+  },
+  "D20": {
+    "stored": 55,
+    "discoverable": 20,
+    "oldFailureVisible": false,
+    "listAvailable": false
+  }
+}

@@ -6,7 +6,8 @@ import { loadPricebook } from '../priceBookService.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, validIntakeConfirmation } from './quoteIntake.js';
 import { declaredAdditionalWork, customerReceiptPresentation } from './quoteScopeDisclosure.js';
-import {storedQuoteView,storedLeadView,storedObject} from './ownerRecordViews.js';
+import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
+import {createOwnerCallService} from './ownerCallService.js';
 import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities.js';
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
@@ -198,8 +199,7 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
   }).immediate();
 }
 function leadView(row,role) {
-  const submission=row.callId?ownerQuery('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,requestId LIMIT 1').get(row.ownerId,row.id):null;
-  return storedLeadView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined);
+  return leadFollowUpView(ownerQuery,row,role);
 }
 export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bookingService,bookingTokenSecret}) {
   registerQuoteDateDatabase(db);
@@ -268,6 +268,8 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
   app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
+  const activity=createOwnerCallService({ownerQuery});
+  app.get('/api/leads/activity',...leadTeam,(req,res)=>res.json(activity.dashboard(req.tenantOwnerId)));
   app.get('/api/leads',...leadTeam,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));
   app.get('/api/leads/:id',...leadTeam,(req,res)=>{
     const row=ownerQuery('SELECT * FROM leads WHERE ownerId = ? AND id = ?').get(req.tenantOwnerId,req.params.id);
@@ -279,6 +281,6 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
     if(!result.changes)return res.status(404).json({error:'Lead not found.'});res.json({success:true});
   });
   app.get('/api/quotes',...team,(req,res)=>{
-    const quotes=ownerQuery('SELECT id,callId,serviceType,status,tierChosen,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>storedQuoteView(row,req.role));res.json({quotes});
+    const quotes=ownerQuery('SELECT id,ownerId,callId,serviceType,status,tierChosen,createdAt,resultJson FROM quotes WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>quoteFollowUpView(ownerQuery,row,req.role));res.json({quotes});
   });
 }

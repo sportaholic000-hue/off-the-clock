@@ -1,0 +1,44 @@
+{
+  "startingSha": "53d6833867dcff42a6ba652e74d26364f4fa1ff1",
+  "schema": "accepted",
+  "transfer": {
+    "status": "unavailable",
+    "reason": "TRANSFER_PROVIDER_UNAVAILABLE",
+    "message": "The live transfer failed. A callback request was saved. Owner notification has not been confirmed.",
+    "callbackSaved": true
+  },
+  "transferAttempts": 1,
+  "callbackLeads": 1,
+  "ownerCallLeadCount": 2,
+  "ownerAlertTable": true,
+  "optionalWebhookDeliveries": 0,
+  "fakeOwnerEmailAttempts": 4,
+  "ownerAlerts": [
+    {
+      "eventType": "callback.requested",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "lead.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "lead.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    },
+    {
+      "eventType": "quote.created",
+      "status": "ACCEPTED",
+      "attemptCount": 1
+    }
+  ],
+  "outbox": [
+    {
+      "eventType": "voice.transfer_requested",
+      "status": "FAILED"
+    }
+  ]
+}

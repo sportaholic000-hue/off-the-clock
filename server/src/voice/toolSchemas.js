@@ -75,14 +75,19 @@ function checkAvailability(args){
 }
 function bookAppointment(args){return {slotHandle:handle(args.slotHandle),leadHandle:handle(args.leadHandle),customerConfirmed:confirmed(args.customerConfirmed)};}
 function captureLead(args){
-  const result={name:text(args.name,{max:120})};
+  const result={};if(args.name!==undefined)result.name=text(args.name,{max:120});
   if(args.email!==undefined){const email=text(args.email,{max:254}).toLowerCase();if(!EMAIL.test(email))fail('INVALID_TOOL_EMAIL');result.email=email;}
-  if(args.address!==undefined)result.address=address(args.address);if(args.notes!==undefined)result.notes=text(args.notes,{max:1000});return result;
+  if(args.address!==undefined)result.address=address(args.address);if(args.notes!==undefined)result.notes=text(args.notes,{max:1000});
+  if(args.description!==undefined)result.description=text(args.description,{max:1000});
+  if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);
+  if(args.inquiryNumber!==undefined){if(!Number.isSafeInteger(args.inquiryNumber)||args.inquiryNumber<1||args.inquiryNumber>100)fail('INVALID_TOOL_NUMBER');result.inquiryNumber=args.inquiryNumber;}
+  if(args.callbackRequested!==undefined){if(typeof args.callbackRequested!=='boolean')fail('INVALID_TOOL_BOOLEAN');result.callbackRequested=args.callbackRequested;if(args.callbackRequested&&args.notes===undefined)fail('MISSING_TOOL_FIELD');}
+  return result;
 }
 function logQuoteRequest(args){const result={description:text(args.description,{max:1000})};if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);return result;}
 function sendSms(args){return {template:oneOf(args.template,['quote','booking','callback','reminder']),recordHandle:handle(args.recordHandle)};}
-function flagUrgent(args){const result={reason:oneOf(args.reason,['active_leak','flooding','safety','complaint'])};if(args.summary!==undefined)result.summary=text(args.summary,{max:500});return result;}
-function transferCall(args){return {reason:oneOf(args.reason,['caller_requested','urgent','escalation']),customerConfirmed:confirmed(args.customerConfirmed)};}
+function flagUrgent(args){const result={reason:oneOf(args.reason,['active_leak','flooding','safety','complaint'])};if(args.summary!==undefined)result.summary=text(args.summary,{max:500});if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);return result;}
+function transferCall(args){const result={reason:oneOf(args.reason,['caller_requested','urgent','escalation']),customerConfirmed:confirmed(args.customerConfirmed)};if(args.notes!==undefined)result.notes=text(args.notes,{max:1000});if(args.leadHandle!==undefined)result.leadHandle=handle(args.leadHandle);if(args.inquiryNumber!==undefined){if(!Number.isSafeInteger(args.inquiryNumber)||args.inquiryNumber<1||args.inquiryNumber>100)fail('INVALID_TOOL_NUMBER');result.inquiryNumber=args.inquiryNumber;}return result;}
 function modifyAppointment(args){
   const action=oneOf(args.action,['reschedule','cancel']);if(action==='reschedule'&&args.slotHandle===undefined)fail('MISSING_TOOL_FIELD');if(action==='cancel'&&args.slotHandle!==undefined)fail('EXTRA_TOOL_FIELD');
   const result={appointmentHandle:handle(args.appointmentHandle),action,customerConfirmed:confirmed(args.customerConfirmed)};if(args.slotHandle!==undefined)result.slotHandle=handle(args.slotHandle);return result;
@@ -110,11 +115,11 @@ const declarations={
   getQuote:object({serviceHandle:opaque,customerInputs:{type:'OBJECT',description:'Only current question field names and caller-stated measurements or ordinary product names returned by matchService. No address, contact, identifiers, money or confirmedFacts.'},customerConfirmed:confirmation,productConfirmations:{type:'OBJECT',description:'Product question fields mapped to true only when the caller has identified and confirmed that exact named product. False or missing means unknown; never assume identification.'},customerFeeSelections:object(Object.fromEntries(['travel','disposal','permit','overhead'].map(fee=>[fee,boolean("The caller's Yes/No to this currently offered fee; no amount.")]))),additionalWork:strings('Separate requested work needing its own on-site estimate, not part of the selected-service price.')},['serviceHandle','customerInputs','customerConfirmed']),
   checkAvailability:object({quoteHandle:opaque,leadHandle:opaque,preference:object({fromDate:string('Local date YYYY-MM-DD, never an invented slot or raw datetime.'),days:{type:'INTEGER',minimum:1,maximum:31},timeOfDay:{type:'ARRAY',items:enumeration(['morning','afternoon','evening'])}})},['quoteHandle','leadHandle']),
   bookAppointment:object({slotHandle:opaque,leadHandle:opaque,customerConfirmed:confirmation},['slotHandle','leadHandle','customerConfirmed']),
-  captureLead:object({name:string('Caller name, captured after the quote outcome.'),email:string('Optional caller email.'),address:object({line1:string('Street address'),line2:string('Optional address line 2'),city:string('City'),region:string('Province or state'),postalCode:string('Postal or ZIP code'),country:string('Two-letter country')},['line1','city','region','postalCode']),notes:string('Optional non-pricing callback notes.')},['name']),
+  captureLead:object({name:string('Optional caller name; the verified callback phone is already bound to this call.'),email:string('Optional caller email.'),address:object({line1:string('Street address'),line2:string('Optional address line 2'),city:string('City'),region:string('Province or state'),postalCode:string('Postal or ZIP code'),country:string('Two-letter country')},['line1','city','region','postalCode']),notes:string('Caller request and non-pricing callback notes. Preserve the caller words.'),callbackRequested:boolean('True when the caller requests a callback; requires their notes. Reuse inquiryNumber for corrections and retries.'),description:string('Optional caller-described work; never invent scope.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse the number or leadHandle for corrections. Use a different number only for a genuinely separate job on this call.'}}),
   logQuoteRequest:object({description:string("The customer's request needing follow-up."),leadHandle:opaque},['description']),
   sendSms:object({template:enumeration(['quote','booking','callback','reminder']),recordHandle:opaque},['template','recordHandle']),
-  flagUrgent:object({reason:enumeration(['active_leak','flooding','safety','complaint']),summary:string('Caller-reported urgency, not an invented diagnosis.')},['reason']),
-  transferCall:object({reason:enumeration(['caller_requested','urgent','escalation']),customerConfirmed:confirmation},['reason','customerConfirmed']),
+  flagUrgent:object({reason:enumeration(['active_leak','flooding','safety','complaint']),summary:string('Optional caller-reported urgency, not an invented diagnosis.'),leadHandle:opaque},['reason']),
+  transferCall:object({reason:enumeration(['caller_requested','urgent','escalation']),customerConfirmed:confirmation,notes:string('The caller exact request words. Preserved in a callback if transfer fails.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse for retries; a different number marks a genuinely separate callback request.'}},['reason','customerConfirmed']),
   modifyAppointment:object({appointmentHandle:opaque,action:enumeration(['reschedule','cancel']),slotHandle:opaque,customerConfirmed:confirmation},['appointmentHandle','action','customerConfirmed']),
   getCustomerContext:object({})
 };

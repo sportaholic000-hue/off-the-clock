@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: D19/D20: production browser shows saved SMS state and browses/retries older failures
+not ok 1 - D19/D20: production browser shows saved SMS state and browses/retries older failures
+  ---
+  duration_ms: 227.574637
+  type: 'test'
+  location: '/workspace/scratch/e04cbf0ad2ad/owner-alerts-delivery-20261006/test/ownerAlertsDelivery20261006.browser.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+    
+    <launching> /workspace/scratch/e04cbf0ad2ad/lead-repair-browsers/chromium-1194/chrome-linux/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/workspace/scratch/e04cbf0ad2ad/lead-repair-temp/playwright_chromiumdev_profile-8sF9SX --remote-debugging-pipe --no-startup-window
+    <launched> pid=24
+    Call log:
+    [2m  - <launching> /workspace/scratch/e04cbf0ad2ad/lead-repair-browsers/chromium-1194/chrome-linux/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/workspace/scratch/e04cbf0ad2ad/lead-repair-temp/playwright_chromiumdev_profile-8sF9SX --remote-debugging-pipe --no-startup-window[22m
+    [2m  - <launched> pid=24[22m
+    [2m  - [pid=24] <gracefully close start>[22m
+    [2m  - [pid=24] <kill>[22m
+    [2m  - [pid=24] <will force kill>[22m
+    [2m  - [pid=24] <process did exit: exitCode=null, signal=SIGTRAP>[22m
+    [2m  - [pid=24] starting temporary directories cleanup[22m
+    [2m  - [pid=24] finished temporary directories cleanup[22m
+    [2m  - [pid=24] <gracefully close end>[22m
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (/workspace/scratch/e04cbf0ad2ad/owner-alerts-delivery-20261006/test/ownerAlertsDelivery20261006.browser.spec.mjs:10:132)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 417.057921

@@ -4,24 +4,24 @@ const exports = Object.freeze({
   leads: {
     columns: ['id', 'createdAt', 'customerName', 'phone', 'email', 'service', 'type', 'status'],
     sql: `SELECT l.id, l.createdAt, l.customerName, l.callerNumber AS phone,
-      CASE WHEN json_valid(l.collectedInputsJson)
-        AND json_type(l.collectedInputsJson, '$.originalSubmission.contact.email') = 'text'
-        THEN json_extract(l.collectedInputsJson, '$.originalSubmission.contact.email') END AS email,
+      COALESCE(CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.contact.email')='text' THEN json_extract(l.collectedInputsJson,'$.contact.email') END,
+        CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.originalSubmission.contact.email')='text' THEN json_extract(l.collectedInputsJson,'$.originalSubmission.contact.email') END) AS email,
       l.describedService AS service, l.type, l.status
       FROM leads l WHERE l.ownerId = @ownerId`
   },
   'quote-requests': {
     columns: ['id', 'createdAt', 'service', 'estimatedValueCents', 'customerName', 'phone', 'email', 'resultType'],
-    sql: `SELECT q.id, q.createdAt, q.describedService AS service,
-      q.estimatedValue AS estimatedValueCents,
-      CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson, '$.contact.name') = 'text'
-        THEN json_extract(s.originalSubmissionJson, '$.contact.name') END AS customerName,
-      CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson, '$.contact.phone') = 'text'
-        THEN json_extract(s.originalSubmissionJson, '$.contact.phone') END AS phone,
-      CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson, '$.contact.email') = 'text'
-        THEN json_extract(s.originalSubmissionJson, '$.contact.email') END AS email,
-      s.resultType
-      FROM quoteRequests q LEFT JOIN quoteSubmissions s ON s.ownerId = q.ownerId AND s.recordId = q.id
+    sql: `SELECT q.id,q.createdAt,q.describedService AS service,q.estimatedValue AS estimatedValueCents,
+      COALESCE(CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson,'$.contact.name')='text' THEN json_extract(s.originalSubmissionJson,'$.contact.name') END,l.customerName) AS customerName,
+      COALESCE(CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson,'$.contact.phone')='text' THEN json_extract(s.originalSubmissionJson,'$.contact.phone') END,l.callerNumber,c.callerNumber) AS phone,
+      COALESCE(CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson,'$.contact.email')='text' THEN json_extract(s.originalSubmissionJson,'$.contact.email') END,
+        CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.contact.email')='text' THEN json_extract(l.collectedInputsJson,'$.contact.email') END) AS email,
+      s.resultType FROM quoteRequests q
+      LEFT JOIN quoteSubmissions s ON s.ownerId=q.ownerId AND s.recordId=q.id
+      LEFT JOIN outboxEvents o ON o.ownerId=q.ownerId AND o.id=(SELECT o2.id FROM outboxEvents o2
+        WHERE o2.ownerId=q.ownerId AND o2.aggregateId=q.id AND o2.eventType='voice.quote_request_logged' ORDER BY o2.createdAt,o2.id LIMIT 1)
+      LEFT JOIN leads l ON l.ownerId=q.ownerId AND l.id=COALESCE(CASE WHEN json_valid(o.payloadJson) THEN json_extract(o.payloadJson,'$.leadId') END,q.id)
+      LEFT JOIN calls c ON c.ownerId=q.ownerId AND c.id=q.callId
       WHERE q.ownerId = @ownerId`
   },
   bookings: {

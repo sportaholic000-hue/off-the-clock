@@ -1,0 +1,103 @@
+{
+  "nodeVersion": "22.23.3",
+  "syntheticOnly": true,
+  "manifestAndLockfileChanges": false,
+  "coldInstall": "PASS",
+  "productionBuild": "PASS",
+  "localChromiumExecutable": "MISSING",
+  "browserDownload": "failed/truncated download, no usable executable installed",
+  "artifacts": [
+    {
+      "artifact": "final-local-test-quote.tap.gz",
+      "uncompressedSha256": "ade802b48b64fe9b11cab52cf3966799fa0b25eaaf8aac6a3177db2691805623",
+      "uncompressedBytes": 543146,
+      "compressedBytes": 80346,
+      "tapSummary": {
+        "tests": 2099,
+        "pass": 2057,
+        "fail": 42,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "missingChromiumErrors": 38,
+      "complete": true
+    },
+    {
+      "artifact": "final-local-full.tap.gz",
+      "uncompressedSha256": "24761dd884426970c1b4b5540f9184fb95fc04ced53950f34bcb1f9e270c1a55",
+      "uncompressedBytes": 161469,
+      "compressedBytes": 28623,
+      "tapSummary": null,
+      "missingChromiumErrors": 8,
+      "complete": false
+    },
+    {
+      "artifact": "final-local-full-command.log.gz",
+      "uncompressedSha256": "b3384d761c43ce35371bf3241d71a5be364021ef6bfd2e536f6311dfb58d8fc1",
+      "uncompressedBytes": 161606,
+      "compressedBytes": 28724,
+      "tapSummary": null,
+      "missingChromiumErrors": 8,
+      "complete": false
+    },
+    {
+      "artifact": "verified-source-local-quote.tap.gz",
+      "uncompressedSha256": "27846b6f7bc8f7e2ca61d400a06fa0ca9114254dce60d1e4e5fbe92bfbd5f896",
+      "uncompressedBytes": 117972,
+      "compressedBytes": 20151,
+      "tapSummary": null,
+      "missingChromiumErrors": 8,
+      "complete": false
+    },
+    {
+      "artifact": "verified-source-local-full.tap.gz",
+      "uncompressedSha256": "d2ab5b889be824ae9c17cf787dfeb1712bafc42148c4b7cc49ae3e35f363c5e9",
+      "uncompressedBytes": 97792,
+      "compressedBytes": 17410,
+      "tapSummary": null,
+      "missingChromiumErrors": 3,
+      "complete": false
+    },
+    {
+      "artifact": "verified-source-local-full-command.log.gz",
+      "uncompressedSha256": "d5f96896c1d18abb6598eace6ee8f046ccb5369221406b62ed06d37b3d26d466",
+      "uncompressedBytes": 97929,
+      "compressedBytes": 17513,
+      "tapSummary": null,
+      "missingChromiumErrors": 3,
+      "complete": false
+    },
+    {
+      "artifact": "local-diagnostic-full.tap.gz",
+      "uncompressedSha256": "710ebb85b397a6f0cad4f9a019c089798e4bd9d4428e14e53b3732c957dcfb4f",
+      "uncompressedBytes": 453335,
+      "compressedBytes": 71697,
+      "tapSummary": null,
+      "missingChromiumErrors": 35,
+      "complete": false
+    },
+    {
+      "artifact": "local-diagnostic-full-command.log.gz",
+      "uncompressedSha256": "152884b3c1b1663ed6abafae0d5790ba0546cc05e006e1a9c78fc2d06900d44b",
+      "uncompressedBytes": 453472,
+      "compressedBytes": 71801,
+      "tapSummary": null,
+      "missingChromiumErrors": 35,
+      "complete": false
+    }
+  ],
+  "intermediateProductFailures": {
+    "firstStrictRun": {
+      "tests": 2099,
+      "pass": 2057,
+      "fail": 42,
+      "browserStartupFailures": 38,
+      "legacyNameLeafAssertions": 2,
+      "legacyNameParentFailures": 2,
+      "resolution": "Source fallback corrected; existing assertions and new regression now pass."
+    }
+  },
+  "noncompletion": "Later local runs, including process-exit diagnostics, ended without a global TAP summary. They are failed/nonaccepted runs. The additional noncompletion cause was not established; no product defect or passing result is inferred from incomplete logs. The existing hosted workflow performs the complete cold gates with Chromium at the exact uploaded source.",
+  "diagnostic": "local-process-diagnostic.mjs recorded process status only, without arguments/customer content, and did not modify application source, tests or gate scripts. It was an auxiliary diagnostic, not a substitute passing gate."
+}

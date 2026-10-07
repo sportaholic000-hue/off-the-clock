@@ -88,7 +88,7 @@ const PROJECTORS=Object.freeze({
   logQuoteRequest(result){const output=baseResult(result);copyIf(result,output,'requestHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   sendSms(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   flagUrgent(result){const output=baseResult(result);copyIf(result,output,'caseHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
-  transferCall(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
+  transferCall(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'callbackSaved',value=>{if(typeof value!=='boolean')fail('INVALID_TOOL_RESULT',502);return value;});return output;},
   modifyAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'recentAppointments',value=>resultTextList(value,10));copyIf(result,output,'message',value=>resultText(value,1000));return output;}
 });

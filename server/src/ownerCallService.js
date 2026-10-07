@@ -1,4 +1,7 @@
-import {storedObject,storedQuoteView,storedLeadView} from './ownerRecordViews.js';
+import {callDeliveryActions} from './voiceDeliveryViews.js';
+import {ownerAlertEmailReady} from './ownerAlertEmail.js';
+import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
+import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {
@@ -35,12 +38,9 @@ export function createOwnerCallService({ownerQuery}) {
       if(stored.length)turns=stored;
     }
     const quotes=ownerQuery('SELECT * FROM quotes WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(quote=>storedQuoteView(quote,role));
+      .map(quote=>quoteFollowUpView(ownerQuery,quote,role));
     const leads=ownerQuery('SELECT * FROM leads WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(lead=>{
-        const submission=ownerQuery('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,requestId LIMIT 1').get(ownerId,lead.id);
-        return storedLeadView(lead,role,submission?storedObject(submission.originalSubmissionJson):undefined);
-      });
+      .map(lead=>leadFollowUpView(ownerQuery,lead,role));
     // Both the source and the linked record must belong to this owner. A bad
     // cross-tenant foreign key must never reveal the other tenant's booking.
     const source=`((i.sourceType='quote' AND EXISTS(SELECT 1 FROM quotes q WHERE q.ownerId=? AND q.id=i.sourceId AND q.callId=?))
@@ -51,13 +51,18 @@ export function createOwnerCallService({ownerQuery}) {
       WHERE a.ownerId=? AND (EXISTS(SELECT 1 FROM quotes q WHERE q.ownerId=? AND q.id=a.quoteId AND q.callId=?)
         OR ${source}) ORDER BY a.createdAt,a.id`).all(ownerId,ownerId,id,ownerId,id,ownerId,id)
       .map(({customerJson,locationJson,...booking})=>({...booking,customer:storedObject(customerJson),location:storedObject(locationJson)}));
-    const bookingRequests=ownerQuery(`SELECT p.id,p.status,p.preferredWindowsJson,p.note,p.createdAt
+    const bookingRequests=ownerQuery(`SELECT p.id,p.status,p.preferredWindowsJson,p.note,p.createdAt,p.customerJson,p.locationJson
       FROM bookingPreferences p JOIN bookingIntents i ON i.id=p.intentId AND i.ownerId=p.ownerId
       WHERE p.ownerId=? AND ${source} ORDER BY p.createdAt,p.id`).all(ownerId,ownerId,id,ownerId,id)
-      .map(({preferredWindowsJson,...request})=>({...request,preferredWindows:transcriptWindows(preferredWindowsJson)}));
+      .map(({preferredWindowsJson,customerJson,locationJson,...request})=>({...request,preferredWindows:transcriptWindows(preferredWindowsJson),
+        customer:followUpContact(storedObject(customerJson)),location:followUpLocation(storedObject(locationJson))}));
     const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
-    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests};
+    const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
+      .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
+    const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
+    const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
+    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
 
   function dashboard(ownerId) {
@@ -67,7 +72,9 @@ export function createOwnerCallService({ownerQuery}) {
       FROM calls WHERE ownerId=?`).get(ownerId);
     const quotes=ownerQuery('SELECT COUNT(*) AS count FROM quotes WHERE ownerId=?').get(ownerId).count;
     const bookings=ownerQuery("SELECT COUNT(*) AS count FROM appointments WHERE ownerId=? AND status='CONFIRMED'").get(ownerId).count;
-    return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5})};
+    const notifications=ownerQuery(`SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status<>'ACCEPTED' OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED') THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId);
+    const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status<>'ACCEPTED'").get(ownerId).n;
+    return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5}),notifications,unresolvedNotifications,emailAlertsConfigured:ownerAlertEmailReady()};
   }
   return {list,detail,dashboard};
 }

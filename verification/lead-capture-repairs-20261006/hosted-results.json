@@ -1,0 +1,35 @@
+{
+  "runId": 37516621001,
+  "sourceSha": "b356fd0babee91c117d1c2973be68996b15e51bb",
+  "sourceTree": "50894e8add0ccdc4a17f4404425b14ecafb328f3",
+  "branch": "codex/lead-capture-repairs-20261006",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37516621001",
+  "jobId": 112451043430,
+  "quote": {
+    "files": 97,
+    "tests": 2105,
+    "pass": 2105,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "full": {
+    "tests": 2488,
+    "pass": 2488,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "coldInstall": true,
+  "build": "success",
+  "browserPrerequisite": "Chromium installed by existing CI workflow",
+  "newBrowserScenarios": 4,
+  "newBrowserTestsIncludingParent": 5,
+  "newRegressionTestsIncludingParents": 42,
+  "productionDependencyAudit": "0 vulnerabilities",
+  "completionTime": "2026-10-06T19:16:47Z"
+}

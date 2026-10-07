@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: D01/D09: usable nameless request retains notes/description in owner and staff views
+ok 1 - D01/D09: usable nameless request retains notes/description in owner and staff views
+  ---
+  duration_ms: 15.43924
+  type: 'test'
+  ...
+# Subtest: D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+ok 2 - D09: omitted name is valid, but supplied invalid contact/oversized fields remain rejected
+  ---
+  duration_ms: 6.792771
+  type: 'test'
+  ...
+# Subtest: D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+ok 3 - D11/D12/D13: corrections retain inquiry, omitted fields and owner disposition; replay is immutable
+  ---
+  duration_ms: 9.11171
+  type: 'test'
+  ...
+# Subtest: D13: new call retains known customer email/address without inventing the new job site
+ok 4 - D13: new call retains known customer email/address without inventing the new job site
+  ---
+  duration_ms: 9.136406
+  type: 'test'
+  ...
+# Subtest: D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+ok 5 - D11: separate inquiry numbers preserve distinct jobs; explicit handle correction touches only its inquiry
+  ---
+  duration_ms: 9.019192
+  type: 'test'
+  ...
+# Subtest: D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+ok 6 - D03/D10: all schema-valid urgency reasons persist without summary, survive capture and do not claim notification
+  ---
+  duration_ms: 17.533226
+  type: 'test'
+  ...
+# Subtest: D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+ok 7 - D03: target urgency belongs to its inquiry and preserves summary/complaint classification
+  ---
+  duration_ms: 7.865742
+  type: 'test'
+  ...
+# Subtest: capture and urgency database failures roll back without a successful acknowledgement
+ok 8 - capture and urgency database failures roll back without a successful acknowledgement
+  ---
+  duration_ms: 7.496184
+  type: 'test'
+  ...
+# Subtest: capture persisted before handle failure recovers the same inquiry once
+ok 9 - capture persisted before handle failure recovers the same inquiry once
+  ---
+  duration_ms: 6.315013
+  type: 'test'
+  ...
+# Subtest: cold process replay preserves dismissed inquiry and original contact receipt
+ok 10 - cold process replay preserves dismissed inquiry and original contact receipt
+  ---
+  duration_ms: 187.274041
+  type: 'test'
+  ...
+# Subtest: wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+ok 11 - wrong tenant/call, expired and deleted handles cannot correct or flag another inquiry
+  ---
+  duration_ms: 9.112882
+  type: 'test'
+  ...
+# Subtest: D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+ok 12 - D17: fresh and upgraded producers preserve voice email, CSV and historical deliveries
+  ---
+  duration_ms: 8.066921
+  type: 'test'
+  ...
+# Subtest: D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+ok 13 - D17: corrections refresh only an unattempted pending snapshot, not a historical attempt
+  ---
+  duration_ms: 7.045687
+  type: 'test'
+  ...
+# Subtest: D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+ok 14 - D18: standalone quote review creates actionable phone lead and linked export/webhook; distinct descriptions stay distinct
+  ---
+  duration_ms: 8.445712
+  type: 'test'
+  ...
+# Subtest: D18: bound quote-review exports preserve saved name/email and dismissed disposition
+ok 15 - D18: bound quote-review exports preserve saved name/email and dismissed disposition
+  ---
+  duration_ms: 7.166636
+  type: 'test'
+  ...
+# Subtest: D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+ok 16 - D18: quote-review storage failure leaves no partial follow-up or success; retry recovers once
+  ---
+  duration_ms: 6.547659
+  type: 'test'
+  ...
+# Subtest: D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+ok 17 - D22/D23: preferred contact is projected with provenance while stored instant amounts and receipts remain unchanged
+  ---
+  duration_ms: 7.154458
+  type: 'test'
+  ...
+# Subtest: D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+ok 18 - D11/D18: review binds matching capture and retry preserves newer corrections and historical attempts
+  ---
+  duration_ms: 9.642657
+  type: 'test'
+  ...
+# Subtest: D11/D18: standalone review retry cannot undo a later description correction
+ok 19 - D11/D18: standalone review retry cannot undo a later description correction
+  ---
+  duration_ms: 6.270116
+  type: 'test'
+  ...
+# Subtest: D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+ok 20 - D22: preferred address is coherent and later explicit voice correction takes precedence with provenance
+  ---
+  duration_ms: 5.931775
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 560.048495

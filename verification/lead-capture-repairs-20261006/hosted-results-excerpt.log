@@ -1,0 +1,35 @@
+2026-10-06T19:08:20.9165641Z found 0 vulnerabilities
+2026-10-06T19:09:34.3007268Z # Subtest: lead capture repairs: production owner app navigation, stored contacts and live feed
+2026-10-06T19:09:34.3008921Z     # Subtest: owner deep link, browser refresh and Calls Refresh retain saved request and urgency
+2026-10-06T19:09:34.3010423Z     ok 1 - owner deep link, browser refresh and Calls Refresh retain saved request and urgency
+2026-10-06T19:09:34.4098933Z     # Subtest: staff receives instant callback contact and corrected lead contact with no private pricing evidence
+2026-10-06T19:09:34.4108040Z     ok 2 - staff receives instant callback contact and corrected lead contact with no private pricing evidence
+2026-10-06T19:09:34.8311781Z     # Subtest: open dashboard renders a newly persisted call, then its feed link survives production reload
+2026-10-06T19:09:34.8313684Z     ok 3 - open dashboard renders a newly persisted call, then its feed link survives production reload
+2026-10-06T19:09:34.9774677Z     # Subtest: tenant change discards old in-flight feed data and cleans up previous tenant timers
+2026-10-06T19:09:34.9776283Z     ok 4 - tenant change discards old in-flight feed data and cleans up previous tenant timers
+2026-10-06T19:09:35.0182213Z ok 456 - lead capture repairs: production owner app navigation, stored contacts and live feed
+2026-10-06T19:12:41.3260237Z # tests 2105
+2026-10-06T19:12:41.3260972Z # pass 2105
+2026-10-06T19:12:41.3261314Z # fail 0
+2026-10-06T19:12:41.3261647Z # cancelled 0
+2026-10-06T19:12:41.3262020Z # skipped 0
+2026-10-06T19:12:41.3262350Z # todo 0
+2026-10-06T19:12:41.3267694Z PASS: quote engine and price book gate (97 files, 2105/2105 tests, zero skips).
+2026-10-06T19:13:20.9473846Z # Subtest: lead capture repairs: production owner app navigation, stored contacts and live feed
+2026-10-06T19:13:20.9475394Z     # Subtest: owner deep link, browser refresh and Calls Refresh retain saved request and urgency
+2026-10-06T19:13:20.9476589Z     ok 1 - owner deep link, browser refresh and Calls Refresh retain saved request and urgency
+2026-10-06T19:13:21.0512299Z     # Subtest: staff receives instant callback contact and corrected lead contact with no private pricing evidence
+2026-10-06T19:13:21.0514340Z     ok 2 - staff receives instant callback contact and corrected lead contact with no private pricing evidence
+2026-10-06T19:13:21.4577591Z     # Subtest: open dashboard renders a newly persisted call, then its feed link survives production reload
+2026-10-06T19:13:21.4579826Z     ok 3 - open dashboard renders a newly persisted call, then its feed link survives production reload
+2026-10-06T19:13:21.6351646Z     # Subtest: tenant change discards old in-flight feed data and cleans up previous tenant timers
+2026-10-06T19:13:21.6353332Z     ok 4 - tenant change discards old in-flight feed data and cleans up previous tenant timers
+2026-10-06T19:13:21.6730829Z ok 635 - lead capture repairs: production owner app navigation, stored contacts and live feed
+2026-10-06T19:16:42.4699003Z # tests 2488
+2026-10-06T19:16:42.4699999Z # pass 2488
+2026-10-06T19:16:42.4700369Z # fail 0
+2026-10-06T19:16:42.4700708Z # cancelled 0
+2026-10-06T19:16:42.4701078Z # skipped 0
+2026-10-06T19:16:42.4701435Z # todo 0
+2026-10-06T19:16:44.6309474Z found 0 vulnerabilities

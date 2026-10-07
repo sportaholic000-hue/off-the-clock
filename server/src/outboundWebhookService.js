@@ -64,6 +64,14 @@ export function createOutboundWebhookService({
         WHERE ownerId = ? ORDER BY createdAt DESC, id DESC LIMIT 20`).all(ownerId)
     };
   }
+  function listDeliveries(ownerId,{status='unresolved',offset='0'}={}){
+    if(!['all','unresolved'].includes(status)||typeof offset!=='string'||!/^\d{1,8}$/.test(offset))throw problem('Unsupported webhook delivery page.');
+    const filter=status==='unresolved'?" AND status NOT IN ('DELIVERED','CANCELED')":'';
+    const total=query('SELECT COUNT(*) AS n FROM webhookDeliveries WHERE ownerId=?'+filter).get(ownerId).n;
+    const deliveries=query(`SELECT id,eventType,aggregateId,status,attemptCount,nextAttemptAt,lastHttpStatus,lastErrorCode,deliveredAt,createdAt
+      FROM webhookDeliveries WHERE ownerId=?${filter} ORDER BY createdAt DESC,id DESC LIMIT 50 OFFSET ?`).all(ownerId,Number(offset));
+    return {deliveries,total,offset:Number(offset),nextOffset:Number(offset)+deliveries.length<total?Number(offset)+deliveries.length:null};
+  }
   function cancelPending(ownerId) {
     query(`UPDATE webhookDeliveries SET status = 'CANCELED', leaseId = NULL, leaseExpiresAt = NULL,
       updatedAt = ? WHERE ownerId = ? AND status IN ('PENDING','DELIVERING','FAILED')`).run(iso(), ownerId);
@@ -248,5 +256,5 @@ export function createOutboundWebhookService({
     timer = setTimeout(tick,intervalMs); timer.unref?.();
     return () => {stopped = true;clearTimeout(timer);return active || Promise.resolve();};
   }
-  return {getConfiguration,save,remove,rotate,retry,dispatchOnce,start};
+  return {getConfiguration,listDeliveries,save,remove,rotate,retry,dispatchOnce,start};
 }
