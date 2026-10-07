@@ -42,4 +42,5 @@ test('dashboard repair: billing, transport, transcript exports and follow-up are
   for(const label of ['Billed minutes','Transport outcome','Download transcript','Print transcript'])assert.ok(html.includes(label),label);
   const leads=renderToStaticMarkup(React.createElement(QuoteRecordsList,{rows:detail.leads,kind:'leads'}));
   for(const label of ['Call back','Owner review','Follow-up'])assert.ok(leads.includes(label),label);
+  assert.match(leads,/aria-label="Follow-up action"/);
 });
