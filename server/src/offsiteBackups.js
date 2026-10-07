@@ -68,15 +68,17 @@ export function createOffsiteBackupService(database,deployment,{env=process.env,
   for(const name of [stateFile,file,lockFile]){assertRealContainment(deployment.root,name);if(fs.existsSync(name) && (!fs.lstatSync(name).isFile() || fs.lstatSync(name).isSymbolicLink()))throw Error('OFFSITE_LOCAL_STATE_UNSAFE');}
   const destinationId=digest(JSON.stringify([config.endpoint,config.bucket,config.prefix,digest(config.key)]));
   let state={version:1,destinationId,phase:'WAITING',failures:0},active,timer,stopped=false,stateInvalid=false;
+  function readState() {
+    const saved=JSON.parse(fs.readFileSync(stateFile,'utf8'));
+    if(saved.version!==1 || saved.destinationId!==destinationId || !Number.isSafeInteger(saved.failures) || saved.failures<0 || !['WAITING','UPLOADING','FAILED','SUCCEEDED'].includes(saved.phase))throw Error('OFFSITE_LOCAL_STATE_INVALID');
+    for(const field of ['lastSuccessAt','lastAttemptAt','nextRetryAt'])if(saved[field]!=null && (!Number.isSafeInteger(saved[field]) || saved[field]<0))throw Error('OFFSITE_LOCAL_STATE_INVALID');
+    if(saved.lastBackupDay && !dayValid(saved.lastBackupDay))throw Error('OFFSITE_LOCAL_STATE_INVALID');
+    if(saved.pending)validateRecord(saved.pending,config,saved.pending.day);
+    if(saved.phase==='UPLOADING'){saved.phase='FAILED';saved.error='OFFSITE_INTERRUPTED';saved.nextRetryAt=0;}
+    return saved;
+  }
   if(fs.existsSync(stateFile)) {
-    try {
-      state=JSON.parse(fs.readFileSync(stateFile,'utf8'));
-      if(state.version!==1 || state.destinationId!==destinationId || !Number.isSafeInteger(state.failures) || state.failures<0 || !['WAITING','UPLOADING','FAILED','SUCCEEDED'].includes(state.phase))throw Error();
-      for(const field of ['lastSuccessAt','lastAttemptAt','nextRetryAt'])if(state[field]!=null && (!Number.isSafeInteger(state[field]) || state[field]<0))throw Error();
-      if(state.lastBackupDay && !dayValid(state.lastBackupDay))throw Error();
-      if(state.pending)validateRecord(state.pending,config,state.pending.day);
-      if(state.phase==='UPLOADING'){state.phase='FAILED';state.error='OFFSITE_INTERRUPTED';state.nextRetryAt=0;}
-    }
+    try {state=readState();}
     catch {stateInvalid=true;state={version:1,destinationId,phase:'FAILED',error:'OFFSITE_LOCAL_STATE_INVALID',failures:1};warn('[offsite-backup] OFFSITE_LOCAL_STATE_INVALID; preserve the pending artifact and correct configuration/state before retrying.');}
   }
   const save=()=>{
@@ -97,6 +99,9 @@ export function createOffsiteBackupService(database,deployment,{env=process.env,
     }
     fs.writeFileSync(lockFile,String(process.pid),{flag:'wx',mode:0o600,flush:true});
     try {
+      // A second worker may have been constructed before the first saved its
+      // artifact. Re-read under the lock, preserving that immutable retry.
+      if(fs.existsSync(stateFile)){try{state=readState();}catch{stateInvalid=true;throw Error('OFFSITE_LOCAL_STATE_INVALID');}}
       state.lastAttemptAt=now();state.phase='UPLOADING';state.error=null;save();
       const day=state.pending?.day||dayAt(now());
       const existing=await store.record(recordKey(config,day));
@@ -134,7 +139,7 @@ export function createOffsiteBackupService(database,deployment,{env=process.env,
     active=perform().catch(error=>{
       state.phase='FAILED';state.failures=Math.min(state.failures+1,1000000);state.error=/^(?:OFFSITE_|BACKUP_)[A-Z0-9_]+$/.test(error.message)?error.message:'OFFSITE_UPLOAD_FAILED';
       state.nextRetryAt=now()+Math.min(30*60000,retryMs*2**Math.min(state.failures-1,10));
-      if(!['OFFSITE_BUSY','OFFSITE_LOCK_INVALID'].includes(state.error)) {try {save();}catch {state.error='OFFSITE_STATUS_WRITE_FAILED';}}
+      if(!stateInvalid && !['OFFSITE_BUSY','OFFSITE_LOCK_INVALID'].includes(state.error)) {try {save();}catch {state.error='OFFSITE_STATUS_WRITE_FAILED';}}
       warn('[offsite-backup] '+state.error+'; backup is not confirmed. Retry scheduled.');throw Error(state.error);
     }).finally(()=>{active=null;});
     return active;

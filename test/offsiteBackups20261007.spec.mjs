@@ -179,3 +179,10 @@ test("a competing local worker cannot erase another worker's pending upload stat
   const file=path.join(f.deployment.backupPath,'.offsite','state.json'),before=fs.readFileSync(file);await assert.rejects(()=>second.run(),/OFFSITE_BUSY/);assert.deepEqual(fs.readFileSync(file),before);
   release();await pending;assert.equal(first.status().ok,true);
 });
+
+test('worker constructed before a failed response reuses the first worker artifact after acquiring its lock',async t=>{
+  const f=await fixture(t);let entered,release;const waiting=new Promise(r=>{entered=r;});
+  const first=createOffsiteBackupService(f.db,f.deployment,{config:f.config,store:{...f.store,putFile:async(...args)=>{entered();await new Promise(r=>{release=r;});await f.store.putFile(...args);throw Error('synthetic accepted response lost');}},now:()=>AT,warn:()=>{}});
+  const second=f.service(),pending=first.run();await waiting;await assert.rejects(()=>second.run(),/OFFSITE_BUSY/);release();await assert.rejects(()=>pending);
+  const accepted=Buffer.from(f.fake.objects.get(key(DAY)).bytes);await second.run();assert.deepEqual(f.fake.objects.get(key(DAY)).bytes,accepted);assert.equal(second.status().ok,true);
+});

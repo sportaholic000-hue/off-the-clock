@@ -28,13 +28,14 @@ Synthetic evidence:
 - First off-site test run: 12/15; three fixture prerequisites corrected (unbuilt
   client assets for the real CLI; missing actual auth sessions).
 - Initial backup + off-site focused run: **32/32** pass, zero skips.
-- Final new regression file: **21/21** pass, zero failures/skips. Covers actual
+- Final new regression file: **22/22** pass, zero failures/skips. Covers actual
   fake S3 HTTP/signing SDK, real restore CLI/full-volume wipe, exact two-owner
   database/book bytes, no plaintext upload, wrong key, checksum/GCM corruption,
   daily dedupe, concurrent runs, lost responses, durable failure/restart, bounded
   retry schedule, paginated retention, missing/incomplete copies, interrupted
   pruning, missing/invalid config, actual admin auth/HTTP status, shutdown drain,
-  changed destination/local state, stale/live locks and competing pending state.
+  changed destination/local state, stale/live locks and competing pending state. A worker also re-reads durable state under its lock, so
+  a worker constructed before a response-loss failure reuses the first artifact.
 - An overlapping multi-file focused run returned **41 pass / 2 fail**: existing
   missing-book rehearsal case plus its parent. Unchanged pinned-base rehearsal
   and changed-source rehearsal each pass **9/9** independently. This transient
