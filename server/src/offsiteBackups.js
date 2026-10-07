@@ -57,7 +57,7 @@ export async function restoreOffsiteBackup({store,config,day,target,volume}) {
     return restoreBackup(bundle,target,{volume});
   } finally {fs.rmSync(stage,{recursive:true,force:true});}
 }
-export function createOffsiteBackupService(database,deployment,{env=process.env,config=readOffsiteConfig(env),store=config.enabled?createS3BackupStore(config):null,now=Date.now,
+export function createOffsiteBackupService(database,deployment,{env=process.env,config=deployment.production?readOffsiteConfig(env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]},store=config.enabled?createS3BackupStore(config):null,now=Date.now,
   takeSnapshot=()=>createSnapshot(database,deployment),warn=message=>console.warn(message),retryMs=60000,pollMs=60000}={}) {
   if(!config.enabled) {
     if(deployment.production)warn('[offsite-backup] WARNING: off-site backups are NOT configured; losing the volume loses business data. '+config.reason+(config.missing?.length?' Missing: '+config.missing.join(', '):''));

@@ -186,3 +186,9 @@ test('worker constructed before a failed response reuses the first worker artifa
   const second=f.service(),pending=first.run();await waiting;await assert.rejects(()=>second.run(),/OFFSITE_BUSY/);release();await assert.rejects(()=>pending);
   const accepted=Buffer.from(f.fake.objects.get(key(DAY)).bytes);await second.run();assert.deepEqual(f.fake.objects.get(key(DAY)).bytes,accepted);assert.equal(second.status().ok,true);
 });
+
+test('production backup settings cannot break a development server that has no production volume paths',async t=>{
+  const f=await fixture(t),warnings=[];
+  const service=createOffsiteBackupService(null,{production:false},{env:f.env,warn:message=>warnings.push(message)});
+  assert.equal(service.status().configured,false);assert.equal(service.status().error,'OFFSITE_PRODUCTION_ONLY');assert.deepEqual(warnings,[]);service.start();await service.stop();assert.equal(f.fake.requests.length,0);
+});
