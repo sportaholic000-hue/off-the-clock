@@ -49,13 +49,14 @@ mock.module('../../server/src/platformIntegrations.js',{namedExports:{...integra
   throw Object.assign(Error('SYNTHETIC provider missing call'),{statusCode:404});
 }}});
 const {default:app,httpServer,lifecycle,voiceRuntime}=await import('../../server/src/server.js');
-const {db}=await import('../../server/src/db.js');
+const {db,ownerQuery}=await import('../../server/src/db.js');
 const {savePricebook,loadPricebook}=await import('../../server/priceBookService.js');
 const bridge=await import('../../server/src/quoteDoneBridge.js');
 const {mowing}=await import('../../verification/engine-independent/fixtures.mjs');
 const {createAuthSessionService}=await import('../../server/src/authSessionService.js');
 const {createBookingService}=await import('../../server/src/bookingService.js');
-const {hashBookingToken}=await import('../../server/src/bookingTokens.js');
+const {sealSlotToken}=await import('../../server/src/bookingTokens.js');
+const {createOutboundWebhookService}=await import('../../server/src/outboundWebhookService.js');
 const {createVoiceSessionNonceService}=await import('../../server/src/voice/sessionNonceService.js');
 const {createVoiceNonceRepository,createVoiceSessionStore}=await import('../../server/src/voice/voicePersistence.js');
 const uuid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
@@ -84,7 +85,14 @@ for(const [label,n] of [['A',1],['B',2]]) {
   db.prepare('INSERT INTO priceBookDrafts(id,ownerId,mode,serviceTypesJson,fieldsJson,confirmedFieldsJson,createdAt,updatedAt) VALUES(?,?,?,?,?,?,?,?)').run(draft,owner,'browser','["LANDSCAPING_MOWING"]','{}','{}',at,at);
   const bookingService=createBookingService({db,calendar:{listBusy:async()=>[],createEvent:async()=>({}),getEvent:async()=>({})},slotTokenSecret:process.env.BOOKING_SLOT_TOKEN_SECRET});
   const intent=bookingService.createIntent({ownerId:owner,sourceType:'quote',sourceId:quote,serviceId:service,resultType:'INSTANT_ESTIMATE_READY',expiresAtUtc:expiry});
-  db.prepare('INSERT INTO appointments(id,ownerId,quoteId,bookingIntentId,status,startAtUtc,endAtUtc,createdAt) VALUES(?,?,?,?,?,?,?,?)').run(booking,owner,quote,intent.intentId,'CONFIRMED',expiry,new Date(Date.now()+90000000).toISOString(),at);
+  const hold=uuid(n+1000),delivery=uuid(n+1100),endAt=new Date(Date.now()+90000000).toISOString();
+  db.prepare(`INSERT INTO bookingHolds(id,ownerId,intentId,calendarId,slotIdDigest,startAtUtc,endAtUtc,lockStartAtUtc,lockEndAtUtc,policyRevision,status,expiresAtUtc,createdAt,updatedAt) VALUES(?,?,?,?,?,?,?,?,?,?,'CONFIRMED',?,?,?)`).run(hold,owner,intent.intentId,'synthetic-calendar-'+label,'synthetic-slot-digest-'+label,expiry,endAt,expiry,endAt,'synthetic-policy-'+label,expiry,at,at);
+  db.prepare('INSERT INTO appointments(id,ownerId,quoteId,bookingIntentId,holdId,status,startAtUtc,endAtUtc,createdAt,customerJson,timezone) VALUES(?,?,?,?,?,?,?,?,?,?,?)').run(booking,owner,quote,intent.intentId,hold,'CONFIRMED',expiry,endAt,at,JSON.stringify({name:'PRIVATE_'+label+'_BOOKING'}),'UTC');
+  const confirmationId=sealSlotToken({kind:'booking-confirmation',ownerId:owner,intentId:intent.intentId,appointmentId:booking,expiresAtUtc:expiry},process.env.BOOKING_SLOT_TOKEN_SECRET);
+  const webhooks=createOutboundWebhookService({database:db,ownerQuery,resolveDestination:async url=>({url:new URL(url)})});
+  await webhooks.save(owner,{url:'https://synthetic-'+label.toLowerCase()+'.example.invalid/hooks',events:['lead.created']});
+  const endpoint=db.prepare('SELECT version FROM webhookEndpoints WHERE ownerId=?').get(owner);
+  db.prepare(`INSERT INTO webhookDeliveries(id,ownerId,endpointVersion,eventType,aggregateId,payloadJson,status,nextAttemptAt,createdAt,updatedAt) VALUES(?,?,?,'lead.created',?,?,'FAILED',0,?,?)`).run(delivery,owner,endpoint.version,lead,JSON.stringify({id:lead,customerName:'PRIVATE_'+label+'_WEBHOOK'}),at,at);
   db.prepare('INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,?,?,\'book_job\',60,1,?)').run(owner,service,'synthetic-policy-'+label,at);
   db.prepare('INSERT INTO bookingSettings(ownerId,revision,timezone,directBookingEnabled,updatedAt) VALUES(?,?,\'UTC\',0,?)').run(owner,'synthetic-settings-'+label,at);
   const nonce=await createVoiceSessionNonceService({repository:createVoiceNonceRepository({database:db})}).issue(context);
@@ -93,7 +101,7 @@ for(const [label,n] of [['A',1],['B',2]]) {
     const receipt=sessions.create(db.prepare('SELECT * FROM users WHERE id=?').get(id));
     auth[role]={token:receipt.token,cookie:(process.env.NODE_ENV==='production'?'__Host-':'')+'otc_refresh_'+receipt.sessionId+'='+receipt.refreshToken};
   }
-  tenants[label]={label,owner,staff,password,email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
+  tenants[label]={label,owner,staff,password,email:`synthetic-${label.toLowerCase()}-owner@example.invalid`,auth,phone,fallback,service,call,callSid,lead,quote,draft,booking,hold,delivery,confirmationId,bookingIntentId:intent.intentId,bookingToken:intent.bookingToken,publicKey:'synthetic-widget-'+label,origin:'https://synthetic-'+label.toLowerCase()+'.example.invalid',nonce:nonce.nonce,quoteBody:{requestId:uuid(n+900),serviceId:service,customerInputs:fixture.customerInputs,contact:{email:'synthetic@example.invalid'}}};
   // Unequal counters catch aggregate leaks that contain no identifying strings.
   if(label==='B')for(let index=0;index<3;index++)db.prepare('INSERT INTO calls(id,ownerId,status,summaryText,createdAt) VALUES(?,?,?,?,?)').run(uuid(800+index),owner,'COMPLETED','PRIVATE_B_EXTRA_CALL',at);
 }

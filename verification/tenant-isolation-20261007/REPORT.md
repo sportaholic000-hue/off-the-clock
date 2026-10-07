@@ -20,7 +20,7 @@ Signup now waits for email verification instead of starting an authenticated ses
 
 ## Fixture and matrix
 
-`test/helpers/tenantIsolationFixture.mjs` starts the actual production server entry point with real migrations, bcrypt/session validation, price-book storage, billing state, booking capabilities, durable voice nonce/session stores and SDK signature verification. Each of A and B has an owner, staff member, saved and approved price book, quote, quote request, lead, call, appointment/booking intent, knowledge base, billing customer/subscription and its own phone/fallback number. B has extra rows to detect aggregate-count contamination.
+`test/helpers/tenantIsolationFixture.mjs` starts the actual production server entry point with real migrations, bcrypt/session validation, price-book storage, billing state, booking capabilities, durable voice nonce/session stores and SDK signature verification. Each of A and B has an owner, staff member, saved and approved price book, quote, quote request, lead, call, appointment/booking intent, confirmed hold, signed confirmation handle, failed outbound webhook delivery, knowledge base, billing customer/subscription and its own phone/fallback number. B has extra rows to detect aggregate-count contamination.
 
 The fixture replaces only provider transports with explicit synthetic responses. External HTTP(S) and fetch are blocked and counted; the matrix requires zero blocked network attempts and zero provider mutations. Every tenant table and price book is snapshotted, including owner and staff user rows. Foreign attempts cannot change B; public email recovery may issue only its intended opaque recovery receipt and cannot change B's password or business records.
 

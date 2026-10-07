@@ -14,7 +14,7 @@ const reviewedMiddleware=JSON.parse(readFileSync(new URL('../verification/tenant
 const uuid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
 const genericId=uuid(999999);
 function pathFor(route,tenant,{other=tenant,guess=false}={}) {
-  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('calls')?other.call:route.includes('deliveries')?uuid(10000):other.lead,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.booking,confirmationId:'synthetic-confirmation',nonce:tenant.nonce,kind:'leads'};
+  const values={ownerId:other.owner,serviceId:other.service,id:route.includes('calls')?other.call:route.includes('deliveries')?other.delivery:other.lead,draftId:other.draft,callSid:other.callSid,bookingIntentId:other.bookingIntentId,bookingToken:tenant.bookingToken,publicKey:tenant.publicKey,holdId:other.hold,confirmationId:other.confirmationId,nonce:tenant.nonce,kind:'leads'};
   return route.split(' ').slice(1).join(' ').replace(/:([A-Za-z]+)/g,(_,key)=>encodeURIComponent(guess&&!['publicKey','bookingToken','nonce','kind'].includes(key)?genericId:values[key])).replace(/^\*$/,'/dashboard').replace('/assets/*','/assets/tenant-isolation-missing.js');
 }
 function bodyFor(route,tenant,other=tenant) {
@@ -41,7 +41,7 @@ function bodyFor(route,tenant,other=tenant) {
 }
 function noLeak(response,other,label) {
   const visible=response.text+JSON.stringify(response.headers||{});
-  for(const forbidden of [other.owner,other.staff,other.email,other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.bookingIntentId,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
+  for(const forbidden of [other.owner,other.staff,other.email,other.phone,other.fallback,other.publicKey,other.bookingToken,other.service,other.call,other.quote,other.lead,other.draft,other.booking,other.hold,other.delivery,other.confirmationId,other.bookingIntentId,'PRIVATE_'+other.label+'_'])assert.ok(!visible.includes(forbidden),label+' leaked '+forbidden+' in '+response.text.slice(0,1200));
 }
 function refused(response,label) {assert.ok(response.status>=400&&response.status<500,label+' was not refused: '+response.status+' '+response.text.slice(0,1200));}
 const sanitized=r=>({status:r.status,text:r.text});
@@ -125,6 +125,10 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
       const wrongRecord=await f.request(own,{method:httpMethod,body:httpMethod==='GET'?undefined:bodyFor(route,A,B),headers:{origin:A.origin,'Idempotency-Key':crypto.randomUUID()}});
       // Availability has no foreign resource selector: the own token can read only A.
       if(!route.endsWith('/availability')&&!route.endsWith('/preference'))refused(wrongRecord,route+' foreign record');noLeak(wrongRecord,B,route);
+      if(route.includes('/confirmations/')) {
+        const absent=await f.request(own.replace(B.confirmationId,'synthetic-unknown-confirmation'),{headers:{origin:A.origin}});
+        assert.deepEqual(sanitized(wrongRecord),sanitized(absent),route+' distinguishes B confirmation from an unknown confirmation');
+      }
     }else if(policy==='stripe') {
       const stripe=new Stripe(f.env.STRIPE_SECRET_KEY);
       for(const [customer,subscription] of [[A,B],[B,A]]) {
@@ -183,6 +187,9 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     for(const tenant of [A,B]) {
       const own=await f.request('/api/pricebook/'+tenant.owner,{token:tenant.auth.owner.token});assert.equal(own.status,200);assert.ok(own.text.includes(tenant.service));
       const catalog=await f.request('/api/public/quote/'+tenant.publicKey,{headers:{origin:tenant.origin}});assert.equal(catalog.status,200);assert.ok(catalog.text.includes(tenant.service));
+      const confirmation=await f.request('/api/public/bookings/'+tenant.bookingToken+'/confirmations/'+tenant.confirmationId,{headers:{origin:tenant.origin}});assert.equal(confirmation.status,200);assert.ok(confirmation.text.includes(tenant.booking));
+      const hooks=await f.request('/api/integrations/webhook',{token:tenant.auth.owner.token});assert.equal(hooks.status,200);assert.ok(hooks.text.includes(tenant.delivery));
+      const rows=(await f.rpc('snapshot',{owner:tenant.owner})).rows;assert.ok(rows.bookingHolds.some(row=>row.id===tenant.hold));assert.ok(rows.webhookDeliveries.some(row=>row.id===tenant.delivery));
     }
   });
   await t.test('attacks never reached an external provider',async()=>{const result=await f.rpc('network');assert.equal(result.blockedNetwork,0);assert.deepEqual(result.providerCalls,[]);});
