@@ -1,5 +1,6 @@
 import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
+import {validateVoiceSettings} from './voice/voiceSettings.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
@@ -293,6 +294,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
       : String(incoming.neverSay || '').split('\n').map(value => value.trim()).filter(Boolean),
     draft: Boolean(incoming.draft)
   };
+  for(const key of ['transferWindows','transferNumber'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
   if (reviewContact) clean.reviewContact = { ...reviewContact, ownerId };
   if (Object.hasOwn(incoming, 'serviceArea')) {
     try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
@@ -446,16 +448,11 @@ export function saveGoogleCalendarTokens(ownerId, tokens) {
 }
 
 export function saveVoice(ownerId, input) {
-  const voiceId = String(input.voiceId || '');
-  const agentName = String(input.agentName || '').trim();
-  const greeting = String(input.greeting || '').trim();
-  if (!['male','female'].includes(voiceId) || !agentName || !greeting) {
-    const error = new Error('Choose a voice, enter an agent name, and enter a greeting'); error.statusCode = 400; throw error;
-  }
-  return updateBusinessProfile(ownerId, {
-    voiceId, agentName, greeting,
-    onboardingStep: Math.max(10, getBusinessProfile(ownerId).onboardingStep)
-  });
+  const {voiceId,agentName,greeting,transferNumber,transferWindows}=validateVoiceSettings(input);
+  const profile=getBusinessProfile(ownerId);
+  const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
+  return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
+    knowledgeBaseJson:JSON.stringify(knowledgeBase),onboardingStep:Math.max(10,profile.onboardingStep)});
 }
 
 export function onboardingState(ownerId) {

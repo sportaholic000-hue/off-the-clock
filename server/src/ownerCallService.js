@@ -1,3 +1,4 @@
+import {isValidIanaTimeZone} from './calendarTime.js';
 import {callDeliveryActions} from './voiceDeliveryViews.js';
 import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
@@ -15,6 +16,7 @@ function transcript(value) {
 
 export function createOwnerCallService({ownerQuery}) {
   if(typeof ownerQuery!=='function')throw new TypeError('Call reads require tenant-scoped queries.');
+  function timezone(ownerId){const value=ownerQuery("SELECT timezone FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId)?.timezone;return isValidIanaTimeZone(value)?value:'UTC';}
   function list({ownerId,query={},limit=50}) {
     if(Object.keys(query).some(key=>key!=='offset'))throw invalid('Unsupported call filter.');
     const offset=query.offset??'0';
@@ -23,7 +25,8 @@ export function createOwnerCallService({ownerQuery}) {
       duration,failureCode,createdAt,completedAt FROM calls WHERE ownerId=?
       ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?`).all(ownerId,limit,Number(offset));
     const total=ownerQuery('SELECT COUNT(*) AS count FROM calls WHERE ownerId=?').get(ownerId).count;
-    return {calls,total,offset:Number(offset),nextOffset:Number(offset)+calls.length<total?Number(offset)+calls.length:null};
+    const ownerTimezone=timezone(ownerId);
+    return {calls:calls.map(call=>({...call,ownerTimezone})),total,offset:Number(offset),nextOffset:Number(offset)+calls.length<total?Number(offset)+calls.length:null};
   }
 
   function detail({ownerId,id,role='owner'}) {
@@ -62,7 +65,7 @@ export function createOwnerCallService({ownerQuery}) {
       .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
     const notifications=ownerQuery('SELECT id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
-    return {...call,transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
+    return {...call,ownerTimezone:timezone(ownerId),transcript:turns||[],transcriptAvailable:turns!==null,quotes,leads,bookings,bookingRequests,quoteRequests,callbackRequests,notifications,deliveryActions,emailAlertsConfigured:ownerAlertEmailReady(),canRetryOwnerAlerts:role==='owner'};
   }
 
   function dashboard(ownerId) {

@@ -1,4 +1,5 @@
 import express from 'express';
+import {transferDecision} from './voiceSettings.js';
 import {isPhoneNumber} from './callerIdentity.js';
 import {isFinalVoiceCall} from './voiceRecovery.js';
 const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -12,6 +13,7 @@ export function createVoiceProviderAdapters({app,database,twilioClient,bookingSe
   const contextFor=call=>({ownerId:call.ownerId,callSid:call.callSid,accountSid:call.accountSid,from:call.callerNumber,to:call.destinationNumber});
   async function transferCall({ownerId,callSid,destination,reason,notes,inquiryNumber,idempotencyKey}){
     const call=callFor(ownerId,callSid);if(isFinalVoiceCall(call.status)||!isPhoneNumber(destination)||destination===call.destinationNumber)throw Error('Transfer unavailable');
+    const decision=transferDecision(database,ownerId,new Date(clock()));if(!decision.allowed||decision.destination!==destination)throw Error('Transfer unavailable outside owner windows.');
     const context=contextFor(call),at=now();
     database.transaction(()=>{
       const outbox=database.prepare("SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND eventType='voice.transfer_requested'").get(ownerId,idempotencyKey);

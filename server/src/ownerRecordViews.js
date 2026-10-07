@@ -59,7 +59,7 @@ export function storedLeadView(row, role, originalSubmission, preferredRequest) 
       if(!(Date.parse(capture.at)>Date.parse(preferredRequest.createdAt)))continue;
       const fields=Array.isArray(capture.providedFields)?capture.providedFields:[];
       let corrected=false;
-      for(const field of ['name','email'])if(fields.includes(field)){
+      for(const field of ['name','email','phone'])if(fields.includes(field)){
         const contact=followUpContact(capture.contact);if(contact[field]!==undefined){common.contact[field]=contact[field];corrected=true;}
       }
       if(fields.includes('address')){common.location=followUpLocation(capture.address);corrected=true;}
@@ -67,7 +67,8 @@ export function storedLeadView(row, role, originalSubmission, preferredRequest) 
     }
   }
   common.customerName=common.preferredRequest?.contact.name?common.contact.name:row.customerName??common.contact.name;
-  common.callerNumber=common.preferredRequest?.contact.phone?common.contact.phone:row.callerNumber??common.contact.phone;
+  common.transportCallerNumber=row.callerNumber;
+  common.callerNumber=common.contact.phone??row.callerNumber;
   if(calculation.customerResult?.resultType==='PARTIAL_ESTIMATE_READY')Object.assign(common,{
     linkedQuoteId:detail.linkedQuoteId || row.id,additionalWork:calculation.customerResult.additionalWork,
     additionalWorkStatus:calculation.customerResult.additionalWorkStatus,pricedScope:calculation.customerResult.pricedScope});

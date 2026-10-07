@@ -26,6 +26,38 @@ pushed-head CI is checked separately. No main merge, deployment, subagents or
 live data.
 
 ## Previous checkpoint
+# October 7 voice core repairs — hosted gates passed
+
+Branch `fix/voice-core`; verified application/test/CI revision
+`696e949ccdf976dd6db555de8bdaefa91348e0ac`.
+[Hosted run 37687001198](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37687001198)
+passed cold `npm ci`, owner/widget builds, **2,597/2,597** strict quote checks,
+**3,655/3,655** full-suite tests, the failure checker and **zero production
+dependency vulnerabilities**. Both summaries contain zero failures/skips/
+cancellations/TODOs. All eight defects have source and execution evidence;
+31 added regressions cover their repairs. The browser retry test now waits
+for the persisted retry and refreshed API/UI state rather than a loading render.
+
+Local cold installation/build passed. Local Chromium independently crashes
+with `SIGTRAP` before rendering; enabled browser checks therefore fail locally.
+This documentation checkpoint does not change application, tests or CI source.
+The final sendable report records the pushed-head hosted result. No subagents,
+main merge, deployment, real calls or live application data.
+
+# October 7 voice core repairs — functional gate passed
+
+Branch `fix/voice-core`, starting at verified audit-repair revision
+`4db13a2945193762bbc4b85f9ab616a00e1dd067`.
+
+[Repair evidence](../verification/voice-core/REPORT.md) records all eight source
+and execution reproductions before repair. The original nine regression cases
+failed as expected; the latest expanded regression/release check passed
+**40/40**; reviewed terminology, tenant isolation and voice checks passed
+**291/291**, all with zero failures/skips/cancellations/TODOs. Cold installation and
+owner/widget build passed. Complete cold suites and hosted CI are checked before
+final delivery; local Chromium startup `SIGTRAP` is an environment limitation,
+and browser tests remain enabled. No subagents, main merge, deployment or live
+application data.
 
 # October 7 audit repairs — hosted gates passed
 

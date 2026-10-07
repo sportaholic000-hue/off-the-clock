@@ -77,7 +77,7 @@
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "38f073eca23b4ba05ace524f41c2c81a670874c6fba89afd0494e11a0abffbfd"
+    "sha256": "e8b073f6f28422416d7d718904a02fd35aa18e644986146783dd4f551e464e0a"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",

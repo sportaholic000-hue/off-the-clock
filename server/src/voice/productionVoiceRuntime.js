@@ -28,6 +28,8 @@ import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {hasOperatorAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
 
+import {VOICE_NAMES} from './voiceSettings.js';
+
 const E164=/^\+[1-9]\d{7,14}$/;
 const SID=/^AC[0-9a-f]{32}$/i;
 const incomingPath='/api/twilio/voice/incoming',streamPath='/api/twilio/voice/stream',fallbackPath='/api/twilio/voice/fallback';
@@ -54,8 +56,17 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const meter=createBillingVoiceUsage({database,clock,onUsage});
   installBillingVoiceRoutes(app,{validator,meter});
   const account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
-  const fallback=({context})=>{
+  function offRouting(context){
     const state=account(context.ownerId);
+    if(state.profile?.operatorEnabled!==0)return null;
+    const coverage=database.prepare('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
+    const number=state.profile.existingPhoneNumber;
+    const confirmed=state.profile.carrierSetupStatus==='updated'&&(!coverage||coverage.confirmedEnabled===0&&coverage.phase==='idle');
+    return {mode:confirmed&&E164.test(number||'')&&number!==context.to?'forward':'message',number,message:'The operator is off. Please call the business directly.'};
+  }
+  const fallback=({context})=>{
+    const state=account(context.ownerId),off=offRouting(context);
+    if(off)return off;
     if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
     return captureChoice(publicBaseUrl);
   };
@@ -73,21 +84,26 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     checkVoiceCap:({context})=>{const state=account(context.ownerId);return trialVoiceCapDecision(state.account,{now:new Date(clock()),minutesUsed:state.minutesUsed});},
     validateCallBinding:store.validateCallBinding,
     validateIncomingCall:store.validateIncomingCall,
-    createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:store.recordFallback,incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
+    createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:input=>{const choice=offRouting(input.context);return choice?store.recordHumanRouting({context:input.context,forwarded:choice.mode==='forward'}):store.recordFallback(input);},incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
   });
   const guide=enabled?readFileSync(new URL('../../../specs/voice_quote_flows.md',import.meta.url),'utf8'):null;
   const client=enabled?(googleClient||new GoogleGenAI({apiKey:String(env.GEMINI_API_KEY||'')})):null;
   let boundary=null;
   function publicPrompt(context){
     const owner=database.prepare('SELECT businessName FROM users WHERE id = ? AND role = ?').get(context.ownerId,'owner');
-    const profile=database.prepare('SELECT agentName, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile=database.prepare('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
     let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[],reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{knowledge=null;}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
-    const book=canQuote?loadPricebook(context.ownerId):{services:[]};
+    let book={services:[]};
+    if(canQuote)try{book=loadPricebook(context.ownerId);}catch{
+      const at=iso(clock),message='The saved price book cannot be read. Calculated quoting is paused; ordinary answering, listed prices, leads and scheduling remain available. Restore the saved price book from backup or contact support.';
+      database.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.quoting_unavailable',?,?,'PENDING',?,?)").run('voice-quoting-unavailable:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,message}),at,at);
+      onError('VOICE_QUOTING_UNAVAILABLE');
+    }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
-    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge});
+    return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
   }
   async function startMediaSession(input){
     if(!enabled||!handleSecret)throw Error('Voice session is unavailable.');
@@ -96,7 +112,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     for(const name of ['matchService','getQuote']){const original=handlers[name];handlers[name]=invocation=>{if(!hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())}))return {status:'needs_details',customerMessage:'The business will review this pricing request.'};return original(invocation);};}
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
-    const opener=createGoogleGenAiLiveSessionOpener({client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
+    const voiceProfile=database.prepare('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
+    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){

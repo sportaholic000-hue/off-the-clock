@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {hasQuoteDoneAccess} from './planAccess.js';
 import { loadPricebook } from '../priceBookService.js';
 import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
 import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
@@ -84,7 +85,7 @@ function normalizedOwnerId(value) {
 
 function normalizedServiceId(value) {
   const id = normalizedText(value, 'Service identity', 128);
-  if (!UUID.test(id)) throw invalid('Choose a saved service.');
+  if (id!=='voice-appointment'&&!UUID.test(id)) throw invalid('Choose a saved service.');
   return id.toLowerCase();
 }
 
@@ -552,7 +553,7 @@ function policyView(row) {
 function serviceReadiness(service, policyRow, globalBlockers, connectionRow, settingsRow) {
   const blockers = [...globalBlockers];
   for (const issue of service.issues) blockers.push(blocker('SERVICE_CATALOG_INVALID', issue));
-  if (service.quoteStatus !== 'QUOTING LIVE') {
+  if (service.id!=='voice-appointment' && service.quoteStatus !== 'QUOTING LIVE') {
     blockers.push(blocker('SERVICE_NOT_QUOTING_LIVE', 'Complete and approve pricing before direct booking.'));
   }
   if (!policyRow) {
@@ -662,13 +663,17 @@ export function createBookingAdminService({
   }
 
   function catalog(ownerId) {
+    const appointment={id:'voice-appointment',serviceType:'APPOINTMENT',name:'Appointment',quoteStatus:'NOT_REQUIRED',allowedQuoteTierNames:[],issues:[]};
+    const nativeCatalog=loadServiceCatalog===defaultLoadServiceCatalog;
+    if(nativeCatalog){const owner=db.prepare("SELECT * FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId);if(!hasQuoteDoneAccess(owner,{now:new Date(clock())}))return [appointment];}
     let loaded;
     try {
       loaded = loadServiceCatalog(ownerId);
     } catch {
+      if(nativeCatalog)return [appointment];
       throw configurationError('SERVICE_CATALOG_UNAVAILABLE', 'The saved service catalog is unavailable.');
     }
-    return normalizedCatalog(loaded);
+    return [...normalizedCatalog(loaded),...(nativeCatalog?[appointment]:[])];
   }
 
   const readTransaction = db.transaction(ownerId => {

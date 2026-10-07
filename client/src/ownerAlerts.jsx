@@ -1,9 +1,10 @@
+import {callTime} from './callTime.js';
 import React,{useState} from 'react';
 import {api,go,getToken} from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
 import {Button,Notice,StatusChip,ErrorMessage} from './ui.jsx';
 
-export function OwnerAlerts({alerts=[],configured,canRetry=true,onRefresh}){
+export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,onRefresh}){
   const [busy,setBusy]=useState(null),[error,setError]=useState(null),[archive,setArchive]=useState(null);
   const writable=canRetry&&(typeof localStorage==='undefined'||sessionClaims(getToken())?.role==='owner');
   async function page(offset=0){setError(null);try{setArchive({...await api('/api/owner-alerts?status=unresolved&offset='+offset),offset});}catch(e){setError(e);}}
@@ -14,8 +15,8 @@ export function OwnerAlerts({alerts=[],configured,canRetry=true,onRefresh}){
     <p>ACCEPTED means the email provider accepted the alert. Inbox delivery and owner reading are not confirmed.</p><ErrorMessage error={error}/><Button variant="secondary" onClick={()=>page(0)}>All unresolved alerts</Button>
     {archive&&<p>{archive.total} unresolved alerts</p>}
     {!rows.length&&<p>No notification events recorded.</p>}
-    {rows.map(alert=><div key={alert.id} className="field-stack"><p>{alert.eventType} · <StatusChip status={alert.status}/></p>
-      <p>{alert.createdAt} · Attempts: {alert.attemptCount}{alert.lastErrorCode?' · '+alert.lastErrorCode:''}</p>
+    {rows.map(alert=><div key={alert.id} className="field-stack">{alert.eventType==='voice.quoting_unavailable'&&<Notice>Calculated quoting is paused because its saved storage cannot be read. Answering remains available. Restore the saved price book from backup or contact support.</Notice>}<p>{alert.eventType} · <StatusChip status={alert.status}/></p>
+      <p>{ownerTimezone?callTime(alert.createdAt,ownerTimezone):alert.createdAt} · Attempts: {alert.attemptCount}{alert.lastErrorCode?' · '+alert.lastErrorCode:''}</p>
       {alert.status==='UNKNOWN'&&<Notice>Delivery is uncertain. The saved request is available. Automatic resending is stopped when it could duplicate an alert.</Notice>}
       {alert.callId&&<Button variant="secondary" onClick={()=>go('/calls?record='+encodeURIComponent(alert.callId))}>Open call</Button>}
       {!alert.callId&&['lead.created','quote.created'].includes(alert.eventType)&&<Button variant="secondary" onClick={()=>go((alert.eventType==='quote.created'?'/quotes':'/leads')+'?record='+encodeURIComponent(alert.aggregateId))}>Open saved request</Button>}

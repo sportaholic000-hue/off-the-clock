@@ -122,7 +122,7 @@ test('contractor UI has no raw identifier fallback paths', () => {
   assert.match(pricebook, /definition\.help/);
 
   const auth = readFileSync('server/src/auth.js', 'utf8');
-  const onboardingService = readFileSync('server/src/onboardingService.js', 'utf8');
+  const onboardingService = readFileSync('server/src/onboardingService.js', 'utf8') + readFileSync('server/src/voice/voiceSettings.js', 'utf8');
   assert.equal(auth.includes("error: 'email, password, firstName, businessName"), false);
   assert.equal(onboardingService.includes("new Error('firstName, businessName"), false);
   assert.equal(onboardingService.includes("new Error('voiceId, agentName"), false);
