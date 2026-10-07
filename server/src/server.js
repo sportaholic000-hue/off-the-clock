@@ -8,6 +8,7 @@ import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
 import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
 import {startBackupScheduler} from './backups.js';
+import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from './offsiteBackups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
 import { installOwnerIntegrationRoutes } from './ownerIntegrationRoutes.js';
 import express from 'express';
@@ -190,6 +191,8 @@ app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);
+const offsiteBackups = createOffsiteBackupService(db,deploymentConfig);
+installOffsiteBackupStatusRoute(app,{service:offsiteBackups,requireAuth});
 
 if (process.env.NODE_ENV !== 'production') {
   app.get('/api/schema', (_req, res) => res.json({ createTableStatements: CREATE_TABLE_STATEMENTS }));
@@ -490,8 +493,9 @@ const httpServer = app.listen(port, () => {
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+if(deploymentConfig.production) offsiteBackups.start();
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,offsiteBackups.stop,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();void offsiteBackups.stop();});
 
 export {httpServer,lifecycle};
 

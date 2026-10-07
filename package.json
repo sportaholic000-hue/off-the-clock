@@ -15,7 +15,8 @@
     "start": "node server/src/server.js",
     "build": "npm run build --workspace client",
     "backup": "node server/scripts/backup.js",
-    "restore": "node server/scripts/restore.js"
+    "restore": "node server/scripts/restore.js",
+    "restore:offsite": "node server/scripts/restore-offsite.js"
   },
   "workspaces": [
     "server",
