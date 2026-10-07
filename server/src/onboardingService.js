@@ -5,6 +5,7 @@ import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
+import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
 import { applicationMetadata } from './quoteDoneBridge.js';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
@@ -208,11 +209,15 @@ export function getBusinessProfile(ownerId) {
   const row = ownerQuery('SELECT * FROM businessProfiles WHERE ownerId = ?').get(ownerId);
   if (!row) return ensureBusinessProfile(ownerId);
   const { businessTypesJson, knowledgeBaseJson, calendarJson, ...profile } = row;
+  const knowledgeBase = { ...EMPTY_KB, ...parseJson(knowledgeBaseJson, {}) };
+  const reviewContact = readReviewContact(knowledgeBase.reviewContact, ownerId);
+  delete knowledgeBase.reviewContact;
+  if (reviewContact) knowledgeBase.reviewContact = reviewContact;
   return {
     ...profile,
     operatorEnabled: Boolean(row.operatorEnabled),
     businessTypes: parseJson(businessTypesJson, []),
-    knowledgeBase: { ...EMPTY_KB, ...parseJson(knowledgeBaseJson, {}) },
+    knowledgeBase,
     calendar: safeCalendar(calendarJson)
   };
 }
@@ -272,6 +277,8 @@ export function savePhoneProvisioning(ownerId, values) {
 export function saveKnowledgeBase(ownerId, knowledgeBase) {
   const incoming = knowledgeBase && typeof knowledgeBase === 'object' && !Array.isArray(knowledgeBase) ? knowledgeBase : {};
   const existing = getBusinessProfile(ownerId).knowledgeBase || EMPTY_KB;
+  const reviewContact = Object.hasOwn(incoming, 'reviewContact')
+    ? normalizeReviewContact(incoming.reviewContact) : existing.reviewContact;
   const clean = {
     about: String(incoming.about || '').trim(), hours: String(incoming.hours || '').trim(),
     services: String(incoming.services || '').trim(), policies: String(incoming.policies || '').trim(),
@@ -284,6 +291,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
       : String(incoming.neverSay || '').split('\n').map(value => value.trim()).filter(Boolean),
     draft: Boolean(incoming.draft)
   };
+  if (reviewContact) clean.reviewContact = { ...reviewContact, ownerId };
   if (Object.hasOwn(incoming, 'serviceArea')) {
     try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
     catch (cause) { const error = new Error(cause.message); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }

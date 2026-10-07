@@ -1,0 +1,158 @@
+{
+  "sourceSha": "4838ed2f3a12e962acfe58e542cd6f00bca31e3d",
+  "sourceTree": "1cc3a88ee0eabf0e57dbfc783c995e17021e08e8",
+  "verifiedBase": "4e4b5ebaab12ef42e56149a7be35ccf1da90fbe9",
+  "auditedAncestor": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "branch": "codex/named-review-contact-implementation-20261006",
+  "hosted": {
+    "runId": 37516810842,
+    "jobId": 112451745014,
+    "conclusion": "success",
+    "coldInstall": true,
+    "builds": 2,
+    "quote": {
+      "tests": 2099,
+      "pass": 2099,
+      "files": 97
+    },
+    "full": {
+      "tests": 2480,
+      "pass": 2480,
+      "files": 140
+    },
+    "failures": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "productionVulnerabilities": 0
+  },
+  "newTests": {
+    "unitStoragePromptDraft": 25,
+    "authenticatedRoutes": 4,
+    "productionVoice": 3,
+    "browser": 2,
+    "total": 34
+  },
+  "finalLocal": {
+    "node": "22.23.3",
+    "coldInstallExit": 0,
+    "buildExit": 0,
+    "quote": {
+      "exit": 1,
+      "tests": 2099,
+      "pass": 2060,
+      "missingChromium": 39
+    },
+    "full": {
+      "exit": 1,
+      "tests": 2480,
+      "pass": 2441,
+      "missingChromium": 39
+    },
+    "focused": {
+      "tests": 242,
+      "pass": 242,
+      "sourceBeforeAccessibleLabelOnlyFix": "7a2d4164964fbd50726fcfb3f68734817df82a8c"
+    }
+  },
+  "independentDiagnostic": {
+    "experiments": 1,
+    "exit": 1,
+    "expected": "exact caller notes preserved",
+    "actual": null,
+    "finding": "existing D03 assigned to separate lead repair"
+  },
+  "archive": {
+    "path": "evidence.tar.gz",
+    "bytes": 1009068,
+    "sha256": "1e65e1d102fcf9a90f07ffa000255f72a132920b6d61dd6bd58e0cc97e0d6d86"
+  },
+  "files": [
+    {
+      "name": "cold-install.log",
+      "bytes": 827,
+      "sha256": "8ac1b7892f8ef5e3517c9e67de4c3505b3761cc000adef8440ca2e9f2ce0f79e"
+    },
+    {
+      "name": "focused.tap",
+      "bytes": 35133,
+      "sha256": "cbd59b0ead9202dc1d29d4116f4a8e9c5825b10c4fd3805518fa7666093aecd4"
+    },
+    {
+      "name": "focused-final.tap",
+      "bytes": 10654,
+      "sha256": "e79ed65946ab1e6880c0a46313c3984ef587aa156ead557af74d405d2c27976d"
+    },
+    {
+      "name": "final-focused.tap",
+      "bytes": 64904,
+      "sha256": "c6a5453b48258a4563b647803e4951d4457de09a6cfd029cfaa7c7fe3112599e"
+    },
+    {
+      "name": "quote-gate.log",
+      "bytes": 565972,
+      "sha256": "56b9554483a7c69c2b71c90c09dc22e4621e82db44cb40a6e0b376d12a03f0ee"
+    },
+    {
+      "name": "full-suite.log",
+      "bytes": 663069,
+      "sha256": "adb41d1c9e44cd7381b2fb4f83ff991107cb28590140d3c7ed0114c99dc0d18a"
+    },
+    {
+      "name": "final-cold-install.log",
+      "bytes": 827,
+      "sha256": "cb91a7bc22740cd5edc808c9f6fbbc51d8a30e0f03871aff0ddf420903d3ba72"
+    },
+    {
+      "name": "final-build.log",
+      "bytes": 1902,
+      "sha256": "19143089d7919b1934153986149816481145fa9638fc12296fe6cbd1f6b2d54a"
+    },
+    {
+      "name": "final-quote-gate.log",
+      "bytes": 563078,
+      "sha256": "b1d36a02696ffbc5c90b56527dd82862a493d26f59cf9fb22fb423c9bbbe85a7"
+    },
+    {
+      "name": "final-full-suite.log",
+      "bytes": 661255,
+      "sha256": "774381506027c79239f5287637003f063b27645eac5974f8f44c1af3f35d05ee"
+    },
+    {
+      "name": "hosted-first.log",
+      "bytes": 889959,
+      "sha256": "e081cebbe523a319773bdc1efcc124f2f5f5b673992ae62bc735c5ebbe9ae374"
+    },
+    {
+      "name": "hosted-second.log",
+      "bytes": 886034,
+      "sha256": "8c2ebd662dd563a98f306dfa86d10cd350d2b480f67a24495aa4c7e2482560bd"
+    },
+    {
+      "name": "hosted-final.log",
+      "bytes": 1897753,
+      "sha256": "eff6c12c09aae1961512c00853090009459faa16088166ec2e63914b7158d10a"
+    },
+    {
+      "name": "hosted-final-jobs.json",
+      "bytes": 4967,
+      "sha256": "a33ac5d67f26dc39814ca8bb4658eea05048bd580c7e4286dd2fd0cfd2cdf5d2"
+    },
+    {
+      "name": "lead-dependency.log",
+      "bytes": 445,
+      "sha256": "30afec95c588d9a8c300c614413eeebaa951f12e207820262e01cc580138b50a"
+    },
+    {
+      "name": "run-check.py",
+      "bytes": 752,
+      "sha256": "caa55e68f306aa03183b561692601df056335e4052f64cc48c183488fd2b95e8"
+    }
+  ],
+  "notes": [
+    "Counts overlap; do not sum gates as distinct tests.",
+    "Failed development runs are retained and are not release evidence.",
+    "All fixtures are synthetic; no actual model speech, notifications or human receipt tested.",
+    "The initial local before-repair output and browser-download console diagnostics are described in the session; incomplete scratch log files are not represented as complete evidence."
+  ]
+}
