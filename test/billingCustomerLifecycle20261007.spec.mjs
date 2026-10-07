@@ -245,3 +245,17 @@ test('legacy missing currency is recovered from a bound provider receipt, never 
   const row=f.db.prepare('SELECT * FROM billingInvoiceEvidence WHERE ownerId=?').get(A);f.fakes.invoices.set(row.stripeInvoiceId,{id:row.stripeInvoiceId,customer:'cus_'+A,status:'paid',amount_paid:11900,currency:'cad'});
   await f.lifecycle.processOwner(A);assert.equal(f.lifecycle.snapshot(A).notices[0].currency,'cad');assert.equal(f.lifecycle.snapshot(A).notices[0].amountCents,11900);
 });
+test('service end disables automatic collection on a previously submitted unpaid overage invoice once',async t=>{
+  const f=setup(t);f.activate();f.call(310*60);f.setTime(END);
+  f.fakes.stripe.invoices.finalizeInvoice=async id=>{const row=f.fakes.invoices.get(id);row.status='open';row.auto_advance=true;row.amount_remaining=350;return structuredClone(row);};
+  await f.service.processOwner(A);const invoice=[...f.fakes.invoices.values()][0];let stops=0;
+  f.fakes.stripe.invoices.update=async(id,params)=>{stops++;assert.deepEqual(params,{auto_advance:false});Object.assign(f.fakes.invoices.get(id),params);return structuredClone(f.fakes.invoices.get(id));};
+  f.setTime(END);await f.lifecycle.cancel(A);await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
+  assert.equal(stops,1);assert.equal(f.fakes.invoices.get(invoice.id).auto_advance,false);assert.equal(f.db.prepare('SELECT collectionStoppedAt FROM billingUsageCharges WHERE ownerId=?').get(A).collectionStoppedAt,END);
+});
+test('crossing service end while reading an overage period cannot finalize or charge the invoice',async t=>{
+  const f=setup(t);f.activate();f.call(310*60);f.setTime(END);
+  f.db.prepare('UPDATE users SET serviceEndsAt=? WHERE id=?').run('2026-11-20T12:00:01.000Z',A);
+  const read=f.fakes.stripe.prices.retrieve;f.fakes.stripe.prices.retrieve=async id=>{f.setTime('2026-11-20T12:00:01.000Z');return read(id);};
+  await f.service.processOwner(A);assert.equal(f.fakes.writes.invoice.length,0);assert.equal(f.fakes.writes.finalize.length,0);
+});

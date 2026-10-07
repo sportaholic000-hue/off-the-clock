@@ -108,6 +108,8 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
         save(patch){assertLease();const fields=Object.keys(patch);if(fields.some(f=>!['providerInvoiceId','providerItemId','currency'].includes(f)))throw Error('Invalid receipt.');
           query(`UPDATE billingUsageCharges SET ${fields.map(f=>f+'=?').join(',')},updatedAt=? WHERE ownerId=? AND periodId=?`).run(...fields.map(f=>patch[f]),now(),ownerId,periodId);},
         async mutate(name,call,{resourceUpdate=false}={}){
+          const lifecycle=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
+          if(lifecycle?.serviceEndsAt&&lifecycle.serviceEndsAt<=now())throw billingProviderError('BILLING_SERVICE_ENDED');
           const row=query('SELECT operationsJson FROM billingUsageCharges WHERE ownerId=? AND periodId=?').get(ownerId,periodId),operations=JSON.parse(row.operationsJson);
           assertLease();if(!resourceUpdate&&operations[name]&&clock().getTime()-Date.parse(operations[name])>=SAFE_RETRY_MS)throw billingProviderError('BILLING_OVERAGE_CONFIRMATION_REQUIRED');
           if(!operations[name]){operations[name]=now();query('UPDATE billingUsageCharges SET operationsJson=?,updatedAt=? WHERE ownerId=? AND periodId=?').run(JSON.stringify(operations),now(),ownerId,periodId);}

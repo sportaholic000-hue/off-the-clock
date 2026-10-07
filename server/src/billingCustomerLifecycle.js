@@ -240,6 +240,26 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     query("DELETE FROM events WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
     query("UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
   });}
+  async function stopUsageCollection(ownerId){
+    if(!enabled()||!stripeClient)return;
+    const charges=query(`SELECT c.*,p.stripeCustomerId,p.stripeSubscriptionId FROM billingUsageCharges c JOIN billingUsagePeriods p
+      ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
+      AND c.status!='PAID' AND c.collectionStoppedAt IS NULL`).all(ownerId);
+    for(const charge of charges){
+      const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
+      const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest;
+      if(!bound(invoice))throw error('BILLING_PROVIDER_MISMATCH',502);
+      if(invoice.status==='paid'){
+        const period=query('SELECT * FROM billingUsagePeriods WHERE ownerId=? AND id=?').get(ownerId,charge.periodId);
+        query("UPDATE billingUsageCharges SET status='PAID',updatedAt=? WHERE ownerId=? AND periodId=? AND status!='REVIEW'").run(now(),ownerId,charge.periodId);
+        recordUsageInvoicePayment(database,{ownerId,period,charge,invoice,at:now()});
+      }else{
+        const receipt=invoice.auto_advance===false?invoice:await billingProviderRead(()=>stripeClient.invoices.update(invoice.id,{auto_advance:false},BILLING_PROVIDER_OPTIONS));
+        if(!bound(receipt)||receipt.auto_advance!==false)throw error('BILLING_COLLECTION_STOP_PENDING',502);
+      }
+      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+    }
+  }
   async function cleanup(ownerId,{deadlineAt=now()}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
     if(!row.endedAt)usageTransaction(database,()=>{
@@ -248,6 +268,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Carrier shutdown is tracked in Billing. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
+    await stopUsageCollection(ownerId);
     if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
