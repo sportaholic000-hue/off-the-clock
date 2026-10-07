@@ -334,7 +334,7 @@ test('F03 + audit defects 6 and 7: a pending confirmation keeps a newer entry, b
   const api = (url, options = {}) => { requests.push({ url, ...options }); return new Promise(resolve => { complete = resolve; }); };
   const set = key => value => { state[key] = value; if (key === 'rawValue') target.current = { ...target.current, rawValue:value }; };
   const handlers = new Function('api', 'setRawValue', 'setReadBack', 'setDraft', 'setAnswer', 'setAiNotice', 'setPosition', 'setError', 'sameAssistTarget', 'STALE_CONFIRM_NOTICE', 'assistTarget', 'state', 'confirmFlight', 'setConfirmBusy', 'writePricebookTransfer', 'go',
-    "const draft={id:'d',confirmedFields:{CUSTOM:[]}};const current={serviceType:'CUSTOM',field:'price',type:'number'};const interviewFields=[current,{serviceType:'CUSTOM',field:'minimumJob',type:'number'}];const position=0;const readBack=state.readBack;const rawValue=state.rawValue;"
+    "const draftConflict=null;const draft={id:'d',revision:'revision-1',confirmedFields:{CUSTOM:[]}};const current={serviceType:'CUSTOM',field:'price',type:'number'};const interviewFields=[current,{serviceType:'CUSTOM',field:'minimumJob',type:'number'}];const position=0;const readBack=state.readBack;const rawValue=state.rawValue;"
     + edit + confirm + review + 'return {editValue,confirmField,reviewDraft};')(api, set('rawValue'), set('readBack'), () => {}, () => {}, set('aiNotice'), set('position'), () => {}, sameAssistTarget,
       (await import('../client/src/interviewAssist.js')).STALE_CONFIRM_NOTICE, target, state, { current:false }, () => {}, () => { throw new Error('review must not transfer while saving'); }, () => {});
   const saving = handlers.confirmField();
@@ -345,6 +345,7 @@ test('F03 + audit defects 6 and 7: a pending confirmation keeps a newer entry, b
   complete({ draft:{ id:'d', fields:requests[0].body.fields, confirmedFields:requests[0].body.confirmedFields } });
   await saving;
   assert.equal(requests[0].body.fields.CUSTOM.price, 25);
+  assert.equal(requests[0].body.revision, 'revision-1');
   assert.equal(state.rawValue, '50', 'the newer typed value is kept');
   assert.equal(state.position, 0, 'the interview does not move on');
   assert.match(state.aiNotice, /new entry is still here/);

@@ -34,6 +34,16 @@ existing browser suites now cover conflict reconciliation in both directions and
 mulch unit changes; hosted full-suite verification is required for their result.
 Compressed baseline, focused, build and local browser-launch logs are retained.
 
+The first hosted follow-up run, [37595006058](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37595006058),
+rebuilt both apps and ran 2,597 strict checks: 2,595 passed, two failed. An older
+test that evaluates the extracted confirmation handler lacked its new conflict
+state binding. The saved-answer browser assertion also read the numeric input
+before its React effect restored the external value. The harness now supplies
+the component's state, and the browser test waits for the expected visible value
+while retaining its value/save assertions. Application source is unchanged by
+this test correction. A fresh hosted run must verify the result; the failed run
+is not counted as a passing gate.
+
 The previous five-repair source at the base SHA passed hosted run
 [37592728250](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37592728250):
 2,585/2,585 strict quote tests, 3,612/3,612 full-suite tests, both production builds,

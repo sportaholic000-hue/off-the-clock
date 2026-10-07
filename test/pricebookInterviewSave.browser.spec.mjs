@@ -112,6 +112,9 @@ for(const useSaved of [false,true])test('stale interview preserves the unsaved a
     assert.equal(await page.getByRole('button',{name:'Review captured values in editor',exact:true}).isDisabled(),true);
     assert.equal(requests.length,1);assert.equal(requests[0].revision,'revision-1');
     await page.getByRole('button',{name:useSaved?'Use latest saved answer':'Keep my answer and review it again',exact:true}).click();
+    // The numeric control applies externally restored text in a React effect.
+    // Wait for that visible state; still fail if the saved answer never appears.
+    await page.waitForFunction(value=>document.querySelector('.interview-field input')?.value===value,useSaved?'30':'25');
     assert.equal(await input.inputValue(),useSaved?'30':'25');
     assert.equal(await page.getByRole('button',{name:'Yes, save this number',exact:true}).count(),0);
     await page.getByRole('button',{name:'Read it back',exact:true}).click();
