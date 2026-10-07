@@ -46,5 +46,5 @@ export async function startTenantIsolation(t,{production=false,configured=true}=
     const response=await fetch('http://127.0.0.1:'+ready.port+route,{method,headers:{...(token?{authorization:'Bearer '+token}:{}),...(body===undefined?{}:{'content-type':'application/json'}),...headers},...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)}),redirect:'manual',signal:AbortSignal.timeout(5000)});
     return {status:response.status,text:await response.text(),headers:Object.fromEntries(response.headers)};
   };
-  return {...ready,env,origin,request,rpc,stop,output:()=>output};
+  return {...ready,directory,env,origin,request,rpc,stop,output:()=>output};
 }

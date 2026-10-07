@@ -1,0 +1,70 @@
+[
+  {
+    "file": "src/accountRoutes.js",
+    "sha256": "d64a9900b5b03fe7bc3de8dfc26357dcb796f5a22ef71bdfbbe99752dc45e597"
+  },
+  {
+    "file": "src/billingRoutes.js",
+    "sha256": "a2cd4a039de1a9207a780af4d6e4abf933a6ebacae59f64d676c658d3683b3d9"
+  },
+  {
+    "file": "src/bookingAdminRoutes.js",
+    "sha256": "3da09b73bc0918077b47c9da87d47183da4e5ae4df7a46ed6fc5a10b21b22a1f"
+  },
+  {
+    "file": "src/bookingRoutes.js",
+    "sha256": "9a5af931f577f794e3637915d656e77b7e951a568eb11356137ffa174d214288"
+  },
+  {
+    "file": "src/clientAddress.js",
+    "sha256": "026da3a7fad6e2d78e68c0a85b46b526bf83ad6ba5ce2ae21f4792d2f28d5e92"
+  },
+  {
+    "file": "src/demo/liveDemo.js",
+    "sha256": "9f9f54e5faaaea711cb20dbe8b60069466ee345eba9db54985b1f41335cee543"
+  },
+  {
+    "file": "src/knowledgeDraftRoutes.js",
+    "sha256": "a1cc908719fa69e66a88286c752d46cc7617871d79bee85d471afa3cc3e6fc05"
+  },
+  {
+    "file": "src/lifecycle.js",
+    "sha256": "eb16dddf8d8b0b0611bb1cbbe4805fe96f2516bbcd6ec8efe7300d8c910f4b98"
+  },
+  {
+    "file": "src/ownerCalendarRoutes.js",
+    "sha256": "5b6c29ddc9fb2da94b786bf9a18c405bf9d329f02b694948c3df78ca623f6dbc"
+  },
+  {
+    "file": "src/ownerCallRoutes.js",
+    "sha256": "10612c8b45eb234bba69ca9d1f022f2968d6598d0fb1d41d852e5905e375b734"
+  },
+  {
+    "file": "src/ownerIntegrationRoutes.js",
+    "sha256": "850c178123066a678faf3cf9cddec4ed02c5a2f551d4c772a5c260deacaec4f3"
+  },
+  {
+    "file": "src/productionAssets.js",
+    "sha256": "e83b221063205d1c5999c67da1f231abb07343d82a846f9013e9c2daf83d2072"
+  },
+  {
+    "file": "src/quoteDoneRoutes.js",
+    "sha256": "9e0857d186c9cb7b2b6c3805a039b32b053f37e2cd04c7b59d60af49c1e4f2c2"
+  },
+  {
+    "file": "src/server.js",
+    "sha256": "84a23ccdb31daa85d7afa4c14a74576d488da396b5be67c901cfea05f6180a49"
+  },
+  {
+    "file": "src/voice/productionVoiceRuntime.js",
+    "sha256": "8999ff056fda98df558c5b2f50bf78f6d6dda6feee534662a67370f6420e6a95"
+  },
+  {
+    "file": "src/voice/voiceWebSocketServer.js",
+    "sha256": "31a80eeee22c763d87dac7d5fa967c7a8cec5240195ade5e58cc014fbad48ebf"
+  },
+  {
+    "file": "src/voiceRuntimeRoutes.js",
+    "sha256": "b12cd9dcfe6d0e9e24b61c936571cc13f2c7539fe1be3edb4e33194091dc0245"
+  }
+]

@@ -24,7 +24,7 @@ Signup now waits for email verification instead of starting an authenticated ses
 
 The fixture replaces only provider transports with explicit synthetic responses. External HTTP(S) and fetch are blocked and counted; the matrix requires zero blocked network attempts and zero provider mutations. Every tenant table and price book is snapshotted, including owner and staff user rows. Foreign attempts cannot change B; public email recovery may issue only its intended opaque recovery receipt and cannot change B's password or business records.
 
-`test/tenantIsolationRoutes.spec.mjs` compares runtime registration to the separately reviewed `routes.json` in both production and development/preview. It recursively walks mounted routers; lifecycle wrappers retain router inventory. `middleware.json` catches added global handlers. The guard is itself executed with a new route and an anonymous router and must fail coverage for both. The matrix is automatically selected by both `npm test` and `npm run test:quote`.
+`test/tenantIsolationRoutes.spec.mjs` compares runtime registration to the separately reviewed `routes.json` in both production and development/preview. It recursively walks mounted routers; lifecycle wrappers retain router inventory. `middleware.json` catches added global handlers. The guard is itself executed with a new route and an anonymous router and must fail coverage for both. A separately reviewed `route-sources.json` fingerprints route-declaring server files; new declarations hidden behind unconfigured feature flags also fail. An unexecuted conditional-route source probe verifies that guard. The matrix is automatically selected by both `npm test` and `npm run test:quote`.
 
 | Policy | Executed applicable threats |
 | --- | --- |
@@ -53,7 +53,7 @@ Actual output: **287 tests; 287 pass; 0 fail; 0 cancelled; 0 skipped; 0 TODO**. 
 
 The refined existing-ID matrix and owner-integration contract checks also passed **238/238**, including the same 199 matrix tests and 39 integration tests, with zero failures/skips. Existing owner-integration tests now require generic 403 for foreign selectors and retain separate positive CSV/settings reads.
 
-Cold Node 22.22.0 `npm ci` and both production builds passed locally. Local full/strict attempts execute the browser tests; Chromium/headless-shell startup crashes with SIGTRAP in this environment. No tests have been skipped, removed, allowlisted or changed to hide that failure. The full-suite result checker now rejects all failures, skips, cancellations and TODOs, including known failures.
+Cold Node 22.22.0 `npm ci` and both production builds passed locally. The latest local cold strict run reported **2,230/2,267**, and the full run **2,612/2,649**: each has **37 failures**, all Chromium startup crashes (SIGTRAP), and zero cancellations/skips/TODOs. All other tests pass. These are failed local gates, not passing browser evidence. No tests have been skipped, removed, allowlisted or changed to hide that failure. The full-suite result checker now rejects all failures, skips, cancellations and TODOs, including known failures.
 
 The first hosted attempt at `ea4c21b6ee058a0fa83ce3a8bbb13563e5ab5e39` passed cold install/build and **2,267/2,267** strict quote tests. The full suite reached **2,647/2,649**, with two old owner-integration assertions expecting ignored foreign selectors; those assertions have since been corrected and passed in the 238-test execution above. No failed test is exempted.
 

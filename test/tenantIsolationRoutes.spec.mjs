@@ -1,7 +1,10 @@
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {routeSourceInventory} from './helpers/tenantRouteInventory.mjs';
 import crypto from 'node:crypto';
 import twilio from 'twilio';
 import Stripe from 'stripe';
@@ -11,6 +14,8 @@ import {ENGINE_VERSION} from '../server/src/quoteDoneBridge.js';
 // Explicit reviewed inventory, never generated from the server during the test.
 const matrix=JSON.parse(readFileSync(new URL('../verification/tenant-isolation-20261007/routes.json',import.meta.url)));
 const reviewedMiddleware=JSON.parse(readFileSync(new URL('../verification/tenant-isolation-20261007/middleware.json',import.meta.url)));
+const reviewedSources=JSON.parse(readFileSync(new URL('../verification/tenant-isolation-20261007/route-sources.json',import.meta.url)));
+const serverRoot=fileURLToPath(new URL('../server/',import.meta.url));
 const uuid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
 const genericId=uuid(999999);
 function pathFor(route,tenant,{other=tenant,guess=false}={}) {
@@ -69,7 +74,7 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
   assert.equal(f.engineVersion,ENGINE_VERSION);
   const expected=matrix.filter(({route})=>production?!['GET /api/schema','POST /api/dev/preview/operator','POST /api/dev/preview/telephony'].includes(route):!['GET *','GET /widget.js','GET /widget-app.js','USE /assets/*'].includes(route)).map(row=>row.route).sort();
   const checkCoverage=routes=>assert.deepEqual(routes,expected);
-  await t.test('every runtime registered route is covered; new and removed routes fail',()=>{checkCoverage(f.routes);assert.deepEqual(f.middleware,reviewedMiddleware[production?'production':'preview'],'Global middleware changed without matrix review');});
+  await t.test('every runtime registered route is covered; new and removed routes fail',()=>{checkCoverage(f.routes);assert.deepEqual(routeSourceInventory(serverRoot),reviewedSources,'Route source changed without explicit matrix review, including disabled feature branches');assert.deepEqual(f.middleware,reviewedMiddleware[production?'production':'preview'],'Global middleware changed without matrix review');});
   const A=f.tenants.A,B=f.tenants.B;
   for(const {route,policy} of matrix.filter(row=>expected.includes(row.route)))await t.test(route+' ['+policy+']',async()=>{
     const method=route.split(' ')[0],httpMethod=method==='USE'?'GET':method;
@@ -196,5 +201,8 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
   await t.test('coverage guard fails for an added route and an anonymously mounted router',async()=>{
     const added=await f.rpc('register-probe-route');assert.throws(()=>checkCoverage(added),{code:'ERR_ASSERTION'});
     const nested=await f.rpc('register-probe-router');assert.ok(nested.includes('POST /new'));assert.throws(()=>checkCoverage(nested),{code:'ERR_ASSERTION'});
+    const probe=path.join(f.directory,'route-source-probe');mkdirSync(probe);assert.deepEqual(routeSourceInventory(probe),[]);
+    writeFileSync(path.join(probe,'disabledRoute.js'),"if (process.env.SYNTHETIC_UNCONFIGURED_FEATURE === 'true') app.get('/api/synthetic-hidden-route', handler);\n");
+    assert.equal(routeSourceInventory(probe)[0].file,'disabledRoute.js');assert.throws(()=>assert.deepEqual(routeSourceInventory(probe),[]),{code:'ERR_ASSERTION'});
   });
 });
