@@ -74,6 +74,7 @@ Branches 1 and 3 had no textual conflicts. No tests were removed. Existing test 
 - Canonical customer lookup still joins normalized phone numbers, while anonymous/legacy capture retains call-scoped identity and never returns anonymous history.
 - Durable SMS keeps the prepared message, provider ID and receipt callback; queued acceptance never becomes a false sent claim.
 - Dashboard retains the five-second lead feed and 30-second/focus usage refresh, with session, generation and unmount guards.
+- Overage browser fixtures return the merged lead-feed and webhook-history API shapes; all original money/allowance assertions remain, with an additional assertion that no uncaught browser errors occurred.
 
 ## Owner rulings and version
 

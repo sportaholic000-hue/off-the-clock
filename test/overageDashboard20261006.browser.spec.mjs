@@ -11,15 +11,22 @@ before(async()=>{
 });
 after(async()=>browser?.close());
 async function screen(t,usage){
-  let current=usage;const page=await browser.newPage();t.after(()=>page.close());
+  let current=usage;const page=await browser.newPage(),pageErrors=[];
+  page.on('pageerror',error=>pageErrors.push(error.message));
+  t.after(async()=>{await page.close();assert.deepEqual(pageErrors,[],'the merged dashboard must render without uncaught errors');});
+  const callActivity={total:0,calls:[],counts:{answered:0,quotes:0,bookings:0,seconds:0},notifications:[],emailAlertsConfigured:false};
   await page.route('**/*',route=>{
     const path=new URL(route.request().url()).pathname;
     if(path==='/')return route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'});
-    const value=path==='/api/dashboard'?{ownerId:A,role:'owner',operator:{enabled:false,eligible:false,missing:[]},minuteUsage:current,pricebookStatuses:[],previewActivity:null,callActivity:{total:0,calls:[],counts:{answered:0,quotes:0,bookings:0,seconds:0}},quoteRequestCount:0}
-      :path==='/api/onboarding/state'?{profile:{onboardingStep:1,knowledgeBase:{},calendar:{}},preview:{}}:{};
+    const value=path==='/api/dashboard'?{ownerId:A,role:'owner',operator:{enabled:false,eligible:false,missing:[]},minuteUsage:current,pricebookStatuses:[],previewActivity:null,callActivity,quoteRequestCount:0}
+      :path==='/api/onboarding/state'?{profile:{onboardingStep:1,knowledgeBase:{},calendar:{}},preview:{}}
+      :path==='/api/leads/activity'?callActivity
+      :path==='/api/integrations/webhook'?{webhook:null,deliveries:[],dispatchEnabled:false}
+      :path==='/api/integrations/webhook/deliveries'?{deliveries:[],total:0,nextOffset:null}:{};
     return route.fulfill({contentType:'application/json',body:JSON.stringify(value)});
   });
-  await page.goto('http://synthetic.test/');const panel=page.getByRole('region',{name:'Voice minute usage'});await panel.waitFor();
+  await page.goto('http://synthetic.test/');await page.getByText('0 unresolved deliveries',{exact:true}).waitFor();
+  const panel=page.getByRole('region',{name:'Voice minute usage'});await panel.waitFor();
   return {page,panel,update:async value=>{current=value;await page.evaluate(()=>window.dispatchEvent(new Event('focus')));}};
 }
 test('real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus',async t=>{
