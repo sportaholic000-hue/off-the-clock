@@ -96,6 +96,9 @@ export function accountAccessDecision(account, { now = Date.now() } = {}) {
   if (current === null) return denied(ACCESS_REASON.INVALID_NOW);
 
   const status = statusOf(account);
+  if(status==='canceled'&&utcEpoch(account.annualPaidThroughAt)>current){
+    return allowed(ACCESS_REASON.ACTIVE,account.annualPaidThroughAt);
+  }
   if (isSuspendedOrCanceled(account)) return denied(ACCESS_REASON.SUSPENDED_OR_CANCELED);
   if (status === 'active') return allowed(ACCESS_REASON.ACTIVE);
 

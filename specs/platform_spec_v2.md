@@ -688,9 +688,21 @@ detected ✓" checker.
     location), unlimited seats, 3,000+ min, priority
     support.
   OVERAGE: $0.35/min, stated plainly on the pricing page.
-  Meter always visible; email at 80% and 100%.
-  TRIAL: 14 days, card required, full QuoteDone features,
-  hard cap 60 voice minutes (clearly shown).
+  Meter always visible; dashboard and durable owner email warnings once per
+  billing month at 60 minutes left, 30 minutes left, and zero minutes left.
+  At zero: "overage at $0.35/min now applies". See
+  OVERAGE_MINUTE_RULES_20261006.md for the owner-approved thresholds and nudge.
+  TRIAL: 14 days, card required, features of the selected
+  plan: Operator trials receive Operator features;
+  QuoteDone trials receive QuoteDone features. Trial status
+  alone does not grant a higher tier. Hard cap 60 voice
+  minutes (clearly shown), with the mid-call rule in 12.11.
+  Owner-approved clarification: TRIAL_ENTITLEMENT_DECISION_20261006.md.
+  First payment is at trial end, never at signup. Annual plans charge $1,190
+  (Operator) or $2,790 (QuoteDone) then for twelve months. Their 300/1,200
+  included minutes reset each monthly anniversary of that paid-term start;
+  overage is billed monthly. Annual cancellation retains service through the
+  paid year, with no partial cancellation refund.
   GUARANTEE: 30-day money-back on the first month, badge at
   every CTA, honored self-serve.
   NO SETUP FEE: onboarding is fully self-serve (4.6); no
@@ -816,10 +828,11 @@ here is a build requirement with the same force as sections
   rounded up per call to the next minute; spam-filtered and
   AI_FALLBACK calls excluded. NEVER terminate a live call at
   the cap — finish the call, bill overage ($0.35/min) via
-  Stripe metered billing. Optional owner hard cap: at cap,
+  Stripe billing using reconciled metered durations. Optional owner hard cap: at cap,
   calls route to fallback capture instead of the agent.
-  Meter, 80%/100% emails, and per-call minutes on every call
-  record.
+  Meter, 60/30/0-minutes-left dashboard/email warnings, and per-call minutes
+  on every call record. Monthly usage invoices are independent of annual
+  base-plan invoices; retries cannot create another usage invoice for a month.
 
 12.6 BILLING LIFECYCLE (Stripe webhooks)
   payment_failed → retry schedule (Stripe smart retries),

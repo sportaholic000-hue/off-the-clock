@@ -1,0 +1,100 @@
+{
+  "sourceSha": "9e93cf51030667136a1c69e3698ade980c962d81",
+  "runId": 37514745759,
+  "quote": {
+    "tests": 2068,
+    "pass": 2068,
+    "fail": 0,
+    "skip": 0,
+    "cancel": 0,
+    "todo": 0
+  },
+  "full": {
+    "tests": 2871,
+    "pass": 2867,
+    "fail": 4,
+    "skip": 0,
+    "cancel": 0,
+    "todo": 0
+  },
+  "newBillingTests": 425,
+  "jobs": [
+    {
+      "id": 112444652917,
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install from lockfile (ignores committed node_modules)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build owner app and widget",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Strict quote engine and price book gate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full test suite",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "No failures beyond the known list",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Publish test summary to claude/ci-results (push events only)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Production dependency audit",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

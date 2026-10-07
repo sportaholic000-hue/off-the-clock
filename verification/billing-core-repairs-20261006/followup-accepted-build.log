@@ -1,0 +1,10 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> npm run build --workspace client
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> off-the-clock-client@0.0.0 build
+> vite build && vite build --config vite.widget.config.js
+

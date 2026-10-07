@@ -1,0 +1,246 @@
+TAP version 13
+# (node:15) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CSV neutralizes formula prefixes, whitespace, controls and locale variants
+ok 1 - CSV neutralizes formula prefixes, whitespace, controls and locale variants
+  ---
+  duration_ms: 1.329582
+  type: 'test'
+  ...
+# Subtest: CSV quoting preserves separators, quotes and multiline data without creating extra cells
+ok 2 - CSV quoting preserves separators, quotes and multiline data without creating extra cells
+  ---
+  duration_ms: 0.558768
+  type: 'test'
+  ...
+# Subtest: leads CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 3 - leads CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 8.050175
+  type: 'test'
+  ...
+# Subtest: quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 4 - quote-requests CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 5.286478
+  type: 'test'
+  ...
+# Subtest: bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+ok 5 - bookings CSV exports only the authenticated tenant and no internal JSON/credentials
+  ---
+  duration_ms: 4.778505
+  type: 'test'
+  ...
+# Subtest: CSV pagination includes more than 500 rows once each, without tenant bleed
+ok 6 - CSV pagination includes more than 500 rows once each, without tenant bleed
+  ---
+  duration_ms: 34.807065
+  type: 'test'
+  ...
+# Subtest: unknown export names and prototype properties are unavailable
+ok 7 - unknown export names and prototype properties are unavailable
+  ---
+  duration_ms: 0.207137
+  type: 'test'
+  ...
+# Subtest: capture is tenant-scoped and the signing secret is encrypted and shown once
+ok 8 - capture is tenant-scoped and the signing secret is encrypted and shown once
+  ---
+  duration_ms: 9.944333
+  type: 'test'
+  ...
+# Subtest: all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+ok 9 - all three event POSTs carry tenant-specific data, independently verifiable signatures and no credentials
+  ---
+  duration_ms: 12.696073
+  type: 'test'
+  ...
+# Subtest: bookings emit only on confirmation; repeated confirmations do not duplicate events
+ok 10 - bookings emit only on confirmation; repeated confirmations do not duplicate events
+  ---
+  duration_ms: 5.379616
+  type: 'test'
+  ...
+# Subtest: transaction rollback removes the captured event and never invokes delivery inline
+ok 11 - transaction rollback removes the captured event and never invokes delivery inline
+  ---
+  duration_ms: 5.351344
+  type: 'test'
+  ...
+# Subtest: malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+ok 12 - malformed or credential-shaped nested JSON never breaks capture or leaks credentials
+  ---
+  duration_ms: 8.098217
+  type: 'test'
+  ...
+# Subtest: disabled event toggles capture only the selected event
+ok 13 - disabled event toggles capture only the selected event
+  ---
+  duration_ms: 5.083317
+  type: 'test'
+  ...
+# Subtest: receiver failures do not affect inserts, and retry obeys due time with stable event/body
+ok 14 - receiver failures do not affect inserts, and retry obeys due time with stable event/body
+  ---
+  duration_ms: 6.422331
+  type: 'test'
+  ...
+# Subtest: retry is durable across a real database close/reopen and encrypted key read
+ok 15 - retry is durable across a real database close/reopen and encrypted key read
+  ---
+  duration_ms: 17.593555
+  type: 'test'
+  ...
+# Subtest: exhausted retries become visible failures; only their own owner can requeue them
+ok 16 - exhausted retries become visible failures; only their own owner can requeue them
+  ---
+  duration_ms: 10.574448
+  type: 'test'
+  ...
+# Subtest: two workers cannot concurrently deliver the same leased event
+ok 17 - two workers cannot concurrently deliver the same leased event
+  ---
+  duration_ms: 7.579898
+  type: 'test'
+  ...
+# Subtest: expired worker lease is reclaimed after a crash, without changing event identity
+ok 18 - expired worker lease is reclaimed after a crash, without changing event identity
+  ---
+  duration_ms: 7.865561
+  type: 'test'
+  ...
+# Subtest: changing URL or rotating/removing a key cancels older pending events without touching other tenants
+ok 19 - changing URL or rotating/removing a key cancels older pending events without touching other tenants
+  ---
+  duration_ms: 10.331998
+  type: 'test'
+  ...
+# Subtest: an endpoint change during DNS resolution prevents sending to the old destination
+ok 20 - an endpoint change during DNS resolution prevents sending to the old destination
+  ---
+  duration_ms: 7.973963
+  type: 'test'
+  ...
+# Subtest: swapping encrypted signing records across tenants fails closed without delivering
+ok 21 - swapping encrypted signing records across tenants fails closed without delivering
+  ---
+  duration_ms: 7.928715
+  type: 'test'
+  ...
+# Subtest: platform dispatch and account entitlements pause delivery without blocking inserts
+ok 22 - platform dispatch and account entitlements pause delivery without blocking inserts
+  ---
+  duration_ms: 8.360185
+  type: 'test'
+  ...
+# Subtest: destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+ok 23 - destination validation rejects HTTP, URL credentials and local/reserved IPv4/IPv6
+  ---
+  duration_ms: 0.996217
+  type: 'test'
+  ...
+# Subtest: mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+ok 24 - mixed DNS records, rebinding on a later attempt and DNS timeout fail before any POST
+  ---
+  duration_ms: 24.143486
+  type: 'test'
+  ...
+# Subtest: HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+ok 25 - HTTPS transport pins DNS, retains TLS checks, sends exact signed bytes, and never follows redirects
+  ---
+  duration_ms: 0.859294
+  type: 'test'
+  ...
+# Subtest: transport deadline rejects a receiver that never responds
+ok 26 - transport deadline rejects a receiver that never responds
+  ---
+  duration_ms: 5.125148
+  type: 'test'
+  ...
+# Subtest: webhook dispatch is independently configured and stays off in preview
+ok 27 - webhook dispatch is independently configured and stays off in preview
+  ---
+  duration_ms: 0.221128
+  type: 'test'
+  ...
+# Subtest: strict webhook settings reject client tenant IDs and unsupported events
+ok 28 - strict webhook settings reject client tenant IDs and unsupported events
+  ---
+  duration_ms: 6.371737
+  type: 'test'
+  ...
+# Subtest: background worker handles store failure outside requests and stops scheduling after close
+ok 29 - background worker handles store failure outside requests and stops scheduling after close
+  ---
+  duration_ms: 56.132082
+  type: 'test'
+  ...
+# Subtest: real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+ok 30 - real authenticated HTTP downloads reject anonymous/forged sessions and isolate every CSV
+  ---
+  duration_ms: 87.025786
+  type: 'test'
+  ...
+# Subtest: real authenticated settings expose no keys on GET and cannot mutate another tenant
+ok 31 - real authenticated settings expose no keys on GET and cannot mutate another tenant
+  ---
+  duration_ms: 35.560533
+  type: 'test'
+  ...
+# Subtest: owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+ok 32 - owners retain CSV access and can remove a webhook after account cancellation, but cannot add one
+  ---
+  duration_ms: 16.581053
+  type: 'test'
+  ...
+# Subtest: real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+ok 33 - real HTTPS receiver verifies signed POSTs and accepts a persisted retry after 503
+  ---
+  duration_ms: 298.240097
+  type: 'test'
+  ...
+# Subtest: event selection changes preserve the signing secret while invalidating older queue entries
+ok 34 - event selection changes preserve the signing secret while invalidating older queue entries
+  ---
+  duration_ms: 7.173756
+  type: 'test'
+  ...
+# Subtest: platform disabled during DNS pauses the leased event without an external POST
+ok 35 - platform disabled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 5.332005
+  type: 'test'
+  ...
+# Subtest: account canceled during DNS pauses the leased event without an external POST
+ok 36 - account canceled during DNS pauses the leased event without an external POST
+  ---
+  duration_ms: 6.213102
+  type: 'test'
+  ...
+# Subtest: migration remains idempotent and does not replay records created before webhook registration
+ok 37 - migration remains idempotent and does not replay records created before webhook registration
+  ---
+  duration_ms: 8.433213
+  type: 'test'
+  ...
+# Subtest: a sustained backlog from the first worker batch cannot starve later owners
+ok 38 - a sustained backlog from the first worker batch cannot starve later owners
+  ---
+  duration_ms: 26.304551
+  type: 'test'
+  ...
+# Subtest: stopping the webhook worker waits for an active signed delivery and its database completion
+ok 39 - stopping the webhook worker waits for an active signed delivery and its database completion
+  ---
+  duration_ms: 72.150363
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1022.14428

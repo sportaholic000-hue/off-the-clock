@@ -57,8 +57,27 @@ export function definiteBillingRejection(error) {
   return (error.status === 400 && ['INVALID_REQUEST','IDEMPOTENCY_KEY_REQUIRED','INVALID_IDEMPOTENCY_KEY'].includes(error.code))
     || ['SUBSCRIPTION_ALREADY_EXISTS','BILLING_CUSTOMER_REQUIRED'].includes(error.code);
 }
+function utcTime(value) {
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value))return null;
+  const time=Date.parse(value);return Number.isFinite(time)&&new Date(time).toISOString()===value?time:null;
+}
 export function canContinueSetup(state, now = Date.now()) {
-  return state.planStatus === 'active' || (state.planStatus === 'trialing'
-    && typeof state.trialEndsAt === 'string' && Number.isFinite(Date.parse(state.trialEndsAt))
-    && Date.parse(state.trialEndsAt) > now);
+  const at=now instanceof Date?now.getTime():typeof now==='string'?utcTime(now):now;
+  if(!Number.isFinite(at)||!state)return false;
+  if(state.plan!==undefined&&!ACCOUNT_PLANS.includes(state.plan))return false;
+  const status=typeof state.planStatus==='string'?state.planStatus.trim().toLowerCase():'';
+  if(status==='canceled'&&utcTime(state.annualPaidThroughAt)!==null&&utcTime(state.annualPaidThroughAt)>at)return true;
+  if(status==='active')return true;
+  if(status==='trialing'){const end=typeof state.trialEndsAt==='string'?Date.parse(state.trialEndsAt):NaN;return Number.isFinite(end)&&at<end;}
+  if(['payment_failed','past_due'].includes(status)){
+    const failed=utcTime(state.paymentFailedAt);
+    return failed!==null&&at>=failed&&at<failed+7*24*60*60*1000;
+  }
+  return false;
+}
+export function billingRecoveryMessage(state, now=Date.now()) {
+  if(!['payment_failed','past_due','suspended','unpaid'].includes(state?.planStatus))return null;
+  return canContinueSetup(state,now)
+    ? 'Your payment failed. Service remains available during the seven-day grace period. Use Manage billing to resolve the outstanding payment.'
+    : 'Service is suspended until the outstanding payment is resolved. Use Manage billing to restore access.';
 }

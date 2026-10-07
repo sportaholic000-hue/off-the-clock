@@ -1,0 +1,58 @@
+TAP version 13
+# [
+#   {
+#     "id": "S01-real-entry-grace-expired-not-swept",
+#     "expected": "suspended persisted status",
+#     "actual": {
+#       "status": "suspended",
+#       "graceEndsAt": "2026-10-05T20:27:25.000Z"
+#     }
+#   },
+#   {
+#     "id": "S02-private-and-public-current-state-gates",
+#     "expected": "403 both without using client plan claims",
+#     "actual": {
+#       "private": 403,
+#       "public": 403
+#     }
+#   },
+#   {
+#     "id": "S03-expired-grace-can-mutate",
+#     "expected": "read-only dashboard except billing",
+#     "actual": {
+#       "leadWriteStatus": 403,
+#       "leadPersisted": "NEEDS REVIEW",
+#       "accountWriteStatus": 403,
+#       "accountPersisted": "Synthetic"
+#     }
+#   },
+#   {
+#     "id": "S05-no-self-serve-refund-endpoint",
+#     "expected": "unsupported facility identified, no invented refund entitlement rule",
+#     "actual": {
+#       "status": 404
+#     }
+#   },
+#   {
+#     "id": "S06-provider-write-switch",
+#     "expected": "provider operations disabled; no Stripe calls",
+#     "actual": {
+#       "status": 503
+#     }
+#   }
+# ]
+# Subtest: billing core F07/F09: real startup suspends elapsed grace and rejects unpaid dashboard writes; recovery is accessible
+ok 1 - billing core F07/F09: real startup suspends elapsed grace and rejects unpaid dashboard writes; recovery is accessible
+  ---
+  duration_ms: 714.812507
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5759.42105

@@ -186,7 +186,7 @@ export function createVoiceSessionStore({
               existing.callerNumber !== context.from || existing.destinationNumber !== context.to) {
             throw new Error('Voice CallSid is already bound to different call data.');
           }
-          database.prepare(`UPDATE calls SET status = 'FALLBACK', outcome = ?, failureCode = ?,
+          database.prepare(`UPDATE calls SET status = 'FALLBACK', minutesBilled = 0, outcome = ?, failureCode = ?,
             completedAt = ?, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
             safeReason, safeReason, at, at, existing.id, context.ownerId
           );
@@ -214,7 +214,7 @@ export function findVoiceTenantsByNumber(database, twilioNumber) {
 }
 
 export function loadVoiceAccountContext(database, ownerId) {
-  const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt
+  const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt
     FROM users WHERE id = ? AND role = 'owner'`).get(ownerId);
   const profile = database.prepare(`SELECT ownerId, operatorEnabled, existingPhoneNumber,
     phoneProvisioningStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson

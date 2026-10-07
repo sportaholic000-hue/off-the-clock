@@ -1,0 +1,42 @@
+TAP version 13
+# (node:164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {
+#   "syntheticOnly": true,
+#   "experimentCount": 1,
+#   "rows": [
+#     {
+#       "id": "V01-trial-cap-does-not-meter-real-call",
+#       "expected": {
+#         "durationSeconds": 3601,
+#         "minutesUsed": 61,
+#         "nextCall": "fallback"
+#       },
+#       "actual": {
+#         "stored": {
+#           "duration": 3601,
+#           "minutesBilled": 61,
+#           "status": "COMPLETED"
+#         },
+#         "minutesUsed": 61,
+#         "nextCallStartsAI": false,
+#         "errors": []
+#       }
+#     }
+#   ]
+# }
+# Subtest: billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+ok 1 - billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+  ---
+  duration_ms: 368.548387
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 422.419059

@@ -47,6 +47,10 @@ import { installLiveDemoRoutes } from './demo/liveDemo.js';
 import { migrateLegacyGoogleCalendarCredentials } from './calendarCredentials.js';
 import { loadBillingConfig } from './billingConfig.js';
 import { createBillingStateService } from './billingStateService.js';
+import {startBillingLifecycleWorker} from './billingLifecycleWorker.js';
+import {createBillingMinuteService} from './billingMinuteService.js';
+import {createStripeOverageProvider} from './billingOverageProvider.js';
+import {createOwnerEmailProvider} from './ownerEmailDelivery.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
 import { resolveJurisdiction } from '../taxJurisdiction.js';
 import { insertQuoteLog } from '../quoteLog.js';
@@ -107,7 +111,7 @@ const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
 
 function accessAccount(ownerId) {
-  return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt FROM users
+  return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt FROM users
     WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 
@@ -169,8 +173,11 @@ const stripeClient = billingConfig
     })
   : null;
 const billingStateService = billingConfig
-  ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap })
+  ? createBillingStateService({ db, pricePlanMap: billingConfig.pricePlanMap, priceIds:billingConfig.priceIds })
   : null;
+const minuteBilling=createBillingMinuteService({database:db,ownerQuery,priceIds:billingConfig?.priceIds||{},
+  paymentProvider:createStripeOverageProvider({stripeClient}),emailProvider:createOwnerEmailProvider(),enabled:providerWritesEnabled,
+  onError:code=>console.error('[minute-worker]',code)});
 
 // Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
 installLiveDemoRoutes(app, { db });
@@ -183,7 +190,8 @@ if (billingConfig) {
       stripeClient.webhooks.constructEvent(payload, signature, secret),
     webhookSecret: billingConfig.webhookSecret,
     billingStateService,
-    stripeClient
+    stripeClient,
+    minuteBilling
   });
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
@@ -447,6 +455,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
     callActivity:ownerCallService.dashboard(req.tenantOwnerId),
+    minuteUsage:req.role==='owner'?minuteBilling.snapshot(req.tenantOwnerId):null,
     pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.
     previewActivity: previewDashboardActivity(),
@@ -459,7 +468,7 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
-installProductionVoice({app,database:db,bookingService,runtimeConfig});
+installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling.syncOwner(ownerId)});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
@@ -478,14 +487,16 @@ app.use((err, _req, res, _next) => {
   });
 });
 
+const stopBillingWorker = billingStateService ? startBillingLifecycleWorker({service:billingStateService,onError:code=>console.error('[billing-worker]',code)}) : ()=>{};
+const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute-worker]',code)});
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
 
 const stopWebhookWorker = outboundWebhooks.start({onError:code=>console.error(`[webhook-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopWebhookWorker();void backupWorker?.stop();});
 
 export {httpServer,lifecycle};
 

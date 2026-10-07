@@ -1,0 +1,24 @@
+{
+  "syntheticOnly": true,
+  "experimentCount": 1,
+  "rows": [
+    {
+      "id": "V01-trial-cap-does-not-meter-real-call",
+      "expected": {
+        "durationSeconds": 3601,
+        "minutesUsed": 61,
+        "nextCall": "fallback"
+      },
+      "actual": {
+        "stored": {
+          "duration": 3601,
+          "minutesBilled": 0,
+          "status": "COMPLETED"
+        },
+        "minutesUsed": 0,
+        "nextCallStartsAI": true,
+        "errors": []
+      }
+    }
+  ]
+}

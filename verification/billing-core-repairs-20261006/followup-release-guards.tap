@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: release guard: west profile changes refresh public catalog/status without saving prices
+ok 1 - release guard: west profile changes refresh public catalog/status without saving prices
+  ---
+  duration_ms: 316.013275
+  type: 'test'
+  ...
+# Subtest: release guard: east profile changes refresh public catalog/status without saving prices
+ok 2 - release guard: east profile changes refresh public catalog/status without saving prices
+  ---
+  duration_ms: 185.460079
+  type: 'test'
+  ...
+# Subtest: release guard: stale approval explains re-approval, blocks quotes and restores exactly $100
+ok 3 - release guard: stale approval explains re-approval, blocks quotes and restores exactly $100
+  ---
+  duration_ms: 120.223051
+  type: 'test'
+  ...
+# Subtest: release guard: owner notice does not promise silent UTC fallback
+ok 4 - release guard: owner notice does not promise silent UTC fallback
+  ---
+  duration_ms: 610.515495
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1854.898035

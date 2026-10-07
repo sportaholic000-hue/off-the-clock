@@ -1,0 +1,429 @@
+TAP version 13
+# Subtest: billing stays fully disabled unless explicitly enabled
+ok 1 - billing stays fully disabled unless explicitly enabled
+  ---
+  duration_ms: 1.55779
+  type: 'test'
+  ...
+# Subtest: one validated configuration drives Checkout and webhook price authority
+ok 2 - one validated configuration drives Checkout and webhook price authority
+  ---
+  duration_ms: 1.460235
+  type: 'test'
+  ...
+# Subtest: billing rejects test credentials in production and malformed signing secrets
+ok 3 - billing rejects test credentials in production and malformed signing secrets
+  ---
+  duration_ms: 0.419742
+  type: 'test'
+  ...
+# Subtest: billing rejects missing, duplicate, or unsafe price and redirect configuration
+ok 4 - billing rejects missing, duplicate, or unsafe price and redirect configuration
+  ---
+  duration_ms: 0.22963
+  type: 'test'
+  ...
+# Subtest: loopback HTTP billing URLs are development-only
+ok 5 - loopback HTTP billing URLs are development-only
+  ---
+  duration_ms: 0.495624
+  type: 'test'
+  ...
+# Subtest: launch configuration requires only the two offered plans; legacy Scale prices are not offered
+ok 6 - launch configuration requires only the two offered plans; legacy Scale prices are not offered
+  ---
+  duration_ms: 0.21577
+  type: 'test'
+  ...
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+ok 7 - webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+  ---
+  duration_ms: 1.36908
+  type: 'test'
+  ...
+# Subtest: verified webhook bytes are passed unchanged and supported events are acknowledged generically
+ok 8 - verified webhook bytes are passed unchanged and supported events are acknowledged generically
+  ---
+  duration_ms: 0.429297
+  type: 'test'
+  ...
+# Subtest: webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+ok 9 - webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+  ---
+  duration_ms: 0.435085
+  type: 'test'
+  ...
+# Subtest: unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+ok 10 - unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+  ---
+  duration_ms: 0.480913
+  type: 'test'
+  ...
+# Subtest: Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+ok 11 - Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+  ---
+  duration_ms: 1.169304
+  type: 'test'
+  ...
+# Subtest: authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+ok 12 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+  ---
+  duration_ms: 12.034514
+  type: 'test'
+  ...
+# Subtest: an expired open Checkout releases the owner slot while the original key still replays its sealed response
+not ok 13 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+  ---
+  duration_ms: 6.279066
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/billingRoutes.spec.mjs:478:1'
+  failureType: 'testCodeFailure'
+  error: 'stripeClient.checkout.sessions.retrieve is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///workspace/scratch/e34515a96b93/billing-core-repairs/server/src/billingRoutes.js:583:82
+    async billingProviderRead (file:///workspace/scratch/e34515a96b93/billing-core-repairs/server/src/billingProvider.js:27:12)
+    async reconcilePriorCheckouts (file:///workspace/scratch/e34515a96b93/billing-core-repairs/server/src/billingRoutes.js:583:21)
+    async withBillingLease.clock (file:///workspace/scratch/e34515a96b93/billing-core-repairs/server/src/billingRoutes.js:758:5)
+    async withBillingLease (file:///workspace/scratch/e34515a96b93/billing-core-repairs/server/src/billingProvider.js:21:15)
+  ...
+# Subtest: an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+ok 14 - an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+  ---
+  duration_ms: 6.576211
+  type: 'test'
+  ...
+# Subtest: an unresolved claim cannot create a subscription after the owner becomes active
+ok 15 - an unresolved claim cannot create a subscription after the owner becomes active
+  ---
+  duration_ms: 5.656167
+  type: 'test'
+  ...
+# Subtest: an unrecovered claim older than Stripe idempotency retention fails closed for every key
+ok 16 - an unrecovered claim older than Stripe idempotency retention fails closed for every key
+  ---
+  duration_ms: 6.05667
+  type: 'test'
+  ...
+# Subtest: Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+ok 17 - Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+  ---
+  duration_ms: 4.75506
+  type: 'test'
+  ...
+# Subtest: billing portal uses only the stored customer mapping and rejects body-supplied ownership
+ok 18 - billing portal uses only the stored customer mapping and rejects body-supplied ownership
+  ---
+  duration_ms: 5.097197
+  type: 'test'
+  ...
+# Subtest: Checkout blocks a second subscription and portal never creates an unmapped customer
+ok 19 - Checkout blocks a second subscription and portal never creates an unmapped customer
+  ---
+  duration_ms: 10.977727
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits resubscription while the original request remains replayable after activation
+ok 20 - verified terminal deletion permits resubscription while the original request remains replayable after activation
+  ---
+  duration_ms: 8.3164
+  type: 'test'
+  ...
+# Subtest: billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+ok 21 - billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+  ---
+  duration_ms: 7.238143
+  type: 'test'
+  ...
+# Subtest: Scale Checkout is rejected before creating a customer or session
+ok 22 - Scale Checkout is rejected before creating a customer or session
+  ---
+  duration_ms: 6.545926
+  type: 'test'
+  ...
+# (node:17) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing schema stores first-class evidence and sanitized idempotent event receipts
+ok 23 - billing schema stores first-class evidence and sanitized idempotent event receipts
+  ---
+  duration_ms: 8.591568
+  type: 'test'
+  ...
+# Subtest: fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+ok 24 - fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+  ---
+  duration_ms: 6.98741
+  type: 'test'
+  ...
+# Subtest: verified event application is idempotent and never stores raw customer metadata
+ok 25 - verified event application is idempotent and never stores raw customer metadata
+  ---
+  duration_ms: 6.703189
+  type: 'test'
+  ...
+# Subtest: same event ID with changed authoritative fields is rejected
+ok 26 - same event ID with changed authoritative fields is rejected
+  ---
+  duration_ms: 5.464782
+  type: 'test'
+  ...
+# Subtest: customer and subscription IDs mapped to different owners are rejected atomically
+ok 27 - customer and subscription IDs mapped to different owners are rejected atomically
+  ---
+  duration_ms: 5.990251
+  type: 'test'
+  ...
+# Subtest: unrecognized prices and ambiguous base plans are rejected without changing access
+ok 28 - unrecognized prices and ambiguous base plans are rejected without changing access
+  ---
+  duration_ms: 6.349604
+  type: 'test'
+  ...
+# Subtest: an older out-of-order failure is receipted but cannot regress newer active state
+not ok 29 - an older out-of-order failure is receipted but cannot regress newer active state
+  ---
+  duration_ms: 6.474359
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/billingStateService.spec.mjs:314:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'APPLIED'
+    - 'IGNORED_STALE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'IGNORED_STALE'
+  actual: 'APPLIED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/billingStateService.spec.mjs:321:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: payment failure preserves seven days of service and paid recovery restores immediately
+not ok 30 - payment failure preserves seven days of service and paid recovery restores immediately
+  ---
+  duration_ms: 7.433782
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/billingStateService.spec.mjs:334:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'payment_failed'
+    - 'active'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'active'
+  actual: 'payment_failed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/billingStateService.spec.mjs:355:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: expired grace is suspended idempotently and queues one transition
+ok 31 - expired grace is suspended idempotently and queues one transition
+  ---
+  duration_ms: 9.824037
+  type: 'test'
+  ...
+# Subtest: subscription deletion cancels immediately and a later stale active update cannot reopen it
+ok 32 - subscription deletion cancels immediately and a later stale active update cannot reopen it
+  ---
+  duration_ms: 9.153562
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+ok 33 - verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+  ---
+  duration_ms: 12.154261
+  type: 'test'
+  ...
+# Subtest: Checkout completion without paid or setup evidence cannot start a trial
+ok 34 - Checkout completion without paid or setup evidence cannot start a trial
+  ---
+  duration_ms: 8.368548
+  type: 'test'
+  ...
+# Subtest: a state-write failure rolls back identifier binding, logs, outbox, and receipt
+ok 35 - a state-write failure rolls back identifier binding, logs, outbox, and receipt
+  ---
+  duration_ms: 6.470955
+  type: 'test'
+  ...
+# Subtest: Operator signup → verified trialing → correct onboarding access
+not ok 36 - Operator signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 295.631442
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:11:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:31:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Operator signup → verified active → correct onboarding access
+not ok 37 - Operator signup → verified active → correct onboarding access
+  ---
+  duration_ms: 249.982503
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:11:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:31:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QuoteDone signup → verified trialing → correct onboarding access
+not ok 38 - QuoteDone signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 248.633878
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:11:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:31:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QuoteDone signup → verified active → correct onboarding access
+not ok 39 - QuoteDone signup → verified active → correct onboarding access
+  ---
+  duration_ms: 247.263717
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:11:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:31:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Operator cannot unlock a trial without verified payment evidence
+not ok 40 - Operator cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 237.375646
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:44:45'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:52:9)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: QuoteDone cannot unlock a trial without verified payment evidence
+not ok 41 - QuoteDone cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 233.286433
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:44:45'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/billing-core-repairs/test/launchPlans.spec.mjs:52:9)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Scale signup is rejected without creating an account
+ok 42 - Scale signup is rejected without creating an account
+  ---
+  duration_ms: 4.168981
+  type: 'test'
+  ...
+# Subtest: bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+ok 43 - bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+  ---
+  duration_ms: 1375.774018
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 34
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3256.677759

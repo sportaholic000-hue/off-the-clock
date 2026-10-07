@@ -1,0 +1,57 @@
+2026-10-06T20:42:25.5727955Z found 0 vulnerabilities
+2026-10-06T20:46:23.4120494Z # tests 2072
+2026-10-06T20:46:23.4120970Z # pass 2072
+2026-10-06T20:46:23.4121190Z # fail 0
+2026-10-06T20:46:23.4121426Z # cancelled 0
+2026-10-06T20:46:23.4121688Z # skipped 0
+2026-10-06T20:46:23.4121913Z # todo 0
+2026-10-06T20:49:54.0557309Z # tests 2908
+2026-10-06T20:49:54.0558155Z # pass 2908
+2026-10-06T20:49:54.0558533Z # fail 0
+2026-10-06T20:49:54.0558903Z # cancelled 0
+2026-10-06T20:49:54.0559289Z # skipped 0
+2026-10-06T20:49:54.0559657Z # todo 0
+2026-10-06T20:49:55.8909775Z found 0 vulnerabilities
+
+2026-10-06T20:43:30.9773351Z ok 204 - billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+2026-10-06T20:43:31.2083676Z ok 205 - billing capability boundary: refund event is unsupported, unchanged account; cancellation logs but no offboarding or notification delivery
+2026-10-06T20:43:31.2086656Z ok 206 - F10: existing number purchase request attaches signed duration callback; fake HTTP only
+2026-10-06T20:43:31.9305446Z ok 207 - billing core F07/F09: real startup suspends elapsed grace and rejects unpaid dashboard writes; recovery is accessible
+2026-10-06T20:46:44.8146372Z ok 404 - billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+2026-10-06T20:46:45.0492804Z ok 405 - billing capability boundary: refund event is unsupported, unchanged account; cancellation logs but no offboarding or notification delivery
+2026-10-06T20:46:45.0498007Z ok 406 - F10: existing number purchase request attaches signed duration callback; fake HTTP only
+2026-10-06T20:46:45.3025404Z ok 407 - F07: boundary, bounded batches and restart produce one persisted suspension with one event/outbox
+2026-10-06T20:46:45.3028262Z ok 408 - F07: failure rolls back suspension/event/outbox and next worker tick retries
+2026-10-06T20:46:45.3030569Z ok 409 - F08: UI agrees with backend at grace before
+2026-10-06T20:46:45.3032626Z ok 410 - F08: UI agrees with backend at grace start
+2026-10-06T20:46:45.3058451Z ok 411 - F08: UI agrees with backend at grace last
+2026-10-06T20:46:45.3067766Z ok 412 - F08: UI agrees with backend at grace end
+2026-10-06T20:46:45.3069742Z ok 413 - F08: UI agrees with backend at grace after
+2026-10-06T20:46:45.3072129Z ok 414 - F08: malformed failure timestamp cannot unlock setup null
+2026-10-06T20:46:45.3074310Z ok 415 - F08: malformed failure timestamp cannot unlock setup bad
+2026-10-06T20:46:45.3076142Z ok 416 - F08: malformed failure timestamp cannot unlock setup 2026-02-30T00:00:00.000Z
+2026-10-06T20:46:45.3078141Z ok 417 - F08: malformed failure timestamp cannot unlock setup 2026-10-06T00:00:00Z
+2026-10-06T20:46:45.3080649Z ok 418 - F08: rendered billing source wires recovery copy independently of Continue setup
+2026-10-06T20:46:45.3083287Z ok 419 - F09: payment_failed denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3085696Z ok 420 - F09: past_due denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3088183Z ok 421 - F09: suspended denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3090822Z ok 422 - F09: canceled denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3093248Z ok 423 - F09: unpaid denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3095673Z ok 424 - F09: trialing denies product mutations but allows reads and billing/auth recovery
+2026-10-06T20:46:45.3097935Z ok 425 - F09: valid grace allows writes; pending allows only initial account setup
+2026-10-06T20:46:45.3100533Z ok 426 - F07: two expired owners drain in bounded batches and owner-specific reads stay tenant-bound
+2026-10-06T20:46:45.3103148Z ok 427 - F09: actual authenticated staff mutation uses current owner state, not token claims
+2026-10-06T20:46:46.0341635Z ok 428 - billing core F07/F09: real startup suspends elapsed grace and rejects unpaid dashboard writes; recovery is accessible
+2026-10-06T20:46:51.4439925Z ok 429 - F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+2026-10-06T20:46:51.4443594Z ok 430 - F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+2026-10-06T20:46:51.4455761Z ok 431 - F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+2026-10-06T20:46:51.4458046Z ok 432 - F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+2026-10-06T20:46:51.4460497Z ok 433 - F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+2026-10-06T20:46:51.4462116Z ok 434 - F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+2026-10-06T20:46:51.4463552Z ok 435 - F10: two31second calls count2minutes; spam and fallback add0
+2026-10-06T20:46:51.4465288Z ok 436 - F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+2026-10-06T20:46:51.4467386Z ok 437 - F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+2026-10-06T20:46:51.4469284Z ok 438 - F10: provider completion after process restart finalizes once; failed persistence rolls back
+2026-10-06T20:46:51.4892418Z ok 439 - F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+2026-10-06T20:46:51.4896010Z ok 440 - F10: late media finalization cannot undo fallback exclusion
+

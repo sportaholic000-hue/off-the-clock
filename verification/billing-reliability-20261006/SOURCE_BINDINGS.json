@@ -1,0 +1,257 @@
+{
+  "auditedSha": "73c00622d6f2df31f57773b32e41355a7421f1a3",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "602f72fbe1168164f7e649c607091521cc728493bd2d92c9cd4fca0b7ba936a4",
+      "gitBlobSha": "e1aa3d78f9ea7c5d4f2ac15ce2b96164a40d8c12",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/BUILD_STATUS.md",
+      "sha256": "1d5c238205dbba2f224c5965a0bcdad774761ff6cb3099faa110f48422ee2255",
+      "gitBlobSha": "590083116da7565aaba7b525e10e286aafa0d09d",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/platform_spec_v2.md",
+      "sha256": "050c9554867abafe95691276c293d51190b791c60cdc9c1f6135da6f800663e3",
+      "gitBlobSha": "deab01d05cc6265d3b2636906d46872a6da4a518",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/build_guide.md",
+      "sha256": "d580ed3a850b52775170c2e72e0f3d214e47476356adf72d530108ca5d35711d",
+      "gitBlobSha": "63d7de75309a938e854c61e6d687fd3b3e7027fb",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/quote_engine_v2.md",
+      "sha256": "43ec924f16d22e6ab1ee9a856336a71b9b91d473598d622d2f0a932b1d9b22c4",
+      "gitBlobSha": "df7136a0dd11f0ecf9fba9f11261d1e7c6ab2cfb",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/voice_quote_flows.md",
+      "sha256": "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6",
+      "gitBlobSha": "7329bde3db8e3b38916e1cd6fbe1ca3fffaffaa5",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "specs/RELEASE_BRANCH_INTEGRATION_20261006.md",
+      "sha256": "1b64298b9675475a9a4803746817e5b9549a559ec3877fdaf4e3753050044acc",
+      "gitBlobSha": "2695859f22ebd3a902cfcbbeb043190abe32db12",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "docs/LAUNCH_AUTHORITY_20260929.md",
+      "sha256": "0f2653c83c6e890bcdc8c2fa48fc7173369133d148bb28fb87f0aedc842df5b1",
+      "gitBlobSha": "0539e2f1f9e92933093429eea8b9cffc615eeb3e",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "f84942897dbc000333eafab36f64cec170ca1b0b8996f68db6dd9061ce616a36",
+      "gitBlobSha": "1f9e99c1977aef5ee92b2edec33a57a3ea4af1e7",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "6923829e8238529b6991c8348f8d742ce64dfcbccfe1b32ccb2bd434a47f7a8a",
+      "gitBlobSha": "11a9e82fbff2bf325d6ec94174d49e8558f13b03",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/package.json",
+      "sha256": "795522e6ce892432a0524ca348e8caca7881004ea68ba6443ae695af01bacc81",
+      "gitBlobSha": "2dc67cf786e5b3e0ab7167428068ef38ca878bb2",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/package.json",
+      "sha256": "3197549d14c974775c5f1533fb9da74da2113d74c8606c47f568e1b090943beb",
+      "gitBlobSha": "8d38de72c610767512b4b641a6b9a7dc35840b79",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/billingConfig.js",
+      "sha256": "4f8604f19725ea0ddb5305cd78eb7e78915f8f80925c609076f6d4fcbad74279",
+      "gitBlobSha": "760804b2be23b09d9fd1b648d1540fbe8bfe592d",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "sha256": "a2cd4a039de1a9207a780af4d6e4abf933a6ebacae59f64d676c658d3683b3d9",
+      "gitBlobSha": "cd411e15a57d8003ce209da2b1e04584341db309",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "sha256": "d40560968613c7000d088086a647179c523487e11984ac0ac41d0ec11a0ec29e",
+      "gitBlobSha": "96dac32b654d757975ba0b39883d5a76ee904742",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/planAccess.js",
+      "sha256": "224b65479c3432dee40f70b245fcf91b2ba448b0cba334e2d4ac62d218ef6951",
+      "gitBlobSha": "c0a85d8569618fbdec8899dafe12659fb2791cd7",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/server.js",
+      "sha256": "8b9093811f0052ac08a2910aef4ab5c45b45fb3be6c340ebc82ede246068d64a",
+      "gitBlobSha": "70eca3ec835af0ccd3eef6d2771fc63f5c8233ab",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/schema.js",
+      "sha256": "aed021b444e55e8f9d5ef24cb4a209463c9b6f746c2d4e7ffa395d528f71f026",
+      "gitBlobSha": "e9b6fbcbb0f75d978d459b74ca0ff751e236023e",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/migrations.js",
+      "sha256": "a589ed7f434accdd802fa88737322ef05270574f6b79f00b02c9d9374d063e8b",
+      "gitBlobSha": "78acc7730988a83ee13ab4bbff89e0e74222e6fa",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/db.js",
+      "sha256": "676b85ceab85fcd621ee59a7ea5ea050b0eded28aadac6c9e982bf65c7f08d6d",
+      "gitBlobSha": "c8d8d0d70288903ce74862199bb087c80914ecd6",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/runtimeConfig.js",
+      "sha256": "91b200ecc1203bec04adb7aec3bfc1abbab97cad5c06e91346c27b40160474dc",
+      "gitBlobSha": "278b5bc6199f3c63ef5872034f928c6ed8574dee",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/auth.js",
+      "sha256": "3f9c8cbd8ea4bdca8b41a75770c849039cc7a76b8f53aa26e31eff82224d0819",
+      "gitBlobSha": "63c6556c5fd8a99d888ac47fdebccf72d5a40677",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "sha256": "3e36f462091fc6334e3ce5db016c54dfa646f5dc8256965289cdb27ecd1b38c3",
+      "gitBlobSha": "89563f0bcb1ddc2dc2d83eb0279de2f872c2e1e5",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/authSessionService.js",
+      "sha256": "eb22ec33b83c78cd3d6dafd592da1ff80cd297482e8e3860fb1c34173ce706bb",
+      "gitBlobSha": "06176e808b145f4d5f1c3523122b564d62fa9729",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/onboardingService.js",
+      "sha256": "b0ac410ca941037bd18dd2c9457512f4c4cb34f051747f905fed3622318995bd",
+      "gitBlobSha": "5d479f22dc11a1c05a2a0b8dbc5945f92eb14ba7",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/quoteDoneRoutes.js",
+      "sha256": "ca6425a167e9046c4ae29f0cd145c398fe2cedb62fcb98ec057c3e1e484c82cd",
+      "gitBlobSha": "fcffecbc962a857da0d0e214b4c03abb2019ae03",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/outboundWebhookService.js",
+      "sha256": "1807364720aa26631ef1f5dc809b119a76fa8c4d544fb20bf1eeb3203bcc3f28",
+      "gitBlobSha": "9fa604729da15d089ce0180bbbed4c7bfb86803f",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/knowledgeDraftRoutes.js",
+      "sha256": "a1cc908719fa69e66a88286c752d46cc7617871d79bee85d471afa3cc3e6fc05",
+      "gitBlobSha": "d7c274ed1831fd921c880923ba650ac7ccf361a5",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/voice/productionVoiceRuntime.js",
+      "sha256": "75ac87d6fb6252f5442ec56baba726107ba024ff56cf590e4b2c6c48193e9da2",
+      "gitBlobSha": "93b46213ed3846e79f5460db50c1412dab802aed",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "sha256": "80b9ffb88e9ee09aeaccba523ff133d9928a73552171c2cfa2c92cef1bc84199",
+      "gitBlobSha": "1d674f506f6e1807793208b0ca9a4e9554fbbe0f",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/src/billing.jsx",
+      "sha256": "abd2b4838ae3ba2d5e8d9a44cf01780fc9f7e846a1ccb13ad1e700ea995857ce",
+      "gitBlobSha": "a6bca4ea0decedc0cd7473da9ace2f5c017286b2",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "sha256": "c454c9f7e2556dab69a27b42c114fade8ae7e8e1ae1a3201c3bab17343911077",
+      "gitBlobSha": "b946a90ce44b2305025103cc06cd6fd7cf1e9c28",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/src/api.js",
+      "sha256": "841cf5fd2e08a540fc87e0fb3183e53204e41dd2ed11dba76a9f7faf478bed62",
+      "gitBlobSha": "1eb92cdb5ad742a107939f5ce05d8b45be7c0982",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/billingConfig.spec.mjs",
+      "sha256": "ca630f43660ee5dd9cf5fd748a27c0347a61394a0a70e84086fec01a07f4c208",
+      "gitBlobSha": "f66d2794be4237d53c71897e24f40b4d2627f81d",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "sha256": "3e35968a2bc2c1ba432d0b1e477b97c77b621339571f6060fc8141df3d632e19",
+      "gitBlobSha": "8f4284f88f31bfdb4267562911c8516e87975c3a",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "sha256": "7498110a8bb674789919ef7235a468e35f9ed3bb29cf18ef22415e3e2e9a80c6",
+      "gitBlobSha": "d21a8308f8cf6c962b8e0bc918b8735193f66da3",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/planAccess.spec.mjs",
+      "sha256": "cbae3acfd133e32d676e6795b6ed4b026758baa7c0c6899b5d7f3d245370b670",
+      "gitBlobSha": "574a4727e94e30d70690fd35add7f14e43613b03",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/launchPlans.spec.mjs",
+      "sha256": "bc116ea46610c808cbeb328cbf0ce661f67834ee0dae78aaaa7f4fbe25e9eddf",
+      "gitBlobSha": "c0183c945f329ad9bbc9c517d4fd123d1d550344",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "test/helpers/launchPlanFixture.mjs",
+      "sha256": "6ca812f5bf7f0a1425087ae31696882bd7241741c34045171e36089ab6e09ccb",
+      "gitBlobSha": "c69f34875b1e31ad79a9f1f23e7310408e5006c6",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/test/billing-transport.test.mjs",
+      "sha256": "bd7795ea4236d28378006a0e02509ea70075cd8458b061c9b226c4ca468375d6",
+      "gitBlobSha": "a15fc1dcd47ede507c92cd0a449640f87def0a02",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/test/billing-browser.mjs",
+      "sha256": "c5dd729e5942fe7d61b5c1c0937265f467a4d5635283a862f422a3f12a80fedd",
+      "gitBlobSha": "eafed56e0b926e2c526726c31e64b02e346d3aeb",
+      "matchesAuditedBase": true
+    },
+    {
+      "path": "client/test/launch-plans-browser.mjs",
+      "sha256": "2614c35e92f497e73b6af491d2e49fdb2dba678a4253fc048688930a13476a4b",
+      "gitBlobSha": "56993de069e6c1cba9e431ca7bef5b9595bd8dd4",
+      "matchesAuditedBase": true
+    }
+  ]
+}

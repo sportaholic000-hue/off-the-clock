@@ -1,0 +1,21 @@
+{
+  "base": "b749dd6f76a6625314f87e4e8bf11fc3b3a0dbb3",
+  "sourceSha": "9e93cf51030667136a1c69e3698ade980c962d81",
+  "sourceTree": "71511e807acc5dc3c0788f4a08b76427b600cc26",
+  "scopeCheck": "all changed source/tests within assigned ownership; all historical audits/specs/CI/manifests unchanged",
+  "sha256": {
+    "server/src/billingCoreMigration.js": "03750bcbfcf7d0362fda287377154a9542b8c2b6fbd2cc13e5dcbc8042b3814d",
+    "server/src/billingEvidence.js": "c0028f012be1382a2a7d6623e860966f0433c5daf5bdccdaa42d8db5877aa495",
+    "server/src/billingProvider.js": "6131fcb68fec22db5e47bd01ac575e60f7fbfc21a756e3d44d820ede2f059e24",
+    "server/src/billingRoutes.js": "8ae82594b697d46273495348c188dc1aaf667d96b783869d1a4e46b653803f7a",
+    "server/src/billingStateService.js": "ac2fe78a167617b9e709724847163d12091099f1fd0d3728da07d02d6d98ea13",
+    "server/src/migrations.js": "0cc9d0873ba2f8407cc90a2066fb5533678805e994f87ef9bcbc520a8eb30cf4",
+    "server/src/schema.js": "f9cb3e84a6b2f7fff362676109af9ce9d10ab83cc5b5d0a87bc2a147613531bb",
+    "test/billingCoreRepair20261006.helpers.mjs": "b9c685d07e7fad235bd0b88e0cdb80ac37be649a0e6b19f401a7506c79aa8626",
+    "test/billingCoreRepair20261006.legacy.mjs": "a133800783fbe673d309134fd8cf3ca769636594484a3222780ae7dd731988b7",
+    "test/billingCoreRepair20261006.spec.mjs": "ae92db25c244c5db734512bbab1968f6e18565ca4e7b000317817412cd49589b",
+    "test/billingCoreRepair20261006Permutations.spec.mjs": "4aa2196b62d91fe8c8a4ae373fc5defa179fc8d4f03115c6c6695859e959ef99",
+    "test/billingCoreRepair20261006Provider.spec.mjs": "40e0ef2ab3aabba299e908c1381c1c7ff39078a2bfd0ee579312e6c9f7988d73",
+    "test/billingCoreRepair20261006Recovery.spec.mjs": "98e864345aedc2f5f90b0f767e9576276becfa35270c30197a17a00e6b9d8e1b"
+  }
+}

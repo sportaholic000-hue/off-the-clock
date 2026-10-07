@@ -1,0 +1,23 @@
+SHA 43a71dec195d3d29506f91f5c97c5741868b6809
+Tree f95df52bbb45fef9f9f5466565cf1f1892d7490e
+https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37512559114
+2026-10-06T18:36:17.0440814Z ##[group]Run npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
+2026-10-06T18:36:39.9919340Z ##[group]Run npm run build
+2026-10-06T18:36:43.3524629Z ##[group]Run npm run test:quote
+2026-10-06T18:39:08.0600912Z # tests 2068
+2026-10-06T18:39:08.0601178Z # pass 2068
+2026-10-06T18:39:08.0601287Z # fail 0
+2026-10-06T18:39:08.0601396Z # cancelled 0
+2026-10-06T18:39:08.0601513Z # skipped 0
+2026-10-06T18:39:08.0601640Z # todo 0
+2026-10-06T18:39:08.0730778Z ##[group]Run npm test
+2026-10-06T18:39:25.4516615Z not ok 419 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+2026-10-06T18:39:25.5663082Z not ok 435 - an older out-of-order failure is receipted but cannot regress newer active state
+2026-10-06T18:39:25.5674649Z not ok 436 - payment failure preserves seven days of service and paid recovery restores immediately
+2026-10-06T18:41:40.8962127Z # tests 2571
+2026-10-06T18:41:40.8962722Z # pass 2568
+2026-10-06T18:41:40.8962895Z # fail 3
+2026-10-06T18:41:40.8963067Z # cancelled 0
+2026-10-06T18:41:40.8963249Z # skipped 0
+2026-10-06T18:41:40.8963419Z # todo 0
+2026-10-06T18:41:40.9452689Z [36;1m{ echo "run ${GITHUB_RUN_ID} sha ${GITHUB_SHA}"; cat "$GITHUB_WORKSPACE/test-check.txt" 2>/dev/null; awk '/^not ok /' "$GITHUB_WORKSPACE/test-results.tap"; } > "$name"[0m

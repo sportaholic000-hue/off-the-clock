@@ -1,3 +1,5 @@
+import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
+import {installBillingVoiceRoutes} from '../billingVoiceRoutes.js';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import twilio from 'twilio';
@@ -27,7 +29,7 @@ const iso=clock=>new Date(clock()).toISOString();
 
 // Dependencies are supplied only by server construction, never request data or
 // an environment-selected test module. Tests use real HTTP/WS/SQLite and fake providers.
-export function installProductionVoice({app,database,bookingService,runtimeConfig={},env=process.env,googleClient,WebSocketServerClass=WebSocketServer,clock=()=>new Date(),providers={},onError=code=>console.error('[voice]',code)}={}){
+export function installProductionVoice({app,database,bookingService,runtimeConfig={},env=process.env,googleClient,WebSocketServerClass=WebSocketServer,clock=()=>new Date(),providers={},onUsage=()=>{},onError=code=>console.error('[voice]',code)}={}){
   if(!app||typeof app.post!=='function'||typeof app.listen!=='function'||!database?.prepare)throw new TypeError('Voice application dependencies are required.');
   const accountSid=String(env.TWILIO_ACCOUNT_SID||''),authToken=String(env.TWILIO_AUTH_TOKEN||''),publicBaseUrl=String(env.PUBLIC_BASE_URL||'');
   let base;try{base=new URL(publicBaseUrl);}catch{}
@@ -42,7 +44,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const validator=createTwilioRequestValidator({validateRequest:twilio.validateRequest,authToken,publicBaseUrl,allowedAccountSids:[accountSid]});
   const tenantResolver=createVoiceTenantResolver({findByTwilioNumber:number=>findVoiceTenantsByNumber(database,number)});
   const nonceService=createVoiceSessionNonceService({repository:createVoiceNonceRepository({database}),now:()=>new Date(clock()).getTime()});
-  const store=createVoiceSessionStore({database,clock}),account=ownerId=>loadVoiceAccountContext(database,ownerId);
+  const meter=createBillingVoiceUsage({database,clock,onUsage});
+  installBillingVoiceRoutes(app,{validator,meter});
+  const store=createVoiceSessionStore({database,clock}),account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
   const fallback=({context})=>{
     const number=account(context.ownerId).profile?.existingPhoneNumber;
     if(!E164.test(String(number||''))||number===context.to)throw Error('A distinct business fallback number is required.');
@@ -78,10 +82,10 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     for(const name of ['matchService','getQuote']){const original=handlers[name];handlers[name]=invocation=>{if(!hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())}))return {status:'needs_details',customerMessage:'The business will review this pricing request.'};return original(invocation);};}
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const opener=createGoogleGenAiLiveSessionOpener({client,model:env.GEMINI_MODEL,systemInstruction:publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
-    let started=null;
     const bridge=createGeminiMediaBridge({
       openGeminiSession:async options=>{
-        const opened=await opener(options);started=new Date(clock()).getTime();
+        meter.start(context,session.callRecordId);
+        const opened=await opener(options);
         try{database.prepare("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=?").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
@@ -97,8 +101,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
         }
       },
       onSessionEnd:({outcome,streamSid})=>{
-        const at=iso(clock),duration=started===null?0:Math.max(0,Math.ceil((new Date(clock()).getTime()-started)/1000));
-        database.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=?,duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(outcome.status==='failed'?'FAILED':'COMPLETED',outcome.reason,outcome.status==='failed'?outcome.reason:null,streamSid,duration,at,at,session.callRecordId,context.ownerId,context.callSid);
+        meter.finish(context,session.callRecordId,{status:outcome.status==='failed'?'FAILED':'COMPLETED',outcome:outcome.reason,failureCode:outcome.status==='failed'?outcome.reason:null,streamSid});
       }
     });return bridge.startMediaSession(input);
   }

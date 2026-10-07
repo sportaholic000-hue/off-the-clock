@@ -1,0 +1,30 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+E01-default-method-does-not-settle-renewal {"status":"active","failedAt":null,"accessAfterGrace":{"allowed":true,"reason":"ACTIVE","accessUntilUtc":null}}
+E02-zero-invoice-before-trial {"trialOutcome":"IGNORED_STALE","status":"pending_payment","verifiedMethodAt":null}
+E03-same-second-zero-invoice-blocks-conversion {"outcome":"IGNORED_STALE","status":"pending_payment"}
+E04-delayed-unpaid-checkout-overwrites-upgrade {"plan":"Operator","quoteAccess":false}
+E05-old-plan-invoice-overwrites-current-plan {"plan":"Operator","quoteAccess":false}
+E06-mixed-proration-lines-rejected {"error":"AMBIGUOUS_PRICE","receipted":0}
+E07-invoice-clears-cancel-schedule {"cancelAtPeriodEnd":0}
+E08-paid-checkout-recovery-inconsistent {"status":"payment_failed","failedAt":null,"access":{"allowed":false,"reason":"PAYMENT_FAILURE_TIME_REQUIRED","accessUntilUtc":null}}
+E09-old-debt-payment-restores-current-unpaid-service {"status":"active","failedAt":null}
+E10-partial-write-and-retry {"status":"active","receipts":1,"outbox":1}
+E11-owner-customer-mismatch {"receipts":2,"currentSubscription":"sub_A"}
+E12-repeat-failures-do-not-extend-grace {"status":"suspended","failedAt":"2026-10-06T12:00:10.000Z"}
+E13-terminal-deletion-prevents-revival {"outcome":"IGNORED_TERMINAL_SUBSCRIPTION","status":"canceled"}
+E14-grace-ui-backend-agreement {"backend":{"allowed":true,"reason":"PAYMENT_FAILURE_GRACE","accessUntilUtc":"2026-10-13T12:00:10.000Z"},"continueSetup":false}
+E15-trial-delivery-permutations {"counts":{"trialing":8,"pending_payment":16,"active":0},"results":[{"order":[0,1,2,3],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[0,1,3,2],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[0,2,1,3],"status":"pending_payment","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[0,2,3,1],"status":"pending_payment","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[0,3,1,2],"status":"pending_payment","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[0,3,2,1],"status":"pending_payment","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,0,2,3],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,0,3,2],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,2,0,3],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,2,3,0],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,3,0,2],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[1,3,2,0],"status":"trialing","trialEndsAt":"2026-10-20T12:00:00.000Z"},{"order":[2,0,1,3],"status":"pending_payment","trialEndsAt":null},{"order":[2,0,3,1],"status":"pending_payment","trialEndsAt":null},{"order":[2,1,0,3],"status":"pending_payment","trialEndsAt":null},{"order":[2,1,3,0],"status":"pending_payment","trialEndsAt":null},{"order":[2,3,0,1],"status":"pending_payment","trialEndsAt":null},{"order":[2,3,1,0],"status":"pending_payment","trialEndsAt":null},{"order":[3,0,1,2],"status":"pending_payment","trialEndsAt":null},{"order":[3,0,2,1],"status":"pending_payment","trialEndsAt":null},{"order":[3,1,0,2],"status":"pending_payment","trialEndsAt":null},{"order":[3,1,2,0],"status":"pending_payment","trialEndsAt":null},{"order":[3,2,0,1],"status":"pending_payment","trialEndsAt":null},{"order":[3,2,1,0],"status":"pending_payment","trialEndsAt":null}]}
+(node:4) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+E16-signed-http-authentication {"statuses":[400,400,400,200],"status":"active"}
+E17-checkout-selections-money-and-repeats [{"plan":"Operator","billingInterval":"monthly","price":"price_op_month","recurringCents":11900,"initialChargeCents":0,"providerCreateCount":1,"status":"pending_payment","changedKeyResult":"IDEMPOTENCY_KEY_CONFLICT"},{"plan":"Operator","billingInterval":"annual","price":"price_op_year","recurringCents":119000,"initialChargeCents":0,"providerCreateCount":1,"status":"pending_payment","changedKeyResult":"IDEMPOTENCY_KEY_CONFLICT"},{"plan":"QuoteDone","billingInterval":"monthly","price":"price_qd_month","recurringCents":27900,"initialChargeCents":0,"providerCreateCount":1,"status":"pending_payment","changedKeyResult":"IDEMPOTENCY_KEY_CONFLICT"},{"plan":"QuoteDone","billingInterval":"annual","price":"price_qd_year","recurringCents":279000,"initialChargeCents":0,"providerCreateCount":1,"status":"pending_payment","changedKeyResult":"IDEMPOTENCY_KEY_CONFLICT"}]
+E18-expiry-delayed-webhook-duplicate-subscriptions {"sessionsCreated":2,"retrievalsBeforeReplacement":0,"syntheticProviderSubscriptions":["sub_A","sub_B"],"completionResponses":[200,500],"ledger":[{"stripeSessionId":"cs_1","status":"EXPIRED"},{"stripeSessionId":"cs_2","status":"OPEN"}]}
+E19-receipt-write-failure-same-provider-key-recovery {"responses":[502,201],"providerAttempts":2,"distinctProviderSessions":1,"ledgerStatus":"OPEN"}
+E20-stale-billing-status-and-grace-ui {"status":"payment_failed","graceEndsAt":"2026-10-13T12:00:10.000Z","access":{"allowed":false,"reason":"PAYMENT_FAILURE_GRACE_EXPIRED","accessUntilUtc":null},"manualSweep":{"suspendedCount":1},"afterManualSweep":"suspended"}
+E21-current-sdk-period-shape {"expected":"2026-11-05T12:00:00.000Z","stored":null,"returned":null}
+E22-unsupported-refund-capability {"response":{"status":200,"body":{"received":true,"status":"IGNORED"}},"status":"active","conclusion":"unsupported capability; cancellation after refund is an unspecified policy, not a confirmed refund-state defect"}
+E23-new-invoice-shape-supported {"plan":"QuoteDone","status":"active"}
+E24-older-failure-cannot-regress-newer-recovery {"outcome":"IGNORED_STALE","status":"active"}
+E25-concurrent-checkout-requests {"responses":[201,201,409],"providerSessions":1}
+E26-concurrent-duplicate-webhooks {"billingEventReceipts":1,"events":1,"outboxEvents":1}
+E27-hydration-wrong-customer {"status":500,"accountStatus":"pending_payment"}

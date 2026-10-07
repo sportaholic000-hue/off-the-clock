@@ -1,3 +1,31 @@
+# October 6–7 overage and minute alerts — hosted gates passed
+
+Branch: `feat/overage-and-minute-alerts-20261006`, based exactly on
+`dce04c53c336de63eaa0d0c7cdc696b9a669c634`.
+Verified source/test SHA: `a6de092bc876fcc8c007f7ac8ecae558088750aa`.
+[Hosted run 37558263595](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37558263595)
+passed cold install, owner/widget build, strict quote gate **2,076/2,076**
+(99 files), full suite **2,974/2,974** (150 files), and production dependency
+audit. Both suites have zero failures, cancellations, skips and TODOs; audit
+found zero vulnerabilities. **66 new tests**, with **63/63** focused tests
+also passing locally; counts overlap the full suites.
+
+Operator/QuoteDone now have durable monthly overage invoices, reconciled F10
+durations, 60/30/0 minute warnings through the dashboard and owner email,
+always-visible usage, and the approved Operator savings comparison. First
+monthly/annual payments occur at trial end. Annual allowances and overage reset
+monthly from that date; prepaid annual cancellation retains service through
+the paid year. No partial refund operation, bulk packs or discounts were added.
+
+See [the rules](OVERAGE_MINUTE_RULES_20261006.md) and
+[complete implementation evidence](../verification/overage-and-minute-alerts-20261006/REPORT.md).
+Local browser runs remain environment-blocked by Chromium SIGTRAP; a follow-up
+local session also ended without a summary. These are not passing local gates.
+The exact hosted source revision above is the complete cold validation.
+No subagents, main merge, deployment, live data or real provider writes.
+
+---
+
 # October 6 quote display defects — hosted gates passed
 
 Branch: `fix/quote-display-defects-20261006`, based on verified

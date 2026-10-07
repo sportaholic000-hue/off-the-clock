@@ -1,0 +1,72 @@
+TAP version 13
+# (node:27) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: fresh/migrated stores preserve unrelated schema and legacy debt; migration is repeatable
+ok 1 - fresh/migrated stores preserve unrelated schema and legacy debt; migration is repeatable
+  ---
+  duration_ms: 11.868527
+  type: 'test'
+  ...
+# Subtest: billing-only table rebuild rolls back copy/drop failure
+ok 2 - billing-only table rebuild rolls back copy/drop failure
+  ---
+  duration_ms: 1.246778
+  type: 'test'
+  ...
+# Subtest: actual process restart retains invoice obligation, receipt conflicts and idempotency
+ok 3 - actual process restart retains invoice obligation, receipt conflicts and idempotency
+  ---
+  duration_ms: 260.032728
+  type: 'test'
+  ...
+# Subtest: response lost after provider completion, restart recovers the same key without another subscription
+ok 4 - response lost after provider completion, restart recovers the same key without another subscription
+  ---
+  duration_ms: 80.197519
+  type: 'test'
+  ...
+# Subtest: provider response received but local receipt failed: rollback and exact-key retry
+ok 5 - provider response received but local receipt failed: rollback and exact-key retry
+  ---
+  duration_ms: 20.008927
+  type: 'test'
+  ...
+# Subtest: durable owner lease rejects concurrent workers and fences a late response after takeover
+ok 6 - durable owner lease rejects concurrent workers and fences a late response after takeover
+  ---
+  duration_ms: 7.966092
+  type: 'test'
+  ...
+# Subtest: same-second conflicting signed states fail closed until provider resolution
+ok 7 - same-second conflicting signed states fail closed until provider resolution
+  ---
+  duration_ms: 21.455782
+  type: 'test'
+  ...
+# Subtest: F02 migrated failure is retained on card edit, resolved only by tenant-bound invoice retrieval
+ok 8 - F02 migrated failure is retained on card edit, resolved only by tenant-bound invoice retrieval
+  ---
+  duration_ms: 18.604335
+  type: 'test'
+  ...
+# Subtest: wrong-tenant provider hydration and write failure leave no receipt or evidence
+ok 9 - wrong-tenant provider hydration and write failure leave no receipt or evidence
+  ---
+  duration_ms: 24.015217
+  type: 'test'
+  ...
+# Subtest: F06 legacy missing failure time stays suspended; provider recovery uses original invoice time
+ok 10 - F06 legacy missing failure time stays suspended; provider recovery uses original invoice time
+  ---
+  duration_ms: 20.159821
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 740.555709

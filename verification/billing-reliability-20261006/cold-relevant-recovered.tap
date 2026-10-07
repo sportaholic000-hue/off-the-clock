@@ -1,0 +1,880 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending and canceled state remains server data, never implied by a chosen plan
+ok 1 - pending and canceled state remains server data, never implied by a chosen plan
+  ---
+  duration_ms: 1.406289
+  type: 'test'
+  ...
+# Subtest: request recovery uses an account-session namespace without retaining the authentication token
+ok 2 - request recovery uses an account-session namespace without retaining the authentication token
+  ---
+  duration_ms: 5.793923
+  type: 'test'
+  ...
+# Subtest: saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+ok 3 - saved checkout and portal bodies preserve exact request IDs and exclude client prices or owner IDs
+  ---
+  duration_ms: 1.552425
+  type: 'test'
+  ...
+# Subtest: only explicit pre-mutation rejection clears an uncertain billing request
+ok 4 - only explicit pre-mutation rejection clears an uncertain billing request
+  ---
+  duration_ms: 0.248254
+  type: 'test'
+  ...
+# Subtest: billing navigation rejects scripts, credentials and insecure destinations
+ok 5 - billing navigation rejects scripts, credentials and insecure destinations
+  ---
+  duration_ms: 0.239041
+  type: 'test'
+  ...
+# Subtest: setup continuation requires confirmed active or unexpired trial status
+ok 6 - setup continuation requires confirmed active or unexpired trial status
+  ---
+  duration_ms: 0.306862
+  type: 'test'
+  ...
+# Subtest: saved Scale Checkout cannot be resumed as a launch offer
+ok 7 - saved Scale Checkout cannot be resumed as a launch offer
+  ---
+  duration_ms: 0.243707
+  type: 'test'
+  ...
+# (node:22) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: session creates short access token, eight-hour absolute expiry and hashed refresh storage
+ok 8 - session creates short access token, eight-hour absolute expiry and hashed refresh storage
+  ---
+  duration_ms: 12.567453
+  type: 'test'
+  ...
+# Subtest: access and refresh expire at exact boundaries; refresh never extends absolute lifetime
+ok 9 - access and refresh expire at exact boundaries; refresh never extends absolute lifetime
+  ---
+  duration_ms: 2.696825
+  type: 'test'
+  ...
+# Subtest: refresh rotates one-use secret; replay conflict does not revoke a successful concurrent refresh
+ok 10 - refresh rotates one-use secret; replay conflict does not revoke a successful concurrent refresh
+  ---
+  duration_ms: 6.125036
+  type: 'test'
+  ...
+# Subtest: logout revokes only the selected session; password reset revokes all user sessions
+ok 11 - logout revokes only the selected session; password reset revokes all user sessions
+  ---
+  duration_ms: 2.709534
+  type: 'test'
+  ...
+# Subtest: credential changes invalidate all old access/refresh tokens and reject stale login snapshots
+ok 12 - credential changes invalidate all old access/refresh tokens and reject stale login snapshots
+  ---
+  duration_ms: 4.334683
+  type: 'test'
+  ...
+# Subtest: password mutation and session revocation roll back together on transaction failure
+ok 13 - password mutation and session revocation roll back together on transaction failure
+  ---
+  duration_ms: 1.787765
+  type: 'test'
+  ...
+# Subtest: delete change cannot retain an owner session
+ok 14 - delete change cannot retain an owner session
+  ---
+  duration_ms: 1.548103
+  type: 'test'
+  ...
+# Subtest: role change cannot retain an owner session
+ok 15 - role change cannot retain an owner session
+  ---
+  duration_ms: 1.616857
+  type: 'test'
+  ...
+# Subtest: email change cannot retain an owner session
+ok 16 - email change cannot retain an owner session
+  ---
+  duration_ms: 1.440672
+  type: 'test'
+  ...
+# Subtest: staff reparenting or missing owner cannot carry a session to another tenant
+ok 17 - staff reparenting or missing owner cannot carry a session to another tenant
+  ---
+  duration_ms: 1.847384
+  type: 'test'
+  ...
+# Subtest: admin sessions bind to current environment credentials and explicit admin provenance
+ok 18 - admin sessions bind to current environment credentials and explicit admin provenance
+  ---
+  duration_ms: 1.361973
+  type: 'test'
+  ...
+# Subtest: stateless, malformed or transplanted JWT claims never authorize a session
+ok 19 - stateless, malformed or transplanted JWT claims never authorize a session
+  ---
+  duration_ms: 1.793804
+  type: 'test'
+  ...
+# Subtest: session and refresh receipts survive service restart and share a single winner across SQLite connections
+ok 20 - session and refresh receipts survive service restart and share a single winner across SQLite connections
+  ---
+  duration_ms: 4.69722
+  type: 'test'
+  ...
+# Subtest: signing failure rolls back both the session and refresh receipt
+ok 21 - signing failure rolls back both the session and refresh receipt
+  ---
+  duration_ms: 1.077314
+  type: 'test'
+  ...
+# Subtest: limiter persists reservations across services; successful login release does not consume failure allowance
+ok 22 - limiter persists reservations across services; successful login release does not consume failure allowance
+  ---
+  duration_ms: 1.150143
+  type: 'test'
+  ...
+# Subtest: old-window completion cannot release a new-window reservation
+ok 23 - old-window completion cannot release a new-window reservation
+  ---
+  duration_ms: 0.838364
+  type: 'test'
+  ...
+# Subtest: limiter capacity is bounded and expired records are reclaimed
+ok 24 - limiter capacity is bounded and expired records are reclaimed
+  ---
+  duration_ms: 5.462609
+  type: 'test'
+  ...
+# Subtest: limiter shares counters across actual database connections
+ok 25 - limiter shares counters across actual database connections
+  ---
+  duration_ms: 3.155036
+  type: 'test'
+  ...
+# (node:29) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing stays fully disabled unless explicitly enabled
+ok 26 - billing stays fully disabled unless explicitly enabled
+  ---
+  duration_ms: 1.199919
+  type: 'test'
+  ...
+# Subtest: one validated configuration drives Checkout and webhook price authority
+ok 27 - one validated configuration drives Checkout and webhook price authority
+  ---
+  duration_ms: 0.415497
+  type: 'test'
+  ...
+# Subtest: billing rejects test credentials in production and malformed signing secrets
+ok 28 - billing rejects test credentials in production and malformed signing secrets
+  ---
+  duration_ms: 0.435096
+  type: 'test'
+  ...
+# Subtest: billing rejects missing, duplicate, or unsafe price and redirect configuration
+ok 29 - billing rejects missing, duplicate, or unsafe price and redirect configuration
+  ---
+  duration_ms: 0.277128
+  type: 'test'
+  ...
+# Subtest: loopback HTTP billing URLs are development-only
+ok 30 - loopback HTTP billing URLs are development-only
+  ---
+  duration_ms: 0.472422
+  type: 'test'
+  ...
+# Subtest: launch configuration requires only the two offered plans; legacy Scale prices are not offered
+ok 31 - launch configuration requires only the two offered plans; legacy Scale prices are not offered
+  ---
+  duration_ms: 0.250066
+  type: 'test'
+  ...
+# (node:36) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:36) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+ok 32 - webhook installer keeps the raw parser before the handler and exposes the exact supported allowlist
+  ---
+  duration_ms: 2.376502
+  type: 'test'
+  ...
+# Subtest: verified webhook bytes are passed unchanged and supported events are acknowledged generically
+ok 33 - verified webhook bytes are passed unchanged and supported events are acknowledged generically
+  ---
+  duration_ms: 0.438191
+  type: 'test'
+  ...
+# Subtest: webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+ok 34 - webhook rejects parsed bodies, missing or bad signatures, and state failures without leaking details
+  ---
+  duration_ms: 0.611332
+  type: 'test'
+  ...
+# Subtest: unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+ok 35 - unsupported verified events are ignored and Checkout line items are hydrated without replacing signed identity
+  ---
+  duration_ms: 0.807026
+  type: 'test'
+  ...
+# Subtest: Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+ok 36 - Checkout hydration fails closed when the retrieved first-class identity does not match the signed event
+  ---
+  duration_ms: 0.302997
+  type: 'test'
+  ...
+# Subtest: authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+ok 37 - authenticated Checkout creates and persists one provider customer, uses configured prices, and never grants access
+  ---
+  duration_ms: 13.412257
+  type: 'test'
+  ...
+# Subtest: an expired open Checkout releases the owner slot while the original key still replays its sealed response
+ok 38 - an expired open Checkout releases the owner slot while the original key still replays its sealed response
+  ---
+  duration_ms: 6.78101
+  type: 'test'
+  ...
+# Subtest: an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+ok 39 - an ambiguous provider failure permits only the same-key recovery with the same Stripe idempotency key
+  ---
+  duration_ms: 8.502095
+  type: 'test'
+  ...
+# Subtest: an unresolved claim cannot create a subscription after the owner becomes active
+ok 40 - an unresolved claim cannot create a subscription after the owner becomes active
+  ---
+  duration_ms: 5.666631
+  type: 'test'
+  ...
+# Subtest: an unrecovered claim older than Stripe idempotency retention fails closed for every key
+ok 41 - an unrecovered claim older than Stripe idempotency retention fails closed for every key
+  ---
+  duration_ms: 6.022337
+  type: 'test'
+  ...
+# Subtest: Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+ok 42 - Checkout accepts only the closed plan/interval contract and requires a stable client idempotency key
+  ---
+  duration_ms: 5.23412
+  type: 'test'
+  ...
+# Subtest: billing portal uses only the stored customer mapping and rejects body-supplied ownership
+ok 43 - billing portal uses only the stored customer mapping and rejects body-supplied ownership
+  ---
+  duration_ms: 5.444857
+  type: 'test'
+  ...
+# Subtest: Checkout blocks a second subscription and portal never creates an unmapped customer
+ok 44 - Checkout blocks a second subscription and portal never creates an unmapped customer
+  ---
+  duration_ms: 10.131681
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits resubscription while the original request remains replayable after activation
+ok 45 - verified terminal deletion permits resubscription while the original request remains replayable after activation
+  ---
+  duration_ms: 7.540165
+  type: 'test'
+  ...
+# Subtest: billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+ok 46 - billing route configuration fails closed on incomplete prices, unsafe redirects, and invalid integration labels
+  ---
+  duration_ms: 4.940106
+  type: 'test'
+  ...
+# Subtest: Scale Checkout is rejected before creating a customer or session
+ok 47 - Scale Checkout is rejected before creating a customer or session
+  ---
+  duration_ms: 6.431985
+  type: 'test'
+  ...
+# (node:43) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:43) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: billing schema stores first-class evidence and sanitized idempotent event receipts
+ok 48 - billing schema stores first-class evidence and sanitized idempotent event receipts
+  ---
+  duration_ms: 9.143752
+  type: 'test'
+  ...
+# Subtest: fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+ok 49 - fresh, direct-write, and legacy unevidenced trials fail closed to pending_payment
+  ---
+  duration_ms: 7.317129
+  type: 'test'
+  ...
+# Subtest: verified event application is idempotent and never stores raw customer metadata
+ok 50 - verified event application is idempotent and never stores raw customer metadata
+  ---
+  duration_ms: 6.511625
+  type: 'test'
+  ...
+# Subtest: same event ID with changed authoritative fields is rejected
+ok 51 - same event ID with changed authoritative fields is rejected
+  ---
+  duration_ms: 5.966674
+  type: 'test'
+  ...
+# Subtest: customer and subscription IDs mapped to different owners are rejected atomically
+ok 52 - customer and subscription IDs mapped to different owners are rejected atomically
+  ---
+  duration_ms: 5.975698
+  type: 'test'
+  ...
+# Subtest: unrecognized prices and ambiguous base plans are rejected without changing access
+ok 53 - unrecognized prices and ambiguous base plans are rejected without changing access
+  ---
+  duration_ms: 6.022017
+  type: 'test'
+  ...
+# Subtest: an older out-of-order failure is receipted but cannot regress newer active state
+ok 54 - an older out-of-order failure is receipted but cannot regress newer active state
+  ---
+  duration_ms: 5.606411
+  type: 'test'
+  ...
+# Subtest: payment failure preserves seven days of service and paid recovery restores immediately
+ok 55 - payment failure preserves seven days of service and paid recovery restores immediately
+  ---
+  duration_ms: 6.135117
+  type: 'test'
+  ...
+# Subtest: expired grace is suspended idempotently and queues one transition
+ok 56 - expired grace is suspended idempotently and queues one transition
+  ---
+  duration_ms: 5.930689
+  type: 'test'
+  ...
+# Subtest: subscription deletion cancels immediately and a later stale active update cannot reopen it
+ok 57 - subscription deletion cancels immediately and a later stale active update cannot reopen it
+  ---
+  duration_ms: 7.097888
+  type: 'test'
+  ...
+# Subtest: verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+ok 58 - verified terminal deletion permits only a newer server-ledger Checkout to bind a replacement subscription
+  ---
+  duration_ms: 7.694828
+  type: 'test'
+  ...
+# Subtest: Checkout completion without paid or setup evidence cannot start a trial
+ok 59 - Checkout completion without paid or setup evidence cannot start a trial
+  ---
+  duration_ms: 5.840163
+  type: 'test'
+  ...
+# Subtest: a state-write failure rolls back identifier binding, logs, outbox, and receipt
+ok 60 - a state-write failure rolls back identifier binding, logs, outbox, and receipt
+  ---
+  duration_ms: 5.517567
+  type: 'test'
+  ...
+# (node:50) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: booking owner routes expose the complete configuration surface
+ok 61 - booking owner routes expose the complete configuration surface
+  ---
+  duration_ms: 3.827539
+  type: 'test'
+  ...
+# Subtest: route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+ok 62 - route handlers derive tenant identity from auth context and pass bodies unchanged to strict service validation
+  ---
+  duration_ms: 0.485582
+  type: 'test'
+  ...
+# (node:57) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Operator signup → verified trialing → correct onboarding access
+ok 63 - Operator signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 298.231625
+  type: 'test'
+  ...
+# Subtest: Operator signup → verified active → correct onboarding access
+ok 64 - Operator signup → verified active → correct onboarding access
+  ---
+  duration_ms: 247.057761
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified trialing → correct onboarding access
+ok 65 - QuoteDone signup → verified trialing → correct onboarding access
+  ---
+  duration_ms: 249.590734
+  type: 'test'
+  ...
+# Subtest: QuoteDone signup → verified active → correct onboarding access
+ok 66 - QuoteDone signup → verified active → correct onboarding access
+  ---
+  duration_ms: 264.420987
+  type: 'test'
+  ...
+# Subtest: Operator cannot unlock a trial without verified payment evidence
+ok 67 - Operator cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 288.553808
+  type: 'test'
+  ...
+# Subtest: QuoteDone cannot unlock a trial without verified payment evidence
+ok 68 - QuoteDone cannot unlock a trial without verified payment evidence
+  ---
+  duration_ms: 249.430458
+  type: 'test'
+  ...
+# Subtest: Scale signup is rejected without creating an account
+ok 69 - Scale signup is rejected without creating an account
+  ---
+  duration_ms: 4.243987
+  type: 'test'
+  ...
+# Subtest: bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+ok 70 - bcrypt 6 accepts existing bcrypt 5 hashes and reset revokes the old session
+  ---
+  duration_ms: 1426.467957
+  type: 'test'
+  ...
+# (node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:68) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:68) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+ok 71 - Calendly onboarding synchronizes profile, canonical connection, and existing booking settings
+  ---
+  duration_ms: 16.097013
+  type: 'test'
+  ...
+# Subtest: calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+ok 72 - calendar selection rejects ambiguous providers, unsafe URLs, and unknown fields without writes
+  ---
+  duration_ms: 2.121308
+  type: 'test'
+  ...
+# Subtest: Google selection initializes fail-closed booking metadata while OAuth is pending
+ok 73 - Google selection initializes fail-closed booking metadata while OAuth is pending
+  ---
+  duration_ms: 1.330565
+  type: 'test'
+  ...
+# Subtest: skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+ok 74 - skip disconnects only the authenticated owner and preserves non-calendar scheduling rules
+  ---
+  duration_ms: 0.834788
+  type: 'test'
+  ...
+# Subtest: invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+ok 75 - invalid owner timezone blocks calendar persistence and leaves canonical rows untouched
+  ---
+  duration_ms: 0.632133
+  type: 'test'
+  ...
+# Subtest: Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+ok 76 - Google callback validates and encrypts credentials, then synchronizes safe metadata atomically
+  ---
+  duration_ms: 2.024302
+  type: 'test'
+  ...
+# Subtest: Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+ok 77 - Google callback fails closed on missing refresh, unsafe destination, expiry, token type, or scopes
+  ---
+  duration_ms: 1.150764
+  type: 'test'
+  ...
+# Subtest: reselecting an already usable Google connection is non-destructive and revision-stable
+ok 78 - reselecting an already usable Google connection is non-destructive and revision-stable
+  ---
+  duration_ms: 1.447903
+  type: 'test'
+  ...
+# (node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: active lifecycle grants Operator/provider writes while plan controls QuoteDone
+ok 79 - active lifecycle grants Operator/provider writes while plan controls QuoteDone
+  ---
+  duration_ms: 3.649046
+  type: 'test'
+  ...
+# Subtest: unknown or missing plan/status fails closed
+ok 80 - unknown or missing plan/status fails closed
+  ---
+  duration_ms: 0.363077
+  type: 'test'
+  ...
+# Subtest: trial expiry uses an exclusive exact UTC boundary
+ok 81 - trial expiry uses an exclusive exact UTC boundary
+  ---
+  duration_ms: 0.182064
+  type: 'test'
+  ...
+# Subtest: missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+ok 82 - missing, invalid, non-UTC, and impossible trial end timestamps fail closed
+  ---
+  duration_ms: 0.157027
+  type: 'test'
+  ...
+# Subtest: payment failure keeps full service until, but not at, the seven-day UTC boundary
+ok 83 - payment failure keeps full service until, but not at, the seven-day UTC boundary
+  ---
+  duration_ms: 0.738012
+  type: 'test'
+  ...
+# Subtest: payment failure without a trustworthy failure timestamp fails closed
+ok 84 - payment failure without a trustworthy failure timestamp fails closed
+  ---
+  duration_ms: 0.254474
+  type: 'test'
+  ...
+# Subtest: suspended and cancellation lifecycle states deny all normal/provider access
+ok 85 - suspended and cancellation lifecycle states deny all normal/provider access
+  ---
+  duration_ms: 0.315876
+  type: 'test'
+  ...
+# Subtest: trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+ok 86 - trial voice cap allows minute 59 and sends the next call to fallback at minute 60
+  ---
+  duration_ms: 0.2257
+  type: 'test'
+  ...
+# Subtest: a trial call already in progress finishes after the cap, but the next call cannot start
+ok 87 - a trial call already in progress finishes after the cap, but the next call cannot start
+  ---
+  duration_ms: 0.26504
+  type: 'test'
+  ...
+# Subtest: unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+ok 88 - unavailable or malformed trial usage blocks new calls but never cuts off an existing call
+  ---
+  duration_ms: 0.473153
+  type: 'test'
+  ...
+# Subtest: the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+ok 89 - the trial cap does not limit active paid accounts, while denied lifecycle still blocks voice
+  ---
+  duration_ms: 0.19277
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:83) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: launch persistence tables and indexes migrate idempotently
+ok 90 - launch persistence tables and indexes migrate idempotently
+  ---
+  duration_ms: 7.448086
+  type: 'test'
+  ...
+# Subtest: legacy calls and appointments receive additive launch columns without data loss
+ok 91 - legacy calls and appointments receive additive launch columns without data loss
+  ---
+  duration_ms: 12.120279
+  type: 'test'
+  ...
+# Subtest: billing migration backfills immutable terminal subscription history without inventing deletion evidence
+ok 92 - billing migration backfills immutable terminal subscription history without inventing deletion evidence
+  ---
+  duration_ms: 7.3715
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:90) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: nonce persistence is atomic, bound, expiring, and one use
+ok 93 - nonce persistence is atomic, bound, expiring, and one use
+  ---
+  duration_ms: 5.846332
+  type: 'test'
+  ...
+# Subtest: session storage binds a call to the nonce hash and exact signed context
+ok 94 - session storage binds a call to the nonce hash and exact signed context
+  ---
+  duration_ms: 2.940692
+  type: 'test'
+  ...
+# Subtest: fallback persistence is idempotent and account context derives metered usage
+ok 95 - fallback persistence is idempotent and account context derives metered usage
+  ---
+  duration_ms: 2.407319
+  type: 'test'
+  ...
+# Subtest: durable tool idempotency replays across store restarts and rejects changed arguments
+ok 96 - durable tool idempotency replays across store restarts and rejects changed arguments
+  ---
+  duration_ms: 2.888934
+  type: 'test'
+  ...
+# Subtest: tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+ok 97 - tool idempotency coalesces concurrent retries and removes a failed uncommitted receipt
+  ---
+  duration_ms: 2.763556
+  type: 'test'
+  ...
+# Subtest: opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+ok 98 - opaque handles are persisted, deterministic, expiring, and bound to tenant, call, and type
+  ---
+  duration_ms: 4.215765
+  type: 'test'
+  ...
+# Subtest: voice tool runtime persists a safe review quote and lead without exposing internal identities
+ok 99 - voice tool runtime persists a safe review quote and lead without exposing internal identities
+  ---
+  duration_ms: 39.312078
+  type: 'test'
+  ...
+# Subtest: voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+ok 100 - voice runtime binds availability to quote plus lead and sequences one hold before one confirmation
+  ---
+  duration_ms: 5.246317
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+ok 101 - signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking
+  ---
+  duration_ms: 563.667967
+  type: 'test'
+  ...
+# Subtest: session-start failure reaches signed forwarding fallback; mismatched caller fails closed
+ok 102 - session-start failure reaches signed forwarding fallback; mismatched caller fails closed
+  ---
+  duration_ms: 104.870553
+  type: 'test'
+  ...
+# Subtest: ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+ok 103 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+  ---
+  duration_ms: 216.442028
+  type: 'test'
+  ...
+# Subtest: phone readiness uses cached quick statuses with the same live answer
+ok 104 - phone readiness uses cached quick statuses with the same live answer
+  ---
+  duration_ms: 155.762958
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value 0
+ok 105 - forbidden quote key __proto__ value 0
+  ---
+  duration_ms: 0.586373
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value null
+ok 106 - forbidden quote key __proto__ value null
+  ---
+  duration_ms: 0.108193
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value "x"
+ok 107 - forbidden quote key __proto__ value "x"
+  ---
+  duration_ms: 0.175424
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __proto__ value {"sentinel":true}
+ok 108 - forbidden quote key __proto__ value {"sentinel":true}
+  ---
+  duration_ms: 0.088644
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value 0
+ok 109 - forbidden quote key constructor value 0
+  ---
+  duration_ms: 0.223787
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value null
+ok 110 - forbidden quote key constructor value null
+  ---
+  duration_ms: 0.275155
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value "x"
+ok 111 - forbidden quote key constructor value "x"
+  ---
+  duration_ms: 0.096646
+  type: 'test'
+  ...
+# Subtest: forbidden quote key constructor value {"sentinel":true}
+ok 112 - forbidden quote key constructor value {"sentinel":true}
+  ---
+  duration_ms: 0.099981
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value 0
+ok 113 - forbidden quote key prototype value 0
+  ---
+  duration_ms: 0.113832
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value null
+ok 114 - forbidden quote key prototype value null
+  ---
+  duration_ms: 0.226732
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value "x"
+ok 115 - forbidden quote key prototype value "x"
+  ---
+  duration_ms: 0.07966
+  type: 'test'
+  ...
+# Subtest: forbidden quote key prototype value {"sentinel":true}
+ok 116 - forbidden quote key prototype value {"sentinel":true}
+  ---
+  duration_ms: 0.061843
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value 0
+ok 117 - forbidden quote key __PrOtO__ value 0
+  ---
+  duration_ms: 0.130697
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value null
+ok 118 - forbidden quote key __PrOtO__ value null
+  ---
+  duration_ms: 0.070676
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value "x"
+ok 119 - forbidden quote key __PrOtO__ value "x"
+  ---
+  duration_ms: 0.145489
+  type: 'test'
+  ...
+# Subtest: forbidden quote key __PrOtO__ value {"sentinel":true}
+ok 120 - forbidden quote key __PrOtO__ value {"sentinel":true}
+  ---
+  duration_ms: 0.090917
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected ownerId
+ok 121 - caller identity or money rejected ownerId
+  ---
+  duration_ms: 0.107312
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected price
+ok 122 - caller identity or money rejected price
+  ---
+  duration_ms: 0.176405
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected offeringId
+ok 123 - caller identity or money rejected offeringId
+  ---
+  duration_ms: 0.073882
+  type: 'test'
+  ...
+# Subtest: caller identity or money rejected confirmedFacts
+ok 124 - caller identity or money rejected confirmedFacts
+  ---
+  duration_ms: 0.128704
+  type: 'test'
+  ...
+# Subtest: full written disclosure survives both projections while short summary preserves both ranges and exclusions
+ok 125 - full written disclosure survives both projections while short summary preserves both ranges and exclusions
+  ---
+  duration_ms: 0.834648
+  type: 'test'
+  ...
+# Subtest: booking already owns hold then confirm; caller hold/finalize injection stays rejected
+ok 126 - booking already owns hold then confirm; caller hold/finalize injection stays rejected
+  ---
+  duration_ms: 0.204088
+  type: 'test'
+  ...
+# Subtest: actual start entry point installs the signed runtime instead of the placeholder
+ok 127 - actual start entry point installs the signed runtime instead of the placeholder
+  ---
+  duration_ms: 0.310247
+  type: 'test'
+  ...
+# (node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: forged inbound signatures are rejected before tenant lookup or session creation
+ok 128 - forged inbound signatures are rejected before tenant lookup or session creation
+  ---
+  duration_ms: 37.684581
+  type: 'test'
+  ...
+# Subtest: the independently enforced account allowlist rejects an otherwise signed account
+ok 129 - the independently enforced account allowlist rejects an otherwise signed account
+  ---
+  duration_ms: 7.926427
+  type: 'test'
+  ...
+# Subtest: tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+ok 130 - tenant identity comes only from signed To and the stream URL contains only a one-use nonce
+  ---
+  duration_ms: 5.847493
+  type: 'test'
+  ...
+# Subtest: unknown and ambiguous signed destinations fail closed without choosing a tenant
+ok 131 - unknown and ambiguous signed destinations fail closed without choosing a tenant
+  ---
+  duration_ms: 6.683874
+  type: 'test'
+  ...
+# Subtest: operator-off calls deterministically forward to the configured business number
+ok 132 - operator-off calls deterministically forward to the configured business number
+  ---
+  duration_ms: 3.873099
+  type: 'test'
+  ...
+# Subtest: runtime-disabled calls never run entitlement checks or allocate an AI session
+ok 133 - runtime-disabled calls never run entitlement checks or allocate an AI session
+  ---
+  duration_ms: 3.057518
+  type: 'test'
+  ...
+# Subtest: a reached voice cap uses message fallback and escapes owner-authored XML
+ok 134 - a reached voice cap uses message fallback and escapes owner-authored XML
+  ---
+  duration_ms: 3.84125
+  type: 'test'
+  ...
+# Subtest: invalid or self-referential forwarding cannot create a dial loop
+ok 135 - invalid or self-referential forwarding cannot create a dial loop
+  ---
+  duration_ms: 11.579564
+  type: 'test'
+  ...
+# Subtest: nonce or session persistence failure falls back instead of returning a dead stream
+ok 136 - nonce or session persistence failure falls back instead of returning a dead stream
+  ---
+  duration_ms: 6.756905
+  type: 'test'
+  ...
+# Subtest: signed WebSocket authorization consumes the nonce once and starts one injected media session
+ok 137 - signed WebSocket authorization consumes the nonce once and starts one injected media session
+  ---
+  duration_ms: 4.448305
+  type: 'test'
+  ...
+# Subtest: forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+ok 138 - forged WebSocket signatures cannot load sessions and mismatched bindings cannot consume a nonce
+  ---
+  duration_ms: 3.264771
+  type: 'test'
+  ...
+# Subtest: stream paths reject query data so secrets or identity cannot ride beside the nonce
+ok 139 - stream paths reject query data so secrets or identity cannot ride beside the nonce
+  ---
+  duration_ms: 2.640159
+  type: 'test'
+  ...
+1..139
+# tests 139
+# suites 0
+# pass 139
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6347.725999

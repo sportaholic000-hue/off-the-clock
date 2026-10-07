@@ -1,4 +1,8 @@
 import crypto from 'node:crypto';
+import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
+import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
+import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
+import {createBillingEvidence, subscriptionFacts, billingReference, billingInvoiceSubscription} from './billingEvidence.js';
 
 const ALLOWED_PLANS = new Set(['Operator', 'QuoteDone', 'Scale']);
 const SUPPORTED_EVENTS = new Set([
@@ -15,16 +19,6 @@ const SERVING_STATUSES = new Set(['trialing', 'active', 'payment_failed', 'past_
 const GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 const TRIAL_SECONDS = 14 * 24 * 60 * 60;
 
-const EVENT_RANK = {
-  'checkout.session.completed': 10,
-  'checkout.session.async_payment_failed': 20,
-  'checkout.session.async_payment_succeeded': 30,
-  'customer.subscription.created': 40,
-  'customer.subscription.updated': 50,
-  'invoice.payment_failed': 60,
-  'invoice.paid': 70,
-  'customer.subscription.deleted': 100
-};
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -159,17 +153,32 @@ function normalizeEvent(rawEvent) {
     cancelAtPeriodEnd: object.cancel_at_period_end === true,
     priceIds
   };
+  const legacyDigest = sha256(canonical(fingerprint));
+  const modern = {
+    ...fingerprint, mode: object.mode ?? null,
+    currentPeriodStart: object.current_period_start ?? null,
+    latestInvoiceId: referenceId(object.latest_invoice), invoiceId: referenceId(object.invoice),
+    periodStart: object.period_start ?? null, periodEnd: object.period_end ?? null,
+    cancelAtPeriodEnd: object.cancel_at_period_end ?? null,
+    items: (object.items?.data ?? []).map(item => ({id:referenceId(item),price:priceIdFromLine(item),
+      quantity:item.quantity ?? null,start:item.current_period_start ?? null,end:item.current_period_end ?? null})),
+    itemsHasMore: object.items?.has_more ?? false,
+    lines: (object.lines?.data ?? []).map(line => ({id:referenceId(line),price:priceIdFromLine(line),
+      amount:line.amount ?? null,period:line.period ?? null,parent:line.parent ?? null}))
+  };
   return {
     id,
     type,
     created: rawEvent.created,
-    rank: EVENT_RANK[type],
+    rank: 0,
     livemode: rawEvent.livemode === true,
     object,
     objectId,
     ...identifiers,
     priceIds,
-    digest: sha256(canonical(fingerprint)),
+    digest: `v2:${sha256(canonical(modern))}`,
+    legacyDigest: (object.current_period_start!=null || object.latest_invoice!=null || object.invoice!=null || object.period_start!=null || object.period_end!=null ||
+      (object.items?.data ?? []).some(item=>item.current_period_start!=null || item.current_period_end!=null)) ? null : legacyDigest,
     sanitizedReceipt: {
       id,
       type,
@@ -231,6 +240,7 @@ function billingError(code, message) {
 export function createBillingStateService({
   db,
   pricePlanMap,
+  priceIds = {},
   supplementalPriceIds = [],
   clock = () => new Date(),
   randomUUID = crypto.randomUUID
@@ -239,6 +249,11 @@ export function createBillingStateService({
     throw new TypeError('BillingStateService requires a SQLite-compatible database.');
   }
   const priceConfiguration = normalizePriceConfiguration(pricePlanMap, supplementalPriceIds);
+  for(const intervals of Object.values(priceIds))for(const [interval,id] of Object.entries(intervals)){
+    if(priceConfiguration.prices.has(id)&&['monthly','annual'].includes(interval))priceConfiguration.prices.get(id).interval=interval;
+  }
+
+  const evidence = createBillingEvidence({db, fail:billingError});
 
   const userById = db.prepare('SELECT id, role, plan, planStatus, trialEndsAt FROM users WHERE id = ?');
   const billingByOwner = db.prepare(`
@@ -283,7 +298,7 @@ export function createBillingStateService({
       status, expiresAt, providerCreatedAt, createdAt
     FROM billingCheckoutRequests
     WHERE ownerId = ? AND stripeCustomerId = ? AND stripeSessionId = ?
-      AND stripePriceId = ? AND status = 'OPEN' AND expiresAt >= ?
+      AND stripePriceId = ? AND status IN ('OPEN','EXPIRED','COMPLETED')
   `);
   const completedCheckoutBySubscription = db.prepare(`
     SELECT id, providerCreatedAt, consumedAt
@@ -326,12 +341,12 @@ export function createBillingStateService({
     WHERE ownerId = ? AND stripeCustomerId = ? AND stripeSessionId = ?
       AND stripePriceId = ?
       AND (stripeSubscriptionId IS NULL OR stripeSubscriptionId = ?)
-      AND status IN ('OPEN', 'COMPLETED', 'FAILED')
+      AND status IN ('OPEN', 'EXPIRED', 'COMPLETED', 'FAILED')
   `);
   const updateBilling = db.prepare(`
     UPDATE billingAccounts SET
       stripeSubscriptionId = ?, stripePriceId = ?, paymentMethodVerifiedAt = ?,
-      paymentFailedAt = ?, graceEndsAt = ?, currentPeriodEndAt = ?,
+      paymentFailedAt = ?, graceEndsAt = ?, currentPeriodEndAt = ?, currentPeriodStartAt = ?,
       cancelAtPeriodEnd = ?, canceledAt = ?, lastStripeEventCreatedAt = ?,
       lastStripeEventRank = ?, lastStripeEventId = ?, updatedAt = ?
     WHERE ownerId = ?
@@ -427,8 +442,7 @@ export function createBillingStateService({
       account.ownerId,
       event.customerId,
       event.objectId,
-      configured.priceId,
-      eventInstant(event.created)
+      configured.priceId
     );
     if (!checkout) {
       throw billingError('SUBSCRIPTION_REPLACEMENT_NOT_AUTHORIZED', 'Resubscription requires a matching open server-created Checkout session.');
@@ -529,6 +543,7 @@ export function createBillingStateService({
       paymentFailedAt: null,
       graceEndsAt: null,
       currentPeriodEndAt: null,
+      currentPeriodStartAt: null,
       cancelAtPeriodEnd: 0,
       canceledAt: null,
       planStatus: 'pending_payment',
@@ -563,155 +578,105 @@ export function createBillingStateService({
     return { failedAt, graceEndsAt, status: expired ? 'suspended' : 'payment_failed' };
   }
 
-  function applyTransition(account, event, configured) {
-    const eventIso = eventInstant(event.created);
-    const object = event.object;
-    const next = {
-      ...account,
-      plan: configured.plan,
-      stripePriceId: configured.priceId,
-      stripeSubscriptionId: account.stripeSubscriptionId || event.subscriptionId,
-      cancelAtPeriodEnd: object.cancel_at_period_end === true ? 1 : 0,
-      currentPeriodEndAt: unixToIso(object.current_period_end) || account.currentPeriodEndAt,
-      updatedAt: now().toISOString()
-    };
-    const subscriptionEvidence = Boolean(referenceId(object.default_payment_method));
-    const checkoutSetupEvidence = event.type === 'checkout.session.completed' &&
-      object.status === 'complete' && object.payment_status === 'no_payment_required' &&
-      Boolean(referenceId(object.setup_intent));
-    const paidCheckout = ['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(event.type) &&
-      object.payment_status === 'paid';
-    if (subscriptionEvidence || checkoutSetupEvidence || paidCheckout ||
-        (event.type === 'invoice.paid' && Number.isInteger(object.amount_paid) && object.amount_paid > 0)) {
-      next.paymentMethodVerifiedAt ||= eventIso;
+  function applyTransition(account, event, configured, providerSubscription) {
+    const object = event.object, eventIso = eventInstant(event.created);
+    const identity = {ownerId:account.ownerId,customerId:event.customerId,subscriptionId:event.subscriptionId};
+    const next = {...account,stripeSubscriptionId:event.subscriptionId,updatedAt:now().toISOString()};
+    let subscription = evidence.readSubscription(account.ownerId,event.subscriptionId);
+    let stale = false;
+    if (event.type.startsWith('customer.subscription.') || providerSubscription) {
+      const source = providerSubscription || object;
+      if (billingReference(source.customer)!==event.customerId || source.id!==event.subscriptionId) throw billingError('CROSS_ACCOUNT_IDS','Provider subscription does not match the verified event.');
+      const facts = subscriptionFacts(source,priceConfiguration,billingError);
+      if (['past_due','unpaid'].includes(facts.status) && !facts.latestInvoiceId) db.prepare(`INSERT OR IGNORE INTO billingRecoveryHolds(ownerId,stripeSubscriptionId,reason,createdAt) VALUES(?,?,'SUBSCRIPTION_DEBT_REFERENCE_REQUIRED',?)`).run(account.ownerId,event.subscriptionId,eventIso);
+      if (facts.status === 'trialing' && (!Number.isInteger(facts.trialStart) || !Number.isInteger(facts.trialEnd) || facts.trialEnd <= facts.trialStart || facts.trialEnd-facts.trialStart>TRIAL_SECONDS)) throw billingError('INVALID_TRIAL','The Stripe trial must have valid boundaries no longer than 14 days.');
+      subscription = evidence.recordSubscription({...identity,facts,created:event.created,provider:Boolean(providerSubscription)});
+      stale = subscription.stale;
     }
-
-    if (event.type === 'checkout.session.completed') {
-      if (object.mode !== 'subscription') throw billingError('INVALID_EVENT', 'Checkout must be in subscription mode.');
-      if (object.status !== 'complete') throw billingError('INVALID_EVENT', 'A completed Checkout event must have complete status.');
-      if (!SERVING_STATUSES.has(account.planStatus)) {
-        next.planStatus = paidCheckout ? 'active' : checkoutSetupEvidence ? 'pending_subscription' : 'pending_payment';
+    if (event.type.startsWith('invoice.')) {
+      const invoice = evidence.recordInvoice({...identity,object,paid:event.type==='invoice.paid',created:event.created});
+      if(event.type==='invoice.paid')recordAnnualPaidTerm({database:db,ownerId:account.ownerId,subscriptionId:event.subscriptionId,facts:subscription?.facts,invoice:object});
+      stale = invoice.stale;
+      if (event.type==='invoice.paid' && object.amount_paid>0) next.paymentMethodVerifiedAt ||= eventIso;
+    }
+    if (providerSubscription?.latest_invoice && typeof providerSubscription.latest_invoice==='object') {
+      const invoice=providerSubscription.latest_invoice;
+      if (invoice.status==='paid') {
+        evidence.recordInvoice({...identity,object:invoice,paid:true,created:event.created});
+        recordAnnualPaidTerm({database:db,ownerId:account.ownerId,subscriptionId:event.subscriptionId,facts:subscription?.facts,invoice});
+        if (invoice.amount_paid>0) next.paymentMethodVerifiedAt ||= eventIso;
+      } else if (['past_due','unpaid'].includes(providerSubscription.status)) {
+        evidence.recordInvoice({...identity,object:invoice,paid:false,created:event.created});
       }
-      if (paidCheckout && account.planStatus !== 'canceled') {
-        next.paymentFailedAt = null;
-        next.graceEndsAt = null;
+    }
+    if (event.type.startsWith('checkout.session.')) {
+      if (object.mode!=='subscription' || object.status!=='complete') throw billingError('INVALID_EVENT','Checkout must be complete and in subscription mode.');
+      const paid = object.payment_status==='paid';
+      if (event.type==='checkout.session.async_payment_succeeded' && !paid) throw billingError('INVALID_EVENT','Async payment success requires paid Checkout status.');
+      // Retain legacy setup evidence as pending only. Subscription-mode Checkout
+      // itself does not supply the trial boundary or current entitlement.
+      const setup = object.payment_status==='no_payment_required' && referenceId(object.setup_intent);
+      if (paid || setup) next.paymentMethodVerifiedAt ||= eventIso;
+      if (!subscription && !account.stripePriceId) {
+        next.plan=configured.plan; next.stripePriceId=configured.priceId;
       }
-      return next;
+      if (!subscription && !SERVING_STATUSES.has(account.planStatus)) next.planStatus=setup?'pending_subscription':'pending_payment';
     }
-
-    if (event.type === 'checkout.session.async_payment_succeeded') {
-      if (!paidCheckout) throw billingError('INVALID_EVENT', 'Async payment success requires paid Checkout status.');
-      if (account.planStatus !== 'canceled') {
-        next.planStatus = 'active';
-        next.paymentFailedAt = null;
-        next.graceEndsAt = null;
-        next.trialEndsAt = null;
-      }
-      return next;
-    }
-
-    if (event.type === 'checkout.session.async_payment_failed') {
-      if (!SERVING_STATUSES.has(account.planStatus)) next.planStatus = 'pending_payment';
-      return next;
-    }
-
-    if (event.type === 'customer.subscription.deleted') {
-      next.planStatus = 'canceled';
-      next.canceledAt = eventIso;
-      next.cancelAtPeriodEnd = 0;
-      next.trialEndsAt = null;
-      return next;
-    }
-
-    if (event.type.startsWith('customer.subscription.')) {
-      const status = requiredText(object.status, 'Subscription status');
-      if (account.planStatus === 'canceled' && status !== 'canceled') return next;
-      if (status === 'trialing') {
-        if (!Number.isInteger(object.trial_end) || !Number.isInteger(object.trial_start ?? object.created ?? event.created)) {
-          throw billingError('INVALID_TRIAL', 'A trialing subscription must contain trial boundaries.');
+    if (subscription) {
+      const f=subscription.facts;
+      next.plan=f.plan; next.stripePriceId=f.priceId;
+      if (f.paymentMethodId) next.paymentMethodVerifiedAt ||= eventIso;
+      next.currentPeriodStartAt=unixToIso(f.periodStart) || account.currentPeriodStartAt || null;
+      next.currentPeriodEndAt=unixToIso(f.periodEnd) || account.currentPeriodEndAt || null;
+      if (f.cancelAtPeriodEnd!==null) next.cancelAtPeriodEnd=f.cancelAtPeriodEnd?1:0;
+      if (subscription.ambiguous) next.planStatus='pending_payment';
+      else if (f.status==='trialing') {
+        next.trialEndsAt=unixToIso(f.trialEnd);
+        next.planStatus=next.paymentMethodVerifiedAt?'trialing':'pending_payment';
+      } else if (f.status==='active') {
+        next.planStatus=next.paymentMethodVerifiedAt?'active':'pending_payment'; next.trialEndsAt=null;
+      } else if (['canceled','incomplete_expired'].includes(f.status)) {
+        next.planStatus='canceled'; next.canceledAt=eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
+      } else if (f.status==='paused') next.planStatus='suspended';
+      else if (f.status==='incomplete') next.planStatus='pending_payment';
+      else if (['past_due','unpaid'].includes(f.status)) {
+        const invoice=f.latestInvoiceId && db.prepare('SELECT status FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND stripeInvoiceId=?').get(account.ownerId,event.subscriptionId,f.latestInvoiceId);
+        if (invoice?.status==='PAID' && !providerSubscription) next.planStatus=next.paymentMethodVerifiedAt?'active':'pending_payment';
+        else {
+          const failure=paymentFailureState(account,eventIso);
+          next.paymentFailedAt=failure.failedAt; next.graceEndsAt=failure.graceEndsAt;
+          next.planStatus=next.paymentMethodVerifiedAt?failure.status:'pending_payment';
         }
-        const trialStart = object.trial_start ?? object.created ?? event.created;
-        if (object.trial_end <= event.created || object.trial_end - trialStart > TRIAL_SECONDS) {
-          throw billingError('INVALID_TRIAL', 'The Stripe trial must be active and no longer than 14 days.');
-        }
-        next.trialEndsAt = eventInstant(object.trial_end);
-        if (account.paymentFailedAt && ['payment_failed', 'past_due', 'suspended'].includes(account.planStatus)) {
-          next.planStatus = account.planStatus;
-        } else {
-          next.planStatus = next.paymentMethodVerifiedAt ? 'trialing' : 'pending_payment';
-        }
-        return next;
-      }
-      if (status === 'active') {
-        next.planStatus = next.paymentMethodVerifiedAt ? 'active' : 'pending_payment';
-        if (next.planStatus === 'active') {
-          next.paymentFailedAt = null;
-          next.graceEndsAt = null;
-          next.trialEndsAt = null;
-        }
-        return next;
-      }
-      if (status === 'past_due' || status === 'unpaid') {
-        if (!next.paymentMethodVerifiedAt) {
-          next.planStatus = 'pending_payment';
-        } else {
-          const failure = paymentFailureState(account, eventIso);
-          next.paymentFailedAt = failure.failedAt;
-          next.graceEndsAt = failure.graceEndsAt;
-          next.planStatus = failure.status;
-        }
-        return next;
-      }
-      if (status === 'canceled' || status === 'incomplete_expired') {
-        next.planStatus = 'canceled';
-        next.canceledAt = eventIso;
-        next.cancelAtPeriodEnd = 0;
-        next.trialEndsAt = null;
-        return next;
-      }
-      if (status === 'paused') {
-        next.planStatus = 'suspended';
-        return next;
-      }
-      if (status === 'incomplete') {
-        next.planStatus = 'pending_payment';
-        return next;
-      }
-      throw billingError('UNSUPPORTED_SUBSCRIPTION_STATUS', `Unsupported Stripe subscription status: ${status}.`);
+      } else throw billingError('UNSUPPORTED_SUBSCRIPTION_STATUS',`Unsupported Stripe subscription status: ${f.status}.`);
     }
-
-    if (event.type === 'invoice.payment_failed') {
-      if (account.planStatus === 'canceled') return next;
-      const failure = paymentFailureState(account, eventIso);
-      next.paymentFailedAt = failure.failedAt;
-      next.graceEndsAt = failure.graceEndsAt;
-      next.planStatus = next.paymentMethodVerifiedAt ? failure.status : 'pending_payment';
-      return next;
+    // The deletion itself is terminal, regardless of any concurrent retrieval.
+    if (event.type==='customer.subscription.deleted') {
+      next.planStatus='canceled'; next.canceledAt=eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
     }
-
-    if (event.type === 'invoice.paid') {
-      if (account.planStatus === 'canceled') return next;
-      if (next.paymentMethodVerifiedAt) {
-        const stillTrialing = account.planStatus === 'trialing' && account.trialEndsAt &&
-          new Date(account.trialEndsAt) > new Date(eventIso) && Number(object.amount_paid ?? 0) === 0;
-        next.planStatus = stillTrialing ? 'trialing' : 'active';
-        next.paymentFailedAt = null;
-        next.graceEndsAt = null;
-        if (!stillTrialing) next.trialEndsAt = null;
-      } else {
-        next.planStatus = 'pending_payment';
-      }
-      return next;
+    const debt=evidence.debt(account.ownerId,event.subscriptionId);
+    const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(account.ownerId,event.subscriptionId);
+    if (hold && !debt.count && !account.paymentFailedAt) {
+      if (next.planStatus!=='canceled') next.planStatus='suspended';
+      next.paymentFailedAt=null; next.graceEndsAt=null;
+    } else if (debt.count || hold) {
+      const failedAt=debt.count?eventInstant(debt.failedAt):account.paymentFailedAt || eventIso;
+      const first=[failedAt,account.paymentFailedAt].filter(Boolean).sort()[0];
+      const failure=paymentFailureState({...account,paymentFailedAt:first,graceEndsAt:null},new Date(Math.max(now().getTime(),event.created*1000)).toISOString());
+      next.paymentFailedAt=failure.failedAt; next.graceEndsAt=failure.graceEndsAt;
+      if (next.planStatus!=='canceled') next.planStatus=next.paymentMethodVerifiedAt?failure.status:'pending_payment';
+    } else if (next.planStatus==='active' || next.planStatus==='trialing') {
+      // All known relevant invoice obligations have been settled. A payment
+      // method or Checkout never independently deletes those obligations.
+      next.paymentFailedAt=null; next.graceEndsAt=null;
     }
-
-    throw billingError('UNSUPPORTED_EVENT', `Unsupported billing event: ${event.type}.`);
+    return {after:next,stale};
   }
 
   function transitionChanged(before, after) {
     return [
       'plan', 'planStatus', 'trialEndsAt', 'stripeSubscriptionId', 'stripePriceId',
       'paymentMethodVerifiedAt', 'paymentFailedAt', 'graceEndsAt',
-      'currentPeriodEndAt', 'cancelAtPeriodEnd', 'canceledAt'
+      'currentPeriodEndAt', 'currentPeriodStartAt', 'cancelAtPeriodEnd', 'canceledAt'
     ].some(key => (before[key] ?? null) !== (after[key] ?? null));
   }
 
@@ -735,7 +700,7 @@ export function createBillingStateService({
     const orderingEventId = preserveOrdering ? before.lastStripeEventId : event.id;
     updateBilling.run(
       after.stripeSubscriptionId, after.stripePriceId, after.paymentMethodVerifiedAt ?? null,
-      after.paymentFailedAt ?? null, after.graceEndsAt ?? null, after.currentPeriodEndAt ?? null,
+      after.paymentFailedAt ?? null, after.graceEndsAt ?? null, after.currentPeriodEndAt ?? null, after.currentPeriodStartAt ?? null,
       after.cancelAtPeriodEnd ? 1 : 0, after.canceledAt ?? null, orderingCreatedAt,
       orderingRank, orderingEventId, processedAt, after.ownerId
     );
@@ -743,6 +708,13 @@ export function createBillingStateService({
       after.plan, after.planStatus, after.trialEndsAt ?? null,
       after.paymentFailedAt ?? null, after.ownerId
     );
+    const facts=evidence.readSubscription(after.ownerId,after.stripeSubscriptionId)?.facts;
+    if(facts?.billingInterval==='annual')for(const invoice of db.prepare("SELECT invoiceJson FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND invoiceJson IS NOT NULL").all(after.ownerId,after.stripeSubscriptionId)){
+      recordAnnualPaidTerm({database:db,ownerId:after.ownerId,subscriptionId:after.stripeSubscriptionId,facts,invoice:JSON.parse(invoice.invoiceJson)});
+    }
+    const paid=db.prepare('SELECT MAX(endAt) endAt FROM billingAnnualTerms WHERE ownerId=? AND stripeSubscriptionId=? AND plan=? AND startAt<=?').get(after.ownerId,after.stripeSubscriptionId,after.plan,processedAt);
+    db.prepare('UPDATE users SET annualPaidThroughAt=? WHERE id=? AND role=\'owner\'').run(paid?.endAt||null,after.ownerId);
+    recordOwnerUsagePeriods({database:db,ownerId:after.ownerId,priceIds,at:processedAt});
     if (changed) logTransition(before, after, event.type, eventInstant(event.created));
   }
 
@@ -772,15 +744,16 @@ export function createBillingStateService({
     });
   }
 
-  function applyVerifiedStripeEvent(rawEvent) {
+  function applyVerifiedStripeEvent(rawEvent, {providerSubscription, providerInvoices = [], providerInvoiceTimes = {}, recoveredLegacy = false, assertLease = () => {}} = {}) {
     // The HTTP integration must verify Stripe's raw-body signature before it
     // calls this state core. A redirect or client-provided session ID is never
     // payment evidence and must not reach this function as an event.
     const event = normalizeEvent(rawEvent);
     return immediate(db, () => {
+      assertLease();
       const existing = receiptById.get(event.id);
       if (existing) {
-        if (existing.eventDigest !== event.digest) {
+        if (existing.eventDigest !== event.digest && existing.eventDigest !== event.legacyDigest) {
           throw billingError('EVENT_ID_CONFLICT', 'This Stripe event ID was already received with different state data.');
         }
         return parseStoredJson(existing.resultJson);
@@ -790,71 +763,54 @@ export function createBillingStateService({
       const account = context.account;
       const processedAt = now().toISOString();
       if (context.relationship === 'TERMINAL') {
-        const result = stateResult('IGNORED_TERMINAL_SUBSCRIPTION', account, false);
+        const terminalOutcome=event.type==='customer.subscription.deleted' && account.stripeSubscriptionId===event.subscriptionId ? 'APPLIED' : 'IGNORED_TERMINAL_SUBSCRIPTION';
+        const result = stateResult(terminalOutcome, account, false);
         insertReceipt.run(
           event.id, account.ownerId, event.type, event.objectId, event.created,
-          event.digest, 'IGNORED_TERMINAL_SUBSCRIPTION',
+          event.digest, terminalOutcome,
           JSON.stringify(event.sanitizedReceipt), JSON.stringify(result), processedAt
         );
         return result;
       }
 
-      const requireEventPrice = event.type.startsWith('checkout.session.') || event.type.startsWith('customer.subscription.');
-      const configured = resolveConfiguredPlan(event.priceIds, account, requireEventPrice);
-      context = authorizeRelationship(context, event, configured);
-      const activationCheckout = context.relationship === 'CURRENT'
-        ? completedCheckoutBySubscription.get(account.ownerId, event.customerId, event.subscriptionId)
-        : null;
-      const activationProviderCreatedAt = activationCheckout?.providerCreatedAt
-        ? new Date(activationCheckout.providerCreatedAt)
-        : null;
-      const pendingSubscriptionActivation =
-        context.relationship === 'CURRENT' &&
-        account.planStatus === 'pending_subscription' &&
-        event.type === 'customer.subscription.created' &&
-        activationProviderCreatedAt &&
-        Number.isFinite(activationProviderCreatedAt.getTime()) &&
-        event.created * 1000 >= activationProviderCreatedAt.getTime();
-      const orderingStale = Number.isInteger(account.lastStripeEventCreatedAt) && (
-        event.created < account.lastStripeEventCreatedAt ||
-        (event.created === account.lastStripeEventCreatedAt && event.rank < (account.lastStripeEventRank ?? 0))
-      );
-      const stale = context.relationship !== 'REPLACEMENT' &&
-        !pendingSubscriptionActivation && orderingStale;
-      let result;
-      let receiptOutcome;
-      if (stale) {
-        result = stateResult('IGNORED_STALE', account, false);
-        receiptOutcome = 'IGNORED_STALE';
-        consumeCheckout(context, event, configured, processedAt);
-      } else {
-        let transitionAccount = account;
-        if (context.relationship === 'REPLACEMENT') {
-          ensureTerminalHistory(
-            account,
-            account.stripeSubscriptionId,
-            context.deleted,
-            processedAt
-          );
-          transitionAccount = replacementBase(account);
+      // Invoice lines are historical charge/credit evidence, never plan authority.
+      let configured;
+      if (event.type.startsWith('invoice.')) {
+        for (const price of event.priceIds) if (!priceConfiguration.prices.has(price) && !priceConfiguration.supplemental.has(price)) throw billingError('UNRECOGNIZED_PRICE','The invoice contains an unconfigured price.');
+        configured={plan:account.plan,priceId:account.stripePriceId};
+      } else configured=resolveConfiguredPlan(event.priceIds,account,true);
+      const duplicateSession=db.prepare(`SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND stripeCustomerId=? AND
+        ((stripeSessionId=? AND stripePriceId=?) OR (stripeSubscriptionId=? AND reconciliationError IS NOT NULL)) LIMIT 1`).get(account.ownerId,event.customerId,event.objectId,configured.priceId,event.subscriptionId);
+      if (context.relationship==='REPLACEMENT_CANDIDATE' && account.planStatus!=='canceled' && duplicateSession) {
+        if (event.type.startsWith('checkout.session.')) {
+          consumeCheckout(context,event,configured,processedAt);
+          db.prepare("UPDATE billingCheckoutRequests SET reconciliationError='DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW' WHERE ownerId=? AND id=?").run(account.ownerId,duplicateSession.id);
         }
-        ensureCurrentHistory(transitionAccount, event, processedAt);
-        const after = applyTransition(transitionAccount, event, configured);
-        const changed = transitionChanged(account, after);
-        writeState(account, after, event, processedAt, changed, {
-          preserveOrdering: pendingSubscriptionActivation && orderingStale
-        });
-        if (event.type === 'customer.subscription.deleted') {
-          ensureTerminalHistory(account, event.subscriptionId, {
-            stripeEventId: event.id,
-            eventCreatedAt: event.created,
-            processedAt
-          }, processedAt);
-        }
-        consumeCheckout(context, event, configured, processedAt);
-        result = stateResult('APPLIED', after, changed);
-        receiptOutcome = 'APPLIED';
+        const result=stateResult('QUARANTINED_DUPLICATE_SUBSCRIPTION',account,false);
+        insertReceipt.run(event.id,account.ownerId,event.type,event.objectId,event.created,event.digest,result.outcome,JSON.stringify(event.sanitizedReceipt),JSON.stringify(result),processedAt);
+        return result;
       }
+      context=authorizeRelationship(context,event,configured);
+      let transitionAccount=account;
+      if (context.relationship==='REPLACEMENT') {
+        ensureTerminalHistory(account,account.stripeSubscriptionId,context.deleted,processedAt);
+        transitionAccount=replacementBase(account);
+      }
+      ensureCurrentHistory(transitionAccount,event,processedAt);
+      for (const invoice of providerInvoices) evidence.recordInvoice({ownerId:account.ownerId,customerId:event.customerId,subscriptionId:event.subscriptionId,object:invoice,paid:invoice.status==='paid',created:providerInvoiceTimes[invoice.id] ?? event.created});
+      if (recoveredLegacy) db.prepare("DELETE FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=? AND reason='LEGACY_DEBT_REQUIRES_RECONCILIATION'").run(account.ownerId,event.subscriptionId);
+      // Replacement creation cannot predate the server-created Checkout.
+      const activation=completedCheckoutBySubscription.get(account.ownerId,event.customerId,event.subscriptionId);
+      const tooEarly=event.type.startsWith('customer.subscription.') && activation && event.created*1000<Date.parse(activation.providerCreatedAt);
+      const transition=tooEarly ? {after:transitionAccount,stale:true} : applyTransition(transitionAccount,event,configured,providerSubscription);
+      const {after,stale}=transition;
+      const changed=transitionChanged(account,after);
+      const preserveOrdering=Number.isInteger(account.lastStripeEventCreatedAt) && event.created<account.lastStripeEventCreatedAt;
+      writeState(account,after,event,processedAt,changed,{preserveOrdering});
+      if (after.planStatus==='canceled') ensureTerminalHistory(account,event.subscriptionId,{stripeEventId:event.id,eventCreatedAt:event.created,processedAt},processedAt);
+      consumeCheckout(context,event,configured,processedAt);
+      const receiptOutcome=stale && !changed?'IGNORED_STALE':'APPLIED';
+      const result=stateResult(receiptOutcome,after,changed);
       insertReceipt.run(
         event.id, account.ownerId, event.type, event.objectId, event.created,
         event.digest, receiptOutcome, JSON.stringify(event.sanitizedReceipt),
@@ -864,7 +820,62 @@ export function createBillingStateService({
     });
   }
 
-  function suspendExpiredGracePeriods({ at = now() } = {}) {
+  async function reconcileVerifiedStripeEvent(rawEvent, stripeClient) {
+    const event=normalizeEvent(rawEvent);
+    const prior=receiptById.get(event.id);
+    if (prior) return applyVerifiedStripeEvent(rawEvent); // also detects changed-ID retries
+    let context=resolveAccountContext(event);
+    // Accounts predating the annual receipt ledger need the paid base invoice
+    // retrieved before cancellation can preserve their purchased year.
+    const annualCancellation=event.type==='customer.subscription.deleted'&&
+      [context.account.stripePriceId,...event.priceIds].some(id=>priceConfiguration.prices.get(id)?.interval==='annual');
+    if (context.relationship==='TERMINAL' || event.type==='customer.subscription.deleted'&&!annualCancellation) return applyVerifiedStripeEvent(rawEvent);
+    return withBillingLease(db,context.account.ownerId,async assertLease=>{
+      if (receiptById.get(event.id)) return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      context=resolveAccountContext(event);
+      if (context.relationship==='TERMINAL') return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      const known=evidence.readSubscription(context.account.ownerId,event.subscriptionId);
+      const recoveryHold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      // Checkout supplies session/payment evidence only. A strictly newer signed
+      // subscription already carries authoritative items. Equal-second conflicts
+      // require retrieval, never a type/ID tie breaker. Read this decision under
+      // the lease as well, so another worker cannot race the fast path.
+      const stored=db.prepare('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      if (!recoveryHold && !annualCancellation && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
+          (event.type.startsWith('customer.subscription.') && (!known || event.created>stored.eventCreatedAt)))) return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      const subscription=await billingProviderRead(()=>stripeClient.subscriptions.retrieve(event.subscriptionId,{expand:['latest_invoice']},BILLING_PROVIDER_OPTIONS));
+      assertLease();
+      if (subscription?.id!==event.subscriptionId || billingReference(subscription.customer)!==event.customerId) throw billingError('CROSS_ACCOUNT_IDS','Retrieved subscription does not match the event.');
+      const invoices=[], providerInvoiceTimes={};
+      if (event.type==='invoice.payment_failed') {
+        const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(event.objectId,{},BILLING_PROVIDER_OPTIONS));
+        assertLease();
+        if (invoice?.id!==event.objectId || !['open','paid'].includes(invoice.status)) throw billingError('BILLING_PROVIDER_MISMATCH','Current invoice is unavailable.');
+        invoices.push(invoice);
+      }
+      let recoveredLegacy=false;
+      const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      if (hold?.reason==='LEGACY_DEBT_REQUIRES_RECONCILIATION') {
+        const failures=db.prepare(`SELECT objectId,MIN(eventCreatedAt) AS failedAt FROM billingEventReceipts WHERE ownerId=? AND eventType='invoice.payment_failed'
+          AND eventCreatedAt>=? AND outcome='APPLIED' GROUP BY objectId LIMIT 101`).all(context.account.ownerId,(context.account.paymentFailedAt ? Math.floor(Date.parse(context.account.paymentFailedAt)/1000) : 0));
+        if (failures.length && failures.length<=100) {
+          for (const failure of failures) {
+            const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(failure.objectId,{},BILLING_PROVIDER_OPTIONS));
+            assertLease();
+            if (billingReference(invoice?.customer)!==event.customerId) throw billingError('CROSS_ACCOUNT_IDS','Legacy invoice customer mismatch.');
+            if (billingInvoiceSubscription(invoice)===event.subscriptionId && ['open','paid'].includes(invoice.status)) {invoices.push(invoice);providerInvoiceTimes[invoice.id]=failure.failedAt;}
+            else throw billingError('BILLING_RECOVERY_REQUIRED','Legacy debt cannot be attributed safely.');
+          }
+          recoveredLegacy=true;
+        }
+      }
+      assertLease();
+      return applyVerifiedStripeEvent(rawEvent,{providerSubscription:subscription,providerInvoices:invoices,providerInvoiceTimes,recoveredLegacy,assertLease});
+    },{clock:now});
+  }
+
+  function suspendExpiredGracePeriods({ at = now(), limit = 100, ownerId = null } = {}) {
+    if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw new TypeError('Invalid grace sweep batch size.');
     const checkedAt = instant(at, 'Grace-period check time');
     const checkedAtIso = checkedAt.toISOString();
     return immediate(db, () => {
@@ -876,7 +887,9 @@ export function createBillingStateService({
         WHERE users.planStatus IN ('payment_failed', 'past_due')
           AND billing.graceEndsAt IS NOT NULL
           AND billing.graceEndsAt <= ?
-      `).all(checkedAtIso);
+        AND (? IS NULL OR billing.ownerId = ?)
+        ORDER BY billing.graceEndsAt, billing.ownerId LIMIT ?
+      `).all(checkedAtIso, ownerId, ownerId, limit);
       for (const row of rows) {
         const after = { ...row, planStatus: 'suspended', updatedAt: checkedAtIso };
         db.prepare('UPDATE billingAccounts SET updatedAt = ? WHERE ownerId = ?').run(checkedAtIso, row.ownerId);
@@ -893,6 +906,7 @@ export function createBillingStateService({
   return {
     registerBillingCustomer,
     applyVerifiedStripeEvent,
+    reconcileVerifiedStripeEvent,
     suspendExpiredGracePeriods
   };
 }

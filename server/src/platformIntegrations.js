@@ -79,7 +79,9 @@ export async function provisionTwilioNumber({ country = 'US', existingNumber, ca
       PhoneNumber: candidate,
       ...(operationId ? { FriendlyName: provisioningTag(operationId) } : {}),
       VoiceUrl: `${publicBaseUrl}/api/twilio/voice/incoming`,
-      VoiceMethod: 'POST'
+      VoiceMethod: 'POST',
+      StatusCallback: `${publicBaseUrl}/api/twilio/voice/status`,
+      StatusCallbackMethod: 'POST'
     }
   });
   return { existingNumber: normalized, twilioNumber: purchased.phone_number, twilioNumberSid: purchased.sid };

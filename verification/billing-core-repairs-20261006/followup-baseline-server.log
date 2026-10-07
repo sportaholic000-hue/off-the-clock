@@ -1,0 +1,42 @@
+[
+  {
+    "id": "S01-real-entry-grace-expired-not-swept",
+    "expected": "suspended persisted status",
+    "actual": {
+      "status": "payment_failed",
+      "graceEndsAt": "2026-10-05T20:18:57.000Z"
+    }
+  },
+  {
+    "id": "S02-private-and-public-current-state-gates",
+    "expected": "403 both without using client plan claims",
+    "actual": {
+      "private": 403,
+      "public": 403
+    }
+  },
+  {
+    "id": "S03-expired-grace-can-mutate",
+    "expected": "read-only dashboard except billing",
+    "actual": {
+      "leadWriteStatus": 200,
+      "leadPersisted": "DISMISSED",
+      "accountWriteStatus": 200,
+      "accountPersisted": "Changed while unpaid"
+    }
+  },
+  {
+    "id": "S05-no-self-serve-refund-endpoint",
+    "expected": "unsupported facility identified, no invented refund entitlement rule",
+    "actual": {
+      "status": 404
+    }
+  },
+  {
+    "id": "S06-provider-write-switch",
+    "expected": "provider operations disabled; no Stripe calls",
+    "actual": {
+      "status": 503
+    }
+  }
+]

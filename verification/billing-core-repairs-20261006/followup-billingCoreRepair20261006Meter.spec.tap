@@ -1,0 +1,78 @@
+TAP version 13
+# (node:80) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+ok 1 - F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+  ---
+  duration_ms: 10.591863
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+ok 2 - F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 5.732069
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+ok 3 - F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 5.275132
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+ok 4 - F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 5.268822
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+ok 5 - F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+  ---
+  duration_ms: 5.461107
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+ok 6 - F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+  ---
+  duration_ms: 5.280028
+  type: 'test'
+  ...
+# Subtest: F10: two31second calls count2minutes; spam and fallback add0
+ok 7 - F10: two31second calls count2minutes; spam and fallback add0
+  ---
+  duration_ms: 6.699463
+  type: 'test'
+  ...
+# Subtest: F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+ok 8 - F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+  ---
+  duration_ms: 6.077091
+  type: 'test'
+  ...
+# Subtest: F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+ok 9 - F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+  ---
+  duration_ms: 6.541499
+  type: 'test'
+  ...
+# Subtest: F10: provider completion after process restart finalizes once; failed persistence rolls back
+ok 10 - F10: provider completion after process restart finalizes once; failed persistence rolls back
+  ---
+  duration_ms: 85.610262
+  type: 'test'
+  ...
+# Subtest: F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+ok 11 - F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+  ---
+  duration_ms: 58.573967
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 528.416759

@@ -1,0 +1,111 @@
+{
+  "sourceSha": "d654f1edcc0ce62963bc8ae9369bd56bd31aac40",
+  "sourceTree": "c4d95b49229b8fb4030068895e3516628a9488a4",
+  "files": [
+    {
+      "path": "client/src/billing.jsx",
+      "sha256": "ab282c35f1f016ea0069555bc690dca1581837e40cef76122bc11fee613e491f",
+      "bytes": 8218
+    },
+    {
+      "path": "client/src/billingTransport.js",
+      "sha256": "36b8f05ae4dfafcc57db0c50577ece43de1472302dc021dfd784da749de08f8c",
+      "bytes": 4741
+    },
+    {
+      "path": "server/src/authMiddleware.js",
+      "sha256": "1751c6b7add2dc363b930c3113bb0c66d4ca1dfda3694aa86ac8f45bf0c443a3",
+      "bytes": 1985
+    },
+    {
+      "path": "server/src/billingLifecycleWorker.js",
+      "sha256": "4b6bd2119a18cf3303837de742769cb2d6812a27a85bd3de203bfebbafa4ab2b",
+      "bytes": 709
+    },
+    {
+      "path": "server/src/billingMutationGuard.js",
+      "sha256": "c42eab1c5a7093cb60cdde1827c7dc7a202e1f251a8455e1d84a5861328d2e2d",
+      "bytes": 1602
+    },
+    {
+      "path": "server/src/billingRoutes.js",
+      "sha256": "cdcb3ca23aa82868bf73b013903602741bbba418c593f1644d111a7365d7f333",
+      "bytes": 37719
+    },
+    {
+      "path": "server/src/billingStateService.js",
+      "sha256": "0b1f7326dcd3f11891edc3a363d16177c6f2657b1bbacf6049dabd8aafde4bef",
+      "bytes": 45577
+    },
+    {
+      "path": "server/src/billingVoiceRoutes.js",
+      "sha256": "31c0095f5f1a67ff42d31deeea876c5f1c1d05b00f7104002b1279800e0fffde",
+      "bytes": 793
+    },
+    {
+      "path": "server/src/billingVoiceUsage.js",
+      "sha256": "be55312d71feb22d1d5961bd3d0a529c0686bc856705c08988265189da82a039",
+      "bytes": 6436
+    },
+    {
+      "path": "server/src/platformIntegrations.js",
+      "sha256": "4a68da0a51eb7b2d633ca37d78a06c9eefff2147f6b958e2ac48cbb1e6366a56",
+      "bytes": 33804
+    },
+    {
+      "path": "server/src/schema.js",
+      "sha256": "7e30fc5027b04b31ea1f26f48d04bae371f321966936e10754d84abf218b0482",
+      "bytes": 24495
+    },
+    {
+      "path": "server/src/server.js",
+      "sha256": "58b06678a396e9e231f698c852329a0d43bbd24766912e69f0f9e0653a6f7eeb",
+      "bytes": 22340
+    },
+    {
+      "path": "server/src/voice/productionVoiceRuntime.js",
+      "sha256": "6f78cee582c47e4142d30f87e3b636b2735d3ec754bc185924b124e0ef387edc",
+      "bytes": 10856
+    },
+    {
+      "path": "server/src/voice/voicePersistence.js",
+      "sha256": "89d43e0e762c8e542283ebf000318b08cfe5fb5857ed9ff9aa15541568fe62c6",
+      "bytes": 21635
+    },
+    {
+      "path": "test/billingCoreRepair20261006CallEntry.spec.mjs",
+      "sha256": "50269ea422cb5b270aac1cc4d9a2d6a0dff624595fc90b9a561abd03aa33d6a1",
+      "bytes": 272
+    },
+    {
+      "path": "test/billingCoreRepair20261006Capabilities.spec.mjs",
+      "sha256": "e3b7c37a6efa3ccebf7b3c10d662683d4ef1b32fb83e5db920f630666e89aa26",
+      "bytes": 2543
+    },
+    {
+      "path": "test/billingCoreRepair20261006Lifecycle.spec.mjs",
+      "sha256": "98f416985a3e42e0e83c45476cc01e2346536c5961cde4faa86e71e4118ae70a",
+      "bytes": 7829
+    },
+    {
+      "path": "test/billingCoreRepair20261006LifecycleEntry.spec.mjs",
+      "sha256": "abc45a9beb9adad2aa00f10a898f08285f86821b3134a5913b090c60f94e44be",
+      "bytes": 262
+    },
+    {
+      "path": "test/billingCoreRepair20261006Meter.spec.mjs",
+      "sha256": "e1d17287dfd09bdfa1de3c8b3bd1da18d29dc2c59fd2d22805a5f75f4d258fee",
+      "bytes": 8021
+    },
+    {
+      "path": "test/billingRoutes.spec.mjs",
+      "sha256": "87adf68f61a323a05f0b46c5e25b0b8c1365ef28ac1ef4b8d135ac6f0212717c",
+      "bytes": 32385
+    },
+    {
+      "path": "test/billingStateService.spec.mjs",
+      "sha256": "042a56e472e85731e931ace7aafea53f2febe08c3dac6bb70d619a641b8a455b",
+      "bytes": 24981
+    }
+  ]
+}
