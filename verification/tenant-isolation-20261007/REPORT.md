@@ -51,9 +51,13 @@ node --experimental-test-module-mocks --import ./test/pricebookTestEnv.mjs --tes
 
 Actual output: **287 tests; 287 pass; 0 fail; 0 cancelled; 0 skipped; 0 TODO**. The isolation matrix contributes **199 tests** (98 route union, exercised in both server modes plus guard/control tests; mode-specific registrations differ).
 
+The refined existing-ID matrix and owner-integration contract checks also passed **238/238**, including the same 199 matrix tests and 39 integration tests, with zero failures/skips. Existing owner-integration tests now require generic 403 for foreign selectors and retain separate positive CSV/settings reads.
+
 Cold Node 22.22.0 `npm ci` and both production builds passed locally. Local full/strict attempts execute the browser tests; Chromium/headless-shell startup crashes with SIGTRAP in this environment. No tests have been skipped, removed, allowlisted or changed to hide that failure. The full-suite result checker now rejects all failures, skips, cancellations and TODOs, including known failures.
 
-Hosted verification must be read at the exact pushed source SHA in [the fix branch CI runs](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Afix%2Ftenant-isolation-20261007). A green hosted run supplies cold install/build and complete browser/full/strict evidence. This checkpoint was written before that run; no unobserved hosted result is claimed here.
+The first hosted attempt at `ea4c21b6ee058a0fa83ce3a8bbb13563e5ab5e39` passed cold install/build and **2,267/2,267** strict quote tests. The full suite reached **2,647/2,649**, with two old owner-integration assertions expecting ignored foreign selectors; those assertions have since been corrected and passed in the 238-test execution above. No failed test is exempted.
+
+Final hosted verification must be read at the exact pushed source SHA in [the fix branch CI runs](https://github.com/sportaholic000-hue/off-the-clock/actions?query=branch%3Afix%2Ftenant-isolation-20261007). A green hosted run supplies cold install/build and complete browser/full/strict evidence. This checkpoint was written before that run; no unobserved hosted result is claimed here.
 
 ## Every registered route
 

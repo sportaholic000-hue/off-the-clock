@@ -1,5 +1,5 @@
-// Fails CI on any test failure not listed in .github/known-test-failures.txt.
-// Known failures that start passing are reported so the list can shrink.
+// Fails CI on any failure, skip, cancellation, TODO or missing summary.
+// Historical known failures are reported but never exempt a failed test.
 import { readFileSync } from 'node:fs';
 const tap = readFileSync(process.argv[2], 'utf8').split('\n');
 const known = new Set(readFileSync('.github/known-test-failures.txt', 'utf8').split('\n').map(s => s.trim()).filter(Boolean));
