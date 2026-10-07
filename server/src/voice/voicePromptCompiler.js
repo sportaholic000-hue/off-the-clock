@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {normalizeReviewContact} from '../reviewContact.js';
-export const IMMUTABLE_VOICE_GUIDE_SHA256='f33b7f324fe38443d33a660006b17fc50dea17f9f866f795afcbe8780b18ff1e';
+export const IMMUTABLE_VOICE_GUIDE_SHA256='ed5046fa75a6cc70b0288fd76b4bc55b1909ad6a5b25e55d4a8b7d16f211bbdc';
 export const VOICE_GUIDE_SERVICE_TYPES=Object.freeze(['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR','INTERIOR_PAINTING','EXTERIOR_PAINTING','FLOORING_INSTALL','FLOORING_REPLACEMENT','FENCING_INSTALL','FENCING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','LANDSCAPING_CLEANUP','LANDSCAPING_MULCH','LANDSCAPING_SOD','LANDSCAPING_PLANTING','LANDSCAPING_MOWING','SIDING_REPLACEMENT','SIDING_REPAIR','CUSTOM']);
 export class VoicePromptCompilerError extends Error{constructor(code){super('The voice instructions could not be compiled safely.');this.name='VoicePromptCompilerError';this.code=code;}}
 const fail=code=>{throw new VoicePromptCompilerError(code);};

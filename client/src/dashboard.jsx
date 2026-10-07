@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {voiceOperatorControl} from './voiceOperatorControl.js';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
+import {ReportsPanel} from './reports.jsx';
 import { api, go, getSessionKey } from './api.js';
 import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
@@ -42,6 +43,7 @@ export default function Dashboard() {
   const [state, setState] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [reportRefresh,setReportRefresh]=useState(0);
   const [feedError,setFeedError]=useState(null);
   const feed=useRef(null),generation=useRef(0),mounted=useRef(false);
 
@@ -74,7 +76,7 @@ export default function Dashboard() {
     return()=>{stopped=true;clearInterval(timer);window.removeEventListener('focus',refreshUsage);};
   },[]);
 
-  async function refresh(){setBusy(true);try{await load();}catch(nextError){if(mounted.current)setFeedError(nextError);}finally{if(mounted.current)setBusy(false);}}
+  async function refresh(){setBusy(true);try{await load();setReportRefresh(value=>value+1);}catch(nextError){if(mounted.current)setFeedError(nextError);}finally{if(mounted.current)setBusy(false);}}
 
   async function toggle(enabled) {
     setBusy(true); setError(null);
@@ -181,6 +183,7 @@ export default function Dashboard() {
         </section>
 
         <MinuteUsage usage={dashboard.minuteUsage}/>
+        <ReportsPanel refreshKey={reportRefresh}/>
 
         {view.simulated && (
           <SimulatedBanner>

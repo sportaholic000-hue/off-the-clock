@@ -30,6 +30,16 @@ test('Owner ruling: removed SMS tool cannot reach the production provider',async
     assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner).n,0);
   }
 });
+test('D04 owner ruling: production refuses caller SMS and never invokes the provider',async t=>{
+  const h=await harness(t),c=await h.connect();
+  const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Please call about a broken gate',callbackRequested:true});
+  // An undeclared/hallucinated SMS tool is rejected at the real Live boundary.
+  c.callback.onmessage({toolCall:{functionCalls:[{id:'synthetic-disabled-sms',name:'sendSms',args:{template:'callback',recordHandle:lead.leadHandle}}]}});
+  await until(()=>h.db.prepare('SELECT status FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,c.params.CallSid).status==='FAILED');
+  assert.equal(h.writes.filter(x=>x[0]==='sms').length,0);
+  assert.equal(h.db.prepare('SELECT COUNT(*) AS n FROM voiceSmsDeliveries WHERE ownerId=?').get(h.owner).n,0);
+  assert.equal(h.db.prepare('SELECT COUNT(*) AS n FROM leads WHERE ownerId=?').get(h.owner).n,1);
+});
 test('D06 failed transfer persists the promised callback with caller words and replay identity',async t=>{
   const h=fixture(t),c=h.context(),v=h.voice(c),args={reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Gate fell on driveway'};
   const result=await v.tool('transferCall',args);assert.equal(result.callbackSaved,true);
@@ -163,7 +173,7 @@ for(const ending of ['error','provider_close','socket_close'])test('D26 pending 
 });
 test('D26 received caller text persists while a provider tool is still waiting',async t=>{
   let release,entered=false;const pending=new Promise(r=>{release=r;});
-  const h=await harness(t,{install:{twilioClient:{calls:()=>({update:async()=>{entered=true;await pending;return {sid:'CA'+'e'.repeat(32),status:'in-progress'};}})}}}),c=await h.connect();
+  const h=await harness(t,{install:{twilioClient:{calls:sid=>({update:async()=>{entered=true;await pending;return {sid,status:'in-progress'};}})}}}),c=await h.connect();
   const lead=await h.tool(c.callback,'captureLead',{notes:'[SYNTHETIC] Initial callback',callbackRequested:true});
   c.callback.onmessage({toolCall:{functionCalls:[{id:'blocked-transfer',name:'transferCall',args:{reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Additional help'}}]}});
   try{await until(()=>entered);c.callback.onmessage({serverContent:{inputTranscription:{text:'[SYNTHETIC] Additional urgent gate detail'}}});

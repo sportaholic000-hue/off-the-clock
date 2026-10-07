@@ -128,6 +128,10 @@
     "policy": "team"
   },
   {
+    "route": "GET /api/owner-records/:kind/:id",
+    "policy": "team"
+  },
+  {
     "route": "GET /api/pricebook/:ownerId",
     "policy": "owner"
   },
@@ -161,6 +165,10 @@
   },
   {
     "route": "GET /api/quotes",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/reports",
     "policy": "team"
   },
   {
@@ -340,6 +348,10 @@
     "policy": "owner"
   },
   {
+    "route": "POST /api/owner-records/:kind/:id/actions",
+    "policy": "team"
+  },
+  {
     "route": "POST /api/pricebook/interview",
     "policy": "owner"
   },
@@ -457,6 +469,10 @@
   },
   {
     "route": "PUT /api/pricebook/interview/:draftId",
+    "policy": "owner"
+  },
+  {
+    "route": "PUT /api/reports/hours",
     "policy": "owner"
   },
   {

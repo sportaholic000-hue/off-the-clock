@@ -25,6 +25,23 @@ export function installOwnerAlertSchema(db) {
     FOREIGN KEY(alertId) REFERENCES ownerAlerts(id));
     CREATE INDEX IF NOT EXISTS owner_alert_due ON ownerAlerts(ownerId,status,nextAttemptAt);
     CREATE INDEX IF NOT EXISTS callback_call ON callbackRequests(ownerId,callId,createdAt);`);
+  if(!db.prepare('PRAGMA table_info(ownerAlerts)').all().some(column=>column.name==='sourceJson'))db.exec('ALTER TABLE ownerAlerts ADD COLUMN sourceJson TEXT');
+  // Snapshot the confirmed slot inside the booking transaction; a reschedule
+  // before dispatch must not silently change the original confirmation email.
+  const bookingCall=`COALESCE((SELECT c.id FROM quotes q JOIN calls c ON c.ownerId=q.ownerId AND c.id=q.callId WHERE q.ownerId=NEW.ownerId AND q.id=NEW.quoteId),
+    (SELECT c.id FROM bookingIntents i
+      LEFT JOIN quotes q ON q.ownerId=i.ownerId AND q.id=i.sourceId AND i.sourceType='quote'
+      LEFT JOIN leads l ON l.ownerId=i.ownerId AND l.id=i.sourceId AND i.sourceType='lead'
+      JOIN calls c ON c.ownerId=i.ownerId AND c.id=COALESCE(q.callId,l.callId)
+      WHERE i.ownerId=NEW.ownerId AND i.id=NEW.bookingIntentId))`;
+  for(const [name,operation,condition] of [['insert','INSERT',"NEW.status='CONFIRMED'"],['update','UPDATE OF status',"NEW.status='CONFIRMED' AND OLD.status IS NOT 'CONFIRMED'"]])db.exec(`
+    CREATE TRIGGER IF NOT EXISTS owner_alert_booking_${name} AFTER ${operation} ON appointments WHEN ${condition}
+    BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,sourceJson,createdAt,updatedAt)
+    VALUES(lower(hex(randomblob(16))),NEW.ownerId,'booking.confirmed:'||NEW.id,'booking.confirmed',NEW.id,${bookingCall},
+      json_object('service',NEW.serviceType,'start',COALESCE(NEW.startAtUtc,NEW.datetime),'end',NEW.endAtUtc,'timezone',NEW.timezone,
+        'mode',NEW.bookingMode,'tier',NEW.tierChosen,'customer',NEW.customerJson,'location',NEW.locationJson),
+      COALESCE(NEW.confirmedAt,NEW.updatedAt,NEW.createdAt),COALESCE(NEW.confirmedAt,NEW.updatedAt,NEW.createdAt))
+    ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   const trigger=(name,table,type,{operation='INSERT',when='',call='NEW.callId',time='NEW.createdAt'}={})=>db.exec(`
     CREATE TRIGGER IF NOT EXISTS owner_alert_${name} AFTER ${operation} ON ${table} ${when?'WHEN '+when:''}
     BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)

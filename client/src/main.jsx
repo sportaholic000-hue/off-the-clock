@@ -6,6 +6,7 @@ import './styles.css';
 import { getToken, getSessionKey, go } from './api.js';
 import Dashboard from './dashboard.jsx';
 import Calls from './calls.jsx';
+import Reports from './reports.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
 import Billing from './billing.jsx';
@@ -60,6 +61,7 @@ function App() {
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
   if (path === '/calendar') return <Calendar key={sessionEpoch} />;
+  if (path === '/reports') return <Reports key={sessionEpoch} />;
   if (path === '/pricebook') return <PriceBook key={sessionEpoch} />;
   if (path === '/dashboard') return <Dashboard key={sessionEpoch} />;
   if (path === '/calls') return <Calls key={location.url+sessionEpoch} recordId={new URLSearchParams(window.location.search).get('record')}/>;

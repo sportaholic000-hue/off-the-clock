@@ -1,6 +1,9 @@
 import {createQuoteEmailService} from './quoteEmailService.js';
 import {installQuoteEmailRoutes} from './quoteEmailRoutes.js';
 import {voiceAdmissionStatus} from './voice/voiceAdmission.js';
+import {createOwnerReportService} from './ownerReportService.js';
+import {createOwnerWorkflowService} from './ownerWorkflowService.js';
+import {installOwnerDashboardRoutes} from './ownerDashboardRoutes.js';
 import {createOwnerAlertService} from './ownerAlertService.js';
 import {installOwnerAlertRoutes} from './ownerAlertRoutes.js';
 // Production storage paths are set here first, before any service module loads.
@@ -207,6 +210,7 @@ if (billingConfig) {
 }
 app.use(express.json({ limit: '1mb', verify: verifyExactJson }));
 installOwnerCallRoutes(app,{service:ownerCallService,requireAuth,asyncHandler});
+installOwnerDashboardRoutes(app,{reports:createOwnerReportService({ownerQuery}),workflow:createOwnerWorkflowService({database:db,ownerQuery}),requireAuth,requireQuoteDonePlan,asyncHandler});
 installOwnerAlertRoutes(app,{service:ownerAlerts,requireAuth,asyncHandler});
 
 app.get('/api/health', lifecycle.health);

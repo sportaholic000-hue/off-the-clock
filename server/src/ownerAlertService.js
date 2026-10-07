@@ -20,6 +20,14 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
   const iso=()=>new Date(clock()).toISOString();
   function source(row){
     const id=row.aggregateId,owner=row.ownerId;
+    if(row.eventType==='booking.confirmed'){
+      if(!query('SELECT id FROM appointments WHERE ownerId=? AND id=?').get(owner,id))throw Error('ALERT_SOURCE_MISSING');
+      const saved=storedObject(row.sourceJson),customer=storedObject(saved.customer),location=storedObject(saved.location);
+      return ['Booking confirmed',saved.service,saved.mode==='site_visit_first'?'Site visit':saved.mode==='book_job'?'Job appointment':saved.mode,
+        saved.start&&'Start (UTC): '+saved.start,saved.end&&'End (UTC): '+saved.end,saved.timezone&&'Business timezone: '+saved.timezone,
+        saved.tier,customer.name,customer.phone,customer.email,...Object.values(location).filter(value=>typeof value==='string'),
+        'This is the saved confirmation. Check the dashboard for subsequent changes.'];
+    }
     if(row.eventType==='voice.caller_throttled'){
       const call=query('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
       return ['Repeated caller — review requested',call.callerNumber,'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];

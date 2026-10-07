@@ -56,16 +56,20 @@
     "sha256": "1f8813021a2c4d1f18d615c9696f582d1893f6aba5aa64aef81d701f63b5957f"
   },
   {
+    "file": "src/ownerDashboardRoutes.js",
+    "sha256": "0a79fc7443a19d16448035cacccf630531bd7dec919359b9361fe6a4432aea4a"
+  },
+  {
     "file": "src/ownerIntegrationRoutes.js",
     "sha256": "5b593335bb89d1bd03309f240ea71f7601ea50d492bfbb92efe31e75e4b69943"
   },
   {
     "file": "src/productionAssets.js",
-    "sha256": "f3e32de83c848526eb7e4359ac946b44444154387b0ccb3b82f1e904ae07c3d1"
+    "sha256": "edf754020c014ed05aa62dfde20b3ce4dd601055787955c538d50a90b1a9e273"
   },
   {
     "file": "src/quoteDoneRoutes.js",
-    "sha256": "544033527a0a41f6de0dd4dadbc6f5e656246bbe10622310bc646648a305a0b6"
+    "sha256": "f0bfcc5b9fd0c2976dda51edd257fead07bf363083cddcfca229bdd97818ff65"
   },
   {
     "file": "src/quoteEmailRoutes.js",

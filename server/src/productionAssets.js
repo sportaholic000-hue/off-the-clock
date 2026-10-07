@@ -2,7 +2,7 @@ import express from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const ownerPaths = new Set(['/','/signup','/register','/login','/onboarding','/dashboard','/calls','/calendar','/pricebook','/leads','/quotes','/settings','/settings/billing','/admin','/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email']);
+const ownerPaths = new Set(['/','/signup','/register','/login','/onboarding','/dashboard','/calls','/reports','/calendar','/pricebook','/leads','/quotes','/settings','/settings/billing','/admin','/forgot-password','/reset-password','/verify-email','/resend-verification','/account/email']);
 
 export function installWidgetAssets(app, dist) {
   // Public module scripts must load on an owner's website, before tenant API
