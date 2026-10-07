@@ -218,8 +218,8 @@ test('invalid recipients, header injection and invalid keys are rejected before 
 });
 
 
-test('configured bcrypt costs below the required twelve rounds fail before account creation',async t=>{
-  for(const BCRYPT_COST of [4,11,'not-a-number',32]){
+test('configured bcrypt costs outside the supported range fail before account creation',async t=>{
+  for(const BCRYPT_COST of [0,4,10,11,17,31,'not-a-number',32]){
     const f=fixture(t,{environment:{BCRYPT_COST}});
     assert.equal((await call(f.handlers.register,signup)).status,503);
     assert.equal(f.database.prepare('SELECT COUNT(*) n FROM users').get().n,0);

@@ -6,7 +6,7 @@ import {saveCallbackRequest} from '../callbackRequestService.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
-import {projectVoiceQuote} from './voiceQuotePresentation.js';
+import {projectVoiceQuote,quoteSmsBody} from './voiceQuotePresentation.js';
 import crypto from 'node:crypto';
 
 import { loadPricebook } from '../../priceBookService.js';
@@ -860,11 +860,8 @@ export function createVoiceToolRuntime({
       body='Your quote-review request has been saved. A price or callback time has not been confirmed.';
     }else if(resolved.type==='quote'&&template==='quote'){
       const quote=loadQuote(resolved);recordId=quote.row.recordId;
-      const customer=quote.response?.pricedEstimate||quote.response;
       // Use the frozen customer receipt only. No fresh arithmetic or raw book.
-      const options=Array.isArray(customer?.options)?customer.options:[customer];
-      const prices=options.filter(o=>Number.isFinite(o?.lowEstimate)&&Number.isFinite(o?.highEstimate)).map(o=>[o.tierName,[o.lowEstimate,o.highEstimate].map(v=>Number(v).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2})).join(' to '),o.currency,o.priceUnit,o.taxTreatment].filter(Boolean).join(' '));
-      body=prices.length?'Your saved estimate: '+prices.join('; ')+'. The business will confirm the job details.':'Your pricing request has been saved for review. No price has been confirmed.';
+      body=quoteSmsBody(quote.response);
     }else if(resolved.type==='appointment'&&['booking','reminder'].includes(template)){
       recordId=resolved.reference.appointmentId;
       const appointment=database.prepare('SELECT status,startAtUtc,timezone,customerJson FROM appointments WHERE ownerId=? AND id=? AND customerId=?').get(context.ownerId,recordId,resolved.reference.customerId);

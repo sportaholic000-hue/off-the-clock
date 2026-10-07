@@ -5,6 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {proxyMode} from './clientAddress.js';
 import {validateRuntimeConfig} from './runtimeConfig.js';
 import {liveDemoConfig} from './demo/liveDemo.js';
+import {passwordHashCost} from './passwordHashConfig.js';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const fail = message => { throw new Error(message); };
@@ -56,7 +57,7 @@ export function validateDeploymentConfig(env = process.env) {
   const shutdownMs = integer(env,'SHUTDOWN_TIMEOUT_SECONDS',110,5,115)*1000;
   if (integer(env,'RAILWAY_DEPLOYMENT_DRAINING_SECONDS',0,0,3600)*1000 < shutdownMs+5000) fail('RAILWAY_DEPLOYMENT_DRAINING_SECONDS must exceed SHUTDOWN_TIMEOUT_SECONDS by at least 5.');
   const port = integer(env,'PORT',3000,1,65535);
-  integer(env,'BCRYPT_COST',12,10,16);
+  passwordHashCost(env);
   const publicUrl = env.PUBLIC_BASE_URL;
   if(publicUrl !== new URL(publicUrl).origin) fail('PUBLIC_BASE_URL must be a bare HTTPS origin without a trailing slash.');
   if(!runtime.corsOrigins.includes(publicUrl)) fail('CORS_ALLOWED_ORIGINS must include PUBLIC_BASE_URL.');

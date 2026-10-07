@@ -49,7 +49,8 @@ function publicQuestionContract(value){
   assertClosed(value,['fields','customerFees'],['fields','customerFees'],'INVALID_TOOL_RESULT');
   if(!Array.isArray(value.fields)||value.fields.length>64||!Array.isArray(value.customerFees)||value.customerFees.length>4)fail('INVALID_TOOL_RESULT',502);
   const fields=value.fields.map(field=>{
-    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','choices','moreChoicesAvailable','productConfirmationRequired'],['field','label','type'],'INVALID_TOOL_RESULT');
+    assertClosed(field,['field','label','type','unit','required','min','max','showWhen','requiredWhen','applicableWhen','choices','moreChoicesAvailable','productConfirmationRequired','productConfirmationExemptValues'],['field','label','type'],'INVALID_TOOL_RESULT');
+    if (field.productConfirmationExemptValues !== undefined && (field.field !== 'existingFloorType' || field.type !== 'slug' || !Array.isArray(field.productConfirmationExemptValues) || field.productConfirmationExemptValues.length !== 1 || field.productConfirmationExemptValues[0] !== 'none')) fail('INVALID_TOOL_RESULT',502);
     for(const key of ['field','label','type'])resultText(field[key],1000);return structuredClone(field);
   });
   const customerFees=value.customerFees.map(fee=>{

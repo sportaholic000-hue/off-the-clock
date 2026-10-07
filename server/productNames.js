@@ -14,6 +14,12 @@ export function productKeyFromName(name) {
 }
 export const DUPLICATE_NAME_MESSAGE = 'That name is already listed.';
 
+// A bare floor is an absence, not a product the owner must register.
+// Both the engine and its voice adapter use this identity applicability rule.
+export function productIdentityRequired(field, value) {
+  return !(field === 'existingFloorType' && value === 'none');
+}
+
 
 export function registeredProductKey(value, keys) {
   if (typeof value !== 'string') return null;
@@ -24,4 +30,3 @@ export function registeredProductKey(value, keys) {
   const matches = keys.filter(key => key === converted.key);
   return matches.length === 1 ? matches[0] : null;
 }
-

@@ -88,3 +88,23 @@ export function projectVoiceOptions(options) {
   if (!Array.isArray(options) || options.length === 0 || options.length > 3) throw new TypeError('Invalid voice quote options.');
   return options.map(optionProjection);
 }
+
+// Written delivery must carry the frozen receipt's qualifications as well as
+// its prices. The caller enforces the SMS budget by refusing, never truncating.
+export function quoteSmsBody(response) {
+  if (Array.isArray(response?.pricedScope?.facts) && response.pricedScope.facts.length > 29) throw new TypeError('SMS scope exceeds its bounded contract.');
+  const projected = projectVoiceQuote(response);
+  if (projected.status !== 'quoted') return 'Your pricing request has been saved for review. No price has been confirmed.';
+  const parts = ['Your saved estimate: ' + projected.voiceSummary];
+  if (projected.pricedScope?.length) parts.push('Priced scope: ' + projected.pricedScope.join('; ') + '.');
+  if (projected.additionalWork?.length) parts.push('Separately unpriced work: ' + projected.additionalWork.join('; ') + '.');
+  if (projected.customerMessage) parts.push(projected.customerMessage);
+  if (text(response?.scopeNotice)) parts.push(response.scopeNotice);
+  if (projected.writtenDisclosure) parts.push(projected.writtenDisclosure);
+  for (const option of projected.options || []) {
+    if (option.writtenDisclosure && option.writtenDisclosure !== projected.writtenDisclosure) {
+      parts.push((projected.options.length > 1 ? option.tierName + ': ' : '') + option.writtenDisclosure);
+    }
+  }
+  return parts.join(' ');
+}

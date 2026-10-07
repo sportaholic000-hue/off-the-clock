@@ -1,5 +1,6 @@
 import {BASIC_PAINT_PREPARATION_NOTICE} from '../scopeConfiguration.js';
 import {validPricebookServiceId} from '../priceBookStructure.js';
+import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest} from '../scopeConfiguration.js';
@@ -942,7 +943,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       validationMessages.push(`${contract.fields[name].label} ${message}.`);
     }
   }
-  const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && !(name === 'existingFloorType' && customerInputs[name] === 'none')).map(([name]) => name);
+  const selectors = Object.entries(contract.fields).filter(([name, def]) => def.type === 'slug' && !missing(customerInputs[name]) && productIdentityRequired(name, customerInputs[name])).map(([name]) => name);
   const facts = customerInputs.confirmedFacts;
   const missingOfferingMaps = [], offeringOwnerDiagnostics = [], unsupportedOfferingFields = [];
   if (facts !== undefined && isRecord(facts)) for (const name of Object.keys(facts)) {

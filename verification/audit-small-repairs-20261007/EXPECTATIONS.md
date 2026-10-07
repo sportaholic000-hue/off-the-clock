@@ -1,0 +1,9 @@
+# Small audit repair expectations
+
+Base: `109f68722dc399ba2e8ffa8bae7ad7fbda951e0a`. Written before running the new regressions. Synthetic data and fake delivery only.
+
+- Bare floor: 200 sq ft × $1 labor × 1.10 room factor = $220. Material: 200 × 1.12 × $2 = $448. Total $668, no tax/fees/markup/range. `none` is absence of flooring, requires no registered identity, and still contradicts requested removal. Ordinary products retain registration and confirmation checks.
+- Roofing: 1,000 measured sq ft / 100 = 10 squares. Labor 10 × $50 = $500, material 10 × $100 = $1,000, removal 10 × $20 = $200. Included underlay adds $0; materials tax 10% × $1,000 = $100. Total $1,800. A positive $10/square tier still requires its materials allocation; with 100% materials it adds $100 plus $10 tax, for $1,910. Removing the included/free classification must still block.
+- SMS uses the frozen receipt. A $100 CAD per-visit mowing subtotal retains excluded bagging, measured area, the access qualification, separately unpriced stump removal and the absence of a whole-job total. Equal endpoints appear once, tax punctuation once. USD tiers $100 and $125.50–$150 retain option-specific disclosures and shared precision. Oversized disclosures must prevent sending; truncating them is not acceptable. No money or stored receipt changes.
+- Production bcrypt configuration accepts 12–16, rejecting 10/11 and values above 16 before serving registration requests. Existing production upper bound remains unchanged; registration/reset use the same generated-hash setting.
+- Minimum-bound standard estimates are exact single amounts under the already approved October 3 decision: $402.50 without tax, $412.50 with $10 actual materials tax, $442.75 with 10% all-tax. This is a documentation correction, not a formula change.
