@@ -11,7 +11,9 @@ import express from 'express';
 import {requireAuth} from '../server/src/authMiddleware.js';
 import {createAuthSessionService,installAuthSessionSchema} from '../server/src/authSessionService.js';
 import {createSnapshot} from '../server/src/backups.js';
-import {createOffsiteBackupService,restoreOffsiteBackup,pruneOffsiteBackups,installOffsiteBackupStatusRoute} from '../server/src/offsiteBackups.js';
+// Keep the original daily publication/recovery contract independently covered;
+// continuousOffsite20261007 exercises the production composite worker.
+import {createDailyOffsiteBackupService as createOffsiteBackupService,restoreOffsiteBackup,pruneOffsiteBackups,installOffsiteBackupStatusRoute} from '../server/src/offsiteBackups.js';
 import {createS3BackupStore,readOffsiteConfig} from '../server/src/offsiteStore.js';
 import {encryptBundle,decryptBundle} from '../server/src/offsiteArchive.js';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';

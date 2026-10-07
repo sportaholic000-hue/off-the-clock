@@ -248,6 +248,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
       AND c.status!='PAID' AND c.collectionStoppedAt IS NULL`).all(ownerId);
     for(const charge of charges){
+      try{
       const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
       assertLease();
       const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest;
@@ -261,8 +262,17 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         assertLease();
         if(!bound(receipt)||receipt.auto_advance!==false)throw error('BILLING_COLLECTION_STOP_PENDING',502);
       }
-      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+      }catch{
+        assertLease();
+        // Provider uncertainty is durable financial evidence, not permission to
+        // keep customer records or a carrier number past their own deadlines.
+        query("UPDATE billingUsageCharges SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND periodId=? AND collectionStoppedAt IS NULL").run(now(),ownerId,charge.periodId);
+      }
     }
+    const pending=query("SELECT 1 FROM billingUsageCharges WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING' AND collectionStoppedAt IS NULL").get(ownerId);
+    if(pending)query("UPDATE billingCancellations SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND lastError IS NULL").run(now(),ownerId);
+    else query("UPDATE billingCancellations SET lastError=NULL,updatedAt=? WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING'").run(now(),ownerId);
   }
   async function cleanup(ownerId,{deadlineAt=now(),assertLease}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
@@ -272,7 +282,6 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Carrier shutdown is tracked in Billing. Export records before ${addDays(row.endAt,90)}. ${link()}`);
     });
     row=cancellation(ownerId);
-    await stopUsageCollection(ownerId,assertLease);
     if(!row.dataDeletedAt&&deadlineAt>=addDays(row.endAt,90))erase(ownerId,row);
     if(enabled()){
       const profile=query('SELECT * FROM businessProfiles WHERE ownerId=?').get(ownerId);
@@ -295,10 +304,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       }
     }
   }
-  async function processOwner(ownerId){
+  async function processOwner(ownerId,{localOnly=false}={}){
     let row=cancellation(ownerId);
-    if(row?.state==='PENDING')try{await cancel(ownerId);}catch{/* Durable intent retried; dashboard reports ambiguity. */}
-    if(row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
+    if(!localOnly&&row?.state==='PENDING')try{await cancel(ownerId);}catch{/* Durable intent retried; dashboard reports ambiguity. */}
+    if(!localOnly&&row?.state==='RESTORING')try{await reactivate(ownerId);}catch{/* Safe current-state read on replay. */}
     await withBillingLease(database,ownerId,async assertLease=>{
       syncBillingPaidThrough(database,ownerId);const account=owner(ownerId);row=cancellation(ownerId);
       const restoring=row&&['CONFIRMED','ENDED'].includes(row.state)&&account.stripeSubscriptionId!==row.stripeSubscriptionId&&account.planStatus==='active'&&account.paidThroughAt>now();
@@ -313,6 +322,11 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         if(result.confirmedEnabled===true&&!result.pending)query('UPDATE billingCancellations SET restoredForwardingAt=?,lastError=NULL,updatedAt=? WHERE ownerId=?').run(now(),now(),ownerId);
         else query("UPDATE billingCancellations SET lastError='REACTIVATION_FORWARDING_PENDING',updatedAt=? WHERE ownerId=?").run(now(),ownerId);
       }
+    },{clock});
+    if(localOnly)return;
+    await withBillingLease(database,ownerId,async assertLease=>{
+      row=cancellation(ownerId);
+      if(row&&['CONFIRMED','ENDED'].includes(row.state)&&row.endAt<=now())await stopUsageCollection(ownerId,assertLease);
     },{clock});
     await recoverReceiptCurrencies(ownerId);syncNotices(ownerId);await reminders(ownerId);
     for(let i=0;i<12;i++)if(!await emails.deliverOne(ownerId))break;
@@ -334,6 +348,9 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     // Platform inventory only. Every following operation binds the owner.
     let owners=database.prepare("SELECT id FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 32").all(cursor);
     if(!owners.length){cursor='';owners=database.prepare("SELECT id FROM users WHERE role='owner' ORDER BY id LIMIT 32").all();}
+    // Finish every due owner's retention work before any Stripe reads. A slow
+    // billing provider for one owner must not postpone another owner's erasure.
+    for(const {id} of owners)try{await processOwner(id,{localOnly:true});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}
     for(const {id} of owners){try{await processOwner(id);}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}finally{cursor=id;}}
   })();try{await running;}finally{running=null;}}
   function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{clearInterval(timer);if(running)await running;};}

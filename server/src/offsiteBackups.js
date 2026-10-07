@@ -5,6 +5,8 @@ import {createSnapshot,restoreBackup} from './backups.js';
 import {assertRealContainment} from './deploymentConfig.js';
 import {encryptBundle,decryptBundle,fileChecksum,MAX_ARCHIVE_BYTES} from './offsiteArchive.js';
 import {readOffsiteConfig,createS3BackupStore,isConflict} from './offsiteStore.js';
+import {createContinuousOffsiteService} from './continuousOffsite.js';
+export {restoreContinuousBackup,pruneContinuousBackups} from './continuousOffsite.js';
 
 const dayAt=now=>new Date(now).toISOString().slice(0,10);
 const dayValid=day=>typeof day==='string' && /^\d{4}-\d{2}-\d{2}$/.test(day) && Number.isFinite(Date.parse(day)) && dayAt(Date.parse(day))===day;
@@ -57,8 +59,8 @@ export async function restoreOffsiteBackup({store,config,day,target,volume}) {
     return restoreBackup(bundle,target,{volume});
   } finally {fs.rmSync(stage,{recursive:true,force:true});}
 }
-export function createOffsiteBackupService(database,deployment,{env=process.env,config=deployment.production?readOffsiteConfig(env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]},store=config.enabled?createS3BackupStore(config):null,now=Date.now,
-  takeSnapshot=()=>createSnapshot(database,deployment),warn=message=>console.warn(message),retryMs=60000,pollMs=60000}={}) {
+export function createDailyOffsiteBackupService(database,deployment,{env=process.env,config=deployment.production?readOffsiteConfig(env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]},store=config.enabled?createS3BackupStore(config):null,now=Date.now,
+  takeSnapshot=()=>createSnapshot(database,deployment),warn=message=>console.warn(message),retryMs=60000,pollMs=60000,closeStore=true}={}) {
   if(!config.enabled) {
     if(deployment.production)warn('[offsite-backup] WARNING: off-site backups are NOT configured; losing the volume loses business data. '+config.reason+(config.missing?.length?' Missing: '+config.missing.join(', '):''));
     return {run:async()=>{throw Error(config.reason);},start:()=>{},stop:async()=>{},status:()=>({ok:false,configured:false,state:'NOT_CONFIGURED',error:config.reason,missing:config.missing||[]})};
@@ -153,8 +155,19 @@ export function createOffsiteBackupService(database,deployment,{env=process.env,
     };
     timer=setTimeout(tick,0);timer.unref?.();
   }
-  async function stop() {stopped=true;clearTimeout(timer);await active?.catch(()=>{});store.close?.();}
+  async function stop() {stopped=true;clearTimeout(timer);await active?.catch(()=>{});if(closeStore)store.close?.();}
   return {run,start,stop,status};
+}
+export function createOffsiteBackupService(database,deployment,options={}){
+  const config=options.config||(deployment.production?readOffsiteConfig(options.env):{enabled:false,reason:'OFFSITE_PRODUCTION_ONLY',missing:[]});
+  const store=config.enabled?(options.store||createS3BackupStore(config)):null,common={...options,config,store,closeStore:false};
+  const daily=createDailyOffsiteBackupService(database,deployment,common);
+  if(!daily.status().configured)return daily;
+  const replica=createContinuousOffsiteService(database,deployment,common);let stopping;
+  const status=()=>{const d=daily.status(),r=replica.status();return {...d,ok:d.ok&&r.ok,error:d.error||r.error,continuous:r};};
+  return {status,replicate:replica.run,
+    async run(){const results=await Promise.allSettled([daily.run(),replica.run()]);for(const result of results)if(result.status==='rejected')throw result.reason;return status();},
+    start(){daily.start();replica.start();},stop(){return stopping||(stopping=Promise.all([replica.stop(),daily.stop()]).finally(()=>store.close?.()));}};
 }
 export function installOffsiteBackupStatusRoute(app,{service,requireAuth}) {
   app.get('/api/admin/backups/offsite',requireAuth(['admin']),(_req,res)=>{const status=service.status();res.set('Cache-Control','no-store').status(status.ok?200:503).json(status);});

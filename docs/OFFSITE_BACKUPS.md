@@ -1,11 +1,22 @@
-# Daily encrypted off-site backups
+# Continuous encrypted off-site replication and nightly backups
 
 The production server retains its existing six-hour local snapshots and adds one
 completed off-site snapshot per UTC calendar day. An overdue job runs at startup;
 a running process checks every minute. These are full database plus **all** saved
-price-book bundles in the existing version-1 format, not continuous replication.
-The off-site recovery point can lose up to a day's changes, and longer during a
-sustained outage. Platform §12.19's continuous replication remains separate work.
+price-book bundles in the existing version-1 format. In addition, a continuous
+worker publishes encrypted online SQLite recovery copies and the complete saved
+book inventory when committed data changes. Filesystem notifications wake it;
+one-second polling also detects missed notifications and other SQLite writers.
+Burst writes coalesce. Changes during an upload require a subsequent checkpoint.
+This supplies platform §12.19's asynchronous replication equivalent alongside the
+nightly snapshot, without requiring a separate Litestream binary.
+
+Recovery uses the latest **completed and verified** checkpoint. Replication is
+asynchronous: a volume loss can still lose in-flight changes, and an object-store
+outage prevents new protection until recovery. There is no zero-loss guarantee.
+Full recovery copies consume more storage/bandwidth than WAL deltas; provision
+for the actual database/book size and change rate. No real provider or deployment
+acceptance is implied by the fake-store regression tests.
 
 No storage account or bucket is created by this implementation. Provision a private
 S3-compatible bucket separately, with no public read access, HTTPS, and credentials
@@ -65,13 +76,32 @@ newest **30 complete daily backups** and remove older data and completion record
 Incomplete/missing copies do not count toward thirty. Failed uploads never trigger
 pruning; interrupted pruning resumes on retry. Unrelated keys are untouched.
 
+Continuous checkpoints use a separate `continuous/<checkpoint-id>.enc` namespace,
+with matching completion records and independent `.offsite-continuous` durable
+pending state/lock. They use the same AES-GCM, conditional publication, download
+verification, size limit and bounded retries. The worker detects changes in the
+live SQLite/WAL files, connection change counters and saved book files; it never
+copies the live database file as a backup. Its private temporary online snapshot
+is removed after encryption. The pending ciphertext survives failed publication
+and restarts, and newer changes wait for that immutable receipt before catch-up.
+
+Retain continuous checkpoints for thirty elapsed days, preserving the exact
+thirty-day boundary and always the newest complete checkpoint during a prolonged
+outage. Pruning runs at most daily after a verified checkpoint; failed publication
+does not prune. Nightly backup retention remains thirty complete daily copies.
+No storage account, bucket or lifecycle policy is created by either worker.
+
 ## Operator status
 
 `GET /api/admin/backups/offsite` requires a real platform-admin session. Anonymous
 users, owners and staff cannot read it. It returns 200 only when a successful backup
-is less than 26 hours old and no failure is active; otherwise 503. It reports last
+is less than 26 hours old, replication has caught up and no failure is active;
+otherwise 503. It reports last
 successful day/time, attempt, pending day, retry time, failure count and a fixed
-error code. Missing configuration is `NOT_CONFIGURED`, with a clear production
+error code. The `continuous` status includes the latest checkpoint ID, last
+successful/attempt times, pending changes/checkpoint, retry and failure state.
+An unchanged database remains caught up; its nightly verification still has the
+26-hour health limit. Missing configuration is `NOT_CONFIGURED`, with a clear production
 startup warning; local snapshots continue. `/api/health` remains the application
 liveness/readiness check so an object-store outage does not trigger restart loops.
 
@@ -98,6 +128,18 @@ checksums are verified again. A wrong key or corrupted object exits nonzero and
 publishes no restore. Existing directories/data are never overwritten. Temporary
 ciphertext/plaintext is cleaned up on success/failure; the final restore directory
 must be a new direct child of the volume's `restores` directory.
+
+For changes since the nightly snapshot, select the completed `lastCheckpointId`
+from the admin status (or a retained completion record) and run:
+
+```sh
+npm run restore:offsite -- --checkpoint <checkpoint-id> --target /data/restores/continuous-drill
+```
+
+This follows the same checksum, authenticated decryption, full-bundle integrity,
+inventory and new-target-only checks. A synthetic regression wipes the whole
+original volume and executes this actual CLI against a fake S3 provider, restoring
+a commit made after the nightly copy. Do not select an incomplete pending upload.
 
 After a successful restore, follow the existing `docs/RAILWAY_SETUP.md` procedure
 for selecting `APP_DATA_DIR` and retaining application secrets. Deployment and real

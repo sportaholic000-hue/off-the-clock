@@ -1,0 +1,84 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fixture,A,B,prices,START} from './overageMinute20261006Fixture.mjs';
+import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
+import {installTelephonyOperationsSchema} from '../server/src/telephonyOperationsMigration.js';
+
+const END='2026-11-20T12:00:00.000Z', RELEASE='2026-12-20T12:00:00.000Z', DELETE='2027-02-18T12:00:00.000Z';
+// Before execution: 310 reconciled minutes - 300 included = 10 × 35 cents
+// = $3.50 CAD pending evidence. Cleanup must neither charge nor refund it.
+async function setup(t){
+  const f=fixture(t),writes={release:[],coverage:[]};installTelephonyOperationsSchema(f.db);
+  f.activate(A);f.activate(B);f.call(310*60);f.setTime(END);
+  f.fakes.stripe.invoices.finalizeInvoice=async id=>{const invoice=f.fakes.invoices.get(id);invoice.status='open';return structuredClone(invoice);};
+  await f.service.processOwner(A);
+  const charge=f.db.prepare('SELECT * FROM billingUsageCharges WHERE ownerId=?').get(A);
+  assert.equal(charge.amountCents,350);assert.ok(charge.providerInvoiceId);
+  for(const id of [A,B]){
+    f.db.prepare("INSERT INTO businessProfiles(ownerId,twilioNumber,twilioNumberSid,operatorEnabled,phoneProvisioningStatus,updatedAt) VALUES(?,?,?,1,'provisioned',?)").run(id,id===A?'+19025550101':'+19025550102','PN'+(id===A?'a':'b').repeat(32),START);
+    f.db.prepare('INSERT INTO leads(id,ownerId,customerName,createdAt) VALUES(?,?,?,?)').run('SYNTHETIC-lead-'+id,id,'[SYNTHETIC] retained',START);
+  }
+  const lifecycle=createBillingCustomerLifecycle({database:f.db,priceIds:prices,stripeClient:f.fakes.stripe,emailProvider:f.fakes.email,enabled:()=>true,clock:f.clock,
+    telephony:{async setCoverage(ownerId,enabled){writes.coverage.push({ownerId,enabled});return {confirmedEnabled:enabled,pending:false};}},
+    releaseNumber:async input=>{writes.release.push(input);return {released:true};}});
+  f.db.prepare(`INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,confirmedAt,operatorWasEnabled,updatedAt)
+    VALUES(?,?,'SYNTHETIC-cancellation','CONFIRMED',?,?,?,1,?)`).run(A,'sub_'+A,END,START,START,START);
+  f.db.prepare('UPDATE users SET serviceEndsAt=? WHERE id=?').run(END,A);
+  return {...f,lifecycle,writes,charge};
+}
+test('day 90 erasure and day 30 number release survive an unavailable billing provider',async t=>{
+  const f=await setup(t);f.setTime(DELETE);
+  f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] Stripe outage');};
+  await f.lifecycle.tick();
+  assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,0);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM calls WHERE ownerId=?').get(A).n,0);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(B).n,1);
+  assert.equal(f.writes.release.length,1);
+  const row=f.lifecycle.snapshot(A).cancellation;assert.equal(row.dataDeletedAt,DELETE);assert.equal(row.phoneReleasedAt,DELETE);
+  const charge=f.db.prepare('SELECT * FROM billingUsageCharges WHERE ownerId=?').get(A);
+  assert.equal(charge.amountCents,350);assert.equal(charge.collectionStoppedAt,null);
+  assert.equal(charge.lastError,'BILLING_COLLECTION_STOP_PENDING');
+  assert.throws(()=>f.lifecycle.exportCsv(A,'leads'),{code:'BILLING_EXPORT_EXPIRED'});
+  assert.equal(f.fakes.writes.invoice.length,1);
+});
+test('local cleanup completes before a delayed billing read settles',async t=>{
+  const f=await setup(t);f.setTime(DELETE);
+  let enter,finish;const entered=new Promise(resolve=>{enter=resolve;}),held=new Promise(resolve=>{finish=resolve;});
+  f.fakes.stripe.invoices.retrieve=async()=>{enter();await held;throw Error('[SYNTHETIC] delayed outage');};
+  const processing=f.lifecycle.processOwner(A);
+  try{
+    await entered;
+    assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,0);
+    assert.equal(f.writes.release.length,1);
+  }finally{finish();await processing.catch(()=>{});}
+});
+test('failed collection stop retries without re-erasing or releasing, preserving financial evidence',async t=>{
+  const f=await setup(t);f.setTime(DELETE);
+  f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] outage');};await f.lifecycle.tick();
+  const releaseCount=f.writes.release.length;
+  f.fakes.stripe.invoices.retrieve=async id=>structuredClone(f.fakes.invoices.get(id));
+  f.fakes.stripe.invoices.update=async(id,params)=>{Object.assign(f.fakes.invoices.get(id),params);return structuredClone(f.fakes.invoices.get(id));};
+  await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
+  assert.equal(f.writes.release.length,releaseCount);assert.equal(releaseCount,1);
+  const charge=f.db.prepare('SELECT * FROM billingUsageCharges WHERE ownerId=?').get(A);
+  assert.equal(charge.collectionStoppedAt,DELETE);assert.equal(charge.lastError,null);assert.equal(charge.amountCents,350);
+});
+test('a collection outage cannot release or erase before their independent exact deadlines',async t=>{
+  const f=await setup(t);f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] outage');};
+  f.setTime(Date.parse(RELEASE)-1);await f.lifecycle.tick();assert.equal(f.writes.release.length,0);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
+  f.setTime(RELEASE);await f.lifecycle.tick();assert.equal(f.writes.release.length,1);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM leads WHERE ownerId=?').get(A).n,1);
+  f.setTime(Date.parse(DELETE)-1);await f.lifecycle.tick();assert.equal(f.lifecycle.snapshot(A).cancellation.dataDeletedAt,null);
+});
+test('all due owners are cleaned before the first owner’s delayed billing reconciliation',async t=>{
+  const f=await setup(t);f.setTime(DELETE);
+  f.db.prepare(`INSERT INTO billingCancellations(ownerId,stripeSubscriptionId,operationId,state,endAt,requestedAt,confirmedAt,operatorWasEnabled,updatedAt)
+    VALUES(?,?,'SYNTHETIC-cancellation-b','CONFIRMED',?,?,?,1,?)`).run(B,'sub_'+B,END,START,START,START);
+  f.db.prepare('UPDATE users SET serviceEndsAt=? WHERE id=?').run(END,B);
+  let enter,finish;const entered=new Promise(resolve=>{enter=resolve;}),held=new Promise(resolve=>{finish=resolve;});
+  f.fakes.stripe.invoices.retrieve=async()=>{enter();await held;throw Error('[SYNTHETIC] delayed outage');};
+  const processing=f.lifecycle.tick();
+  try{await entered;assert.equal(f.db.prepare('SELECT count(*) n FROM leads').get().n,0);assert.equal(f.writes.release.length,2);}
+  finally{finish();await processing;}
+});
