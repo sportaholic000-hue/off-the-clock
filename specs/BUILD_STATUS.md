@@ -1,10 +1,12 @@
-# October 7 release integration — three ordered merges
+# October 7 release integration — hosted gates passed
 
 Target `codex/quote-release-candidate-20261006`, starting at `5c1050dce191e9b97f20234b2747554bbbf3a20c`. Billing lifecycle `852caa9`, off-site backups `0062c43`, then tenant isolation `1189372` are preserved as ordered merge parents. [Complete integration and conflict report](../verification/release-three-branches-20261007/REPORT.md).
 
 The route matrix now covers all **115** merged registrations. Additional integration regressions repair day-90 callback/alert/SMS erasure, service-end fallback callbacks and saved-quote replay during corrupt-book recovery; anonymous callers retain strict saved bindings. Existing tests and the empty known-failures list remain. No quote arithmetic change; engine stays v7.
 
-Cold local install, owner/widget build and production audit passed. Final focused verification: **349/349**, zero failures/skips/cancellations/TODOs. Full local browser execution is not yet a passing gate; the exact pushed-head hosted cold run is checked before task completion and its counts reported there. No subagents, main merge, deployment or live data.
+[Hosted run 37577802231](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37577802231) passed at source/test/CI SHA **`424184eb65036eb986dc153ae8cd3f6a4d1fe9b3`**: cold `npm ci`, owner/widget builds, **2,576/2,576** strict quote tests, **3,603/3,603** full-suite tests, empty-failure checker and **zero production dependency vulnerabilities**. Both suites report **zero failures/skips/cancellations/TODOs**. All three pinned ancestry checks returned exit 0 after fetching back the identical published tree.
+
+Local focused verification passed **349/349**, with zero failures/skips/cancellations/TODOs. Local Chromium startup crashes (SIGTRAP) prevent a passing local browser-gate claim; hosted cold execution supplies complete browser evidence. Application/test/CI code is unchanged in this result-recording checkpoint; the exact final pushed-head run is independently checked before task delivery. No subagents, main merge, deployment or live data.
 
 ## Previous checkpoint
 

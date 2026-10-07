@@ -1,0 +1,121 @@
+{
+  "source_sha": "424184eb65036eb986dc153ae8cd3f6a4d1fe9b3",
+  "run_id": 37577802231,
+  "run_url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37577802231",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 112650497366,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install from lockfile (ignores committed node_modules)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build owner app and widget",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Strict quote engine and price book gate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full test suite",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "No failures beyond the known list",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish test summary to claude/ci-results (push events only)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Production dependency audit",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "test_summaries": [
+    "2026-10-07T05:44:32.6034394Z found 0 vulnerabilities",
+    "2026-10-07T05:44:58.4891903Z PASS: quotes reach the engine only through quoteDoneBridge.js; customers receive sanitized results; no legacy engine in production.",
+    "2026-10-07T05:49:52.5346250Z # tests 2576",
+    "2026-10-07T05:49:52.5347269Z # pass 2576",
+    "2026-10-07T05:49:52.5347752Z # fail 0",
+    "2026-10-07T05:49:52.5348396Z # cancelled 0",
+    "2026-10-07T05:49:52.5348657Z # skipped 0",
+    "2026-10-07T05:49:52.5349214Z # todo 0",
+    "2026-10-07T05:49:52.5352914Z PASS: quote engine and price book gate (129 files, 2576/2576 tests, zero skips).",
+    "2026-10-07T05:55:18.1059672Z # tests 3603",
+    "2026-10-07T05:55:18.1060393Z # pass 3603",
+    "2026-10-07T05:55:18.1060730Z # fail 0",
+    "2026-10-07T05:55:18.1061052Z # cancelled 0",
+    "2026-10-07T05:55:18.1061393Z # skipped 0",
+    "2026-10-07T05:55:18.1061708Z # todo 0",
+    "2026-10-07T05:55:20.2138579Z found 0 vulnerabilities"
+  ],
+  "ancestry_inputs": [
+    {
+      "sha": "852caa913d44d5b7e3b3cec6d90d9dd02ba1679e",
+      "exit": 0
+    },
+    {
+      "sha": "0062c4307f54f5a4839ead1f912d2d4c889889b4",
+      "exit": 0
+    },
+    {
+      "sha": "1189372bd5872d8c9d719cf7248e4d5ec3636da2",
+      "exit": 0
+    }
+  ],
+  "known_failures_bytes": 0,
+  "quote_engine_version": "quote-engine-vnext-date-context-20261006-v7"
+}

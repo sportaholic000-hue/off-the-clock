@@ -23,7 +23,7 @@ Each input remains an actual merge parent, in this order. No squash or cherry-pi
 - Backup rehearsal now verifies a captured synthetic email via the real HTTP route before login; no session is granted before verification. Real $100 quote, lead, confirmed-booking, backup/restore and immutable replay assertions remain.
 - Rebuilt the committed owner-app assets from the merged sources. No quote arithmetic changed: all inputs and this integration retain `quote-engine-vnext-date-context-20261006-v7`. Owner-only deadlines, $0.35/min overage with 60/30/0 alerts, upfront annual trial-end charge and monthly resets remain covered by the inherited release tests.
 
-## Verification checkpoint
+## Verification results
 
 Synthetic data only. Local Node 22 cold `npm ci` installed 288 packages; owner app and widget builds passed; `npm audit --omit=dev --audit-level=high` found **zero vulnerabilities**. The empty `.github/known-test-failures.txt` is retained.
 
@@ -37,6 +37,20 @@ Focused final verification (disjoint test files):
 | Off-site encryption, retention and synthetic S3 restore | 23 | 0 / 0 / 0 / 0 |
 | Total focused checks | **349** | **0 / 0 / 0 / 0** |
 
-The initial local full gate ran 3,594 tests with 69 failures and zero skips: 16 were integration fixture/selector failures repaired and rerun above; 53 were missing Chromium failures. This is not a passing local full gate. Browser installation is being retried; the hosted cold run on the exact published head is the final complete-gate evidence. No tests are disabled or allowlisted. Full/quote counts and the exact hosted run are reported in the task completion after publication, rather than predicting them in this pre-publication checkpoint.
+The initial local full gate ran 3,594 tests with 69 failures and zero skips: 16 were integration fixture/selector failures repaired and rerun above; 53 were missing Chromium failures. The final local quote attempt passed 2,514 of 2,567 tests, with 53 browser startup failures and zero skips. Installing the same pinned Playwright/Chromium version as CI succeeded on retry, but its startup smoke test crashed with SIGTRAP in this workspace. These are failed local browser gates, not passing evidence. No tests are disabled or allowlisted.
+
+**Hosted cold verification passed** on source/test/CI SHA **`424184eb65036eb986dc153ae8cd3f6a4d1fe9b3`**, [run 37577802231](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37577802231). The run removed all installed project dependencies, ran `npm ci`, installed Chromium, built the owner app and widget, and passed:
+
+| Gate | Result |
+| --- | --- |
+| `npm run test:quote` | **2,576/2,576**, 129 test files |
+| `npm test` | **3,603/3,603** |
+| Failures, skips, cancellations, TODOs | **0** in both suites |
+| Empty known-failures checker | Passed |
+| `npm audit --omit=dev --audit-level=high` | **0 vulnerabilities** |
+
+[HOSTED_VERIFICATION.json](HOSTED_VERIFICATION.json) records the successful job/step statuses and exact timestamped test summaries. Hosted counts include nine nested browser checks which cannot execute after the local browser startup failures.
+
+The fetched-back published tree matched the local committed tree exactly. Real `git merge-base --is-ancestor <input> HEAD` checks returned **exit 0 for all three inputs** on this published source SHA; the working tree was clean and the known-failures file was zero bytes. This result-recording commit changes only documentation/evidence. Its own exact-head hosted run and final ancestry are independently checked before task delivery and reported in the completion response.
 
 No subagents, merge to main, deployment, live data, real payments, email or SMS. Off-site tests use the loopback fake S3 service only.
