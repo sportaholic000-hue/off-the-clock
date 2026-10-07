@@ -998,9 +998,9 @@ owner.
   promise remedies, refunds, or fixes the owner hasn't
   pre-authorized in the KB ("Policies" section may authorize
   standard responses, e.g. "we'll always come back to fix a
-  warranty issue"); (4) commit to a concrete callback window
-  (owner-set, default "within 2 hours during business
-  hours"); (5) flagUrgent — complaints always notify the
+  warranty issue"); (4) promise a callback deadline only if explicitly owner-set
+  in saved policies; otherwise say the business will follow up
+  without a time (owner ruling 2026-10-06, no default deadline); (5) flagUrgent — complaints always notify the
   owner immediately, never digest. Lead card type COMPLAINT
   with transcript pinned to the customer record.
 

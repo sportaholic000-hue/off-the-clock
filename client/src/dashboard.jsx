@@ -2,6 +2,7 @@ import {OwnerAlerts} from './ownerAlerts.jsx';
 import OwnerIntegrations from './ownerIntegrations.jsx';
 import MinuteUsage from './minuteUsage.jsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {voiceOperatorControl} from './voiceOperatorControl.js';
 import { BookOpen, ChevronRight, PhoneCall, Settings } from 'lucide-react';
 import {CallFeed} from './calls.jsx';
 import { api, go, getSessionKey } from './api.js';
@@ -30,12 +31,8 @@ function operatorView(operator) {
     };
   }
   return {
-    live: operator.enabled,
+    ...voiceOperatorControl(operator),
     simulated: false,
-    title: operator.enabled ? 'OPERATOR LIVE' : 'OPERATOR OFF',
-    sub: operator.enabled ? 'EVERY CALL FROM HERE ON IS COVERED' : 'CALLS RING YOUR PHONE',
-    checked: operator.enabled,
-    blocked: !operator.eligible && !operator.enabled,
     missing: operator.missing || []
   };
 }

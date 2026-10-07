@@ -373,19 +373,19 @@ export function createGeminiMediaBridge({
             // A provider close failure cannot keep accepting media.
           }
         }
-        if (closeTransport) {
-          closeSocket(
-            outcome.status === "failed" ? 1008 : 1000,
-            outcome.status === "failed" ? "Voice media unavailable" : "Voice session ended",
-          );
-        }
+        await transcriptTail;
+        let finalOutcome=outcome;
         try {
           await onSessionEnd({ context, session, streamSid, outcome });
         } catch {
-          // Session-end telemetry is best effort after media has already stopped.
+          // The durable active row remains recoverable; never claim successful
+          // final persistence after a failed commit.
+          finalOutcome=Object.freeze({status:'failed',reason:'SESSION_PERSISTENCE_FAILED'});
         }
-        resolveDone(outcome);
-        return outcome;
+        if(closeTransport)closeSocket(finalOutcome.status==='failed'?1008:1000,
+          finalOutcome.status==='failed'?'Voice media unavailable':'Voice session ended');
+        resolveDone(finalOutcome);
+        return finalOutcome;
       });
       return finishPromise;
     }
@@ -501,14 +501,11 @@ export function createGeminiMediaBridge({
             return Promise.resolve();
           }
           const task = transcriptTail.then(() => {
-            if (ended) return undefined;
             return onTranscript({ context, session, streamSid, transcript });
           });
-          transcriptTail = task.catch((error) => abort(
-            error instanceof GeminiMediaBridgeError
-              ? error
-              : bridgeError("TRANSCRIPT_CALLBACK_FAILED"),
-          ));
+          transcriptTail = task.catch((error) => {
+            void abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("TRANSCRIPT_CALLBACK_FAILED"));
+          });
           return transcriptTail;
         },
 

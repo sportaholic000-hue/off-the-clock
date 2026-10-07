@@ -52,10 +52,10 @@ function ownerFacts(prompt) {
   return JSON.parse(match[1]);
 }
 
-test("the compiler authenticates and parses every section of the immutable 459-line guide", () => {
+test("the compiler authenticates and parses every section of the versioned owner-policy guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "e0cf3500c61395bb2114998fee20da989d0a3adabd59f9b1d597fbf20279c3c6");
+  assert.equal(parsed.digest, "f33b7f324fe38443d33a660006b17fc50dea17f9f866f795afcbe8780b18ff1e");
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
   assert.match(parsed.globalRules, /ONE question per turn/);
   assert.match(parsed.globalRules, /read back every number explicitly/);
@@ -326,7 +326,9 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   }
 
   const availability = VOICE_TOOL_DECLARATIONS.find((item) => item.name === "checkAvailability");
-  assert.deepEqual(availability.parameters.required, ["quoteHandle", "leadHandle"]);
+  assert.deepEqual(availability.parameters.required, []);
+  assert.deepEqual(validateVoiceToolCall("checkAvailability",{appointmentHandle:HANDLE_A}),{appointmentHandle:HANDLE_A});
+  assert.throws(()=>validateVoiceToolCall("checkAvailability",{}),{code:"MISSING_TOOL_FIELD"});
   assert.equal(availability.parameters.properties.preference.type, "OBJECT");
   assert.equal(availability.parameters.properties.preference.additionalProperties, false);
   assert.deepEqual(

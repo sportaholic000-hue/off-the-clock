@@ -622,7 +622,18 @@ export function createGoogleCalendarAdapter({
     return normalizeEvent(payload, input.eventId);
   }
 
+  async function changeEvent(input){
+    const {ownerId,calendarId}=baseRequest(input);
+    if(!GOOGLE_EVENT_ID.test(input.eventId)||!['cancel','reschedule'].includes(input.action))throw invalidRequest();
+    const bounds=input.action==='reschedule'?orderedUtcBounds(input.startAtUtc,input.endAtUtc):null;
+    const payload=await apiRequest({ownerId,calendarId,path:`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(input.eventId)}?sendUpdates=none`,method:'PATCH',write:true,
+      body:bounds?{start:{dateTime:bounds.start,timeZone:'UTC'},end:{dateTime:bounds.end,timeZone:'UTC'}}:{status:'cancelled'}});
+    const event=normalizeEvent(payload,input.eventId,{ambiguous:true});
+    if(bounds?(event.status!=='CONFIRMED'||event.startAtUtc!==bounds.start||event.endAtUtc!==bounds.end):event.status!=='CANCELLED')throw invalidResponse({ambiguous:true});
+    return event;
+  }
+
   // Google Calendar's caller-supplied event ID prevents duplicate event creation
   // when a successful write loses its response. Recovery must reuse that ID.
-  return { listBusy, createEvent, getEvent, idempotentCreateByEventId: true };
+  return { listBusy, createEvent, getEvent, changeEvent, idempotentCreateByEventId: true };
 }

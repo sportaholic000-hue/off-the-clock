@@ -1,3 +1,5 @@
+import {isVoiceCaller} from './voice/callerIdentity.js';
+import {isFinalVoiceCall} from './voice/voiceRecovery.js';
 import { createHash } from "node:crypto";
 
 import express from "express";
@@ -180,7 +182,7 @@ function normalizeIncomingCall(body, validatedAccountSid, allowedAccountSids) {
   ) {
     fail("TWILIO_ACCOUNT_NOT_ALLOWED", 403);
   }
-  if (!CALL_SID.test(callSid) || !E164.test(from) || !E164.test(to) || direction !== "inbound") {
+  if (!CALL_SID.test(callSid) || !isVoiceCaller(from) || !E164.test(to) || direction !== "inbound") {
     fail("INVALID_INBOUND_CALL", 400);
   }
   return Object.freeze({ accountSid, callSid, from, to });
@@ -211,6 +213,11 @@ function safeMessage(value) {
 function fallbackTwiml(value, calledNumber) {
   const fallback = isPlainObject(value) ? value : {};
   const message = safeMessage(fallback.message);
+  if(fallback.mode==='capture') {
+    const action=new URL(fallback.action),partial=new URL(fallback.partial);
+    if(action.protocol!=='https:'||partial.origin!==action.origin)throw Error('Invalid capture URL');
+    return '<Response><Gather input="speech" action="'+xmlText(action.href)+'" method="POST" partialResultCallback="'+xmlText(partial.href)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>'+xmlText(message)+'</Say></Gather></Response>';
+  }
   const number = typeof fallback.number === "string" ? fallback.number.trim() : "";
   if (fallback.mode === "forward" && E164.test(number) && number !== calledNumber) {
     return (
@@ -270,12 +277,8 @@ async function resolveFallbackTwiml({ resolveFallback, recordFallback, context, 
     choice = null;
   }
   if (typeof recordFallback === "function") {
-    try {
-      await recordFallback({ context, tenant, reason });
-    } catch {
-      // A persistence/notification failure must not turn a signed inbound call
-      // into a dead ring. The safe response is still returned.
-    }
+    const saved=await recordFallback({context,tenant,reason});
+    if(saved?.terminal)return '<Response><Hangup/></Response>';
   }
   return fallbackTwiml(choice, context?.to ?? tenant?.calledNumber ?? null);
 }
@@ -299,6 +302,7 @@ export function installVoiceRuntimeRoutes(app, {
   checkOperatorEligibility,
   checkVoiceCap,
   createSession,
+  routeIncoming,
   resolveFallback = async () => ({ mode: "message", message: DEFAULT_FALLBACK_MESSAGE }),
   recordFallback,
   incomingPath: incomingPathValue,
@@ -361,21 +365,19 @@ export function installVoiceRuntimeRoutes(app, {
         accountSid: call.accountSid,
       });
 
+      const build = async()=>{
       const runtimeDecision =
         typeof runtimeEnabled === "function"
           ? await runGate(runtimeEnabled, { context, tenant }, "VOICE_RUNTIME_DISABLED")
           : normalizeGateDecision(runtimeEnabled, "VOICE_RUNTIME_DISABLED");
       if (!runtimeDecision.allowed) {
-        return sendXml(
-          response,
-          await resolveFallbackTwiml({
+        return await resolveFallbackTwiml({
             resolveFallback,
             recordFallback,
             context,
             tenant,
             reason: runtimeDecision.reason,
-          }),
-        );
+          });
       }
 
       const operatorDecision = await runGate(
@@ -384,16 +386,13 @@ export function installVoiceRuntimeRoutes(app, {
         "OPERATOR_INELIGIBLE",
       );
       if (!operatorDecision.allowed) {
-        return sendXml(
-          response,
-          await resolveFallbackTwiml({
+        return await resolveFallbackTwiml({
             resolveFallback,
             recordFallback,
             context,
             tenant,
             reason: operatorDecision.reason,
-          }),
-        );
+          });
       }
 
       const capDecision = await runGate(
@@ -403,16 +402,13 @@ export function installVoiceRuntimeRoutes(app, {
         "canStartNewCall",
       );
       if (!capDecision.allowed) {
-        return sendXml(
-          response,
-          await resolveFallbackTwiml({
+        return await resolveFallbackTwiml({
             resolveFallback,
             recordFallback,
             context,
             tenant,
             reason: capDecision.reason,
-          }),
-        );
+          });
       }
 
       let issued;
@@ -430,39 +426,25 @@ export function installVoiceRuntimeRoutes(app, {
           context,
           expiresAt: issued.expiresAt,
         });
+        if(result?.status==='capacity')return resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:'VOICE_CONCURRENCY_LIMIT'});
         if (!isPlainObject(result) || result.status !== "created") {
           fail("VOICE_SESSION_NOT_PERSISTED");
         }
       } catch {
-        return sendXml(
-          response,
-          await resolveFallbackTwiml({
+        return await resolveFallbackTwiml({
             resolveFallback,
             recordFallback,
             context,
             tenant,
             reason: "VOICE_SESSION_UNAVAILABLE",
-          }),
-        );
+          });
       }
 
-      return sendXml(response, streamTwiml(streamUrl(base, streamPath, issued.nonce),resumeFallback?base.origin+fallbackPath+'/'+issued.nonce:null));
+      return streamTwiml(streamUrl(base, streamPath, issued.nonce),resumeFallback?base.origin+fallbackPath+'/'+issued.nonce:null);
+      };
+      return sendXml(response,routeIncoming?await routeIncoming({context,build}):await build());
     } catch (error) {
-      // Once a signed destination has resolved, every downstream failure gets
-      // deterministic TwiML instead of silence. Authentication and unknown
-      // destination failures are never converted into a trusted tenant route.
-      if (tenant && context) {
-        return sendXml(
-          response,
-          await resolveFallbackTwiml({
-            resolveFallback,
-            recordFallback,
-            context,
-            tenant,
-            reason: "VOICE_RUNTIME_BOUNDARY_FAILURE",
-          }),
-        );
-      }
+      if(tenant&&context)return response.status(503).type('text/plain').send('Request capture temporarily unavailable. Retry this callback.');
       return sendBoundaryFailure(response, error);
     }
   });
@@ -478,6 +460,7 @@ export function installVoiceRuntimeRoutes(app, {
       const stored=await loadSessionByNonceHash({sessionKey:nonceDigest(nonce)});
       const context=stored?.context;
       if(!context||context.ownerId!==tenant.ownerId||context.callSid!==call.callSid||context.accountSid!==call.accountSid||context.from!==call.from||context.to!==call.to)fail('FALLBACK_BINDING_MISMATCH',403);
+      if(isFinalVoiceCall(stored.session?.status)||stored.session?.status==='TRANSFERRING')return sendXml(response,'<Response><Hangup/></Response>');
       return sendXml(response,await resolveFallbackTwiml({resolveFallback,recordFallback,context,tenant,reason:'VOICE_SESSION_UNAVAILABLE'}));
     }catch(error){return sendBoundaryFailure(response,error);}
   });
@@ -507,6 +490,7 @@ function sessionRecord(value) {
   if (!isPlainObject(value) || !isPlainObject(value.context)) {
     fail("VOICE_SESSION_NOT_FOUND", 403);
   }
+  if(isFinalVoiceCall(value.session?.status)||['FAILED','FALLBACK','TRANSFERRING'].includes(value.session?.status))fail("VOICE_SESSION_FINAL",403);
   return value;
 }
 

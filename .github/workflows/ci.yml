@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006']
+    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006']
   pull_request:
 permissions:
   contents: write

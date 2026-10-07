@@ -1,3 +1,10 @@
+# Voice lifecycle repairs — 2026-10-06
+
+Branch `fix/voice-lifecycle-20261006` starts at verified `eaadeca0856f1bd7fcade8685711a19aefd786d0`. D04/D06/D07/D08/D25–D28/D31/D32 and P01 are implemented or independently verified with synthetic fake providers. Final tested source: **`e49ea59118fc1c442b8ee44a807b15149405136c`**. Cold hosted [run 37545433595](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37545433595) passed install, build, **2,144 strict quote tests / 2,570 full tests**, and the production dependency audit. Targeted gate: **325/325**, including **43 lifecycle scenarios**. All these test gates have zero failures, cancellations, skips or TODOs. Local install/build passed; local test runs have 39 Chromium-startup failures each, disclosed separately in `verification/voice-lifecycle-20261006/REPORT.md`. No application work remains unfinished; no subagents, merge, deployment, real calls/texts or live data were used.
+
+
+---
+
 # October 6 named review contact — hosted gates passed; review delivery still incomplete
 
 Branch: `codex/named-review-contact-implementation-20261006`.
