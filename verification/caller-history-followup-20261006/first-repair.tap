@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: D14 caller filter precedes limit with tenant and malformed-record controls
+ok 1 - D14 caller filter precedes limit with tenant and malformed-record controls
+  ---
+  duration_ms: 20.217075
+  type: 'test'
+  ...
+# Subtest: D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+ok 2 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+  ---
+  duration_ms: 13.840121
+  type: 'test'
+  ...
+# Subtest: D16 handle credential rotation preserves one owner-phone customer and historical references
+ok 3 - D16 handle credential rotation preserves one owner-phone customer and historical references
+  ---
+  duration_ms: 9.387909
+  type: 'test'
+  ...
+# Subtest: D21 unresolved preferences survive calendar range changes until resolved
+ok 4 - D21 unresolved preferences survive calendar range changes until resolved
+  ---
+  duration_ms: 30.304107
+  type: 'test'
+  ...
+# Subtest: D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+ok 5 - D24 signed HTTP and WebSocket call stores factual transcript summary visible in owner feed
+  ---
+  duration_ms: 233.672773
+  type: 'test'
+  ...
+# Subtest: D16 web review and voice share exact normalized owner-phone identity
+ok 6 - D16 web review and voice share exact normalized owner-phone identity
+  ---
+  duration_ms: 45.095723
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 608.006997

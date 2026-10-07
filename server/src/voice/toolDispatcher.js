@@ -91,7 +91,15 @@ const PROJECTORS=Object.freeze({
   flagUrgent(result){const output=baseResult(result);copyIf(result,output,'caseHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   transferCall(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'callbackSaved',value=>{if(typeof value!=='boolean')fail('INVALID_TOOL_RESULT',502);return value;});return output;},
   modifyAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},
-  getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'recentAppointments',value=>resultTextList(value,10));copyIf(result,output,'message',value=>resultText(value,1000));return output;}
+  getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'address',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,text])=>[key,text===''&&key==='line2'?'':resultText(text,500)]));});
+    for(const key of ['openLeads','recentQuotes','quoteRequests'])copyIf(result,output,key,value=>{
+      if(!Array.isArray(value)||value.length>5)fail('INVALID_TOOL_RESULT',502);
+      return value.map(row=>{assertClosed(row,key==='recentQuotes'?['status','serviceType','createdAt','resultType','lowEstimate','midEstimate','highEstimate','currency','tierName','options']:key==='openLeads'?['description','status','createdAt']:['description','createdAt'],[],'INVALID_TOOL_RESULT');
+        const safe={};for(const [field,item] of Object.entries(row)){
+          if(field==='options'){if(!Array.isArray(item)||item.length>5)fail('INVALID_TOOL_RESULT',502);safe.options=item.map(option=>{assertClosed(option,['tierName','currency','lowEstimate','midEstimate','highEstimate'],[],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(option).map(([name,amount])=>[name,/Estimate$/.test(name)?resultMoney(amount):resultText(amount,120)]));});}
+          else safe[field]=item===null?null:/Estimate$/.test(field)?resultMoney(item):resultText(item,500);
+        }return safe;});
+    });copyIf(result,output,'recentAppointments',value=>resultTextList(value,10));copyIf(result,output,'message',value=>resultText(value,1000));return output;}
 });
 export function projectVoiceToolResult(name,result){const projector=PROJECTORS[name];if(typeof projector!=='function')fail('UNKNOWN_VOICE_TOOL');return Object.freeze(projector(result));}
 function requestDigest(name,args){return createHash('sha256').update(JSON.stringify({name,args}),'utf8').digest('hex');}

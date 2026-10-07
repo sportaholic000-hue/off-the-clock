@@ -157,6 +157,7 @@ export const CREATE_TABLE_STATEMENTS = [
     outcome TEXT,
     transcriptJson TEXT,
     summaryText TEXT,
+    transportOutcome TEXT,
     urgency TEXT,
     spamFiltered INTEGER NOT NULL DEFAULT 0,
     minutesBilled INTEGER NOT NULL DEFAULT 0,

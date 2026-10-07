@@ -1,0 +1,16 @@
+# Pre-execution expectations
+Base eaadeca0856f1bd7fcade8685711a19aefd786d0; synthetic accounts only.
+
+- D14: one matching older appointment remains discoverable behind 30 unrelated newer appointments; other tenant and caller appointments never appear. Results remain bounded to five per caller.
+- D15: dispatcher retains saved name and complete address, open lead descriptions/status, and customer-safe saved quote range/status. The saved synthetic quote is $221.23–$243.35 (22,123–24,335 cents), unchanged; no calculation occurs. Internal rate/cost sentinels and other tenants' history never appear.
+- D16: web plus voice with the same owner and exact normalized international phone have one stable customer identity, independent of handle secret. Different phones and owners remain separate even with equal names/emails; ambiguous local phone numbers and email-only requests are not automatically merged. Web input is contact information, not proof of authentication; it must never grant account access or overwrite an established customer identity. Existing duplicate customer rows/receipts are preserved, not destructively merged.
+- D21: REQUESTED preferences from past or future dates remain in the calendar request inbox until status is resolved. Resolved requests remain visible only in their historical date range. Foreign preferences never appear.
+- D24: after an actual signed synthetic call completes, summary contains only attributed verbatim finalized caller/assistant excerpts. No generated facts, tool payloads, provider claims or raw pricing. Empty/malformed transcript produces no invented summary. Existing owner feed/detail renders the stored text. Semantic outcome uses committed tenant-bound records; transport reason remains separately recorded.
+
+Source evidence before changes: voiceToolRuntime getCustomerContext applies tenant LIMIT 25 before JS caller filter, returns name/address absent from dispatcher, queries no leads/quotes. saveInquiry derives customer UUID from handle secret. submitQuote inserts no customer. ownerCalendarService filters all requests by requested date. productionVoiceRuntime onSessionEnd writes transport outcome without summary.
+Governing platform_spec_v2 sections 5.7, 6.6, 6.8, 12.18, 13.3, 13.7.
+
+Post-checkpoint robustness check, expected before execution: a saved receipt with
+one valid $221.23–$243.35 option alongside null/non-object options must retain the
+valid stored range and the caller's other history; malformed optional entries must
+not crash the whole returning-caller tool. Blank legacy descriptions stay unknown.

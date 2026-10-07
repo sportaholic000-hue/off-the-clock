@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: D16 web review and voice share exact normalized owner-phone identity
+not ok 1 - D16 web review and voice share exact normalized owner-phone identity
+  ---
+  duration_ms: 26.701379
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Web.spec.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: 'Web must create a normalized customer identity'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006Web.spec.mjs:12:155)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 212.614963

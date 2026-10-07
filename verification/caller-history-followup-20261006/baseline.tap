@@ -1,0 +1,114 @@
+TAP version 13
+# Subtest: D14 caller filter precedes limit with tenant and malformed-record controls
+not ok 1 - D14 caller filter precedes limit with tenant and malformed-record controls
+  ---
+  duration_ms: 17.533151
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'not_found'
+    - 'found'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'found'
+  actual: 'not_found'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:20:69)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+not ok 2 - D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars
+  ---
+  duration_ms: 13.869034
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:22:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - '[SYNTHETIC] Alex'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '[SYNTHETIC] Alex'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:27:60)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D16 handle credential rotation preserves one owner-phone customer and historical references
+not ok 3 - D16 handle credential rotation preserves one owner-phone customer and historical references
+  ---
+  duration_ms: 10.35937
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '338880dd-5392-516f-b1e7-447b2d28044e'
+    - 'c7a4d6f0-dce8-5fc1-91d7-752d6dfdfefb'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'c7a4d6f0-dce8-5fc1-91d7-752d6dfdfefb'
+  actual: '338880dd-5392-516f-b1e7-447b2d28044e'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:33:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D21 unresolved preferences survive calendar range changes until resolved
+not ok 4 - D21 unresolved preferences survive calendar range changes until resolved
+  ---
+  duration_ms: 21.880582
+  type: 'test'
+  location: '/workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'future',
+    -   'past'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'future'
+    1: 'past'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/e34515a96b93/caller-history-followup/test/callerHistoryFollowup20261006.spec.mjs:38:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 296.248105
