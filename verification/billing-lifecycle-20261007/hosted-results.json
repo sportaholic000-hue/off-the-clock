@@ -1,0 +1,123 @@
+{
+  "baseSha": "130db2148de05cb8b62f5a2595b98b635ce863cb",
+  "sourceSha": "0862c78bafd6b96bf5f62edca524d75a1d9907f8",
+  "sourceTree": "71dc89f6a678da389eee40ee5fa51b640490b423",
+  "branch": "feat/billing-lifecycle-20261007",
+  "runId": 37563765418,
+  "jobId": 112606724204,
+  "url": "https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37563765418",
+  "conclusion": "success",
+  "coldInstall": "npm ci",
+  "build": "npm run build",
+  "quote": {
+    "command": "npm run test:quote",
+    "files": 101,
+    "tests": 2081,
+    "pass": 2081,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "full": {
+    "command": "npm test",
+    "files": 153,
+    "tests": 3024,
+    "pass": 3024,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "newTests": 50,
+  "productionAudit": {
+    "command": "npm audit --omit=dev --audit-level=high",
+    "vulnerabilities": 0
+  },
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 1
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 2
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 3
+    },
+    {
+      "name": "Install from lockfile (ignores committed node_modules)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4
+    },
+    {
+      "name": "Browser for the two browser test files (Playwright is not a project dependency; installed without touching the lockfile)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 5
+    },
+    {
+      "name": "Build owner app and widget",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6
+    },
+    {
+      "name": "Strict quote engine and price book gate",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 7
+    },
+    {
+      "name": "Full test suite",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 8
+    },
+    {
+      "name": "No failures beyond the known list",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 9
+    },
+    {
+      "name": "Publish test summary to claude/ci-results (push events only)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 10
+    },
+    {
+      "name": "Production dependency audit",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 11
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 21
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 22
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 23
+    }
+  ]
+}
