@@ -97,8 +97,6 @@ regression also checks query strings, no-store caching and unknown-page 404s.
 That strict run reported 2,662 tests / 2,659 passes / 3 failures / zero skips or
 cancellations. The full step did not run after the failed strict gate.
 
-Final cold hosted evidence is pending at this checkpoint.
-
 The third strict run, 37686739433 at `0d988f0`, passed the direct page and staff
 boundaries. Its remaining browser assertion read the loading state between the
 initial month report and the requested all-time response. The test now waits
@@ -106,3 +104,32 @@ for that exact response and the all-time range label before reading values.
 Its summary was 2,663 tests / 2,661 passes / 2 failures / zero skips or
 cancellations. A fast browser regression step now precedes the unchanged strict
 and full gates so integration failures surface immediately after the build.
+
+## Passing cold hosted gates
+
+Source/test/CI commit: `ed9d52937cb7a4e7e54d22620ff7191e76347092`.
+[Run 37687674965](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37687674965)
+completed successfully on October 7, 2026. The workflow removes installed
+dependencies before `npm ci`, installs Chromium and builds the owner app/widget.
+
+| Command or check | Result |
+| --- | --- |
+| `npm ci` | Passed cold |
+| `npm run build` | Passed |
+| Focused dashboard browser regression | 6/6 passed |
+| `npm run test:quote` | 2,663/2,663 passed |
+| `npm test` | 3,690/3,690 passed |
+| Full-suite zero-failure checker | Passed |
+| Production dependency audit | Zero vulnerabilities |
+
+Every test summary reports zero failures, cancellations, skips and TODOs. Suite
+counts overlap and are not a count of unique tests. The browser regression
+executes the compiled owner app through the production static handler and real
+authenticated HTTP APIs against temporary synthetic data. The final local
+direct-page and explicit tenant-route regression run passed 248/248.
+
+The base-to-branch ancestry and exact published Git tree were verified. This
+result-recording checkpoint changes documentation only; final exact-head hosted
+CI is independently checked before task delivery. No application source, tests,
+test exclusions, thresholds or CI gates change after the passing source commit.
+No main merge, deployment, real calendar, real email or caller message was used.

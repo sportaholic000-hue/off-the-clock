@@ -1,4 +1,4 @@
-# Owner dashboard repair — 2026-10-07
+# Owner dashboard repair — hosted gates passed
 
 Branch `fix/owner-dashboard` starts at verified base `4db13a2945193762bbc4b85f9ab616a00e1dd067`.
 Implements confirmed-booking owner alerts, call billing/transport/search/transcripts,
@@ -6,8 +6,17 @@ owner review and follow-up progression, and period/value/service-funnel reports.
 Current owner ruling disables caller texts, confirmations, invites and reminders.
 See `specs/OWNER_DASHBOARD_20261007.md` and `verification/owner-dashboard-20261007/REPORT.md`.
 Synthetic source/service/HTTP/render reproductions failed before fixes. The expanded
-regressions and explicit tenant route matrix passed 292/292; cold install and build passed.
-Final cold full/quote and hosted gates are pending; this entry does not claim release approval.
+regressions and explicit tenant route matrix passed 292/292; the final direct-page
+and route checks passed 248/248. Source/test/CI commit
+`ed9d52937cb7a4e7e54d22620ff7191e76347092` passed
+[hosted run 37687674965](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37687674965):
+cold `npm ci`, owner/widget build, **6/6** dashboard browser checks,
+**2,663/2,663** strict quote tests and **3,690/3,690** full-suite tests.
+All summaries have zero failures, skips, cancellations and TODOs; production
+dependency audit found zero vulnerabilities. Local Chromium SIGTRAP prevents a
+passing local browser-gate claim; complete cold browser evidence is hosted.
+This checkpoint changes documentation only. Final pushed-head CI is checked
+independently before task delivery; no release or deployment approval is implied.
 No merge, deployment, real calendar or real email operation was performed.
 
 # October 7 audit repairs — hosted gates passed
