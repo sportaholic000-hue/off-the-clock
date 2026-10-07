@@ -20,6 +20,8 @@ jobs:
         run: npm install --no-save --no-audit --no-fund playwright@1.56.0 && npx playwright install --with-deps chromium > /dev/null
       - name: Build owner app and widget
         run: npm run build
+      - name: Owner dashboard browser regression
+        run: node --test test/ownerDashboard20261007.browser.spec.mjs
       - name: Strict quote engine and price book gate
         run: npm run test:quote
       - name: Full test suite

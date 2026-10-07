@@ -98,3 +98,11 @@ That strict run reported 2,662 tests / 2,659 passes / 3 failures / zero skips or
 cancellations. The full step did not run after the failed strict gate.
 
 Final cold hosted evidence is pending at this checkpoint.
+
+The third strict run, 37686739433 at `0d988f0`, passed the direct page and staff
+boundaries. Its remaining browser assertion read the loading state between the
+initial month report and the requested all-time response. The test now waits
+for that exact response and the all-time range label before reading values.
+Its summary was 2,663 tests / 2,661 passes / 2 failures / zero skips or
+cancellations. A fast browser regression step now precedes the unchanged strict
+and full gates so integration failures surface immediately after the build.

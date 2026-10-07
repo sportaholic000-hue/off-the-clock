@@ -39,8 +39,10 @@ test('owner dashboard browser: real compiled calls, review, progression, reports
     assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM voiceSmsDeliveries WHERE ownerId=?').get(s.c.ownerId).n,0);
   });
   await t.test('reports expose period, actual value and funnel with an explicit unknown after-hours count',async()=>{
-    await p.goto(f.base+'/reports');await p.getByLabel('Period',{exact:true}).selectOption('all');await p.getByRole('button',{name:'Show report',exact:true}).click();
-    await p.getByRole('heading',{name:'Service funnel',exact:true}).waitFor();assert.match(await p.locator('main').innerText(),/CAD \$110.15/);assert.match(await p.locator('main').innerText(),/After-hours classification is unknown/);
+    await p.goto(f.base+'/reports');await p.getByLabel('Period',{exact:true}).selectOption('all');
+    const [response]=await Promise.all([p.waitForResponse(r=>new URL(r.url()).pathname==='/api/reports'&&new URL(r.url()).searchParams.get('period')==='all'),p.getByRole('button',{name:'Show report',exact:true}).click()]);assert.equal(response.status(),200);
+    await p.getByText(/^All recorded activity · /).waitFor();await p.getByRole('heading',{name:'Service funnel',exact:true}).waitFor();
+    const reportText=await p.locator('main').innerText();assert.match(reportText,/CAD \$110.15/);assert.match(reportText,/After-hours classification is unknown/);
     await p.getByText('Business hours for after-hours reporting',{exact:true}).click();assert.equal(await p.getByRole('button',{name:'Save business hours',exact:true}).count(),1);
   });
   await t.test('staff has safe reads but no owner review or report configuration',async()=>{
