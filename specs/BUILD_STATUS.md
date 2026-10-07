@@ -1,3 +1,33 @@
+# October 7 billing retention and continuous backups — hosted gates passed
+
+Branch `fix/billing-backup-leftovers`, from verified base
+`4db13a2945193762bbc4b85f9ab616a00e1dd067` on
+`codex/audit-small-repairs-20261007`. Verified application/test/CI source:
+**`1299971f37b21595c86195043b7d3d566d066f8d`**.
+[Hosted run 37686304077](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37686304077)
+passed cold `npm ci`, both owner/widget builds, **2,613/2,613** strict quote tests
+(132 files), **3,648/3,648** full tests and the production dependency audit
+(zero vulnerabilities). Both suites have **zero failures/skips/cancellations/TODOs**.
+
+The two supplied leftovers were reproduced from source and synthetic execution.
+Local billing retention now has a separate fenced lease and a complete paginated
+cancellation sweep; day-30 phone release and day-90 deletion continue while a
+financial sweep awaits Stripe. Financial evidence and durable retries survive.
+Continuous encrypted online SQLite/book checkpoints now accompany nightly copies,
+with thirty-day retention, verified publication, restart-safe catch-up and a
+documented/tested checkpoint restore, including complete synthetic volume loss.
+[Complete repair and verification report](../verification/billing-backup-leftovers/REPORT.md).
+
+**24 new regressions**; focused diagnostic **342/342**, zero failures/skips.
+Local native-runtime/browser limitations prevent a local all-green claim; ordinary
+hosted Node 22 supplies complete cold acceptance. No subagents, main merge,
+deployment, real charges, storage accounts or live provider/data operations.
+These gates establish the requested repairs, not a production provisioning drill.
+This results checkpoint changes documentation only; final pushed-head CI is
+checked independently before delivery.
+
+## Previous checkpoint
+
 # October 7 audit repairs — hosted gates passed
 
 Branch `codex/audit-small-repairs-20261007`; verified source/test commit

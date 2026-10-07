@@ -55,7 +55,33 @@ checked against `AGENTS.md`, the current build status, the repository audit repo
   route's last write. The existing CI workflow includes this exact repair branch;
   no gate is weakened, skipped or exempted.
 
-## Verification checkpoint
+## Completed verification
+
+Verified application/test/CI source: **`1299971f37b21595c86195043b7d3d566d066f8d`**.
+[Cold hosted run 37686304077](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37686304077)
+completed successfully on that exact revision. It removed all workspace
+`node_modules`, ran `npm ci`, installed Chromium without changing the lockfile,
+ran `npm run build`, `npm run test:quote`, `npm test`, the empty-failure checker
+and the production dependency audit. Every step passed; the audit found zero
+vulnerabilities. Unmodified hosted Node 22 used no local diagnostic workaround.
+
+| Gate | Tests | Passed | Failed | Skipped | Cancelled / TODO |
+|---|---:|---:|---:|---:|---:|
+| Strict quote/price book (132 files) | 2,613 | 2,613 | 0 | 0 | 0 / 0 |
+| Full suite | 3,648 | 3,648 | 0 | 0 | 0 / 0 |
+| Focused diagnostic | 342 | 342 | 0 | 0 | 0 / 0 |
+
+The raw hosted TAP summaries report `# tests 2613`, `# pass 2613`, `# fail 0`,
+`# skipped 0` and `# tests 3648`, `# pass 3648`, `# fail 0`, `# skipped 0`,
+with zero cancellations/TODOs in both. The strict architecture check passed.
+Both quote and full counts include overlapping tests and must not be added.
+
+The result-recording checkpoint changes this report and `specs/BUILD_STATUS.md`
+only. Application, tests, CI and the reviewed route fingerprints match the
+verified source revision. Final pushed-head CI is independently checked before
+handoff.
+
+## Reproduction and intermediate verification evidence
 
 The latest focused diagnostic run passed **342/342**, zero failures, skips,
 cancellations or TODOs: both billing files, continuous/daily off-site files,
@@ -97,8 +123,8 @@ couplings before final acceptance:
   phone lease-loss test now reclaims the retention lease and retains every
   original receipt assertion; financial fencing tests remain unchanged.
 
-The final code and two additional regressions require their own cold hosted gate;
-the preliminary green revision does not prove that later work passed.
+The final code and two additional regressions passed their own cold hosted gate
+above; the preliminary green revision was not used as proof of later work.
 
 Local verification uses available Node 24.19.0. Ordinary cold installation first
 failed on native header extraction (`fchown`); a downloaded Node 22 executable
@@ -115,7 +141,6 @@ and one file lacked complete results. Chromium was unavailable; a catalog timing
 assertion and a native SIGABRT also failed locally. This is not local all-green
 evidence; ordinary hosted Node 22 supplies complete cold acceptance.
 
-Unfinished at this checkpoint: final local command results and hosted cold
-acceptance. Real storage/provider provisioning and deployment are excluded by the
+Requested work unfinished: **none**. Real storage/provider provisioning and deployment are excluded by the
 owner's request. Replication is asynchronous; an in-flight change or sustained
 provider outage is not a zero-loss recovery guarantee.
