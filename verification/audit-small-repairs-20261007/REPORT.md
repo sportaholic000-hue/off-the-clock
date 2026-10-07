@@ -36,6 +36,12 @@ Compressed logs preserve the baseline, focused run, install and build. This loca
 
 ## Findings that remain open
 
+The subsequent [three-repair checkpoint](../audit-followup-20261007/REPORT.md)
+fixes stale manual interview saves, mulch display units and the bounded adjacent
+website-condition cases, with passing hosted checks. The list below describes
+what remained open at this first checkpoint; stylesheet visibility and phone
+scope confirmation still remain open after the follow-up.
+
 The quote-page link portion of Off-the-Clock 17 remains unfinished. Sending a long receipt currently fails safely at the existing 1,600-character SMS limit; a complete saved-quote delivery/link workflow needs separate implementation.
 
 This checkpoint does not repair selection-dependent phone scope confirmation, ambiguous mulch units, stale interview saves, website condition/visibility extraction, listed-price model arithmetic, or the remaining platform workflow defects. The website condition finding overlaps across two audits; SMS scope loss overlaps across another two. Counts should be consolidated by root cause rather than added together.

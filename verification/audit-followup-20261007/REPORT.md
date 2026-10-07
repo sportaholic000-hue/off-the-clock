@@ -1,4 +1,13 @@
-# Three follow-up repairs
+# Three follow-up repairs — hosted checks passed
+
+Verified source/test commit: `2879f2560e3ae2ee2d4a38c41c401c1da49487f3`.
+[Hosted run 37596037228](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37596037228)
+passed cold installation, both production builds, **2,597/2,597 strict quote
+checks**, **3,624/3,624 full-suite tests**, the empty-failure checker and the
+production dependency audit (zero vulnerabilities). Both test summaries have
+zero failures, cancellations, skips and TODOs. Browser conflict reconciliation
+and mulch unit-change tests pass in the hosted browser. Application/test/CI
+source is unchanged in this result-recording checkpoint.
 
 This is a bounded repair checkpoint, not a clean bill of health for the project.
 Base: `9720aaef7677b7d864363a417cd823c816477dde`, on
@@ -41,8 +50,9 @@ state binding. The saved-answer browser assertion also read the numeric input
 before its React effect restored the external value. The harness now supplies
 the component's state, and the browser test waits for the expected visible value
 while retaining its value/save assertions. Application source is unchanged by
-this test correction. A fresh hosted run must verify the result; the failed run
-is not counted as a passing gate.
+this test correction. Local follow-up checks passed 36/36, and the successful
+hosted run above verifies both corrected cases. The failed run is not counted
+as a passing gate.
 
 The previous five-repair source at the base SHA passed hosted run
 [37592728250](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37592728250):

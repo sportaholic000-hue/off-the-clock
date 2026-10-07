@@ -1,3 +1,25 @@
+# October 7 audit repairs — hosted gates passed
+
+Branch `codex/audit-small-repairs-20261007`; verified source/test commit
+`2879f2560e3ae2ee2d4a38c41c401c1da49487f3`.
+[Hosted run 37596037228](https://github.com/sportaholic000-hue/off-the-clock/actions/runs/37596037228)
+passed cold installation, owner/widget builds, **2,597/2,597** strict quote checks,
+**3,624/3,624** full-suite tests and zero production dependency vulnerabilities.
+Both test summaries contain zero failures/skips/cancellations/TODOs.
+
+The [first five repairs](../verification/audit-small-repairs-20261007/REPORT.md)
+cover qualified quote SMS, bare-floor voice selection, included zero roof
+underlayment allocation, password hashing configuration and minimum-price spec
+wording. The [three follow-up repairs](../verification/audit-followup-20261007/REPORT.md)
+protect interview revisions, clarify mulch units and retain bounded adjacent
+website price conditions. The larger open findings remain listed in those reports.
+Price formulas are unchanged. No main merge, deployment or live-data changes.
+The active agent made all source changes; further subagent use was prohibited
+and stopped. This checkpoint records results only; application, test and CI
+source match the verified commit above.
+
+## Previous checkpoint
+
 # October 7 release integration — hosted gates passed
 
 Target `codex/quote-release-candidate-20261006`, starting at `5c1050dce191e9b97f20234b2747554bbbf3a20c`. Billing lifecycle `852caa9`, off-site backups `0062c43`, then tenant isolation `1189372` are preserved as ordered merge parents. [Complete integration and conflict report](../verification/release-three-branches-20261007/REPORT.md).
