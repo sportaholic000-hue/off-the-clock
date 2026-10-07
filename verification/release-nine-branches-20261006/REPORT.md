@@ -69,6 +69,7 @@ Branches 1 and 3 had no textual conflicts. No tests were removed. Existing test 
 
 - Lifecycle persistence, summary enrichment and recovered lead creation share a transaction. Summary failure cannot mark a call complete. Metering then reconciles provider-confirmed duration without erasing lifecycle state.
 - Fallback capture and restart retain zero billable minutes even after lifecycle completion; late media cleanup cannot finalize an unfinished fallback.
+- Caller summaries recognize both CONFIRMED tool receipts and CONNECTED warm-transfer receipts; an accepted handoff cannot regress to INFO after media cleanup. The new production-flow test reproduced INFO before this fix.
 - Canonical customer lookup still joins normalized phone numbers, while anonymous/legacy capture retains call-scoped identity and never returns anonymous history.
 - Durable SMS keeps the prepared message, provider ID and receipt callback; queued acceptance never becomes a false sent claim.
 - Dashboard retains the five-second lead feed and 30-second/focus usage refresh, with session, generation and unmount guards.
@@ -83,10 +84,10 @@ Branches 1 and 3 had no textual conflicts. No tests were removed. Existing test 
 
 ## Prewritten integration checks
 
-61 seconds → 2 billable minutes. Fallback capture/restart → 0. Summary failure rolls back lifecycle and recovered lead. Transferring calls stay transferring. Two anonymous callers retain distinct customers and no shared history. Named contact and owner-set deadlines coexist. Seven new checks are in `test/releaseIntegration20261006.spec.mjs`.
+61 seconds → 2 billable minutes. Fallback capture/restart → 0. Summary failure rolls back lifecycle and recovered lead. Transferring calls stay transferring. Two anonymous callers retain distinct customers and no shared history. Named contact and owner-set deadlines coexist. An accepted warm transfer stays TRANSFERRED after summary enrichment. Eight new checks are in `test/releaseIntegration20261006.spec.mjs`.
 
-## Verification checkpoint before hosted run
+## Local verification and hosted publication
 
-Node 22.23.3 cold `npm ci` passed (262 packages). `npm run build` passed both owner and widget builds. Production audit found 0 vulnerabilities. Focused integration run: 111 tests, 111 passes, 0 failures, cancellations, skips or TODOs. Full and strict local runs and hosted verification are pending at this source checkpoint.
+Node 22.23.3 cold `npm ci` passed (262 packages). `npm run build` passed both owner and widget builds. Production audit found 0 vulnerabilities. Focused integration run: 111 tests, 111 passes, 0 failures, cancellations, skips or TODOs. The final warm-transfer correction passed 56/56 focused lifecycle/summary/integration tests with zero failures or skips. The local full run stalled without a complete summary and was interrupted; it is not a passing gate. The strict local run also lacks a passing result. Hosted verification is reported against the final published SHA in the task completion report.
 
 Earlier attempts: Node 24 install failed compiling better-sqlite3; the initial Node 22 test command lacked a usable `/tmp`, corrected by using workspace TMPDIR. The first executed focused run had 97 passes/7 failures from anonymous customer-function registration; repaired and rerun 111/111. Chromium download failed with truncated archive and directory-lock errors, so local browser prerequisites remain unavailable. These are disclosed, not passing gates.

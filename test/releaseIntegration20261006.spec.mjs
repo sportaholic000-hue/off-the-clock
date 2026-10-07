@@ -7,6 +7,7 @@ import {createVoiceSessionStore} from '../server/src/voice/voicePersistence.js';
 import {createBillingVoiceUsage} from '../server/src/billingVoiceUsage.js';
 import {completeVoiceCall} from '../server/src/callSummaryService.js';
 import {compileVoiceSystemInstruction} from '../server/src/voice/voicePromptCompiler.js';
+import {harness,ACCOUNT,TO} from './voiceLifecycle20261006Fixture.mjs';
 
 // Prewritten integration oracles: ceil(61 seconds / 60) = 2 minutes;
 // fallback capture and restart remain zero billable minutes; summaries never
@@ -52,6 +53,17 @@ test('release: summary enrichment cannot complete a transferring call',t=>{
   const h=setup(t);h.db.prepare("UPDATE calls SET status='TRANSFERRING' WHERE ownerId=? AND callSid=?").run(h.context.ownerId,h.context.callSid);
   h.store.finishCall({context:h.context,status:'COMPLETED',reason:'TWILIO_STOP',finalizeMetadata:h.metadata});
   assert.equal(h.row().status,'TRANSFERRING');assert.equal(h.row().completedAt,null);
+});
+test('release: accepted warm transfer keeps its confirmed outcome after media summary',async t=>{
+  const h=await harness(t),call=await h.connect();
+  await h.tool(call.callback,'transferCall',{reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Transfer request'});
+  const twiml=h.writes.find(write=>write[0]==='call')[2].twiml;
+  const accept=new URL(twiml.match(/<Number url="([^"]+)"/)[1]).pathname;
+  const child={AccountSid:ACCOUNT,ParentCallSid:call.params.CallSid,CallSid:'CA'+'d'.repeat(32),From:TO,To:'+19025550199',Direction:'outbound-dial',Digits:'1'};
+  assert.equal(await (await h.post(accept,child)).text(),'<Response/>');
+  await h.runtime.close();
+  const row=h.db.prepare('SELECT status,outcome,failureCode FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,call.params.CallSid);
+  assert.equal(row.status,'COMPLETED');assert.equal(row.outcome,'TRANSFERRED');assert.equal(row.failureCode,null);
 });
 test('release: canonical customer lookup preserves isolated anonymous capture',async t=>{
   const h=fixture(t),ids=[];

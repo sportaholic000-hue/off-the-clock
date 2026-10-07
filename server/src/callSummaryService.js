@@ -24,7 +24,7 @@ export function completeVoiceCall({database,ownerId,callId,callSid,outcome,strea
     else if(query(`SELECT 1 FROM appointments a WHERE a.ownerId=? AND a.status='CONFIRMED' AND ${linked} LIMIT 1`).get(ownerId,callId,callId,callId))semantic='BOOKED';
     else if(query("SELECT 1 FROM quotes WHERE ownerId=? AND callId=? AND status IN ('INSTANT','PARTIAL') LIMIT 1").get(ownerId,callId))semantic='QUOTED';
     else if(query('SELECT 1 FROM quoteRequests WHERE ownerId=? AND callId=? LIMIT 1').get(ownerId,callId))semantic='QUOTE_REQUEST';
-    else if(query("SELECT 1 FROM outboxEvents WHERE ownerId=? AND eventType='voice.transfer_requested' AND status='CONFIRMED' AND json_valid(payloadJson) AND json_extract(payloadJson,'$.callSid')=? LIMIT 1").get(ownerId,callSid))semantic='TRANSFERRED';
+    else if(query("SELECT 1 FROM outboxEvents WHERE ownerId=? AND eventType='voice.transfer_requested' AND status IN ('CONFIRMED','CONNECTED') AND json_valid(payloadJson) AND json_extract(payloadJson,'$.callSid')=? LIMIT 1").get(ownerId,callSid))semantic='TRANSFERRED';
     else if(query('SELECT 1 FROM leads WHERE ownerId=? AND callId=? LIMIT 1').get(ownerId,callId))semantic='LEAD';
     if(preserveLifecycle){
       // The lifecycle store owns terminal/fallback/transfer status and timing.
