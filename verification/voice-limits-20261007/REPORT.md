@@ -90,3 +90,24 @@ Cold full/quote/build/install results are reported from the final exact-head
 GitHub Actions run in the task response; CI was enabled for this branch only.
 No gates or skip checks were weakened. The real model's spoken output was not
 sampled: instruction and transport behavior are verified with fake providers.
+
+## Local cold gate limits and hosted retry
+
+Cold `npm ci` and `npm run build` passed with Node 22.23.3. Native SQLite was
+built against the matching local Node headers because the prebuilt binary
+endpoint was unavailable. No lockfile or dependency version changed.
+
+Local `npm run test:quote` completed: **2,541 passed / 2,597 results / 56 failed /
+0 skipped / 0 cancelled**. Every reported failure requires an unavailable local
+Chromium browser. This is not a passing local quote gate. The local full-suite
+attempt also hit unavailable browser prerequisites and was stopped without a
+complete summary; its SQLite adapter incompatibility was separately corrected
+and verified by the 29/29 native billing-call and new-regression run above.
+
+First hosted attempt: `37679286368`, source `46f1cc91aaa1cebbefa97168bf0674ee1a44ba03`.
+It passed cold installation but remained in Chromium setup while local checks
+completed (the preceding successful repository run installed Chromium in 34
+seconds). This documentation-only checkpoint records the local limits and
+triggers a fresh cold hosted run. Application, test and workflow files are
+identical to that first uploaded source. The final task response reports the
+exact final-head hosted result, not a passing claim for these local attempts.
