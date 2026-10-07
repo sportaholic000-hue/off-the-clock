@@ -7,6 +7,7 @@ import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
+import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import crypto from 'node:crypto';
 
 import { loadPricebook } from '../../priceBookService.js';
@@ -397,6 +398,9 @@ export function createVoiceToolRuntime({
       serviceHandleHash: selected.handleHash,
       customerInputs: args.customerInputs,
       productConfirmations: args.productConfirmations || {},
+      // Preserve legacy request identities without scope tokens, while a new
+      // confirmation can never replay a receipt for a different confirmation.
+      ...(args.scopeConfirmations&&Object.keys(args.scopeConfirmations).length?{scopeConfirmations:args.scopeConfirmations}:{}),
       customerFeeSelections: args.customerFeeSelections || {},
       additionalWork: args.additionalWork || []
     });
@@ -431,8 +435,9 @@ export function createVoiceToolRuntime({
     }
     const service = matches[0];
     const definition=quoteApp.definition(service);
-    const bound=bindVoiceQuoteInputs(service,definition,args);
-    if(bound.followUps.length)return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:bound.followUps,questionContract:voiceQuestionContract(service,definition)};
+    const scopeAuthority={secret,binding:json([context.ownerId,context.callSid,quoteApp.revision(book)])};
+    const bound=bindVoiceQuoteInputs(service,definition,args,scopeAuthority);
+    if(bound.followUps.length)return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:bound.followUps,questionContract:voiceQuestionContract(service,definition,bound.customerInputs||args.customerInputs,scopeAuthority)};
     const submission = {
       requestId,
       serviceId: service.id,
@@ -1143,6 +1148,12 @@ export function createVoiceToolRuntime({
     }
   }
 
+  async function calculateListedPrice(input) {
+    const args=invocation(input);
+    const profile=database.prepare('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    return calculateSavedListedPrice(parseJson(profile?.knowledgeBaseJson),args);
+  }
+
   async function getCustomerContext(input) {
     invocation(input);
     if(!isPhoneNumber(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
@@ -1167,6 +1178,7 @@ export function createVoiceToolRuntime({
   const handlers = Object.freeze({
     matchService,
     getQuote,
+    calculateListedPrice,
     checkAvailability,
     bookAppointment,
     captureLead,

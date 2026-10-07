@@ -282,7 +282,7 @@ test('voice tool runtime persists a safe review quote and lead without exposing 
     assert.equal(db.prepare('SELECT COUNT(*) AS count FROM quoteSubmissions').get().count, 1);
     assert.equal(db.prepare(`SELECT callerNumber FROM leads WHERE type = 'voice_lead'`).get().callerNumber, FROM);
     assert.deepEqual(Object.keys(runtime.handlers).sort(), [
-      'bookAppointment', 'captureLead', 'checkAvailability', 'flagUrgent',
+      'bookAppointment', 'calculateListedPrice', 'captureLead', 'checkAvailability', 'flagUrgent',
       'getCustomerContext', 'getQuote', 'logQuoteRequest', 'matchService',
       'modifyAppointment', 'prepareQuoteEmail', 'sendQuoteEmail', 'transferCall'
     ]);

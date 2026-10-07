@@ -52,7 +52,7 @@ export async function resolveWebsiteDestination(url,{lookup=dnsLookup,timeoutMs=
 
 // The request adapter is injectable only by trusted server code/tests. No
 // request payload or environment switch can enable access to private addresses.
-export function readWebsiteResponse(destination,{limits,budget,timeoutMs,request}={}){
+export function readWebsiteResponse(destination,{limits,budget,timeoutMs,request,stylesheet=false}={}){
   return new Promise((resolve,reject)=>{
     let req,res,settled=false;const chunks=[];let bytes=0;
     const finish=(error,value)=>{
@@ -68,7 +68,7 @@ export function readWebsiteResponse(destination,{limits,budget,timeoutMs,request
         lookup:(_host,options,callback)=>options?.all
           ?callback(null,[{address:destination.address,family:destination.family}])
           :callback(null,destination.address,destination.family),
-        headers:{Accept:'text/html, text/plain;q=0.8','Accept-Encoding':'identity','User-Agent':'OffTheClock-OwnerPriceDraft/1'}
+        headers:{Accept:stylesheet?'text/css':'text/html, text/plain;q=0.8','Accept-Encoding':'identity','User-Agent':'OffTheClock-OwnerPriceDraft/1'}
       },response=>{
         res=response;res.on('error',()=>finish(new WebsiteImportError('WEBSITE_READ_FAILED','The website response could not be read.')));
         const status=res.statusCode;
@@ -77,7 +77,7 @@ export function readWebsiteResponse(destination,{limits,budget,timeoutMs,request
         }
         if(status!==200){res.destroy();finish(new WebsiteImportError('WEBSITE_HTTP_FAILED','The website did not return a public page.'));return;}
         const contentType=String(res.headers['content-type']||'');
-        if(!/^(?:text\/(?:html|plain)|application\/xhtml\+xml)(?:\s*;|$)/i.test(contentType)){
+        if(!(stylesheet?/^text\/css(?:\s*;|$)/i:/^(?:text\/(?:html|plain)|application\/xhtml\+xml)(?:\s*;|$)/i).test(contentType)){
           res.destroy();finish(new WebsiteImportError('WEBSITE_CONTENT_TYPE','Only readable HTML or text pages can be imported.'));return;
         }
         const tooLarge=()=>new WebsiteImportError('WEBSITE_SIZE_LIMIT','The website page exceeds the import size limit. Enter these prices manually.');

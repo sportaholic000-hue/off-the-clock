@@ -7,17 +7,17 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
   const limits=boundedWebsiteLimits(overrides);
   return async function importPrices(input){
     const start=websiteUrl(input),deadline=performance.now()+limits.totalMs;
-    const budget={bytesLeft:limits.totalBytes},queue=[start.href],queued=new Set(queue),requested=new Set(),pages=[],entries=[],seen=new Set();
-    let requests=0,fetchedPages=0,limited=false,chars=0;
+    const budget={bytesLeft:limits.totalBytes},queue=[start.href],queued=new Set(queue),requested=new Set(),pages=[],entries=[],seen=new Set(),cssCache=new Map();
+    let requests=0,fetchedPages=0,limited=false,visibilityUnverified=false,chars=0;
     const remaining=()=>{const ms=deadline-performance.now();if(ms<=0)throw new WebsiteImportError('WEBSITE_TIMEOUT','The website import reached its time limit.');return Math.max(1,Math.floor(ms));};
-    async function fetchPage(input){
+    async function fetchPage(input,stylesheet=false){
       let url=websiteUrl(input,start.hostname);
       for(let redirects=0;;redirects++){
         if(requests>=limits.requests)throw new WebsiteImportError('WEBSITE_REQUEST_LIMIT','The website import reached its request limit.');
         if(requested.has(url.href))throw new WebsiteImportError('WEBSITE_REDIRECT_LOOP','The website links or redirects repeat the same page.');
         requested.add(url.href);requests++;
         const destination=await resolveWebsiteDestination(url,{lookup,timeoutMs:Math.min(limits.dnsMs,remaining())});
-        const response=await readWebsiteResponse(destination,{limits,budget,timeoutMs:Math.min(limits.requestMs,remaining()),request});
+        const response=await readWebsiteResponse(destination,{limits,budget,timeoutMs:Math.min(limits.requestMs,remaining()),request,stylesheet});
         remaining();
         if(response.status===200)return {...response,url:url.href};
         if(redirects>=limits.redirects)throw new WebsiteImportError('WEBSITE_REDIRECT_LIMIT','The website redirects too many times.');
@@ -38,8 +38,21 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       fetchedPages++;
       let extracted;
       try{extracted=extractWebsitePrices(page.text,{plain:page.plain,limits});remaining();}catch(error){if(!pages.length)throw error;limited=true;continue;}
+      if(extracted.stylesheetLinks?.length){
+        const stylesheets=Object.create(null);
+        try{
+          if(extracted.stylesheetLinks.length>limits.links)throw new WebsiteImportError('WEBSITE_STRUCTURE_LIMIT','Too many stylesheets.');
+          for(const href of extracted.stylesheetLinks){
+            const url=websiteUrl(new URL(href,page.url).href,start.hostname).href;
+            if(!cssCache.has(url))cssCache.set(url,(await fetchPage(url,true)).text);
+            stylesheets[href]=cssCache.get(url);
+          }
+          extracted=extractWebsitePrices(page.text,{plain:page.plain,limits,stylesheets});remaining();
+        }catch{ /* Keep the incomplete, empty extraction when visibility cannot be established. */ }
+      }
       pages.push(page.url);
       if(extracted.linksLimited||extracted.limited)limited=true;
+      if(extracted.visibilityUnverified)visibilityUnverified=true;
       for(const entry of extracted.entries){
         const conditions=extracted.conditions.filter(note=>!entry.excerpt.includes(note));
         const excerpt=[entry.excerpt,...conditions].join('\n');
@@ -57,9 +70,10 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
     }
     if(queue.some(url=>!requested.has(url)))limited=true;
     return {prices:entries.map(e=>e.excerpt).join('\n\n'),websiteUrl:start.href,draft:true,websiteImport:{
-      entries,pages,limited,
+      entries,pages,limited,visibilityUnverified,
       message:(entries.length?'Website prices are a draft. Review the item names, amounts and conditions before saving.':'No literal prices were found in the pages read. Your saved prices have not changed.')+
-        (limited?' Only part of the website could be read within the import limits.':'')
+        (limited?' Only part of the website could be read within the import limits.':'')+
+        (visibilityUnverified?' Prices were omitted where stylesheet visibility could not be verified. Review the visible website and enter those prices manually.':'')
     }};
   };
 }

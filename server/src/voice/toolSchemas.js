@@ -3,8 +3,8 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FORBIDDEN_KEYS = new Set(['ownerpricing','price','amount','total','offeringid','proto','ownerid','tenantid','tenantownerid','accountsid','callsid','from','to','phonenumber','twilionumber','twilionumbersid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','pricebook','bookversion','ownerspricing','pricing','rate','rates','unitrate','baserate','cost','internalcost','markup','margin','datetime','rawdatetime','startdatetime','enddatetime','starttime','endtime','durationminutes','prototype','constructor']);
 const FORBIDDEN_DERIVED_KEYS = new Set(['hourlyrate','laborrate','materialrate','ownerrate','rawrate','unitprice','unitcost','laborcost','materialcost','estimatedcost','estimatedprice','customerprice','ownerprice','requestedatetime','requesteddatetime','scheduleddatetime']);
 const FORBIDDEN_ID_SUFFIXES = ['ownerid','tenantid','accountsid','callsid','serviceid','quoteid','slotid','appointmentid','customerid','leadid','calendarid','offeringid'];
-export const VOICE_TOOL_NAMES = Object.freeze(['matchService','getQuote','checkAvailability','bookAppointment','captureLead','logQuoteRequest','prepareQuoteEmail','sendQuoteEmail','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
-export const MUTATING_VOICE_TOOLS = Object.freeze(VOICE_TOOL_NAMES.filter(name => !['matchService','getCustomerContext'].includes(name)));
+export const VOICE_TOOL_NAMES = Object.freeze(['matchService','getQuote','calculateListedPrice','checkAvailability','bookAppointment','captureLead','logQuoteRequest','prepareQuoteEmail','sendQuoteEmail','flagUrgent','transferCall','modifyAppointment','getCustomerContext']);
+export const MUTATING_VOICE_TOOLS = Object.freeze(VOICE_TOOL_NAMES.filter(name => !['matchService','getCustomerContext','calculateListedPrice'].includes(name)));
 export class VoiceToolValidationError extends Error {
   constructor(code) { super('The requested voice action was not valid.'); this.name='VoiceToolValidationError'; this.code=code; this.statusCode=400; }
 }
@@ -52,10 +52,21 @@ function booleanMap(value,allowed){
   if(Object.keys(result).length>32)fail('TOOL_INPUT_TOO_LARGE');return result;
 }
 function matchService(args){return {query:text(args.query,{max:500})};}
+function calculateListedPrice(args){
+  const quantity=text(args.quantity,{max:19});if(!/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/.test(quantity)||!/[1-9]/.test(quantity))fail('INVALID_TOOL_NUMBER');
+  return {listedItem:text(args.listedItem,{max:2000}),quantity,customerConfirmed:confirmed(args.customerConfirmed)};
+}
 function getQuote(args){
   assertPlainObject(args.customerInputs);
   const result={serviceHandle:handle(args.serviceHandle),customerInputs:safeDynamicValue(args.customerInputs),customerConfirmed:confirmed(args.customerConfirmed)};
   if(args.productConfirmations!==undefined)result.productConfirmations=booleanMap(args.productConfirmations);
+  if(args.scopeConfirmations!==undefined){
+    assertPlainObject(args.scopeConfirmations);if(Object.keys(args.scopeConfirmations).length>32)fail('TOOL_INPUT_TOO_LARGE');
+    result.scopeConfirmations={};for(const [key,value] of Object.entries(args.scopeConfirmations)){
+      assertAllowedKey(key);if(!/^[a-zA-Z][a-zA-Z0-9_]{0,99}$/.test(key))fail('INVALID_TOOL_FIELD');
+      result.scopeConfirmations[key]=handle(value);
+    }
+  }
   if(args.customerFeeSelections!==undefined)result.customerFeeSelections=booleanMap(args.customerFeeSelections,['travel','disposal','permit','overhead']);
   if(args.additionalWork!==undefined)result.additionalWork=textList(args.additionalWork);return result;
 }
@@ -95,7 +106,7 @@ function modifyAppointment(args){
   const action=oneOf(args.action,['reschedule','cancel']);if(action==='reschedule'&&args.slotHandle===undefined)fail('MISSING_TOOL_FIELD');if(action==='cancel'&&args.slotHandle!==undefined)fail('EXTRA_TOOL_FIELD');
   const result={appointmentHandle:handle(args.appointmentHandle),action,customerConfirmed:confirmed(args.customerConfirmed)};if(args.slotHandle!==undefined)result.slotHandle=handle(args.slotHandle);return result;
 }
-const VALIDATORS=Object.freeze({matchService,getQuote,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext:()=>({})});
+const VALIDATORS=Object.freeze({matchService,getQuote,calculateListedPrice,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext:()=>({})});
 function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;}
 export function validateVoiceToolCall(name,args){
   if(typeof name!=='string'||!Object.hasOwn(VALIDATORS,name))fail('UNKNOWN_VOICE_TOOL');
@@ -115,7 +126,8 @@ const opaque=string('Opaque server-issued handle from this call. Never invent or
 const confirmation=boolean('True only after the caller affirmatively confirms the recap, or the exact displayed appointment and address.');
 const declarations={
   matchService:object({query:string("The caller's requested main service, in ordinary words.")},['query']),
-  getQuote:object({serviceHandle:opaque,customerInputs:{type:'OBJECT',description:'Only current question field names and caller-stated measurements or ordinary product names returned by matchService. No address, contact, identifiers, money or confirmedFacts.'},customerConfirmed:confirmation,productConfirmations:{type:'OBJECT',description:'Product question fields mapped to true only when the caller has identified and confirmed that exact named product. False or missing means unknown; never assume identification.'},customerFeeSelections:object(Object.fromEntries(['travel','disposal','permit','overhead'].map(fee=>[fee,boolean("The caller's Yes/No to this currently offered fee; no amount.")]))),additionalWork:strings('Separate requested work needing its own on-site estimate, not part of the selected-service price.')},['serviceHandle','customerInputs','customerConfirmed']),
+  calculateListedPrice:object({listedItem:string('Copy exactly one complete saved item paragraph from knowledge.prices, including its conditions. Never supply or edit a rate.'),quantity:string('The caller-confirmed quantity in the listing unit, as plain decimal text. Never convert units or infer a quantity.'),customerConfirmed:confirmation},['listedItem','quantity','customerConfirmed']),
+  getQuote:object({serviceHandle:opaque,customerInputs:{type:'OBJECT',description:'Only current question field names and caller-stated measurements or ordinary product names returned by matchService. No address, contact, identifiers, money or confirmedFacts.'},customerConfirmed:confirmation,productConfirmations:{type:'OBJECT',description:'Product question fields mapped to true only when the caller has identified and confirmed that exact named product. False or missing means unknown; never assume identification.'},scopeConfirmations:{type:'OBJECT',description:'Scope question field mapped to its current server-issued confirmationToken only after reading that question label and every detail and receiving affirmative confirmation. Never reuse after changing scope.'},customerFeeSelections:object(Object.fromEntries(['travel','disposal','permit','overhead'].map(fee=>[fee,boolean("The caller's Yes/No to this currently offered fee; no amount.")]))),additionalWork:strings('Separate requested work needing its own on-site estimate, not part of the selected-service price.')},['serviceHandle','customerInputs','customerConfirmed']),
   checkAvailability:object({quoteHandle:opaque,leadHandle:opaque,appointmentHandle:opaque,preference:object({fromDate:string('Local date YYYY-MM-DD, never an invented slot or raw datetime.'),days:{type:'INTEGER',minimum:1,maximum:31},timeOfDay:{type:'ARRAY',items:enumeration(['morning','afternoon','evening'])}})}),
   bookAppointment:object({slotHandle:opaque,leadHandle:opaque,customerConfirmed:confirmation},['slotHandle','leadHandle','customerConfirmed']),
   captureLead:object({name:string('Optional caller name; the verified callback phone is already bound to this call.'),email:string('Optional caller email.'),address:object({line1:string('Street address'),line2:string('Optional address line 2'),city:string('City'),region:string('Province or state'),postalCode:string('Postal or ZIP code'),country:string('Two-letter country')},['line1','city','region','postalCode']),notes:string('Caller request and non-pricing callback notes. Preserve the caller words.'),callbackRequested:boolean('True when the caller requests a callback; requires their notes. Reuse inquiryNumber for corrections and retries.'),description:string('Optional caller-described work; never invent scope.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse the number or leadHandle for corrections. Use a different number only for a genuinely separate job on this call.'}}),

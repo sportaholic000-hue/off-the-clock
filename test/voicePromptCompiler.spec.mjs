@@ -278,6 +278,7 @@ const VALID_ARGUMENTS = Object.freeze({
     slotHandle: HANDLE_B,
     customerConfirmed: true,
   },
+  calculateListedPrice: { listedItem: "[SYNTHETIC] Item $2 each", quantity: "3", customerConfirmed: true },
   getCustomerContext: {},
 });
 
@@ -287,7 +288,7 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   assert.deepEqual(VOICE_TOOL_DECLARATIONS.map((item) => item.name), VOICE_TOOL_NAMES);
   assert.deepEqual(
     MUTATING_VOICE_TOOLS,
-    VOICE_TOOL_NAMES.filter((name) => !["matchService", "getCustomerContext"].includes(name)),
+    VOICE_TOOL_NAMES.filter((name) => !["matchService", "getCustomerContext", "calculateListedPrice"].includes(name)),
   );
 
   for (const declaration of VOICE_TOOL_DECLARATIONS) {

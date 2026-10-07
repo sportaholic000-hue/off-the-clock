@@ -91,6 +91,54 @@ export function projectVoiceOptions(options) {
   return options.map(optionProjection);
 }
 
+// Replay only frozen customer-facing facts. Never recalculate a historical
+// quote, truncate its qualifications, or copy the owner's financial record.
+export function projectSavedQuoteContext(response) {
+  if(!record(response))throw new TypeError('Invalid saved quote.');
+  const partial=response.resultType==='PARTIAL_ESTIMATE_READY';
+  const range=partial?response.pricedEstimate:response;
+  const out={};
+  if(text(response.resultType,120))out.resultType=response.resultType;
+  if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(response.resultType))return out;
+  if(!record(range))throw new TypeError('Missing saved priced scope.');
+  const prices=value=>{
+    const view={};
+    for(const key of ['lowEstimate','midEstimate','highEstimate'])if(money(value[key]))view[key]=value[key];
+    for(const key of ['currency','tierName','taxTreatment','priceUnit']){
+      const item=text(value[key],key==='taxTreatment'?2000:200);if(item)view[key]=item;
+    }
+    if(value.skippedAddons!==undefined)view.skippedAddons=list(value.skippedAddons);
+    const written=value.writtenDisclosure??value.disclaimer;
+    if(text(written))view.writtenDisclosure=written;
+    return view;
+  };
+  Object.assign(out,prices(range));
+  if(Array.isArray(range.options)){
+    const options=range.options.filter(record);
+    if(options.length>5)throw new TypeError('Too many saved options.');
+    out.options=options.map(option=>prices({...option,...Object.fromEntries(['currency','taxTreatment','priceUnit'].filter(key=>option[key]===undefined&&range[key]!==undefined).map(key=>[key,range[key]]))}));
+  }else if(range.options!==undefined)throw new TypeError('Invalid saved options.');
+  for(const key of ['customerMessage','additionalWorkStatus','scopeNotice'])if(text(response[key],key==='scopeNotice'?VOICE_WRITTEN_LIMIT:2000))out[key]=response[key];
+  if(response.additionalWork!==undefined){
+    if(!Array.isArray(response.additionalWork))throw new TypeError('Invalid saved additional work.');
+    out.additionalWork=list(response.additionalWork.map(item=>{
+      const description=typeof item==='string'?item:item?.description;
+      if(!text(description,1000))throw new TypeError('Missing saved additional work description.');
+      return description;
+    }));
+  }
+  if(response.pricedScope!==undefined){
+    if(!record(response.pricedScope)||!Array.isArray(response.pricedScope.facts)||response.pricedScope.facts.length>29)throw new TypeError('Invalid saved scope.');
+    out.pricedScope=list([response.pricedScope.service,...response.pricedScope.facts.map(fact=>{
+      if(!record(fact)||!text(fact.label,1000)||!['string','number','boolean'].includes(typeof fact.value))throw new TypeError('Invalid saved scope fact.');
+      return fact.label+': '+String(fact.value);
+    })]);
+  }
+  if(partial)out.fullJobTotal=null;
+  if(Buffer.byteLength(JSON.stringify(out),'utf8')>VOICE_RESULT_BYTES-16384)throw new TypeError('Saved quote exceeds voice budget.');
+  return out;
+}
+
 // One complete script is presented on the call and frozen for email delivery.
 function quoteNarration(projected,response) {
   if (projected.status !== 'quoted') return 'Your pricing request has been saved for review. No price has been confirmed.';
