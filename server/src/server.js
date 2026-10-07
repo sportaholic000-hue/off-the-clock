@@ -321,7 +321,12 @@ app.post('/api/onboarding/phone/test', requireAuth(['owner']), requireProviderWr
 
 app.get('/api/onboarding/phone/test/:callSid', requireAuth(['owner']), requireProviderWrites, asyncHandler(async (req, res) => {
   const profile = getBusinessProfile(req.tenantOwnerId);
-  const call = await getTwilioCallStatus(req.params.callSid);
+  let call;
+  try {call=await getTwilioCallStatus(req.params.callSid);}
+  catch(error) {
+    if(Number(error?.statusCode||error?.status)===404||Number(error?.code)===20404)return res.status(404).json({error:'Test call not found'});
+    throw error;
+  }
   if (call.to !== profile.existingPhoneNumber || call.from !== profile.twilioNumber) {
     return res.status(404).json({ error:'Test call not found' });
   }
@@ -459,7 +464,7 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
-installProductionVoice({app,database:db,bookingService,runtimeConfig});
+const voiceRuntime=installProductionVoice({app,database:db,bookingService,runtimeConfig});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 
@@ -487,6 +492,6 @@ const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deplo
 lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,...(backupWorker?[backupWorker.stop]:[])],timeoutMs:deploymentConfig.shutdownMs || 110000});
 httpServer.on('close',()=>{void stopWebhookWorker();void backupWorker?.stop();});
 
-export {httpServer,lifecycle};
+export {httpServer,lifecycle,voiceRuntime};
 
 export default app;

@@ -1,3 +1,16 @@
+# October 7 tenant isolation — focused gate passed; hosted gate pending
+
+Branch: `fix/tenant-isolation-20261007`, starting at `73c0062` on the approved release-candidate branch.
+[Complete route inventory, source/execution reproductions and matrix](../verification/tenant-isolation-20261007/REPORT.md).
+
+Three disclosures fixed: signed CallSid collision returned another tenant's forwarding number; phone-test errors disclosed foreign CallSid existence; signup disclosed existing account emails. Contradictory selectors and foreign saved quote-service IDs now fail uniformly. Signup requires email verification before owner login.
+
+Actual final focused result: **287/287**, including **199 matrix tests** covering a union of **98 registrations**, zero failures/cancellations/skips/TODOs. The real-server route inventory guard catches new routes and anonymously mounted routers; full-suite checks also reject skips and allowlisted failures. Local cold Node 22 install and owner/widget builds passed. Chromium/headless shell crashes locally; no complete local browser gate is claimed. Hosted CI is being checked at the pushed source SHA; its result must be observed before calling the full/strict gates passed.
+
+No subagents, main merge, deployment, provider writes or live data.
+
+## Previous checkpoint
+
 # October 6 approved-branch integration — hosted gates passed
 
 Branch: `codex/quote-release-candidate-20261006`; verified starting revision

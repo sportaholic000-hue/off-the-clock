@@ -214,15 +214,14 @@ export function createAuthHandlers({
       });
     }
 
-    const existing = database.prepare('SELECT id FROM users WHERE email = ?').get(email);
-    if (existing) {
-      return res.status(409).json({ error: 'An account with this email already exists' });
-    }
-
     const createdAt = now().toISOString();
     const id = randomUUID();
     const cost = Number(environment.BCRYPT_COST || 12);
     const passwordHash = await hashPassword(password, cost);
+    // A public signup response must not disclose whether this email exists.
+    // Hash every valid request; only email possession can unlock a new owner.
+    const accepted = () => res.status(202).json({ok: true});
+    if (database.prepare('SELECT id FROM users WHERE email = ?').get(email)) return accepted();
     let verification;
     try {
       verification = immediate(database, () => {
@@ -238,28 +237,12 @@ export function createAuthHandlers({
       if (error instanceof AuthTokenError) {
         return res.status(503).json({ error: 'Authentication service is temporarily unavailable.' });
       }
-      if ((error?.code === 'SQLITE_CONSTRAINT_UNIQUE' || error?.errcode === 2067)) return res.status(409).json({error: 'An account with this email already exists'});
+      if ((error?.code === 'SQLITE_CONSTRAINT_UNIQUE' || error?.errcode === 2067)) return accepted();
       throw error;
     }
 
-    const verificationDelivery = await sendAccountLink({id, email}, verification);
-
-    let session;
-    try {session=sessions.create({id,email,passwordHash,role:'owner'});}catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);throw error;}
-    return http.sessionReply(res.status(201),{
-      ...session,
-      verificationDelivery,
-      account: {
-        id,
-        email,
-        firstName,
-        businessName,
-        plan: requestedPlan,
-        requestedPlan,
-        planStatus: 'pending_payment',
-        role: 'owner'
-      }
-    });
+    await sendAccountLink({id, email}, verification);
+    return accepted();
   }
 
   async function loginHandler(req,res) {
@@ -267,7 +250,7 @@ export function createAuthHandlers({
     const email=normalizedEmail(req.body?.email);
     const password=typeof req.body?.password==='string'?req.body.password:'';
     const user=email?database.prepare('SELECT * FROM users WHERE email=?').get(email):null;
-    if(!user||user.role==='admin'||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
+    if(!user||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
     try {const result=sessions.create(user);limits.release(receipt);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }

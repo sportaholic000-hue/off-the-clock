@@ -14,4 +14,5 @@ for (const n of unexpected) console.log(`::error::New test failure: ${n}`);
 if (Number(summary.cancelled || 0) > 0) { console.log('::error::Tests were cancelled'); process.exit(1); }
 // A run that crashed or never started has no summary; that must fail, not pass.
 if (!(Number(summary.tests) > 0)) { console.log('::error::No test summary found; the test run did not complete'); process.exit(1); }
+if (['fail','skipped','cancelled','todo'].some(key => Number(summary[key] || 0) > 0)) { console.log('::error::The full suite requires zero failures, skips, cancellations and TODOs'); process.exit(1); }
 process.exit(unexpected.length ? 1 : 0);

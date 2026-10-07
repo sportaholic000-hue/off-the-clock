@@ -1,4 +1,5 @@
 import {quoteDateContext,registerQuoteDateDatabase} from './quoteDate.js';
+import {guardTenantRequest} from './tenantRequest.js';
 import crypto from 'node:crypto';
 import { db, ownerQuery } from './db.js';
 import { requireAuth } from './auth.js';
@@ -62,11 +63,17 @@ function publicContext(req,res,next) {
     try { origin=new URL(req.get('Referer')).origin; } catch { /* deny below */ }
   }
   if(!origin||!parseStoredQuoteOrigins(access.allowedOriginsJson).includes(origin))return res.status(403).json({error:'This website is not authorized for this quote link.'});
-  req.tenantOwnerId=access.ownerId;next();
+  req.tenantOwnerId=access.ownerId;
+  if(!guardTenantRequest(req,res,req.tenantOwnerId))return;
+  next();
 }
 function serviceFor(book,body) {
   if(typeof body.serviceId!=='string')return null;
   const matches=applicationServiceMatches(book,body.serviceId);return matches.length===1?matches[0]:null;
+}
+function requireSavedQuoteService(req,res,next) {
+  if(!serviceFor(loadPricebook(req.tenantOwnerId),req.body||{}))return res.status(404).json({error:'Service not found.'});
+  next();
 }
 function customerCatalogService(service,metadata,bookingCapability) {
   const definition=applicationServiceDefinition(service);
@@ -256,16 +263,16 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requireQuoteDonePlan,bo
       services
     });
   });
-  app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
+  app.post('/api/public/quote/:publicKey',publicContext,publicLimit,requireQuoteDonePlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
-  app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,asyncHandler(async(req,res)=>{
+  app.post('/api/public/quote/:publicKey/prepare',publicContext,publicLimit,requireQuoteDonePlan,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     res.json(prepareApplicationIntake(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)));
   }));
-  app.post('/api/quote/prepare',...team,asyncHandler(async(req,res)=>{
+  app.post('/api/quote/prepare',...team,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     res.json(prepareApplicationIntake(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)));
   }));
-  app.post('/api/quote/calculate',...team,asyncHandler(async(req,res)=>{
+  app.post('/api/quote/calculate',...team,requireSavedQuoteService,asyncHandler(async(req,res)=>{
     const result=submitQuote(req.tenantOwnerId,req.body,{bookingService,bookingTokenSecret});res.status(result.status).json(result.response);
   }));
   app.get('/api/leads',...leadTeam,(req,res)=>res.json({leads:ownerQuery('SELECT * FROM leads WHERE ownerId = ? ORDER BY createdAt DESC,id').all(req.tenantOwnerId).map(row=>leadView(row,req.role))}));

@@ -112,6 +112,7 @@ function AuthStep({ onAuthenticated }) {
   const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [registrationSent, setRegistrationSent] = useState(false);
 
   async function submit(event) {
     event.preventDefault();
@@ -121,6 +122,7 @@ function AuthStep({ onAuthenticated }) {
       const payload = mode === 'register'
         ? await api('/api/auth/register', { method:'POST', auth:false, body:form })
         : await api('/api/auth/login', { method:'POST', auth:false, body:{ email:form.email, password:form.password } });
+      if (mode === 'register') { setRegistrationSent(true); return; }
       setToken(payload.token);
       if (mode === 'login') {
         try {
@@ -144,8 +146,8 @@ function AuthStep({ onAuthenticated }) {
       <div className="auth-brand"><span className="eyebrow">SELF-SERVE SETUP</span><h1>Put your operator on the line.</h1></div>
       <form className="auth-form" onSubmit={submit}>
         <div className="segmented">
-          <button type="button" className={mode === 'register' ? 'selected' : ''} onClick={() => setMode('register')}>Create account</button>
-          <button type="button" className={mode === 'login' ? 'selected' : ''} onClick={() => setMode('login')}>Sign in</button>
+          <button type="button" className={mode === 'register' ? 'selected' : ''} onClick={() => { setMode('register'); setRegistrationSent(false); }}>Create account</button>
+          <button type="button" className={mode === 'login' ? 'selected' : ''} onClick={() => { setMode('login'); setRegistrationSent(false); }}>Sign in</button>
         </div>
         {mode === 'register' && (
           <>
@@ -164,6 +166,8 @@ function AuthStep({ onAuthenticated }) {
             </div>
           </Field>
         )}
+        {registrationSent && <p role="status">Check your email to verify your account, then sign in. If you already have an account, sign in or reset your password.</p>}
+        {registrationSent && <Button variant="secondary" onClick={() => go('/resend-verification')}>Resend verification email</Button>}
         <ErrorMessage error={error} />
         <Button className="full" type="submit" disabled={busy}>{busy ? 'Working' : mode === 'register' ? 'Start setup' : 'Sign in'}</Button>
         <Button variant="secondary" onClick={() => go('/forgot-password')}>Forgot password?</Button>

@@ -91,6 +91,8 @@ function createHarness(overrides = {}) {
   installVoiceRuntimeRoutes(app, {
     twilioValidator,
     tenantResolver,
+    validateIncomingCall:overrides.validateIncomingCall??(()=>true),
+    validateCallBinding:overrides.validateCallBinding??(()=>true),
     nonceService,
     allowedAccountSids: overrides.routeAccountSids ?? [ACCOUNT_SID],
     publicBaseUrl: PUBLIC_BASE_URL,
@@ -439,3 +441,18 @@ test("stream paths reject query data so secrets or identity cannot ride beside t
   );
 });
 
+
+test('CallSid binding is checked before resolving the other business phone number',async()=>{
+  const harness=createHarness({validateIncomingCall:()=>false});
+  const response=await postInbound(harness,{form:inboundForm({To:'+19025550201'})});
+  assert.equal(response.status,403);assert.equal(await response.text(),'Forbidden');
+  assert.deepEqual(harness.tenantLookups,[]);assert.deepEqual(harness.fallbackCalls,[]);
+  assert.equal(harness.repository.records.size,0);assert.equal(harness.events.sessionCreates,0);
+});
+
+test('a binding collision during persistence cannot fall through to a private forwarding number',async()=>{
+  const collision=()=>{throw Object.assign(Error('SYNTHETIC binding collision'),{code:'VOICE_CALL_BINDING_MISMATCH',statusCode:403});};
+  const harness=createHarness({createSession:collision,recordFallback:collision,resolveFallback:()=>({mode:'forward',number:BUSINESS_NUMBER})});
+  const response=await postInbound(harness);
+  assert.equal(response.status,403);assert.equal(await response.text(),'Forbidden');
+});

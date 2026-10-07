@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {attachTenantContext} from './tenant.js';
+import {guardTenantRequest} from './tenantRequest.js';
 import {AuthSessionError,createAuthSessionService} from './authSessionService.js';
 
 export function requireAuth(allowedRoles=[],{database,verifyToken=jwt.verify,sessionService}={}) {
@@ -18,6 +19,7 @@ export function requireAuth(allowedRoles=[],{database,verifyToken=jwt.verify,ses
         delete req.tenantOwnerId;delete req.ownerId;return next();
       }
       if(!attachTenantContext(req,{id:user.id,ownerId:user.ownerId,email:user.email,role:user.role,ownerRole:user.ownerRole}))return res.status(401).json({error:'Invalid tenant context',code:'SESSION_INVALID'});
+      if(!guardTenantRequest(req,res,req.tenantOwnerId))return;
       return next();
     }catch(error){
       if(error instanceof AuthSessionError&&error.code==='SESSION_STORE_UNAVAILABLE')return res.status(503).json({error:error.message,code:error.code});

@@ -11,8 +11,11 @@ export function createLifecycle(app, database) {
     return result;
   }
   function wrap(handler) {
-    if (handler.length === 4) return function(error,req,res,next) {return observe(handler(error,req,res,next),next);};
-    return function(req,res,next) {return observe(handler(req,res,next),next);};
+    const wrapped=handler.length === 4 ? function(error,req,res,next) {return observe(handler(error,req,res,next),next);} :
+      function(req,res,next) {return observe(handler(req,res,next),next);};
+    // Retain router inventory when tracking its returned work.
+    if(Array.isArray(handler.stack))Object.defineProperty(wrapped,'stack',{value:handler.stack});
+    return wrapped;
   }
   const mapped = value => Array.isArray(value) ? value.map(mapped) : typeof value === 'function' ? wrap(value) : value;
   for (const method of ['get','post','put','patch','delete','options','head','all','use']) {

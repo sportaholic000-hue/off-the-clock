@@ -1,0 +1,394 @@
+[
+  {
+    "route": "DELETE /api/bookings/:bookingIntentId/holds/:holdId",
+    "policy": "team"
+  },
+  {
+    "route": "DELETE /api/integrations/webhook",
+    "policy": "owner"
+  },
+  {
+    "route": "DELETE /api/public/bookings/:bookingToken/holds/:holdId",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "GET *",
+    "policy": "platform"
+  },
+  {
+    "route": "GET /api/admin",
+    "policy": "admin"
+  },
+  {
+    "route": "GET /api/auth/account",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/auth/verify-email",
+    "policy": "auth"
+  },
+  {
+    "route": "GET /api/billing/status",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/booking/configuration",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/booking/readiness",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/calendar/busy",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/calendar/schedule",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/calls",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/calls/:id",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/dashboard",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/exports/:kind",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/health",
+    "policy": "platform"
+  },
+  {
+    "route": "GET /api/integrations/webhook",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/leads",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/leads/:id",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/onboarding/calendar/google/callback",
+    "policy": "oauth-capability"
+  },
+  {
+    "route": "GET /api/onboarding/calendar/google/start",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/onboarding/phone/test/:callSid",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/onboarding/state",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/pricebook/:ownerId",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/pricebook/interview",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/pricebook/interview/:draftId",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/pricebook/interview/:draftId/review",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/pricebook/meta",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/public/bookings/:bookingToken/confirmations/:confirmationId",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "GET /api/public/quote/:publicKey",
+    "policy": "widget"
+  },
+  {
+    "route": "GET /api/quotedone/access",
+    "policy": "owner"
+  },
+  {
+    "route": "GET /api/quotes",
+    "policy": "team"
+  },
+  {
+    "route": "GET /api/schema",
+    "policy": "platform"
+  },
+  {
+    "route": "GET /demo/otc-live-demo.js",
+    "policy": "platform"
+  },
+  {
+    "route": "GET /widget-app.js",
+    "policy": "platform"
+  },
+  {
+    "route": "GET /widget.js",
+    "policy": "platform"
+  },
+  {
+    "route": "OPTIONS /api/demo/session",
+    "policy": "platform"
+  },
+  {
+    "route": "PATCH /api/leads/:id",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/admin/login",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/account/resend-verification",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/auth/forgot-password",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/login",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/logout",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/refresh",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/register",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/resend-verification",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/reset-password",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/auth/verify-email",
+    "policy": "auth"
+  },
+  {
+    "route": "POST /api/billing/checkout",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/billing/portal",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/bookings/:bookingIntentId/availability",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/bookings/:bookingIntentId/confirm",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/bookings/:bookingIntentId/holds",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/bookings/:bookingIntentId/preference",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/business/jurisdiction",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/demo/session",
+    "policy": "platform"
+  },
+  {
+    "route": "POST /api/dev/preview/operator",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/dev/preview/telephony",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/integrations/webhook/deliveries/:id/retry",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/integrations/webhook/rotate-secret",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/account",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/business-types",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/calendar",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/knowledge-base",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/knowledge-base/draft",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/phone/provision",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/phone/test",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/onboarding/voice",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/operator/toggle",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/interview",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/interview/:draftId/assist",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/preview",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/save",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/services/:serviceId/approve",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/suggest",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/pricebook/validate",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/public/bookings/:bookingToken/availability",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "POST /api/public/bookings/:bookingToken/confirm",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "POST /api/public/bookings/:bookingToken/holds",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "POST /api/public/bookings/:bookingToken/preference",
+    "policy": "booking-capability"
+  },
+  {
+    "route": "POST /api/public/quote/:publicKey",
+    "policy": "widget"
+  },
+  {
+    "route": "POST /api/public/quote/:publicKey/prepare",
+    "policy": "widget"
+  },
+  {
+    "route": "POST /api/quote/calculate",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/quote/prepare",
+    "policy": "team"
+  },
+  {
+    "route": "POST /api/quote/test",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/quotedone/access",
+    "policy": "owner"
+  },
+  {
+    "route": "POST /api/stripe/webhook",
+    "policy": "stripe"
+  },
+  {
+    "route": "POST /api/twilio/voice/fallback/:nonce",
+    "policy": "voice"
+  },
+  {
+    "route": "POST /api/twilio/voice/incoming",
+    "policy": "voice"
+  },
+  {
+    "route": "PUT /api/booking/policies/:serviceId",
+    "policy": "owner"
+  },
+  {
+    "route": "PUT /api/booking/settings",
+    "policy": "owner"
+  },
+  {
+    "route": "PUT /api/integrations/webhook",
+    "policy": "owner"
+  },
+  {
+    "route": "PUT /api/pricebook/interview/:draftId",
+    "policy": "owner"
+  },
+  {
+    "route": "PUT /api/widget/settings",
+    "policy": "owner"
+  },
+  {
+    "route": "USE /api/demo/session",
+    "policy": "platform"
+  },
+  {
+    "route": "USE /assets/*",
+    "policy": "platform"
+  },
+  {
+    "route": "WS /api/twilio/voice/stream/:nonce",
+    "policy": "voice"
+  }
+]
