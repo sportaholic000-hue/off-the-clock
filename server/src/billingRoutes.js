@@ -378,7 +378,7 @@ export function installBillingRoutes(app, {
 
   const billingByOwner = database.prepare(`
     SELECT billing.ownerId, billing.stripeCustomerId, billing.stripeSubscriptionId,
-      billing.canceledAt, users.planStatus, users.annualPaidThroughAt
+      billing.canceledAt, users.planStatus, users.annualPaidThroughAt, users.paidThroughAt, users.serviceEndsAt
     FROM billingAccounts AS billing
     JOIN users ON users.id = billing.ownerId
     WHERE billing.ownerId = ?
@@ -388,7 +388,7 @@ export function installBillingRoutes(app, {
     FROM users WHERE id = ? AND role = 'owner'
   `);
   const billingStatusByOwner = database.prepare(`
-    SELECT users.plan, users.planStatus, users.trialEndsAt, users.annualPaidThroughAt,
+    SELECT users.plan, users.planStatus, users.trialEndsAt, users.annualPaidThroughAt, users.paidThroughAt, users.serviceEndsAt,
       users.paymentFailedAt AS userPaymentFailedAt,
       billing.stripeCustomerId, billing.stripeSubscriptionId, billing.stripePriceId,
       billing.graceEndsAt, billing.currentPeriodEndAt, billing.cancelAtPeriodEnd,
@@ -677,6 +677,7 @@ export function installBillingRoutes(app, {
   }
 
   function checkoutParameters(row) {
+    const returningPaidOwner=database.prepare("SELECT stripeInvoiceId FROM billingInvoiceEvidence WHERE ownerId=? AND status='PAID' AND amountPaid>0 LIMIT 1").get(row.ownerId);
     let storedSuccess;
     let storedCancel;
     let storedIntegration;
@@ -697,8 +698,10 @@ export function installBillingRoutes(app, {
       payment_method_collection: 'always',
       payment_method_types: ['card'],
       subscription_data: {
-        trial_period_days: 14,
-        trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }
+        ...(!returningPaidOwner?{
+          trial_period_days: 14,
+          trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }
+        }:{})
       },
       success_url: storedSuccess.value,
       cancel_url: storedCancel.value,
@@ -765,6 +768,8 @@ export function installBillingRoutes(app, {
       planStatus: account.planStatus,
       billingInterval,
       ...(account.annualPaidThroughAt?{annualPaidThroughAt:account.annualPaidThroughAt}:{}),
+      ...(account.paidThroughAt?{paidThroughAt:account.paidThroughAt}:{}),
+      ...(account.serviceEndsAt?{serviceEndsAt:account.serviceEndsAt}:{}),
       trialEndsAt: account.trialEndsAt ?? null,
       paymentFailedAt: account.userPaymentFailedAt ?? null,
       graceEndsAt: account.graceEndsAt ?? null,

@@ -1,3 +1,4 @@
+import {syncBillingPaidThrough,syncBillingCancellationEvidence} from './billingCustomerLifecycle.js';
 import crypto from 'node:crypto';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
@@ -714,6 +715,8 @@ export function createBillingStateService({
     }
     const paid=db.prepare('SELECT MAX(endAt) endAt FROM billingAnnualTerms WHERE ownerId=? AND stripeSubscriptionId=? AND plan=? AND startAt<=?').get(after.ownerId,after.stripeSubscriptionId,after.plan,processedAt);
     db.prepare('UPDATE users SET annualPaidThroughAt=? WHERE id=? AND role=\'owner\'').run(paid?.endAt||null,after.ownerId);
+    syncBillingPaidThrough(db,after.ownerId);
+    syncBillingCancellationEvidence(db,after.ownerId,processedAt);
     recordOwnerUsagePeriods({database:db,ownerId:after.ownerId,priceIds,at:processedAt});
     if (changed) logTransition(before, after, event.type, eventInstant(event.created));
   }

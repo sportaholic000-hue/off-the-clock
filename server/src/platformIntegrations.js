@@ -37,6 +37,7 @@ async function twilioRequest(path, { method = 'GET', params } = {}) {
     options.body = new URLSearchParams(Object.entries(params).map(([key, value]) => [key, String(value)]));
   }
   const response = await fetchWithTimeout(url, options);
+  if(method==='DELETE'&&(response.status===204||response.status===404))return {released:true};
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error('Twilio request failed');
@@ -46,6 +47,13 @@ async function twilioRequest(path, { method = 'GET', params } = {}) {
     throw error;
   }
   return payload;
+}
+
+// Deleting one saved number resource is idempotent. A 404 on replay confirms
+// the exact SID is gone; a timeout never clears the tenant's local receipt.
+export async function releaseTwilioNumber({sid}) {
+  if(!/^PN[0-9a-f]{32}$/i.test(String(sid||'')))throw new Error('Invalid saved phone SID');
+  return twilioRequest(`IncomingPhoneNumbers/${sid}.json`,{method:'DELETE'});
 }
 
 export function normalizePhone(value) {

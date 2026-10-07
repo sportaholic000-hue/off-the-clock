@@ -64,6 +64,6 @@ export function createStripeOverageProvider({stripeClient:stripe}={}) {
     if(invoice.subtotal!==charge.amountCents||invoice.currency!==price.currency)throw fail();
     if(invoice.status==='draft')invoice=validInvoice(await journal.mutate('finalize',()=>stripe.invoices.finalizeInvoice(invoice.id,{auto_advance:true},{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-finalize-'+period.id}),{resourceUpdate:true}));
     if(!['open','paid'].includes(invoice.status)||invoice.subtotal!==charge.amountCents)throw fail();
-    return {status:invoice.status==='paid'?'PAID':'SUBMITTED',providerInvoiceId:invoice.id};
+    return {status:invoice.status==='paid'?'PAID':'SUBMITTED',providerInvoiceId:invoice.id,invoice};
   }};
 }

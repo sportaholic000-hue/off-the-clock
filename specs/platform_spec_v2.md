@@ -843,15 +843,13 @@ here is a build requirement with the same force as sections
   restore. All transitions logged + owner-notified.
 
 12.7 CANCELLATION / OFFBOARDING
-  Self-serve cancel triggers: (1) un-forwarding instructions
-  shown + emailed immediately (their business line must stop
-  pointing at us); (2) 14-day wind-down — the number answers
-  with a configurable "this line has changed, call [owner's
-  real number]" message, then releases; (3) full data export
-  (CSV: calls, transcripts, leads, quotes, customers)
-  available for 30 days; (4) exit survey, one question.
-  An ex-customer whose calls silently die becomes an
-  anti-referral — offboarding is reputation work.
+  Owner amendment BILLING_LIFECYCLE_20261007.md governs. Dashboard cancellation
+  retains service through the verified paid period without partial refunds.
+  At service end AI answering, forwarding, quoting and widget availability stop.
+  Release the phone 30 days later; retain CSV leads, quotes and call records
+  through 90 days, then delete records and application copies. Reactivation
+  restores retained resources within their respective windows, with verified
+  payment required after termination. Provider uncertainty remains visible.
 
 12.8 TIMEZONES
   Owner timezone set at onboarding (default from region,
@@ -879,10 +877,9 @@ here is a build requirement with the same force as sections
   all public endpoints; bcrypt cost ≥ 12.
 
 12.11 TRIAL MECHANICS
-  Card required at start; usage banner throughout; email
-  day 10 ("here's what your operator did so far" — real
-  numbers) and day 13 (converting tomorrow); auto-convert
-  day 14; trial minutes exhausted early → operator falls
+  Card required at start; usage banner throughout; durable owner email and
+  dashboard reminder three days before the first charge, stating plan, exact
+  amount/currency/date and dashboard cancel/change links; auto-convert day 14; trial minutes exhausted early → operator falls
   back to capture + upgrade prompt (never dead ring);
   MID-CALL CAP: if the 60-min trial cap is reached DURING a
   live call, the agent finishes the current caller

@@ -3,6 +3,7 @@ import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {billingUsageId,MINUTE_PLANS,MINUTE_THRESHOLDS,usageAmounts,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
 import {createBillingVoiceUsage,voiceUsagePeriod} from './billingVoiceUsage.js';
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
+import {recordUsageInvoicePayment} from './billingCustomerLifecycle.js';
 
 const SAFE_RETRY_MS=23*60*60*1000;
 export function createBillingMinuteService({database,ownerQuery,priceIds={},paymentProvider,emailProvider,enabled=()=>false,clock=()=>new Date(),onError=()=>{}}={}) {
@@ -85,6 +86,8 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
   }
   async function chargePeriod(ownerId,periodId){
     if(!enabled()||!paymentProvider)return false;
+    const cancellation=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
+    if(cancellation?.serviceEndsAt&&cancellation.serviceEndsAt<=now())return false;
     try{return await withBillingLease(database,ownerId,async assertLease=>{
       const period=query('SELECT * FROM billingUsagePeriods WHERE ownerId=? AND id=?').get(ownerId,periodId);
       if(!period||period.endAt>now())return false;
@@ -116,6 +119,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
         if(!['SUBMITTED','PAID'].includes(result?.status)||!result.providerInvoiceId)throw Error('Unconfirmed overage invoice.');
         query('UPDATE billingUsageCharges SET status=?,providerInvoiceId=?,lastError=NULL,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND periodId=?')
           .run(result.status,result.providerInvoiceId,new Date(clock().getTime()+60000).toISOString(),now(),ownerId,periodId);
+        if(result.status==='PAID'&&result.invoice)recordUsageInvoicePayment(database,{ownerId,period,charge,invoice:result.invoice,at:now()});
         return true;
       }catch(error){assertLease();query("UPDATE billingUsageCharges SET status='PENDING',lastError=?,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND periodId=?")
           .run(error.code==='BILLING_OVERAGE_CONFIRMATION_REQUIRED'?'BILLING_OVERAGE_CONFIRMATION_REQUIRED':'BILLING_PROVIDER_PENDING',new Date(clock().getTime()+60000).toISOString(),now(),ownerId,periodId);return false;}
@@ -163,6 +167,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
     }else if(event.type==='invoice.payment_failed'&&charge.status!=='PAID'){
       query("UPDATE billingUsageCharges SET lastError='PAYMENT_PENDING',nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND periodId=?").run(now(),now(),binding.ownerId,id);
     }
+    if(event.type==='invoice.paid'||charge.status!=='PAID')recordUsageInvoicePayment(database,{ownerId:binding.ownerId,period,charge,invoice,at:Number.isInteger(event.created)?new Date(event.created*1000).toISOString():now()});
     return true;
   }
   return {syncOwner,snapshot,usage,chargePeriod,processOwner,tick,start,emails,applyInvoiceEvent};

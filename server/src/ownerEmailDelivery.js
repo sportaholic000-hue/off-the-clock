@@ -32,7 +32,7 @@ export function createOwnerEmailDelivery({database,ownerQuery,provider,enabled=(
     const save=(status,{id=row.providerId,error=null,delay=60000}={})=>usageTransaction(database,()=>{
       const updated=query(`UPDATE ownerEmailDeliveries SET status=?,providerId=?,lastError=?,nextAttemptAt=?,leaseToken=NULL,leaseUntil=NULL,updatedAt=?
         WHERE ownerId=? AND id=? AND leaseToken=?`).run(status,id,error,new Date(clock().getTime()+delay).toISOString(),now(),ownerId,row.id,row.leaseToken);
-      if(status==='DELIVERED'&&Number(updated.changes))query("UPDATE outboxEvents SET status='DELIVERED',updatedAt=? WHERE ownerId=? AND id=? AND eventType='billing.minute_warning'").run(now(),ownerId,row.id);
+      if(status==='DELIVERED'&&Number(updated.changes))query("UPDATE outboxEvents SET status='DELIVERED',updatedAt=? WHERE ownerId=? AND id=? AND eventType IN ('billing.minute_warning','billing.lifecycle_notice')").run(now(),ownerId,row.id);
       return updated;
     });
     const message=JSON.parse(row.messageJson);

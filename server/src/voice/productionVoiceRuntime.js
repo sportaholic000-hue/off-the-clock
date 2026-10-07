@@ -48,7 +48,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   installBillingVoiceRoutes(app,{validator,meter});
   const store=createVoiceSessionStore({database,clock}),account=ownerId=>({...loadVoiceAccountContext(database,ownerId),minutesUsed:meter.minutesUsed(ownerId)});
   const fallback=({context})=>{
-    const number=account(context.ownerId).profile?.existingPhoneNumber;
+    const state=account(context.ownerId);
+    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
+    const number=state.profile?.existingPhoneNumber;
     if(!E164.test(String(number||''))||number===context.to)throw Error('A distinct business fallback number is required.');
     return {mode:'forward',number,message:'The business could not answer. Please try the business again shortly.'};
   };
