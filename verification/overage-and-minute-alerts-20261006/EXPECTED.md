@@ -23,6 +23,8 @@ Owner rules supersede the former 80%/100% notification wording in platform secti
 | First paid Operator / QuoteDone annual term | **$1,190.00 / $2,790.00** in full at trial end, covering 12 months |
 | Annual monthly reset after 301 Operator minutes | Prior month **$0.35**; next monthly allowance 300 with **$0.00** new overage |
 | Annual cancellation during paid year | Service through paid-term end; **$0.00** partial refund |
+| 239 confirmed Operator minutes plus a provisional call later confirmed as 0 seconds | 239 used, 61 left, **$0.00** overage; no 60-minute warning |
+| 757 confirmed Operator minutes plus one provisional minute | No upgrade claim until provider confirmation; if confirmed as 0 seconds, **$159.95** overage and no nudge |
 
 Warn at used counts 240/270/300 for Operator and 1,140/1,170/1,200 for QuoteDone. Each threshold creates one dashboard event and one durable email identity per owner/period even when a call crosses multiple thresholds, requests repeat, workers race or restart. Reset allowance on the paid subscription's monthly anniversary, preserving the original day when short months require clamping. A call crossing a boundary belongs to the month in which it connected. Annual paid term and monthly anniversaries begin at trial end, not signup.
 

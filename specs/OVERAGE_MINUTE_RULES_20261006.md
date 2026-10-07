@@ -29,6 +29,8 @@ Warnings are durable and tenant-scoped, once per period at 60, 30 and zero
 minutes left. Crossing several thresholds in one call records all crossed
 warnings. Retries retain the exact warning identity and message. Dashboard
 usage shows minutes used, minutes left and overage so far even with zero calls.
+Warnings use provider-confirmed durations; provisional usage is labelled and
+cannot trigger an irreversible email or a premature upgrade savings claim.
 Email acceptance is distinguished from confirmed delivery. Failed or uncertain
 delivery stays visible; provider idempotency-window expiry requires receipt
 reconciliation rather than a blind resend. No exactly-once inbox guarantee is

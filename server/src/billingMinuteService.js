@@ -15,20 +15,23 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       AND COALESCE(c.spamFiltered,0)=0 AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK')
       AND COALESCE(c.outcome,'')!='AI_FALLBACK' AND COALESCE(v.usageKind,'unknown')!='trial' ORDER BY c.id`)
       .all(period.ownerId,period.startAt,period.endAt);
-    let minutes=0,pending=0;
+    let minutes=0,confirmedMinutes=0,pending=0;
     const proof=[];
     for(const row of rows){
       if(!Number.isSafeInteger(row.minutesBilled)||row.minutesBilled<0)throw Error('Invalid stored minute count.');
       minutes+=row.minutesBilled;
       const verified=row.usageKind==='paid'&&row.completedAt&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
         Number.isSafeInteger(row.providerDurationSeconds)&&row.providerDurationSeconds>=0&&Math.ceil(row.providerDurationSeconds/60)===row.minutesBilled;
-      if(!verified)pending++;
+      if(!verified)pending++;else confirmedMinutes+=row.minutesBilled;
       proof.push([row.id,row.providerDigest,row.providerDurationSeconds,row.minutesBilled]);
     }
-    return {...usageAmounts(period.plan,minutes),unconfirmedCalls:pending,digest:billingUsageId('duration-proof-v1',proof)};
+    return {...usageAmounts(period.plan,minutes),confirmedMinutesUsed:confirmedMinutes,unconfirmedCalls:pending,digest:billingUsageId('duration-proof-v1',proof)};
   }
   function warnings(period,totals){
     if(period.startAt>now()||period.endAt<=now())return;
+    // Local durations are provisional under F10. An irreversible warning must
+    // not be triggered by a duration the signed provider receipt may reduce.
+    totals=usageAmounts(period.plan,totals.confirmedMinutesUsed);
     const owner=query("SELECT email FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:period.ownerId});
     if(!owner)throw Error('Owner unavailable.');
     for(const threshold of MINUTE_THRESHOLDS){
@@ -61,6 +64,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
     if(current){
       data={status:'PAID',plan:current.plan,periodId:current.id,periodStartAt:current.startAt,periodEndAt:current.endAt,billingInterval:current.billingInterval,...usage(current)};
       delete data.digest;
+      if(data.unconfirmedCalls){data.savingsCents=0;data.upgradeMessage=null;}
     }else if(owner.planStatus==='trialing'){
       const period=voiceUsagePeriod(database,ownerId,{at:now()}),used=createBillingVoiceUsage({database,clock}).minutesUsed(ownerId);
       data=period&&Number.isSafeInteger(used)?{status:'TRIAL',plan:owner.plan,minutesUsed:used,includedMinutes:60,minutesLeft:Math.max(0,60-used),overageMinutes:0,overageCents:0,upgradeMessage:null,periodStartAt:period.start,periodEndAt:period.end}:null;

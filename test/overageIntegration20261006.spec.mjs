@@ -8,6 +8,11 @@ import {createOwnerEmailProvider} from '../server/src/ownerEmailDelivery.js';
 import {harness,httpHarness} from './billingCoreRepair20261006.helpers.mjs';
 
 const END=monthlyAnniversary(START,1);
+test('provisional duration cannot send a false threshold warning or savings claim',t=>{
+  const h=fixture(t);h.activate();h.call(239*60);const uncertain=h.call(0,{localSeconds:61,provider:false});
+  assert.equal(h.service.snapshot(A).warnings.length,0);h.meter.providerComplete(uncertain.receipt);assert.equal(h.service.snapshot(A).minutesUsed,239);assert.equal(h.service.snapshot(A).minutesLeft,61);
+  h.call(518*60);const nudge=h.call(0,{localSeconds:1,provider:false});assert.equal(h.service.snapshot(A).upgradeMessage,null);h.meter.providerComplete(nudge.receipt);assert.equal(h.service.snapshot(A).overageCents,15995);assert.equal(h.service.snapshot(A).upgradeMessage,null);
+});
 test('a call crossing the anniversary belongs to its connected month; confirmed $0.35 is charged once',async t=>{
   const h=fixture(t);h.activate(A,{interval:'annual'});h.call(300*60);h.call(60,{at:new Date(Date.parse(END)-30000).toISOString()});
   assert.equal(h.service.snapshot(A).minutesUsed,0);await h.service.processOwner(A);assert.equal([...h.fakes.items.values()][0].amount,35);
