@@ -470,7 +470,7 @@ app.post('/api/quote/test', requireAuth(['owner']), requireQuoteDonePlan, asyncH
 
 app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
   const profileState = clientOnboardingState(req.tenantOwnerId);
-  const book = loadPricebook(req.tenantOwnerId);
+  let book={services:[]},quotingNotice=null;try{book=loadPricebook(req.tenantOwnerId);}catch{quotingNotice='The saved price book cannot be read. Quoting is paused; answering remains available. Restore the saved price book from backup or contact support.';}
   const quoteRequestCount = ownerQuery('SELECT COUNT(*) AS count FROM quoteRequests WHERE ownerId = ?').get(req.tenantOwnerId)?.count || 0;
   res.json({
     ownerId: req.tenantOwnerId,
@@ -478,7 +478,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
     operator: profileState.operator,
     onboardingStep: profileState.profile.onboardingStep,
     quoteRequestCount,
-    callActivity:ownerCallService.dashboard(req.tenantOwnerId),
+    callActivity:ownerCallService.dashboard(req.tenantOwnerId),quotingNotice,
     minuteUsage:req.role==='owner'?minuteBilling.snapshot(req.tenantOwnerId):null,
     pricebookStatuses: req.role === 'owner' ? bookStatuses(book) : [],
     // Null outside local preview. Never fabricated for the real product.

@@ -14,7 +14,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       FROM calls c LEFT JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
       WHERE c.ownerId=? AND COALESCE(v.connectedAt,c.createdAt)>=? AND COALESCE(v.connectedAt,c.createdAt)<?
       AND COALESCE(c.spamFiltered,0)=0 AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK')
-      AND COALESCE(c.outcome,'')!='AI_FALLBACK' AND COALESCE(v.usageKind,'unknown')!='trial' ORDER BY c.id`)
+      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF') AND COALESCE(v.usageKind,'unknown')!='trial' ORDER BY c.id`)
       .all(period.ownerId,period.startAt,period.endAt);
     let minutes=0,confirmedMinutes=0,pending=0;
     const proof=[];

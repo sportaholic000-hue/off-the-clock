@@ -23,13 +23,13 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
     if(row.eventType==='lead.created'){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};
-      return ['New lead',lead.customerName||d.contact?.name||submission.contact?.name,lead.callerNumber||d.contact?.phone||submission.contact?.phone,d.contact?.email||submission.contact?.email,lead.describedService,d.notes,submission.context];
+      return ['New lead',lead.customerName||d.contact?.name||submission.contact?.name,d.contact?.phone||submission.contact?.phone||lead.callerNumber,d.contact?.email||submission.contact?.email,lead.describedService,d.notes,submission.context];
     }
     if(['callback.requested','callback.updated'].includes(row.eventType)){
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');
-      const lead=query('SELECT callerNumber,customerName FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
+      const lead=query('SELECT callerNumber,customerName,collectedInputsJson FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const history=parseArray(callback.historyJson),revision=row.eventType==='callback.updated'?Number(row.eventKey.split(':').at(-1))-1:0,entry=history[revision];
-      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',lead.customerName,lead.callerNumber,entry?.notes??callback.notes??'No caller notes recorded',callback.reason];
+      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',lead.customerName,storedObject(lead.collectedInputsJson).contact?.phone||lead.callerNumber,entry?.notes??callback.notes??'No caller notes recorded',callback.reason];
     }
     if(row.eventType==='quote.created'){
       const quote=query('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);if(!quote)throw Error('ALERT_SOURCE_MISSING');
@@ -46,6 +46,10 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
     if(row.eventType==='booking.preference_requested'){
       const request=query('SELECT * FROM bookingPreferences WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(request.customerJson);return ['Preferred-time request (not booked)',c.name,c.phone,c.email,request.note,...parseArray(request.preferredWindowsJson).map(w=>JSON.stringify(w))];
+    }
+    if(row.eventType==='voice.quoting_unavailable'){
+      const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
+      return ['Quoting is paused. Answering remains available.',storedObject(outbox.payloadJson).message];
     }
     if(row.eventType==='voice.urgent_flagged'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');

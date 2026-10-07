@@ -138,6 +138,7 @@ export default function Dashboard() {
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator}>
       <main className="dashboard-page">
+        {dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
         {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh}/>}
         {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>

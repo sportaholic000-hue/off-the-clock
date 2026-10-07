@@ -16,22 +16,22 @@ export function saveVoiceInquiry({database,context,callId,key,leadId,customerId,
   if(!row&&!leadId&&legacyDefault)row=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=?
     AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
     AND json_extract(collectedInputsJson,'$.inquiryKey') IS NULL
-    AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid LIMIT 1`).get(context.ownerId,callId,context.from);
+    AND callerNumber=? ORDER BY rowid LIMIT 1`).get(context.ownerId,callId,context.from);
   if(!row&&!leadId&&legacyDefault){
     const pending=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=?
       AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
-      AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid`).all(context.ownerId,callId,context.from);
+      AND callerNumber=? ORDER BY rowid`).all(context.ownerId,callId,context.from);
     if(pending.length===1&&String(parsed(pending[0].collectedInputsJson).inquiryKey||'').startsWith('review:'))row=pending[0];
   }
   customerQuery(database);
   const before=parsed(row?.collectedInputsJson);
-  if(row&&(before.voiceVersion!==1||before.contact?.phone!==context.from))throw Error('Invalid inquiry binding.');
+  if(row&&(before.voiceVersion!==1||row.callerNumber!==context.from))throw Error('Invalid inquiry binding.');
   const id=row?.id||leadId||randomUUID();
   customerId=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt})?.id||customerId||randomUUID();
   const customer=database.prepare('SELECT * FROM customers WHERE ownerId=? AND id=? AND (customer_phone(phoneE164)=? OR phoneE164=?)').get(context.ownerId,customerId,context.from,context.from);
   const customerNotes=parsed(customer?.notesJson);
-  const contact={name:before.contact?.name??customer?.name??null,email:before.contact?.email??customerNotes.email??null,phone:context.from};
-  for(const field of ['name','email'])if(updates[field]!==undefined)contact[field]=updates[field];
+  const contact={name:before.contact?.name??customer?.name??null,email:before.contact?.email??customerNotes.email??null,phone:before.contact?.phone??context.from};
+  for(const field of ['name','email','phone'])if(updates[field]!==undefined)contact[field]=updates[field];
   // An old customer's address is retained on the customer, but is not silently
   // promoted to the site of a new inquiry/booking.
   const address=updates.address!==undefined?updates.address:before.address??null;
@@ -59,6 +59,6 @@ export function saveVoiceInquiry({database,context,callId,key,leadId,customerId,
     database.prepare(`UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,
       '$.customerName',?,'$.phone',?,'$.email',?,'$.service',?,'$.type',?)
       WHERE ownerId=? AND aggregateId=? AND eventType='lead.created' AND status='PENDING'
-      AND attemptCount=0 AND json_valid(payloadJson)`).run(contact.name,context.from,contact.email,description,nextType,context.ownerId,id);
+      AND attemptCount=0 AND json_valid(payloadJson)`).run(contact.name,contact.phone,contact.email,description,nextType,context.ownerId,id);
   return {row:{...row,id,ownerId:context.ownerId,callId,describedService:description},details};
 }

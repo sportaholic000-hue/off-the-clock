@@ -853,7 +853,9 @@ function VoiceStep({ state, refresh, back }) {
   const [form, setForm] = useState({
     voiceId:state.profile.voiceId || 'female',
     agentName:state.profile.agentName || 'Nova',
-    greeting:state.profile.greeting || `${businessName}, this is Nova. How can I help?`
+    greeting:state.profile.greeting || `${businessName}, this is Nova. How can I help?`,
+    transferNumber:state.profile.knowledgeBase?.transferNumber||state.profile.existingPhoneNumber||'',
+    transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
   const [error, setError] = useState(null);
   function update(field, value) {
@@ -885,9 +887,15 @@ function VoiceStep({ state, refresh, back }) {
         <button type="button" className={form.voiceId === 'female' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','female')}>Nova · female voice</button>
         <button type="button" className={form.voiceId === 'male' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','male')}>Miles · male voice</button>
       </div>
-      <Field label="Agent name"><TextInput value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
-      <Field label="Greeting"><Textarea rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
+      <Field label="Agent name"><TextInput maxLength={500} value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
+      <Field label="Greeting"><Textarea maxLength={1000} rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
       <Button icon={Volume2} variant="secondary" onClick={preview}>Preview greeting</Button>
+      <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
+      <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
+      {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
+        {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
+        <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>
+      </fieldset>)}
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.agentName.trim() || !form.greeting.trim()} />
     </section>

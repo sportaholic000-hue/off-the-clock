@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {allowancePeriods} from './billingUsagePolicy.js';
 const terminal=new Set(['completed','busy','failed','no-answer','canceled']);
-const excluded=row=>row.spamFiltered===1||['FALLBACK','AI_FALLBACK'].includes(row.status)||row.outcome==='AI_FALLBACK';
+const excluded=row=>row.spamFiltered===1||['FALLBACK','AI_FALLBACK'].includes(row.status)||row.outcome==='AI_FALLBACK'||row.outcome==='OPERATOR_OFF';
 function transaction(db,work){db.exec('BEGIN IMMEDIATE');try{const result=work();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}
 function iso(value){const date=new Date(value);if(!Number.isFinite(date.getTime()))throw Error('Invalid metering instant.');return date.toISOString();}
 export function voiceUsagePeriod(db,ownerId,{at=new Date().toISOString()}={}){
@@ -71,6 +71,7 @@ export function createBillingVoiceUsage({database:db,clock=()=>new Date(),onUsag
       const digest=createHash('sha256').update(JSON.stringify([params.AccountSid,params.CallSid,params.From,params.To,params.CallStatus,seconds])).digest('hex');
       if(usage.providerDigest&&usage.providerDigest!==digest)throw Error('Conflicting completed-call receipt.');
       db.prepare('UPDATE billingVoiceUsage SET providerDurationSeconds=?,providerDigest=?,completedAt=COALESCE(completedAt,?) WHERE ownerId=? AND callId=?').run(seconds,digest,iso(clock()),row.ownerId,row.id);
+      if(row.outcome==='OPERATOR_OFF'&&!row.completedAt)db.prepare("UPDATE calls SET status=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND outcome='OPERATOR_OFF'").run(params.CallStatus==='completed'?'COMPLETED':'FAILED',iso(clock()),iso(clock()),row.ownerId,row.id);
       return writeMinutes(row,seconds);
     });onUsage(ownerId);return result;},
     minutesUsed(ownerId){
@@ -79,7 +80,7 @@ export function createBillingVoiceUsage({database:db,clock=()=>new Date(),onUsag
       // across the boundary and belongs to the period in which it connected.
       const row=db.prepare(`SELECT COALESCE(SUM(c.minutesBilled),0) n FROM calls c
         WHERE c.ownerId=? AND COALESCE(c.spamFiltered,0)=0
-        AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK') AND COALESCE(c.outcome,'')!='AI_FALLBACK'
+        AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK') AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')
         AND COALESCE((SELECT v.connectedAt FROM billingVoiceUsage v WHERE v.ownerId=c.ownerId AND v.callId=c.id),c.createdAt)>=?
         AND COALESCE((SELECT v.connectedAt FROM billingVoiceUsage v WHERE v.ownerId=c.ownerId AND v.callId=c.id),c.createdAt)<?`).get(ownerId,period.start,period.end);
       return row.n;

@@ -78,7 +78,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       connecting.then(value=>{if(closed){try{value.close();}catch{}}}).catch(()=>{});
       provider=await Promise.race([connecting,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED')),connectTimeoutMs);})]);
       if(closed||failed||['sendRealtimeInput','sendToolResponse','close'].some(key=>typeof provider?.[key]!=='function'))throw Error();
-      if(greetOnConnect&&typeof provider.sendClientContent==='function')provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Give the brief business greeting; this is a connection event, not a customer request.]'}]}],turnComplete:true});
+      if(greetOnConnect&&typeof provider.sendClientContent==='function')provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]'}]}],turnComplete:true});
     }catch{await close();fail('GEMINI_CONNECT_FAILED');}finally{clearTimeout(timer);}
     return Object.freeze({
       async sendAudio(value){

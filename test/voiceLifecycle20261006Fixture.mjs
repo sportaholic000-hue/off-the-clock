@@ -1,5 +1,6 @@
 import './pricebookTestEnv.mjs';
 import express from 'express';
+import {installTelephonyOperationsSchema} from '../server/src/telephonyOperationsMigration.js';
 import twilio from 'twilio';
 import WebSocket from 'ws';
 import {once} from 'node:events';
@@ -11,10 +12,10 @@ export async function until(predicate){for(let i=0;i<200;i++){if(predicate())ret
 export async function harness(t,options={}){
   let disposeDatabase;const f=fixture({after:fn=>{disposeDatabase=fn;}},options.filename),{db}=f,owner='synthetic-a',callbacks=[],responses=new Map(),errors=[],writes=[],sockets=[];
   db.prepare("UPDATE users SET plan='Operator' WHERE id=?").run(owner);
-  db.prepare("UPDATE businessProfiles SET existingPhoneNumber='+19025550199',twilioNumber=?,twilioNumberSid=?,phoneProvisioningStatus='provisioned',operatorEnabled=1,agentName='Sam',knowledgeBaseJson=? WHERE ownerId=?").run(TO,'PN'+'c'.repeat(32),JSON.stringify({about:'Synthetic business',hours:'Monday to Friday'}),owner);
-  const googleClient={live:{connect:async input=>{callbacks.push(input.callbacks);if(options.fail)throw Error('Synthetic model failure');return {sendRealtimeInput(){},sendClientContent(){},sendToolResponse(input){for(const r of input.functionResponses)responses.set(r.id,r.response);},close(){if(options.closeText)input.callbacks.onmessage({serverContent:{inputTranscription:{text:options.closeText},outputTranscription:{text:'Final provider transcript'}}});}};}}};
+  db.prepare("UPDATE businessProfiles SET existingPhoneNumber='+19025550199',twilioNumber=?,twilioNumberSid=?,phoneProvisioningStatus='provisioned',operatorEnabled=1,agentName='Sam',knowledgeBaseJson=? WHERE ownerId=?").run(TO,'PN'+'c'.repeat(32),JSON.stringify({about:'Synthetic business',hours:'Monday to Friday',transferWindows:Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(day=>[day,[{start:'00:00',end:'23:59'}]]))}),owner);
+  const googleClient={live:{connect:async input=>{options.onConnect?.(input);callbacks.push(input.callbacks);if(options.fail)throw Error('Synthetic model failure');return {sendRealtimeInput(){},sendClientContent(){},sendToolResponse(input){for(const r of input.functionResponses)responses.set(r.id,r.response);},close(){if(options.closeText)input.callbacks.onmessage({serverContent:{inputTranscription:{text:options.closeText},outputTranscription:{text:'Final provider transcript'}}});}};}}};
   const twilioClient={messages:{create:async input=>{writes.push(['sms',input]);return {sid:'SM'+'d'.repeat(32),status:'queued'};}},calls:sid=>({update:async input=>{writes.push(['call',sid,input]);return {sid,status:'in-progress'};}})};
-  options.beforeInstall?.(f);const app=express();
+  installTelephonyOperationsSchema(db);options.beforeInstall?.(f);const app=express();
   const runtime=installProductionVoice({app,database:db,runtimeConfig:{voiceRuntime:true,providerWrites:true},env,googleClient,twilioClient,clock:()=>new Date(at),onError:code=>errors.push(code),...options.install});
   const server=app.listen(0,'127.0.0.1');await once(server,'listening');const local='http://127.0.0.1:'+server.address().port;
   t.after(async()=>{await runtime.close();for(const ws of sockets)ws.terminate();server.closeAllConnections();await new Promise(r=>server.close(r));disposeDatabase();});

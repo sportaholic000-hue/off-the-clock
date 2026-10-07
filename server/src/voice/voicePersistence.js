@@ -216,6 +216,15 @@ export function createVoiceSessionStore({
       };
     },
 
+    recordHumanRouting({context,forwarded}) {
+      if(!validContext(context))throw new TypeError('Voice call context is invalid.');
+      return immediate(database,()=>{
+        const existing=boundCall(context);if(existing){if(isFinalVoiceCall(existing.status))return {terminal:true};return {callRecordId:existing.id};}
+        const at=nowIso(),id=randomUUID(),message=forwarded?'Operator was off. Routing was issued to the business phone; a human answer has not been confirmed.':'Operator was off. Human routing could not be confirmed because forwarding setup is incomplete. No AI answering or message capture was started.';
+        database.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,outcome,summaryText,transcriptJson,minutesBilled,createdAt,updatedAt) VALUES(?,?,?,?,?,?,'HUMAN_ROUTING','OPERATOR_OFF',?,'[]',0,?,?)").run(id,context.ownerId,context.callSid,context.accountSid,context.from,context.to,message,at,at);
+        return {callRecordId:id};
+      });
+    },
     recordFallback({ context, reason }) {
       if (!validContext(context)) throw new TypeError('Voice fallback context is invalid.');
       const safeReason = REASON.test(String(reason || '')) ? reason : 'VOICE_FALLBACK';
@@ -303,7 +312,7 @@ export function loadVoiceAccountContext(database, ownerId) {
   const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, paidThroughAt, serviceEndsAt
     FROM users WHERE id = ? AND role = 'owner'`).get(ownerId);
   const profile = database.prepare(`SELECT ownerId, operatorEnabled, existingPhoneNumber,
-    phoneProvisioningStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson
+    phoneProvisioningStatus, carrierSetupStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson
     FROM businessProfiles WHERE ownerId = ?`).get(ownerId);
   const usage = database.prepare(`SELECT COALESCE(SUM(minutesBilled), 0) AS minutesUsed
     FROM calls WHERE ownerId = ?`).get(ownerId);

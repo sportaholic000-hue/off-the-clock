@@ -396,9 +396,10 @@ export function createBookingService({
         typeof sourceId !== 'string' || !sourceId || typeof serviceId !== 'string' || !serviceId) {
       throw invalid('A tenant, persisted source, and saved service are required for booking.');
     }
-    if (![...RELEASED_QUOTE_RESULTS, 'ESTIMATE_REQUIRES_REVIEW'].includes(resultType)) {
+    if (![...RELEASED_QUOTE_RESULTS, 'ESTIMATE_REQUIRES_REVIEW','APPOINTMENT_REQUEST'].includes(resultType)) {
       throw invalid('The booking source has an unsupported quote outcome.');
     }
+    if(resultType==='APPOINTMENT_REQUEST'&&(sourceType!=='lead'||serviceId!=='voice-appointment'||!db.prepare('SELECT id FROM leads WHERE ownerId=? AND id=?').get(ownerId,sourceId)))throw invalid('A saved owner-scoped lead is required for an appointment request.');
     const now = nowFrom(clock);
     const expiry = instant(expiresAtUtc, 'Booking expiry');
     if (expiry <= now) throw invalid('Booking expiry must be in the future.');
@@ -692,7 +693,7 @@ export function createBookingService({
     const tierName = typeof body.tierName === 'string' ? body.tierName.trim() : '';
     if (tierName && (!Array.isArray(tiers) || !tiers.includes(tierName))) throw invalid('Choose a current quote option before booking.');
     if (policy.bookingMode === 'book_job') {
-      if (!RELEASED_QUOTE_RESULTS.has(row.intentResultType)) {
+      if (!RELEASED_QUOTE_RESULTS.has(row.intentResultType)&&row.intentResultType!=='APPOINTMENT_REQUEST') {
         throw bookingError('QUOTE_NEEDS_DETAILS', 422, 'This request needs a site visit or owner review before the job can be booked.');
       }
       if (Array.isArray(tiers) && tiers.length && !tierName) throw invalid('Choose a quote option before booking the job.');

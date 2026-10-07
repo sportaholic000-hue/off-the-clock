@@ -3,6 +3,7 @@ import {isVoiceCaller,callerIdentity,isPhoneNumber} from './callerIdentity.js';
 import {customerPhone,resolveCustomer} from '../customerIdentityService.js';
 import {customerHistory} from '../customerHistoryService.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
+import {transferDecision} from './voiceSettings.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
@@ -303,7 +304,7 @@ export function createVoiceToolRuntime({
       WHERE id = ? AND ownerId = ? AND callId = ?`).get(leadId, context.ownerId, call.id);
     const details = parseJson(row?.collectedInputsJson);
     if (!row || !record(details) || details.voiceVersion !== 1 ||
-        details.contact?.phone !== context.from ||
+        row.callerNumber !== context.from ||
         (resolved.reference.customerId && details.customerId !== resolved.reference.customerId)) {
       throw runtimeError('INVALID_LEAD_HANDLE');
     }
@@ -565,7 +566,7 @@ export function createVoiceToolRuntime({
     if(args.leadHandle)leadId=loadLead(resolve(args.leadHandle,'lead')).row.id;
     const number=args.inquiryNumber??1;
     const fields={...updates};
-    for(const field of ['name','email','notes','description'])if(args[field]!==undefined)fields[field]=args[field].trim();
+    for(const field of ['name','email','phone','notes','description'])if(args[field]!==undefined)fields[field]=args[field].trim();
     if(fields.email!==undefined){fields.email=fields.email.toLowerCase();if(!EMAIL.test(fields.email))throw runtimeError('INVALID_EMAIL');}
     if(args.address!==undefined)fields.address=Object.fromEntries(Object.entries(args.address).map(([name,value])=>[name,['region','postalCode','country'].includes(name)?value.trim().toUpperCase():value.trim()]));
     return saveVoiceInquiry({database,context,callId:call.id,key:key||'capture:'+number,leadId,
@@ -600,20 +601,29 @@ export function createVoiceToolRuntime({
       if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
       return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId},body.validUntilUtc)}))};
     }
-    const quoteResolved = resolve(args.quoteHandle, 'quote');
+    const quoteResolved = args.quoteHandle?resolve(args.quoteHandle, 'quote'):null;
     const leadResolved = resolve(args.leadHandle, 'lead');
-    const { row: quoteRow } = loadQuote(quoteResolved);
     const { row: leadRow, details } = loadLead(leadResolved);
-    const reference = quoteResolved.reference;
-    if (!reference.intentId || quoteRow.bookingIntentId !== reference.intentId ||
-        !BOOKABLE_RESULTS.has(reference.resultType) || reference.bookingCapability === 'NONE') {
+    let reference,quoteRow;
+    if(quoteResolved){({row:quoteRow}=loadQuote(quoteResolved));reference=quoteResolved.reference;}
+    else {
+      const policy=database.prepare("SELECT * FROM bookingPolicies WHERE ownerId=? AND serviceId='voice-appointment' AND enabled=1").get(context.ownerId);
+      if(!policy||typeof bookingService?.createIntent!=='function')return {status:'unavailable',message:'The business has not enabled appointment booking. A preferred time can be saved for review.'};
+      const intent=immediate(database,()=>{
+        const existing=database.prepare("SELECT id FROM bookingIntents WHERE ownerId=? AND sourceType='lead' AND sourceId=? AND serviceId='voice-appointment' AND resultType='APPOINTMENT_REQUEST' AND status='ACTIVE' AND expiresAtUtc>? ORDER BY createdAt DESC LIMIT 1").get(context.ownerId,leadRow.id,instant().toISOString());
+        return existing?.id||bookingService.createIntent({ownerId:context.ownerId,sourceType:'lead',sourceId:leadRow.id,serviceId:'voice-appointment',resultType:'APPOINTMENT_REQUEST',expiresAtUtc:new Date(instant().getTime()+3600000).toISOString()}).intentId;
+      });
+      reference={intentId:intent,bookingCapability:'DIRECT',resultType:'APPOINTMENT_REQUEST'};
+    }
+    if (!reference.intentId || quoteRow&&quoteRow.bookingIntentId !== reference.intentId ||
+        quoteResolved&&!BOOKABLE_RESULTS.has(reference.resultType) || reference.bookingCapability === 'NONE') {
       return {
         status: 'unavailable',
         reason: 'BOOKING_NOT_AVAILABLE',
         message: 'This quote cannot be booked automatically.'
       };
     }
-    if (multiTierDirectBookingBlocked(reference)) {
+    if (quoteResolved&&multiTierDirectBookingBlocked(reference)) {
       return {
         status: 'unavailable',
         reason: 'TIER_SELECTION_REQUIRED',
@@ -686,7 +696,7 @@ export function createVoiceToolRuntime({
         'slot:' + reference.intentId + ':' + sha256(slot.slotId),
         {
           intentId: reference.intentId,
-          quoteRequestId: reference.requestId,
+          ...(reference.requestId?{quoteRequestId:reference.requestId}:{}),
           leadId: leadRow.id,
           customerId: details.customerId,
           slotId: slot.slotId,
@@ -827,10 +837,10 @@ export function createVoiceToolRuntime({
       const boundId=supplied?.row.id||priorLeadId||requestId;
       let existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND id=?
         AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
-        AND json_extract(collectedInputsJson,'$.contact.phone')=?`).get(context.ownerId,call.id,boundId,context.from);
+        AND callerNumber=?`).get(context.ownerId,call.id,boundId,context.from);
       if(!existing&&!priorEvent&&!supplied)existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND describedService=?
         AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
-        AND json_extract(collectedInputsJson,'$.contact.phone')=? ORDER BY rowid LIMIT 1`).get(context.ownerId,call.id,description,context.from);
+        AND callerNumber=? ORDER BY rowid LIMIT 1`).get(context.ownerId,call.id,description,context.from);
       lead=saveInquiry({}, {leadId:existing?.id||supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
         updates:{description:existing?.describedService||description}});
       database.prepare('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
@@ -932,12 +942,8 @@ export function createVoiceToolRuntime({
     const reason = typeof args.reason === 'string' ? args.reason.trim() : '';
     if (!reason) throw runtimeError('TRANSFER_REASON_REQUIRED');
     if(args.leadHandle)loadLead(resolve(args.leadHandle,'lead'));
-    const profile = database.prepare('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId = ?').get(
-      context.ownerId
-    );
-    const destination = typeof profile?.existingPhoneNumber === 'string'
-      ? profile.existingPhoneNumber.trim()
-      : '';
+    const decision=transferDecision(database,context.ownerId,instant());
+    const destination=decision.destination||'';
     const identity = json({ callSid: context.callSid, reason, destination,...(args.inquiryNumber>1?{inquiryNumber:args.inquiryNumber}:{}) });
     const eventId = stableUuid(secret, 'voice-transfer-event', identity);
     // A failed transfer must never strand the caller. Persist the follow-up
@@ -960,6 +966,12 @@ export function createVoiceToolRuntime({
       return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
     }
 
+    const completedTransfer=database.prepare('SELECT status FROM outboxEvents WHERE id=? AND ownerId=?').get(eventId,context.ownerId);
+    if(completedTransfer?.status==='CONNECTED')return {status:'transferred',message:'The call was connected.'};
+    if (!decision.allowed) {
+      writeOutbox({id:eventId,eventType:'voice.transfer_requested',aggregateId:context.callSid,payload:{callSid:context.callSid,reason,policyReason:decision.reason},status:'FAILED'});
+      return unavailable(decision.reason,'A live transfer is unavailable outside the owner’s configured transfer hours or until transfer settings are complete.');
+    }
     if (!E164.test(destination)) {
       writeOutbox({
         id: eventId,
