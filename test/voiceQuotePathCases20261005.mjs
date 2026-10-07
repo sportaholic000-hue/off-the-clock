@@ -81,6 +81,23 @@ async function harness({fail=false}={}){
   return {db,owner,custom,mulch,fake,voice,errors,callSid,post,connect,close,get calendarCreates(){return calendarCreates;}};
 }
 
+test('signed production voice exposes server-only listed-price multiplication and speaks its exact response',async()=>{
+  // Written in verification/engine-leftovers/EXPECTATIONS.md: $0.10 × 3 = $0.30.
+  const h=await harness();try{
+    const listedItem='[SYNTHETIC] Widget $0.10 each. Pickup only.';
+    h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listedItem}),h.owner);
+    await h.connect();
+    const config=h.fake.connects[0].config;
+    assert.ok(config.tools[0].functionDeclarations.some(tool=>tool.name==='calculateListedPrice'));
+    assert.match(JSON.stringify(config.systemInstruction),/calculateListedPrice/);
+    assert.doesNotMatch(JSON.stringify(config.systemInstruction),/you may multiply/);
+    const result=await h.fake.tool('calculateListedPrice',{listedItem,quantity:'3',customerConfirmed:true});
+    assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,'0.30');
+    assert.match(result.voiceSummary,/\$0\.30/);assert.match(result.voiceSummary,/Pickup only/);
+    assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes').get().n,0);
+  }finally{await h.close();}
+});
+
 // Written before execution: $100/$150, travel $10 for Yes only, 15% tax.
 // Yes => $126.50/$184.00; No => $115.00/$172.50. No markup or range buffer.
 test('signed provisioned callback -> real dispatcher -> two-tier quote -> availability -> one hold and persisted booking',async()=>{

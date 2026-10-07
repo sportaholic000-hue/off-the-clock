@@ -1,3 +1,23 @@
+# October 7 engine leftovers — implementation checkpoint
+
+Branch `fix/engine-leftovers`, exact requested base
+`4db13a2945193762bbc4b85f9ab616a00e1dd067`.
+[Repair and reproduction record](../verification/engine-leftovers/REPORT.md).
+
+All four requested defects were reproduced twice before implementation: eight
+failing baseline checks. Scope confirmations now bind the selected description;
+historical voice receipts preserve material qualifications; website drafts omit
+CSS-hidden or unresolved prices; listed-unit multiplication runs exactly on the
+server and the receptionist speaks its returned result without doing arithmetic.
+
+The expanded focused run passed **179/179**, zero failures/skips. Cold installation
+passed. Browser startup in this workspace fails with Chromium SIGTRAP; hosted
+cold gates are required and their pending result is not represented as passing.
+Additional CSS boundary checks and the updated prior multiplication assertion
+are included in the final gates. No main merge, deployment, subagents or live data.
+
+## Previous checkpoint
+
 # October 7 audit repairs — hosted gates passed
 
 Branch `codex/audit-small-repairs-20261007`; verified source/test commit

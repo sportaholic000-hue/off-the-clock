@@ -1,4 +1,5 @@
 import {customerQuery,findCustomer} from './customerIdentityService.js';
+import {projectSavedQuoteContext,VOICE_RESULT_BYTES} from './voice/voiceQuotePresentation.js';
 const parsed=value=>{try{return JSON.parse(value)||{};}catch{return {};}};
 const text=value=>typeof value==='string'&&value.trim()?value.trim().slice(0,500):null;
 const jsonPhone=(column,path)=>`customer_phone(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
@@ -15,6 +16,7 @@ export function customerHistory(database,{ownerId,from}) {
    AND customer_phone(l.callerNumber)=? AND COALESCE(l.status,'') NOT IN ('DISMISSED','RESOLVED','CLOSED','CONVERTED','BOOKED')
    ORDER BY l.createdAt DESC,l.id DESC LIMIT 5`).all(ownerId,from)
    .map(row=>({description:text(row.describedService),status:text(row.status),createdAt:row.createdAt}));
+ let quoteBudget=VOICE_RESULT_BYTES-16384;
  const recentQuotes=query(`SELECT q.resultJson,q.status,q.serviceType,q.createdAt,s.customerResponseJson
    FROM quotes q LEFT JOIN quoteSubmissions s ON s.ownerId=q.ownerId AND s.recordId=q.id
    WHERE q.ownerId=? AND (
@@ -25,13 +27,15 @@ export function customerHistory(database,{ownerId,from}) {
    .map(row=>{
      const stored=parsed(row.customerResponseJson),fallback=parsed(row.resultJson).customerResult;
      const result=stored.resultType?stored:fallback||{};
-     const range=result.resultType==='PARTIAL_ESTIMATE_READY'?result.pricedEstimate||{}:result;
      const view={status:text(row.status),serviceType:text(row.serviceType),createdAt:row.createdAt,resultType:text(result.resultType)};
-     const prices=value=>Object.fromEntries(['lowEstimate','midEstimate','highEstimate','currency','tierName'].filter(key=>
-       key==='currency'?/^[A-Z]{3}$/.test(value[key]):key==='tierName'?typeof value[key]==='string':typeof value[key]==='number'&&Number.isFinite(value[key])&&value[key]>=0
-     ).map(key=>[key,typeof value[key]==='string'?value[key].slice(0,120):value[key]]));
-     Object.assign(view,prices(range));
-     if(Array.isArray(range.options))view.options=range.options.filter(value=>value&&typeof value==='object'&&!Array.isArray(value)).slice(0,5).map(prices);
+     try{
+       const complete=projectSavedQuoteContext(result),bytes=Buffer.byteLength(JSON.stringify(complete),'utf8');
+       if(bytes>quoteBudget)throw new TypeError('History exceeds voice budget.');
+       quoteBudget-=bytes;Object.assign(view,complete);
+     }catch{
+       view.resultType='ESTIMATE_REQUIRES_REVIEW';
+       view.customerMessage='The complete saved quote qualifications are unavailable in this conversation. Ask the business to review the saved estimate; do not repeat an unqualified amount.';
+     }
      return view;
    });
  const quoteRequests=query(`SELECT r.describedService,r.createdAt FROM quoteRequests r WHERE r.ownerId=? AND

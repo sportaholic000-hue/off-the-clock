@@ -1,5 +1,6 @@
 import {Parser} from 'htmlparser2';
 import {WebsiteImportError,WEBSITE_LIMITS} from './websitePriceTransport.js';
+import {applyWebsiteVisibility} from './websitePriceVisibility.js';
 
 const BLOCK=new Set('address article aside blockquote br dd div dl dt fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hr li main nav ol p pre section table tbody td th thead tr ul'.split(' '));
 const OMIT=new Set('script style template noscript iframe object embed svg math canvas head form textarea del s strike'.split(' '));
@@ -24,7 +25,7 @@ function itemNamed(text){
   const other=text.replace(moneyPattern,'').replace(/\b(?:from|starting|at|only|each|per|hour|hr|visit|month|year|day|week|sqft|square|foot|feet|tax|extra|plus|including|excluding|to|and|or)\b/gi,'');
   return /[\p{L}]{2}/u.test(other);
 }
-export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}){
+export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,stylesheets={}}={}){
   if(Buffer.byteLength(text)>limits.pageBytes)throw new WebsiteImportError('WEBSITE_SIZE_LIMIT','The decoded website page exceeds the import size limit.');
   if(plain){
     const lines=text.split(/\r?\n/).map(normalize),entries=[];let limited=false;
@@ -46,10 +47,12 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS}={}
       const parent=stack.at(-1),hidden=parent.hidden||OMIT.has(name)||Object.hasOwn(attrs,'hidden')||attrs['aria-hidden']?.toLowerCase()==='true'||hiddenStyle(attrs.style);
       const node={name,attrs,parts:[],parent,hidden};parent.parts.push(node);nodes.push(node);stack.push(node);
     },
-    ontext(value){if(!stack.at(-1).hidden)stack.at(-1).parts.push(value);},
+    ontext(value){if(!stack.at(-1).hidden||stack.at(-1).name==='style')stack.at(-1).parts.push(value);},
     onclosetag(){if(stack.length>1)stack.pop();}
   },{decodeEntities:true});
   parser.end(text);
+  const visibility=applyWebsiteVisibility(nodes,{stylesheets});
+  if(!visibility.verified)return {entries:[],links:[],conditions:[],limited:true,visibilityUnverified:true,stylesheetLinks:visibility.stylesheetLinks};
   function content(node){
     if(node.text!==undefined)return node.text;
     if(node.hidden)return node.text='';

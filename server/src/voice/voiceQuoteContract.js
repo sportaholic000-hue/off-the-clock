@@ -1,4 +1,6 @@
 import { registeredProductKey, productIdentityRequired } from '../../productNames.js';
+import {createHmac} from 'node:crypto';
+import {customerFieldForInputs,customerFieldVisible} from '../../scopeConfiguration.js';
 
 const own = (value, key) => Object.hasOwn(value || {}, key);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value) &&
@@ -24,16 +26,36 @@ function publicCondition(value, depth = 0) {
   return out;
 }
 
-export function voiceQuestionContract(service, definition) {
+const scopeField = field => field.type === 'boolean' && field.presentationVariants?.some(v=>v.details?.length);
+function selectedPresentations(field, inputs) {
+  return (field.presentationVariants || []).filter(v=>customerFieldVisible({visibleWhen:v.visibleWhen},inputs));
+}
+function scopeToken(service, field, inputs, authority) {
+  const selected=selectedPresentations(field,inputs);
+  if(!authority?.secret || !selected.length)return undefined;
+  return createHmac('sha256',authority.secret).update(JSON.stringify([authority.binding,service.id,field.name,selected])).digest('base64url');
+}
+
+export function voiceQuestionContract(service, definition, inputs = {}, authority) {
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly);
   if (fields.length > 64) throw new TypeError('Voice measurement contract exceeds its bounded field limit.');
-  const questions = fields.map(field => {
-    const question = { field: field.name, label: safeText(field.label) || human(field.name), type: field.type };
+  const questions = fields.map(original => {
+    const field=customerFieldForInputs(original,inputs);
+    const pending=scopeField(original)&&!selectedPresentations(original,inputs).length;
+    const question = { field: field.name, label: pending?'Confirm the selected work after supplying its measurements':safeText(field.label,4000) || human(field.name), type: field.type };
+    if(!pending&&field.details?.length)question.details=field.details.map(value=>{
+      if(!safeText(value,4000))throw new TypeError('Invalid scope description.');return value;
+    });
+    if(scopeField(original)){
+      question.scopeConfirmationRequired=true;
+      const token=scopeToken(service,original,inputs,authority);
+      if(token)question.confirmationToken=token;
+    }
     if (safeText(field.unit, 160)) question.unit = field.unit;
     if (typeof field.required === 'boolean') question.required = field.required;
     for (const name of ['min', 'max']) if (typeof field[name] === 'number' && Number.isFinite(field[name])) question[name] = field[name];
-    for (const name of ['showWhen', 'requiredWhen', 'applicableWhen']) {
+    for (const name of ['showWhen', 'requiredWhen', 'applicableWhen', 'visibleWhen']) {
       const condition = publicCondition(field[name]);
       if (condition !== undefined) question[name] = condition;
     }
@@ -53,7 +75,7 @@ export function voiceQuestionContract(service, definition) {
   return { fields: questions, customerFees };
 }
 
-export function bindVoiceQuoteInputs(service, definition, args) {
+export function bindVoiceQuoteInputs(service, definition, args, authority) {
   if (!record(args.customerInputs) || own(args.customerInputs, 'confirmedFacts')) {
     return { followUps: ['Supply the current job measurements and confirm the named products; product identities are resolved by the business.'] };
   }
@@ -88,6 +110,15 @@ export function bindVoiceQuoteInputs(service, definition, args) {
     } else if (field.type === 'enum' && typeof customerInputs[field.name] === 'string') {
       const key = registeredProductKey(customerInputs[field.name], (field.values || []).filter(value => typeof value === 'string'));
       if (key) customerInputs[field.name] = key;
+    }
+  }
+  const scopeConfirmations=record(args.scopeConfirmations)?args.scopeConfirmations:{};
+  for(const key of Object.keys(scopeConfirmations))if(!fields.some(field=>field.name===key&&scopeField(field)))followUps.push('Confirm only a scope requested for this service.');
+  for(const field of fields)if(scopeField(field)&&(customerInputs[field.name]===true||selectedPresentations(field,customerInputs).length)){
+    const expected=scopeToken(service,field,customerInputs,authority);
+    if(customerInputs[field.name]!==true||!expected||scopeConfirmations[field.name]!==expected){
+      const view=customerFieldForInputs(field,customerInputs);
+      followUps.push('Please confirm the current scope: '+view.label+'.');
     }
   }
   if (Object.keys(confirmedFacts).length) customerInputs.confirmedFacts = confirmedFacts;
