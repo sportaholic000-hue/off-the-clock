@@ -825,7 +825,11 @@ export function createBillingStateService({
     const prior=receiptById.get(event.id);
     if (prior) return applyVerifiedStripeEvent(rawEvent); // also detects changed-ID retries
     let context=resolveAccountContext(event);
-    if (context.relationship==='TERMINAL' || event.type==='customer.subscription.deleted') return applyVerifiedStripeEvent(rawEvent);
+    // Accounts predating the annual receipt ledger need the paid base invoice
+    // retrieved before cancellation can preserve their purchased year.
+    const annualCancellation=event.type==='customer.subscription.deleted'&&
+      [context.account.stripePriceId,...event.priceIds].some(id=>priceConfiguration.prices.get(id)?.interval==='annual');
+    if (context.relationship==='TERMINAL' || event.type==='customer.subscription.deleted'&&!annualCancellation) return applyVerifiedStripeEvent(rawEvent);
     return withBillingLease(db,context.account.ownerId,async assertLease=>{
       if (receiptById.get(event.id)) return applyVerifiedStripeEvent(rawEvent,{assertLease});
       context=resolveAccountContext(event);
@@ -837,7 +841,7 @@ export function createBillingStateService({
       // require retrieval, never a type/ID tie breaker. Read this decision under
       // the lease as well, so another worker cannot race the fast path.
       const stored=db.prepare('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
-      if (!recoveryHold && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
+      if (!recoveryHold && !annualCancellation && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
           (event.type.startsWith('customer.subscription.') && (!known || event.created>stored.eventCreatedAt)))) return applyVerifiedStripeEvent(rawEvent,{assertLease});
       const subscription=await billingProviderRead(()=>stripeClient.subscriptions.retrieve(event.subscriptionId,{expand:['latest_invoice']},BILLING_PROVIDER_OPTIONS));
       assertLease();

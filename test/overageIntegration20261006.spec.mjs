@@ -72,3 +72,10 @@ test('cancelled prepaid year blocks another checkout until paid-through, includi
 test('an Operator annual payment cannot grant a cancelled QuoteDone paid year',t=>{
   const h=fixture(t);h.activate(A,{interval:'annual'});h.subscription(A,{plan:'QuoteDone',interval:'annual',status:'canceled'});assert.equal(h.db.prepare('SELECT annualPaidThroughAt FROM users WHERE id=?').get(A).annualPaidThroughAt,null);
 });
+test('an annual cancellation recovers the full paid invoice for accounts created before the new receipt schema',async t=>{
+  const h=fixture(t);const sub=h.activate(A,{interval:'annual'}),invoice=h.paid(A,{interval:'annual'});
+  h.db.prepare('DELETE FROM billingAnnualTerms WHERE ownerId=?').run(A);h.db.prepare('UPDATE billingInvoiceEvidence SET invoiceJson=NULL WHERE ownerId=?').run(A);h.db.prepare('UPDATE users SET annualPaidThroughAt=NULL WHERE id=?').run(A);
+  h.setTime(END);const cancelled={...sub,status:'canceled',latest_invoice:invoice};h.fakes.subscriptions.set(sub.id,cancelled);
+  await h.billing.reconcileVerifiedStripeEvent({id:'evt_SYNTHETIC_legacy_cancel',type:'customer.subscription.deleted',created:Math.floor(h.clock().getTime()/1000),data:{object:{...cancelled,latest_invoice:invoice.id}}},h.fakes.stripe);
+  assert.equal(h.db.prepare('SELECT annualPaidThroughAt FROM users WHERE id=?').get(A).annualPaidThroughAt,monthlyAnniversary(START,12));
+});
