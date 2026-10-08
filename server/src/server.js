@@ -31,6 +31,7 @@ import { CREATE_TABLE_STATEMENTS } from './schema.js';
 import {installAccountRoutes} from './accountRoutes.js';
 import { installQuoteDoneRoutes } from './quoteDoneRoutes.js';
 import { createBookingService } from './bookingService.js';
+import {operatorOffRouting} from './voice/operatorOffRouting.js';
 import { createBookingPreferenceService } from './bookingPreferenceService.js';
 import { installBookingRoutes } from './bookingRoutes.js';
 import { createGoogleCalendarAdapter } from './googleCalendarAdapter.js';
@@ -119,7 +120,13 @@ const priceBookAIHandler = fn => asyncHandler(async(req,res)=>{
   }
 });
 const taxModes = new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
-const clientOnboardingState = ownerId => decoratePreviewState(onboardingState(ownerId));
+const clientOnboardingState = ownerId => {
+  const state=decoratePreviewState(onboardingState(ownerId));
+  const profile=ownerQuery('SELECT operatorEnabled,existingPhoneNumber,twilioNumber,carrierSetupStatus FROM businessProfiles WHERE ownerId=?').get(ownerId);
+  const coverage=ownerQuery('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(ownerId);
+  const routing=operatorOffRouting({profile,coverage,destinationNumber:profile?.twilioNumber});
+  return {...state,operator:{...state.operator,offRouting:{confirmed:routing?.mode==='forward',setupStep:4}}};
+};
 
 function accessAccount(ownerId) {
   return ownerQuery(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, paidThroughAt, serviceEndsAt FROM users
@@ -526,6 +533,7 @@ app.use((err, req, res, _next) => {
 const stopBillingWorker = billingStateService ? startBillingLifecycleWorker({service:billingStateService,onError:code=>console.error('[billing-worker]',code)}) : ()=>{};
 const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute-worker]',code)});
 const stopCustomerLifecycle=customerLifecycle.start();
+const stopCalendarChanges=bookingService?.startChangeReconciler({enabled:providerWritesEnabled,onError:code=>console.error('[calendar-change-worker]',code)})||(()=>{});
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
 });
@@ -535,8 +543,8 @@ const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

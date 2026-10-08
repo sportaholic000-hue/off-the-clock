@@ -72,7 +72,7 @@ export function validateDeploymentConfig(env = process.env) {
     if (env.GOOGLE_CALENDAR_REDIRECT_URI !== publicUrl+'/api/onboarding/calendar/google/callback') fail('GOOGLE_CALENDAR_REDIRECT_URI must use the public service callback.');
   }
   if (Boolean(env.ADMIN_EMAIL) !== Boolean(env.ADMIN_PASSWORD_HASH)) fail('Admin email and password hash must be set together.');
-  if (env.ADMIN_PASSWORD_HASH && !/^\$2[aby]\$(?:1[0-6])\$[./A-Za-z0-9]{53}$/.test(env.ADMIN_PASSWORD_HASH)) fail('ADMIN_PASSWORD_HASH must be a bcrypt hash with cost 10 through 16.');
+  if (env.ADMIN_PASSWORD_HASH && !/^\$2[aby]\$(?:1[2-6])\$[./A-Za-z0-9]{53}$/.test(env.ADMIN_PASSWORD_HASH)) fail('ADMIN_PASSWORD_HASH must be a bcrypt hash with cost 12 through 16.');
   return {production,mode,volume,root,databasePath,pricebookPath,
     backupPath:path.join(root,'backups'),tempPath:path.join(root,'tmp'),port,shutdownMs,
     backupIntervalMs:integer(env,'BACKUP_INTERVAL_SECONDS',21600,60,86400)*1000,

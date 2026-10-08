@@ -48,6 +48,10 @@ export function installBillingLifecycleSchema(database){
     CREATE TABLE IF NOT EXISTS billingRetentionLeases (
     ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
+  // Existing queued notices need the same dispatch condition as new ones.
+  database.prepare(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
+    SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
+    WHERE unpaidInvoiceId IS NULL AND EXISTS(SELECT 1 FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')`).run();
 }
 
 // Only an actual settled base invoice grants cancellation time. Monthly and
@@ -93,7 +97,7 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
 }
 
 const DATA_TABLES=['ownerRecordEvents','ownerRecordWorkflows','callerBlocklist','quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests','ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
-  'appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
+  'appointmentChanges','appointments','bookingIdempotency','bookingPreferences','bookingHolds','bookingIntents',
   'quoteSubmissions','transcriptTurns','voiceOpaqueHandles','voiceToolReceipts','voiceSessionNonces',
   'billingVoiceUsage','webhookDeliveries','leads','quoteRequests','quotes','calls','customers'];
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,telephony,
@@ -115,7 +119,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         VALUES(?,?,'billing.lifecycle_notice',?,?,'PENDING',?,?)`).run(id,ownerId,referenceId,JSON.stringify({kind,message,amountCents,currency,dueAt}),at,at);
       query('INSERT INTO billingLifecycleNotices(id,ownerId,kind,referenceId,message,amountCents,currency,dueAt,createdAt) VALUES(?,?,?,?,?,?,?,?,?)')
         .run(id,ownerId,kind,referenceId,message,amountCents,currency,dueAt,at);
-      emails.queue({id,ownerId,message:{to:account.email,subject:({trial_ending:'Your free trial ends in three days',annual_renewal:'Your annual plan renews in thirty days',receipt:'Your payment receipt',payment_failed:'Payment failed: action needed',cancellation:'Your plan cancellation',service_ended:'Your service has ended',reactivated:'Your service is reactivated',suspended:'Your service is suspended'})[kind]||'Billing update',text:message}});
+      emails.queue({id,ownerId,unpaidInvoiceId:kind==='payment_failed'?referenceId:null,message:{to:account.email,subject:({trial_ending:'Your free trial ends in three days',annual_renewal:'Your annual plan renews in thirty days',receipt:'Your payment receipt',payment_failed:'Payment failed: action needed',cancellation:'Your plan cancellation',service_ended:'Your service has ended',reactivated:'Your service is reactivated',suspended:'Your service is suspended'})[kind]||'Billing update',text:message}});
       return id;
     });
   }
@@ -129,7 +133,14 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       if(invoice.status==='PAID'&&invoice.amountPaid>0&&['cad','usd'].includes(invoice.currency))notice(ownerId,'receipt',invoice.stripeInvoiceId,
         `${metered?'Overage payment received':'Payment received'}: ${billingMoney(invoice.amountPaid)} ${invoice.currency.toUpperCase()}. Invoice ${invoice.stripeInvoiceId}. Charge date: ${billingIso(invoice.paidAt)}. ${link()}`,
         {amountCents:invoice.amountPaid,currency:invoice.currency,dueAt:billingIso(invoice.paidAt)});
-      if(invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
+      if(invoice.status==='PAID')query(`UPDATE ownerEmailDeliveries SET status='REVIEW',suppressedAt=?,lastError=NULL,updatedAt=?
+        WHERE ownerId=? AND providerId IS NULL AND status='PENDING' AND suppressedAt IS NULL
+        AND id IN (SELECT id FROM billingLifecycleNotices WHERE ownerId=? AND kind='payment_failed' AND referenceId=?)`)
+        .run(now(),now(),ownerId,ownerId,invoice.stripeInvoiceId);
+      if(invoice.status==='PAID')query(`UPDATE outboxEvents SET status='CANCELLED',updatedAt=? WHERE ownerId=? AND eventType='billing.lifecycle_notice'
+        AND id IN (SELECT id FROM ownerEmailDeliveries WHERE ownerId=? AND suppressedAt IS NOT NULL AND unpaidInvoiceId=?)`)
+        .run(now(),ownerId,ownerId,invoice.stripeInvoiceId);
+      if(invoice.status!=='PAID'&&invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
         `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. Service continues during the seven-day grace period ending ${addDays(billingIso(invoice.failedAt),7)}; unresolved payment suspends service.`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
     }
     for(const charge of query("SELECT * FROM billingUsageCharges WHERE ownerId=? AND status='PAID'").all(ownerId))if(charge.providerInvoiceId)
@@ -336,7 +347,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   }
   function snapshot(ownerId){syncNotices(ownerId);const row=cancellation(ownerId),account=owner(ownerId);return {
     serviceEndsAt:account?.serviceEndsAt||null,cancellation:row?{...row,phoneReleaseAt:addDays(row.endAt,30),exportUntilAt:addDays(row.endAt,90)}:null,
-    notices:query(`SELECT n.*,e.status emailStatus,e.lastError deliveryError FROM billingLifecycleNotices n
+    notices:query(`SELECT n.*,CASE WHEN e.suppressedAt IS NOT NULL THEN 'SUPPRESSED' ELSE e.status END emailStatus,e.lastError deliveryError FROM billingLifecycleNotices n
       LEFT JOIN ownerEmailDeliveries e ON e.ownerId=n.ownerId AND e.id=n.id WHERE n.ownerId=? ORDER BY n.createdAt DESC,n.id`).all(ownerId)};}
   function exportCsv(ownerId,kind){
     const table={leads:'leads',quotes:'quotes',calls:'calls'}[kind];if(!table)throw error('INVALID_EXPORT',400);

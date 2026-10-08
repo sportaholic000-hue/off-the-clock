@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {createOwnerCalendarService} from '../server/src/ownerCalendarService.js';
+import {installAppointmentChangeSchema} from '../server/src/appointmentChangeSchema.js';
 
 function fixture(calendar={listBusy:async()=>[]}){
  const db=new DatabaseSync(':memory:');
@@ -14,6 +15,7 @@ function fixture(calendar={listBusy:async()=>[]}){
  INSERT INTO users VALUES('a',NULL,'owner','America/Halifax'),('b',NULL,'owner','UTC');
  INSERT INTO calendarConnections VALUES('a','google','connected','primary',NULL,'DO-NOT-EXPOSE');
  INSERT INTO bookingIntents VALUES('ia','a','quote','qa'),('ib','b','lead','lb');`);
+ installAppointmentChangeSchema(db);
  const ownerQuery=sql=>{assert.match(sql,/ownerId/);return db.prepare(sql);};
  const service=createOwnerCalendarService({ownerQuery,calendar,clock:()=>new Date('2026-10-02T01:00:00.000Z')});
  return {db,service};

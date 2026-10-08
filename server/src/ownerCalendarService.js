@@ -60,15 +60,21 @@ export function createOwnerCalendarService({ownerQuery, calendar, clock = () => 
     const {timezone, connection} = context(ownerId), selected = range(query, timezone);
     const appointments = ownerQuery(`SELECT a.id, a.status, a.serviceType, a.bookingMode,
       a.startAtUtc, a.endAtUtc, a.timezone, a.tierChosen, a.customerJson, a.locationJson,
-      a.createdAt, a.updatedAt, i.sourceType, i.sourceId
+      a.createdAt, a.updatedAt, i.sourceType, i.sourceId,
+      c.action changeAction,c.status changeStatus,c.oldSlotJson,c.newSlotJson,c.lastError changeError
       FROM appointments a LEFT JOIN bookingIntents i ON i.id = a.bookingIntentId AND i.ownerId = a.ownerId
+      LEFT JOIN appointmentChanges c ON c.ownerId=a.ownerId AND c.appointmentId=a.id AND c.rowid=(
+        SELECT MAX(history.rowid) FROM appointmentChanges history WHERE history.ownerId=a.ownerId AND history.appointmentId=a.id)
       WHERE a.ownerId = ? AND a.startAtUtc < ? AND a.endAtUtc > ?
       ORDER BY a.startAtUtc, a.id`).all(ownerId, selected.endAtUtc, selected.startAtUtc)
       .map(row => ({
         id: row.id, status: row.status, serviceType: row.serviceType, bookingMode: row.bookingMode,
         startAtUtc: row.startAtUtc, endAtUtc: row.endAtUtc, timezone: row.timezone,
         tierChosen: row.tierChosen, customer: contact(row.customerJson), location: location(row.locationJson),
-        source: sourceLink(row), createdAt: row.createdAt, updatedAt: row.updatedAt
+        source: sourceLink(row), createdAt: row.createdAt, updatedAt: row.updatedAt,
+        change:row.changeStatus?{action:row.changeAction,status:row.changeStatus,reason:row.changeError,
+          oldSlot:{startAtUtc:json(row.oldSlotJson,{}).startAtUtc,endAtUtc:json(row.oldSlotJson,{}).endAtUtc},
+          newSlot:row.newSlotJson?{startAtUtc:json(row.newSlotJson,{}).startAtUtc,endAtUtc:json(row.newSlotJson,{}).endAtUtc}:null}:null
       }));
     const requests = ownerQuery(`SELECT p.id, p.status, p.preferredWindowsJson, p.customerJson,
       p.locationJson, p.note, p.createdAt, i.sourceType, i.sourceId

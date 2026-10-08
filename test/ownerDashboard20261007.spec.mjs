@@ -69,7 +69,7 @@ test('follow-up deadlines, completion, dismissal and reopening are durable and d
   const f=fixture(t),id=owner+'-lead';const saved=action(f,'leads',id,{action:'BOOK',dueAt:'2026-10-08T12:00:00.000Z'});
   assert.equal(saved.status,'CAPTURED');assert.equal(saved.workflow.followUpStatus,'OPEN');assert.equal(f.reports.report({ownerId:owner,query:{period:'all'}}).followUp.open,1);
   action(f,'leads',id,{action:'COMPLETE_FOLLOW_UP'});assert.equal(f.reports.report({ownerId:owner}).followUp.open,0);
-  action(f,'leads',id,{action:'DISMISS'});assert.equal(action(f,'leads',id,{action:'REOPEN'}).status,'NEEDS REVIEW');
+  action(f,'leads',id,{action:'DISMISS'});assert.equal(action(f,'leads',id,{action:'REOPEN'}).status,'CAPTURED');
   assert.throws(()=>action(f,'leads',id,{action:'CALL_BACK',dueAt:at}),{statusCode:400});
 });
 test('progression requires actual-event attestation, selected tier and exact final invoice; no automatic delivery',t=>{
@@ -83,6 +83,41 @@ test('progression requires actual-event attestation, selected tier and exact fin
   const row=f.db.prepare('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);assert.equal(row.finalInvoiceAmount,11015);assert.equal(row.resultJson,before);
   const report=f.reports.report({ownerId:owner,query:{period:'all'}});assert.equal(report.values.invoiced[0].low,'110.15');assert.equal(report.counts.invoices,1);
   assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM voiceSmsDeliveries WHERE ownerId=?').get(owner).n,0);
+});
+
+test('reopening restores the exact dismissed stage and refuses missing history without guessing',t=>{
+  const f=fixture(t);
+  for(const stage of ['PARTIAL','SENT','VIEWED']){
+    const id='synthetic-reopen-'+stage,result=stage==='PARTIAL'?{resultType:'PARTIAL_ESTIMATE_READY',pricedEstimate:priced()}:priced();
+    addQuote(f,id,result,{status:stage});
+    const receipt=f.db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(owner,id).resultJson;
+    action(f,'quotes',id,{action:'DISMISS'});
+    const body={action:'REOPEN',version:1,idempotencyKey:'synthetic-reopen-'+stage,note:'[SYNTHETIC] Resume this record'};
+    const request={ownerId:owner,actorId:owner,kind:'quotes',id,body};
+    const restored=f.workflow.act(request);assert.equal(restored.status,stage);assert.equal(restored.workflow.version,2);
+    assert.deepEqual(f.workflow.act(request),restored);
+    assert.throws(()=>f.workflow.act({...request,body:{...body,idempotencyKey:'synthetic-stale-'+stage}}),{statusCode:409});
+    assert.equal(f.db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(owner,id).resultJson,receipt);
+    // The latest dismissal governs a second cycle even at the same timestamp.
+    f.db.prepare("UPDATE quotes SET status='VIEWED' WHERE ownerId=? AND id=?").run(owner,id);
+    const latest=action(f,'quotes',id,{action:'DISMISS'});
+    f.db.prepare('UPDATE ownerRecordEvents SET createdAt=? WHERE ownerId=? AND id=?').run('2020-01-01T00:00:00.000Z',owner,latest.workflow.history.at(-1).id);
+    assert.equal(action(f,'quotes',id,{action:'REOPEN'}).status,'VIEWED','Clock rollback must not select an older dismissal');
+  }
+  const lead=owner+'-lead';action(f,'leads',lead,{action:'DISMISS'});
+  assert.throws(()=>action(f,'leads',lead,{action:'DISMISS'}),{statusCode:409});
+  assert.equal(action(f,'leads',lead,{action:'REOPEN'}).status,'CAPTURED');
+  const reviewedLead=owner+'-review';action(f,'leads',reviewedLead,{action:'DISMISS'});
+  assert.equal(action(f,'leads',reviewedLead,{action:'REOPEN'}).status,'NEEDS REVIEW');
+  addQuote(f,'synthetic-legacy-dismissed',priced(),{status:'DISMISSED'});
+  // Another tenant's history for that ID must not supply a missing stage.
+  const foreign=f.db.prepare('SELECT * FROM ownerRecordEvents WHERE ownerId=? LIMIT 1').get(owner);
+  f.db.prepare(`INSERT INTO ownerRecordEvents(id,ownerId,kind,recordId,idempotencyKey,requestJson,action,fromStatus,toStatus,note,actorId,payloadJson,responseJson,createdAt)
+    VALUES(?,?,'quotes',?,?,'{}','DISMISS','INSTANT','DISMISSED',?,?,?,'{}',?)`)
+    .run('synthetic-foreign-dismissal',other,'synthetic-legacy-dismissed','synthetic-foreign-key',foreign.note,other,'{}',now);
+  assert.throws(()=>action(f,'quotes','synthetic-legacy-dismissed',{action:'REOPEN'}),/stage before dismissal is unavailable/);
+  assert.equal(f.workflow.view(owner,'quotes','synthetic-legacy-dismissed').status,'DISMISSED');
+  assert.equal(f.workflow.view(owner,'quotes','synthetic-legacy-dismissed').workflow.version,0);
 });
 for(const value of ['-1','1.001','1e2','Infinity','NaN',' 1','1 ',1,null,{},'99999999999.99'])test('owner monetary boundary rejects '+JSON.stringify(value),()=>assert.throws(()=>ownerAmountCents(value),{statusCode:400}));
 test('owner money preserves cent boundaries and maximum supported amount',()=>{assert.equal(ownerAmountCents('0.01'),1);assert.equal(ownerAmountCents('100.10'),10010);assert.equal(ownerAmountCents('9999999999.99'),999999999999);});

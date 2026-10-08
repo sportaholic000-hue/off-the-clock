@@ -223,7 +223,7 @@ function calendarFixture(t,{failChange=false}={}){
   h.db.prepare("UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?").run(JSON.stringify({serviceArea:{mode:'all',cities:[]}}),ownerId);
   h.db.prepare("INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'v1','UTC','google','synthetic-calendar',?,'[]',30,0,30,0,0,1,?)").run(ownerId,JSON.stringify(weekly),clock().toISOString());
   h.db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,'synthetic-service','v1','site_visit_first',30,1,?)").run(ownerId,clock().toISOString());
-  let busy=[];const calendar={listBusy:async()=>busy,createEvent:async input=>({status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc}),changeEvent:async input=>{writes.push(input);if(failChange)throw Error('Synthetic ambiguous calendar failure');return {status:input.action==='cancel'?'CANCELLED':'CONFIRMED',startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
+  let busy=[];const calendar={listBusy:async()=>busy,createEvent:async input=>({status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc}),changeEvent:async input=>{writes.push(input);if(failChange)throw Error('Synthetic ambiguous calendar failure');return {status:input.action==='cancel'?'CANCELLED':'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
   return {...h,context,ownerId,clock,writes,setBusy:rows=>{busy=rows;},service:createBookingService({db:h.db,calendar,clock,slotTokenSecret:'synthetic-calendar-secret'.padEnd(64,'x')})};
 }
 async function seedAppointment(h){
@@ -246,7 +246,8 @@ for(const action of ['cancel','reschedule'])test('D04 real booking service '+act
 });
 test('D04 ambiguous calendar change preserves both reservations and request evidence',async t=>{
   const h=calendarFixture(t,{failChange:true}),row=await seedAppointment(h),slots=await h.service.appointmentAvailability({ownerId:h.ownerId,appointmentId:row.id,callerNumber:FROM,filters:{fromDate:'2026-10-08',days:1}});
-  await assert.rejects(h.service.modifyAppointment({ownerId:h.ownerId,callSid:h.context.callSid,appointment:row,action:'reschedule',idempotencyKey:randomUUID(),slotId:slots.body.slots[0].slotId,intentId:slots.intentId}));
+  const result=await h.service.modifyAppointment({ownerId:h.ownerId,callSid:h.context.callSid,appointment:row,action:'reschedule',idempotencyKey:randomUUID(),slotId:slots.body.slots[0].slotId,intentId:slots.intentId});
+  assert.equal(result.status,'PENDING_CONFIRMATION');
   assert.equal(h.db.prepare('SELECT startAtUtc FROM appointments WHERE id=?').get(row.id).startAtUtc,row.startAtUtc);
   assert.equal(h.db.prepare('SELECT status FROM appointments WHERE id=?').get(row.id).status,'PENDING_CONFIRMATION');
   assert.equal(h.db.prepare("SELECT COUNT(*) n FROM bookingHolds WHERE status='CONFIRMING' AND expiresAtUtc>'2099'").get().n,1);

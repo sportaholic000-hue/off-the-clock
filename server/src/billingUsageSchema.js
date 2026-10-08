@@ -28,10 +28,12 @@ export function installBillingUsageSchema(db) {
     id TEXT PRIMARY KEY REFERENCES outboxEvents(id), ownerId TEXT NOT NULL REFERENCES users(id),
     messageJson TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'PENDING' CHECK(status IN ('PENDING','SENDING','ACCEPTED','DELIVERED','REVIEW','BOUNCED')),
     providerId TEXT, firstAttemptAt TEXT, nextAttemptAt TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0,
-    leaseToken TEXT, leaseUntil TEXT, lastError TEXT, createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL
+    leaseToken TEXT, leaseUntil TEXT, lastError TEXT, suppressedAt TEXT, unpaidInvoiceId TEXT, createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS billing_usage_period_owner ON billingUsagePeriods(ownerId,startAt,endAt);
   CREATE INDEX IF NOT EXISTS owner_email_due ON ownerEmailDeliveries(ownerId,nextAttemptAt);
   CREATE INDEX IF NOT EXISTS billing_usage_charge_due ON billingUsageCharges(ownerId,nextAttemptAt);`);
   if(!db.prepare('PRAGMA table_info(billingUsageCharges)').all().some(column=>column.name==='collectionStoppedAt'))db.exec('ALTER TABLE billingUsageCharges ADD COLUMN collectionStoppedAt TEXT');
+  if(!db.prepare('PRAGMA table_info(ownerEmailDeliveries)').all().some(column=>column.name==='suppressedAt'))db.exec('ALTER TABLE ownerEmailDeliveries ADD COLUMN suppressedAt TEXT');
+  if(!db.prepare('PRAGMA table_info(ownerEmailDeliveries)').all().some(column=>column.name==='unpaidInvoiceId'))db.exec('ALTER TABLE ownerEmailDeliveries ADD COLUMN unpaidInvoiceId TEXT');
 }

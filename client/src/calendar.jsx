@@ -10,14 +10,19 @@ function when(value,timezone) {
   return new Intl.DateTimeFormat(undefined,{timeZone:timezone,dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
 }
 
-function RecordCard({record,timezone,request=false}) {
+export function RecordCard({record,timezone,request=false}) {
   const label=STATUS[record.status]||record.status;
   return <article className="calendar-record" aria-label={`${label}: ${record.customer.name||'Customer'}`}>
     <div className="calendar-record-top"><h3>{record.customer.name||'Customer'}</h3><span className={`calendar-status status-${record.status?.toLowerCase()}`}>{label}</span></div>
     {request?<><p>Waiting for the business to agree a time.</p><ul>{record.preferredWindows.map((window,index)=><li key={index}>{window.date} · {window.timeOfDay}</li>)}</ul></>
       :<><p className="mono">{when(record.startAtUtc,timezone)} — {new Intl.DateTimeFormat(undefined,{timeZone:timezone,timeStyle:'short'}).format(new Date(record.endAtUtc))}</p>
         <p>{serviceName(record.serviceType)} · {record.bookingMode==='site_visit_first'?'Site visit':'Job appointment'}{record.tierChosen?' · '+record.tierChosen:''}</p></>}
-    {record.status==='PENDING_CONFIRMATION'&&<p>Calendar confirmation is still pending. This appointment has not been confirmed.</p>}
+    {record.status==='PENDING_CONFIRMATION'&&!record.change&&<p>Calendar confirmation is still pending. This appointment has not been confirmed.</p>}
+    {record.change&&<p>{['PREPARING','PENDING'].includes(record.change.status)
+      ?`The requested ${record.change.action==='cancel'?'cancellation':'reschedule'} is awaiting calendar confirmation. The original time and any replacement time remain reserved.`
+      :record.change.status==='REJECTED'?'The calendar change was not applied. The original appointment remains confirmed.'
+      :record.change.action==='cancel'?'The calendar confirmed the cancellation.':'The calendar confirmed the new appointment time.'}</p>}
+    {record.change?.newSlot&&['PREPARING','PENDING'].includes(record.change.status)&&<p>Requested new time: {when(record.change.newSlot.startAtUtc,timezone)} — {new Intl.DateTimeFormat(undefined,{timeZone:timezone,timeStyle:'short'}).format(new Date(record.change.newSlot.endAtUtc))}</p>}
     <dl className="calendar-details">
       {record.customer.phone&&<><dt>Phone</dt><dd><a href={'tel:'+record.customer.phone}>{record.customer.phone}</a></dd></>}
       {record.customer.email&&<><dt>Email</dt><dd><a href={'mailto:'+record.customer.email}>{record.customer.email}</a></dd></>}

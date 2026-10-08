@@ -1,4 +1,5 @@
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
+import {operatorOffRouting} from './operatorOffRouting.js';
 import {createVoiceAdmission} from './voiceAdmission.js';
 import {installBillingVoiceRoutes} from '../billingVoiceRoutes.js';
 import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
@@ -31,7 +32,6 @@ import {hasOperatorAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../pla
 
 import {VOICE_NAMES} from './voiceSettings.js';
 
-const E164=/^\+[1-9]\d{7,14}$/;
 const SID=/^AC[0-9a-f]{32}$/i;
 const incomingPath='/api/twilio/voice/incoming',streamPath='/api/twilio/voice/stream',fallbackPath='/api/twilio/voice/fallback';
 const iso=clock=>new Date(clock()).toISOString();
@@ -62,9 +62,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const state=account(context.ownerId);
     if(state.profile?.operatorEnabled!==0)return null;
     const coverage=database.prepare('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
-    const number=state.profile.existingPhoneNumber;
-    const confirmed=state.profile.carrierSetupStatus==='updated'&&(!coverage||coverage.confirmedEnabled===0&&coverage.phase==='idle');
-    return {mode:confirmed&&E164.test(number||'')&&number!==context.to?'forward':'message',number,message:'The operator is off. Please call the business directly.'};
+    return operatorOffRouting({profile:state.profile,coverage,destinationNumber:context.to});
   }
   const fallback=({context,reason})=>{
     if(reason==='VOICE_SPAM_BLOCKED')return {mode:'reject'};

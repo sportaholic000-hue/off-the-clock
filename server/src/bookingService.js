@@ -16,6 +16,8 @@ import {
 } from './calendarTime.js';
 
 const HOLD_DURATION_MS = 5 * 60 * 1000;
+const CHANGE_PREPARATION_LEASE_MS = 120000;
+const CHANGE_SETTLE_MS = 30000;
 const SLOT_TOKEN_DURATION_MS = 2 * 60 * 1000;
 const IDEMPOTENCY_KEY = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BOOKING_MODES = new Set(['site_visit_first', 'book_job']);
@@ -307,6 +309,102 @@ export function createBookingService({
 
   function immediate(work) {
     return db.transaction(work).immediate();
+  }
+
+  const changesInFlight=new Set();
+  const changeRow=(ownerId,id)=>db.prepare('SELECT * FROM appointmentChanges WHERE ownerId=? AND id=?').get(ownerId,id);
+  function changeResult(change) {
+    const slot=parseJson(change.newSlotJson,null);
+    return {status:change.status==='CONFIRMED'?'CONFIRMED':change.status==='REJECTED'?'REJECTED':'PENDING_CONFIRMATION',
+      appointmentId:change.appointmentId,action:change.action,
+      ...(change.status==='CONFIRMED'&&slot?{startUtc:slot.startAtUtc,endUtc:slot.endAtUtc}:{}),
+      ...(change.lastError?{reason:change.lastError}:{})};
+  }
+  function finishChange(change,{rejected=false,reason=null}={}) {
+    return immediate(()=>{
+      const current=changeRow(change.ownerId,change.id);
+      if(!current||!['PREPARING','PENDING'].includes(current.status))return current;
+      const old=parseJson(current.oldSlotJson,{}),next=parseJson(current.newSlotJson,null),at=nowFrom(clock).toISOString();
+      const appointment=db.prepare("SELECT * FROM appointments WHERE ownerId=? AND id=? AND providerEventStatus='CHANGE_PENDING'").get(current.ownerId,current.appointmentId);
+      if(!appointment||appointment.bookingIntentId!==old.bookingIntentId||appointment.holdId!==old.holdId)throw providerError('The appointment change needs reconciliation.');
+      if(rejected){
+        db.prepare("UPDATE appointments SET status='CONFIRMED',providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?")
+          .run(old.providerEventStatus,at,current.ownerId,current.appointmentId);
+        if(next)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+          .run(at,current.ownerId,next.id,next.intentId);
+      }else{
+        if(current.action==='cancel')db.prepare("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?")
+          .run(at,current.ownerId,current.appointmentId);
+        else{
+          const lock=db.prepare("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='CONFIRMING'").get(current.ownerId,next.id,next.intentId);
+          if(!lock)throw providerError('The replacement slot needs reconciliation.');
+          db.prepare("UPDATE appointments SET status='CONFIRMED',bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?")
+            .run(lock.intentId,lock.id,lock.startAtUtc,lock.endAtUtc,lock.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,current.ownerId,current.appointmentId);
+          db.prepare("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+            .run(at,current.ownerId,lock.id,lock.intentId);
+        }
+        if(old.holdId)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+          .run(at,current.ownerId,old.holdId,old.bookingIntentId);
+      }
+      db.prepare('UPDATE appointmentChanges SET status=?,lastError=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=?')
+        .run(rejected?'REJECTED':'CONFIRMED',reason,at,at,current.ownerId,current.id);
+      db.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'appointment.changed',?,?,'PENDING',?,?)")
+        .run(current.id+'-changed',current.ownerId,current.appointmentId,JSON.stringify({appointmentId:current.appointmentId,action:current.action,
+          status:rejected?'REJECTED':'CONFIRMED',reason,startAtUtc:rejected?old.startAtUtc:next?.startAtUtc||null,endAtUtc:rejected?old.endAtUtc:next?.endAtUtc||null}),at,at);
+      // A delayed read can resolve a request whose voice call has already ended.
+      db.prepare("UPDATE outboxEvents SET status=?,updatedAt=? WHERE ownerId=? AND id=? AND eventType='voice.appointment_change_requested'")
+        .run(rejected?'FAILED':'CONFIRMED',at,current.ownerId,current.id);
+      return changeRow(current.ownerId,current.id);
+    });
+  }
+  async function reconcileAppointmentChange({ownerId,appointmentId}) {
+    let change=db.prepare("SELECT * FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND status IN ('PREPARING','PENDING') ORDER BY rowid DESC LIMIT 1").get(ownerId,appointmentId);
+    if(!change||changesInFlight.has(change.id))return change;
+    if(change.status==='PREPARING')return nowFrom(clock).getTime()-Date.parse(change.updatedAt)<CHANGE_PREPARATION_LEASE_MS?change:finishChange(change,{rejected:true,reason:'PREPARATION_INTERRUPTED'});
+    if(change.lastError==='CALENDAR_REQUEST_REJECTED')return finishChange(change,{rejected:true,reason:change.lastError});
+    const appointment=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,appointmentId);
+    if(!appointment||typeof calendar.getEvent!=='function')return change;
+    let event;
+    try{event=await calendar.getEvent({ownerId,provider:appointment.provider,calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId});}
+    catch{return change;}
+    const next=parseJson(change.newSlotJson,null);
+    const status=confirmationStatus(event,{eventId:appointment.providerEventId,startAtUtc:next?.startAtUtc,endAtUtc:next?.endAtUtc});
+    if(change.action==='cancel'&&['CANCELLED','CANCELED'].includes(status)||change.action==='reschedule'&&status==='CONFIRMED')return finishChange(change);
+    // Seeing the old time alone cannot prove rejection: a delayed PATCH may
+    // still finish. Only retire a guarded write after its original version is
+    // gone. A missing event must never enter the booking-create retry path.
+    const old=parseJson(change.oldSlotJson,{});
+    const original=confirmationStatus(event,{eventId:appointment.providerEventId,startAtUtc:old.startAtUtc,endAtUtc:old.endAtUtc});
+    if(original==='CONFIRMED'&&old.etag&&event.etag){
+      if(event.etag!==old.etag)return finishChange(change,{rejected:true,reason:'ORIGINAL_SLOT_RECONCILED'});
+      if(change.lastError==='ORIGINAL_SLOT_STILL_PRESENT'&&nowFrom(clock).getTime()-Date.parse(change.updatedAt)>=CHANGE_SETTLE_MS&&typeof calendar.fenceEventChange==='function'){
+        try{
+          const fenced=await calendar.fenceEventChange({ownerId,calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,ifMatch:old.etag,operationId:change.id});
+          if(confirmationStatus(fenced,{eventId:appointment.providerEventId,startAtUtc:old.startAtUtc,endAtUtc:old.endAtUtc})==='CONFIRMED'&&fenced.etag&&fenced.etag!==old.etag)return finishChange(change,{rejected:true,reason:'ORIGINAL_SLOT_RECONCILED'});
+        }catch{/* Read again, including after a lost fence response or a 412. */}
+        return changeRow(ownerId,change.id);
+      }
+    }
+    if(original==='CONFIRMED'&&change.lastError==='ORIGINAL_SLOT_STILL_PRESENT')return change;
+    db.prepare("UPDATE appointmentChanges SET lastError=?,updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'")
+      .run(original==='CONFIRMED'?'ORIGINAL_SLOT_STILL_PRESENT':'PROVIDER_CONFIRMATION_PENDING',nowFrom(clock).toISOString(),ownerId,change.id);
+    return changeRow(ownerId,change.id);
+  }
+  async function reconcilePendingAppointmentChanges({ownerId}) {
+    const rows=db.prepare("SELECT appointmentId FROM appointmentChanges WHERE ownerId=? AND status IN ('PREPARING','PENDING') ORDER BY requestedAt,id").all(ownerId);
+    for(const row of rows)await reconcileAppointmentChange({ownerId,appointmentId:row.appointmentId});
+  }
+  function startChangeReconciler({enabled=()=>true,onError=()=>{},intervalMs=30000}={}) {
+    let running=null,stopped=false;
+    const tick=()=>{
+      if(stopped||running||!enabled())return running;
+      running=(async()=>{
+        const owners=db.prepare("SELECT DISTINCT ownerId FROM appointmentChanges WHERE status IN ('PREPARING','PENDING') ORDER BY ownerId").all();
+        for(const {ownerId} of owners){if(stopped)break;try{await reconcilePendingAppointmentChanges({ownerId});}catch{onError('APPOINTMENT_CHANGE_RECONCILIATION_PENDING');}}
+      })().finally(()=>{running=null;});return running;
+    };
+    const timer=setInterval(tick,intervalMs);timer.unref?.();void tick();
+    return async()=>{stopped=true;clearInterval(timer);if(running)await running;};
   }
 
   function context(ownerId, intentId, now = nowFrom(clock)) {
@@ -1070,15 +1168,22 @@ export function createBookingService({
     const resolved = resolveBookingToken(bookingToken);
     const now = nowFrom(clock);
     const handle = openConfirmationId(confirmationId, resolved, now);
-    const appointmentStatement = db.prepare(`SELECT * FROM appointments
-      WHERE id = ? AND ownerId = ? AND bookingIntentId = ?`);
-    let appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
-    if (!appointment) throw confirmationNotFound();
+    const appointmentStatement = db.prepare('SELECT * FROM appointments WHERE id=? AND ownerId=?');
+    let appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
+    const historicalIntent=db.prepare("SELECT id FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND json_extract(oldSlotJson,'$.bookingIntentId')=? LIMIT 1");
+    if (!appointment||appointment.bookingIntentId!==resolved.intentId&&!historicalIntent.get(resolved.ownerId,handle.appointmentId,resolved.intentId)) throw confirmationNotFound();
     releaseInterruptedPreparation(appointment);
-    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
+    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
+    if(appointment.providerEventStatus==='CHANGE_PENDING'){
+      const change=await reconcileAppointmentChange({ownerId:resolved.ownerId,appointmentId:appointment.id});
+      appointment=appointmentStatement.get(handle.appointmentId,resolved.ownerId);
+      if(!change||['PREPARING','PENDING'].includes(change.status))return {statusCode:200,body:pendingConfirmationBody(confirmationId,appointment.id)};
+      return {statusCode:200,body:appointment.status==='CANCELLED'?{status:'CANCELLED',appointmentId:appointment.id}: {...confirmedAppointmentBody(appointment),changeStatus:change.status}};
+    }
     if (appointment.status === 'CONFIRMED') {
       return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
     }
+    if(appointment.status==='CANCELLED')return {statusCode:200,body:{status:'CANCELLED',appointmentId:appointment.id}};
     if (!PENDING_APPOINTMENT_STATUSES.has(appointment.status)) {
       const code = appointment.status === 'CONFLICTED' ? 'SLOT_UNAVAILABLE' : 'PROVIDER_UNAVAILABLE';
       return { statusCode: 200, body: failedConfirmationBody(code) };
@@ -1125,7 +1230,7 @@ export function createBookingService({
           );
         }
       });
-      appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
+      appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
       if (appointment?.status === 'CONFIRMED') {
         return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
       }
@@ -1164,7 +1269,7 @@ export function createBookingService({
         );
       }
     });
-    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId, resolved.intentId);
+    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
     if (appointment?.status === 'CONFIRMED') {
       return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
     }
@@ -1193,7 +1298,15 @@ export function createBookingService({
   async function modifyAppointment({ownerId,callSid,action,appointment,slotId,intentId,idempotencyKey}){
     const call=db.prepare('SELECT callerNumber FROM calls WHERE ownerId=? AND callSid=?').get(ownerId,callSid);
     const row=ownedAppointment(ownerId,appointment.id,call?.callerNumber);
-    if(!['cancel','reschedule'].includes(action)||row.status!=='CONFIRMED'||row.provider!=='google'||typeof calendar.changeEvent!=='function')throw invalid('Appointment change is unavailable.');
+    if(!['cancel','reschedule'].includes(action)||!uuid(idempotencyKey))throw invalid('Choose a valid appointment action and request key.');
+    const requestJson=JSON.stringify({appointmentId:row.id,action,intentId:intentId||null,slotId:slotId||null});
+    const prior=changeRow(ownerId,idempotencyKey);
+    if(prior){
+      if(prior.requestJson!==requestJson)throw bookingError('IDEMPOTENCY_CONFLICT',409,'This request key was already used for a different appointment change.');
+      await reconcileAppointmentChange({ownerId,appointmentId:row.id});
+      return changeResult(changeRow(ownerId,idempotencyKey));
+    }
+    if(row.status!=='CONFIRMED'||row.providerEventStatus==='CHANGE_PENDING'||row.provider!=='google'||typeof calendar.changeEvent!=='function')throw invalid('Appointment change is unavailable.');
     let held;
     if(action==='reschedule'){
       const replacement=db.prepare('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,intentId);
@@ -1202,48 +1315,67 @@ export function createBookingService({
       held=hold({ownerId,intentId,idempotencyKey,slotId}).body;
       if(held.status!=='HELD')throw invalid('Replacement slot unavailable.');
     }
-    immediate(()=>{
-      const claimed=db.prepare("UPDATE appointments SET status='PENDING_CONFIRMATION',providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(nowFrom(clock).toISOString(),ownerId,row.id);
-      if(claimed.changes!==1)throw invalid('An appointment change is already in progress.');
-      // Retain both the old slot and a possible new slot until the remote
-      // result is known. An ambiguous write must never free either slot.
-      if(held)db.prepare("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z' WHERE ownerId=? AND id=?").run(ownerId,held.holdId);
-    });
-    if(held){
-      const lock=db.prepare('SELECT * FROM bookingHolds WHERE ownerId=? AND id=?').get(ownerId,held.holdId);
+    changesInFlight.add(idempotencyKey);
+    try{
+      immediate(()=>{
+        const at=nowFrom(clock).toISOString();
+        const claimed=db.prepare("UPDATE appointments SET status='PENDING_CONFIRMATION',providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(at,ownerId,row.id);
+        if(claimed.changes!==1)throw invalid('An appointment change is already in progress.');
+        const next=held?db.prepare("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='HELD' AND expiresAtUtc>?").get(ownerId,held.holdId,intentId,at):null;
+        if(held&&!next)throw invalid('Replacement slot unavailable.');
+        const old={bookingIntentId:row.bookingIntentId,holdId:row.holdId,providerEventStatus:row.providerEventStatus,
+          startAtUtc:row.startAtUtc,endAtUtc:row.endAtUtc,lockStartAtUtc:row.lockStartAtUtc,lockEndAtUtc:row.lockEndAtUtc};
+        db.prepare("INSERT INTO appointmentChanges(id,ownerId,appointmentId,requestJson,action,status,oldSlotJson,newSlotJson,requestedAt,updatedAt) VALUES(?,?,?,?,?,'PREPARING',?,?,?,?)")
+          .run(idempotencyKey,ownerId,row.id,requestJson,action,JSON.stringify(old),next?JSON.stringify(next):null,at,at);
+        if(next)db.prepare("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?").run(at,ownerId,next.id,intentId);
+      });
+      let change=changeRow(ownerId,idempotencyKey);
+      if(held){
+        const lock=JSON.parse(change.newSlotJson);
+        try{
+          const busy=normalizeBusy(await calendar.listBusy({ownerId,calendarId:row.providerCalendarId,timeMinUtc:lock.lockStartAtUtc,timeMaxUtc:lock.lockEndAtUtc}));
+          if(busy.some(item=>intervalsOverlap(lock.lockStartAtUtc,lock.lockEndAtUtc,item.startAtUtc,item.endAtUtc)))throw bookingError('SLOT_UNAVAILABLE',409,'That replacement time is no longer available.');
+        }catch(error){finishChange(change,{rejected:true,reason:'REPLACEMENT_SLOT_UNAVAILABLE'});throw error;}
+      }
+      if(calendar.conditionalChanges===true){
+        try{
+          const original=await calendar.getEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId});
+          if(!original?.etag||confirmationStatus(original,{eventId:row.providerEventId,startAtUtc:row.startAtUtc,endAtUtc:row.endAtUtc})!=='CONFIRMED')throw providerError('The original calendar appointment could not be verified.');
+          const old={...JSON.parse(change.oldSlotJson),etag:original.etag};
+          db.prepare("UPDATE appointmentChanges SET oldSlotJson=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(JSON.stringify(old),ownerId,idempotencyKey);
+        }catch(error){finishChange(change,{rejected:true,reason:'CALENDAR_CHANGE_NOT_STARTED'});throw error;}
+      }
+      // Persist the write boundary before PATCH. Restart recovery only reads it;
+      // it cannot know whether a write begun before a crash reached Google.
+      const ready=db.prepare("UPDATE appointmentChanges SET status='PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+      if(ready.changes!==1)return changeResult(changeRow(ownerId,idempotencyKey));
+      change=changeRow(ownerId,idempotencyKey);
       try{
-        const busy=normalizeBusy(await calendar.listBusy({ownerId,calendarId:row.providerCalendarId,timeMinUtc:lock.lockStartAtUtc,timeMaxUtc:lock.lockEndAtUtc}));
-        if(busy.some(item=>intervalsOverlap(lock.lockStartAtUtc,lock.lockEndAtUtc,item.startAtUtc,item.endAtUtc)))throw bookingError('SLOT_UNAVAILABLE',409,'That replacement time is no longer available.');
+        const changed=await calendar.changeEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId,action,
+          ...(JSON.parse(change.oldSlotJson).etag?{ifMatch:JSON.parse(change.oldSlotJson).etag}:{}),
+          ...(held?{startAtUtc:held.slot.startUtc,endAtUtc:held.slot.endUtc}:{})});
+        const expected=confirmationStatus(changed,{eventId:row.providerEventId,startAtUtc:held?.slot.startUtc,endAtUtc:held?.slot.endUtc});
+        if(action==='cancel'?!['CANCELLED','CANCELED'].includes(expected):expected!=='CONFIRMED')throw providerError();
+        return changeResult(finishChange(change));
       }catch(error){
-        // No remote write has started, so both the change claim and new hold
-        // can safely be released. The existing appointment is untouched.
-        immediate(()=>{
-          db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(nowFrom(clock).toISOString(),ownerId,held.holdId);
-          db.prepare("UPDATE appointments SET status='CONFIRMED',providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?").run(row.providerEventStatus,nowFrom(clock).toISOString(),ownerId,row.id);
-        });throw error;
+        if(error?.ambiguous===false&&[400,403].includes(error.providerStatus)){
+          db.prepare("UPDATE appointmentChanges SET lastError='CALENDAR_REQUEST_REJECTED',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+          finishChange(change,{rejected:true,reason:'CALENDAR_REQUEST_REJECTED'});
+          throw bookingError('CALENDAR_CHANGE_REJECTED',502,'The calendar rejected this change. The original appointment remains confirmed.',{retryable:false});
+        }
+        db.prepare("UPDATE appointmentChanges SET lastError='PROVIDER_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+        return changeResult(changeRow(ownerId,idempotencyKey));
       }
-    }
-    const changed=await calendar.changeEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId,action,
-      ...(held?{startAtUtc:held.slot.startUtc,endAtUtc:held.slot.endUtc}:{})});
-    if(action==='cancel'?changed.status!=='CANCELLED':changed.status!=='CONFIRMED'||changed.startAtUtc!==held.slot.startUtc||changed.endAtUtc!==held.slot.endUtc)throw providerError();
-    immediate(()=>{
-      const at=nowFrom(clock).toISOString();
-      if(action==='cancel')db.prepare("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.id);
-      else{
-        const lock=db.prepare('SELECT * FROM bookingHolds WHERE ownerId=? AND id=?').get(ownerId,held.holdId);
-        db.prepare("UPDATE appointments SET status='CONFIRMED',bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(intentId,held.holdId,changed.startAtUtc,changed.endAtUtc,changed.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,ownerId,row.id);
-        db.prepare("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,held.holdId);
-      }
-      if(row.holdId)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=?").run(at,ownerId,row.holdId);
-      db.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'appointment.changed',?,?,'PENDING',?,?)").run(idempotencyKey+'-changed',ownerId,row.id,JSON.stringify({appointmentId:row.id,action,startAtUtc:changed.startAtUtc||null,endAtUtc:changed.endAtUtc||null}),at,at);
-    });
-    return {status:'CONFIRMED',startUtc:changed.startAtUtc,endUtc:changed.endAtUtc};
+    }finally{changesInFlight.delete(idempotencyKey);}
   }
 
   return {
     createIntent,
     appointmentAvailability,
     modifyAppointment,
+    reconcileAppointmentChange,
+    reconcilePendingAppointmentChanges,
+    startChangeReconciler,
     resolveBookingToken,
     availability,
     getAvailability: availability,

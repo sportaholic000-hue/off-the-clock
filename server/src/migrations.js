@@ -1,5 +1,6 @@
 import {migrateBillingCheckoutRecovery} from './billingCoreMigration.js';
 import {installBillingUsageSchema} from './billingUsageSchema.js';
+import {installAppointmentChangeSchema} from './appointmentChangeSchema.js';
 import {installOwnerAlertSchema} from './ownerAlertSchema.js';
 import {installOwnerDashboardSchema} from './ownerDashboardSchema.js';
 import {installBillingLifecycleSchema} from './billingCustomerLifecycle.js';
@@ -263,6 +264,7 @@ export function migrateDatabase(database) {
   installAuthLimitSchema(database);
   installOutboundWebhookSchema(database);
   installBillingUsageSchema(database);
+  installAppointmentChangeSchema(database);
   installOwnerAlertSchema(database);
   installOwnerDashboardSchema(database);
   installBillingLifecycleSchema(database);

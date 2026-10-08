@@ -52,11 +52,13 @@ export function createOwnerWorkflowService({database,ownerQuery=sql=>database.pr
         if(workflow.followUpStatus!=='OPEN')throw problem('There is no open follow-up to complete.',409);
         next.followUpStatus='COMPLETED';next.dueAt=null;
       }else if(body.action==='DISMISS'){
-        if(['ACCEPTED','INVOICED','SUPERSEDED','REVIEWED'].includes(status))throw problem('This record cannot be dismissed at its current stage.',409);
+        if(['ACCEPTED','INVOICED','SUPERSEDED','REVIEWED','DISMISSED'].includes(status))throw problem('This record cannot be dismissed at its current stage.',409);
         status='DISMISSED';next.followUpStatus='DISMISSED';next.dueAt=null;
       }else if(body.action==='REOPEN'){
         if(status!=='DISMISSED')throw problem('Only a dismissed record can be reopened.',409);
-        status=kind==='leads'?'NEEDS REVIEW':'INSTANT';next.followUpStatus=null;next.dueAt=null;
+        const dismissal=q("SELECT fromStatus,toStatus FROM ownerRecordEvents WHERE ownerId=? AND kind=? AND recordId=? AND action='DISMISS' ORDER BY rowid DESC LIMIT 1").get(ownerId,kind,id);
+        if(!dismissal||dismissal.toStatus!=='DISMISSED'||!safeText(dismissal.fromStatus,128)||dismissal.fromStatus==='DISMISSED')throw problem('The stage before dismissal is unavailable. This record cannot be reopened without its dismissal history.',409);
+        status=dismissal.fromStatus;next.followUpStatus=null;next.dueAt=null;
       }else if(body.action==='REVIEW'){
         if(['ACCEPTED','INVOICED','SUPERSEDED','DISMISSED','REVIEWED'].includes(status)||workflow.reviewedQuoteId)throw problem('This record is not available for owner review.',409);
         const estimate=body.estimate;

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import bcrypt from 'bcrypt';
 import {productionEnv} from './helpers/railwayEnv.mjs';
 import {validateDeploymentConfig,prepareDeploymentEnvironment} from '../server/src/deploymentConfig.js';
 
@@ -71,4 +72,14 @@ test('Google Calendar validates the existing onboarding callback without changin
 
 test('Railway cannot accidentally boot with development storage defaults',()=>{
   assert.throws(()=>validateDeploymentConfig({RAILWAY_ENVIRONMENT_ID:'SYNTHETIC_RAILWAY_ENVIRONMENT',NODE_ENV:'development'}),/NODE_ENV=production/);
+});
+
+test('production admin hashes require bcrypt costs 12 through 16',async t=>{
+  const root=volume(t);
+  for(const cost of [11,12,16,17]){
+    const hash=await bcrypt.hash('[SYNTHETIC] admin boundary password',cost);
+    const env=productionEnv(root,{ADMIN_EMAIL:'[SYNTHETIC]-admin@example.invalid',ADMIN_PASSWORD_HASH:hash});
+    if(cost<12||cost>16)assert.throws(()=>validateDeploymentConfig(env),/ADMIN_PASSWORD_HASH.*cost 12 through 16/);
+    else assert.equal(validateDeploymentConfig(env).production,true);
+  }
 });
