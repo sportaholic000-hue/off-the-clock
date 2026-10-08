@@ -2,6 +2,7 @@ const CALENDAR_API_BASE_URL = 'https://www.googleapis.com/calendar/v3';
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_EVENT_ID = /^[0-9a-v]{5,1024}$/;
 const BEARER_TOKEN = /^[A-Za-z0-9._~+\/-]+=*$/;
+const EVENT_ETAG = /^"[^"\u0000-\u0020\u007f]{1,512}"$/;
 const UTC_INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/;
 const RFC3339_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
 
@@ -279,7 +280,8 @@ function normalizeEvent(value, expectedEventId, { ambiguous = false } = {}) {
     status,
     eventId: expectedEventId,
     startAtUtc: start.toISOString(),
-    endAtUtc: end.toISOString()
+    endAtUtc: end.toISOString(),
+    ...(typeof value.etag==='string'&&EVENT_ETAG.test(value.etag)?{etag:value.etag}:{})
   };
 }
 
@@ -505,7 +507,7 @@ export function createGoogleCalendarAdapter({
     return connection;
   }
 
-  async function apiRequest({ ownerId, calendarId, path, method, body, write = false, notFoundIsNull = false }) {
+  async function apiRequest({ ownerId, calendarId, path, method, body, write = false, notFoundIsNull = false, ifMatch }) {
     let connection = await loadOwnerConnection(ownerId, calendarId);
     connection = await usableConnection(ownerId, connection);
     for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -514,6 +516,7 @@ export function createGoogleCalendarAdapter({
         headers: {
           authorization: `Bearer ${connection.accessToken}`,
           accept: 'application/json',
+          ...(ifMatch?{'if-match':ifMatch}:{}),
           ...(body === undefined ? {} : { 'content-type': 'application/json' })
         },
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
@@ -625,16 +628,29 @@ export function createGoogleCalendarAdapter({
 
   async function changeEvent(input){
     const {ownerId,calendarId}=baseRequest(input);
-    if(!GOOGLE_EVENT_ID.test(input.eventId)||!['cancel','reschedule'].includes(input.action))throw invalidRequest();
+    if(!GOOGLE_EVENT_ID.test(input.eventId)||!['cancel','reschedule'].includes(input.action)||input.ifMatch!==undefined&&!EVENT_ETAG.test(input.ifMatch))throw invalidRequest();
     const bounds=input.action==='reschedule'?orderedUtcBounds(input.startAtUtc,input.endAtUtc):null;
-    const payload=await apiRequest({ownerId,calendarId,path:`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(input.eventId)}?sendUpdates=none`,method:'PATCH',write:true,
+    const payload=await apiRequest({ownerId,calendarId,path:`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(input.eventId)}?sendUpdates=none`,method:'PATCH',write:true,ifMatch:input.ifMatch,
       body:bounds?{reminders:{useDefault:false,overrides:[]},attendees:[],start:{dateTime:bounds.start,timeZone:'UTC'},end:{dateTime:bounds.end,timeZone:'UTC'}}:{status:'cancelled',reminders:{useDefault:false,overrides:[]},attendees:[]}});
     const event=normalizeEvent(payload,input.eventId,{ambiguous:true});
     if(bounds?(event.status!=='CONFIRMED'||event.startAtUtc!==bounds.start||event.endAtUtc!==bounds.end):event.status!=='CANCELLED')throw invalidResponse({ambiguous:true});
     return event;
   }
 
+  async function fenceEventChange(input){
+    const {ownerId,calendarId}=baseRequest(input);
+    if(!GOOGLE_EVENT_ID.test(input.eventId)||!EVENT_ETAG.test(input.ifMatch)||!safeIdentifier(input.operationId,128))throw invalidRequest();
+    // Retire the original If-Match version without moving or cancelling the
+    // event. A late original write can then only fail its precondition. Google
+    // documents this compare-and-swap contract in its version-resources guide.
+    const payload=await apiRequest({ownerId,calendarId,path:`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(input.eventId)}?sendUpdates=none`,method:'PATCH',write:true,ifMatch:input.ifMatch,
+      body:{extendedProperties:{private:{otcChangeFence:input.operationId}},reminders:{useDefault:false,overrides:[]},attendees:[]}});
+    const event=normalizeEvent(payload,input.eventId,{ambiguous:true});
+    if(!event.etag||event.etag===input.ifMatch)throw invalidResponse({ambiguous:true});
+    return event;
+  }
+
   // Google Calendar's caller-supplied event ID prevents duplicate event creation
   // when a successful write loses its response. Recovery must reuse that ID.
-  return { listBusy, createEvent, getEvent, changeEvent, idempotentCreateByEventId: true };
+  return { listBusy, createEvent, getEvent, changeEvent, fenceEventChange, conditionalChanges:true, idempotentCreateByEventId: true };
 }

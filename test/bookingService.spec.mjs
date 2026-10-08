@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { createBookingService, BookingServiceError } from '../server/src/bookingService.js';
 import { localDateTimeCandidates } from '../server/src/calendarTime.js';
+import {installAppointmentChangeSchema} from '../server/src/appointmentChangeSchema.js';
 
 const OWNER = 'owner-a';
 const OTHER_OWNER = 'owner-b';
@@ -177,6 +178,7 @@ function database() {
       updatedAt TEXT NOT NULL
     );
   `);
+  installAppointmentChangeSchema(db);
   return db;
 }
 

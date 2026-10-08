@@ -111,6 +111,34 @@ test('subscription receipt preserves actual charge currency and handwritten amou
   const f=setup(t);f.subscription();const event=payment(f);f.billing.applyVerifiedStripeEvent(event);await f.lifecycle.processOwner(A);
   const n=f.lifecycle.snapshot(A).notices.find(n=>n.referenceId==='in_SYNTHETIC_lifecycle');assert.equal(n.amountCents,11900);assert.equal(n.currency,'cad');assert.match(n.message,/\$119.00 CAD/);assert.equal(f.fakes.mail.size,1);
 });
+
+test('settled invoices suppress stale failure notices in either event order and at dispatch',async t=>{
+  // Handwritten receipt oracle: the synthetic monthly payment is $119.00 CAD.
+  for(const order of ['paid-then-older-failed','failed-then-paid-before-sync','failed-queued-then-paid-before-dispatch','failed-queued-then-paid-minute-worker-dispatch','paid-only'])await t.test(order,async t=>{
+    const f=setup(t);f.subscription();
+    const id='in_SYNTHETIC_settled',fail=()=>payment(f,{id,type:'invoice.payment_failed',created:sec(START)+1});
+    const settle=()=>payment(f,{id,created:sec(START)+2});
+    if(order==='paid-then-older-failed'){settle();fail();}
+    else if(order==='paid-only')settle();
+    else{
+      fail();
+      if(order.startsWith('failed-queued'))f.lifecycle.syncNotices(A);
+      settle();
+      // Deliberately bypass syncNotices to exercise the final send guard.
+      if(order==='failed-queued-then-paid-before-dispatch')await f.lifecycle.emails.deliverOne(A);
+      if(order==='failed-queued-then-paid-minute-worker-dispatch')await f.service.emails.deliverOne(A);
+    }
+    await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
+    const invoice=f.db.prepare('SELECT * FROM billingInvoiceEvidence WHERE ownerId=? AND stripeInvoiceId=?').get(A,id);
+    assert.equal(invoice.status,'PAID');if(order!=='paid-only')assert.ok(invoice.failedAt!==null,'Retain failure history');
+    assert.deepEqual(f.fakes.writes.email.map(mail=>mail.subject),['Your payment receipt']);
+    assert.match(f.fakes.writes.email[0].text,/\$119.00 CAD/);
+    const notices=f.lifecycle.snapshot(A).notices,failed=notices.filter(n=>n.kind==='payment_failed');
+    if(order.startsWith('failed-queued')){assert.equal(failed.length,1);assert.equal(failed[0].emailStatus,'SUPPRESSED');assert.equal(failed[0].deliveryError,null);}
+    else assert.equal(failed.length,0);
+    assert.equal(notices.filter(n=>n.kind==='receipt').length,1);assert.equal(f.lifecycle.snapshot(B).notices.length,0);
+  });
+});
 test('overage receipt: ten extra minutes × 35 cents = $3.50, once',async t=>{
   const f=setup(t);f.activate();f.call(310*60);f.setTime(END);await f.service.processOwner(A);await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
   const n=f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='receipt'&&n.message.startsWith('Overage'));assert.equal(n.length,1);assert.equal(n[0].amountCents,350);

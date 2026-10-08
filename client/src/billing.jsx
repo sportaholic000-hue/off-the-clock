@@ -136,7 +136,7 @@ export default function Billing() {
           {['leads','quotes','calls'].map(kind=><Button key={kind} variant="secondary" disabled={!!busy||!!(lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'&&Date.parse(lifecycle.cancellation.exportUntilAt)<=Date.now())} onClick={()=>exportRecords(kind)}>Export {kind} (CSV)</Button>)}
         </section>:null}
         <section className="billing-panel" aria-label="Billing notices"><h2>Billing notices</h2>
-          {!lifecycle?.notices?.length?<p>No billing notices yet.</p>:lifecycle.notices.map(item=><article key={item.id}><p>{item.message}</p><small>Email: {item.emailStatus||'PENDING'}{item.deliveryError?' — confirmation pending':''}</small></article>)}
+          {!lifecycle?.notices?.length?<p>No billing notices yet.</p>:lifecycle.notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus||'PENDING'}{item.deliveryError?' — confirmation pending':''}</small></article>)}
         </section>
       </>:null}
       <Button variant="secondary" disabled={!!busy} onClick={refresh}>{busy==='status'?'Refreshing billing status':'Refresh billing status'}</Button>

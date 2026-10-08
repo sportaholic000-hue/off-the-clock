@@ -38,6 +38,15 @@ function operatorView(operator) {
   };
 }
 
+export function OperatorOffBanner({routing}) {
+  return <div className="off-banner">
+    <span className="off-dot" aria-hidden="true" />
+    {routing?.confirmed?<span>Operator is off. Calls reaching your Off The Clock number ring your phone.</span>
+      :<><span>Operator is off. Calls reaching your Off The Clock number cannot be routed to your phone yet. Finish phone setup.</span>
+        <Button variant="secondary" onClick={()=>go('/onboarding?step=4')}>Finish phone setup</Button></>}
+  </div>;
+}
+
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [state, setState] = useState(null);
@@ -193,10 +202,7 @@ export default function Dashboard() {
         )}
 
         {!view.live && !view.simulated && (
-          <div className="off-banner">
-            <span className="off-dot" aria-hidden="true" />
-            <span>Operator is off. Calls to your line ring your phone. Whoever answers is on it.</span>
-          </div>
+          <OperatorOffBanner routing={dashboard.operator.offRouting}/>
         )}
 
         {view.blocked && view.missing.length > 0 && (

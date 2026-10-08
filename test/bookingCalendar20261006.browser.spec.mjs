@@ -34,7 +34,10 @@ test('real caller widget in Los Angeles books Moncton DST time, visible in owner
   const row=s.db.prepare("SELECT * FROM appointments WHERE ownerId='synthetic-a'").get();assert.equal(row.status,'CONFIRMED');assert.equal(row.startAtUtc,'2026-11-01T13:00:00.000Z');
   assert.equal(await page.evaluate(at=>new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit'}).format(new Date(at)),row.startAtUtc),'5:00 AM');
   await page.evaluate(token=>{localStorage.setItem('otc_token',token);window.mount('dashboard');},s.tokens['synthetic-a']);
-  const counter=page.locator('.counter-card').filter({hasText:'BOOKED ON CALENDAR'});await counter.waitFor();assert.equal(await counter.locator('.counter-value').innerText(),'1');
+  // Force the reports card to render before the dashboard counter. Both use
+  // the same label; only the counter grid identifies the dashboard count.
+  await page.getByRole('region',{name:'Period reports'}).locator('.counter-card').filter({hasText:'BOOKED ON CALENDAR'}).waitFor();
+  const counter=page.locator('.dashboard-page > .counter-grid > .counter-card').filter({hasText:'BOOKED ON CALENDAR'});await counter.waitFor();assert.equal(await counter.count(),1);assert.equal(await counter.locator('.counter-value').innerText(),'1');
   await page.evaluate(()=>window.mount('calendar'));
   const article=page.getByRole('article',{name:'Confirmed: [SYNTHETIC] Caller'});await article.waitFor();assert.match(await article.innerText(),/Nov 1, 2026.*9:00 AM/);
   await page.evaluate(token=>{localStorage.setItem('otc_token',token);window.mount('calendar');},s.tokens['synthetic-b']);

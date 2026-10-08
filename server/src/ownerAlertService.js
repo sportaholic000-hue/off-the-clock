@@ -64,7 +64,10 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
       const appointment=event&&query('SELECT customerJson,status,startAtUtc,endAtUtc,timezone,locationJson FROM appointments WHERE ownerId=? AND id=?').get(owner,event.aggregateId);
       if(!appointment)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(appointment.customerJson),d=storedObject(event.payloadJson);
-      return [row.eventType==='appointment.booked'?'Booking confirmed':'Booking changed',c.name,c.phone,c.email,d.action==='cancel'?'CANCELLED':d.status||appointment.status,d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,d.timezone||appointment.timezone,JSON.stringify(storedObject(appointment.locationJson))];
+      const rejected=d.status==='REJECTED';
+      return [row.eventType==='appointment.booked'?'Booking confirmed':rejected?'Booking change not applied':'Booking changed',c.name,c.phone,c.email,
+        rejected?'The requested '+(d.action==='cancel'?'cancellation':'reschedule')+' was not applied. The original appointment remains confirmed.':d.action==='cancel'?'CANCELLED':d.status||appointment.status,
+        d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,d.timezone||appointment.timezone,JSON.stringify(storedObject(appointment.locationJson))];
     }
     if(row.eventType==='voice.quoting_unavailable'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
