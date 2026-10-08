@@ -77,11 +77,11 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "3feace70a0be2377361791c08cb080e5025cdcc7e04536be2d259807cf7a873b"
+    "sha256": "8342a880578af019750c89ed3353135847d4adcf308f8c2c3f66a664ea942582"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "df3a49a73a9e2cbbbf1463768c69d9c011ad0468909065c4bbe9e74cc242fb61"
+    "sha256": "a41a728e72c8ac6e445083b753b807f9c60210aa53e7328c6ea391ce3a2955dc"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",

@@ -58,7 +58,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px">
         <a href="#demo" style="background:#00E676;color:#0A0A0A;font-weight:600;font-size:15px;padding:14px 24px;border-radius:3px;transition:background 150ms ease" style-hover="background:#16A34A;color:#0A0A0A">Start Live Demo Call</a>
         <a href="#pricing" style="border:1px solid #1E241E;color:#F2F5F2;font-weight:600;font-size:15px;padding:13px 24px;border-radius:3px;transition:border-color 150ms ease" style-hover="border-color:#00E676;color:#F2F5F2">Start free</a>
-        <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#8A948A;border:1px solid #1E241E;border-radius:3px;padding:8px 12px"><span style="color:#00E676">✓</span>30-DAY MONEY-BACK</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#8A948A;border:1px solid #1E241E;border-radius:3px;padding:8px 12px"><span style="color:#00E676">✓</span>14-DAY FREE TRIAL</span>
       </div>
       <p style="margin:0;font-size:13.5px;line-height:1.6;color:#8A948A;max-width:500px">The demo is a live, two-way conversation. You talk, it answers. Ask it anything about how the product works and what it would do for your business.</p>
     </div>
@@ -425,14 +425,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
           </div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <a href="#pricing" style="display:block;text-align:center;background:{{ plan.ctaBg }};border:1px solid {{ plan.ctaBorder }};color:{{ plan.ctaColor }};font-weight:600;font-size:14.5px;padding:13px 0;border-radius:3px;transition:background 150ms ease">{{ plan.cta }}</a>
-            <span style="display:flex;justify-content:center;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8A948A"><span style="color:#00E676">✓</span>30-DAY MONEY-BACK</span>
+            <span style="display:flex;justify-content:center;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8A948A"><span style="color:#00E676">✓</span>14-DAY FREE TRIAL</span>
           </div>
         </div>
       </sc-for>
     </div>
     <div style="display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#8A948A">
-      <span>OVERAGE: $0.35/MIN · METER ALWAYS VISIBLE, EMAIL AT 80% AND 100%</span>
-      <span>TRIAL: 14 DAYS · FULL QUOTEDONE FEATURES · 60-MIN VOICE CAP</span>
+      <span>OVERAGE: $0.35/MIN · METER ALWAYS VISIBLE, EMAIL AT 60, 30 AND 0 MIN LEFT</span>
+      <span>TRIAL: 14 DAYS · YOUR PLAN’S FULL FEATURES · 60-MIN VOICE CAP</span>
       <span>SETUP: SELF-SERVE, ~15 MINUTES</span>
     </div>
   </div>
@@ -465,8 +465,8 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
       </div>
     </div>
     <div style="border-top:1px solid #1E241E;padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">© 2026 OFF THE CLOCK AI · OFFTHECLOCKAI.COM</span>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">30-DAY MONEY-BACK · CANCEL ANYTIME · SELF-SERVE</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">© 2026 OFF THE CLOCK AI · OFFTHECLOCKAI.COM · <a href="mailto:support@offtheclockai.com" style="color:inherit;text-decoration:none">SUPPORT@OFFTHECLOCKAI.COM</a></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8A948A">14-DAY FREE TRIAL · CANCEL ANYTIME · SELF-SERVE</span>
     </div>
   </div>
 </footer>
@@ -728,11 +728,11 @@ class Component extends DCLogic {
     // answers
     const answers = [
       { q: 'Won\u2019t my customers hate talking to a robot?', a: 'Press the mic above and decide for yourself. The demo is the claim. On real calls, anyone can say \u201cget me a person\u201d and be transferred live to you, anytime. And if a caller asks whether it\u2019s AI, it says so, honestly.' },
-      { q: 'I already use Jobber / QuickBooks.', a: 'Keep them. Webhooks, Zapier, and CSV export push every call, quote, and booking into your existing system. You switch nothing.' },
-      { q: 'Another subscription\u2026', a: 'Run the calculator above with your own numbers. One saved job typically covers months. 30-day money-back on the first month, cancel anytime, self-serve.' },
+      { q: 'I already use Jobber / QuickBooks.', a: 'Keep them. Webhooks and CSV export push every call, quote, and booking into your existing system. You switch nothing.' },
+      { q: 'Another subscription\u2026', a: 'Run the calculator above with your own numbers. One saved job typically covers months. Try it free for 14 days, cancel anytime, self-serve.' },
       { q: 'Do I need a new phone number?', a: 'No, you keep yours. Connecting it takes about five minutes, and we walk you through it.' },
       { q: 'Some of my customers don\u2019t speak English.', a: 'The agent handles 20+ languages, including Spanish and French, and switches naturally mid-conversation.' },
-      { q: 'How do minutes work?', a: 'A minute is talk time on your line. The meter is always visible; you get an email at 80% and 100%. Past your plan it\u2019s $0.35/min. No surprise tiers, no forced upgrade.' }
+      { q: 'How do minutes work?', a: 'A minute is talk time on your line. The meter is always visible; you get an email at 60, 30 and 0 minutes left. Past your plan it\u2019s $0.35/min. No surprise tiers, no forced upgrade.' }
     ];
 
     // pricing
