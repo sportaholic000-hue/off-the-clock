@@ -80,6 +80,7 @@ export function conciseVoiceSummary(result) {
     const exclusions=option.skippedAddons?.length?sentence('Not included: '+option.skippedAddons.map(clean).join('; ')):'';
     return [sentence(price),tax,exclusions].filter(Boolean).join(' ');
   });
+  if(result.callerMeasurementsEstimated===true)parts.push('This price is based on the measurements you gave us. The business will confirm them on site.');
   parts.push('This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it.');
   if(result.optionAvailabilityNotice)parts.push(result.optionAvailabilityNotice);
   if (result.resultType === 'PARTIAL_ESTIMATE_READY' || result.additionalWork?.length) parts.push('Separate additional work is excluded and needs its own on-site estimate. A total for all requested work is not available.');
@@ -89,10 +90,11 @@ export function conciseVoiceSummary(result) {
   return summary;
 }
 
-export function projectVoiceQuote(response, quoteHandle, followUps = []) {
+export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false}={}) {
   const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
   const output = { status: released ? 'quoted' : 'needs_details', quoteHandle, resultType: response?.resultType || 'ESTIMATE_REQUIRES_REVIEW' };
+  if(callerMeasurementsEstimated===true)output.callerMeasurementsEstimated=true;
   if (released) {
     if(text(estimate?.optionAvailabilityNotice,2000))output.optionAvailabilityNotice=estimate.optionAvailabilityNotice;
     for (const key of ['lowEstimate', 'midEstimate', 'highEstimate']) if (money(estimate?.[key])) output[key] = estimate[key];

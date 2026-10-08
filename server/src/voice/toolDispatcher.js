@@ -65,6 +65,7 @@ function publicQuestionContract(value){
   });return {fields,customerFees};
 }
 const PROJECTORS=Object.freeze({
+  calculateVoiceArea(result){const output=baseResult(result);if(result.status!=='calculated')fail('INVALID_TOOL_RESULT',502);copyIf(result,output,'areaSqft',value=>{const area=resultText(value,30);if(!/^(?:0|[1-9]\d{0,6})(?:\.\d{1,12})?$/.test(area))fail('INVALID_TOOL_RESULT',502);return area;});if(!output.areaSqft)fail('INVALID_TOOL_RESULT',502);return output;},
   calculateListedPrice(result){
     const output=baseResult(result);
     if(result.status==='calculated'){
@@ -81,6 +82,7 @@ const PROJECTORS=Object.freeze({
   },
   getQuote(result){
     const output=baseResult(result); // Inspect all fields before projection; hidden rates are rejected, not silently dropped.
+    if(result.callerMeasurementsEstimated!==undefined){if(result.callerMeasurementsEstimated!==true)fail('INVALID_TOOL_RESULT',502);output.callerMeasurementsEstimated=true;}
     copyIf(result,output,'quoteHandle',resultHandle);copyIf(result,output,'resultType',value=>resultText(value,80));
     for(const key of ['lowEstimate','midEstimate','highEstimate','fullJobTotal'])copyIf(result,output,key,key==='fullJobTotal'?value=>value===null?null:resultMoney(value):resultMoney);
     for(const key of ['priceDrivers','additionalWork','followUps','skippedAddons'])copyIf(result,output,key,resultTextList);
@@ -102,7 +104,10 @@ const PROJECTORS=Object.freeze({
       output.slotOptions=result.slotOptions.map(slot=>{assertClosed(slot,['slotHandle','label'],['slotHandle','label'],'INVALID_TOOL_RESULT');return {slotHandle:resultHandle(slot.slotHandle),label:resultText(slot.label,200)};});}
     return output;
   },
-  bookAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},
+  bookAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));if(result.status==='confirmed'){
+    for(const key of ['startLocal','endLocal','timezone'])copyIf(result,output,key,value=>resultText(value,100));
+    copyIf(result,output,'serviceAddress',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,key==='line2'&&item===''?'':resultText(item,200)]));});
+  }return output;},
   captureLead(result){const output=baseResult(result);copyIf(result,output,'leadHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   logQuoteRequest(result){const output=baseResult(result);copyIf(result,output,'requestHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   prepareQuoteEmail(result){const output=baseResult(result);copyIf(result,output,'emailConfirmationHandle',resultHandle);copyIf(result,output,'readBack',value=>resultText(value,2000));return output;},

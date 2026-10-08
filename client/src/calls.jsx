@@ -79,7 +79,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     {call.notifications&&<OwnerAlerts ownerTimezone={call.ownerTimezone} alerts={call.notifications} configured={call.emailAlertsConfigured} canRetry={canRetry} onRefresh={onRefresh}/>}
     <DeliveryActions ownerTimezone={call.ownerTimezone} actions={call.deliveryActions}/>
     <h3>Quotes</h3>{!call.quotes.length&&<Notice>No saved quote for this call.</Notice>}
-    {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {callTime(quote.createdAt,call.ownerTimezone)}{quote.tierChosen?' · '+quote.tierChosen:''}</p><QuoteResult result={quote.result}/>
+    {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {callTime(quote.createdAt,call.ownerTimezone)}{quote.tierChosen?' · '+quote.tierChosen:''}</p>{quote.measurementsNotice&&<p><strong>{quote.measurementsNotice}</strong></p>}{quote.customerInputs&&<pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify({measurementsAndScope:quote.customerInputs},null,2)}</pre>}<QuoteResult result={quote.result}/>
       {!quote.result&&<Notice>The saved quote has no readable estimate.</Notice>}
       <Button variant="secondary" onClick={()=>go('/quotes?record='+encodeURIComponent(quote.id))}>Quotes</Button>
       {quote.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(quote.internal,null,2)}</pre></details>}
@@ -88,7 +88,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     {call.leads.map(lead=><section className="editor-section" key={lead.id}><h3>{lead.customerName||lead.describedService||'Lead'}</h3><p>{lead.status} · {lead.type}</p>
       {lead.reviewReason&&<Notice title="Request saved for review">{lead.reviewReason}</Notice>}
       <dl><dt>Customer</dt><dd>{text(lead.customerName||lead.contact?.name)}</dd><dt>Phone</dt><dd>{text(lead.callerNumber)}</dd><dt>Requested work</dt><dd>{text(lead.describedService)}</dd></dl>
-      <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({contact:lead.contact,location:lead.location,notes:lead.notes,measurementsAndScope:lead.customerInputs,unknowns:lead.explicitUnknowns,urgency:lead.urgency,context:lead.context,followUpSource:lead.followUpSource,submittedContact:lead.submittedContact,submittedLocation:lead.submittedLocation},null,2)}</pre>
+      {lead.measurementsNotice&&<p><strong>{lead.measurementsNotice}</strong></p>}<pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({contact:lead.contact,location:lead.location,notes:lead.notes,measurementsAndScope:lead.customerInputs,unknowns:lead.explicitUnknowns,urgency:lead.urgency,context:lead.context,followUpSource:lead.followUpSource,submittedContact:lead.submittedContact,submittedLocation:lead.submittedLocation},null,2)}</pre>
       {!!lead.captureHistory?.length&&<details><summary>Contact and request history</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(lead.captureHistory,null,2)}</pre></details>}
       <Button variant="secondary" onClick={()=>go('/leads?record='+encodeURIComponent(lead.id))}>Leads</Button>
       {lead.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(lead.internal,null,2)}</pre></details>}

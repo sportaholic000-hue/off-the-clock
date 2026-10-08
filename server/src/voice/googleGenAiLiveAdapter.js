@@ -1,5 +1,7 @@
 // SDK boundary: injected clients let tests execute without a live provider.
 import {VOICE_RESULT_BYTES} from './voiceQuotePresentation.js';
+import {validLiveModelName} from './liveModelName.js';
+import {VOICE_INSTRUCTION_CHARACTER_LIMIT} from './voiceProviderLimits.js';
 export class GoogleGenAiLiveAdapterError extends Error{constructor(code){super('The live voice provider is unavailable.');this.name='GoogleGenAiLiveAdapterError';this.code=code;}}
 const fail=code=>{throw new GoogleGenAiLiveAdapterError(code);};
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
@@ -16,7 +18,7 @@ function jsonData(value,maxBytes=VOICE_RESULT_BYTES){
 }
 export function createGoogleGenAiLiveSessionOpener({client,model,systemInstruction,toolDeclarations,voiceName,connectTimeoutMs=15000,greetOnConnect=false}={}){
   if(typeof client?.live?.connect!=='function')fail('GOOGLE_LIVE_CLIENT_REQUIRED');
-  if(typeof model!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(model))fail('GOOGLE_LIVE_MODEL_REQUIRED');
+  if(!validLiveModelName(model))fail('GOOGLE_LIVE_MODEL_REQUIRED');
   if(!(typeof systemInstruction==='string'&&systemInstruction.trim())&&typeof systemInstruction!=='function')fail('GOOGLE_LIVE_INSTRUCTION_REQUIRED');
   if(!Array.isArray(toolDeclarations)||!toolDeclarations.length)fail('GOOGLE_LIVE_TOOLS_REQUIRED');
   if(!Number.isSafeInteger(connectTimeoutMs)||connectTimeoutMs<100||connectTimeoutMs>60000)fail('GOOGLE_LIVE_TIMEOUT_INVALID');jsonData(toolDeclarations);
@@ -24,7 +26,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     if(!plain(callbacks)||['onAudio','onInterruption','onTranscript','onToolCall','onError','onClose'].some(key=>typeof callbacks[key]!=='function'))fail('GOOGLE_LIVE_CALLBACKS_REQUIRED');
     if(audio?.inputMimeType!=='audio/pcm;rate=16000'||audio?.outputMimeType!=='audio/pcm;rate=24000')fail('GOOGLE_LIVE_AUDIO_FORMAT_INVALID');
     let instruction;try{instruction=typeof systemInstruction==='function'?await systemInstruction({context,session}):systemInstruction;}catch{fail('GOOGLE_LIVE_INSTRUCTION_FAILED');}
-    if(typeof instruction!=='string'||!instruction.trim()||instruction.length>200000)fail('GOOGLE_LIVE_INSTRUCTION_FAILED');
+    if(typeof instruction!=='string'||!instruction.trim()||instruction.length>VOICE_INSTRUCTION_CHARACTER_LIMIT)fail('GOOGLE_LIVE_INSTRUCTION_FAILED');
     let provider,closed=false,closing=false,failed=false,modelText='',queue=Promise.resolve(),transcriptions=Promise.resolve(),closePromise;
     function close(){
       if(closePromise)return closePromise;closing=true;

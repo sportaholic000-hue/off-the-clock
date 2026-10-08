@@ -20,7 +20,7 @@ export async function voiceHarness(t){
   const connections=[],responses=new Map(),sockets=[];let callbacks;
   const client={live:{connect:async value=>{connections.push(value);callbacks=value.callbacks;return {sendRealtimeInput(){},sendClientContent(){},sendToolResponse(value){for(const result of value.functionResponses)responses.set(result.id,result.response);},async close(){}};}}};
   const app=express(),errors=[];
-  const voice=installProductionVoice({app,database:db,bookingService:{},runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:accountSid,TWILIO_AUTH_TOKEN:token,PUBLIC_BASE_URL:origin,GEMINI_MODEL:'synthetic-model',JWT_SECRET:'SYNTHETIC-voice-secret-'.repeat(3)},googleClient:client,onError:code=>errors.push(code)});
+  const voice=installProductionVoice({app,database:db,bookingService:{},runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:accountSid,TWILIO_AUTH_TOKEN:token,PUBLIC_BASE_URL:origin,GEMINI_MODEL:'synthetic-live-model',JWT_SECRET:'SYNTHETIC-voice-secret-'.repeat(3)},googleClient:client,onError:code=>errors.push(code)});
   const server=app.listen(0,'127.0.0.1');await once(server,'listening');const local='http://127.0.0.1:'+server.address().port;
   t.after(async()=>{for(const ws of sockets)ws.terminate();await voice.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));});
   async function connect(){

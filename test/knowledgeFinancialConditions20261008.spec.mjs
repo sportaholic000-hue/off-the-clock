@@ -64,14 +64,14 @@ for(const sentence of [
 
 test('audit 2 only non-financial sentences in a mixed paragraph are rewritten or removed',()=>{
  const input='Text us for hours. Mowing: $10 per acre. Text us for a 10% discount. We send texts. Text me for access.';
- const expected='Call us for hours. Mowing: $10 per acre. Text us for a 10% discount. Call me for access.';
+ const expected='Mowing: $10 per acre. Text us for a 10% discount.';
  assert.equal(rewriteKnowledgeText(input),expected);
  assert.equal(compiledPrices(input),expected);
 });
 
 test('audit 2 prompt and calculator accept the same rewritten ordinary contact invitation',()=>{
  const original='Window washing: $6 each. Text us for a quote.';
- const rewritten='Window washing: $6 each. Call us for a quote.';
+ const rewritten='Window washing: $6 each.';
  assert.equal(compiledPrices(original),rewritten);
  const result=calculateSavedListedPrice({prices:original},{listedItem:rewritten,quantity:'10',customerConfirmed:true});
  assert.equal(result.status,'calculated');
@@ -79,7 +79,7 @@ test('audit 2 prompt and calculator accept the same rewritten ordinary contact i
  assert.equal(result.listedItem,rewritten);
 });
 
-test('audit 2 the existing free-estimate invitation still permits its stated call option',()=>{
- assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'Call for a free estimate.');
- assert.equal(rewriteKnowledgeText('Text or call for a free quote.'),'Call for a free quote.');
+test('audit 2 free-estimate financial condition remains word for word',()=>{
+ assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'Call or text for a free estimate.');
+ assert.equal(rewriteKnowledgeText('Text or call for a free quote.'),'Text or call for a free quote.');
 });

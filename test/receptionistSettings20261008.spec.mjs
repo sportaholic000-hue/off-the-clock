@@ -122,3 +122,10 @@ test('receptionist 5 compilation failure names the setting in durable dashboard 
  assert.equal(service.list({ownerId:'synthetic-b'}).alerts.length,0);await service.dispatchOnce();await service.dispatchOnce();
  const settingEmails=messages.filter(message=>message.subject.includes('Receptionist setting'));assert.equal(settingEmails.length,1);assert.match(settingEmails[0].text,/Hours/);assert.equal(settingEmails[0].to,'synthetic-a@example.invalid');assert.equal(service.list({ownerId:owner}).alerts.find(a=>a.id===alert.id).status,'ACCEPTED');
 });
+test('oversized preexisting receptionist prompt raises settings invalid before the provider opens',async t=>{
+ const knowledge={about:'Synthetic work',neverSay:Array.from({length:10},(_,i)=>`${i}:`+'z'.repeat(19998))};
+ const h=await harness(t,{fail:true,beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify(knowledge),owner)});
+ await h.connect();assert.equal(h.callbacks.length,0);assert.ok(h.errors.includes('VOICE_SETTINGS_INVALID'));
+ const alert=createOwnerAlertService({database:h.db,ready:()=>false}).list({ownerId:owner}).alerts.find(a=>a.eventType==='voice.settings_invalid');
+ assert.ok(alert);assert.match(alert.settingMessage,/Business knowledge/);
+});

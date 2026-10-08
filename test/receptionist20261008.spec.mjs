@@ -51,10 +51,10 @@ test('receptionist 2 all twenty live flows use measured inputs and open fence he
 const mixed='Gutter cleaning: $2.50 per linear foot\nAll prices plus HST. Call or text for a free estimate.\n\nService call: $89 each. Call or text to book.\n\nCustom text engraving: $25 each\n\nWindow washing: $6 each\nText us for a quote.';
 test('receptionist 3 shared communication rewrite preserves prices tax and ordinary text',()=>{
  const knowledge=facts(compile({knowledge:{prices:mixed,hours:'Call or text for hours.',policies:'Text me for access.'}})).knowledge;
- assert.match(knowledge.prices,/plus HST/);assert.match(knowledge.prices,/Service call: \$89 each/);assert.match(knowledge.prices,/Custom text engraving/);assert.equal(knowledge.hours,'Call for hours.');assert.equal(knowledge.policies,'Call me for access.');
+ assert.match(knowledge.prices,/plus HST/);assert.match(knowledge.prices,/Service call: \$89 each/);assert.match(knowledge.prices,/Custom text engraving/);assert.equal(knowledge.hours,'');assert.equal(knowledge.policies,'');
  const entry=knowledge.prices.split('\n\n').at(-1);assert.equal(calculate(mixed,'10',entry).extendedAmount,'60.00');
 });
-for(const [listing,quantity,amount] of [['Bricks $2 each','500','1000.00'],['$90 each','4','360.00'],['$6 per window','10','60.00'],['$75 per stump','3','225.00'],['$350 per square','2','700.00'],['$5 per bag','12','60.00'],['$150 per load','2','300.00'],['$400 per room','3','1200.00'],['SYNTHETIC: $20 per hour','1.25','25.00'],[mixed.split('\n\n')[0],'120','300.00'],['$2.50 per linear foot','3.333','8.33'],['$1.25 each','2.5','3.13']])test('receptionist 4 flat listed price '+listing+' x '+quantity,()=>{
+for(const [listing,quantity,amount] of [['Bricks $2 each','500','1000.00'],['$90 each','4','360.00'],['$6 per window','10','60.00'],['$75 per stump','3','225.00'],['$350 per square','2','700.00'],['$5 per bag','12','60.00'],['$150 per load','2','300.00'],['$400 per room','3','1200.00'],['SYNTHETIC: $20 per hour','1.25','25.00'],['Gutter cleaning: $2.50 per linear foot\nAll prices plus HST.','120','300.00'],['$2.50 per linear foot','3.333','8.33'],['$1.25 each','2.5','3.13']])test('receptionist 4 flat listed price '+listing+' x '+quantity,()=>{
  const rewritten=facts(compile({knowledge:{prices:listing}})).knowledge.prices;
  const result=calculate(listing,quantity,rewritten);assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,amount);
  assert.ok(result.voiceSummary.startsWith(rewritten));assert.doesNotMatch(result.voiceSummary,/\.\./);
@@ -71,6 +71,8 @@ test('receptionist 3 sentence rewriting removes only communication offers and pr
  const financial=['We send texts about a 10 percent fee.','We send texts with a $20 minimum.','We send texts about prices plus HST.','Custom text engraving: $25 each.'];
  for(const sentence of financial)assert.equal(rewriteKnowledgeText(sentence),sentence);
  assert.equal(rewriteKnowledgeText("We send texts. Hours: 9 to 5. Automatic SMS reminders available. We'll text you a reminder."),'Hours: 9 to 5.');
- assert.equal(rewriteKnowledgeText('Text or call for access. Text us for a quote. Text me to book.'),'Call for access. Call us for a quote. Call me to book.');
+ assert.equal(rewriteKnowledgeText('Text or call for access. Text us for a quote. Text me to book.'),'');
  assert.equal(calculate('$20 each. Pickup only.','3').status,'needs_review');
+ assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'Call or text for a free estimate.');
+ assert.equal(calculate(mixed.split('\n\n')[0],'120',rewriteKnowledgeText(mixed.split('\n\n')[0])).status,'needs_review');
 });

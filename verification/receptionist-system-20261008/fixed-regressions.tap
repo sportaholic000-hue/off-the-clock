@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: system 1 work requests use the live engine ahead of a matching product listing
+ok 1 - system 1 work requests use the live engine ahead of a matching product listing
+  ---
+  duration_ms: 4.059035
+  type: 'test'
+  ...
+# Subtest: system 2 contact-only lines vanish in prompt and calculation without touching price or discount
+ok 2 - system 2 contact-only lines vanish in prompt and calculation without touching price or discount
+  ---
+  duration_ms: 2.999954
+  type: 'test'
+  ...
+# Subtest: system 3 caller-estimated measurements retain exact geometry, quote and owner warning
+ok 3 - system 3 caller-estimated measurements retain exact geometry, quote and owner warning
+  ---
+  duration_ms: 14.780448
+  type: 'test'
+  ...
+# Subtest: system 4 identity answers accurately and does not name the provider
+ok 4 - system 4 identity answers accurately and does not name the provider
+  ---
+  duration_ms: 0.495148
+  type: 'test'
+  ...
+# Subtest: system 5 confirmed booking projects local time, zone and service address
+ok 5 - system 5 confirmed booking projects local time, zone and service address
+  ---
+  duration_ms: 0.520857
+  type: 'test'
+  ...
+# Subtest: system 6 oversized saved knowledge is rejected before storage with characters to cut
+ok 6 - system 6 oversized saved knowledge is rejected before storage with characters to cut
+  ---
+  duration_ms: 35.127949
+  type: 'test'
+  ...
+# Subtest: system 7 startup, readiness and adapter agree on explicit Live model names
+ok 7 - system 7 startup, readiness and adapter agree on explicit Live model names
+  ---
+  duration_ms: 1.200975
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 67.229395
