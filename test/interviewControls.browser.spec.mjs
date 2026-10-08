@@ -21,13 +21,15 @@ async function withQuestion(definition,initial,run){
  try{
   await page.route('http://interview-controls.test/',route=>route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.replaceAll('</script','<\\/script')+'</script>'}));
   await page.goto('http://interview-controls.test/');await page.evaluate(({definition,initial})=>window.mount(definition,initial),{definition,initial});await page.locator('output').waitFor();
-  await run(page,async()=>JSON.parse(await page.locator('output').textContent()));
+  // An omitted answer renders as empty output; parse it as undefined.
+  await run(page,async()=>{const text=await page.locator('output').textContent();return text===''?undefined:JSON.parse(text);});
  }finally{await page.close();}
 }
 test('F11 browser boolean leaves preserve No, unanswered and the exact key',async()=>{
  await withQuestion({type:'json',field:'postsIncludedInMaterial',label:'Posts included',tree:{leafType:'boolean'}},{wood:false},async(page,answer)=>{
   const input=page.getByLabel('Posts included Wood',{exact:true});assert.equal(await input.inputValue(),'false');
-  await input.selectOption('');assert.deepEqual(await answer(),{});
+  // Clearing the only answer omits the whole map (an empty map is invalid), never false.
+  await input.selectOption('');assert.equal(await answer(),undefined);
   // Re-create the exact owner offering; blank does not become a free/false answer.
   await page.getByLabel('Posts included product name',{exact:true}).fill('wood');await page.getByRole('button',{name:'Add offering',exact:true}).click();
   await input.selectOption('false');assert.deepEqual(await answer(),{wood:false});await input.selectOption('true');assert.deepEqual(await answer(),{wood:true});
