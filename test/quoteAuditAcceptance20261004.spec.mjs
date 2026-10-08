@@ -84,7 +84,7 @@ for(const reverse of [false,true])test('QP-04: original distinct package product
  assert.equal(changed.underlaymentScopeConfirmed,undefined);
  assert.equal(clearChangedScopeConfirmations(fields,f.customerInputs,{...f.customerInputs,sqft:300}).underlaymentScopeConfirmed,true);
  const q=customerQuote(book,f.customerInputs);assert.equal(q.midEstimate,2060);
- assert.match(q.pricedScope.facts.find(x=>/Confirmed hardwood/.test(x.label)).label,/hardwood/);
+ const confirmed=q.pricedScope.facts.find(x=>/Confirm hardwood/.test(x.label));assert.match(confirmed.label,/hardwood/);assert.ok(confirmed.details.some(detail=>detail.includes(p.scopeDetails.floor_underlayment_hardwood.description)));assert.doesNotMatch(confirmed.details.join(' '),/VINYL ONLY/);
 });
 function originalCatalog(){
  const f=flatRoof(),p=f.ownerPricing.pricing;

@@ -43,6 +43,7 @@ function resultText(value,max=2000){if(typeof value!=='string'||!value.trim()||v
 function resultHandle(value){if(typeof value!=='string'||!HANDLE.test(value))fail('INVALID_TOOL_RESULT',502);return value;}
 function resultMoney(value){if(typeof value==='number'&&Number.isFinite(value)&&value>=0)return value;if(typeof value==='string'&&/^(0|[1-9]\d{0,11})(\.\d{1,2})?$/.test(value))return value;fail('INVALID_TOOL_RESULT',502);}
 function resultTextList(value,maxItems=30){if(!Array.isArray(value)||value.length>maxItems)fail('INVALID_TOOL_RESULT',502);return value.map(item=>resultText(item,1000));}
+function scopeTextList(value,maxItems){if(!Array.isArray(value)||value.length>maxItems)fail('INVALID_TOOL_RESULT',502);return value.map(item=>resultText(item,4000));}
 function copyIf(result,output,key,reader){if(Object.hasOwn(result,key))output[key]=reader(result[key]);}
 function baseResult(result){assertPlainObject(result,'INVALID_TOOL_RESULT');scanCustomerSafe(result);if(Buffer.byteLength(JSON.stringify(result),'utf8')>VOICE_RESULT_BYTES)fail('UNSAFE_TOOL_RESULT',502);return {status:resultText(result.status,80)};}
 function publicQuestionContract(value){
@@ -82,9 +83,11 @@ const PROJECTORS=Object.freeze({
     const output=baseResult(result); // Inspect all fields before projection; hidden rates are rejected, not silently dropped.
     copyIf(result,output,'quoteHandle',resultHandle);copyIf(result,output,'resultType',value=>resultText(value,80));
     for(const key of ['lowEstimate','midEstimate','highEstimate','fullJobTotal'])copyIf(result,output,key,key==='fullJobTotal'?value=>value===null?null:resultMoney(value):resultMoney);
-    for(const key of ['priceDrivers','pricedScope','additionalWork','followUps','skippedAddons'])copyIf(result,output,key,resultTextList);
-    for(const key of ['customerMessage','additionalWorkStatus','currency','taxTreatment','priceUnit'])copyIf(result,output,key,value=>resultText(value,2000));
+    for(const key of ['priceDrivers','additionalWork','followUps','skippedAddons'])copyIf(result,output,key,resultTextList);
+    for(const key of ['customerMessage','additionalWorkStatus','currency','taxTreatment','priceUnit','optionAvailabilityNotice'])copyIf(result,output,key,value=>resultText(value,2000));
     copyIf(result,output,'questionContract',publicQuestionContract);
+    copyIf(result,output,'pricedScope',value=>scopeTextList(value,65));
+    copyIf(result,output,'scopeDetails',value=>scopeTextList(value,100));
     copyIf(result,output,'quoteNarration',value=>resultText(value,VOICE_WRITTEN_LIMIT));
     try{
       if(result.options!==undefined)output.options=projectVoiceOptions(result.options);
@@ -110,10 +113,11 @@ const PROJECTORS=Object.freeze({
   getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'address',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,text])=>[key,text===''&&key==='line2'?'':resultText(text,500)]));});
     for(const key of ['openLeads','recentQuotes','quoteRequests'])copyIf(result,output,key,value=>{
       if(!Array.isArray(value)||value.length>5)fail('INVALID_TOOL_RESULT',502);
-      return value.map(row=>{assertClosed(row,key==='recentQuotes'?['status','serviceType','createdAt','resultType','lowEstimate','midEstimate','highEstimate','currency','tierName','options','priceUnit','taxTreatment','writtenDisclosure','skippedAddons','pricedScope','additionalWork','additionalWorkStatus','customerMessage','scopeNotice','fullJobTotal']:key==='openLeads'?['description','status','createdAt']:['description','createdAt'],[],'INVALID_TOOL_RESULT');
+      return value.map(row=>{assertClosed(row,key==='recentQuotes'?['status','serviceType','createdAt','resultType','lowEstimate','midEstimate','highEstimate','currency','tierName','options','priceUnit','taxTreatment','writtenDisclosure','skippedAddons','pricedScope','additionalWork','additionalWorkStatus','customerMessage','scopeNotice','scopeDetails','optionAvailabilityNotice','fullJobTotal']:key==='openLeads'?['description','status','createdAt']:['description','createdAt'],[],'INVALID_TOOL_RESULT');
         const safe={};for(const [field,item] of Object.entries(row)){
           if(field==='options'){if(!Array.isArray(item)||item.length>5)fail('INVALID_TOOL_RESULT',502);safe.options=item.map(option=>{assertClosed(option,['tierName','currency','lowEstimate','midEstimate','highEstimate','priceUnit','taxTreatment','skippedAddons','writtenDisclosure'],[],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(option).map(([name,value])=>[name,/Estimate$/.test(name)?resultMoney(value):name==='skippedAddons'?resultTextList(value):resultText(value,name==='writtenDisclosure'?VOICE_WRITTEN_LIMIT:2000)]));});}
-          else if(['skippedAddons','pricedScope','additionalWork'].includes(field))safe[field]=resultTextList(item);
+          else if(field==='pricedScope'||field==='scopeDetails')safe[field]=scopeTextList(item,field==='pricedScope'?65:100);
+          else if(['skippedAddons','additionalWork'].includes(field))safe[field]=resultTextList(item);
           else if(field==='fullJobTotal'){if(item!==null)fail('INVALID_TOOL_RESULT',502);safe[field]=null;}
           else if(['writtenDisclosure','scopeNotice'].includes(field))safe[field]=resultText(item,VOICE_WRITTEN_LIMIT);
           else if(['customerMessage','taxTreatment','additionalWorkStatus'].includes(field))safe[field]=resultText(item,2000);

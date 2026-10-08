@@ -70,7 +70,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
     if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;
   });
-  const customerFees = FEES.filter(fee => service.feeRules?.[fee] === 'customer_selected')
+  const customerFees = FEES.filter(fee => authority?.requiredCustomerFees?.includes(fee) && service.feeRules?.[fee] === 'customer_selected')
     .map(fee => ({ field: fee, label: 'Apply the ' + fee + ' charge?', type: 'boolean' }));
   return { fields: questions, customerFees };
 }
@@ -126,7 +126,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   for (const [fee, value] of Object.entries(selections)) {
     if (!FEES.includes(fee) || service.feeRules?.[fee] !== 'customer_selected' || typeof value !== 'boolean') followUps.push('Answer only the current customer-selected fee questions.');
   }
-  for (const fee of FEES) if (service.feeRules?.[fee] === 'customer_selected' && !own(selections, fee)) followUps.push('Should the ' + fee + ' charge apply? Answer Yes or No.');
+  for (const fee of FEES) if (authority?.requiredCustomerFees?.includes(fee) && service.feeRules?.[fee] === 'customer_selected' && !own(selections, fee)) followUps.push('Should the ' + fee + ' charge apply? Answer Yes or No.');
   // Do not assume No. The engine decides whether selected scope replaces a
   // common fee. No duplicated fee amounts or fee arithmetic live here.
   return { customerInputs, customerFeeSelections: structuredClone(selections), followUps: [...new Set(followUps)] };

@@ -178,10 +178,10 @@ export function scopeCustomerFields(type,p={},rules={}){
  if(type==='SIDING_REPLACEMENT'&&scopeEntriesFor(p,'siding_removal').length)out.existingSidingType={...cchoice('Existing siding type to remove',[...new Set(scopeEntriesFor(p,'siding_removal').map(([,d])=>d.existingSidingType).filter(text))]),visibleWhen:scopeConditions(type,'siding_removal',p,rules)};
  for(const [key,d]of Object.entries(record(p.scopeDetails)?p.scopeDetails:{}))if(own(defs,key)&&record(d)){
   const base=scopeBaseKey(key),conditions=scopeConditions(type,key,p,rules),visibleWhen=conditions.map(all=>[...all,...scopeMatchConditions(base,d)]);
-  const name=defs[key].confirmation,label=key.startsWith('paint_')?'The selected paint products, coating variants and preparation products match this job':'Confirmed '+defs[key].label.toLowerCase()+': '+(d.description||'owner-defined scope');
+  const name=defs[key].confirmation,label=key.startsWith('paint_')?'The selected paint products, coating variants and preparation products match this job':'Confirm '+defs[key].label.toLowerCase()+' matches this job';
   const details=[defs[key].label+': '+(d.description||'')];
   if(base==='stairs')details.push('Flooring: '+d.flooringType+'. Maximum tread width: '+d.maximumWidthLF+' ft. '+['underlayment','removal','disposal'].map(part=>(part==='underlayment'?'Underlayment':part==='removal'?'Existing covering removal':'Debris disposal')+(d[part+'Included']?' is included.':' is not included.')).join(' '));
-  const variants=key==='insulation'?['insulation','coverboard'].map(layer=>({label:'Confirmed '+layer+' work: '+(d[layer+'System']||'owner-defined system'),details:[layer+': '+(d[layer+'System']||''),d.description||''],visibleWhen:[[[layer+'Needed','eq',true]]]})):[{label,details,visibleWhen}];
+  const variants=key==='insulation'?['insulation','coverboard'].map(layer=>({label:'Confirm '+layer+' work matches this job',details:[layer+': '+(d[layer+'System']||''),d.description||''].filter(Boolean),visibleWhen:[[[layer+'Needed','eq',true]]]})):[{label,details,visibleWhen}];
   out[name]={...confirm(out[name]?.label||label),details:[...(out[name]?.details||[]),...details],visibleWhen:[...(out[name]?.visibleWhen||[]),...visibleWhen],presentationVariants:[...(out[name]?.presentationVariants||[]),...variants]};
  }
  return out;

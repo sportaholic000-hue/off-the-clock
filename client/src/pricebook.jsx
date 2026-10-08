@@ -1,5 +1,5 @@
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
-import {ServiceStatusNotices} from './quoteDoneControls.jsx';
+import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
 import {InstalledMaterialsEditor} from './installedMaterialsEditor.jsx';
 import {quoteDisplayDisclaimer} from './quotePresentation.js';
 import {ScopeEditor} from './scopeEditor.jsx';
@@ -541,7 +541,7 @@ function Preview({ preview, loading, status }) {
 
             {status && (
               <div className={`quote-issue-state${status.status === 'QUOTING LIVE' ? ' live' : ''}`}>
-                <StatusChip status={status.status} />
+                <StatusChip status={status.status} label={priceOptionChipText(status)} />
                 <span>
                   {status.status === 'QUOTING LIVE'
                     ? 'This service can issue quotes on a live call.'
@@ -924,7 +924,7 @@ export default function PriceBook() {
               return (
                 <button key={editorServiceKey(service, index)} className={selectedType === editorServiceKey(service, index) ? 'service-pick active' : 'service-pick'} type="button" onClick={() => setSelectedType(editorServiceKey(service, index))}>
                   <span><strong>{service.service || meta?.name || 'Service'}</strong></span>
-                  <StatusChip status={status.status} pending={validating} />
+                  <StatusChip status={status.status} label={priceOptionChipText(status)} pending={validating} />
                   <small className="mono service-compact-status">
                     {status.status === 'CHECKING'
                       ? 'Checking'
@@ -1175,7 +1175,7 @@ export default function PriceBook() {
           <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
         )}
         <div className="save-bar">
-          <StatusChip status={selectedStatus.status} pending={validating} />
+          <StatusChip status={selectedStatus.status} label={priceOptionChipText(selectedStatus)} pending={validating} />
           {validating && (
             <span className="validating-note" role="status">
               <span className="validating-dot" aria-hidden="true" />

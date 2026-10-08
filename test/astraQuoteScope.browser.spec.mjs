@@ -26,15 +26,15 @@ async function withForm(f,wizard,run){
 for(const wizard of [false,true])test('Astra 2 browser: tier-only confirmation can be answered in '+(wizard?'customer wizard':'measurement form'),async()=>{
  const f=fixture(),p=f.ownerPricing.pricing;f.ownerPricing.tiers=[{name:'Best',overrides:{scopeDetails:p.scopeDetails,scopeRates:p.scopeRates}}];delete p.scopeDetails;delete p.scopeRates;delete f.customerInputs.underlaymentScopeConfirmed;
  await withForm(f,wizard,async(page,answer)=>{
-  if(wizard)for(let i=0;i<25&&await page.getByLabel(/Confirmed hardwood underlayment/).count()===0;i++)await page.getByRole('button',{name:'Continue',exact:true}).click();
-  const confirmation=page.getByLabel(/Confirmed hardwood underlayment/);assert.equal(await confirmation.count(),1);await confirmation.selectOption('true');const inputs=await answer();assert.equal(inputs.underlaymentScopeConfirmed,true);const q=generateQuoteVNext({...f,customerInputs:inputs});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,196000);
+  if(wizard)for(let i=0;i<25&&await page.getByLabel(/Confirm hardwood underlayment/).count()===0;i++)await page.getByRole('button',{name:'Continue',exact:true}).click();
+  const confirmation=page.getByLabel(/Confirm hardwood underlayment/);assert.equal(await confirmation.count(),1);await confirmation.selectOption('true');const inputs=await answer();assert.equal(inputs.underlaymentScopeConfirmed,true);const q=generateQuoteVNext({...f,customerInputs:inputs});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,196000);
  });
 });
 test('Astra 4 browser: product change shows its own confirmation and clears the old Yes',async()=>{
  const f=fixture(),p=f.ownerPricing.pricing;p.scopeDetails.floor_underlayment_hardwood.description='[SYNTHETIC] Hardwood felt.';p.scopeDetails.floor_underlayment_vinyl_plank={description:'[SYNTHETIC] Vinyl plank foam.',mode:'installed_area_sell_price'};p.scopeRates.floor_underlayment_vinyl_plank=120;p.vinylPlankUnderlaymentRule='always_included';
  await withForm(f,false,async(page,answer)=>{
-  const hardwood=page.getByLabel(/Confirmed hardwood underlayment/);assert.equal(await hardwood.inputValue(),'true');assert.equal(await page.getByLabel(/Confirmed vinyl plank underlayment/).count(),0);assert.doesNotMatch(await page.locator('body').innerText(),/Vinyl plank foam/);
-  await page.getByLabel('New flooring type',{exact:true}).selectOption('vinyl_plank');const vinyl=page.getByLabel(/Confirmed vinyl plank underlayment/);assert.equal(await vinyl.count(),1);assert.equal(await vinyl.inputValue(),'');assert.equal((await answer()).underlaymentScopeConfirmed,undefined);assert.equal(await page.getByLabel(/Confirmed hardwood underlayment/).count(),0);await vinyl.selectOption('true');assert.equal((await answer()).underlaymentScopeConfirmed,true);
+  const hardwood=page.getByLabel(/Confirm hardwood underlayment/);assert.equal(await hardwood.inputValue(),'true');assert.equal(await page.getByLabel(/Confirm vinyl plank underlayment/).count(),0);assert.doesNotMatch(await page.locator('body').innerText(),/Vinyl plank foam/);
+  await page.getByLabel('New flooring type',{exact:true}).selectOption('vinyl_plank');const vinyl=page.getByLabel(/Confirm vinyl plank underlayment/);assert.equal(await vinyl.count(),1);assert.equal(await vinyl.inputValue(),'');assert.equal((await answer()).underlaymentScopeConfirmed,undefined);assert.equal(await page.getByLabel(/Confirm hardwood underlayment/).count(),0);await vinyl.selectOption('true');assert.equal((await answer()).underlaymentScopeConfirmed,true);
   await page.getByLabel('New flooring type',{exact:true}).selectOption('hardwood');assert.equal(await hardwood.inputValue(),'');assert.equal((await answer()).underlaymentScopeConfirmed,undefined);
  });
 });

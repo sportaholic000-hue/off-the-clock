@@ -35,15 +35,15 @@ export function Button({ children, icon: Icon, variant = 'primary', className = 
   );
 }
 
-export function StatusChip({ status, pending = false }) {
+export function StatusChip({ status, pending = false, label = status }) {
   const live = status === 'QUOTING LIVE' || status === 'OPERATOR LIVE' || status === 'LIVE';
   // CHECKING is a genuinely unknown state before the first validation returns.
   // It must not be styled or worded as a failure.
   const checking = status === 'CHECKING';
   const tone = checking ? 'status-checking' : live ? 'status-live' : 'status-need';
   return (
-    <span className={`status-chip ${tone}${pending ? ' status-pending' : ''}`}>
-      {checking ? 'CHECKING' : status}
+    <span className={`status-chip ${tone}${pending ? ' status-pending' : ''}${label !== status ? ' status-expanded' : ''}`}>
+      {checking ? 'CHECKING' : label}
     </span>
   );
 }

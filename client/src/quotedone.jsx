@@ -130,7 +130,7 @@ export function CustomerQuote({publicKey,request=api,progressive=false,cachePref
     <p>This estimate covers the selected service and its job details below. The business owner will estimate separate additional work on site. Correct any uncertain measurements for the selected service before continuing.</p>
     <h3>{summary.service}</h3>
     {summary.requestedWork!==undefined&&summary.requestedWork!==summary.service&&<p>{shown(summary.requestedWork)}</p>}
-    <dl>{summary.facts.map((fact,i)=><React.Fragment key={i}><dt>{fact.label}</dt><dd>{fact.value}</dd></React.Fragment>)}</dl>
+    <dl>{summary.facts.map((fact,i)=><React.Fragment key={i}><dt>{fact.label}</dt><dd>{fact.value}{fact.details?.map((detail,index)=><p key={index}>{detail}</p>)}</dd></React.Fragment>)}</dl>
     {!!summary.fees.length&&<><h3>Selected charges</h3><dl>{summary.fees.map((fee,i)=><React.Fragment key={i}><dt>{fee.label}</dt><dd>{fee.value}</dd></React.Fragment>)}</dl></>}
     <h3>Contact and site</h3>
     <dl>{Object.entries(summary.contact||{}).map(([key,value])=><React.Fragment key={key}><dt>{key[0].toUpperCase()+key.slice(1)}</dt><dd>{shown(value)||'Not supplied'}</dd></React.Fragment>)}
@@ -188,7 +188,7 @@ export function QuoteResult({result}){
  const show=value=>value===null||value===undefined?'':typeof value==='object'?JSON.stringify(value):String(value);
  return <section className="editor-section">
   <h2>{partial?'Estimate for selected work':'Estimate'}</h2>
-  {scope&&<><h3>{scope.service}</h3><dl>{scope.facts.map((fact,index)=><React.Fragment key={index}><dt>{fact.label}</dt><dd>{fact.value}</dd></React.Fragment>)}</dl></>}
+  {scope&&<><h3>{scope.service}</h3><dl>{scope.facts.map((fact,index)=><React.Fragment key={index}><dt>{fact.label}</dt><dd>{fact.value}{fact.details?.map((detail,index)=><p key={index}>{detail}</p>)}</dd></React.Fragment>)}</dl></>}
   {estimate.optionAvailabilityNotice&&<Notice>{estimate.optionAvailabilityNotice}</Notice>}
   {options.map((option,index)=><article key={index}>{option.tierName&&<h3>{option.tierName}</h3>}<strong>{money.range(option.lowEstimate,option.highEstimate)}{(option.priceUnit||estimate.priceUnit)?` ${option.priceUnit||estimate.priceUnit}`:''}</strong>{(option.taxTreatment||estimate.taxTreatment)&&<p className="quote-tax-treatment">{option.taxTreatment||estimate.taxTreatment}</p>}<ul>{(option.priceDrivers||[]).map((driver,i)=><li key={i}>{driver}</li>)}</ul><p>{quoteDisplayDisclaimer(option.disclaimer||estimate.disclaimer,{priceUnit:option.priceUnit||estimate.priceUnit,taxTreatment:option.taxTreatment||estimate.taxTreatment})}</p></article>)}
   {partial&&<Notice title="Additional work for on-site estimate"><ul>{result.additionalWork.map((item,index)=><li key={index}>{item.description}</li>)}</ul><p>{result.customerMessage}</p><p>Total for all requested work: not yet available.</p></Notice>}

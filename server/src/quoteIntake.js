@@ -95,7 +95,7 @@ export function customerJobSummary(service,definition,submission,revision) {
     if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {
       formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name.replaceAll('_',' '))).join('; ')||'No gates';
     }
-    return {label:field?.summaryLabel||field?.label||key,value:formatted};
+    return {label:field?.summaryLabel||field?.label||key,value:formatted,...(field?.details?.length?{details:structuredClone(field.details)}:{})};
   });
   return {
     service:service?.service||definition?.service||'Selected service',

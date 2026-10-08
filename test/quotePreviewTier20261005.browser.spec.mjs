@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')).render(<Preview/>);`}});
   await page.exposeFunction('runPreview',customerInputs=>bridge.previewApplicationQuote(owner,{revision:book.revision,serviceId:service.id,customerInputs}));
   await page.route('http://tier-preview.test/',route=>route.fulfill({contentType:'text/html',body:'<div id="root"></div><script>'+bundle.outputFiles[0].text.replaceAll('</script','<\\/script')+'</script>'}));
   await page.goto('http://tier-preview.test/');
-  const confirmation=page.getByRole('combobox',{name:/Confirmed hardwood underlayment/});await confirmation.waitFor();
+  const confirmation=page.getByRole('combobox',{name:/Confirm hardwood underlayment/});await confirmation.waitFor();
   await page.getByRole('button',{name:'Preview measured job'}).click();await page.waitForFunction(()=>document.querySelector('output').dataset.completed==='1');
   assert.equal(JSON.parse(await page.locator('output').innerText()).resultType,'ESTIMATE_REQUIRES_REVIEW');
   await confirmation.selectOption('true');await page.getByRole('button',{name:'Preview measured job'}).click();await page.waitForFunction(()=>document.querySelector('output').dataset.completed==='2');

@@ -7,6 +7,7 @@ import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosu
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
 import { hasCallbackContact, invalidCallbackFields } from './quoteContact.js';
 import { scopeOverlapDiagnostics } from '../scopeConfiguration.js';
+import {voiceConfigurationIssues} from './voice/voiceQuotePresentation.js';
 import {
   ENGINE_VERSION, generateQuoteVNext, previewQuoteVNext, sanitizeForCustomerVNext,
   buildInternalLeadVNext, vNextServiceStatus, getVNextPriceBookMetadata,
@@ -103,6 +104,10 @@ function seasonalDecision(raw,book) {
   const months=raw.peakMonths??book.defaults.peakMonths,percent=raw.peakSurchargePercent??book.defaults.peakSurchargePercent;
   return Array.isArray(months)&&months.length>0&&typeof percent==='number'&&percent>0;
 }
+function applicationPresentationIssues(raw) {
+  try{return voiceConfigurationIssues(raw,applicationServiceDefinition(raw));}
+  catch{return ['Correct the invalid service configuration before presenting it on the call or in a saved quote.'];}
+}
 export function applicationServiceMatches(book,serviceId) {
   if(typeof serviceId!=='string')return [];
   return book.services.filter(service=>typeof service.id==='string'&&service.id.toLowerCase()===serviceId.toLowerCase());
@@ -122,7 +127,8 @@ function withOwnerLabels(result,service) {
   const tier=service.tiers?.find(t=>t.name===row.tierName);
   const effective=tier?mergePricingVNext(pricing,tier.overrides||{}):pricing;
   const label=path=>reviewLabel(path,service,meta,effective);
-  const out={...row,missingOwnerLabels:(row.missingOwnerFields||[]).map(label)};
+  const ownerFields=[...new Set([...(row.missingOwnerFields||[]),...(row.invalidOwnerFields||[]),...(row.unsupportedOwnerFields||[]),...(row.crossFieldOwnerFields||[]),...(row.ownerDiagnostics||[]).map(d=>d.path).filter(Boolean)])];
+  const out={...row,missingOwnerLabels:(row.missingOwnerFields||[]).map(label),ownerFieldLabels:ownerFields.map(path=>label(path.replace(/^zeroPricePolicy\.includedPrices\./,'')))};
   for(const key of ['failedTierDiagnostics','productCoverage','scopeCoverage'])if(Array.isArray(row[key]))out[key]=row[key].map(child=>{
    const fields=child.missingOwnerFields||[...new Set((child.ownerDiagnostics||[]).filter(d=>d.type==='missing').map(d=>d.path))];
    return annotate({...child,missingOwnerFields:fields},pricing);
@@ -137,6 +143,7 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message],ownerDiagnostics:[{type:'invalid',path:error.details?.field||'service',message:error.message}]};}
   const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const issues=[];
+  issues.push(...applicationPresentationIssues(raw));
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
   if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
   const staleEngineApproval=record(raw.quoteDoneApproval)&&raw.quoteDoneApproval.engineVersion!==ENGINE_VERSION;
@@ -222,6 +229,8 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
         service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:new Date().toISOString()};
       }
       const effective=projection(service);
+      const presentationIssues=applicationPresentationIssues(service);
+      if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
       for(const [tierName,pricing] of [[null,effective.pricing],...(service.tiers||[]).map(t=>[t.name,mergePricingVNext(effective.pricing,t.overrides||{})])]){
         const issues=scopeOverlapDiagnostics(service.serviceType,pricing);
         if(issues.length)throw problem('Resolve overlapping scope entries before saving'+(tierName?' in '+tierName:'')+'.',400,{issues,tierName});
@@ -241,6 +250,8 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     const book=loadPricebook(ownerId);requireRevision(book,input.revision);
     const selected=uniqueApplicationService(book,serviceId),index=book.services.indexOf(selected);if(index<0)throw problem('Service not found.',404);
     const raw=clone(book.services[index]);
+    const presentationIssues=applicationPresentationIssues(raw);
+    if(presentationIssues.length)throw problem(presentationIssues.join(' '),422,{code:'INVALID_QUOTE_PRESENTATION',issues:presentationIssues});
     if(input.confirmConfiguration!==true)throw problem('Explicit confirmation of the displayed saved configuration is required.');
     if(raw.serviceType==='ROOFING_REPLACEMENT'&&[raw.minimumJob,raw.pricing?.minimumJob,...(Array.isArray(raw.tiers)?raw.tiers:[]).map(t=>t.overrides?.minimumJob)].some(value=>typeof value==='number'&&!Number.isSafeInteger(value)))throw problem('Correct the roof replacement minimum, including price options, to an exact dollar-and-cent amount before confirming it. The stored value has not been rounded.',422);
     if(legacySettings(raw,book,true).length&&input.confirmLegacySettings!==true)throw problem('Confirm the listed retained legacy settings are not used by the measured contract.');
