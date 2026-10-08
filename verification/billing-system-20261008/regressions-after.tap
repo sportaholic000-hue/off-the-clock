@@ -1,0 +1,330 @@
+TAP version 13
+# (node:10) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+ok 1 - billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+  ---
+  duration_ms: 29.815878
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+ok 2 - billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+  ---
+  duration_ms: 18.20754
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+ok 3 - billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+  ---
+  duration_ms: 20.008551
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+ok 4 - billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+  ---
+  duration_ms: 19.753405
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+ok 5 - billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+  ---
+  duration_ms: 17.899595
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+ok 6 - billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+  ---
+  duration_ms: 16.134368
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+ok 7 - billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+  ---
+  duration_ms: 18.218386
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+ok 8 - billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+  ---
+  duration_ms: 18.941639
+  type: 'test'
+  ...
+# Subtest: billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+ok 9 - billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+  ---
+  duration_ms: 33.00718
+  type: 'test'
+  ...
+# Subtest: billing repair 2: provisional trial duration cannot send irreversible warning
+ok 10 - billing repair 2: provisional trial duration cannot send irreversible warning
+  ---
+  duration_ms: 23.10505
+  type: 'test'
+  ...
+# Subtest: billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+ok 11 - billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 52.58416
+  type: 'test'
+  ...
+# Subtest: billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+ok 12 - billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 48.437624
+  type: 'test'
+  ...
+# Subtest: billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+ok 13 - billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+  ---
+  duration_ms: 21.609479
+  type: 'test'
+  ...
+# Subtest: billing repair 3: final cancelled month charges the remainder at service end
+ok 14 - billing repair 3: final cancelled month charges the remainder at service end
+  ---
+  duration_ms: 22.166361
+  type: 'test'
+  ...
+# Subtest: billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+ok 15 - billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+  ---
+  duration_ms: 46.555811
+  type: 'test'
+  ...
+# Subtest: billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+ok 16 - billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+  ---
+  duration_ms: 63.380872
+  type: 'test'
+  ...
+# Subtest: billing repair 3: all three customer billing sentences state the threshold and remainder rule
+ok 17 - billing repair 3: all three customer billing sentences state the threshold and remainder rule
+  ---
+  duration_ms: 0.498023
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+ok 18 - billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 22.025579
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+ok 19 - billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 12.969696
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+ok 20 - billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 14.834484
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+ok 21 - billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 12.673979
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+ok 22 - billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 13.763525
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+ok 23 - billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 12.996947
+  type: 'test'
+  ...
+# Subtest: billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+ok 24 - billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+  ---
+  duration_ms: 34.819919
+  type: 'test'
+  ...
+# Subtest: billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+ok 25 - billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+  ---
+  duration_ms: 23.42288
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+ok 26 - billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 45.865548
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+ok 27 - billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 29.561424
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+ok 28 - billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 34.722162
+  type: 'test'
+  ...
+# Subtest: billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+ok 29 - billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+  ---
+  duration_ms: 21.350408
+  type: 'test'
+  ...
+# Subtest: billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+ok 30 - billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+  ---
+  duration_ms: 36.842435
+  type: 'test'
+  ...
+# Subtest: billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+ok 31 - billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+  ---
+  duration_ms: 335.465027
+  type: 'test'
+  ...
+# Subtest: billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+ok 32 - billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+  ---
+  duration_ms: 14.291283
+  type: 'test'
+  ...
+# Subtest: billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+ok 33 - billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+  ---
+  duration_ms: 12.439615
+  type: 'test'
+  ...
+# Subtest: billing repair 2: extending the same trial does not reset warning identities
+ok 34 - billing repair 2: extending the same trial does not reset warning identities
+  ---
+  duration_ms: 20.202083
+  type: 'test'
+  ...
+# Subtest: billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+ok 35 - billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+  ---
+  duration_ms: 23.902775
+  type: 'test'
+  ...
+# Subtest: billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+ok 36 - billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+  ---
+  duration_ms: 23.32393
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: startup → owner, signed whole-call duration is free
+ok 37 - billing repair 1 production: startup → owner, signed whole-call duration is free
+  ---
+  duration_ms: 98.82181
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: startup → message, signed whole-call duration is free
+ok 38 - billing repair 1 production: startup → message, signed whole-call duration is free
+  ---
+  duration_ms: 42.481185
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: startup → capture, signed whole-call duration is free
+ok 39 - billing repair 1 production: startup → capture, signed whole-call duration is free
+  ---
+  duration_ms: 44.702431
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error → owner, signed whole-call duration is free
+ok 40 - billing repair 1 production: session-error → owner, signed whole-call duration is free
+  ---
+  duration_ms: 46.564554
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error → message, signed whole-call duration is free
+ok 41 - billing repair 1 production: session-error → message, signed whole-call duration is free
+  ---
+  duration_ms: 48.23642
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error → capture, signed whole-call duration is free
+ok 42 - billing repair 1 production: session-error → capture, signed whole-call duration is free
+  ---
+  duration_ms: 51.052776
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close → owner, signed whole-call duration is free
+ok 43 - billing repair 1 production: session-close → owner, signed whole-call duration is free
+  ---
+  duration_ms: 46.129968
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close → message, signed whole-call duration is free
+ok 44 - billing repair 1 production: session-close → message, signed whole-call duration is free
+  ---
+  duration_ms: 47.343892
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close → capture, signed whole-call duration is free
+ok 45 - billing repair 1 production: session-close → capture, signed whole-call duration is free
+  ---
+  duration_ms: 50.953806
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error before warm-transfer acceptance remains free
+ok 46 - billing repair 1 production: session-error before warm-transfer acceptance remains free
+  ---
+  duration_ms: 58.028235
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error after warm-transfer acceptance remains free
+ok 47 - billing repair 1 production: session-error after warm-transfer acceptance remains free
+  ---
+  duration_ms: 51.682748
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close before warm-transfer acceptance remains free
+ok 48 - billing repair 1 production: session-close before warm-transfer acceptance remains free
+  ---
+  duration_ms: 52.671952
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close after warm-transfer acceptance remains free
+ok 49 - billing repair 1 production: session-close after warm-transfer acceptance remains free
+  ---
+  duration_ms: 53.538932
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion
+ok 50 - billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion
+  ---
+  duration_ms: 52.874198
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: late media completion and summary cannot erase operator-off exclusion
+ok 51 - billing repair 1 production: late media completion and summary cannot erase operator-off exclusion
+  ---
+  duration_ms: 49.167937
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: direct fallback final capture excludes a still-connected row
+ok 52 - billing repair 1 production: direct fallback final capture excludes a still-connected row
+  ---
+  duration_ms: 36.644335
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: direct fallback partial capture excludes a still-connected row
+ok 53 - billing repair 1 production: direct fallback partial capture excludes a still-connected row
+  ---
+  duration_ms: 41.642161
+  type: 'test'
+  ...
+1..53
+# tests 53
+# suites 0
+# pass 53
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2511.318131

@@ -1,3 +1,4 @@
+import {ownerUtcInstant} from './ownerDate.js';
 import {addLocalDays,isValidIanaTimeZone,localDateForInstant,localDateTimeCandidates,parseLocalDate} from './calendarTime.js';
 export const reportProblem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode});
 export function ownerTimezone(query,ownerId) {
@@ -19,7 +20,9 @@ export function localReportRange({period='month',fromDate,toDate},timezone,clock
     fromDate=today.slice(0,7)+'-01';const date=new Date(fromDate+'T12:00:00Z');date.setUTCMonth(date.getUTCMonth()+1);toDate=addLocalDays(date.toISOString().slice(0,10),-1);
   }
   try {parseLocalDate(fromDate);parseLocalDate(toDate);}catch{throw reportProblem('Choose valid start and end dates.');}
-  const days=(Date.parse(toDate+'T12:00:00Z')-Date.parse(fromDate+'T12:00:00Z'))/86400000+1;
+  const from=ownerUtcInstant(fromDate+'T12:00:00Z'),to=ownerUtcInstant(toDate+'T12:00:00Z');
+  if(!from||!to)throw reportProblem('Choose valid start and end dates.');
+  const days=(Date.parse(to)-Date.parse(from))/86400000+1;
   if(days<1||days>366)throw reportProblem('Choose a period of 1 to 366 days.');
   const start=localDateTimeCandidates(fromDate,'00:00',timezone),end=localDateTimeCandidates(addLocalDays(toDate,1),'00:00',timezone);
   if(start.length!==1||end.length!==1)throw reportProblem('Choose dates with unambiguous local midnight boundaries.');

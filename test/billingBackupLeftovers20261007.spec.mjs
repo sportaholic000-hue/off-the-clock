@@ -37,7 +37,7 @@ test('day 90 erasure and day 30 number release survive an unavailable billing pr
   const row=f.lifecycle.snapshot(A).cancellation;assert.equal(row.dataDeletedAt,DELETE);assert.equal(row.phoneReleasedAt,DELETE);
   const charge=f.db.prepare('SELECT * FROM billingUsageCharges WHERE ownerId=?').get(A);
   assert.equal(charge.amountCents,350);assert.equal(charge.collectionStoppedAt,null);
-  assert.equal(charge.lastError,'BILLING_COLLECTION_STOP_PENDING');
+  assert.equal(charge.lastError,'BILLING_COLLECTION_CONFIRMATION_PENDING');
   assert.throws(()=>f.lifecycle.exportCsv(A,'leads'),{code:'BILLING_EXPORT_EXPIRED'});
   assert.equal(f.fakes.writes.invoice.length,1);
 });
@@ -52,7 +52,7 @@ test('local cleanup completes before a delayed billing read settles',async t=>{
     assert.equal(f.writes.release.length,1);
   }finally{finish();await processing.catch(()=>{});}
 });
-test('failed collection stop retries without re-erasing or releasing, preserving financial evidence',async t=>{
+test('failed collection reconciliation retries without re-erasing or releasing, preserving financial evidence',async t=>{
   const f=await setup(t);f.setTime(DELETE);
   f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] outage');};await f.lifecycle.tick();
   const releaseCount=f.writes.release.length;
@@ -61,7 +61,7 @@ test('failed collection stop retries without re-erasing or releasing, preserving
   await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
   assert.equal(f.writes.release.length,releaseCount);assert.equal(releaseCount,1);
   const charge=f.db.prepare('SELECT * FROM billingUsageCharges WHERE ownerId=?').get(A);
-  assert.equal(charge.collectionStoppedAt,DELETE);assert.equal(charge.lastError,null);assert.equal(charge.amountCents,350);
+  assert.equal(charge.collectionStoppedAt,null);assert.equal(charge.lastError,null);assert.equal(charge.amountCents,350);
 });
 test('a collection outage cannot release or erase before their independent exact deadlines',async t=>{
   const f=await setup(t);f.fakes.stripe.invoices.retrieve=async()=>{throw Error('[SYNTHETIC] outage');};

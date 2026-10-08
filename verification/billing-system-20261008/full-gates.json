@@ -1,0 +1,491 @@
+{
+  "node": "22.16.0",
+  "playwright": "1.56.0",
+  "browserModule": "$(npm root -g)/playwright",
+  "runs": [
+    {
+      "command": "npm test",
+      "counts": {
+        "tests": 4274,
+        "pass": 4217,
+        "fail": 57,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "3e561e4f4ed53af15fc902a4e3ab57da5051d0744b28ede038cb69f893718345",
+      "failures": [
+        {
+          "test": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "expired export window disables all CSV buttons and no longer offers setup/service",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "scope editor groups entries of the same kind and names them by their matching facts",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F13 browser legacy flat and two-level controls use the same exact parser",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "unverified period and pending historical charge are visible without an invented zero balance",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save preserves a newer numeric edit and its question",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save preserves a newer structured price-map edit",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save prevents duplicate confirmation and premature review",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "unchanged confirmed value saves once and advances normally",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "failed manual save keeps the confirmed value available for retry",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "late 200 response cannot replace a new service preview",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "late 400 response cannot replace a new service preview",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "old completion cannot clear current loading and invalid input cannot retain old ready",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview owner can add separate demolition entries and explicitly choose up-to access",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview accepts ordinary floor names and retains invalid drafts for correction",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: actual dashboard and owner preview show production missing-price labels",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "website owner screen says no prices found and preserves the current prices",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        }
+      ]
+    },
+    {
+      "command": "npm run test:quote",
+      "counts": {
+        "tests": 2996,
+        "pass": 2939,
+        "fail": 57,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "a417834cc7e0b359bd3bfd51ed5117fe4a681195bc9a30d0c07dbdbbe87907cf",
+      "failures": [
+        {
+          "test": "Astra 2 browser: tier-only confirmation can be answered in measurement form",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "Astra 2 browser: tier-only confirmation can be answered in customer wizard",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "Astra 4 browser: product change shows its own confirmation and clears the old Yes",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "reactivation refreshes dashboard from persisted backend state and permits CSV download",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "expired export window disables all CSV buttons and no longer offers setup/service",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "scope editor groups entries of the same kind and names them by their matching facts",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F11 browser boolean leaves preserve No, unanswered and the exact key",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F11/F13 browser depth-three values retain zero, fractional rates and rejected text",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "F13 browser legacy flat and two-level controls use the same exact parser",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "lead capture repairs: production owner app navigation, stored contacts and live feed",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "named review contact signup prefill remains unconfirmed until save and survives reopening",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "named review contact AI draft, empty edit and rejected save preserve the confirmed person",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "real dashboard always shows zero-call usage, then refreshes the $160.30 overage and $0.30 nudge on focus",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "unverified period and pending historical charge are visible without an invented zero balance",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "owner alert repairs: production dashboard, Calls, retry and staff visibility",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "D19/D20: production browser shows saved quote email status and browses/retries older failures",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "owner dashboard browser: real compiled calls, review, progression, reports and staff boundaries",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: root factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: nested factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: flat factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: equal factor survives no-edit blur save reopen and same-type switches",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1: a genuine absent default is displayed without being written by focus or blur",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2: conflicting minima survive no-edit focus blur preview switches and unrelated edits",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2: deliberate 14.02 resolves both minima and only its own AI confirmation",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0049 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0050 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked rate: 0.0051 types blurs saves and reopens exactly",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked invalid text: lossless rejection survives blur same-type switch and save",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor locked maps tiers and explicit enablement stay separate for two same-type records",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D1 direct: reviewer minimal legacy fixture saves root 0.23 without a nested copy",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor D2 direct: deliberately typing the displayed candidate resolves the conflict and revokes affected approval",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "editor fixed-cent boundaries: 14.00 14.01 14.02 retain exact cents and adjacent sub-cent entries reject",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save preserves a newer numeric edit and its question",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save preserves a newer structured price-map edit",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "pending manual save prevents duplicate confirmation and premature review",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "unchanged confirmed value saves once and advances normally",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "failed manual save keeps the confirmed value available for retry",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "stale interview preserves the unsaved answer and requires explicit reconciliation: keep answer",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "stale interview preserves the unsaved answer and requires explicit reconciliation: saved answer",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "late 200 response cannot replace a new service preview",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "late 400 response cannot replace a new service preview",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "old completion cannot clear current loading and invalid input cannot retain old ready",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "invalid replacement rejects an old delayed success and unchanged focus blur does not request again",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview owner can add separate demolition entries and explicitly choose up-to access",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview rate controls accept 3.5 cents per foot and reject fractional-cent gates",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "interview accepts ordinary floor names and retains invalid drafts for correction",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: changing mulch quantity method requires a fresh quantity in its new unit",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: all 15 product fields select names, invalidate confirmations, and roofing quotes $2520",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: actual dashboard and owner preview show production missing-price labels",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "display browser: $172.50 minimum appears on all four surfaces and equal preview endpoints collapse",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "QP-02 rendered owner measurements collect tier-only hardwood confirmation and preview $1960",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "re-audit browser: Remove gate offering yields a coherent saveable draft and unchanged no-gate price",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "website owner screen shows an unsaved draft, literal prices and source; saves only on review",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        },
+        {
+          "test": "website owner screen says no prices found and preserves the current prices",
+          "failure": "Chromium exited with SIGTRAP at browserType.launch; browser assertions did not execute."
+        }
+      ]
+    }
+  ]
+}

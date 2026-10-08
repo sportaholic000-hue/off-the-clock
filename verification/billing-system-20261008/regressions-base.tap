@@ -1,0 +1,1888 @@
+TAP version 13
+# (node:10) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+not ok 1 - billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+  ---
+  duration_ms: 23.565896
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:35:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+not ok 2 - billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+  ---
+  duration_ms: 14.375059
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:35:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+ok 3 - billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+  ---
+  duration_ms: 16.593241
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+ok 4 - billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+  ---
+  duration_ms: 17.654784
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+not ok 5 - billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+  ---
+  duration_ms: 14.231182
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:35:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+not ok 6 - billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+  ---
+  duration_ms: 12.713949
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:23:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+not ok 7 - billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+  ---
+  duration_ms: 14.933713
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:35:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+not ok 8 - billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+  ---
+  duration_ms: 14.76582
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:19:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:35:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+not ok 9 - billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+  ---
+  duration_ms: 13.533808
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   30
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 30
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:46:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 2: provisional trial duration cannot send irreversible warning
+ok 10 - billing repair 2: provisional trial duration cannot send irreversible warning
+  ---
+  duration_ms: 11.494037
+  type: 'test'
+  ...
+# Subtest: billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+not ok 11 - billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 16.429242
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:59:44'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:61:53)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+not ok 12 - billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 23.536692
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:59:44'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:61:53)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+not ok 13 - billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+  ---
+  duration_ms: 20.204326
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:70:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:73:78)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: final cancelled month charges the remainder at service end
+not ok 14 - billing repair 3: final cancelled month charges the remainder at service end
+  ---
+  duration_ms: 20.951265
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:75:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   105
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 105
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:78:74)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+not ok 15 - billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+  ---
+  duration_ms: 20.736931
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:83:57)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+not ok 16 - billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+  ---
+  duration_ms: 27.801756
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:100:97)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: all three customer billing sentences state the threshold and remainder rule
+not ok 17 - billing repair 3: all three customer billing sentences state the threshold and remainder rule
+  ---
+  duration_ms: 0.401156
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:105:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:107:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+not ok 18 - billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 25.097169
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+not ok 19 - billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 10.322987
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+not ok 20 - billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 10.733828
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+not ok 21 - billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 10.634998
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+not ok 22 - billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 10.102253
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+not ok 23 - billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 9.972407
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:111:140'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    message: 'Choose a future follow-up time.'
+    statusCode: 400
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+not ok 24 - billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+  ---
+  duration_ms: 17.741635
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:120:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:123:57)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+not ok 25 - billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+  ---
+  duration_ms: 19.098846
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:128:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   105
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 105
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:133:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+not ok 26 - billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 22.650292
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:139:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520,
+    -   2520,
+    -   105
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+    1: 2520
+    2: 105
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:143:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+not ok 27 - billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 20.497319
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:139:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   5145
+    -   2520,
+    -   2520,
+    -   105
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+    1: 2520
+    2: 105
+  actual:
+    0: 5145
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:143:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+not ok 28 - billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 20.163034
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:139:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   5145
+    -   2520,
+    -   2520,
+    -   105
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+    1: 2520
+    2: 105
+  actual:
+    0: 5145
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:143:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+ok 29 - billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+  ---
+  duration_ms: 15.868105
+  type: 'test'
+  ...
+# Subtest: billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+not ok 30 - billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+  ---
+  duration_ms: 29.766664
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:155:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:169:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Error:   Failed to scan for dependencies from entries:
+#   /workspace/scratch/18cbdaa4aace/billing-base/client/index.html
+#   [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:6:44:
+# [37m      6 │ import { getToken, getSessionKey, go } from [32m'./api.js'[37m;
+#         ╵                                             [32m~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:7:22:
+# [37m      7 │ import Dashboard from [32m'./dashboard.jsx'[37m;
+#         ╵                       [32m~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:8:18:
+# [37m      8 │ import Calls from [32m'./calls.jsx'[37m;
+#         ╵                   [32m~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:9:20:
+# [37m      9 │ import Reports from [32m'./reports.jsx'[37m;
+#         ╵                     [32m~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:10:23:
+# [37m      10 │ import Onboarding from [32m'./onboarding.jsx'[37m;
+#          ╵                        [32m~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:11:22:
+# [37m      11 │ import PriceBook from [32m'./pricebook.jsx'[37m;
+#          ╵                       [32m~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:12:20:
+# [37m      12 │ import Billing from [32m'./billing.jsx'[37m;
+#          ╵                     [32m~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:13:21:
+# [37m      13 │ import Calendar from [32m'./calendar.jsx'[37m;
+#          ╵                      [32m~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:14:28:
+# [37m      14 │ import AccountRecovery from [32m'./accountRecovery.jsx'[37m;
+#          ╵                             [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:15:22:
+# [37m      15 │ import { Brand } from [32m'./ui.jsx'[37m;
+#          ╵                       [32m~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/main.jsx:16:23:
+# [37m      16 │ import VoiceAdmin from [32m'./voiceAdmin.jsx'[37m;
+#          ╵                        [32m~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:1:34:
+# [37m      1 │ import {quoteMoneyFormatter} from [32m'../../server/quoteMoneyFormat.js'[37m;
+#         ╵                                   [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:2:30:
+# [37m      2 │ import {DeliveryActions} from [32m'./deliveryActions.jsx'[37m;
+#         ╵                               [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:3:33:
+# [37m      3 │ import {OwnerRecordActions} from [32m'./ownerRecordActions.jsx'[37m;
+#         ╵                                  [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:4:37:
+# [37m      4 │ import {quoteDisplayDisclaimer} from [32m'./quotePresentation.js'[37m;
+#         ╵                                      [32m~~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:6:21:
+# [37m      6 │ import {api,go} from [32m'./api.js'[37m;
+#         ╵                      [32m~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:7:93:
+# [37m      7 │ ...TextInput,Textarea,Notice,ErrorMessage,PageHeader} from [32m'./ui.jsx'[37m;
+#         ╵                                                            [32m~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:8:35:
+# [37m      8 │ import {CustomerMeasurements} from [32m'./quoteDoneControls.jsx'[37m;
+#         ╵                                    [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:9:55:
+# [37m      9 │ ...missionCanBeEdited,submissionTooLarge} from [32m'./quoteSubmission.js'[37m;
+#         ╵                                                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:10:26:
+# [37m      10 │ import {QuoteWizard} from [32m'./quoteWizard.jsx'[37m;
+#          ╵                           [32m~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:11:57:
+# [37m      11 │ ...gMode,pricingEnvelope,widgetBranding} from [32m'./widgetTransport.js'[37m;
+#          ╵                                               [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:12:28:
+# [37m      12 │ import {WidgetBooking} from [32m'./widgetBooking.jsx'[37m;
+#          ╵                             [32m~~~~~~~~~~~~~~~~~~~~~[0m
+# [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mThe server is being restarted or closed. Request is outdated[0m [1m[35m[plugin vite:dep-scan][0m
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1217:27:
+# [37m      1217 │         let result = await [32m[37mcallback({
+#            ╵                            [32m^[0m
+#     at throwClosedServerError (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42185:15)
+#     at EnvironmentPluginContainer.resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42364:9)
+#     at resolveId (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14314:40)
+#     at resolve (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14325:28)
+#     at file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14534:34
+#     at requestCallbacks.on-resolve (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1217:28)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+#     at Socket.emit (node:events:518:28)
+#   This error came from the "onResolve" callback registered here:
+#     ../off-the-clock/node_modules/esbuild/lib/main.js:1141:20:
+# [37m      1141 │       let promise = [32m[37msetup({
+#            ╵                     [32m^[0m
+#     at setup (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14529:13)
+#     at handlePlugins (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1141:21)
+#     at buildOrContextImpl (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:854:5)
+#     at Object.buildOrContext (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:680:5)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:68
+#     at new Promise (<anonymous>)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:2035:27)
+#     at Object.context (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1877:58)
+#     at prepareEsbuildScanner (file:///workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14266:24)
+#   The plugin "vite:dep-scan" was triggered by this import
+#     client/src/quotedone.jsx:14:26:
+# [37m      14 │ export {QuoteAccess} from [32m'./widgetInstall.jsx'[37m;
+#          ╵                           [32m~~~~~~~~~~~~~~~~~~~~~[0m
+#     at failureErrorWithLog (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1467:15)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:926:25
+#     at runOnEndCallbacks (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:1307:45)
+#     at buildResponseToResult (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:924:7)
+#     at /workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:936:9
+#     at new Promise (<anonymous>)
+#     at requestCallbacks.on-end (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:935:54)
+#     at handleRequest (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:628:17)
+#     at handleIncomingPacket (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:653:7)
+#     at Socket.readFromStdout (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/esbuild/lib/main.js:581:7)
+# Subtest: billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+not ok 31 - billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+  ---
+  duration_ms: 409.642552
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:172:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /<dt>Charged so far<\/dt><dd>\$50\.40<\/dd>/. Input:
+    
+    '<section class="billing-panel minute-usage" aria-label="Voice minute usage" aria-live="polite"><h2>Minutes this billing month</h2><p>2026-10-20 to 2026-11-20 · 300 included minutes</p><dl class="minute-usage-totals"><div><dt>Minutes used</dt><dd>447</dd></div><div><dt>Minutes left</dt><dd>0</dd></div><div><dt>Overage so far</dt><dd>$51.45</dd></div></dl><p>Extra minutes: $0.35/min. </p></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="billing-panel minute-usage" aria-label="Voice minute usage" aria-live="polite"><h2>Minutes this billing month</h2><p>2026-10-20 to 2026-11-20 · 300 included minutes</p><dl class="minute-usage-totals"><div><dt>Minutes used</dt><dd>447</dd></div><div><dt>Minutes left</dt><dd>0</dd></div><div><dt>Overage so far</dt><dd>$51.45</dd></div></dl><p>Extra minutes: $0.35/min. </p></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:177:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+ok 32 - billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+  ---
+  duration_ms: 18.934773
+  type: 'test'
+  ...
+# Subtest: billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+ok 33 - billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+  ---
+  duration_ms: 12.589992
+  type: 'test'
+  ...
+# Subtest: billing repair 2: extending the same trial does not reset warning identities
+not ok 34 - billing repair 2: extending the same trial does not reset warning identities
+  ---
+  duration_ms: 14.265975
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:187:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:189:64)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+not ok 35 - billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+  ---
+  duration_ms: 21.527486
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:193:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:198:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+not ok 36 - billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+  ---
+  duration_ms: 19.29042
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:209:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   2520
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 2520
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/billingSystem20261008.spec.mjs:211:42)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: startup → owner, signed whole-call duration is free
+not ok 37 - billing repair 1 production: startup → owner, signed whole-call duration is free
+  ---
+  duration_ms: 101.445885
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: billing repair 1 production: startup → message, signed whole-call duration is free
+not ok 38 - billing repair 1 production: startup → message, signed whole-call duration is free
+  ---
+  duration_ms: 44.122253
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: startup → capture, signed whole-call duration is free
+ok 39 - billing repair 1 production: startup → capture, signed whole-call duration is free
+  ---
+  duration_ms: 45.741801
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error → owner, signed whole-call duration is free
+not ok 40 - billing repair 1 production: session-error → owner, signed whole-call duration is free
+  ---
+  duration_ms: 45.404572
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-error → message, signed whole-call duration is free
+not ok 41 - billing repair 1 production: session-error → message, signed whole-call duration is free
+  ---
+  duration_ms: 45.694178
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-error → capture, signed whole-call duration is free
+ok 42 - billing repair 1 production: session-error → capture, signed whole-call duration is free
+  ---
+  duration_ms: 54.906048
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-close → owner, signed whole-call duration is free
+not ok 43 - billing repair 1 production: session-close → owner, signed whole-call duration is free
+  ---
+  duration_ms: 56.885669
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-close → message, signed whole-call duration is free
+not ok 44 - billing repair 1 production: session-close → message, signed whole-call duration is free
+  ---
+  duration_ms: 52.257321
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:6:115'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:23:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-close → capture, signed whole-call duration is free
+ok 45 - billing repair 1 production: session-close → capture, signed whole-call duration is free
+  ---
+  duration_ms: 55.822512
+  type: 'test'
+  ...
+# Subtest: billing repair 1 production: session-error before warm-transfer acceptance remains free
+not ok 46 - billing repair 1 production: session-error before warm-transfer acceptance remains free
+  ---
+  duration_ms: 61.860454
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:27:96'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:37:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-error after warm-transfer acceptance remains free
+not ok 47 - billing repair 1 production: session-error after warm-transfer acceptance remains free
+  ---
+  duration_ms: 63.893701
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:27:96'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:37:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-close before warm-transfer acceptance remains free
+not ok 48 - billing repair 1 production: session-close before warm-transfer acceptance remains free
+  ---
+  duration_ms: 54.561266
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:27:96'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:37:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: session-close after warm-transfer acceptance remains free
+not ok 49 - billing repair 1 production: session-close after warm-transfer acceptance remains free
+  ---
+  duration_ms: 53.729349
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:27:96'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:37:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion
+not ok 50 - billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion
+  ---
+  duration_ms: 54.310487
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:46:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: late media completion and summary cannot erase operator-off exclusion
+not ok 51 - billing repair 1 production: late media completion and summary cannot erase operator-off exclusion
+  ---
+  duration_ms: 51.619382
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:55:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: direct fallback final capture excludes a still-connected row
+not ok 52 - billing repair 1 production: direct fallback final capture excludes a still-connected row
+  ---
+  duration_ms: 41.804993
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:57:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:62:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: billing repair 1 production: direct fallback partial capture excludes a still-connected row
+not ok 53 - billing repair 1 production: direct fallback partial capture excludes a still-connected row
+  ---
+  duration_ms: 42.769721
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:57:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    11 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 11
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/billing-base/test/voiceBillingSystem20261008.spec.mjs:62:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..53
+# tests 53
+# suites 0
+# pass 9
+# fail 44
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2363.347148

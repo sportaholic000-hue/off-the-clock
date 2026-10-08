@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {ownerUtcInstant} from './ownerDate.js';
 import {hasQuoteDoneAccess} from './planAccess.js';
 import { loadPricebook } from '../priceBookService.js';
 import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
@@ -137,17 +138,11 @@ function normalizedUtcInstant(value, label) {
   if (!match) {
     throw invalid(`${label} must be a UTC timestamp.`);
   }
-  const date = new Date(value);
-  const [, year, month, day, hour, minute, second, fraction = ''] = match;
-  const millisecond = Number(fraction.slice(0, 3).padEnd(3, '0'));
-  if (!Number.isFinite(date.getTime()) ||
-      date.getUTCFullYear() !== Number(year) || date.getUTCMonth() + 1 !== Number(month) ||
-      date.getUTCDate() !== Number(day) || date.getUTCHours() !== Number(hour) ||
-      date.getUTCMinutes() !== Number(minute) || date.getUTCSeconds() !== Number(second) ||
-      date.getUTCMilliseconds() !== millisecond) {
+  const normalized = ownerUtcInstant(value);
+  if (!normalized) {
     throw invalid(`${label} must be a valid UTC timestamp.`);
   }
-  return date.toISOString();
+  return normalized;
 }
 
 function normalizedBlackouts(value) {

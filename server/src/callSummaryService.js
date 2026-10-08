@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 // Extractive summary: transcript text is quoted data, never an instruction.
 // Keep attribution; never convert an assistant promise into a confirmed fact.
 export function transcriptSummary(serialized) {
@@ -10,8 +11,8 @@ export function transcriptSummary(serialized) {
     const words=turn.text.trim();return label+': '+words.slice(0,300)+(words.length>300?'…':'');
   }).join('\n')||null;
 }
-export function completeVoiceCall({database,ownerId,callId,callSid,outcome,streamSid,duration,at,preserveLifecycle=false}) {
-  const query=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Call completion requires tenant-bound queries.');return database.prepare(sql);};
+export function completeVoiceCall({database,ownerQuery,ownerId,callId,callSid,outcome,streamSid,duration,at,preserveLifecycle=false}) {
+  const query=usageOwnerQuery(database,ownerQuery);
   const work=()=>{
     const call=query('SELECT transcriptJson,status,spamFiltered,outcome FROM calls WHERE ownerId=? AND id=? AND callSid=?').get(ownerId,callId,callSid);
     if(!call)throw Error('Call binding lost.');
@@ -29,7 +30,7 @@ export function completeVoiceCall({database,ownerId,callId,callSid,outcome,strea
     if(preserveLifecycle){
       // The lifecycle store owns terminal/fallback/transfer status and timing.
       // Enrich its committed call without reopening it or erasing billing exclusions.
-      const preserveOutcome=call.outcome==='AI_FALLBACK'||['FALLBACK','AI_FALLBACK','TRANSFERRING','RECOVERED'].includes(call.status);
+      const preserveOutcome=['AI_FALLBACK','OPERATOR_OFF'].includes(call.outcome)||['FALLBACK','AI_FALLBACK','HUMAN_ROUTING','TRANSFERRING','RECOVERED'].includes(call.status);
       query('UPDATE calls SET outcome=?,transportOutcome=?,summaryText=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?')
         .run(preserveOutcome?call.outcome:semantic,outcome.reason,transcriptSummary(call.transcriptJson),at,ownerId,callId,callSid);
       return;

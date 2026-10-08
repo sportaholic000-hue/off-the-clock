@@ -23,7 +23,7 @@ for(const [plan,minutes,cents,savings] of [
   const h=fixture(t);h.activate(A,{plan});h.call(minutes*60);
   const view=h.service.snapshot(A);assert.equal(view.overageCents,cents);assert.equal(view.savingsCents,savings);assert.equal(view.minutesLeft,Math.max(0,view.includedMinutes-minutes));
   assert.equal(Boolean(view.upgradeMessage),savings>0);if(savings===30)assert.equal(view.upgradeMessage,'Upgrading to QuoteDone would have saved you $0.30 this month');
-  assert.equal(h.fakes.invoices.size,0,'an open month is not charged incrementally');
+  assert.equal(h.fakes.invoices.size,0,'metering persists usage; the payment worker submits invoices');
   h.setTime(END);await h.service.processOwner(A);await h.service.processOwner(A);
   assert.equal(h.fakes.invoices.size,cents?1:0);if(cents){assert.equal([...h.fakes.items.values()][0].amount,cents);assert.equal(h.db.prepare('SELECT status FROM billingUsageCharges WHERE ownerId=?').get(A).status,'PAID');}
 });
@@ -52,7 +52,7 @@ for(const plan of ['Operator','QuoteDone'])test(plan+' warnings fire at 60, 30 a
 });
 test('one call crossing all thresholds queues each warning once, no automatic upgrade or pack purchase',async t=>{
   const h=fixture(t);h.activate();h.call(758*60);await h.service.processOwner(A);
-  assert.equal(h.fakes.mail.size,3);assert.equal(h.fakes.invoices.size,0);assert.equal(h.db.prepare('SELECT plan FROM users WHERE id=?').get(A).plan,'Operator');
+  assert.equal(h.fakes.mail.size,3);assert.equal(h.fakes.invoices.size,1);assert.equal([...h.fakes.items.values()][0].amount,16030);assert.equal(h.db.prepare('SELECT plan FROM users WHERE id=?').get(A).plan,'Operator');
 });
 test('monthly rollover resets allowance, nudge and warning identities while preserving previous usage',async t=>{
   const h=fixture(t);h.activate();h.call(758*60);const old=h.service.snapshot(A);
@@ -78,7 +78,7 @@ test('monthly anniversary restores the original day after February and leap-year
 });
 test('trial is free even with overrun; paid annual term and monthly resets start at trial end',async t=>{
   const h=fixture(t);h.setTime(SIGNUP);h.subscription(A,{status:'trialing',interval:'annual',start:SIGNUP,end:START});h.call(3601);
-  const trial=h.service.snapshot(A);assert.equal(trial.status,'TRIAL');assert.equal(trial.minutesUsed,61);assert.equal(trial.overageCents,0);assert.equal(trial.warnings.length,0);await h.service.processOwner(A);assert.equal(h.fakes.invoices.size,0);
+  const trial=h.service.snapshot(A);assert.equal(trial.status,'TRIAL');assert.equal(trial.minutesUsed,61);assert.equal(trial.overageCents,0);assert.deepEqual(trial.warnings.map(w=>w.threshold),[30,0]);await h.service.processOwner(A);assert.equal(h.fakes.invoices.size,0);
   h.setTime(START);h.activate(A,{interval:'annual'});const paid=h.service.snapshot(A);assert.equal(paid.minutesUsed,0);assert.equal(paid.periodStartAt,START);assert.equal(paid.periodEndAt,END);
   assert.equal(h.db.prepare('SELECT amountPaidCents,endAt FROM billingAnnualTerms WHERE ownerId=?').get(A).amountPaidCents,119000);
 });

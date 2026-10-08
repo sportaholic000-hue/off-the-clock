@@ -33,13 +33,13 @@ test('real dashboard always shows zero-call usage, then refreshes the $160.30 ov
   const h=fixture(t);h.activate();const {panel,update}=await screen(t,h.service.snapshot(A));
   assert.match(await panel.innerText(),/Minutes used\s+0/);assert.match(await panel.innerText(),/Minutes left\s+300/);assert.match(await panel.innerText(),/Overage so far\s+\$0\.00/);
   h.call(758*60);await update(h.service.snapshot(A));await panel.getByText('Upgrading to QuoteDone would have saved you $0.30 this month',{exact:true}).waitFor();
-  assert.match(await panel.innerText(),/\$160\.30/);assert.match(await panel.innerText(),/overage at \$0\.35\/min now applies/);
+  assert.match(await panel.innerText(),/Not yet charged\s+\$160\.30/);await h.service.processOwner(A);await update(h.service.snapshot(A));await panel.locator('.minute-usage-totals > div').filter({hasText:'Charged so far'}).getByText('$160.30',{exact:true}).waitFor();assert.match(await panel.innerText(),/Charged so far\s+\$160\.30/);assert.match(await panel.innerText(),/overage at \$0\.35\/min now applies/);
 });
 test('QuoteDone dashboard shows $0.35 overage, annual monthly allowance and no Operator upgrade nudge',async t=>{
   const h=fixture(t);h.activate(A,{plan:'QuoteDone',interval:'annual'});h.call(1201*60);const {panel}=await screen(t,h.service.snapshot(A));
-  assert.match(await panel.innerText(),/Minutes used\s+1,201/);assert.match(await panel.innerText(),/Overage so far\s+\$0\.35/);assert.match(await panel.innerText(),/overage is billed monthly/);assert.doesNotMatch(await panel.innerText(),/would have saved/);
+  assert.match(await panel.innerText(),/Minutes used\s+1,201/);assert.match(await panel.innerText(),/Overage so far\s+\$0\.35/);assert.match(await panel.innerText(),/charged to your card each time they reach \$25/);assert.doesNotMatch(await panel.innerText(),/would have saved/);
 });
 test('unverified period and pending historical charge are visible without an invented zero balance',async t=>{
   const h=fixture(t);h.activate();h.call(301*60);h.setTime('2026-11-20T12:00:00.000Z');h.fakes.fail('invoice');await h.service.processOwner(A);const {panel}=await screen(t,h.service.snapshot(A));
-  assert.match(await panel.innerText(),/waiting for verified billing-period information/);assert.match(await panel.innerText(),/\$0\.35/);assert.match(await panel.innerText(),/will be retried safely/);assert.doesNotMatch(await panel.innerText(),/Overage so far\s+\$0\.00/);
+  assert.match(await panel.innerText(),/waiting for verified billing-period information/);assert.match(await panel.innerText(),/\$0\.35/);assert.match(await panel.innerText(),/awaiting provider confirmation/);assert.doesNotMatch(await panel.innerText(),/Overage so far\s+\$0\.00/);
 });
