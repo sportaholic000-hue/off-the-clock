@@ -1,4 +1,5 @@
 import { loadBillingConfig, stripeBillingEnabled } from './billingConfig.js';
+import {validLiveModelName} from './voice/liveModelName.js';
 
 // Release pin: an older engine must never start serving production quotes.
 // Advance deliberately with an approved engine release, not through an env override.
@@ -18,7 +19,6 @@ const INSECURE_JWT_SECRETS = new Set([
 
 const TWILIO_ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const TWILIO_API_KEY_SID = /^SK[0-9a-f]{32}$/i;
-const GEMINI_LIVE_MODEL = /^[A-Za-z0-9][A-Za-z0-9._/-]*live[A-Za-z0-9._/-]*$/i;
 
 function bytesFromCredentialKey(value) {
   const raw = String(value || '').trim();
@@ -104,7 +104,7 @@ export function validateRuntimeConfig(env = process.env) {
     if (env.TWILIO_ACCOUNT_SID && !TWILIO_ACCOUNT_SID.test(env.TWILIO_ACCOUNT_SID)) {
       errors.push('TWILIO_ACCOUNT_SID must be a valid Account SID');
     }
-    if (env.GEMINI_MODEL && !GEMINI_LIVE_MODEL.test(env.GEMINI_MODEL)) {
+    if (env.GEMINI_MODEL && !validLiveModelName(env.GEMINI_MODEL)) {
       errors.push('GEMINI_MODEL must be an explicit Gemini Live model');
     }
     let voicePublicBase;

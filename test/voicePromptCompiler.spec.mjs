@@ -55,7 +55,7 @@ function ownerFacts(prompt) {
 test("the compiler authenticates and parses every section of the versioned owner-policy guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "aaa2446b7ed63d80e00b27096b82b1c534283d5b29aec8852cee5106b0fceb8b");
+  assert.equal(parsed.digest, "80a56be7fa9480d7b40839d89d981ee88a1ff0d5bbcaa4e90443c39f3e1af268");
   assert.match(compile(), /Do not offer later booking confirmations or reminders by any channel/);
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
   assert.match(parsed.globalRules, /ONE question per turn/);
@@ -81,7 +81,7 @@ test("guide changes, unknown sections, and duplicate flow sections fail closed",
   );
   assert.throws(() => parseVoiceGuide(unknownFlow), hasCode("UNKNOWN_VOICE_FLOW_SECTION"));
 
-  const silentlyEdited = GUIDE.replace("A measurement must be measured", "Any number is fine");
+  const silentlyEdited = GUIDE.replace("A measurement may be the caller's own approximation", "Any number is fine");
   assert.throws(() => parseVoiceGuide(silentlyEdited), hasCode("VOICE_GUIDE_DIGEST_MISMATCH"));
 });
 
@@ -230,7 +230,7 @@ test("prompt locks quote accuracy, separate-work handling, confirmation, and add
   assert.match(prompt, /only when it appears in \(a\) the current successful getQuote result, or \(b\) the owner's listed prices/);
   assert.match(prompt, /read back EVERY numeric measurement/);
   assert.match(prompt, /getQuote\.customerConfirmed=true only after/);
-  assert.match(prompt, /Missing or uncertain measurements.*block a released quote/);
+  assert.match(prompt, /If the caller gives no number.*give no price/);
   assert.match(prompt, /Preserve separately requested additional work in getQuote\.additionalWork/);
   assert.match(prompt, /getQuote result → captureLead with the service address → checkAvailability with both quoteHandle and leadHandle/);
   assert.match(prompt, /Never send a raw address to checkAvailability/);
@@ -245,6 +245,7 @@ test("prompt locks quote accuracy, separate-work handling, confirmation, and add
 
 const VALID_ARGUMENTS = Object.freeze({
   matchService: { query: "roof repair" },
+  calculateVoiceArea: { length: "10", width: "12", customerConfirmed: true },
   getQuote: {
     serviceHandle: HANDLE_A,
     customerInputs: { affectedArea: "small", stories: 1 },
@@ -289,7 +290,7 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   assert.deepEqual(VOICE_TOOL_DECLARATIONS.map((item) => item.name), VOICE_TOOL_NAMES);
   assert.deepEqual(
     MUTATING_VOICE_TOOLS,
-    VOICE_TOOL_NAMES.filter((name) => !["matchService", "getCustomerContext", "calculateListedPrice"].includes(name)),
+    VOICE_TOOL_NAMES.filter((name) => !["matchService", "getCustomerContext", "calculateListedPrice", "calculateVoiceArea"].includes(name)),
   );
 
   for (const declaration of VOICE_TOOL_DECLARATIONS) {

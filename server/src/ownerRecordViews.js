@@ -26,6 +26,8 @@ export function storedQuoteView(row, role, originalSubmission) {
   const submitted=originalSubmission||internal.originalSubmission||{};
   return {id:row.id, callId:row.callId, serviceType:row.serviceType, status:row.status,
     tierChosen:row.tierChosen, createdAt:row.createdAt, result:calculation.customerResult || null,
+    customerInputs:storedObject(row.customerInputsJson),
+    ...(internal.callerMeasurementsEstimated===true?{measurementsNotice:"Caller's estimated measurements. Measure on site."}:{}),
     contact:followUpContact(submitted.contact),location:followUpLocation(submitted.location),
     context:safeText(submitted.context,4000)||null,
     ...(role==='owner'?{internal}: {})};
@@ -38,6 +40,7 @@ export function storedLeadView(row, role, originalSubmission, preferredRequest) 
     describedService:row.describedService,type:row.type,status:row.status,createdAt:row.createdAt,
     contact:followUpContact(submitted.contact??detail.contact),location:followUpLocation(submitted.location??detail.address),
     customerInputs:submitted.customerInputs??calculation.request?.customerInputs??null,
+    ...(detail.callerMeasurementsEstimated===true?{measurementsNotice:"Caller's estimated measurements. Measure on site."}:{}),
     explicitUnknowns:submitted.explicitUnknowns??null,urgency:followUpUrgency(detail.urgency??submitted.urgency),context:submitted.context??null,
     notes:safeText(detail.notes,1000)||null,
     reviewReason:calculation.applicationReview?.reason??calculation.internalResult?.reviewReason??calculation.leadEnvelope?.reviewReason??null};

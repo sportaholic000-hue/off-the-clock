@@ -18,6 +18,7 @@ import {installProductionVoice} from '../server/src/voice/productionVoiceRuntime
 import {validateVoiceToolCall,getVoiceToolDeclarations} from '../server/src/voice/toolSchemas.js';
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
 import {projectVoiceQuote} from '../server/src/voice/voiceQuotePresentation.js';
+import {storedQuoteView,storedLeadView} from '../server/src/ownerRecordViews.js';
 import {saveApplicationBook,readApplicationBook,approveApplicationService,applicationStatus,bookQuoteStatuses,applicationStatusCacheCounts} from '../server/src/quoteDoneBridge.js';
 import {PRICE_BASIS_CATEGORIES} from '../server/quote-engine-vnext/index.js';
 
@@ -133,9 +134,31 @@ test('signed provisioned callback -> real dispatcher -> two-tier quote -> availa
     assert.equal((await h.fake.tool('bookAppointment',{...bookingArgs,customerConfirmed:false})).status,'needs_details');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM bookingHolds').get().n,0);
     await h.fake.speak('Yes, that appointment and the address are correct.');
     const booked=await h.fake.tool('bookAppointment',bookingArgs,'book-confirmed');assert.equal(booked.status,'confirmed',JSON.stringify(booked));assert.deepEqual(await h.fake.tool('bookAppointment',bookingArgs,'book-confirmed'),booked);
+    assert.match(booked.startLocal,/^2026-10-06T/);assert.match(booked.endLocal,/^2026-10-06T/);assert.equal(booked.timezone,'UTC');assert.deepEqual(booked.serviceAddress,{line1:'10 Test Street',city:'Halifax',region:'NS',postalCode:'B3H 1A1',country:'CA'});
     assert.equal(h.calendarCreates,1);assert.equal(h.db.prepare("SELECT COUNT(*) n FROM bookingHolds WHERE status='CONFIRMED'").get().n,1);assert.equal(h.db.prepare("SELECT COUNT(*) n FROM appointments WHERE status='CONFIRMED' AND ownerId=?").get(h.owner).n,1);
     assert.match(h.db.prepare('SELECT transcriptJson FROM calls WHERE callSid=?').get(h.callSid).transcriptJson,/travel charge are correct/);
     const publicValues=JSON.stringify([matched,quoted,noFee,lead,slots,booked]);for(const secret of [h.owner,h.custom.id,ACCOUNT,h.callSid,'calculationRecord','lineItems','approvedValues','markupPercent','priceBasisByCategory'])assert.equal(publicValues.includes(secret),false,secret);
+  }finally{await h.close();}
+});
+test('caller-estimated phone quote saves flag, owner warnings and identical written narration',async()=>{
+  const h=await harness();try{
+    await h.connect();
+    const area=await h.fake.tool('calculateVoiceArea',{length:'10.25',width:'10.1',customerConfirmed:true});assert.deepEqual(area,{status:'calculated',areaSqft:'103.525'});
+    const m=await h.fake.tool('matchService',{query:h.mulch.service});assert.equal(m.status,'matched');
+    const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'sqft',mulchArea:Number(area.areaSqft),mulchDepth:3,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'},productConfirmations:{mulchType:true},customerConfirmed:true,callerMeasurementsEstimated:true,additionalWork:['Synthetic tree removal']};
+    const quote=await h.fake.tool('getQuote',args);assert.equal(quote.status,'quoted',JSON.stringify(quote));
+    const warning='This price is based on the measurements you gave us. The business will confirm them on site.';
+    assert.ok(quote.quoteNarration.includes(warning));assert.ok(quote.quoteNarration.indexOf(warning)<quote.quoteNarration.indexOf('This is a preliminary estimate'));
+    const submission=h.db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=?').get(h.owner);
+    assert.equal(JSON.parse(submission.internalOutcomeJson).callerMeasurementsEstimated,true);
+    assert.equal(JSON.parse(submission.originalSubmissionJson).callerMeasurementsEstimated,undefined);
+    const ownerNotice="Caller's estimated measurements. Measure on site.";
+    const savedQuote=storedQuoteView(h.db.prepare('SELECT * FROM quotes WHERE ownerId=?').get(h.owner),'owner');assert.equal(savedQuote.measurementsNotice,ownerNotice);
+    const savedLead=storedLeadView(h.db.prepare('SELECT * FROM leads WHERE ownerId=?').get(h.owner),'owner');assert.equal(savedLead.measurementsNotice,ownerNotice);
+    const prepared=await h.fake.tool('prepareQuoteEmail',{quoteHandle:quote.quoteHandle,email:'estimate@example.invalid'});
+    await h.fake.tool('sendQuoteEmail',{emailConfirmationHandle:prepared.emailConfirmationHandle,customerConfirmed:true});
+    await h.quoteEmailDelivery.processOne(h.owner);assert.ok(h.emailMessages[0].text.includes(warning));
+    assert.equal(h.emailMessages[0].text.split('\n\nView your saved quote: ')[0],quote.quoteNarration);
   }finally{await h.close();}
 });
 test('session-start failure captures before signed forwarding; mismatched caller fails closed',async()=>{

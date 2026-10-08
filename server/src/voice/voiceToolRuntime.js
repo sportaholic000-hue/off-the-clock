@@ -9,6 +9,7 @@ import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from './voiceQuoteContract.js';
 import {projectVoiceQuote} from './voiceQuotePresentation.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
+import {calculateVoiceArea} from './measurementArea.js';
 import crypto from 'node:crypto';
 
 import { loadPricebook } from '../../priceBookService.js';
@@ -230,8 +231,8 @@ export function createVoiceToolRuntime({
     database, clock, leaseMs: idempotencyLeaseMs
   });
 
-  function projectQuoteResult(response,quoteHandle,followUps=[]){
-    const result=projectVoiceQuote(response,quoteHandle,followUps);
+  function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
+    const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
     if(result.status==='quoted'){
       const resolved=resolve(quoteHandle,'quote'),requestId=resolved.reference.requestId;
       database.prepare('INSERT OR IGNORE INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)')
@@ -392,7 +393,8 @@ export function createVoiceToolRuntime({
       // confirmation can never replay a receipt for a different confirmation.
       ...(args.scopeConfirmations&&Object.keys(args.scopeConfirmations).length?{scopeConfirmations:args.scopeConfirmations}:{}),
       customerFeeSelections: args.customerFeeSelections || {},
-      additionalWork: args.additionalWork || []
+      additionalWork: args.additionalWork || [],
+      ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{})
     });
     const requestId = stableUuid(secret, 'voice-quote-request', requestFingerprint);
     const prior = database.prepare(`SELECT * FROM quoteSubmissions
@@ -411,7 +413,7 @@ export function createVoiceToolRuntime({
         bookingCapability: response.bookingCapability || 'NONE'
       };
       const quoteHandle = issue('quote', `quote:${requestId}`, reference);
-      return projectQuoteResult(response, quoteHandle, internal.voiceFollowUps || []);
+      return projectQuoteResult(response, quoteHandle, internal.voiceFollowUps || [],internal.callerMeasurementsEstimated===true);
     }
 
     const book = quoteApp.loadBook(context.ownerId);
@@ -499,7 +501,7 @@ export function createVoiceToolRuntime({
           bookingCapability: existingResponse.bookingCapability || 'NONE'
         };
         const existingHandle = issue('quote', `quote:${requestId}`, existingReference);
-        return projectQuoteResult(existingResponse, existingHandle, existingInternal.voiceFollowUps || []);
+        return projectQuoteResult(existingResponse, existingHandle, existingInternal.voiceFollowUps || [],existingInternal.callerMeasurementsEstimated===true);
       }
 
       const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt});
@@ -507,6 +509,7 @@ export function createVoiceToolRuntime({
         customerId:customer?.id||null,
         voiceVersion: 1,
         voiceFollowUps: followUps,
+        ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{}),
         applicationOutcome: calculated
       };
       if (RELEASED_RESULTS.has(response.resultType)) {
@@ -569,7 +572,7 @@ export function createVoiceToolRuntime({
         bookingCapability: capability
       };
       const quoteHandle = issue('quote', `quote:${requestId}`, reference);
-      return projectQuoteResult(storedResponse, quoteHandle, followUps);
+      return projectQuoteResult(storedResponse, quoteHandle, followUps,args.callerMeasurementsEstimated===true);
     });
   }
 
@@ -815,6 +818,7 @@ export function createVoiceToolRuntime({
       for (const key of ['startUtc', 'endUtc', 'startLocal', 'endLocal', 'timezone', 'bookingMode']) {
         if (typeof body[key] === 'string' && body[key]) output[key] = body[key];
       }
+      output.serviceAddress={...details.address};
       return output;
     } catch (error) {
       if (held?.body?.holdId && typeof bookingService.releaseHold === 'function') {
@@ -1189,6 +1193,7 @@ export function createVoiceToolRuntime({
     matchService,
     getQuote,
     calculateListedPrice,
+    calculateVoiceArea:async input=>calculateVoiceArea(invocation(input)),
     checkAvailability,
     bookAppointment,
     captureLead,

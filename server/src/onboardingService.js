@@ -11,7 +11,11 @@ import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
 import { hasOperatorAccess } from './planAccess.js';
 import {voiceRouteReadiness} from './voice/voiceReadiness.js';
-import { applicationMetadata } from './quoteDoneBridge.js';
+import {applicationMetadata,bookQuoteStatuses,applicationServiceName} from './quoteDoneBridge.js';
+import {quoteDateContext} from './quoteDate.js';
+import {loadPricebook} from '../priceBookService.js';
+import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
+import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
@@ -305,6 +309,16 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
     catch (cause) { const error = new Error(cause.message); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
   } else if (Object.hasOwn(existing, 'serviceArea')) clean.serviceArea = existing.serviceArea;
+  // Validate the actual instruction for this owner's current plan and live
+  // catalog before committing knowledge. The same compiler guards call time.
+  const account=ownerAccount(ownerId),profile=getBusinessProfile(ownerId);
+  let services=[];
+  if(hasQuoteDoneAccess(account,{now:new Date()})){
+    let book={services:[]};try{book=loadPricebook(ownerId);}catch{ /* Call time also falls back to answering without a readable book. */ }
+    const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
+    services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
+  }
+  compileVoiceSystemInstruction({guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
