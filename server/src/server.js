@@ -475,7 +475,7 @@ app.post('/api/quote/test', requireAuth(['owner']), requireQuoteDonePlan, asyncH
 
 app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
   const profileState = clientOnboardingState(req.tenantOwnerId);
-  let book={services:[]},quotingNotice=null;try{book=loadPricebook(req.tenantOwnerId);}catch{quotingNotice='The saved price book cannot be read. Quoting is paused; answering remains available. Restore the saved price book from backup or contact support.';}
+  let book={services:[]},quotingNotice=null;try{book=loadPricebook(req.tenantOwnerId);}catch{quotingNotice='The saved price book cannot be read. Quoting is paused; answering remains available. Restore the saved price book from backup or email support@offtheclockai.com.';}
   const quoteRequestCount = ownerQuery('SELECT COUNT(*) AS count FROM quoteRequests WHERE ownerId = ?').get(req.tenantOwnerId)?.count || 0;
   res.json({
     ownerId: req.tenantOwnerId,
@@ -513,7 +513,7 @@ app.use((err, req, res, _next) => {
   // unusable saved storage returns 503. Expose only this fixed, safe copy;
   // arbitrary server errors and filesystem details remain private.
   const ownerPricebookRecovery = req.role === 'owner' && code === 'PRICEBOOK_UNREADABLE'
-    ? 'The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or contact support; do not create a replacement book.'
+    ? 'The saved price book cannot be used. Quoting is paused until it is restored. Restore the saved price-book file from backup or email support@offtheclockai.com; do not create a replacement book.'
     : null;
   res.status(status).json({
     error: ownerPricebookRecovery || (status >= 500 ? 'Internal server error' : err.message),

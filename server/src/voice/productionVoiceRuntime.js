@@ -102,7 +102,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     let book={services:[]};
     if(canQuote)try{book=loadPricebook(context.ownerId);}catch{
-      const at=iso(clock),message='The saved price book cannot be read. Calculated quoting is paused; ordinary answering, listed prices, leads and scheduling remain available. Restore the saved price book from backup or contact support.';
+      const at=iso(clock),message='The saved price book cannot be read. Calculated quoting is paused; ordinary answering, listed prices, leads and scheduling remain available. Restore the saved price book from backup or email support@offtheclockai.com.';
       database.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.quoting_unavailable',?,?,'PENDING',?,?)").run('voice-quoting-unavailable:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,message}),at,at);
       onError('VOICE_QUOTING_UNAVAILABLE');
     }
