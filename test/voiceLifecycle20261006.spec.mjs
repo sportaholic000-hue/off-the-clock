@@ -125,7 +125,7 @@ test('D32 default ceiling reserves five sessions atomically; sixth captures its 
   assert.equal(later.filter(c=>c.xml.includes('<Gather')).length,1,'a connected session still consumes capacity after its nonce expires');
 });
 test('P01 no default callback or quote deadline; only explicit owner policy authorizes one',()=>{
-  const guideText=readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8');
+  const guideText=readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8');
   const prompt=compileVoiceSystemInstruction({guideText,business:{businessName:'Synthetic',agentName:'Sam'},services:[]});
   assert.match(prompt,/deadline.*only.*owner/i);assert.doesNotMatch(prompt,/have your quote today/i);
 });
@@ -199,7 +199,7 @@ test('D32 sixth caller request is retained and another tenant has independent ca
   const other=await h.post('/api/twilio/voice/incoming',{...h.params(7),To:'+19025550202'});assert.match(await other.text(),/<Stream/);
 });
 test('P01 owner-set policy is available verbatim; caller urgency and business hours are not deadlines',()=>{
-  const guideText=readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8');
+  const guideText=readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8');
   const prompt=compileVoiceSystemInstruction({guideText,business:{businessName:'Synthetic',agentName:'Sam'},services:[],knowledge:{hours:'Open until 5',policies:'Callbacks within one business day. Roof quotes within three business days.'}});
   assert.match(prompt,/Callbacks within one business day/);assert.match(prompt,/Roof quotes within three business days/);assert.match(prompt,/opening hours, urgency, a caller's requested time/);
 });

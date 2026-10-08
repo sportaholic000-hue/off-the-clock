@@ -1,3 +1,4 @@
+import {settingError} from './receptionistSettings.js';
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
 import {operatorOffRouting} from './operatorOffRouting.js';
 import {createVoiceAdmission} from './voiceAdmission.js';
@@ -89,14 +90,15 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     validateIncomingCall:store.validateIncomingCall,
     checkCaller:admission.checkCaller,createSession:store.createSession,routeIncoming,resolveFallback:fallback,recordFallback:input=>{const choice=input.reason==='VOICE_SPAM_BLOCKED'?null:offRouting(input.context);return choice?store.recordHumanRouting({context:input.context,forwarded:choice.mode==='forward'}):store.recordFallback(input);},incomingPath,streamPath,resumeFallback:true,fallbackPath,loadSessionByNonceHash:store.loadSessionByNonceHash
   });
-  const guide=enabled?readFileSync(new URL('../../../specs/voice_quote_flows.md',import.meta.url),'utf8'):null;
+  const guide=enabled?readFileSync(new URL('./receptionistGuide.md',import.meta.url),'utf8'):null;
   const client=enabled?(googleClient||new GoogleGenAI({apiKey:String(env.GEMINI_API_KEY||'')})):null;
   let boundary=null;
   function publicPrompt(context){
+   try{
     const owner=database.prepare('SELECT businessName FROM users WHERE id = ? AND role = ?').get(context.ownerId,'owner');
     const profile=database.prepare('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
-    let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:Array.isArray(kb.neverSay)?kb.neverSay:[],reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{knowledge=null;}
+    let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:kb.neverSay,reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{throw settingError('Business knowledge','Business knowledge could not be read.');}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     let book={services:[]};
     if(canQuote)try{book=loadPricebook(context.ownerId);}catch{
@@ -107,6 +109,13 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
     return compileVoiceSystemInstruction({guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
+   }catch(error){
+    const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
+    const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';
+    const at=iso(clock);
+    database.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.settings_invalid',?,?,'PENDING',?,?)").run('voice-settings-invalid:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,setting,message}),at,at);
+    onError('VOICE_SETTINGS_INVALID');throw error;
+   }
   }
   async function startMediaSession(input){
     if(!enabled||!handleSecret)throw Error('Voice session is unavailable.');

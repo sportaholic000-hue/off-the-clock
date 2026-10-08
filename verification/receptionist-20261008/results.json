@@ -1,0 +1,50 @@
+{
+  "base": "c68b9bc754e8d95cc3aab8c26f286d4a94f57204",
+  "branch": "fix/receptionist-20261008",
+  "node": "22.23.3",
+  "npm_ci": "PASS (cold, 328 packages)",
+  "npm_run_build": "PASS",
+  "npm_test": {
+    "tests": 3949,
+    "pass": 3892,
+    "fail": 57,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "full_suite_failure_classification": {
+    "browser_launch_unavailable": 57,
+    "other": 0
+  },
+  "new_regressions": {
+    "tests": 55,
+    "pass": 55,
+    "fail": 0,
+    "skipped": 0
+  },
+  "final_prompt_and_rewrite_check": {
+    "tests": 63,
+    "pass": 63,
+    "fail": 0,
+    "skipped": 0
+  },
+  "packaged_guide_sha256": "32e07270b7e6dcf8832f1c8c8aa68b4188592ceb290a30bbb3eb1b8b5ab965ae",
+  "specs_diff": "empty",
+  "quote_engine_directory_diff": "empty",
+  "known_failures_file_bytes": 0,
+  "docker": "not available locally; CI job added, actual Docker run not yet executed",
+  "pushed": false,
+  "hosted_run": "not started: owner requires green local commands before push",
+  "npm_run_test_quote": {
+    "tests": 2795,
+    "pass": 2738,
+    "fail": 57,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "quote_suite_failure_classification": {
+    "browser_launch_unavailable": 57,
+    "other": 0
+  }
+}

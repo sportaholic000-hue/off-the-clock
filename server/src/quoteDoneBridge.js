@@ -1,3 +1,4 @@
+import {settingError,validatePricebookReceptionistSettings} from './voice/receptionistSettings.js';
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
@@ -168,9 +169,9 @@ function statusCacheIdentity(raw,book) {
   const index=(book.services||[]).indexOf(raw);
   return 'draft:'+(index>=0?index:'detached')+':'+digest(raw);
 }
-export function cachedApplicationStatus(raw,book,{quick=false,...dateContext}={}) {
+function cachedStatus(raw,book,{quick=false,...dateContext},revision) {
   dateContext=applicationDateContext(book.ownerId,dateContext);
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+bookRevision(book)+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
   if(statusCache.has(key)){statusCacheCounts.hits++;return clone(statusCache.get(key));}
   statusCacheCounts.misses++;
   const status=applicationStatus(raw,book,{...dateContext,firstLiveProduct:quick});
@@ -178,10 +179,11 @@ export function cachedApplicationStatus(raw,book,{quick=false,...dateContext}={}
   if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
   return status;
 }
+export function cachedApplicationStatus(raw,book,options={}) { return cachedStatus(raw,book,options,bookRevision(book)); }
 export function applicationStatusCacheCounts() { return {...statusCacheCounts}; }
-export function bookStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,context)); }
+export function bookStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext),revision=bookRevision(book);return (book.services||[]).map(service=>cachedStatus(service,book,context,revision)); }
 // Customer-facing catalog and scheduling: live/not-live only.
-export function bookQuoteStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{...context,quick:true})); }
+export function bookQuoteStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext),revision=bookRevision(book);return (book.services||[]).map(service=>cachedStatus(service,book,{...context,quick:true},revision)); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
 function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409,{code:'REVISION_CONFLICT'}); }
 function validateApplicationNumericDraft(book) { validatePricebookNumericDraft(book); }
@@ -201,10 +203,17 @@ export function validateApplicationDraft(ownerId,input,dateContext={}) {
   const statuses=bookStatuses({...saved,...incoming,ownerId},dateContext);
   return {statuses,validationErrors:statuses.flatMap(s=>s.validationErrors||[]),revision:bookRevision(saved)};
 }
+function validateLiveServiceLimit(book,dateContext){
+  const candidates=book.services.filter(service=>service.active!==false);
+  if(candidates.length<=1000)return;
+  let live=0;
+  for(const service of candidates)if(applicationStatus(service,book,{...dateContext,firstLiveProduct:true}).status==='QUOTING LIVE'&&++live>1000)throw settingError('Live services','At most 1,000 services can be live. Disable a service before enabling another.');
+}
 export function saveApplicationBook(ownerId,input,dateContext={}) {
   return withPricebookLock(ownerId,()=>{
     requireDraftBook(input);
     const previous=loadPricebook(ownerId);requireRevision(previous,input.revision);
+    validatePricebookReceptionistSettings(input);
     validateApplicationNumericDraft(input);
     const incoming=convertApplicationBook(input,'toCents');
     const ids=new Set();
@@ -240,6 +249,7 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
         if(!has(service.pricing,field)&&!has(service,field)&&has(effective.pricing||{},field))service.pricing[field]=clone(effective.pricing[field]);
     }
     const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
+    validateLiveServiceLimit(next,dateContext);
     const result=savePricebook(ownerId,next).pricebook;
     return {success:true,statuses:bookStatuses(result,dateContext),revision:bookRevision(result)};
   });
@@ -274,7 +284,7 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     }
     if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
     raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvalContent(raw,book)),operation:'owner_confirmed_quotedone_registration'};
-    book.services[index]=raw;const saved=savePricebook(ownerId,book).pricebook;
+    book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
     return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
   });
 }

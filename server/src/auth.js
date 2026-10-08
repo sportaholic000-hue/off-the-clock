@@ -1,3 +1,4 @@
+import {identityLabel} from './voice/receptionistSettings.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
@@ -205,7 +206,7 @@ export function createAuthHandlers({
     const email = normalizedEmail(body.email);
     const password = body.password;
     const firstName = requiredText(body.firstName, 120);
-    const businessName = requiredText(body.businessName, 200);
+    let businessName;try{businessName=identityLabel(body.businessName,'Business name').trim();}catch(error){return res.status(400).json({error:error.message});}
     const requestedPlan = body.plan === undefined ? 'Operator' : body.plan;
     if (!email || !validPassword(password) || !firstName || !businessName ||
         typeof requestedPlan !== 'string' || !ALLOWED_REQUESTED_PLANS.has(requestedPlan)) {

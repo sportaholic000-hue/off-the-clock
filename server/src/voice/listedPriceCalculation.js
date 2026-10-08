@@ -1,32 +1,39 @@
+import {rewriteKnowledgeText} from './knowledgeText.js';
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
-const refusal=()=>({status:'needs_review',message:'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listed price and its conditions, or ask the business to review it. No multiplied amount is available.'});
+const refusal=()=>({status:'needs_review',message:'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'});
 const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
-const moneyPattern=/(CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|\bCAD\b|\bUSD\b|\bEUR\b|\bGBP\b|\bAUD\b|\bNZD\b)\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)(?![\d.,])/gi;
-// This tool reads one exact saved paragraph, not a model-supplied rate. Lists
-// with several prices, nonlinear conditions or uncertain units remain review.
+const priceSentence=/^(?<item>[\p{L}\p{M}\[][\p{L}\p{M}\s:'’()\[\]-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
+// A unit is one word, or a standard two-word measure (square foot, linear
+// foot, cubic yard...). Any other second word ("per hour minimum", "per item
+// daily", "per sqft twice") can change the charge, so it is not multiplied.
+const taxSentence=/^(?:all prices\s+)?(?:plus\s+(?:HST|GST|tax)(?:\s*(?:and|\/)\s*(?:HST|GST|tax))?|taxes extra)\.?$/i;
+const contactSentence=/^call(?: us| me)? (?:for (?:a )?(?:free )?(?:estimate|quote|hours|access|details|information)|to (?:book|schedule)(?: an? (?:appointment|estimate))?)\.?$/i;
+// Positive sentence grammar: one flat rate and only tax/contact qualifications.
+// Nothing else (including a second price basis) is interpreted or calculated.
 export function calculateSavedListedPrice(knowledge,args){
-  if(!record(knowledge)||knowledge.draft===true||typeof knowledge.prices!=='string'||knowledge.prices.length>20000||args?.customerConfirmed!==true||typeof args.listedItem!=='string'||args.listedItem.length>2000||typeof args.quantity!=='string'||!decimal.test(args.quantity))return refusal();
-  const paragraph=args.listedItem.trim();
-  const entries=knowledge.prices.replace(/\r\n?/g,'\n').split(/\n\s*\n/).map(value=>value.trim());
-  if(!paragraph||entries.filter(value=>value===paragraph).length!==1)return refusal();
-  if(/\b(?:from|starting|minimum|maximum|min|max|discount|bulk|bundle|free|buy|save|up to|at least|at most|between|first|subsequent|thereafter|tier|tiers|threshold|increment|prorate|prorated|rounded|rounding)\b|\d\s*[-–]\s*\d|\b(?:for|over|under|above|below|after|before|exceeding)\s+\d/i.test(paragraph))return refusal();
-  const matches=[...paragraph.matchAll(moneyPattern)];if(matches.length!==1)return refusal();
-  const match=matches[0],amount=match[2].replaceAll(',','');
-  if(!decimal.test(amount)||/[-+]\s*$/.test(paragraph.slice(0,match.index)))return refusal();
-  const tail=paragraph.slice(match.index+match[0].length);
-  if(!/^\s*(?:each\b|(?:per\s+|\/\s*)(?:item|unit|piece|hour|hr|minute|day|week|month|visit|sqft|square foot|square feet|linear foot|linear feet|foot|feet|yard|cubic yard|cubic yards)s?\b)/i.test(tail))return refusal();
-  const rate=coefficient(amount),quantity=coefficient(args.quantity);
-  if(quantity.value===0n)return refusal();
-  const scale=rate.scale+quantity.scale;
-  let digits=(rate.value*quantity.value).toString().padStart(scale+1,'0');
-  let whole=scale?digits.slice(0,-scale):digits,fraction=scale?digits.slice(-scale).replace(/0+$/,''):'';
-  if(whole.length>12)return refusal();
-  // Preserve the exact decimal product, including fractional cents. No binary
-  // multiplication, rounding, unit conversion, taxes, fees or other arithmetic.
-  fraction=fraction.padEnd(2,'0');
-  const currency=match[1],extendedAmount=whole+'.'+fraction;
-  const spokenAmount=currency+(currency.endsWith('$')||['$','€','£','¥'].includes(currency)?'':' ')+extendedAmount;
-  return {status:'calculated',listedItem:paragraph,quantity:args.quantity,extendedAmount,currency,
-    voiceSummary:paragraph+'. At that listed price, '+args.quantity+' comes to '+spokenAmount+'. The stated conditions still apply. No tax, fees, discounts or other items have been added.'};
+ if(!record(knowledge)||knowledge.draft===true||typeof knowledge.prices!=='string'||knowledge.prices.length>20000||args?.customerConfirmed!==true||typeof args.listedItem!=='string'||args.listedItem.length>20000||typeof args.quantity!=='string'||!decimal.test(args.quantity))return refusal();
+ const paragraph=args.listedItem.trim();
+ const entries=rewriteKnowledgeText(knowledge.prices).split(/\n\s*\n/).map(value=>value.trim());
+ if(!paragraph||entries.filter(value=>value===paragraph).length!==1)return refusal();
+ const sentences=paragraph.split(/\n|(?<=[.!?])\s+/).map(value=>value.trim()).filter(Boolean);
+ let price;
+ for(const sentence of sentences){
+  const match=priceSentence.exec(sentence);
+  if(match){
+   // "from"/"starting at" introduce a price bound, not an item name.
+   if(price||/\b(?:from|starting(?: at)?|minimum|maximum)\s*:?\s*$/i.test(match.groups.item||''))return refusal();
+   price=match.groups;
+  }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
+ }
+ if(!price)return refusal();
+ const amount=price.amount.replaceAll(',','');if(!decimal.test(amount))return refusal();
+ const rate=coefficient(amount),quantity=coefficient(args.quantity);if(quantity.value===0n)return refusal();
+ const product=rate.value*quantity.value,denominator=10n**BigInt(rate.scale+quantity.scale),scaled=product*100n;
+ const remainder=scaled%denominator,cents=scaled/denominator+(remainder*2n>=denominator?1n:0n);
+ const whole=(cents/100n).toString();if(whole.length>12)return refusal();
+ const extendedAmount=whole+'.'+(cents%100n).toString().padStart(2,'0');
+ const currency=price.currency,spokenAmount=currency+(currency.endsWith('$')||['$','€','£','¥'].includes(currency)?'':' ')+whole.replace(/\B(?=(\d{3})+(?!\d))/g,',')+extendedAmount.slice(-3);
+ return {status:'calculated',listedItem:paragraph,quantity:args.quantity,extendedAmount,currency,
+  voiceSummary:paragraph+(/[.!?]$/.test(paragraph)?' ':'. ')+'At that listed price, '+args.quantity+' comes to '+spokenAmount+(remainder?' (rounded to the nearest cent)':'')+'. The stated conditions still apply. No tax, fees, discounts or other items have been added.'};
 }

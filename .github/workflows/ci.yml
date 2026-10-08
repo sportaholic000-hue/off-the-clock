@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'feat/no-sms-email-quotes', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006', 'fix/caller-history-followup-20261006', 'fix/booking-calendar-20261006', 'verify/backup-restore-rehearsal-20261006', 'feat/billing-lifecycle-20261007', 'fix/tenant-isolation-20261007', 'fix/engine-leftovers', 'fix/voice-core', 'fix/voice-limits', 'fix/owner-dashboard', 'fix/billing-backup-leftovers']
+    branches: ['main', 'claude/**', 'codex/**', 'fix/voice-quote-path-v2-20261006', 'feat/website-price-import-20261006', 'feat/no-sms-email-quotes', 'fix/quote-display-defects-20261006', 'feat/overage-and-minute-alerts-20261006', 'fix/voice-lifecycle-20261006', 'fix/caller-history-followup-20261006', 'fix/booking-calendar-20261006', 'verify/backup-restore-rehearsal-20261006', 'feat/billing-lifecycle-20261007', 'fix/tenant-isolation-20261007', 'fix/engine-leftovers', 'fix/voice-core', 'fix/voice-limits', 'fix/owner-dashboard', 'fix/billing-backup-leftovers', 'fix/receptionist-20261008']
   pull_request:
 permissions:
   contents: write
@@ -54,3 +54,15 @@ jobs:
           git add "$name" && git commit -q -m "CI ${GITHUB_REF_NAME} ${GITHUB_SHA::7}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/ci-results || true
       - name: Production dependency audit
         run: npm audit --omit=dev --audit-level=high
+
+  voice-docker-startup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Build production runtime image
+        run: docker build --tag otc-receptionist:synthetic .
+      - name: Voice enabled with synthetic credentials and no provider network
+        run: node verification/receptionist-20261008/docker-voice-smoke.mjs otc-receptionist:synthetic

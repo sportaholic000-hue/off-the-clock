@@ -14,7 +14,7 @@ const database = await import('../server/src/db.js');
 database.migrate();
 const { saveKnowledgeBase, getBusinessProfile } = await import('../server/src/onboardingService.js');
 const { compileVoiceSystemInstruction } = await import('../server/src/voice/voicePromptCompiler.js');
-const GUIDE = fs.readFileSync(new URL('../specs/voice_quote_flows.md', import.meta.url), 'utf8');
+const GUIDE = fs.readFileSync(new URL('../server/src/voice/receptionistGuide.md', import.meta.url), 'utf8');
 const OWNER = 'synthetic-nightclub-owner';
 database.db.prepare('INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,?,?,?,?,?,?,?,?)')
   .run(OWNER, OWNER + '@example.invalid', '[SYNTHETIC]', '[SYNTHETIC]', '[SYNTHETIC] Night Club', 'Operator', 'active', 'UTC', 'owner', '2026-10-05T12:00:00.000Z');

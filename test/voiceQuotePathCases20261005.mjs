@@ -87,7 +87,7 @@ async function harness({fail=false}={}){
 test('signed production voice exposes server-only listed-price multiplication and speaks its exact response',async()=>{
   // Written in verification/engine-leftovers/EXPECTATIONS.md: $0.10 × 3 = $0.30.
   const h=await harness();try{
-    const listedItem='[SYNTHETIC] Widget $0.10 each. Pickup only.';
+    const listedItem='[SYNTHETIC] Widget $0.10 each. Taxes extra.';
     h.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listedItem}),h.owner);
     await h.connect();
     const config=h.fake.connects[0].config;
@@ -96,7 +96,7 @@ test('signed production voice exposes server-only listed-price multiplication an
     assert.doesNotMatch(JSON.stringify(config.systemInstruction),/you may multiply/);
     const result=await h.fake.tool('calculateListedPrice',{listedItem,quantity:'3',customerConfirmed:true});
     assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,'0.30');
-    assert.match(result.voiceSummary,/\$0\.30/);assert.match(result.voiceSummary,/Pickup only/);
+    assert.match(result.voiceSummary,/\$0\.30/);assert.match(result.voiceSummary,/Taxes extra/);
     assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes').get().n,0);
   }finally{await h.close();}
 });

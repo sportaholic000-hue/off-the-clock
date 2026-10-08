@@ -69,6 +69,11 @@ export function installOwnerAlertSchema(db) {
     VALUES(lower(hex(randomblob(16))),NEW.ownerId,'callback.updated:'||NEW.id||':'||json_array_length(NEW.historyJson),'callback.updated',NEW.id,NEW.callId,NEW.updatedAt,NEW.updatedAt)
     ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('preference','bookingPreferences','booking.preference_requested',{call:`(SELECT COALESCE(l.callId,q.callId) FROM bookingIntents i LEFT JOIN leads l ON l.ownerId=i.ownerId AND l.id=i.sourceId AND i.sourceType='lead' LEFT JOIN quotes q ON q.ownerId=i.ownerId AND q.id=i.sourceId AND i.sourceType='quote' WHERE i.ownerId=NEW.ownerId AND i.id=NEW.intentId)`});
+  db.exec(`CREATE TRIGGER IF NOT EXISTS owner_alert_settings_invalid AFTER INSERT ON outboxEvents WHEN NEW.eventType='voice.settings_invalid'
+    BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,sourceJson,createdAt,updatedAt)
+    VALUES(lower(hex(randomblob(16))),NEW.ownerId,'voice.settings_invalid:'||NEW.id,'voice.settings_invalid',NEW.id,
+      (SELECT id FROM calls WHERE ownerId=NEW.ownerId AND callSid=json_extract(NEW.payloadJson,'$.callSid')),NEW.payloadJson,NEW.createdAt,NEW.updatedAt)
+    ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('quoting_unavailable','outboxEvents','voice.quoting_unavailable',{when:"NEW.eventType='voice.quoting_unavailable'",call:"CASE WHEN json_valid(NEW.payloadJson) THEN (SELECT id FROM calls WHERE ownerId=NEW.ownerId AND callSid=json_extract(NEW.payloadJson,'$.callSid')) END"});
   trigger('urgent','outboxEvents','voice.urgent_flagged',{when:"NEW.eventType='voice.urgent_flagged'",call:"CASE WHEN json_valid(NEW.payloadJson) THEN (SELECT id FROM calls WHERE ownerId=NEW.ownerId AND callSid=json_extract(NEW.payloadJson,'$.callSid')) END"});
   trigger('call_finish','calls','call.completed',{operation:'UPDATE OF completedAt',when:'NEW.completedAt IS NOT NULL AND OLD.completedAt IS NULL',call:'NEW.id',time:'NEW.completedAt'});
