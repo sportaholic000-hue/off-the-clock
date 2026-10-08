@@ -20,3 +20,7 @@ Base Codex efba22b. This commit adds the two-word unit fix.
 - claude/homepage-copy-20261008 (bd37e74) overlaps this branch in client/src/ownerAlerts.jsx and server/src/voice/productionVoiceRuntime.js; re-pin verification/tenant-isolation-20261007/route-sources.json after combining.
 - Calendar/billing/dashboard agent has not reported.
 - Codex commits use the owner's personal email as author.
+
+## Added 2026-10-08 (owner)
+- Guide tone: owner wants occasional natural filler words ("um", "hmm", "uh", "let's see") so the receptionist never sounds robotic or perfect. Use them sparingly and naturally; never inside a price, measurement or read-back, and never in the quote narration.
+- Calendar/billing/dashboard agent pushed fix/calendar-billing-dashboard-20261008 at e34e5f4 (base c68b9bc). Its sandbox reported 3,865 passed / 57 Chromium-launch failures; test:quote unfinished. Claude to verify after the receptionist branch: review six items, own reproductions, cold npm test + test:quote.
