@@ -1,0 +1,455 @@
+{
+  "baseCommit": "4e6cf6330a7253f086fa167037d572d28eac0029",
+  "runs": [
+    {
+      "source": "base",
+      "counts": {
+        "tests": 53,
+        "pass": 9,
+        "fail": 44,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "tests": [
+        {
+          "name": "billing repair 1: failed receptionist \u2192 owner-forward bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 operator-off-message bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 fallback-forward bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 fallback-capture bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 restart-after-owner bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 receipt-before-owner bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 late-media-close bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 meter-only-close bills zero including owner leg",
+          "passed": false
+        },
+        {
+          "name": "billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60",
+          "passed": false
+        },
+        {
+          "name": "billing repair 2: provisional trial duration cannot send irreversible warning",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: final cancelled month charges the remainder at service end",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: all three customer billing sentences state the threshold and remainder rule",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: a final declined card creates a truthful unpaid notice after cancellation",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: lost item receipt on second installment reconciles despite subsequent usage",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy",
+          "passed": false
+        },
+        {
+          "name": "billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: valid future 2027-03-02T12:00:00Z is preserved",
+          "passed": true
+        },
+        {
+          "name": "billing repair 2: extending the same trial does not reset warning identities",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles",
+          "passed": false
+        },
+        {
+          "name": "billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 owner, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 message, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 owner, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 message, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 owner, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 message, signed whole-call duration is free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error before warm-transfer acceptance remains free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-error after warm-transfer acceptance remains free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-close before warm-transfer acceptance remains free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: session-close after warm-transfer acceptance remains free",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: late media completion and summary cannot erase operator-off exclusion",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: direct fallback final capture excludes a still-connected row",
+          "passed": false
+        },
+        {
+          "name": "billing repair 1 production: direct fallback partial capture excludes a still-connected row",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "source": "after",
+      "counts": {
+        "tests": 53,
+        "pass": 53,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "tests": [
+        {
+          "name": "billing repair 1: failed receptionist \u2192 owner-forward bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 operator-off-message bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 fallback-forward bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 fallback-capture bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 restart-after-owner bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 receipt-before-owner bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 late-media-close bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1: failed receptionist \u2192 meter-only-close bills zero including owner leg",
+          "passed": true
+        },
+        {
+          "name": "billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60",
+          "passed": true
+        },
+        {
+          "name": "billing repair 2: provisional trial duration cannot send irreversible warning",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: final cancelled month charges the remainder at service end",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: all three customer billing sentences state the threshold and remainder rule",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: a final declined card creates a truthful unpaid notice after cancellation",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: lost item receipt on second installment reconciles despite subsequent usage",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved",
+          "passed": true
+        },
+        {
+          "name": "billing repair 4: valid future 2027-03-02T12:00:00Z is preserved",
+          "passed": true
+        },
+        {
+          "name": "billing repair 2: extending the same trial does not reset warning identities",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles",
+          "passed": true
+        },
+        {
+          "name": "billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 owner, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 message, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: startup \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 owner, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 message, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 owner, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 message, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close \u2192 capture, signed whole-call duration is free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error before warm-transfer acceptance remains free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-error after warm-transfer acceptance remains free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close before warm-transfer acceptance remains free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: session-close after warm-transfer acceptance remains free",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: failed warm transfer enters capture-again with a durable zero-minute exclusion",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: late media completion and summary cannot erase operator-off exclusion",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: direct fallback final capture excludes a still-connected row",
+          "passed": true
+        },
+        {
+          "name": "billing repair 1 production: direct fallback partial capture excludes a still-connected row",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

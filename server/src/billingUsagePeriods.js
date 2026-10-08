@@ -2,7 +2,7 @@ import {allowancePeriods,billingUsageId,MINUTE_PLANS,usageOwnerQuery} from './bi
 
 export function recordOwnerUsagePeriods({database,ownerQuery,ownerId,priceIds={},at=new Date().toISOString()}) {
   const query=usageOwnerQuery(database,ownerQuery);
-  const row=query(`SELECT b.*,u.plan,u.planStatus,u.annualPaidThroughAt,e.stateJson,e.ambiguous
+  const row=query(`SELECT b.*,u.plan,u.planStatus,u.annualPaidThroughAt,u.paidThroughAt,u.serviceEndsAt,e.stateJson,e.ambiguous
     FROM billingAccounts b JOIN users u ON u.id=b.ownerId LEFT JOIN billingSubscriptionEvidence e
     ON e.ownerId=b.ownerId AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE b.ownerId=?`).get(ownerId);
   if(!row||!MINUTE_PLANS[row.plan]||row.ambiguous||!row.stripeSubscriptionId||!row.currentPeriodStartAt||!row.currentPeriodEndAt||
@@ -13,7 +13,7 @@ export function recordOwnerUsagePeriods({database,ownerQuery,ownerId,priceIds={}
   if(!['monthly','annual'].includes(interval)||facts.status==='trialing')return null;
   const start=row.currentPeriodStartAt,end=row.currentPeriodEndAt;
   if(facts.trialEnd&&Date.parse(start)<facts.trialEnd*1000)return null;
-  if(row.planStatus==='canceled'&&!(interval==='annual'&&row.annualPaidThroughAt>=end))return null;
+  if(row.planStatus==='canceled'&&!(row.paidThroughAt>=end||interval==='annual'&&row.annualPaidThroughAt>=end))return null;
   const anchor=facts.billingAnchor ? new Date(facts.billingAnchor*1000).toISOString():start;
   const periods=allowancePeriods({start,end,interval,anchor:anchor<=start?anchor:start});
   for(const period of periods){

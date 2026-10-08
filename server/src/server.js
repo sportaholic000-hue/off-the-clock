@@ -505,7 +505,7 @@ app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
 installQuoteEmailRoutes(app,{service:quoteEmailDelivery});
-const voiceRuntime=installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>minuteBilling.syncOwner(ownerId),providers:{quoteEmailDelivery}});
+const voiceRuntime=installProductionVoice({app,database:db,bookingService,runtimeConfig,onUsage:ownerId=>{minuteBilling.syncOwner(ownerId);void minuteBilling.processOwner(ownerId).catch(()=>console.error('MINUTE_BILLING_PENDING'));},providers:{quoteEmailDelivery}});
 
 if(deploymentConfig.production) installOwnerAssets(app,deploymentConfig.ownerDist);
 

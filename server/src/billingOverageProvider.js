@@ -3,7 +3,7 @@ import {MINUTE_PLANS} from './billingUsagePolicy.js';
 const reference=value=>typeof value==='string'?value:value?.id;
 const fail=()=>billingProviderError('BILLING_OVERAGE_CONFIRMATION_REQUIRED');
 
-// A separate monthly usage invoice keeps annual base payments annual. Every
+// Usage installments keep annual base payments annual. Every
 // remote mutation is journalled by the service before this adapter executes it.
 export function createStripeOverageProvider({stripeClient:stripe}={}) {
   if(!stripe)return null;
@@ -19,12 +19,14 @@ export function createStripeOverageProvider({stripeClient:stripe}={}) {
     throw fail(); // An incomplete read never authorizes another invoice/item.
   }
   return {async submit(period,charge,journal){
-    const metadata={otc_usage_period:period.id,otc_usage_digest:charge.usageDigest};
+    const chargeId=charge.id||period.id;
+    const metadata={otc_usage_period:period.id,otc_usage_digest:charge.usageDigest,...(chargeId!==period.id?{otc_usage_charge:chargeId}:{})};
+    const sameCharge=i=>(i.metadata?.otc_usage_charge||period.id)===chargeId;
     const validInvoice=invoice=>{
-      if(!invoice?.id||reference(invoice.customer)!==period.stripeCustomerId||invoice.metadata?.otc_usage_period!==period.id||invoice.metadata?.otc_usage_digest!==charge.usageDigest)throw fail();return invoice;
+      if(!invoice?.id||reference(invoice.customer)!==period.stripeCustomerId||invoice.metadata?.otc_usage_period!==period.id||invoice.metadata?.otc_usage_digest!==charge.usageDigest||!sameCharge(invoice))throw fail();return invoice;
     };
     const invoices=charge.providerInvoiceId?[]:await listAll((...args)=>stripe.invoices.list(...args),{customer:period.stripeCustomerId});
-    const found=invoices.filter(i=>i.metadata?.otc_usage_period===period.id);
+    const found=invoices.filter(i=>i.metadata?.otc_usage_period===period.id&&sameCharge(i));
     if(found.length>1)throw fail();
     let invoice=charge.providerInvoiceId
       ? validInvoice(await read(()=>stripe.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS)))
@@ -43,7 +45,7 @@ export function createStripeOverageProvider({stripeClient:stripe}={}) {
         auto_advance:false,pending_invoice_items_behavior:'exclude',discounts:'',metadata,
         description:`Voice minute overage ${period.startAt.slice(0,10)} to ${period.endAt.slice(0,10)}`,
         ...(paymentMethod?{default_payment_method:paymentMethod}:{})
-      },{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-invoice-'+period.id})));
+      },{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-invoice-'+chargeId})));
     }
     journal.save({providerInvoiceId:invoice.id,currency:price.currency});
     const items=await listAll((...args)=>stripe.invoiceItems.list(...args),{invoice:invoice.id});
@@ -54,16 +56,16 @@ export function createStripeOverageProvider({stripeClient:stripe}={}) {
       item=await journal.mutate('item',()=>stripe.invoiceItems.create({customer:period.stripeCustomerId,invoice:invoice.id,
         amount:charge.amountCents,currency:price.currency,discountable:false,metadata,
         period:{start:Math.floor(Date.parse(period.startAt)/1000),end:Math.floor(Date.parse(period.endAt)/1000)},
-        description:`${charge.minutesUsed-MINUTE_PLANS[period.plan].included} extra voice minutes at $0.35/min`
-      },{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-item-'+period.id}));
+        description:`${charge.amountCents/35} extra voice minutes at $0.35/min`
+      },{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-item-'+chargeId}));
     }
     if(!item?.id||reference(item.customer)!==period.stripeCustomerId||reference(item.invoice)!==invoice.id||
-      item.metadata?.otc_usage_period!==period.id||item.metadata?.otc_usage_digest!==charge.usageDigest||item.amount!==charge.amountCents||item.currency!==price.currency)throw fail();
+      item.metadata?.otc_usage_period!==period.id||!sameCharge(item)||item.metadata?.otc_usage_digest!==charge.usageDigest||item.amount!==charge.amountCents||item.currency!==price.currency)throw fail();
     journal.save({providerItemId:item.id});
     invoice=validInvoice(await read(()=>stripe.invoices.retrieve(invoice.id,{},BILLING_PROVIDER_OPTIONS)));
     if(invoice.subtotal!==charge.amountCents||invoice.currency!==price.currency)throw fail();
-    if(invoice.status==='draft')invoice=validInvoice(await journal.mutate('finalize',()=>stripe.invoices.finalizeInvoice(invoice.id,{auto_advance:true},{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-finalize-'+period.id}),{resourceUpdate:true}));
-    if(!['open','paid'].includes(invoice.status)||invoice.subtotal!==charge.amountCents)throw fail();
+    if(invoice.status==='draft')invoice=validInvoice(await journal.mutate('finalize',()=>stripe.invoices.finalizeInvoice(invoice.id,{auto_advance:true},{...BILLING_PROVIDER_OPTIONS,idempotencyKey:'minute-finalize-'+chargeId}),{resourceUpdate:true}));
+    if(!['open','paid'].includes(invoice.status)||invoice.subtotal!==charge.amountCents||invoice.status==='paid'&&invoice.amount_remaining!==0)throw fail();
     return {status:invoice.status==='paid'?'PAID':'SUBMITTED',providerInvoiceId:invoice.id,invoice};
   }};
 }

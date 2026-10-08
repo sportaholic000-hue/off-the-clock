@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {isVoiceCaller} from './callerIdentity.js';
 import crypto from 'node:crypto';
 import {isFinalVoiceCall,preserveVoiceRequest} from './voiceRecovery.js';
@@ -116,6 +117,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
 
 export function createVoiceSessionStore({
   database,
+  ownerQuery,
   clock = () => new Date(),
   maxConcurrentCalls = 5,
   admission,
@@ -124,6 +126,7 @@ export function createVoiceSessionStore({
   if (!database || typeof database.prepare !== 'function' || typeof database.exec !== 'function') {
     throw new TypeError('Voice session persistence requires a synchronous SQLite database.');
   }
+  const query=usageOwnerQuery(database,ownerQuery);
   function nowIso() {
     const value = clock();
     const date = value instanceof Date ? value : new Date(value);
@@ -138,7 +141,7 @@ export function createVoiceSessionStore({
 
   if(!Number.isSafeInteger(maxConcurrentCalls)||maxConcurrentCalls<1)throw new TypeError('Invalid concurrent call ceiling.');
   function boundCall(context){
-    const call=database.prepare('SELECT * FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
+    const call=query('SELECT * FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
     if(call&&(call.accountSid!==context.accountSid||call.callerNumber!==context.from||call.destinationNumber!==context.to))throw Error('Call binding mismatch.');
     return call;
   }
@@ -222,9 +225,15 @@ export function createVoiceSessionStore({
     recordHumanRouting({context,forwarded}) {
       if(!validContext(context))throw new TypeError('Voice call context is invalid.');
       return immediate(database,()=>{
-        const existing=boundCall(context);if(existing){if(isFinalVoiceCall(existing.status))return {terminal:true};return {callRecordId:existing.id};}
+        const existing=boundCall(context);if(existing){
+          if(isFinalVoiceCall(existing.status))return {terminal:true};
+          // Routing to a human (or the operator-off message) permanently removes
+          // this call from AI billing, including late media/provider callbacks.
+          query("UPDATE calls SET status='HUMAN_ROUTING',outcome='OPERATOR_OFF',minutesBilled=0,updatedAt=? WHERE ownerId=? AND id=?").run(nowIso(),context.ownerId,existing.id);
+          return {callRecordId:existing.id};
+        }
         const at=nowIso(),id=randomUUID(),message=forwarded?'Operator was off. Routing was issued to the business phone; a human answer has not been confirmed.':'Operator was off. Human routing could not be confirmed because forwarding setup is incomplete. No AI answering or message capture was started.';
-        database.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,outcome,summaryText,transcriptJson,minutesBilled,createdAt,updatedAt) VALUES(?,?,?,?,?,?,'HUMAN_ROUTING','OPERATOR_OFF',?,'[]',0,?,?)").run(id,context.ownerId,context.callSid,context.accountSid,context.from,context.to,message,at,at);
+        query("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,outcome,summaryText,transcriptJson,minutesBilled,createdAt,updatedAt) VALUES(?,?,?,?,?,?,'HUMAN_ROUTING','OPERATOR_OFF',?,'[]',0,?,?)").run(id,context.ownerId,context.callSid,context.accountSid,context.from,context.to,message,at,at);
         return {callRecordId:id};
       });
     },
@@ -289,12 +298,17 @@ export function createVoiceSessionStore({
     finishCall({context,status,reason,streamSid=null,duration=0,finalizeMetadata}){
       return immediate(database,()=>{
         const call=boundCall(context);if(!call)throw Error('Call unavailable.');
+        if(status==='FAILED'&&(call.status==='TRANSFERRING'||call.outcome==='TRANSFER_CONNECTED')){
+          // The transfer owns connection state, but an AI failure during the
+          // handoff still excludes the entire call, including the owner's leg.
+          query("UPDATE calls SET outcome='AI_FALLBACK',failureCode=?,minutesBilled=0,updatedAt=? WHERE ownerId=? AND id=?").run(reason,nowIso(),context.ownerId,call.id);
+        }
         if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING'){finalizeMetadata?.();return;}
         const at=nowIso();
         // Even without an explicit captureLead tool call, preserve the caller's
         // received request. Never mark final if this transaction cannot commit.
         if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
-        database.prepare('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.status==='FALLBACK'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+        query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'?'OPERATOR_OFF':call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
         finalizeMetadata?.();
       });
     },
@@ -309,7 +323,7 @@ export function createVoiceSessionStore({
           // still persisted owner requests, never candidates for a new call.
           const context={ownerId:call.ownerId,callSid:call.callSid||'legacy:'+call.id,accountSid:call.accountSid,from:call.callerNumber||'unknown',to:call.destinationNumber};
           const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
-          database.prepare("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN status='FALLBACK' THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
+          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
         }
         return rows.length;
       });

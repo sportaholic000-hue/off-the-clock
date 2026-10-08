@@ -5,7 +5,7 @@
   },
   {
     "file": "src/billingCustomerLifecycle.js",
-    "sha256": "9fd86cf6715a6d77938ccc0bb57c01c4b552771e85519a1a42c9c40c7cec2aa5"
+    "sha256": "e5a3bbb10f7f5cdbe040f0a54475f80cf16d3a07a2163c1eadfdf1c85d6e6818"
   },
   {
     "file": "src/billingRoutes.js",
@@ -77,7 +77,7 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "8342a880578af019750c89ed3353135847d4adcf308f8c2c3f66a664ea942582"
+    "sha256": "506a6907aa151ed36924939496d68bd73d9a3906575e4f77a5b2f09aca4aa7aa"
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
@@ -85,11 +85,11 @@
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "9b5d4dd7b05530f7c341d1b315d018574ab2a06cf86632e3d4da309f2bfd5085"
+    "sha256": "65100e403241261c23a14a0f51c65a95c0e40b1b837f03479698de8a594e065f"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
-    "sha256": "eab8b9af1627e51224020d5353dc50f8b9fe45fa58fb64acdc146cab4734ce4f"
+    "sha256": "f8c0f2b567a3b1ee7f7de3b4894d2dcd6d4a1b601cd388466a1f0bcea1724f7b"
   },
   {
     "file": "src/voice/voiceWebSocketServer.js",

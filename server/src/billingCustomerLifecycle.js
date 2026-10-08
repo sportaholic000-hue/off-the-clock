@@ -9,9 +9,9 @@ const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCod
 const addDays=(at,days)=>new Date(Date.parse(at)+days*DAY).toISOString();
 // Called only after the minute service verifies the signed/provider invoice
 // against its frozen customer, invoice ID, amount, currency and usage digest.
-export function recordUsageInvoicePayment(database,{ownerId,period,charge,invoice,at}){
+export function recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,charge,invoice,at}){
   return usageTransaction(database,()=>{
-    const query=usageOwnerQuery(database),account=query(`SELECT b.*,u.planStatus FROM billingAccounts b
+    const query=usageOwnerQuery(database,ownerQuery),account=query(`SELECT b.*,u.planStatus FROM billingAccounts b
       JOIN users u ON u.id=b.ownerId WHERE b.ownerId=?`).get(ownerId);
     const object={...invoice,subscription:period.stripeSubscriptionId,
       amount_paid:Number.isSafeInteger(invoice.amount_paid)?invoice.amount_paid:charge.amountCents};
@@ -141,7 +141,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         AND id IN (SELECT id FROM ownerEmailDeliveries WHERE ownerId=? AND suppressedAt IS NOT NULL AND unpaidInvoiceId=?)`)
         .run(now(),ownerId,ownerId,invoice.stripeInvoiceId);
       if(invoice.status!=='PAID'&&invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
-        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. Service continues during the seven-day grace period ending ${addDays(billingIso(invoice.failedAt),7)}; unresolved payment suspends service.`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
+        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the seven-day grace period ending ${addDays(billingIso(invoice.failedAt),7)}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
     }
     for(const charge of query("SELECT * FROM billingUsageCharges WHERE ownerId=? AND status='PAID'").all(ownerId))if(charge.providerInvoiceId)
       notice(ownerId,'receipt',charge.providerInvoiceId,`Overage payment received: ${billingMoney(charge.amountCents)} ${(charge.currency||'').toUpperCase()}. Invoice ${charge.providerInvoiceId}. Charge confirmed: ${charge.updatedAt}. ${link()}`,
@@ -256,7 +256,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     query("DELETE FROM events WHERE ownerId=? AND eventType NOT LIKE 'billing.%'").run(ownerId);
     query("UPDATE billingCancellations SET dataDeletedAt=?,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
   });}
-  async function stopUsageCollection(ownerId,assertLease){
+  async function reconcileEndedUsage(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
     const charges=query(`SELECT c.*,p.stripeCustomerId,p.stripeSubscriptionId FROM billingUsageCharges c JOIN billingUsagePeriods p
       ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
@@ -265,28 +265,27 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       try{
       const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
       assertLease();
-      const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest;
+      const bound=i=>i?.id===charge.providerInvoiceId&&billingReference(i.customer)===charge.stripeCustomerId&&i.metadata?.otc_usage_period===charge.periodId&&i.metadata?.otc_usage_digest===charge.usageDigest&&
+        (i.metadata?.otc_usage_charge||charge.periodId)===charge.id&&i.subtotal===charge.amountCents&&i.currency===charge.currency&&(i.status!=='paid'||i.amount_remaining===0);
       if(!bound(invoice))throw error('BILLING_PROVIDER_MISMATCH',502);
       if(invoice.status==='paid'){
         const period=query('SELECT * FROM billingUsagePeriods WHERE ownerId=? AND id=?').get(ownerId,charge.periodId);
-        query("UPDATE billingUsageCharges SET status='PAID',updatedAt=? WHERE ownerId=? AND periodId=? AND status!='REVIEW'").run(now(),ownerId,charge.periodId);
-        recordUsageInvoicePayment(database,{ownerId,period,charge,invoice,at:now()});
-      }else{
-        const receipt=invoice.auto_advance===false?invoice:await billingProviderRead(()=>stripeClient.invoices.update(invoice.id,{auto_advance:false},BILLING_PROVIDER_OPTIONS));
-        assertLease();
-        if(!bound(receipt)||receipt.auto_advance!==false)throw error('BILLING_COLLECTION_STOP_PENDING',502);
+        query("UPDATE billingUsageCharges SET status='PAID',updatedAt=? WHERE ownerId=? AND id=? AND status!='REVIEW'").run(now(),ownerId,charge.id);
+        recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,charge,invoice,at:now()});
       }
-      query('UPDATE billingUsageCharges SET collectionStoppedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND periodId=?').run(now(),now(),ownerId,charge.periodId);
+      // Service end closes the allowance, not the owner's accrued debt. Keep
+      // automatic collection in Stripe; reads reconcile paid receipts only.
+      query('UPDATE billingUsageCharges SET lastError=NULL,updatedAt=? WHERE ownerId=? AND id=?').run(now(),ownerId,charge.id);
       }catch{
         assertLease();
         // Provider uncertainty is durable financial evidence, not permission to
         // keep customer records or a carrier number past their own deadlines.
-        query("UPDATE billingUsageCharges SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND periodId=? AND collectionStoppedAt IS NULL").run(now(),ownerId,charge.periodId);
+        query("UPDATE billingUsageCharges SET lastError='BILLING_COLLECTION_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND collectionStoppedAt IS NULL").run(now(),ownerId,charge.id);
       }
     }
-    const pending=query("SELECT 1 FROM billingUsageCharges WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING' AND collectionStoppedAt IS NULL").get(ownerId);
-    if(pending)query("UPDATE billingCancellations SET lastError='BILLING_COLLECTION_STOP_PENDING',updatedAt=? WHERE ownerId=? AND lastError IS NULL").run(now(),ownerId);
-    else query("UPDATE billingCancellations SET lastError=NULL,updatedAt=? WHERE ownerId=? AND lastError='BILLING_COLLECTION_STOP_PENDING'").run(now(),ownerId);
+    const pending=query("SELECT 1 FROM billingUsageCharges WHERE ownerId=? AND lastError='BILLING_COLLECTION_CONFIRMATION_PENDING' AND collectionStoppedAt IS NULL").get(ownerId);
+    if(pending)query("UPDATE billingCancellations SET lastError='BILLING_COLLECTION_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND lastError IS NULL").run(now(),ownerId);
+    else query("UPDATE billingCancellations SET lastError=NULL,updatedAt=? WHERE ownerId=? AND lastError='BILLING_COLLECTION_CONFIRMATION_PENDING'").run(now(),ownerId);
   }
   async function cleanup(ownerId,{deadlineAt=now(),assertLease}={}){
     let row=cancellation(ownerId);if(!row||!['CONFIRMED','ENDED'].includes(row.state)||deadlineAt<row.endAt)return;
@@ -340,7 +339,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(localOnly)return;
     await withBillingLease(database,ownerId,async assertLease=>{
       row=cancellation(ownerId);
-      if(row&&['CONFIRMED','ENDED'].includes(row.state)&&row.endAt<=now())await stopUsageCollection(ownerId,assertLease);
+      if(row&&['CONFIRMED','ENDED'].includes(row.state)&&row.endAt<=now())await reconcileEndedUsage(ownerId,assertLease);
     },{clock});
     await recoverReceiptCurrencies(ownerId);syncNotices(ownerId);await reminders(ownerId);
     for(let i=0;i<12;i++)if(!await emails.deliverOne(ownerId))break;

@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {ownerUtcInstant} from './ownerDate.js';
 import {storedObject} from './ownerRecordViews.js';
 import {recordWorkflow} from './ownerWorkflowViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
@@ -46,7 +47,7 @@ export function createOwnerWorkflowService({database,ownerQuery=sql=>database.pr
       const now=clock().toISOString(),next={...workflow,version:workflow.version+1,note:body.note.trim(),updatedAt:now};
       let status=row.status,payload={};
       if(['CALL_BACK','BOOK'].includes(body.action)){
-        if(body.dueAt!==undefined&&body.dueAt!==null&&(typeof body.dueAt!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(body.dueAt)||!Number.isFinite(Date.parse(body.dueAt))||Date.parse(body.dueAt)<=Date.parse(now)))throw problem('Choose a future follow-up time.');
+        if(body.dueAt!==undefined&&body.dueAt!==null&&(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(body.dueAt)||!ownerUtcInstant(body.dueAt)||ownerUtcInstant(body.dueAt)<=now))throw problem('Choose a future follow-up time.');
         next.followUpAction=body.action;next.followUpStatus='OPEN';next.dueAt=body.dueAt||null;
       }else if(body.action==='COMPLETE_FOLLOW_UP'){
         if(workflow.followUpStatus!=='OPEN')throw problem('There is no open follow-up to complete.',409);

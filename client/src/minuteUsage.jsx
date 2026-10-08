@@ -13,12 +13,14 @@ export default function MinuteUsage({usage}){
         <div><dt>Minutes used</dt><dd>{usage.minutesUsed.toLocaleString('en-CA')}</dd></div>
         <div><dt>Minutes left</dt><dd>{usage.minutesLeft.toLocaleString('en-CA')}</dd></div>
         <div><dt>Overage so far</dt><dd>{minuteMoney(usage.overageCents)}</dd></div>
+        <div><dt>Charged so far</dt><dd>{minuteMoney(usage.chargedCents)}</dd></div>
+        <div><dt>Not yet charged</dt><dd>{minuteMoney(usage.unchargedCents)}</dd></div>
       </dl>
-      {usage.status==='PAID'?<p>Extra minutes: $0.35/min. {usage.billingInterval==='annual'?'Your annual plan includes a fresh allowance each monthly anniversary; overage is billed monthly.':null}</p>:<p>Trial minutes are not billed as overage.</p>}
-      {usage.unconfirmedCalls>0?<p>Some call durations are awaiting provider confirmation. Overage is not charged until those durations are reconciled.</p>:null}
+      {usage.status==='PAID'?<p>Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:<p>Trial minutes are not billed as overage.</p>}
+      {usage.unconfirmedCalls>0?<p>Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.</p>:null}
       {(usage.warnings||[]).map(warning=><Notice key={warning.id} tone="warning">{warning.message}{['PENDING','SENDING','ACCEPTED','REVIEW','BOUNCED'].includes(warning.emailStatus)?' Email delivery is pending or needs attention; this dashboard warning is saved.':null}</Notice>)}
       {usage.upgradeMessage?<Notice>{usage.upgradeMessage}</Notice>:null}
     </>:<p>{usage.message||'Minute usage is waiting for verified billing-period information.'}</p>}
-    {(usage.pendingCharges||[]).map(charge=><Notice key={charge.periodId} tone="warning">{charge.startAt.slice(0,10)} to {charge.endAt.slice(0,10)}: {minuteMoney(charge.amountCents)}. {charge.message}</Notice>)}
+    {(usage.pendingCharges||[]).map(charge=><Notice key={charge.id||charge.periodId} tone="warning">{charge.startAt.slice(0,10)} to {charge.endAt.slice(0,10)}: {minuteMoney(charge.amountCents)}. {charge.message}</Notice>)}
   </section>;
 }
