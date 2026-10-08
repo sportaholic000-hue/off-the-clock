@@ -3,7 +3,10 @@ const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)
 const refusal=()=>({status:'needs_review',message:'The saved listing or quantity cannot be multiplied safely. Repeat only the saved listing word for word with its conditions, or ask the business to review it. No multiplied amount is available.'});
 const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
-const priceSentence=/^(?<item>[\p{L}\p{M}\[][\p{L}\p{M}\s:'’()\[\]-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)[a-z]+(?:\s+[a-z]+)?)\.?$/iu;
+const priceSentence=/^(?<item>[\p{L}\p{M}\[][\p{L}\p{M}\s:'’()\[\]-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
+// A unit is one word, or a standard two-word measure (square foot, linear
+// foot, cubic yard...). Any other second word ("per hour minimum", "per item
+// daily", "per sqft twice") can change the charge, so it is not multiplied.
 const taxSentence=/^(?:all prices\s+)?(?:plus\s+(?:HST|GST|tax)(?:\s*(?:and|\/)\s*(?:HST|GST|tax))?|taxes extra)\.?$/i;
 const contactSentence=/^call(?: us| me)? (?:for (?:a )?(?:free )?(?:estimate|quote|hours|access|details|information)|to (?:book|schedule)(?: an? (?:appointment|estimate))?)\.?$/i;
 // Positive sentence grammar: one flat rate and only tax/contact qualifications.
