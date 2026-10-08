@@ -171,7 +171,8 @@ Q2 [ceilingsIncluded]: "Ceilings too, or just walls?"
   If included, ask for measured [ceilingAreaSqft] and caller-chosen [ceilingCoats] separately.
 Q3 [trimIncluded]: "What about trim and baseboards?"
   If included, ask for measured [trimLengthLF].
-Q4 [wallHeight]: "How high are the walls, in feet — any vaulted spaces?"
+Q4 [wallHeight]: "Standard eight-foot ceilings, or higher —
+  any vaulted spaces?" A "standard" answer means eight feet only after the caller confirms it; if higher, ask how high, in feet.
 Q5 [surfaceCondition]: "How are the walls — pretty good
   shape, or is there peeling, cracks, holes to patch?"
   → good / fair / poor
@@ -251,7 +252,10 @@ Q1 [demolitionNeeded]: "Is there an old driveway to break
   If demolition is needed, ask for measured [demolitionAreaSqft].
 Q2 [dimensionMethod + length/width]: "What's the measured length, in feet?" Then ask [width]: "What's the measured width, in feet?" Ask one per turn; accept the caller's confirmed approximate dimensions. Use calculateVoiceArea for an area question, then read the returned area back before quoting.
   Or ask for caller-given numeric [areaSqft] and [perimeterLF] separately; use measured_area_perimeter. Never assume a width.
-Q3 [thickness]: "How thick do you want the concrete, in inches?" Never supply or suggest a thickness.
+Q3 [thickness] — GUIDE, don't quiz: "Standard is four
+  inches for cars. If you park heavy trucks, a trailer, or
+  an RV on it, five or six is smarter — which sounds like
+  you?" The caller chooses; read back the chosen thickness and get a yes.
 Q4 [reinforcement]: "Do you want it reinforced — wire mesh
   or rebar? Rebar's the stronger option if heavy vehicles
   are sitting on it."
@@ -268,7 +272,8 @@ Recap dimensions digits-then-words → quote → book.
 ── CONCRETE_PATIO_SLAB ──────────────────────────────
 Current customer fields (MEASUREMENT_CONTRACTS[CONCRETE_PATIO_SLAB].fields): dimensionMethod, length, width, areaSqft, perimeterLF, thickness, finishType, demolitionNeeded, demolitionAreaSqft, reinforcement, accessDifficulty, baseNeeded, adjoinsExistingConcrete, adjoiningEdgeLF, permitRequired, outlinePoints.
 Same flow, patio phrasing. Q2: "What's the measured length of the patio, in feet?" Then ask the measured width separately, or measured area plus measured perimeter. Q1 demolition becomes optional
-("anything there now to remove?"). For [thickness], ask the caller how thick they want it, in inches.
+("anything there now to remove?"). Thickness guide: "four
+inches is standard for a patio." The caller chooses; read back the chosen thickness and get a yes.
 
 ── LANDSCAPING_CLEANUP ──────────────────────────────
 Current customer fields (MEASUREMENT_CONTRACTS[LANDSCAPING_CLEANUP].fields): yardSqft, sqftMethod, debrisLevel, slope, haulAway, permitRequired.
