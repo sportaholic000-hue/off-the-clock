@@ -55,7 +55,6 @@ for(const sentence of [
  'Text us to get half off.',
  'Text us for free delivery.',
  'Free estimates only if you text us.',
- 'Text us for a free estimate.',
  "We'll text you about the discount.",
  'We send texts explaining surcharges.',
 ])test('audit 2 financial sentence without an amount is untouched: '+sentence,()=>{
@@ -79,7 +78,11 @@ test('audit 2 prompt and calculator accept the same rewritten ordinary contact i
  assert.equal(result.listedItem,rewritten);
 });
 
-test('audit 2 free-estimate financial condition remains word for word',()=>{
- assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'Call or text for a free estimate.');
- assert.equal(rewriteKnowledgeText('Text or call for a free quote.'),'Text or call for a free quote.');
+test('audit 2 a contact-only free-estimate invitation is removed; a channel condition stays (owner ruling 2026-10-08)',()=>{
+ // The caller is already on the call and is quoted there, so the invitation is
+ // removed rather than rewritten into an unconditional "Free estimates" claim.
+ assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'');
+ assert.equal(rewriteKnowledgeText('Text or call for a free quote.'),'');
+ assert.equal(rewriteKnowledgeText('Text us for a free estimate.'),'');
+ assert.equal(rewriteKnowledgeText('Free estimates only if you text us.'),'Free estimates only if you text us.');
 });

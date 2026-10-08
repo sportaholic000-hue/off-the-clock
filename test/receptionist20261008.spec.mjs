@@ -73,6 +73,8 @@ test('receptionist 3 sentence rewriting removes only communication offers and pr
  assert.equal(rewriteKnowledgeText("We send texts. Hours: 9 to 5. Automatic SMS reminders available. We'll text you a reminder."),'Hours: 9 to 5.');
  assert.equal(rewriteKnowledgeText('Text or call for access. Text us for a quote. Text me to book.'),'');
  assert.equal(calculate('$20 each. Pickup only.','3').status,'needs_review');
- assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'Call or text for a free estimate.');
- assert.equal(calculate(mixed.split('\n\n')[0],'120',rewriteKnowledgeText(mixed.split('\n\n')[0])).status,'needs_review');
+ assert.equal(rewriteKnowledgeText('Call or text for a free estimate.'),'');
+ // 120 linear feet x $2.50 = $300.00 (hand-calculated); the contact line no longer blocks the listing.
+ const gutter=calculate(mixed.split('\n\n')[0],'120',rewriteKnowledgeText(mixed.split('\n\n')[0]));
+ assert.equal(gutter.status,'calculated');assert.equal(gutter.extendedAmount,'300.00');assert.doesNotMatch(gutter.voiceSummary,/\b(?:call|text)\b/i);
 });
