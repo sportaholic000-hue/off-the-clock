@@ -149,7 +149,7 @@ export function offeringContract(type,p,rules={}) {
   const fields={permitRequired:bool('Permit required for this measured project')};
   if(fence(type))Object.assign(fields,{
     linearFeet:number('Measured fence length excluding gate openings','linear feet',1),
-    lfMethod:choice('Fence measurement method',['exact','assumption']),
+    lfMethod:choice('Fence measurement method',['exact']),
     fenceType:{label:'Fence type',type:'slug',unit:null},fenceHeight:number('Fence height','feet',Number.MIN_VALUE,Number.MAX_VALUE),
     terrainSlope:choice('Terrain slope',['flat','moderate','steep']),
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${k.replaceAll('_',' ')} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
@@ -158,7 +158,7 @@ export function offeringContract(type,p,rules={}) {
     ...(type==='FENCING_REPLACEMENT'?{oldFenceRemoval:bool('Old fence removal included'),removalLengthLF:number('Measured old fence length to remove','linear feet',0.1)}:{})
   });
   else Object.assign(fields,{
-    areaInputMethod:choice('Wall area measurement method',['wall_sqft','homesize']),
+    areaInputMethod:choice('Wall area measurement method',['wall_sqft']),
     [type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:number('Measured paintable wall area','square feet',1,2_000_000),
     coats:number(installed?'Finish paint coats':'Finish coats on walls and selected ceilings','coats',1,3,{integer:true}),surfaceCondition:choice('Surface condition',['good','fair','poor']),
     ...(type==='INTERIOR_PAINTING'?{wallHeight:choice('Wall height',['standard','high','vaulted']),wallScopeUniform:bool('All wall area shares the confirmed height, access, and finish-coat count'),ceilingsIncluded:bool('Ceiling painting included'),ceilingAreaSqft:number('Measured ceiling area','square feet',1,2_000_000),trimIncluded:bool('Trim painting included'),trimLengthLF:number('Measured trim length','linear feet',0.1)}:{stories:choice('Building stories',[1,2,3])})

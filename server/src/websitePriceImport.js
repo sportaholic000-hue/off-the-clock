@@ -8,7 +8,7 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
   return async function importPrices(input){
     const start=websiteUrl(input),deadline=performance.now()+limits.totalMs;
     const budget={bytesLeft:limits.totalBytes},queue=[start.href],queued=new Set(queue),requested=new Set(),pages=[],entries=[],seen=new Set(),cssCache=new Map();
-    let requests=0,fetchedPages=0,limited=false,visibilityUnverified=false,chars=0;
+    let requests=0,fetchedPages=0,limited=false,visibilityUnverified=false,conditionsUnverified=false,chars=0;
     const remaining=()=>{const ms=deadline-performance.now();if(ms<=0)throw new WebsiteImportError('WEBSITE_TIMEOUT','The website import reached its time limit.');return Math.max(1,Math.floor(ms));};
     async function fetchPage(input,stylesheet=false){
       let url=websiteUrl(input,start.hostname);
@@ -53,8 +53,9 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       pages.push(page.url);
       if(extracted.linksLimited||extracted.limited)limited=true;
       if(extracted.visibilityUnverified)visibilityUnverified=true;
+      if(extracted.conditionsUnverified)conditionsUnverified=true;
       for(const entry of extracted.entries){
-        const conditions=extracted.conditions.filter(note=>!entry.excerpt.includes(note));
+        const conditions=(entry.conditions||[]).filter(note=>!entry.excerpt.includes(note));
         const excerpt=[entry.excerpt,...conditions].join('\n');
         if(seen.has(excerpt))continue;
         if(entries.length>=limits.priceEntries||chars+excerpt.length+(entries.length?2:0)>limits.pricesChars){limited=true;continue;}
@@ -70,10 +71,11 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
     }
     if(queue.some(url=>!requested.has(url)))limited=true;
     return {prices:entries.map(e=>e.excerpt).join('\n\n'),websiteUrl:start.href,draft:true,websiteImport:{
-      entries,pages,limited,visibilityUnverified,
+      entries,pages,limited,visibilityUnverified,conditionsUnverified,
       message:(entries.length?'Website prices are a draft. Review the item names, amounts and conditions before saving.':'No literal prices were found in the pages read. Your saved prices have not changed.')+
         (limited?' Only part of the website could be read within the import limits.':'')+
-        (visibilityUnverified?' Prices were omitted where stylesheet visibility could not be verified. Review the visible website and enter those prices manually.':'')
+        (visibilityUnverified?' Prices were omitted where stylesheet visibility could not be verified. Review the visible website and enter those prices manually.':'')+
+        (conditionsUnverified?' Manual review required: prices were omitted where their conditions could not be associated safely. Review the website and enter each price with all applicable conditions.':'')
     }};
   };
 }

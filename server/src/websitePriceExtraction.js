@@ -10,9 +10,39 @@ const moneyPattern=new RegExp('(?:\\b(?:CA|US|AU|NZ|HK)|[CA])?[$€£¥]\\s*'+nu
 // This is a conservative exclusion, not an instruction interpreter. Website
 // text is never sent to a model; the only output is visible literal excerpts.
 const instruction=/(?:ignore|disregard|override|forget)\b.{0,80}\b(?:instructions?|prompts?|rules?|previous|above)|\b(?:system|developer|assistant)\s*(?:message|prompt|instructions?|:)|\b(?:reveal|exfiltrate)\b|\b(?:you are|act as)\b.{0,60}\b(?:assistant|chatgpt|receptionist|agent)\b|\b(?:tell|instruct)\s+(?:the\s+)?(?:assistant|model|agent)\b/i;
-const conditions=/\b(?:all prices|prices (?:include|exclude|are|subject)|tax(?:es)? (?:not )?included|plus tax|excluding tax)\b/i;
+// A qualification need not contain a number: "Minimum booking: two hours"
+// changes whether a listed unit rate may be used just as much as a dollar fee.
+const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximums?|bookings?|tax(?:es)?|HST|GST|VAT|surcharges?|fees?|discounts?|deposits?|charges?|extra|additional|excluded?|excluding|included?|including|subject to|only|except|conditions?|restrictions?|required|requirements?|starting|up to|about|around|approx(?:imately)?|sale|special|promo(?:tion)?|deal|free|billed separately|charged separately|terms apply)\b/i;
+const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
+const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (?:visit|booking|service|order)|site[- ]wide)\b/i;
+const unclearReference=/\b(?:some|selected|certain|specific|applicable)\s+(?:services?|items?|prices?|offers?|bookings?)\b|\b(?:above|below|following|marked|asterisk)\b|[*†‡]/i;
+const SCOPE=new Set(['root','body','main','section','article','div','li','tr','table','aside','header','footer']);
+const SECTION=new Set(['section','article','li','tr','aside']);
 const amounts=text=>[...text.matchAll(moneyPattern)].map(m=>m[0].trimEnd());
 const normalize=text=>text.replace(/[\t\r\f ]+/g,' ').split('\n').map(s=>s.trim()).filter(Boolean).join('\n');
+const qualification=text=>conditions.test(text)&&(!amounts(text).length||pageWide.test(text)||/\b(?:minimums?|maximums?|surcharges?)\b/i.test(text)||standaloneCharge.test(text.slice(0,text.search(moneyPattern))));
+const within=(node,ancestor)=>{for(let n=node;n;n=n.parent)if(n===ancestor)return true;return false;};
+function finishConditions(candidates,notes,associate){
+  const attached=new Map(candidates.map(entry=>[entry,[]])),withheld=new Set(),savedNotes=new Set();
+  for(const note of notes){
+    const affected=associate(note);
+    // A wrapping excerpt can already contain a note while its separately
+    // extracted child listings still need it. Deduplicate only after binding.
+    if(affected?.length&&affected.every(entry=>entry.excerpt.includes(note.text)))continue;
+    if(!affected||unclearReference.test(note.text)||note.text.length>500){
+      for(const entry of affected||candidates)withheld.add(entry);
+      continue;
+    }
+    if(!affected.length)continue;
+    savedNotes.add(note.text);
+    for(const entry of affected)if(!entry.excerpt.includes(note.text))attached.get(entry).push(note.text);
+  }
+  const entries=candidates.filter(entry=>!withheld.has(entry)).map(candidate=>{
+    const {node,...entry}=candidate,notes=[...new Set(attached.get(candidate))];
+    return notes.length?{...entry,conditions:notes}:entry;
+  });
+  return {entries:[...new Map(entries.map(entry=>[JSON.stringify(entry),entry])).values()],conditions:[...savedNotes],conditionsUnverified:withheld.size>0};
+}
 function hiddenStyle(style=''){
   return style.split(';').some(declaration=>{
     const colon=declaration.indexOf(':');if(colon<0)return false;
@@ -28,24 +58,39 @@ function itemNamed(text){
 export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,stylesheets={}}={}){
   if(Buffer.byteLength(text)>limits.pageBytes)throw new WebsiteImportError('WEBSITE_SIZE_LIMIT','The decoded website page exceeds the import size limit.');
   if(plain){
-    const lines=text.split(/\r?\n/).map(normalize),entries=[];let limited=false;
+    const lines=text.split(/\r?\n/).map(normalize),entries=[],notes=[];let limited=false;
+    for(let i=0;i<lines.length;i++)if(qualification(lines[i])&&!instruction.test(lines[i]))notes.push({text:lines[i],node:{index:i}});
     for(let i=0;i<lines.length;i++){
       const line=lines[i];
-      if(!amounts(line).length||!itemNamed(line)||instruction.test(line))continue;
+      if(!amounts(line).length||!itemNamed(line)||instruction.test(line)||qualification(line))continue;
+      const start=i;
       const parts=[line];
       while(i+1<lines.length&&lines[i+1]&&!amounts(lines[i+1]).length&&!instruction.test(lines[i+1]))parts.push(lines[++i]);
       const excerpt=parts.join('\n');
       if(excerpt.length>1500){limited=true;continue;}
-      entries.push({excerpt,amounts:amounts(excerpt)});
+      entries.push({excerpt,amounts:amounts(excerpt),node:{index:start,end:i}});
     }
-    return {entries,limited,links:[],conditions:lines.filter(line=>line.length<=500&&conditions.test(line)&&!instruction.test(line))};
+    const result=finishConditions(entries,notes,note=>{
+      // Without markup, an unlabelled qualification before the first price is
+      // page-wide. A detached note elsewhere has no reliable section binding.
+      const first=entries[0]?.node.index;
+      if(pageWide.test(note.text))return entries;
+      if(first!==undefined&&note.node.index<first&&lines.slice(0,note.node.index).every(line=>!line||qualification(line)))return entries;
+      let start=note.node.index,end=start;
+      while(start>0&&lines[start-1])start--;
+      while(end+1<lines.length&&lines[end+1])end++;
+      const affected=entries.filter(entry=>entry.node.index>=start&&entry.node.index<=end);
+      if(affected.length===1)return affected;
+      return null;
+    });
+    return {...result,limited:limited||result.conditionsUnverified,links:[]};
   }
   const root={name:'root',parts:[],parent:null,hidden:false};const stack=[root],nodes=[],links=[];
   const parser=new Parser({
     onopentag(name,attrs){
       if(nodes.length>=limits.nodes||stack.length>=limits.depth)throw new WebsiteImportError('WEBSITE_STRUCTURE_LIMIT','The website page is too complex to import safely.');
       const parent=stack.at(-1),hidden=parent.hidden||OMIT.has(name)||Object.hasOwn(attrs,'hidden')||attrs['aria-hidden']?.toLowerCase()==='true'||hiddenStyle(attrs.style);
-      const node={name,attrs,parts:[],parent,hidden};parent.parts.push(node);nodes.push(node);stack.push(node);
+      const node={name,attrs,parts:[],parent,hidden,index:nodes.length};parent.parts.push(node);nodes.push(node);stack.push(node);
     },
     ontext(value){if(!stack.at(-1).hidden||stack.at(-1).name==='style')stack.at(-1).parts.push(value);},
     onclosetag(){if(stack.length>1)stack.pop();}
@@ -86,8 +131,8 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     }
     if(omitted)continue;
     const excerpt=chosen.text;
-    if(!excerpt||excerpt.length>1500||!itemNamed(excerpt)||instruction.test(excerpt))continue;
-    candidates.push({excerpt,amounts:amounts(excerpt)});
+    if(!excerpt||excerpt.length>1500||!itemNamed(excerpt)||instruction.test(excerpt)||qualification(excerpt)&&!excerpt.includes('\n'))continue;
+    candidates.push({excerpt,amounts:amounts(excerpt),node:chosen});
   }
   // Numeric-only table prices are eligible only under an explicit price/currency
   // column heading. Copy that heading with the row; never add a currency sign.
@@ -106,15 +151,48 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
       const cells=row.parts.filter(p=>typeof p!=='string'&&['td','th'].includes(p.name));
       if(cells.length!==headings.length||cells.some(c=>c.attrs.colspan||c.attrs.rowspan))continue;
       const literal=cells.filter((c,i)=>/\b(?:price|cost|rate|fee|CAD|USD|EUR|GBP)\b|[$€£¥]/i.test(headings[i].text)&&new RegExp('^'+number+'$').test(c.text)).map(c=>c.text);
-      if(literal.length&&itemNamed(row.text))candidates.push({excerpt:heading.text+'\n'+row.text,amounts:literal});
+      if(literal.length&&itemNamed(row.text))candidates.push({excerpt:heading.text+'\n'+row.text,amounts:literal,node:row});
     }
   }
-  const unique=[...new Map(candidates.map(e=>[e.excerpt,e])).values()];
   // HTML fragments and text-only HTML can lack a body or block element.
-  if(!limited&&!unique.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text))unique.push({excerpt:root.text,amounts:amounts(root.text)});
-  // Exact duplicates only: a shorter excerpt can be a distinct offering.
-  // Avoid pairwise substring scans on large or adversarial pages.
-  const entries=unique;
-  const notes=nodes.filter(n=>!n.hidden&&['p','small','footer'].includes(n.name)&&n.text?.length<=500&&conditions.test(n.text)&&!instruction.test(n.text)).map(n=>n.text);
-  return {entries,limited,links,linksLimited,conditions:[...new Set(notes)]};
+  if(!limited&&!candidates.length&&root.text.length<=1500&&amounts(root.text).length&&itemNamed(root.text)&&!instruction.test(root.text)&&!qualification(root.text))candidates.push({excerpt:root.text,amounts:amounts(root.text),node:root});
+  // Read each visible block's own text once, preserving inline markup text.
+  // Ancestor text is not flattened into a global condition for every service.
+  const notes=[];
+  function collectNotes(node){
+    if(node.hidden)return;
+    let own='';
+    const flush=()=>{
+      const value=normalize(own);own='';
+      const copiedHeading=node.name==='th'&&candidates.some(entry=>entry.excerpt.includes(value));
+      const headingLabel=/^h[1-6]$/.test(node.name)&&/^(?:prices?|rates?|conditions?)$/i.test(value);
+      if(value&&qualification(value)&&!instruction.test(value)&&!copiedHeading&&!headingLabel)notes.push({text:value,node});
+    };
+    for(const part of node.parts){
+      if(typeof part==='string')own+=part;
+      else if(BLOCK.has(part.name)||['html','body'].includes(part.name)){flush();collectNotes(part);}
+      else own+=content(part);
+    }
+    flush();
+  }
+  collectNotes(root);
+  const result=finishConditions(candidates,notes,note=>{
+    for(let scope=SCOPE.has(note.node.name)?note.node:note.node.parent||root;scope;scope=scope.parent){
+      if(!SCOPE.has(scope.name))continue;
+      let affected=candidates.filter(entry=>within(entry.node,scope));
+      const headings=scope.parts.filter(part=>typeof part!=='string'&&/^h[1-6]$/.test(part.name)&&!part.hidden);
+      const heading=headings.filter(part=>part.index<=note.node.index).at(-1);
+      if(heading&&!pageWide.test(note.text)&&note.node.name!=='footer'){
+        const end=headings.find(part=>part.index>heading.index&&part.name<=heading.name)?.index??Infinity;
+        affected=affected.filter(entry=>within(note.node,entry.node)||entry.node.index>=heading.index&&entry.node.index<end);
+        return affected.length?affected:null;
+      }
+      if(affected.length)return affected;
+      // A condition in a separate named/semantic section cannot safely be
+      // applied to a different section just because they share a page.
+      if(SECTION.has(scope.name)||headings.length)return amounts(scope.text||'').length?[]:null;
+    }
+    return candidates.length?null:[];
+  });
+  return {...result,limited:limited||result.conditionsUnverified,links,linksLimited};
 }

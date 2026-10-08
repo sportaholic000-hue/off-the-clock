@@ -2368,6 +2368,38 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     };
     for (const [field, { sample, index }] of mutationSamples) {
       const definition = MEASUREMENT_CONTRACTS[serviceType].fields[field];
+      if (definition.type === 'enum' && definition.values.length === 1) {
+        // The owner removed measurement shortcuts from customer choices. These
+        // methods have no second valid choice; exercise their retained review
+        // branches instead of inventing a valid alternative. Other enum and
+        // customer-field differential assertions below remain mandatory.
+        const measuredOnly = {
+          roofSizeMethod: { value: 'roof_measured', legacy: ['home_floor_area', 'assumption'] },
+          sqftMethod: { value: 'exact', legacy: ['assumption'] },
+          lfMethod: { value: 'exact', legacy: ['assumption'] },
+          areaInputMethod: serviceType === 'SIDING_REPLACEMENT'
+            ? { value: 'sqft', legacy: ['homesize'] }
+            : { value: 'wall_sqft', legacy: serviceType === 'INTERIOR_PAINTING' ? ['floor_sqft', 'rooms'] : ['homesize'] }
+        };
+        const expected = measuredOnly[field];
+        assert.ok(expected, serviceType + ' has an unexpected single-choice enum: ' + field);
+        assert.deepEqual(definition.values, [expected.value], serviceType + ' measured-only choices for ' + field);
+        assert.equal(sample[field], expected.value, serviceType + ' measured baseline for ' + field);
+        for (const legacy of expected.legacy) {
+          const changed = { ...structuredClone(sample), [field]: legacy };
+          const review = quoteFromVNextPricebook({pricebook, serviceType, customerInputs:changed, callerType:'owner', currentMonth:1});
+          const label = serviceType + ' legacy measurement ' + field + '=' + legacy;
+          assert.equal(review.resultType, 'ESTIMATE_REQUIRES_REVIEW', label);
+          assert.equal(review.inspectionFirst, true, label);
+          assert.deepEqual(review.submittedCustomerInputs, changed, label);
+          for (const result of [review, sanitizeForCustomerVNext(review)]) {
+            for (const key of ['lowEstimate', 'midEstimate', 'highEstimate', 'options', 'lineItems', 'calculationRecord']) {
+              assert.equal(Object.hasOwn(result, key), false, label + ' exposes ' + key);
+            }
+          }
+        }
+        continue;
+      }
       const alternative = validAlternative(definition, sample[field]);
       assert.notEqual(alternative, undefined, serviceType + ' has no valid customer mutation for ' + field);
       assert.notDeepEqual(alternative, sample[field], serviceType + ' customer mutation did not change ' + field);

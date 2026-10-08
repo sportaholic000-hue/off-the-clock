@@ -123,7 +123,7 @@ function commonContract({ fields, required, inspection, crossValidate }) {
 export const MEASUREMENT_CONTRACTS = {
   ROOFING_REPLACEMENT: commonContract({
     fields: {
-      roofSizeMethod: enumField('Roof measurement method', ['roof_measured', 'home_floor_area', 'assumption']),
+      roofSizeMethod: enumField('Roof measurement method', ['roof_measured']),
       roofSizeInput: numberField('Measured roof surface area', 'square feet', 50, 1_000_000),
       existingRoofType: slugField('Existing roofing material'),
       replacementRoofType: slugField('Replacement roofing material'),
@@ -192,7 +192,7 @@ export const MEASUREMENT_CONTRACTS = {
   FLAT_ROOF_REPLACEMENT: commonContract({
     fields: {
       roofSqft: numberField('Measured flat-roof area', 'square feet', 25, 2_000_000),
-      sqftMethod: enumField('Roof measurement method', ['exact', 'assumption']),
+      sqftMethod: enumField('Roof measurement method', ['exact']),
       membraneType: slugField('Existing membrane type'),
       existingLayers: field('Measured existing membrane layers', 'layers', 'integer_or_unknown', { min: 1, max: 10 }),
       accessDifficulty: enumField('Roof access', ACCESS),
@@ -250,7 +250,7 @@ export const MEASUREMENT_CONTRACTS = {
 
   INTERIOR_PAINTING: commonContract({
     fields: {
-      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft', 'floor_sqft', 'rooms']),
+      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft']),
       wallAreaSqft: numberField('Measured paintable wall area', 'square feet', 1, 2_000_000),
       wallHeight: enumField('Wall height', ['standard', 'high', 'vaulted']),
       surfaceCondition: enumField('Wall condition', ['good', 'fair', 'poor']),
@@ -281,7 +281,7 @@ export const MEASUREMENT_CONTRACTS = {
 
   EXTERIOR_PAINTING: commonContract({
     fields: {
-      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft', 'homesize']),
+      areaInputMethod: enumField('Wall area measurement method', ['wall_sqft']),
       exteriorAreaSqft: numberField('Measured paintable wall area', 'square feet', 1, 2_000_000),
       stories: enumField('Building stories', STORIES),
       surfaceCondition: enumField('Exterior surface condition', ['good', 'fair', 'poor']),
@@ -315,7 +315,7 @@ function flooringContract(replacement) {
   return commonContract({
     fields: {
       sqft: numberField('Measured flooring area', 'square feet', 1, 1_000_000),
-      sqftMethod: enumField('Floor measurement method', ['exact', 'assumption']),
+      sqftMethod: enumField('Floor measurement method', ['exact']),
       newFlooringType: enumField('New flooring type', FLOORING_TYPES),
       existingFloorType: slugField('Existing floor type'),
       removalNeeded: booleanField('Existing floor removal included'),
@@ -373,7 +373,7 @@ function fencingContract(replacement) {
   return commonContract({
     fields: {
       linearFeet: numberField('Measured fence length', 'linear feet', 1, 1_000_000),
-      lfMethod: enumField('Fence measurement method', ['exact', 'assumption']),
+      lfMethod: enumField('Fence measurement method', ['exact']),
       fenceType: slugField('Fence type'),
       fenceHeight: numberField('Fence height', 'feet', Number.MIN_VALUE, Number.MAX_VALUE),
       gateCount: numberField('Gate count', 'gates', 0, 10_000, { integer: true }),
@@ -409,7 +409,7 @@ function fencingContract(replacement) {
 function concreteContract() {
   return commonContract({
     fields: {
-      dimensionMethod: enumField('Slab measurement method', ['exact', 'measured_area_perimeter', 'measured_outline', 'area_only', 'assumption']),
+      dimensionMethod: enumField('Slab measurement method', ['exact', 'measured_area_perimeter', 'measured_outline']),
       length: numberField('Measured slab length', 'feet', 0.1, 100_000),
       width: numberField('Measured slab width', 'feet', 0.1, 100_000),
       areaSqft: numberField('Measured slab area', 'square feet', 1, 10_000_000),
@@ -480,7 +480,7 @@ MEASUREMENT_CONTRACTS.CONCRETE_PATIO_SLAB = concreteContract();
 MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
   fields: {
     yardSqft: numberField('Measured cleanup area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Cleanup area method', ['exact', 'assumption']),
+    sqftMethod: enumField('Cleanup area method', ['exact']),
     debrisLevel: enumField('Debris level', ['light', 'moderate', 'heavy']),
     slope: enumField('Terrain slope', SLOPES),
     haulAway: booleanField('Additional haul-away selected')
@@ -524,7 +524,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
 MEASUREMENT_CONTRACTS.LANDSCAPING_SOD = commonContract({
   fields: {
     sodSqft: numberField('Measured sod area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Sod area method', ['exact', 'assumption']),
+    sqftMethod: enumField('Sod area method', ['exact']),
     groundPrepNeeded: booleanField('Ground preparation included'),
     slope: enumField('Terrain slope', SLOPES),
     accessDifficulty: enumField('Project access', ACCESS)
@@ -560,7 +560,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_PLANTING = commonContract({
 MEASUREMENT_CONTRACTS.LANDSCAPING_MOWING = commonContract({
   fields: {
     yardSqft: numberField('Measured mowable lawn area', 'square feet', 1, 10_000_000),
-    sqftMethod: enumField('Lawn area method', ['exact', 'assumption']),
+    sqftMethod: enumField('Lawn area method', ['exact']),
     serviceFrequency: enumField('Service frequency', ['weekly', 'biweekly', 'monthly', 'one_time']),
     grassCondition: enumField('Grass condition', ['maintained', 'overgrown', 'severe']),
     bagClippings: booleanField('Clipping bagging selected'),
@@ -581,7 +581,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_MOWING = commonContract({
 
 MEASUREMENT_CONTRACTS.SIDING_REPLACEMENT = commonContract({
   fields: {
-    areaInputMethod: enumField('Siding area method', ['sqft', 'homesize']),
+    areaInputMethod: enumField('Siding area method', ['sqft']),
     sidingAreaSqft: numberField('Measured siding wall area', 'square feet', 1, 2_000_000),
     sidingType: enumField('Siding type', SIDING_TYPES),
     stories: enumField('Building stories', STORIES),

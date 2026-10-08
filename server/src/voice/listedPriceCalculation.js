@@ -4,6 +4,7 @@ const refusal=()=>({status:'needs_review',message:'The saved listing or quantity
 const decimal=/^(?:0|[1-9]\d{0,11})(?:\.\d{1,6})?$/;
 const coefficient=value=>{const [whole,fraction='']=value.split('.');return {value:BigInt(whole+fraction),scale:fraction.length};};
 const priceSentence=/^(?<item>[\p{L}\p{M}\[][\p{L}\p{M}\s:'’()\[\]-]*?\s*)?(?<currency>CA\$|C\$|US\$|AU\$|A\$|NZ\$|HK\$|\$|€|£|¥|CAD|USD|EUR|GBP|AUD|NZD)\s*(?<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,6})?)\s*(?:each|(?:per\s+|\/\s*)(?:(?:square|sq\.?|linear|lineal|lin\.?|cubic|cu\.?|board)\s+(?:foot|feet|ft|yards?|yds?|meters?|metres?|m|inch(?:es)?|in)|[a-z]+))\.?$/iu;
+const qualifiedPricePrefix=/\p{N}|\b(?:minimum|min|maximum|max|from|starting|start|up\s+to|about|approx|around|only|first|second|half|discount|off|sale|special|promo|deal|free|extra|additional|each\s+additional|per)\b/iu;
 // A unit is one word, or a standard two-word measure (square foot, linear
 // foot, cubic yard...). Any other second word ("per hour minimum", "per item
 // daily", "per sqft twice") can change the charge, so it is not multiplied.
@@ -21,8 +22,9 @@ export function calculateSavedListedPrice(knowledge,args){
  for(const sentence of sentences){
   const match=priceSentence.exec(sentence);
   if(match){
-   // "from"/"starting at" introduce a price bound, not an item name.
-   if(price||/\b(?:from|starting(?: at)?|minimum|maximum)\s*:?\s*$/i.test(match.groups.item||''))return refusal();
+   // A qualification anywhere before the price can change the charge. Even
+   // genuine item names such as "Half-round gutter" must be repeated as saved.
+   if(price||qualifiedPricePrefix.test(match.groups.item||''))return refusal();
    price=match.groups;
   }else if(!taxSentence.test(sentence)&&!contactSentence.test(sentence))return refusal();
  }
