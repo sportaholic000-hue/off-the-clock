@@ -19,5 +19,7 @@
     "autoprefixer": "^10.4.20",
     "lucide-react": "^0.468.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
 }

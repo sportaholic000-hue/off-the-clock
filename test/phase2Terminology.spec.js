@@ -352,10 +352,12 @@ test('button labels are never repainted by container descendant selectors', () =
 
 test('draft validation never clears known statuses or reports failure while typing', () => {
   const pricebook = readFileSync('client/src/pricebook.jsx', 'utf8');
-  const effect = pricebook.slice(
-    pricebook.indexOf('if (!book || locked) return;'),
-    pricebook.indexOf('}, [book, locked]);')
-  );
+  // Conflict recovery adds an early-return guard and a dependency; locate
+  // the same validation effect without assuming its exact dependency list.
+  const start = pricebook.indexOf('if (!book || locked');
+  const end = pricebook.indexOf('}, [book, locked', start);
+  assert.ok(start >= 0 && end > start, 'the draft validation effect must exist');
+  const effect = pricebook.slice(start, end);
 
   // The user-visible failure: typing one character cleared every service's
   // status, so chips that were QUOTING LIVE flashed to NEEDS PRICING on every

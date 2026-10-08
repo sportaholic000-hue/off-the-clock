@@ -67,7 +67,7 @@ export function editServiceTiers(service, tiers) {
 }
 
 export function editorServiceKey(service, index) {
-  return service.id || (service.serviceType + ':' + index);
+  return service.id || service.__clientTempId || (service.serviceType + ':' + index);
 }
 
 export function editorServices(saved, metadata, businessTypes) {
@@ -124,7 +124,7 @@ export function mergeSavedApproval(draft, before, after, serviceId, approvedRevi
   if (!savedService || !reviewed || draft.revision !== before.revision || after.revision !== approvedRevision ||
       !sameEditorValue(before.defaults, after.defaults) ||
       !sameEditorValue(before.services.filter(s => s.id !== serviceId), after.services.filter(s => s.id !== serviceId))) {
-    throw Object.assign(Error('The saved price book changed during approval. Your unsaved edits are still here. Review the newer saved version before saving again.'),{status:409});
+    throw Object.assign(Error('The saved price book changed during approval. Your unsaved edits are still here. Review the newer saved version before saving again.'),{status:409, details:{code:'REVISION_CONFLICT'}, remoteBook:after});
   }
   return {...draft, revision:after.revision, updatedAt:after.updatedAt,
     services:draft.services.map(service => {

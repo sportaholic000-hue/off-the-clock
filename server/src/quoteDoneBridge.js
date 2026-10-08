@@ -133,8 +133,8 @@ function withOwnerLabels(result,service) {
 }
 export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContext}={}) {
   dateContext=applicationDateContext(book.ownerId,dateContext);
-  if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],approvalCurrent:false};
-  let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message]};}
+  if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],ownerDiagnostics:[{type:'invalid',path:'id',message:'Duplicate saved service IDs require owner correction.'}],approvalCurrent:false};
+  let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message],ownerDiagnostics:[{type:'invalid',path:error.details?.field||'service',message:error.message}]};}
   const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const issues=[];
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
@@ -176,7 +176,7 @@ export function bookStatuses(book,dateContext={}) { const context=applicationDat
 // Customer-facing catalog and scheduling: live/not-live only.
 export function bookQuoteStatuses(book,dateContext={}) { const context=applicationDateContext(book.ownerId,dateContext);return (book.services||[]).map(service=>cachedApplicationStatus(service,book,{...context,quick:true})); }
 function requireDraftBook(input) {if(!record(input)||!Array.isArray(input.services)||!record(input.defaults)||input.services.some(s=>!record(s)||(s.tiers!==undefined&&(!Array.isArray(s.tiers)||s.tiers.some(t=>!record(t))))))throw problem('Supply a price book with object services, object tiers and business defaults.');}
-function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409); }
+function requireRevision(book,revision) { if(typeof revision!=='string'||revision!==bookRevision(book))throw problem('This price book changed. Reload it before saving or approving.',409,{code:'REVISION_CONFLICT'}); }
 function validateApplicationNumericDraft(book) { validatePricebookNumericDraft(book); }
 export function validateApplicationDraft(ownerId,input,dateContext={}) {
   requireDraftBook(input);

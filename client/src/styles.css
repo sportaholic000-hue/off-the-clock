@@ -249,6 +249,19 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .notice-success strong { color: var(--green); }
 .notice-warning { border-color: #5E502B; color: #E8D499; }
 .notice-error { border-color: #653434; color: #FFB0B0; }
+.pricebook-conflict { width:min(960px, calc(100% - 32px)); max-height:90vh; overflow:auto; background:var(--black); color:var(--white); border:1px solid var(--black-line); padding:24px; }
+.pricebook-conflict::backdrop { background:rgba(0,0,0,.7); }
+.pricebook-conflict > p, .pricebook-conflict .notice { margin-bottom:16px; }
+.conflict-choice { border:1px solid var(--black-line); margin:20px 0; padding:16px; }
+.conflict-values { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-bottom:16px; }
+.conflict-values section { min-width:0; overflow-wrap:anywhere; max-height:280px; overflow:auto; }
+.conflict-values h3 { font-size:14px; }
+.conflict-values dt { color:var(--gray); font-size:12px; }
+.conflict-values dd { margin:0 0 8px; }
+.conflict-choice > label { display:block; margin:8px 0; }
+.conflict-choice input { margin-right:8px; }
+.conflict-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+@media (max-width:650px) { .conflict-values { grid-template-columns:1fr; } }
 .loading, .center-state { min-height: 100vh; display: grid; place-items: center; color: var(--gray); letter-spacing: .12em; }
 
 .auth-layout {

@@ -10,6 +10,8 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import { BookOpen, Check, Plus, RotateCcw, Sparkles, Trash2, X } from 'lucide-react';
 import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
+import {PricebookConflict} from './pricebookConflict.jsx';
+import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliationErrors, withClientServiceIds} from './pricebookConflict.js';
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput } from './pricebookInputs.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
@@ -583,6 +585,81 @@ export default function PriceBook() {
   const [transferNotice,setTransferNotice] = useState(null);
   const [previewFeeDraft,setPreviewFeeDraft] = useState({context:null,values:{}});
   const [revisionConflict,setRevisionConflict] = useState(null);
+  const basePricebook = useRef(null);
+  const draftRef = useRef(book);
+  draftRef.current = book;
+  const conflictGeneration = useRef(0);
+  const [conflictChoices, setConflictChoices] = useState({});
+  const conflictMerge = useMemo(() => {
+    if (!revisionConflict?.remote || !book || !basePricebook.current) return null;
+    try { return reconcilePricebook(basePricebook.current, book, revisionConflict.remote, conflictChoices); }
+    catch (problem) { return {problem}; }
+  }, [book, revisionConflict?.remote, conflictChoices]);
+  useEffect(() => () => { conflictGeneration.current++; validationSeq.current++; }, []);
+
+  async function recoverConflict(problem) {
+    const generation = ++conflictGeneration.current;
+    validationSeq.current++;
+    setValidating(false);
+    setError(null);
+    setDraftValidationErrors([]);
+    setConflictChoices({});
+    setRevisionConflict({isOpen:true, phase:'loading', remote:null, error:null, errors:[]});
+    try {
+      const remote = problem?.remoteBook || await api(`/api/pricebook/${dashboard.ownerId}`);
+      if (generation !== conflictGeneration.current) return;
+      setRevisionConflict({isOpen:true, phase:'checking', remote:clone(remote), error:null, errors:[]});
+    } catch (error) {
+      if (generation === conflictGeneration.current) setRevisionConflict({isOpen:true, phase:'failed', remote:null, error, errors:[]});
+    }
+  }
+
+  useEffect(() => {
+    if (!revisionConflict?.isOpen || !conflictMerge) return;
+    if (conflictMerge.problem) {
+      setRevisionConflict(current => ({...current, phase:'failed', error:conflictMerge.problem}));
+      return;
+    }
+    if (conflictMerge.unresolved.length) {
+      setRevisionConflict(current => ({...current, phase:'choosing', error:null, errors:[]}));
+      return;
+    }
+    let current = true;
+    const generation = conflictGeneration.current;
+    setRevisionConflict(state => ({...state, phase:'validating', error:null, errors:[]}));
+    (async () => {
+      try {
+        const payload = pricebookPayload(conflictMerge.draft);
+        validatePricebookNumericDraft(payload);
+        const validation = await api('/api/pricebook/validate', {method:'POST', body:payload});
+        const errors = reconciliationErrors(validation);
+        if (current && generation === conflictGeneration.current) setRevisionConflict(state => ({...state, phase:'ready', errors, validation, validatedDraft:conflictMerge.draft}));
+      } catch (problem) {
+        if (!current || generation !== conflictGeneration.current) return;
+        if (isRevisionConflict(problem)) recoverConflict(problem);
+        else setRevisionConflict(state => ({...state, phase:'failed', error:problem}));
+      }
+    })();
+    return () => { current = false; };
+  }, [conflictMerge, revisionConflict?.isOpen]);
+
+  function useRecoveredBook(next, baseline, validation) {
+    conflictGeneration.current++;
+    validationSeq.current++;
+    basePricebook.current = clone(baseline);
+    const services = withClientServiceIds(next.services);
+    setBook({...next, services});
+    if (!services.some((service, index) => editorServiceKey(service, index) === selectedType)) setSelectedType(services.length ? editorServiceKey(services[0], 0) : null);
+    setStatuses(validation?.statuses || null);
+    setDraftValidationErrors(validation?.validationErrors || []);
+    setRevisionConflict(null);
+    setConflictChoices({});
+    setError(null);
+  }
+  function acceptRecoveredDraft() {
+    if (revisionConflict?.phase !== 'ready' || revisionConflict.errors?.length || !conflictMerge || conflictMerge.problem || conflictMerge.unresolved.length || revisionConflict.validatedDraft !== conflictMerge.draft) return;
+    useRecoveredBook(conflictMerge.draft, revisionConflict.remote, revisionConflict.validation);
+  }
 
   async function load() {
     const [dash, state, meta] = await Promise.all([
@@ -592,9 +669,10 @@ export default function PriceBook() {
     ]);
     const canQuote = ['QuoteDone','Scale'].includes(state.account.plan);
     const loadedBook = canQuote ? await api(`/api/pricebook/${dash.ownerId}`) : { services:[], defaults:{} };
+    basePricebook.current = clone(loadedBook);
     setLocked(!canQuote);
     const activeTypes = state.profile.businessTypes || [];
-    const services = editorServices(loadedBook.services, meta.services, activeTypes);
+    let services = editorServices(loadedBook.services, meta.services, activeTypes);
     const transferredDraft = consumePricebookTransfer('draft',dash.ownerId);
     const transferredSuggestions = consumePricebookTransfer('suggestions',dash.ownerId);
     setTransferNotice([transferredDraft.notice,transferredSuggestions.notice].filter(Boolean).join(' '));
@@ -610,6 +688,7 @@ export default function PriceBook() {
     if (starter) {
       setSuggestions(starter);
     }
+    services = withClientServiceIds(services);
     setDashboard(dash);
     setOnboarding(state);
     setMetadata(meta.services || []);
@@ -635,7 +714,7 @@ export default function PriceBook() {
 
 
   useEffect(() => {
-    if (!book || locked) return;
+    if (!book || locked || revisionConflict) return;
     // Do NOT clear statuses here. Clearing on every keystroke made every
     // service chip fall back to NEEDS PRICING mid-typing, including services
     // already proven QUOTING LIVE. The previous confirmed result stays on
@@ -644,7 +723,7 @@ export default function PriceBook() {
     validationSeq.current = seq;
     setValidating(true);
     const timer = setTimeout(() => {
-      api('/api/pricebook/validate', { method:'POST', body:book })
+      api('/api/pricebook/validate', { method:'POST', body:pricebookPayload(book) })
         .then(result => {
           // Out-of-order guard: ignore anything but the newest request.
           if (validationSeq.current !== seq) return;
@@ -654,6 +733,7 @@ export default function PriceBook() {
         })
         .catch(nextError => {
           if (validationSeq.current !== seq) return;
+          if (isRevisionConflict(nextError)) { recoverConflict(nextError); return; }
           // A failed validation must be visible and must never leave the UI
           // claiming the draft is valid. Surface the error, but do not
           // fabricate NEEDS PRICING for every service -- the last confirmed
@@ -662,15 +742,15 @@ export default function PriceBook() {
           setValidating(false);
         });
     }, 250);
-    return () => { clearTimeout(timer); };
-  }, [book, locked]);
+    return () => { clearTimeout(timer); if (validationSeq.current === seq) validationSeq.current++; };
+  }, [book, locked, !!revisionConflict]);
 
   useEffect(() => {
     // Every response, rejection and completion belongs to this exact draft.
     // Cleanup invalidates already-running requests as well as the debounce.
     let current = true;
     setPreview(null);
-    if(revisionConflict){setPreviewLoading(false);setPreview({resultType:'ESTIMATE_REQUIRES_REVIEW',reviewReason:revisionConflict});return () => {current=false;};}
+    if(revisionConflict){setPreviewLoading(false);setPreview({resultType:'ESTIMATE_REQUIRES_REVIEW',reviewReason:'Reconcile your unsaved changes with the latest saved price book before previewing.'});return () => {current=false;};}
     if (!selected || !selectedMeta || !book || locked) {
       setPreviewLoading(false);
       return () => { current = false; };
@@ -685,9 +765,9 @@ export default function PriceBook() {
     const timer = setTimeout(() => {
       api('/api/pricebook/preview', {
         method:'POST',
-        body:{ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs, customerFeeSelections }
+        body:pricebookPayload({ serviceId:selected.id, revision:book.revision, service:selected, defaults:book.defaults, customerInputs:selected.validationInputs || selectedMeta.sampleInputs, customerFeeSelections })
       }).then(result => { if (current) setPreview(result); })
-        .catch(nextError => { if (current) setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); })
+        .catch(nextError => { if (current) { if (isRevisionConflict(nextError)) recoverConflict(nextError); else setPreview({ resultType:'ESTIMATE_REQUIRES_REVIEW', reviewReason:nextError.message }); } })
         .finally(() => { if (current) setPreviewLoading(false); });
     }, 350);
     return () => { current = false; clearTimeout(timer); };
@@ -716,16 +796,18 @@ export default function PriceBook() {
   }
 
   async function save() {
+    if (revisionConflict) { await recoverConflict(); return; }
     setSaving(true); setError(null);
     try {
       if(!contract.engineVersion)validatePricebookNumericDraft(book);else if(document.querySelector('[aria-invalid="true"]'))throw Error('Correct invalid numeric inputs before saving or previewing.');
-      const result = await api('/api/pricebook/save', { method:'POST', body:book });
+      const result = await api('/api/pricebook/save', { method:'POST', body:pricebookPayload(book) });
       setStatuses(result.statuses || []);
       const loaded = await api(`/api/pricebook/${dashboard.ownerId}`);
+      basePricebook.current = clone(loaded);
       const selectedIndex = book.services.findIndex((service, index) => editorServiceKey(service, index) === selectedType);
       setBook({ ...book, ...loaded });
       if (loaded.services?.[selectedIndex]) setSelectedType(editorServiceKey(loaded.services[selectedIndex], selectedIndex));
-    } catch (nextError) { setError(nextError); }
+    } catch (nextError) { if (isRevisionConflict(nextError)) await recoverConflict(nextError); else setError(nextError); }
     finally { setSaving(false); }
   }
 
@@ -748,7 +830,7 @@ export default function PriceBook() {
       tiers:[], source:'AI_SUGGESTED', confirmedFields:{},
       validationInputs:clone(metadata.find(meta => meta.serviceType === item.serviceType)?.sampleInputs || {})
     };
-    const services=[...book.services,{...next,active:false}];
+    const services=withClientServiceIds([...book.services,{...next,active:false}]);
     setBook({...book,services});
     setSelectedType(editorServiceKey(services[services.length-1],services.length-1));
   }
@@ -811,9 +893,11 @@ export default function PriceBook() {
           eyebrow="QUOTEDONE"
           title="Price book"
           description="Your prices drive every quote."
-          actions={<><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending} onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending||suggesting} onClick={suggest}>{suggesting?'Generating draft…':'Suggest a starter book'}</Button></>}
+          actions={<><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending||!!revisionConflict} onClick={() => go('/onboarding?step=7')}>Build it with your AI</Button><Button icon={Sparkles} variant="secondary" disabled={saving||approvalPending||suggesting||!!revisionConflict} onClick={suggest}>{suggesting?'Generating draft…':'Suggest a starter book'}</Button></>}
         />
-        <fieldset disabled={saving||approvalPending} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
+        {revisionConflict && <Notice tone="warning">Your draft has unsaved changes against an older saved version. Preview is paused until recovery is accepted.{!revisionConflict.isOpen && <Button variant="secondary" onClick={() => recoverConflict()}>Recover unsaved changes</Button>}</Notice>}
+        {revisionConflict?.isOpen && <PricebookConflict state={revisionConflict} merge={conflictMerge?.problem ? null : conflictMerge} metadata={metadata} onChoice={(key, value) => setConflictChoices(current => ({...current, [key]:value}))} onAccept={acceptRecoveredDraft} onEdit={() => {conflictGeneration.current++;setRevisionConflict(current => ({...current, isOpen:false}));}} onRetry={() => recoverConflict()} onDiscard={() => useRecoveredBook(revisionConflict.remote, revisionConflict.remote)}/>}
+        <fieldset disabled={saving||approvalPending||revisionConflict?.isOpen} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
         {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. You can keep editing prices manually.</p>}
         <ErrorMessage error={suggestionError} />
         {suggestions && (
@@ -831,7 +915,7 @@ export default function PriceBook() {
           </section>
         )}
         <div className="pricebook-layout">
-          <aside className="service-list"><Select aria-label="New service type" value={newServiceType} onChange={e=>setNewServiceType(e.target.value)}><option value="">Choose service type</option>{metadata.map(m=><option key={m.serviceType} value={m.serviceType}>{m.name}</option>)}</Select><Button variant="secondary" disabled={!newServiceType} onClick={()=>{const m=metadata.find(m=>m.serviceType===newServiceType);const service={serviceType:m.serviceType,service:m.name,source:'MANUAL',active:false,pricing:{},tiers:[],validationInputs:{}};const index=book.services.length;setBook({...book,services:[...book.services,service]});setSelectedType(editorServiceKey(service,index));}}>Add service</Button>
+          <aside className="service-list"><Select aria-label="New service type" value={newServiceType} onChange={e=>setNewServiceType(e.target.value)}><option value="">Choose service type</option>{metadata.map(m=><option key={m.serviceType} value={m.serviceType}>{m.name}</option>)}</Select><Button variant="secondary" disabled={!newServiceType} onClick={()=>{const m=metadata.find(m=>m.serviceType===newServiceType);const [service]=withClientServiceIds([{serviceType:m.serviceType,service:m.name,source:'MANUAL',active:false,pricing:{},tiers:[],validationInputs:{}}]);const index=book.services.length;setBook({...book,services:[...book.services,service]});setSelectedType(editorServiceKey(service,index));}}>Add service</Button>
             <p className="eyebrow">SERVICES</p>
             {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);
@@ -942,7 +1026,7 @@ export default function PriceBook() {
                 {contract.engineVersion&&<>
                   <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
                   <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={book} onBusyChange={setApprovalPending} onRevisionConflict={problem=>setRevisionConflict(problem.message)} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(book,before,after,serviceId,revision);setPreview(null);setStatuses(null);setBook(next);}}/></div>
+                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={pricebookPayload(book)} onBusyChange={setApprovalPending} onRevisionConflict={recoverConflict} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(draftRef.current,before,after,serviceId,revision);basePricebook.current=clone(after);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
