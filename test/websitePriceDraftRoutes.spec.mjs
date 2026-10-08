@@ -18,7 +18,7 @@ const {db}=await import('../server/src/db.js');
 for(const sql of [...CREATE_TABLE_STATEMENTS,...CREATE_INDEX_STATEMENTS])db.exec(sql);
 const {getBusinessProfile,saveKnowledgeBase}=await import('../server/src/onboardingService.js');
 after(()=>{db.close();rmSync(directory,{recursive:true,force:true});});
-const guideText=readFileSync('specs/voice_quote_flows.md','utf8');
+const guideText=readFileSync('server/src/voice/receptionistGuide.md','utf8');
 let sequence=0;
 function seed(){
   const id='synthetic-website-owner-'+(++sequence);

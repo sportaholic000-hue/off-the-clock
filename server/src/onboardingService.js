@@ -1,3 +1,4 @@
+import {identityLabel,validateKnowledge} from './voice/receptionistSettings.js';
 import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
 import {validateVoiceSettings} from './voice/voiceSettings.js';
@@ -226,6 +227,8 @@ export function getBusinessProfile(ownerId) {
 }
 
 export function updateBusinessProfile(ownerId, patch) {
+  if(Object.hasOwn(patch,'agentName'))identityLabel(patch.agentName,'Agent name');
+  if(Object.hasOwn(patch,'knowledgeBaseJson')){let knowledge;try{knowledge=JSON.parse(patch.knowledgeBaseJson);}catch{throw onboardingError('Business knowledge must be valid saved data.');}validateKnowledge(knowledge);}
   ensureBusinessProfile(ownerId);
   const entries = Object.entries(patch).filter(([key]) => PROFILE_COLUMNS.has(key));
   if (!entries.length) return getBusinessProfile(ownerId);
@@ -244,7 +247,7 @@ function ownerAccount(ownerId) {
 export function updateOnboardingAccount(ownerId, values) {
   const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
   const firstName = String(input.firstName || '').trim();
-  const businessName = String(input.businessName || '').trim();
+  const businessName = identityLabel(input.businessName,'Business name').trim();
   if (!firstName || !businessName) { const error = new Error('First name and business name are required'); error.statusCode = 400; throw error; }
   ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
     WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
@@ -279,6 +282,8 @@ export function savePhoneProvisioning(ownerId, values) {
 
 export function saveKnowledgeBase(ownerId, knowledgeBase) {
   const incoming = knowledgeBase && typeof knowledgeBase === 'object' && !Array.isArray(knowledgeBase) ? knowledgeBase : {};
+  const neverSay=Array.isArray(incoming.neverSay)?incoming.neverSay:String(incoming.neverSay||'').split('\n').filter(value=>value.trim());
+  validateKnowledge({...incoming,neverSay});
   const existing = getBusinessProfile(ownerId).knowledgeBase || EMPTY_KB;
   const reviewContact = Object.hasOwn(incoming, 'reviewContact')
     ? normalizeReviewContact(incoming.reviewContact) : existing.reviewContact;

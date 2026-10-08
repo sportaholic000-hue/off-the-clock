@@ -18,7 +18,7 @@ import {
   parseVoiceGuide,
 } from "../server/src/voice/voicePromptCompiler.js";
 
-const GUIDE = fs.readFileSync(new URL("../specs/voice_quote_flows.md", import.meta.url), "utf8");
+const GUIDE = fs.readFileSync(new URL("../server/src/voice/receptionistGuide.md", import.meta.url), "utf8");
 const HANDLE_A = "a".repeat(32);
 const HANDLE_B = "b".repeat(32);
 const HANDLE_C = "c".repeat(32);
@@ -55,7 +55,7 @@ function ownerFacts(prompt) {
 test("the compiler authenticates and parses every section of the versioned owner-policy guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "f33b7f324fe38443d33a660006b17fc50dea17f9f866f795afcbe8780b18ff1e");
+  assert.equal(parsed.digest, "32e07270b7e6dcf8832f1c8c8aa68b4188592ceb290a30bbb3eb1b8b5ab965ae");
   assert.match(compile(), /Do not offer later booking confirmations or reminders by any channel/);
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
   assert.match(parsed.globalRules, /ONE question per turn/);
@@ -81,7 +81,7 @@ test("guide changes, unknown sections, and duplicate flow sections fail closed",
   );
   assert.throws(() => parseVoiceGuide(unknownFlow), hasCode("UNKNOWN_VOICE_FLOW_SECTION"));
 
-  const silentlyEdited = GUIDE.replace("A rough number's fine", "Any number is fine");
+  const silentlyEdited = GUIDE.replace("A measurement must be measured", "Any number is fine");
   assert.throws(() => parseVoiceGuide(silentlyEdited), hasCode("VOICE_GUIDE_DIGEST_MISMATCH"));
 });
 
@@ -104,7 +104,7 @@ test("compiled instructions include global rules and only quoting-live service h
     ],
   });
   const parsed = parseVoiceGuide(GUIDE);
-  assert.equal(prompt.includes(parsed.globalRules), false);
+  assert.equal(prompt.includes(parsed.globalRules), true);
   assert.match(prompt,/Your booking is confirmed/);
   assert.doesNotMatch(prompt,/\b(?:sms|texts|texting|text (?:confirmation|message))\b/i);
   assert.deepEqual(

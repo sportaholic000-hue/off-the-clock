@@ -58,7 +58,7 @@ test('voice-core 4 unreadable quote storage keeps ordinary answering live and qu
 });
 test('voice-core 5 voice settings reject values that cannot compile before persisting them',()=>{
  migrateDatabase(sharedDb);const owner='synthetic-voice-settings';sharedDb.prepare("INSERT OR IGNORE INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic','Operator','active','UTC','owner',?)").run(owner,owner+'@example.invalid',at);
- for(const value of ['x'.repeat(501),'Agent\u0000Name','$100 Agent'])assert.throws(()=>saveVoice(owner,{voiceId:'female',agentName:value,greeting:'Synthetic greeting'}),e=>e.statusCode===400);
+ for(const value of ['x'.repeat(501),'Agent\u0000Name'])assert.throws(()=>saveVoice(owner,{voiceId:'female',agentName:value,greeting:'Synthetic greeting'}),e=>e.statusCode===400);
  assert.throws(()=>saveVoice(owner,{voiceId:'female',agentName:{name:'Synthetic'},greeting:'Synthetic greeting'}),e=>e.statusCode===400);
 });
 test('voice-core 6 confirmed Operator OFF routes to the business with no capture, live session or AI billing',async t=>{

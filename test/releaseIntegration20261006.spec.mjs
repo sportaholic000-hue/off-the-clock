@@ -85,7 +85,7 @@ test('merged tenant binding accepts an anonymous caller and rejects changed call
   for(const patch of [{from:'+19025550999'},{to:'+19025550999'},{ownerId:'SYNTHETIC-other-owner'}])assert.equal(h.store.validateCallBinding({context:{...context,...patch}}),false);
 });
 test('release: named contact and owner-only deadlines coexist once in prompt authority',()=>{
-  const prompt=compileVoiceSystemInstruction({guideText:readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8'),
+  const prompt=compileVoiceSystemInstruction({guideText:readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8'),
     business:{businessName:'Synthetic Business',agentName:'Assistant'},services:[],
     knowledge:{reviewContact:{name:'Alex',role:'manager'},policies:'Callbacks within one business day.'}});
   assert.equal(prompt.split('Callback or quote deadline:').length-1,1);

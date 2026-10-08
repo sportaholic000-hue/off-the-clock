@@ -1,3 +1,4 @@
+import {validatePricebookReceptionistSettings} from './src/voice/receptionistSettings.js';
 import Database from 'better-sqlite3';
 import {mkdirSync,readFileSync,writeFileSync,renameSync,unlinkSync,openSync,fsyncSync,closeSync,existsSync} from 'node:fs';
 import {convertPricebookMoney} from './priceBookMoney.js';
@@ -162,6 +163,7 @@ export function savePricebook(ownerId, data) {
   const invalid = reason => Object.assign(new Error(`The price book was not saved: ${reason}.`), { code:'PRICEBOOK_INVALID', statusCode:400 });
   const issue = pricebookStructureIssue(data);
   if (issue) throw invalid(issue);
+  validatePricebookReceptionistSettings(data);
   const ids = new Set();
   const services = data.services.map(service => {
     const missing = missingPricebookServiceId(service.id);

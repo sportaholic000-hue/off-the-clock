@@ -14,7 +14,7 @@ for(const id of [owner,other])db.prepare("INSERT INTO users(id,email,passwordHas
 test.after(()=>db.close());
 const manager={name:'Synthetic Morgan',role:'manager'};
 const kb=extra=>({about:'[SYNTHETIC] Test business',hours:'Weekdays',...extra});
-const guideText=readFileSync('specs/voice_quote_flows.md','utf8');
+const guideText=readFileSync('server/src/voice/receptionistGuide.md','utf8');
 const compile=knowledge=>compileVoiceSystemInstruction({guideText,business:{businessName:'Synthetic Review Co',agentName:'Synthetic Ava'},services:[],knowledge});
 const facts=prompt=>JSON.parse(prompt.split('<OWNER_FACTS_JSON>\n')[1].split('\n</OWNER_FACTS_JSON>')[0]);
 

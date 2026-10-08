@@ -8,7 +8,7 @@ export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,90
 // margin; after an ambiguous first attempt this worker refuses an unsafe resend.
 export const OWNER_ALERT_SAFE_REPLAY_MS=23*60*60*1000;
 const LEASE_MS=30000;
-const fields='id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt';
+const fields="CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt";
 const problem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode});
 const email=v=>typeof v==='string'&&v.length<=320&&/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v);
 const parseArray=v=>{try{const a=JSON.parse(v);return Array.isArray(a)?a:[];}catch{return [];}};
@@ -66,6 +66,7 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
       const c=storedObject(appointment.customerJson),d=storedObject(event.payloadJson);
       return [row.eventType==='appointment.booked'?'Booking confirmed':'Booking changed',c.name,c.phone,c.email,d.action==='cancel'?'CANCELLED':d.status||appointment.status,d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,d.timezone||appointment.timezone,JSON.stringify(storedObject(appointment.locationJson))];
     }
+    if(row.eventType==='voice.settings_invalid')return ['Receptionist setting needs correction',storedObject(row.sourceJson).message];
     if(row.eventType==='voice.quoting_unavailable'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
       return ['Quoting is paused. Answering remains available.',storedObject(outbox.payloadJson).message];

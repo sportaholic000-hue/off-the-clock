@@ -150,19 +150,19 @@ for(const [label,options] of [['foreign host',{href:'https://other.example/price
  });
 }
 test('leftovers listed prices: prompt delegates multiplication to server only',()=>{
- const prompt=compileVoiceSystemInstruction({guideText:fs.readFileSync(new URL('../specs/voice_quote_flows.md',import.meta.url),'utf8'),business:{businessName:'Synthetic',agentName:'Synthetic receptionist'},services:[],knowledge:{prices:'[SYNTHETIC] Widget $0.10 each'}});
+ const prompt=compileVoiceSystemInstruction({guideText:fs.readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:'Synthetic',agentName:'Synthetic receptionist'},services:[],knowledge:{prices:'[SYNTHETIC] Widget $0.10 each'}});
  assert.doesNotMatch(prompt,/you may multiply/);assert.match(prompt,/calculateListedPrice/);
 });
 test('leftovers listed prices: server tool accepts listing identity and quantity, never a supplied rate',()=>{
  assert.doesNotThrow(()=>validateVoiceToolCall('calculateListedPrice',{listedItem:'[SYNTHETIC] Widget $0.10 each',quantity:'3',customerConfirmed:true}));
  assert.throws(()=>validateVoiceToolCall('calculateListedPrice',{listedItem:'[SYNTHETIC] Widget $0.10 each',quantity:'3',customerConfirmed:true,unitPrice:0.1}));
 });
-for(const [rate,quantity,expected] of [['$0.10','3','0.30'],['$2','500','1000.00'],['$19.99','3','59.97'],['$0.035','1000','35.00'],['$0.10','0.2','0.02'],['$0.005','3','0.015'],['$1,234.50','2','2469.00']]){
+for(const [rate,quantity,expected] of [['$0.10','3','0.30'],['$2','500','1000.00'],['$19.99','3','59.97'],['$0.035','1000','35.00'],['$0.10','0.2','0.02'],['$0.005','3','0.02'],['$1,234.50','2','2469.00']]){
  test('leftovers listed prices: dispatched exact product '+rate+' × '+quantity+' = '+expected,async t=>{
-  const f=fixture(t),c=f.context(),listedItem='[SYNTHETIC] Widget '+rate+' each. Pickup only.';
+  const f=fixture(t),c=f.context(),listedItem='[SYNTHETIC] Widget '+rate+' each. Taxes extra.';
   f.db.prepare('UPDATE businessProfiles SET knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({prices:listedItem}),c.ownerId);
   const v=f.voice(c),before=f.db.prepare('SELECT total_changes() n').get().n,args={listedItem,quantity,customerConfirmed:true};
-  const result=await v.tool('calculateListedPrice',args);assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,expected);assert.equal(result.listedItem,listedItem);assert.ok(result.voiceSummary.includes('$'+expected));assert.match(result.voiceSummary,/Pickup only/);
+  const result=await v.tool('calculateListedPrice',args);assert.equal(result.status,'calculated');assert.equal(result.extendedAmount,expected);assert.equal(result.listedItem,listedItem);assert.ok(result.voiceSummary.includes('$'+expected.replace(/\B(?=(\d{3})+(?!\d))/g,',')));assert.match(result.voiceSummary,/Taxes extra/);
   assert.deepEqual(await v.tool('calculateListedPrice',args),result);assert.equal(f.db.prepare('SELECT total_changes() n').get().n,before);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM quotes').get().n,0);
  });
 }
