@@ -16,8 +16,36 @@ test('receptionist 1 runtime guide ships inside server without specs',()=>{
 });
 test('receptionist 2 all twenty live flows use measured inputs and open fence height',()=>{
  const prompt=compile().replace(/\s+/g,' ');
- for(const stale of ["I'll quote a range","slightly wider range","small house, average","small yard, average","small patio, average","engine estimates from bed size","pace it","I'll use average pricing","standard width","four foot, six, or eight","what's the floor space","Small city lot","home_floor_area","Knows floor sqft","Rooms path"])assert.ok(!prompt.toLowerCase().includes(stale.toLowerCase()),stale);
- assert.match(prompt,/measured wall area/i);assert.match(prompt,/How many coats/i);assert.match(prompt,/height.*feet and inches/i);
+ assert.equal((prompt.match(/## ACTIVE SERVICE FLOW: /g)||[]).length,20);
+ for(const serviceType of VOICE_GUIDE_SERVICE_TYPES)assert.ok(prompt.includes(`## ACTIVE SERVICE FLOW: ${serviceType}`),serviceType);
+ for(const stale of [
+  'convert silently','go look or pace it off','MEASUREMENT COACHING BANK',
+  'big walking step','Pace it off','No tape measure needed',"A rough number's fine",
+  "I'll quote a range",'slightly wider range','small/medium/large',
+  'assumption quotes','assumption gate applies','assume-with-disclosure',
+  "Most folks go [owner's default]",'walk you through samples',
+  'owner is being notified now','text confirmation',
+  'small house, average','small yard, average','small patio, average',
+  'engine estimates from bed size','walking step',"I'll use average pricing",
+  "I'll figure one layer","I'll figure one",'Ballpark\'s fine',
+  'towel/bedsheet/bigger scale','engine maps size',
+  'standard width','four foot, six, or eight',"what's the floor space",
+  'Small city lot','home_floor_area','homesize','Knows floor sqft','Rooms path',
+  'room sizes','floorAreaSqft','roomCount/floorAreaSqft',
+  'assumption path',"I can work it out from that",
+  'Going over a dark color usually wants an extra coat',
+  'Two coats covers that',"I'll quote two", "I'll quote three",
+  '$X a sheet'
+ ])assert.ok(!prompt.toLowerCase().includes(stale.toLowerCase()),stale);
+ assert.match(prompt,/NEVER use the same acknowledgment twice in a row/);
+ assert.match(prompt,/CAPTURE ALL OF THEM/);
+ assert.match(prompt,/Which works\?/);
+ assert.match(prompt,/NATURAL SPEECH:.*Now and then use a natural filler like 'um', 'hmm', 'uh' or 'let's see'.*sparingly, never in every turn.*Never put a filler inside a price, a measurement, a number read-back or the quote narration\./i);
+ assert.match(prompt,/measured wall area/i);assert.match(prompt,/How many coats do you want\?/i);
+ assert.match(prompt,/How tall do you want it, in feet and inches\?/);
+ assert.match(prompt,/What's the measured roof area, in square feet\?/);
+ assert.match(prompt,/Your booking is confirmed\./);
+ assert.doesNotMatch(prompt,/being notified as we speak/i);
  assert.doesNotMatch(prompt,/\b(?:sms|texting|texts|text confirmation)\b/i);
 });
 const mixed='Gutter cleaning: $2.50 per linear foot\nAll prices plus HST. Call or text for a free estimate.\n\nService call: $89 each. Call or text to book.\n\nCustom text engraving: $25 each\n\nWindow washing: $6 each\nText us for a quote.';

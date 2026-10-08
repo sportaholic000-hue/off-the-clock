@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {rewriteKnowledgeText} from './knowledgeText.js';
 import {identityLabel,pricingLabel,validateKnowledge,KNOWLEDGE_TEXT_FIELDS} from './receptionistSettings.js';
 import {normalizeReviewContact} from '../reviewContact.js';
-export const IMMUTABLE_VOICE_GUIDE_SHA256='32e07270b7e6dcf8832f1c8c8aa68b4188592ceb290a30bbb3eb1b8b5ab965ae';
+export const IMMUTABLE_VOICE_GUIDE_SHA256='f4fc3c72296d6c0a3e6efcb31a88fb11afa827bc3aaf90b562a40a9ce94c6fa0';
 export const VOICE_GUIDE_SERVICE_TYPES=Object.freeze(['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR','INTERIOR_PAINTING','EXTERIOR_PAINTING','FLOORING_INSTALL','FLOORING_REPLACEMENT','FENCING_INSTALL','FENCING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','LANDSCAPING_CLEANUP','LANDSCAPING_MULCH','LANDSCAPING_SOD','LANDSCAPING_PLANTING','LANDSCAPING_MOWING','SIDING_REPLACEMENT','SIDING_REPAIR','CUSTOM']);
 export class VoicePromptCompilerError extends Error{constructor(code){super('The voice instructions could not be compiled safely.');this.name='VoicePromptCompilerError';this.code=code;}}
 const fail=code=>{throw new VoicePromptCompilerError(code);};
