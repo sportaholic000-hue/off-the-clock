@@ -165,3 +165,18 @@ Source: `specs/voice_quote_flows.md` at `9c5a3b5` (SHA-256 `f33b7f324fe38443d33a
 | 439 | `"    \"like two or three, or more like five to ten?\")"` | Ask for a confirmed itemCount; remove vague count ranges. |
 | 440 | `"  per_sqft / per_LF: coaching bank → exact or"` | Ask for measured quantity in the configured custom-service unit, without size categories or assumption gates. |
 | 441 | `"    small/medium/large (assumption gate applies)."` | Ask for measured quantity in the configured custom-service unit, without size categories or assumption gates. |
+
+## Claude follow-up edits (on top of e59f915)
+
+Guide SHA-256 now `aaa2446b7ed63d80e00b27096b82b1c534283d5b29aec8852cee5106b0fceb8b`. Wording that still contradicted owner rulings:
+
+| Was | Now | Reason |
+| --- | --- | --- |
+| "So that's about one-fifty … one gate, four corners." | "So that's one-fifty … one gate." | Measurements are confirmed, not "about"; corners are no longer asked. |
+| "you're looking at roughly $X to $Y" | "you're looking at $X to $Y" | Amounts come only from the tool result. |
+| "NEVER apologize for a range ("it's a range because we haven't measured yet — the on-site number is exact")" | "NEVER apologize for a range or explain it away; the confirmed-in-person line already covers it." | Quotes now require measurements; no exactness promise. |
+| "the inspection finds it, then you get an exact price" | "the inspection finds it, then [owner] can price it" | No exact-price promise. |
+| "about how many steps?" / "About how many plants" | "how many steps?" / "How many plants" | Counts are confirmed, not estimated. |
+| "that doesn't include baseboards" | "that doesn't include [skipped item]" | Baseboard add-on no longer exists. |
+| "[baseNeeded] — confirm, default yes: "We'll include the compacted gravel base … Sound good?"" | "[baseNeeded] — ask; never assume the answer: "Do you want the compacted gravel base under it? That's standard so it doesn't crack."" | Never assume a caller's answer. |
+| "the manager will follow up" | "[owner] will follow up" | [owner] maps to the saved review contact. |
