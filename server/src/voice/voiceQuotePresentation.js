@@ -4,6 +4,8 @@ import {quoteMoneyFormatter} from '../../quoteMoneyFormat.js';
 export const VOICE_WRITTEN_LIMIT = 65_536;
 export const VOICE_SUMMARY_LIMIT = 4_000;
 export const VOICE_RESULT_BYTES = 262_144;
+export const VOICE_SCOPE_FACT_LIMIT = 4_000;
+export const VOICE_SCOPE_DETAIL_COUNT = 100;
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const text = (value, maximum = VOICE_WRITTEN_LIMIT) => {
   if (value === undefined || value === null || value === '') return undefined;
@@ -16,6 +18,38 @@ const list = (value, maximum = 30) => {
   return value.map(item => text(item, 1000)).filter(Boolean);
 };
 const money = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+
+// Validate the owner's presentation envelope before saving or approving it.
+// Reserve space for measurements, engine disclosures, tax/currency and prices;
+// count every possible scope detail so a later selection cannot exceed it.
+export function voiceConfigurationIssues(service, definition) {
+  const fields=definition?.customerFields||[];
+  const details=[...new Set(fields.flatMap(field=>(field.presentationVariants||[]).flatMap(variant=>variant.details||[])))];
+  const labels=fields.flatMap(field=>[field.label,...(field.presentationVariants||[]).map(variant=>variant.label)]).filter(Boolean);
+  const names=[service.service,...(Array.isArray(service.tiers)?service.tiers:[]).map(tier=>tier?.name)].filter(value=>value!==undefined);
+  const disclaimer=service.disclaimer||'';
+  const issues=[];
+  if(names.some(value=>typeof value!=='string'||value.length>200))issues.push('Keep service and price option names within 200 characters for the call and saved quote.');
+  if(fields.length>64||labels.some(value=>typeof value!=='string'||value.length>VOICE_SCOPE_FACT_LIMIT)||details.length>VOICE_SCOPE_DETAIL_COUNT||details.some(value=>typeof value!=='string'||!value.trim()||value.length>VOICE_SCOPE_FACT_LIMIT))issues.push('The configured scope details exceed the complete call and saved-quote presentation limits. Split this work into separate services.');
+  if(typeof disclaimer==='string'){
+    const ownerText=[...details,...(definition?.offeringSummary||[])];
+    const written=[...ownerText,...ownerText,...ownerText,...ownerText,...labels,...names,disclaimer,disclaimer,disclaimer,disclaimer].join(' ');
+    if(written.length+16_384>VOICE_WRITTEN_LIMIT||Buffer.byteLength(written,'utf8')*3+65_536>VOICE_RESULT_BYTES)issues.push('The complete scope details and quote qualifications are too long for the call and saved quote. Shorten them or split this work into separate services; nothing will be truncated.');
+  }
+  return issues;
+}
+const scopeFacts = scope => {
+  if(!record(scope)||!Array.isArray(scope.facts)||scope.facts.length>64)throw new TypeError('Invalid saved scope.');
+  return [scope.service,...scope.facts.map(fact=>{
+    if(!record(fact)||!text(fact.label,VOICE_SCOPE_FACT_LIMIT)||!['string','number','boolean'].includes(typeof fact.value))throw new TypeError('Invalid saved scope fact.');
+    return text(fact.label+': '+String(fact.value),VOICE_SCOPE_FACT_LIMIT);
+  })].filter(Boolean);
+};
+const scopeDetails = scope => {
+  const details=[...new Set(scope.facts.flatMap(fact=>fact.details||[]))];
+  if(details.length>VOICE_SCOPE_DETAIL_COUNT)throw new TypeError('Too many scope details.');
+  return details.map(detail=>text(detail,VOICE_SCOPE_FACT_LIMIT)).filter(Boolean);
+};
 
 function optionProjection(option, index, parent = {}) {
   if (!record(option) || !money(option.lowEstimate) || !money(option.highEstimate) || option.lowEstimate > option.highEstimate) throw new TypeError('Invalid voice quote range.');
@@ -47,6 +81,7 @@ export function conciseVoiceSummary(result) {
     return [sentence(price),tax,exclusions].filter(Boolean).join(' ');
   });
   parts.push('This is a preliminary estimate for the described work, not a final whole-job price. Final pricing is confirmed before work starts; changed scope or unforeseen conditions may change it.');
+  if(result.optionAvailabilityNotice)parts.push(result.optionAvailabilityNotice);
   if (result.resultType === 'PARTIAL_ESTIMATE_READY' || result.additionalWork?.length) parts.push('Separate additional work is excluded and needs its own on-site estimate. A total for all requested work is not available.');
   parts.push('The full written estimate retains the scope qualifications and allowances for each option.');
   const summary = parts.join(' ');
@@ -59,6 +94,7 @@ export function projectVoiceQuote(response, quoteHandle, followUps = []) {
   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
   const output = { status: released ? 'quoted' : 'needs_details', quoteHandle, resultType: response?.resultType || 'ESTIMATE_REQUIRES_REVIEW' };
   if (released) {
+    if(text(estimate?.optionAvailabilityNotice,2000))output.optionAvailabilityNotice=estimate.optionAvailabilityNotice;
     for (const key of ['lowEstimate', 'midEstimate', 'highEstimate']) if (money(estimate?.[key])) output[key] = estimate[key];
     for (const key of ['currency', 'taxTreatment', 'priceUnit']) if (text(estimate?.[key], 200)) output[key] = estimate[key];
     if (Array.isArray(estimate?.options) && estimate.options.length) {
@@ -75,9 +111,8 @@ export function projectVoiceQuote(response, quoteHandle, followUps = []) {
   if (Array.isArray(response?.additionalWork)) output.additionalWork = list(response.additionalWork.map(item => typeof item === 'string' ? item : item.description));
   if (followUps.length) output.followUps = list(followUps);
   if (record(response?.pricedScope)) {
-    const facts = response.pricedScope.facts || [];
-    if(facts.length>29)throw new TypeError('Quote scope exceeds its bounded contract.');
-    output.pricedScope = [response.pricedScope.service, ...facts.map(fact => `${fact.label}: ${String(fact.value ?? 'Not supplied')}`)].filter(Boolean).slice(0, 30).map(item => text(item, 1000));
+    output.pricedScope = scopeFacts(response.pricedScope);
+    output.scopeDetails = scopeDetails(response.pricedScope);
   }
   output.voiceSummary = conciseVoiceSummary(output);
   output.disclaimer = output.voiceSummary;
@@ -113,6 +148,7 @@ export function projectSavedQuoteContext(response) {
     return view;
   };
   Object.assign(out,prices(range));
+  if(text(range.optionAvailabilityNotice,2000))out.optionAvailabilityNotice=range.optionAvailabilityNotice;
   if(Array.isArray(range.options)){
     const options=range.options.filter(record);
     if(options.length>5)throw new TypeError('Too many saved options.');
@@ -128,11 +164,8 @@ export function projectSavedQuoteContext(response) {
     }));
   }
   if(response.pricedScope!==undefined){
-    if(!record(response.pricedScope)||!Array.isArray(response.pricedScope.facts)||response.pricedScope.facts.length>29)throw new TypeError('Invalid saved scope.');
-    out.pricedScope=list([response.pricedScope.service,...response.pricedScope.facts.map(fact=>{
-      if(!record(fact)||!text(fact.label,1000)||!['string','number','boolean'].includes(typeof fact.value))throw new TypeError('Invalid saved scope fact.');
-      return fact.label+': '+String(fact.value);
-    })]);
+    out.pricedScope=scopeFacts(response.pricedScope);
+    out.scopeDetails=scopeDetails(response.pricedScope);
   }
   if(partial)out.fullJobTotal=null;
   if(Buffer.byteLength(JSON.stringify(out),'utf8')>VOICE_RESULT_BYTES-16384)throw new TypeError('Saved quote exceeds voice budget.');
@@ -144,6 +177,7 @@ function quoteNarration(projected,response) {
   if (projected.status !== 'quoted') return 'Your pricing request has been saved for review. No price has been confirmed.';
   const parts = [projected.voiceSummary];
   if (projected.pricedScope?.length) parts.push('Priced scope: ' + projected.pricedScope.join('; ') + '.');
+  if (projected.scopeDetails?.length) parts.push('Scope details: ' + projected.scopeDetails.join('; ') + '.');
   if (projected.additionalWork?.length) parts.push('Separately unpriced work: ' + projected.additionalWork.join('; ') + '.');
   if (projected.customerMessage) parts.push(projected.customerMessage);
   if (text(response?.scopeNotice)) parts.push(response.scopeNotice);

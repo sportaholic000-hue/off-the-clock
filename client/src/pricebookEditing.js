@@ -47,6 +47,13 @@ export function editServiceField(service, field, value) {
   const next = { ...service };
   if (!nested || hasRoot) next[field] = value;
   if (nested && (hasNested || !hasRoot)) next.pricing = { ...nested, [field]: value };
+  if (value === undefined) {
+    delete next[field];
+    if (next.pricing && Object.hasOwn(next.pricing, field)) {
+      next.pricing = { ...next.pricing };
+      delete next.pricing[field];
+    }
+  }
   if (['AI_SUGGESTED', 'AI_INTERVIEW'].includes(service.source) && service.confirmedFields?.[field] === true) {
     next.confirmedFields = { ...service.confirmedFields, [field]: false };
   }

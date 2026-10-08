@@ -22,7 +22,7 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  const allowed=treeKeysAt(tree,level),required=requiredTreeKeysAt(tree,level);
  const keys=[...new Set([...Object.keys(map),...required])];
  const available=allowed?.filter(key=>!own(map,key)&&!required.includes(key));
- const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(next);};
+ const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length?undefined:next);};
  return <div className="field-stack">{keys.map(key=><div key={key}>
   {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
    <Field label={treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
@@ -95,7 +95,22 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
 }
 
 export function ServiceStatusNotices({status}) {
- return <>{status.statusNotices?.map(notice=><Notice key={notice}>{notice}</Notice>)}</>;
+ return <>{status.statusNotices?.map(notice=><Notice key={notice}>{notice}</Notice>)}{!!status.failedTierDiagnostics?.length&&<section className="scope-coverage" aria-label="Price options not offered to customers"><h3>Price options not offered to customers</h3><ul>{status.failedTierDiagnostics.map((option,index)=><li key={index}><strong>{option.tierName||'Unnamed option'}</strong><span>{option.ownerFieldLabels?.join('; ')||'Saved price option settings'}. {withheldOptionReason(option)}</span></li>)}</ul></section>}</>;
+}
+
+function withheldOptionReason(option) {
+ const diagnostics=option.ownerDiagnostics||[];
+ if(diagnostics.some(d=>d.kind?.includes('zero')||d.path?.startsWith('zeroPricePolicy')))return 'A zero price needs an explicit included or free choice; otherwise enter a positive price.';
+ if(option.crossFieldOwnerFields?.length||diagnostics.some(d=>d.type==='cross_field'))return 'These settings conflict. Correct them before offering this option.';
+ if(option.unsupportedOwnerFields?.length||diagnostics.some(d=>d.type==='unsupported'))return 'This option contains unsupported settings. Remove or replace them.';
+ if(option.invalidOwnerFields?.length||diagnostics.some(d=>d.type==='invalid'))return 'A saved value is invalid. Correct it before offering this option.';
+ if(option.missingOwnerFields?.length)return 'Required pricing or configuration is missing. Complete it before offering this option.';
+ return 'Review and confirm this option’s configuration before offering it.';
+}
+
+export function priceOptionChipText(status) {
+ const withheld=status.failedTierDiagnostics?.length||0,total=withheld+(status.validTierNames?.length||0);
+ return status.status==='QUOTING LIVE'&&withheld?`QUOTING LIVE — ${withheld} of ${total} options not offered`:status.status;
 }
 
 export function ServiceRules({service,services=[],meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {

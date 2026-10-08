@@ -32,7 +32,7 @@ test('leftovers scope: resolved phone question identifies selected laminate, not
  const f=laminate(),a=savedDisplayFixture(f);
  assert.equal(a.quote(f.customerInputs).customerResult.midEstimate,852);
  const q=voiceQuestionContract(a.service,a.definition,f.customerInputs).fields.find(x=>x.field==='underlaymentScopeConfirmed');
- assert.match(q.label,/laminate foam/);assert.doesNotMatch(q.label,/hardwood plywood/);
+ assert.match(q.details.join(' '),/laminate foam/);assert.doesNotMatch(q.details.join(' '),/hardwood plywood/);
 });
 test('leftovers scope: approved phone calculation refuses an unbound scope boolean',async t=>{
  const h=quoteEmailFixture(t),f=laminate();delete f.ownerPricing.origin;
@@ -43,7 +43,7 @@ test('leftovers scope: approved phone calculation refuses an unbound scope boole
  const match=await invoke('matchService',{query:f.ownerPricing.service}),inputs=structuredClone(f.customerInputs);delete inputs.confirmedFacts;
  const result=await invoke('getQuote',{serviceHandle:match.serviceHandle,customerInputs:inputs,customerConfirmed:true});
  assert.equal(result.status,'needs_details');assert.equal(result.midEstimate,undefined);
- assert.match(result.questionContract.fields.find(x=>x.field==='underlaymentScopeConfirmed').label,/laminate foam/);
+ assert.match(result.questionContract.fields.find(x=>x.field==='underlaymentScopeConfirmed').details.join(' '),/laminate foam/);
  const unanswered=structuredClone(inputs);delete unanswered.underlaymentScopeConfirmed;
  const question=await invoke('getQuote',{serviceHandle:match.serviceHandle,customerInputs:unanswered,customerConfirmed:true});
  assert.equal(question.status,'needs_details');assert.ok(question.questionContract.fields.find(x=>x.field==='underlaymentScopeConfirmed').confirmationToken);

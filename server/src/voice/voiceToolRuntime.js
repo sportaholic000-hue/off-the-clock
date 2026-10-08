@@ -167,18 +167,7 @@ function safeStringList(value, limit = 30) {
     .slice(0, limit).map(item => item.trim().slice(0, 500));
 }
 
-function pricedScopeLines(response) {
-  const scope = response?.pricedScope;
-  if (!record(scope)) return [];
-  const lines = [];
-  if (typeof scope.service === 'string' && scope.service.trim()) lines.push(scope.service.trim());
-  for (const fact of Array.isArray(scope.facts) ? scope.facts : []) {
-    if (record(fact) && typeof fact.label === 'string') {
-      lines.push(`${fact.label}: ${String(fact.value ?? 'Not supplied')}`.slice(0, 500));
-    }
-  }
-  return lines.slice(0, 30);
-}
+
 
 
 function completeAddress(address) {
@@ -470,6 +459,15 @@ export function createVoiceToolRuntime({
       }
     } catch {
       throw runtimeError('QUOTE_BOUNDARY_FAILED');
+    }
+    // Only the engine knows which fees the selected template/scope replaces.
+    // Its per-option validation reports unanswered, applicable customer fees.
+    // Ask these before saving an outcome, including when another option priced.
+    const diagnostics=[calculated?.internalResult,...(calculated?.internalResult?.failedTierDiagnostics||[])];
+    const requiredCustomerFees=[...new Set(diagnostics.flatMap(row=>row?.invalidCustomerFields||[]).filter(field=>/^feeSelections\.customer\.(travel|disposal|permit|overhead)$/.test(field)).map(field=>field.split('.').at(-1)))];
+    if(requiredCustomerFees.length){
+      const feeAuthority={...scopeAuthority,requiredCustomerFees};
+      return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:requiredCustomerFees.map(fee=>'Should the '+fee+' charge apply? Answer Yes or No.'),questionContract:voiceQuestionContract(service,definition,bound.customerInputs,feeAuthority)};
     }
     const response = calculated?.customerResult;
     if (!record(response) || !BOOKABLE_RESULTS.has(response.resultType)) {

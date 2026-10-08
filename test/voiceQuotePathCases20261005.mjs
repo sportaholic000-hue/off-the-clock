@@ -108,7 +108,7 @@ test('signed provisioned callback -> real dispatcher -> two-tier quote -> availa
     const forged=await h.post('/api/twilio/voice/incoming',undefined,'forged');assert.equal(forged.status,403);assert.equal(h.db.prepare('SELECT COUNT(*) n FROM calls').get().n,0);
     await h.connect();await new Promise(resolve=>setImmediate(resolve));
     assert.deepEqual(h.fake.connects[0].config.tools[0].functionDeclarations.map(v=>v.name),getVoiceToolDeclarations().map(v=>v.name).filter(name=>name!=='sendSms'));
-    const matched=await h.fake.tool('matchService',{query:h.custom.service});assert.equal(matched.status,'matched');assert.ok(matched.questionContract.fields.some(field=>field.field==='unit'));assert.deepEqual(matched.questionContract.customerFees.map(fee=>fee.field),['travel']);
+    const matched=await h.fake.tool('matchService',{query:h.custom.service});assert.equal(matched.status,'matched');assert.ok(matched.questionContract.fields.some(field=>field.field==='unit'));assert.deepEqual(matched.questionContract.customerFees,[]);
     const inputs={service:h.custom.service,serviceConfirmed:true,unit:'flat'};
     const denied=await h.fake.tool('getQuote',{serviceHandle:matched.serviceHandle,customerInputs:inputs});assert.equal(denied.status,'needs_details');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes').get().n,0);
     const unanswered=await h.fake.tool('getQuote',{serviceHandle:matched.serviceHandle,customerInputs:inputs,customerConfirmed:true});assert.match(unanswered.followUps.join(' '),/travel/);

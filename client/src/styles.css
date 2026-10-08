@@ -444,6 +444,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   hyphens: none;
 }
 .service-pick > .status-chip { align-self: flex-start; white-space: nowrap; }
+.status-chip.status-expanded { white-space: normal; }
 .service-pick > .service-compact-status { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .service-pick small { color: var(--gray); font-size: 11px; overflow-wrap: normal; }
 .service-pick .missing-list { color: var(--amber); line-height: 1.4; }
