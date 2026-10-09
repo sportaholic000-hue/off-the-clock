@@ -1,0 +1,83 @@
+{
+  "scenario": "signed-twilio-websocket-fake-google",
+  "calls": 1,
+  "requestedDurationMs": 120000,
+  "actualPacedMs": 120023,
+  "cooldownMs": 120000,
+  "machine": {
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpuCount": 9,
+    "node": "v22.23.3"
+  },
+  "baseline": {
+    "wall": "2026-10-09T08:13:54.532Z",
+    "rssBytes": 105082880,
+    "cpu": {
+      "userMs": 412.776,
+      "systemMs": 66.707,
+      "totalMs": 479.483
+    }
+  },
+  "connected": {
+    "wall": "2026-10-09T08:13:54.581Z",
+    "rssBytes": 109281280,
+    "cpu": {
+      "userMs": 458.419,
+      "systemMs": 70.543,
+      "totalMs": 528.962
+    }
+  },
+  "peak": {
+    "wall": "2026-10-09T08:14:02.533Z",
+    "rssBytes": 124092416,
+    "cpu": {
+      "userMs": 706.191,
+      "systemMs": 103.21,
+      "totalMs": 809.401
+    }
+  },
+  "paced": {
+    "wall": "2026-10-09T08:15:54.601Z",
+    "rssBytes": 109809664,
+    "cpu": {
+      "userMs": 2696.887,
+      "systemMs": 310.736,
+      "totalMs": 3007.623
+    }
+  },
+  "ended": {
+    "wall": "2026-10-09T08:15:56.602Z",
+    "rssBytes": 109809664,
+    "cpu": {
+      "userMs": 2699.564,
+      "systemMs": 311.044,
+      "totalMs": 3010.608
+    }
+  },
+  "afterCooldown": {
+    "wall": "2026-10-09T08:17:56.604Z",
+    "rssBytes": 109809664,
+    "cpu": {
+      "userMs": 2735.574,
+      "systemMs": 311.323,
+      "totalMs": 3046.897
+    }
+  },
+  "perAddedCall": {
+    "peakRssBytes": 19009536,
+    "peakCpuMs": 329.91799999999995,
+    "pacedCpuMs": 2478.661
+  },
+  "framesIn": 6001,
+  "framesOut": 6001,
+  "markAcks": 6001,
+  "maxTickDelayMs": 2.682444999998552,
+  "statuses": [
+    {
+      "status": "COMPLETED",
+      "failureCode": null,
+      "n": 1
+    }
+  ],
+  "errors": []
+}

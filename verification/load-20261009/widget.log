@@ -1,0 +1,6 @@
+Text AI unavailable: configure GEMINI_API_KEY, GEMINI_TEXT_MODEL
+(node:160187) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Off The Clock AI server listening on 44037
+{"scenario":"1000-public-widget-quote-submissions","requests":1000,"success":1000,"statuses":{"201":1000},"peakRssMB":246.12890625,"cpuMs":35270.373,"errors":[]}
+[shutdown] requests and workers drained; database closed

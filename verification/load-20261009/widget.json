@@ -1,0 +1,48 @@
+{
+  "scenario": "1000-public-widget-quote-submissions",
+  "durationMs": 600000,
+  "actualMs": 600001,
+  "machine": {
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpuCount": 9,
+    "node": "v22.23.3"
+  },
+  "baseline": {
+    "wall": "2026-10-09T08:52:57.874Z",
+    "rssBytes": 157048832,
+    "cpu": {
+      "userMs": 683.762,
+      "systemMs": 85.717,
+      "totalMs": 769.479
+    }
+  },
+  "peak": {
+    "wall": "2026-10-09T08:54:42.937Z",
+    "rssBytes": 258084864,
+    "cpu": {
+      "userMs": 6718.592,
+      "systemMs": 363.084,
+      "totalMs": 7081.676
+    }
+  },
+  "ended": {
+    "wall": "2026-10-09T09:02:57.875Z",
+    "rssBytes": 250830848,
+    "cpu": {
+      "userMs": 34474.701,
+      "systemMs": 1565.151,
+      "totalMs": 36039.852
+    }
+  },
+  "requests": 1000,
+  "success": 1000,
+  "statuses": {
+    "201": 1000
+  },
+  "errors": [],
+  "latencyMs": {
+    "median": 27.5,
+    "p95": 36.3,
+    "max": 108.3
+  }
+}

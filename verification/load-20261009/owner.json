@@ -1,0 +1,48 @@
+{
+  "scenario": "250-authenticated-owner-sessions-dashboard-minute-usage",
+  "durationMs": 600000,
+  "actualMs": 600004,
+  "machine": {
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpuCount": 9,
+    "node": "v22.23.3"
+  },
+  "baseline": {
+    "wall": "2026-10-09T08:42:43.230Z",
+    "rssBytes": 129138688,
+    "cpu": {
+      "userMs": 610.944,
+      "systemMs": 163.231,
+      "totalMs": 774.175
+    }
+  },
+  "peak": {
+    "wall": "2026-10-09T08:42:47.230Z",
+    "rssBytes": 171663360,
+    "cpu": {
+      "userMs": 1473.616,
+      "systemMs": 223.539,
+      "totalMs": 1697.155
+    }
+  },
+  "ended": {
+    "wall": "2026-10-09T08:52:43.230Z",
+    "rssBytes": 156479488,
+    "cpu": {
+      "userMs": 22115.206,
+      "systemMs": 2522.22,
+      "totalMs": 24637.426
+    }
+  },
+  "requests": 5000,
+  "success": 5000,
+  "statuses": {
+    "200": 5000
+  },
+  "errors": [],
+  "latencyMs": {
+    "median": 400.5,
+    "p95": 723.3,
+    "max": 819.8
+  }
+}
