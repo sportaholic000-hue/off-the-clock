@@ -17,7 +17,7 @@ export default function MinuteUsage({usage}){
         <div><dt>Not yet charged</dt><dd>{minuteMoney(usage.unchargedCents)}</dd></div>
       </dl>
       {usage.status==='PAID'?<p>Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:<p>Trial minutes are not billed as overage.</p>}
-      {usage.unconfirmedCalls>0?<p>Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.</p>:null}
+      {usage.unconfirmedCalls>0?<p>Calls still being confirmed: {usage.unconfirmedCalls}</p>:null}
       {(usage.warnings||[]).map(warning=><Notice key={warning.id} tone="warning">{warning.message}{['PENDING','SENDING','ACCEPTED','REVIEW','BOUNCED'].includes(warning.emailStatus)?' Email delivery is pending or needs attention; this dashboard warning is saved.':null}</Notice>)}
       {usage.upgradeMessage?<Notice>{usage.upgradeMessage}</Notice>:null}
     </>:<p>{usage.message||'Minute usage is waiting for verified billing-period information.'}</p>}

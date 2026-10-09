@@ -33,12 +33,16 @@ try{
  ws.send(JSON.stringify({event:'connected',protocol:'Call',version:'1.0.0'}));
  ws.send(JSON.stringify({event:'start',sequenceNumber:'1',streamSid,start:{accountSid:ACCOUNT,callSid:call,streamSid,tracks:['inbound'],mediaFormat:{encoding:'audio/x-mulaw',sampleRate:8000,channels:1}}}));
  await until(()=>connects===1&&db.prepare('SELECT status FROM calls WHERE callSid=?').get(call).status==='CONNECTED');
- // Handwritten expected: ceil(3,601/60)=61; trial overrun absorbed; next call fallback.
+ // Handwritten expected: local 3,601 seconds is pending (0 counted). The
+ // signed receipt then confirms ceil(3,601/60)=61; trial overrun is absorbed.
  at+=3601*1000;
  ws.send(JSON.stringify({event:'stop',sequenceNumber:'2',streamSid,stop:{accountSid:ACCOUNT,callSid:call}}));
  await until(()=>db.prepare('SELECT status FROM calls WHERE callSid=?').get(call).status==='COMPLETED');
  const stored=db.prepare('SELECT duration,minutesBilled,status FROM calls WHERE callSid=?').get(call);assert.equal(stored.duration,3601);assert.equal(stored.minutesBilled,61);
  const context=loadVoiceAccountContext(db,owner);assert.equal(context.minutesUsed,61);
+ const beforeReceipt=await incoming('CA'+crypto.randomBytes(16).toString('hex'));assert.match(beforeReceipt,/<Stream /);
+ const route='/api/twilio/voice/status',params={AccountSid:ACCOUNT,CallSid:call,From:FROM,To:TO,Direction:'inbound',CallStatus:'completed',CallDuration:'3601'};
+ for(let n=0;n<2;n++){const response=await fetch(base+route,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded','x-twilio-signature':twilio.getExpectedTwilioSignature(secret,origin+route,params)},body:new URLSearchParams(params)});assert.equal(response.status,204);}
  const next=await incoming('CA'+crypto.randomBytes(16).toString('hex'));assert.doesNotMatch(next,/<Stream /);assert.match(next,/<Gather/);assert.doesNotMatch(next,/<Dial/);
  const result={syntheticOnly:true,experimentCount:1,rows:[{id:'V01-trial-cap-does-not-meter-real-call',expected:{durationSeconds:3601,minutesUsed:61,nextCall:'fallback'},actual:{stored,minutesUsed:context.minutesUsed,nextCallStartsAI:next.includes('<Stream '),errors}}]};
  console.log(JSON.stringify(result,null,2));

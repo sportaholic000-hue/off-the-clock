@@ -1,0 +1,233 @@
+{
+  "baseCommit": "c99ea0519c3966b9b6a2bc4c750c036cd16d6b80",
+  "tests": [
+    {
+      "name": "billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 0sec => 0min, duplicate/restart stable",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 1sec => 1min, duplicate/restart stable",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 59sec => 1min, duplicate/restart stable",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 60sec => 1min, duplicate/restart stable",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 61sec => 2min, duplicate/restart stable",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: per-call ceiling 3601sec => 61min, duplicate/restart stable",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: two31second calls count2minutes; spam and fallback add0",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: provider completion after process restart finalizes once; failed persistence rolls back",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "F10: late media finalization cannot undo fallback exclusion",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1 DOM: [null] picker and submitted acceptance",
+      "item": 1,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1 DOM: [\"Basic\"] picker and submitted acceptance",
+      "item": 1,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1 DOM: [\"Basic\",\"Plus\"] picker and submitted acceptance",
+      "item": 1,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3 DOM: TRIAL pending calls use approved count wording and zero overage",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3 DOM: PAID pending calls use approved count wording and zero overage",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: real untiered phone quote accepts omitted tier and invoices 353889 cents",
+      "item": 1,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: real untiered phone quote accepts null tier and invoices 353889 cents",
+      "item": 1,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: sole null option rejects mismatching \"\"",
+      "item": 1,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: sole null option rejects mismatching \"Wrong\"",
+      "item": 1,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: sole null option rejects mismatching 0",
+      "item": 1,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: 1 named options enforce exact selection and preserve tier",
+      "item": 1,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 1: 2 named options enforce exact selection and preserve tier",
+      "item": 1,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: ended account rejects availability without rows or calendar calls",
+      "item": 2,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: ended account rejects holds without rows or calendar calls",
+      "item": 2,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: ended account rejects confirm without rows or calendar calls",
+      "item": 2,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: ended account rejects preference without rows or calendar calls",
+      "item": 2,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: active account books; ended account can release a hold",
+      "item": 2,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 2: existing confirmation status remains readable after service ends",
+      "item": 2,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: trial six unconfirmed ten-minute calls pending",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: trial six unconfirmed ten-minute calls receipts",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: Operator 300 confirmed plus ten unconfirmed minutes receipts",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: failed receptionist stays zero before and after a signed receipt",
+      "item": 3,
+      "base": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: admission meter permits another trial call until durations are confirmed",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "audit 3: closed month with only unconfirmed extra calls has no monetary pending charge",
+      "item": 3,
+      "base": "FAIL",
+      "after": "PASS"
+    }
+  ]
+}

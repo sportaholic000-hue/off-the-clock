@@ -27,7 +27,7 @@ export function OwnerRecordActions({row,kind,onSaved}) {
     try {
       let deadline;
       if(['CALL_BACK','BOOK'].includes(selected)&&dueAt){const [date,time]=dueAt.split('T'),candidates=localDateTimeCandidates(date,time,workflow.timezone);if(candidates.length!==1)throw Error('Choose an unambiguous follow-up time in the business timezone.');deadline=candidates[0];}
-      const draft={action:selected,version:workflow.version,note,...(deadline?{dueAt:deadline}:{}),...(selected==='REVIEW'?{estimate:review}:{}),...(progressed?{attested}:{}),...(selected==='ACCEPTED'&&estimate?.options?.length?{tierName}:{}),...(selected==='INVOICED'?{invoiceAmount}: {})};
+      const draft={action:selected,version:workflow.version,note,...(deadline?{dueAt:deadline}:{}),...(selected==='REVIEW'?{estimate:review}:{}),...(progressed?{attested}:{}),...(selected==='ACCEPTED'&&estimate?.options?.length>1?{tierName}:{}),...(selected==='INVOICED'?{invoiceAmount}: {})};
       const digest=JSON.stringify(draft);if(pending.current?.digest!==digest)pending.current={digest,body:{...draft,idempotencyKey:crypto.randomUUID()}};
       await api('/api/owner-records/'+kind+'/'+encodeURIComponent(row.id)+'/actions',{method:'POST',body:pending.current.body});
       pending.current=null;await onSaved?.();setSaved(true);setAttested(false);setNote('');
@@ -49,7 +49,7 @@ export function OwnerRecordActions({row,kind,onSaved}) {
         <Field label="Tax treatment"><Select aria-label="Tax treatment" required value={review.taxTreatment} onChange={event=>setReview({...review,taxTreatment:event.target.value})}><option value="">Choose tax treatment</option>{['Includes applicable tax.','No tax added.','Tax excluded; added to the invoice.'].map(value=><option key={value}>{value}</option>)}</Select></Field>
         <Field label="Price basis"><Select aria-label="Price basis" value={review.priceUnit} onChange={event=>setReview({...review,priceUnit:event.target.value})}><option>per job</option><option>per visit</option></Select></Field>
       </>}
-      {selected==='ACCEPTED'&&estimate?.options?.length>0&&<Field label="Accepted quote option"><Select aria-label="Accepted quote option" required value={tierName} onChange={event=>setTierName(event.target.value)}><option value="">Choose accepted option</option>{estimate.options.map(option=><option key={option.tierName}>{option.tierName}</option>)}</Select></Field>}
+      {selected==='ACCEPTED'&&estimate?.options?.length>1&&<Field label="Accepted quote option"><Select aria-label="Accepted quote option" required value={tierName} onChange={event=>setTierName(event.target.value)}><option value="">Choose accepted option</option>{estimate.options.map(option=><option key={option.tierName}>{option.tierName}</option>)}</Select></Field>}
       {selected==='INVOICED'&&<Field label={'Final invoice amount ('+estimate?.currency+')'}><TextInput aria-label={"Final invoice amount ("+estimate?.currency+")"} required inputMode="decimal" value={invoiceAmount} onChange={event=>setInvoiceAmount(event.target.value)}/></Field>}
       {progressed&&<label><input type="checkbox" required checked={attested} onChange={event=>setAttested(event.target.checked)}/>I confirm this event happened outside the app.</label>}
       <p>Saving records owner activity. No message is sent to the caller.</p><Button type="submit">{busy?'Saving…':'Save action'}</Button>

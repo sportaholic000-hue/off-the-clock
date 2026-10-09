@@ -1,0 +1,268 @@
+TAP version 13
+# (node:10) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {
+#   "syntheticOnly": true,
+#   "experimentCount": 1,
+#   "rows": [
+#     {
+#       "id": "V01-trial-cap-does-not-meter-real-call",
+#       "expected": {
+#         "durationSeconds": 3601,
+#         "minutesUsed": 61,
+#         "nextCall": "fallback"
+#       },
+#       "actual": {
+#         "stored": {
+#           "duration": 3601,
+#           "minutesBilled": 61,
+#           "status": "COMPLETED"
+#         },
+#         "minutesUsed": 61,
+#         "nextCallStartsAI": false,
+#         "errors": []
+#       }
+#     }
+#   ]
+# }
+# Subtest: billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+ok 1 - billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+  ---
+  duration_ms: 460.750657
+  type: 'test'
+  ...
+# (node:21) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+ok 2 - F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+  ---
+  duration_ms: 23.852743
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+ok 3 - F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 16.703565
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+ok 4 - F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 15.213007
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+ok 5 - F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 14.837654
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+ok 6 - F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+  ---
+  duration_ms: 15.966883
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+ok 7 - F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+  ---
+  duration_ms: 15.812194
+  type: 'test'
+  ...
+# Subtest: F10: two31second calls count2minutes; spam and fallback add0
+ok 8 - F10: two31second calls count2minutes; spam and fallback add0
+  ---
+  duration_ms: 16.782336
+  type: 'test'
+  ...
+# Subtest: F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+ok 9 - F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+  ---
+  duration_ms: 17.570258
+  type: 'test'
+  ...
+# Subtest: F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+ok 10 - F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+  ---
+  duration_ms: 16.936537
+  type: 'test'
+  ...
+# Subtest: F10: provider completion after process restart finalizes once; failed persistence rolls back
+ok 11 - F10: provider completion after process restart finalizes once; failed persistence rolls back
+  ---
+  duration_ms: 151.690984
+  type: 'test'
+  ...
+# Subtest: F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+ok 12 - F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+  ---
+  duration_ms: 67.01909
+  type: 'test'
+  ...
+# Subtest: F10: late media finalization cannot undo fallback exclusion
+ok 13 - F10: late media finalization cannot undo fallback exclusion
+  ---
+  duration_ms: 14.513455
+  type: 'test'
+  ...
+# Subtest: audit 1 DOM: [null] picker and submitted acceptance
+ok 14 - audit 1 DOM: [null] picker and submitted acceptance
+  ---
+  duration_ms: 448.042624
+  type: 'test'
+  ...
+# Subtest: audit 1 DOM: ["Basic"] picker and submitted acceptance
+ok 15 - audit 1 DOM: ["Basic"] picker and submitted acceptance
+  ---
+  duration_ms: 108.519446
+  type: 'test'
+  ...
+# Subtest: audit 1 DOM: ["Basic","Plus"] picker and submitted acceptance
+ok 16 - audit 1 DOM: ["Basic","Plus"] picker and submitted acceptance
+  ---
+  duration_ms: 59.720277
+  type: 'test'
+  ...
+# Subtest: audit 3 DOM: TRIAL pending calls use approved count wording and zero overage
+ok 17 - audit 3 DOM: TRIAL pending calls use approved count wording and zero overage
+  ---
+  duration_ms: 41.432267
+  type: 'test'
+  ...
+# Subtest: audit 3 DOM: PAID pending calls use approved count wording and zero overage
+ok 18 - audit 3 DOM: PAID pending calls use approved count wording and zero overage
+  ---
+  duration_ms: 24.710028
+  type: 'test'
+  ...
+# (node:78) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: audit 1: real untiered phone quote accepts omitted tier and invoices 353889 cents
+ok 19 - audit 1: real untiered phone quote accepts omitted tier and invoices 353889 cents
+  ---
+  duration_ms: 565.219942
+  type: 'test'
+  ...
+# Subtest: audit 1: real untiered phone quote accepts null tier and invoices 353889 cents
+ok 20 - audit 1: real untiered phone quote accepts null tier and invoices 353889 cents
+  ---
+  duration_ms: 411.641762
+  type: 'test'
+  ...
+# Subtest: audit 1: sole null option rejects mismatching ""
+ok 21 - audit 1: sole null option rejects mismatching ""
+  ---
+  duration_ms: 438.615417
+  type: 'test'
+  ...
+# Subtest: audit 1: sole null option rejects mismatching "Wrong"
+ok 22 - audit 1: sole null option rejects mismatching "Wrong"
+  ---
+  duration_ms: 461.181597
+  type: 'test'
+  ...
+# Subtest: audit 1: sole null option rejects mismatching 0
+ok 23 - audit 1: sole null option rejects mismatching 0
+  ---
+  duration_ms: 571.08432
+  type: 'test'
+  ...
+# Subtest: audit 1: 1 named options enforce exact selection and preserve tier
+ok 24 - audit 1: 1 named options enforce exact selection and preserve tier
+  ---
+  duration_ms: 513.928438
+  type: 'test'
+  ...
+# Subtest: audit 1: 2 named options enforce exact selection and preserve tier
+ok 25 - audit 1: 2 named options enforce exact selection and preserve tier
+  ---
+  duration_ms: 341.106162
+  type: 'test'
+  ...
+# Subtest: audit 2: ended account rejects availability without rows or calendar calls
+ok 26 - audit 2: ended account rejects availability without rows or calendar calls
+  ---
+  duration_ms: 673.990736
+  type: 'test'
+  ...
+# Subtest: audit 2: ended account rejects holds without rows or calendar calls
+ok 27 - audit 2: ended account rejects holds without rows or calendar calls
+  ---
+  duration_ms: 786.943091
+  type: 'test'
+  ...
+# Subtest: audit 2: ended account rejects confirm without rows or calendar calls
+ok 28 - audit 2: ended account rejects confirm without rows or calendar calls
+  ---
+  duration_ms: 705.447231
+  type: 'test'
+  ...
+# Subtest: audit 2: ended account rejects preference without rows or calendar calls
+ok 29 - audit 2: ended account rejects preference without rows or calendar calls
+  ---
+  duration_ms: 936.739316
+  type: 'test'
+  ...
+# Subtest: audit 2: active account books; ended account can release a hold
+ok 30 - audit 2: active account books; ended account can release a hold
+  ---
+  duration_ms: 957.075422
+  type: 'test'
+  ...
+# Subtest: audit 2: existing confirmation status remains readable after service ends
+ok 31 - audit 2: existing confirmation status remains readable after service ends
+  ---
+  duration_ms: 881.433468
+  type: 'test'
+  ...
+# Subtest: audit 3: trial six unconfirmed ten-minute calls pending
+ok 32 - audit 3: trial six unconfirmed ten-minute calls pending
+  ---
+  duration_ms: 42.650437
+  type: 'test'
+  ...
+# Subtest: audit 3: trial six unconfirmed ten-minute calls receipts
+ok 33 - audit 3: trial six unconfirmed ten-minute calls receipts
+  ---
+  duration_ms: 35.403637
+  type: 'test'
+  ...
+# Subtest: audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending
+ok 34 - audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending
+  ---
+  duration_ms: 91.32674
+  type: 'test'
+  ...
+# Subtest: audit 3: Operator 300 confirmed plus ten unconfirmed minutes receipts
+ok 35 - audit 3: Operator 300 confirmed plus ten unconfirmed minutes receipts
+  ---
+  duration_ms: 96.452082
+  type: 'test'
+  ...
+# Subtest: audit 3: failed receptionist stays zero before and after a signed receipt
+ok 36 - audit 3: failed receptionist stays zero before and after a signed receipt
+  ---
+  duration_ms: 25.840152
+  type: 'test'
+  ...
+# Subtest: audit 3: admission meter permits another trial call until durations are confirmed
+ok 37 - audit 3: admission meter permits another trial call until durations are confirmed
+  ---
+  duration_ms: 32.00135
+  type: 'test'
+  ...
+# Subtest: audit 3: closed month with only unconfirmed extra calls has no monetary pending charge
+ok 38 - audit 3: closed month with only unconfirmed extra calls has no monetary pending charge
+  ---
+  duration_ms: 29.089248
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11334.474672

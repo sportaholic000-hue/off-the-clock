@@ -91,8 +91,9 @@ export function createOwnerWorkflowService({database,ownerQuery=sql=>database.pr
         if(body.action==='ACCEPTED'){
           const options=estimate.options;
           if(Array.isArray(options)&&options.length){
-            if(typeof body.tierName!=='string'||options.filter(option=>option.tierName===body.tierName).length!==1)throw problem('Select the exact accepted quote option.');
-            q('UPDATE quotes SET tierChosen=? WHERE ownerId=? AND id=?').run(body.tierName,ownerId,id);payload.tierName=body.tierName;
+            const selected=options.length===1?options[0]:typeof body.tierName==='string'&&options.filter(option=>option.tierName===body.tierName).length===1?options.find(option=>option.tierName===body.tierName):null;
+            if(!selected||(body.tierName!==undefined&&body.tierName!==selected.tierName))throw problem('Select the exact accepted quote option.');
+            q('UPDATE quotes SET tierChosen=? WHERE ownerId=? AND id=?').run(selected.tierName,ownerId,id);payload.tierName=selected.tierName;
           }else if(body.tierName!==undefined)throw problem('This quote has no selectable tier.');
         }
         if(body.action==='INVOICED'){
