@@ -22,6 +22,12 @@ import { missingPricebookServiceId } from '../priceBookStructure.js';
 import { convertPricebookMoney, moneyKindForField, wholeCentsForPricingField, validatePricebookNumericDraft, pricingMapField } from '../priceBookMoney.js';
 import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../priceBookMetadata.js';
 
+// The engine sorts a measured affected area into these bands
+// (repairSizeFromAffectedArea). Owners see the same limits on each price box.
+const repairSizeLabels=type=>type==='ROOFING_REPAIR'
+  ?{small:'Small (under 50 sq ft)',medium:'Medium (50 to 200 sq ft)',large:'Large (over 200 sq ft)'}
+  :{small:'Small (under 20 sq ft)',medium:'Medium (20 to 80 sq ft)',large:'Large (over 80 sq ft)'};
+
 // The only application bridge to the quote engine. Transport and persistence
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
@@ -407,7 +413,7 @@ export function applicationMetadata() {
       const enums={accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
-      if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large']}});
+      if(['repairHours','repairMaterialAllowance','patchRepairHours','patchMaterialAllowance'].includes(field.field)||meta.serviceType==='SIDING_REPAIR'&&field.field==='materialAllowance')Object.assign(info,{type:'json',tree:{depth:3,leafKeys:['small','medium','large'],leafLabels:repairSizeLabels(meta.serviceType)}});
       if(field.field==='postsIncludedInMaterial')Object.assign(info,{type:'json',tree:{leafType:'boolean'}});
       if(info.tree){
         Object.assign(info.tree,pricingMapDomainVNext(meta.serviceType,field.field));

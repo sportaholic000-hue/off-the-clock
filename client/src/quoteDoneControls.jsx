@@ -25,7 +25,7 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length?undefined:next);};
  return <div className="field-stack">{keys.map(key=><div key={key}>
   {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
-   <Field label={treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
+   <Field label={tree.leafLabels?.[key]||treeLabel(key)}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{human(v)}</option>)}</Select>:
     tree.leafType==='boolean'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
     <ExactNumericInput aria-label={label+' '+treeLabel(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} wholeCents={definition.wholeCents} onChange={v=>update(key,v)}/>}</Field>}
    {!required.includes(key)&&<Button variant="quiet" onClick={()=>update(key,undefined)}>Remove {treeLabel(key)}</Button>}
