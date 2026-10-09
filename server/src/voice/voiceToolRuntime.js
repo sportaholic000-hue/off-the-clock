@@ -2,6 +2,7 @@ import {createQuoteEmailService} from '../quoteEmailService.js';
 import {isVoiceCaller,callerIdentity,isPhoneNumber} from './callerIdentity.js';
 import {customerPhone,resolveCustomer} from '../customerIdentityService.js';
 import {customerHistory} from '../customerHistoryService.js';
+import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
 import {transferDecision} from './voiceSettings.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
@@ -230,6 +231,8 @@ export function createVoiceToolRuntime({
   const idempotencyStore = createVoiceToolIdempotencyStore({
     database, clock, leaseMs: idempotencyLeaseMs
   });
+  const tenantQuery=usageOwnerQuery(database);
+  let identityQuestion=null,identityDenied=false;
 
   function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
     const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
@@ -1169,13 +1172,28 @@ export function createVoiceToolRuntime({
   }
 
   async function getCustomerContext(input) {
-    invocation(input);
+    const args=invocation(input);
     if(!isPhoneNumber(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
-    const {customer,appointments,openLeads,recentQuotes,quoteRequests}=customerHistory(database,context);
-    if (!customer && !appointments.length && !openLeads.length && !recentQuotes.length && !quoteRequests.length) {
+    if(identityDenied)return {status:'not_found',message:'Treat this person as a new caller; do not reveal saved history.'};
+    const {customer,appointments,openLeads,recentQuotes,quoteRequests,previousCall}=customerHistory(database,context,{now:instant().getTime(),ownerQuery:tenantQuery});
+    if (!customer && !appointments.length && !openLeads.length && !recentQuotes.length && !quoteRequests.length && !previousCall) {
       return {status:'not_found',message:'No caller-owned customer history was found.'};
     }
-    const output={status:'found',openLeads,recentQuotes,quoteRequests,
+    const firstName=typeof customer?.name==='string'?customer.name.trim().split(/\s+/)[0].slice(0,120):null;
+    const question=firstName?`Am I speaking with ${firstName}?`:'Am I speaking with the person who called this business from this number?';
+    if(!args.callerConfirmedIdentity){identityQuestion=question;return {status:'identity_unconfirmed',...(firstName?{greetingName:firstName}:{}),message:question};}
+    if(!identityQuestion)return {status:'not_found',message:'Ask the identity question before retrieving history.'};
+    const row=tenantQuery('SELECT transcriptJson FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
+    const transcript=parseJson(row?.transcriptJson,[]);
+    const turns=Array.isArray(transcript)?transcript:[];
+    const lastCaller=[...turns].reverse().find(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string');
+    const preceding=lastCaller?turns.slice(0,turns.lastIndexOf(lastCaller)).reverse().find(turn=>['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'):null;
+    const answer=lastCaller?.text.trim()||'';
+    const named=firstName&&new RegExp(`^(?:yes[,!. ]*)?(?:this is|i am|i'm|it's)\\s+${firstName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}(?:\\s+speaking)?[.!\\s]*$`,'i').test(answer);
+    if(!lastCaller||preceding?.text.trim()!==identityQuestion||!named&&!/^(?:yes(?:\s*[,!.]?\s*(?:speaking|that'?s me|it is|this is|i am|i'm))?|yeah|yep|speaking|that'?s me|correct|that'?s right)[.!\s]*$/i.test(answer)){
+      identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
+    }
+    const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),
       recentAppointments:appointments.map(row=>{
         const handle=issue('appointment','appointment:'+row.id,{appointmentId:row.id,intentId:row.bookingIntentId||null,customerId:row.customerId||null});
         return handle+' — '+String(row.status||'unknown').toLowerCase()+' — '+(row.startAtUtc||row.datetime||'time unavailable');

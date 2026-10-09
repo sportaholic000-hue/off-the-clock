@@ -112,7 +112,8 @@ function modifyAppointment(args){
   const action=oneOf(args.action,['reschedule','cancel']);if(action==='reschedule'&&args.slotHandle===undefined)fail('MISSING_TOOL_FIELD');if(action==='cancel'&&args.slotHandle!==undefined)fail('EXTRA_TOOL_FIELD');
   const result={appointmentHandle:handle(args.appointmentHandle),action,customerConfirmed:confirmed(args.customerConfirmed)};if(args.slotHandle!==undefined)result.slotHandle=handle(args.slotHandle);return result;
 }
-const VALIDATORS=Object.freeze({matchService,getQuote,calculateListedPrice,calculateVoiceArea,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext:()=>({})});
+function getCustomerContext(args){if(args.callerConfirmedIdentity!==undefined&&typeof args.callerConfirmedIdentity!=='boolean')fail('INVALID_TOOL_BOOLEAN');return {callerConfirmedIdentity:args.callerConfirmedIdentity===true};}
+const VALIDATORS=Object.freeze({matchService,getQuote,calculateListedPrice,calculateVoiceArea,checkAvailability,bookAppointment,captureLead,logQuoteRequest,prepareQuoteEmail,sendQuoteEmail,flagUrgent,transferCall,modifyAppointment,getCustomerContext});
 function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;}
 export function validateVoiceToolCall(name,args){
   if(typeof name!=='string'||!Object.hasOwn(VALIDATORS,name))fail('UNKNOWN_VOICE_TOOL');
@@ -144,7 +145,7 @@ const declarations={
   flagUrgent:object({reason:enumeration(['active_leak','flooding','safety','complaint']),summary:string('Optional caller-reported urgency, not an invented diagnosis.'),leadHandle:opaque},['reason']),
   transferCall:object({reason:enumeration(['caller_requested','urgent','escalation']),customerConfirmed:confirmation,notes:string('The caller exact request words. Preserved in a callback if transfer fails.'),leadHandle:opaque,inquiryNumber:{type:'INTEGER',minimum:1,maximum:100,description:'Default 1. Reuse for retries; a different number marks a genuinely separate callback request.'}},['reason','customerConfirmed']),
   modifyAppointment:object({appointmentHandle:opaque,action:enumeration(['reschedule','cancel']),slotHandle:opaque,customerConfirmed:confirmation},['appointmentHandle','action','customerConfirmed']),
-  getCustomerContext:object({})
+  getCustomerContext:object({callerConfirmedIdentity:boolean('False for the first lookup. True only after asking the returned identity question and hearing this caller affirm that identity; the server checks the call transcript before releasing any history.')})
 };
 export const VOICE_TOOL_DECLARATIONS=deepFreeze(VOICE_TOOL_NAMES.map(name=>({name,description:name==='bookAppointment'?'After explicit caller confirmation, the server obtains one hold and then confirms that held appointment. Do not supply hold IDs, finalize flags, addresses or times.':"Perform "+name+" using this call's server-authoritative records. Never invent prices, identities or outcomes.",parameters:declarations[name]})));
 export const getVoiceToolDeclarations=()=>VOICE_TOOL_DECLARATIONS;

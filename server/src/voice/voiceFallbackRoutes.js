@@ -2,9 +2,13 @@ import express from 'express';
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {isVoiceCaller,isPhoneNumber} from './callerIdentity.js';
 import {isFinalVoiceCall} from './voiceRecovery.js';
+import {TWILIO_BACKUP_VOICES} from './voiceSettings.js';
 export const CAPTURE_PATH='/api/twilio/voice/capture';
 const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');
-export function captureChoice(base){return {mode:'capture',action:base+CAPTURE_PATH,partial:base+CAPTURE_PATH+'/partial',message:'Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.'};}
+export const BACKUP_CAPTURE_MESSAGE="Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we'll get back to you.";
+export const BACKUP_THANK_YOU="Thanks, we'll get back to you.";
+const THROTTLED_RETRY_MESSAGE='Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.';
+export function captureChoice(base,voiceId){return {mode:'capture',action:base+CAPTURE_PATH,partial:base+CAPTURE_PATH+'/partial',message:BACKUP_CAPTURE_MESSAGE,...(Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?{voice:TWILIO_BACKUP_VOICES[voiceId]}:{})};}
 export function installVoiceFallbackRoutes({app,validator,resolver,database,ownerQuery,store,publicBaseUrl,clock=()=>new Date()}){
   const query=usageOwnerQuery(database,ownerQuery);
   const markFallback=(context,call)=>{
@@ -41,13 +45,19 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
       const number=query('SELECT existingPhoneNumber FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.existingPhoneNumber;
       store.finishCall({context,status:'COMPLETED',reason:'FALLBACK_REQUEST_CAPTURED'});
       const dial=call.failureCode!=='VOICE_CALLER_THROTTLED'&&isPhoneNumber(number)&&number!==context.to?'<Dial answerOnBridge="true" timeout="20"><Number>'+xml(number)+'</Number></Dial>':'';
-      return res.type('text/xml').send('<Response><Say>Thank you. The business will follow up.</Say>'+dial+'<Hangup/></Response>');
+      const savedVoice=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
+      const voice=call.failureCode==='VOICE_CALLER_THROTTLED'||!Object.hasOwn(TWILIO_BACKUP_VOICES,savedVoice)?null:TWILIO_BACKUP_VOICES[savedVoice];
+      const words=call.failureCode==='VOICE_CALLER_THROTTLED'?'Thank you. The business will follow up.':BACKUP_THANK_YOU;
+      return res.type('text/xml').send('<Response><Say'+(voice?' voice="'+xml(voice)+'"':'')+'>'+xml(words)+'</Say>'+dial+'<Hangup/></Response>');
     }catch{return res.status(503).send('Request capture unavailable; retry this callback.');}
   });
   app.post(CAPTURE_PATH+'/again',parser,async(req,res)=>{
     try{const {call,context}=await contextFor(req);if(serviceEnded(context))return unavailable(res);if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
       markFallback(context,call);
-      const choice=captureChoice(publicBaseUrl);return res.type('text/xml').send('<Response><Gather input="speech" action="'+xml(choice.action)+'" method="POST" partialResultCallback="'+xml(choice.partial)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto"><Say>'+xml(choice.message)+'</Say></Gather></Response>');
+      const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
+      const choice=captureChoice(publicBaseUrl,call.failureCode==='VOICE_CALLER_THROTTLED'?null:voiceId);
+      if(call.failureCode==='VOICE_CALLER_THROTTLED')choice.message=THROTTLED_RETRY_MESSAGE;
+      return res.type('text/xml').send('<Response><Gather input="speech" action="'+xml(choice.action)+'" method="POST" partialResultCallback="'+xml(choice.partial)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto"><Say'+(choice.voice?' voice="'+xml(choice.voice)+'"':'')+'>'+xml(choice.message)+'</Say></Gather></Response>');
     }catch{return res.sendStatus(403);}
   });
 }

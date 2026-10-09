@@ -1,6 +1,7 @@
 import {identityLabel} from './receptionistSettings.js';
 import {isValidIanaTimeZone} from '../calendarTime.js';
 export const VOICE_NAMES=Object.freeze({male:'Charon',female:'Kore'});
+export const TWILIO_BACKUP_VOICES=Object.freeze(Object.fromEntries(Object.entries(VOICE_NAMES).map(([id,name])=>[id,`Google.en-US-Chirp3-HD-${name}`])));
 export const TRANSFER_DAYS=Object.freeze(['sun','mon','tue','wed','thu','fri','sat']);
 const plain=value=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
 const invalid=message=>Object.assign(new Error(message),{statusCode:400,code:'INVALID_VOICE_SETTINGS'});

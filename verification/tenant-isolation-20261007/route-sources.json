@@ -81,11 +81,11 @@
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "bf3ca1ab518f36f211d3b991da726cc2eb91b9fa60a8b669377930edfbb6f73a"
+    "sha256": "794270793cae778a03b750bf34d4277eaf7ab0f243ac2183031b276ca64db881"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "65100e403241261c23a14a0f51c65a95c0e40b1b837f03479698de8a594e065f"
+    "sha256": "3ba489138236bef59d445123218b6820355a3a268dc4ff6fea39791f8f63ff0b"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
@@ -97,6 +97,6 @@
   },
   {
     "file": "src/voiceRuntimeRoutes.js",
-    "sha256": "2da21b282b485f9eaf1a5525610972e23d2ac2e558a99aa4eb965fc600ecc533"
+    "sha256": "682f8e4f5abb80ce0721afb0a1f05135fb4b3e3c7a7a0e57971d6eaff60e9cdf"
   }
 ]

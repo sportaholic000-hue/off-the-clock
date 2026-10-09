@@ -28,9 +28,11 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     let instruction;try{instruction=typeof systemInstruction==='function'?await systemInstruction({context,session}):systemInstruction;}catch{fail('GOOGLE_LIVE_INSTRUCTION_FAILED');}
     if(typeof instruction!=='string'||!instruction.trim()||instruction.length>VOICE_INSTRUCTION_CHARACTER_LIMIT)fail('GOOGLE_LIVE_INSTRUCTION_FAILED');
     let provider,closed=false,closing=false,failed=false,modelText='',queue=Promise.resolve(),transcriptions=Promise.resolve(),closePromise;
+    let generation=0,resumeHandle=null,reconnectPromise=null;
     function close(){
       if(closePromise)return closePromise;closing=true;
       closePromise=Promise.resolve().then(async()=>{
+        if(reconnectPromise)await reconnectPromise.catch(()=>{});
         if(provider)try{await provider.sendRealtimeInput({audioStreamEnd:true});}catch{}
         await transcriptions;await flush(false);await queue;
         if(provider)try{await provider.close();}catch{}
@@ -73,23 +75,67 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       transcriptions=received.catch(error);
       enqueue(async()=>{await received;await message(value);});
     }
-    const config={responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
-    let timer;
+    // The empty sliding window uses Google's default trigger and target sizes.
+    // Audio arriving during a WebSocket switch waits in the bridge's bounded,
+    // ordered input queue; it is submitted once to the resumed connection.
+    const config={responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],sessionResumption:{},contextWindowCompression:{slidingWindow:{}},...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
+    async function connect(handle,epoch){
+      const options={...config,sessionResumption:handle?{handle}:{}};
+      let timer;
+      const connecting=Promise.resolve(client.live.connect({model,config:options,callbacks:{
+        onmessage:value=>{
+          // The provider may deliver its last transcript while close awaits
+          // acknowledgement; keep accepting that text on the active socket.
+          if(epoch!==generation||closed||failed)return;
+          try{
+            jsonData(value);
+            const update=value.sessionResumptionUpdate;
+            if(update!==undefined){
+              if(!plain(update)||update.resumable!==undefined&&typeof update.resumable!=='boolean'||update.newHandle!==undefined&&typeof update.newHandle!=='string')fail('INVALID_GOOGLE_LIVE_MESSAGE');
+              if(update.resumable===false)resumeHandle=null;
+              else if(update.newHandle&&update.newHandle.length<=4096)resumeHandle=update.newHandle;
+            }
+          }catch{error();return;}
+          acceptMessage(value);
+          if(value.goAway!==undefined&&!closing){
+            if(!plain(value.goAway)||value.goAway.timeLeft!==undefined&&typeof value.goAway.timeLeft!=='string'){error();return;}
+            void reconnect(epoch);
+          }
+        },
+        onerror:()=>{if(epoch!==generation||closing||closed||failed)return;if(resumeHandle)void reconnect(epoch);else enqueue(error);},
+        onclose:()=>{if(epoch!==generation||closing||closed||failed)return;if(resumeHandle)void reconnect(epoch);else enqueue(async()=>{if(!closed){await flush(false);Promise.resolve(callbacks.onClose()).catch(()=>{});void close();}});}
+      }}));
+      connecting.then(value=>{if(epoch!==generation||closing||closed||failed)try{value.close();}catch{}}).catch(()=>{});
+      try{
+        const opened=await Promise.race([connecting,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED')),connectTimeoutMs);})]);
+        if(epoch!==generation||closing||closed||failed||['sendRealtimeInput','sendToolResponse','close'].some(key=>typeof opened?.[key]!=='function'))throw Error();
+        return opened;
+      }finally{clearTimeout(timer);}
+    }
+    function reconnect(epoch){
+      if(epoch!==generation||closing||closed||failed||reconnectPromise)return reconnectPromise;
+      if(!resumeHandle){error();return null;}
+      const old=provider;provider=null;const handle=resumeHandle,next=++generation;
+      reconnectPromise=connect(handle,next).then(opened=>{provider=opened;return opened;}).catch(()=>{error();throw new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED');}).finally(()=>{reconnectPromise=null;});
+      // Retire the old socket without ending the resumed session. Old callbacks
+      // are ignored by generation; already accepted transcripts/tools drain once.
+      if(old)Promise.resolve().then(()=>old.close()).catch(()=>{});
+      reconnectPromise.catch(()=>{});
+      return reconnectPromise;
+    }
+    async function ready(){if(reconnectPromise)await reconnectPromise;if(!provider||closed||failed)fail('GOOGLE_LIVE_SEND_FAILED');return provider;}
     try{
-      const connecting=Promise.resolve(client.live.connect({model,config,callbacks:{onmessage:acceptMessage,onerror:()=>enqueue(error),onclose:()=>enqueue(async()=>{if(!closed){await flush(false);Promise.resolve(callbacks.onClose()).catch(()=>{});void close();}})}}));
-      connecting.then(value=>{if(closed){try{value.close();}catch{}}}).catch(()=>{});
-      provider=await Promise.race([connecting,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new GoogleGenAiLiveAdapterError('GEMINI_CONNECT_FAILED')),connectTimeoutMs);})]);
-      if(closed||failed||['sendRealtimeInput','sendToolResponse','close'].some(key=>typeof provider?.[key]!=='function'))throw Error();
+      provider=await connect(null,generation);
       if(greetOnConnect&&typeof provider.sendClientContent==='function')provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]'}]}],turnComplete:true});
-    }catch{await close();fail('GEMINI_CONNECT_FAILED');}finally{clearTimeout(timer);}
+    }catch{await close();fail('GEMINI_CONNECT_FAILED');}
     return Object.freeze({
       async sendAudio(value){
         if(closed||failed||value?.mimeType!==audio.inputMimeType||!(Buffer.isBuffer(value.data)||value.data instanceof Uint8Array)||!value.data.byteLength||value.data.byteLength%2||value.data.byteLength>32768)fail('INVALID_GOOGLE_LIVE_AUDIO');
-        try{await provider.sendRealtimeInput({audio:{data:Buffer.from(value.data).toString('base64'),mimeType:value.mimeType}});}catch{await error();fail('GOOGLE_LIVE_SEND_FAILED');}
+        try{await (await ready()).sendRealtimeInput({audio:{data:Buffer.from(value.data).toString('base64'),mimeType:value.mimeType}});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },
       async sendToolResponse(value){
         if(closed||failed||typeof value?.toolCallId!=='string'||typeof value?.name!=='string'||!toolDeclarations.some(tool=>tool.name===value.name))fail('INVALID_GOOGLE_LIVE_TOOL_RESPONSE');jsonData(value.response);
-        try{await provider.sendToolResponse({functionResponses:[{id:value.toolCallId,name:value.name,response:value.response}]});}catch{await error();fail('GOOGLE_LIVE_SEND_FAILED');}
+        try{await (await ready()).sendToolResponse({functionResponses:[{id:value.toolCallId,name:value.name,response:value.response}]});}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });
   };

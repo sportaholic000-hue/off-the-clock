@@ -214,10 +214,11 @@ function fallbackTwiml(value, calledNumber) {
   const fallback = isPlainObject(value) ? value : {};
   if(fallback.mode==='reject')return '<Response><Reject reason="rejected"/></Response>';
   const message = safeMessage(fallback.message);
+  const voice=['Google.en-US-Chirp3-HD-Charon','Google.en-US-Chirp3-HD-Kore'].includes(fallback.voice)?' voice="'+xmlText(fallback.voice)+'"':'';
   if(fallback.mode==='capture') {
     const action=new URL(fallback.action),partial=new URL(fallback.partial);
     if(action.protocol!=='https:'||partial.origin!==action.origin)throw Error('Invalid capture URL');
-    return '<Response><Gather input="speech" action="'+xmlText(action.href)+'" method="POST" partialResultCallback="'+xmlText(partial.href)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>'+xmlText(message)+'</Say></Gather></Response>';
+    return '<Response><Gather input="speech" action="'+xmlText(action.href)+'" method="POST" partialResultCallback="'+xmlText(partial.href)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say'+voice+'>'+xmlText(message)+'</Say></Gather></Response>';
   }
   const number = typeof fallback.number === "string" ? fallback.number.trim() : "";
   if (fallback.mode === "forward" && E164.test(number) && number !== calledNumber) {

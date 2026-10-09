@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import {db,migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {fixture,at} from './leadCaptureRepair20261006Fixture.mjs';
+import {confirmedHistory} from './returningCallerTestHelper.mjs';
 
 function context(f){const c={ownerId:'synthetic-a',callSid:'CA'+crypto.randomBytes(16).toString('hex'),accountSid:'AC'+'a'.repeat(32),from:'+19025550100',to:'+19025550101'};f.db.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,transcriptJson,createdAt) VALUES(?,?,?,?,?,?,'CONNECTED','[]',?)").run(c.callSid,c.ownerId,c.callSid,c.accountSid,c.from,c.to,at);return c;}
 
@@ -27,7 +28,7 @@ test('D16 public web input cannot overwrite established voice identity and web h
  const f=fixture(t,process.env.DATABASE_PATH),c=context(f),voice=f.voice(c);await voice.tool('captureLead',{name:'[SYNTHETIC] Established',email:'known@example.invalid'});
  const body={requestId:crypto.randomUUID(),serviceId:crypto.randomUUID(),serviceRequest:'[SYNTHETIC] web history request',customerInputs:{},contact:{phone:'+1 (902) 555-0100',email:'claimed@example.invalid'},reviewRequested:true};submitQuote(c.ownerId,body);
  const customer=db.prepare('SELECT * FROM customers WHERE ownerId=? AND phoneE164=?').get(c.ownerId,c.from);assert.equal(customer.name,'[SYNTHETIC] Established');assert.equal(JSON.parse(customer.notesJson).email,'known@example.invalid');
- const result=await voice.tool('getCustomerContext',{});assert.ok(result.openLeads.some(v=>v.description===body.serviceRequest));assert.ok(result.quoteRequests.some(v=>v.description===body.serviceRequest));
+ const result=await confirmedHistory(f.db,c,args=>voice.tool('getCustomerContext',args));assert.ok(result.openLeads.some(v=>v.description===body.serviceRequest));assert.ok(result.quoteRequests.some(v=>v.description===body.serviceRequest));
 });
 test('D16 web identity and all related records roll back when receipt persistence fails',t=>{
  fixture(t,process.env.DATABASE_PATH);const contact={phone:'+19025550155'},body={requestId:crypto.randomUUID(),serviceId:crypto.randomUUID(),serviceRequest:'[SYNTHETIC] rollback',customerInputs:{},contact,reviewRequested:true};

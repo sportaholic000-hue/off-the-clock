@@ -75,6 +75,8 @@ test('connects with audio-only transcription, tools, prompt, and configured voic
     outputAudioTranscription: {},
     systemInstruction: 'Serve owner-a without exposing prices.',
     tools: [{ functionDeclarations: TOOLS }],
+    sessionResumption: {},
+    contextWindowCompression: { slidingWindow: {} },
     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Aoede' } } }
   });
   const pcm = Buffer.from([0, 1, 2, 3]);

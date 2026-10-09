@@ -70,8 +70,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const state=account(context.ownerId),off=offRouting(context);
     if(off)return off;
     if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
-    const choice=captureChoice(publicBaseUrl);
-    if(reason==='VOICE_CALLER_THROTTLED')choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";
+    const choice=captureChoice(publicBaseUrl,state.profile?.voiceId);
+    if(reason==='VOICE_CALLER_THROTTLED'){choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";delete choice.voice;}
     return choice;
   };
   const configuredSecret=env.VOICE_HANDLE_SECRET||env.BOOKING_SLOT_TOKEN_SECRET||env.JWT_SECRET;

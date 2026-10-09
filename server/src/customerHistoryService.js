@@ -1,11 +1,30 @@
-import {customerQuery,findCustomer} from './customerIdentityService.js';
+import {customerQuery,customerPhone} from './customerIdentityService.js';
 import {projectSavedQuoteContext,VOICE_RESULT_BYTES} from './voice/voiceQuotePresentation.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 const parsed=value=>{try{return JSON.parse(value)||{};}catch{return {};}};
 const text=value=>typeof value==='string'&&value.trim()?value.trim().slice(0,500):null;
 const jsonPhone=(column,path)=>`customer_phone(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
 
-export function customerHistory(database,{ownerId,from}) {
- const query=customerQuery(database),customer=findCustomer(database,ownerId,from);
+const oldAmount=value=>value.replace(/(?:(?:\b(?:CA|US|AU|NZ|C|A|NZ))?\s*[$€£¥]\s*\d[\d,.]*|\b\d[\d,.]*\s*(?:dollars?|cents?)\b)/gi,'[past amount omitted]');
+function previousCallContext(row){
+ if(!row)return null;
+ let entries;try{entries=JSON.parse(row.transcriptJson||'[]');}catch{return null;}
+ if(!Array.isArray(entries))return null;
+ const utterances=entries.filter(item=>item&&typeof item==='object'&&['caller','user','assistant','model'].includes(item.role)&&typeof item.text==='string');
+ const backup=utterances.filter(item=>typeof item.fallbackKey==='string').at(-1);
+ const excerpt=utterances.filter(item=>typeof item.fallbackKey!=='string').slice(-10).map(item=>({role:['caller','user'].includes(item.role)?'caller':'receptionist',text:oldAmount(item.text.trim().slice(0,300))})).filter(item=>item.text);
+ let remaining=2500;const recent=[];for(const item of excerpt.reverse()){if(item.text.length>remaining)break;recent.push(item);remaining-=item.text.length;}
+ return {recordedAt:row.createdAt,endedUnexpectedly:row.status==='FAILED'||row.outcome==='TWILIO_SOCKET_CLOSED'||Boolean(row.failureCode&&/^(?:GEMINI_|TWILIO_SOCKET_)/.test(row.failureCode)),transcriptExcerpt:recent.reverse(),...(backup?{backupMessage:oldAmount(backup.text.trim().slice(0,500))}:{})};
+}
+export function customerHistory(database,{ownerId,from,callSid},{now=Date.now(),ownerQuery}={}) {
+ customerQuery(database); // Register the same normalized phone function used by existing history joins.
+ const query=usageOwnerQuery(database,ownerQuery),normalized=customerPhone(from);
+ const customer=normalized?query(`SELECT * FROM customers WHERE ownerId=? AND customer_phone(phoneE164)=?
+   ORDER BY createdAt,id LIMIT 1`).get(ownerId,normalized):null;
+ const prior=query(`SELECT status,outcome,failureCode,createdAt,transcriptJson FROM calls
+   WHERE ownerId=? AND customer_phone(callerNumber)=? AND callSid<>? AND createdAt>=? AND createdAt<=?
+   ORDER BY createdAt DESC,id DESC LIMIT 1`).get(ownerId,from,callSid||'',new Date(now-24*60*60*1000).toISOString(),new Date(now).toISOString());
+ const previousCall=previousCallContext(prior);
  const appointments=query(`SELECT * FROM appointments a WHERE a.ownerId=?
    AND (${jsonPhone('a.customerJson','$.phone')}=? OR
      (a.customerId IS NOT NULL AND EXISTS(SELECT 1 FROM customers c WHERE c.ownerId=a.ownerId AND c.id=a.customerId AND customer_phone(c.phoneE164)=?)
@@ -43,5 +62,5 @@ export function customerHistory(database,{ownerId,from}) {
     OR EXISTS(SELECT 1 FROM quoteSubmissions s WHERE s.ownerId=r.ownerId AND s.recordId=r.id AND ${jsonPhone('s.originalSubmissionJson','$.contact.phone')}=?))
    ORDER BY r.createdAt DESC,r.id DESC LIMIT 5`).all(ownerId,from,from)
    .map(row=>({description:text(row.describedService),createdAt:row.createdAt}));
- return {customer,appointments,openLeads,recentQuotes,quoteRequests};
+ return {customer,appointments,openLeads,recentQuotes,quoteRequests,previousCall};
 }

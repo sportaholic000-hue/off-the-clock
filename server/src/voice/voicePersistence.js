@@ -340,8 +340,8 @@ export function findVoiceTenantsByNumber(database, twilioNumber) {
 export function loadVoiceAccountContext(database, ownerId) {
   const account = database.prepare(`SELECT id, plan, planStatus, trialEndsAt, paymentFailedAt, annualPaidThroughAt, paidThroughAt, serviceEndsAt
     FROM users WHERE id = ? AND role = 'owner'`).get(ownerId);
-  const profile = database.prepare(`SELECT ownerId, operatorEnabled, existingPhoneNumber,
-    phoneProvisioningStatus, carrierSetupStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson
+  const profile = usageOwnerQuery(database)(`SELECT ownerId, operatorEnabled, existingPhoneNumber,
+    phoneProvisioningStatus, carrierSetupStatus, twilioNumber, twilioNumberSid, knowledgeBaseJson, voiceId
     FROM businessProfiles WHERE ownerId = ?`).get(ownerId);
   const usage = database.prepare(`SELECT COALESCE(SUM(minutesBilled), 0) AS minutesUsed
     FROM calls WHERE ownerId = ?`).get(ownerId);

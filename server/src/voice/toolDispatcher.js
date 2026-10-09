@@ -128,7 +128,13 @@ const PROJECTORS=Object.freeze({
           else if(['customerMessage','taxTreatment','additionalWorkStatus'].includes(field))safe[field]=resultText(item,2000);
           else safe[field]=item===null?null:/Estimate$/.test(field)?resultMoney(item):resultText(item,500);
         }return safe;});
-    });copyIf(result,output,'recentAppointments',value=>resultTextList(value,10));copyIf(result,output,'message',value=>resultText(value,1000));return output;}
+    });copyIf(result,output,'recentAppointments',value=>resultTextList(value,10));
+    copyIf(result,output,'previousCall',value=>{
+      assertClosed(value,['recordedAt','endedUnexpectedly','transcriptExcerpt','backupMessage'],['recordedAt','endedUnexpectedly','transcriptExcerpt'],'INVALID_TOOL_RESULT');
+      if(typeof value.endedUnexpectedly!=='boolean'||!Array.isArray(value.transcriptExcerpt)||value.transcriptExcerpt.length>10)fail('INVALID_TOOL_RESULT',502);
+      const excerpt=value.transcriptExcerpt.map(item=>{assertClosed(item,['role','text'],['role','text'],'INVALID_TOOL_RESULT');if(!['caller','receptionist'].includes(item.role))fail('INVALID_TOOL_RESULT',502);return {role:item.role,text:resultText(item.text,300)};});
+      return {recordedAt:resultText(value.recordedAt,40),endedUnexpectedly:value.endedUnexpectedly,transcriptExcerpt:excerpt,...(value.backupMessage?{backupMessage:resultText(value.backupMessage,500)}:{})};
+    });copyIf(result,output,'message',value=>resultText(value,1000));return output;}
 });
 export function projectVoiceToolResult(name,result){const projector=PROJECTORS[name];if(typeof projector!=='function')fail('UNKNOWN_VOICE_TOOL');return Object.freeze(projector(result));}
 function requestDigest(name,args){return createHash('sha256').update(JSON.stringify({name,args}),'utf8').digest('hex');}
