@@ -6,13 +6,21 @@ export function rewriteKnowledgeText(value){
  // the business for a quote, pricing, details or booking. The caller is already
  // on the call, so it is removed. A sentence that adds anything else (an
  // amount, a discount, a condition, a named service) never matches and is kept.
- const contactOnly=new RegExp('^(?:please\\s+)?(?:'+
+ // The purpose may come before the contact instruction ("For a free estimate,
+ // call us.") or after it ("Call us to get a free estimate."). The grammar is
+ // closed: any other word (an amount, a condition, "emergencies") keeps the
+ // sentence.
+ const when='(?:\\s+(?:today|now|anytime|any\\s+time|24\\/7))?';
+ const address='(?:\\s+(?:(?:at|on)\\s+)?(?:[+\\d(][\\d()\\s.\\-]{5,20}\\d|[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+))?';
+ const purpose='(?:for|to\\s+(?:get|request|receive|arrange))\\s+(?:(?:a|an|your|our|more|additional)\\s+)?'+
+  '(?:(?:free|no[-\\s]obligation)(?:\\s*,?\\s*(?:and\\s+)?(?:free|no[-\\s]obligation))?\\s+)?'+
+  '(?:quotes?|estimates?|consultations?|inspections?|assessments?|pricing|prices?|rates?|details|information|info|hours|access|availability|appointments?)'+
+  '|to\\s+(?:book|schedule|set\\s+up)(?:\\s+(?:a|an|your)\\s+(?:appointment|estimate|visit|consultation|service|job|quote|inspection))?';
+ const contact='(?:please\\s+)?(?:'+
   '(?:call|text|email|e-mail|message|phone|contact|ring)(?:\\s+or\\s+(?:call|text|email|e-mail|message))?(?:\\s+(?:us|me))?'+
   '|give\\s+(?:us|me)\\s+a\\s+(?:call|ring)|get\\s+in\\s+touch(?:\\s+with\\s+(?:us|me))?|reach\\s+out(?:\\s+to\\s+(?:us|me))?|drop\\s+(?:us|me)\\s+a\\s+(?:line|message|note)'+
-  ')(?:\\s+(?:today|now|anytime|any\\s+time|24\\/7))?(?:\\s+(?:(?:at|on)\\s+)?[+\\d(][\\d()\\s.\\-]{5,20}\\d)?'+
-  '(?:\\s+for\\s+(?:a\\s+|an\\s+|your\\s+|more\\s+|additional\\s+)?(?:(?:free|no[-\\s]obligation)\\s+)?(?:quotes?|estimates?|consultations?|inspections?|assessments?|pricing|prices?|rates?|details|information|info|hours|access|availability|appointments?)'+
-  '|\\s+to\\s+(?:book|schedule|set\\s+up)(?:\\s+(?:a|an|your)\\s+(?:appointment|estimate|visit|consultation|service|job|quote|inspection))?)?'+
-  '(?:\\s+(?:today|now|anytime|any\\s+time|24\\/7))?[.!?]?$','i');
+  ')'+when+address+when;
+ const contactOnly=new RegExp('^(?:(?:'+purpose+')\\s*,?\\s+)?'+contact+'(?:\\s+(?:'+purpose+'))?'+when+'[.!?]?$','i');
  return value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').replace(/\r\n?/g,'\n')
   .split(/\n\s*\n/).map(paragraph=>paragraph.split('\n').map(line=>line.split(/(?<=[.!?])\s+/).map(sentence=>{
    // Check the original sentence before changing or discarding any contact
