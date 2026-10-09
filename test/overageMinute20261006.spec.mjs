@@ -33,8 +33,8 @@ test('F10 per-call rounding is retained: two 31-second calls over allowance cost
 });
 test('unconfirmed duration cannot charge; provider 61 seconds replaces local 59 seconds: $0.70',async t=>{
   const h=fixture(t);h.activate();h.call(300*60);const last=h.call(61,{localSeconds:59,provider:false});
-  assert.equal(h.service.snapshot(A).overageCents,35);h.setTime(END);await h.service.processOwner(A);assert.equal(h.fakes.invoices.size,0);
-  assert.match(h.service.snapshot(A).pendingCharges[0].message,/durations.*confirmation/);
+  assert.equal(h.service.snapshot(A).overageCents,0);assert.equal(h.service.snapshot(A).unconfirmedCalls,1);h.setTime(END);await h.service.processOwner(A);assert.equal(h.fakes.invoices.size,0);
+  assert.deepEqual(h.service.snapshot(A).pendingCharges,[]);
   h.meter.providerComplete(last.receipt);h.meter.providerComplete(last.receipt);await h.service.processOwner(A);
   assert.equal(h.fakes.invoices.size,1);assert.equal([...h.fakes.items.values()][0].amount,70);
 });

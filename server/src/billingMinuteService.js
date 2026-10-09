@@ -1,7 +1,7 @@
 import {withBillingLease,billingProviderRead,billingProviderError} from './billingProvider.js';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {billingUsageId,MINUTE_PLANS,MINUTE_THRESHOLDS,usageAmounts,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
-import {voiceUsagePeriod} from './billingVoiceUsage.js';
+import {voiceUsagePeriod,hasConfirmedVoiceMinutes} from './billingVoiceUsage.js';
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {recordUsageInvoicePayment} from './billingCustomerLifecycle.js';
 
@@ -26,16 +26,14 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')
       AND ${period.kind==='trial'?"v.usageKind='trial'":"COALESCE(v.usageKind,'unknown')!='trial'"} ORDER BY c.id`)
       .all(period.ownerId,period.startAt,endAt(period));
-    let minutes=0,confirmedMinutes=0,pending=0;const proof=[];
+    let confirmedMinutes=0,pending=0;const proof=[];
     for(const row of rows){
       if(!Number.isSafeInteger(row.minutesBilled)||row.minutesBilled<0)throw Error('Invalid stored minute count.');
-      minutes+=row.minutesBilled;
-      const verified=['COMPLETED','RECOVERED'].includes(row.status)&&row.completedAt&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
-        Number.isSafeInteger(row.providerDurationSeconds)&&row.providerDurationSeconds>=0&&Math.ceil(row.providerDurationSeconds/60)===row.minutesBilled;
+      const verified=hasConfirmedVoiceMinutes(row);
       if(!verified)pending++;
       else {confirmedMinutes+=row.minutesBilled;proof.push([row.id,row.providerDigest,row.providerDurationSeconds,row.minutesBilled]);}
     }
-    const totals=period.kind==='trial'?{minutesUsed:minutes,includedMinutes:60,minutesLeft:Math.max(0,60-minutes),overageMinutes:0,overageCents:0,upgradeMessage:null}:usageAmounts(period.plan,minutes);
+    const totals=period.kind==='trial'?{minutesUsed:confirmedMinutes,includedMinutes:60,minutesLeft:Math.max(0,60-confirmedMinutes),overageMinutes:0,overageCents:0,upgradeMessage:null}:usageAmounts(period.plan,confirmedMinutes);
     return {...totals,confirmedMinutesUsed:confirmedMinutes,unconfirmedCalls:pending,proof,digest:billingUsageId('duration-proof-v1',proof)};
   }
   function warnings(period,totals){
@@ -84,8 +82,8 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       const totals=usage(p),rows=charges(p),remaining=Math.max(0,totals.overageCents-rows.reduce((n,c)=>n+c.amountCents,0));
       for(const charge of rows.filter(c=>c.status!=='PAID'))data.pendingCharges.push({id:charge.id,periodId:p.id,startAt:p.startAt,endAt:endAt(p),amountCents:charge.amountCents,status:charge.status,
         message:charge.status==='REVIEW'?'Overage needs manual confirmation; no duplicate charge will be submitted.':charge.providerInvoiceId?'Overage invoice is unpaid. Open Manage billing to resolve payment.':charge.operationsJson==='{}'?'Remaining overage has not yet been submitted.':'Overage charge is awaiting provider confirmation.'});
-      if(endAt(p)<=now()&&(remaining||totals.unconfirmedCalls))data.pendingCharges.push({id:p.id+'-remainder',periodId:p.id,startAt:p.startAt,endAt:endAt(p),amountCents:remaining,status:'PENDING',
-        message:totals.unconfirmedCalls?'Overage pending: call durations are awaiting confirmation.':'Remaining overage has not yet been charged.'});
+      if(endAt(p)<=now()&&remaining)data.pendingCharges.push({id:p.id+'-remainder',periodId:p.id,startAt:p.startAt,endAt:endAt(p),amountCents:remaining,status:'PENDING',
+        message:'Remaining overage has not yet been charged.'});
     }
     return data;
   }

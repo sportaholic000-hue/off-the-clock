@@ -447,6 +447,7 @@ if (bookingService) {
   installBookingRoutes(app, {
     bookingService,
     preferenceService: bookingPreferenceService,
+    ownerQuery,
     asyncHandler,
     requireAuth,
     database: db

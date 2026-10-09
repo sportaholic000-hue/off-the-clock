@@ -1,0 +1,1485 @@
+TAP version 13
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+not ok 1 - billing core F10: real signed incoming/WS call meters61minutes and next trial call falls back without cutting off current caller
+  ---
+  duration_ms: 463.865688
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006CallEntry.spec.mjs:2:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /<Stream /. Input:
+
+    '<Response><Gather input="speech" action="https://voice.example.invalid/api/twilio/voice/capture" method="POST" partialResultCallback="https://voice.example.invalid/api/twilio/voice/capture/partial" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we&apos;ll get back to you.</Say></Gather></Response>'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<Response><Gather input="speech" action="https://voice.example.invalid/api/twilio/voice/capture" method="POST" partialResultCallback="https://voice.example.invalid/api/twilio/voice/capture/partial" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto" timeout="8"><Say>Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we&apos;ll get back to you.</Say></Gather></Response>'
+  operator: 'match'
+  stack: |-
+    file:///workspace/scratch/18cbdaa4aace/workflow-base/verification/billing-core-repairs-20261006/followup-voice-regression.mjs:43:89
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+  ...
+# (node:22) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+ok 2 - F10: per-call ceiling 0sec => 0min, duplicate/restart stable
+  ---
+  duration_ms: 38.936486
+  type: 'test'
+  ...
+# Subtest: F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+not ok 3 - F10: per-call ceiling 1sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 24.639502
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:20:77'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:21:304)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+not ok 4 - F10: per-call ceiling 59sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 22.849042
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:20:77'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:21:304)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+not ok 5 - F10: per-call ceiling 60sec => 1min, duplicate/restart stable
+  ---
+  duration_ms: 23.246216
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:20:77'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:21:304)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+not ok 6 - F10: per-call ceiling 61sec => 2min, duplicate/restart stable
+  ---
+  duration_ms: 23.14086
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:20:77'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    2 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:21:304)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+not ok 7 - F10: per-call ceiling 3601sec => 61min, duplicate/restart stable
+  ---
+  duration_ms: 21.445597
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:20:77'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    61 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 61
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:21:304)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10: two31second calls count2minutes; spam and fallback add0
+ok 8 - F10: two31second calls count2minutes; spam and fallback add0
+  ---
+  duration_ms: 22.099135
+  type: 'test'
+  ...
+# Subtest: F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+ok 9 - F10: trial and paid usage periods exclude historic calls, preserve boundary-crossing attribution
+  ---
+  duration_ms: 17.646603
+  type: 'test'
+  ...
+# Subtest: F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+not ok 10 - F10: provider duration supersedes local interval, exact retries stable, changed receipts and foreign bindings rejected atomically
+  ---
+  duration_ms: 20.324668
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/billingCoreRepair20261006Meter.spec.mjs:35:150)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10: provider completion after process restart finalizes once; failed persistence rolls back
+ok 11 - F10: provider completion after process restart finalizes once; failed persistence rolls back
+  ---
+  duration_ms: 184.300822
+  type: 'test'
+  ...
+# Subtest: F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+ok 12 - F10: signed duration HTTP rejects forgery and wrong tenant; unknown provider events cannot write usage
+  ---
+  duration_ms: 94.539572
+  type: 'test'
+  ...
+# Subtest: F10: late media finalization cannot undo fallback exclusion
+ok 13 - F10: late media finalization cannot undo fallback exclusion
+  ---
+  duration_ms: 22.713164
+  type: 'test'
+  ...
+# Subtest: audit 1 DOM: [null] picker and submitted acceptance
+not ok 14 - audit 1 DOM: [null] picker and submitted acceptance
+  ---
+  duration_ms: 286.702989
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:24:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:30:86)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:520:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: audit 1 DOM: ["Basic"] picker and submitted acceptance
+not ok 15 - audit 1 DOM: ["Basic"] picker and submitted acceptance
+  ---
+  duration_ms: 51.704282
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:24:56'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:30:86)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:520:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 1 DOM: ["Basic","Plus"] picker and submitted acceptance
+ok 16 - audit 1 DOM: ["Basic","Plus"] picker and submitted acceptance
+  ---
+  duration_ms: 52.630452
+  type: 'test'
+  ...
+# Subtest: audit 3 DOM: TRIAL pending calls use approved count wording and zero overage
+not ok 17 - audit 3 DOM: TRIAL pending calls use approved count wording and zero overage
+  ---
+  duration_ms: 25.994477
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:37:86'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Calls still being confirmed: 6/. Input:
+
+    'Trial minutes2026-10-09 to 2026-10-23 · 60 included minutesMinutes used0Minutes left60Overage so far$0.00Charged so far$0.00Not yet charged$0.00Trial minutes are not billed as overage.Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'Trial minutes2026-10-09 to 2026-10-23 · 60 included minutesMinutes used0Minutes left60Overage so far$0.00Charged so far$0.00Not yet charged$0.00Trial minutes are not billed as overage.Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:39:69)
+    runNextTicks (node:internal/process/task_queues:65:5)
+    process.processTimers (node:internal/timers:520:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 3 DOM: PAID pending calls use approved count wording and zero overage
+not ok 18 - audit 3 DOM: PAID pending calls use approved count wording and zero overage
+  ---
+  duration_ms: 19.722071
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:37:86'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Calls still being confirmed: 1/. Input:
+
+    'Minutes this billing month2026-10-09 to 2026-10-23 · 300 included minutesMinutes used300Minutes left0Overage so far$0.00Charged so far$0.00Not yet charged$0.00Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'Minutes this billing month2026-10-09 to 2026-10-23 · 300 included minutesMinutes used300Minutes left0Overage so far$0.00Charged so far$0.00Not yet charged$0.00Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.Some call durations are awaiting provider confirmation. Only confirmed minutes count toward overage charges.'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.dom.spec.mjs:39:69)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:78) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: audit 1: real untiered phone quote accepts omitted tier and invoices 353889 cents
+not ok 19 - audit 1: real untiered phone quote accepts omitted tier and invoices 353889 cents
+  ---
+  duration_ms: 580.959737
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:38:69'
+  failureType: 'testCodeFailure'
+  error: 'Select the exact accepted quote option.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    problem (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:7:55)
+    Function.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:94:122)
+    Function.sqliteTransaction (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/better-sqlite3/lib/methods/transaction.js:65:24)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:114:8)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:35:41)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:40:20)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: audit 1: real untiered phone quote accepts null tier and invoices 353889 cents
+not ok 20 - audit 1: real untiered phone quote accepts null tier and invoices 353889 cents
+  ---
+  duration_ms: 359.043888
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:38:69'
+  failureType: 'testCodeFailure'
+  error: 'Select the exact accepted quote option.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    problem (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:7:55)
+    Function.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:94:122)
+    Function.sqliteTransaction (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/better-sqlite3/lib/methods/transaction.js:65:24)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:114:8)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:35:41)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:40:20)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 1: sole null option rejects mismatching ""
+ok 21 - audit 1: sole null option rejects mismatching ""
+  ---
+  duration_ms: 351.410227
+  type: 'test'
+  ...
+# Subtest: audit 1: sole null option rejects mismatching "Wrong"
+ok 22 - audit 1: sole null option rejects mismatching "Wrong"
+  ---
+  duration_ms: 311.196984
+  type: 'test'
+  ...
+# Subtest: audit 1: sole null option rejects mismatching 0
+ok 23 - audit 1: sole null option rejects mismatching 0
+  ---
+  duration_ms: 317.792016
+  type: 'test'
+  ...
+# Subtest: audit 1: 1 named options enforce exact selection and preserve tier
+not ok 24 - audit 1: 1 named options enforce exact selection and preserve tier
+  ---
+  duration_ms: 312.588785
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:50:49'
+  failureType: 'testCodeFailure'
+  error: 'Select the exact accepted quote option.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    problem (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:7:55)
+    Function.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:94:122)
+    Function.sqliteTransaction (/workspace/scratch/18cbdaa4aace/off-the-clock/node_modules/better-sqlite3/lib/methods/transaction.js:65:24)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/server/src/ownerWorkflowService.js:114:8)
+    Object.act (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:35:41)
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:56:18)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 1: 2 named options enforce exact selection and preserve tier
+ok 25 - audit 1: 2 named options enforce exact selection and preserve tier
+  ---
+  duration_ms: 328.789462
+  type: 'test'
+  ...
+# Subtest: audit 2: ended account rejects availability without rows or calendar calls
+not ok 26 - audit 2: ended account rejects availability without rows or calendar calls
+  ---
+  duration_ms: 960.638328
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:65:72'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+
+      {
+    +   provider: [
+    +     {
+    +       body: {
+    +         items: [
+    +           {
+    +             id: 'primary'
+    +           }
+    +         ],
+    +         timeMax: '2026-11-01T16:00:00.000Z',
+    +         timeMin: '2026-11-01T13:00:00.000Z',
+    +         timeZone: 'UTC'
+    +       },
+    +       method: 'POST',
+    +       owner: 'synthetic-a',
+    +       path: '/calendar/v3/freeBusy'
+    +     }
+    +   ],
+    -   provider: [],
+        records: {
+          appointments: [],
+          bookingHolds: [],
+          bookingIdempotency: [],
+          bookingPreferences: [],
+    ...
+          body: {
+    +       bookingMode: 'site_visit_first',
+    +       durationMinutes: 45,
+    +       slots: [
+    +         {
+    +           endLocal: '2026-11-01T09:45:00-04:00',
+    +           endUtc: '2026-11-01T13:45:00.000Z',
+    +           label: 'Sunday, November 1 at 9:00 AM AST',
+    +           slotId: 's1.QuwK1J413WHVP5oo.UzvyABYJC3E5fl5joRAmCFzTXalQstJQ67mY-Up_Suf63IHjqnRHlziggyAyfM0WHkigLay0rGqdEG3bwmldWzpjmz4Cw4pXF4N8Ano24-wZwubk4D_-hECiRdACWR3ODCOxO4byk-4R5dnnIDhyPOQzc1q7wbLCGISY7TgVaZobWzfHOK0QRVgiEc_FQ-QJ5ulqDE6VIy--MunKyWYFvpwGFFhDGXEF3Kqaz_tEVUAgTGQInyxXM4tdCc0zULytA-INxQ9qzneIQfhAKwlOQBPTvnCvXkr3uBvX87h8AL01mE2sRCbhR2L1oM-6xx2oSnMQiSA0mxl7ke5CeEPJzi3AF9UxbfrSKLO6Vrf0-TuX8IyK0VPr6bT6Oe7N6vQupQLXOvadVhH8t6BYtqrwW80sVCTCmuNzZkE2oERZXD1Hu23RmTvnOdGo6kkCExiZ9PP-6Ji5OSYAVuF6UQ.ff2ANLKlKkDz0K5t9VjoMg',
+    +           startLocal: '2026-11-01T09:00:00-04:00',
+    +           startUtc: '2026-11-01T13:00:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T10:00:00-04:00',
+    +           endUtc: '2026-11-01T14:00:00.000Z',
+    +           label: 'Sunday, November 1 at 9:15 AM AST',
+    +           slotId: 's1.th6dslbuKGunpIN-.7Z-lrdxVTktsgMJ1cj-AEL236eG4xiwDoYbISWciz5LDajPnBaDjY44IP3t8XHHY4QjMS1E3_dVWVNaFH0PcD5oSglaBb0ggaK9__ytYO1H6AVa8UfWYMD_vY80yYH723xBOU5WOy9Ej2XXr9ySoK5vw6s4Sgsz9W6X9CLo27LAe7xifykq-_1xGzR4BwOhfigt9sKMZdhsLAh5TAtJnk3jG_VyRapqVFJNUCaVxDaysC97Swpx7nQS8DW3UY-V3XjKxlu3ddDPtWLDyGXNbFMJIN5ziPfiObq1KZB5_3Visxvtj9oAiPySPbKVyAd-C4ifBBmxoOJcvSvusnd-deeOl8-GcW_DzBLQCDIyZdFX5zSy4m2EquGj-t8UdL1VHAVl3I7NhPukcWo9ow2FAqVooQMEeGQC3-ZMAerFG0qCrMcNRCKeB4hXAr6wzVEPzdIBJmkhCI_Dips-4Yw.-V37QzXlyR0gWXmDPmDsWg',
+    +           startLocal: '2026-11-01T09:15:00-04:00',
+    +           startUtc: '2026-11-01T13:15:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T10:15:00-04:00',
+    +           endUtc: '2026-11-01T14:15:00.000Z',
+    +           label: 'Sunday, November 1 at 9:30 AM AST',
+    +           slotId: 's1.rQJfnbzienoVZ4B_.z1zsYVx1-hyDT0GVsrqQt2WA2WFyNGatpn-2xvRaClxJ8NLfMpdzVPmEW2YhpUzMP5aXvCmriakoQUdIPjaqMYnJF_-Of_lUJspiYsMMBSP1nlqnTrX_KcbOskyAxZzSkGfjt-8HfQxyVbl6tWOXVSrP9-eciRwd2P67ucnbt_OTSu7q-TKtFWeHaK3slWjZ8pdVgLB5NBCX8wtZZDzakcAUgMpLsNOAT1zI0YjmM1gdXCII5I-q4dtAWq4QD9Vf1x_pmu0yzsf-No6qWYDdHfpzWzyuI3-IT5rTNKK6Ozu4aef6ivONFHsKJSDP4VbiDYQ9KaCKBSza74BL4VU-cyBA3wyMlE-90997INGeMmtEPa1wVcNTZl4KrrUqbJMHbN_cpYS_to5XddjvyC3UcYzwi2CafFk2yvMtN9Ipf-bx2zPEG_S_eMJptFoMk9mWYAT-EtHZNIKET8UuKQ.pwTxPOE0u0uGmjBhV_9JJQ',
+    +           startLocal: '2026-11-01T09:30:00-04:00',
+    +           startUtc: '2026-11-01T13:30:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T10:30:00-04:00',
+    +           endUtc: '2026-11-01T14:30:00.000Z',
+    +           label: 'Sunday, November 1 at 9:45 AM AST',
+    +           slotId: 's1.vSioeggKpUNNPNgs.IOLy5LCySuqOBLboWKquFuyzMjqCDpvn8UxiRS-o0SHW3SMkiUbF0ZwXAnX0c5eobmtkIKwmkd0QilTH7mVRrVvUCwJgX7QjrEwmn-8z9IUZZfZZ56sRvzXDGa25wKif9y0dRIoyWGJuB_FBHzVmuX9cs7Z984lkXtZ4cJ-eWN9X5ovjAcbeeIruX_5FlF1N7HYJKg3mdN8wsF9SZW9s9s4kKIhE3fKduRYEtWlLFqAexbs38l4ywKUfa5j-OIQmp6NMOfQ13bJPN1_auy6ZkMBIbfPrsPZbogQVEradjIyQ7ol2uDvO6NYef5VOFVxOwPwU18UR5USLkls_eL_Kyk5FR668lLz_nYm69dupgqQ_1pxsVoCPAGkXG9nHqAIxKK249s1zWL9HS6d7Qg_iUn_jVtgoEhkepjV9RsS4Vv9uE2VE6Eh5J42ImPDzkFRObmiyqVC91y7mijC1RA.EiB71fLTFmFcuMkraV_MKQ',
+    +           startLocal: '2026-11-01T09:45:00-04:00',
+    +           startUtc: '2026-11-01T13:45:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T10:45:00-04:00',
+    +           endUtc: '2026-11-01T14:45:00.000Z',
+    +           label: 'Sunday, November 1 at 10:00 AM AST',
+    +           slotId: 's1.qrgTrHuLCDD89uQS.ervMMtMPFrnZKCAgO3xukGgw6DYufe1uZxH0ZBvhjNrede5eWNaUK_JBlwl7HtJwKfRDnYCmTN4LIQxQfGjRNyAh5BzPsTGcbmG7LlJ_dyq5eF4ihgKEXFx8q7sFyozpnQ3tHBziMg113TXhXuZf5TrmLWdtm5_V27M_IZZI9F1ESWPDBnyi7e_hBcPRfbq2TRa6ayaTwYW2zpAUodwtHaGzvcI5md35miXnsMDSJe9wW1Puh7SgPrJfvTfaP6fhjFcNZtsJtU5ap3RPpPay2ZBeQHZ-tFHOln3v_HSuBVP6WQORG5DSJ2ZywYgJjRDCRAxXXkvx2cbtsy7QOfG82j9tiUk3tWlEhlO87lOISSPAZRGT7kQp1q9gwgvVay7LDqL-RirlQTEP4mwB6Mjk6-4KS3Lf87R_1r78f30OyDuRVzCs3j3H-ALsTzYOn1wkRWKKXtXXJJ9C-C9W_w.XfgAD_k5aR7rpFIyrJt_sA',
+    +           startLocal: '2026-11-01T10:00:00-04:00',
+    +           startUtc: '2026-11-01T14:00:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T11:00:00-04:00',
+    +           endUtc: '2026-11-01T15:00:00.000Z',
+    +           label: 'Sunday, November 1 at 10:15 AM AST',
+    +           slotId: 's1.PnGXbZLu1pl6H2b5.ifLKIEXRzIE0beHGuZljGxzuxFMb9PV_MUPca3HDTd8btWtdFF-8N7xBGUTXklD0urr5ByCuIQcQpKC2i61xDUf2R-xaoRG1jEjCPH7xHMZsCTdALM9BrchSjBvjT7oUIIxJ1420Y7-lgrQiGUpHqG1MYvqNGkXT7JO3JS_EE8aVtRIfnES9LZe0Al0HMqIlVfJlXr4w2fucKTLznVb1o7X1iqoRC3gIxsNTl2JzfL43gAJM1H6qst_DiS3-K19-TFTsntFiQ_cLlZ7jlaiiV2ApZ5yVZs3iqxizwYonhlqkWfGQZwtocE_VlEyeHZ2TTmRMuee-AKk9oqHwyJv9DpWKycQeolB0KTzJgaLqITVxJpiIgyy1Hsao11LvpVv4lCZ5vdn2Z_-3RbhMqzb2GG0lOmvKTzXm_PZFBEm4ly1HoSgW3QkBxPqI3LIFZ9Jmle7DTEIQOh7V2wrVZA.4zMO9ReYMnMhK_DVQpp5Og',
+    +           startLocal: '2026-11-01T10:15:00-04:00',
+    +           startUtc: '2026-11-01T14:15:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T11:15:00-04:00',
+    +           endUtc: '2026-11-01T15:15:00.000Z',
+    +           label: 'Sunday, November 1 at 10:30 AM AST',
+    +           slotId: 's1.Wf9aCwFU4LUguUFX.GzsPJRY9EdkYh3AMqBmuVxQ0oxDO-ceXP8_8j-sP1uOTYunawSgnacsntSZCTMM-FX07uggx5KjlLEfg473CqpwtfTwMBfl-I5YINZ2Z9LvTbgq6kHQ6WXSL3MI444Qal8HxbE-ZWr5-qWaWvVbtRGz9HgMlt0bJpigYwm8xFnTveTOn3Jtel5g6Bx-rI57L8eJRCVqFtBe_te91YfH7hglUrCk85XBWIiP97s6JEivfk0Xd9luepA_BZu0rw7JgKaY6X7qN_oAN6hUVvwwW8BOO22TTfeBXH39blQ_0oWNr7A6MXmpJQ_8NaiTon5gjhYcQoFEZnfRjAsETCNjsOdg5IfueR3ZgV4HPE2PA70IpA_g6i__C_MypgzePxbM6dYRVVXrLIDf0DJt1a3GuYvHICWeps5YFIaWEcO_vGvPCjecaXly2NGQChzrZr0QxCELcrY_tIPZOO8m4eg.cOXRVeWdnP1jiottB5jytA',
+    +           startLocal: '2026-11-01T10:30:00-04:00',
+    +           startUtc: '2026-11-01T14:30:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T11:30:00-04:00',
+    +           endUtc: '2026-11-01T15:30:00.000Z',
+    +           label: 'Sunday, November 1 at 10:45 AM AST',
+    +           slotId: 's1.tNXF5wEICnHhUrfg.rXd69IlmyQ2WjlD_4BMr2DUYCvplUypS5CoZ1YMt6iSYFMMfQYdh98bMghjJkTgsNU7hgrC45ZQYaJMDdLswbqBLm9KgUyaF4hm3h59nSBXqYIO7_5jFlWHwrUlHpKXJKXIRYug0KKmHsVUG6dA-CL5CYgQqU-e-3dznIHOIjNptIDo4Hk0LpVP3La5vGe1d5xVvc4p3U-ci3ZEPW7iDgQizoJtc_yz3SOGzh0x4Z1WrYmp2Xae2yrjUjinqw7b_6ERpWLzKngG97xbxikisKngTbE0-N2RZ8IWYNJRvIpgv_QQ86hwWx86ed4F8t2zS41bz9G3YEl9ZCQgBa3n_8Bk7kyR4UqDF8Yc7AzkFHtPwhdiqzURAXWy0RQy7xqyHD8NEEL24PYFUOqU0ODX3S5R0yi0L4YH9QLS5edNaww_QGM2ABAJT_6FzKN9uEilGjzEgvhCAgAE0gROUmQ.iXGMN7WWOPwID9OKmauK5Q',
+    +           startLocal: '2026-11-01T10:45:00-04:00',
+    +           startUtc: '2026-11-01T14:45:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T11:45:00-04:00',
+    +           endUtc: '2026-11-01T15:45:00.000Z',
+    +           label: 'Sunday, November 1 at 11:00 AM AST',
+    +           slotId: 's1.vPgFckAHDj2RZYA5.-mXjCA8LSjFQez1u4FktqiwNPmN-uwYTNGFNHuOuszadKW73ESXrptm4t0iz2sIv8t5ZORad3QXeoB8u1UOvGbCdB_BUSHRF-RmbwBUIYpFbpkUaegJu_X_FnEdVkTw2XjONPCvLTNVRv8gkPWutZhuYfRSm6ZVNu4ZyFC926ltTj6h6Qiy4oPjTCdaWByJNZxbpaVgdHDuM23PjBKvuzLWLdt-cd9ZrbK_QSnW3hLAkE8TNGH6tLu_e7MXu-9FDVu8_8C1m5mv4HXr5-F24ddjLW7wpk_AkHQ7Vx15F645vs5u1D8EkHEFaPrDnaBhrilQPDQsRTQx547clgzIafkAhrgev1ZfqEb5XUdoKCfbSj29vFh4E7cSu3jTdxd4dw2vJXi-O0huK316ipPty2IG3VkfneepMp4U0qYOyKaXS0tGHuIZ_-U-0SWKh3KmkeeJwNS14fTLK9KJlFg.E8ayJBZN2VZhYWHDxXYhGw',
+    +           startLocal: '2026-11-01T11:00:00-04:00',
+    +           startUtc: '2026-11-01T15:00:00.000Z'
+    +         },
+    +         {
+    +           endLocal: '2026-11-01T12:00:00-04:00',
+    +           endUtc: '2026-11-01T16:00:00.000Z',
+    +           label: 'Sunday, November 1 at 11:15 AM AST',
+    +           slotId: 's1.4MekP8vhQAeZMu8_.ekk7Levv0A-QDlwcy8-OVmtGFTPBwSLhQ944zHeFUno4k-u1HzosCm1Nx089QoooBNvxHAPg6w4lXKRypXoybw-SVSAVhonnSulnXmSUHLwsZOt1yV854kHenlLji9vJ65wravtt8J9GTD5-GitWyE9CYkq51tcWxpUp14GguP0s7gmdjKMgdc0F3JU53G969W7LD8JBfZx8sNnr0vV4oj0bKW7potYkL7X4hd67DaHrXvAi9njqlhpjmPbBfsNSf6sgBjwl3fXjV2zQzJYRJgpvAuvTEW3ac3Ll6lYVt6nFqOf3SG4DfhaQCayQ4IeIVa0dkMxUE6FnthXHKvVn9faJZEXJY6bl7OLsDSy-_3RJl07lW28LUwhlwSVcBjrgiV4nvepjC3OvPcg7-XnpWsLO8HjtO0D8wPQta29uw_rxZk9uXiKN-jn8GxvHmD7FwSP97ZIBDZGf6X0aPw.WpnrzzrvaXjqkUz3smT0PA',
+    +           startLocal: '2026-11-01T11:15:00-04:00',
+    +           startUtc: '2026-11-01T15:15:00.000Z'
+    +         }
+    +       ],
+    +       status: 'AVAILABLE',
+    +       timezone: 'America/Moncton',
+    +       validUntilUtc: '2026-10-31T12:02:00.000Z'
+    -       code: 'BOOKING_UNAVAILABLE',
+    -       error: 'This business is currently unavailable.'
+          },
+    +     status: 200
+    -     status: 403
+        }
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    response:
+      status: 403
+      body:
+        error: 'This business is currently unavailable.'
+        code: 'BOOKING_UNAVAILABLE'
+    records:
+      bookingHolds:
+      bookingIdempotency:
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+  actual:
+    response:
+      status: 200
+      body:
+        status: 'AVAILABLE'
+        timezone: 'America/Moncton'
+        bookingMode: 'site_visit_first'
+        durationMinutes: 45
+        validUntilUtc: '2026-10-31T12:02:00.000Z'
+        slots:
+          0:
+            slotId: 's1.QuwK1J413WHVP5oo.UzvyABYJC3E5fl5joRAmCFzTXalQstJQ67mY-Up_Suf63IHjqnRHlziggyAyfM0WHkigLay0rGqdEG3bwmldWzpjmz4Cw4pXF4N8Ano24-wZwubk4D_-hECiRdACWR3ODCOxO4byk-4R5dnnIDhyPOQzc1q7wbLCGISY7TgVaZobWzfHOK0QRVgiEc_FQ-QJ5ulqDE6VIy--MunKyWYFvpwGFFhDGXEF3Kqaz_tEVUAgTGQInyxXM4tdCc0zULytA-INxQ9qzneIQfhAKwlOQBPTvnCvXkr3uBvX87h8AL01mE2sRCbhR2L1oM-6xx2oSnMQiSA0mxl7ke5CeEPJzi3AF9UxbfrSKLO6Vrf0-TuX8IyK0VPr6bT6Oe7N6vQupQLXOvadVhH8t6BYtqrwW80sVCTCmuNzZkE2oERZXD1Hu23RmTvnOdGo6kkCExiZ9PP-6Ji5OSYAVuF6UQ.ff2ANLKlKkDz0K5t9VjoMg'
+            startUtc: '2026-11-01T13:00:00.000Z'
+            endUtc: '2026-11-01T13:45:00.000Z'
+            startLocal: '2026-11-01T09:00:00-04:00'
+            endLocal: '2026-11-01T09:45:00-04:00'
+            label: 'Sunday, November 1 at 9:00 AM AST'
+          1:
+            slotId: 's1.th6dslbuKGunpIN-.7Z-lrdxVTktsgMJ1cj-AEL236eG4xiwDoYbISWciz5LDajPnBaDjY44IP3t8XHHY4QjMS1E3_dVWVNaFH0PcD5oSglaBb0ggaK9__ytYO1H6AVa8UfWYMD_vY80yYH723xBOU5WOy9Ej2XXr9ySoK5vw6s4Sgsz9W6X9CLo27LAe7xifykq-_1xGzR4BwOhfigt9sKMZdhsLAh5TAtJnk3jG_VyRapqVFJNUCaVxDaysC97Swpx7nQS8DW3UY-V3XjKxlu3ddDPtWLDyGXNbFMJIN5ziPfiObq1KZB5_3Visxvtj9oAiPySPbKVyAd-C4ifBBmxoOJcvSvusnd-deeOl8-GcW_DzBLQCDIyZdFX5zSy4m2EquGj-t8UdL1VHAVl3I7NhPukcWo9ow2FAqVooQMEeGQC3-ZMAerFG0qCrMcNRCKeB4hXAr6wzVEPzdIBJmkhCI_Dips-4Yw.-V37QzXlyR0gWXmDPmDsWg'
+            startUtc: '2026-11-01T13:15:00.000Z'
+            endUtc: '2026-11-01T14:00:00.000Z'
+            startLocal: '2026-11-01T09:15:00-04:00'
+            endLocal: '2026-11-01T10:00:00-04:00'
+            label: 'Sunday, November 1 at 9:15 AM AST'
+          2:
+            slotId: 's1.rQJfnbzienoVZ4B_.z1zsYVx1-hyDT0GVsrqQt2WA2WFyNGatpn-2xvRaClxJ8NLfMpdzVPmEW2YhpUzMP5aXvCmriakoQUdIPjaqMYnJF_-Of_lUJspiYsMMBSP1nlqnTrX_KcbOskyAxZzSkGfjt-8HfQxyVbl6tWOXVSrP9-eciRwd2P67ucnbt_OTSu7q-TKtFWeHaK3slWjZ8pdVgLB5NBCX8wtZZDzakcAUgMpLsNOAT1zI0YjmM1gdXCII5I-q4dtAWq4QD9Vf1x_pmu0yzsf-No6qWYDdHfpzWzyuI3-IT5rTNKK6Ozu4aef6ivONFHsKJSDP4VbiDYQ9KaCKBSza74BL4VU-cyBA3wyMlE-90997INGeMmtEPa1wVcNTZl4KrrUqbJMHbN_cpYS_to5XddjvyC3UcYzwi2CafFk2yvMtN9Ipf-bx2zPEG_S_eMJptFoMk9mWYAT-EtHZNIKET8UuKQ.pwTxPOE0u0uGmjBhV_9JJQ'
+            startUtc: '2026-11-01T13:30:00.000Z'
+            endUtc: '2026-11-01T14:15:00.000Z'
+            startLocal: '2026-11-01T09:30:00-04:00'
+            endLocal: '2026-11-01T10:15:00-04:00'
+            label: 'Sunday, November 1 at 9:30 AM AST'
+          3:
+            slotId: 's1.vSioeggKpUNNPNgs.IOLy5LCySuqOBLboWKquFuyzMjqCDpvn8UxiRS-o0SHW3SMkiUbF0ZwXAnX0c5eobmtkIKwmkd0QilTH7mVRrVvUCwJgX7QjrEwmn-8z9IUZZfZZ56sRvzXDGa25wKif9y0dRIoyWGJuB_FBHzVmuX9cs7Z984lkXtZ4cJ-eWN9X5ovjAcbeeIruX_5FlF1N7HYJKg3mdN8wsF9SZW9s9s4kKIhE3fKduRYEtWlLFqAexbs38l4ywKUfa5j-OIQmp6NMOfQ13bJPN1_auy6ZkMBIbfPrsPZbogQVEradjIyQ7ol2uDvO6NYef5VOFVxOwPwU18UR5USLkls_eL_Kyk5FR668lLz_nYm69dupgqQ_1pxsVoCPAGkXG9nHqAIxKK249s1zWL9HS6d7Qg_iUn_jVtgoEhkepjV9RsS4Vv9uE2VE6Eh5J42ImPDzkFRObmiyqVC91y7mijC1RA.EiB71fLTFmFcuMkraV_MKQ'
+            startUtc: '2026-11-01T13:45:00.000Z'
+            endUtc: '2026-11-01T14:30:00.000Z'
+            startLocal: '2026-11-01T09:45:00-04:00'
+            endLocal: '2026-11-01T10:30:00-04:00'
+            label: 'Sunday, November 1 at 9:45 AM AST'
+          4:
+            slotId: 's1.qrgTrHuLCDD89uQS.ervMMtMPFrnZKCAgO3xukGgw6DYufe1uZxH0ZBvhjNrede5eWNaUK_JBlwl7HtJwKfRDnYCmTN4LIQxQfGjRNyAh5BzPsTGcbmG7LlJ_dyq5eF4ihgKEXFx8q7sFyozpnQ3tHBziMg113TXhXuZf5TrmLWdtm5_V27M_IZZI9F1ESWPDBnyi7e_hBcPRfbq2TRa6ayaTwYW2zpAUodwtHaGzvcI5md35miXnsMDSJe9wW1Puh7SgPrJfvTfaP6fhjFcNZtsJtU5ap3RPpPay2ZBeQHZ-tFHOln3v_HSuBVP6WQORG5DSJ2ZywYgJjRDCRAxXXkvx2cbtsy7QOfG82j9tiUk3tWlEhlO87lOISSPAZRGT7kQp1q9gwgvVay7LDqL-RirlQTEP4mwB6Mjk6-4KS3Lf87R_1r78f30OyDuRVzCs3j3H-ALsTzYOn1wkRWKKXtXXJJ9C-C9W_w.XfgAD_k5aR7rpFIyrJt_sA'
+            startUtc: '2026-11-01T14:00:00.000Z'
+            endUtc: '2026-11-01T14:45:00.000Z'
+            startLocal: '2026-11-01T10:00:00-04:00'
+            endLocal: '2026-11-01T10:45:00-04:00'
+            label: 'Sunday, November 1 at 10:00 AM AST'
+          5:
+            slotId: 's1.PnGXbZLu1pl6H2b5.ifLKIEXRzIE0beHGuZljGxzuxFMb9PV_MUPca3HDTd8btWtdFF-8N7xBGUTXklD0urr5ByCuIQcQpKC2i61xDUf2R-xaoRG1jEjCPH7xHMZsCTdALM9BrchSjBvjT7oUIIxJ1420Y7-lgrQiGUpHqG1MYvqNGkXT7JO3JS_EE8aVtRIfnES9LZe0Al0HMqIlVfJlXr4w2fucKTLznVb1o7X1iqoRC3gIxsNTl2JzfL43gAJM1H6qst_DiS3-K19-TFTsntFiQ_cLlZ7jlaiiV2ApZ5yVZs3iqxizwYonhlqkWfGQZwtocE_VlEyeHZ2TTmRMuee-AKk9oqHwyJv9DpWKycQeolB0KTzJgaLqITVxJpiIgyy1Hsao11LvpVv4lCZ5vdn2Z_-3RbhMqzb2GG0lOmvKTzXm_PZFBEm4ly1HoSgW3QkBxPqI3LIFZ9Jmle7DTEIQOh7V2wrVZA.4zMO9ReYMnMhK_DVQpp5Og'
+            startUtc: '2026-11-01T14:15:00.000Z'
+            endUtc: '2026-11-01T15:00:00.000Z'
+            startLocal: '2026-11-01T10:15:00-04:00'
+            endLocal: '2026-11-01T11:00:00-04:00'
+            label: 'Sunday, November 1 at 10:15 AM AST'
+          6:
+            slotId: 's1.Wf9aCwFU4LUguUFX.GzsPJRY9EdkYh3AMqBmuVxQ0oxDO-ceXP8_8j-sP1uOTYunawSgnacsntSZCTMM-FX07uggx5KjlLEfg473CqpwtfTwMBfl-I5YINZ2Z9LvTbgq6kHQ6WXSL3MI444Qal8HxbE-ZWr5-qWaWvVbtRGz9HgMlt0bJpigYwm8xFnTveTOn3Jtel5g6Bx-rI57L8eJRCVqFtBe_te91YfH7hglUrCk85XBWIiP97s6JEivfk0Xd9luepA_BZu0rw7JgKaY6X7qN_oAN6hUVvwwW8BOO22TTfeBXH39blQ_0oWNr7A6MXmpJQ_8NaiTon5gjhYcQoFEZnfRjAsETCNjsOdg5IfueR3ZgV4HPE2PA70IpA_g6i__C_MypgzePxbM6dYRVVXrLIDf0DJt1a3GuYvHICWeps5YFIaWEcO_vGvPCjecaXly2NGQChzrZr0QxCELcrY_tIPZOO8m4eg.cOXRVeWdnP1jiottB5jytA'
+            startUtc: '2026-11-01T14:30:00.000Z'
+            endUtc: '2026-11-01T15:15:00.000Z'
+            startLocal: '2026-11-01T10:30:00-04:00'
+            endLocal: '2026-11-01T11:15:00-04:00'
+            label: 'Sunday, November 1 at 10:30 AM AST'
+          7:
+            slotId: 's1.tNXF5wEICnHhUrfg.rXd69IlmyQ2WjlD_4BMr2DUYCvplUypS5CoZ1YMt6iSYFMMfQYdh98bMghjJkTgsNU7hgrC45ZQYaJMDdLswbqBLm9KgUyaF4hm3h59nSBXqYIO7_5jFlWHwrUlHpKXJKXIRYug0KKmHsVUG6dA-CL5CYgQqU-e-3dznIHOIjNptIDo4Hk0LpVP3La5vGe1d5xVvc4p3U-ci3ZEPW7iDgQizoJtc_yz3SOGzh0x4Z1WrYmp2Xae2yrjUjinqw7b_6ERpWLzKngG97xbxikisKngTbE0-N2RZ8IWYNJRvIpgv_QQ86hwWx86ed4F8t2zS41bz9G3YEl9ZCQgBa3n_8Bk7kyR4UqDF8Yc7AzkFHtPwhdiqzURAXWy0RQy7xqyHD8NEEL24PYFUOqU0ODX3S5R0yi0L4YH9QLS5edNaww_QGM2ABAJT_6FzKN9uEilGjzEgvhCAgAE0gROUmQ.iXGMN7WWOPwID9OKmauK5Q'
+            startUtc: '2026-11-01T14:45:00.000Z'
+            endUtc: '2026-11-01T15:30:00.000Z'
+            startLocal: '2026-11-01T10:45:00-04:00'
+            endLocal: '2026-11-01T11:30:00-04:00'
+            label: 'Sunday, November 1 at 10:45 AM AST'
+          8:
+            slotId: 's1.vPgFckAHDj2RZYA5.-mXjCA8LSjFQez1u4FktqiwNPmN-uwYTNGFNHuOuszadKW73ESXrptm4t0iz2sIv8t5ZORad3QXeoB8u1UOvGbCdB_BUSHRF-RmbwBUIYpFbpkUaegJu_X_FnEdVkTw2XjONPCvLTNVRv8gkPWutZhuYfRSm6ZVNu4ZyFC926ltTj6h6Qiy4oPjTCdaWByJNZxbpaVgdHDuM23PjBKvuzLWLdt-cd9ZrbK_QSnW3hLAkE8TNGH6tLu_e7MXu-9FDVu8_8C1m5mv4HXr5-F24ddjLW7wpk_AkHQ7Vx15F645vs5u1D8EkHEFaPrDnaBhrilQPDQsRTQx547clgzIafkAhrgev1ZfqEb5XUdoKCfbSj29vFh4E7cSu3jTdxd4dw2vJXi-O0huK316ipPty2IG3VkfneepMp4U0qYOyKaXS0tGHuIZ_-U-0SWKh3KmkeeJwNS14fTLK9KJlFg.E8ayJBZN2VZhYWHDxXYhGw'
+            startUtc: '2026-11-01T15:00:00.000Z'
+            endUtc: '2026-11-01T15:45:00.000Z'
+            startLocal: '2026-11-01T11:00:00-04:00'
+            endLocal: '2026-11-01T11:45:00-04:00'
+            label: 'Sunday, November 1 at 11:00 AM AST'
+          9:
+            slotId: 's1.4MekP8vhQAeZMu8_.ekk7Levv0A-QDlwcy8-OVmtGFTPBwSLhQ944zHeFUno4k-u1HzosCm1Nx089QoooBNvxHAPg6w4lXKRypXoybw-SVSAVhonnSulnXmSUHLwsZOt1yV854kHenlLji9vJ65wravtt8J9GTD5-GitWyE9CYkq51tcWxpUp14GguP0s7gmdjKMgdc0F3JU53G969W7LD8JBfZx8sNnr0vV4oj0bKW7potYkL7X4hd67DaHrXvAi9njqlhpjmPbBfsNSf6sgBjwl3fXjV2zQzJYRJgpvAuvTEW3ac3Ll6lYVt6nFqOf3SG4DfhaQCayQ4IeIVa0dkMxUE6FnthXHKvVn9faJZEXJY6bl7OLsDSy-_3RJl07lW28LUwhlwSVcBjrgiV4nvepjC3OvPcg7-XnpWsLO8HjtO0D8wPQta29uw_rxZk9uXiKN-jn8GxvHmD7FwSP97ZIBDZGf6X0aPw.WpnrzzrvaXjqkUz3smT0PA'
+            startUtc: '2026-11-01T15:15:00.000Z'
+            endUtc: '2026-11-01T16:00:00.000Z'
+            startLocal: '2026-11-01T11:15:00-04:00'
+            endLocal: '2026-11-01T12:00:00-04:00'
+            label: 'Sunday, November 1 at 11:15 AM AST'
+    records:
+      bookingHolds:
+      bookingIdempotency:
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+      0:
+        owner: 'synthetic-a'
+        path: '/calendar/v3/freeBusy'
+        method: 'POST'
+        body:
+          timeMin: '2026-11-01T13:00:00.000Z'
+          timeMax: '2026-11-01T16:00:00.000Z'
+          timeZone: 'UTC'
+          items:
+            0:
+              id: 'primary'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:71:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 2: ended account rejects holds without rows or calendar calls
+not ok 27 - audit 2: ended account rejects holds without rows or calendar calls
+  ---
+  duration_ms: 651.623149
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:65:72'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+        provider: [],
+        records: {
+          appointments: [],
+    +     bookingHolds: [
+    +       {
+    +         calendarId: 'primary',
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         endAtUtc: '2026-11-01T13:45:00.000Z',
+    +         expiresAtUtc: '2026-10-31T12:05:00.000Z',
+    +         id: 'fc45bf22-276e-45fb-8ccb-bf91b3e4e261',
+    +         intentId: '583bdc1a-37cb-49d5-a084-63b4383f2150',
+    +         lockEndAtUtc: '2026-11-01T13:45:00.000Z',
+    +         lockStartAtUtc: '2026-11-01T13:00:00.000Z',
+    +         ownerId: 'synthetic-a',
+    +         policyRevision: 's1:p1',
+    +         slotIdDigest: '687bfef082b1b8027f18ab9a4246167828825590a10754de0e563ee765fd68cc',
+    +         startAtUtc: '2026-11-01T13:00:00.000Z',
+    +         status: 'HELD',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ],
+    +     bookingIdempotency: [
+    +       {
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         httpStatus: 201,
+    +         idempotencyKey: '47c8a094-5766-4d1d-b0ac-a48d9f0da7b5',
+    +         intentId: '583bdc1a-37cb-49d5-a084-63b4383f2150',
+    +         operation: 'hold',
+    +         ownerId: 'synthetic-a',
+    +         requestDigest: 'e4b3da92b4b2c6e64f0d338ddb35b55ade6712c1cf19539ff2ae8a8e5de26bb2',
+    +         responseJson: '{"status":"HELD","holdId":"fc45bf22-276e-45fb-8ccb-bf91b3e4e261","expiresAtUtc":"2026-10-31T12:05:00.000Z","slot":{"slotId":"s1.QMD3mE3kwbpUf5EP.vJPkhHkcgYq-aK-qvkFO1FUJQHqtzCWk0nJSUxGQ7clMiXMw0zIdAwbvSOhPIACpjfv9_ep3f1zZFMEHXg_cWmT8eW-h2vuJn_aWmcK97IRu1oa4tCocps4zZXl6eMjjk__4LmXPdevZddRyUhwnorX5mFPOY0jOpwJvU26IovkcKsgYdUXuaYcvTYvh6uL3U6rleIIg91fjWfQe4-FUEi9ctz2KqwTxRSWCgJpAAnodCGqjGiPAiQt5WiP1todKPjD3kfzDgd5tHvEiwcnzA8se2vCA48nMPM8UCnV-8qySqOT4XycfLY8cVgUr0A1yzfudUDr7c1sWktrzGhShiUh0ky6HHkliHkqb2bOZYo1Z2e-Jqt0nkvOYVV0msAx3kjlc4k-Eo96wDbjNTPQSP3W4aWhR5y5LjEcbr5FPdWTqXcxb0mJJICM0yUPZYJyCyHY1UJEffA0iJrnouw.AzgWv3ofzZx5SnblBGNc4w","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","label":"Sunday, November 1 at 9:00 AM AST"}}',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ],
+    -     bookingHolds: [],
+    -     bookingIdempotency: [],
+          bookingPreferences: [],
+          outboxEvents: []
+        },
+        response: {
+          body: {
+    +       expiresAtUtc: '2026-10-31T12:05:00.000Z',
+    +       holdId: 'fc45bf22-276e-45fb-8ccb-bf91b3e4e261',
+    +       slot: {
+    +         endLocal: '2026-11-01T09:45:00-04:00',
+    +         endUtc: '2026-11-01T13:45:00.000Z',
+    +         label: 'Sunday, November 1 at 9:00 AM AST',
+    +         slotId: 's1.QMD3mE3kwbpUf5EP.vJPkhHkcgYq-aK-qvkFO1FUJQHqtzCWk0nJSUxGQ7clMiXMw0zIdAwbvSOhPIACpjfv9_ep3f1zZFMEHXg_cWmT8eW-h2vuJn_aWmcK97IRu1oa4tCocps4zZXl6eMjjk__4LmXPdevZddRyUhwnorX5mFPOY0jOpwJvU26IovkcKsgYdUXuaYcvTYvh6uL3U6rleIIg91fjWfQe4-FUEi9ctz2KqwTxRSWCgJpAAnodCGqjGiPAiQt5WiP1todKPjD3kfzDgd5tHvEiwcnzA8se2vCA48nMPM8UCnV-8qySqOT4XycfLY8cVgUr0A1yzfudUDr7c1sWktrzGhShiUh0ky6HHkliHkqb2bOZYo1Z2e-Jqt0nkvOYVV0msAx3kjlc4k-Eo96wDbjNTPQSP3W4aWhR5y5LjEcbr5FPdWTqXcxb0mJJICM0yUPZYJyCyHY1UJEffA0iJrnouw.AzgWv3ofzZx5SnblBGNc4w',
+    +         startLocal: '2026-11-01T09:00:00-04:00',
+    +         startUtc: '2026-11-01T13:00:00.000Z'
+    +       },
+    +       status: 'HELD'
+    -       code: 'BOOKING_UNAVAILABLE',
+    -       error: 'This business is currently unavailable.'
+          },
+    +     status: 201
+    -     status: 403
+        }
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    response:
+      status: 403
+      body:
+        error: 'This business is currently unavailable.'
+        code: 'BOOKING_UNAVAILABLE'
+    records:
+      bookingHolds:
+      bookingIdempotency:
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+  actual:
+    response:
+      status: 201
+      body:
+        status: 'HELD'
+        holdId: 'fc45bf22-276e-45fb-8ccb-bf91b3e4e261'
+        expiresAtUtc: '2026-10-31T12:05:00.000Z'
+        slot:
+          slotId: 's1.QMD3mE3kwbpUf5EP.vJPkhHkcgYq-aK-qvkFO1FUJQHqtzCWk0nJSUxGQ7clMiXMw0zIdAwbvSOhPIACpjfv9_ep3f1zZFMEHXg_cWmT8eW-h2vuJn_aWmcK97IRu1oa4tCocps4zZXl6eMjjk__4LmXPdevZddRyUhwnorX5mFPOY0jOpwJvU26IovkcKsgYdUXuaYcvTYvh6uL3U6rleIIg91fjWfQe4-FUEi9ctz2KqwTxRSWCgJpAAnodCGqjGiPAiQt5WiP1todKPjD3kfzDgd5tHvEiwcnzA8se2vCA48nMPM8UCnV-8qySqOT4XycfLY8cVgUr0A1yzfudUDr7c1sWktrzGhShiUh0ky6HHkliHkqb2bOZYo1Z2e-Jqt0nkvOYVV0msAx3kjlc4k-Eo96wDbjNTPQSP3W4aWhR5y5LjEcbr5FPdWTqXcxb0mJJICM0yUPZYJyCyHY1UJEffA0iJrnouw.AzgWv3ofzZx5SnblBGNc4w'
+          startUtc: '2026-11-01T13:00:00.000Z'
+          endUtc: '2026-11-01T13:45:00.000Z'
+          startLocal: '2026-11-01T09:00:00-04:00'
+          endLocal: '2026-11-01T09:45:00-04:00'
+          label: 'Sunday, November 1 at 9:00 AM AST'
+    records:
+      bookingHolds:
+        0:
+          id: 'fc45bf22-276e-45fb-8ccb-bf91b3e4e261'
+          ownerId: 'synthetic-a'
+          intentId: '583bdc1a-37cb-49d5-a084-63b4383f2150'
+          calendarId: 'primary'
+          slotIdDigest: '687bfef082b1b8027f18ab9a4246167828825590a10754de0e563ee765fd68cc'
+          startAtUtc: '2026-11-01T13:00:00.000Z'
+          endAtUtc: '2026-11-01T13:45:00.000Z'
+          lockStartAtUtc: '2026-11-01T13:00:00.000Z'
+          lockEndAtUtc: '2026-11-01T13:45:00.000Z'
+          policyRevision: 's1:p1'
+          status: 'HELD'
+          expiresAtUtc: '2026-10-31T12:05:00.000Z'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      bookingIdempotency:
+        0:
+          ownerId: 'synthetic-a'
+          operation: 'hold'
+          idempotencyKey: '47c8a094-5766-4d1d-b0ac-a48d9f0da7b5'
+          intentId: '583bdc1a-37cb-49d5-a084-63b4383f2150'
+          requestDigest: 'e4b3da92b4b2c6e64f0d338ddb35b55ade6712c1cf19539ff2ae8a8e5de26bb2'
+          httpStatus: 201
+          responseJson: '{"status":"HELD","holdId":"fc45bf22-276e-45fb-8ccb-bf91b3e4e261","expiresAtUtc":"2026-10-31T12:05:00.000Z","slot":{"slotId":"s1.QMD3mE3kwbpUf5EP.vJPkhHkcgYq-aK-qvkFO1FUJQHqtzCWk0nJSUxGQ7clMiXMw0zIdAwbvSOhPIACpjfv9_ep3f1zZFMEHXg_cWmT8eW-h2vuJn_aWmcK97IRu1oa4tCocps4zZXl6eMjjk__4LmXPdevZddRyUhwnorX5mFPOY0jOpwJvU26IovkcKsgYdUXuaYcvTYvh6uL3U6rleIIg91fjWfQe4-FUEi9ctz2KqwTxRSWCgJpAAnodCGqjGiPAiQt5WiP1todKPjD3kfzDgd5tHvEiwcnzA8se2vCA48nMPM8UCnV-8qySqOT4XycfLY8cVgUr0A1yzfudUDr7c1sWktrzGhShiUh0ky6HHkliHkqb2bOZYo1Z2e-Jqt0nkvOYVV0msAx3kjlc4k-Eo96wDbjNTPQSP3W4aWhR5y5LjEcbr5FPdWTqXcxb0mJJICM0yUPZYJyCyHY1UJEffA0iJrnouw.AzgWv3ofzZx5SnblBGNc4w","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","label":"Sunday, November 1 at 9:00 AM AST"}}'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:71:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 2: ended account rejects confirm without rows or calendar calls
+not ok 28 - audit 2: ended account rejects confirm without rows or calendar calls
+  ---
+  duration_ms: 939.046336
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:65:72'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+
+      {
+    +   provider: [
+    +     {
+    +       body: {
+    +         items: [
+    +           {
+    +             id: 'primary'
+    +           }
+    +         ],
+    +         timeMax: '2026-11-01T13:45:00.000Z',
+    +         timeMin: '2026-11-01T13:00:00.000Z',
+    +         timeZone: 'UTC'
+    +       },
+    +       method: 'POST',
+    +       owner: 'synthetic-a',
+    +       path: '/calendar/v3/freeBusy'
+    +     },
+    +     {
+    +       body: {
+    +         description: 'Appointment ID: f19c208b-4176-4754-b3d4-071e78af7f3e\n' +
+    +           'Customer: [SYNTHETIC] Caller\n' +
+    +           'Email: booking@example.invalid\n' +
+    +           'Phone: +15065550123\n' +
+    +           'Source: quote 06fcb435-1b79-4652-9b92-4679b3288a61',
+    +         end: {
+    +           dateTime: '2026-11-01T13:45:00.000Z',
+    +           timeZone: 'UTC'
+    +         },
+    +         extendedProperties: {
+    +           private: {
+    +             appointmentId: 'f19c208b-4176-4754-b3d4-071e78af7f3e',
+    +             bookingMode: 'site_visit_first'
+    +           }
+    +         },
+    +         guestsCanInviteOthers: false,
+    +         guestsCanModify: false,
+    +         id: 'bc1abe743ca237b009854c9fcd59148e',
+    +         location: '[SYNTHETIC] 1 Test Street, Moncton, NB, E1A 0A1, CA',
+    +         reminders: {
+    +           overrides: [],
+    +           useDefault: false
+    +         },
+    +         start: {
+    +           dateTime: '2026-11-01T13:00:00.000Z',
+    +           timeZone: 'UTC'
+    +         },
+    +         summary: 'Site visit - [SYNTHETIC] Caller',
+    +         transparency: 'opaque',
+    +         visibility: 'private'
+    +       },
+    +       method: 'POST',
+    +       owner: 'synthetic-a',
+    +       path: '/calendar/v3/calendars/primary/events'
+    +     }
+    +   ],
+    -   provider: [],
+        records: {
+    +     appointments: [
+    +       {
+    +         bookingIntentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f',
+    +         bookingMode: 'site_visit_first',
+    +         confirmedAt: '2026-10-31T12:00:00.000Z',
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         customerId: null,
+    +         customerJson: '{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"}',
+    +         datetime: '2026-11-01T13:00:00.000Z',
+    +         depositPaid: 0,
+    +         depositRequested: 0,
+    +         durationMinutes: 45,
+    +         endAtUtc: '2026-11-01T13:45:00.000Z',
+    +         holdId: 'ad183618-9d38-4509-9be0-54f497726e99',
+    +         id: 'f19c208b-4176-4754-b3d4-071e78af7f3e',
+    +         locationJson: '{"addressLine1":"[SYNTHETIC] 1 Test Street","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA","addressLine2":""}',
+    +         lockEndAtUtc: '2026-11-01T13:45:00.000Z',
+    +         lockStartAtUtc: '2026-11-01T13:00:00.000Z',
+    +         ownerId: 'synthetic-a',
+    +         policyRevision: 's1:p1',
+    +         provider: 'google',
+    +         providerCalendarId: 'primary',
+    +         providerEventId: 'bc1abe743ca237b009854c9fcd59148e',
+    +         providerEventStatus: 'CONFIRMED',
+    +         quoteId: '06fcb435-1b79-4652-9b92-4679b3288a61',
+    +         serviceType: null,
+    +         startAtUtc: '2026-11-01T13:00:00.000Z',
+    +         status: 'CONFIRMED',
+    +         tierChosen: null,
+    +         timezone: 'America/Moncton',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ],
+    -     appointments: [],
+          bookingHolds: [
+            {
+              calendarId: 'primary',
+              createdAt: '2026-10-31T12:00:00.000Z',
+              endAtUtc: '2026-11-01T13:45:00.000Z',
+    ...
+              startAtUtc: '2026-11-01T13:00:00.000Z',
+    +         status: 'CONFIRMED',
+    -         status: 'HELD',
+              updatedAt: '2026-10-31T12:00:00.000Z'
+            }
+          ],
+          bookingIdempotency: [
+            {
+    ...
+            },
+    +       {
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         httpStatus: 201,
+    +         idempotencyKey: '4e6f5d9a-a21c-486e-b112-2bf11cb56232',
+    +         intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f',
+    +         operation: 'confirm',
+    +         ownerId: 'synthetic-a',
+    +         requestDigest: '83ab9f63474f7034b70e302ba53dfabdafdd0a80a12dc7361a2d7e2d2366e06d',
+    +         responseJson: '{"status":"CONFIRMED","appointmentId":"f19c208b-4176-4754-b3d4-071e78af7f3e","bookingMode":"site_visit_first","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","timezone":"America/Moncton","provider":"google","calendarEventStatus":"CONFIRMED"}',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+          ],
+          bookingPreferences: [],
+    +     outboxEvents: [
+    +       {
+    +         aggregateId: 'f19c208b-4176-4754-b3d4-071e78af7f3e',
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         eventType: 'appointment.booked',
+    +         id: 'f19c208b-4176-4754-b3d4-071e78af7f3e:booked',
+    +         ownerId: 'synthetic-a',
+    +         payloadJson: '{"status":"CONFIRMED","appointmentId":"f19c208b-4176-4754-b3d4-071e78af7f3e","bookingMode":"site_visit_first","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","timezone":"America/Moncton","provider":"google","calendarEventStatus":"CONFIRMED"}',
+    +         status: 'PENDING',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ]
+    -     outboxEvents: []
+        },
+        response: {
+          body: {
+    +       appointmentId: 'f19c208b-4176-4754-b3d4-071e78af7f3e',
+    +       bookingMode: 'site_visit_first',
+    +       calendarEventStatus: 'CONFIRMED',
+    +       endLocal: '2026-11-01T09:45:00-04:00',
+    +       endUtc: '2026-11-01T13:45:00.000Z',
+    +       provider: 'google',
+    +       startLocal: '2026-11-01T09:00:00-04:00',
+    +       startUtc: '2026-11-01T13:00:00.000Z',
+    +       status: 'CONFIRMED',
+    +       timezone: 'America/Moncton'
+    -       code: 'BOOKING_UNAVAILABLE',
+    -       error: 'This business is currently unavailable.'
+          },
+    +     status: 201
+    -     status: 403
+        }
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    response:
+      status: 403
+      body:
+        error: 'This business is currently unavailable.'
+        code: 'BOOKING_UNAVAILABLE'
+    records:
+      bookingHolds:
+        0:
+          id: 'ad183618-9d38-4509-9be0-54f497726e99'
+          ownerId: 'synthetic-a'
+          intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          calendarId: 'primary'
+          slotIdDigest: '1942840f417765ce7c5f98e4411a4a3b81aa8db80c20024ae5e936979cbce0b1'
+          startAtUtc: '2026-11-01T13:00:00.000Z'
+          endAtUtc: '2026-11-01T13:45:00.000Z'
+          lockStartAtUtc: '2026-11-01T13:00:00.000Z'
+          lockEndAtUtc: '2026-11-01T13:45:00.000Z'
+          policyRevision: 's1:p1'
+          status: 'HELD'
+          expiresAtUtc: '2026-10-31T12:05:00.000Z'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      bookingIdempotency:
+        0:
+          ownerId: 'synthetic-a'
+          operation: 'hold'
+          idempotencyKey: 'a4d4aa70-c16b-411b-8734-530d810d4ff3'
+          intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          requestDigest: '8e3997bb629802247d0940d96ef01e4bc46225065293bd30dcf7015c0613ad56'
+          httpStatus: 201
+          responseJson: '{"status":"HELD","holdId":"ad183618-9d38-4509-9be0-54f497726e99","expiresAtUtc":"2026-10-31T12:05:00.000Z","slot":{"slotId":"s1.z-rOsY6TCve-7gWf.S5ettKdYqAqIASHj5WBP850ytexDYvcd0QlcpzirqaYLFf9WG9f-E5kjOHAi8EecEVQ-M0zd_t0Cu9KaAnA33wOrZf7DAqIKc6dzFUGoEgXmiUQ-BGeDF232-SCUAy2xoA7szDNNqKnS2_63h1MbGIL_6Ci86AT_EyBvh8MuIqWGIQPRyxMv3TIuu4lrLlNHaan550onKZUX7ykDloGkReRKzT5IpiYumGok8Q3oSkpX14Ksv1HWqIB3gcy8zDGFsW0u2Wz5X-fBeUuLXWGx7FkwLHiprpvPdPatNp-rd9i_l7U3ENsfBoUEh8RXIzYtKP9CsprGE_5MrCgC5j7Oj022e1ZX_0O6RqHHC8o-hZFGmAg9Grjb4oO1R7X80Hbhdu_2z-0sYxNzjW7SymEaMq07zNjQ38VDdA89ZpNWUQyz-__JqVFSrLidj1WNFe6_oos5PSzvquwxgfOvog.3MJwcU7QPKQTHnTWyKs0Lg","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","label":"Sunday, November 1 at 9:00 AM AST"}}'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+  actual:
+    response:
+      status: 201
+      body:
+        status: 'CONFIRMED'
+        appointmentId: 'f19c208b-4176-4754-b3d4-071e78af7f3e'
+        bookingMode: 'site_visit_first'
+        startUtc: '2026-11-01T13:00:00.000Z'
+        endUtc: '2026-11-01T13:45:00.000Z'
+        startLocal: '2026-11-01T09:00:00-04:00'
+        endLocal: '2026-11-01T09:45:00-04:00'
+        timezone: 'America/Moncton'
+        provider: 'google'
+        calendarEventStatus: 'CONFIRMED'
+    records:
+      bookingHolds:
+        0:
+          id: 'ad183618-9d38-4509-9be0-54f497726e99'
+          ownerId: 'synthetic-a'
+          intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          calendarId: 'primary'
+          slotIdDigest: '1942840f417765ce7c5f98e4411a4a3b81aa8db80c20024ae5e936979cbce0b1'
+          startAtUtc: '2026-11-01T13:00:00.000Z'
+          endAtUtc: '2026-11-01T13:45:00.000Z'
+          lockStartAtUtc: '2026-11-01T13:00:00.000Z'
+          lockEndAtUtc: '2026-11-01T13:45:00.000Z'
+          policyRevision: 's1:p1'
+          status: 'CONFIRMED'
+          expiresAtUtc: '2026-10-31T12:05:00.000Z'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      bookingIdempotency:
+        0:
+          ownerId: 'synthetic-a'
+          operation: 'hold'
+          idempotencyKey: 'a4d4aa70-c16b-411b-8734-530d810d4ff3'
+          intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          requestDigest: '8e3997bb629802247d0940d96ef01e4bc46225065293bd30dcf7015c0613ad56'
+          httpStatus: 201
+          responseJson: '{"status":"HELD","holdId":"ad183618-9d38-4509-9be0-54f497726e99","expiresAtUtc":"2026-10-31T12:05:00.000Z","slot":{"slotId":"s1.z-rOsY6TCve-7gWf.S5ettKdYqAqIASHj5WBP850ytexDYvcd0QlcpzirqaYLFf9WG9f-E5kjOHAi8EecEVQ-M0zd_t0Cu9KaAnA33wOrZf7DAqIKc6dzFUGoEgXmiUQ-BGeDF232-SCUAy2xoA7szDNNqKnS2_63h1MbGIL_6Ci86AT_EyBvh8MuIqWGIQPRyxMv3TIuu4lrLlNHaan550onKZUX7ykDloGkReRKzT5IpiYumGok8Q3oSkpX14Ksv1HWqIB3gcy8zDGFsW0u2Wz5X-fBeUuLXWGx7FkwLHiprpvPdPatNp-rd9i_l7U3ENsfBoUEh8RXIzYtKP9CsprGE_5MrCgC5j7Oj022e1ZX_0O6RqHHC8o-hZFGmAg9Grjb4oO1R7X80Hbhdu_2z-0sYxNzjW7SymEaMq07zNjQ38VDdA89ZpNWUQyz-__JqVFSrLidj1WNFe6_oos5PSzvquwxgfOvog.3MJwcU7QPKQTHnTWyKs0Lg","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","label":"Sunday, November 1 at 9:00 AM AST"}}'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+        1:
+          ownerId: 'synthetic-a'
+          operation: 'confirm'
+          idempotencyKey: '4e6f5d9a-a21c-486e-b112-2bf11cb56232'
+          intentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          requestDigest: '83ab9f63474f7034b70e302ba53dfabdafdd0a80a12dc7361a2d7e2d2366e06d'
+          httpStatus: 201
+          responseJson: '{"status":"CONFIRMED","appointmentId":"f19c208b-4176-4754-b3d4-071e78af7f3e","bookingMode":"site_visit_first","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","timezone":"America/Moncton","provider":"google","calendarEventStatus":"CONFIRMED"}'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      appointments:
+        0:
+          id: 'f19c208b-4176-4754-b3d4-071e78af7f3e'
+          ownerId: 'synthetic-a'
+          customerId: ~
+          quoteId: '06fcb435-1b79-4652-9b92-4679b3288a61'
+          serviceType: ~
+          bookingMode: 'site_visit_first'
+          datetime: '2026-11-01T13:00:00.000Z'
+          durationMinutes: 45
+          status: 'CONFIRMED'
+          depositRequested: 0
+          depositPaid: 0
+          bookingIntentId: '8ed39554-f5d5-4046-b0ca-bed0cfb8d54f'
+          holdId: 'ad183618-9d38-4509-9be0-54f497726e99'
+          provider: 'google'
+          providerCalendarId: 'primary'
+          providerEventId: 'bc1abe743ca237b009854c9fcd59148e'
+          providerEventStatus: 'CONFIRMED'
+          startAtUtc: '2026-11-01T13:00:00.000Z'
+          endAtUtc: '2026-11-01T13:45:00.000Z'
+          lockStartAtUtc: '2026-11-01T13:00:00.000Z'
+          lockEndAtUtc: '2026-11-01T13:45:00.000Z'
+          timezone: 'America/Moncton'
+          policyRevision: 's1:p1'
+          tierChosen: ~
+          customerJson: '{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"}'
+          locationJson: '{"addressLine1":"[SYNTHETIC] 1 Test Street","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA","addressLine2":""}'
+          confirmedAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+          createdAt: '2026-10-31T12:00:00.000Z'
+      bookingPreferences:
+      outboxEvents:
+        0:
+          id: 'f19c208b-4176-4754-b3d4-071e78af7f3e:booked'
+          ownerId: 'synthetic-a'
+          eventType: 'appointment.booked'
+          aggregateId: 'f19c208b-4176-4754-b3d4-071e78af7f3e'
+          payloadJson: '{"status":"CONFIRMED","appointmentId":"f19c208b-4176-4754-b3d4-071e78af7f3e","bookingMode":"site_visit_first","startUtc":"2026-11-01T13:00:00.000Z","endUtc":"2026-11-01T13:45:00.000Z","startLocal":"2026-11-01T09:00:00-04:00","endLocal":"2026-11-01T09:45:00-04:00","timezone":"America/Moncton","provider":"google","calendarEventStatus":"CONFIRMED"}'
+          status: 'PENDING'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+    provider:
+      0:
+        owner: 'synthetic-a'
+        path: '/calendar/v3/freeBusy'
+        method: 'POST'
+        body:
+          timeMin: '2026-11-01T13:00:00.000Z'
+          timeMax: '2026-11-01T13:45:00.000Z'
+          timeZone: 'UTC'
+          items:
+            0:
+              id: 'primary'
+      1:
+        owner: 'synthetic-a'
+        path: '/calendar/v3/calendars/primary/events'
+        method: 'POST'
+        body:
+          id: 'bc1abe743ca237b009854c9fcd59148e'
+          summary: 'Site visit - [SYNTHETIC] Caller'
+          description: |-
+            Appointment ID: f19c208b-4176-4754-b3d4-071e78af7f3e
+            Customer: [SYNTHETIC] Caller
+            Email: booking@example.invalid
+            Phone: +15065550123
+            Source: quote 06fcb435-1b79-4652-9b92-4679b3288a61
+          location: '[SYNTHETIC] 1 Test Street, Moncton, NB, E1A 0A1, CA'
+          start:
+            dateTime: '2026-11-01T13:00:00.000Z'
+            timeZone: 'UTC'
+          end:
+            dateTime: '2026-11-01T13:45:00.000Z'
+            timeZone: 'UTC'
+          transparency: 'opaque'
+          visibility: 'private'
+          guestsCanInviteOthers: false
+          guestsCanModify: false
+          reminders:
+            useDefault: false
+            overrides:
+          extendedProperties:
+            private:
+              appointmentId: 'f19c208b-4176-4754-b3d4-071e78af7f3e'
+              bookingMode: 'site_visit_first'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:71:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 2: ended account rejects preference without rows or calendar calls
+not ok 29 - audit 2: ended account rejects preference without rows or calendar calls
+  ---
+  duration_ms: 899.283836
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:65:72'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+        provider: [],
+        records: {
+          appointments: [],
+          bookingHolds: [],
+    +     bookingIdempotency: [
+    +       {
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         httpStatus: 201,
+    +         idempotencyKey: '0769c269-0dff-4f57-9954-89a32b2a1aa2',
+    +         intentId: 'bb094e4d-0435-4b11-96f8-2fb653cc02f4',
+    +         operation: 'preference',
+    +         ownerId: 'synthetic-a',
+    +         requestDigest: 'f7ed521d2b2fa8559b178a67648aeeb308ba8b9e7f97cb08ddc8c317bac7f848',
+    +         responseJson: '{"status":"REQUESTED","preferenceRequestId":"bec8094b-d099-4371-a1cf-4757d18644d9","message":"The business will contact you to confirm a time."}',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ],
+    +     bookingPreferences: [
+    +       {
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         customerJson: '{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"}',
+    +         id: 'bec8094b-d099-4371-a1cf-4757d18644d9',
+    +         intentId: 'bb094e4d-0435-4b11-96f8-2fb653cc02f4',
+    +         locationJson: '{"addressLine1":"[SYNTHETIC] 1 Test Street","addressLine2":"","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA"}',
+    +         note: '[SYNTHETIC] Morning',
+    +         ownerId: 'synthetic-a',
+    +         preferredWindowsJson: '[{"date":"2026-11-01","timeOfDay":"morning"}]',
+    +         status: 'REQUESTED',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ],
+    +     outboxEvents: [
+    +       {
+    +         aggregateId: 'bec8094b-d099-4371-a1cf-4757d18644d9',
+    +         createdAt: '2026-10-31T12:00:00.000Z',
+    +         eventType: 'booking.preference_requested',
+    +         id: 'bec8094b-d099-4371-a1cf-4757d18644d9:requested',
+    +         ownerId: 'synthetic-a',
+    +         payloadJson: '{"status":"REQUESTED","preferenceRequestId":"bec8094b-d099-4371-a1cf-4757d18644d9","intentId":"bb094e4d-0435-4b11-96f8-2fb653cc02f4","preferredWindows":[{"date":"2026-11-01","timeOfDay":"morning"}],"customer":{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"},"location":{"addressLine1":"[SYNTHETIC] 1 Test Street","addressLine2":"","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA"},"note":"[SYNTHETIC] Morning"}',
+    +         status: 'PENDING',
+    +         updatedAt: '2026-10-31T12:00:00.000Z'
+    +       }
+    +     ]
+    -     bookingIdempotency: [],
+    -     bookingPreferences: [],
+    -     outboxEvents: []
+        },
+        response: {
+          body: {
+    +       message: 'The business will contact you to confirm a time.',
+    +       preferenceRequestId: 'bec8094b-d099-4371-a1cf-4757d18644d9',
+    +       status: 'REQUESTED'
+    -       code: 'BOOKING_UNAVAILABLE',
+    -       error: 'This business is currently unavailable.'
+          },
+    +     status: 201
+    -     status: 403
+        }
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    response:
+      status: 403
+      body:
+        error: 'This business is currently unavailable.'
+        code: 'BOOKING_UNAVAILABLE'
+    records:
+      bookingHolds:
+      bookingIdempotency:
+      appointments:
+      bookingPreferences:
+      outboxEvents:
+    provider:
+  actual:
+    response:
+      status: 201
+      body:
+        status: 'REQUESTED'
+        preferenceRequestId: 'bec8094b-d099-4371-a1cf-4757d18644d9'
+        message: 'The business will contact you to confirm a time.'
+    records:
+      bookingHolds:
+      bookingIdempotency:
+        0:
+          ownerId: 'synthetic-a'
+          operation: 'preference'
+          idempotencyKey: '0769c269-0dff-4f57-9954-89a32b2a1aa2'
+          intentId: 'bb094e4d-0435-4b11-96f8-2fb653cc02f4'
+          requestDigest: 'f7ed521d2b2fa8559b178a67648aeeb308ba8b9e7f97cb08ddc8c317bac7f848'
+          httpStatus: 201
+          responseJson: '{"status":"REQUESTED","preferenceRequestId":"bec8094b-d099-4371-a1cf-4757d18644d9","message":"The business will contact you to confirm a time."}'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      appointments:
+      bookingPreferences:
+        0:
+          id: 'bec8094b-d099-4371-a1cf-4757d18644d9'
+          ownerId: 'synthetic-a'
+          intentId: 'bb094e4d-0435-4b11-96f8-2fb653cc02f4'
+          preferredWindowsJson: '[{"date":"2026-11-01","timeOfDay":"morning"}]'
+          customerJson: '{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"}'
+          locationJson: '{"addressLine1":"[SYNTHETIC] 1 Test Street","addressLine2":"","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA"}'
+          note: '[SYNTHETIC] Morning'
+          status: 'REQUESTED'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+      outboxEvents:
+        0:
+          id: 'bec8094b-d099-4371-a1cf-4757d18644d9:requested'
+          ownerId: 'synthetic-a'
+          eventType: 'booking.preference_requested'
+          aggregateId: 'bec8094b-d099-4371-a1cf-4757d18644d9'
+          payloadJson: '{"status":"REQUESTED","preferenceRequestId":"bec8094b-d099-4371-a1cf-4757d18644d9","intentId":"bb094e4d-0435-4b11-96f8-2fb653cc02f4","preferredWindows":[{"date":"2026-11-01","timeOfDay":"morning"}],"customer":{"name":"[SYNTHETIC] Caller","email":"booking@example.invalid","phone":"+15065550123"},"location":{"addressLine1":"[SYNTHETIC] 1 Test Street","addressLine2":"","city":"Moncton","region":"NB","postalCode":"E1A 0A1","country":"CA"},"note":"[SYNTHETIC] Morning"}'
+          status: 'PENDING'
+          createdAt: '2026-10-31T12:00:00.000Z'
+          updatedAt: '2026-10-31T12:00:00.000Z'
+    provider:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:71:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 2: active account books; ended account can release a hold
+ok 30 - audit 2: active account books; ended account can release a hold
+  ---
+  duration_ms: 960.632934
+  type: 'test'
+  ...
+# Subtest: audit 2: existing confirmation status remains readable after service ends
+ok 31 - audit 2: existing confirmation status remains readable after service ends
+  ---
+  duration_ms: 712.791673
+  type: 'test'
+  ...
+# Subtest: audit 3: trial six unconfirmed ten-minute calls pending
+not ok 32 - audit 3: trial six unconfirmed ten-minute calls pending
+  ---
+  duration_ms: 44.090605
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:88:43'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+    -   0,
+        60,
+        0,
+    +   0,
+        6,
+        0,
+        0
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 0
+    1: 60
+    2: 0
+    3: 6
+    4: 0
+    5: 0
+  actual:
+    0: 60
+    1: 0
+    2: 0
+    3: 6
+    4: 0
+    5: 0
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:93:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 3: trial six unconfirmed ten-minute calls receipts
+ok 33 - audit 3: trial six unconfirmed ten-minute calls receipts
+  ---
+  duration_ms: 32.018712
+  type: 'test'
+  ...
+# Subtest: audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending
+not ok 34 - audit 3: Operator 300 confirmed plus ten unconfirmed minutes pending
+  ---
+  duration_ms: 83.604905
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:97:43'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+    +   310,
+    -   300,
+        0,
+    +   350,
+    +   350,
+        0,
+    -   0,
+    -   0,
+        1
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 300
+    1: 0
+    2: 0
+    3: 0
+    4: 0
+    5: 1
+  actual:
+    0: 310
+    1: 0
+    2: 350
+    3: 350
+    4: 0
+    5: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:101:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 3: Operator 300 confirmed plus ten unconfirmed minutes receipts
+ok 35 - audit 3: Operator 300 confirmed plus ten unconfirmed minutes receipts
+  ---
+  duration_ms: 100.059291
+  type: 'test'
+  ...
+# Subtest: audit 3: failed receptionist stays zero before and after a signed receipt
+ok 36 - audit 3: failed receptionist stays zero before and after a signed receipt
+  ---
+  duration_ms: 20.301705
+  type: 'test'
+  ...
+# Subtest: audit 3: admission meter permits another trial call until durations are confirmed
+not ok 37 - audit 3: admission meter permits another trial call until durations are confirmed
+  ---
+  duration_ms: 21.213904
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:111:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:115:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: audit 3: closed month with only unconfirmed extra calls has no monetary pending charge
+not ok 38 - audit 3: closed month with only unconfirmed extra calls has no monetary pending charge
+  ---
+  duration_ms: 29.592047
+  type: 'test'
+  location: '/workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:119:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + [
+    +   {
+    +     amountCents: 350,
+    +     endAt: '2026-11-20T12:00:00.000Z',
+    +     id: '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c-remainder',
+    +     message: 'Overage pending: call durations are awaiting confirmation.',
+    +     periodId: '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c',
+    +     startAt: '2026-10-20T12:00:00.000Z',
+    +     status: 'PENDING'
+    +   }
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      id: '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c-remainder'
+      periodId: '7e8da5737de4ad67a64205faae935e504b27f0cf11b5b7f878de1a9525e4b01c'
+      startAt: '2026-10-20T12:00:00.000Z'
+      endAt: '2026-11-20T12:00:00.000Z'
+      amountCents: 350
+      status: 'PENDING'
+      message: 'Overage pending: call durations are awaiting confirmation.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/18cbdaa4aace/workflow-base/test/workflowBillingAudit20261009.spec.mjs:121:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 16
+# fail 22
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10505.980238

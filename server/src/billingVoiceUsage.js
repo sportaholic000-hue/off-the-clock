@@ -2,6 +2,10 @@ import {createHash} from 'node:crypto';
 import {allowancePeriods,usageOwnerQuery} from './billingUsagePolicy.js';
 const terminal=new Set(['completed','busy','failed','no-answer','canceled']);
 const excluded=row=>row.spamFiltered===1||['FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK'].includes(row.status)||row.outcome==='AI_FALLBACK'||row.outcome==='OPERATOR_OFF';
+export function hasConfirmedVoiceMinutes(row){
+  return ['COMPLETED','RECOVERED'].includes(row.status)&&Boolean(row.completedAt)&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
+    Number.isSafeInteger(row.minutesBilled)&&row.minutesBilled>=0&&Number.isSafeInteger(row.providerDurationSeconds)&&row.providerDurationSeconds>=0&&Math.ceil(row.providerDurationSeconds/60)===row.minutesBilled;
+}
 function transaction(db,work){db.exec('BEGIN IMMEDIATE');try{const result=work();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}
 function iso(value){const date=new Date(value);if(!Number.isFinite(date.getTime()))throw Error('Invalid metering instant.');return date.toISOString();}
 export function voiceUsagePeriod(db,ownerId,{at=new Date().toISOString(),ownerQuery}={}){
@@ -81,12 +85,12 @@ export function createBillingVoiceUsage({database:db,ownerQuery,clock=()=>new Da
       const period=voiceUsagePeriod(db,ownerId,{at:iso(clock()),ownerQuery});if(!period)return null;
       // Attribution is by call connection time. An in-progress call finishes
       // across the boundary and belongs to the period in which it connected.
-      const row=query(`SELECT COALESCE(SUM(c.minutesBilled),0) n FROM calls c
+      const rows=query(`SELECT c.status,c.minutesBilled,v.completedAt,v.providerDigest,v.providerDurationSeconds FROM calls c
+        JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
         WHERE c.ownerId=? AND COALESCE(c.spamFiltered,0)=0
         AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK') AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')
-        AND COALESCE((SELECT v.connectedAt FROM billingVoiceUsage v WHERE v.ownerId=c.ownerId AND v.callId=c.id),c.createdAt)>=?
-        AND COALESCE((SELECT v.connectedAt FROM billingVoiceUsage v WHERE v.ownerId=c.ownerId AND v.callId=c.id),c.createdAt)<?`).get(ownerId,period.start,period.end);
-      return row.n;
+        AND v.connectedAt>=? AND v.connectedAt<?`).all(ownerId,period.start,period.end);
+      return rows.reduce((minutes,row)=>minutes+(hasConfirmedVoiceMinutes(row)?row.minutesBilled:0),0);
     }
   });
 }

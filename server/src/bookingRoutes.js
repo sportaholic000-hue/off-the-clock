@@ -1,5 +1,6 @@
 import { BookingServiceError } from './bookingService.js';
 import {guardTenantRequest} from './tenantRequest.js';
+import {accountAccessDecision} from './planAccess.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LOCATION_FIELDS = ['addressLine1', 'addressLine2', 'city', 'region', 'postalCode', 'country'];
@@ -147,13 +148,14 @@ export function installBookingRoutes(app, {
   preferenceService,
   asyncHandler,
   requireAuth,
-  database
+  database,
+  ownerQuery=sql=>database.prepare(sql)
 }) {
   if (!bookingService || !asyncHandler || !requireAuth || !database) {
     throw new TypeError('Booking routes require booking, auth, async, and database dependencies.');
   }
 
-  const accessStatement = database.prepare(
+  const accessStatement = ownerQuery(
     'SELECT allowedOriginsJson FROM quoteAccessKeys WHERE ownerId = ?'
   );
 
@@ -186,8 +188,14 @@ export function installBookingRoutes(app, {
     return next();
   }
 
+  function requireBookingAccess(req, res, next) {
+    const owner=ownerQuery("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,paidThroughAt,annualPaidThroughAt,serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:req.bookingContext.ownerId});
+    if(!accountAccessDecision(owner).allowed)return res.status(403).json({error:'This business is currently unavailable.',code:'BOOKING_UNAVAILABLE'});
+    return next();
+  }
+
   const publicPrefix = '/api/public/bookings/:bookingToken';
-  app.post(`${publicPrefix}/availability`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
+  app.post(`${publicPrefix}/availability`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
     validateAvailabilityBody(req.body);
     const result = await bookingService.availability({
       ...req.bookingContext,
@@ -195,7 +203,7 @@ export function installBookingRoutes(app, {
     });
     return res.status(result.statusCode).json(result.body);
   }));
-  app.post(`${publicPrefix}/holds`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
+  app.post(`${publicPrefix}/holds`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
     validateHoldBody(req.body);
     const result = bookingService.hold({
       ...req.bookingContext,
@@ -213,7 +221,7 @@ export function installBookingRoutes(app, {
     });
     return res.status(result.statusCode).json(result.body);
   }));
-  app.post(`${publicPrefix}/confirm`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
+  app.post(`${publicPrefix}/confirm`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
     validateConfirmBody(req.body);
     const result = await bookingService.confirm({
       ...req.bookingContext,
@@ -230,7 +238,7 @@ export function installBookingRoutes(app, {
     return res.status(result.statusCode).json(result.body);
   }));
   if (preferenceService) {
-    app.post(`${publicPrefix}/preference`, publicBookingContext, publicRateLimit, asyncHandler(async (req, res) => {
+    app.post(`${publicPrefix}/preference`, publicBookingContext, requireBookingAccess, publicRateLimit, asyncHandler(async (req, res) => {
       exactKeys(req.body, ['scopeConfirmation', 'preferredWindows', 'customer', 'location', 'note'], 'Preference request');
       requireUnchangedScope(req.body);
       const result = preferenceService.request({
