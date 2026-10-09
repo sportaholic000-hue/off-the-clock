@@ -1,0 +1,7 @@
+Text AI unavailable: configure GEMINI_TEXT_MODEL
+[offsite-backup] WARNING: off-site backups are NOT configured; losing the volume loses business data. OFFSITE_CONFIG_MISSING Missing: OFFSITE_BACKUP_ENDPOINT, OFFSITE_BACKUP_BUCKET, OFFSITE_BACKUP_ACCESS_KEY_ID, OFFSITE_BACKUP_SECRET_ACCESS_KEY, OFFSITE_BACKUP_ENCRYPTION_KEY
+Off The Clock AI server listening on 38013
+[error] AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.
+[error] This price book changed. Reload it before saving or approving.
+[error] This price book changed. Reload it before saving or approving.
+[shutdown] requests and workers drained; database closed
