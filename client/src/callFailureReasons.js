@@ -1,0 +1,26 @@
+// Proposed owner wording is listed in verification/billing-calls-20261009/REPORT.md.
+const reasons=Object.create(null);
+for(const code of "GEMINI_SESSION_CLOSED".split(" "))reasons[code]="The AI receptionist connection closed unexpectedly.";
+for(const code of "GEMINI_SESSION_ERROR GEMINI_CONNECT_FAILED VOICE_MEDIA_FAILURE".split(" "))reasons[code]="The AI receptionist encountered a connection error.";
+for(const code of "TWILIO_SOCKET_CLOSED TWILIO_SOCKET_ERROR MEDIA_SOCKET_CLOSED".split(" "))reasons[code]="The phone connection closed unexpectedly.";
+for(const code of "SESSION_PERSISTENCE_FAILED TRANSCRIPT_CALLBACK_FAILED CALL_PERSISTENCE_FAILED".split(" "))reasons[code]="The receptionist could not save the final call details.";
+for(const code of "TOOL_CALLBACK_FAILED INVALID_TOOL_RESPONSE INVALID_GEMINI_TOOL_CALL".split(" "))reasons[code]="The receptionist could not complete a requested action.";
+for(const code of "GEMINI_AUDIO_RATE_LIMIT INPUT_AUDIO_BACKPRESSURE_LIMIT OUTPUT_AUDIO_BACKPRESSURE_LIMIT PENDING_MARK_LIMIT SOCKET_BACKPRESSURE_LIMIT TWILIO_AUDIO_RATE_LIMIT TWILIO_MESSAGE_BACKPRESSURE_LIMIT TWILIO_MESSAGE_RATE_LIMIT TWILIO_MESSAGE_TOO_LARGE AUDIO_PAYLOAD_TOO_LARGE MULAW_AUDIO_TOO_LARGE PCM_AUDIO_TOO_LARGE".split(" "))reasons[code]="The call exceeded a safe audio or connection limit.";
+for(const code of "INVALID_CALL_CONTEXT TWILIO_START_BINDING_MISMATCH TWILIO_STOP_BINDING_MISMATCH TWILIO_STREAM_SID_MISMATCH VOICE_CALL_BINDING_MISMATCH".split(" "))reasons[code]="The call connection did not match the saved call.";
+for(const code of "VOICE_RESTART_RECOVERY APPLICATION_CLOSE SESSION_ENDED_DURING_CONNECT".split(" "))reasons[code]="The receptionist stopped when the service restarted.";
+for(const code of "VOICE_DISABLED VOICE_RUNTIME_DISABLED VOICE_FALLBACK VOICE_SESSION_UNAVAILABLE VOICE_ADMISSION_UNAVAILABLE VOICE_SESSION_NOT_PERSISTED".split(" "))reasons[code]="The receptionist was unavailable for this call.";
+for(const code of "VOICE_CIRCUIT_OPEN".split(" "))reasons[code]="The receptionist is temporarily paused after repeated connection failures.";
+for(const code of "VOICE_CONCURRENCY_LIMIT VOICE_PLATFORM_CAPACITY".split(" "))reasons[code]="All available receptionist call connections were in use.";
+for(const code of "VOICE_CALLER_THROTTLED".split(" "))reasons[code]="The caller reached the daily answering limit. Their request is saved for review.";
+for(const code of "VOICE_SPAM_BLOCKED".split(" "))reasons[code]="This caller was blocked as spam.";
+for(const code of "OPERATOR_INELIGIBLE ACCOUNT_REQUIRED INVALID_PLAN INVALID_STATUS INVALID_NOW TRIAL_END_REQUIRED PAYMENT_FAILURE_TIME_REQUIRED SUSPENDED_OR_CANCELED".split(" "))reasons[code]="The account was not eligible for receptionist service.";
+for(const code of "TRIAL_EXPIRED".split(" "))reasons[code]="The trial had ended.";
+for(const code of "PAYMENT_FAILURE_GRACE_EXPIRED".split(" "))reasons[code]="The payment grace period had ended.";
+for(const code of "TRIAL_VOICE_CAP_REACHED VOICE_CAP_REACHED".split(" "))reasons[code]="The trial had no included call minutes left.";
+for(const code of "TRIAL_USAGE_REQUIRED".split(" "))reasons[code]="Call usage could not be verified before answering.";
+for(const code of "VOICE_CALLER_CHECK_UNAVAILABLE".split(" "))reasons[code]="The caller safety check could not be completed.";
+for(const code of "VOICE_CALLER_CHECK_UNAVAILABLE_INVALID VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE VOICE_RUNTIME_DISABLED_INVALID VOICE_RUNTIME_DISABLED_UNAVAILABLE OPERATOR_INELIGIBLE_INVALID OPERATOR_INELIGIBLE_UNAVAILABLE VOICE_CAP_REACHED_INVALID VOICE_CAP_REACHED_UNAVAILABLE".split(" "))reasons[code]="The receptionist could not verify whether it was allowed to answer.";
+for(const code of "BINARY_TWILIO_MESSAGE_REJECTED EMPTY_AUDIO_PAYLOAD EMPTY_MULAW_AUDIO EMPTY_PCM_AUDIO GEMINI_SESSION_OPENER_REQUIRED INVALID_AUDIO_BASE64 INVALID_AUDIO_LIMIT INVALID_GEMINI_AUDIO INVALID_GEMINI_AUDIO_FORMAT INVALID_GEMINI_SESSION_ADAPTER INVALID_GEMINI_TRANSCRIPT INVALID_MEDIA_CLOCK INVALID_MEDIA_LIMITS INVALID_MEDIA_SOCKET INVALID_MULAW_BUFFER INVALID_MULAW_SAMPLE INVALID_PCM_BUFFER INVALID_PCM_SAMPLE INVALID_PROVIDER_MESSAGE INVALID_SOCKET_BACKPRESSURE INVALID_TWILIO_CONNECTED_EVENT INVALID_TWILIO_CUSTOM_PARAMETERS INVALID_TWILIO_JSON INVALID_TWILIO_MEDIA_CHUNK INVALID_TWILIO_MEDIA_TIMESTAMP INVALID_TWILIO_MESSAGE INVALID_TWILIO_SEQUENCE INVALID_TWILIO_STREAM_SID MARK_BEFORE_ACTIVE_START MEDIA_BEFORE_ACTIVE_START MEDIA_CLOCK_REQUIRED MISALIGNED_PCM16_AUDIO NON_CANONICAL_AUDIO_BASE64 SESSION_END_CALLBACK_INVALID STOP_BEFORE_ACTIVE_START TOOL_CALLBACK_REQUIRED TRANSCRIPT_CALLBACK_REQUIRED TWILIO_MEDIA_ORDER_MISMATCH TWILIO_SEQUENCE_MISMATCH UNEXPECTED_TWILIO_MEDIA_TRACK UNEXPECTED_TWILIO_START UNKNOWN_TWILIO_MARK UNSUPPORTED_TWILIO_EVENT UNSUPPORTED_TWILIO_MEDIA_FORMAT".split(" "))reasons[code]="The call contained audio or connection data the receptionist could not process safely.";
+for(const code of "GOOGLE_LIVE_INSTRUCTION_FAILED".split(" "))reasons[code]="The receptionist could not load its voice settings.";
+export const CALL_FAILURE_REASONS=Object.freeze(reasons);
+export const callFailureReason=code=>CALL_FAILURE_REASONS[code]||"The receptionist could not complete this call. The technical detail below may help support investigate.";

@@ -12,9 +12,9 @@ import {validateInterviewValue} from '../server/src/priceBookAI.js';
 // leave the prior saved draft unchanged. See QUOTE_LAUNCH_DECISIONS_20261005.md.
 test('interview stores normalized maps through manual and actual assist paths without losing confirmation',async()=>{
   const directory=mkdtempSync(join(tmpdir(),'otc-interview-names-'));
-  const previous={DATABASE_PATH:process.env.DATABASE_PATH,GEMINI_API_KEY:process.env.GEMINI_API_KEY};
+  const previous={DATABASE_PATH:process.env.DATABASE_PATH,GEMINI_TEXT_MODEL:process.env.GEMINI_TEXT_MODEL,GEMINI_API_KEY:process.env.GEMINI_API_KEY};
   const originalFetch=globalThis.fetch;
-  Object.assign(process.env,{DATABASE_PATH:join(directory,'synthetic.sqlite'),GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'});
+  Object.assign(process.env,{DATABASE_PATH:join(directory,'synthetic.sqlite'),GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'});
   let db;
   try {
     const database=await import('../server/src/db.js');db=database.db;database.migrate();

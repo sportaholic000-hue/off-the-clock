@@ -30,7 +30,7 @@ test('m1 previously stored invalid rate remains visible for correction; fraction
  const supported=convertApplicationBook({services:[{serviceType:'LANDSCAPING_MOWING',pricing:{mowingBaseRatePerSqft:.005}},{serviceType:'CUSTOM',pricing:{unit:'per_sqft',price:.005}}],defaults:{}},'toCents');
  assert.equal(supported.services[0].pricing.mowingBaseRatePerSqft,.5);assert.equal(supported.services[1].pricing.price,.5);
 });
-const env={GEMINI_API_KEY:'SYNTHETIC-TEST-KEY',PRICEBOOK_GEMINI_MODEL:'synthetic-text-model'};
+const env={GEMINI_API_KEY:'SYNTHETIC-TEST-KEY',GEMINI_TEXT_MODEL:'synthetic-text-model'};
 for(const [country,currency,region] of [['CA','CAD','NS'],['US','USD','MA']])test('m2 starter explicitly uses '+currency+' and the saved regional context',async()=>{
  let sent;const values=[{service:'[SYNTHETIC] Mowing',serviceType:'LANDSCAPING_MOWING',fields:{mowingBaseRatePerSqft:.02}}];
  const result=await suggestStarterBook({industry:'[SYNTHETIC]',serviceTypes:['LANDSCAPING_MOWING'],country,region},{env,fetchImpl:async(_url,init)=>{sent=JSON.parse(init.body);return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(values)}]}}]})};}});

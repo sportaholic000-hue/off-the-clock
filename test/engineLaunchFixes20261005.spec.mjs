@@ -210,7 +210,7 @@ test('follow-up normalization retains closed domains, exact structural keys and 
 });
 test('follow-up actual AI response returns the normalized $5 rate and registry-compatible key',async()=>{
   const result=await interpretInterviewAnswer({serviceType:'FLAT_ROOF_REPLACEMENT',field:'laborPerSqft',answer:'[SYNTHETIC] EPDM rubber is five dollars per square foot'},
-    {env:{GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'},fetchImpl:async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"value":{"EPDM rubber":5}}'}]}}]})})});
+    {env:{GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'SYNTHETIC_TEST_ONLY'},fetchImpl:async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"value":{"EPDM rubber":5}}'}]}}]})})});
   assert.deepEqual(result,{epdm_rubber:5});
   assert.deepEqual(Object.keys(result),Object.keys(validateInterviewValue('FLAT_ROOF_REPLACEMENT','knownOfferings',{membraneType:{'EPDM rubber':true}}).membraneType));
 });

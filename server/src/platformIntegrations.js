@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { installTelephonyOperationsSchema } from './telephonyOperationsMigration.js';
+import {geminiTextModel,TextAIConfigurationError} from './geminiTextModel.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json' };
 
@@ -191,13 +192,14 @@ function stripJsonFences(text) {
 }
 
 async function geminiJson({ systemInstruction, userMessage, timeoutMs = 15000 }) {
-  const key = required('GEMINI_API_KEY');
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const model = geminiTextModel();
+  const key = process.env.GEMINI_API_KEY;
+  if(!key)throw new TextAIConfigurationError();
   const response = await fetchWithTimeout(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: 'POST',
-      headers: JSON_HEADERS,
+      headers: {...JSON_HEADERS,'x-goog-api-key':key},
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: systemInstruction }] },
         contents: [{ role: 'user', parts: [{ text: userMessage }] }],

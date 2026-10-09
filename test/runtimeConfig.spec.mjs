@@ -24,6 +24,7 @@ test('production runtime accepts only complete secure base configuration', () =>
     providerWrites: false,
     voiceRuntime: false,
     stripeBilling: false,
+    textAI: {enabled:false,missing:['GEMINI_API_KEY','GEMINI_TEXT_MODEL']},
     corsOrigins: ['https://app.example.com', 'https://widget.example.com']
   });
   for (const [field, value] of [

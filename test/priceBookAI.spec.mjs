@@ -8,7 +8,7 @@ import {suggestStarterBook,interpretInterviewAnswer,validateStarterOutput,valida
 import {applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {customerJobSummary} from '../server/src/quoteIntake.js';
 const mowing = fields => [{service:'[SYNTHETIC] Mowing',serviceType:'LANDSCAPING_MOWING',fields}];
-const env={GEMINI_API_KEY:'SYNTHETIC-TEST-KEY',GEMINI_MODEL:'gemini-3.8-live',PRICEBOOK_GEMINI_MODEL:'gemini-3.8-flash'};
+const env={GEMINI_API_KEY:'SYNTHETIC-TEST-KEY',GEMINI_MODEL:'gemini-3.8-live',GEMINI_TEXT_MODEL:'gemini-3.8-flash'};
 const ok=text=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text}]}}]})});
 const request={industry:'[SYNTHETIC]',serviceTypes:['LANDSCAPING_MOWING'],country:'CA',region:'NS'};
 
@@ -17,8 +17,8 @@ test('price-book generation is independent of the voice setting and never puts t
  assert.equal(result[0].fields.mowingBaseRatePerSqft,.005);assert.equal(calls.length,1);
  assert.match(calls[0].url,/gemini-3.8-flash:generateContent$/);
  assert.ok(!calls[0].url.includes(env.GEMINI_API_KEY));assert.equal(calls[0].init.headers['x-goog-api-key'],env.GEMINI_API_KEY);
- assert.equal(priceBookModel({GEMINI_MODEL:'gemini-3.8-live'}),'gemini-3.5-flash-lite');
- assert.throws(()=>priceBookModel({PRICEBOOK_GEMINI_MODEL:'gemini-3.8-live'}));
+ assert.throws(()=>priceBookModel({GEMINI_MODEL:'gemini-3.8-live'}),{code:'TEXT_AI_UNAVAILABLE'});
+ assert.throws(()=>priceBookModel({GEMINI_TEXT_MODEL:'gemini-3.8-live'}));
 });
 const invalid=[
  ['non JSON','not JSON'],['fenced JSON','\x60\x60\x60json\n[]\n\x60\x60\x60'],

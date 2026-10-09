@@ -1,0 +1,1735 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Text AI unavailable: configure GEMINI_TEXT_MODEL
+# Off The Clock AI server listening on 0
+# [error] AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.
+# [error] AI drafting is unavailable because its text model is not configured. You can enter your business information and prices manually. Contact support@offtheclockai.com for help.
+# [shutdown] requests and workers drained; database closed
+# Subtest: calls audit 3 HTTP: missing text model gives the owner a readable refusal and does not save a draft
+ok 1 - calls audit 3 HTTP: missing text model gives the owner a readable refusal and does not save a draft
+  ---
+  duration_ms: 600.397004
+  type: 'test'
+  ...
+# (node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:20) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+ok 2 - calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+  ---
+  duration_ms: 36.845559
+  type: 'test'
+  ...
+# Subtest: calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+ok 3 - calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+  ---
+  duration_ms: 16.696748
+  type: 'test'
+  ...
+# Subtest: calls audit 1: an ended call without a metering row is recovered through the callback path
+ok 4 - calls audit 1: an ended call without a metering row is recovered through the callback path
+  ---
+  duration_ms: 18.486774
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+ok 5 - calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 17.868813
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+ok 6 - calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 18.054176
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched from=+19025550999 is refused
+ok 7 - calls audit 1: fetched from=+19025550999 is refused
+  ---
+  duration_ms: 16.976058
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched to=+19025550999 is refused
+ok 8 - calls audit 1: fetched to=+19025550999 is refused
+  ---
+  duration_ms: 17.409241
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched direction=outbound-api is refused
+ok 9 - calls audit 1: fetched direction=outbound-api is refused
+  ---
+  duration_ms: 17.21843
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched status=in-progress is refused
+ok 10 - calls audit 1: fetched status=in-progress is refused
+  ---
+  duration_ms: 17.986123
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=1.5 is refused
+ok 11 - calls audit 1: fetched duration=1.5 is refused
+  ---
+  duration_ms: 17.669378
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=null is refused
+ok 12 - calls audit 1: fetched duration=null is refused
+  ---
+  duration_ms: 17.92092
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=-1 is refused
+ok 13 - calls audit 1: fetched duration=-1 is refused
+  ---
+  duration_ms: 16.629009
+  type: 'test'
+  ...
+# Subtest: calls audit 1: recovered failed call remains zero
+ok 14 - calls audit 1: recovered failed call remains zero
+  ---
+  duration_ms: 16.764273
+  type: 'test'
+  ...
+# Subtest: calls audit 1: recovered spam call remains zero
+ok 15 - calls audit 1: recovered spam call remains zero
+  ---
+  duration_ms: 17.498595
+  type: 'test'
+  ...
+# Subtest: calls audit 1: ten-minute boundary, active calls and tenant isolation
+ok 16 - calls audit 1: ten-minute boundary, active calls and tenant isolation
+  ---
+  duration_ms: 20.33544
+  type: 'test'
+  ...
+# Subtest: calls audit 1: retry backoff survives restart and stops at seven days
+ok 17 - calls audit 1: retry backoff survives restart and stops at seven days
+  ---
+  duration_ms: 17.897401
+  type: 'test'
+  ...
+# Subtest: calls audit 1: retry can recover later and simultaneous workers reserve only one read
+ok 18 - calls audit 1: retry can recover later and simultaneous workers reserve only one read
+  ---
+  duration_ms: 17.394675
+  type: 'test'
+  ...
+# Subtest: calls audit 1: scheduled worker ticks and stops without provider writes
+ok 19 - calls audit 1: scheduled worker ticks and stops without provider writes
+  ---
+  duration_ms: 16.731061
+  type: 'test'
+  ...
+# Subtest: calls audit 1: production starts and stops the recovery worker
+ok 20 - calls audit 1: production starts and stops the recovery worker
+  ---
+  duration_ms: 0.409722
+  type: 'test'
+  ...
+# Subtest: calls audit 1: expired recovery remains a pending count after the allowance month ends
+ok 21 - calls audit 1: expired recovery remains a pending count after the allowance month ends
+  ---
+  duration_ms: 18.097963
+  type: 'test'
+  ...
+# (node:28) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:16:
+#       3 │ const API_BASE=(import.meta.env?.VITE_API_URL??(import.meta.env?.DE...
+#         ╵                 ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+#     client/src/api.js:3:48:
+#       3 │ ...t.meta.env?.VITE_API_URL??(import.meta.env?.DEV?'http://localhos...
+#         ╵                               ~~~~~~~~~~~
+#   You need to set the output format to "esm" for "import.meta" to work correctly.
+# Subtest: calls audit 2 render: GEMINI_SESSION_CLOSED
+ok 22 - calls audit 2 render: GEMINI_SESSION_CLOSED
+  ---
+  duration_ms: 155.467075
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: GEMINI_SESSION_ERROR
+ok 23 - calls audit 2 render: GEMINI_SESSION_ERROR
+  ---
+  duration_ms: 13.926794
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: GEMINI_CONNECT_FAILED
+ok 24 - calls audit 2 render: GEMINI_CONNECT_FAILED
+  ---
+  duration_ms: 12.832734
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_MEDIA_FAILURE
+ok 25 - calls audit 2 render: VOICE_MEDIA_FAILURE
+  ---
+  duration_ms: 6.15532
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_SOCKET_CLOSED
+ok 26 - calls audit 2 render: TWILIO_SOCKET_CLOSED
+  ---
+  duration_ms: 6.877575
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_SOCKET_ERROR
+ok 27 - calls audit 2 render: TWILIO_SOCKET_ERROR
+  ---
+  duration_ms: 8.250755
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MEDIA_SOCKET_CLOSED
+ok 28 - calls audit 2 render: MEDIA_SOCKET_CLOSED
+  ---
+  duration_ms: 9.210002
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: SESSION_PERSISTENCE_FAILED
+ok 29 - calls audit 2 render: SESSION_PERSISTENCE_FAILED
+  ---
+  duration_ms: 8.677946
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRANSCRIPT_CALLBACK_FAILED
+ok 30 - calls audit 2 render: TRANSCRIPT_CALLBACK_FAILED
+  ---
+  duration_ms: 14.284742
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: CALL_PERSISTENCE_FAILED
+ok 31 - calls audit 2 render: CALL_PERSISTENCE_FAILED
+  ---
+  duration_ms: 14.363613
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TOOL_CALLBACK_FAILED
+ok 32 - calls audit 2 render: TOOL_CALLBACK_FAILED
+  ---
+  duration_ms: 8.644321
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TOOL_RESPONSE
+ok 33 - calls audit 2 render: INVALID_TOOL_RESPONSE
+  ---
+  duration_ms: 8.622002
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_TOOL_CALL
+ok 34 - calls audit 2 render: INVALID_GEMINI_TOOL_CALL
+  ---
+  duration_ms: 7.582657
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: GEMINI_AUDIO_RATE_LIMIT
+ok 35 - calls audit 2 render: GEMINI_AUDIO_RATE_LIMIT
+  ---
+  duration_ms: 7.520869
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INPUT_AUDIO_BACKPRESSURE_LIMIT
+ok 36 - calls audit 2 render: INPUT_AUDIO_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 7.17271
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: OUTPUT_AUDIO_BACKPRESSURE_LIMIT
+ok 37 - calls audit 2 render: OUTPUT_AUDIO_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 10.785731
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: PENDING_MARK_LIMIT
+ok 38 - calls audit 2 render: PENDING_MARK_LIMIT
+  ---
+  duration_ms: 6.982175
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: SOCKET_BACKPRESSURE_LIMIT
+ok 39 - calls audit 2 render: SOCKET_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 7.092235
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_AUDIO_RATE_LIMIT
+ok 40 - calls audit 2 render: TWILIO_AUDIO_RATE_LIMIT
+  ---
+  duration_ms: 6.670395
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_BACKPRESSURE_LIMIT
+ok 41 - calls audit 2 render: TWILIO_MESSAGE_BACKPRESSURE_LIMIT
+  ---
+  duration_ms: 6.336231
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_RATE_LIMIT
+ok 42 - calls audit 2 render: TWILIO_MESSAGE_RATE_LIMIT
+  ---
+  duration_ms: 6.66544
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_MESSAGE_TOO_LARGE
+ok 43 - calls audit 2 render: TWILIO_MESSAGE_TOO_LARGE
+  ---
+  duration_ms: 7.299147
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: AUDIO_PAYLOAD_TOO_LARGE
+ok 44 - calls audit 2 render: AUDIO_PAYLOAD_TOO_LARGE
+  ---
+  duration_ms: 10.560169
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MULAW_AUDIO_TOO_LARGE
+ok 45 - calls audit 2 render: MULAW_AUDIO_TOO_LARGE
+  ---
+  duration_ms: 6.444442
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: PCM_AUDIO_TOO_LARGE
+ok 46 - calls audit 2 render: PCM_AUDIO_TOO_LARGE
+  ---
+  duration_ms: 6.989201
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_CALL_CONTEXT
+ok 47 - calls audit 2 render: INVALID_CALL_CONTEXT
+  ---
+  duration_ms: 6.217354
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_START_BINDING_MISMATCH
+ok 48 - calls audit 2 render: TWILIO_START_BINDING_MISMATCH
+  ---
+  duration_ms: 5.872534
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_STOP_BINDING_MISMATCH
+ok 49 - calls audit 2 render: TWILIO_STOP_BINDING_MISMATCH
+  ---
+  duration_ms: 4.400843
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_STREAM_SID_MISMATCH
+ok 50 - calls audit 2 render: TWILIO_STREAM_SID_MISMATCH
+  ---
+  duration_ms: 5.680595
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CALL_BINDING_MISMATCH
+ok 51 - calls audit 2 render: VOICE_CALL_BINDING_MISMATCH
+  ---
+  duration_ms: 10.714385
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_RESTART_RECOVERY
+ok 52 - calls audit 2 render: VOICE_RESTART_RECOVERY
+  ---
+  duration_ms: 4.328656
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: APPLICATION_CLOSE
+ok 53 - calls audit 2 render: APPLICATION_CLOSE
+  ---
+  duration_ms: 4.330881
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: SESSION_ENDED_DURING_CONNECT
+ok 54 - calls audit 2 render: SESSION_ENDED_DURING_CONNECT
+  ---
+  duration_ms: 4.374806
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_DISABLED
+ok 55 - calls audit 2 render: VOICE_DISABLED
+  ---
+  duration_ms: 4.67665
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED
+ok 56 - calls audit 2 render: VOICE_RUNTIME_DISABLED
+  ---
+  duration_ms: 4.68568
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_FALLBACK
+ok 57 - calls audit 2 render: VOICE_FALLBACK
+  ---
+  duration_ms: 4.021665
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_SESSION_UNAVAILABLE
+ok 58 - calls audit 2 render: VOICE_SESSION_UNAVAILABLE
+  ---
+  duration_ms: 7.026854
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_ADMISSION_UNAVAILABLE
+ok 59 - calls audit 2 render: VOICE_ADMISSION_UNAVAILABLE
+  ---
+  duration_ms: 4.003947
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_SESSION_NOT_PERSISTED
+ok 60 - calls audit 2 render: VOICE_SESSION_NOT_PERSISTED
+  ---
+  duration_ms: 3.927764
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CIRCUIT_OPEN
+ok 61 - calls audit 2 render: VOICE_CIRCUIT_OPEN
+  ---
+  duration_ms: 3.980011
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CONCURRENCY_LIMIT
+ok 62 - calls audit 2 render: VOICE_CONCURRENCY_LIMIT
+  ---
+  duration_ms: 3.923504
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_PLATFORM_CAPACITY
+ok 63 - calls audit 2 render: VOICE_PLATFORM_CAPACITY
+  ---
+  duration_ms: 4.006302
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_THROTTLED
+ok 64 - calls audit 2 render: VOICE_CALLER_THROTTLED
+  ---
+  duration_ms: 4.558224
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_SPAM_BLOCKED
+ok 65 - calls audit 2 render: VOICE_SPAM_BLOCKED
+  ---
+  duration_ms: 7.125207
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE
+ok 66 - calls audit 2 render: OPERATOR_INELIGIBLE
+  ---
+  duration_ms: 4.055714
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: ACCOUNT_REQUIRED
+ok 67 - calls audit 2 render: ACCOUNT_REQUIRED
+  ---
+  duration_ms: 4.073836
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_PLAN
+ok 68 - calls audit 2 render: INVALID_PLAN
+  ---
+  duration_ms: 3.928558
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_STATUS
+ok 69 - calls audit 2 render: INVALID_STATUS
+  ---
+  duration_ms: 3.853817
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_NOW
+ok 70 - calls audit 2 render: INVALID_NOW
+  ---
+  duration_ms: 3.935797
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRIAL_END_REQUIRED
+ok 71 - calls audit 2 render: TRIAL_END_REQUIRED
+  ---
+  duration_ms: 3.898055
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: PAYMENT_FAILURE_TIME_REQUIRED
+ok 72 - calls audit 2 render: PAYMENT_FAILURE_TIME_REQUIRED
+  ---
+  duration_ms: 10.989587
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: SUSPENDED_OR_CANCELED
+ok 73 - calls audit 2 render: SUSPENDED_OR_CANCELED
+  ---
+  duration_ms: 4.092722
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRIAL_EXPIRED
+ok 74 - calls audit 2 render: TRIAL_EXPIRED
+  ---
+  duration_ms: 4.078277
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: PAYMENT_FAILURE_GRACE_EXPIRED
+ok 75 - calls audit 2 render: PAYMENT_FAILURE_GRACE_EXPIRED
+  ---
+  duration_ms: 4.087682
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRIAL_VOICE_CAP_REACHED
+ok 76 - calls audit 2 render: TRIAL_VOICE_CAP_REACHED
+  ---
+  duration_ms: 4.272611
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED
+ok 77 - calls audit 2 render: VOICE_CAP_REACHED
+  ---
+  duration_ms: 3.806239
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRIAL_USAGE_REQUIRED
+ok 78 - calls audit 2 render: TRIAL_USAGE_REQUIRED
+  ---
+  duration_ms: 4.00642
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE
+ok 79 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE
+  ---
+  duration_ms: 7.512019
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_INVALID
+ok 80 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_INVALID
+  ---
+  duration_ms: 4.017579
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE
+ok 81 - calls audit 2 render: VOICE_CALLER_CHECK_UNAVAILABLE_UNAVAILABLE
+  ---
+  duration_ms: 3.998527
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED_INVALID
+ok 82 - calls audit 2 render: VOICE_RUNTIME_DISABLED_INVALID
+  ---
+  duration_ms: 4.322098
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_RUNTIME_DISABLED_UNAVAILABLE
+ok 83 - calls audit 2 render: VOICE_RUNTIME_DISABLED_UNAVAILABLE
+  ---
+  duration_ms: 3.952399
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE_INVALID
+ok 84 - calls audit 2 render: OPERATOR_INELIGIBLE_INVALID
+  ---
+  duration_ms: 4.241492
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: OPERATOR_INELIGIBLE_UNAVAILABLE
+ok 85 - calls audit 2 render: OPERATOR_INELIGIBLE_UNAVAILABLE
+  ---
+  duration_ms: 3.924548
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED_INVALID
+ok 86 - calls audit 2 render: VOICE_CAP_REACHED_INVALID
+  ---
+  duration_ms: 7.071913
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: VOICE_CAP_REACHED_UNAVAILABLE
+ok 87 - calls audit 2 render: VOICE_CAP_REACHED_UNAVAILABLE
+  ---
+  duration_ms: 4.074964
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: BINARY_TWILIO_MESSAGE_REJECTED
+ok 88 - calls audit 2 render: BINARY_TWILIO_MESSAGE_REJECTED
+  ---
+  duration_ms: 4.016756
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: EMPTY_AUDIO_PAYLOAD
+ok 89 - calls audit 2 render: EMPTY_AUDIO_PAYLOAD
+  ---
+  duration_ms: 3.897888
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: EMPTY_MULAW_AUDIO
+ok 90 - calls audit 2 render: EMPTY_MULAW_AUDIO
+  ---
+  duration_ms: 4.273128
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: EMPTY_PCM_AUDIO
+ok 91 - calls audit 2 render: EMPTY_PCM_AUDIO
+  ---
+  duration_ms: 4.115114
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: GEMINI_SESSION_OPENER_REQUIRED
+ok 92 - calls audit 2 render: GEMINI_SESSION_OPENER_REQUIRED
+  ---
+  duration_ms: 3.508216
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_AUDIO_BASE64
+ok 93 - calls audit 2 render: INVALID_AUDIO_BASE64
+  ---
+  duration_ms: 8.496548
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_AUDIO_LIMIT
+ok 94 - calls audit 2 render: INVALID_AUDIO_LIMIT
+  ---
+  duration_ms: 5.013006
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_AUDIO
+ok 95 - calls audit 2 render: INVALID_GEMINI_AUDIO
+  ---
+  duration_ms: 4.379409
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_AUDIO_FORMAT
+ok 96 - calls audit 2 render: INVALID_GEMINI_AUDIO_FORMAT
+  ---
+  duration_ms: 4.605464
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_SESSION_ADAPTER
+ok 97 - calls audit 2 render: INVALID_GEMINI_SESSION_ADAPTER
+  ---
+  duration_ms: 4.945082
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_GEMINI_TRANSCRIPT
+ok 98 - calls audit 2 render: INVALID_GEMINI_TRANSCRIPT
+  ---
+  duration_ms: 4.349067
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_CLOCK
+ok 99 - calls audit 2 render: INVALID_MEDIA_CLOCK
+  ---
+  duration_ms: 4.605444
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_LIMITS
+ok 100 - calls audit 2 render: INVALID_MEDIA_LIMITS
+  ---
+  duration_ms: 12.75404
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_MEDIA_SOCKET
+ok 101 - calls audit 2 render: INVALID_MEDIA_SOCKET
+  ---
+  duration_ms: 4.014024
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_MULAW_BUFFER
+ok 102 - calls audit 2 render: INVALID_MULAW_BUFFER
+  ---
+  duration_ms: 3.712925
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_MULAW_SAMPLE
+ok 103 - calls audit 2 render: INVALID_MULAW_SAMPLE
+  ---
+  duration_ms: 3.649965
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_PCM_BUFFER
+ok 104 - calls audit 2 render: INVALID_PCM_BUFFER
+  ---
+  duration_ms: 3.517987
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_PCM_SAMPLE
+ok 105 - calls audit 2 render: INVALID_PCM_SAMPLE
+  ---
+  duration_ms: 3.466671
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_PROVIDER_MESSAGE
+ok 106 - calls audit 2 render: INVALID_PROVIDER_MESSAGE
+  ---
+  duration_ms: 3.491228
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_SOCKET_BACKPRESSURE
+ok 107 - calls audit 2 render: INVALID_SOCKET_BACKPRESSURE
+  ---
+  duration_ms: 3.469216
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_CONNECTED_EVENT
+ok 108 - calls audit 2 render: INVALID_TWILIO_CONNECTED_EVENT
+  ---
+  duration_ms: 3.445985
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_CUSTOM_PARAMETERS
+ok 109 - calls audit 2 render: INVALID_TWILIO_CUSTOM_PARAMETERS
+  ---
+  duration_ms: 3.430503
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_JSON
+ok 110 - calls audit 2 render: INVALID_TWILIO_JSON
+  ---
+  duration_ms: 3.948016
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MEDIA_CHUNK
+ok 111 - calls audit 2 render: INVALID_TWILIO_MEDIA_CHUNK
+  ---
+  duration_ms: 3.681804
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MEDIA_TIMESTAMP
+ok 112 - calls audit 2 render: INVALID_TWILIO_MEDIA_TIMESTAMP
+  ---
+  duration_ms: 3.413246
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_MESSAGE
+ok 113 - calls audit 2 render: INVALID_TWILIO_MESSAGE
+  ---
+  duration_ms: 3.987349
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_SEQUENCE
+ok 114 - calls audit 2 render: INVALID_TWILIO_SEQUENCE
+  ---
+  duration_ms: 4.325856
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: INVALID_TWILIO_STREAM_SID
+ok 115 - calls audit 2 render: INVALID_TWILIO_STREAM_SID
+  ---
+  duration_ms: 7.955518
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MARK_BEFORE_ACTIVE_START
+ok 116 - calls audit 2 render: MARK_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.819354
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MEDIA_BEFORE_ACTIVE_START
+ok 117 - calls audit 2 render: MEDIA_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.45068
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MEDIA_CLOCK_REQUIRED
+ok 118 - calls audit 2 render: MEDIA_CLOCK_REQUIRED
+  ---
+  duration_ms: 3.422799
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: MISALIGNED_PCM16_AUDIO
+ok 119 - calls audit 2 render: MISALIGNED_PCM16_AUDIO
+  ---
+  duration_ms: 3.988311
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: NON_CANONICAL_AUDIO_BASE64
+ok 120 - calls audit 2 render: NON_CANONICAL_AUDIO_BASE64
+  ---
+  duration_ms: 3.657666
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: SESSION_END_CALLBACK_INVALID
+ok 121 - calls audit 2 render: SESSION_END_CALLBACK_INVALID
+  ---
+  duration_ms: 3.707863
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: STOP_BEFORE_ACTIVE_START
+ok 122 - calls audit 2 render: STOP_BEFORE_ACTIVE_START
+  ---
+  duration_ms: 3.650381
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TOOL_CALLBACK_REQUIRED
+ok 123 - calls audit 2 render: TOOL_CALLBACK_REQUIRED
+  ---
+  duration_ms: 6.358747
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TRANSCRIPT_CALLBACK_REQUIRED
+ok 124 - calls audit 2 render: TRANSCRIPT_CALLBACK_REQUIRED
+  ---
+  duration_ms: 3.462531
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_MEDIA_ORDER_MISMATCH
+ok 125 - calls audit 2 render: TWILIO_MEDIA_ORDER_MISMATCH
+  ---
+  duration_ms: 3.493002
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: TWILIO_SEQUENCE_MISMATCH
+ok 126 - calls audit 2 render: TWILIO_SEQUENCE_MISMATCH
+  ---
+  duration_ms: 3.88424
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: UNEXPECTED_TWILIO_MEDIA_TRACK
+ok 127 - calls audit 2 render: UNEXPECTED_TWILIO_MEDIA_TRACK
+  ---
+  duration_ms: 3.706192
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: UNEXPECTED_TWILIO_START
+ok 128 - calls audit 2 render: UNEXPECTED_TWILIO_START
+  ---
+  duration_ms: 3.558474
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: UNKNOWN_TWILIO_MARK
+ok 129 - calls audit 2 render: UNKNOWN_TWILIO_MARK
+  ---
+  duration_ms: 3.735023
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: UNSUPPORTED_TWILIO_EVENT
+ok 130 - calls audit 2 render: UNSUPPORTED_TWILIO_EVENT
+  ---
+  duration_ms: 6.601699
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: UNSUPPORTED_TWILIO_MEDIA_FORMAT
+ok 131 - calls audit 2 render: UNSUPPORTED_TWILIO_MEDIA_FORMAT
+  ---
+  duration_ms: 3.743583
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: GOOGLE_LIVE_INSTRUCTION_FAILED
+ok 132 - calls audit 2 render: GOOGLE_LIVE_INSTRUCTION_FAILED
+  ---
+  duration_ms: 3.660843
+  type: 'test'
+  ...
+# Subtest: calls audit 2 render: unknown and absent codes do not invent a cause
+ok 133 - calls audit 2 render: unknown and absent codes do not invent a cause
+  ---
+  duration_ms: 13.869798
+  type: 'test'
+  ...
+# Subtest: calls audit 2 inventory: every bridge and codec code has reviewed wording
+ok 134 - calls audit 2 inventory: every bridge and codec code has reviewed wording
+  ---
+  duration_ms: 0.612251
+  type: 'test'
+  ...
+# Subtest: calls audit 1 render: pending calls remain visible without a current allowance period
+ok 135 - calls audit 1 render: pending calls remain visible without a current allowance period
+  ---
+  duration_ms: 0.552067
+  type: 'test'
+  ...
+# (node:48) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calls audit 3: knowledge draft sends only the explicit text model to generateContent
+ok 136 - calls audit 3: knowledge draft sends only the explicit text model to generateContent
+  ---
+  duration_ms: 3.919966
+  type: 'test'
+  ...
+# Subtest: calls audit 3: knowledge refuses text model undefined without a Google request
+ok 137 - calls audit 3: knowledge refuses text model undefined without a Google request
+  ---
+  duration_ms: 2.149886
+  type: 'test'
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "" without a Google request
+ok 138 - calls audit 3: knowledge refuses text model "" without a Google request
+  ---
+  duration_ms: 0.86343
+  type: 'test'
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "synthetic-live-model" without a Google request
+ok 139 - calls audit 3: knowledge refuses text model "synthetic-live-model" without a Google request
+  ---
+  duration_ms: 0.800876
+  type: 'test'
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "synthetic-audio-model" without a Google request
+ok 140 - calls audit 3: knowledge refuses text model "synthetic-audio-model" without a Google request
+  ---
+  duration_ms: 0.543988
+  type: 'test'
+  ...
+# Subtest: calls audit 3: knowledge refuses text model "bad/model?key=secret" without a Google request
+ok 141 - calls audit 3: knowledge refuses text model "bad/model?key=secret" without a Google request
+  ---
+  duration_ms: 0.475155
+  type: 'test'
+  ...
+# Subtest: calls audit 3: starter uses GEMINI_TEXT_MODEL and refuses missing configuration
+ok 142 - calls audit 3: starter uses GEMINI_TEXT_MODEL and refuses missing configuration
+  ---
+  duration_ms: 124.957787
+  type: 'test'
+  ...
+# Subtest: calls audit 3: interview uses GEMINI_TEXT_MODEL and refuses missing configuration
+ok 143 - calls audit 3: interview uses GEMINI_TEXT_MODEL and refuses missing configuration
+  ---
+  duration_ms: 66.009137
+  type: 'test'
+  ...
+# Subtest: calls audit 3: startup lists missing text configuration and validates a supplied model independently
+ok 144 - calls audit 3: startup lists missing text configuration and validates a supplied model independently
+  ---
+  duration_ms: 0.984877
+  type: 'test'
+  ...
+# Subtest: calls audit 3: literal website import needs no text model or Google request
+ok 145 - calls audit 3: literal website import needs no text model or Google request
+  ---
+  duration_ms: 0.347864
+  type: 'test'
+  ...
+# (node:56) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:56) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+ok 146 - billing repair 1: failed receptionist → owner-forward bills zero including owner leg
+  ---
+  duration_ms: 45.783119
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+ok 147 - billing repair 1: failed receptionist → operator-off-message bills zero including owner leg
+  ---
+  duration_ms: 29.632332
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+ok 148 - billing repair 1: failed receptionist → fallback-forward bills zero including owner leg
+  ---
+  duration_ms: 30.228139
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+ok 149 - billing repair 1: failed receptionist → fallback-capture bills zero including owner leg
+  ---
+  duration_ms: 33.66511
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+ok 150 - billing repair 1: failed receptionist → restart-after-owner bills zero including owner leg
+  ---
+  duration_ms: 31.037587
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+ok 151 - billing repair 1: failed receptionist → receipt-before-owner bills zero including owner leg
+  ---
+  duration_ms: 29.891262
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+ok 152 - billing repair 1: failed receptionist → late-media-close bills zero including owner leg
+  ---
+  duration_ms: 32.612683
+  type: 'test'
+  ...
+# Subtest: billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+ok 153 - billing repair 1: failed receptionist → meter-only-close bills zero including owner leg
+  ---
+  duration_ms: 30.357484
+  type: 'test'
+  ...
+# Subtest: billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+ok 154 - billing repair 2: trial 30 and zero warnings reach email and dashboard once, never 60
+  ---
+  duration_ms: 39.130792
+  type: 'test'
+  ...
+# Subtest: billing repair 2: provisional trial duration cannot send irreversible warning
+ok 155 - billing repair 2: provisional trial duration cannot send irreversible warning
+  ---
+  duration_ms: 26.572731
+  type: 'test'
+  ...
+# Subtest: billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+ok 156 - billing repair 3: monthly crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 87.681377
+  type: 'test'
+  ...
+# Subtest: billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+ok 157 - billing repair 3: annual crosses $25 repeatedly, then charges exact month-end remainder
+  ---
+  duration_ms: 85.115056
+  type: 'test'
+  ...
+# Subtest: billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+ok 158 - billing repair 3: unconfirmed overage waits for the signed duration, then charges $25.20
+  ---
+  duration_ms: 38.141464
+  type: 'test'
+  ...
+# Subtest: billing repair 3: final cancelled month charges the remainder at service end
+ok 159 - billing repair 3: final cancelled month charges the remainder at service end
+  ---
+  duration_ms: 34.29737
+  type: 'test'
+  ...
+# Subtest: billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+ok 160 - billing repair 3: declined invoice blocks another charge across periods and exposes unpaid final amount
+  ---
+  duration_ms: 44.219977
+  type: 'test'
+  ...
+# Subtest: billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+ok 161 - billing repair 3: restart after Stripe accepted an installment never duplicates it or loses the remainder
+  ---
+  duration_ms: 75.745878
+  type: 'test'
+  ...
+# Subtest: billing repair 3: all three customer billing sentences state the threshold and remainder rule
+ok 162 - billing repair 3: all three customer billing sentences state the threshold and remainder rule
+  ---
+  duration_ms: 0.565867
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+ok 163 - billing repair 4: CALL_BACK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 31.419378
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+ok 164 - billing repair 4: CALL_BACK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 23.743175
+  type: 'test'
+  ...
+# Subtest: billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+ok 165 - billing repair 4: CALL_BACK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 21.33343
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+ok 166 - billing repair 4: BOOK rejects impossible 2027-02-30T12:00:00.000Z without saving
+  ---
+  duration_ms: 22.184463
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+ok 167 - billing repair 4: BOOK rejects impossible 2027-02-29T12:00:00Z without saving
+  ---
+  duration_ms: 21.40118
+  type: 'test'
+  ...
+# Subtest: billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+ok 168 - billing repair 4: BOOK rejects impossible 2027-04-31T12:00:00.000Z without saving
+  ---
+  duration_ms: 22.357074
+  type: 'test'
+  ...
+# Subtest: billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+ok 169 - billing repair 3: an unpaid first month blocks a threshold invoice in the next annual allowance month
+  ---
+  duration_ms: 51.840706
+  type: 'test'
+  ...
+# Subtest: billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+ok 170 - billing repair 3: a final declined card creates a truthful unpaid notice after cancellation
+  ---
+  duration_ms: 40.791965
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+ok 171 - billing repair 3: lost invoice receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 45.150191
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+ok 172 - billing repair 3: lost item receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 44.320346
+  type: 'test'
+  ...
+# Subtest: billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+ok 173 - billing repair 3: lost finalize receipt on second installment reconciles despite subsequent usage
+  ---
+  duration_ms: 48.092655
+  type: 'test'
+  ...
+# Subtest: billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+ok 174 - billing repair 3: an active call receipt cannot trigger charging before its AI lifecycle finishes
+  ---
+  duration_ms: 29.72544
+  type: 'test'
+  ...
+# Subtest: billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+ok 175 - billing repair 3: legacy monthly charge migration retains its Stripe identity without another charge
+  ---
+  duration_ms: 55.532336
+  type: 'test'
+  ...
+# Subtest: billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+ok 176 - billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy
+  ---
+  duration_ms: 397.082209
+  type: 'test'
+  ...
+# Subtest: billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+ok 177 - billing repair 4: valid future 2028-02-29T12:00:00.000Z is preserved
+  ---
+  duration_ms: 23.652456
+  type: 'test'
+  ...
+# Subtest: billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+ok 178 - billing repair 4: valid future 2027-03-02T12:00:00Z is preserved
+  ---
+  duration_ms: 22.024374
+  type: 'test'
+  ...
+# Subtest: billing repair 2: extending the same trial does not reset warning identities
+ok 179 - billing repair 2: extending the same trial does not reset warning identities
+  ---
+  duration_ms: 35.140122
+  type: 'test'
+  ...
+# Subtest: billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+ok 180 - billing repair 3: blocked final remainder survives retention and reconciles once after the unpaid invoice settles
+  ---
+  duration_ms: 42.008831
+  type: 'test'
+  ...
+# Subtest: billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+ok 181 - billing repair 3: confirmed threshold charges immediately while an unrelated duration remains provisional
+  ---
+  duration_ms: 36.180064
+  type: 'test'
+  ...
+# (node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:78) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: Operator 300 metered minutes: 0 cents, upgrade saving 0 cents
+ok 182 - Operator 300 metered minutes: 0 cents, upgrade saving 0 cents
+  ---
+  duration_ms: 54.818261
+  type: 'test'
+  ...
+# Subtest: Operator 301 metered minutes: 35 cents, upgrade saving 0 cents
+ok 183 - Operator 301 metered minutes: 35 cents, upgrade saving 0 cents
+  ---
+  duration_ms: 38.621945
+  type: 'test'
+  ...
+# Subtest: QuoteDone 1200 metered minutes: 0 cents, upgrade saving 0 cents
+ok 184 - QuoteDone 1200 metered minutes: 0 cents, upgrade saving 0 cents
+  ---
+  duration_ms: 33.29952
+  type: 'test'
+  ...
+# Subtest: QuoteDone 1201 metered minutes: 35 cents, upgrade saving 0 cents
+ok 185 - QuoteDone 1201 metered minutes: 35 cents, upgrade saving 0 cents
+  ---
+  duration_ms: 37.221525
+  type: 'test'
+  ...
+# Subtest: Operator 757 metered minutes: 15995 cents, upgrade saving 0 cents
+ok 186 - Operator 757 metered minutes: 15995 cents, upgrade saving 0 cents
+  ---
+  duration_ms: 35.625058
+  type: 'test'
+  ...
+# Subtest: Operator 758 metered minutes: 16030 cents, upgrade saving 30 cents
+ok 187 - Operator 758 metered minutes: 16030 cents, upgrade saving 30 cents
+  ---
+  duration_ms: 56.310721
+  type: 'test'
+  ...
+# Subtest: Operator 1200 metered minutes: 31500 cents, upgrade saving 15500 cents
+ok 188 - Operator 1200 metered minutes: 31500 cents, upgrade saving 15500 cents
+  ---
+  duration_ms: 38.752384
+  type: 'test'
+  ...
+# Subtest: Operator 1201 metered minutes: 31535 cents, upgrade saving 15500 cents
+ok 189 - Operator 1201 metered minutes: 31535 cents, upgrade saving 15500 cents
+  ---
+  duration_ms: 38.663478
+  type: 'test'
+  ...
+# Subtest: F10 per-call rounding is retained: two 31-second calls over allowance cost $0.70
+ok 190 - F10 per-call rounding is retained: two 31-second calls over allowance cost $0.70
+  ---
+  duration_ms: 42.414183
+  type: 'test'
+  ...
+# Subtest: unconfirmed duration cannot charge; provider 61 seconds replaces local 59 seconds: $0.70
+ok 191 - unconfirmed duration cannot charge; provider 61 seconds replaces local 59 seconds: $0.70
+  ---
+  duration_ms: 43.344563
+  type: 'test'
+  ...
+# Subtest: Operator warnings fire at 60, 30 and zero left exactly once under worker retries
+ok 192 - Operator warnings fire at 60, 30 and zero left exactly once under worker retries
+  ---
+  duration_ms: 55.564232
+  type: 'test'
+  ...
+# Subtest: QuoteDone warnings fire at 60, 30 and zero left exactly once under worker retries
+ok 193 - QuoteDone warnings fire at 60, 30 and zero left exactly once under worker retries
+  ---
+  duration_ms: 49.627157
+  type: 'test'
+  ...
+# Subtest: one call crossing all thresholds queues each warning once, no automatic upgrade or pack purchase
+ok 194 - one call crossing all thresholds queues each warning once, no automatic upgrade or pack purchase
+  ---
+  duration_ms: 35.457871
+  type: 'test'
+  ...
+# Subtest: monthly rollover resets allowance, nudge and warning identities while preserving previous usage
+ok 195 - monthly rollover resets allowance, nudge and warning identities while preserving previous usage
+  ---
+  duration_ms: 43.569229
+  type: 'test'
+  ...
+# Subtest: Operator annual upfront term receives monthly resets and monthly overage invoices
+ok 196 - Operator annual upfront term receives monthly resets and monthly overage invoices
+  ---
+  duration_ms: 57.046297
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual upfront term receives monthly resets and monthly overage invoices
+ok 197 - QuoteDone annual upfront term receives monthly resets and monthly overage invoices
+  ---
+  duration_ms: 54.267006
+  type: 'test'
+  ...
+# Subtest: monthly anniversary restores the original day after February and leap-year clamping
+ok 198 - monthly anniversary restores the original day after February and leap-year clamping
+  ---
+  duration_ms: 0.358344
+  type: 'test'
+  ...
+# Subtest: trial is free even with overrun; paid annual term and monthly resets start at trial end
+ok 199 - trial is free even with overrun; paid annual term and monthly resets start at trial end
+  ---
+  duration_ms: 36.797022
+  type: 'test'
+  ...
+# Subtest: cancelled prepaid annual plans keep access until paid-year end, with no partial refund operation
+ok 200 - cancelled prepaid annual plans keep access until paid-year end, with no partial refund operation
+  ---
+  duration_ms: 32.879352
+  type: 'test'
+  ...
+# Subtest: trial cancellation and unpaid or partially paid annual invoices never grant a prepaid year
+ok 201 - trial cancellation and unpaid or partially paid annual invoices never grant a prepaid year
+  ---
+  duration_ms: 27.796851
+  type: 'test'
+  ...
+# Subtest: invoice-before-subscription ordering retains the same fully paid annual entitlement
+ok 202 - invoice-before-subscription ordering retains the same fully paid annual entitlement
+  ---
+  duration_ms: 26.966287
+  type: 'test'
+  ...
+# Subtest: Operator monthly checkout has card collection and a 14-day trial, no signup charge
+ok 203 - Operator monthly checkout has card collection and a 14-day trial, no signup charge
+  ---
+  duration_ms: 96.564907
+  type: 'test'
+  ...
+# Subtest: Operator annual checkout has card collection and a 14-day trial, no signup charge
+ok 204 - Operator annual checkout has card collection and a 14-day trial, no signup charge
+  ---
+  duration_ms: 35.076565
+  type: 'test'
+  ...
+# Subtest: QuoteDone monthly checkout has card collection and a 14-day trial, no signup charge
+ok 205 - QuoteDone monthly checkout has card collection and a 14-day trial, no signup charge
+  ---
+  duration_ms: 29.775238
+  type: 'test'
+  ...
+# Subtest: QuoteDone annual checkout has card collection and a 14-day trial, no signup charge
+ok 206 - QuoteDone annual checkout has card collection and a 14-day trial, no signup charge
+  ---
+  duration_ms: 28.643042
+  type: 'test'
+  ...
+# Subtest: spam and AI fallback never create overage or minute warnings
+ok 207 - spam and AI fallback never create overage or minute warnings
+  ---
+  duration_ms: 30.865834
+  type: 'test'
+  ...
+# Subtest: two tenants have isolated usage, warning recipients and payment identities
+ok 208 - two tenants have isolated usage, warning recipients and payment identities
+  ---
+  duration_ms: 44.149944
+  type: 'test'
+  ...
+# Subtest: payment invoice before failure stays pending then reconciles exactly one $0.35 charge
+ok 209 - payment invoice before failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 34.710286
+  type: 'test'
+  ...
+# Subtest: payment invoice after failure stays pending then reconciles exactly one $0.35 charge
+ok 210 - payment invoice after failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 32.28128
+  type: 'test'
+  ...
+# Subtest: payment item before failure stays pending then reconciles exactly one $0.35 charge
+ok 211 - payment item before failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 31.784947
+  type: 'test'
+  ...
+# Subtest: payment item after failure stays pending then reconciles exactly one $0.35 charge
+ok 212 - payment item after failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 34.630757
+  type: 'test'
+  ...
+# Subtest: payment finalize before failure stays pending then reconciles exactly one $0.35 charge
+ok 213 - payment finalize before failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 34.585164
+  type: 'test'
+  ...
+# Subtest: payment finalize after failure stays pending then reconciles exactly one $0.35 charge
+ok 214 - payment finalize after failure stays pending then reconciles exactly one $0.35 charge
+  ---
+  duration_ms: 31.757245
+  type: 'test'
+  ...
+# Subtest: old ambiguous provider operation is read-reconciled, never blindly recreated after idempotency expiry
+ok 215 - old ambiguous provider operation is read-reconciled, never blindly recreated after idempotency expiry
+  ---
+  duration_ms: 34.18774
+  type: 'test'
+  ...
+# Subtest: old uncertain operation with no provider receipt remains visible and does not risk a second charge
+ok 216 - old uncertain operation with no provider receipt remains visible and does not risk a second charge
+  ---
+  duration_ms: 31.267789
+  type: 'test'
+  ...
+# Subtest: concurrent payment workers hold one durable owner lease and create one invoice
+ok 217 - concurrent payment workers hold one durable owner lease and create one invoice
+  ---
+  duration_ms: 36.267913
+  type: 'test'
+  ...
+# Subtest: email acceptance response loss retries the same identity and payload without duplicate delivery
+ok 218 - email acceptance response loss retries the same identity and payload without duplicate delivery
+  ---
+  duration_ms: 31.221446
+  type: 'test'
+  ...
+# Subtest: email retry after idempotency expiry is visibly held instead of duplicating an uncertain send
+ok 219 - email retry after idempotency expiry is visibly held instead of duplicating an uncertain send
+  ---
+  duration_ms: 30.664448
+  type: 'test'
+  ...
+# Subtest: provider switch disables all payment and email writes while preserving visible usage and pending work
+ok 220 - provider switch disables all payment and email writes while preserving visible usage and pending work
+  ---
+  duration_ms: 30.125764
+  type: 'test'
+  ...
+# Subtest: billing amounts reject malformed and unsafe numeric inputs
+ok 221 - billing amounts reject malformed and unsafe numeric inputs
+  ---
+  duration_ms: 0.540564
+  type: 'test'
+  ...
+# Subtest: independent processes racing warning creation retain one durable event per threshold
+ok 222 - independent processes racing warning creation retain one durable event per threshold
+  ---
+  duration_ms: 145.108908
+  type: 'test'
+  ...
+# Subtest: restart retains frozen charge, warnings and provider receipts
+ok 223 - restart retains frozen charge, warnings and provider receipts
+  ---
+  duration_ms: 71.554928
+  type: 'test'
+  ...
+# (node:110) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: price-book generation is independent of the voice setting and never puts the key in its URL
+ok 224 - price-book generation is independent of the voice setting and never puts the key in its URL
+  ---
+  duration_ms: 47.387345
+  type: 'test'
+  ...
+# Subtest: starter rejects non JSON without silently dropping input
+ok 225 - starter rejects non JSON without silently dropping input
+  ---
+  duration_ms: 14.282595
+  type: 'test'
+  ...
+# Subtest: starter rejects fenced JSON without silently dropping input
+ok 226 - starter rejects fenced JSON without silently dropping input
+  ---
+  duration_ms: 13.002802
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown service without silently dropping input
+ok 227 - starter rejects unknown service without silently dropping input
+  ---
+  duration_ms: 12.621766
+  type: 'test'
+  ...
+# Subtest: starter rejects unknown field without silently dropping input
+ok 228 - starter rejects unknown field without silently dropping input
+  ---
+  duration_ms: 24.482928
+  type: 'test'
+  ...
+# Subtest: starter rejects negative field without silently dropping input
+ok 229 - starter rejects negative field without silently dropping input
+  ---
+  duration_ms: 66.253627
+  type: 'test'
+  ...
+# Subtest: starter rejects absurd value without silently dropping input
+ok 230 - starter rejects absurd value without silently dropping input
+  ---
+  duration_ms: 46.519078
+  type: 'test'
+  ...
+# Subtest: starter rejects out of domain key without silently dropping input
+ok 231 - starter rejects out of domain key without silently dropping input
+  ---
+  duration_ms: 39.591237
+  type: 'test'
+  ...
+# Subtest: starter rejects extra root field without silently dropping input
+ok 232 - starter rejects extra root field without silently dropping input
+  ---
+  duration_ms: 10.542506
+  type: 'test'
+  ...
+# Subtest: starter rejects extra confirmation without silently dropping input
+ok 233 - starter rejects extra confirmation without silently dropping input
+  ---
+  duration_ms: 10.101659
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate service without silently dropping input
+ok 234 - starter rejects duplicate service without silently dropping input
+  ---
+  duration_ms: 10.073358
+  type: 'test'
+  ...
+# Subtest: starter rejects numeric string without silently dropping input
+ok 235 - starter rejects numeric string without silently dropping input
+  ---
+  duration_ms: 38.920429
+  type: 'test'
+  ...
+# Subtest: starter rejects duplicate JSON key without silently dropping input
+ok 236 - starter rejects duplicate JSON key without silently dropping input
+  ---
+  duration_ms: 10.315917
+  type: 'test'
+  ...
+# Subtest: starter rejects decimal drift without silently dropping input
+ok 237 - starter rejects decimal drift without silently dropping input
+  ---
+  duration_ms: 10.591772
+  type: 'test'
+  ...
+# Subtest: starter rejects missing service without silently dropping input
+ok 238 - starter rejects missing service without silently dropping input
+  ---
+  duration_ms: 9.737255
+  type: 'test'
+  ...
+# Subtest: starter preserves subcent rates and exact nested domain values
+ok 239 - starter preserves subcent rates and exact nested domain values
+  ---
+  duration_ms: 31.94387
+  type: 'test'
+  ...
+# Subtest: starter catalog only proposes supported current fields; new roof maps are not scalar rates
+ok 240 - starter catalog only proposes supported current fields; new roof maps are not scalar rates
+  ---
+  duration_ms: 101.301995
+  type: 'test'
+  ...
+# Subtest: interview extracts only one unconfirmed value despite instructions in free text
+ok 241 - interview extracts only one unconfirmed value despite instructions in free text
+  ---
+  duration_ms: 18.56095
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+ok 242 - interview rejects invalid or privileged output {"value":0.01,"confirmed":true}
+  ---
+  duration_ms: 9.545647
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":-1}
+ok 243 - interview rejects invalid or privileged output {"value":-1}
+  ---
+  duration_ms: 27.114399
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":1e100}
+ok 244 - interview rejects invalid or privileged output {"value":1e100}
+  ---
+  duration_ms: 27.461467
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":"0.01"}
+ok 245 - interview rejects invalid or privileged output {"value":"0.01"}
+  ---
+  duration_ms: 26.655839
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":null}
+ok 246 - interview rejects invalid or privileged output {"value":null}
+  ---
+  duration_ms: 9.318133
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"active":true}
+ok 247 - interview rejects invalid or privileged output {"active":true}
+  ---
+  duration_ms: 9.028513
+  type: 'test'
+  ...
+# Subtest: interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+ok 248 - interview rejects invalid or privileged output {"value":{"weekly":1,"wrong":2}}
+  ---
+  duration_ms: 25.957173
+  type: 'test'
+  ...
+# Subtest: slow response body is bounded and manual-path error exposes no provider details
+ok 249 - slow response body is bounded and manual-path error exposes no provider details
+  ---
+  duration_ms: 24.593363
+  type: 'test'
+  ...
+# Subtest: provider error containing a secret is never propagated
+ok 250 - provider error containing a secret is never propagated
+  ---
+  duration_ms: 17.980479
+  type: 'test'
+  ...
+# Subtest: interview rejects out-of-domain and unknown keys before draft persistence
+ok 251 - interview rejects out-of-domain and unknown keys before draft persistence
+  ---
+  duration_ms: 46.766325
+  type: 'test'
+  ...
+# Subtest: widget summary uses customer words and preserves original measurements
+ok 252 - widget summary uses customer words and preserves original measurements
+  ---
+  duration_ms: 4.892139
+  type: 'test'
+  ...
+# Subtest: every catalog enum is displayed using customer words rather than snake case
+ok 253 - every catalog enum is displayed using customer words rather than snake case
+  ---
+  duration_ms: 6.683173
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+ok 254 - current starter schema accepts supported draft fields for ROOFING_REPLACEMENT
+  ---
+  duration_ms: 63.020701
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for ROOFING_REPAIR
+ok 255 - current starter schema accepts supported draft fields for ROOFING_REPAIR
+  ---
+  duration_ms: 35.973002
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+ok 256 - current starter schema accepts supported draft fields for FLAT_ROOF_REPLACEMENT
+  ---
+  duration_ms: 27.570597
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+ok 257 - current starter schema accepts supported draft fields for FLAT_ROOF_REPAIR
+  ---
+  duration_ms: 44.935173
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for INTERIOR_PAINTING
+ok 258 - current starter schema accepts supported draft fields for INTERIOR_PAINTING
+  ---
+  duration_ms: 73.24829
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+ok 259 - current starter schema accepts supported draft fields for EXTERIOR_PAINTING
+  ---
+  duration_ms: 18.435949
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_INSTALL
+ok 260 - current starter schema accepts supported draft fields for FLOORING_INSTALL
+  ---
+  duration_ms: 52.991931
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+ok 261 - current starter schema accepts supported draft fields for FLOORING_REPLACEMENT
+  ---
+  duration_ms: 60.56435
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_INSTALL
+ok 262 - current starter schema accepts supported draft fields for FENCING_INSTALL
+  ---
+  duration_ms: 18.410778
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+ok 263 - current starter schema accepts supported draft fields for FENCING_REPLACEMENT
+  ---
+  duration_ms: 17.907639
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+ok 264 - current starter schema accepts supported draft fields for SIDING_REPLACEMENT
+  ---
+  duration_ms: 51.649471
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for SIDING_REPAIR
+ok 265 - current starter schema accepts supported draft fields for SIDING_REPAIR
+  ---
+  duration_ms: 37.060809
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+ok 266 - current starter schema accepts supported draft fields for CONCRETE_DRIVEWAY
+  ---
+  duration_ms: 86.503367
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+ok 267 - current starter schema accepts supported draft fields for CONCRETE_PATIO_SLAB
+  ---
+  duration_ms: 86.592128
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+ok 268 - current starter schema accepts supported draft fields for LANDSCAPING_CLEANUP
+  ---
+  duration_ms: 43.404858
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+ok 269 - current starter schema accepts supported draft fields for LANDSCAPING_MULCH
+  ---
+  duration_ms: 43.688609
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_SOD
+ok 270 - current starter schema accepts supported draft fields for LANDSCAPING_SOD
+  ---
+  duration_ms: 43.849676
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+ok 271 - current starter schema accepts supported draft fields for LANDSCAPING_PLANTING
+  ---
+  duration_ms: 52.673341
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+ok 272 - current starter schema accepts supported draft fields for LANDSCAPING_MOWING
+  ---
+  duration_ms: 60.954365
+  type: 'test'
+  ...
+# Subtest: current starter schema accepts supported draft fields for CUSTOM
+ok 273 - current starter schema accepts supported draft fields for CUSTOM
+  ---
+  duration_ms: 34.42124
+  type: 'test'
+  ...
+# (node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Off The Clock AI server listening on 0
+# [error] That answer does not identify a clear value. State the value or enter it manually. No prices were changed.
+# [error] This interview draft changed. Review the newest saved answers before trying again.
+# [error] This interview draft changed. Review the newest saved answers before trying again.
+# [shutdown] requests and workers drained; database closed
+# Subtest: ambiguous AI answer returns clarification over HTTP without changing the saved draft
+ok 274 - ambiguous AI answer returns clarification over HTTP without changing the saved draft
+  ---
+  duration_ms: 967.903124
+  type: 'test'
+  ...
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: interview stores normalized maps through manual and actual assist paths without losing confirmation
+ok 275 - interview stores normalized maps through manual and actual assist paths without losing confirmation
+  ---
+  duration_ms: 374.443468
+  type: 'test'
+  ...
+# (node:134) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production runtime accepts only complete secure base configuration
+ok 276 - production runtime accepts only complete secure base configuration
+  ---
+  duration_ms: 3.321987
+  type: 'test'
+  ...
+# Subtest: enabled Stripe billing must have one complete validated configuration
+ok 277 - enabled Stripe billing must have one complete validated configuration
+  ---
+  duration_ms: 1.272219
+  type: 'test'
+  ...
+# Subtest: configured URLs are exact origins and local HTTP is development-only
+ok 278 - configured URLs are exact origins and local HTTP is development-only
+  ---
+  duration_ms: 0.339582
+  type: 'test'
+  ...
+# Subtest: provider REST writes require well-formed Twilio API-key credentials
+ok 279 - provider REST writes require well-formed Twilio API-key credentials
+  ---
+  duration_ms: 0.740961
+  type: 'test'
+  ...
+# Subtest: voice runtime has a separate inbound-signature credential gate
+ok 280 - voice runtime has a separate inbound-signature credential gate
+  ---
+  duration_ms: 0.862942
+  type: 'test'
+  ...
+1..280
+# tests 280
+# suites 0
+# pass 280
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10513.019191

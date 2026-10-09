@@ -74,6 +74,11 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       if(data.unconfirmedCalls){data.savingsCents=0;data.upgradeMessage=null;}
     }
     data??={status:'UNAVAILABLE',plan:owner.plan,minutesUsed:null,minutesLeft:null,includedMinutes:MINUTE_PLANS[owner.plan]?.included??null,overageCents:null,upgradeMessage:null,message:'Minute usage is waiting for verified billing-period information.'};
+    // Unconfirmed calls remain visible after their allowance month or trial ends.
+    data.unconfirmedCalls=query(`SELECT c.status,c.minutesBilled,v.completedAt,v.providerDigest,v.providerDurationSeconds
+      FROM calls c LEFT JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
+      WHERE c.ownerId=? AND COALESCE(c.spamFiltered,0)=0 AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK')
+      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')`).all(ownerId).filter(row=>!hasConfirmedVoiceMinutes(row)).length;
     data.annualPaidThroughAt=owner.annualPaidThroughAt||null;
     data.warnings=period?query(`SELECT a.id,a.threshold,a.message,a.createdAt,e.status emailStatus FROM ${period.kind==='trial'?'billingTrialMinuteAlerts':'billingMinuteAlerts'} a
       LEFT JOIN ownerEmailDeliveries e ON e.ownerId=a.ownerId AND e.id=a.id WHERE a.ownerId=? AND a.periodId=? ORDER BY a.threshold DESC`).all(ownerId,period.id):[];

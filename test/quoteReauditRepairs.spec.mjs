@@ -144,7 +144,7 @@ test('R02 configured gate inclusion keeps camel-case contract keys and sell-pric
 test('R05/R06 starter prompt uses current planting keys and typed cleanup leaves',async()=>{
  const types=['LANDSCAPING_PLANTING','LANDSCAPING_CLEANUP'];let prompt;
  const output=[{service:'[SYNTHETIC] Planting',serviceType:types[0],fields:{plantingLaborPerPlant:{small:10,medium:20,large:30}}},{service:'[SYNTHETIC] Cleanup',serviceType:types[1],fields:{debrisPricing:debris}}];
- const result=await suggestStarterBook({industry:'[SYNTHETIC]',serviceTypes:types,country:'CA',region:'NS'},{env:{GEMINI_API_KEY:'[SYNTHETIC]'},fetchImpl:async(url,options)=>{const body=JSON.parse(options.body);prompt=JSON.parse(body.contents[0].parts[0].text);return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(output)}]}}]})};}});
+ const result=await suggestStarterBook({industry:'[SYNTHETIC]',serviceTypes:types,country:'CA',region:'NS'},{env:{GEMINI_TEXT_MODEL:'synthetic-text-model',GEMINI_API_KEY:'[SYNTHETIC]'},fetchImpl:async(url,options)=>{const body=JSON.parse(options.body);prompt=JSON.parse(body.contents[0].parts[0].text);return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(output)}]}}]})};}});
  assert.equal(result.length,2);const planting=prompt.catalog[0].shape.fields.plantingLaborPerPlant,cleanup=prompt.catalog[1].shape.fields.debrisPricing;
  assert.deepEqual(Object.keys(planting),['small','medium','large']);assert.match(cleanup.light.disposalFlat,/whole-cent/);assert.equal(cleanup.light.laborMultiplier,'positive number');
  assert.ok(starterFields(types[1]).some(d=>d.field==='debrisPricing'));

@@ -67,10 +67,10 @@ export function createBillingVoiceUsage({database:db,ownerQuery,clock=()=>new Da
     });onUsage(context.ownerId);return result;},
     // Called only after official SDK signature/account validation. A current
     // phone-number lookup cannot reassign historic calls to another tenant.
-    providerComplete(params){let ownerId;const result=transaction(db,()=>{
+    providerComplete(params,{ownerId:expectedOwnerId}={}){let ownerId;const result=transaction(db,()=>{
       if(!terminal.has(params.CallStatus)||!/^CA[0-9a-f]{32}$/i.test(params.CallSid||'')||!/^\d+$/.test(params.CallDuration||''))throw Error('Invalid completed-call receipt.');
       const seconds=Number(params.CallDuration);if(!Number.isSafeInteger(seconds))throw Error('Invalid call duration.');
-      const binding=db.prepare('SELECT ownerId,id FROM calls WHERE accountSid=? AND callSid=?').get(params.AccountSid,params.CallSid);
+      const binding=expectedOwnerId?query('SELECT ownerId,id FROM calls WHERE ownerId=? AND accountSid=? AND callSid=?').get(expectedOwnerId,params.AccountSid,params.CallSid):db.prepare('SELECT ownerId,id FROM calls WHERE accountSid=? AND callSid=?').get(params.AccountSid,params.CallSid);
       const row=binding?get(binding.ownerId,binding.id):null;
       if(!row||row.callerNumber!==params.From||row.destinationNumber!==params.To||params.Direction&&params.Direction!=='inbound')throw Error('Completed call binding mismatch.');
       ownerId=row.ownerId;

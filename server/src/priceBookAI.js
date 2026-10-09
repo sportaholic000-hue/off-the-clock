@@ -3,6 +3,7 @@ import {applicationMetadata, quoteDoneMoneyKind} from './quoteDoneBridge.js';
 import {parseOwnerNumericInput} from '../priceBookMoney.js';
 import {validatePriceBookTree} from '../priceBookTree.js';
 import {verifyExactJson} from './exactJson.js';
+import {geminiTextModel,TextAIConfigurationError} from './geminiTextModel.js';
 
 export class PriceBookAIError extends Error {
   constructor(reason='generation') {
@@ -104,15 +105,12 @@ export function validateStarterOutput(raw, requested) {
   });
 }
 export function priceBookModel(env = process.env) {
-  const model = env.PRICEBOOK_GEMINI_MODEL || 'gemini-3.5-flash-lite';
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(model) || /live|audio|tts|embedding|image/i.test(model)) throw new Error('Price-book AI requires a text generation model.');
-  return model;
+  return geminiTextModel(env);
 }
 async function generateDraft(systemInstruction, data, validate, {env=process.env,fetchImpl=globalThis.fetch,timeoutMs=15000} = {}) {
   // The key is sent only in the provider header, never a URL, response or error.
   let model;
-  try { model=priceBookModel(env); if (!env.GEMINI_API_KEY) throw new Error(); }
-  catch { throw new PriceBookAIError('configuration'); }
+  model=priceBookModel(env); if (!env.GEMINI_API_KEY) throw new TextAIConfigurationError();
   for (let attempt=0; attempt<2; attempt++) {
     const controller=new AbortController();
     let timer;

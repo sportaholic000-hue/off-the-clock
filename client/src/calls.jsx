@@ -1,3 +1,4 @@
+import {callFailureReason} from './callFailureReasons.js';
 import {callTime} from './callTime.js';
 import {DeliveryActions} from './deliveryActions.jsx';
 import {OwnerAlerts} from './ownerAlerts.jsx';
@@ -68,7 +69,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
       <dt>Outcome</dt><dd>{text(call.outcome)}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
       <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Transport outcome</dt><dd>{text(call.transportOutcome)}</dd>
       <dt>Call provider ID</dt><dd>{text(call.callSid)}</dd><dt>Stream ID</dt><dd>{text(call.streamSid)}</dd><dt>Destination number</dt><dd>{text(call.destinationNumber)}</dd>
-      <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{call.failureCode}</dd></>}
+      <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{callFailureReason(call.failureCode)}</dd><dt>Technical detail</dt><dd>{call.failureCode}</dd></>}
       {!!call.spamFiltered&&<><dt>Spam</dt><dd>Filtered</dd></>}</dl>
     <h3>Summary</h3><p>{call.summaryText||'No summary recorded.'}</p>
     <Button variant="secondary" disabled={!call.transcript.length} onClick={()=>downloadTranscript(call)}>Download transcript</Button>
