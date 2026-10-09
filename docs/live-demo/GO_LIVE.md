@@ -1,6 +1,6 @@
 # Website live voice demo — go-live checklist
 
-Branch `claude/live-demo`. Status as of 2026-10-01.
+Historical live-demo evidence below is from branch `claude/live-demo`, 2026-10-01. Configuration was rechecked against `be473b6542c498a6e96b056b5be2c3d59d9e4055` on 2026-10-09 using source and synthetic checks only; no provider or deployment acceptance was rerun.
 
 ## How it works
 
@@ -9,7 +9,7 @@ Branch `claude/live-demo`. Status as of 2026-10-01.
 3. The server mints a single-use Gemini Live token. Model, voice and instructions are locked in the token (`bidiGenerateContentSetup`). The API key never leaves the server.
 4. The browser talks to Gemini directly with that token. No audio is stored anywhere.
 
-## Verified
+## Historical verification (2026-10-01)
 
 | What | How it was verified |
 |---|---|
@@ -21,9 +21,9 @@ Branch `claude/live-demo`. Status as of 2026-10-01.
 | Time cap: closing line spoken, session ends | E2E run 36880070372 (45 s test cap) |
 | Layout at 375, 768 and 1280 px; widget adds no horizontal overflow | Local browser checks |
 
-## Claims the agent makes — must be true on launch day
+## Historical launch gaps (2026-10-01)
 
-The demo instructions list the locked product-rule features. Each one must work in production before the demo goes public, or be removed from `server/src/demo/demoInstructions.js`. Status from code search on 2026-10-01:
+The table below preserves the earlier audit record; it is not a description of the current release. Current source mounts the phone runtime (`server/src/server.js:512`) and its shutdown boundary (`server/src/voice/productionVoiceRuntime.js:175`). Current demo instructions prohibit texting and a money-back promise (`server/src/demo/demoInstructions.js:32,39,44`). Those older claims below must not be reused. Source presence is not live acceptance: verify every current product claim before making the demo public. Historical code-search results from 2026-10-01:
 
 | Claim | Status |
 |---|---|
@@ -44,17 +44,24 @@ The demo instructions list the locked product-rule features. Each one must work 
 
 ## Deploy settings (app server)
 
+This is the demo-specific supplement, not a complete application template. Apply the [full production environment inventory](../RAILWAY_SETUP.md#production-environment-inventory-2026-10-09) and [Railway template](../../deployment/railway.env.example) first. Configuration is captured when routes are installed; restart the process after changing it. Turning the demo off stops new tokens after restart, but does not revoke already minted tokens.
+
+The three model settings serve different endpoints: `GEMINI_LIVE_MODEL` is for this browser demo; `GEMINI_MODEL` is the explicit phone Live model; `GEMINI_TEXT_MODEL` is the separate text generation model for knowledge and price-book drafts. The text model has **no default**. Missing text configuration disables drafting with the existing unavailable message; an invalid nonempty text-model name rejects startup. It is not required to mint demo tokens. All three use `GEMINI_API_KEY`.
+
 | Variable | Value |
 |---|---|
-| `DEMO_ENABLED` | `true` to turn on; `false` turns it off instantly |
+| `DEMO_ENABLED` | `true` to turn on; `false` to stop new sessions after process restart (default `false`) |
 | `GEMINI_API_KEY` | production key, server only |
 | `GEMINI_LIVE_MODEL` | `gemini-3.8-live` (default) |
 | `DEMO_ALLOWED_ORIGINS` | the homepage origin(s), e.g. `https://www.offtheclockai.com,https://offtheclockai.com` |
-| `DEMO_TRUSTED_PROXY_HOPS` | number of proxies in front of the app that add `X-Forwarded-For` (Railway: to be confirmed). With `0`, every visitor behind the proxy shares one hourly allowance |
-| `DEMO_SESSIONS_PER_IP_PER_HOUR` | `2` |
-| `DEMO_MAX_CONCURRENT` | `10` |
-| `DEMO_DAILY_SESSION_CAP` | `200` (cost ceiling: at most this many sessions, each hard-capped by Google at 3:30) |
-| `DEMO_IP_SALT` | random secret (visitor IPs are stored only as salted hashes) |
+| `TRUST_PROXY` | Shared policy: `railway` uses protected `X-Real-IP` and requires Railway metadata; `none` ignores forwarded headers. Production requires an explicit choice. `DEMO_TRUSTED_PROXY_HOPS` is rejected even if set to `0`; remove it |
+| `DEMO_SESSIONS_PER_IP_PER_HOUR` | Default `2`; integer 1..100 (rolling hour) |
+| `DEMO_MAX_CONCURRENT` | Default `10`; integer 1..1000 |
+| `DEMO_DAILY_SESSION_CAP` | Default `200`; integer 1..100000, rolling 24 hours; counts sessions, not dollars |
+| `DEMO_SESSION_SECONDS` | Default `180`; integer 30..600. Requested token expiry is this value + 30 seconds (3:30 only at the default) |
+| `DEMO_MILES_VOICE` / `DEMO_NOVA_VOICE` | Defaults `Charon` / `Kore`; no startup validation against Google's voice catalog |
+| `DEMO_VOICE_AUDITION` | Default off; `true` is forbidden in production, including when the demo is off |
+| `DEMO_IP_SALT` | Optional independent random secret; defaults to `JWT_SECRET` (visitor IPs are stored only as salted hashes) |
 
 Homepage line, added before `</body>` of the Claude Design export:
 
