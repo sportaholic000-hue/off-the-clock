@@ -1,0 +1,665 @@
+{
+  "scenario": "five-round-signed-twilio-websocket-fake-google",
+  "sourceBase": "94c0d63f7eace16eac4c97f5a95712eb443118d6",
+  "referenceLoadCommit": "bc6309701da3b7b68c866cc65a30ddb9f834e289",
+  "pid": 5,
+  "config": {
+    "rounds": 5,
+    "callsPerRound": 50,
+    "durationMs": 120000,
+    "cooldownMs": 120000,
+    "gcCallsPerCooldown": 2
+  },
+  "machine": {
+    "node": "v22.23.3",
+    "cpuCount": 0
+  },
+  "units": "bytes",
+  "baselineBeforeGc": {
+    "measurementSource": "v8.getHeapStatistics",
+    "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+    "wall": "2026-10-09T14:13:38.441Z",
+    "elapsedMs": 315,
+    "rss": null,
+    "heapUsed": 21828680,
+    "heapTotal": 37199872,
+    "external": 3765393,
+    "arrayBuffers": null,
+    "counts": {
+      "voiceSessions": 0,
+      "serverWebSockets": 0,
+      "clientWebSockets": 0,
+      "fakeGoogleSessions": 0
+    }
+  },
+  "baselineAfterGc": {
+    "measurementSource": "v8.getHeapStatistics",
+    "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+    "wall": "2026-10-09T14:13:38.454Z",
+    "elapsedMs": 327,
+    "rss": null,
+    "heapUsed": 19597272,
+    "heapTotal": 38510592,
+    "external": 3764273,
+    "arrayBuffers": null,
+    "counts": {
+      "voiceSessions": 0,
+      "serverWebSockets": 0,
+      "clientWebSockets": 0,
+      "fakeGoogleSessions": 0
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "connected": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:13:39.218Z",
+        "elapsedMs": 1091,
+        "rss": null,
+        "heapUsed": 33609648,
+        "heapTotal": 61054976,
+        "external": 4215744,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "paced": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:15:39.218Z",
+        "elapsedMs": 121091,
+        "rss": null,
+        "heapUsed": 43113280,
+        "heapTotal": 69181440,
+        "external": 5174566,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "afterStopBeforePeerClose": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:15:39.241Z",
+        "elapsedMs": 121115,
+        "rss": null,
+        "heapUsed": 44745920,
+        "heapTotal": 69181440,
+        "external": 5201150,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualPacedMs": 120000.15857,
+      "framesIn": 300000,
+      "framesOut": 300000,
+      "markAcks": 300000,
+      "maxTickDelayMs": 11.031512000001385,
+      "ended": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:15:39.252Z",
+        "elapsedMs": 121125,
+        "rss": null,
+        "heapUsed": 45919248,
+        "heapTotal": 69181440,
+        "external": 5204350,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualCooldownMs": 120004,
+      "beforeGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:17:39.256Z",
+        "elapsedMs": 241129,
+        "rss": null,
+        "heapUsed": 23958288,
+        "heapTotal": 35102720,
+        "external": 3955876,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "afterGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:17:39.280Z",
+        "elapsedMs": 241153,
+        "rss": null,
+        "heapUsed": 23782288,
+        "heapTotal": 27500544,
+        "external": 3955876,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "statuses": [
+        {
+          "status": "COMPLETED",
+          "failureCode": null,
+          "n": 50
+        }
+      ],
+      "sqlitePages": 252
+    },
+    {
+      "round": 2,
+      "connected": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:17:40.483Z",
+        "elapsedMs": 242356,
+        "rss": null,
+        "heapUsed": 30140480,
+        "heapTotal": 38477824,
+        "external": 4187210,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "paced": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:19:40.503Z",
+        "elapsedMs": 362376,
+        "rss": null,
+        "heapUsed": 38872520,
+        "heapTotal": 66527232,
+        "external": 5114472,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "afterStopBeforePeerClose": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:19:40.527Z",
+        "elapsedMs": 362400,
+        "rss": null,
+        "heapUsed": 40413656,
+        "heapTotal": 66527232,
+        "external": 5132864,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualPacedMs": 120019.108775,
+      "framesIn": 300050,
+      "framesOut": 300050,
+      "markAcks": 300050,
+      "maxTickDelayMs": 52.871322000049986,
+      "ended": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:19:40.537Z",
+        "elapsedMs": 362410,
+        "rss": null,
+        "heapUsed": 27700720,
+        "heapTotal": 66527232,
+        "external": 4211966,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualCooldownMs": 120008,
+      "beforeGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:21:40.544Z",
+        "elapsedMs": 482418,
+        "rss": null,
+        "heapUsed": 23482920,
+        "heapTotal": 27729920,
+        "external": 3949874,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "afterGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:21:40.561Z",
+        "elapsedMs": 482434,
+        "rss": null,
+        "heapUsed": 23482368,
+        "heapTotal": 27729920,
+        "external": 3949874,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "statuses": [
+        {
+          "status": "COMPLETED",
+          "failureCode": null,
+          "n": 100
+        }
+      ],
+      "sqlitePages": 297
+    },
+    {
+      "round": 3,
+      "connected": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:21:41.286Z",
+        "elapsedMs": 483160,
+        "rss": null,
+        "heapUsed": 29176008,
+        "heapTotal": 38215680,
+        "external": 4186167,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "paced": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:23:41.306Z",
+        "elapsedMs": 603179,
+        "rss": null,
+        "heapUsed": 41554224,
+        "heapTotal": 68362240,
+        "external": 4942290,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "afterStopBeforePeerClose": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:23:41.351Z",
+        "elapsedMs": 603224,
+        "rss": null,
+        "heapUsed": 43079392,
+        "heapTotal": 68362240,
+        "external": 4960682,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualPacedMs": 120019.46041699994,
+      "framesIn": 300050,
+      "framesOut": 300050,
+      "markAcks": 300050,
+      "maxTickDelayMs": 66.6252819999936,
+      "ended": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:23:41.362Z",
+        "elapsedMs": 603235,
+        "rss": null,
+        "heapUsed": 44185200,
+        "heapTotal": 68362240,
+        "external": 4972074,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualCooldownMs": 120016,
+      "beforeGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:25:41.378Z",
+        "elapsedMs": 723251,
+        "rss": null,
+        "heapUsed": 44200584,
+        "heapTotal": 68362240,
+        "external": 4972074,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "afterGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:25:41.441Z",
+        "elapsedMs": 723314,
+        "rss": null,
+        "heapUsed": 23531280,
+        "heapTotal": 29040640,
+        "external": 3949874,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "statuses": [
+        {
+          "status": "COMPLETED",
+          "failureCode": null,
+          "n": 150
+        }
+      ],
+      "sqlitePages": 329
+    },
+    {
+      "round": 4,
+      "connected": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:25:42.209Z",
+        "elapsedMs": 724082,
+        "rss": null,
+        "heapUsed": 29230096,
+        "heapTotal": 37953536,
+        "external": 4186167,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "paced": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:27:42.229Z",
+        "elapsedMs": 844102,
+        "rss": null,
+        "heapUsed": 42066104,
+        "heapTotal": 69148672,
+        "external": 4942290,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "afterStopBeforePeerClose": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:27:42.251Z",
+        "elapsedMs": 844125,
+        "rss": null,
+        "heapUsed": 43595512,
+        "heapTotal": 69148672,
+        "external": 4960682,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualPacedMs": 120020.207651,
+      "framesIn": 300050,
+      "framesOut": 300050,
+      "markAcks": 300050,
+      "maxTickDelayMs": 28.695443999953568,
+      "ended": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:27:42.262Z",
+        "elapsedMs": 844135,
+        "rss": null,
+        "heapUsed": 44694728,
+        "heapTotal": 69148672,
+        "external": 4972074,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualCooldownMs": 120015,
+      "beforeGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:29:42.276Z",
+        "elapsedMs": 964150,
+        "rss": null,
+        "heapUsed": 44710112,
+        "heapTotal": 69148672,
+        "external": 4972074,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "afterGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:29:42.311Z",
+        "elapsedMs": 964184,
+        "rss": null,
+        "heapUsed": 23611528,
+        "heapTotal": 30351360,
+        "external": 3949874,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "statuses": [
+        {
+          "status": "COMPLETED",
+          "failureCode": null,
+          "n": 200
+        }
+      ],
+      "sqlitePages": 366
+    },
+    {
+      "round": 5,
+      "connected": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:29:43.077Z",
+        "elapsedMs": 964950,
+        "rss": null,
+        "heapUsed": 29662680,
+        "heapTotal": 37953536,
+        "external": 4187678,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "paced": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:31:43.097Z",
+        "elapsedMs": 1084970,
+        "rss": null,
+        "heapUsed": 33458288,
+        "heapTotal": 68624384,
+        "external": 5419114,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 50
+        }
+      },
+      "afterStopBeforePeerClose": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:31:43.120Z",
+        "elapsedMs": 1084993,
+        "rss": null,
+        "heapUsed": 34986264,
+        "heapTotal": 68624384,
+        "external": 4241350,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 50,
+          "serverWebSockets": 50,
+          "clientWebSockets": 50,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualPacedMs": 120019.57950200012,
+      "framesIn": 300050,
+      "framesOut": 300050,
+      "markAcks": 300050,
+      "maxTickDelayMs": 26.83257099997718,
+      "ended": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:31:43.131Z",
+        "elapsedMs": 1085004,
+        "rss": null,
+        "heapUsed": 36088888,
+        "heapTotal": 68624384,
+        "external": 4252742,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "actualCooldownMs": 120018,
+      "beforeGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:33:43.149Z",
+        "elapsedMs": 1205022,
+        "rss": null,
+        "heapUsed": 36104272,
+        "heapTotal": 68624384,
+        "external": 4252742,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "afterGc": {
+        "measurementSource": "v8.getHeapStatistics",
+        "rssUnavailable": "Sandbox does not expose /proc; uv_resident_set_memory returns ENOENT.",
+        "wall": "2026-10-09T14:33:43.176Z",
+        "elapsedMs": 1205049,
+        "rss": null,
+        "heapUsed": 23642064,
+        "heapTotal": 29564928,
+        "external": 3949874,
+        "arrayBuffers": null,
+        "counts": {
+          "voiceSessions": 0,
+          "serverWebSockets": 0,
+          "clientWebSockets": 0,
+          "fakeGoogleSessions": 0
+        }
+      },
+      "statuses": [
+        {
+          "status": "COMPLETED",
+          "failureCode": null,
+          "n": 250
+        }
+      ],
+      "sqlitePages": 399
+    }
+  ],
+  "heapSnapshots": [
+    {
+      "round": 1,
+      "file": "/workspace/scratch/18cbdaa4aace/task-evidence/heaps/round-1.heapsnapshot"
+    }
+  ],
+  "errors": [],
+  "unexpectedProviderWrites": 0,
+  "heapUsedAfterGcDeltas": [
+    4185016,
+    -299920,
+    48912,
+    80248,
+    30536
+  ],
+  "completed": true
+}
