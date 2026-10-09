@@ -36,7 +36,10 @@ export function createBillingEvidence({db, fail}) {
     if (row && (row.ownerId !== ownerId || row.stripeCustomerId !== customerId || row.stripeSubscriptionId !== subscriptionId)) throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
   }
   function recordSubscription({ownerId, customerId, subscriptionId, facts, created, provider=false}) {
-    const global = db.prepare('SELECT * FROM billingSubscriptionEvidence WHERE stripeSubscriptionId=?').get(subscriptionId);
+    const global = sub.get(ownerId,subscriptionId);
+    if (usageOwnerQuery(db)('SELECT 1 FROM billingSubscriptionEvidence WHERE stripeSubscriptionId=? AND ownerId<>?').get(subscriptionId,ownerId)) {
+      throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
+    }
     checkIdentity(global,ownerId,customerId,subscriptionId);
     let ambiguous = 0, next = facts;
     if (global) {
@@ -61,7 +64,10 @@ export function createBillingEvidence({db, fail}) {
   }
   function recordInvoice({ownerId,customerId,subscriptionId,object,paid,created}) {
     if (!object.id || billingReference(object.customer)!==customerId || billingInvoiceSubscription(object)!==subscriptionId) throw fail('CROSS_ACCOUNT_IDS','Invoice ownership does not match the subscription.');
-    const prior = db.prepare('SELECT * FROM billingInvoiceEvidence WHERE stripeInvoiceId=?').get(object.id);
+    const prior = usageOwnerQuery(db)('SELECT * FROM billingInvoiceEvidence WHERE ownerId=? AND stripeInvoiceId=?').get(ownerId,object.id);
+    if (usageOwnerQuery(db)('SELECT 1 FROM billingInvoiceEvidence WHERE stripeInvoiceId=? AND ownerId<>?').get(object.id,ownerId)) {
+      throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
+    }
     checkIdentity(prior,ownerId,customerId,subscriptionId);
     if (paid && object.status !== 'paid') throw fail('INVALID_EVENT','A paid invoice must have paid status.');
     if (paid && (!Number.isSafeInteger(object.amount_paid) || object.amount_paid < 0)) throw fail('INVALID_EVENT','Paid invoice amount must be nonnegative integer cents.');

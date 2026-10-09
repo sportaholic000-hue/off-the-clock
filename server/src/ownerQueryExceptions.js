@@ -311,20 +311,6 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1
   },
   {
-    "file": "server/src/billingEvidence.js",
-    "function": "recordSubscription",
-    "reason": "Stripe webhook identity lookup before owner binding.",
-    "signature": "2ac2872e9ca2d18cbb75ab6a646dab382c402116d283e99a5aa3ce1b947b52c3",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingEvidence.js",
-    "function": "recordInvoice",
-    "reason": "Stripe webhook identity lookup before owner binding.",
-    "signature": "79f44fadf8c25eba90e1574499036a7cbb92702f9439d0f699beac815da3de7d",
-    "occurrence": 1
-  },
-  {
     "file": "server/src/billingMinuteService.js",
     "function": "tick",
     "reason": "Platform owner inventory or Stripe invoice lookup before owner binding.",
@@ -347,36 +333,29 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/billingStateService.js",
-    "function": "createBillingStateService",
-    "reason": "Registration role lookup or Stripe webhook identity lookup before owner binding.",
-    "signature": "17aa46e0d58f9c07fcfafe29f62c4d3b78d90efd8a39ff67d9d5c8f954de9f70",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingStateService.js",
-    "function": "createBillingStateService",
-    "reason": "Registration role lookup or Stripe webhook identity lookup before owner binding.",
+    "function": "resolveAccountContext billingByCustomer",
+    "reason": "Verified Stripe customer lookup before the event owner is known.",
     "signature": "f635d5e9638739c3e2ca04f049616353b5360f032fb42b86842fc6000597b142",
     "occurrence": 1
   },
   {
     "file": "server/src/billingStateService.js",
-    "function": "createBillingStateService",
-    "reason": "Registration role lookup or Stripe webhook identity lookup before owner binding.",
+    "function": "resolveAccountContext billingBySubscription",
+    "reason": "Verified Stripe subscription lookup before the event owner is known.",
     "signature": "93175ed2e77e5ff886d8a068dd03877b0634801bc9c2d0a2d9633b2ddd85e5f1",
     "occurrence": 1
   },
   {
     "file": "server/src/billingStateService.js",
-    "function": "createBillingStateService",
-    "reason": "Registration role lookup or Stripe webhook identity lookup before owner binding.",
+    "function": "reconcileVerifiedStripeEvent receiptById",
+    "reason": "Event-ID receipt lookup before resolving the Stripe event owner.",
     "signature": "d3ec7913ca3674d5ef7ca441cf93caccfe8792063bd1d7c29a1e20c99cf2541d",
     "occurrence": 1
   },
   {
     "file": "server/src/billingStateService.js",
-    "function": "createBillingStateService",
-    "reason": "Registration role lookup or Stripe webhook identity lookup before owner binding.",
+    "function": "resolveAccountContext subscriptionHistoryById",
+    "reason": "Verified subscription history lookup before the event owner is known.",
     "signature": "fa254c0f3f7e0fdd2fa284122038689b3daed71eb6cc616b6407d0bf062f3be2",
     "occurrence": 1
   },
@@ -413,111 +392,6 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "providerComplete",
     "reason": "Signed Twilio callback binding by account and CallSid before owner binding.",
     "signature": "f4ae63cf1af5f2754f75383c3230a6666d9c3bd116c15dfd8f69e7fac31bf4aa",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "e0d243063f727fd45d738e903f78bba7fdfe53db625a54557f503308c4ad2a3c",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "30332a17f58e44fcf6f92f42276f22a1626317a6851c2dd63ddcc512df79bcf1",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "9b690afa69caa173bcb7815babdec679430f9bb9b2f8f35ec79609cdbdb8e5ca",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "7c58460f10c95ae96b021056c240164a2ff3e93d1079751e0fd27c859dd3f826",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "8f512672882d88cbfa4e2b2c3c0643058e5a54633e2a5180eababb4858dd0236",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "c7b6083ce9079b968f69bc65aee4fea5784d685aca29e4df07ed31bd7011792a",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "1352372ee5c02da5cb5b35614eaadc575d731f1ade832665a9e8b20dc9cbaf0e",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "createBookingAdminService",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "41205e1c6a43770330aaad42eda83eb4863db3db0bed0bddac7047e976920fac",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "catalog",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "7f5152529be7183cfabf8bd1f0200f414ab990253143240d3c716ccf01a64598",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "getReadiness",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "558de83185903b34aabb31e3944993bdbddcaf2451d6894558480e57317951c9",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "getReadiness",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "b0bd1101e6d73383c5090c2701dfa8d6a1f5d6486e10dcf45e901e3ed40a9bb4",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "updateSettings",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "712b47e6eeca7d2d7b5b0b14f8cbb941a9b2541f34b16cecb714227ebe5686f3",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "updatePolicy",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "f9d2df33b2c5bfd6cdec3a780d754d3314907bd8b7fa57508fed195ccda51198",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "updatePolicy",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "f63e1f4abce9d22f91c5e651dd915a040b9b6ed720a4885a94af3fa55a91cd8a",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/bookingAdminService.js",
-    "function": "updatePolicy",
-    "reason": "Admin booking operation across tenants.",
-    "signature": "162c2358ccf28455b4ba34045f00c770b8ebb2044005fc21c6f5615d6533ff2c",
     "occurrence": 1
   },
   {
@@ -788,57 +662,29 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voicePersistence.js",
-    "function": "nonceRow",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
+    "function": "loadSessionByNonceHash nonceRow",
+    "reason": "Nonce-only signed session loading before the call owner is known.",
     "signature": "01ea51c200ec4e825f279c9384d034b18d689a3e4a9d30e18e3e6a8d9d33479b",
     "occurrence": 1
   },
   {
     "file": "server/src/voice/voicePersistence.js",
     "function": "validateIncomingCall",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
+    "reason": "Signed Twilio CallSid/account binding before owner resolution.",
     "signature": "3f0ff95289db32cfbdb0d2cb17531042a62d4c436598081bce2e7e7d8e1b108f",
     "occurrence": 1
   },
   {
     "file": "server/src/voice/voicePersistence.js",
-    "function": "validateCallBinding",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
-    "signature": "f4fe3415ea27da76fa4ecddd228848ffc5c1bd2297d06412e07cae996c51421d",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voicePersistence.js",
-    "function": "createVoiceSessionStore.createSession",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
-    "signature": "f7e2084ea8cd96a573bbf15c6d179f5ce5961b82b15cefeb618b902ad1eb350b",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voicePersistence.js",
-    "function": "loadSessionByNonceHash",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
-    "signature": "ba0b9759a9fad1bc7282d932e7520e163dd2dda878a285bf94102817c6177cf9",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voicePersistence.js",
-    "function": "recordFallback",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
-    "signature": "f7e2084ea8cd96a573bbf15c6d179f5ce5961b82b15cefeb618b902ad1eb350b",
-    "occurrence": 2
-  },
-  {
-    "file": "server/src/voice/voicePersistence.js",
     "function": "recoverActiveCalls",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
+    "reason": "Startup recovery inventory across owners; each mutation uses the persisted owner.",
     "signature": "314c45e633461a3e645a25db473ca773a25f74387e494a5b489452387a66b5e3",
     "occurrence": 1
   },
   {
     "file": "server/src/voice/voicePersistence.js",
     "function": "findVoiceTenantsByNumber",
-    "reason": "Signed Twilio webhook binding, nonce validation, or platform recovery before tenant binding.",
+    "reason": "Incoming Twilio destination lookup before owner resolution.",
     "signature": "e0b0b11134f74e0f56e5475d58f01feb85b16468d318867795f5a260b5e8cd34",
     "occurrence": 1
   },
@@ -855,5 +701,194 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Migration schema inspection.",
     "signature": "17c7a2c551ac55fe6d7d2531fb73fad4ac4d17483939ff9b559971a9805780ac",
     "occurrence": 1
+  }
+]);
+
+// Explicit non-query spellings of prepare plus the two ownerQuery helper
+// implementations. An exact source signature keeps this inventory reviewable.
+export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
+  {
+    "file": "server/quote-engine-vnext\u002ftests/dateContext.spec.mjs",
+    "function": "dateContext test fixture",
+    "reason": "Synthetic quote-engine test fixture implements a fake database method.",
+    "signature": "f52c7812de0671eef1f2a0edc9a2cc36f5b59364e3222d7b846792390456f80c",
+    "occurrence": 1,
+    "line": 83
+  },
+  {
+    "file": "server/src/auth.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "line": 92
+  },
+  {
+    "file": "server/src/authTokenService.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "e5ac8ea24d193fdee2095f6e68333587c4a21e90974fa0cb2c117421e8e6474e",
+    "occurrence": 1,
+    "line": 195
+  },
+  {
+    "file": "server/src/billingRoutes.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "fbbf8364fb73ff9e4b8a8355df87feea1bc33d3ce172ce85b5f4eb80d39f2643",
+    "occurrence": 1,
+    "line": 349
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "e427edc2b62645b776e651900eb8ac341a3f85f916a29c5053efc57b00b7f044",
+    "occurrence": 1,
+    "line": 250
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "usageOwnerQuery",
+    "reason": "The injected ownerQuery helper prepares SQL after checking the owner predicate.",
+    "signature": "4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd",
+    "occurrence": 1,
+    "line": 56
+  },
+  {
+    "file": "server/src/bookingAdminService.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
+    "occurrence": 1,
+    "line": 632
+  },
+  {
+    "file": "server/src/bookingPreferenceService.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
+    "occurrence": 1,
+    "line": 160
+  },
+  {
+    "file": "server/src/bookingService.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
+    "occurrence": 1,
+    "line": 262
+  },
+  {
+    "file": "server/src/calendarOAuthState.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "73925bc4e79a2feea1af31ec29d1eb400b08d3d9bce225e513f5f2b430611910",
+    "occurrence": 1,
+    "line": 168
+  },
+  {
+    "file": "server/src/db.js",
+    "function": "ownerQuery",
+    "reason": "The ownerQuery helper is the database preparation boundary.",
+    "signature": "4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd",
+    "occurrence": 1,
+    "line": 30
+  },
+  {
+    "file": "server/src/quoteDoneRoutes.js",
+    "function": "quote routes",
+    "reason": "HTTP path segment named draft, not a database access.",
+    "signature": "db72570f2623abd12c0b007ed07f930c37bb0c274a1bd6be7bb433c1ad003240",
+    "occurrence": 1,
+    "line": 276
+  },
+  {
+    "file": "server/src/quoteDoneRoutes.js",
+    "function": "quote routes",
+    "reason": "HTTP path segment named draft, not a database access.",
+    "signature": "8621ad257ba4926ce00d97497886875137519b6a6fef92a569637a84e2b7cf2a",
+    "occurrence": 1,
+    "line": 279
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "quote email service",
+    "reason": "Quote email application method named draft, not a database access.",
+    "signature": "55c15137b2afa99405d2a7fc54c299b619fac5e1dccf838963e9b04e2b515361",
+    "occurrence": 1,
+    "line": 19
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "quote email service",
+    "reason": "Quote email application method named draft, not a database access.",
+    "signature": "9fbc4260df1cce701be7c3e1d24f839fb8992ef652f680e698ee5cdddee9f4f4",
+    "occurrence": 1,
+    "line": 108
+  },
+  {
+    "file": "server/src/voice/productionVoiceRuntime.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "045383ababdcc533677d179156ed2324ae3736c4bd18c1f12905c37a053e2c5e",
+    "occurrence": 1,
+    "line": 44
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "line": 58
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 2,
+    "line": 128
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 3,
+    "line": 406
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "function": "quote application adapter",
+    "reason": "Quote application method name, not a SQLite method.",
+    "signature": "2bf0b7e51bf3386018bf02eae97afcad64ae3202ae19eefe134d9b4dbd67dced",
+    "occurrence": 1,
+    "line": 204
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "function": "dependency validation",
+    "reason": "Checks the injected SQLite dependency shape without executing a query.",
+    "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
+    "occurrence": 1,
+    "line": 221
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "function": "quote application",
+    "reason": "Quote application draft method, not a SQLite method.",
+    "signature": "fe4011982aa4327a138ebfa73b9158559738b9948dcbdb19b5e1c26e5c6bc0b5",
+    "occurrence": 1,
+    "line": 453
+  },
+  {
+    "file": "server/src/voice/voiceToolRuntime.js",
+    "function": "quote email application",
+    "reason": "Quote email draft method, not a SQLite method.",
+    "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
+    "occurrence": 1,
+    "line": 881
   }
 ]);
