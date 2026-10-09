@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {createHash,randomBytes,createCipheriv,createDecipheriv} from 'node:crypto';
 import {createVoiceToolIdempotencyStore} from './voicePersistence.js';
 import {isFinalVoiceCall} from './voiceRecovery.js';
@@ -9,10 +10,10 @@ export function createVoiceInboundReceipt({database,secret,clock}){
   const store=createVoiceToolIdempotencyStore({database,clock});
   return async({context,build})=>{
     const binding=JSON.stringify(context),scope=createHash('sha256').update('inbound\0'+context.ownerId+'\0'+context.callSid).digest('hex');
-    const existing=database.prepare('SELECT * FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
+    const existing=usageOwnerQuery(database)('SELECT * FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
     if(existing&&(existing.accountSid!==context.accountSid||existing.callerNumber!==context.from||existing.destinationNumber!==context.to))throw Error('Call binding mismatch');
     if(isFinalVoiceCall(existing?.status))return '<Response><Hangup/></Response>';
-    const result=await store.run({scope,key:'inbound',digest:createHash('sha256').update(binding).digest('hex'),execute:async()=>{
+    const result=await store.run({ownerId:context.ownerId,scope,key:'inbound',digest:createHash('sha256').update(binding).digest('hex'),execute:async()=>{
       const xml=await build(),iv=randomBytes(12),cipher=createCipheriv('aes-256-gcm',key,iv);cipher.setAAD(Buffer.from(binding));
       return {iv:iv.toString('base64'),body:Buffer.concat([cipher.update(xml,'utf8'),cipher.final()]).toString('base64'),tag:cipher.getAuthTag().toString('base64')};
     }});

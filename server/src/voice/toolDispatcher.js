@@ -156,7 +156,7 @@ export function createVoiceToolDispatcher({handlers,callContext,idempotencyStore
     if(!mutating)return invoke(name,args);if(typeof request.toolCallId!=='string'||!TOOL_CALL_ID.test(request.toolCallId))fail('TOOL_CALL_ID_REQUIRED');
     const digest=requestDigest(name,args);
     return enqueueMutation(async()=>{
-      let outcome;try{outcome=await idempotencyStore.run({scope,key:request.toolCallId,digest,execute:()=>invoke(name,args)});}catch(error){if(error instanceof VoiceToolDispatchError)throw error;fail('IDEMPOTENCY_STORE_FAILED',503);}
+      let outcome;try{outcome=await idempotencyStore.run({ownerId:context.ownerId,scope,key:request.toolCallId,digest,execute:()=>invoke(name,args)});}catch(error){if(error instanceof VoiceToolDispatchError)throw error;fail('IDEMPOTENCY_STORE_FAILED',503);}
       if(outcome?.status==='conflict')fail('IDEMPOTENCY_CONFLICT',409);if(!['executed','replayed'].includes(outcome?.status))fail('INVALID_IDEMPOTENCY_RESULT',500);
       return projectVoiceToolResult(name,outcome.value);
     });

@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 
 export const BILLING_PROVIDER_OPTIONS = Object.freeze({timeout:10000,maxNetworkRetries:0});
@@ -18,16 +19,16 @@ export function withBillingRetentionLease(db,ownerId,work,options={}) {
 async function withOwnerLease(db,ownerId,work,table,{clock=()=>new Date(),leaseMs=120000}={}) {
   const token=crypto.randomUUID(),at=clock().toISOString();
   const expiresAt=new Date(clock().getTime()+leaseMs).toISOString();
-  const result=db.prepare(`INSERT INTO ${table}(ownerId,token,expiresAt) VALUES(?,?,?)
+  const result=usageOwnerQuery(db)(`INSERT INTO ${table}(ownerId,token,expiresAt) VALUES(?,?,?)
     ON CONFLICT(ownerId) DO UPDATE SET token=excluded.token,expiresAt=excluded.expiresAt
     WHERE ${table}.expiresAt<=?`).run(ownerId,token,expiresAt,at);
   if (!Number(result.changes)) throw billingProviderError('BILLING_OPERATION_IN_PROGRESS');
   const assertLease=()=>{
-    const current=db.prepare(`SELECT token,expiresAt FROM ${table} WHERE ownerId=?`).get(ownerId);
+    const current=usageOwnerQuery(db)(`SELECT token,expiresAt FROM ${table} WHERE ownerId=?`).get(ownerId);
     if (current?.token!==token || current.expiresAt<=clock().toISOString()) throw billingProviderError('BILLING_LEASE_LOST');
   };
   try {return await work(assertLease);}
-  finally {db.prepare(`DELETE FROM ${table} WHERE ownerId=? AND token=?`).run(ownerId,token);}
+  finally {usageOwnerQuery(db)(`DELETE FROM ${table} WHERE ownerId=? AND token=?`).run(ownerId,token);}
 }
 export async function billingProviderRead(call) {
   let timer;

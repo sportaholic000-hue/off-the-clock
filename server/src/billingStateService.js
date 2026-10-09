@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {syncBillingPaidThrough,syncBillingCancellationEvidence} from './billingCustomerLifecycle.js';
 import crypto from 'node:crypto';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
@@ -257,7 +258,7 @@ export function createBillingStateService({
   const evidence = createBillingEvidence({db, fail:billingError});
 
   const userById = db.prepare('SELECT id, role, plan, planStatus, trialEndsAt FROM users WHERE id = ?');
-  const billingByOwner = db.prepare(`
+  const billingByOwner = usageOwnerQuery(db)(`
     SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
       users.role AS userRole
     FROM billingAccounts AS billing
@@ -284,7 +285,7 @@ export function createBillingStateService({
   const subscriptionHistoryById = db.prepare(`
     SELECT * FROM billingSubscriptionHistory WHERE stripeSubscriptionId = ?
   `);
-  const terminalDeletionReceipt = db.prepare(`
+  const terminalDeletionReceipt = usageOwnerQuery(db)(`
     SELECT stripeEventId, eventCreatedAt, processedAt
     FROM billingEventReceipts
     WHERE ownerId = ?
@@ -294,14 +295,14 @@ export function createBillingStateService({
     ORDER BY eventCreatedAt DESC, stripeEventId DESC
     LIMIT 1
   `);
-  const authorizedCheckoutBySession = db.prepare(`
+  const authorizedCheckoutBySession = usageOwnerQuery(db)(`
     SELECT id, ownerId, stripeCustomerId, stripeSessionId, stripePriceId,
       status, expiresAt, providerCreatedAt, createdAt
     FROM billingCheckoutRequests
     WHERE ownerId = ? AND stripeCustomerId = ? AND stripeSessionId = ?
       AND stripePriceId = ? AND status IN ('OPEN','EXPIRED','COMPLETED')
   `);
-  const completedCheckoutBySubscription = db.prepare(`
+  const completedCheckoutBySubscription = usageOwnerQuery(db)(`
     SELECT id, providerCreatedAt, consumedAt
     FROM billingCheckoutRequests
     WHERE ownerId = ? AND stripeCustomerId = ? AND stripeSubscriptionId = ?
@@ -309,33 +310,33 @@ export function createBillingStateService({
     ORDER BY consumedAt DESC, id DESC
     LIMIT 1
   `);
-  const insertReceipt = db.prepare(`
+  const insertReceipt = usageOwnerQuery(db)(`
     INSERT INTO billingEventReceipts (
       stripeEventId, ownerId, eventType, objectId, eventCreatedAt,
       eventDigest, outcome, sanitizedReceiptJson, resultJson, processedAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  const insertCurrentSubscriptionHistory = db.prepare(`
+  const insertCurrentSubscriptionHistory = usageOwnerQuery(db)(`
     INSERT INTO billingSubscriptionHistory (
       stripeSubscriptionId, ownerId, stripeCustomerId, status,
       firstEventId, firstEventCreatedAt, createdAt, updatedAt
     ) VALUES (?, ?, ?, 'CURRENT', ?, ?, ?, ?)
   `);
-  const insertTerminalSubscriptionHistory = db.prepare(`
+  const insertTerminalSubscriptionHistory = usageOwnerQuery(db)(`
     INSERT INTO billingSubscriptionHistory (
       stripeSubscriptionId, ownerId, stripeCustomerId, status,
       firstEventId, firstEventCreatedAt, terminalEventId,
       terminalEventCreatedAt, createdAt, updatedAt
     ) VALUES (?, ?, ?, 'TERMINAL', ?, ?, ?, ?, ?, ?)
   `);
-  const markSubscriptionTerminal = db.prepare(`
+  const markSubscriptionTerminal = usageOwnerQuery(db)(`
     UPDATE billingSubscriptionHistory SET
       status = 'TERMINAL', terminalEventId = ?,
       terminalEventCreatedAt = ?, updatedAt = ?
     WHERE stripeSubscriptionId = ? AND ownerId = ? AND stripeCustomerId = ?
       AND status = 'CURRENT'
   `);
-  const closeCheckoutRequest = db.prepare(`
+  const closeCheckoutRequest = usageOwnerQuery(db)(`
     UPDATE billingCheckoutRequests SET
       status = ?, stripeSubscriptionId = ?,
       consumedAt = COALESCE(consumedAt, ?), updatedAt = ?
@@ -344,7 +345,7 @@ export function createBillingStateService({
       AND (stripeSubscriptionId IS NULL OR stripeSubscriptionId = ?)
       AND status IN ('OPEN', 'EXPIRED', 'COMPLETED', 'FAILED')
   `);
-  const updateBilling = db.prepare(`
+  const updateBilling = usageOwnerQuery(db)(`
     UPDATE billingAccounts SET
       stripeSubscriptionId = ?, stripePriceId = ?, paymentMethodVerifiedAt = ?,
       paymentFailedAt = ?, graceEndsAt = ?, currentPeriodEndAt = ?, currentPeriodStartAt = ?,
@@ -352,15 +353,15 @@ export function createBillingStateService({
       lastStripeEventRank = ?, lastStripeEventId = ?, updatedAt = ?
     WHERE ownerId = ?
   `);
-  const updateUser = db.prepare(`
+  const updateUser = usageOwnerQuery(db)(`
     UPDATE users SET plan = ?, planStatus = ?, trialEndsAt = ?, paymentFailedAt = ?
-    WHERE id = ? AND role = 'owner'
+    WHERE id = ? AND role = 'owner' AND ownerId IS NULL
   `);
-  const insertEvent = db.prepare(`
+  const insertEvent = usageOwnerQuery(db)(`
     INSERT INTO events (id, ownerId, eventType, payloadJson, createdAt)
     VALUES (?, ?, 'billing.state_changed', ?, ?)
   `);
-  const insertOutbox = db.prepare(`
+  const insertOutbox = usageOwnerQuery(db)(`
     INSERT INTO outboxEvents (
       id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
     ) VALUES (?, ?, 'billing.state_changed', ?, ?, 'PENDING', ?, ?)
@@ -589,7 +590,7 @@ export function createBillingStateService({
       const source = providerSubscription || object;
       if (billingReference(source.customer)!==event.customerId || source.id!==event.subscriptionId) throw billingError('CROSS_ACCOUNT_IDS','Provider subscription does not match the verified event.');
       const facts = subscriptionFacts(source,priceConfiguration,billingError);
-      if (['past_due','unpaid'].includes(facts.status) && !facts.latestInvoiceId) db.prepare(`INSERT OR IGNORE INTO billingRecoveryHolds(ownerId,stripeSubscriptionId,reason,createdAt) VALUES(?,?,'SUBSCRIPTION_DEBT_REFERENCE_REQUIRED',?)`).run(account.ownerId,event.subscriptionId,eventIso);
+      if (['past_due','unpaid'].includes(facts.status) && !facts.latestInvoiceId) usageOwnerQuery(db)(`INSERT OR IGNORE INTO billingRecoveryHolds(ownerId,stripeSubscriptionId,reason,createdAt) VALUES(?,?,'SUBSCRIPTION_DEBT_REFERENCE_REQUIRED',?)`).run(account.ownerId,event.subscriptionId,eventIso);
       if (facts.status === 'trialing' && (!Number.isInteger(facts.trialStart) || !Number.isInteger(facts.trialEnd) || facts.trialEnd <= facts.trialStart || facts.trialEnd-facts.trialStart>TRIAL_SECONDS)) throw billingError('INVALID_TRIAL','The Stripe trial must have valid boundaries no longer than 14 days.');
       subscription = evidence.recordSubscription({...identity,facts,created:event.created,provider:Boolean(providerSubscription)});
       stale = subscription.stale;
@@ -641,7 +642,7 @@ export function createBillingStateService({
       } else if (f.status==='paused') next.planStatus='suspended';
       else if (f.status==='incomplete') next.planStatus='pending_payment';
       else if (['past_due','unpaid'].includes(f.status)) {
-        const invoice=f.latestInvoiceId && db.prepare('SELECT status FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND stripeInvoiceId=?').get(account.ownerId,event.subscriptionId,f.latestInvoiceId);
+        const invoice=f.latestInvoiceId && usageOwnerQuery(db)('SELECT status FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND stripeInvoiceId=?').get(account.ownerId,event.subscriptionId,f.latestInvoiceId);
         if (invoice?.status==='PAID' && !providerSubscription) next.planStatus=next.paymentMethodVerifiedAt?'active':'pending_payment';
         else {
           const failure=paymentFailureState(account,eventIso);
@@ -655,7 +656,7 @@ export function createBillingStateService({
       next.planStatus='canceled'; next.canceledAt=eventIso; next.cancelAtPeriodEnd=0; next.trialEndsAt=null;
     }
     const debt=evidence.debt(account.ownerId,event.subscriptionId);
-    const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(account.ownerId,event.subscriptionId);
+    const hold=usageOwnerQuery(db)('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(account.ownerId,event.subscriptionId);
     if (hold && !debt.count && !account.paymentFailedAt) {
       if (next.planStatus!=='canceled') next.planStatus='suspended';
       next.paymentFailedAt=null; next.graceEndsAt=null;
@@ -710,11 +711,11 @@ export function createBillingStateService({
       after.paymentFailedAt ?? null, after.ownerId
     );
     const facts=evidence.readSubscription(after.ownerId,after.stripeSubscriptionId)?.facts;
-    if(facts?.billingInterval==='annual')for(const invoice of db.prepare("SELECT invoiceJson FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND invoiceJson IS NOT NULL").all(after.ownerId,after.stripeSubscriptionId)){
+    if(facts?.billingInterval==='annual')for(const invoice of usageOwnerQuery(db)("SELECT invoiceJson FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='PAID' AND invoiceJson IS NOT NULL").all(after.ownerId,after.stripeSubscriptionId)){
       recordAnnualPaidTerm({database:db,ownerId:after.ownerId,subscriptionId:after.stripeSubscriptionId,facts,invoice:JSON.parse(invoice.invoiceJson)});
     }
-    const paid=db.prepare('SELECT MAX(endAt) endAt FROM billingAnnualTerms WHERE ownerId=? AND stripeSubscriptionId=? AND plan=? AND startAt<=?').get(after.ownerId,after.stripeSubscriptionId,after.plan,processedAt);
-    db.prepare('UPDATE users SET annualPaidThroughAt=? WHERE id=? AND role=\'owner\'').run(paid?.endAt||null,after.ownerId);
+    const paid=usageOwnerQuery(db)('SELECT MAX(endAt) endAt FROM billingAnnualTerms WHERE ownerId=? AND stripeSubscriptionId=? AND plan=? AND startAt<=?').get(after.ownerId,after.stripeSubscriptionId,after.plan,processedAt);
+    usageOwnerQuery(db)('UPDATE users SET annualPaidThroughAt=? WHERE id=? AND role=\'owner\' AND ownerId IS NULL').run(paid?.endAt||null,after.ownerId);
     syncBillingPaidThrough(db,after.ownerId);
     syncBillingCancellationEvidence(db,after.ownerId,processedAt);
     recordOwnerUsagePeriods({database:db,ownerId:after.ownerId,priceIds,at:processedAt});
@@ -739,7 +740,7 @@ export function createBillingStateService({
         return stateResult('EXISTS', existingOwner, false);
       }
       const nowIso = now().toISOString();
-      db.prepare(`INSERT INTO billingAccounts (
+      usageOwnerQuery(db)(`INSERT INTO billingAccounts (
         ownerId, stripeCustomerId, cancelAtPeriodEnd, createdAt, updatedAt
       ) VALUES (?, ?, 0, ?, ?)`).run(cleanOwnerId, cleanCustomerId, nowIso, nowIso);
       updateUser.run(user.plan, 'pending_payment', null, null, cleanOwnerId);
@@ -782,12 +783,12 @@ export function createBillingStateService({
         for (const price of event.priceIds) if (!priceConfiguration.prices.has(price) && !priceConfiguration.supplemental.has(price)) throw billingError('UNRECOGNIZED_PRICE','The invoice contains an unconfigured price.');
         configured={plan:account.plan,priceId:account.stripePriceId};
       } else configured=resolveConfiguredPlan(event.priceIds,account,true);
-      const duplicateSession=db.prepare(`SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND stripeCustomerId=? AND
+      const duplicateSession=usageOwnerQuery(db)(`SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND stripeCustomerId=? AND
         ((stripeSessionId=? AND stripePriceId=?) OR (stripeSubscriptionId=? AND reconciliationError IS NOT NULL)) LIMIT 1`).get(account.ownerId,event.customerId,event.objectId,configured.priceId,event.subscriptionId);
       if (context.relationship==='REPLACEMENT_CANDIDATE' && account.planStatus!=='canceled' && duplicateSession) {
         if (event.type.startsWith('checkout.session.')) {
           consumeCheckout(context,event,configured,processedAt);
-          db.prepare("UPDATE billingCheckoutRequests SET reconciliationError='DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW' WHERE ownerId=? AND id=?").run(account.ownerId,duplicateSession.id);
+          usageOwnerQuery(db)("UPDATE billingCheckoutRequests SET reconciliationError='DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW' WHERE ownerId=? AND id=?").run(account.ownerId,duplicateSession.id);
         }
         const result=stateResult('QUARANTINED_DUPLICATE_SUBSCRIPTION',account,false);
         insertReceipt.run(event.id,account.ownerId,event.type,event.objectId,event.created,event.digest,result.outcome,JSON.stringify(event.sanitizedReceipt),JSON.stringify(result),processedAt);
@@ -801,7 +802,7 @@ export function createBillingStateService({
       }
       ensureCurrentHistory(transitionAccount,event,processedAt);
       for (const invoice of providerInvoices) evidence.recordInvoice({ownerId:account.ownerId,customerId:event.customerId,subscriptionId:event.subscriptionId,object:invoice,paid:invoice.status==='paid',created:providerInvoiceTimes[invoice.id] ?? event.created});
-      if (recoveredLegacy) db.prepare("DELETE FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=? AND reason='LEGACY_DEBT_REQUIRES_RECONCILIATION'").run(account.ownerId,event.subscriptionId);
+      if (recoveredLegacy) usageOwnerQuery(db)("DELETE FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=? AND reason='LEGACY_DEBT_REQUIRES_RECONCILIATION'").run(account.ownerId,event.subscriptionId);
       // Replacement creation cannot predate the server-created Checkout.
       const activation=completedCheckoutBySubscription.get(account.ownerId,event.customerId,event.subscriptionId);
       const tooEarly=event.type.startsWith('customer.subscription.') && activation && event.created*1000<Date.parse(activation.providerCreatedAt);
@@ -838,12 +839,12 @@ export function createBillingStateService({
       context=resolveAccountContext(event);
       if (context.relationship==='TERMINAL') return applyVerifiedStripeEvent(rawEvent,{assertLease});
       const known=evidence.readSubscription(context.account.ownerId,event.subscriptionId);
-      const recoveryHold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      const recoveryHold=usageOwnerQuery(db)('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
       // Checkout supplies session/payment evidence only. A strictly newer signed
       // subscription already carries authoritative items. Equal-second conflicts
       // require retrieval, never a type/ID tie breaker. Read this decision under
       // the lease as well, so another worker cannot race the fast path.
-      const stored=db.prepare('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      const stored=usageOwnerQuery(db)('SELECT eventCreatedAt FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
       if (!recoveryHold && !annualCancellation && ((event.type.startsWith('checkout.session.') && (known || context.relationship==='UNBOUND')) ||
           (event.type.startsWith('customer.subscription.') && (!known || event.created>stored.eventCreatedAt)))) return applyVerifiedStripeEvent(rawEvent,{assertLease});
       const subscription=await billingProviderRead(()=>stripeClient.subscriptions.retrieve(event.subscriptionId,{expand:['latest_invoice']},BILLING_PROVIDER_OPTIONS));
@@ -857,9 +858,9 @@ export function createBillingStateService({
         invoices.push(invoice);
       }
       let recoveredLegacy=false;
-      const hold=db.prepare('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
+      const hold=usageOwnerQuery(db)('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(context.account.ownerId,event.subscriptionId);
       if (hold?.reason==='LEGACY_DEBT_REQUIRES_RECONCILIATION') {
-        const failures=db.prepare(`SELECT objectId,MIN(eventCreatedAt) AS failedAt FROM billingEventReceipts WHERE ownerId=? AND eventType='invoice.payment_failed'
+        const failures=usageOwnerQuery(db)(`SELECT objectId,MIN(eventCreatedAt) AS failedAt FROM billingEventReceipts WHERE ownerId=? AND eventType='invoice.payment_failed'
           AND eventCreatedAt>=? AND outcome='APPLIED' GROUP BY objectId LIMIT 101`).all(context.account.ownerId,(context.account.paymentFailedAt ? Math.floor(Date.parse(context.account.paymentFailedAt)/1000) : 0));
         if (failures.length && failures.length<=100) {
           for (const failure of failures) {
@@ -882,7 +883,7 @@ export function createBillingStateService({
     const checkedAt = instant(at, 'Grace-period check time');
     const checkedAtIso = checkedAt.toISOString();
     return immediate(db, () => {
-      const rows = db.prepare(`
+      const rows = usageOwnerQuery(db)(`
         SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
           users.role AS userRole
         FROM billingAccounts AS billing
@@ -895,7 +896,7 @@ export function createBillingStateService({
       `).all(checkedAtIso, ownerId, ownerId, limit);
       for (const row of rows) {
         const after = { ...row, planStatus: 'suspended', updatedAt: checkedAtIso };
-        db.prepare('UPDATE billingAccounts SET updatedAt = ? WHERE ownerId = ?').run(checkedAtIso, row.ownerId);
+        usageOwnerQuery(db)('UPDATE billingAccounts SET updatedAt = ? WHERE ownerId = ?').run(checkedAtIso, row.ownerId);
         updateUser.run(
           row.plan, 'suspended', row.trialEndsAt ?? null,
           row.paymentFailedAt ?? null, row.ownerId

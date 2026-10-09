@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { createHash, randomBytes as nodeRandomBytes } from "node:crypto";
 
 const OWNER_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
@@ -119,7 +120,7 @@ function isNoChange(result) {
 function prepareStatements(database) {
   try {
     const statements = {
-      insert: database.prepare(`
+      insert: usageOwnerQuery(database)(`
         INSERT OR IGNORE INTO calendarOAuthStates (
           stateHash, ownerId, createdAt, expiresAt, consumedAt
         ) VALUES (?, ?, ?, ?, NULL)
@@ -129,7 +130,7 @@ function prepareStatements(database) {
         FROM calendarOAuthStates
         WHERE stateHash = ?
       `),
-      consume: database.prepare(`
+      consume: usageOwnerQuery(database)(`
         UPDATE calendarOAuthStates
         SET consumedAt = ?
         WHERE stateHash = ?

@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 // Durable billing facts. Only verified webhook/provider objects enter this module.
 // No event-type priority: subscriptions describe entitlement, invoices describe debt.
 export const billingReference = value => typeof value === 'string' ? value : value?.id || null;
@@ -30,7 +31,7 @@ export function subscriptionFacts(object, priceConfiguration, fail) {
 }
 
 export function createBillingEvidence({db, fail}) {
-  const sub = db.prepare('SELECT * FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?');
+  const sub = usageOwnerQuery(db)('SELECT * FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=?');
   function checkIdentity(row, ownerId, customerId, subscriptionId) {
     if (row && (row.ownerId !== ownerId || row.stripeCustomerId !== customerId || row.stripeSubscriptionId !== subscriptionId)) throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
   }
@@ -48,7 +49,7 @@ export function createBillingEvidence({db, fail}) {
         next = {...facts, paymentMethodId:facts.paymentMethodId || prior.paymentMethodId};
       }
     }
-    db.prepare(`INSERT INTO billingSubscriptionEvidence (stripeSubscriptionId,ownerId,stripeCustomerId,eventCreatedAt,stateJson,ambiguous)
+    usageOwnerQuery(db)(`INSERT INTO billingSubscriptionEvidence (stripeSubscriptionId,ownerId,stripeCustomerId,eventCreatedAt,stateJson,ambiguous)
       VALUES(?,?,?,?,?,?) ON CONFLICT(stripeSubscriptionId) DO UPDATE SET eventCreatedAt=excluded.eventCreatedAt,stateJson=excluded.stateJson,ambiguous=excluded.ambiguous
       WHERE billingSubscriptionEvidence.ownerId=excluded.ownerId AND billingSubscriptionEvidence.stripeCustomerId=excluded.stripeCustomerId`)
       .run(subscriptionId,ownerId,customerId,Math.max(created,global?.eventCreatedAt ?? 0),JSON.stringify(next),ambiguous);
@@ -68,20 +69,20 @@ export function createBillingEvidence({db, fail}) {
     // and credit/write-off policy are deliberately outside this repair batch.
     const settled = paid || prior?.status === 'PAID';
     const firstFailed = !paid ? Math.min(created,prior?.failedAt ?? created) : prior?.failedAt ?? null;
-    db.prepare(`INSERT INTO billingInvoiceEvidence (stripeInvoiceId,ownerId,stripeCustomerId,stripeSubscriptionId,status,failedAt,paidAt,amountPaid,periodStart,periodEnd)
+    usageOwnerQuery(db)(`INSERT INTO billingInvoiceEvidence (stripeInvoiceId,ownerId,stripeCustomerId,stripeSubscriptionId,status,failedAt,paidAt,amountPaid,periodStart,periodEnd)
       VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(stripeInvoiceId) DO UPDATE SET status=excluded.status,failedAt=excluded.failedAt,paidAt=excluded.paidAt,amountPaid=excluded.amountPaid,periodStart=excluded.periodStart,periodEnd=excluded.periodEnd
       WHERE billingInvoiceEvidence.ownerId=excluded.ownerId AND billingInvoiceEvidence.stripeSubscriptionId=excluded.stripeSubscriptionId`)
       .run(object.id,ownerId,customerId,subscriptionId,settled?'PAID':'FAILED',firstFailed,paid ? (prior?.paidAt ?? created) : prior?.paidAt ?? null,
         paid?object.amount_paid:prior?.amountPaid ?? null,object.period_start ?? prior?.periodStart ?? null,object.period_end ?? prior?.periodEnd ?? null);
-    db.prepare('UPDATE billingInvoiceEvidence SET currency=COALESCE(?,currency) WHERE ownerId=? AND stripeInvoiceId=?').run(object.currency||null,ownerId,object.id);
-    if(paid)db.prepare('UPDATE billingInvoiceEvidence SET invoiceJson=? WHERE ownerId=? AND stripeInvoiceId=?').run(JSON.stringify({
+    usageOwnerQuery(db)('UPDATE billingInvoiceEvidence SET currency=COALESCE(?,currency) WHERE ownerId=? AND stripeInvoiceId=?').run(object.currency||null,ownerId,object.id);
+    if(paid)usageOwnerQuery(db)('UPDATE billingInvoiceEvidence SET invoiceJson=? WHERE ownerId=? AND stripeInvoiceId=?').run(JSON.stringify({
       id:object.id,customer:customerId,subscription:subscriptionId,status:'paid',amount_paid:object.amount_paid,currency:object.currency,
       lines:{has_more:object.lines?.has_more===true,data:(object.lines?.data||[]).map(l=>({price:billingPrice(l),amount:l.amount,quantity:l.quantity,period:l.period}))}
     }),ownerId,object.id);
     return {stale:!paid && settled};
   }
   function debt(ownerId,subscriptionId) {
-    return db.prepare("SELECT MIN(failedAt) AS failedAt, COUNT(*) AS count FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='FAILED'").get(ownerId,subscriptionId);
+    return usageOwnerQuery(db)("SELECT MIN(failedAt) AS failedAt, COUNT(*) AS count FROM billingInvoiceEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND status='FAILED'").get(ownerId,subscriptionId);
   }
   return {recordSubscription,readSubscription,recordInvoice,debt};
 }

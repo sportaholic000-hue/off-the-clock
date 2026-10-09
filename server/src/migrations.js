@@ -20,6 +20,7 @@ const USERS_COLUMNS = [
 const USERS_ROLE_NULLABILITY_CHECK = /CHECK\s*\(\s*\(\s*role\s*=\s*'staff'\s+AND\s+ownerId\s+IS\s+NOT\s+NULL\s*\)\s+OR\s+\(\s*role\s+IN\s*\(\s*'owner'\s*,\s*'admin'\s*\)\s+AND\s+ownerId\s+IS\s+NULL\s*\)\s*\)/i;
 
 const ADDITIVE_COLUMNS = {
+  voiceToolIdempotencyReceipts: { ownerId: "TEXT NOT NULL DEFAULT ''" },
   billingInvoiceEvidence: { invoiceJson: 'TEXT', currency: 'TEXT' },
   billingAccounts: { currentPeriodStartAt: 'TEXT' },
   billingCheckoutRequests: { providerExpiredVerifiedAt: 'TEXT', reconciliationError: 'TEXT' },

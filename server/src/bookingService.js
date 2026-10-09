@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 import { serviceAreaFromKnowledgeBase, serviceAreaDecision } from './serviceArea.js';
 import {
@@ -272,7 +273,7 @@ export function createBookingService({
     throw new TypeError('Booking durations must be positive integer milliseconds.');
   }
 
-  const policyStatement = db.prepare(`
+  const policyStatement = usageOwnerQuery(db)(`
     SELECT i.id AS intentId, i.ownerId, i.sourceType, i.sourceId, i.serviceId,
       i.resultType AS intentResultType, i.allowedTierNamesJson, i.status AS intentStatus,
       i.expiresAtUtc, s.revision AS settingsRevision, s.timezone, s.provider,
@@ -291,18 +292,18 @@ export function createBookingService({
     SELECT id AS intentId, ownerId, status AS intentStatus, expiresAtUtc
     FROM bookingIntents WHERE tokenHash = ?
   `);
-  const receiptStatement = db.prepare(`
+  const receiptStatement = usageOwnerQuery(db)(`
     SELECT intentId, requestDigest, httpStatus, responseJson
     FROM bookingIdempotency
     WHERE ownerId = ? AND operation = ? AND idempotencyKey = ?
   `);
-  const insertReceiptStatement = db.prepare(`
+  const insertReceiptStatement = usageOwnerQuery(db)(`
     INSERT INTO bookingIdempotency (
       ownerId, operation, idempotencyKey, intentId, requestDigest,
       httpStatus, responseJson, createdAt, updatedAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  const updateReceiptStatement = db.prepare(`
+  const updateReceiptStatement = usageOwnerQuery(db)(`
     UPDATE bookingIdempotency SET httpStatus = ?, responseJson = ?, updatedAt = ?
     WHERE ownerId = ? AND operation = ? AND idempotencyKey = ? AND intentId = ?
   `);
@@ -312,7 +313,7 @@ export function createBookingService({
   }
 
   const changesInFlight=new Set();
-  const changeRow=(ownerId,id)=>db.prepare('SELECT * FROM appointmentChanges WHERE ownerId=? AND id=?').get(ownerId,id);
+  const changeRow=(ownerId,id)=>usageOwnerQuery(db)('SELECT * FROM appointmentChanges WHERE ownerId=? AND id=?').get(ownerId,id);
   function changeResult(change) {
     const slot=parseJson(change.newSlotJson,null);
     return {status:change.status==='CONFIRMED'?'CONFIRMED':change.status==='REJECTED'?'REJECTED':'PENDING_CONFIRMATION',
@@ -325,44 +326,44 @@ export function createBookingService({
       const current=changeRow(change.ownerId,change.id);
       if(!current||!['PREPARING','PENDING'].includes(current.status))return current;
       const old=parseJson(current.oldSlotJson,{}),next=parseJson(current.newSlotJson,null),at=nowFrom(clock).toISOString();
-      const appointment=db.prepare("SELECT * FROM appointments WHERE ownerId=? AND id=? AND providerEventStatus='CHANGE_PENDING'").get(current.ownerId,current.appointmentId);
+      const appointment=usageOwnerQuery(db)("SELECT * FROM appointments WHERE ownerId=? AND id=? AND providerEventStatus='CHANGE_PENDING'").get(current.ownerId,current.appointmentId);
       if(!appointment||appointment.bookingIntentId!==old.bookingIntentId||appointment.holdId!==old.holdId)throw providerError('The appointment change needs reconciliation.');
       if(rejected){
-        db.prepare("UPDATE appointments SET status='CONFIRMED',providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?")
+        usageOwnerQuery(db)("UPDATE appointments SET status='CONFIRMED',providerEventStatus=?,updatedAt=? WHERE ownerId=? AND id=?")
           .run(old.providerEventStatus,at,current.ownerId,current.appointmentId);
-        if(next)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+        if(next)usageOwnerQuery(db)("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
           .run(at,current.ownerId,next.id,next.intentId);
       }else{
-        if(current.action==='cancel')db.prepare("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?")
+        if(current.action==='cancel')usageOwnerQuery(db)("UPDATE appointments SET status='CANCELLED',providerEventStatus='CANCELLED',updatedAt=? WHERE ownerId=? AND id=?")
           .run(at,current.ownerId,current.appointmentId);
         else{
-          const lock=db.prepare("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='CONFIRMING'").get(current.ownerId,next.id,next.intentId);
+          const lock=usageOwnerQuery(db)("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='CONFIRMING'").get(current.ownerId,next.id,next.intentId);
           if(!lock)throw providerError('The replacement slot needs reconciliation.');
-          db.prepare("UPDATE appointments SET status='CONFIRMED',bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?")
+          usageOwnerQuery(db)("UPDATE appointments SET status='CONFIRMED',bookingIntentId=?,holdId=?,startAtUtc=?,endAtUtc=?,datetime=?,lockStartAtUtc=?,lockEndAtUtc=?,providerEventStatus='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=?")
             .run(lock.intentId,lock.id,lock.startAtUtc,lock.endAtUtc,lock.startAtUtc,lock.lockStartAtUtc,lock.lockEndAtUtc,at,current.ownerId,current.appointmentId);
-          db.prepare("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+          usageOwnerQuery(db)("UPDATE bookingHolds SET status='CONFIRMED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
             .run(at,current.ownerId,lock.id,lock.intentId);
         }
-        if(old.holdId)db.prepare("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
+        if(old.holdId)usageOwnerQuery(db)("UPDATE bookingHolds SET status='RELEASED',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?")
           .run(at,current.ownerId,old.holdId,old.bookingIntentId);
       }
-      db.prepare('UPDATE appointmentChanges SET status=?,lastError=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=?')
+      usageOwnerQuery(db)('UPDATE appointmentChanges SET status=?,lastError=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=?')
         .run(rejected?'REJECTED':'CONFIRMED',reason,at,at,current.ownerId,current.id);
-      db.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'appointment.changed',?,?,'PENDING',?,?)")
+      usageOwnerQuery(db)("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'appointment.changed',?,?,'PENDING',?,?)")
         .run(current.id+'-changed',current.ownerId,current.appointmentId,JSON.stringify({appointmentId:current.appointmentId,action:current.action,
           status:rejected?'REJECTED':'CONFIRMED',reason,startAtUtc:rejected?old.startAtUtc:next?.startAtUtc||null,endAtUtc:rejected?old.endAtUtc:next?.endAtUtc||null}),at,at);
       // A delayed read can resolve a request whose voice call has already ended.
-      db.prepare("UPDATE outboxEvents SET status=?,updatedAt=? WHERE ownerId=? AND id=? AND eventType='voice.appointment_change_requested'")
+      usageOwnerQuery(db)("UPDATE outboxEvents SET status=?,updatedAt=? WHERE ownerId=? AND id=? AND eventType='voice.appointment_change_requested'")
         .run(rejected?'FAILED':'CONFIRMED',at,current.ownerId,current.id);
       return changeRow(current.ownerId,current.id);
     });
   }
   async function reconcileAppointmentChange({ownerId,appointmentId}) {
-    let change=db.prepare("SELECT * FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND status IN ('PREPARING','PENDING') ORDER BY rowid DESC LIMIT 1").get(ownerId,appointmentId);
+    let change=usageOwnerQuery(db)("SELECT * FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND status IN ('PREPARING','PENDING') ORDER BY rowid DESC LIMIT 1").get(ownerId,appointmentId);
     if(!change||changesInFlight.has(change.id))return change;
     if(change.status==='PREPARING')return nowFrom(clock).getTime()-Date.parse(change.updatedAt)<CHANGE_PREPARATION_LEASE_MS?change:finishChange(change,{rejected:true,reason:'PREPARATION_INTERRUPTED'});
     if(change.lastError==='CALENDAR_REQUEST_REJECTED')return finishChange(change,{rejected:true,reason:change.lastError});
-    const appointment=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,appointmentId);
+    const appointment=usageOwnerQuery(db)('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,appointmentId);
     if(!appointment||typeof calendar.getEvent!=='function')return change;
     let event;
     try{event=await calendar.getEvent({ownerId,provider:appointment.provider,calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId});}
@@ -386,12 +387,12 @@ export function createBookingService({
       }
     }
     if(original==='CONFIRMED'&&change.lastError==='ORIGINAL_SLOT_STILL_PRESENT')return change;
-    db.prepare("UPDATE appointmentChanges SET lastError=?,updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'")
+    usageOwnerQuery(db)("UPDATE appointmentChanges SET lastError=?,updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'")
       .run(original==='CONFIRMED'?'ORIGINAL_SLOT_STILL_PRESENT':'PROVIDER_CONFIRMATION_PENDING',nowFrom(clock).toISOString(),ownerId,change.id);
     return changeRow(ownerId,change.id);
   }
   async function reconcilePendingAppointmentChanges({ownerId}) {
-    const rows=db.prepare("SELECT appointmentId FROM appointmentChanges WHERE ownerId=? AND status IN ('PREPARING','PENDING') ORDER BY requestedAt,id").all(ownerId);
+    const rows=usageOwnerQuery(db)("SELECT appointmentId FROM appointmentChanges WHERE ownerId=? AND status IN ('PREPARING','PENDING') ORDER BY requestedAt,id").all(ownerId);
     for(const row of rows)await reconcileAppointmentChange({ownerId,appointmentId:row.appointmentId});
   }
   function startChangeReconciler({enabled=()=>true,onError=()=>{},intervalMs=30000}={}) {
@@ -414,7 +415,7 @@ export function createBookingService({
   const preparationsInFlight = new Set();
 
   function requireUnbookedIntent(ownerId, intentId) {
-    const appointment = db.prepare(`SELECT id, status FROM appointments
+    const appointment = usageOwnerQuery(db)(`SELECT id, status FROM appointments
       WHERE ownerId = ? AND bookingIntentId = ?
         AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')
       LIMIT 1`).get(ownerId, intentId);
@@ -432,13 +433,13 @@ export function createBookingService({
     if (appointment.providerEventStatus !== 'PREPARING' || preparationsInFlight.has(appointment.id)) return;
     immediate(() => {
       const nowIso = nowFrom(clock).toISOString();
-      const revoked = db.prepare(`UPDATE appointments SET status = 'PROVIDER_FAILED',
+      const revoked = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
         providerEventStatus = 'CONFIRMATION_INTERRUPTED', updatedAt = ?
         WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
           AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
         nowIso, appointment.id, appointment.ownerId, appointment.bookingIntentId
       );
-      if (revoked.changes === 1) db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+      if (revoked.changes === 1) usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
         WHERE id = ? AND ownerId = ? AND intentId = ? AND status = 'CONFIRMING'`).run(
         nowIso, appointment.holdId, appointment.ownerId, appointment.bookingIntentId
       );
@@ -497,14 +498,14 @@ export function createBookingService({
     if (![...RELEASED_QUOTE_RESULTS, 'ESTIMATE_REQUIRES_REVIEW','APPOINTMENT_REQUEST'].includes(resultType)) {
       throw invalid('The booking source has an unsupported quote outcome.');
     }
-    if(resultType==='APPOINTMENT_REQUEST'&&(sourceType!=='lead'||serviceId!=='voice-appointment'||!db.prepare('SELECT id FROM leads WHERE ownerId=? AND id=?').get(ownerId,sourceId)))throw invalid('A saved owner-scoped lead is required for an appointment request.');
+    if(resultType==='APPOINTMENT_REQUEST'&&(sourceType!=='lead'||serviceId!=='voice-appointment'||!usageOwnerQuery(db)('SELECT id FROM leads WHERE ownerId=? AND id=?').get(ownerId,sourceId)))throw invalid('A saved owner-scoped lead is required for an appointment request.');
     const now = nowFrom(clock);
     const expiry = instant(expiresAtUtc, 'Booking expiry');
     if (expiry <= now) throw invalid('Booking expiry must be in the future.');
     const tierNames = [...new Set((Array.isArray(allowedTierNames) ? allowedTierNames : []).map(String).map(value => value.trim()).filter(Boolean))];
     const id = randomUUID();
     const bookingToken = createBookingToken(randomBytes);
-    db.prepare(`INSERT INTO bookingIntents (
+    usageOwnerQuery(db)(`INSERT INTO bookingIntents (
       id, ownerId, tokenHash, sourceType, sourceId, serviceId, resultType,
       allowedTierNamesJson, status, expiresAtUtc, createdAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)`).run(
@@ -589,10 +590,10 @@ export function createBookingService({
       throw providerError();
     }
     const nowIso = now.toISOString();
-    const localHolds = db.prepare(`SELECT lockStartAtUtc, lockEndAtUtc FROM bookingHolds
+    const localHolds = usageOwnerQuery(db)(`SELECT lockStartAtUtc, lockEndAtUtc FROM bookingHolds
       WHERE ownerId = ? AND calendarId = ?
         AND status IN ('HELD', 'CONFIRMING') AND expiresAtUtc > ?`).all(ownerId, policy.calendarId, nowIso);
-    const localAppointments = db.prepare(`SELECT lockStartAtUtc, lockEndAtUtc FROM appointments
+    const localAppointments = usageOwnerQuery(db)(`SELECT lockStartAtUtc, lockEndAtUtc FROM appointments
       WHERE ownerId = ? AND providerCalendarId = ?
         AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')`).all(ownerId, policy.calendarId);
     const blocked = [...localHolds, ...localAppointments]
@@ -682,13 +683,13 @@ export function createBookingService({
         const row = context(ownerId, intentId, now);
         requireUnbookedIntent(ownerId, intentId);
         const { payload } = validateSlot(slotId, ownerId, intentId, row, now);
-        db.prepare(`UPDATE bookingHolds SET status = 'EXPIRED', updatedAt = ?
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'EXPIRED', updatedAt = ?
           WHERE ownerId = ? AND status = 'HELD' AND expiresAtUtc <= ?`).run(nowIso, ownerId, nowIso);
-        const conflictingHold = db.prepare(`SELECT id FROM bookingHolds
+        const conflictingHold = usageOwnerQuery(db)(`SELECT id FROM bookingHolds
           WHERE ownerId = ? AND calendarId = ? AND status IN ('HELD', 'CONFIRMING')
             AND expiresAtUtc > ? AND lockStartAtUtc < ? AND lockEndAtUtc > ?
           LIMIT 1`).get(ownerId, payload.calendarId, nowIso, payload.lockEndAtUtc, payload.lockStartAtUtc);
-        const conflictingAppointment = db.prepare(`SELECT id FROM appointments
+        const conflictingAppointment = usageOwnerQuery(db)(`SELECT id FROM appointments
           WHERE ownerId = ? AND providerCalendarId = ?
             AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')
             AND lockStartAtUtc < ? AND lockEndAtUtc > ?
@@ -698,7 +699,7 @@ export function createBookingService({
         }
         const holdId = randomUUID();
         const expiresAtUtc = minInstant(new Date(now.getTime() + holdDurationMs), row.expiresAtUtc);
-        db.prepare(`INSERT INTO bookingHolds (
+        usageOwnerQuery(db)(`INSERT INTO bookingHolds (
           id, ownerId, intentId, calendarId, slotIdDigest, startAtUtc, endAtUtc,
           lockStartAtUtc, lockEndAtUtc, policyRevision, status, expiresAtUtc,
           createdAt, updatedAt
@@ -741,7 +742,7 @@ export function createBookingService({
       const nowIso = now.toISOString();
       try {
         context(ownerId, intentId, now);
-        const holdRow = db.prepare(`SELECT id, status, expiresAtUtc FROM bookingHolds
+        const holdRow = usageOwnerQuery(db)(`SELECT id, status, expiresAtUtc FROM bookingHolds
           WHERE id = ? AND ownerId = ? AND intentId = ?`).get(holdId, ownerId, intentId);
         if (!holdRow) throw bookingError('HOLD_NOT_FOUND', 404, 'The held time was not found.');
         if (holdRow.status === 'CONFIRMING' || holdRow.status === 'CONFIRMED') {
@@ -751,7 +752,7 @@ export function createBookingService({
           throw bookingError('HOLD_NOT_RELEASABLE', 409, 'This hold cannot be released.');
         }
         if (holdRow.status !== 'RELEASED') {
-          db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+          usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
             WHERE id = ? AND ownerId = ? AND intentId = ?`).run(nowIso, holdId, ownerId, intentId);
         }
         const body = { status: 'RELEASED', holdId };
@@ -836,16 +837,16 @@ export function createBookingService({
     const nowIso = now.toISOString();
     const body = errorBody(error);
     const interrupted = immediate(() => {
-      const current = db.prepare('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+      const current = usageOwnerQuery(db)('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return true;
-      db.prepare(`UPDATE appointments SET status = ?, providerEventStatus = ?, updatedAt = ?
+      usageOwnerQuery(db)(`UPDATE appointments SET status = ?, providerEventStatus = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(
         error.code === 'SLOT_UNAVAILABLE' ? 'CONFLICTED' : 'PROVIDER_FAILED',
         error.code, nowIso, appointmentId, ownerId
       );
-      const holdRow = db.prepare('SELECT expiresAtUtc FROM bookingHolds WHERE id = ? AND ownerId = ?').get(holdId, ownerId);
+      const holdRow = usageOwnerQuery(db)('SELECT expiresAtUtc FROM bookingHolds WHERE id = ? AND ownerId = ?').get(holdId, ownerId);
       const holdStatus = releaseHold ? 'RELEASED' : holdRow && instant(holdRow.expiresAtUtc, 'Hold expiry') > now ? 'HELD' : 'EXPIRED';
-      db.prepare('UPDATE bookingHolds SET status = ?, updatedAt = ? WHERE id = ? AND ownerId = ?')
+      usageOwnerQuery(db)('UPDATE bookingHolds SET status = ?, updatedAt = ? WHERE id = ? AND ownerId = ?')
         .run(holdStatus, nowIso, holdId, ownerId);
       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, error.statusCode, body, nowIso);
     });
@@ -855,7 +856,7 @@ export function createBookingService({
 
   function settledConfirmation(ownerId, intentId, idempotencyKey, appointmentId) {
     return immediate(() => {
-      const row = db.prepare('SELECT * FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+      const row = usageOwnerQuery(db)('SELECT * FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
       if (row?.status === 'CONFIRMED') {
         const body = confirmedAppointmentBody(row);
         updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, 201, body, nowFrom(clock).toISOString());
@@ -869,12 +870,12 @@ export function createBookingService({
     const nowIso = nowFrom(clock).toISOString();
     const body = pendingConfirmationBody(confirmationId, appointmentId);
     const settled = immediate(() => {
-      const current = db.prepare('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+      const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return true;
-      db.prepare(`UPDATE appointments SET status = 'PENDING_CONFIRMATION',
+      usageOwnerQuery(db)(`UPDATE appointments SET status = 'PENDING_CONFIRMATION',
         providerEventId = ?, providerEventStatus = 'PENDING_CONFIRMATION', updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(eventId, nowIso, appointmentId, ownerId);
-      db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMING', updatedAt = ?
+      usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMING', updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(nowIso, holdId, ownerId);
       updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, 202, body, nowIso);
     });
@@ -886,14 +887,14 @@ export function createBookingService({
     const nowIso = nowFrom(clock).toISOString();
     const body = confirmedAppointmentBody({ id: appointmentId, ...result });
     const settled = immediate(() => {
-      const current = db.prepare('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
+      const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return true;
-      db.prepare(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
+      usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
         providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(eventId, nowIso, nowIso, appointmentId, ownerId);
-      db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
+      usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
         WHERE id = ? AND ownerId = ?`).run(nowIso, holdId, ownerId);
-      db.prepare(`INSERT OR IGNORE INTO outboxEvents (
+      usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
         id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
       ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
         `${appointmentId}:booked`, ownerId, appointmentId, JSON.stringify(body), nowIso, nowIso
@@ -918,11 +919,11 @@ export function createBookingService({
         if (!record(body) || !uuid(body.holdId) || typeof body.confirmedSlotId !== 'string') {
           throw invalid('A valid hold and confirmed slot are required.');
         }
-        const holdRow = db.prepare(`SELECT * FROM bookingHolds
+        const holdRow = usageOwnerQuery(db)(`SELECT * FROM bookingHolds
           WHERE id = ? AND ownerId = ? AND intentId = ?`).get(body.holdId, ownerId, intentId);
         if (!holdRow || holdRow.status !== 'HELD' || instant(holdRow.expiresAtUtc, 'Hold expiry') <= now) {
           if (holdRow && holdRow.status === 'HELD') {
-            db.prepare(`UPDATE bookingHolds SET status = 'EXPIRED', updatedAt = ?
+            usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'EXPIRED', updatedAt = ?
               WHERE id = ? AND ownerId = ?`).run(nowIso, body.holdId, ownerId);
           }
           throw bookingError('HOLD_EXPIRED', 410, 'The held time has expired. Request fresh availability.');
@@ -936,7 +937,7 @@ export function createBookingService({
             'The project address needs owner follow-up before booking.',
             { details: { reason: coverage.reason, recoveryAction: 'REQUEST_PREFERRED_TIME' } });
         }
-        const conflictingAppointment = db.prepare(`SELECT id FROM appointments
+        const conflictingAppointment = usageOwnerQuery(db)(`SELECT id FROM appointments
           WHERE ownerId = ? AND providerCalendarId = ?
             AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')
             AND lockStartAtUtc < ? AND lockEndAtUtc > ? LIMIT 1`).get(
@@ -951,9 +952,9 @@ export function createBookingService({
           appointmentId,
           expiresAtUtc: row.expiresAtUtc
         });
-        db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMING', updatedAt = ?
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMING', updatedAt = ?
           WHERE id = ? AND ownerId = ?`).run(nowIso, holdRow.id, ownerId);
-        db.prepare(`INSERT INTO appointments (
+        usageOwnerQuery(db)(`INSERT INTO appointments (
           id, ownerId, customerId, quoteId, serviceType, bookingMode, datetime,
           durationMinutes, status, depositRequested, depositPaid, createdAt,
           bookingIntentId, holdId, provider, providerCalendarId, providerEventId,
@@ -969,7 +970,7 @@ export function createBookingService({
           holdRow.lockEndAtUtc, validated.policy.timezone, validated.policy.policyRevision,
           validated.tierName, JSON.stringify(validated.customer), JSON.stringify(validated.location), nowIso
         );
-        db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
           WHERE ownerId = ? AND intentId = ? AND id <> ? AND status = 'HELD'`).run(
           nowIso, ownerId, intentId, holdRow.id
         );
@@ -1049,14 +1050,14 @@ export function createBookingService({
     let claimed;
     try {
       claimed = immediate(() => {
-        const current = db.prepare('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(phase.appointmentId, ownerId, intentId);
+        const current = usageOwnerQuery(db)('SELECT status, providerEventStatus FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(phase.appointmentId, ownerId, intentId);
         if (current?.status !== 'PENDING_PROVIDER' || current.providerEventStatus !== 'PREPARING') return false;
         const now = nowFrom(clock), row = context(ownerId, intentId, now);
         validateConfirmation(row, phase.holdRow, body.confirmedSlotId, body, now);
         if (!serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), phase.location).eligible) {
           throw bookingError('SERVICE_AREA_MISMATCH', 409, 'The project address needs owner follow-up before booking.');
         }
-        return db.prepare(`UPDATE appointments SET providerEventStatus = 'PENDING_PROVIDER', updatedAt = ?
+        return usageOwnerQuery(db)(`UPDATE appointments SET providerEventStatus = 'PENDING_PROVIDER', updatedAt = ?
           WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
             AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
           now.toISOString(), phase.appointmentId, ownerId, intentId
@@ -1148,7 +1149,7 @@ export function createBookingService({
       if (busy.some(interval=>intervalsOverlap(appointment.lockStartAtUtc,appointment.lockEndAtUtc,interval.startAtUtc,interval.endAtUtc))) return null;
       // Recheck after the asynchronous read; another poll may already have
       // reconciled this appointment. Only the persisted confirmed request is retried.
-      const current = db.prepare('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
+      const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
         .get(appointment.id,appointment.ownerId,appointment.bookingIntentId);
       if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return null;
       return await calendar.createEvent({ownerId:appointment.ownerId,provider:appointment.provider,
@@ -1168,9 +1169,9 @@ export function createBookingService({
     const resolved = resolveBookingToken(bookingToken);
     const now = nowFrom(clock);
     const handle = openConfirmationId(confirmationId, resolved, now);
-    const appointmentStatement = db.prepare('SELECT * FROM appointments WHERE id=? AND ownerId=?');
+    const appointmentStatement = usageOwnerQuery(db)('SELECT * FROM appointments WHERE id=? AND ownerId=?');
     let appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
-    const historicalIntent=db.prepare("SELECT id FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND json_extract(oldSlotJson,'$.bookingIntentId')=? LIMIT 1");
+    const historicalIntent=usageOwnerQuery(db)("SELECT id FROM appointmentChanges WHERE ownerId=? AND appointmentId=? AND json_extract(oldSlotJson,'$.bookingIntentId')=? LIMIT 1");
     if (!appointment||appointment.bookingIntentId!==resolved.intentId&&!historicalIntent.get(resolved.ownerId,handle.appointmentId,resolved.intentId)) throw confirmationNotFound();
     releaseInterruptedPreparation(appointment);
     appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
@@ -1216,14 +1217,14 @@ export function createBookingService({
     if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
       const nowIso = nowFrom(clock).toISOString();
       immediate(() => {
-        const transition = db.prepare(`UPDATE appointments SET status = 'PROVIDER_FAILED',
+        const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
           providerEventStatus = 'PROVIDER_UNAVAILABLE', updatedAt = ?
           WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
             AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
           nowIso, appointment.id, resolved.ownerId, resolved.intentId
         );
         if (transition.changes === 1) {
-          db.prepare(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+          usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
             WHERE id = ? AND ownerId = ? AND intentId = ?
               AND status = 'CONFIRMING'`).run(
             nowIso, appointment.holdId, resolved.ownerId, resolved.intentId
@@ -1243,7 +1244,7 @@ export function createBookingService({
 
     const nowIso = nowFrom(clock).toISOString();
     immediate(() => {
-      const transition = db.prepare(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
+      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
         providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
         WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
           AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
@@ -1255,13 +1256,13 @@ export function createBookingService({
         resolved.intentId
       );
       if (transition.changes === 1) {
-        db.prepare(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
           WHERE id = ? AND ownerId = ? AND intentId = ?
             AND status = 'CONFIRMING'`).run(
           nowIso, appointment.holdId, resolved.ownerId, resolved.intentId
         );
         const body = confirmedAppointmentBody(appointment);
-        db.prepare(`INSERT OR IGNORE INTO outboxEvents (
+        usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
           id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
         ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
           `${appointment.id}:booked`, resolved.ownerId, appointment.id,
@@ -1281,14 +1282,14 @@ export function createBookingService({
   }
 
   function ownedAppointment(ownerId,id,callerNumber){
-    const row=db.prepare('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,id);
+    const row=usageOwnerQuery(db)('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(ownerId,id);
     if(!row||!/^\+[1-9]\d{7,14}$/.test(callerNumber||'')||parseJson(row.customerJson,{})?.phone!==callerNumber)throw invalid('Appointment contact does not match this caller.');
     return row;
   }
   async function appointmentAvailability({ownerId,appointmentId,callerNumber,filters={}}){
     const row=ownedAppointment(ownerId,appointmentId,callerNumber);
     if(row.status!=='CONFIRMED'||row.providerEventStatus==='CHANGE_PENDING')throw invalid('Appointment cannot be changed right now.');
-    const source=db.prepare('SELECT * FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
+    const source=usageOwnerQuery(db)('SELECT * FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
     if(!source)throw invalid('Appointment booking context is unavailable.');
     const fresh=createIntent({ownerId,sourceType:source.sourceType,sourceId:source.sourceId,serviceId:source.serviceId,resultType:source.resultType,allowedTierNames:parseJson(source.allowedTierNamesJson,[]),expiresAtUtc:new Date(nowFrom(clock).getTime()+3600000).toISOString()});
     const location=parseJson(row.locationJson,{});
@@ -1296,7 +1297,7 @@ export function createBookingService({
     return {...result,intentId:fresh.intentId};
   }
   async function modifyAppointment({ownerId,callSid,action,appointment,slotId,intentId,idempotencyKey}){
-    const call=db.prepare('SELECT callerNumber FROM calls WHERE ownerId=? AND callSid=?').get(ownerId,callSid);
+    const call=usageOwnerQuery(db)('SELECT callerNumber FROM calls WHERE ownerId=? AND callSid=?').get(ownerId,callSid);
     const row=ownedAppointment(ownerId,appointment.id,call?.callerNumber);
     if(!['cancel','reschedule'].includes(action)||!uuid(idempotencyKey))throw invalid('Choose a valid appointment action and request key.');
     const requestJson=JSON.stringify({appointmentId:row.id,action,intentId:intentId||null,slotId:slotId||null});
@@ -1309,8 +1310,8 @@ export function createBookingService({
     if(row.status!=='CONFIRMED'||row.providerEventStatus==='CHANGE_PENDING'||row.provider!=='google'||typeof calendar.changeEvent!=='function')throw invalid('Appointment change is unavailable.');
     let held;
     if(action==='reschedule'){
-      const replacement=db.prepare('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,intentId);
-      const original=db.prepare('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
+      const replacement=usageOwnerQuery(db)('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,intentId);
+      const original=usageOwnerQuery(db)('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
       if(!replacement||!original||JSON.stringify(replacement)!==JSON.stringify(original)||intentId===row.bookingIntentId)throw invalid('Replacement slot does not belong to this appointment.');
       held=hold({ownerId,intentId,idempotencyKey,slotId}).body;
       if(held.status!=='HELD')throw invalid('Replacement slot unavailable.');
@@ -1319,15 +1320,15 @@ export function createBookingService({
     try{
       immediate(()=>{
         const at=nowFrom(clock).toISOString();
-        const claimed=db.prepare("UPDATE appointments SET status='PENDING_CONFIRMATION',providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(at,ownerId,row.id);
+        const claimed=usageOwnerQuery(db)("UPDATE appointments SET status='PENDING_CONFIRMATION',providerEventStatus='CHANGE_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='CONFIRMED' AND (providerEventStatus IS NULL OR providerEventStatus!='CHANGE_PENDING')").run(at,ownerId,row.id);
         if(claimed.changes!==1)throw invalid('An appointment change is already in progress.');
-        const next=held?db.prepare("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='HELD' AND expiresAtUtc>?").get(ownerId,held.holdId,intentId,at):null;
+        const next=held?usageOwnerQuery(db)("SELECT * FROM bookingHolds WHERE ownerId=? AND id=? AND intentId=? AND status='HELD' AND expiresAtUtc>?").get(ownerId,held.holdId,intentId,at):null;
         if(held&&!next)throw invalid('Replacement slot unavailable.');
         const old={bookingIntentId:row.bookingIntentId,holdId:row.holdId,providerEventStatus:row.providerEventStatus,
           startAtUtc:row.startAtUtc,endAtUtc:row.endAtUtc,lockStartAtUtc:row.lockStartAtUtc,lockEndAtUtc:row.lockEndAtUtc};
-        db.prepare("INSERT INTO appointmentChanges(id,ownerId,appointmentId,requestJson,action,status,oldSlotJson,newSlotJson,requestedAt,updatedAt) VALUES(?,?,?,?,?,'PREPARING',?,?,?,?)")
+        usageOwnerQuery(db)("INSERT INTO appointmentChanges(id,ownerId,appointmentId,requestJson,action,status,oldSlotJson,newSlotJson,requestedAt,updatedAt) VALUES(?,?,?,?,?,'PREPARING',?,?,?,?)")
           .run(idempotencyKey,ownerId,row.id,requestJson,action,JSON.stringify(old),next?JSON.stringify(next):null,at,at);
-        if(next)db.prepare("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?").run(at,ownerId,next.id,intentId);
+        if(next)usageOwnerQuery(db)("UPDATE bookingHolds SET status='CONFIRMING',expiresAtUtc='9999-12-31T23:59:59.999Z',updatedAt=? WHERE ownerId=? AND id=? AND intentId=?").run(at,ownerId,next.id,intentId);
       });
       let change=changeRow(ownerId,idempotencyKey);
       if(held){
@@ -1342,12 +1343,12 @@ export function createBookingService({
           const original=await calendar.getEvent({ownerId,calendarId:row.providerCalendarId,eventId:row.providerEventId});
           if(!original?.etag||confirmationStatus(original,{eventId:row.providerEventId,startAtUtc:row.startAtUtc,endAtUtc:row.endAtUtc})!=='CONFIRMED')throw providerError('The original calendar appointment could not be verified.');
           const old={...JSON.parse(change.oldSlotJson),etag:original.etag};
-          db.prepare("UPDATE appointmentChanges SET oldSlotJson=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(JSON.stringify(old),ownerId,idempotencyKey);
+          usageOwnerQuery(db)("UPDATE appointmentChanges SET oldSlotJson=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(JSON.stringify(old),ownerId,idempotencyKey);
         }catch(error){finishChange(change,{rejected:true,reason:'CALENDAR_CHANGE_NOT_STARTED'});throw error;}
       }
       // Persist the write boundary before PATCH. Restart recovery only reads it;
       // it cannot know whether a write begun before a crash reached Google.
-      const ready=db.prepare("UPDATE appointmentChanges SET status='PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+      const ready=usageOwnerQuery(db)("UPDATE appointmentChanges SET status='PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PREPARING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
       if(ready.changes!==1)return changeResult(changeRow(ownerId,idempotencyKey));
       change=changeRow(ownerId,idempotencyKey);
       try{
@@ -1359,11 +1360,11 @@ export function createBookingService({
         return changeResult(finishChange(change));
       }catch(error){
         if(error?.ambiguous===false&&[400,403].includes(error.providerStatus)){
-          db.prepare("UPDATE appointmentChanges SET lastError='CALENDAR_REQUEST_REJECTED',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+          usageOwnerQuery(db)("UPDATE appointmentChanges SET lastError='CALENDAR_REQUEST_REJECTED',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
           finishChange(change,{rejected:true,reason:'CALENDAR_REQUEST_REJECTED'});
           throw bookingError('CALENDAR_CHANGE_REJECTED',502,'The calendar rejected this change. The original appointment remains confirmed.',{retryable:false});
         }
-        db.prepare("UPDATE appointmentChanges SET lastError='PROVIDER_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
+        usageOwnerQuery(db)("UPDATE appointmentChanges SET lastError='PROVIDER_CONFIRMATION_PENDING',updatedAt=? WHERE ownerId=? AND id=? AND status='PENDING'").run(nowFrom(clock).toISOString(),ownerId,idempotencyKey);
         return changeResult(changeRow(ownerId,idempotencyKey));
       }
     }finally{changesInFlight.delete(idempotencyKey);}

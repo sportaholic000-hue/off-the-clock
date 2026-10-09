@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { encryptCredentialPayload, decryptCredentialPayload } from './credentialEncryption.js';
 import { hasOperatorAccess } from './planAccess.js';
@@ -40,7 +41,7 @@ function safePayload(row) {
 }
 
 export function createOutboundWebhookService({
-  database, ownerQuery = sql => database.prepare(sql), encryptionOptions = {},
+  database, ownerQuery = usageOwnerQuery(database), encryptionOptions = {},
   now = Date.now, resolveDestination = resolveWebhookDestination, deliver = postWebhook,
   enabled = webhookDispatchEnabled
 }) {
@@ -230,10 +231,10 @@ export function createOutboundWebhookService({
     // Rotate across owners, so a sustained backlog from an earlier owner
     // cannot starve later tenants. The cursor contains no customer data.
     const due = `((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))`;
-    const owners = database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
+    const owners = usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
       WHERE ownerId > ? AND ${due} ORDER BY ownerId LIMIT 16`).all(lastOwnerId,now(),now());
     if (owners.length < 16 && lastOwnerId) {
-      owners.push(...database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
+      owners.push(...usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
         WHERE ownerId <= ? AND ${due} ORDER BY ownerId LIMIT ?`)
         .all(lastOwnerId,now(),now(),16-owners.length));
     }

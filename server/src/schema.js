@@ -501,6 +501,7 @@ export const CREATE_TABLE_STATEMENTS = [
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,
   `CREATE TABLE IF NOT EXISTS voiceToolIdempotencyReceipts (
+    ownerId TEXT NOT NULL DEFAULT '',
     scopeHash TEXT NOT NULL,
     idempotencyKey TEXT NOT NULL,
     requestDigest TEXT NOT NULL,

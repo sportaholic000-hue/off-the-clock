@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: every direct database prepare in server is an exact listed exception
+not ok 1 - every direct database prepare in server is an exact listed exception
+  ---
+  duration_ms: 19.059796
+  type: 'test'
+  location: '/workspace/scratch/7c2e3c39d840/repo/test/ownerQueryCoverage20261009.spec.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    374 direct prepares are not in the exact exception list:
+    server/priceBookService.js:47
+    server/priceBookService.js:51
+    server/quoteLog.js:5
+    server/quoteLog.js:9
+    server/quoteLog.js:20
+    server/src/auth.js:146
+    server/src/auth.js:171
+    server/src/auth.js:178
+    server/src/auth.js:194
+    server/src/auth.js:225
+    server/src/auth.js:229
+    server/src/auth.js:253
+    server/src/auth.js:294
+    server/src/auth.js:318
+    server/src/auth.js:341
+    server/src/authRateLimitService.js:18
+    server/src/authRateLimitService.js:19
+    server/src/authRateLimitService.js:21
+    server/src/authRateLimitService.js:22
+    server/src/authRateLimitService.js:29
+
+    374 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 374
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/7c2e3c39d840/repo/test/ownerQueryCoverage20261009.spec.mjs:58:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25.153415

@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {identityLabel} from './receptionistSettings.js';
 import {isValidIanaTimeZone} from '../calendarTime.js';
 export const VOICE_NAMES=Object.freeze({male:'Charon',female:'Kore'});
@@ -22,8 +23,8 @@ export function normalizeTransferWindows(value){
  const normalized=windows.map(window=>{if(!plain(window)||Object.keys(window).some(key=>!['start','end'].includes(key)))throw invalid('Choose valid transfer availability windows.');const start=minute(window.start),finish=minute(window.end);if(start>=finish||start<end)throw invalid('Transfer windows must be ordered, non-overlapping, and end after they start.');end=finish;return {start:window.start,end:window.end};});return [day,normalized];}));
 }
 export function transferDecision(database,ownerId,now){
- const profile=database.prepare('SELECT existingPhoneNumber,knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId);
- const owner=database.prepare("SELECT timezone FROM users WHERE id=? AND role='owner'").get(ownerId);
+ const profile=usageOwnerQuery(database)('SELECT existingPhoneNumber,knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId);
+ const owner=usageOwnerQuery(database)("SELECT timezone FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
  let kb,windows;try{kb=JSON.parse(profile?.knowledgeBaseJson||'{}');windows=normalizeTransferWindows(kb.transferWindows);}catch{return {allowed:false,reason:'TRANSFER_HOURS_UNCONFIGURED'};}
  if(!isValidIanaTimeZone(owner?.timezone))return {allowed:false,reason:'TRANSFER_TIMEZONE_INVALID'};
  const parts=new Intl.DateTimeFormat('en-US',{timeZone:owner.timezone,weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now);

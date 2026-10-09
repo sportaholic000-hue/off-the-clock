@@ -49,7 +49,7 @@ export function installBillingLifecycleSchema(database){
     ownerId TEXT PRIMARY KEY REFERENCES users(id),token TEXT NOT NULL,expiresAt TEXT NOT NULL);`);
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
   // Existing queued notices need the same dispatch condition as new ones.
-  database.prepare(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
+  usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
     WHERE unpaidInvoiceId IS NULL AND EXISTS(SELECT 1 FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')`).run();
 }
@@ -365,7 +365,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       // postpone an overdue cancellation on a later page.
       let retentionCursor='';
       while(true){
-        const due=database.prepare(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
+        const due=usageOwnerQuery(database)(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
           WHERE u.role='owner' AND u.id>? AND c.state IN ('CONFIRMED','ENDED','RESTORED') ORDER BY u.id LIMIT 32`).all(retentionCursor);
         if(!due.length)break;
         for(const {id} of due)try{await processOwner(id,{localOnly:true});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}

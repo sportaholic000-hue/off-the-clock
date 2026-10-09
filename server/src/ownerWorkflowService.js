@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {ownerUtcInstant} from './ownerDate.js';
 import {storedObject} from './ownerRecordViews.js';
 import {recordWorkflow} from './ownerWorkflowViews.js';
@@ -16,7 +17,7 @@ export function ownerAmountCents(value) {
   if(cents>999999999999n)throw problem('Amount exceeds the supported limit.');
   return Number(cents);
 }
-export function createOwnerWorkflowService({database,ownerQuery=sql=>database.prepare(sql),clock=()=>new Date()}) {
+export function createOwnerWorkflowService({database,ownerQuery=usageOwnerQuery(database),clock=()=>new Date()}) {
   const q=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Owner workflow tenant binding required');return ownerQuery(sql);};
   function record(ownerId,kind,id){
     if(!kinds.has(kind))throw problem('Record not found.',404);

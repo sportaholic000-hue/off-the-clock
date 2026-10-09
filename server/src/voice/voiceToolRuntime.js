@@ -238,9 +238,9 @@ export function createVoiceToolRuntime({
     const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
     if(result.status==='quoted'){
       const resolved=resolve(quoteHandle,'quote'),requestId=resolved.reference.requestId;
-      database.prepare('INSERT OR IGNORE INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)')
+      tenantQuery('INSERT OR IGNORE INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)')
         .run(context.ownerId,requestId,context.callSid,result.quoteNarration,instant().toISOString());
-      const saved=database.prepare('SELECT narration,callSid FROM voiceQuoteNarrations WHERE ownerId=? AND requestId=?').get(context.ownerId,requestId);
+      const saved=tenantQuery('SELECT narration,callSid FROM voiceQuoteNarrations WHERE ownerId=? AND requestId=?').get(context.ownerId,requestId);
       if(saved.callSid!==context.callSid)throw runtimeError('QUOTE_CALL_MISMATCH');
       result.quoteNarration=saved.narration;
     }
@@ -266,7 +266,7 @@ export function createVoiceToolRuntime({
   }
 
   function callRow() {
-    const row = database.prepare(`SELECT id, ownerId, callSid, accountSid, callerNumber, destinationNumber
+    const row = tenantQuery(`SELECT id, ownerId, callSid, accountSid, callerNumber, destinationNumber
       FROM calls WHERE ownerId = ? AND callSid = ?`).get(context.ownerId, context.callSid);
     if (!row || row.accountSid !== context.accountSid || row.callerNumber !== context.from ||
         row.destinationNumber !== context.to) {
@@ -303,7 +303,7 @@ export function createVoiceToolRuntime({
     const leadId = resolved.reference.leadId;
     if (typeof leadId !== 'string') throw runtimeError('INVALID_LEAD_HANDLE');
     const call = callRow();
-    const row = database.prepare(`SELECT * FROM leads
+    const row = tenantQuery(`SELECT * FROM leads
       WHERE id = ? AND ownerId = ? AND callId = ?`).get(leadId, context.ownerId, call.id);
     const details = parseJson(row?.collectedInputsJson);
     if (!row || !record(details) || details.voiceVersion !== 1 ||
@@ -319,7 +319,7 @@ export function createVoiceToolRuntime({
     if (typeof reference.recordId !== 'string' || typeof reference.requestId !== 'string') {
       throw runtimeError('INVALID_QUOTE_HANDLE');
     }
-    const row = database.prepare(`SELECT * FROM quoteSubmissions
+    const row = tenantQuery(`SELECT * FROM quoteSubmissions
       WHERE ownerId = ? AND requestId = ? AND recordId = ?`).get(
       context.ownerId, reference.requestId, reference.recordId
     );
@@ -330,14 +330,14 @@ export function createVoiceToolRuntime({
 
   function multiTierDirectBookingBlocked(reference) {
     if (!Array.isArray(reference.allowedTierNames) || !reference.allowedTierNames.length) return false;
-    const policy = database.prepare(`SELECT bookingMode FROM bookingPolicies
+    const policy = tenantQuery(`SELECT bookingMode FROM bookingPolicies
       WHERE ownerId = ? AND serviceId = ?`).get(context.ownerId, reference.serviceId);
     return policy?.bookingMode === 'book_job';
   }
 
   function writeOutbox({ id, eventType, aggregateId, payload, status = 'PENDING' }) {
     const at = instant().toISOString();
-    database.prepare(`INSERT OR IGNORE INTO outboxEvents (
+    tenantQuery(`INSERT OR IGNORE INTO outboxEvents (
       id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).run(
       id, context.ownerId, eventType, aggregateId, JSON.stringify(payload), status, at, at
@@ -346,7 +346,7 @@ export function createVoiceToolRuntime({
   }
 
   function updateOutbox(id, status) {
-    database.prepare(`UPDATE outboxEvents SET status = ?, updatedAt = ?
+    tenantQuery(`UPDATE outboxEvents SET status = ?, updatedAt = ?
       WHERE id = ? AND ownerId = ?`).run(status, instant().toISOString(), id, context.ownerId);
   }
 
@@ -400,7 +400,7 @@ export function createVoiceToolRuntime({
       ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{})
     });
     const requestId = stableUuid(secret, 'voice-quote-request', requestFingerprint);
-    const prior = database.prepare(`SELECT * FROM quoteSubmissions
+    const prior = tenantQuery(`SELECT * FROM quoteSubmissions
       WHERE ownerId = ? AND requestId = ?`).get(context.ownerId, requestId);
     if (prior) {
       const response = parseJson(prior.customerResponseJson, {});
@@ -488,7 +488,7 @@ export function createVoiceToolRuntime({
     const storedResponse = { ...response, bookingCapability: capability };
 
     return immediate(database, () => {
-      const existing = database.prepare(`SELECT * FROM quoteSubmissions
+      const existing = tenantQuery(`SELECT * FROM quoteSubmissions
         WHERE ownerId = ? AND requestId = ?`).get(context.ownerId, requestId);
       if (existing) {
         const existingResponse = parseJson(existing.customerResponseJson, {});
@@ -516,7 +516,7 @@ export function createVoiceToolRuntime({
         applicationOutcome: calculated
       };
       if (RELEASED_RESULTS.has(response.resultType)) {
-        database.prepare(`INSERT INTO quotes (
+        tenantQuery(`INSERT INTO quotes (
           id, ownerId, callId, quoteId, serviceType, customerInputsJson,
           resultJson, status, callerType, createdAt
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'customer', ?)`).run(
@@ -527,7 +527,7 @@ export function createVoiceToolRuntime({
         );
       }
       if (!RELEASED_RESULTS.has(response.resultType) || response.resultType === 'PARTIAL_ESTIMATE_READY') {
-        database.prepare(`INSERT INTO leads (
+        tenantQuery(`INSERT INTO leads (
           id, ownerId, callId, customerName, callerNumber, describedService,
           collectedInputsJson, type, status, createdAt
         ) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, 'NEEDS REVIEW', ?)`).run(
@@ -537,7 +537,7 @@ export function createVoiceToolRuntime({
           createdAt
         );
       }
-      database.prepare(`INSERT INTO quoteRequests (
+      tenantQuery(`INSERT INTO quoteRequests (
         id, ownerId, callId, describedService, estimatedValue, createdAt
       ) VALUES (?, ?, ?, ?, NULL, ?)`).run(
         recordId, context.ownerId, call.id, quoteApp.serviceName(service), createdAt
@@ -556,7 +556,7 @@ export function createVoiceToolRuntime({
         });
         intentId = booking.intentId;
       }
-      database.prepare(`INSERT INTO quoteSubmissions (
+      tenantQuery(`INSERT INTO quoteSubmissions (
         ownerId, requestId, contentDigest, recordId, resultType, bookRevision,
         originalSubmissionJson, internalOutcomeJson, customerResponseJson,
         bookingIntentId, bookingTokenReceipt, createdAt
@@ -625,10 +625,10 @@ export function createVoiceToolRuntime({
     let reference,quoteRow;
     if(quoteResolved){({row:quoteRow}=loadQuote(quoteResolved));reference=quoteResolved.reference;}
     else {
-      const policy=database.prepare("SELECT * FROM bookingPolicies WHERE ownerId=? AND serviceId='voice-appointment' AND enabled=1").get(context.ownerId);
+      const policy=tenantQuery("SELECT * FROM bookingPolicies WHERE ownerId=? AND serviceId='voice-appointment' AND enabled=1").get(context.ownerId);
       if(!policy||typeof bookingService?.createIntent!=='function')return {status:'unavailable',message:'The business has not enabled appointment booking. A preferred time can be saved for review.'};
       const intent=immediate(database,()=>{
-        const existing=database.prepare("SELECT id FROM bookingIntents WHERE ownerId=? AND sourceType='lead' AND sourceId=? AND serviceId='voice-appointment' AND resultType='APPOINTMENT_REQUEST' AND status='ACTIVE' AND expiresAtUtc>? ORDER BY createdAt DESC LIMIT 1").get(context.ownerId,leadRow.id,instant().toISOString());
+        const existing=tenantQuery("SELECT id FROM bookingIntents WHERE ownerId=? AND sourceType='lead' AND sourceId=? AND serviceId='voice-appointment' AND resultType='APPOINTMENT_REQUEST' AND status='ACTIVE' AND expiresAtUtc>? ORDER BY createdAt DESC LIMIT 1").get(context.ownerId,leadRow.id,instant().toISOString());
         return existing?.id||bookingService.createIntent({ownerId:context.ownerId,sourceType:'lead',sourceId:leadRow.id,serviceId:'voice-appointment',resultType:'APPOINTMENT_REQUEST',expiresAtUtc:new Date(instant().getTime()+3600000).toISOString()}).intentId;
       });
       reference={intentId:intent,bookingCapability:'DIRECT',resultType:'APPOINTMENT_REQUEST'};
@@ -656,7 +656,7 @@ export function createVoiceToolRuntime({
         message: 'A complete service address is required before checking availability.'
       };
     }
-    const profile = database.prepare('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile = tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     const area = serviceAreaDecision(
       serviceAreaFromKnowledgeBase(profile?.knowledgeBaseJson),
       { city: address.city, region: address.region, country: address.country }
@@ -851,24 +851,24 @@ export function createVoiceToolRuntime({
     immediate(database,()=>{
       // Separate described requests have separate identities; exact retries
       // recover the same standalone inquiry even after a process restart.
-      const priorEvent=database.prepare('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND aggregateId=?').get(context.ownerId,eventId,requestId);
+      const priorEvent=tenantQuery('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=? AND aggregateId=?').get(context.ownerId,eventId,requestId);
       let priorLeadId;try{priorLeadId=JSON.parse(priorEvent?.payloadJson||'{}').leadId;}catch{}
       const boundId=supplied?.row.id||priorLeadId||requestId;
-      let existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND id=?
+      let existing=tenantQuery(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND id=?
         AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
         AND callerNumber=?`).get(context.ownerId,call.id,boundId,context.from);
-      if(!existing&&!priorEvent&&!supplied)existing=database.prepare(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND describedService=?
+      if(!existing&&!priorEvent&&!supplied)existing=tenantQuery(`SELECT * FROM leads WHERE ownerId=? AND callId=? AND describedService=?
         AND json_valid(collectedInputsJson) AND json_extract(collectedInputsJson,'$.voiceVersion')=1
         AND callerNumber=? ORDER BY rowid LIMIT 1`).get(context.ownerId,call.id,description,context.from);
       lead=saveInquiry({}, {leadId:existing?.id||supplied?.row.id||requestId,key:'review:'+requestId,type:'quote_review',status:'NEEDS REVIEW',
         updates:{description:existing?.describedService||description}});
-      database.prepare('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
+      tenantQuery('INSERT OR IGNORE INTO quoteRequests(id,ownerId,callId,describedService,estimatedValue,createdAt) VALUES(?,?,?,?,NULL,?)').run(requestId,context.ownerId,call.id,description,createdAt);
       writeOutbox({id:eventId,eventType:'voice.quote_request_logged',aggregateId:requestId,
         payload:{callSid:context.callSid,description,callerNumber:context.from,leadId:lead.row.id,contact:lead.details.contact}});
       // Enrich only an unattempted snapshot inside the producer transaction.
       // Delivered historical events and quote/submission receipts stay intact.
       if(database.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='webhookDeliveries'").get())
-        database.prepare("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING' AND attemptCount=0").run(
+        tenantQuery("UPDATE webhookDeliveries SET payloadJson=json_set(payloadJson,'$.customer',json(?),'$.leadId',?) WHERE ownerId=? AND aggregateId=? AND eventType='quote.requested' AND status='PENDING' AND attemptCount=0").run(
           JSON.stringify(lead.details.contact),lead.row.id,context.ownerId,requestId);
     });
     const requestHandle=issue('quote_request','quote-request:'+requestId,{requestId,leadId:lead.row.id});
@@ -904,8 +904,8 @@ export function createVoiceToolRuntime({
     const createdAt = instant().toISOString();
     immediate(database, () => {
       const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{}, {updates:{urgency:{reason,summary:summary||null,recordedAt:createdAt,source:'voice'}}});
-      database.prepare('UPDATE calls SET urgency=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?').run(reason,createdAt,context.ownerId,lead.row.callId,context.callSid);
-      database.prepare('INSERT OR IGNORE INTO events (id, ownerId, eventType, payloadJson, createdAt) VALUES (?, ?, \'voice.urgent_flagged\', ?, ?)').run(
+      tenantQuery('UPDATE calls SET urgency=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?').run(reason,createdAt,context.ownerId,lead.row.callId,context.callSid);
+      tenantQuery('INSERT OR IGNORE INTO events (id, ownerId, eventType, payloadJson, createdAt) VALUES (?, ?, \'voice.urgent_flagged\', ?, ?)').run(
         urgentId, context.ownerId,
         JSON.stringify({
           callSid: context.callSid,
@@ -950,12 +950,12 @@ export function createVoiceToolRuntime({
     function unavailable(code,message){
       const callback=immediate(database,()=>{
         const key='transfer:'+reason+':'+(args.inquiryNumber??1);
-        const prior=database.prepare('SELECT leadId,notes FROM callbackRequests WHERE ownerId=? AND callId=? AND requestKey=?').get(context.ownerId,callRow().id,key);
+        const prior=tenantQuery('SELECT leadId,notes FROM callbackRequests WHERE ownerId=? AND callId=? AND requestKey=?').get(context.ownerId,callRow().id,key);
         let words=args.notes??prior?.notes;
         if(words===undefined){
           const call=callRow();
-          const turns=database.prepare('SELECT role,text FROM transcriptTurns WHERE ownerId=? AND callId=? ORDER BY sequence DESC,id DESC').all(context.ownerId,call.id);
-          const raw=database.prepare('SELECT transcriptJson FROM calls WHERE ownerId=? AND id=?').get(context.ownerId,call.id);
+          const turns=tenantQuery('SELECT role,text FROM transcriptTurns WHERE ownerId=? AND callId=? ORDER BY sequence DESC,id DESC').all(context.ownerId,call.id);
+          const raw=tenantQuery('SELECT transcriptJson FROM calls WHERE ownerId=? AND id=?').get(context.ownerId,call.id);
           const recent=turns.find(turn=>['caller','user'].includes(turn.role))||[...(parseJson(raw?.transcriptJson,[])||[])].reverse().find(turn=>['caller','user'].includes(turn?.role));
           words=typeof recent?.text==='string'&&recent.text.trim()?recent.text.slice(0,1000):null;
         }
@@ -965,7 +965,7 @@ export function createVoiceToolRuntime({
       return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
     }
 
-    const completedTransfer=database.prepare('SELECT status FROM outboxEvents WHERE id=? AND ownerId=?').get(eventId,context.ownerId);
+    const completedTransfer=tenantQuery('SELECT status FROM outboxEvents WHERE id=? AND ownerId=?').get(eventId,context.ownerId);
     if(completedTransfer?.status==='CONNECTED')return {status:'transferred',message:'The call was connected.'};
     if (!decision.allowed) {
       writeOutbox({id:eventId,eventType:'voice.transfer_requested',aggregateId:context.callSid,payload:{callSid:context.callSid,reason,policyReason:decision.reason},status:'FAILED'});
@@ -981,7 +981,7 @@ export function createVoiceToolRuntime({
       });
       return unavailable('TRANSFER_DESTINATION_UNAVAILABLE','A live transfer destination is not configured.');
     }
-    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+    const prior = tenantQuery('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
     );
     if (prior) {
@@ -1031,7 +1031,7 @@ export function createVoiceToolRuntime({
   function callerOwnsAppointment(resolved) {
     const appointmentId = resolved.reference.appointmentId;
     if (typeof appointmentId !== 'string') throw runtimeError('INVALID_APPOINTMENT_HANDLE');
-    const row = database.prepare('SELECT * FROM appointments WHERE id = ? AND ownerId = ?').get(
+    const row = tenantQuery('SELECT * FROM appointments WHERE id = ? AND ownerId = ?').get(
       appointmentId, context.ownerId
     );
     const customer = parseJson(row?.customerJson);
@@ -1067,7 +1067,7 @@ export function createVoiceToolRuntime({
       slotHandleHash: slotResolved?.handleHash || null
     });
     const eventId = stableUuid(secret, 'voice-appointment-change', identity);
-    const prior = database.prepare('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+    const prior = tenantQuery('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
     );
     if (prior) {
@@ -1133,11 +1133,11 @@ export function createVoiceToolRuntime({
       }
       const updatedAt = instant().toISOString();
       if (args.action === 'cancel') {
-        database.prepare('UPDATE appointments SET status = \'CANCELLED\', updatedAt = ? WHERE id = ? AND ownerId = ?').run(
+        tenantQuery('UPDATE appointments SET status = \'CANCELLED\', updatedAt = ? WHERE id = ? AND ownerId = ?').run(
           updatedAt, row.id, context.ownerId
         );
       } else {
-        database.prepare('UPDATE appointments SET status = \'CONFIRMED\', startAtUtc = COALESCE(?, startAtUtc), endAtUtc = COALESCE(?, endAtUtc), datetime = COALESCE(?, datetime), updatedAt = ? WHERE id = ? AND ownerId = ?').run(
+        tenantQuery('UPDATE appointments SET status = \'CONFIRMED\', startAtUtc = COALESCE(?, startAtUtc), endAtUtc = COALESCE(?, endAtUtc), datetime = COALESCE(?, datetime), updatedAt = ? WHERE id = ? AND ownerId = ?').run(
           typeof result.startUtc === 'string' ? result.startUtc : null,
           typeof result.endUtc === 'string' ? result.endUtc : null,
           typeof result.startUtc === 'string' ? result.startUtc : null,
@@ -1167,7 +1167,7 @@ export function createVoiceToolRuntime({
 
   async function calculateListedPrice(input) {
     const args=invocation(input);
-    const profile=database.prepare('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile=tenantQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     return calculateSavedListedPrice(parseJson(profile?.knowledgeBaseJson),args);
   }
 

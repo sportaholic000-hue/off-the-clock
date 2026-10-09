@@ -9,7 +9,7 @@ import { types } from 'node:util';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
 import { pricebookStructureIssue, validPricebookServiceId, missingPricebookServiceId } from './priceBookStructure.js';
-import {db as applicationDb} from './src/db.js';
+import {db as applicationDb,ownerQuery} from './src/db.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function pricebookDirectory() {
@@ -44,11 +44,11 @@ function ensureCreationRecords() {
 }
 export function pricebookCreationRecorded(ownerId) {
   ensureCreationRecords();
-  return Boolean(applicationDb.prepare('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
+  return Boolean(ownerQuery('SELECT 1 FROM priceBookCreationRecords WHERE ownerId = ?').get(String(ownerId)));
 }
 function recordPricebookCreation(ownerId, timestamp = new Date().toISOString()) {
   ensureCreationRecords();
-  applicationDb.prepare(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
+  ownerQuery(`INSERT INTO priceBookCreationRecords(ownerId,createdAt,updatedAt)
     VALUES(?,?,?) ON CONFLICT(ownerId) DO UPDATE SET updatedAt=excluded.updatedAt`).run(String(ownerId),timestamp,timestamp);
 }
 function missingCreatedPricebook(ownerId) {
