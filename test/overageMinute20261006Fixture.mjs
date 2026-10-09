@@ -71,7 +71,8 @@ export function fixture(t,{filename=':memory:',resume=false,fakes=fakeProviders(
     setTime(at);const id='SYNTHETIC-call-'+(++sequence),context={ownerId,callSid:'CA'+sequence.toString(16).padStart(32,'0'),accountSid:'AC'+'a'.repeat(32),from:'+19025550100',to:ownerId===A?'+19025550101':'+19025550102'};
     db.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,minutesBilled,spamFiltered,createdAt) VALUES(?,?,?,?,?,?,'CONNECTED',0,?,?)").run(id,ownerId,context.callSid,context.accountSid,context.from,context.to,spam?1:0,at);
     meter.start(context,id);setTime(Date.parse(at)+localSeconds*1000);
-    if(fallback)db.prepare("UPDATE calls SET status='AI_FALLBACK',outcome='AI_FALLBACK' WHERE ownerId=? AND id=?").run(ownerId,id);
+    // This helper ends the phone call, including any fallback leg.
+    if(fallback)db.prepare("UPDATE calls SET status='AI_FALLBACK',outcome='AI_FALLBACK',completedAt=? WHERE ownerId=? AND id=?").run(clock().toISOString(),ownerId,id);
     meter.finish(context,id,{status:'COMPLETED',outcome:'SYNTHETIC_END',failureCode:null,streamSid:null});
     const receipt={AccountSid:context.accountSid,CallSid:context.callSid,From:context.from,To:context.to,CallStatus:'completed',CallDuration:String(seconds),Direction:'inbound'};
     if(provider)meter.providerComplete(receipt);

@@ -1,0 +1,204 @@
+(node:4) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+ok 1 - calls audit 1: missing callback recovered by GET adds exactly 350 cents, late callback and restart count once
+  ---
+  duration_ms: 40.119179
+  type: 'test'
+  ...
+# Subtest: calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+ok 2 - calls audit 1: trial recovered 61 seconds uses two minutes and zero cents
+  ---
+  duration_ms: 18.47467
+  type: 'test'
+  ...
+# Subtest: calls audit 1: an ended call without a metering row is recovered through the callback path
+ok 3 - calls audit 1: an ended call without a metering row is recovered through the callback path
+  ---
+  duration_ms: 18.935263
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+ok 4 - calls audit 1: fetched account_sid=ACffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 17.709149
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+ok 5 - calls audit 1: fetched sid=CAffffffffffffffffffffffffffffffff is refused
+  ---
+  duration_ms: 17.873148
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched from=+19025550999 is refused
+ok 6 - calls audit 1: fetched from=+19025550999 is refused
+  ---
+  duration_ms: 17.870417
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched to=+19025550999 is refused
+ok 7 - calls audit 1: fetched to=+19025550999 is refused
+  ---
+  duration_ms: 18.019767
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched direction=outbound-api is refused
+ok 8 - calls audit 1: fetched direction=outbound-api is refused
+  ---
+  duration_ms: 18.47663
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched status=in-progress is refused
+ok 9 - calls audit 1: fetched status=in-progress is refused
+  ---
+  duration_ms: 17.887076
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=1.5 is refused
+ok 10 - calls audit 1: fetched duration=1.5 is refused
+  ---
+  duration_ms: 17.609099
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=null is refused
+ok 11 - calls audit 1: fetched duration=null is refused
+  ---
+  duration_ms: 18.097543
+  type: 'test'
+  ...
+# Subtest: calls audit 1: fetched duration=-1 is refused
+ok 12 - calls audit 1: fetched duration=-1 is refused
+  ---
+  duration_ms: 17.586613
+  type: 'test'
+  ...
+# Subtest: calls audit 1: recovered failed call remains zero
+ok 13 - calls audit 1: recovered failed call remains zero
+  ---
+  duration_ms: 20.08321
+  type: 'test'
+  ...
+# Subtest: calls audit 1: recovered spam call remains zero
+ok 14 - calls audit 1: recovered spam call remains zero
+  ---
+  duration_ms: 18.252856
+  type: 'test'
+  ...
+# Subtest: calls audit 1: ten-minute boundary, active calls and tenant isolation
+ok 15 - calls audit 1: ten-minute boundary, active calls and tenant isolation
+  ---
+  duration_ms: 25.499102
+  type: 'test'
+  ...
+# Subtest: calls audit 1: retry backoff survives restart and stops at seven days
+ok 16 - calls audit 1: retry backoff survives restart and stops at seven days
+  ---
+  duration_ms: 18.278601
+  type: 'test'
+  ...
+# Subtest: calls audit 1: retry can recover later and simultaneous workers reserve only one read
+ok 17 - calls audit 1: retry can recover later and simultaneous workers reserve only one read
+  ---
+  duration_ms: 19.178741
+  type: 'test'
+  ...
+# Subtest: calls audit 1: scheduled worker ticks and stops without provider writes
+ok 18 - calls audit 1: scheduled worker ticks and stops without provider writes
+  ---
+  duration_ms: 19.046024
+  type: 'test'
+  ...
+# Subtest: calls audit 1: production starts and stops the recovery worker
+ok 19 - calls audit 1: production starts and stops the recovery worker
+  ---
+  duration_ms: 0.451534
+  type: 'test'
+  ...
+# Subtest: calls audit 1: expired recovery remains a pending count after the allowance month ends
+ok 20 - calls audit 1: expired recovery remains a pending count after the allowance month ends
+  ---
+  duration_ms: 22.392843
+  type: 'test'
+  ...
+# (node:12) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: duration fallback: live FALLBACK at 10 minutes consumes no read or recovery row
+ok 21 - duration fallback: live FALLBACK at 10 minutes consumes no read or recovery row
+  ---
+  duration_ms: 26.463995
+  type: 'test'
+  ...
+# Subtest: duration fallback: live FALLBACK at 1 hour consumes no read or recovery row
+ok 22 - duration fallback: live FALLBACK at 1 hour consumes no read or recovery row
+  ---
+  duration_ms: 17.205133
+  type: 'test'
+  ...
+# Subtest: duration fallback: live FALLBACK at 8 days consumes no read or recovery row
+ok 23 - duration fallback: live FALLBACK at 8 days consumes no read or recovery row
+  ---
+  duration_ms: 16.995352
+  type: 'test'
+  ...
+# Subtest: duration fallback: ended FALLBACK waits ten minutes from phone end and still bills zero
+ok 24 - duration fallback: ended FALLBACK waits ten minutes from phone end and still bills zero
+  ---
+  duration_ms: 21.057714
+  type: 'test'
+  ...
+# Subtest: duration fallback: FALLBACK seven-day give-up starts at phone end, eight days after AI end
+ok 25 - duration fallback: FALLBACK seven-day give-up starts at phone end, eight days after AI end
+  ---
+  duration_ms: 19.403136
+  type: 'test'
+  ...
+# Subtest: duration fallback: live AI_FALLBACK at 10 minutes consumes no read or recovery row
+ok 26 - duration fallback: live AI_FALLBACK at 10 minutes consumes no read or recovery row
+  ---
+  duration_ms: 16.736982
+  type: 'test'
+  ...
+# Subtest: duration fallback: live AI_FALLBACK at 1 hour consumes no read or recovery row
+ok 27 - duration fallback: live AI_FALLBACK at 1 hour consumes no read or recovery row
+  ---
+  duration_ms: 16.604289
+  type: 'test'
+  ...
+# Subtest: duration fallback: live AI_FALLBACK at 8 days consumes no read or recovery row
+ok 28 - duration fallback: live AI_FALLBACK at 8 days consumes no read or recovery row
+  ---
+  duration_ms: 16.146886
+  type: 'test'
+  ...
+# Subtest: duration fallback: ended AI_FALLBACK waits ten minutes from phone end and still bills zero
+ok 29 - duration fallback: ended AI_FALLBACK waits ten minutes from phone end and still bills zero
+  ---
+  duration_ms: 18.190312
+  type: 'test'
+  ...
+# Subtest: duration fallback: AI_FALLBACK seven-day give-up starts at phone end, eight days after AI end
+ok 30 - duration fallback: AI_FALLBACK seven-day give-up starts at phone end, eight days after AI end
+  ---
+  duration_ms: 18.071076
+  type: 'test'
+  ...
+# Subtest: duration fallback: ordinary completed call still recovers 10 minutes and exactly 350 cents
+ok 31 - duration fallback: ordinary completed call still recovers 10 minutes and exactly 350 cents
+  ---
+  duration_ms: 20.602065
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 499.492383

@@ -34,14 +34,15 @@ export function createVoiceDurationRecovery({database,ownerQuery,env=process.env
   }
   async function processOwner(ownerId){
     if(!configured||stopped)return;
+    // The AI leg can finish while fallback is live; only the call row ends the phone call.
     const rows=ownerQuery(`SELECT c.id,c.ownerId,c.accountSid,c.callSid,c.callerNumber,c.destinationNumber,
-      COALESCE(v.completedAt,c.completedAt) endedAt
+      c.completedAt endedAt
       FROM calls c LEFT JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
       LEFT JOIN voiceDurationRecovery r ON r.ownerId=c.ownerId AND r.callId=c.id
       WHERE c.ownerId=? AND c.status IN ('COMPLETED','RECOVERED','FAILED','FALLBACK','AI_FALLBACK','HUMAN_ROUTING')
-      AND COALESCE(v.completedAt,c.completedAt)<=? AND v.providerDigest IS NULL
+      AND c.completedAt<=? AND v.providerDigest IS NULL
       AND r.gaveUpAt IS NULL AND (r.nextAttemptAt IS NULL OR r.nextAttemptAt<=?)
-      ORDER BY COALESCE(v.completedAt,c.completedAt),c.id LIMIT 20`).all(ownerId,iso(now()-MIN_AGE),iso(now()));
+      ORDER BY c.completedAt,c.id LIMIT 20`).all(ownerId,iso(now()-MIN_AGE),iso(now()));
     for(const call of rows){
       if(stopped)break;
       ownerQuery('INSERT OR IGNORE INTO voiceDurationRecovery(callId,ownerId,nextAttemptAt) VALUES(?,?,?)').run(call.id,ownerId,iso(now()));
