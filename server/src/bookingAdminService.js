@@ -5,6 +5,7 @@ import { loadPricebook } from '../priceBookService.js';
 import { bookStatuses, bookQuoteStatuses } from './quoteDoneBridge.js';
 import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
 import { serviceAreaFromKnowledgeBase } from './serviceArea.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const WEEKDAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const BOOKING_MODES = new Set(['site_visit_first', 'book_job']);
@@ -636,18 +637,20 @@ export function createBookingAdminService({
     throw new TypeError('Booking admin service dependencies are invalid.');
   }
 
-  const ownerStatement = db.prepare(`SELECT id, businessName, timezone FROM users
+  const query = usageOwnerQuery(db);
+
+  const ownerStatement = query(`SELECT id, businessName, timezone FROM users
     WHERE id = ? AND (ownerId = ? OR id = ?) AND role = 'owner'`);
-  const settingsStatement = db.prepare('SELECT * FROM bookingSettings WHERE ownerId = ?');
-  const policiesStatement = db.prepare('SELECT * FROM bookingPolicies WHERE ownerId = ? ORDER BY serviceId');
-  const policyStatement = db.prepare('SELECT * FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?');
-  const widgetStatement = db.prepare('SELECT * FROM widgetSettings WHERE ownerId = ?');
-  const accessStatement = db.prepare('SELECT publicKey, allowedOriginsJson, createdAt FROM quoteAccessKeys WHERE ownerId = ?');
-  const connectionStatement = db.prepare(`SELECT ownerId, provider, status, calendarId,
+  const settingsStatement = query('SELECT * FROM bookingSettings WHERE ownerId = ?');
+  const policiesStatement = query('SELECT * FROM bookingPolicies WHERE ownerId = ? ORDER BY serviceId');
+  const policyStatement = query('SELECT * FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?');
+  const widgetStatement = query('SELECT * FROM widgetSettings WHERE ownerId = ?');
+  const accessStatement = query('SELECT publicKey, allowedOriginsJson, createdAt FROM quoteAccessKeys WHERE ownerId = ?');
+  const connectionStatement = query(`SELECT ownerId, provider, status, calendarId,
     credentialsCiphertext, credentialsIv, credentialsTag, keyVersion,
     externalUrl, expiresAtUtc, scopesJson, createdAt, updatedAt
     FROM calendarConnections WHERE ownerId = ?`);
-  const profileStatement = db.prepare(
+  const profileStatement = query(
     'SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?'
   );
 
@@ -660,7 +663,7 @@ export function createBookingAdminService({
   function catalog(ownerId) {
     const appointment={id:'voice-appointment',serviceType:'APPOINTMENT',name:'Appointment',quoteStatus:'NOT_REQUIRED',allowedQuoteTierNames:[],issues:[]};
     const nativeCatalog=loadServiceCatalog===defaultLoadServiceCatalog;
-    if(nativeCatalog){const owner=db.prepare("SELECT * FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId);if(!hasQuoteDoneAccess(owner,{now:new Date(clock())}))return [appointment];}
+    if(nativeCatalog){const owner=query("SELECT * FROM users WHERE id=? AND (ownerId=? OR id=?) AND role='owner'").get(ownerId,ownerId,ownerId);if(!hasQuoteDoneAccess(owner,{now:new Date(clock())}))return [appointment];}
     let loaded;
     try {
       loaded = loadServiceCatalog(ownerId);
@@ -794,13 +797,13 @@ export function createBookingAdminService({
       bufferAfterMinutes: current.bufferAfterMinutes,
       directBookingEnabled: Number(current.directBookingEnabled)
     };
-    db.prepare(`UPDATE users SET timezone = ?
+    query(`UPDATE users SET timezone = ?
       WHERE id = ? AND (ownerId = ? OR id = ?) AND role = 'owner'`)
       .run(input.timezone, ownerId, ownerId, ownerId);
     if (current && same(comparable, next)) return current.revision;
     const revision = revisionFrom(randomUUID);
     const updatedAt = nowIso(clock);
-    db.prepare(`INSERT INTO bookingSettings (
+    query(`INSERT INTO bookingSettings (
       ownerId, revision, timezone, provider, calendarId, externalUrl,
       weeklyAvailabilityJson, blackoutsJson, bookingHorizonDays,
       minimumNoticeMinutes, slotIncrementMinutes, bufferBeforeMinutes,
@@ -864,7 +867,7 @@ export function createBookingAdminService({
     if (current && same(comparable, next)) return current.revision;
     const revision = revisionFrom(randomUUID);
     const updatedAt = nowIso(clock);
-    db.prepare(`INSERT INTO bookingPolicies (
+    query(`INSERT INTO bookingPolicies (
       ownerId, serviceId, revision, bookingMode, durationMinutes, enabled, updatedAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(ownerId, serviceId) DO UPDATE SET
@@ -896,7 +899,7 @@ export function createBookingAdminService({
     const now = nowIso(clock);
     const existing = accessStatement.get(ownerId);
     const publicKey = existing?.publicKey || publicKeyFrom(randomBytes);
-    db.prepare(`INSERT INTO widgetSettings (
+    query(`INSERT INTO widgetSettings (
       ownerId, accentColor, launcherLabel, clickToCallNumber, updatedAt
     ) VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(ownerId) DO UPDATE SET
@@ -904,10 +907,10 @@ export function createBookingAdminService({
       clickToCallNumber=excluded.clickToCallNumber, updatedAt=excluded.updatedAt`
     ).run(ownerId, input.accentColor, input.launcherLabel, input.clickToCallNumber, now);
     if (existing) {
-      db.prepare('UPDATE quoteAccessKeys SET allowedOriginsJson = ? WHERE ownerId = ?')
+      query('UPDATE quoteAccessKeys SET allowedOriginsJson = ? WHERE ownerId = ?')
         .run(JSON.stringify(input.allowedOrigins), ownerId);
     } else {
-      db.prepare(`INSERT INTO quoteAccessKeys (
+      query(`INSERT INTO quoteAccessKeys (
         ownerId, publicKey, allowedOriginsJson, createdAt
       ) VALUES (?, ?, ?, ?)`).run(
         ownerId,

@@ -257,7 +257,7 @@ export function createBillingStateService({
 
   const evidence = createBillingEvidence({db, fail:billingError});
 
-  const userById = db.prepare('SELECT id, role, plan, planStatus, trialEndsAt FROM users WHERE id = ?');
+  const userById = usageOwnerQuery(db)("SELECT id, role, plan, planStatus, trialEndsAt FROM users WHERE id = ? AND role = 'owner' AND ownerId IS NULL");
   const billingByOwner = usageOwnerQuery(db)(`
     SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
       users.role AS userRole
@@ -272,6 +272,16 @@ export function createBillingStateService({
     JOIN users ON users.id = billing.ownerId
     WHERE billing.stripeCustomerId = ?
   `);
+  const ownerBillingByCustomer = usageOwnerQuery(db)(`
+    SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
+      users.role AS userRole
+    FROM billingAccounts AS billing
+    JOIN users ON users.id = billing.ownerId
+    WHERE billing.ownerId = ? AND billing.stripeCustomerId = ?
+  `);
+  const foreignBillingCustomer = usageOwnerQuery(db)(
+    'SELECT 1 FROM billingAccounts WHERE stripeCustomerId = ? AND ownerId <> ?'
+  );
   const billingBySubscription = db.prepare(`
     SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
       users.role AS userRole
@@ -282,9 +292,21 @@ export function createBillingStateService({
   const receiptById = db.prepare(`
     SELECT eventDigest, resultJson FROM billingEventReceipts WHERE stripeEventId = ?
   `);
+  const ownerReceiptById = usageOwnerQuery(db)(`
+    SELECT eventDigest, resultJson FROM billingEventReceipts WHERE ownerId = ? AND stripeEventId = ?
+  `);
+  const foreignReceiptById = usageOwnerQuery(db)(
+    'SELECT 1 FROM billingEventReceipts WHERE stripeEventId = ? AND ownerId <> ?'
+  );
   const subscriptionHistoryById = db.prepare(`
     SELECT * FROM billingSubscriptionHistory WHERE stripeSubscriptionId = ?
   `);
+  const ownerSubscriptionHistoryById = usageOwnerQuery(db)(
+    'SELECT * FROM billingSubscriptionHistory WHERE ownerId = ? AND stripeSubscriptionId = ?'
+  );
+  const foreignSubscriptionHistory = usageOwnerQuery(db)(
+    'SELECT 1 FROM billingSubscriptionHistory WHERE stripeSubscriptionId = ? AND ownerId <> ?'
+  );
   const terminalDeletionReceipt = usageOwnerQuery(db)(`
     SELECT stripeEventId, eventCreatedAt, processedAt
     FROM billingEventReceipts
@@ -471,8 +493,15 @@ export function createBillingStateService({
     return history;
   }
 
+  function historyForOwner(account, subscriptionId) {
+    if (foreignSubscriptionHistory.get(subscriptionId, account.ownerId)) {
+      throw billingError('BILLING_STATE_CONFLICT', 'Subscription history ownership is inconsistent.');
+    }
+    return ownerSubscriptionHistoryById.get(account.ownerId, subscriptionId);
+  }
+
   function ensureCurrentHistory(account, event, processedAt) {
-    const existing = subscriptionHistoryById.get(event.subscriptionId);
+    const existing = historyForOwner(account, event.subscriptionId);
     if (existing) {
       validateHistoryOwnership(existing, account, event.subscriptionId);
       if (existing.status !== 'CURRENT') {
@@ -490,14 +519,14 @@ export function createBillingStateService({
       processedAt
     );
     return validateHistoryOwnership(
-      subscriptionHistoryById.get(event.subscriptionId),
+      historyForOwner(account, event.subscriptionId),
       account,
       event.subscriptionId
     );
   }
 
   function ensureTerminalHistory(account, subscriptionId, deleted, processedAt) {
-    const existing = subscriptionHistoryById.get(subscriptionId);
+    const existing = historyForOwner(account, subscriptionId);
     if (!existing) {
       insertTerminalSubscriptionHistory.run(
         subscriptionId,
@@ -524,7 +553,7 @@ export function createBillingStateService({
       }
     }
     const terminal = validateHistoryOwnership(
-      subscriptionHistoryById.get(subscriptionId),
+      historyForOwner(account, subscriptionId),
       account,
       subscriptionId
     );
@@ -729,8 +758,8 @@ export function createBillingStateService({
       const user = userById.get(cleanOwnerId);
       if (!user || user.role !== 'owner') throw billingError('OWNER_NOT_FOUND', 'Billing can only be registered for an owner account.');
       const existingOwner = billingByOwner.get(cleanOwnerId);
-      const existingCustomer = billingByCustomer.get(cleanCustomerId);
-      if (existingCustomer && existingCustomer.ownerId !== cleanOwnerId) {
+      const existingCustomer = ownerBillingByCustomer.get(cleanOwnerId, cleanCustomerId);
+      if (!existingCustomer && foreignBillingCustomer.get(cleanCustomerId, cleanOwnerId)) {
         throw billingError('CUSTOMER_ALREADY_ASSIGNED', 'The Stripe customer is assigned to another account.');
       }
       if (existingOwner) {
@@ -835,7 +864,8 @@ export function createBillingStateService({
       [context.account.stripePriceId,...event.priceIds].some(id=>priceConfiguration.prices.get(id)?.interval==='annual');
     if (context.relationship==='TERMINAL' || event.type==='customer.subscription.deleted'&&!annualCancellation) return applyVerifiedStripeEvent(rawEvent);
     return withBillingLease(db,context.account.ownerId,async assertLease=>{
-      if (receiptById.get(event.id)) return applyVerifiedStripeEvent(rawEvent,{assertLease});
+      if (ownerReceiptById.get(context.account.ownerId,event.id) ||
+          foreignReceiptById.get(event.id,context.account.ownerId)) return applyVerifiedStripeEvent(rawEvent,{assertLease});
       context=resolveAccountContext(event);
       if (context.relationship==='TERMINAL') return applyVerifiedStripeEvent(rawEvent,{assertLease});
       const known=evidence.readSubscription(context.account.ownerId,event.subscriptionId);

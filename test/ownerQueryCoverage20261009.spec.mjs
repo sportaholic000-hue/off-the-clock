@@ -1,52 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
-import {readdirSync,readFileSync} from 'node:fs';
-import {join,relative} from 'node:path';
-import {OWNER_QUERY_EXCEPTIONS} from '../server/src/ownerQueryExceptions.js';
+import {mkdtempSync,mkdirSync,rmSync,writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {OWNER_QUERY_EXCEPTIONS, OWNER_QUERY_NON_QUERY_USES} from '../server/src/ownerQueryExceptions.js';
+import {prepareInventory,unlistedPrepares} from './helpers/ownerQueryScan.mjs';
 
 const root=new URL('..',import.meta.url).pathname;
-function files(directory){return readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
-  if(entry.name==='node_modules')return [];
-  const path=join(directory,entry.name);
-  if(entry.isDirectory())return files(path);
-  return entry.isFile()&&/\.js$/.test(entry.name)?[path]:[];
-});}
-// Parse through balanced parentheses, strings, template literals and comments,
-// so a multiline SQL statement counts as one prepare even if it has nested SQL.
-function argument(source,start){
-  let depth=1,quote=null,escaped=false,lineComment=false,blockComment=false,i=start;
-  for(;i<source.length&&depth;i++){
-    const c=source[i],next=source[i+1];
-    if(lineComment){if(c==='\n')lineComment=false;continue;}
-    if(blockComment){if(c==='*'&&next==='/'){blockComment=false;i++;}continue;}
-    if(quote){if(escaped)escaped=false;else if(c==='\\')escaped=true;else if(c===quote)quote=null;continue;}
-    if(c==='/'&&next==='/'){lineComment=true;i++;continue;}
-    if(c==='/'&&next==='*'){blockComment=true;i++;continue;}
-    if(c==='\''||c==='"'||c==='`'){quote=c;continue;}
-    if(c==='(')depth++;
-    if(c===')')depth--;
-  }
-  if(depth)throw new Error('Unbalanced prepare call');
-  return source.slice(start,i-1).trim();
-}
-function directPrepares(){
- const result=[],ordinals=new Map();
- for(const path of files(join(root,'server'))){
-  const file=relative(root,path).replaceAll('\\','/'),source=readFileSync(path,'utf8');
-  const pattern=/\b([A-Za-z_$][\w$]*)\s*(?:\?\.|\.)\s*prepare\s*\(/g;let match;
-  while((match=pattern.exec(source))){
-   const sql=argument(source,pattern.lastIndex),line=source.slice(0,match.index).split('\n').length;
-   // These are application protocol methods, not SQLite connections.
-   if((file==='server/src/voice/voiceToolRuntime.js'&&match[1]==='quoteApp')||
-      (file==='server/src/voice/voiceToolRuntime.js'&&match[1]==='quoteEmails'))continue;
-   if(sql==='sql'&&['server/src/db.js','server/src/billingUsagePolicy.js'].includes(file))continue;
-   const signature=createHash('sha256').update(sql).digest('hex'),key=file+'\0'+signature,occurrence=(ordinals.get(key)||0)+1;
-   ordinals.set(key,occurrence);result.push({file,line,signature,occurrence});
-  }
- }
- return result;
-}
 test('every direct database prepare in server is an exact listed exception',()=>{
  const exceptions=new Map();
  for(const row of OWNER_QUERY_EXCEPTIONS){
@@ -59,9 +18,54 @@ test('every direct database prepare in server is an exact listed exception',()=>
   assert.ok(!exceptions.has(key),`Duplicate exception: ${row.file} ${row.function}`);
   exceptions.set(key,row);
  }
- const all=directPrepares(),unlisted=all.filter(row=>!exceptions.has(row.file+'\0'+row.signature+'\0'+row.occurrence));
- assert.equal(unlisted.length,0,`${unlisted.length} direct prepares are not in the exact exception list:\n${unlisted.slice(0,20).map(row=>`${row.file}:${row.line}`).join('\n')}`);
- for(const row of OWNER_QUERY_EXCEPTIONS)assert.ok(all.some(call=>call.file===row.file&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused exception: ${row.file} ${row.function}`);
+ const all=prepareInventory(root),unlisted=unlistedPrepares(root,OWNER_QUERY_EXCEPTIONS,OWNER_QUERY_NON_QUERY_USES);
+ assert.equal(unlisted.length,0,`${unlisted.length} prepare occurrences are not listed:\n${unlisted.slice(0,20).map(row=>`${row.file}:${row.line} ${row.snippet}`).join('\n')}`);
+ for(const row of OWNER_QUERY_EXCEPTIONS)assert.ok(all.some(call=>call.direct&&call.file===row.file&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused exception: ${row.file} ${row.function}`);
+ for(const row of OWNER_QUERY_NON_QUERY_USES){
+  assert.ok(row.reason?.length>8,`Missing non-query reason: ${row.file}`);
+  assert.ok(Number.isInteger(row.line)&&row.line>0,`Missing line: ${row.file}`);
+  assert.ok(all.some(call=>call.file===row.file&&call.line===row.line&&call.signature===row.signature&&call.occurrence===row.occurrence),`Unused allowed use: ${row.file}:${row.line} ${row.function}`);
+ }
+});
+
+function scratchScan(name,extension,source,expected) {
+ const directory=mkdtempSync(join(root,'.owner-query-scan-'));
+ try {
+  mkdirSync(join(directory,'server','src'),{recursive:true});
+  writeFileSync(join(directory,'server','src',name+extension),source);
+  const found=unlistedPrepares(directory,[],[]);
+  assert.equal(found.length,expected,`${name} should yield exactly ${expected} unlisted occurrences`);
+ } finally { rmSync(directory,{recursive:true,force:true}); }
+}
+
+test('scan rejects bracketed database[\'prepare\'] in .js: 1 finding',()=>{
+ scratchScan('bracket-single','.js',"database['prepare']('SELECT * FROM calls')",1);
+});
+test('scan rejects double quoted and template computed prepare in .js: 1 each',()=>{
+ scratchScan('bracket-double','.js','database["prepare"]("SELECT 1")',1);
+ scratchScan('bracket-template','.js','database[`prepare`]("SELECT 1")',1);
+});
+test('scan rejects dynamic key spelling in .js: 1 finding',()=>{
+ scratchScan('bracket-variable','.js',"const key = 'prepare'; database[key]('SELECT 1')",1);
+});
+test('scan rejects database.prepare.bind alias in .js: 1 finding',()=>{
+ scratchScan('bound-alias','.js','const p = database.prepare.bind(database)',1);
+});
+test('scan rejects const p = database.prepare alias in .js: 1 finding',()=>{
+ scratchScan('property-alias','.js','const p = database.prepare',1);
+});
+test('scan rejects destructured prepare alias in .js: 1 finding',()=>{
+ scratchScan('destructured','.js','const {prepare} = database',1);
+});
+test('scan covers .mjs and .cjs: 1 finding in each',()=>{
+ scratchScan('module','.mjs',"database.prepare('SELECT 1')",1);
+ scratchScan('common','.cjs',"database.prepare('SELECT 1')",1);
+});
+test('scan permits an ownerQuery control and ignores commented prepares: 0 findings',()=>{
+ scratchScan('control','.mjs',"// database.prepare('SELECT 1')\n/* database['prepare']() */\nownerQuery('SELECT * FROM calls WHERE ownerId=?')",0);
+});
+test('scan does not mistake a slash inside a regex literal for a comment: 1 finding',()=>{
+ scratchScan('regex-literal','.js',"const slash=/[//]/; database.prepare('SELECT 1')",1);
 });
 
 test('owner-row predicate preserves owner and staff parent lookup results',async()=>{

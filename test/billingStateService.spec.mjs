@@ -293,6 +293,16 @@ test('customer and subscription IDs mapped to different owners are rejected atom
   }
 });
 
+test('customer linking keeps the same foreign customer collision error and leaves both owners unchanged', () => {
+  const {db,service}=harness();
+  try {
+    // Handwritten expected: owner A retains cus_a; owner B has no customer;
+    // linking the same Stripe customer to B is CUSTOMER_ALREADY_ASSIGNED.
+    assert.throws(()=>service.registerBillingCustomer({ownerId:OWNER_B,stripeCustomerId:'cus_a'}),hasCode('CUSTOMER_ALREADY_ASSIGNED'));
+    assert.deepEqual(db.prepare('SELECT ownerId,stripeCustomerId FROM billingAccounts ORDER BY ownerId').all().map(r=>[r.ownerId,r.stripeCustomerId]),[[OWNER_A,'cus_a']]);
+  } finally {db.close();}
+});
+
 test('unrecognized prices and ambiguous base plans are rejected without changing access', () => {
   const { db, service } = harness();
   try {
