@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: goAway while a turn is active retains the last handle and drains speech until turnComplete
+ok 1 - goAway while a turn is active retains the last handle and drains speech until turnComplete
+  ---
+  duration_ms: 9.350678
+  type: 'test'
+  ...
+# Subtest: a fresh resumable handle during goAway is used after the current speech
+ok 2 - a fresh resumable handle during goAway is used after the current speech
+  ---
+  duration_ms: 7.923403
+  type: 'test'
+  ...
+# Subtest: idle goAway reconnects immediately; warning deadline uses last good handle
+ok 3 - idle goAway reconnects immediately; warning deadline uses last good handle
+  ---
+  duration_ms: 5.507442
+  type: 'test'
+  ...
+# Subtest: transparent resumption replays unconsumed caller audio once in order
+ok 4 - transparent resumption replays unconsumed caller audio once in order
+  ---
+  duration_ms: 2.570666
+  type: 'test'
+  ...
+# Subtest: identity accepts greeting plus question
+ok 5 - identity accepts greeting plus question
+  ---
+  duration_ms: 32.346283
+  type: 'test'
+  ...
+# Subtest: identity accepts missing punctuation
+ok 6 - identity accepts missing punctuation
+  ---
+  duration_ms: 18.506031
+  type: 'test'
+  ...
+# Subtest: identity accepts yeah that is me
+ok 7 - identity accepts yeah that is me
+  ---
+  duration_ms: 18.391685
+  type: 'test'
+  ...
+# Subtest: identity accepts yes it is me
+ok 8 - identity accepts yes it is me
+  ---
+  duration_ms: 18.361784
+  type: 'test'
+  ...
+# Subtest: identity accepts pieces
+ok 9 - identity accepts pieces
+  ---
+  duration_ms: 19.12749
+  type: 'test'
+  ...
+# Subtest: identity accepts intro
+ok 10 - identity accepts intro
+  ---
+  duration_ms: 18.567912
+  type: 'test'
+  ...
+# Subtest: identity accepts yup
+ok 11 - identity accepts yup
+  ---
+  duration_ms: 16.712789
+  type: 'test'
+  ...
+# Subtest: identity accepts self naming
+ok 12 - identity accepts self naming
+  ---
+  duration_ms: 17.598405
+  type: 'test'
+  ...
+# Subtest: no-name question uses approved wording and a clear yes releases history
+ok 13 - no-name question uses approved wording and a clear yes releases history
+  ---
+  duration_ms: 18.822651
+  type: 'test'
+  ...
+# Subtest: silence is retryable and a subsequent clear yes confirms
+ok 14 - silence is retryable and a subsequent clear yes confirms
+  ---
+  duration_ms: 17.311842
+  type: 'test'
+  ...
+# Subtest: identity no reveals nothing
+ok 15 - identity no reveals nothing
+  ---
+  duration_ms: 17.562044
+  type: 'test'
+  ...
+# Subtest: identity unclear reveals nothing
+ok 16 - identity unclear reveals nothing
+  ---
+  duration_ms: 17.540162
+  type: 'test'
+  ...
+# Subtest: previous speech redacts every receptionist number and all caller money forms, retaining measurements
+ok 17 - previous speech redacts every receptionist number and all caller money forms, retaining measurements
+  ---
+  duration_ms: 19.370381
+  type: 'test'
+  ...
+# Subtest: numeric product name: Pressure-treated 2x4 $3.50 each.
+ok 18 - numeric product name: Pressure-treated 2x4 $3.50 each.
+  ---
+  duration_ms: 6.145316
+  type: 'test'
+  ...
+# Subtest: numeric product name: 2x4 stud $3.50 each.
+ok 19 - numeric product name: 2x4 stud $3.50 each.
+  ---
+  duration_ms: 6.310156
+  type: 'test'
+  ...
+# Subtest: numeric product name: Grade 2 lumber $5 each
+ok 20 - numeric product name: Grade 2 lumber $5 each
+  ---
+  duration_ms: 0.158632
+  type: 'test'
+  ...
+# Subtest: numeric product name: 3/4 inch plywood $5 each
+ok 21 - numeric product name: 3/4 inch plywood $5 each
+  ---
+  duration_ms: 0.077315
+  type: 'test'
+  ...
+# Subtest: numeric product name: \#2 lumber $5 each
+ok 22 - numeric product name: \#2 lumber $5 each
+  ---
+  duration_ms: 0.129659
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber $5 each, 10 or more $4 each
+ok 23 - quantity condition refused: Lumber $5 each, 10 or more $4 each
+  ---
+  duration_ms: 1.086768
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber $5 each or 2 for $9
+ok 24 - quantity condition refused: Lumber $5 each or 2 for $9
+  ---
+  duration_ms: 0.489501
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber pack of 6 $5 each
+ok 25 - quantity condition refused: Lumber pack of 6 $5 each
+  ---
+  duration_ms: 0.189546
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber first 3 $5 each
+ok 26 - quantity condition refused: Lumber first 3 $5 each
+  ---
+  duration_ms: 0.217233
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber per 100 $5 each
+ok 27 - quantity condition refused: Lumber per 100 $5 each
+  ---
+  duration_ms: 0.07962
+  type: 'test'
+  ...
+# Subtest: quantity condition refused: Lumber min 5 $5 each
+ok 28 - quantity condition refused: Lumber min 5 $5 each
+  ---
+  duration_ms: 0.048137
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 323.516022

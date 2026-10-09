@@ -232,7 +232,7 @@ export function createVoiceToolRuntime({
     database, clock, leaseMs: idempotencyLeaseMs
   });
   const tenantQuery=usageOwnerQuery(database);
-  let identityQuestion=null,identityDenied=false;
+  let identityQuestion=null,identityQuestionOffset=0,identityDenied=false;
 
   function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
     const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
@@ -1180,17 +1180,32 @@ export function createVoiceToolRuntime({
       return {status:'not_found',message:'No caller-owned customer history was found.'};
     }
     const firstName=typeof customer?.name==='string'?customer.name.trim().split(/\s+/)[0].slice(0,120):null;
-    const question=firstName?`Am I speaking with ${firstName}?`:'Am I speaking with the person who called this business from this number?';
-    if(!args.callerConfirmedIdentity){identityQuestion=question;return {status:'identity_unconfirmed',...(firstName?{greetingName:firstName}:{}),message:question};}
+    const question=firstName?`Am I speaking with ${firstName}?`:'Have you called us before from this number?';
+    if(!args.callerConfirmedIdentity){
+      if(!identityQuestion){
+        const saved=tenantQuery('SELECT transcriptJson FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
+        const prior=parseJson(saved?.transcriptJson,[]);
+        identityQuestionOffset=Array.isArray(prior)?prior.length:0;
+      }
+      identityQuestion=question;return {status:'identity_unconfirmed',...(firstName?{greetingName:firstName}:{}),message:question};
+    }
     if(!identityQuestion)return {status:'not_found',message:'Ask the identity question before retrieving history.'};
     const row=tenantQuery('SELECT transcriptJson FROM calls WHERE ownerId=? AND callSid=?').get(context.ownerId,context.callSid);
     const transcript=parseJson(row?.transcriptJson,[]);
     const turns=Array.isArray(transcript)?transcript:[];
-    const lastCaller=[...turns].reverse().find(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string');
-    const preceding=lastCaller?turns.slice(0,turns.lastIndexOf(lastCaller)).reverse().find(turn=>['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'):null;
-    const answer=lastCaller?.text.trim()||'';
-    const named=firstName&&new RegExp(`^(?:yes[,!. ]*)?(?:this is|i am|i'm|it's)\\s+${firstName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}(?:\\s+speaking)?[.!\\s]*$`,'i').test(answer);
-    if(!lastCaller||preceding?.text.trim()!==identityQuestion||!named&&!/^(?:yes(?:\s*[,!.]?\s*(?:speaking|that'?s me|it is|this is|i am|i'm))?|yeah|yep|speaking|that'?s me|correct|that'?s right)[.!\s]*$/i.test(answer)){
+    const normalized=value=>value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+    const name=normalized(firstName||'');
+    const questionIndex=turns.findLastIndex((turn,index)=>index>=identityQuestionOffset&&['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'&&
+      (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):normalized(turn.text).includes('have you called us before from this number')));
+    if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
+    const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
+    if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
+    const spoken=normalized(answer);
+    const denied=/\b(?:no|nope|not|isn t|isnt|wrong number)\b/i.test(spoken);
+    const affirmation=/^(?:(?:hi|hello|oh|um)\s+)?(?:yes|yeah|yep|yup|correct|that s right|that s me|it s me|it is|speaking)(?:\b|$)/i.test(spoken);
+    const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const named=Boolean(name)&&new RegExp(`^(?:(?:hi|hello|oh|um)\\s+)?(?:this is|i m|i am)\\s+${escaped}(?:\\b|$)|^(?:(?:hi|hello|oh|um)\\s+)?${escaped}\\s+here(?:\\b|$)`,'i').test(spoken);
+    if(denied||!affirmation&&!named){
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),
