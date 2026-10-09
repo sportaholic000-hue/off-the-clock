@@ -13,12 +13,14 @@ import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
 import {validateVoiceToolCall} from '../server/src/voice/toolSchemas.js';
 import {compileVoiceSystemInstruction} from '../server/src/voice/voicePromptCompiler.js';
 import {customerHistory} from '../server/src/customerHistoryService.js';
+import {confirmedHistory} from './returningCallerTestHelper.mjs';
 import {savePricebook,loadPricebook} from '../server/priceBookService.js';
 import {approveApplicationService,bookRevision} from '../server/src/quoteDoneBridge.js';
 import {extractWebsitePrices} from '../server/src/websitePriceExtraction.js';
 import {createWebsitePriceImporter} from '../server/src/websitePriceImport.js';
 
 process.env.JWT_SECRET='SYNTHETIC_LEFTOVERS_SIGNING_KEY_NEVER_LIVE';
+const history=(f,c)=>{const v=f.voice(c);return confirmedHistory(f.db,c,args=>v.tool('getCustomerContext',args));};
 // Handwritten expectations: verification/engine-leftovers/EXPECTATIONS.md.
 function laminate(){
  const f=flooring('laminate');delete f.ownerPricing.pricing.perStepPrice;
@@ -84,7 +86,7 @@ test('leftovers history: service retains saved material qualifications and optio
 });
 test('leftovers history: dispatched partial receipt retains priced scope and separate work',async t=>{
  const f=fixture(t),c=f.context();savedHistory(f,c,{resultType:'PARTIAL_ESTIMATE_READY',pricedEstimate:receipt(),pricedScope:{service:'[SYNTHETIC] Mowing',facts:[{label:'Area',value:'5000 sqft'}]},additionalWork:[{description:'[SYNTHETIC] stump removal'}],fullJobTotal:null});
- const result=await f.voice(c).tool('getCustomerContext',{}),q=result.recentQuotes[0];
+ const result=await history(f,c),q=result.recentQuotes[0];
  assert.equal(q.fullJobTotal,null);assert.ok(q.pricedScope.includes('Area: 5000 sqft'));
  assert.deepEqual(q.additionalWork,['[SYNTHETIC] stump removal']);assert.equal(q.options[0].priceUnit,'per visit');
  assert.doesNotMatch(JSON.stringify(result),/PRIVATE_MUST_NOT_LEAK/);
@@ -94,7 +96,7 @@ test('leftovers history: authoritative frozen receipt retains long and per-optio
  Object.assign(saved.options[0],{priceUnit:'per package',taxTreatment:'Tax included in this saved option.',skippedAddons:['[SYNTHETIC] delivery excluded']});
  savedHistory(f,c,{...receipt(),priceUnit:'STALE_FALLBACK'},'authoritative');
  f.db.prepare("INSERT INTO quoteSubmissions(ownerId,requestId,contentDigest,recordId,resultType,bookRevision,originalSubmissionJson,internalOutcomeJson,customerResponseJson,createdAt) VALUES(?,'synthetic-history','synthetic','authoritative','INSTANT_ESTIMATE_READY','old-revision','{}','{}',?,?)").run(c.ownerId,JSON.stringify(saved),at);
- const q=(await f.voice(c).tool('getCustomerContext',{})).recentQuotes[0];
+ const q=(await history(f,c)).recentQuotes[0];
  assert.equal(q.midEstimate,100);assert.equal(q.priceUnit,'per visit');assert.equal(q.writtenDisclosure,saved.disclaimer);
  assert.equal(q.options[0].priceUnit,'per package');assert.equal(q.options[0].taxTreatment,saved.options[0].taxTreatment);
  assert.deepEqual(q.options[0].skippedAddons,saved.options[0].skippedAddons);assert.doesNotMatch(JSON.stringify(q),/STALE_FALLBACK/);
@@ -102,7 +104,7 @@ test('leftovers history: authoritative frozen receipt retains long and per-optio
 for(const [label,change] of [['oversize disclosure',r=>r.disclaimer='x'.repeat(65537)],['invalid exclusion',r=>r.skippedAddons=[{description:'must not vanish'}]],['missing separate scope',r=>Object.assign(r,{resultType:'PARTIAL_ESTIMATE_READY',pricedEstimate:receipt(),additionalWork:[{}]})]]){
  test('leftovers history: '+label+' withholds all amounts instead of dropping qualifications',async t=>{
   const f=fixture(t),c=f.context(),saved=receipt();change(saved);savedHistory(f,c,saved);
-  const q=(await f.voice(c).tool('getCustomerContext',{})).recentQuotes[0];
+  const q=(await history(f,c)).recentQuotes[0];
   assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);assert.equal(q.options,undefined);assert.match(q.customerMessage,/complete saved quote qualifications/);
  });
 }

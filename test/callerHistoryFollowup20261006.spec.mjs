@@ -5,8 +5,10 @@ import {fixture,address,at,secret} from './leadCaptureRepair20261006Fixture.mjs'
 import {createVoiceToolRuntime} from '../server/src/voice/voiceToolRuntime.js';
 import {createVoiceToolDispatcher} from '../server/src/voice/toolDispatcher.js';
 import {createOwnerCalendarService} from '../server/src/ownerCalendarService.js';
+import {confirmedHistory} from './returningCallerTestHelper.mjs';
 
 const phone='+19025550100';
+const history=(f,c,v=f.voice(c))=>confirmedHistory(f.db,c,args=>v.tool('getCustomerContext',args));
 function appointment(f,id,ownerId,number,start){f.db.prepare("INSERT INTO appointments(id,ownerId,customerJson,status,startAtUtc,createdAt) VALUES(?,?,?,'CONFIRMED',?,?)").run(id,ownerId,JSON.stringify({phone:number}),start,at);}
 function preference(f,id,ownerId,status,date){
  f.db.prepare("INSERT INTO bookingIntents(id,ownerId,tokenHash,sourceType,sourceId,serviceId,resultType,status,expiresAtUtc,createdAt) VALUES(?,?,?,'lead',?,'synthetic-service','ESTIMATE_REQUIRES_REVIEW','OPEN','2026-12-31T00:00:00Z',?)").run(id,ownerId,id,id,at);
@@ -17,14 +19,14 @@ test('D14 caller filter precedes limit with tenant and malformed-record controls
  for(let i=0;i<30;i++)appointment(f,'unrelated-'+i,c.ownerId,'+19025550177','2026-10-08T12:00:00Z');
  appointment(f,'foreign','synthetic-b',phone,'2026-10-09T12:00:00Z');
  f.db.prepare("INSERT INTO appointments(id,ownerId,customerJson,createdAt) VALUES('malformed',?,'{',?)").run(c.ownerId,at);
- const result=await f.voice(c).tool('getCustomerContext',{});assert.equal(result.status,'found');assert.equal(result.recentAppointments.length,1);assert.match(result.recentAppointments[0],/2026-10-07/);
+ const result=await history(f,c);assert.equal(result.status,'found');assert.equal(result.recentAppointments.length,1);assert.match(result.recentAppointments[0],/2026-10-07/);
 });
 test('D15 dispatched identity and saved history preserve only safe fields and exact recorded dollars',async t=>{
  const f=fixture(t),c=f.context(),v=f.voice(c);await v.tool('captureLead',{name:'[SYNTHETIC] Alex',address,description:'[SYNTHETIC] repair gate'});
  const other=f.context('synthetic-b');await f.voice(other).tool('captureLead',{name:'FOREIGN PERSON',description:'FOREIGN REQUEST'});
  // Handwritten expected before execution: saved range $221.23–$243.35, not recalculated.
  f.db.prepare("INSERT INTO quotes(id,ownerId,callId,resultJson,status,createdAt) VALUES('saved-quote',?,?,?,'INSTANT',?)").run(c.ownerId,c.callSid,JSON.stringify({originalSubmission:{contact:{phone}},customerResult:{resultType:'INSTANT_ESTIMATE_READY',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'},privateCost:'PRIVATE_SENTINEL'}),at);
- const result=await v.tool('getCustomerContext',{});assert.equal(result.greetingName,'[SYNTHETIC] Alex');assert.equal(result.address.line1,address.line1);assert.equal(result.openLeads[0].description,'[SYNTHETIC] repair gate');assert.equal(result.recentQuotes[0].lowEstimate,221.23);assert.equal(result.recentQuotes[0].highEstimate,243.35);assert.doesNotMatch(JSON.stringify(result),/PRIVATE_SENTINEL|FOREIGN|ownerId|callSid|lineItems/);
+ const result=await history(f,c,v);assert.equal(result.greetingName,'[SYNTHETIC] Alex');assert.equal(result.address.line1,address.line1);assert.equal(result.openLeads[0].description,'[SYNTHETIC] repair gate');assert.equal(result.recentQuotes[0].lowEstimate,221.23);assert.equal(result.recentQuotes[0].highEstimate,243.35);assert.doesNotMatch(JSON.stringify(result),/PRIVATE_SENTINEL|FOREIGN|ownerId|callSid|lineItems/);
 });
 test('D16 handle credential rotation preserves one owner-phone customer and historical references',async t=>{
  const f=fixture(t),a=f.context();await f.voice(a).tool('captureLead',{name:'[SYNTHETIC] Alex',address});const id=JSON.parse(f.lead(a)[0].collectedInputsJson).customerId;
@@ -45,26 +47,26 @@ test('D14 legacy duplicate IDs preserve caller bookings; contradictory and forei
  const f=fixture(t),c=f.context();
  for(const [id,owner,number] of [['old','synthetic-a',phone],['duplicate','synthetic-a',phone],['other','synthetic-a','+19025550199'],['foreign','synthetic-b',phone]])f.db.prepare('INSERT INTO customers(id,ownerId,phoneE164,createdAt) VALUES(?,?,?,?)').run(id,owner,number,at);
  for(const id of ['duplicate','other','foreign']){appointment(f,id+'-booking',c.ownerId,phone,'2026-10-07T12:00:00Z');f.db.prepare('UPDATE appointments SET customerId=? WHERE ownerId=? AND id=?').run(id,c.ownerId,id+'-booking');}
- const result=await f.voice(c).tool('getCustomerContext',{});assert.equal(result.recentAppointments.length,1);
+ const result=await history(f,c);assert.equal(result.recentAppointments.length,1);
  const handle=result.recentAppointments[0].split(' — ')[0];assert.equal(f.voice(c).runtime.handleStore.resolve({context:c,handle,expectedType:'appointment'}).reference.appointmentId,'duplicate-booking');
 });
 test('D14 normalized appointment phone and per-caller limit do not mix callers',async t=>{
  const f=fixture(t),c=f.context();for(let i=0;i<8;i++)appointment(f,'own-'+i,c.ownerId,'+1 (902) 555-0100','2026-10-07T12:00:00Z');
- const result=await f.voice(c).tool('getCustomerContext',{});assert.equal(result.recentAppointments.length,5);
+ const result=await history(f,c);assert.equal(result.recentAppointments.length,5);
 });
 test('D15 history remains available without customer row; closed leads excluded; malformed receipts fail safely',async t=>{
  const f=fixture(t),c=f.context();
  f.db.prepare("INSERT INTO leads(id,ownerId,callerNumber,describedService,status,createdAt) VALUES('legacy',?,?,?,'NEEDS REVIEW',?)").run(c.ownerId,phone,'[SYNTHETIC] Legacy request',at);
  f.db.prepare("INSERT INTO leads(id,ownerId,callerNumber,describedService,status,createdAt) VALUES('closed',?,?,?,'DISMISSED',?)").run(c.ownerId,phone,'CLOSED SENTINEL',at);
  f.db.prepare("INSERT INTO quotes(id,ownerId,callId,resultJson,status,createdAt) VALUES('broken',?,?,'{','INSTANT',?)").run(c.ownerId,c.callSid,at);
- const result=await f.voice(c).tool('getCustomerContext',{});assert.equal(result.status,'found');assert.equal(result.openLeads.length,1);assert.equal(result.recentQuotes.length,1);assert.equal(result.recentQuotes[0].lowEstimate,undefined);assert.doesNotMatch(JSON.stringify(result),/CLOSED SENTINEL/);
+ const result=await history(f,c);assert.equal(result.status,'found');assert.equal(result.openLeads.length,1);assert.equal(result.recentQuotes.length,1);assert.equal(result.recentQuotes[0].lowEstimate,undefined);assert.doesNotMatch(JSON.stringify(result),/CLOSED SENTINEL/);
 });
 test('D15 quote and request joins reject foreign-call and foreign-submission links',async t=>{
  const f=fixture(t),c=f.context(),foreign=f.context('synthetic-b');
  f.db.prepare("INSERT INTO quotes(id,ownerId,callId,resultJson,status,createdAt) VALUES('bad-link',?,?,'{}','INSTANT',?)").run(c.ownerId,foreign.callSid,at);
  f.db.prepare("INSERT INTO quoteRequests(id,ownerId,callId,describedService,createdAt) VALUES('bad-link',?,?,'FOREIGN',?)").run(c.ownerId,foreign.callSid,at);
  f.db.prepare("INSERT INTO quoteSubmissions(ownerId,requestId,contentDigest,recordId,resultType,bookRevision,originalSubmissionJson,internalOutcomeJson,customerResponseJson,createdAt) VALUES(?,'foreign','synthetic','bad-link','INSTANT_ESTIMATE_READY','synthetic',?,'{}','{}',?)").run(foreign.ownerId,JSON.stringify({contact:{phone}}),at);
- assert.equal((await f.voice(c).tool('getCustomerContext',{})).status,'not_found');
+ assert.equal((await history(f,c)).status,'not_found');
 });
 test('D16 same names and emails do not join different phones or different tenants',async t=>{
  const f=fixture(t),a=f.context(),b={...f.context(),from:'+19025550199'},foreign=f.context('synthetic-b');
@@ -85,5 +87,5 @@ test('D15 malformed optional quote entries cannot hide valid saved ranges or oth
  const f=fixture(t),c=f.context(),v=f.voice(c);await v.tool('captureLead',{description:'[SYNTHETIC] valid lead'});
  // Expected before execution: retain saved $221.23–$243.35, never recalculate.
  f.db.prepare("INSERT INTO quotes(id,ownerId,callId,resultJson,status,createdAt) VALUES('mixed-receipt',?,?,?,'INSTANT',?)").run(c.ownerId,c.callSid,JSON.stringify({customerResult:{resultType:'INSTANT_ESTIMATE_READY',options:[null,'invalid',{tierName:'Saved',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'}]}}),at);
- const result=await v.tool('getCustomerContext',{});assert.equal(result.openLeads.length,1);assert.deepEqual(result.recentQuotes[0].options,[{tierName:'Saved',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'}]);
+ const result=await history(f,c,v);assert.equal(result.openLeads.length,1);assert.deepEqual(result.recentQuotes[0].options,[{tierName:'Saved',lowEstimate:221.23,highEstimate:243.35,currency:'CAD'}]);
 });

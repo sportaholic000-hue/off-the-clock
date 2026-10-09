@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+ok 1 - A goAway resumes one call with compression, one greeting, ordered caller audio and a single tool completion
+  ---
+  duration_ms: 11.471295
+  type: 'test'
+  ...
+# Subtest: A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+ok 2 - A unexpected close with a valid handle reconnects; failed reconnect reports a real failure once
+  ---
+  duration_ms: 8.772456
+  type: 'test'
+  ...
+# Subtest: A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+ok 3 - A signed phone stream stays open across reconnection; a later caller hangup completes and bills normally
+  ---
+  duration_ms: 85.685965
+  type: 'test'
+  ...
+# Subtest: A failed resumption runs the genuine backup path and bills zero minutes
+ok 4 - A failed resumption runs the genuine backup path and bills zero minutes
+  ---
+  duration_ms: 51.602163
+  type: 'test'
+  ...
+# Subtest: B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+ok 5 - B same-number dropped call has gated name, then bounded previous transcript and backup message without an old price
+  ---
+  duration_ms: 21.135118
+  type: 'test'
+  ...
+# Subtest: B a price at the very start of old speech is redacted before the model sees history
+ok 6 - B a price at the very start of old speech is redacted before the model sees history
+  ---
+  duration_ms: 13.825972
+  type: 'test'
+  ...
+# Subtest: B a dropped Twilio socket is flagged as an unexpected previous call
+ok 7 - B a dropped Twilio socket is flagged as an unexpected previous call
+  ---
+  duration_ms: 13.704027
+  type: 'test'
+  ...
+# Subtest: B all caller history reads use the tenant ownerQuery, including the previous call
+ok 8 - B all caller history reads use the tenant ownerQuery, including the previous call
+  ---
+  duration_ms: 14.670299
+  type: 'test'
+  ...
+# Subtest: B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+ok 9 - B a no or unclear identity answer reveals no history, even if a tool claims confirmation
+  ---
+  duration_ms: 14.88801
+  type: 'test'
+  ...
+# Subtest: B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+ok 10 - B an explicit natural yes with the saved first name confirms, while an unclear answer does not
+  ---
+  duration_ms: 16.122659
+  type: 'test'
+  ...
+# Subtest: B withheld and other-business caller IDs disclose nothing
+ok 11 - B withheld and other-business caller IDs disclose nothing
+  ---
+  duration_ms: 15.761051
+  type: 'test'
+  ...
+# Subtest: B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+ok 12 - B after 24 hours saved requests remain available only after identity confirmation, without old transcript
+  ---
+  duration_ms: 17.575318
+  type: 'test'
+  ...
+# Subtest: B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+ok 13 - B caller words are captured immediately and survive a drop; prompt requires early capture and guarded returning context
+  ---
+  duration_ms: 47.607897
+  type: 'test'
+  ...
+# Subtest: C backup capture speaks the matching Chirp voice and the exact two new lines
+ok 14 - C backup capture speaks the matching Chirp voice and the exact two new lines
+  ---
+  duration_ms: 0.254735
+  type: 'test'
+  ...
+# Subtest: C signed male fallback repeats the configured voice on capture and thanks, then retains ring-through
+ok 15 - C signed male fallback repeats the configured voice on capture and thanks, then retains ring-through
+  ---
+  duration_ms: 55.280182
+  type: 'test'
+  ...
+# Subtest: C signed female fallback repeats the configured voice on capture and thanks, then retains ring-through
+ok 16 - C signed female fallback repeats the configured voice on capture and thanks, then retains ring-through
+  ---
+  duration_ms: 53.509852
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 726.99548

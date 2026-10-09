@@ -15,6 +15,14 @@ import {voiceOperatorControl} from '../client/src/voiceOperatorControl.js';
 // Expectations written before execution: no prices are calculated here. Exactly
 // five active calls per owner; sixth captures a request. One call/session per
 // signed CallSid. No deadline unless supplied by the owner. No audio is stored.
+async function confirmedLiveHistory(h,call){
+ const first=await h.tool(call.callback,'getCustomerContext',{});if(first.status==='not_found')return first;
+ assert.equal(first.status,'identity_unconfirmed');
+ call.callback.onmessage({serverContent:{outputTranscription:{text:first.message},turnComplete:true}});
+ call.callback.onmessage({serverContent:{inputTranscription:{text:'Yes, speaking.'}}});
+ await until(()=>JSON.parse(h.db.prepare('SELECT transcriptJson FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,call.params.CallSid).transcriptJson).some(turn=>turn.text==='Yes, speaking.'));
+ return h.tool(call.callback,'getCustomerContext',{callerConfirmedIdentity:true});
+}
 test('Owner ruling: removed SMS tool cannot reach the production provider',async t=>{
   for(const template of ['quote','booking','callback','reminder']){
     const h=await harness(t),c=await h.connect();
@@ -53,7 +61,7 @@ test('D04 production transfer adapter initiates one provider handoff without cla
 test('D04 production appointment-change adapter reaches the booking service',async t=>{
   const calls=[],h=await harness(t,{install:{bookingService:{modifyAppointment:async input=>{calls.push(input);return {status:'CONFIRMED'};}}}}),c=await h.connect();
   h.db.prepare("INSERT INTO appointments(id,ownerId,status,customerJson,createdAt) VALUES('synthetic-appointment',?,'CONFIRMED',?,'2026-10-06T12:00:00.000Z')").run(h.owner,JSON.stringify({phone:c.params.From}));
-  const history=await h.tool(c.callback,'getCustomerContext',{}),handle=history.recentAppointments[0].split(' — ')[0];
+  const history=await confirmedLiveHistory(h,c),handle=history.recentAppointments[0].split(' — ')[0];
   const result=await h.tool(c.callback,'modifyAppointment',{appointmentHandle:handle,action:'cancel',customerConfirmed:true});
   assert.equal(result.status,'cancelled');assert.equal(calls.length,1);
 });

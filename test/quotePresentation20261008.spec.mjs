@@ -12,6 +12,7 @@ import {fixture,concrete,mowing} from '../verification/engine-independent/fixtur
 import {configuredScope} from './measuredScopeFixtures.mjs';
 import {savedDisplayFixture,date} from './quoteDisplayFixtures20261006.mjs';
 import {quoteEmailFixture} from './quoteEmailFixture.mjs';
+import {confirmedHistory} from './returningCallerTestHelper.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {editServiceField} from '../client/src/pricebookEditing.js';
@@ -33,6 +34,7 @@ before(async()=>{
 });
 after(()=>rmSync(temporary,{recursive:true,force:true}));
 const render=(component,props)=>renderToStaticMarkup(React.createElement(component,props));
+const history=h=>{const dispatch=h.voice();return confirmedHistory(h.db,h.c,args=>dispatch({name:'getCustomerContext',args}));};
 const waitFor=async predicate=>{for(let i=0;i<200;i++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,5));}assert.fail('Synthetic DOM did not settle');};
 function patio(length=960){
  const f=concrete();Object.assign(f.ownerPricing.pricing,{laborPerSqft:100,concreteCostPerCubicYard:8100,formworkPerLF:100});delete f.ownerPricing.pricing.demolitionPerSqft;
@@ -58,7 +60,7 @@ for(const length of [959,960,2000])test(`presentation 1: ${length}-character sco
  assert.ok(render(quoteView.QuoteResult,{result:response}).includes(description));
  const h=quoteEmailFixture(t),p=await phone(h,f);assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(p.result.midEstimate,450);assert.ok(p.result.scopeDetails.some(detail=>detail.includes(description)));assert.ok(occurrences(p.result.quoteNarration,description)>=1);
  const replay=await h.tool('getQuote',p.args);assert.equal(replay.quoteNarration,p.result.quoteNarration);
- const history=(await h.tool('getCustomerContext',{})).recentQuotes[0];assert.equal(history.midEstimate,450);assert.ok(history.scopeDetails.some(detail=>detail.includes(description)));
+ const previous=(await history(h)).recentQuotes[0];assert.equal(previous.midEstimate,450);assert.ok(previous.scopeDetails.some(detail=>detail.includes(description)));
  const confirmation=await h.tool('prepareQuoteEmail',{quoteHandle:p.result.quoteHandle,email:'caller@example.invalid'});await h.tool('sendQuoteEmail',{emailConfirmationHandle:confirmation.emailConfirmationHandle,customerConfirmed:true});await h.emailService().dispatchOnce();
  const row=h.rows()[0],message=JSON.parse(row.messageJson),token=new URL(message.text.split('View your saved quote: ')[1]).pathname.split('/').at(-1);assert.equal(h.emailService().publicQuote(h.c.ownerId,token).narration,p.result.quoteNarration);assert.ok(message.text.includes(description));assert.equal(row.narration,p.result.quoteNarration);assert.ok(occurrences(row.narration,description)>=1);
 });
@@ -78,7 +80,7 @@ test('presentation 2a: owner sees named withheld option, owner labels and 1-of-3
 });
 for(const partial of [false,true])test(`presentation 2b: withheld notice survives phone/history/requested copy once (${partial?'partial':'complete'})`,async t=>{
  const h=quoteEmailFixture(t),f=tiers(),p=await phone(h,f,partial?['[SYNTHETIC] Separate unpriced tree removal']:[]);assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.deepEqual(p.result.options.map(option=>option.midEstimate),[115,172.5]);assert.equal(p.result.optionAvailabilityNotice,notice);assert.equal(occurrences(p.result.voiceSummary,notice),1);assert.equal(occurrences(p.result.quoteNarration,notice),1);
- const history=(await h.tool('getCustomerContext',{})).recentQuotes[0];assert.equal(history.optionAvailabilityNotice,notice);assert.deepEqual(history.options.map(option=>option.midEstimate),[115,172.5]);if(partial)assert.equal(history.fullJobTotal,null);
+ const previous=(await history(h)).recentQuotes[0];assert.equal(previous.optionAvailabilityNotice,notice);assert.deepEqual(previous.options.map(option=>option.midEstimate),[115,172.5]);if(partial)assert.equal(previous.fullJobTotal,null);
  const confirmation=await h.tool('prepareQuoteEmail',{quoteHandle:p.result.quoteHandle,email:'caller@example.invalid'});await h.tool('sendQuoteEmail',{emailConfirmationHandle:confirmation.emailConfirmationHandle,customerConfirmed:true});await h.emailService().dispatchOnce();const row=h.rows()[0],message=JSON.parse(row.messageJson),token=new URL(message.text.split('View your saved quote: ')[1]).pathname.split('/').at(-1);assert.equal(occurrences(message.text,notice),1);assert.equal(occurrences(h.emailService().publicQuote(h.c.ownerId,token).narration,notice),1);assert.equal(occurrences(row.narration,notice),1);
 });
 for(const depth of [1,2,3])test(`presentation 3: actual Remove button prunes an optional map at depth ${depth}`,async t=>{
