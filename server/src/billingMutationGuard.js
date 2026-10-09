@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {accountAccessDecision} from './planAccess.js';
 const READ_METHODS=new Set(['GET','HEAD','OPTIONS']);
 // Only billing and account authentication recovery bypass lifecycle restrictions.
@@ -8,7 +9,7 @@ export function billingMutationDecision(database,req,{now=Date.now()}={}) {
   if(READ_METHODS.has(req.method)||!req.method)return {allowed:true};
   const path=req.route?.path || req.path;
   if(req.method==='POST'&&(RECOVERY_PATHS.has(path)||READ_ONLY_POSTS.has(path)))return {allowed:true};
-  const owner=database.prepare("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users WHERE id=? AND role='owner'").get(req.tenantOwnerId);
+  const owner=usageOwnerQuery(database)("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(req.tenantOwnerId);
   // Existing cancellation cleanup contract: docs/operator-integrations.md:23.
   // This removes delivery authority; it cannot configure or send a webhook.
   if(req.method==='DELETE'&&path==='/api/integrations/webhook'&&['canceled','cancelled'].includes(owner?.planStatus))return {allowed:true};

@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {createQuoteEmailProvider} from './quoteEmailProvider.js';
 const EMAIL=/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
@@ -9,7 +10,7 @@ export function quoteEmailOrigin(env){
   if(u.username||u.password||u.search||u.hash||u.pathname!=='/'||u.protocol!=='https:')fail('QUOTE_EMAIL_LINK_UNAVAILABLE');
   return u.origin;
 }
-export function createQuoteEmailService({database,ownerQuery=sql=>database.prepare(sql),environment=process.env,
+export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(database),environment=process.env,
   provider=createQuoteEmailProvider({environment}),clock=Date.now,providerTimeoutMs=6000}={}){
   if(!Number.isSafeInteger(providerTimeoutMs)||providerTimeoutMs<1||providerTimeoutMs>25000)throw new TypeError('Invalid email provider timeout');
   const q=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Quote email tenant required');return ownerQuery(sql);};
@@ -96,8 +97,8 @@ export function createQuoteEmailService({database,ownerQuery=sql=>database.prepa
   }
   let cursor='',stopped=false;
   async function dispatchOnce(){
-    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
-    if(!owners.length){cursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
+    if(!owners.length){cursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     for(const {ownerId}of owners){if(stopped)break;cursor=ownerId;for(let i=0;i<10&&!stopped;i++)if(!await processOne(ownerId))break;}
   }
   function start({intervalMs=1000,onError=()=>{}}={}){let timer,running;stopped=false;

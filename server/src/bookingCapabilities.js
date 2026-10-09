@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { isValidIanaTimeZone } from './calendarTime.js';
 import { isServiceAreaConfigured, serviceAreaFromKnowledgeBase } from './serviceArea.js';
 
@@ -57,13 +58,13 @@ export function resolveBookingCapability({ settings, policy, serviceArea } = {})
 }
 
 export function loadBookingCapability(database, ownerId, serviceId) {
-  const settings = database.prepare(
+  const settings = usageOwnerQuery(database)(
     'SELECT * FROM bookingSettings WHERE ownerId = ?'
   ).get(ownerId);
-  const policy = database.prepare(
+  const policy = usageOwnerQuery(database)(
     'SELECT * FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?'
   ).get(ownerId, serviceId);
-  const profile = database.prepare(
+  const profile = usageOwnerQuery(database)(
     'SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?'
   ).get(ownerId);
   return resolveBookingCapability({
@@ -86,7 +87,7 @@ export function sanitizePublicBranding(value = {}) {
 }
 
 export function loadPublicBranding(database, ownerId) {
-  const row = database.prepare(`
+  const row = usageOwnerQuery(database)(`
     SELECT u.businessName, w.accentColor, w.launcherLabel, w.clickToCallNumber,
       p.twilioNumber
     FROM users AS u

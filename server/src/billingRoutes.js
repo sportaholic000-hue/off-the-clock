@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 
@@ -376,18 +377,18 @@ export function installBillingRoutes(app, {
   }
   const now = () => instant(clock(), 'Checkout clock');
 
-  const billingByOwner = database.prepare(`
+  const billingByOwner = usageOwnerQuery(database)(`
     SELECT billing.ownerId, billing.stripeCustomerId, billing.stripeSubscriptionId,
       billing.canceledAt, users.planStatus, users.annualPaidThroughAt, users.paidThroughAt, users.serviceEndsAt
     FROM billingAccounts AS billing
     JOIN users ON users.id = billing.ownerId
     WHERE billing.ownerId = ?
   `);
-  const ownerById = database.prepare(`
+  const ownerById = usageOwnerQuery(database)(`
     SELECT id, email, firstName, businessName
-    FROM users WHERE id = ? AND role = 'owner'
+    FROM users WHERE id = ? AND role = 'owner' AND ownerId IS NULL
   `);
-  const billingStatusByOwner = database.prepare(`
+  const billingStatusByOwner = usageOwnerQuery(database)(`
     SELECT users.plan, users.planStatus, users.trialEndsAt, users.annualPaidThroughAt, users.paidThroughAt, users.serviceEndsAt,
       users.paymentFailedAt AS userPaymentFailedAt,
       billing.stripeCustomerId, billing.stripeSubscriptionId, billing.stripePriceId,
@@ -397,7 +398,7 @@ export function installBillingRoutes(app, {
     LEFT JOIN billingAccounts AS billing ON billing.ownerId = users.id
     WHERE users.id = ? AND users.role = 'owner'
   `);
-  const terminalDeletionReceipt = database.prepare(`
+  const terminalDeletionReceipt = usageOwnerQuery(database)(`
     SELECT stripeEventId, eventCreatedAt
     FROM billingEventReceipts
     WHERE ownerId = ?
@@ -407,16 +408,16 @@ export function installBillingRoutes(app, {
     ORDER BY eventCreatedAt DESC, stripeEventId DESC
     LIMIT 1
   `);
-  const checkoutByKey = database.prepare(`
+  const checkoutByKey = usageOwnerQuery(database)(`
     SELECT * FROM billingCheckoutRequests
     WHERE ownerId = ? AND idempotencyKeyHash = ?
   `);
-  const activeCheckout = database.prepare(`
+  const activeCheckout = usageOwnerQuery(database)(`
     SELECT * FROM billingCheckoutRequests
     WHERE ownerId = ? AND status IN ('CREATING', 'OPEN')
     ORDER BY createdAt ASC LIMIT 1
   `);
-  const insertCheckoutClaim = database.prepare(`
+  const insertCheckoutClaim = usageOwnerQuery(database)(`
     INSERT INTO billingCheckoutRequests (
       id, ownerId, idempotencyKeyHash, requestDigest, plan, billingInterval,
       stripePriceId, stripeCustomerId, providerIdempotencyKey,
@@ -424,17 +425,17 @@ export function installBillingRoutes(app, {
       attemptCount, leaseExpiresAt, createdAt, updatedAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'CREATING', 1, ?, ?, ?)
   `);
-  const reclaimCheckout = database.prepare(`
+  const reclaimCheckout = usageOwnerQuery(database)(`
     UPDATE billingCheckoutRequests
     SET attemptCount = attemptCount + 1, leaseExpiresAt = ?, updatedAt = ?
     WHERE id = ? AND ownerId = ? AND status = 'CREATING'
   `);
-  const releaseCheckoutLease = database.prepare(`
+  const releaseCheckoutLease = usageOwnerQuery(database)(`
     UPDATE billingCheckoutRequests
     SET leaseExpiresAt = ?, updatedAt = ?
     WHERE id = ? AND ownerId = ? AND status = 'CREATING'
   `);
-  const persistCheckoutSession = database.prepare(`
+  const persistCheckoutSession = usageOwnerQuery(database)(`
     UPDATE billingCheckoutRequests SET
       stripeSessionId = ?, sessionUrlCiphertext = ?, sessionUrlIv = ?,
       sessionUrlTag = ?, sessionUrlKeyVersion = ?, status = 'OPEN',
@@ -581,7 +582,7 @@ export function installBillingRoutes(app, {
   }
 
   async function reconcilePriorCheckouts(ownerId,account,requestKey,assertLease) {
-    const rows=database.prepare(`SELECT * FROM billingCheckoutRequests WHERE ownerId=?
+    const rows=usageOwnerQuery(database)(`SELECT * FROM billingCheckoutRequests WHERE ownerId=?
       AND ((status='OPEN' AND expiresAt<=?) OR (status='EXPIRED' AND providerExpiredVerifiedAt IS NULL))
       ORDER BY createdAt LIMIT 101`).all(ownerId,now().toISOString());
     if (rows.length>100) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'Earlier Checkout sessions require review.');
@@ -599,11 +600,11 @@ export function installBillingRoutes(app, {
           const priorTerminal=latest.planStatus==='canceled' && latest.canceledAt && terminalDeletionReceipt.get(ownerId,latest.stripeSubscriptionId);
           const authorizedReplacement=priorTerminal && Date.parse(row.providerCreatedAt)>=priorTerminal.eventCreatedAt*1000;
           const conflict=latest.stripeSubscriptionId && latest.stripeSubscriptionId!==subscriptionId && !authorizedReplacement;
-          database.prepare(`UPDATE billingCheckoutRequests SET status='COMPLETED',stripeSubscriptionId=?,consumedAt=?,updatedAt=?,reconciliationError=?
+          usageOwnerQuery(database)(`UPDATE billingCheckoutRequests SET status='COMPLETED',stripeSubscriptionId=?,consumedAt=?,updatedAt=?,reconciliationError=?
             WHERE ownerId=? AND id=? AND status IN ('OPEN','EXPIRED')`).run(subscriptionId,now().toISOString(),now().toISOString(),conflict?'DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW':null,ownerId,row.id);
           // Keep the owner slot bound without granting access. Verified subscription
           // evidence and its own webhook will establish plan/trial/payment state.
-          if (!latest.stripeSubscriptionId) database.prepare('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),ownerId,account.stripeCustomerId);
+          if (!latest.stripeSubscriptionId) usageOwnerQuery(database)('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),ownerId,account.stripeCustomerId);
         });
         throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
       }
@@ -613,15 +614,15 @@ export function installBillingRoutes(app, {
       if (!Array.isArray(subscriptions?.data) || subscriptions.has_more!==false) throw providerFailure();
       if (subscriptions.data.some(sub=>providerReference(sub.customer)!==account.stripeCustomerId)) throw providerFailure();
       if (subscriptions.data.some(sub=>!['canceled','incomplete_expired'].includes(sub.status))) throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
-      immediate(database,()=>{assertLease();database.prepare(`UPDATE billingCheckoutRequests SET status='EXPIRED',providerExpiredVerifiedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status IN ('OPEN','EXPIRED')`).run(now().toISOString(),now().toISOString(),ownerId,row.id);});
+      immediate(database,()=>{assertLease();usageOwnerQuery(database)(`UPDATE billingCheckoutRequests SET status='EXPIRED',providerExpiredVerifiedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status IN ('OPEN','EXPIRED')`).run(now().toISOString(),now().toISOString(),ownerId,row.id);});
     }
-    const quarantined=database.prepare('SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND reconciliationError IS NOT NULL LIMIT 1').get(ownerId);
+    const quarantined=usageOwnerQuery(database)('SELECT id FROM billingCheckoutRequests WHERE ownerId=? AND reconciliationError IS NOT NULL LIMIT 1').get(ownerId);
     if (quarantined) throw routeError('CHECKOUT_RECOVERY_REQUIRED',409,'Conflicting subscriptions require review.');
     // A consumed session that has not yet acquired an authoritative subscription
     // is still an unresolved provider obligation, not a free creation slot.
-    const completed=database.prepare("SELECT stripeSubscriptionId FROM billingCheckoutRequests WHERE ownerId=? AND status IN ('COMPLETED','FAILED')").all(ownerId);
+    const completed=usageOwnerQuery(database)("SELECT stripeSubscriptionId FROM billingCheckoutRequests WHERE ownerId=? AND status IN ('COMPLETED','FAILED')").all(ownerId);
     for (const row of completed) {
-      const terminal=database.prepare("SELECT status FROM billingSubscriptionHistory WHERE ownerId=? AND stripeSubscriptionId=?").get(ownerId,row.stripeSubscriptionId);
+      const terminal=usageOwnerQuery(database)("SELECT status FROM billingSubscriptionHistory WHERE ownerId=? AND stripeSubscriptionId=?").get(ownerId,row.stripeSubscriptionId);
       if (terminal?.status!=='TERMINAL' && row.stripeSubscriptionId!==account.stripeSubscriptionId) throw routeError('SUBSCRIPTION_ALREADY_EXISTS',409,'Manage the existing subscription in the billing portal.');
     }
   }
@@ -645,9 +646,9 @@ export function installBillingRoutes(app, {
       assertLease();
       const latest=billingByOwner.get(row.ownerId);
       const conflict=subscriptionId && latest.stripeSubscriptionId && latest.stripeSubscriptionId!==subscriptionId;
-      database.prepare(`UPDATE billingCheckoutRequests SET stripeSessionId=?,stripeSubscriptionId=?,status=?,expiresAt=?,providerCreatedAt=?,consumedAt=?,updatedAt=?,reconciliationError=?
+      usageOwnerQuery(database)(`UPDATE billingCheckoutRequests SET stripeSessionId=?,stripeSubscriptionId=?,status=?,expiresAt=?,providerCreatedAt=?,consumedAt=?,updatedAt=?,reconciliationError=?
         WHERE ownerId=? AND id=? AND status='CREATING'`).run(session.id,subscriptionId,session.status==='complete'?'COMPLETED':'EXPIRED',new Date(session.expires_at*1000).toISOString(),new Date(session.created*1000).toISOString(),subscriptionId?now().toISOString():null,now().toISOString(),conflict?'DUPLICATE_SUBSCRIPTION_REQUIRES_REVIEW':null,row.ownerId,row.id);
-      if (subscriptionId && !latest.stripeSubscriptionId) database.prepare('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),row.ownerId,row.stripeCustomerId);
+      if (subscriptionId && !latest.stripeSubscriptionId) usageOwnerQuery(database)('UPDATE billingAccounts SET stripeSubscriptionId=?,updatedAt=? WHERE ownerId=? AND stripeCustomerId=? AND stripeSubscriptionId IS NULL').run(subscriptionId,now().toISOString(),row.ownerId,row.stripeCustomerId);
     });
   }
 
@@ -677,7 +678,7 @@ export function installBillingRoutes(app, {
   }
 
   function checkoutParameters(row) {
-    const returningPaidOwner=database.prepare("SELECT stripeInvoiceId FROM billingInvoiceEvidence WHERE ownerId=? AND status='PAID' AND amountPaid>0 LIMIT 1").get(row.ownerId);
+    const returningPaidOwner=usageOwnerQuery(database)("SELECT stripeInvoiceId FROM billingInvoiceEvidence WHERE ownerId=? AND status='PAID' AND amountPaid>0 LIMIT 1").get(row.ownerId);
     let storedSuccess;
     let storedCancel;
     let storedIntegration;

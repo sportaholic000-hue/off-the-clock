@@ -1,6 +1,7 @@
 import { BookingServiceError } from './bookingService.js';
 import {guardTenantRequest} from './tenantRequest.js';
 import {accountAccessDecision} from './planAccess.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LOCATION_FIELDS = ['addressLine1', 'addressLine2', 'city', 'region', 'postalCode', 'country'];
@@ -149,7 +150,7 @@ export function installBookingRoutes(app, {
   asyncHandler,
   requireAuth,
   database,
-  ownerQuery=sql=>database.prepare(sql)
+  ownerQuery=usageOwnerQuery(database)
 }) {
   if (!bookingService || !asyncHandler || !requireAuth || !database) {
     throw new TypeError('Booking routes require booking, auth, async, and database dependencies.');

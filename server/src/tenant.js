@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 export function deriveTenantOwnerId(user) {
   if (!user) return null;
   if (user.role === 'staff') return user.ownerId ?? null;
@@ -17,12 +18,12 @@ export function attachTenantContext(req, user) {
 
 export function validateStaffOwnerParent(database, ownerId) {
   if (!ownerId) return false;
-  const parent = database.prepare('SELECT role FROM users WHERE id = ?').get(ownerId);
+  const parent = usageOwnerQuery(database)('SELECT role FROM users WHERE id = ? AND ownerId IS NULL').get(ownerId);
   return parent?.role === 'owner';
 }
 
 export function findInvalidStaffOwnerLinks(database) {
-  return database.prepare(`
+  return usageOwnerQuery(database)(`
     SELECT staff.id AS staffId, staff.ownerId, parent.role AS parentRole
     FROM users AS staff
     LEFT JOIN users AS parent ON parent.id = staff.ownerId

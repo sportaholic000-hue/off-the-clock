@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {settingError} from './receptionistSettings.js';
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
 import {operatorOffRouting} from './operatorOffRouting.js';
@@ -62,7 +63,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   function offRouting(context){
     const state=account(context.ownerId);
     if(state.profile?.operatorEnabled!==0)return null;
-    const coverage=database.prepare('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
+    const coverage=usageOwnerQuery(database)('SELECT confirmedEnabled,phase FROM operatorCoverageOperations WHERE ownerId=?').get(context.ownerId);
     return operatorOffRouting({profile:state.profile,coverage,destinationNumber:context.to});
   }
   const fallback=({context,reason})=>{
@@ -95,15 +96,15 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   let boundary=null;
   function publicPrompt(context){
    try{
-    const owner=database.prepare('SELECT businessName FROM users WHERE id = ? AND role = ?').get(context.ownerId,'owner');
-    const profile=database.prepare('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const owner=usageOwnerQuery(database)('SELECT businessName FROM users WHERE id = ? AND role = ? AND ownerId IS NULL').get(context.ownerId,'owner');
+    const profile=usageOwnerQuery(database)('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
     let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:kb.neverSay,reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{throw settingError('Business knowledge','Business knowledge could not be read.');}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
     let book={services:[]};
     if(canQuote)try{book=loadPricebook(context.ownerId);}catch{
       const at=iso(clock),message='The saved price book cannot be read. Calculated quoting is paused; ordinary answering, listed prices, leads and scheduling remain available. Restore the saved price book from backup or email support@offtheclockai.com.';
-      database.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.quoting_unavailable',?,?,'PENDING',?,?)").run('voice-quoting-unavailable:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,message}),at,at);
+      usageOwnerQuery(database)("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.quoting_unavailable',?,?,'PENDING',?,?)").run('voice-quoting-unavailable:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,message}),at,at);
       onError('VOICE_QUOTING_UNAVAILABLE');
     }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
@@ -113,7 +114,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
     const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';
     const at=iso(clock);
-    database.prepare("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.settings_invalid',?,?,'PENDING',?,?)").run('voice-settings-invalid:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,setting,message}),at,at);
+    usageOwnerQuery(database)("INSERT OR IGNORE INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,'voice.settings_invalid',?,?,'PENDING',?,?)").run('voice-settings-invalid:'+context.ownerId+':'+context.callSid,context.ownerId,context.callSid,JSON.stringify({callSid:context.callSid,setting,message}),at,at);
     onError('VOICE_SETTINGS_INVALID');throw error;
    }
   }
@@ -124,16 +125,16 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     for(const name of ['matchService','getQuote']){const original=handlers[name];handlers[name]=invocation=>{if(!hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())}))return {status:'needs_details',customerMessage:'The business will review this pricing request.'};return original(invocation);};}
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
-    const voiceProfile=database.prepare('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
+    const voiceProfile=usageOwnerQuery(database)('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
     const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations(),greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){
       if(!pendingTranscripts.length)return;
-      const row=database.prepare('SELECT transcriptJson FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
+      const row=usageOwnerQuery(database)('SELECT transcriptJson FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
       if(!row)throw Error('Call binding lost.');
       const prior=JSON.parse(row.transcriptJson||'[]');prior.push(...pendingTranscripts.map(item=>item.transcript));
-      database.prepare('UPDATE calls SET transcriptJson=?,streamSid=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(JSON.stringify(prior),pendingTranscripts.at(-1).streamSid,iso(clock),session.callRecordId,context.ownerId,context.callSid);
+      usageOwnerQuery(database)('UPDATE calls SET transcriptJson=?,streamSid=?,updatedAt=? WHERE id=? AND ownerId=? AND callSid=?').run(JSON.stringify(prior),pendingTranscripts.at(-1).streamSid,iso(clock),session.callRecordId,context.ownerId,context.callSid);
       pendingTranscripts.length=0;
     }
     const bridge=createGeminiMediaBridge({
@@ -142,7 +143,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
         if(denied){store.recordFallback({context,reason:denied});throw Error('Voice admission closed.');}
         meter.start(context,session.callRecordId);
         let opened;try{opened=await opener(options);}catch(error){if(error.code==='GEMINI_CONNECT_FAILED')admission.failed(context);throw error;}
-        try{admission.connected(context);started=new Date(clock()).getTime();database.prepare("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
+        try{admission.connected(context);started=new Date(clock()).getTime();usageOwnerQuery(database)("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
         pendingTranscripts.push({transcript,streamSid});flushTranscripts();
@@ -158,7 +159,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
         const duration=started===null?0:Math.max(0,Math.ceil((new Date(clock()).getTime()-started)/1000));
         try{
           flushTranscripts();
-          const call=database.prepare('SELECT status FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
+          const call=usageOwnerQuery(database)('SELECT status FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
           // The signed capture callback owns finalizing a fallback. Media close
           // must neither cut it off nor turn excluded fallback into paid usage.
           const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true});

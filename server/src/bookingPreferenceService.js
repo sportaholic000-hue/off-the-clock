@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import crypto from 'node:crypto';
 import { requestDigest } from './bookingTokens.js';
 import {
@@ -163,7 +164,7 @@ export function createBookingPreferenceService({
     throw new TypeError('BookingPreferenceService requires clock and UUID dependencies.');
   }
 
-  const contextStatement = db.prepare([
+  const contextStatement = usageOwnerQuery(db)([
     'SELECT i.id AS intentId, i.ownerId, i.status AS intentStatus, i.expiresAtUtc,',
     's.timezone AS settingsTimezone, u.timezone AS ownerTimezone',
     'FROM bookingIntents AS i',
@@ -171,23 +172,23 @@ export function createBookingPreferenceService({
     'LEFT JOIN users AS u ON u.id = i.ownerId',
     'WHERE i.id = ? AND i.ownerId = ?'
   ].join(' '));
-  const receiptStatement = db.prepare([
+  const receiptStatement = usageOwnerQuery(db)([
     'SELECT intentId, requestDigest, httpStatus, responseJson',
     'FROM bookingIdempotency',
     'WHERE ownerId = ? AND operation = ? AND idempotencyKey = ?'
   ].join(' '));
-  const insertPreferenceStatement = db.prepare([
+  const insertPreferenceStatement = usageOwnerQuery(db)([
     'INSERT INTO bookingPreferences (',
     'id, ownerId, intentId, preferredWindowsJson, customerJson, locationJson,',
     'note, status, createdAt, updatedAt',
     ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
   ].join(' '));
-  const insertOutboxStatement = db.prepare([
+  const insertOutboxStatement = usageOwnerQuery(db)([
     'INSERT INTO outboxEvents (',
     'id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt',
     ") VALUES (?, ?, 'booking.preference_requested', ?, ?, 'PENDING', ?, ?)"
   ].join(' '));
-  const insertReceiptStatement = db.prepare([
+  const insertReceiptStatement = usageOwnerQuery(db)([
     'INSERT INTO bookingIdempotency (',
     'ownerId, operation, idempotencyKey, intentId, requestDigest,',
     'httpStatus, responseJson, createdAt, updatedAt',

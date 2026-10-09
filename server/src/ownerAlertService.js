@@ -1,3 +1,4 @@
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomUUID} from 'node:crypto';
 import {createOwnerAlertEmailSender,ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject} from './ownerRecordViews.js';
@@ -13,7 +14,7 @@ const problem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode
 const email=v=>typeof v==='string'&&v.length<=320&&/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v);
 const parseArray=v=>{try{const a=JSON.parse(v);return Array.isArray(a)?a:[];}catch{return [];}};
 
-export function createOwnerAlertService({database,ownerQuery=sql=>database.prepare(sql),environment=process.env,
+export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(database),environment=process.env,
   clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),providerTimeoutMs=5000}={}){
   if(!Number.isSafeInteger(providerTimeoutMs)||providerTimeoutMs<1||providerTimeoutMs>10000)throw TypeError('Invalid owner alert provider timeout.');
   const query=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Owner alert query must bind tenant');return ownerQuery(sql);};
@@ -143,8 +144,8 @@ export function createOwnerAlertService({database,ownerQuery=sql=>database.prepa
   async function dispatchOnce(){
     // Owner identity enumeration is the same identity-registry read used by
     // authentication/routing. Alert/customer queries never scan across tenants.
-    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
-    if(!owners.length){ownerCursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
+    if(!owners.length){ownerCursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     let processed=0;
     for(const {ownerId}of owners){
       if(workerStopping||processed>=20)break;ownerCursor=ownerId;

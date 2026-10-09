@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {usageOwnerQuery} from './billingUsagePolicy.js';
 
 // International numbers only: never infer a country or match names/emails.
 // Normalization verifies syntax, not ownership. Signed voice context supplies
@@ -16,7 +17,7 @@ export function customerQuery(database) {
   }
   return sql=>{
     if(!/\bownerId\b/.test(sql))throw new Error('Customer queries require ownerId.');
-    return database.prepare(sql);
+    return usageOwnerQuery(database)(sql);
   };
 }
 export function findCustomer(database,ownerId,phone) {
